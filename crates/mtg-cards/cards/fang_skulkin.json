@@ -1,0 +1,28 @@
+{
+  "oracle_id": "54bed864-fe2e-4359-b0ac-c27a2c225487",
+  "name": "Fang Skulkin",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fang Skulkin",
+      "oracle_fingerprint": "3bd03a52d4f809fdecbc6b0b78993813",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{2}",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, { "Color": "Black" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Wither" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

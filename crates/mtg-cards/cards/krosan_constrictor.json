@@ -1,0 +1,29 @@
+{
+  "oracle_id": "c9747b5d-0f6d-4a9a-8921-1d5c0be3bd60",
+  "name": "Krosan Constrictor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Krosan Constrictor",
+      "oracle_fingerprint": "ce8fbe10d049ee697677ef3ce294307f",
+      "abilities": [
+        { "Keyword": { "Landwalk": [{ "Subtype": "Swamp" }] } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, { "Color": "Black" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": -2, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

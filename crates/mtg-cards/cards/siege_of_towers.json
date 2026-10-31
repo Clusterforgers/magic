@@ -1,0 +1,28 @@
+{
+  "oracle_id": "d8eb0897-0d2f-4f2d-a09b-87d57d5a0fa9",
+  "name": "Siege of Towers",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Siege of Towers",
+      "oracle_fingerprint": "d5c4119c3bd6637cd36de885ea735f10",
+      "abilities": [
+        { "Keyword": { "Replicate": "{1}{R}" } },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Subtype": "Mountain" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetPT": { "power": 3, "toughness": 1 } }, { "AddType": "Creature" }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

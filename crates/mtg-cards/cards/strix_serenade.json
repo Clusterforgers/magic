@@ -1,0 +1,52 @@
+{
+  "oracle_id": "7ca3aa03-e62d-464a-9111-e754abe17f76",
+  "name": "Strix Serenade",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Strix Serenade",
+      "oracle_fingerprint": "a9136932365e0a682a628d88e27e3f77",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    "Spell",
+                    {
+                      "AnyOf": [
+                        { "Type": "Artifact" },
+                        { "Type": "Creature" },
+                        { "Type": "Planeswalker" }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Counter": { "what": { "Target": 0 } } },
+              {
+                "CreateToken": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "token": {
+                    "Custom": {
+                      "name": "Bird",
+                      "colors": ["Blue"],
+                      "types": ["Creature"],
+                      "subtypes": ["Bird"],
+                      "power": 2,
+                      "toughness": 2,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

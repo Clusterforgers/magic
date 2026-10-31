@@ -1,0 +1,30 @@
+{
+  "oracle_id": "bc3576fb-3c08-456e-b3b6-9eb01b2366d6",
+  "name": "Hyalopterous Lemure",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hyalopterous Lemure",
+      "oracle_fingerprint": "e76aca86d4f0f4f3ee994932cb6500ff",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{0}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "ModifyPT": { "power": -1, "toughness": 0 } },
+                    { "AddKeyword": "Flying" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

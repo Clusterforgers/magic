@@ -1,0 +1,22 @@
+{
+  "oracle_id": "b0c50079-5376-47ff-82c5-d52dbf49afdf",
+  "name": "Consign to the Pit",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Consign to the Pit",
+      "oracle_fingerprint": "ab94bb60df0bfc4e85d7665082ddf70a",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              { "DealDamage": { "to": { "ControllerOf": { "Target": 0 } }, "amount": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "oracle_id": "1139ee31-cb6e-4ae6-a08b-252c46b2db97",
+  "name": "Lotusguard Disciple",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lotusguard Disciple",
+      "oracle_fingerprint": "41522c37fecb24e3ee17e0ad03649ff0",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Creature" }, { "Subtype": "Vehicle" }] }]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Lifelink" }, { "AddKeyword": "Indestructible" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

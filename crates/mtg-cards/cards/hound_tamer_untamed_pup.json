@@ -1,0 +1,49 @@
+{
+  "oracle_id": "e9208fc2-616d-4c32-bd66-76a8bf85a6b5",
+  "name": "Hound Tamer // Untamed Pup",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hound Tamer",
+      "oracle_fingerprint": "6fdbb9756e4cedfdaba9c7eee0fcdf21",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Activated": {
+            "cost": "{3}{G}",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+          }
+        },
+        { "Keyword": "Daybound" }
+      ]
+    },
+    {
+      "name": "Untamed Pup",
+      "oracle_fingerprint": "2f4f79b734a4574a7a5bc443f71497ce",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "AnyOf": [{ "Subtype": "Wolf" }, { "Subtype": "Werewolf" }] },
+                "Other",
+                { "ControlledBy": "You" }
+              ]
+            },
+            "mods": [{ "AddKeyword": "Trample" }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{3}{G}",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+          }
+        },
+        { "Keyword": "Nightbound" }
+      ]
+    }
+  ]
+}

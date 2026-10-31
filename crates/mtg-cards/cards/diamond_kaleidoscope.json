@@ -1,0 +1,39 @@
+{
+  "oracle_id": "bffa9256-aff4-476f-86f4-4f4c9e57fa69",
+  "name": "Diamond Kaleidoscope",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Diamond Kaleidoscope",
+      "oracle_fingerprint": "7f5af50420bfceb5b8afeb7f122db1ac",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}" }, "Tap"],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Prism",
+                      "types": ["Artifact", "Creature"],
+                      "subtypes": ["Prism"],
+                      "power": 0,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Sacrifice": { "filter": [{ "Subtype": "Prism" }, "Token"] } }],
+            "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

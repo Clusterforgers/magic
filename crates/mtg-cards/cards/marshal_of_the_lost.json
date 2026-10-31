@@ -1,0 +1,38 @@
+{
+  "oracle_id": "af762373-e159-4a36-83b5-a82b8b16fa41",
+  "name": "Marshal of the Lost",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Marshal of the Lost",
+      "oracle_fingerprint": "fb9ed2dd6bf550f84627fb9139772f00",
+      "abilities": [
+        { "Keyword": "Deathtouch" },
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+            },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": { "Count": [{ "Type": "Creature" }, "Attacking"] },
+                        "toughness": { "Count": [{ "Type": "Creature" }, "Attacking"] }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "oracle_id": "cf40caa2-cd5b-4372-ad4a-7f4cf564241e",
+  "name": "Celestial Messenger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Celestial Messenger",
+      "oracle_fingerprint": "32e7e7121250d4c23af85d739a7006f6",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": "Flying" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "Type": "Planeswalker" },
+                    { "Subtype": "Yanling" },
+                    { "ControlledBy": "You" }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

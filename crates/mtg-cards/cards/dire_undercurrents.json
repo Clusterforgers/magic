@@ -1,0 +1,37 @@
+{
+  "oracle_id": "7545adab-b6f8-496d-8c25-416c7ec85fa2",
+  "name": "Dire Undercurrents",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dire Undercurrents",
+      "oracle_fingerprint": "32f4abe2824e8a6fd2e342dce4c1e290",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "Color": "Blue" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "targets": [{ "what": "Player" }],
+            "effects": [{ "May": { "effects": [{ "Draw": { "who": { "Target": 0 } } }] } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "Color": "Black" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "targets": [{ "what": "Player" }],
+            "effects": [{ "May": { "effects": [{ "Discard": { "who": { "Target": 0 } } }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

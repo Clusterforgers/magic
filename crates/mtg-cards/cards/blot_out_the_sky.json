@@ -1,0 +1,50 @@
+{
+  "oracle_id": "ded78090-c6a1-4c9d-b7b9-b433b1d963b6",
+  "name": "Blot Out the Sky",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Blot Out the Sky",
+      "oracle_fingerprint": "f81584f9c0cf052b3be891ed06ffb4e6",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Inkling",
+                      "colors": ["White", "Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Inkling"],
+                      "power": 2,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  },
+                  "count": "X",
+                  "tapped": true
+                }
+              },
+              {
+                "If": {
+                  "condition": { "Compare": { "left": "X", "op": "Ge", "right": 6 } },
+                  "then": [
+                    {
+                      "Destroy": {
+                        "what": {
+                          "Each": [{ "Not": { "Type": "Creature" } }, { "Not": { "Type": "Land" } }]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

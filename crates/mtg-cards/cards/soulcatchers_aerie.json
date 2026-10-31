@@ -1,0 +1,38 @@
+{
+  "oracle_id": "69565f6e-2e23-4cd8-bd21-1283e06729a3",
+  "name": "Soulcatchers' Aerie",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Soulcatchers' Aerie",
+      "oracle_fingerprint": "2c973d5c2a6bdd46edfc6c6ad764f966",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Subtype": "Bird" }, { "OwnedBy": "You" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": { "Other": "feather" } } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "Subtype": "Bird" }] },
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": { "Counters": { "on": "This", "counter": { "Other": "feather" } } },
+                  "toughness": { "Counters": { "on": "This", "counter": { "Other": "feather" } } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

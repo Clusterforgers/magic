@@ -1,0 +1,32 @@
+{
+  "oracle_id": "fa602f8f-1d80-4f6d-8b8f-d1a1f36037bd",
+  "name": "Bolg's Company",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bolg's Company",
+      "oracle_fingerprint": "c2f957387ddfe8e51b11f99992b2ba29",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Haste" }],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Subtype": "Goblin" }, "Other", { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap", { "Sacrifice": { "filter": [{ "Subtype": "Goblin" }, "Other"] } }],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Black", "Red"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "oracle_id": "ff8fae94-3a34-4bc6-aaa2-7ab7d2e2d0dd",
+  "name": "Flare",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Flare",
+      "oracle_fingerprint": "dc0df85350ab668d8f9ae8c817292b0e",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 1 } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "Upkeep" } },
+                  "effects": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

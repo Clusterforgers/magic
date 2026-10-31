@@ -1,0 +1,21 @@
+{
+  "oracle_id": "7e162cc1-9482-4812-8897-209ec2927ec0",
+  "name": "Lesser Gargadon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lesser Gargadon",
+      "oracle_fingerprint": "1753444bd005a1ce16b35b4b99899908",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [{ "Attacks": { "what": ["This"] } }, { "Blocks": { "what": ["This"] } }]
+            },
+            "effects": [{ "Sacrifice": { "filter": [{ "Type": "Land" }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

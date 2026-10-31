@@ -1,0 +1,144 @@
+{
+  "object": "card",
+  "id": "e9d3500e-09ba-48b6-933f-25b4625b79aa",
+  "oracle_id": "e049eb22-a01a-463e-8de9-705d6eaf84e2",
+  "multiverse_ids": [
+    555344
+  ],
+  "mtgo_id": 98505,
+  "arena_id": 80294,
+  "tcgplayer_id": 268792,
+  "cardmarket_id": 651848,
+  "name": "Elegant Entourage",
+  "lang": "en",
+  "released_at": "2022-04-29",
+  "uri": "https://api.scryfall.com/cards/e9d3500e-09ba-48b6-933f-25b4625b79aa",
+  "scryfall_uri": "https://scryfall.com/card/snc/143/elegant-entourage?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T06:11:44Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/e/9/e9d3500e-09ba-48b6-933f-25b4625b79aa.jpg?1783923104",
+    "normal": "https://cards.scryfall.io/normal/front/e/9/e9d3500e-09ba-48b6-933f-25b4625b79aa.jpg?1783923104",
+    "large": "https://cards.scryfall.io/large/front/e/9/e9d3500e-09ba-48b6-933f-25b4625b79aa.jpg?1783923104",
+    "png": "https://cards.scryfall.io/png/front/e/9/e9d3500e-09ba-48b6-933f-25b4625b79aa.png?1783923104",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/e/9/e9d3500e-09ba-48b6-933f-25b4625b79aa.jpg?1783923104",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/e/9/e9d3500e-09ba-48b6-933f-25b4625b79aa.jpg?1783923104",
+    "thumb": "https://cards.scryfall.io/thumb/front/e/9/e9d3500e-09ba-48b6-933f-25b4625b79aa.webp?1783923104",
+    "grid": "https://cards.scryfall.io/grid/front/e/9/e9d3500e-09ba-48b6-933f-25b4625b79aa.webp?1783923104",
+    "display": "https://cards.scryfall.io/display/front/e/9/e9d3500e-09ba-48b6-933f-25b4625b79aa.webp?1783923104",
+    "art": "https://cards.scryfall.io/art/front/e/9/e9d3500e-09ba-48b6-933f-25b4625b79aa.webp?1783923104",
+    "crop": "https://cards.scryfall.io/crop/front/e/9/e9d3500e-09ba-48b6-933f-25b4625b79aa.webp?1783923104",
+    "jpeg": "https://cards.scryfall.io/normal/front/e/9/e9d3500e-09ba-48b6-933f-25b4625b79aa.jpg?1783923104"
+  },
+  "mana_cost": "{3}{G}",
+  "cmc": 4.0,
+  "type_line": "Creature — Elf Druid",
+  "oracle_text": "Alliance — Whenever another creature you control enters, target creature other than this creature gets +1/+1 and gains trample until end of turn.",
+  "power": "4",
+  "toughness": "4",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Alliance"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo",
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "df837242-8c15-42e4-b049-c933a02dc501",
+  "set": "snc",
+  "set_name": "Streets of New Capenna",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/df837242-8c15-42e4-b049-c933a02dc501",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Asnc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/snc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/e9d3500e-09ba-48b6-933f-25b4625b79aa/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ae049eb22-a01a-463e-8de9-705d6eaf84e2&unique=prints",
+  "collector_number": "143",
+  "digital": false,
+  "rarity": "uncommon",
+  "watermark": "cabaretti",
+  "flavor_text": "\"Terribly sorry, but this is a private party, and your name isn't on the list.\"",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Jodie Muir",
+  "artist_ids": [
+    "b09e6cd1-0257-425a-9bbb-5cac3f803443"
+  ],
+  "illustration_id": "a68a8c36-39d2-4de0-85f4-496e99f7dc1a",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 20376,
+  "penny_rank": 11521,
+  "preview": {
+    "source": "Robert Taylor",
+    "source_uri": "https://twitter.com/fireshoes/status/1513985409474306054",
+    "previewed_at": "2022-04-12"
+  },
+  "prices": {
+    "usd": "0.19",
+    "usd_foil": "0.25",
+    "usd_etched": null,
+    "eur": "0.06",
+    "eur_foil": "0.11",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=555344&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DElegant%2BEntourage",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DElegant%2BEntourage",
+    "edhrec": "https://edhrec.com/route/?cc=Elegant+Entourage"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F268792%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=651848&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/98505?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "oracle_id": "2bee2508-cd5d-4c62-a205-12d8bbb3143d",
+  "name": "Felidar Savior",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Felidar Savior",
+      "oracle_fingerprint": "c79c45083e66fde3abaf6206898738f4",
+      "abilities": [
+        { "Keyword": "Lifelink" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "Other"] },
+                "bounds": { "min": 0, "max": 2 }
+              }
+            ],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

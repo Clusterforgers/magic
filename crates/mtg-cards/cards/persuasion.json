@@ -1,0 +1,15 @@
+{
+  "oracle_id": "a503d302-6b12-4d82-9ba6-73efbcb1b1a2",
+  "name": "Persuasion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Persuasion",
+      "oracle_fingerprint": "9f491ef30986715581ab98897c0614ae",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        { "Static": { "affected": "Attached", "mods": [{ "SetController": "You" }] } }
+      ]
+    }
+  ]
+}

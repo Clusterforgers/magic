@@ -1,0 +1,27 @@
+{
+  "oracle_id": "9e00188a-0743-4a39-9229-977a0a115659",
+  "name": "Iceberg Cancrix",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Iceberg Cancrix",
+      "oracle_fingerprint": "721c8c3d607cc050d9e72caf2a10bae6",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": ["Other", { "ControlledBy": "You" }, { "Supertype": "Snow" }],
+                "to": "Battlefield"
+              }
+            },
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              { "May": { "effects": [{ "Mill": { "who": { "Target": 0 }, "count": 2 } }] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

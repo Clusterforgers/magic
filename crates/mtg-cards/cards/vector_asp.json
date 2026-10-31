@@ -1,0 +1,27 @@
+{
+  "oracle_id": "1950067a-cc57-42a8-b1ee-f03e1b50591b",
+  "name": "Vector Asp",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vector Asp",
+      "oracle_fingerprint": "f1590fa0077f868ba5fa70a22c54bc55",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{B}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddKeyword": "Infect" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,131 @@
+{
+  "object": "card",
+  "id": "888746d8-6322-4554-8acb-ce88eba55c51",
+  "oracle_id": "8beccaff-d30f-4164-a264-cb7119cee4f1",
+  "multiverse_ids": [
+    184694
+  ],
+  "mtgo_id": 30572,
+  "mtgo_foil_id": 30573,
+  "name": "Stonehands",
+  "lang": "en",
+  "released_at": "2008-09-22",
+  "uri": "https://api.scryfall.com/cards/888746d8-6322-4554-8acb-ce88eba55c51",
+  "scryfall_uri": "https://scryfall.com/card/me2/151/stonehands?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T11:36:48Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/8/8/888746d8-6322-4554-8acb-ce88eba55c51.jpg?1783942608",
+    "normal": "https://cards.scryfall.io/normal/front/8/8/888746d8-6322-4554-8acb-ce88eba55c51.jpg?1783942608",
+    "large": "https://cards.scryfall.io/large/front/8/8/888746d8-6322-4554-8acb-ce88eba55c51.jpg?1783942608",
+    "png": "https://cards.scryfall.io/png/front/8/8/888746d8-6322-4554-8acb-ce88eba55c51.png?1783942608",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/8/8/888746d8-6322-4554-8acb-ce88eba55c51.jpg?1783942608",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/8/8/888746d8-6322-4554-8acb-ce88eba55c51.jpg?1783942608",
+    "thumb": "https://cards.scryfall.io/thumb/front/8/8/888746d8-6322-4554-8acb-ce88eba55c51.webp?1783942608",
+    "grid": "https://cards.scryfall.io/grid/front/8/8/888746d8-6322-4554-8acb-ce88eba55c51.webp?1783942608",
+    "display": "https://cards.scryfall.io/display/front/8/8/888746d8-6322-4554-8acb-ce88eba55c51.webp?1783942608",
+    "art": "https://cards.scryfall.io/art/front/8/8/888746d8-6322-4554-8acb-ce88eba55c51.webp?1783942608",
+    "crop": "https://cards.scryfall.io/crop/front/8/8/888746d8-6322-4554-8acb-ce88eba55c51.webp?1783942608",
+    "jpeg": "https://cards.scryfall.io/normal/front/8/8/888746d8-6322-4554-8acb-ce88eba55c51.jpg?1783942608"
+  },
+  "mana_cost": "{2}{R}",
+  "cmc": 3.0,
+  "type_line": "Enchantment — Aura",
+  "oracle_text": "Enchant creature\nEnchanted creature gets +0/+2.\n{R}: Enchanted creature gets +1/+0 until end of turn.",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Enchant"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "7d51a13b-dcd2-4ec2-b3a7-c89288e00b4e",
+  "set": "me2",
+  "set_name": "Masters Edition II",
+  "set_type": "masters",
+  "set_uri": "https://api.scryfall.com/sets/7d51a13b-dcd2-4ec2-b3a7-c89288e00b4e",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ame2&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/me2?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/888746d8-6322-4554-8acb-ce88eba55c51/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A8beccaff-d30f-4164-a264-cb7119cee4f1&unique=prints",
+  "collector_number": "151",
+  "digital": true,
+  "rarity": "common",
+  "flavor_text": "\"Trust in the power of stone. Stone is strong; stone shatters swords; stone breaks bones. Trust in stone.\"\n—Lovisa Coldeyes, Balduvian chieftain",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Dan Frazier",
+  "artist_ids": [
+    "059bba56-5feb-42e4-8c2e-e2f1e6ba11f9"
+  ],
+  "illustration_id": "541e3de2-9698-44ca-80ed-5efa100a2e69",
+  "border_color": "black",
+  "frame": "1997",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 30391,
+  "prices": {
+    "usd": null,
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": null,
+    "eur_foil": null,
+    "tix": "0.06"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=184694&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DStonehands",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DStonehands",
+    "edhrec": "https://edhrec.com/route/?cc=Stonehands"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fmagic%2Fproduct%3FproductLineName%3Dmagic%26q%3DStonehands%26view%3Dgrid",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products/Search?referrer=scryfall&searchString=Stonehands&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/30572?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

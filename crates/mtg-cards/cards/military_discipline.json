@@ -1,0 +1,35 @@
+{
+  "oracle_id": "c910c1c0-2b78-4e0f-bb55-e0581b2e07e8",
+  "name": "Military Discipline",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Military Discipline",
+      "oracle_fingerprint": "865c4b1456f77916bd607b9076ad7742",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Attached",
+                  "mods": [{ "AddKeyword": "FirstStrike" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

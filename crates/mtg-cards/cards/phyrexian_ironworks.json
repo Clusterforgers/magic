@@ -1,0 +1,42 @@
+{
+  "oracle_id": "b3c87cb9-a37a-428e-95d1-e6dd90b31097",
+  "name": "Phyrexian Ironworks",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Phyrexian Ironworks",
+      "oracle_fingerprint": "232cee7726648697465b09909019f307",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+            },
+            "effects": [{ "PutCounters": { "on": "You", "counter": { "Other": "energy" } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap", { "PayEnergy": 3 }],
+            "timing": "Sorcery",
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Phyrexian Golem",
+                      "types": ["Artifact", "Creature"],
+                      "subtypes": ["Phyrexian", "Golem"],
+                      "power": 3,
+                      "toughness": 3
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

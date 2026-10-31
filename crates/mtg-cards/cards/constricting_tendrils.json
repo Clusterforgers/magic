@@ -1,0 +1,28 @@
+{
+  "oracle_id": "9e34ab18-5d39-49d9-9d3d-e1d4a3611b87",
+  "name": "Constricting Tendrils",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Constricting Tendrils",
+      "oracle_fingerprint": "58c7a0de9a29aa433e78d03aa3c67ac2",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": -3, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Cycling": "{2}" } }
+      ]
+    }
+  ]
+}

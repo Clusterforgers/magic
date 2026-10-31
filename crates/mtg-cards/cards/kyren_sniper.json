@@ -1,0 +1,24 @@
+{
+  "oracle_id": "7661dda6-4e7b-42d0-8374-0a1fe65b83e4",
+  "name": "Kyren Sniper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kyren Sniper",
+      "oracle_fingerprint": "917c4634c79ea0f71b26e3bdd23a043f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "targets": [
+              { "what": { "Either": ["Player", { "Object": [{ "Type": "Planeswalker" }] }] } }
+            ],
+            "effects": [
+              { "May": { "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

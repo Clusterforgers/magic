@@ -1,0 +1,35 @@
+{
+  "oracle_id": "3386414c-32fa-40ae-9b30-dab976a158c1",
+  "name": "Vampire Gourmand",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vampire Gourmand",
+      "oracle_fingerprint": "33cbb1194384eae96f298640604145e5",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "Sacrifice": { "filter": [{ "Type": "Creature" }, "Other"] } }],
+                  "paid": [
+                    { "Draw": {} },
+                    {
+                      "Continuous": {
+                        "affected": "This",
+                        "mods": ["CantBeBlocked"],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

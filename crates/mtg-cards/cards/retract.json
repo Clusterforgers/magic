@@ -1,0 +1,25 @@
+{
+  "oracle_id": "31cefc9d-cc13-4b32-a1f8-edbcaf35aa3b",
+  "name": "Retract",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Retract",
+      "oracle_fingerprint": "895a4ff5d43da6cd4f326700c0114b03",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Each": [{ "Type": "Artifact" }, { "ControlledBy": "You" }] },
+                  "to": "Hand"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

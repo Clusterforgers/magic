@@ -1,0 +1,34 @@
+{
+  "oracle_id": "af6e4c3e-0276-4f72-9a70-25868fe8bba5",
+  "name": "Ioreth of the Healing House",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ioreth of the Healing House",
+      "oracle_fingerprint": "0db1d90a0b4bf9cfb4483827a141955d",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": { "Object": ["Other"] } }],
+            "effects": [{ "Untap": { "what": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "Supertype": "Legendary" }, "Other"]
+                },
+                "bounds": { "min": 2, "max": 2 }
+              }
+            ],
+            "effects": [{ "Untap": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

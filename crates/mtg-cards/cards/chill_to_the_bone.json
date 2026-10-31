@@ -1,0 +1,21 @@
+{
+  "oracle_id": "bcc53728-3f6e-48cf-a042-393a2d8098fc",
+  "name": "Chill to the Bone",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Chill to the Bone",
+      "oracle_fingerprint": "75aebc69d1cecad0986a07c06017671b",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "Not": { "Supertype": "Snow" } }] } }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

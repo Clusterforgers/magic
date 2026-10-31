@@ -1,0 +1,142 @@
+{
+  "object": "card",
+  "id": "f442442d-2e5d-4913-82d8-bab2f31541f8",
+  "oracle_id": "4fe38c9e-6fa0-4e05-9d3f-8fd635c457fb",
+  "multiverse_ids": [
+    602604
+  ],
+  "mtgo_id": 106363,
+  "arena_id": 83774,
+  "tcgplayer_id": 479037,
+  "cardmarket_id": 694307,
+  "name": "Trawler Drake",
+  "lang": "en",
+  "released_at": "2023-02-10",
+  "uri": "https://api.scryfall.com/cards/f442442d-2e5d-4913-82d8-bab2f31541f8",
+  "scryfall_uri": "https://scryfall.com/card/one/74/trawler-drake?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T04:47:35Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/f/4/f442442d-2e5d-4913-82d8-bab2f31541f8.jpg?1783918055",
+    "normal": "https://cards.scryfall.io/normal/front/f/4/f442442d-2e5d-4913-82d8-bab2f31541f8.jpg?1783918055",
+    "large": "https://cards.scryfall.io/large/front/f/4/f442442d-2e5d-4913-82d8-bab2f31541f8.jpg?1783918055",
+    "png": "https://cards.scryfall.io/png/front/f/4/f442442d-2e5d-4913-82d8-bab2f31541f8.png?1783918055",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/f/4/f442442d-2e5d-4913-82d8-bab2f31541f8.jpg?1783918055",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/f/4/f442442d-2e5d-4913-82d8-bab2f31541f8.jpg?1783918055",
+    "thumb": "https://cards.scryfall.io/thumb/front/f/4/f442442d-2e5d-4913-82d8-bab2f31541f8.webp?1783918055",
+    "grid": "https://cards.scryfall.io/grid/front/f/4/f442442d-2e5d-4913-82d8-bab2f31541f8.webp?1783918055",
+    "display": "https://cards.scryfall.io/display/front/f/4/f442442d-2e5d-4913-82d8-bab2f31541f8.webp?1783918055",
+    "art": "https://cards.scryfall.io/art/front/f/4/f442442d-2e5d-4913-82d8-bab2f31541f8.webp?1783918055",
+    "crop": "https://cards.scryfall.io/crop/front/f/4/f442442d-2e5d-4913-82d8-bab2f31541f8.webp?1783918055",
+    "jpeg": "https://cards.scryfall.io/normal/front/f/4/f442442d-2e5d-4913-82d8-bab2f31541f8.jpg?1783918055"
+  },
+  "mana_cost": "{2}{U}",
+  "cmc": 3.0,
+  "type_line": "Creature — Phyrexian Drake",
+  "oracle_text": "Flying\nThis creature enters with an oil counter on it.\nThis creature gets +1/+1 for each oil counter on it.\nWhenever you cast a noncreature spell, put an oil counter on this creature.",
+  "power": "0",
+  "toughness": "0",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Flying"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "arena",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "04bef644-343f-4230-95ee-255f29aa67a2",
+  "set": "one",
+  "set_name": "Phyrexia: All Will Be One",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/04bef644-343f-4230-95ee-255f29aa67a2",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aone&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/one?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/f442442d-2e5d-4913-82d8-bab2f31541f8/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A4fe38c9e-6fa0-4e05-9d3f-8fd635c457fb&unique=prints",
+  "collector_number": "74",
+  "digital": false,
+  "rarity": "uncommon",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Daniel Ljunggren",
+  "artist_ids": [
+    "0fbd4798-76eb-46d5-a5d4-1e3a25870e34"
+  ],
+  "illustration_id": "49b035a4-c42b-4f84-befe-0de96d511624",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 17486,
+  "penny_rank": 13033,
+  "preview": {
+    "source": "MTGNerdGirl",
+    "source_uri": "https://twitter.com/MTGNerdGirl/status/1617620159459659776",
+    "previewed_at": "2023-01-23"
+  },
+  "prices": {
+    "usd": "0.19",
+    "usd_foil": "0.15",
+    "usd_etched": null,
+    "eur": "0.06",
+    "eur_foil": "0.24",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=602604&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DTrawler%2BDrake",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DTrawler%2BDrake",
+    "edhrec": "https://edhrec.com/route/?cc=Trawler+Drake"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F479037%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=694307&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/106363?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

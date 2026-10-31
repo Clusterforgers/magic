@@ -1,0 +1,131 @@
+{
+  "object": "card",
+  "id": "73f75891-00fa-428b-a3cb-88867ff35cd2",
+  "oracle_id": "20c7630d-a97f-4f09-9ec5-b7a1739107de",
+  "multiverse_ids": [
+    184737
+  ],
+  "mtgo_id": 30490,
+  "mtgo_foil_id": 30491,
+  "name": "Krovikan Fetish",
+  "lang": "en",
+  "released_at": "2008-09-22",
+  "uri": "https://api.scryfall.com/cards/73f75891-00fa-428b-a3cb-88867ff35cd2",
+  "scryfall_uri": "https://scryfall.com/card/me2/100/krovikan-fetish?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T11:37:01Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/7/3/73f75891-00fa-428b-a3cb-88867ff35cd2.jpg?1783942621",
+    "normal": "https://cards.scryfall.io/normal/front/7/3/73f75891-00fa-428b-a3cb-88867ff35cd2.jpg?1783942621",
+    "large": "https://cards.scryfall.io/large/front/7/3/73f75891-00fa-428b-a3cb-88867ff35cd2.jpg?1783942621",
+    "png": "https://cards.scryfall.io/png/front/7/3/73f75891-00fa-428b-a3cb-88867ff35cd2.png?1783942621",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/7/3/73f75891-00fa-428b-a3cb-88867ff35cd2.jpg?1783942621",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/7/3/73f75891-00fa-428b-a3cb-88867ff35cd2.jpg?1783942621",
+    "thumb": "https://cards.scryfall.io/thumb/front/7/3/73f75891-00fa-428b-a3cb-88867ff35cd2.webp?1783942621",
+    "grid": "https://cards.scryfall.io/grid/front/7/3/73f75891-00fa-428b-a3cb-88867ff35cd2.webp?1783942621",
+    "display": "https://cards.scryfall.io/display/front/7/3/73f75891-00fa-428b-a3cb-88867ff35cd2.webp?1783942621",
+    "art": "https://cards.scryfall.io/art/front/7/3/73f75891-00fa-428b-a3cb-88867ff35cd2.webp?1783942621",
+    "crop": "https://cards.scryfall.io/crop/front/7/3/73f75891-00fa-428b-a3cb-88867ff35cd2.webp?1783942621",
+    "jpeg": "https://cards.scryfall.io/normal/front/7/3/73f75891-00fa-428b-a3cb-88867ff35cd2.jpg?1783942621"
+  },
+  "mana_cost": "{2}{B}",
+  "cmc": 3.0,
+  "type_line": "Enchantment — Aura",
+  "oracle_text": "Enchant creature\nWhen this Aura enters, draw a card at the beginning of the next turn's upkeep.\nEnchanted creature gets +1/+1.",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Enchant"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "7d51a13b-dcd2-4ec2-b3a7-c89288e00b4e",
+  "set": "me2",
+  "set_name": "Masters Edition II",
+  "set_type": "masters",
+  "set_uri": "https://api.scryfall.com/sets/7d51a13b-dcd2-4ec2-b3a7-c89288e00b4e",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ame2&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/me2?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/73f75891-00fa-428b-a3cb-88867ff35cd2/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A20c7630d-a97f-4f09-9ec5-b7a1739107de&unique=prints",
+  "collector_number": "100",
+  "digital": true,
+  "rarity": "common",
+  "flavor_text": "Some Krovikans find strength in the ears and eyes of their victims and wear such fetishes into battle.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Heather Hudson",
+  "artist_ids": [
+    "4441fe52-9e41-40c1-9b74-8510426279ab"
+  ],
+  "illustration_id": "b65e7162-7b19-429e-a042-94647902c036",
+  "border_color": "black",
+  "frame": "1997",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 29209,
+  "prices": {
+    "usd": null,
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": null,
+    "eur_foil": null,
+    "tix": "0.05"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=184737&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DKrovikan%2BFetish",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DKrovikan%2BFetish",
+    "edhrec": "https://edhrec.com/route/?cc=Krovikan+Fetish"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fmagic%2Fproduct%3FproductLineName%3Dmagic%26q%3DKrovikan%2BFetish%26view%3Dgrid",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products/Search?referrer=scryfall&searchString=Krovikan+Fetish&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/30490?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

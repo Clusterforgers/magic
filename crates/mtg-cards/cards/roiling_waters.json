@@ -1,0 +1,28 @@
+{
+  "oracle_id": "77fef82d-e8d0-444b-8d76-68e9b533f38b",
+  "name": "Roiling Waters",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Roiling Waters",
+      "oracle_fingerprint": "039f3ef94833495bf75d93a313757b52",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] },
+                "bounds": { "min": 0, "max": 2 }
+              },
+              { "what": "Player" }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": "Hand" } },
+              { "Draw": { "who": { "Target": 1 }, "count": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

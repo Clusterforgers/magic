@@ -1,0 +1,142 @@
+{
+  "object": "card",
+  "id": "55271960-b9bd-4bea-93ca-3321bf30be78",
+  "oracle_id": "9e459e48-d2bb-4c4e-9a87-58efb56cddd1",
+  "multiverse_ids": [
+    629681
+  ],
+  "mtgo_id": 116700,
+  "arena_id": 86888,
+  "tcgplayer_id": 513347,
+  "cardmarket_id": 729566,
+  "name": "Redtooth Vanguard",
+  "lang": "en",
+  "released_at": "2023-09-08",
+  "uri": "https://api.scryfall.com/cards/55271960-b9bd-4bea-93ca-3321bf30be78",
+  "scryfall_uri": "https://scryfall.com/card/woe/180/redtooth-vanguard?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:57:59Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/5/5/55271960-b9bd-4bea-93ca-3321bf30be78.jpg?1783915079",
+    "normal": "https://cards.scryfall.io/normal/front/5/5/55271960-b9bd-4bea-93ca-3321bf30be78.jpg?1783915079",
+    "large": "https://cards.scryfall.io/large/front/5/5/55271960-b9bd-4bea-93ca-3321bf30be78.jpg?1783915079",
+    "png": "https://cards.scryfall.io/png/front/5/5/55271960-b9bd-4bea-93ca-3321bf30be78.png?1783915079",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/5/5/55271960-b9bd-4bea-93ca-3321bf30be78.jpg?1783915079",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/5/5/55271960-b9bd-4bea-93ca-3321bf30be78.jpg?1783915079",
+    "thumb": "https://cards.scryfall.io/thumb/front/5/5/55271960-b9bd-4bea-93ca-3321bf30be78.webp?1783915079",
+    "grid": "https://cards.scryfall.io/grid/front/5/5/55271960-b9bd-4bea-93ca-3321bf30be78.webp?1783915079",
+    "display": "https://cards.scryfall.io/display/front/5/5/55271960-b9bd-4bea-93ca-3321bf30be78.webp?1783915079",
+    "art": "https://cards.scryfall.io/art/front/5/5/55271960-b9bd-4bea-93ca-3321bf30be78.webp?1783915079",
+    "crop": "https://cards.scryfall.io/crop/front/5/5/55271960-b9bd-4bea-93ca-3321bf30be78.webp?1783915079",
+    "jpeg": "https://cards.scryfall.io/normal/front/5/5/55271960-b9bd-4bea-93ca-3321bf30be78.jpg?1783915079"
+  },
+  "mana_cost": "{1}{G}",
+  "cmc": 2.0,
+  "type_line": "Creature — Elf Warrior",
+  "oracle_text": "Trample\nWhenever an enchantment you control enters, you may pay {2}. If you do, return this card from your graveyard to your hand.",
+  "power": "3",
+  "toughness": "1",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Trample"
+  ],
+  "legalities": {
+    "standard": "legal",
+    "future": "legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "arena",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "79139661-13ee-43c4-8bad-a8c069f1a1df",
+  "set": "woe",
+  "set_name": "Wilds of Eldraine",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/79139661-13ee-43c4-8bad-a8c069f1a1df",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Awoe&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/woe?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/55271960-b9bd-4bea-93ca-3321bf30be78/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A9e459e48-d2bb-4c4e-9a87-58efb56cddd1&unique=prints",
+  "collector_number": "180",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "\"I'm just as deadly during the day.\"",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Joshua Cairos",
+  "artist_ids": [
+    "2b8abf3a-262e-492d-8ee5-5f33e09cc679"
+  ],
+  "illustration_id": "dea9e278-eb75-4cd1-a2cb-a3a7383b4c4d",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 25010,
+  "preview": {
+    "source": "Wizards of the Coast",
+    "source_uri": "https://magic.wizards.com/en/products/wilds-of-eldraine/card-image-gallery",
+    "previewed_at": "2023-08-22"
+  },
+  "prices": {
+    "usd": "0.07",
+    "usd_foil": "0.10",
+    "usd_etched": null,
+    "eur": "0.02",
+    "eur_foil": "0.16",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=629681&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DRedtooth%2BVanguard",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DRedtooth%2BVanguard",
+    "edhrec": "https://edhrec.com/route/?cc=Redtooth+Vanguard"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F513347%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=729566&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/116700?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

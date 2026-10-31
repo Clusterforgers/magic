@@ -1,0 +1,27 @@
+{
+  "oracle_id": "8664a004-d786-4357-8856-2f8f5a9ae24d",
+  "name": "Bone Flute",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bone Flute",
+      "oracle_fingerprint": "bd5745e2a81fd2e31a97d2694feed992",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap"],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }] },
+                  "mods": [{ "ModifyPT": { "power": -1, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

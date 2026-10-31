@@ -1,0 +1,29 @@
+{
+  "oracle_id": "faac29f5-10ad-4800-a9d3-2259c4800352",
+  "name": "Aven Redeemer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Aven Redeemer",
+      "oracle_fingerprint": "28bc2fb007302fc8dd75e521fc173b36",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": { "Target": 0 } } },
+                  "by": { "PreventUpTo": 2 },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "oracle_id": "a39c758d-82be-4d8c-bb3e-8ee8a6c6788b",
+  "name": "Pillar Launch",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pillar Launch",
+      "oracle_fingerprint": "c372a661bf4599db4c5fcd7da5ee48dd",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "ModifyPT": { "power": 2, "toughness": 2 } },
+                    { "AddKeyword": "Reach" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Untap": { "what": { "Target": 0 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

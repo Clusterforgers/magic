@@ -1,0 +1,28 @@
+{
+  "oracle_id": "4a85cd7e-625b-4043-b7f1-999def26eb36",
+  "name": "Erratic Portal",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Erratic Portal",
+      "oracle_fingerprint": "a8976efec12ada45ad2ac500476a10bd",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Pay": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "cost": "{1}",
+                  "unpaid": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "oracle_id": "65164450-b477-4096-8146-ebb80a709787",
+  "name": "Shield of the Ages",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shield of the Ages",
+      "oracle_fingerprint": "c61a079aba14387e8a45569e86594f27",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{2}",
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": "You" } },
+                  "by": { "PreventUpTo": 1 },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

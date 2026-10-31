@@ -1,0 +1,19 @@
+{
+  "oracle_id": "b13f97b3-56ae-4131-a93b-b162c8ff7cca",
+  "name": "Caltrops",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Caltrops",
+      "oracle_fingerprint": "5bb0185b3059c5b1a7c6e98638b406fc",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": [{ "Type": "Creature" }] } },
+            "effects": [{ "DealDamage": { "to": "Triggering", "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

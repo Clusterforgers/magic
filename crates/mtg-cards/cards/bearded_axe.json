@@ -1,0 +1,49 @@
+{
+  "oracle_id": "a231319d-5d72-4aa6-8868-5987694791cd",
+  "name": "Bearded Axe",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bearded Axe",
+      "oracle_fingerprint": "d1adc41a00dc890a17f157c7907d165e",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": {
+                    "Count": [
+                      {
+                        "AnyOf": [
+                          { "Subtype": "Dwarf" },
+                          { "Subtype": "Equipment" },
+                          { "Subtype": "Vehicle" }
+                        ]
+                      },
+                      { "ControlledBy": "You" }
+                    ]
+                  },
+                  "toughness": {
+                    "Count": [
+                      {
+                        "AnyOf": [
+                          { "Subtype": "Dwarf" },
+                          { "Subtype": "Equipment" },
+                          { "Subtype": "Vehicle" }
+                        ]
+                      },
+                      { "ControlledBy": "You" }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{2}" } }
+      ]
+    }
+  ]
+}

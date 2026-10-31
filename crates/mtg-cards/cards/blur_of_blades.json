@@ -1,0 +1,22 @@
+{
+  "oracle_id": "65410f7a-c749-4b23-ad61-8a7136efcad2",
+  "name": "Blur of Blades",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Blur of Blades",
+      "oracle_fingerprint": "1a4d822a861f5829a005bce0e5afca7e",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "-1/-1" } },
+              { "DealDamage": { "to": { "ControllerOf": { "Target": 0 } }, "amount": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

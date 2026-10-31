@@ -1,0 +1,30 @@
+{
+  "oracle_id": "e30c639a-d46c-4488-bfdd-d4282046153c",
+  "name": "Deepwater Hypnotist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Deepwater Hypnotist",
+      "oracle_fingerprint": "80d7800317be6199e5a794577cb4dca5",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Untapped": { "what": ["This"] } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": -3, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

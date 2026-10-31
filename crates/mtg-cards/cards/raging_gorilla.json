@@ -1,0 +1,32 @@
+{
+  "oracle_id": "1dd6df3f-eac4-4f30-b832-4a3f3a97632f",
+  "name": "Raging Gorilla",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Raging Gorilla",
+      "oracle_fingerprint": "80c612497afd899bb0bd1fc7373b6a39",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "Blocks": { "what": ["This"] } },
+                { "BecomesBlocked": { "what": ["This"] } }
+              ]
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": -2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

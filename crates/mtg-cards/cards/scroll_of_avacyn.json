@@ -1,0 +1,33 @@
+{
+  "oracle_id": "f728c4f1-178f-421b-a713-21f85892f051",
+  "name": "Scroll of Avacyn",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Scroll of Avacyn",
+      "oracle_fingerprint": "c772d6f75e9220941bd3c015f92d6e5b",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "SacrificeSelf"],
+            "effects": [
+              { "Draw": {} },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "Subtype": "Angel" }, { "ControlledBy": "You" }] },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "GainLife": { "amount": 5 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

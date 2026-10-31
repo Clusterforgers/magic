@@ -1,0 +1,33 @@
+{
+  "oracle_id": "470f0043-3ffe-470b-981f-425f0583a87e",
+  "name": "Crabapple Cohort",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Crabapple Cohort",
+      "oracle_fingerprint": "cdc615098c14947c14f86258c975da85",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "Type": "Creature" },
+                    { "Color": "Green" },
+                    "Other",
+                    { "ControlledBy": "You" }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "oracle_id": "6f1e5571-ddda-4cea-84ef-36a571d8fd51",
+  "name": "Ashiok's Reaper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ashiok's Reaper",
+      "oracle_fingerprint": "cb53c97830591a9e44571e470bd5d58e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Enchantment" }, { "ControlledBy": "You" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "oracle_id": "e8aa12f8-8922-41ed-8cdb-219c9e4b9e36",
+  "name": "Martial Glory",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Martial Glory",
+      "oracle_fingerprint": "83f0750487c117dba132de66084f86bb",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] } },
+              { "what": { "Object": [{ "Type": "Creature" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 3, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Target": 1 },
+                  "mods": [{ "ModifyPT": { "power": 0, "toughness": 3 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

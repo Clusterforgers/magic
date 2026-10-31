@@ -1,0 +1,20 @@
+{
+  "oracle_id": "bb7c069b-8d3f-4ba2-874b-8ec575fd6dd4",
+  "name": "Jace's Erasure",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jace's Erasure",
+      "oracle_fingerprint": "965a640a67fa79cfc81b339b4b2b9fd1",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Drew": { "who": "You" } },
+            "targets": [{ "what": "Player" }],
+            "effects": [{ "May": { "effects": [{ "Mill": { "who": { "Target": 0 } } }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

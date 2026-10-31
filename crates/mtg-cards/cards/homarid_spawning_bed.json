@@ -1,0 +1,38 @@
+{
+  "oracle_id": "173f2b8e-8072-4fdd-a469-8a1fb0bb6e64",
+  "name": "Homarid Spawning Bed",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Homarid Spawning Bed",
+      "oracle_fingerprint": "6206c6bdcbb198000689a63650dd309c",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{1}{U}{U}" },
+              { "Sacrifice": { "filter": [{ "Type": "Creature" }, { "Color": "Blue" }] } }
+            ],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Camarid",
+                      "colors": ["Blue"],
+                      "types": ["Creature"],
+                      "subtypes": ["Camarid"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": { "Stat": { "of": "Paid", "stat": "ManaValue" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

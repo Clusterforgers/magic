@@ -1,0 +1,29 @@
+{
+  "oracle_id": "382109c5-fd08-4e82-b898-2a387181b470",
+  "name": "Ironclad Revolutionary",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ironclad Revolutionary",
+      "oracle_fingerprint": "f53a65cbe537333fad2f07be8bc30809",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "Sacrifice": { "filter": [{ "Type": "Artifact" }] } }],
+                  "paid": [
+                    { "PutCounters": { "on": "This", "counter": "+1/+1", "count": 2 } },
+                    { "LoseLife": { "who": "Opponents", "amount": 2 } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

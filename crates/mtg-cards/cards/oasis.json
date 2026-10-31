@@ -1,0 +1,28 @@
+{
+  "oracle_id": "4533ce78-0594-4195-96fb-46cbadd0db69",
+  "name": "Oasis",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Oasis",
+      "oracle_fingerprint": "689f9660438368b50f9221f5491bc3ed",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": { "Target": 0 } } },
+                  "by": { "PreventUpTo": 1 },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

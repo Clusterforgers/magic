@@ -1,0 +1,19 @@
+{
+  "oracle_id": "8ddf93fe-980b-4dc4-b56f-6a2ee50100a6",
+  "name": "Gravity Sphere",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gravity Sphere",
+      "oracle_fingerprint": "259b7d84649f279134b1f864f8a8367a",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }] },
+            "mods": [{ "RemoveKeyword": "Flying" }]
+          }
+        }
+      ]
+    }
+  ]
+}

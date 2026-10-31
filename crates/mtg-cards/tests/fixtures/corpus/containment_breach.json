@@ -1,0 +1,161 @@
+{
+  "object": "card",
+  "id": "0dcca120-b72e-4007-98e1-cb22e7b9a705",
+  "oracle_id": "043dd2e5-21e4-49b9-90b2-831e587b2238",
+  "multiverse_ids": [
+    513602
+  ],
+  "mtgo_id": 88727,
+  "arena_id": 76518,
+  "tcgplayer_id": 235953,
+  "cardmarket_id": 558092,
+  "name": "Containment Breach",
+  "lang": "en",
+  "released_at": "2021-04-23",
+  "uri": "https://api.scryfall.com/cards/0dcca120-b72e-4007-98e1-cb22e7b9a705",
+  "scryfall_uri": "https://scryfall.com/card/stx/125/containment-breach?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T07:22:24Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/0/d/0dcca120-b72e-4007-98e1-cb22e7b9a705.jpg?1783927344",
+    "normal": "https://cards.scryfall.io/normal/front/0/d/0dcca120-b72e-4007-98e1-cb22e7b9a705.jpg?1783927344",
+    "large": "https://cards.scryfall.io/large/front/0/d/0dcca120-b72e-4007-98e1-cb22e7b9a705.jpg?1783927344",
+    "png": "https://cards.scryfall.io/png/front/0/d/0dcca120-b72e-4007-98e1-cb22e7b9a705.png?1783927344",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/0/d/0dcca120-b72e-4007-98e1-cb22e7b9a705.jpg?1783927344",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/0/d/0dcca120-b72e-4007-98e1-cb22e7b9a705.jpg?1783927344",
+    "thumb": "https://cards.scryfall.io/thumb/front/0/d/0dcca120-b72e-4007-98e1-cb22e7b9a705.webp?1783927344",
+    "grid": "https://cards.scryfall.io/grid/front/0/d/0dcca120-b72e-4007-98e1-cb22e7b9a705.webp?1783927344",
+    "display": "https://cards.scryfall.io/display/front/0/d/0dcca120-b72e-4007-98e1-cb22e7b9a705.webp?1783927344",
+    "art": "https://cards.scryfall.io/art/front/0/d/0dcca120-b72e-4007-98e1-cb22e7b9a705.webp?1783927344",
+    "crop": "https://cards.scryfall.io/crop/front/0/d/0dcca120-b72e-4007-98e1-cb22e7b9a705.webp?1783927344",
+    "jpeg": "https://cards.scryfall.io/normal/front/0/d/0dcca120-b72e-4007-98e1-cb22e7b9a705.jpg?1783927344"
+  },
+  "mana_cost": "{2}{G}",
+  "cmc": 3.0,
+  "type_line": "Sorcery — Lesson",
+  "oracle_text": "Destroy target artifact or enchantment. If its mana value is 2 or less, create a 1/1 black and green Pest creature token with \"When this token dies, you gain 1 life.\"",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "0dcca120-b72e-4007-98e1-cb22e7b9a705",
+      "component": "combo_piece",
+      "name": "Containment Breach",
+      "type_line": "Sorcery — Lesson",
+      "uri": "https://api.scryfall.com/cards/0dcca120-b72e-4007-98e1-cb22e7b9a705"
+    },
+    {
+      "object": "related_card",
+      "id": "d0ddbe3e-4a66-494d-9304-7471232549bf",
+      "component": "token",
+      "name": "Pest",
+      "type_line": "Token Creature — Pest",
+      "uri": "https://api.scryfall.com/cards/d0ddbe3e-4a66-494d-9304-7471232549bf"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "arena",
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "541c3c28-8747-40e5-a231-8e8f33234859",
+  "set": "stx",
+  "set_name": "Strixhaven: School of Mages",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/541c3c28-8747-40e5-a231-8e8f33234859",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Astx&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/stx?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/0dcca120-b72e-4007-98e1-cb22e7b9a705/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A043dd2e5-21e4-49b9-90b2-831e587b2238&unique=prints",
+  "collector_number": "125",
+  "digital": false,
+  "rarity": "uncommon",
+  "watermark": "witherbloom",
+  "flavor_text": "For pestkeepers, there's no sound more disheartening than breaking glass.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Campbell White",
+  "artist_ids": [
+    "d281eab4-463a-4ba8-9039-8943737960a0"
+  ],
+  "illustration_id": "5578cafa-25ec-468b-9ca4-8e0e8b6d16ab",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "lesson"
+  ],
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 13253,
+  "penny_rank": 3737,
+  "preview": {
+    "source": "/r/MagicArena",
+    "source_uri": "https://www.reddit.com/r/MagicArena/comments/mijvpn/stx_daemogoth_titan_containment_breach/",
+    "previewed_at": "2021-04-02"
+  },
+  "prices": {
+    "usd": "0.16",
+    "usd_foil": "0.33",
+    "usd_etched": null,
+    "eur": "0.12",
+    "eur_foil": "0.21",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=513602&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DContainment%2BBreach",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DContainment%2BBreach",
+    "edhrec": "https://edhrec.com/route/?cc=Containment+Breach"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F235953%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=558092&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/88727?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

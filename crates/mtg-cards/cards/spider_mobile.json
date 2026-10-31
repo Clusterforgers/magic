@@ -1,0 +1,40 @@
+{
+  "oracle_id": "3c322d99-2bc4-4618-aeb3-5583fce54f1b",
+  "name": "Spider-Mobile",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spider-Mobile",
+      "oracle_fingerprint": "28995309e69d5f1ace9912c3ecf25bb4",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [{ "Attacks": { "what": ["This"] } }, { "Blocks": { "what": ["This"] } }]
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": { "Count": [{ "Subtype": "Spider" }, { "ControlledBy": "You" }] },
+                        "toughness": {
+                          "Count": [{ "Subtype": "Spider" }, { "ControlledBy": "You" }]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Crew": 2 } }
+      ]
+    }
+  ]
+}

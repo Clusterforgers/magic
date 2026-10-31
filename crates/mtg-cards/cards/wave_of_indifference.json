@@ -1,0 +1,32 @@
+{
+  "oracle_id": "932a47fa-9b78-4c7b-8df8-65e0309d663c",
+  "name": "Wave of Indifference",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wave of Indifference",
+      "oracle_fingerprint": "d6fedb1af51af7d48f63d76a141c0fcc",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }] },
+                "bounds": { "min": "X", "max": "X" }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["CantBlock"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

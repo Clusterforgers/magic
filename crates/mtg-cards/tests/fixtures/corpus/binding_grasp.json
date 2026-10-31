@@ -1,0 +1,131 @@
+{
+  "object": "card",
+  "id": "27cf6b51-6e77-490d-9b1a-02c1ba3109d1",
+  "oracle_id": "1ebdc091-16d5-4803-821a-ac8c4696b5bc",
+  "multiverse_ids": [
+    184605
+  ],
+  "mtgo_id": 30392,
+  "mtgo_foil_id": 30393,
+  "name": "Binding Grasp",
+  "lang": "en",
+  "released_at": "2008-09-22",
+  "uri": "https://api.scryfall.com/cards/27cf6b51-6e77-490d-9b1a-02c1ba3109d1",
+  "scryfall_uri": "https://scryfall.com/card/me2/41/binding-grasp?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T11:37:16Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/2/7/27cf6b51-6e77-490d-9b1a-02c1ba3109d1.jpg?1783942636",
+    "normal": "https://cards.scryfall.io/normal/front/2/7/27cf6b51-6e77-490d-9b1a-02c1ba3109d1.jpg?1783942636",
+    "large": "https://cards.scryfall.io/large/front/2/7/27cf6b51-6e77-490d-9b1a-02c1ba3109d1.jpg?1783942636",
+    "png": "https://cards.scryfall.io/png/front/2/7/27cf6b51-6e77-490d-9b1a-02c1ba3109d1.png?1783942636",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/2/7/27cf6b51-6e77-490d-9b1a-02c1ba3109d1.jpg?1783942636",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/2/7/27cf6b51-6e77-490d-9b1a-02c1ba3109d1.jpg?1783942636",
+    "thumb": "https://cards.scryfall.io/thumb/front/2/7/27cf6b51-6e77-490d-9b1a-02c1ba3109d1.webp?1783942636",
+    "grid": "https://cards.scryfall.io/grid/front/2/7/27cf6b51-6e77-490d-9b1a-02c1ba3109d1.webp?1783942636",
+    "display": "https://cards.scryfall.io/display/front/2/7/27cf6b51-6e77-490d-9b1a-02c1ba3109d1.webp?1783942636",
+    "art": "https://cards.scryfall.io/art/front/2/7/27cf6b51-6e77-490d-9b1a-02c1ba3109d1.webp?1783942636",
+    "crop": "https://cards.scryfall.io/crop/front/2/7/27cf6b51-6e77-490d-9b1a-02c1ba3109d1.webp?1783942636",
+    "jpeg": "https://cards.scryfall.io/normal/front/2/7/27cf6b51-6e77-490d-9b1a-02c1ba3109d1.jpg?1783942636"
+  },
+  "mana_cost": "{3}{U}",
+  "cmc": 4.0,
+  "type_line": "Enchantment — Aura",
+  "oracle_text": "Enchant creature\nAt the beginning of your upkeep, sacrifice this Aura unless you pay {1}{U}.\nYou control enchanted creature.\nEnchanted creature gets +0/+1.",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Enchant"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "7d51a13b-dcd2-4ec2-b3a7-c89288e00b4e",
+  "set": "me2",
+  "set_name": "Masters Edition II",
+  "set_type": "masters",
+  "set_uri": "https://api.scryfall.com/sets/7d51a13b-dcd2-4ec2-b3a7-c89288e00b4e",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ame2&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/me2?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/27cf6b51-6e77-490d-9b1a-02c1ba3109d1/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A1ebdc091-16d5-4803-821a-ac8c4696b5bc&unique=prints",
+  "collector_number": "41",
+  "digital": true,
+  "rarity": "rare",
+  "flavor_text": "\"What I want, I take.\"\n—Gustha Ebbasdotter, Kjeldoran royal mage",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Ruth Thompson",
+  "artist_ids": [
+    "318b2c62-c912-4fa9-8e16-d820770f5d1c"
+  ],
+  "illustration_id": "f43e2c7c-f95a-4948-b553-e6561f62bd58",
+  "border_color": "black",
+  "frame": "1997",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 27744,
+  "prices": {
+    "usd": null,
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": null,
+    "eur_foil": null,
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=184605&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DBinding%2BGrasp",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DBinding%2BGrasp",
+    "edhrec": "https://edhrec.com/route/?cc=Binding+Grasp"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fmagic%2Fproduct%3FproductLineName%3Dmagic%26q%3DBinding%2BGrasp%26view%3Dgrid",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products/Search?referrer=scryfall&searchString=Binding+Grasp&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/30392?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

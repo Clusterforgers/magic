@@ -1,0 +1,33 @@
+{
+  "oracle_id": "ec7a9e7f-742b-4344-983e-73372c6a1760",
+  "name": "Ghor-Clan Rampager",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ghor-Clan Rampager",
+      "oracle_fingerprint": "8653ad539eff9e3d558c275478000d81",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{R}{G}" }, "DiscardSelf"],
+            "from": "Hand",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Attacking"] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "ModifyPT": { "power": 4, "toughness": 4 } },
+                    { "AddKeyword": "Trample" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

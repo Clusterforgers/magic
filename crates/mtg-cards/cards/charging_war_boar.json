@@ -1,0 +1,33 @@
+{
+  "oracle_id": "2b04b60b-0c4c-4fee-a54b-7052ca5190e1",
+  "name": "Charging War Boar",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Charging War Boar",
+      "oracle_fingerprint": "92e35b8b9b787846d275ec5736ca3ad7",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }, { "AddKeyword": "Trample" }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "Type": "Planeswalker" },
+                    { "Subtype": "Domri" },
+                    { "ControlledBy": "You" }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

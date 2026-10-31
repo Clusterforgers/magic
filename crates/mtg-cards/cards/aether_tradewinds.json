@@ -1,0 +1,25 @@
+{
+  "oracle_id": "3a0dd318-9523-4740-b0aa-a911032e3851",
+  "name": "Aether Tradewinds",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Aether Tradewinds",
+      "oracle_fingerprint": "cbd98f018677c00c127dff927279f046",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "ControlledBy": "You" }] } },
+              { "what": { "Object": [{ "Not": { "ControlledBy": "You" } }] } }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": "Hand" } },
+              { "Move": { "what": { "Target": 1 }, "to": "Hand" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

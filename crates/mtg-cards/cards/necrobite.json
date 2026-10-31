@@ -1,0 +1,28 @@
+{
+  "oracle_id": "d2a3e219-08f3-4c05-b239-abf80a1c1c6b",
+  "name": "Necrobite",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Necrobite",
+      "oracle_fingerprint": "47acc20e9745d237a897c6ab34bf5a4a",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Deathtouch" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Regenerate": { "what": { "Target": 0 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

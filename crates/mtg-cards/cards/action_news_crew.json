@@ -1,0 +1,29 @@
+{
+  "oracle_id": "a9d68cf5-3055-4ec9-9893-244bfd7046be",
+  "name": "Action News Crew",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Action News Crew",
+      "oracle_fingerprint": "89c46c150b70194fbd8c6aa22691231a",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{6}" }, "DiscardSelf"],
+            "from": "Hand",
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "counter": "+1/+1"
+                }
+              },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

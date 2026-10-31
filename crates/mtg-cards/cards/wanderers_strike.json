@@ -1,0 +1,19 @@
+{
+  "oracle_id": "d6239ada-c72a-49b2-882c-6dae1dd366e3",
+  "name": "Wanderer's Strike",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wanderer's Strike",
+      "oracle_fingerprint": "9d5fffcff2b6f3a1ad0ac30b6610af07",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "Exile": { "what": { "Target": 0 } } }, { "Proliferate": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

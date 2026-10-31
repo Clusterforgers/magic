@@ -1,0 +1,24 @@
+{
+  "oracle_id": "03e1cdd5-b687-4dc0-967e-244b70f5ed15",
+  "name": "Soratami Mirror-Mage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Soratami Mirror-Mage",
+      "oracle_fingerprint": "b456c4f27c8901755a86a704128d9f4c",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{3}" },
+              { "ReturnToHand": { "filter": [{ "Type": "Land" }], "count": 3 } }
+            ],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

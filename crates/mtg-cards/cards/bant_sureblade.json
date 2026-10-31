@@ -1,0 +1,35 @@
+{
+  "oracle_id": "610adb2b-9d52-4b70-92d1-0c7adeb93552",
+  "name": "Bant Sureblade",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bant Sureblade",
+      "oracle_fingerprint": "47f645aded8ca502315cf71e658d2499",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              { "ModifyPT": { "power": 1, "toughness": 1 } },
+              { "AddKeyword": "FirstStrike" }
+            ],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "Compare": { "stat": "Colors", "op": "Ge", "to": 2 } },
+                    "Other",
+                    { "ControlledBy": "You" }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

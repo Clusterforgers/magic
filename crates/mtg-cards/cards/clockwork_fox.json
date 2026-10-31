@@ -1,0 +1,19 @@
+{
+  "oracle_id": "eb73db77-4050-4617-a29b-f9a8c885b424",
+  "name": "Clockwork Fox",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Clockwork Fox",
+      "oracle_fingerprint": "9672a6cc0ab6146d48ffa086826b88a7",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield" } },
+            "effects": [{ "Draw": { "count": 2 } }, { "Draw": { "who": "Opponents" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

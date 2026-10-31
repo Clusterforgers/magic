@@ -1,0 +1,26 @@
+{
+  "oracle_id": "54e86bc8-ff48-49be-902c-4923d59901a7",
+  "name": "Bearer of the Heavens",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bearer of the Heavens",
+      "oracle_fingerprint": "98ad57d15db4857b64488a5a990335a1",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [{ "Destroy": { "what": { "Each": [] } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

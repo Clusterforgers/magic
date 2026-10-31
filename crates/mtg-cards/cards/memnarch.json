@@ -1,0 +1,43 @@
+{
+  "oracle_id": "52d8e70b-7e94-4e17-811f-70afe39ff9bd",
+  "name": "Memnarch",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Memnarch",
+      "oracle_fingerprint": "6a5f58eb3908e9264379b2783e1a9d4f",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{1}{U}{U}",
+            "targets": [{ "what": { "Object": [] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddType": "Artifact" }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{3}{U}",
+            "targets": [{ "what": { "Object": [{ "Type": "Artifact" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

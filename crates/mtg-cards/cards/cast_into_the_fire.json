@@ -1,0 +1,38 @@
+{
+  "oracle_id": "b24ed296-e17d-4e36-8a86-a370868b0136",
+  "name": "Cast into the Fire",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cast into the Fire",
+      "oracle_fingerprint": "44a15fc40b0bfb307dc869df99f989be",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [
+                        {
+                          "what": { "Object": [{ "Type": "Creature" }] },
+                          "bounds": { "min": 0, "max": 2 }
+                        }
+                      ],
+                      "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }]
+                    },
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Artifact" }] } }],
+                      "effects": [{ "Exile": { "what": { "Target": 0 } } }]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

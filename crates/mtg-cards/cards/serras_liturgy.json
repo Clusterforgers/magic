@@ -1,0 +1,42 @@
+{
+  "oracle_id": "17b7b7e4-4ae8-495d-bf0c-d18697f250ea",
+  "name": "Serra's Liturgy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Serra's Liturgy",
+      "oracle_fingerprint": "4ea9b2287559e6e2f018b4e63ee2d7be",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [{ "PutCounters": { "on": "This", "counter": { "Other": "verse" } } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{W}" }, "SacrificeSelf"],
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Enchantment" }] }]
+                },
+                "bounds": {
+                  "min": 0,
+                  "max": { "Counters": { "on": "This", "counter": { "Other": "verse" } } }
+                }
+              }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

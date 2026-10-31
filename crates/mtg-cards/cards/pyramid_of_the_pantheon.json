@@ -1,0 +1,35 @@
+{
+  "oracle_id": "efc66685-94cf-4d3f-82e0-9967c6ab2e5c",
+  "name": "Pyramid of the Pantheon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pyramid of the Pantheon",
+      "oracle_fingerprint": "869bc35b63afb27a1c67d859411579b4",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap"],
+            "effects": [
+              { "AddMana": { "mana": { "AnyColor": 1 } } },
+              { "PutCounters": { "on": "This", "counter": { "Other": "brick" } } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "condition": {
+              "Compare": {
+                "left": { "Counters": { "on": "This", "counter": { "Other": "brick" } } },
+                "op": "Ge",
+                "right": 3
+              }
+            },
+            "effects": [{ "AddMana": { "mana": { "AnyColor": 3 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

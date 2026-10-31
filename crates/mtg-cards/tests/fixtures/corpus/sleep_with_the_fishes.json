@@ -1,0 +1,152 @@
+{
+  "object": "card",
+  "id": "3742a0fb-4b86-49d6-b6fb-bd6a42fa1bcb",
+  "oracle_id": "48533a2d-1bdb-40a6-939e-9c8337e0dc5a",
+  "multiverse_ids": [
+    555262
+  ],
+  "mtgo_id": 98341,
+  "arena_id": 80212,
+  "tcgplayer_id": 268774,
+  "cardmarket_id": 651700,
+  "name": "Sleep with the Fishes",
+  "lang": "en",
+  "released_at": "2022-04-29",
+  "uri": "https://api.scryfall.com/cards/3742a0fb-4b86-49d6-b6fb-bd6a42fa1bcb",
+  "scryfall_uri": "https://scryfall.com/card/snc/61/sleep-with-the-fishes?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T06:12:18Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/3/7/3742a0fb-4b86-49d6-b6fb-bd6a42fa1bcb.jpg?1783923138",
+    "normal": "https://cards.scryfall.io/normal/front/3/7/3742a0fb-4b86-49d6-b6fb-bd6a42fa1bcb.jpg?1783923138",
+    "large": "https://cards.scryfall.io/large/front/3/7/3742a0fb-4b86-49d6-b6fb-bd6a42fa1bcb.jpg?1783923138",
+    "png": "https://cards.scryfall.io/png/front/3/7/3742a0fb-4b86-49d6-b6fb-bd6a42fa1bcb.png?1783923138",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/3/7/3742a0fb-4b86-49d6-b6fb-bd6a42fa1bcb.jpg?1783923138",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/3/7/3742a0fb-4b86-49d6-b6fb-bd6a42fa1bcb.jpg?1783923138",
+    "thumb": "https://cards.scryfall.io/thumb/front/3/7/3742a0fb-4b86-49d6-b6fb-bd6a42fa1bcb.webp?1783923138",
+    "grid": "https://cards.scryfall.io/grid/front/3/7/3742a0fb-4b86-49d6-b6fb-bd6a42fa1bcb.webp?1783923138",
+    "display": "https://cards.scryfall.io/display/front/3/7/3742a0fb-4b86-49d6-b6fb-bd6a42fa1bcb.webp?1783923138",
+    "art": "https://cards.scryfall.io/art/front/3/7/3742a0fb-4b86-49d6-b6fb-bd6a42fa1bcb.webp?1783923138",
+    "crop": "https://cards.scryfall.io/crop/front/3/7/3742a0fb-4b86-49d6-b6fb-bd6a42fa1bcb.webp?1783923138",
+    "jpeg": "https://cards.scryfall.io/normal/front/3/7/3742a0fb-4b86-49d6-b6fb-bd6a42fa1bcb.jpg?1783923138"
+  },
+  "mana_cost": "{2}{U}{U}",
+  "cmc": 4.0,
+  "type_line": "Enchantment — Aura",
+  "oracle_text": "Enchant creature\nWhen this Aura enters, tap enchanted creature and you create a 1/1 blue Fish creature token with \"This token can't be blocked.\"\nEnchanted creature doesn't untap during its controller's untap step.",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Enchant"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "3742a0fb-4b86-49d6-b6fb-bd6a42fa1bcb",
+      "component": "combo_piece",
+      "name": "Sleep with the Fishes",
+      "type_line": "Enchantment — Aura",
+      "uri": "https://api.scryfall.com/cards/3742a0fb-4b86-49d6-b6fb-bd6a42fa1bcb"
+    },
+    {
+      "object": "related_card",
+      "id": "3b2e726b-f124-43f7-87e4-bb06bbe8e3d7",
+      "component": "token",
+      "name": "Fish",
+      "type_line": "Token Creature — Fish",
+      "uri": "https://api.scryfall.com/cards/3b2e726b-f124-43f7-87e4-bb06bbe8e3d7"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo",
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "df837242-8c15-42e4-b049-c933a02dc501",
+  "set": "snc",
+  "set_name": "Streets of New Capenna",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/df837242-8c15-42e4-b049-c933a02dc501",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Asnc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/snc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/3742a0fb-4b86-49d6-b6fb-bd6a42fa1bcb/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A48533a2d-1bdb-40a6-939e-9c8337e0dc5a&unique=prints",
+  "collector_number": "61",
+  "digital": false,
+  "rarity": "uncommon",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Randy Gallegos",
+  "artist_ids": [
+    "a5048cc7-438a-4378-98e4-da99b78e1db0"
+  ],
+  "illustration_id": "62ca497d-ffb4-4cae-8cef-22fd73fc59dc",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 19779,
+  "prices": {
+    "usd": "0.25",
+    "usd_foil": "0.22",
+    "usd_etched": null,
+    "eur": "0.07",
+    "eur_foil": "0.19",
+    "tix": "0.01"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=555262&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DSleep%2Bwith%2Bthe%2BFishes",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DSleep%2Bwith%2Bthe%2BFishes",
+    "edhrec": "https://edhrec.com/route/?cc=Sleep+with+the+Fishes"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F268774%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=651700&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/98341?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

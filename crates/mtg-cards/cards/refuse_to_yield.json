@@ -1,0 +1,28 @@
+{
+  "oracle_id": "d05aeada-2a9f-464d-8a66-b6e90f43bae3",
+  "name": "Refuse to Yield",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Refuse to Yield",
+      "oracle_fingerprint": "dda090225ef9cacc48c4a267cd89662a",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 7 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Untap": { "what": { "Target": 0 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

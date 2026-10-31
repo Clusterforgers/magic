@@ -1,0 +1,35 @@
+{
+  "oracle_id": "3961ef7c-4eb4-482e-9cda-d49d6a29c5a9",
+  "name": "Aurochs",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Aurochs",
+      "oracle_fingerprint": "d55d18a53acb0b4fefbc3064219ae839",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": { "Count": [{ "Subtype": "Aurochs" }, "Attacking", "Other"] },
+                        "toughness": 0
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

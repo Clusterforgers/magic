@@ -1,0 +1,20 @@
+{
+  "oracle_id": "e365699a-bd77-473f-86b0-4e1ba0371cdc",
+  "name": "Crippling Blight",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Crippling Blight",
+      "oracle_fingerprint": "842667386f6f382b702f49bbe95a3a41",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": -1, "toughness": -1 } }, "CantBlock"]
+          }
+        }
+      ]
+    }
+  ]
+}

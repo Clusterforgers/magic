@@ -1,0 +1,39 @@
+{
+  "oracle_id": "f5aeed95-24f8-4f28-9e7c-1e3502d013cd",
+  "name": "Sunspring Expedition",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sunspring Expedition",
+      "oracle_fingerprint": "45932278340c4c8f7cf0335a181c0e14",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [{ "PutCounters": { "on": "This", "counter": { "Other": "quest" } } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "RemoveCounters": { "counter": { "Other": "quest" }, "count": 3 } },
+              "SacrificeSelf"
+            ],
+            "effects": [{ "GainLife": { "amount": 8 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

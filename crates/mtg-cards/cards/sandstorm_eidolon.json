@@ -1,0 +1,40 @@
+{
+  "oracle_id": "84fe1c59-3f7b-4c1c-9bc4-78a185cfcc0c",
+  "name": "Sandstorm Eidolon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sandstorm Eidolon",
+      "oracle_fingerprint": "0630d081faf6837974a791c52981f484",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{R}" }, "SacrificeSelf"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["CantBlock"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [{ "Compare": { "stat": "Colors", "op": "Ge", "to": 2 } }],
+                "by": "You"
+              }
+            },
+            "from": "Graveyard",
+            "effects": [{ "May": { "effects": [{ "Move": { "what": "This", "to": "Hand" } }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

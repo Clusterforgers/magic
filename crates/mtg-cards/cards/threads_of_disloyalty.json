@@ -1,0 +1,22 @@
+{
+  "oracle_id": "9d86735c-12e5-457a-beb4-057ab220d18b",
+  "name": "Threads of Disloyalty",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Threads of Disloyalty",
+      "oracle_fingerprint": "42a8be8e750bd7ea8a04f9c13061051b",
+      "abilities": [
+        {
+          "Keyword": {
+            "Enchant": [
+              { "Type": "Creature" },
+              { "Compare": { "stat": "ManaValue", "op": "Le", "to": 2 } }
+            ]
+          }
+        },
+        { "Static": { "affected": "Attached", "mods": [{ "SetController": "You" }] } }
+      ]
+    }
+  ]
+}

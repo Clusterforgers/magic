@@ -1,0 +1,52 @@
+{
+  "oracle_id": "dded2874-e80f-401a-b700-52c54dd6da60",
+  "name": "Ivory Charm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ivory Charm",
+      "oracle_fingerprint": "679d7a3fcfaf2948d33364155338e046",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": { "Each": [{ "Type": "Creature" }] },
+                            "mods": [{ "ModifyPT": { "power": -2, "toughness": 0 } }],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                      "effects": [{ "Tap": { "what": { "Target": 0 } } }]
+                    },
+                    {
+                      "targets": [{ "what": "AnyTarget" }],
+                      "effects": [
+                        {
+                          "Shield": {
+                            "when": { "Damage": { "to": { "Target": 0 } } },
+                            "by": { "PreventUpTo": 1 },
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

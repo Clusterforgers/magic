@@ -1,0 +1,29 @@
+{
+  "oracle_id": "9abeb38c-2243-424c-bfbc-87aa45b6ea4f",
+  "name": "Blindblast",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Blindblast",
+      "oracle_fingerprint": "82820ab578af695e9bca7ac3aff59ba7",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 1 } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["CantBlock"],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

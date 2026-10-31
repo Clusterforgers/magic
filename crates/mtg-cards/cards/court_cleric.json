@@ -1,0 +1,33 @@
+{
+  "oracle_id": "dec9edbb-677b-4773-8bc4-b388d7592276",
+  "name": "Court Cleric",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Court Cleric",
+      "oracle_fingerprint": "6ae2548eda773515d79eceafcf6d827d",
+      "abilities": [
+        { "Keyword": "Lifelink" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "Type": "Planeswalker" },
+                    { "Subtype": "Ajani" },
+                    { "ControlledBy": "You" }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

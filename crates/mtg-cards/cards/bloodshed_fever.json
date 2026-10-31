@@ -1,0 +1,15 @@
+{
+  "oracle_id": "3a018a54-6094-42bb-af6a-ef436c09f0b4",
+  "name": "Bloodshed Fever",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bloodshed Fever",
+      "oracle_fingerprint": "e54c35708e49e8ff639c2094680dd14e",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        { "Rule": { "rule": { "MustAttack": "Attached" } } }
+      ]
+    }
+  ]
+}

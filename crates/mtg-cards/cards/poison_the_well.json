@@ -1,0 +1,22 @@
+{
+  "oracle_id": "a47ae84f-dcbc-4a60-9266-c1a02f92e7f8",
+  "name": "Poison the Well",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Poison the Well",
+      "oracle_fingerprint": "5a033649d3d25e9b21e4ec869a09c15d",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Land" }] } }],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              { "DealDamage": { "to": { "ControllerOf": { "Target": 0 } }, "amount": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

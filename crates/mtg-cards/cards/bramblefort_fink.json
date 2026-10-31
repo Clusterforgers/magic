@@ -1,0 +1,40 @@
+{
+  "oracle_id": "e56a9b7b-ce3f-4f5c-87d0-6f1d50d98ac3",
+  "name": "Bramblefort Fink",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bramblefort Fink",
+      "oracle_fingerprint": "0e87301f7e0a46edce170f5fa83e646c",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{8}",
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "Type": "Planeswalker" },
+                    { "ControlledBy": "You" },
+                    { "Subtype": "Oko" }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "SetPT": { "power": 10, "toughness": 10 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

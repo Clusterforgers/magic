@@ -1,0 +1,25 @@
+{
+  "oracle_id": "ab855992-34da-42a2-b7c7-dec4db849159",
+  "name": "Aerial Volley",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Aerial Volley",
+      "oracle_fingerprint": "16260c774917c056258b083eb01b8544",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "HasKeyword": "Flying" }] },
+                "bounds": { "min": 1, "max": 3 },
+                "divide": 3
+              }
+            ],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": "Divided" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

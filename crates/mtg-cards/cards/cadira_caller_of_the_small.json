@@ -1,0 +1,36 @@
+{
+  "oracle_id": "fcf22321-2f55-41ca-b8e1-4792540ba3ee",
+  "name": "Cadira, Caller of the Small",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cadira, Caller of the Small",
+      "oracle_fingerprint": "107d96612ee210038d0c1ac9123b91de",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Rabbit",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Rabbit"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": { "Count": ["Token", { "ControlledBy": "You" }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

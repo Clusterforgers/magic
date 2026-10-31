@@ -1,0 +1,21 @@
+{
+  "oracle_id": "fdd423d5-f19b-4bb2-98ca-75cc3c058d32",
+  "name": "Mystic Subdual",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mystic Subdual",
+      "oracle_fingerprint": "0935bd82d28dbdc4c7bfcf4b7c925d19",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": -2, "toughness": 0 } }, "LoseAbilities"]
+          }
+        }
+      ]
+    }
+  ]
+}

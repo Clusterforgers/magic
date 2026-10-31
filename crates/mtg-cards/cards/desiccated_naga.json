@@ -1,0 +1,36 @@
+{
+  "oracle_id": "ab172e3e-e71e-4627-9b9a-a9295b891533",
+  "name": "Desiccated Naga",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Desiccated Naga",
+      "oracle_fingerprint": "e379d8c5a072600e243872f6a1ed2ac9",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{3}{B}",
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "Type": "Planeswalker" },
+                    { "Subtype": "Liliana" },
+                    { "ControlledBy": "You" }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              { "LoseLife": { "who": { "Target": 0 }, "amount": 2 } },
+              { "GainLife": { "amount": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

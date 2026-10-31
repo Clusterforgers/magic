@@ -1,0 +1,142 @@
+{
+  "object": "card",
+  "id": "2381dbab-e968-4bbc-b3a7-a1e55b066039",
+  "oracle_id": "a231319d-5d72-4aa6-8868-5987694791cd",
+  "multiverse_ids": [
+    506930
+  ],
+  "mtgo_id": 87299,
+  "arena_id": 75356,
+  "tcgplayer_id": 229257,
+  "cardmarket_id": 527605,
+  "name": "Bearded Axe",
+  "lang": "en",
+  "released_at": "2021-02-05",
+  "uri": "https://api.scryfall.com/cards/2381dbab-e968-4bbc-b3a7-a1e55b066039",
+  "scryfall_uri": "https://scryfall.com/card/khm/388/bearded-axe?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T07:35:16Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/2/3/2381dbab-e968-4bbc-b3a7-a1e55b066039.jpg?1783928116",
+    "normal": "https://cards.scryfall.io/normal/front/2/3/2381dbab-e968-4bbc-b3a7-a1e55b066039.jpg?1783928116",
+    "large": "https://cards.scryfall.io/large/front/2/3/2381dbab-e968-4bbc-b3a7-a1e55b066039.jpg?1783928116",
+    "png": "https://cards.scryfall.io/png/front/2/3/2381dbab-e968-4bbc-b3a7-a1e55b066039.png?1783928116",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/2/3/2381dbab-e968-4bbc-b3a7-a1e55b066039.jpg?1783928116",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/2/3/2381dbab-e968-4bbc-b3a7-a1e55b066039.jpg?1783928116",
+    "thumb": "https://cards.scryfall.io/thumb/front/2/3/2381dbab-e968-4bbc-b3a7-a1e55b066039.webp?1783928116",
+    "grid": "https://cards.scryfall.io/grid/front/2/3/2381dbab-e968-4bbc-b3a7-a1e55b066039.webp?1783928116",
+    "display": "https://cards.scryfall.io/display/front/2/3/2381dbab-e968-4bbc-b3a7-a1e55b066039.webp?1783928116",
+    "art": "https://cards.scryfall.io/art/front/2/3/2381dbab-e968-4bbc-b3a7-a1e55b066039.webp?1783928116",
+    "crop": "https://cards.scryfall.io/crop/front/2/3/2381dbab-e968-4bbc-b3a7-a1e55b066039.webp?1783928116",
+    "jpeg": "https://cards.scryfall.io/normal/front/2/3/2381dbab-e968-4bbc-b3a7-a1e55b066039.jpg?1783928116"
+  },
+  "mana_cost": "{2}{R}",
+  "cmc": 3.0,
+  "type_line": "Artifact — Equipment",
+  "oracle_text": "Equipped creature gets +1/+1 for each Dwarf, Equipment, and/or Vehicle you control.\nEquip {2}",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Equip"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "arena",
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "43057fad-b1c1-437f-bc48-0045bce6d8c9",
+  "set": "khm",
+  "set_name": "Kaldheim",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/43057fad-b1c1-437f-bc48-0045bce6d8c9",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Akhm&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/khm?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/2381dbab-e968-4bbc-b3a7-a1e55b066039/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Aa231319d-5d72-4aa6-8868-5987694791cd&unique=prints",
+  "collector_number": "388",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "Every dwarven artisan spends the first hundred years of their life forging a single weapon and infusing it with runic magic.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Ovidio Cartagena",
+  "artist_ids": [
+    "7de94887-7f8b-4642-922c-1fa6b4568d07"
+  ],
+  "illustration_id": "561f763b-9e97-42b2-a045-0fa9e0923a00",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "themepack"
+  ],
+  "edhrec_rank": 9117,
+  "preview": {
+    "source": "Wizards of the Coast",
+    "source_uri": "https://magic.wizards.com/en/articles/archive/card-preview/set-and-theme-booster-additional-cards-kaldheim-2020-12-16",
+    "previewed_at": "2020-12-16"
+  },
+  "prices": {
+    "usd": "3.59",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "8.41",
+    "eur_foil": null,
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=506930&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DBearded%2BAxe",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DBearded%2BAxe",
+    "edhrec": "https://edhrec.com/route/?cc=Bearded+Axe"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F229257%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=527605&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/87299?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

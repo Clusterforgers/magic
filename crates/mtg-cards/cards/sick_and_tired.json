@@ -1,0 +1,29 @@
+{
+  "oracle_id": "070d82db-0851-4f6d-8bf7-1a79c4c2cfee",
+  "name": "Sick and Tired",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sick and Tired",
+      "oracle_fingerprint": "f94e19cb51ed667ced530e3c9e4dfbde",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 2, "max": 2 } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": -1, "toughness": -1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

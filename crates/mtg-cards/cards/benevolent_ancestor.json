@@ -1,0 +1,29 @@
+{
+  "oracle_id": "ee414d20-b18e-4bed-97fc-3c7535089ec1",
+  "name": "Benevolent Ancestor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Benevolent Ancestor",
+      "oracle_fingerprint": "a4fad1cf9236219c5282d03b6d5d8c64",
+      "abilities": [
+        { "Keyword": "Defender" },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": { "Target": 0 } } },
+                  "by": { "PreventUpTo": 1 },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

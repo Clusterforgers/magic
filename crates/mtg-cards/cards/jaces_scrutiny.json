@@ -1,0 +1,28 @@
+{
+  "oracle_id": "8578c462-7b2d-4b69-ad10-a2eab44ac98d",
+  "name": "Jace's Scrutiny",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jace's Scrutiny",
+      "oracle_fingerprint": "142394cd17c0de8d0635f452947b9ea0",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": -4, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "CreateToken": { "token": { "Named": "clue" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

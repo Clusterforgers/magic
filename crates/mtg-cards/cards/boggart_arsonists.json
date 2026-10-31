@@ -1,0 +1,27 @@
+{
+  "oracle_id": "54831951-2cd3-41bb-8326-6cfce48feb34",
+  "name": "Boggart Arsonists",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Boggart Arsonists",
+      "oracle_fingerprint": "a1c05679e86542c8b07b4106ea6617a3",
+      "abilities": [
+        { "Keyword": { "Landwalk": [{ "Subtype": "Plains" }] } },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{R}" }, "SacrificeSelf"],
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Subtype": "Scarecrow" }, { "Subtype": "Plains" }] }]
+                }
+              }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

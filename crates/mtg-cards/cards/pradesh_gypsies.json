@@ -1,0 +1,28 @@
+{
+  "oracle_id": "37c49483-bef6-47c6-9354-ead8560d48da",
+  "name": "Pradesh Gypsies",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pradesh Gypsies",
+      "oracle_fingerprint": "2d3c8afc465c32bfc898fcdc9fa17077",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{G}" }, "Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": -2, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

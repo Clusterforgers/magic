@@ -1,0 +1,23 @@
+{
+  "oracle_id": "cec10abd-2a2d-4d89-9ecc-ea50c2ac1538",
+  "name": "Boosted Sloop",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Boosted Sloop",
+      "oracle_fingerprint": "60322ddd11280037a546a021d82c0e19",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+            },
+            "effects": [{ "Draw": {} }, { "Discard": {} }]
+          }
+        },
+        { "Keyword": { "Crew": 1 } }
+      ]
+    }
+  ]
+}

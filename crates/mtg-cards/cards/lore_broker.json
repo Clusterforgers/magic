@@ -1,0 +1,19 @@
+{
+  "oracle_id": "e60a9e8d-0be4-4d08-a03a-af9f9e2be65b",
+  "name": "Lore Broker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lore Broker",
+      "oracle_fingerprint": "b4d3dd520b40cfca7cc0c2a741ce8d31",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "Draw": { "who": "EachPlayer" } }, { "Discard": { "who": "EachPlayer" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

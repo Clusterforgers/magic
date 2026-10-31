@@ -1,0 +1,32 @@
+{
+  "oracle_id": "bf24c063-dd9a-4381-b94e-682b0cb0c03d",
+  "name": "Teferi's Sentinel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Teferi's Sentinel",
+      "oracle_fingerprint": "a3b00a07cbd34940030dc05d088904e2",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": 4, "toughness": 0 } }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "Type": "Planeswalker" },
+                    { "Subtype": "Teferi" },
+                    { "ControlledBy": "You" }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

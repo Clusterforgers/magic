@@ -1,0 +1,27 @@
+{
+  "oracle_id": "8f2ab0a8-9d60-493b-a284-9ed7fa07e5ea",
+  "name": "Devouring Strossus",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Devouring Strossus",
+      "oracle_fingerprint": "726dc88feb37258c5cc9d9308cb59e65",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [{ "Sacrifice": { "filter": [{ "Type": "Creature" }] } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Sacrifice": { "filter": [{ "Type": "Creature" }] } }],
+            "effects": [{ "Regenerate": { "what": "This" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

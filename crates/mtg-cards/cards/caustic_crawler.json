@@ -1,0 +1,39 @@
+{
+  "oracle_id": "91c83b1e-32d9-4bb4-9a71-05fbb0cb8134",
+  "name": "Caustic Crawler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Caustic Crawler",
+      "oracle_fingerprint": "861aababe1323460b25e4dda24669e3e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [{ "ModifyPT": { "power": -1, "toughness": -1 } }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

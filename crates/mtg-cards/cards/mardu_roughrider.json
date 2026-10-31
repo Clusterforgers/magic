@@ -1,0 +1,28 @@
+{
+  "oracle_id": "10177654-c342-4537-a141-887a3fef13e8",
+  "name": "Mardu Roughrider",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mardu Roughrider",
+      "oracle_fingerprint": "6f10fb5b9d37f535312bd4fc50668090",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["CantBlock"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

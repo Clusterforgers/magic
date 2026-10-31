@@ -1,0 +1,138 @@
+{
+  "object": "card",
+  "id": "c0b86a7b-4912-43a7-ab89-c3432385baa1",
+  "oracle_id": "b36271cb-cda2-434a-a580-6050dc460409",
+  "multiverse_ids": [
+    679897
+  ],
+  "resource_id": "616666FEDCB27ECFB6D6DAAE58E8012BFDD70BB5C71C071F0D5E964C69926E45",
+  "mtgo_id": 133336,
+  "arena_id": 93868,
+  "tcgplayer_id": 591733,
+  "cardmarket_id": 797341,
+  "name": "Fleeting Distraction",
+  "lang": "en",
+  "released_at": "2024-11-15",
+  "uri": "https://api.scryfall.com/cards/c0b86a7b-4912-43a7-ab89-c3432385baa1",
+  "scryfall_uri": "https://scryfall.com/card/fdn/155/fleeting-distraction?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T02:18:01Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/c/0/c0b86a7b-4912-43a7-ab89-c3432385baa1.jpg?1783909081",
+    "normal": "https://cards.scryfall.io/normal/front/c/0/c0b86a7b-4912-43a7-ab89-c3432385baa1.jpg?1783909081",
+    "large": "https://cards.scryfall.io/large/front/c/0/c0b86a7b-4912-43a7-ab89-c3432385baa1.jpg?1783909081",
+    "png": "https://cards.scryfall.io/png/front/c/0/c0b86a7b-4912-43a7-ab89-c3432385baa1.png?1783909081",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/c/0/c0b86a7b-4912-43a7-ab89-c3432385baa1.jpg?1783909081",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/c/0/c0b86a7b-4912-43a7-ab89-c3432385baa1.jpg?1783909081",
+    "thumb": "https://cards.scryfall.io/thumb/front/c/0/c0b86a7b-4912-43a7-ab89-c3432385baa1.webp?1783909081",
+    "grid": "https://cards.scryfall.io/grid/front/c/0/c0b86a7b-4912-43a7-ab89-c3432385baa1.webp?1783909081",
+    "display": "https://cards.scryfall.io/display/front/c/0/c0b86a7b-4912-43a7-ab89-c3432385baa1.webp?1783909081",
+    "art": "https://cards.scryfall.io/art/front/c/0/c0b86a7b-4912-43a7-ab89-c3432385baa1.webp?1783909081",
+    "crop": "https://cards.scryfall.io/crop/front/c/0/c0b86a7b-4912-43a7-ab89-c3432385baa1.webp?1783909081",
+    "jpeg": "https://cards.scryfall.io/normal/front/c/0/c0b86a7b-4912-43a7-ab89-c3432385baa1.jpg?1783909081"
+  },
+  "mana_cost": "{U}",
+  "cmc": 1.0,
+  "type_line": "Instant",
+  "oracle_text": "Target creature gets -1/-0 until end of turn.\nDraw a card.",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "legal",
+    "future": "legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "arena",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "a7ecb771-d1b6-4dec-8cf5-8d45179f21e0",
+  "set": "fdn",
+  "set_name": "Foundations",
+  "set_type": "core",
+  "set_uri": "https://api.scryfall.com/sets/a7ecb771-d1b6-4dec-8cf5-8d45179f21e0",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Afdn&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/fdn?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/c0b86a7b-4912-43a7-ab89-c3432385baa1/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ab36271cb-cda2-434a-a580-6050dc460409&unique=prints",
+  "collector_number": "155",
+  "digital": false,
+  "rarity": "common",
+  "flavor_text": "The first spell taught to young mages, it has spared the lives of many whose hands are too small to hold a sword.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Ryan Yee",
+  "artist_ids": [
+    "8955dca7-3e37-42b4-83a9-167c78a2178f"
+  ],
+  "illustration_id": "36ec9cc0-4b5c-4686-8efb-34bda466f370",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "promo_types": [
+    "beginnerbox"
+  ],
+  "edhrec_rank": 9058,
+  "penny_rank": 8514,
+  "prices": {
+    "usd": "0.21",
+    "usd_foil": "0.23",
+    "usd_etched": null,
+    "eur": "0.06",
+    "eur_foil": "0.04",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=679897&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DFleeting%2BDistraction",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DFleeting%2BDistraction",
+    "edhrec": "https://edhrec.com/route/?cc=Fleeting+Distraction"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F591733%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=797341&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/133336?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

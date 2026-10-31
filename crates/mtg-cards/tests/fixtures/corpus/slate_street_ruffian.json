@@ -1,0 +1,138 @@
+{
+  "object": "card",
+  "id": "d683abb8-46b4-424e-8a10-325519477419",
+  "oracle_id": "c74d72ee-4795-41ca-b676-4d5a05bd12b7",
+  "multiverse_ids": [
+    489285
+  ],
+  "arena_id": 72341,
+  "tcgplayer_id": 216463,
+  "cardmarket_id": 473359,
+  "name": "Slate Street Ruffian",
+  "lang": "en",
+  "released_at": "2020-07-17",
+  "uri": "https://api.scryfall.com/cards/d683abb8-46b4-424e-8a10-325519477419",
+  "scryfall_uri": "https://scryfall.com/card/jmp/279/slate-street-ruffian?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T08:13:28Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/d/6/d683abb8-46b4-424e-8a10-325519477419.jpg?1783930408",
+    "normal": "https://cards.scryfall.io/normal/front/d/6/d683abb8-46b4-424e-8a10-325519477419.jpg?1783930408",
+    "large": "https://cards.scryfall.io/large/front/d/6/d683abb8-46b4-424e-8a10-325519477419.jpg?1783930408",
+    "png": "https://cards.scryfall.io/png/front/d/6/d683abb8-46b4-424e-8a10-325519477419.png?1783930408",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/d/6/d683abb8-46b4-424e-8a10-325519477419.jpg?1783930408",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/d/6/d683abb8-46b4-424e-8a10-325519477419.jpg?1783930408",
+    "thumb": "https://cards.scryfall.io/thumb/front/d/6/d683abb8-46b4-424e-8a10-325519477419.webp?1783930408",
+    "grid": "https://cards.scryfall.io/grid/front/d/6/d683abb8-46b4-424e-8a10-325519477419.webp?1783930408",
+    "display": "https://cards.scryfall.io/display/front/d/6/d683abb8-46b4-424e-8a10-325519477419.webp?1783930408",
+    "art": "https://cards.scryfall.io/art/front/d/6/d683abb8-46b4-424e-8a10-325519477419.webp?1783930408",
+    "crop": "https://cards.scryfall.io/crop/front/d/6/d683abb8-46b4-424e-8a10-325519477419.webp?1783930408",
+    "jpeg": "https://cards.scryfall.io/normal/front/d/6/d683abb8-46b4-424e-8a10-325519477419.jpg?1783930408"
+  },
+  "mana_cost": "{2}{B}",
+  "cmc": 3.0,
+  "type_line": "Creature — Human Warrior",
+  "oracle_text": "Whenever this creature becomes blocked, defending player discards a card.",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "arena",
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "0f6ccf25-a627-4263-86df-5757137f1696",
+  "set": "jmp",
+  "set_name": "Jumpstart",
+  "set_type": "draft_innovation",
+  "set_uri": "https://api.scryfall.com/sets/0f6ccf25-a627-4263-86df-5757137f1696",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ajmp&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/jmp?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/d683abb8-46b4-424e-8a10-325519477419/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ac74d72ee-4795-41ca-b676-4d5a05bd12b7&unique=prints",
+  "collector_number": "279",
+  "digital": false,
+  "rarity": "common",
+  "flavor_text": "\"Merciless to the point of psychosis. Let's give him a job.\"\n—Zelinas, Orzhov recruiter",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Jim Murray",
+  "artist_ids": [
+    "1c906f9b-5bbe-4643-8f5c-90eb1c7f0c43"
+  ],
+  "illustration_id": "b1e7d0bb-3a09-442c-ab1c-deafbe8bef12",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 26435,
+  "penny_rank": 17966,
+  "preview": {
+    "source": "Wizards of the Coast",
+    "source_uri": "",
+    "previewed_at": "2020-06-19"
+  },
+  "prices": {
+    "usd": "0.21",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.10",
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=489285&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DSlate%2BStreet%2BRuffian",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DSlate%2BStreet%2BRuffian",
+    "edhrec": "https://edhrec.com/route/?cc=Slate+Street+Ruffian"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F216463%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=473359&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Slate+Street+Ruffian&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

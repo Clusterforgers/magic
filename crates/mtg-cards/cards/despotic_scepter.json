@@ -1,0 +1,20 @@
+{
+  "oracle_id": "34a85d7f-d4ea-4a0f-aa4c-bf0b0f4987bf",
+  "name": "Despotic Scepter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Despotic Scepter",
+      "oracle_fingerprint": "8c330b2891c712653086786a95563530",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": { "Object": [{ "OwnedBy": "You" }] } }],
+            "effects": [{ "Destroy": { "what": { "Target": 0 }, "regenerate": false } }]
+          }
+        }
+      ]
+    }
+  ]
+}

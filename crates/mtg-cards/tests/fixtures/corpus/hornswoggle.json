@@ -1,0 +1,161 @@
+{
+  "object": "card",
+  "id": "b10b8f15-b323-44d8-85a7-ed662a40889d",
+  "oracle_id": "71b178bd-3b37-4de9-97a3-96e23d5444a4",
+  "multiverse_ids": [
+    439696
+  ],
+  "mtgo_id": 66531,
+  "arena_id": 66695,
+  "tcgplayer_id": 155798,
+  "cardmarket_id": 315381,
+  "name": "Hornswoggle",
+  "lang": "en",
+  "released_at": "2018-01-19",
+  "uri": "https://api.scryfall.com/cards/b10b8f15-b323-44d8-85a7-ed662a40889d",
+  "scryfall_uri": "https://scryfall.com/card/rix/39/hornswoggle?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T09:35:24Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/b/1/b10b8f15-b323-44d8-85a7-ed662a40889d.jpg?1783935324",
+    "normal": "https://cards.scryfall.io/normal/front/b/1/b10b8f15-b323-44d8-85a7-ed662a40889d.jpg?1783935324",
+    "large": "https://cards.scryfall.io/large/front/b/1/b10b8f15-b323-44d8-85a7-ed662a40889d.jpg?1783935324",
+    "png": "https://cards.scryfall.io/png/front/b/1/b10b8f15-b323-44d8-85a7-ed662a40889d.png?1783935324",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/b/1/b10b8f15-b323-44d8-85a7-ed662a40889d.jpg?1783935324",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/b/1/b10b8f15-b323-44d8-85a7-ed662a40889d.jpg?1783935324",
+    "thumb": "https://cards.scryfall.io/thumb/front/b/1/b10b8f15-b323-44d8-85a7-ed662a40889d.webp?1783935324",
+    "grid": "https://cards.scryfall.io/grid/front/b/1/b10b8f15-b323-44d8-85a7-ed662a40889d.webp?1783935324",
+    "display": "https://cards.scryfall.io/display/front/b/1/b10b8f15-b323-44d8-85a7-ed662a40889d.webp?1783935324",
+    "art": "https://cards.scryfall.io/art/front/b/1/b10b8f15-b323-44d8-85a7-ed662a40889d.webp?1783935324",
+    "crop": "https://cards.scryfall.io/crop/front/b/1/b10b8f15-b323-44d8-85a7-ed662a40889d.webp?1783935324",
+    "jpeg": "https://cards.scryfall.io/normal/front/b/1/b10b8f15-b323-44d8-85a7-ed662a40889d.jpg?1783935324"
+  },
+  "mana_cost": "{2}{U}",
+  "cmc": 3.0,
+  "type_line": "Instant",
+  "oracle_text": "Counter target creature spell. You create a Treasure token. (It's an artifact with \"{T}, Sacrifice this token: Add one mana of any color.\")",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Treasure"
+  ],
+  "produced_mana": [
+    "B",
+    "G",
+    "R",
+    "U",
+    "W"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "bbe8bced-9524-47f6-a600-bf4ddc072698",
+      "component": "token",
+      "name": "Treasure",
+      "type_line": "Token Artifact — Treasure",
+      "uri": "https://api.scryfall.com/cards/bbe8bced-9524-47f6-a600-bf4ddc072698"
+    },
+    {
+      "object": "related_card",
+      "id": "b10b8f15-b323-44d8-85a7-ed662a40889d",
+      "component": "combo_piece",
+      "name": "Hornswoggle",
+      "type_line": "Instant",
+      "uri": "https://api.scryfall.com/cards/b10b8f15-b323-44d8-85a7-ed662a40889d"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "arena",
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "2f7e40fc-772d-4a85-bfdd-01653c41d0fa",
+  "set": "rix",
+  "set_name": "Rivals of Ixalan",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/2f7e40fc-772d-4a85-bfdd-01653c41d0fa",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Arix&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/rix?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/b10b8f15-b323-44d8-85a7-ed662a40889d/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A71b178bd-3b37-4de9-97a3-96e23d5444a4&unique=prints",
+  "collector_number": "39",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "Being a merciful pirate, she saved the vampire's gold from falling overboard.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Deruchenko Alexander",
+  "artist_ids": [
+    "806f6ff9-6ed4-4e93-998a-a562c0b792e6"
+  ],
+  "illustration_id": "8c66bcef-66e2-4210-8319-92eb7473b6d7",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 13694,
+  "penny_rank": 11565,
+  "prices": {
+    "usd": "0.16",
+    "usd_foil": "0.49",
+    "usd_etched": null,
+    "eur": "0.23",
+    "eur_foil": "0.75",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=439696&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DHornswoggle",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DHornswoggle",
+    "edhrec": "https://edhrec.com/route/?cc=Hornswoggle"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F155798%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=315381&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/66531?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

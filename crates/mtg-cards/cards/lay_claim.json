@@ -1,0 +1,16 @@
+{
+  "oracle_id": "c7111365-b96b-4d6a-8c3c-73a0d8baf641",
+  "name": "Lay Claim",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lay Claim",
+      "oracle_fingerprint": "cff5e41bb13cebe2b02b5fca306a5c43",
+      "abilities": [
+        { "Keyword": { "Enchant": [] } },
+        { "Static": { "affected": "Attached", "mods": [{ "SetController": "You" }] } },
+        { "Keyword": { "Cycling": "{2}" } }
+      ]
+    }
+  ]
+}

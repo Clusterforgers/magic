@@ -1,0 +1,42 @@
+{
+  "oracle_id": "ce8833ea-5f58-4ab9-b33d-8972f2215574",
+  "name": "Necromancer's Familiar",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Necromancer's Familiar",
+      "oracle_fingerprint": "5f28fee0c6cce642291ef1d511a874ce",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Lifelink" }],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
+                "op": "Eq",
+                "right": 0
+              }
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{B}" }, { "Discard": {} }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddKeyword": "Indestructible" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Tap": { "what": "This" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "oracle_id": "1c77b4da-b580-4ce9-b127-76de674f5694",
+  "name": "Iron-Shield Elf",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Iron-Shield Elf",
+      "oracle_fingerprint": "414b2cff35b4895d0c3a518e22689eba",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Discard": {} }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddKeyword": "Indestructible" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Tap": { "what": "This" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

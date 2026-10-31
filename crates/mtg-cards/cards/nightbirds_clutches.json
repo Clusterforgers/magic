@@ -1,0 +1,30 @@
+{
+  "oracle_id": "d12b875c-0056-4a57-a7ff-09c73d00f8cc",
+  "name": "Nightbird's Clutches",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nightbird's Clutches",
+      "oracle_fingerprint": "586f9debb705662a848db25e3304f616",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 0, "max": 2 } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["CantBlock"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Flashback": "{3}{R}" } }
+      ]
+    }
+  ]
+}

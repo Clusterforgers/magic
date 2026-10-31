@@ -1,0 +1,27 @@
+{
+  "oracle_id": "675ed28e-4328-4638-aaad-3f47e5c7895f",
+  "name": "Headstrong Brute",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Headstrong Brute",
+      "oracle_fingerprint": "a564d4e45f988390555d0f34c8ccd4e7",
+      "abilities": [
+        { "Static": { "affected": "This", "mods": ["CantBlock"] } },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Menace" }],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Subtype": "Pirate" }, "Other", { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

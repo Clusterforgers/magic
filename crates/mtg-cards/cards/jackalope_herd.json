@@ -1,0 +1,19 @@
+{
+  "oracle_id": "bcc8ce61-a881-42be-ab2c-64351d17f9f8",
+  "name": "Jackalope Herd",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jackalope Herd",
+      "oracle_fingerprint": "43cf0eabea4ba383d1a198590cdcbcb1",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "by": "You" } },
+            "effects": [{ "Move": { "what": "This", "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

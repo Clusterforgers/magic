@@ -1,0 +1,34 @@
+{
+  "oracle_id": "003e5dc6-8b26-4a0a-a50b-5f0806a7bacd",
+  "name": "South Wind Avatar",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "South Wind Avatar",
+      "oracle_fingerprint": "847ae1a04c3f4bfaeb848c61e8392d78",
+      "abilities": [
+        { "Keyword": "Deathtouch" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              { "GainLife": { "amount": { "Stat": { "of": "Triggering", "stat": "Toughness" } } } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "LifeGained": { "who": "You" } },
+            "effects": [{ "LoseLife": { "who": "Opponents", "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

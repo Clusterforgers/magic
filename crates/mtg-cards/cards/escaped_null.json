@@ -1,0 +1,33 @@
+{
+  "oracle_id": "8bc17c50-f4c9-46dd-9294-3036ed46de91",
+  "name": "Escaped Null",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Escaped Null",
+      "oracle_fingerprint": "a6c51094a95508998f46177949d81963",
+      "abilities": [
+        { "Keyword": "Lifelink" },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "Blocks": { "what": ["This"] } },
+                { "BecomesBlocked": { "what": ["This"] } }
+              ]
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 5, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

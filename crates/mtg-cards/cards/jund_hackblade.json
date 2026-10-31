@@ -1,0 +1,32 @@
+{
+  "oracle_id": "e0e2184e-d4e3-4620-89c4-8378ce3a59c3",
+  "name": "Jund Hackblade",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jund Hackblade",
+      "oracle_fingerprint": "d0df9f9fe5ff9ee8cdfa4f64b2bcd91d",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }, { "AddKeyword": "Haste" }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "ControlledBy": "You" },
+                    { "Compare": { "stat": "Colors", "op": "Ge", "to": 2 } },
+                    "Other"
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

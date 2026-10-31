@@ -1,0 +1,28 @@
+{
+  "oracle_id": "c87e056a-6067-49e6-b3f7-bba8234777de",
+  "name": "Saltfield Recluse",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Saltfield Recluse",
+      "oracle_fingerprint": "2488a88a3ff64da842813464c153ad6b",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": -2, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "oracle_id": "6155908a-0079-42c7-ae81-326a6faccb89",
+  "name": "Trial of Knowledge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Trial of Knowledge",
+      "oracle_fingerprint": "484946bfbe772a061233cdd913e2a5e0",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Draw": { "count": 3 } }, { "Discard": {} }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Subtype": "Cartouche" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [{ "Move": { "what": "This", "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

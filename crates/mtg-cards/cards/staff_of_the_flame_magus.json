@@ -1,0 +1,29 @@
+{
+  "oracle_id": "fc71710a-8294-4370-89da-7ab1c2b38d19",
+  "name": "Staff of the Flame Magus",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Staff of the Flame Magus",
+      "oracle_fingerprint": "e8e97a7456eb8616afc37e06dedb0935",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "SpellCast": { "what": [{ "Color": "Red" }], "by": "You" } },
+                {
+                  "ZoneChange": {
+                    "what": [{ "Subtype": "Mountain" }, { "ControlledBy": "You" }],
+                    "to": "Battlefield"
+                  }
+                }
+              ]
+            },
+            "effects": [{ "GainLife": { "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

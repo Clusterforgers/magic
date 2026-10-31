@@ -1,0 +1,41 @@
+{
+  "oracle_id": "a89994d0-2110-4ca0-abfc-5dd232981acf",
+  "name": "Mortis Dogs",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mortis Dogs",
+      "oracle_fingerprint": "ea3aa82274e9f9207cbc8c388eaeaa94",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "LoseLife": {
+                  "who": { "Target": 0 },
+                  "amount": { "Stat": { "of": "This", "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

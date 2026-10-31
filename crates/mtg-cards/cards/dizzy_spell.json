@@ -1,0 +1,28 @@
+{
+  "oracle_id": "7de04284-dcaa-4b63-a734-fcfe2698f83c",
+  "name": "Dizzy Spell",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dizzy Spell",
+      "oracle_fingerprint": "377db61ae63c677bfac3f8bf9916d2cb",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": -3, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Transmute": "{1}{U}{U}" } }
+      ]
+    }
+  ]
+}

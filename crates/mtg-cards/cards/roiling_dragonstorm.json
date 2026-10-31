@@ -1,0 +1,30 @@
+{
+  "oracle_id": "6badc583-fabb-4d63-b70c-e7380acafc23",
+  "name": "Roiling Dragonstorm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Roiling Dragonstorm",
+      "oracle_fingerprint": "207a6841575e3df9f9e42397bdc2c04e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Draw": { "count": 2 } }, { "Discard": {} }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Subtype": "Dragon" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [{ "Move": { "what": "This", "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

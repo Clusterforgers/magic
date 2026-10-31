@@ -1,0 +1,21 @@
+{
+  "oracle_id": "af98156b-3064-4f16-940e-10039241f2b0",
+  "name": "Burning Inquiry",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Burning Inquiry",
+      "oracle_fingerprint": "f69035a0c04bf9d5da8ce3a854890e5b",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Draw": { "who": "EachPlayer", "count": 3 } },
+              { "Discard": { "who": "EachPlayer", "count": 3, "random": true } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

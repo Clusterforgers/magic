@@ -1,0 +1,35 @@
+{
+  "oracle_id": "b9dee727-8ad8-42e0-93c6-5ef91d3f7309",
+  "name": "Aquitect's Defenses",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Aquitect's Defenses",
+      "oracle_fingerprint": "3250bd3d5eb212dc9028cf5ed689baec",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Attached",
+                  "mods": [{ "AddKeyword": "Hexproof" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

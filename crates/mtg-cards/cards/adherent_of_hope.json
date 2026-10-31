@@ -1,0 +1,32 @@
+{
+  "oracle_id": "b5f5400e-f341-40e3-b935-36d9cf983a20",
+  "name": "Adherent of Hope",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Adherent of Hope",
+      "oracle_fingerprint": "40424c9d975a54a5a4f222d95ec61c85",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "Type": "Planeswalker" },
+                    { "Subtype": "Basri" },
+                    { "ControlledBy": "You" }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

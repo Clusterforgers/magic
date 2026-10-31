@@ -1,0 +1,141 @@
+{
+  "object": "card",
+  "id": "f177e9cc-0c41-417d-9215-5ff23a1a0657",
+  "oracle_id": "a39c758d-82be-4d8c-bb3e-8ee8a6c6788b",
+  "multiverse_ids": [],
+  "resource_id": "FB8B01A71C05985CD1DED6F520355759E5633564C0D6B3A97E42707827584007",
+  "mtgo_id": 144864,
+  "arena_id": 97467,
+  "tcgplayer_id": 649613,
+  "cardmarket_id": 857472,
+  "name": "Pillar Launch",
+  "lang": "en",
+  "released_at": "2025-11-21",
+  "uri": "https://api.scryfall.com/cards/f177e9cc-0c41-417d-9215-5ff23a1a0657",
+  "scryfall_uri": "https://scryfall.com/card/tla/189/pillar-launch?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T01:08:59Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/f/1/f177e9cc-0c41-417d-9215-5ff23a1a0657.jpg?1783904939",
+    "normal": "https://cards.scryfall.io/normal/front/f/1/f177e9cc-0c41-417d-9215-5ff23a1a0657.jpg?1783904939",
+    "large": "https://cards.scryfall.io/large/front/f/1/f177e9cc-0c41-417d-9215-5ff23a1a0657.jpg?1783904939",
+    "png": "https://cards.scryfall.io/png/front/f/1/f177e9cc-0c41-417d-9215-5ff23a1a0657.png?1783904939",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/f/1/f177e9cc-0c41-417d-9215-5ff23a1a0657.jpg?1783904939",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/f/1/f177e9cc-0c41-417d-9215-5ff23a1a0657.jpg?1783904939",
+    "thumb": "https://cards.scryfall.io/thumb/front/f/1/f177e9cc-0c41-417d-9215-5ff23a1a0657.webp?1783904939",
+    "grid": "https://cards.scryfall.io/grid/front/f/1/f177e9cc-0c41-417d-9215-5ff23a1a0657.webp?1783904939",
+    "display": "https://cards.scryfall.io/display/front/f/1/f177e9cc-0c41-417d-9215-5ff23a1a0657.webp?1783904939",
+    "art": "https://cards.scryfall.io/art/front/f/1/f177e9cc-0c41-417d-9215-5ff23a1a0657.webp?1783904939",
+    "crop": "https://cards.scryfall.io/crop/front/f/1/f177e9cc-0c41-417d-9215-5ff23a1a0657.webp?1783904939",
+    "jpeg": "https://cards.scryfall.io/normal/front/f/1/f177e9cc-0c41-417d-9215-5ff23a1a0657.jpg?1783904939"
+  },
+  "mana_cost": "{G}",
+  "cmc": 1.0,
+  "type_line": "Instant",
+  "oracle_text": "Target creature gets +2/+2 and gains reach until end of turn. Untap it.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "legal",
+    "future": "legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "arena",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "118f7e64-5caa-4cb7-99a8-184f4d3a7422",
+  "set": "tla",
+  "set_name": "Avatar: The Last Airbender",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/118f7e64-5caa-4cb7-99a8-184f4d3a7422",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Atla&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/tla?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/f177e9cc-0c41-417d-9215-5ff23a1a0657/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Aa39c758d-82be-4d8c-bb3e-8ee8a6c6788b&unique=prints",
+  "collector_number": "189",
+  "digital": false,
+  "rarity": "common",
+  "watermark": "earthkingdom",
+  "flavor_text": "Toph hated flying. \"Launching,\" however, was a trajectory under her control.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Jo Cordisco",
+  "artist_ids": [
+    "f9452ff6-516a-489e-9271-ce8ee876275e"
+  ],
+  "illustration_id": "9b787124-36c2-448d-a0f3-abdb21950a76",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 10826,
+  "penny_rank": 5881,
+  "preview": {
+    "source": "IGN",
+    "source_uri": "https://www.ign.com/articles/avatar-the-last-airbender-magic-the-gathering-beginner-box-card-reveal-spoilers",
+    "previewed_at": "2025-08-14"
+  },
+  "prices": {
+    "usd": "0.16",
+    "usd_foil": "0.24",
+    "usd_etched": null,
+    "eur": "0.05",
+    "eur_foil": "0.05",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DPillar%2BLaunch",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DPillar%2BLaunch",
+    "edhrec": "https://edhrec.com/route/?cc=Pillar+Launch"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F649613%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=857472&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/144864?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

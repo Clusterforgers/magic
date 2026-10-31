@@ -1,0 +1,33 @@
+{
+  "oracle_id": "bf9c5c0d-86a5-467a-863c-653279f2e6e7",
+  "name": "Akki Raider",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Akki Raider",
+      "oracle_fingerprint": "48b7f8bfe17a0da3e3a318a0b00a6d45",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Land" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

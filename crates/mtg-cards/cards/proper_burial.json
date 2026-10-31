@@ -1,0 +1,27 @@
+{
+  "oracle_id": "e5bf77c2-a9b2-4366-8412-e263160403c1",
+  "name": "Proper Burial",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Proper Burial",
+      "oracle_fingerprint": "1be63b788eba1c41a3be257b92a53f4e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              { "GainLife": { "amount": { "Stat": { "of": "Triggering", "stat": "Toughness" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

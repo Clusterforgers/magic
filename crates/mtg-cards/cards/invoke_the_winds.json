@@ -1,0 +1,34 @@
+{
+  "oracle_id": "721c3255-953c-49cd-a5dd-852c3d09eae4",
+  "name": "Invoke the Winds",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Invoke the Winds",
+      "oracle_fingerprint": "d7cb518a6b9b1b8011700e10c561fc17",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] }]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "Forever"
+                }
+              },
+              { "Untap": { "what": { "Target": 0 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

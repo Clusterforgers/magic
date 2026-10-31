@@ -1,0 +1,26 @@
+{
+  "oracle_id": "b597e801-2648-48b9-8a21-02baa13e37af",
+  "name": "Court Homunculus",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Court Homunculus",
+      "oracle_fingerprint": "9bc25f60dabb8b026ba87232825e0b9b",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Type": "Artifact" }, "Other", { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

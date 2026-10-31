@@ -1,0 +1,38 @@
+{
+  "oracle_id": "0230fdda-d916-457e-9dfd-61783fcf4652",
+  "name": "Granger Guildmage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Granger Guildmage",
+      "oracle_fingerprint": "07e2112b06a640e15df29a482b2e51f3",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{R}" }, "Tap"],
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 1 } },
+              { "DealDamage": { "to": "You", "amount": 1 } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{W}" }, "Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "FirstStrike" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

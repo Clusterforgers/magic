@@ -1,0 +1,40 @@
+{
+  "oracle_id": "03199a9e-3a52-42af-8027-50b455a054d4",
+  "name": "Jiwari, the Earth Aflame",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jiwari, the Earth Aflame",
+      "oracle_fingerprint": "b62c42490c1070ba780cf8b2cc229a0e",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{X}{R}" }, "Tap"],
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "Not": { "HasKeyword": "Flying" } }]
+                }
+              }
+            ],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": "X" } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{X}{R}{R}{R}" }, "DiscardSelf"],
+            "from": "Hand",
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Each": [{ "Type": "Creature" }, { "Not": { "HasKeyword": "Flying" } }] },
+                  "amount": "X"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "oracle_id": "bd63bfda-e20a-4476-8a61-cdb51355a227",
+  "name": "Lionheart Glimmer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lionheart Glimmer",
+      "oracle_fingerprint": "8b3f109fb5d154b4746fd7f5022ad473",
+      "abilities": [
+        { "Keyword": { "Ward": "{2}" } },
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "oracle_id": "00b50215-e832-417f-9c80-2bc3050b6ebb",
+  "name": "Spider-Ham, Peter Porker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spider-Ham, Peter Porker",
+      "oracle_fingerprint": "a2b4fc7691344e93d9ada0bf7b1c73fb",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "CreateToken": { "token": { "Named": "food" } } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                {
+                  "AnyOf": [
+                    { "Subtype": "Spider" },
+                    { "Subtype": "Boar" },
+                    { "Subtype": "Bat" },
+                    { "Subtype": "Bear" },
+                    { "Subtype": "Bird" },
+                    { "Subtype": "Cat" },
+                    { "Subtype": "Dog" },
+                    { "Subtype": "Frog" },
+                    { "Subtype": "Jackal" },
+                    { "Subtype": "Lizard" },
+                    { "Subtype": "Mouse" },
+                    { "Subtype": "Otter" },
+                    { "Subtype": "Rabbit" },
+                    { "Subtype": "Raccoon" },
+                    { "Subtype": "Rat" },
+                    { "Subtype": "Squirrel" },
+                    { "Subtype": "Turtle" },
+                    { "Subtype": "Wolf" }
+                  ]
+                },
+                "Other",
+                { "ControlledBy": "You" }
+              ]
+            },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

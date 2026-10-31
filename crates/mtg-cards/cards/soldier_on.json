@@ -1,0 +1,22 @@
+{
+  "oracle_id": "f522e161-f249-4add-8326-b6ab0de8ba57",
+  "name": "Soldier On",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Soldier On",
+      "oracle_fingerprint": "9c139092f27edfb54c000d0638827e48",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1", "count": 2 } },
+              { "Untap": { "what": { "Target": 0 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

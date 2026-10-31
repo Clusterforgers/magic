@@ -1,0 +1,29 @@
+{
+  "oracle_id": "937a04c2-41be-4ff3-8992-6628a9ee9792",
+  "name": "Hall Monitor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hall Monitor",
+      "oracle_fingerprint": "c6e9475dd2e70b9317e5c5b942c88999",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{R}" }, "Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["CantBlock"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "oracle_id": "84469042-d48d-409f-a2c9-047058f13bc5",
+  "name": "Bewildering Blizzard",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bewildering Blizzard",
+      "oracle_fingerprint": "c9515f66aed62d14aef2abe5555d11c5",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Draw": { "count": 3 } },
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] },
+                  "mods": [{ "ModifyPT": { "power": -3, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,126 @@
+{
+  "object": "card",
+  "id": "2fe3ed98-bd34-467d-9081-6b0de6ba738a",
+  "oracle_id": "11bc7014-68d3-46e3-97cb-1f1b475e53af",
+  "multiverse_ids": [],
+  "tcgplayer_id": 485146,
+  "name": "Red Priest of Yawgmoth",
+  "lang": "en",
+  "released_at": "2023-02-17",
+  "uri": "https://api.scryfall.com/cards/2fe3ed98-bd34-467d-9081-6b0de6ba738a",
+  "scryfall_uri": "https://scryfall.com/card/unk/UR02b/red-priest-of-yawgmoth?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T04:42:47Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/2/f/2fe3ed98-bd34-467d-9081-6b0de6ba738a.jpg?1783917767",
+    "normal": "https://cards.scryfall.io/normal/front/2/f/2fe3ed98-bd34-467d-9081-6b0de6ba738a.jpg?1783917767",
+    "large": "https://cards.scryfall.io/large/front/2/f/2fe3ed98-bd34-467d-9081-6b0de6ba738a.jpg?1783917767",
+    "png": "https://cards.scryfall.io/png/front/2/f/2fe3ed98-bd34-467d-9081-6b0de6ba738a.png?1783917767",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/2/f/2fe3ed98-bd34-467d-9081-6b0de6ba738a.jpg?1783917767",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/2/f/2fe3ed98-bd34-467d-9081-6b0de6ba738a.jpg?1783917767",
+    "thumb": "https://cards.scryfall.io/thumb/front/2/f/2fe3ed98-bd34-467d-9081-6b0de6ba738a.webp?1783917767",
+    "grid": "https://cards.scryfall.io/grid/front/2/f/2fe3ed98-bd34-467d-9081-6b0de6ba738a.webp?1783917767",
+    "display": "https://cards.scryfall.io/display/front/2/f/2fe3ed98-bd34-467d-9081-6b0de6ba738a.webp?1783917767",
+    "art": "https://cards.scryfall.io/art/front/2/f/2fe3ed98-bd34-467d-9081-6b0de6ba738a.webp?1783917767",
+    "crop": "https://cards.scryfall.io/crop/front/2/f/2fe3ed98-bd34-467d-9081-6b0de6ba738a.webp?1783917767",
+    "jpeg": "https://cards.scryfall.io/normal/front/2/f/2fe3ed98-bd34-467d-9081-6b0de6ba738a.jpg?1783917767"
+  },
+  "mana_cost": "{1}{R}",
+  "cmc": 2.0,
+  "type_line": "Artifact Creature — Phyrexian Cleric",
+  "oracle_text": "{T}, Sacrifice an artifact: Add an amount of {R} equal to the sacrificed artifact's mana value.",
+  "power": "1",
+  "toughness": "2",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [],
+  "produced_mana": [
+    "R"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "not_legal",
+    "pauper": "not_legal",
+    "vintage": "not_legal",
+    "penny": "not_legal",
+    "commander": "not_legal",
+    "oathbreaker": "not_legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "not_legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "d2703c4f-66b6-438d-9368-ebb55aa12e78",
+  "set": "unk",
+  "set_name": "Unknown Event",
+  "set_type": "funny",
+  "set_uri": "https://api.scryfall.com/sets/d2703c4f-66b6-438d-9368-ebb55aa12e78",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aunk&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/unk?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/2fe3ed98-bd34-467d-9081-6b0de6ba738a/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A11bc7014-68d3-46e3-97cb-1f1b475e53af&unique=prints",
+  "collector_number": "UR02b",
+  "digital": false,
+  "rarity": "uncommon",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "playtest"
+  ],
+  "prices": {
+    "usd": null,
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": null,
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DRed%2BPriest%2Bof%2BYawgmoth",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DRed%2BPriest%2Bof%2BYawgmoth",
+    "edhrec": "https://edhrec.com/route/?cc=Red+Priest+of+Yawgmoth"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F485146%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products/Search?referrer=scryfall&searchString=Red+Priest+of+Yawgmoth&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Red+Priest+of+Yawgmoth&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

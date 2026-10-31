@@ -1,0 +1,32 @@
+{
+  "oracle_id": "4576cc5b-7b3a-41a7-9b84-acadf2d4adf5",
+  "name": "Dromosaur",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dromosaur",
+      "oracle_fingerprint": "80c612497afd899bb0bd1fc7373b6a39",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "Blocks": { "what": ["This"] } },
+                { "BecomesBlocked": { "what": ["This"] } }
+              ]
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": -2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

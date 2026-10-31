@@ -1,0 +1,43 @@
+{
+  "oracle_id": "74c90ddc-4c6e-479d-ad68-b444d3109258",
+  "name": "Hypochondria",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hypochondria",
+      "oracle_fingerprint": "49001c2b25af4b4f8e879bf78b054936",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{W}" }, { "Discard": {} }],
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": { "Target": 0 } } },
+                  "by": { "PreventUpTo": 3 },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{W}" }, "SacrificeSelf"],
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": { "Target": 0 } } },
+                  "by": { "PreventUpTo": 3 },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

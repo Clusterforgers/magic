@@ -1,0 +1,28 @@
+{
+  "oracle_id": "1ac6fabb-71db-442f-8c14-ba9e659f906c",
+  "name": "Chrome Companion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Chrome Companion",
+      "oracle_fingerprint": "b31e81de6da22d730dd9dc02caaf004a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Tapped": { "what": ["This"] } },
+            "effects": [{ "GainLife": { "amount": 1 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap"],
+            "targets": [{ "what": { "Object": [{ "In": "Graveyard" }] } }],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Library": { "place": "Bottom" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

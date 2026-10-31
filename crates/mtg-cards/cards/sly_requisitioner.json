@@ -1,0 +1,40 @@
+{
+  "oracle_id": "15ea4698-86b4-47c5-a9a7-60af16063a61",
+  "name": "Sly Requisitioner",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sly Requisitioner",
+      "oracle_fingerprint": "9c25d55d7248605f2aa0af25f31f7d14",
+      "abilities": [
+        { "Keyword": "Improvise" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Artifact" }, { "Not": "Token" }, { "ControlledBy": "You" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Servo",
+                      "types": ["Artifact", "Creature"],
+                      "subtypes": ["Servo"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

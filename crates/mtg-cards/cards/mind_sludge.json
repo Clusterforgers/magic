@@ -1,0 +1,26 @@
+{
+  "oracle_id": "86e64a29-6ed1-451b-a114-f74341322eeb",
+  "name": "Mind Sludge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mind Sludge",
+      "oracle_fingerprint": "7e277f3da510ac546f5c9f5bf94abd63",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Discard": {
+                  "who": { "Target": 0 },
+                  "count": { "Count": [{ "Subtype": "Swamp" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "oracle_id": "06494c26-3822-43ee-bedf-611c9ec7cc6b",
+  "name": "Puppet Conjurer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Puppet Conjurer",
+      "oracle_fingerprint": "ef68ccc8d1701ef55b9ba684a64411a5",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{U}" }, "Tap"],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Homunculus",
+                      "colors": ["Blue"],
+                      "types": ["Artifact", "Creature"],
+                      "subtypes": ["Homunculus"],
+                      "power": 0,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [{ "Sacrifice": { "filter": [{ "Subtype": "Homunculus" }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

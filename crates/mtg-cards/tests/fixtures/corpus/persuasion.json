@@ -1,0 +1,134 @@
+{
+  "object": "card",
+  "id": "e957fab3-7a79-4b8f-813a-daaabb0ccbea",
+  "oracle_id": "a503d302-6b12-4d82-9ba6-73efbcb1b1a2",
+  "multiverse_ids": [
+    129900
+  ],
+  "mtgo_id": 27002,
+  "mtgo_foil_id": 27003,
+  "tcgplayer_id": 15244,
+  "cardmarket_id": 16259,
+  "name": "Persuasion",
+  "lang": "en",
+  "released_at": "2007-07-13",
+  "uri": "https://api.scryfall.com/cards/e957fab3-7a79-4b8f-813a-daaabb0ccbea",
+  "scryfall_uri": "https://scryfall.com/card/10e/95/persuasion?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T11:44:14Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/e/9/e957fab3-7a79-4b8f-813a-daaabb0ccbea.jpg?1783943054",
+    "normal": "https://cards.scryfall.io/normal/front/e/9/e957fab3-7a79-4b8f-813a-daaabb0ccbea.jpg?1783943054",
+    "large": "https://cards.scryfall.io/large/front/e/9/e957fab3-7a79-4b8f-813a-daaabb0ccbea.jpg?1783943054",
+    "png": "https://cards.scryfall.io/png/front/e/9/e957fab3-7a79-4b8f-813a-daaabb0ccbea.png?1783943054",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/e/9/e957fab3-7a79-4b8f-813a-daaabb0ccbea.jpg?1783943054",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/e/9/e957fab3-7a79-4b8f-813a-daaabb0ccbea.jpg?1783943054",
+    "thumb": "https://cards.scryfall.io/thumb/front/e/9/e957fab3-7a79-4b8f-813a-daaabb0ccbea.webp?1783943054",
+    "grid": "https://cards.scryfall.io/grid/front/e/9/e957fab3-7a79-4b8f-813a-daaabb0ccbea.webp?1783943054",
+    "display": "https://cards.scryfall.io/display/front/e/9/e957fab3-7a79-4b8f-813a-daaabb0ccbea.webp?1783943054",
+    "art": "https://cards.scryfall.io/art/front/e/9/e957fab3-7a79-4b8f-813a-daaabb0ccbea.webp?1783943054",
+    "crop": "https://cards.scryfall.io/crop/front/e/9/e957fab3-7a79-4b8f-813a-daaabb0ccbea.webp?1783943054",
+    "jpeg": "https://cards.scryfall.io/normal/front/e/9/e957fab3-7a79-4b8f-813a-daaabb0ccbea.jpg?1783943054"
+  },
+  "mana_cost": "{3}{U}{U}",
+  "cmc": 5.0,
+  "type_line": "Enchantment — Aura",
+  "oracle_text": "Enchant creature (Target a creature as you cast this. This card enters attached to that creature.)\nYou control enchanted creature.",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Enchant"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "a66a6124-0d81-488d-b080-91f5ba7fbad0",
+  "set": "10e",
+  "set_name": "Tenth Edition",
+  "set_type": "core",
+  "set_uri": "https://api.scryfall.com/sets/a66a6124-0d81-488d-b080-91f5ba7fbad0",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3A10e&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/10e?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/e957fab3-7a79-4b8f-813a-daaabb0ccbea/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Aa503d302-6b12-4d82-9ba6-73efbcb1b1a2&unique=prints",
+  "collector_number": "95",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "There's no telling what an accomplished mage might collect.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "William O'Connor",
+  "artist_ids": [
+    "4f1c2854-d7a8-4f9a-8b3d-72a16eb7bdc1"
+  ],
+  "illustration_id": "5fed711f-85d9-4ca7-a884-925c9c72ec61",
+  "border_color": "black",
+  "frame": "2003",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 21601,
+  "penny_rank": 16159,
+  "prices": {
+    "usd": "0.29",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.28",
+    "eur_foil": null,
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=129900&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DPersuasion",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DPersuasion",
+    "edhrec": "https://edhrec.com/route/?cc=Persuasion"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F15244%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=16259&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/27002?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

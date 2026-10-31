@@ -1,0 +1,19 @@
+{
+  "oracle_id": "ece9d3e5-79e5-4c56-9e8d-8abcd819c041",
+  "name": "Ruinous Minotaur",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ruinous Minotaur",
+      "oracle_fingerprint": "fee7af8f783bd798caccf787930c247b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "Opponents" } },
+            "effects": [{ "Sacrifice": { "filter": [{ "Type": "Land" }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

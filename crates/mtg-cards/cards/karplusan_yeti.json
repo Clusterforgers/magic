@@ -1,0 +1,34 @@
+{
+  "oracle_id": "d6d84884-4a58-4187-aa5c-20b39b379590",
+  "name": "Karplusan Yeti",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Karplusan Yeti",
+      "oracle_fingerprint": "36497302635eb26e05fe743d20de9d2e",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": { "Stat": { "of": "This", "stat": "Power" } }
+                }
+              },
+              {
+                "DealDamage": {
+                  "source": { "Target": 0 },
+                  "to": "This",
+                  "amount": { "Stat": { "of": { "Target": 0 }, "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

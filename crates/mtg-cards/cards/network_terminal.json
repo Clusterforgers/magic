@@ -1,0 +1,29 @@
+{
+  "oracle_id": "a0eb1d5b-2c54-44fa-b7ad-bdd4b1147929",
+  "name": "Network Terminal",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Network Terminal",
+      "oracle_fingerprint": "c1be771fdc272c436fe9ecce2a12306f",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{1}" },
+              "Tap",
+              { "TapPermanents": { "filter": [{ "Type": "Artifact" }, "Other"] } }
+            ],
+            "effects": [{ "Draw": {} }, { "Discard": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

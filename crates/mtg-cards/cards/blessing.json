@@ -1,0 +1,28 @@
+{
+  "oracle_id": "5c84d8da-2bfb-4618-89a0-7d9ed604e854",
+  "name": "Blessing",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Blessing",
+      "oracle_fingerprint": "e6e04056e555b7e6390bb2a397b2be4d",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Activated": {
+            "cost": "{W}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Attached",
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

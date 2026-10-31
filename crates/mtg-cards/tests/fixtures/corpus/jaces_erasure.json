@@ -1,0 +1,135 @@
+{
+  "object": "card",
+  "id": "970f4f34-f834-41a7-aff1-7cef82cefc74",
+  "oracle_id": "bb7c069b-8d3f-4ba2-874b-8ec575fd6dd4",
+  "multiverse_ids": [
+    227227
+  ],
+  "mtgo_id": 41269,
+  "mtgo_foil_id": 41270,
+  "tcgplayer_id": 47216,
+  "cardmarket_id": 247843,
+  "name": "Jace's Erasure",
+  "lang": "en",
+  "released_at": "2011-07-15",
+  "uri": "https://api.scryfall.com/cards/970f4f34-f834-41a7-aff1-7cef82cefc74",
+  "scryfall_uri": "https://scryfall.com/card/m12/60/jaces-erasure?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T11:11:32Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/9/7/970f4f34-f834-41a7-aff1-7cef82cefc74.jpg?1783941092",
+    "normal": "https://cards.scryfall.io/normal/front/9/7/970f4f34-f834-41a7-aff1-7cef82cefc74.jpg?1783941092",
+    "large": "https://cards.scryfall.io/large/front/9/7/970f4f34-f834-41a7-aff1-7cef82cefc74.jpg?1783941092",
+    "png": "https://cards.scryfall.io/png/front/9/7/970f4f34-f834-41a7-aff1-7cef82cefc74.png?1783941092",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/9/7/970f4f34-f834-41a7-aff1-7cef82cefc74.jpg?1783941092",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/9/7/970f4f34-f834-41a7-aff1-7cef82cefc74.jpg?1783941092",
+    "thumb": "https://cards.scryfall.io/thumb/front/9/7/970f4f34-f834-41a7-aff1-7cef82cefc74.webp?1783941092",
+    "grid": "https://cards.scryfall.io/grid/front/9/7/970f4f34-f834-41a7-aff1-7cef82cefc74.webp?1783941092",
+    "display": "https://cards.scryfall.io/display/front/9/7/970f4f34-f834-41a7-aff1-7cef82cefc74.webp?1783941092",
+    "art": "https://cards.scryfall.io/art/front/9/7/970f4f34-f834-41a7-aff1-7cef82cefc74.webp?1783941092",
+    "crop": "https://cards.scryfall.io/crop/front/9/7/970f4f34-f834-41a7-aff1-7cef82cefc74.webp?1783941092",
+    "jpeg": "https://cards.scryfall.io/normal/front/9/7/970f4f34-f834-41a7-aff1-7cef82cefc74.jpg?1783941092"
+  },
+  "mana_cost": "{1}{U}",
+  "cmc": 2.0,
+  "type_line": "Enchantment",
+  "oracle_text": "Whenever you draw a card, you may have target player mill a card.",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Mill"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "5cdd2643-229c-4441-a62a-c34e4b531e1c",
+  "set": "m12",
+  "set_name": "Magic 2012",
+  "set_type": "core",
+  "set_uri": "https://api.scryfall.com/sets/5cdd2643-229c-4441-a62a-c34e4b531e1c",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Am12&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/m12?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/970f4f34-f834-41a7-aff1-7cef82cefc74/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Abb7c069b-8d3f-4ba2-874b-8ec575fd6dd4&unique=prints",
+  "collector_number": "60",
+  "digital": false,
+  "rarity": "common",
+  "flavor_text": "\"You should try to clear your mind of idle thoughts. And if you can't, I will.\"",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Jason Chan",
+  "artist_ids": [
+    "8062d5a9-51b6-4822-933f-fa9e9dba8416"
+  ],
+  "illustration_id": "f0da7fa0-6d8b-4940-8182-c162776bd694",
+  "border_color": "black",
+  "frame": "2003",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 7648,
+  "penny_rank": 6524,
+  "prices": {
+    "usd": "0.26",
+    "usd_foil": "3.56",
+    "usd_etched": null,
+    "eur": "0.28",
+    "eur_foil": "1.58",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=227227&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DJace%2527s%2BErasure",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DJace%2527s%2BErasure",
+    "edhrec": "https://edhrec.com/route/?cc=Jace%27s+Erasure"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F47216%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=247843&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/41269?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

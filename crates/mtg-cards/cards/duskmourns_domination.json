@@ -1,0 +1,21 @@
+{
+  "oracle_id": "ebdace8f-8e8e-411b-b1d5-5b27cca7d9fb",
+  "name": "Duskmourn's Domination",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Duskmourn's Domination",
+      "oracle_fingerprint": "2c4e64f08780b24e0d741636cb345e27",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        { "Static": { "affected": "Attached", "mods": [{ "SetController": "You" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": -3, "toughness": 0 } }, "LoseAbilities"]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "oracle_id": "3aa654cb-c0a0-48e7-901a-c690120b1510",
+  "name": "Companion of the Trials",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Companion of the Trials",
+      "oracle_fingerprint": "39892f25dd30e046d78effa05fbbd363",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": "{1}{W}",
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "Type": "Planeswalker" },
+                    { "Subtype": "Gideon" },
+                    { "ControlledBy": "You" }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "Untap": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

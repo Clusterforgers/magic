@@ -1,0 +1,28 @@
+{
+  "oracle_id": "84c7d60a-7a7a-4344-8db5-d658792e3ac4",
+  "name": "Lambholt Harrier",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lambholt Harrier",
+      "oracle_fingerprint": "13f5bda421b50b45f45d63901cf42268",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{3}{R}",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["CantBlock"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

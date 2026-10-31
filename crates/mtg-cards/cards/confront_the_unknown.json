@@ -1,0 +1,35 @@
+{
+  "oracle_id": "221240c5-3c97-438c-b906-2508eacf190f",
+  "name": "Confront the Unknown",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Confront the Unknown",
+      "oracle_fingerprint": "22b1726113ae47c256d3a05906e71992",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "CreateToken": { "token": { "Named": "clue" } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": { "Count": [{ "Subtype": "Clue" }, { "ControlledBy": "You" }] },
+                        "toughness": { "Count": [{ "Subtype": "Clue" }, { "ControlledBy": "You" }] }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "oracle_id": "9d3136da-3efa-4103-9d35-8da87d318544",
+  "name": "Glarewielder",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Glarewielder",
+      "oracle_fingerprint": "949981a2007f17129a3c1e1b183156c3",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 0, "max": 2 } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["CantBlock"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Evoke": "{1}{R}" } }
+      ]
+    }
+  ]
+}

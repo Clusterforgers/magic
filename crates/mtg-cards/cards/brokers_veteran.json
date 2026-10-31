@@ -1,0 +1,24 @@
+{
+  "oracle_id": "feee1926-0b63-404f-9b01-df965de26b5f",
+  "name": "Brokers Veteran",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Brokers Veteran",
+      "oracle_fingerprint": "a767e1f729c1f0cc471403e5c17984a5",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "shield" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

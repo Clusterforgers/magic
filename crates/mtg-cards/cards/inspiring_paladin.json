@@ -1,0 +1,29 @@
+{
+  "oracle_id": "95efbb81-2418-42ed-ae34-5759efff8253",
+  "name": "Inspiring Paladin",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Inspiring Paladin",
+      "oracle_fingerprint": "c427e8bf9c3bbc38d1e220525ab0ac5b",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "FirstStrike" }],
+            "condition": "YourTurn"
+          }
+        },
+        {
+          "Static": {
+            "affected": {
+              "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }, { "HasCounter": "+1/+1" }]
+            },
+            "mods": [{ "AddKeyword": "FirstStrike" }],
+            "condition": "YourTurn"
+          }
+        }
+      ]
+    }
+  ]
+}

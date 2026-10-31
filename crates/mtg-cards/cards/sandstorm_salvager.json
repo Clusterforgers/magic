@@ -1,0 +1,55 @@
+{
+  "oracle_id": "ec19a9bc-6fc1-4150-976b-37a47b165016",
+  "name": "Sandstorm Salvager",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sandstorm Salvager",
+      "oracle_fingerprint": "4f04894dace0ae0e113166b4df0c26e1",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Golem",
+                      "types": ["Artifact", "Creature"],
+                      "subtypes": ["Golem"],
+                      "power": 3,
+                      "toughness": 3
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap"],
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": { "Each": [{ "Type": "Creature" }, "Token", { "ControlledBy": "You" }] },
+                  "counter": "+1/+1"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [{ "Type": "Creature" }, "Token", { "ControlledBy": "You" }]
+                  },
+                  "mods": [{ "AddKeyword": "Trample" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

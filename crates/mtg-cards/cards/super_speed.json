@@ -1,0 +1,35 @@
+{
+  "oracle_id": "88923ca1-a793-42f0-b9f8-ed9ff9c1185d",
+  "name": "Super Speed",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Super Speed",
+      "oracle_fingerprint": "5dc07dbebfddfed5d6b6d9f7f8f933e1",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Attached",
+                  "mods": [{ "AddKeyword": "FirstStrike" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }, { "AddKeyword": "Haste" }]
+          }
+        }
+      ]
+    }
+  ]
+}

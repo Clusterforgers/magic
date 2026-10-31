@@ -1,0 +1,42 @@
+{
+  "oracle_id": "f4d54a89-8409-4fbc-b01f-3b03f352820f",
+  "name": "Transluminant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Transluminant",
+      "oracle_fingerprint": "125c7f7d458d0c9da69513db9f6ae1ea",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{W}" }, "SacrificeSelf"],
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Spirit",
+                            "colors": ["White"],
+                            "types": ["Creature"],
+                            "subtypes": ["Spirit"],
+                            "power": 1,
+                            "toughness": 1,
+                            "abilities": [{ "Keyword": "Flying" }]
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "oracle_id": "e1a41091-6ff1-42bb-b248-90040107efe1",
+  "name": "Kuldotha Cackler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kuldotha Cackler",
+      "oracle_fingerprint": "7e02238ec6d7346b315192a05dcb807a",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": {
+                          "Count": [{ "ControlledBy": "You" }, { "HasCounter": { "Other": "oil" } }]
+                        },
+                        "toughness": 0
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "oracle_id": "32717625-46c6-45c5-ad0a-fb6a91f9878c",
+  "name": "Runed Arch",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Runed Arch",
+      "oracle_fingerprint": "d2ba3387b25accd61a5bbbaf3ff8539e",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{X}" }, "Tap", "SacrificeSelf"],
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "Compare": { "stat": "Power", "op": "Le", "to": 2 } }
+                  ]
+                },
+                "bounds": { "min": "X", "max": "X" }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["CantBeBlocked"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

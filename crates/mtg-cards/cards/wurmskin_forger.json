@@ -1,0 +1,28 @@
+{
+  "oracle_id": "c94332ac-982a-4c0f-85d4-43e950ac3069",
+  "name": "Wurmskin Forger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wurmskin Forger",
+      "oracle_fingerprint": "41e587e3714242a7c2c86d3d32eff575",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }] },
+                "bounds": { "min": 1, "max": 3 },
+                "divide": 3
+              }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1", "count": "Divided" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

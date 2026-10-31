@@ -1,0 +1,25 @@
+{
+  "oracle_id": "c8ca2523-0511-4415-b85e-7834d3cb1d0c",
+  "name": "Part the Veil",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Part the Veil",
+      "oracle_fingerprint": "761cce379b585a769f8f45e7328652b3",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "to": "Hand"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

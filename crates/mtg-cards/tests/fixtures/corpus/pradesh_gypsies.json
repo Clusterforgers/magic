@@ -1,0 +1,120 @@
+{
+  "object": "card",
+  "id": "a4c9b18c-4993-4ce1-b2bd-ab14c9f3aad7",
+  "oracle_id": "37c49483-bef6-47c6-9354-ead8560d48da",
+  "multiverse_ids": [
+    11453
+  ],
+  "name": "Pradesh Gypsies",
+  "lang": "en",
+  "released_at": "1999-04-21",
+  "uri": "https://api.scryfall.com/cards/a4c9b18c-4993-4ce1-b2bd-ab14c9f3aad7",
+  "scryfall_uri": "https://scryfall.com/card/6ed/244/pradesh-gypsies?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T12:35:58Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/a/4/a4c9b18c-4993-4ce1-b2bd-ab14c9f3aad7.jpg?1783946158",
+    "normal": "https://cards.scryfall.io/normal/front/a/4/a4c9b18c-4993-4ce1-b2bd-ab14c9f3aad7.jpg?1783946158",
+    "large": "https://cards.scryfall.io/large/front/a/4/a4c9b18c-4993-4ce1-b2bd-ab14c9f3aad7.jpg?1783946158",
+    "png": "https://cards.scryfall.io/png/front/a/4/a4c9b18c-4993-4ce1-b2bd-ab14c9f3aad7.png?1783946158",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/a/4/a4c9b18c-4993-4ce1-b2bd-ab14c9f3aad7.jpg?1783946158",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/a/4/a4c9b18c-4993-4ce1-b2bd-ab14c9f3aad7.jpg?1783946158",
+    "thumb": "https://cards.scryfall.io/thumb/front/a/4/a4c9b18c-4993-4ce1-b2bd-ab14c9f3aad7.webp?1783946158",
+    "grid": "https://cards.scryfall.io/grid/front/a/4/a4c9b18c-4993-4ce1-b2bd-ab14c9f3aad7.webp?1783946158",
+    "display": "https://cards.scryfall.io/display/front/a/4/a4c9b18c-4993-4ce1-b2bd-ab14c9f3aad7.webp?1783946158",
+    "art": "https://cards.scryfall.io/art/front/a/4/a4c9b18c-4993-4ce1-b2bd-ab14c9f3aad7.webp?1783946158",
+    "crop": "https://cards.scryfall.io/crop/front/a/4/a4c9b18c-4993-4ce1-b2bd-ab14c9f3aad7.webp?1783946158",
+    "jpeg": "https://cards.scryfall.io/normal/front/a/4/a4c9b18c-4993-4ce1-b2bd-ab14c9f3aad7.jpg?1783946158"
+  },
+  "mana_cost": "{2}{G}",
+  "cmc": 3.0,
+  "type_line": "Creature — Human Nomad",
+  "oracle_text": "{1}{G}, {T}: Target creature gets -2/-0 until end of turn.",
+  "power": "1",
+  "toughness": "1",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "banned",
+    "pauper": "banned",
+    "vintage": "banned",
+    "penny": "not_legal",
+    "commander": "banned",
+    "oathbreaker": "banned",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "banned",
+    "duel": "banned",
+    "oldschool": "legal",
+    "premodern": "legal",
+    "predh": "banned",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "78ee1957-d5d4-4551-acae-b1b418e8a50b",
+  "set": "6ed",
+  "set_name": "Classic Sixth Edition",
+  "set_type": "core",
+  "set_uri": "https://api.scryfall.com/sets/78ee1957-d5d4-4551-acae-b1b418e8a50b",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3A6ed&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/6ed?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/a4c9b18c-4993-4ce1-b2bd-ab14c9f3aad7/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A37c49483-bef6-47c6-9354-ead8560d48da&unique=prints",
+  "collector_number": "244",
+  "digital": false,
+  "rarity": "common",
+  "flavor_text": "\"A mysterious people indeed. Their origins are as secret as their traditions.\"\n—Lord Magnus of Llanowar",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Quinton Hoover",
+  "artist_ids": [
+    "1a2db619-92a5-431a-822b-101cdcc5bd5d"
+  ],
+  "illustration_id": "07121780-50b2-457f-b744-21d24c3383f2",
+  "border_color": "white",
+  "frame": "1997",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "content_warning": true,
+  "prices": {
+    "usd": null,
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": null,
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=11453&printed=false"
+  }
+}

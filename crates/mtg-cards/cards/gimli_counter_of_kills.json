@@ -1,0 +1,26 @@
+{
+  "oracle_id": "96ebcd8b-ae3c-47b0-b895-bfc9848713e5",
+  "name": "Gimli, Counter of Kills",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gimli, Counter of Kills",
+      "oracle_fingerprint": "30363d9aa3a993beeeb2ef7ff4aa3072",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [{ "DealDamage": { "to": { "ControllerOf": "Triggering" }, "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

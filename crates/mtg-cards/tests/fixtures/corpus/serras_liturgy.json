@@ -1,0 +1,131 @@
+{
+  "object": "card",
+  "id": "b84be3ef-a820-41e3-b66a-09303dad32dd",
+  "oracle_id": "17b7b7e4-4ae8-495d-bf0c-d18697f250ea",
+  "multiverse_ids": [
+    8444
+  ],
+  "mtgo_id": 12243,
+  "mtgo_foil_id": 12244,
+  "tcgplayer_id": 7029,
+  "cardmarket_id": 10256,
+  "name": "Serra's Liturgy",
+  "lang": "en",
+  "released_at": "1998-10-12",
+  "uri": "https://api.scryfall.com/cards/b84be3ef-a820-41e3-b66a-09303dad32dd",
+  "scryfall_uri": "https://scryfall.com/card/usg/49/serras-liturgy?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T12:39:28Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/b/8/b84be3ef-a820-41e3-b66a-09303dad32dd.jpg?1783946368",
+    "normal": "https://cards.scryfall.io/normal/front/b/8/b84be3ef-a820-41e3-b66a-09303dad32dd.jpg?1783946368",
+    "large": "https://cards.scryfall.io/large/front/b/8/b84be3ef-a820-41e3-b66a-09303dad32dd.jpg?1783946368",
+    "png": "https://cards.scryfall.io/png/front/b/8/b84be3ef-a820-41e3-b66a-09303dad32dd.png?1783946368",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/b/8/b84be3ef-a820-41e3-b66a-09303dad32dd.jpg?1783946368",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/b/8/b84be3ef-a820-41e3-b66a-09303dad32dd.jpg?1783946368",
+    "thumb": "https://cards.scryfall.io/thumb/front/b/8/b84be3ef-a820-41e3-b66a-09303dad32dd.webp?1783946368",
+    "grid": "https://cards.scryfall.io/grid/front/b/8/b84be3ef-a820-41e3-b66a-09303dad32dd.webp?1783946368",
+    "display": "https://cards.scryfall.io/display/front/b/8/b84be3ef-a820-41e3-b66a-09303dad32dd.webp?1783946368",
+    "art": "https://cards.scryfall.io/art/front/b/8/b84be3ef-a820-41e3-b66a-09303dad32dd.webp?1783946368",
+    "crop": "https://cards.scryfall.io/crop/front/b/8/b84be3ef-a820-41e3-b66a-09303dad32dd.webp?1783946368",
+    "jpeg": "https://cards.scryfall.io/normal/front/b/8/b84be3ef-a820-41e3-b66a-09303dad32dd.jpg?1783946368"
+  },
+  "mana_cost": "{2}{W}{W}",
+  "cmc": 4.0,
+  "type_line": "Enchantment",
+  "oracle_text": "At the beginning of your upkeep, you may put a verse counter on this enchantment.\n{W}, Sacrifice this enchantment: Destroy up to X target artifacts and/or enchantments, where X is the number of verse counters on this enchantment.",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "c330df40-51db-4caf-bde6-48df6c181001",
+  "set": "usg",
+  "set_name": "Urza's Saga",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/c330df40-51db-4caf-bde6-48df6c181001",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ausg&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/usg?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/b84be3ef-a820-41e3-b66a-09303dad32dd/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A17b7b7e4-4ae8-495d-bf0c-d18697f250ea&unique=prints",
+  "collector_number": "49",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "rk post",
+  "artist_ids": [
+    "81ae0f3f-1d88-4125-9aeb-b15b4c734c82"
+  ],
+  "illustration_id": "166124f4-694f-4d17-adb5-4b286badeedf",
+  "border_color": "black",
+  "frame": "1997",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 28025,
+  "penny_rank": 17903,
+  "prices": {
+    "usd": "0.59",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.87",
+    "eur_foil": null,
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=8444&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DSerra%2527s%2BLiturgy",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DSerra%2527s%2BLiturgy",
+    "edhrec": "https://edhrec.com/route/?cc=Serra%27s+Liturgy"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F7029%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=10256&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/12243?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

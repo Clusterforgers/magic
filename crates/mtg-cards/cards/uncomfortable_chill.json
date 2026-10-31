@@ -1,0 +1,27 @@
+{
+  "oracle_id": "d6596336-8177-4475-95b9-a21858563276",
+  "name": "Uncomfortable Chill",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Uncomfortable Chill",
+      "oracle_fingerprint": "3493d16ed3ad03dc46ac9e5bb2adae6d",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] },
+                  "mods": [{ "ModifyPT": { "power": -2, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

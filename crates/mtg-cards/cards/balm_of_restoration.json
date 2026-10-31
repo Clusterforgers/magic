@@ -1,0 +1,39 @@
+{
+  "oracle_id": "45a40b4c-1d37-4d87-adf1-abf0ea4c86b4",
+  "name": "Balm of Restoration",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Balm of Restoration",
+      "oracle_fingerprint": "7c2e0f1c458afb5af7ac15a5cddf0644",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap", "SacrificeSelf"],
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    { "effects": [{ "GainLife": { "amount": 2 } }] },
+                    {
+                      "targets": [{ "what": "AnyTarget" }],
+                      "effects": [
+                        {
+                          "Shield": {
+                            "when": { "Damage": { "to": { "Target": 0 } } },
+                            "by": { "PreventUpTo": 2 },
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

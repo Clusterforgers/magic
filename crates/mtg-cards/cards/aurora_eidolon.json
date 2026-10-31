@@ -1,0 +1,40 @@
+{
+  "oracle_id": "4fc8a155-4eb8-4b86-8ccc-2569630d3bfa",
+  "name": "Aurora Eidolon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Aurora Eidolon",
+      "oracle_fingerprint": "1dc4060bd788b50d36949dedeedaf225",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{W}" }, "SacrificeSelf"],
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": { "Target": 0 } } },
+                  "by": { "PreventUpTo": 3 },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [{ "Compare": { "stat": "Colors", "op": "Ge", "to": 2 } }],
+                "by": "You"
+              }
+            },
+            "from": "Graveyard",
+            "effects": [{ "May": { "effects": [{ "Move": { "what": "This", "to": "Hand" } }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

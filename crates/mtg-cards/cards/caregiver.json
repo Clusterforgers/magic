@@ -1,0 +1,28 @@
+{
+  "oracle_id": "7661484b-1faa-4ed7-b77b-fc1e625d23e3",
+  "name": "Caregiver",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Caregiver",
+      "oracle_fingerprint": "b387c32a923aa4712e3eb35e261698de",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{W}" }, { "Sacrifice": { "filter": [{ "Type": "Creature" }] } }],
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": { "Target": 0 } } },
+                  "by": { "PreventUpTo": 1 },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

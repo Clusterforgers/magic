@@ -1,0 +1,53 @@
+{
+  "oracle_id": "f95f7b0c-2dd6-46e1-ae02-f51d275e7120",
+  "name": "Team Avatar",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Team Avatar",
+      "oracle_fingerprint": "b00fdd0ad0019cef253e3db9e3207ce2",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AttacksAlone": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Triggering",
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": { "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                        "toughness": {
+                          "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{W}" }, "DiscardSelf"],
+            "from": "Hand",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": { "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

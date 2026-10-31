@@ -1,0 +1,33 @@
+{
+  "oracle_id": "469bdca3-d373-4420-9266-921b6605f327",
+  "name": "Force Void",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Force Void",
+      "oracle_fingerprint": "683ff739bb133a2a3720cc1a9b5d2280",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [
+              {
+                "Pay": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "cost": "{1}",
+                  "unpaid": [{ "Counter": { "what": { "Target": 0 } } }]
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "Upkeep" } },
+                  "effects": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

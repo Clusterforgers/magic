@@ -1,0 +1,38 @@
+{
+  "oracle_id": "a912834b-e4bc-4ccc-ae13-915ebe5acd00",
+  "name": "Mardu Runemark",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mardu Runemark",
+      "oracle_fingerprint": "be2bdfd43dfb2986491517e8a2f47932",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "AddKeyword": "FirstStrike" }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "AnyOf": [{ "Color": "White" }, { "Color": "Black" }] },
+                    { "ControlledBy": "You" }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "oracle_id": "fbdbea75-7f80-4704-b2cf-920d00dc1273",
+  "name": "Painsmith",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Painsmith",
+      "oracle_fingerprint": "709c9861096f26bf148b4d63c9df96cd",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Type": "Artifact" }], "by": "You" } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [
+                          { "ModifyPT": { "power": 2, "toughness": 0 } },
+                          { "AddKeyword": "Deathtouch" }
+                        ],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

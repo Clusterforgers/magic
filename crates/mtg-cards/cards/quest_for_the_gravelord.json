@@ -1,0 +1,55 @@
+{
+  "oracle_id": "c5f92560-dc82-4bd2-ae6b-4c3942d458b7",
+  "name": "Quest for the Gravelord",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Quest for the Gravelord",
+      "oracle_fingerprint": "3af11d0cfeff1ff9cfe991a1443882ea",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [{ "PutCounters": { "on": "This", "counter": { "Other": "quest" } } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "RemoveCounters": { "counter": { "Other": "quest" }, "count": 3 } },
+              "SacrificeSelf"
+            ],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Zombie Giant",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Zombie", "Giant"],
+                      "power": 5,
+                      "toughness": 5
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

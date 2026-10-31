@@ -1,0 +1,61 @@
+{
+  "oracle_id": "04aa210a-235f-4e07-87d1-0d28cdf6888b",
+  "name": "Huatli, Dinosaur Knight",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Huatli, Dinosaur Knight",
+      "oracle_fingerprint": "40e0e32bce7f6d2237154d3ce8f8768d",
+      "abilities": [
+        {
+          "Loyalty": {
+            "cost": { "Plus": 2 },
+            "targets": [
+              {
+                "what": { "Object": [{ "Subtype": "Dinosaur" }, { "ControlledBy": "You" }] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1", "count": 2 } }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 3 },
+            "targets": [
+              { "what": { "Object": [{ "Subtype": "Dinosaur" }, { "ControlledBy": "You" }] } },
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "Not": { "ControlledBy": "You" } }] }
+              }
+            ],
+            "effects": [
+              {
+                "DealDamage": {
+                  "source": { "Target": 0 },
+                  "to": { "Target": 1 },
+                  "amount": { "Stat": { "of": { "Target": 0 }, "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 7 },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Subtype": "Dinosaur" }, { "ControlledBy": "You" }] },
+                  "mods": [{ "ModifyPT": { "power": 4, "toughness": 4 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "oracle_id": "d1faaa3e-8e99-48e9-bb04-98bd46b7217c",
+  "name": "Escaped Experiment",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Escaped Experiment",
+      "oracle_fingerprint": "007d79826c10dcb51d831cd10d6a0819",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": {
+                          "Times": {
+                            "by": -1,
+                            "of": { "Count": [{ "Type": "Artifact" }, { "ControlledBy": "You" }] }
+                          }
+                        },
+                        "toughness": 0
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

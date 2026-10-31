@@ -1,0 +1,49 @@
+{
+  "oracle_id": "41dd7ec7-a238-4723-a244-9a112d4fbfd2",
+  "name": "Necrosquito",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Necrosquito",
+      "oracle_fingerprint": "df253d1c9026329ec00d8de929b3d5bd",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": { "Other": "oil" }, "count": 2 } }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": { "Counters": { "on": "This", "counter": { "Other": "oil" } } },
+                  "toughness": { "Counters": { "on": "This", "counter": { "Other": "oil" } } }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "AnyOf": [{ "Type": "Creature" }, { "Type": "Artifact" }] },
+                  { "ControlledBy": "You" },
+                  "Other"
+                ],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": { "Other": "oil" } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

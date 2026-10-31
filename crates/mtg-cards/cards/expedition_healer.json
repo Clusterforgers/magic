@@ -1,0 +1,27 @@
+{
+  "oracle_id": "e8fbdf4b-ef64-4b82-b67f-ae5568772256",
+  "name": "Expedition Healer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Expedition Healer",
+      "oracle_fingerprint": "bbdb68493eaa69f996713ef19a7c3d63",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Lifelink" }],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Subtype": "Cleric" }, "Other", { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

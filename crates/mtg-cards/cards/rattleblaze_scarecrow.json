@@ -1,0 +1,43 @@
+{
+  "oracle_id": "313130ab-13db-4d0a-b3f3-b60e060b303c",
+  "name": "Rattleblaze Scarecrow",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rattleblaze Scarecrow",
+      "oracle_fingerprint": "2a7d754dcdff094c61e4effbdb31ab2e",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Persist" }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }, { "Color": "Black" }]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Haste" }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }, { "Color": "Red" }]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

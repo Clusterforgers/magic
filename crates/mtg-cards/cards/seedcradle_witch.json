@@ -1,0 +1,29 @@
+{
+  "oracle_id": "278ea996-3094-4a76-b6e1-db1d002e5502",
+  "name": "Seedcradle Witch",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Seedcradle Witch",
+      "oracle_fingerprint": "d72229d9ecae7be5a2f0a0e0781f0902",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{2}{W}{G}",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 3, "toughness": 3 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Untap": { "what": { "Target": 0 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

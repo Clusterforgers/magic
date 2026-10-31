@@ -1,0 +1,29 @@
+{
+  "oracle_id": "303d74d0-84db-4694-bb1a-470cf470bc4f",
+  "name": "Battlefield Promotion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Battlefield Promotion",
+      "oracle_fingerprint": "790cdac8f90bf23ca96ec15c303c9fc6",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "FirstStrike" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "GainLife": { "amount": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

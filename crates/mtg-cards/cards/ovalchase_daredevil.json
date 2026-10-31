@@ -1,0 +1,25 @@
+{
+  "oracle_id": "a33961bb-fff0-4f4a-aa35-f904dbf2b075",
+  "name": "Ovalchase Daredevil",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ovalchase Daredevil",
+      "oracle_fingerprint": "d298086bd98724963ea74979649e3a88",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Artifact" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "from": "Graveyard",
+            "effects": [{ "May": { "effects": [{ "Move": { "what": "This", "to": "Hand" } }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

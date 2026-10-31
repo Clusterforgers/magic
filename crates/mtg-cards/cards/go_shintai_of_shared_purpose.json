@@ -1,0 +1,42 @@
+{
+  "oracle_id": "4cab6ea8-4a80-4b34-b758-7f2aa4d540e4",
+  "name": "Go-Shintai of Shared Purpose",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Go-Shintai of Shared Purpose",
+      "oracle_fingerprint": "79c140c97ccf4519a040e5ccb9dffb9f",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{1}",
+                  "paid": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Spirit",
+                            "types": ["Creature"],
+                            "subtypes": ["Spirit"],
+                            "power": 1,
+                            "toughness": 1
+                          }
+                        },
+                        "count": { "Count": [{ "Subtype": "Shrine" }, { "ControlledBy": "You" }] }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

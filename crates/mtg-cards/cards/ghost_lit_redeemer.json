@@ -1,0 +1,26 @@
+{
+  "oracle_id": "b6c22cbe-61e0-4d66-a78d-7016e84c303d",
+  "name": "Ghost-Lit Redeemer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ghost-Lit Redeemer",
+      "oracle_fingerprint": "5c9ba28f924bfbb3bb8ec4235df02c49",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{W}" }, "Tap"],
+            "effects": [{ "GainLife": { "amount": 2 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{W}" }, "DiscardSelf"],
+            "from": "Hand",
+            "effects": [{ "GainLife": { "amount": 4 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

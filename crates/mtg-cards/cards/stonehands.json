@@ -1,0 +1,34 @@
+{
+  "oracle_id": "8beccaff-d30f-4164-a264-cb7119cee4f1",
+  "name": "Stonehands",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stonehands",
+      "oracle_fingerprint": "d2c6df330f00d0ca901a7112fd95a65e",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 0, "toughness": 2 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{R}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Attached",
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

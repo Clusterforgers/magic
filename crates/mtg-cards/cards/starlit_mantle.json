@@ -1,0 +1,35 @@
+{
+  "oracle_id": "8a7643e4-b824-441a-bbe6-349fc7a3e11e",
+  "name": "Starlit Mantle",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Starlit Mantle",
+      "oracle_fingerprint": "7481bce6a5b115d421c9b8df0e15ba28",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Attached",
+                  "mods": [{ "AddKeyword": "Hexproof" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

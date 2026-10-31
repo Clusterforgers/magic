@@ -1,0 +1,34 @@
+{
+  "oracle_id": "f4b1bbd1-f1b2-4c7d-bafd-9d2857f92a89",
+  "name": "Ice-Fang Coatl",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ice-Fang Coatl",
+      "oracle_fingerprint": "749764519a244553caf6d9ee1dc6408e",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Draw": {} }]
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Deathtouch" }],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Supertype": "Snow" }, "Other", { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 3
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

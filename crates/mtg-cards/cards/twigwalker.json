@@ -1,0 +1,30 @@
+{
+  "oracle_id": "ee90b4c5-f646-47a9-8aa8-393c86e35536",
+  "name": "Twigwalker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Twigwalker",
+      "oracle_fingerprint": "59184c76e307afb884813db8f690767b",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{G}" }, "SacrificeSelf"],
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 2, "max": 2 } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

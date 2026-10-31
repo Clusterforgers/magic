@@ -1,0 +1,32 @@
+{
+  "oracle_id": "cee583b7-7cc3-40ea-a227-b760839ec291",
+  "name": "Dwalin, Weaponmaster",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dwalin, Weaponmaster",
+      "oracle_fingerprint": "e4d28804b2be3deb86ad9d7d877b5cbc",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "Attacks": { "what": ["This"] } }
+              ]
+            },
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": { "Each": [{ "Subtype": "Equipment" }, { "ControlledBy": "You" }] },
+                  "counter": { "Other": "hone" }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

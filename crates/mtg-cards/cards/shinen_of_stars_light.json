@@ -1,0 +1,30 @@
+{
+  "oracle_id": "d43f813b-3607-4bc3-b996-3dbad6977bd8",
+  "name": "Shinen of Stars' Light",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shinen of Stars' Light",
+      "oracle_fingerprint": "b12e0b4426f3034ed08493160685d6a2",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{W}" }, "DiscardSelf"],
+            "from": "Hand",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "FirstStrike" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

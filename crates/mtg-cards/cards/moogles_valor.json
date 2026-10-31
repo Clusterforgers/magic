@@ -1,0 +1,42 @@
+{
+  "oracle_id": "9627ed9a-5ade-412d-bf8d-f0705b1c9405",
+  "name": "Moogles' Valor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Moogles' Valor",
+      "oracle_fingerprint": "68b67d40ad8aa0e6d2e2cbd732935ff1",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Moogle",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Moogle"],
+                      "power": 1,
+                      "toughness": 2,
+                      "abilities": [{ "Keyword": "Lifelink" }]
+                    }
+                  },
+                  "count": { "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [{ "AddKeyword": "Indestructible" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

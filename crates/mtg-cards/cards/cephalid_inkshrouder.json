@@ -1,0 +1,34 @@
+{
+  "oracle_id": "a3add0d7-2610-4b4e-9d43-3f04a5cd8259",
+  "name": "Cephalid Inkshrouder",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cephalid Inkshrouder",
+      "oracle_fingerprint": "5edec19eb75b4bfb310d77fe2bb383d7",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Discard": {} }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddKeyword": "Shroud" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": ["CantBeBlocked"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

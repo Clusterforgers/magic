@@ -1,0 +1,15 @@
+{
+  "oracle_id": "5f1f49dd-b7ce-494a-9b4b-ac702d3664c5",
+  "name": "Annex",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Annex",
+      "oracle_fingerprint": "1a6a66c7f82d4d412cfba672a801e291",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Land" }] } },
+        { "Static": { "affected": "Attached", "mods": [{ "SetController": "You" }] } }
+      ]
+    }
+  ]
+}

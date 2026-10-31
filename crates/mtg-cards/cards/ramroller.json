@@ -1,0 +1,27 @@
+{
+  "oracle_id": "d670d937-aaa7-4a96-9c6a-916ff7a6b935",
+  "name": "Ramroller",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ramroller",
+      "oracle_fingerprint": "a885995cc0bc6488b4c22f1c18107f6e",
+      "abilities": [
+        { "Rule": { "rule": { "MustAttack": "This" } } },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Type": "Artifact" }, { "ControlledBy": "You" }, "Other"] },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

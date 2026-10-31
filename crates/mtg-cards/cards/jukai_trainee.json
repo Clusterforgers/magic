@@ -1,0 +1,32 @@
+{
+  "oracle_id": "cb9fa34d-1d5f-461c-acad-bc573d41ceb2",
+  "name": "Jukai Trainee",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jukai Trainee",
+      "oracle_fingerprint": "7911aea349acc123accad1167af30d87",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "Blocks": { "what": ["This"] } },
+                { "BecomesBlocked": { "what": ["This"] } }
+              ]
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

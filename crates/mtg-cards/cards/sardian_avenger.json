@@ -1,0 +1,50 @@
+{
+  "oracle_id": "6db90f86-205a-4e0b-944b-74742bc4e59d",
+  "name": "Sardian Avenger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sardian Avenger",
+      "oracle_fingerprint": "b3a0947c0b8ccd36a13c2d0b348f81ce",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": {
+                          "Count": [{ "Type": "Artifact" }, { "ControlledBy": "Opponents" }]
+                        },
+                        "toughness": 0
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Artifact" }, { "ControlledBy": "Opponents" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [{ "DealDamage": { "to": { "ControllerOf": "Triggering" }, "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

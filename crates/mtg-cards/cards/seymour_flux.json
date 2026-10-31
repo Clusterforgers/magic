@@ -1,0 +1,26 @@
+{
+  "oracle_id": "7312efc2-8a02-47cd-874b-c3338241435e",
+  "name": "Seymour Flux",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Seymour Flux",
+      "oracle_fingerprint": "b936a4eb5b3cf893c68d65ef9d359b2c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "PayLife": 1 }],
+                  "paid": [{ "Draw": {} }, { "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

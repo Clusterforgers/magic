@@ -1,0 +1,25 @@
+{
+  "oracle_id": "68bde9ff-3206-4a9c-9233-4b2387dcd306",
+  "name": "Talas Lookout",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Talas Lookout",
+      "oracle_fingerprint": "99a3a5cb6335545139ce5441665b24d5",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              { "LookAtTop": { "count": 2, "as": "top" } },
+              { "Choose": { "from": { "Bound": "top" }, "as": "kept2", "rest_as": "rest3" } },
+              { "Move": { "what": { "Bound": "kept2" }, "to": "Hand" } },
+              { "Move": { "what": { "Bound": "rest3" }, "to": "Graveyard" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

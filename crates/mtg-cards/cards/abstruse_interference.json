@@ -1,0 +1,49 @@
+{
+  "oracle_id": "e8ebf5cb-3a26-4bbd-812b-414c129e4bb7",
+  "name": "Abstruse Interference",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Abstruse Interference",
+      "oracle_fingerprint": "81c174f7411a301e5acc4b32af87e5ef",
+      "abilities": [
+        { "Keyword": "Devoid" },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [
+              {
+                "Pay": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "cost": "{1}",
+                  "unpaid": [{ "Counter": { "what": { "Target": 0 } } }]
+                }
+              },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Eldrazi Scion",
+                      "types": ["Creature"],
+                      "subtypes": ["Eldrazi", "Scion"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [
+                        {
+                          "Activated": {
+                            "cost": ["SacrificeSelf"],
+                            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

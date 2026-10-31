@@ -1,0 +1,33 @@
+{
+  "oracle_id": "daa47749-7a20-4e64-b476-a44eaeb4d844",
+  "name": "Bane's Invoker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bane's Invoker",
+      "oracle_fingerprint": "322d98ffc9b2e617dd54b4da3d4df087",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{8}",
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 0, "max": 2 } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "ModifyPT": { "power": 2, "toughness": 2 } },
+                    { "AddKeyword": "Flying" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

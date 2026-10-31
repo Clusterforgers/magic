@@ -1,0 +1,27 @@
+{
+  "oracle_id": "8307bfb0-3ab2-467f-b13c-ad4acadf319c",
+  "name": "Spikeshot Elder",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spikeshot Elder",
+      "oracle_fingerprint": "8f920d53094a5a019198d672418d864e",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{1}{R}{R}",
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": { "Stat": { "of": "This", "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

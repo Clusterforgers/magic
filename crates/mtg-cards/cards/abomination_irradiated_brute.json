@@ -1,0 +1,31 @@
+{
+  "oracle_id": "e7436d37-c331-4524-b5d4-861e9d25bfc5",
+  "name": "Abomination, Irradiated Brute",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Abomination, Irradiated Brute",
+      "oracle_fingerprint": "88578aac03c9c49304fdfc3c45bc79b9",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [
+                  { "AnyOf": [{ "Subtype": "Gamma" }, { "Subtype": "Villain" }] },
+                  { "ControlledBy": "You" }
+                ],
+                "to": "EachPlayer",
+                "combat": true
+              }
+            },
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": "+1/+1", "count": "Triggering" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

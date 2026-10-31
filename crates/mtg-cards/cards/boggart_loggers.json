@@ -1,0 +1,27 @@
+{
+  "oracle_id": "f8fac28d-adf4-47e9-bdd3-8402cbf0f228",
+  "name": "Boggart Loggers",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Boggart Loggers",
+      "oracle_fingerprint": "2f0ae02b4d00be677277658ffd19b2bc",
+      "abilities": [
+        { "Keyword": { "Landwalk": [{ "Subtype": "Forest" }] } },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{B}" }, "SacrificeSelf"],
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Subtype": "Treefolk" }, { "Subtype": "Forest" }] }]
+                }
+              }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

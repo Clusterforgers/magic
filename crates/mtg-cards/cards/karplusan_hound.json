@@ -1,0 +1,33 @@
+{
+  "oracle_id": "7af53dd7-3994-48f1-9ae1-44380ac56ee0",
+  "name": "Karplusan Hound",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Karplusan Hound",
+      "oracle_fingerprint": "50b9edbf13a6cdd52df832b0cc8d423c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "Type": "Planeswalker" },
+                    { "Subtype": "Chandra" },
+                    { "ControlledBy": "You" }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "oracle_id": "5fd4be4c-70a3-4c91-a4c6-788a2051ff13",
+  "name": "Viscerid Drone",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Viscerid Drone",
+      "oracle_fingerprint": "5ba56804be79c7c03f952cdfaf4a3886",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              "Tap",
+              { "Sacrifice": { "filter": [{ "Type": "Creature" }] } },
+              { "Sacrifice": { "filter": [{ "Subtype": "Swamp" }] } }
+            ],
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "Not": { "Type": "Artifact" } }] } }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 }, "regenerate": false } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              "Tap",
+              { "Sacrifice": { "filter": [{ "Type": "Creature" }] } },
+              { "Sacrifice": { "filter": [{ "Subtype": "Swamp" }, { "Supertype": "Snow" }] } }
+            ],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "Destroy": { "what": { "Target": 0 }, "regenerate": false } }]
+          }
+        }
+      ]
+    }
+  ]
+}

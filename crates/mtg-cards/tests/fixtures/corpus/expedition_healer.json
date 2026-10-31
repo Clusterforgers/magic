@@ -1,0 +1,138 @@
+{
+  "object": "card",
+  "id": "11a00a88-de0e-4012-9ad8-ccb187dff7df",
+  "oracle_id": "e8fbdf4b-ef64-4b82-b67f-ae5568772256",
+  "multiverse_ids": [
+    491635
+  ],
+  "mtgo_id": 82963,
+  "arena_id": 73196,
+  "tcgplayer_id": 222369,
+  "cardmarket_id": 497520,
+  "name": "Expedition Healer",
+  "lang": "en",
+  "released_at": "2020-09-25",
+  "uri": "https://api.scryfall.com/cards/11a00a88-de0e-4012-9ad8-ccb187dff7df",
+  "scryfall_uri": "https://scryfall.com/card/znr/13/expedition-healer?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T07:56:59Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/1/1/11a00a88-de0e-4012-9ad8-ccb187dff7df.jpg?1783929419",
+    "normal": "https://cards.scryfall.io/normal/front/1/1/11a00a88-de0e-4012-9ad8-ccb187dff7df.jpg?1783929419",
+    "large": "https://cards.scryfall.io/large/front/1/1/11a00a88-de0e-4012-9ad8-ccb187dff7df.jpg?1783929419",
+    "png": "https://cards.scryfall.io/png/front/1/1/11a00a88-de0e-4012-9ad8-ccb187dff7df.png?1783929419",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/1/1/11a00a88-de0e-4012-9ad8-ccb187dff7df.jpg?1783929419",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/1/1/11a00a88-de0e-4012-9ad8-ccb187dff7df.jpg?1783929419",
+    "thumb": "https://cards.scryfall.io/thumb/front/1/1/11a00a88-de0e-4012-9ad8-ccb187dff7df.webp?1783929419",
+    "grid": "https://cards.scryfall.io/grid/front/1/1/11a00a88-de0e-4012-9ad8-ccb187dff7df.webp?1783929419",
+    "display": "https://cards.scryfall.io/display/front/1/1/11a00a88-de0e-4012-9ad8-ccb187dff7df.webp?1783929419",
+    "art": "https://cards.scryfall.io/art/front/1/1/11a00a88-de0e-4012-9ad8-ccb187dff7df.webp?1783929419",
+    "crop": "https://cards.scryfall.io/crop/front/1/1/11a00a88-de0e-4012-9ad8-ccb187dff7df.webp?1783929419",
+    "jpeg": "https://cards.scryfall.io/normal/front/1/1/11a00a88-de0e-4012-9ad8-ccb187dff7df.jpg?1783929419"
+  },
+  "mana_cost": "{1}{W}",
+  "cmc": 2.0,
+  "type_line": "Creature — Kor Cleric",
+  "oracle_text": "Vigilance\nThis creature has lifelink as long as you control another Cleric.",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Vigilance"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "arena",
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "f4e01fa7-b254-42dd-849f-69b58027a8c4",
+  "set": "znr",
+  "set_name": "Zendikar Rising",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/f4e01fa7-b254-42dd-849f-69b58027a8c4",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aznr&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/znr?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/11a00a88-de0e-4012-9ad8-ccb187dff7df/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ae8fbdf4b-ef64-4b82-b67f-ae5568772256&unique=prints",
+  "collector_number": "13",
+  "digital": false,
+  "rarity": "common",
+  "flavor_text": "In any adventuring party, the cleric is the heart: healing wounds, inspiring courage, and raising morale.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Heonhwa",
+  "artist_ids": [
+    "ce415f9e-8a20-4d64-bcba-2b1b7e94012e"
+  ],
+  "illustration_id": "55cb4ead-dd31-4f29-8d3e-cd894f92a328",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 26177,
+  "penny_rank": 14905,
+  "prices": {
+    "usd": "0.07",
+    "usd_foil": "0.21",
+    "usd_etched": null,
+    "eur": "0.07",
+    "eur_foil": "0.10",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=491635&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DExpedition%2BHealer",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DExpedition%2BHealer",
+    "edhrec": "https://edhrec.com/route/?cc=Expedition+Healer"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F222369%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=497520&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/82963?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

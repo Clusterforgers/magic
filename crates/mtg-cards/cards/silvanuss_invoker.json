@@ -1,0 +1,35 @@
+{
+  "oracle_id": "4a25fab1-cabb-44b9-8a69-01fc1fc46bd4",
+  "name": "Silvanus's Invoker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Silvanus's Invoker",
+      "oracle_fingerprint": "5f62f78ab27ecb4103718abe38635b33",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{8}",
+            "targets": [{ "what": { "Object": [{ "Type": "Land" }, { "ControlledBy": "You" }] } }],
+            "effects": [
+              { "Untap": { "what": { "Target": 0 } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "SetPT": { "power": 8, "toughness": 8 } },
+                    { "AddSubtype": "Elemental" },
+                    { "AddType": "Creature" },
+                    { "AddKeyword": "Trample" },
+                    { "AddKeyword": "Haste" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

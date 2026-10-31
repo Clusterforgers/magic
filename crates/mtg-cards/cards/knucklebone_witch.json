@@ -1,0 +1,27 @@
+{
+  "oracle_id": "4d165c0f-3e40-45ad-92a1-53b13c07b34d",
+  "name": "Knucklebone Witch",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Knucklebone Witch",
+      "oracle_fingerprint": "575b92063aae93bba50b1c0d8a721e89",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Subtype": "Goblin" }, { "ControlledBy": "You" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              { "May": { "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,153 @@
+{
+  "object": "card",
+  "id": "0e4f3eff-ac99-41e2-9003-9630cdb3ae23",
+  "oracle_id": "630b1685-d0c9-4d94-97dc-70058fb52e5d",
+  "multiverse_ids": [
+    39717
+  ],
+  "mtgo_id": 17703,
+  "mtgo_foil_id": 17704,
+  "tcgplayer_id": 10405,
+  "cardmarket_id": 1650,
+  "name": "Daru Healer",
+  "lang": "en",
+  "released_at": "2002-10-07",
+  "uri": "https://api.scryfall.com/cards/0e4f3eff-ac99-41e2-9003-9630cdb3ae23",
+  "scryfall_uri": "https://scryfall.com/card/ons/19/daru-healer?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T12:18:20Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/0/e/0e4f3eff-ac99-41e2-9003-9630cdb3ae23.jpg?1783945100",
+    "normal": "https://cards.scryfall.io/normal/front/0/e/0e4f3eff-ac99-41e2-9003-9630cdb3ae23.jpg?1783945100",
+    "large": "https://cards.scryfall.io/large/front/0/e/0e4f3eff-ac99-41e2-9003-9630cdb3ae23.jpg?1783945100",
+    "png": "https://cards.scryfall.io/png/front/0/e/0e4f3eff-ac99-41e2-9003-9630cdb3ae23.png?1783945100",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/0/e/0e4f3eff-ac99-41e2-9003-9630cdb3ae23.jpg?1783945100",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/0/e/0e4f3eff-ac99-41e2-9003-9630cdb3ae23.jpg?1783945100",
+    "thumb": "https://cards.scryfall.io/thumb/front/0/e/0e4f3eff-ac99-41e2-9003-9630cdb3ae23.webp?1783945100",
+    "grid": "https://cards.scryfall.io/grid/front/0/e/0e4f3eff-ac99-41e2-9003-9630cdb3ae23.webp?1783945100",
+    "display": "https://cards.scryfall.io/display/front/0/e/0e4f3eff-ac99-41e2-9003-9630cdb3ae23.webp?1783945100",
+    "art": "https://cards.scryfall.io/art/front/0/e/0e4f3eff-ac99-41e2-9003-9630cdb3ae23.webp?1783945100",
+    "crop": "https://cards.scryfall.io/crop/front/0/e/0e4f3eff-ac99-41e2-9003-9630cdb3ae23.webp?1783945100",
+    "jpeg": "https://cards.scryfall.io/normal/front/0/e/0e4f3eff-ac99-41e2-9003-9630cdb3ae23.jpg?1783945100"
+  },
+  "mana_cost": "{2}{W}",
+  "cmc": 3.0,
+  "type_line": "Creature — Human Cleric",
+  "oracle_text": "{T}: Prevent the next 1 damage that would be dealt to any target this turn.\nMorph {W} (You may cast this card face down as a 2/2 creature for {3}. Turn it face up any time for its morph cost.)",
+  "power": "1",
+  "toughness": "2",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Morph"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "0e4f3eff-ac99-41e2-9003-9630cdb3ae23",
+      "component": "combo_piece",
+      "name": "Daru Healer",
+      "type_line": "Creature — Human Cleric",
+      "uri": "https://api.scryfall.com/cards/0e4f3eff-ac99-41e2-9003-9630cdb3ae23"
+    },
+    {
+      "object": "related_card",
+      "id": "5430da88-b72e-4d64-bd3c-b21062cac1c2",
+      "component": "combo_piece",
+      "name": "Morph",
+      "type_line": "Creature",
+      "uri": "https://api.scryfall.com/cards/5430da88-b72e-4d64-bd3c-b21062cac1c2"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "914a6c6d-cb3b-45e8-a2db-9978a2339faf",
+  "set": "ons",
+  "set_name": "Onslaught",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/914a6c6d-cb3b-45e8-a2db-9978a2339faf",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aons&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/ons?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/0e4f3eff-ac99-41e2-9003-9630cdb3ae23/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A630b1685-d0c9-4d94-97dc-70058fb52e5d&unique=prints",
+  "collector_number": "19",
+  "digital": false,
+  "rarity": "common",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Dany Orizio",
+  "artist_ids": [
+    "fcd5ea36-64e0-4af0-992a-3c68a34a400f"
+  ],
+  "illustration_id": "bd631756-fe66-4c42-bf71-c1094612ab69",
+  "border_color": "black",
+  "frame": "1997",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 31482,
+  "prices": {
+    "usd": "0.07",
+    "usd_foil": "0.92",
+    "usd_etched": null,
+    "eur": "0.04",
+    "eur_foil": "0.30",
+    "tix": "0.06"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=39717&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DDaru%2BHealer",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DDaru%2BHealer",
+    "edhrec": "https://edhrec.com/route/?cc=Daru+Healer"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F10405%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=1650&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/17703?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

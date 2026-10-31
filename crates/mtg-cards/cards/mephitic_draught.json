@@ -1,0 +1,24 @@
+{
+  "oracle_id": "05da6b06-fb5f-41e8-b0a2-d949646e36d9",
+  "name": "Mephitic Draught",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mephitic Draught",
+      "oracle_fingerprint": "cac13b321e68619f7af81399c2cba91d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } }
+              ]
+            },
+            "effects": [{ "Draw": {} }, { "LoseLife": { "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "oracle_id": "185db9c7-3936-473c-9220-ae255527aaf9",
+  "name": "Rubblebelt Maaka",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rubblebelt Maaka",
+      "oracle_fingerprint": "8c5ec06c78fa912da72899a63a34699c",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{R}" }, "DiscardSelf"],
+            "from": "Hand",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Attacking"] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 3, "toughness": 3 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

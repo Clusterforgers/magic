@@ -1,0 +1,179 @@
+{
+  "object": "card",
+  "id": "890eee8d-a339-4143-adfa-1b17ec10c099",
+  "oracle_id": "6bc668f4-8fc7-4aaf-891b-277d8328b376",
+  "multiverse_ids": [
+    491718,
+    491719
+  ],
+  "mtgo_id": 83129,
+  "arena_id": 73279,
+  "tcgplayer_id": 221862,
+  "cardmarket_id": 495049,
+  "name": "Umara Wizard // Umara Skyfalls",
+  "lang": "en",
+  "released_at": "2020-09-25",
+  "uri": "https://api.scryfall.com/cards/890eee8d-a339-4143-adfa-1b17ec10c099",
+  "scryfall_uri": "https://scryfall.com/card/znr/86/umara-wizard-umara-skyfalls?utm_source=api",
+  "layout": "modal_dfc",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T07:56:31Z",
+  "cmc": 5.0,
+  "type_line": "Creature — Merfolk Wizard // Land",
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [],
+  "produced_mana": [
+    "U"
+  ],
+  "card_faces": [
+    {
+      "object": "card_face",
+      "name": "Umara Wizard",
+      "mana_cost": "{4}{U}",
+      "type_line": "Creature — Merfolk Wizard",
+      "oracle_text": "Whenever you cast an instant, sorcery, or Wizard spell, this creature gains flying until end of turn.",
+      "colors": [
+        "U"
+      ],
+      "power": "4",
+      "toughness": "3",
+      "flavor_text": "\"You see a waterfall. I see a way up.\"\n—Ko Dari, expedition wizard",
+      "artist": "Jesper Ejsing",
+      "artist_id": "a5f8354a-8b51-4e59-96b2-0e3aeae4fa1d",
+      "illustration_id": "0cf9a5eb-c214-4303-a33a-2091e3c3e31c",
+      "image_uris": {
+        "small": "https://cards.scryfall.io/small/front/8/9/890eee8d-a339-4143-adfa-1b17ec10c099.jpg?1783929391",
+        "normal": "https://cards.scryfall.io/normal/front/8/9/890eee8d-a339-4143-adfa-1b17ec10c099.jpg?1783929391",
+        "large": "https://cards.scryfall.io/large/front/8/9/890eee8d-a339-4143-adfa-1b17ec10c099.jpg?1783929391",
+        "png": "https://cards.scryfall.io/png/front/8/9/890eee8d-a339-4143-adfa-1b17ec10c099.png?1783929391",
+        "art_crop": "https://cards.scryfall.io/art_crop/front/8/9/890eee8d-a339-4143-adfa-1b17ec10c099.jpg?1783929391",
+        "border_crop": "https://cards.scryfall.io/border_crop/front/8/9/890eee8d-a339-4143-adfa-1b17ec10c099.jpg?1783929391",
+        "thumb": "https://cards.scryfall.io/thumb/front/8/9/890eee8d-a339-4143-adfa-1b17ec10c099.webp?1783929391",
+        "grid": "https://cards.scryfall.io/grid/front/8/9/890eee8d-a339-4143-adfa-1b17ec10c099.webp?1783929391",
+        "display": "https://cards.scryfall.io/display/front/8/9/890eee8d-a339-4143-adfa-1b17ec10c099.webp?1783929391",
+        "art": "https://cards.scryfall.io/art/front/8/9/890eee8d-a339-4143-adfa-1b17ec10c099.webp?1783929391",
+        "crop": "https://cards.scryfall.io/crop/front/8/9/890eee8d-a339-4143-adfa-1b17ec10c099.webp?1783929391",
+        "jpeg": "https://cards.scryfall.io/normal/front/8/9/890eee8d-a339-4143-adfa-1b17ec10c099.jpg?1783929391"
+      }
+    },
+    {
+      "object": "card_face",
+      "name": "Umara Skyfalls",
+      "mana_cost": "",
+      "type_line": "Land",
+      "oracle_text": "This land enters tapped.\n{T}: Add {U}.",
+      "colors": [],
+      "flavor_text": "\"The source of the Umara River sits high above Oran-Rief, ever weeping on the jungle below.\"\n—Ko Dari, expedition wizard",
+      "artist": "Jesper Ejsing",
+      "artist_id": "a5f8354a-8b51-4e59-96b2-0e3aeae4fa1d",
+      "illustration_id": "e6e86f57-e7a4-4b3b-8d16-7c3f37398ab9",
+      "image_uris": {
+        "small": "https://cards.scryfall.io/small/back/8/9/890eee8d-a339-4143-adfa-1b17ec10c099.jpg?1783929391",
+        "normal": "https://cards.scryfall.io/normal/back/8/9/890eee8d-a339-4143-adfa-1b17ec10c099.jpg?1783929391",
+        "large": "https://cards.scryfall.io/large/back/8/9/890eee8d-a339-4143-adfa-1b17ec10c099.jpg?1783929391",
+        "png": "https://cards.scryfall.io/png/back/8/9/890eee8d-a339-4143-adfa-1b17ec10c099.png?1783929391",
+        "art_crop": "https://cards.scryfall.io/art_crop/back/8/9/890eee8d-a339-4143-adfa-1b17ec10c099.jpg?1783929391",
+        "border_crop": "https://cards.scryfall.io/border_crop/back/8/9/890eee8d-a339-4143-adfa-1b17ec10c099.jpg?1783929391",
+        "thumb": "https://cards.scryfall.io/thumb/back/8/9/890eee8d-a339-4143-adfa-1b17ec10c099.webp?1783929391",
+        "grid": "https://cards.scryfall.io/grid/back/8/9/890eee8d-a339-4143-adfa-1b17ec10c099.webp?1783929391",
+        "display": "https://cards.scryfall.io/display/back/8/9/890eee8d-a339-4143-adfa-1b17ec10c099.webp?1783929391",
+        "art": "https://cards.scryfall.io/art/back/8/9/890eee8d-a339-4143-adfa-1b17ec10c099.webp?1783929391",
+        "crop": "https://cards.scryfall.io/crop/back/8/9/890eee8d-a339-4143-adfa-1b17ec10c099.webp?1783929391",
+        "jpeg": "https://cards.scryfall.io/normal/back/8/9/890eee8d-a339-4143-adfa-1b17ec10c099.jpg?1783929391"
+      }
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "arena",
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "f4e01fa7-b254-42dd-849f-69b58027a8c4",
+  "set": "znr",
+  "set_name": "Zendikar Rising",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/f4e01fa7-b254-42dd-849f-69b58027a8c4",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aznr&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/znr?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/890eee8d-a339-4143-adfa-1b17ec10c099/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A6bc668f4-8fc7-4aaf-891b-277d8328b376&unique=prints",
+  "collector_number": "86",
+  "digital": false,
+  "rarity": "uncommon",
+  "artist": "Jesper Ejsing",
+  "artist_ids": [
+    "a5f8354a-8b51-4e59-96b2-0e3aeae4fa1d"
+  ],
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 14617,
+  "penny_rank": 4256,
+  "preview": {
+    "source": "Tom Anderson",
+    "source_uri": "https://twitter.com/awanderingbard/status/1301060837545619456",
+    "previewed_at": "2020-09-02"
+  },
+  "prices": {
+    "usd": "0.19",
+    "usd_foil": "0.21",
+    "usd_etched": null,
+    "eur": "0.17",
+    "eur_foil": "0.25",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=491718&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DUmara%2BWizard%2B%252F%252F%2BUmara%2BSkyfalls",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DUmara%2BWizard%2B%252F%252F%2BUmara%2BSkyfalls",
+    "edhrec": "https://edhrec.com/route/?cc=Umara+Wizard"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F221862%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=495049&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/83129?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "oracle_id": "566d6fcd-dd50-4135-a912-ec923fc433df",
+  "name": "Scorchwalker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Scorchwalker",
+      "oracle_fingerprint": "5013ddda6c47a8166ea5e8b2fb6d8747",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{R}{R}" }, "DiscardSelf"],
+            "from": "Hand",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Attacking"] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 5, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

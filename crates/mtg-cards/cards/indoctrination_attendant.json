@@ -1,0 +1,45 @@
+{
+  "oracle_id": "9587bdb3-fb6a-47c0-898d-404bf60fcb6b",
+  "name": "Indoctrination Attendant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Indoctrination Attendant",
+      "oracle_fingerprint": "0229654d16eb65dc5f9735db7a36e205",
+      "abilities": [
+        { "Keyword": { "Toxic": 1 } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "ReturnToHand": { "filter": ["Other"] } }],
+                  "paid": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Phyrexian Mite",
+                            "types": ["Artifact", "Creature"],
+                            "subtypes": ["Phyrexian", "Mite"],
+                            "power": 1,
+                            "toughness": 1,
+                            "abilities": [
+                              { "Keyword": { "Toxic": 1 } },
+                              { "Static": { "affected": "This", "mods": ["CantBlock"] } }
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

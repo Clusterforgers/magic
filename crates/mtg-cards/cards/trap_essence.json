@@ -1,0 +1,25 @@
+{
+  "oracle_id": "d64adb26-62c4-44aa-bc2e-d05bd1cf657b",
+  "name": "Trap Essence",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Trap Essence",
+      "oracle_fingerprint": "5fa77470cf89938120daee4178bed05e",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": ["Spell", { "Type": "Creature" }] } },
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 0, "max": 1 } }
+            ],
+            "effects": [
+              { "Counter": { "what": { "Target": 0 } } },
+              { "PutCounters": { "on": { "Target": 1 }, "counter": "+1/+1", "count": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

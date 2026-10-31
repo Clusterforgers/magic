@@ -1,0 +1,28 @@
+{
+  "oracle_id": "1b3bbd3c-f5ef-4940-82a2-d36f4d148b9a",
+  "name": "Ghosts of the Damned",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ghosts of the Damned",
+      "oracle_fingerprint": "0d088e76546ce8d93646daef7f0fe52f",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": -1, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

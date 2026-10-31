@@ -1,0 +1,139 @@
+{
+  "object": "card",
+  "id": "fa0ccd32-63c8-47a2-8de1-5845dad8e682",
+  "oracle_id": "1d95b5c0-d193-4a03-9954-23861ac1c762",
+  "multiverse_ids": [],
+  "resource_id": "6FAD5B5CAC0704874594930F6F837C2255015AFA2E5D8FC72000D6321C20F0A1",
+  "tcgplayer_id": 646136,
+  "cardmarket_id": 839941,
+  "name": "Ghost-Spider, Gwen Stacy",
+  "lang": "en",
+  "released_at": "2025-09-26",
+  "uri": "https://api.scryfall.com/cards/fa0ccd32-63c8-47a2-8de1-5845dad8e682",
+  "scryfall_uri": "https://scryfall.com/card/spe/14/ghost-spider-gwen-stacy?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T01:16:10Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/f/a/fa0ccd32-63c8-47a2-8de1-5845dad8e682.jpg?1783905370",
+    "normal": "https://cards.scryfall.io/normal/front/f/a/fa0ccd32-63c8-47a2-8de1-5845dad8e682.jpg?1783905370",
+    "large": "https://cards.scryfall.io/large/front/f/a/fa0ccd32-63c8-47a2-8de1-5845dad8e682.jpg?1783905370",
+    "png": "https://cards.scryfall.io/png/front/f/a/fa0ccd32-63c8-47a2-8de1-5845dad8e682.png?1783905370",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/f/a/fa0ccd32-63c8-47a2-8de1-5845dad8e682.jpg?1783905370",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/f/a/fa0ccd32-63c8-47a2-8de1-5845dad8e682.jpg?1783905370",
+    "thumb": "https://cards.scryfall.io/thumb/front/f/a/fa0ccd32-63c8-47a2-8de1-5845dad8e682.webp?1783905370",
+    "grid": "https://cards.scryfall.io/grid/front/f/a/fa0ccd32-63c8-47a2-8de1-5845dad8e682.webp?1783905370",
+    "display": "https://cards.scryfall.io/display/front/f/a/fa0ccd32-63c8-47a2-8de1-5845dad8e682.webp?1783905370",
+    "art": "https://cards.scryfall.io/art/front/f/a/fa0ccd32-63c8-47a2-8de1-5845dad8e682.webp?1783905370",
+    "crop": "https://cards.scryfall.io/crop/front/f/a/fa0ccd32-63c8-47a2-8de1-5845dad8e682.webp?1783905370",
+    "jpeg": "https://cards.scryfall.io/normal/front/f/a/fa0ccd32-63c8-47a2-8de1-5845dad8e682.jpg?1783905370"
+  },
+  "mana_cost": "{3}{R}{R}",
+  "cmc": 5.0,
+  "type_line": "Legendary Creature — Spider Human Hero",
+  "oracle_text": "Menace (This creature can't be blocked except by two or more creatures.)\nWhenever Ghost-Spider attacks, she deals X damage to defending player, where X is the number of attacking creatures.",
+  "power": "4",
+  "toughness": "4",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Menace"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "57f25bcf-c541-418d-87c2-57361d57d35e",
+  "set": "spe",
+  "set_name": "Marvel's Spider-Man Eternal",
+  "set_type": "eternal",
+  "set_uri": "https://api.scryfall.com/sets/57f25bcf-c541-418d-87c2-57361d57d35e",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aspe&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/spe?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/fa0ccd32-63c8-47a2-8de1-5845dad8e682/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A1d95b5c0-d193-4a03-9954-23861ac1c762&unique=prints",
+  "collector_number": "14",
+  "digital": false,
+  "rarity": "mythic",
+  "flavor_text": "\"No, it's fine. I'm late for practice again, but sure, I have time for a runaway bus.\"",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Xabi Gaztelua",
+  "artist_ids": [
+    "35b87e24-bfe0-43f4-83c3-2fa9574d6026"
+  ],
+  "illustration_id": "44626c09-1fae-4433-aa9d-3909271961fe",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 11083,
+  "prices": {
+    "usd": "10.79",
+    "usd_foil": "14.73",
+    "usd_etched": null,
+    "eur": "4.62",
+    "eur_foil": "7.38",
+    "tix": null
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DGhost-Spider%252C%2BGwen%2BStacy",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DGhost-Spider%252C%2BGwen%2BStacy",
+    "edhrec": "https://edhrec.com/route/?cc=Ghost-Spider%2C+Gwen+Stacy"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F646136%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=839941&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Ghost-Spider%2C+Gwen+Stacy&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

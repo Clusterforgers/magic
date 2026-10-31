@@ -1,0 +1,35 @@
+{
+  "oracle_id": "a8ce90be-f0ab-4f8d-896a-cde8aaf24579",
+  "name": "Jukai Preserver",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jukai Preserver",
+      "oracle_fingerprint": "6308ef8ba08b68476f2b9c940c1f822c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{G}" }, "DiscardSelf"],
+            "from": "Hand",
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                "bounds": { "min": 0, "max": 2 }
+              }
+            ],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

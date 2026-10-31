@@ -1,0 +1,23 @@
+{
+  "oracle_id": "3e56606d-562e-4c77-9769-213997fea28e",
+  "name": "Cunning Evasion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cunning Evasion",
+      "oracle_fingerprint": "489aa875c6b73a0b6db962b6c14fdde2",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "BecomesBlocked": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+            },
+            "effects": [
+              { "May": { "effects": [{ "Move": { "what": "Triggering", "to": "Hand" } }] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

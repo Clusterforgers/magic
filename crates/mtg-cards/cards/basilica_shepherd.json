@@ -1,0 +1,39 @@
+{
+  "oracle_id": "929c67aa-49ff-4401-85e8-76990fe1a369",
+  "name": "Basilica Shepherd",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Basilica Shepherd",
+      "oracle_fingerprint": "bac53778607573748dd21eaa351fb4e4",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Phyrexian Mite",
+                      "types": ["Artifact", "Creature"],
+                      "subtypes": ["Phyrexian", "Mite"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [
+                        { "Keyword": { "Toxic": 1 } },
+                        { "Static": { "affected": "This", "mods": ["CantBlock"] } }
+                      ]
+                    }
+                  },
+                  "count": 2
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

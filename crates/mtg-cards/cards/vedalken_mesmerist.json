@@ -1,0 +1,30 @@
+{
+  "oracle_id": "f507f9ba-a7e9-4e45-86dc-8c60a72a6234",
+  "name": "Vedalken Mesmerist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vedalken Mesmerist",
+      "oracle_fingerprint": "8c258ae3efcae7591bfabe20d4747e80",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": -2, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

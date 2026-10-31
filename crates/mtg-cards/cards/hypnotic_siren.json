@@ -1,0 +1,22 @@
+{
+  "oracle_id": "54aede54-4f7d-40f5-bad0-2448293e2cf0",
+  "name": "Hypnotic Siren",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hypnotic Siren",
+      "oracle_fingerprint": "2617f885c6bc2551adef57cc12d0e14f",
+      "abilities": [
+        { "Keyword": { "Bestow": "{5}{U}{U}" } },
+        { "Keyword": "Flying" },
+        { "Static": { "affected": "Attached", "mods": [{ "SetController": "You" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }, { "AddKeyword": "Flying" }]
+          }
+        }
+      ]
+    }
+  ]
+}

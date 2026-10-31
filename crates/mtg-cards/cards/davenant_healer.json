@@ -1,0 +1,41 @@
+{
+  "oracle_id": "91770dc7-3de3-458f-a240-6540455fe05f",
+  "name": "D'Avenant Healer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "D'Avenant Healer",
+      "oracle_fingerprint": "225a04a7d6f312fb00871f8b383c7299",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "AnyOf": ["Attacking", "Blocking"] }]
+                }
+              }
+            ],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": { "Target": 0 } } },
+                  "by": { "PreventUpTo": 1 },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

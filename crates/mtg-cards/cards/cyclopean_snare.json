@@ -1,0 +1,23 @@
+{
+  "oracle_id": "6f5a86bf-caa7-48c9-a59f-b13fb483a9d4",
+  "name": "Cyclopean Snare",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cyclopean Snare",
+      "oracle_fingerprint": "134a16880cc6017d0d170f51f34a6c2a",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}" }, "Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Tap": { "what": { "Target": 0 } } },
+              { "Move": { "what": "This", "to": "Hand" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

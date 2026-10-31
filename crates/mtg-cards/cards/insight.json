@@ -1,0 +1,19 @@
+{
+  "oracle_id": "c77afbeb-cc9b-4770-9a48-e7460562895f",
+  "name": "Insight",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Insight",
+      "oracle_fingerprint": "b166d9520d349b1fb96c8946b075b3f2",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Color": "Green" }], "by": "Opponents" } },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

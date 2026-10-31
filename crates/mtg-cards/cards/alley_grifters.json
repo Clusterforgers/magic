@@ -1,0 +1,19 @@
+{
+  "oracle_id": "399af8ea-7a6f-4f43-bd39-dc29a6e75e06",
+  "name": "Alley Grifters",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Alley Grifters",
+      "oracle_fingerprint": "2a363e13d0ffaeff485e56ed06a61bf7",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "BecomesBlocked": { "what": ["This"] } },
+            "effects": [{ "Discard": { "who": "Defending" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

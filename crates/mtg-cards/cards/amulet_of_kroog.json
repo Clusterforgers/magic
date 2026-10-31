@@ -1,0 +1,28 @@
+{
+  "oracle_id": "8eca999e-f7f8-4354-b419-2df4249c4361",
+  "name": "Amulet of Kroog",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Amulet of Kroog",
+      "oracle_fingerprint": "01716b19218ea0f95059bef1a7180772",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap"],
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": { "Target": 0 } } },
+                  "by": { "PreventUpTo": 1 },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

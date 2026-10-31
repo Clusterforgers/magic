@@ -1,0 +1,22 @@
+{
+  "oracle_id": "47258c3e-b4a7-466d-9464-3924f75d9293",
+  "name": "Bad Deal",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bad Deal",
+      "oracle_fingerprint": "4e53e0bbff28eb0967bfdd0f87fd00d6",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Draw": { "count": 2 } },
+              { "Discard": { "who": "Opponents", "count": 2 } },
+              { "LoseLife": { "who": "EachPlayer", "amount": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "oracle_id": "cd1a6508-aaba-4515-9496-057915d02040",
+  "name": "Illumination",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Illumination",
+      "oracle_fingerprint": "ddff10622d77e0f47bcca6ee8df45fbb",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    "Spell",
+                    { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Enchantment" }] }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Counter": { "what": { "Target": 0 } } },
+              {
+                "GainLife": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "amount": { "Stat": { "of": { "Target": 0 }, "stat": "ManaValue" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

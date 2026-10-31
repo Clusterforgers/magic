@@ -1,0 +1,38 @@
+{
+  "oracle_id": "48533a2d-1bdb-40a6-939e-9c8337e0dc5a",
+  "name": "Sleep with the Fishes",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sleep with the Fishes",
+      "oracle_fingerprint": "153c60a095cdbdff3feb01a3950d01db",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "Tap": { "what": "Attached" } },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Fish",
+                      "colors": ["Blue"],
+                      "types": ["Creature"],
+                      "subtypes": ["Fish"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Static": { "affected": "This", "mods": ["CantBeBlocked"] } }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Static": { "affected": "Attached", "mods": ["DoesntUntap"] } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "oracle_id": "e0583f29-c344-4b56-b0dc-bef1089a95c7",
+  "name": "Smash to Smithereens",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Smash to Smithereens",
+      "oracle_fingerprint": "f70a633c2f46de39bfaf05c2e5ab14a9",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Artifact" }] } }],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              { "DealDamage": { "to": { "ControllerOf": { "Target": 0 } }, "amount": 3 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

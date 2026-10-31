@@ -1,0 +1,35 @@
+{
+  "oracle_id": "b79378e7-99db-403f-8f63-4d71ebdb3f6c",
+  "name": "Nantuko Mentor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nantuko Mentor",
+      "oracle_fingerprint": "364a7e17466ab787aaa83ece44655b15",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{G}" }, "Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": { "Stat": { "of": { "Target": 0 }, "stat": "Power" } },
+                        "toughness": { "Stat": { "of": { "Target": 0 }, "stat": "Power" } }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

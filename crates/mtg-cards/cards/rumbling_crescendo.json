@@ -1,0 +1,40 @@
+{
+  "oracle_id": "2e7e19c2-5399-433d-9653-d956f11838f5",
+  "name": "Rumbling Crescendo",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rumbling Crescendo",
+      "oracle_fingerprint": "366d383119aecaa7f2616c75e5a88b66",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [{ "PutCounters": { "on": "This", "counter": { "Other": "verse" } } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{R}" }, "SacrificeSelf"],
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Land" }] },
+                "bounds": {
+                  "min": 0,
+                  "max": { "Counters": { "on": "This", "counter": { "Other": "verse" } } }
+                }
+              }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

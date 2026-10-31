@@ -1,0 +1,28 @@
+{
+  "oracle_id": "a3805bb3-544c-4142-a6df-c60fa38d625a",
+  "name": "Chain to Memory",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Chain to Memory",
+      "oracle_fingerprint": "50c8d22a3bf56a556b136690a4ef86b8",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": -4, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Scry": { "count": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

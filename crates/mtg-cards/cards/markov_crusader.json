@@ -1,0 +1,27 @@
+{
+  "oracle_id": "0a8511b9-ed7d-4e33-9c2f-96b9a4c535e2",
+  "name": "Markov Crusader",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Markov Crusader",
+      "oracle_fingerprint": "a51f2943cae739be805f836586ac62d4",
+      "abilities": [
+        { "Keyword": "Lifelink" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Haste" }],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "ControlledBy": "You" }, { "Subtype": "Vampire" }, "Other"] },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

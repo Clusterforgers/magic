@@ -1,0 +1,33 @@
+{
+  "oracle_id": "fa43793d-a215-4a64-a09c-ed9799f745a4",
+  "name": "Abandon Reason",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Abandon Reason",
+      "oracle_fingerprint": "f92e57aeda7133e64d25b12872ed7f02",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 0, "max": 2 } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "ModifyPT": { "power": 1, "toughness": 0 } },
+                    { "AddKeyword": "FirstStrike" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Madness": "{1}{R}" } }
+      ]
+    }
+  ]
+}

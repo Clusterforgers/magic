@@ -1,0 +1,28 @@
+{
+  "oracle_id": "3a07e22c-71cd-4723-b07e-0ff02009a878",
+  "name": "Steel Wrecking Ball",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Steel Wrecking Ball",
+      "oracle_fingerprint": "4e1dbfcf296db4e011d74719266b1840",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 5 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{R}" }, "DiscardSelf"],
+            "from": "Hand",
+            "targets": [{ "what": { "Object": [{ "Type": "Artifact" }] } }],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

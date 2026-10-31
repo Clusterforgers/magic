@@ -1,0 +1,34 @@
+{
+  "oracle_id": "193c1671-328e-4f9c-836e-055f46c3aab0",
+  "name": "Rakalite",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rakalite",
+      "oracle_fingerprint": "b54f1e4116f025c8e38311327e0126e8",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{2}",
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": { "Target": 0 } } },
+                  "by": { "PreventUpTo": 1 },
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [{ "Move": { "what": "This", "to": "Hand" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

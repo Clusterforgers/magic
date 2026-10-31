@@ -1,0 +1,30 @@
+{
+  "oracle_id": "7c4fc524-4734-4fb8-a5ca-ac2617242c3f",
+  "name": "Hissing Iguanar",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hissing Iguanar",
+      "oracle_fingerprint": "a49e48e9e29c0f721e8b8ceacfb658bf",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, "Other"],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "targets": [
+              { "what": { "Either": ["Player", { "Object": [{ "Type": "Planeswalker" }] }] } }
+            ],
+            "effects": [
+              { "May": { "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

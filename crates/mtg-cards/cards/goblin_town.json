@@ -1,0 +1,39 @@
+{
+  "oracle_id": "98d20908-6d68-4d31-b719-207f93c9b402",
+  "name": "Goblin-town",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Goblin-town",
+      "oracle_fingerprint": "b2f4bd3aa2a75ff397564647326d58eb",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "OneOf": ["Black", "Red"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{B}{R}" }, "Tap", "SacrificeSelf"],
+            "timing": "Sorcery",
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Subtype": "Goblin" }, { "Subtype": "Orc" }] },
+                    { "ControlledBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1", "count": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

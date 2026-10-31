@@ -1,0 +1,33 @@
+{
+  "oracle_id": "3313aa8f-6441-4daa-b8fa-e6144f60bea8",
+  "name": "Sarkhan's Rage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sarkhan's Rage",
+      "oracle_fingerprint": "5f2c3ef63ce895a9cf2f817c7ff35c10",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 5 } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "Subtype": "Dragon" }, { "ControlledBy": "You" }] },
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [{ "DealDamage": { "to": "You", "amount": 2 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,55 @@
+{
+  "oracle_id": "a7736614-cdd3-43bd-ab3e-461e3e24ed40",
+  "name": "Warehouse Tabby",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Warehouse Tabby",
+      "oracle_fingerprint": "e659e8ca1cb3f269f3f44d167116402e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Enchantment" }, { "ControlledBy": "You" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Rat",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Rat"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Static": { "affected": "This", "mods": ["CantBlock"] } }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{1}{B}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddKeyword": "Deathtouch" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

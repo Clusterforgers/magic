@@ -1,0 +1,28 @@
+{
+  "oracle_id": "8916b3d4-6a9a-420a-8ee7-be67b2f47201",
+  "name": "Reinforced Bulwark",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Reinforced Bulwark",
+      "oracle_fingerprint": "407893bb0afb50f2636034821d98e934",
+      "abilities": [
+        { "Keyword": "Defender" },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": "You" } },
+                  "by": { "PreventUpTo": 1 },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

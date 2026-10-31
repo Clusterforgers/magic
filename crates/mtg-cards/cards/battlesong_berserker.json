@@ -1,0 +1,35 @@
+{
+  "oracle_id": "396cc8ce-9efa-4fc7-90a6-b439b2b021db",
+  "name": "Battlesong Berserker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Battlesong Berserker",
+      "oracle_fingerprint": "68b0ceb6b3c382bac24ca1dfc5f1ae2d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+            },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "ModifyPT": { "power": 1, "toughness": 0 } },
+                    { "AddKeyword": "Menace" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

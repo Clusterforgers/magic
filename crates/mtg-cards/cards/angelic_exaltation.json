@@ -1,0 +1,38 @@
+{
+  "oracle_id": "507d2f27-08a9-4938-b191-5734cda42ef2",
+  "name": "Angelic Exaltation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Angelic Exaltation",
+      "oracle_fingerprint": "ade260810af8f13db102bdfb254c02af",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AttacksAlone": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Triggering",
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": { "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                        "toughness": {
+                          "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

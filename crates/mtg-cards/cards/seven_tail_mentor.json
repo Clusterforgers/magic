@@ -1,0 +1,34 @@
+{
+  "oracle_id": "301b8265-9e17-48c3-942d-b7243112b394",
+  "name": "Seven-Tail Mentor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Seven-Tail Mentor",
+      "oracle_fingerprint": "294382bab3204b3e13706ed5fef3c3d9",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } }
+              ]
+            },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Creature" }, { "Subtype": "Vehicle" }] },
+                    { "ControlledBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

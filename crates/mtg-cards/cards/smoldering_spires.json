@@ -1,0 +1,35 @@
+{
+  "oracle_id": "cfa3288d-e521-4a13-bcb3-7950a94e1746",
+  "name": "Smoldering Spires",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Smoldering Spires",
+      "oracle_fingerprint": "4caf8068c9737a2224b235186ef6267b",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["CantBlock"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Red"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

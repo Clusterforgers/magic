@@ -1,0 +1,30 @@
+{
+  "oracle_id": "e574bfdb-505b-4d61-a376-6d26f03cd9b1",
+  "name": "Reito Sentinel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Reito Sentinel",
+      "oracle_fingerprint": "01e41235e4c0b75d1540e211fe35b25e",
+      "abilities": [
+        { "Keyword": "Defender" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Player" }],
+            "effects": [{ "Mill": { "who": { "Target": 0 }, "count": 3 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{3}",
+            "targets": [{ "what": { "Object": [{ "In": "Graveyard" }] } }],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Library": { "place": "Bottom" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

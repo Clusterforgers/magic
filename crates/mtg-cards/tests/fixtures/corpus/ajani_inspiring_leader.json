@@ -1,0 +1,160 @@
+{
+  "object": "card",
+  "id": "dba41e5f-66b8-4459-8a07-bbe893216f1e",
+  "oracle_id": "15474e82-94b4-47e1-b91c-3deaf4dbffd6",
+  "multiverse_ids": [
+    469835
+  ],
+  "mtgo_id": 73481,
+  "arena_id": 70066,
+  "tcgplayer_id": 192695,
+  "cardmarket_id": 379017,
+  "name": "Ajani, Inspiring Leader",
+  "lang": "en",
+  "released_at": "2019-07-12",
+  "uri": "https://api.scryfall.com/cards/dba41e5f-66b8-4459-8a07-bbe893216f1e",
+  "scryfall_uri": "https://scryfall.com/card/m20/282/ajani-inspiring-leader?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T08:55:23Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/d/b/dba41e5f-66b8-4459-8a07-bbe893216f1e.jpg?1783932923",
+    "normal": "https://cards.scryfall.io/normal/front/d/b/dba41e5f-66b8-4459-8a07-bbe893216f1e.jpg?1783932923",
+    "large": "https://cards.scryfall.io/large/front/d/b/dba41e5f-66b8-4459-8a07-bbe893216f1e.jpg?1783932923",
+    "png": "https://cards.scryfall.io/png/front/d/b/dba41e5f-66b8-4459-8a07-bbe893216f1e.png?1783932923",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/d/b/dba41e5f-66b8-4459-8a07-bbe893216f1e.jpg?1783932923",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/d/b/dba41e5f-66b8-4459-8a07-bbe893216f1e.jpg?1783932923",
+    "thumb": "https://cards.scryfall.io/thumb/front/d/b/dba41e5f-66b8-4459-8a07-bbe893216f1e.webp?1783932923",
+    "grid": "https://cards.scryfall.io/grid/front/d/b/dba41e5f-66b8-4459-8a07-bbe893216f1e.webp?1783932923",
+    "display": "https://cards.scryfall.io/display/front/d/b/dba41e5f-66b8-4459-8a07-bbe893216f1e.webp?1783932923",
+    "art": "https://cards.scryfall.io/art/front/d/b/dba41e5f-66b8-4459-8a07-bbe893216f1e.webp?1783932923",
+    "crop": "https://cards.scryfall.io/crop/front/d/b/dba41e5f-66b8-4459-8a07-bbe893216f1e.webp?1783932923",
+    "jpeg": "https://cards.scryfall.io/normal/front/d/b/dba41e5f-66b8-4459-8a07-bbe893216f1e.jpg?1783932923"
+  },
+  "mana_cost": "{4}{W}{W}",
+  "cmc": 6.0,
+  "type_line": "Legendary Planeswalker — Ajani",
+  "oracle_text": "+2: You gain 2 life. Put two +1/+1 counters on up to one target creature.\n−3: Exile target creature. Its controller gains 2 life.\n−10: Creatures you control gain flying and double strike until end of turn.",
+  "loyalty": "5",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "dba41e5f-66b8-4459-8a07-bbe893216f1e",
+      "component": "combo_piece",
+      "name": "Ajani, Inspiring Leader",
+      "type_line": "Legendary Planeswalker — Ajani",
+      "uri": "https://api.scryfall.com/cards/dba41e5f-66b8-4459-8a07-bbe893216f1e"
+    },
+    {
+      "object": "related_card",
+      "id": "67edcb9b-f56b-4a34-b4bd-d22ee929041a",
+      "component": "combo_piece",
+      "name": "Goldmane Griffin",
+      "type_line": "Creature — Griffin",
+      "uri": "https://api.scryfall.com/cards/67edcb9b-f56b-4a34-b4bd-d22ee929041a"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "arena",
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": false,
+  "finishes": [
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "4a787360-9767-4f44-80b1-2405dc5e39c7",
+  "set": "m20",
+  "set_name": "Core Set 2020",
+  "set_type": "core",
+  "set_uri": "https://api.scryfall.com/sets/4a787360-9767-4f44-80b1-2405dc5e39c7",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Am20&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/m20?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/dba41e5f-66b8-4459-8a07-bbe893216f1e/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A15474e82-94b4-47e1-b91c-3deaf4dbffd6&unique=prints",
+  "collector_number": "282",
+  "digital": false,
+  "rarity": "mythic",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Yongjae Choi",
+  "artist_ids": [
+    "5ab91c3b-a6da-4751-a56e-81d0f61a67ab"
+  ],
+  "illustration_id": "d83c6985-6c7c-472e-89bf-b72ce0a75b73",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "planeswalkerdeck"
+  ],
+  "edhrec_rank": 15131,
+  "penny_rank": 15493,
+  "preview": {
+    "source": "Paste Magazine",
+    "source_uri": "https://www.pastemagazine.com/articles/2019/06/magic-2020-preview-cards.html",
+    "previewed_at": "2019-06-21"
+  },
+  "prices": {
+    "usd": null,
+    "usd_foil": "7.18",
+    "usd_etched": null,
+    "eur": null,
+    "eur_foil": "3.84",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=469835&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DAjani%252C%2BInspiring%2BLeader",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DAjani%252C%2BInspiring%2BLeader",
+    "edhrec": "https://edhrec.com/route/?cc=Ajani%2C+Inspiring+Leader"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F192695%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=379017&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/73481?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

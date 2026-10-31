@@ -1,0 +1,27 @@
+{
+  "oracle_id": "8d35c7c8-1342-40b7-82ec-2f7973ee8af8",
+  "name": "The Wasp, Janet Van Dyne",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Wasp, Janet Van Dyne",
+      "oracle_fingerprint": "ab4b13fbcfd160c4b3d72ba723dd3026",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, "Tapped", { "ControlledBy": "Opponents" }]
+                }
+              }
+            ],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 4 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

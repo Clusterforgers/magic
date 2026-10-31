@@ -1,0 +1,43 @@
+{
+  "oracle_id": "69095c25-6ae6-42f5-9c3d-1d8f86f03fae",
+  "name": "Manacles of Decay",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Manacles of Decay",
+      "oracle_fingerprint": "0f0838f5b1c984aa14da844bea49018b",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        { "Static": { "affected": "Attached", "mods": ["CantAttack"] } },
+        {
+          "Activated": {
+            "cost": "{B}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Attached",
+                  "mods": [{ "ModifyPT": { "power": -1, "toughness": -1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{R}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Attached",
+                  "mods": ["CantBlock"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "oracle_id": "55ede1d4-593d-433c-943a-4db12eeb5fa8",
+  "name": "Scalestorm Summoner",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Scalestorm Summoner",
+      "oracle_fingerprint": "1cdca9b779c8629ee9f110dbdc2298a5",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Count": [
+                          { "Type": "Creature" },
+                          { "ControlledBy": "You" },
+                          { "Compare": { "stat": "Power", "op": "Ge", "to": 4 } }
+                        ]
+                      },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Dinosaur",
+                            "colors": ["Red"],
+                            "types": ["Creature"],
+                            "subtypes": ["Dinosaur"],
+                            "power": 3,
+                            "toughness": 1
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

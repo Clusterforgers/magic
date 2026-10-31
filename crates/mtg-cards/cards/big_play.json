@@ -1,0 +1,31 @@
+{
+  "oracle_id": "607425ac-9e90-4c9e-88bf-72f8a76cce97",
+  "name": "Big Play",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Big Play",
+      "oracle_fingerprint": "f33f31bf192232069e1568af30e94d80",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "ModifyPT": { "power": 2, "toughness": 2 } },
+                    { "AddKeyword": "Reach" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

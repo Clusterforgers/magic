@@ -1,0 +1,29 @@
+{
+  "oracle_id": "831273d4-ced3-4659-b1f6-d5a0aeed3421",
+  "name": "Mischief and Mayhem",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mischief and Mayhem",
+      "oracle_fingerprint": "082acfb23815ff09edb1b1567cc40f36",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 0, "max": 2 } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 4, "toughness": 4 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

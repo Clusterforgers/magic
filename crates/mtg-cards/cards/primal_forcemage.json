@@ -1,0 +1,32 @@
+{
+  "oracle_id": "0daed54c-ced9-4910-b62f-693f25190607",
+  "name": "Primal Forcemage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Primal Forcemage",
+      "oracle_fingerprint": "eef52db648f298012bf4344a9a723ca1",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Triggering",
+                  "mods": [{ "ModifyPT": { "power": 3, "toughness": 3 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

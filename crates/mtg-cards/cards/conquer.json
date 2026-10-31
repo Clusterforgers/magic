@@ -1,0 +1,15 @@
+{
+  "oracle_id": "be15e131-0753-4ceb-a36b-4f9172241080",
+  "name": "Conquer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Conquer",
+      "oracle_fingerprint": "721ea3617c4de7f4e6d59aa819ad10f3",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Land" }] } },
+        { "Static": { "affected": "Attached", "mods": [{ "SetController": "You" }] } }
+      ]
+    }
+  ]
+}

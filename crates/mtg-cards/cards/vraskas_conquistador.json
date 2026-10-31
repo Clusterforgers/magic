@@ -1,0 +1,38 @@
+{
+  "oracle_id": "d3839a3f-3018-4a8d-b298-3f5b5fc70cd1",
+  "name": "Vraska's Conquistador",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vraska's Conquistador",
+      "oracle_fingerprint": "0a2521ffbc05585c53be8e0c6771befb",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [{ "Attacks": { "what": ["This"] } }, { "Blocks": { "what": ["This"] } }]
+            },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "Type": "Planeswalker" },
+                    { "Subtype": "Vraska" },
+                    { "ControlledBy": "You" }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              { "LoseLife": { "who": { "Target": 0 }, "amount": 2 } },
+              { "GainLife": { "amount": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

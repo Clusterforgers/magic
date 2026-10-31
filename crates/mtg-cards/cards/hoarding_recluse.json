@@ -1,0 +1,29 @@
+{
+  "oracle_id": "5fc09704-56cf-4e47-bd96-27ac34434941",
+  "name": "Hoarding Recluse",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hoarding Recluse",
+      "oracle_fingerprint": "edd6a80d55e7c0536919938a04eb3908",
+      "abilities": [
+        { "Keyword": "Reach" },
+        { "Keyword": "Deathtouch" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "targets": [
+              {
+                "what": { "Object": ["Other", { "In": "Graveyard" }] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Library": { "place": "Bottom" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

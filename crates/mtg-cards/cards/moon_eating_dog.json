@@ -1,0 +1,32 @@
+{
+  "oracle_id": "a8e69725-cd57-4340-83b1-498bc0bd77b8",
+  "name": "Moon-Eating Dog",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Moon-Eating Dog",
+      "oracle_fingerprint": "7d21a6f4e689814d1eb8539f5602db21",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Flying" }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "Type": "Planeswalker" },
+                    { "Subtype": "Yanling" },
+                    { "ControlledBy": "You" }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

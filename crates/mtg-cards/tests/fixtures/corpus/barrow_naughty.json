@@ -1,0 +1,138 @@
+{
+  "object": "card",
+  "id": "67da5ad8-4de2-4bd4-8b95-f2657e1fdee5",
+  "oracle_id": "95664c29-9801-4dfc-9dbd-465abf6bb4ee",
+  "multiverse_ids": [
+    629582
+  ],
+  "mtgo_id": 116472,
+  "arena_id": 86774,
+  "tcgplayer_id": 513342,
+  "cardmarket_id": 729564,
+  "name": "Barrow Naughty",
+  "lang": "en",
+  "released_at": "2023-09-08",
+  "uri": "https://api.scryfall.com/cards/67da5ad8-4de2-4bd4-8b95-f2657e1fdee5",
+  "scryfall_uri": "https://scryfall.com/card/woe/81/barrow-naughty?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:58:31Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/6/7/67da5ad8-4de2-4bd4-8b95-f2657e1fdee5.jpg?1783915111",
+    "normal": "https://cards.scryfall.io/normal/front/6/7/67da5ad8-4de2-4bd4-8b95-f2657e1fdee5.jpg?1783915111",
+    "large": "https://cards.scryfall.io/large/front/6/7/67da5ad8-4de2-4bd4-8b95-f2657e1fdee5.jpg?1783915111",
+    "png": "https://cards.scryfall.io/png/front/6/7/67da5ad8-4de2-4bd4-8b95-f2657e1fdee5.png?1783915111",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/6/7/67da5ad8-4de2-4bd4-8b95-f2657e1fdee5.jpg?1783915111",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/6/7/67da5ad8-4de2-4bd4-8b95-f2657e1fdee5.jpg?1783915111",
+    "thumb": "https://cards.scryfall.io/thumb/front/6/7/67da5ad8-4de2-4bd4-8b95-f2657e1fdee5.webp?1783915111",
+    "grid": "https://cards.scryfall.io/grid/front/6/7/67da5ad8-4de2-4bd4-8b95-f2657e1fdee5.webp?1783915111",
+    "display": "https://cards.scryfall.io/display/front/6/7/67da5ad8-4de2-4bd4-8b95-f2657e1fdee5.webp?1783915111",
+    "art": "https://cards.scryfall.io/art/front/6/7/67da5ad8-4de2-4bd4-8b95-f2657e1fdee5.webp?1783915111",
+    "crop": "https://cards.scryfall.io/crop/front/6/7/67da5ad8-4de2-4bd4-8b95-f2657e1fdee5.webp?1783915111",
+    "jpeg": "https://cards.scryfall.io/normal/front/6/7/67da5ad8-4de2-4bd4-8b95-f2657e1fdee5.jpg?1783915111"
+  },
+  "mana_cost": "{1}{B}",
+  "cmc": 2.0,
+  "type_line": "Creature — Faerie",
+  "oracle_text": "Flying\nThis creature has lifelink as long as you control another Faerie.\n{2}{B}: This creature gets +1/+0 until end of turn.",
+  "power": "1",
+  "toughness": "3",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Flying"
+  ],
+  "legalities": {
+    "standard": "legal",
+    "future": "legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "arena",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "79139661-13ee-43c4-8bad-a8c069f1a1df",
+  "set": "woe",
+  "set_name": "Wilds of Eldraine",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/79139661-13ee-43c4-8bad-a8c069f1a1df",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Awoe&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/woe?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/67da5ad8-4de2-4bd4-8b95-f2657e1fdee5/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A95664c29-9801-4dfc-9dbd-465abf6bb4ee&unique=prints",
+  "collector_number": "81",
+  "digital": false,
+  "rarity": "common",
+  "flavor_text": "\"The difference between mischief and malice? Numbers.\"",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Matt Forsyth",
+  "artist_ids": [
+    "5548bc56-e1cc-40d5-a6cd-ae81beafa8a3"
+  ],
+  "illustration_id": "1e953d5d-044a-4243-91cf-3b09c7a21876",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 17352,
+  "penny_rank": 10448,
+  "prices": {
+    "usd": "0.17",
+    "usd_foil": "0.28",
+    "usd_etched": null,
+    "eur": "0.06",
+    "eur_foil": "0.20",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=629582&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DBarrow%2BNaughty",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DBarrow%2BNaughty",
+    "edhrec": "https://edhrec.com/route/?cc=Barrow+Naughty"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F513342%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=729564&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/116472?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

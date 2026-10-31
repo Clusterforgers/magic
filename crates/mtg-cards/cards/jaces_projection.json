@@ -1,0 +1,28 @@
+{
+  "oracle_id": "ff8db8aa-1d5a-42f8-8056-8da0da9846bc",
+  "name": "Jace's Projection",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jace's Projection",
+      "oracle_fingerprint": "446adae14ce6fcfed85035594429a34d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Drew": { "who": "You" } },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{3}{U}",
+            "targets": [
+              { "what": { "Object": [{ "Type": "Planeswalker" }, { "Subtype": "Jace" }] } }
+            ],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "loyalty" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

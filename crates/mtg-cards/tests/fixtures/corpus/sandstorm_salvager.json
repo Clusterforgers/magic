@@ -1,0 +1,160 @@
+{
+  "object": "card",
+  "id": "13b0f27c-a359-4702-833a-82fec161eeec",
+  "oracle_id": "ec19a9bc-6fc1-4150-976b-37a47b165016",
+  "multiverse_ids": [
+    660315
+  ],
+  "mtgo_id": 125399,
+  "arena_id": 90680,
+  "tcgplayer_id": 545133,
+  "cardmarket_id": 764467,
+  "name": "Sandstorm Salvager",
+  "lang": "en",
+  "released_at": "2024-04-19",
+  "uri": "https://api.scryfall.com/cards/13b0f27c-a359-4702-833a-82fec161eeec",
+  "scryfall_uri": "https://scryfall.com/card/big/19/sandstorm-salvager?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:06:37Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/1/3/13b0f27c-a359-4702-833a-82fec161eeec.jpg?1783911997",
+    "normal": "https://cards.scryfall.io/normal/front/1/3/13b0f27c-a359-4702-833a-82fec161eeec.jpg?1783911997",
+    "large": "https://cards.scryfall.io/large/front/1/3/13b0f27c-a359-4702-833a-82fec161eeec.jpg?1783911997",
+    "png": "https://cards.scryfall.io/png/front/1/3/13b0f27c-a359-4702-833a-82fec161eeec.png?1783911997",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/1/3/13b0f27c-a359-4702-833a-82fec161eeec.jpg?1783911997",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/1/3/13b0f27c-a359-4702-833a-82fec161eeec.jpg?1783911997",
+    "thumb": "https://cards.scryfall.io/thumb/front/1/3/13b0f27c-a359-4702-833a-82fec161eeec.webp?1783911997",
+    "grid": "https://cards.scryfall.io/grid/front/1/3/13b0f27c-a359-4702-833a-82fec161eeec.webp?1783911997",
+    "display": "https://cards.scryfall.io/display/front/1/3/13b0f27c-a359-4702-833a-82fec161eeec.webp?1783911997",
+    "art": "https://cards.scryfall.io/art/front/1/3/13b0f27c-a359-4702-833a-82fec161eeec.webp?1783911997",
+    "crop": "https://cards.scryfall.io/crop/front/1/3/13b0f27c-a359-4702-833a-82fec161eeec.webp?1783911997",
+    "jpeg": "https://cards.scryfall.io/normal/front/1/3/13b0f27c-a359-4702-833a-82fec161eeec.jpg?1783911997"
+  },
+  "mana_cost": "{2}{G}",
+  "cmc": 3.0,
+  "type_line": "Creature — Human Artificer",
+  "oracle_text": "When this creature enters, create a 3/3 colorless Golem artifact creature token.\n{2}, {T}: Put a +1/+1 counter on each creature token you control. They gain trample until end of turn.",
+  "power": "1",
+  "toughness": "1",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "406e2960-f560-48bb-b4a6-4bd35889a8f8",
+      "component": "token",
+      "name": "Golem",
+      "type_line": "Token Artifact Creature — Golem",
+      "uri": "https://api.scryfall.com/cards/406e2960-f560-48bb-b4a6-4bd35889a8f8"
+    },
+    {
+      "object": "related_card",
+      "id": "84c96b72-b0e1-4ea3-9984-5a67718d070d",
+      "component": "combo_piece",
+      "name": "Sandstorm Salvager",
+      "type_line": "Creature — Human Artificer",
+      "uri": "https://api.scryfall.com/cards/84c96b72-b0e1-4ea3-9984-5a67718d070d"
+    }
+  ],
+  "legalities": {
+    "standard": "legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "arena",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "14332d2c-ba93-4498-bf3f-9d601f88f783",
+  "set": "big",
+  "set_name": "The Big Score",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/14332d2c-ba93-4498-bf3f-9d601f88f783",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Abig&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/big?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/13b0f27c-a359-4702-833a-82fec161eeec/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Aec19a9bc-6fc1-4150-976b-37a47b165016&unique=prints",
+  "collector_number": "19",
+  "digital": false,
+  "rarity": "mythic",
+  "flavor_text": "Mora didn't want friends, but she didn't mind having someone to watch her back.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Francis Tneh",
+  "artist_ids": [
+    "87cde7a9-7da8-4ebd-abb3-49ca146085bf"
+  ],
+  "illustration_id": "82b83f63-23f0-48ce-9238-8c0e5dc1ae20",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 9357,
+  "penny_rank": 5231,
+  "preview": {
+    "source": "Human Monk",
+    "source_uri": "https://twitter.com/Human_Monk/status/1775482199917416826",
+    "previewed_at": "2024-04-03"
+  },
+  "prices": {
+    "usd": "0.84",
+    "usd_foil": "1.19",
+    "usd_etched": null,
+    "eur": "1.29",
+    "eur_foil": "1.92",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=660315&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DSandstorm%2BSalvager",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DSandstorm%2BSalvager",
+    "edhrec": "https://edhrec.com/route/?cc=Sandstorm+Salvager"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F545133%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=764467&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/125399?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

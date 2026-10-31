@@ -1,0 +1,28 @@
+{
+  "oracle_id": "18a45b81-1946-4be6-8f2c-8c21d11c86f8",
+  "name": "Flowstone Embrace",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Flowstone Embrace",
+      "oracle_fingerprint": "e6592a0448501c0ba9d71c481e2cfa36",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Attached",
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": -2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "oracle_id": "5fe13418-c63c-4f3c-9a42-7ab06949e3cd",
+  "name": "Jeskai Runemark",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jeskai Runemark",
+      "oracle_fingerprint": "124694f4cf7fffa16d32a3d8a3fdbe5f",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "AddKeyword": "Flying" }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "AnyOf": [{ "Color": "Red" }, { "Color": "White" }] },
+                    { "ControlledBy": "You" }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

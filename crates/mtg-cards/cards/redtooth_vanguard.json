@@ -1,0 +1,28 @@
+{
+  "oracle_id": "9e459e48-d2bb-4c4e-9a87-58efb56cddd1",
+  "name": "Redtooth Vanguard",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Redtooth Vanguard",
+      "oracle_fingerprint": "877a2f094b6c26e0f50e6797e7515441",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Enchantment" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "from": "Graveyard",
+            "effects": [
+              { "Pay": { "cost": "{2}", "paid": [{ "Move": { "what": "This", "to": "Hand" } }] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

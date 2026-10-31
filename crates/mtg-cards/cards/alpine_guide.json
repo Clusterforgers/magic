@@ -1,0 +1,41 @@
+{
+  "oracle_id": "55b12241-2495-45e6-b618-3746d5521291",
+  "name": "Alpine Guide",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Alpine Guide",
+      "oracle_fingerprint": "7a8aeee2f112bcfb4261ddde661689f1",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "Search": { "filter": [{ "Subtype": "Mountain" }], "as": "found" } },
+                    {
+                      "Move": {
+                        "what": { "Bound": "found" },
+                        "to": { "Battlefield": { "tapped": true } }
+                      }
+                    },
+                    { "Shuffle": {} }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Rule": { "rule": { "MustAttack": "This" } } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield" } },
+            "effects": [{ "Sacrifice": { "filter": [{ "Subtype": "Mountain" }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

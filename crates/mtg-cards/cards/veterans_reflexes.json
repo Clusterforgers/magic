@@ -1,0 +1,28 @@
+{
+  "oracle_id": "efee0ca0-0897-4972-99c4-432561b6e9f8",
+  "name": "Veteran's Reflexes",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Veteran's Reflexes",
+      "oracle_fingerprint": "2f8ab2ce7d29fc55052142a0ab7d05a0",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Untap": { "what": { "Target": 0 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

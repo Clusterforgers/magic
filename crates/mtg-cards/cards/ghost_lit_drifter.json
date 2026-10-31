@@ -1,0 +1,50 @@
+{
+  "oracle_id": "c8618fec-e124-4f42-b440-0f41a7de3d1f",
+  "name": "Ghost-Lit Drifter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ghost-Lit Drifter",
+      "oracle_fingerprint": "2f5281e6160aa7db9eed6d01a0fd4f5f",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": "{2}{U}",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Other"] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Flying" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{X}{U}" }, "DiscardSelf"],
+            "from": "Hand",
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }] },
+                "bounds": { "min": "X", "max": "X" }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Flying" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

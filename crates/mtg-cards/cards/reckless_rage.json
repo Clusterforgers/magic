@@ -1,0 +1,27 @@
+{
+  "oracle_id": "d7e2b2ba-cb5e-41f1-ad33-baf56c0b72ed",
+  "name": "Reckless Rage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Reckless Rage",
+      "oracle_fingerprint": "d6f3f3cec8616a982929e9014f7f0650",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "Not": { "ControlledBy": "You" } }] }
+              },
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 4 } },
+              { "DealDamage": { "to": { "Target": 1 }, "amount": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

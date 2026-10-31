@@ -1,0 +1,60 @@
+{
+  "oracle_id": "d1a665f1-b06f-4775-bcb1-c57a476fa651",
+  "name": "Invigorated Rampage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Invigorated Rampage",
+      "oracle_fingerprint": "fdcebf435449be70625814ca4b75f2ee",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": { "Target": 0 },
+                            "mods": [
+                              { "ModifyPT": { "power": 4, "toughness": 0 } },
+                              { "AddKeyword": "Trample" }
+                            ],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [
+                        {
+                          "what": { "Object": [{ "Type": "Creature" }] },
+                          "bounds": { "min": 2, "max": 2 }
+                        }
+                      ],
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": { "Target": 0 },
+                            "mods": [
+                              { "ModifyPT": { "power": 2, "toughness": 0 } },
+                              { "AddKeyword": "Trample" }
+                            ],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

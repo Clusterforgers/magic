@@ -1,0 +1,27 @@
+{
+  "oracle_id": "4ed55e9c-84ea-42a3-a32f-469da56b3eb5",
+  "name": "Shieldmate's Blessing",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shieldmate's Blessing",
+      "oracle_fingerprint": "23d59c65bf1db8b6e9392f2c9181d752",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": { "Target": 0 } } },
+                  "by": { "PreventUpTo": 3 },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

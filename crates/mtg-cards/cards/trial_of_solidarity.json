@@ -1,0 +1,41 @@
+{
+  "oracle_id": "cbcc2577-7556-4174-83ff-9e00611412b3",
+  "name": "Trial of Solidarity",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Trial of Solidarity",
+      "oracle_fingerprint": "128f25f813150e030b448fed18ff0f93",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [
+                    { "ModifyPT": { "power": 2, "toughness": 1 } },
+                    { "AddKeyword": "Vigilance" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Subtype": "Cartouche" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [{ "Move": { "what": "This", "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

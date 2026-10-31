@@ -1,0 +1,54 @@
+{
+  "oracle_id": "9d835137-584c-46bd-952e-4b2812bba1a3",
+  "name": "Charge the Sanctum",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Charge the Sanctum",
+      "oracle_fingerprint": "755237b29e25f2a7a912ed2ad036a1fe",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": {
+                              "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                            },
+                            "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": { "Target": 0 },
+                            "mods": [
+                              { "ModifyPT": { "power": 2, "toughness": 0 } },
+                              { "AddKeyword": "FirstStrike" }
+                            ],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        },
+                        { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

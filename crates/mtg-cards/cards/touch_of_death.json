@@ -1,0 +1,30 @@
+{
+  "oracle_id": "52a768eb-16eb-4643-b8be-7a4b5b32f28b",
+  "name": "Touch of Death",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Touch of Death",
+      "oracle_fingerprint": "b33eb982d174766a3566c2c2e7ed4221",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Either": ["Player", { "Object": [{ "Type": "Planeswalker" }] }] } }
+            ],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 1 } },
+              { "GainLife": { "amount": 1 } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "Upkeep" } },
+                  "effects": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

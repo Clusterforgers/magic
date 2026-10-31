@@ -1,0 +1,25 @@
+{
+  "oracle_id": "d9c29e6e-5949-4599-bf74-b9539e753f76",
+  "name": "Bounce Off",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bounce Off",
+      "oracle_fingerprint": "c42dd792d303e186338673e10c8184ee",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Creature" }, { "Subtype": "Vehicle" }] }]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

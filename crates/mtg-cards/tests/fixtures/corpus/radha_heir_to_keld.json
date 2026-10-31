@@ -1,0 +1,143 @@
+{
+  "object": "card",
+  "id": "ecb7c19a-b4af-405d-b016-a546ed12a99d",
+  "oracle_id": "61d94fe7-b559-4bd4-94a7-f4ed4c853b4b",
+  "multiverse_ids": [
+    599070
+  ],
+  "mtgo_id": 107881,
+  "tcgplayer_id": 457476,
+  "cardmarket_id": 688759,
+  "name": "Radha, Heir to Keld",
+  "lang": "en",
+  "released_at": "2023-01-13",
+  "uri": "https://api.scryfall.com/cards/ecb7c19a-b4af-405d-b016-a546ed12a99d",
+  "scryfall_uri": "https://scryfall.com/card/dmr/196/radha-heir-to-keld?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T04:53:49Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/e/c/ecb7c19a-b4af-405d-b016-a546ed12a99d.jpg?1783918429",
+    "normal": "https://cards.scryfall.io/normal/front/e/c/ecb7c19a-b4af-405d-b016-a546ed12a99d.jpg?1783918429",
+    "large": "https://cards.scryfall.io/large/front/e/c/ecb7c19a-b4af-405d-b016-a546ed12a99d.jpg?1783918429",
+    "png": "https://cards.scryfall.io/png/front/e/c/ecb7c19a-b4af-405d-b016-a546ed12a99d.png?1783918429",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/e/c/ecb7c19a-b4af-405d-b016-a546ed12a99d.jpg?1783918429",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/e/c/ecb7c19a-b4af-405d-b016-a546ed12a99d.jpg?1783918429",
+    "thumb": "https://cards.scryfall.io/thumb/front/e/c/ecb7c19a-b4af-405d-b016-a546ed12a99d.webp?1783918429",
+    "grid": "https://cards.scryfall.io/grid/front/e/c/ecb7c19a-b4af-405d-b016-a546ed12a99d.webp?1783918429",
+    "display": "https://cards.scryfall.io/display/front/e/c/ecb7c19a-b4af-405d-b016-a546ed12a99d.webp?1783918429",
+    "art": "https://cards.scryfall.io/art/front/e/c/ecb7c19a-b4af-405d-b016-a546ed12a99d.webp?1783918429",
+    "crop": "https://cards.scryfall.io/crop/front/e/c/ecb7c19a-b4af-405d-b016-a546ed12a99d.webp?1783918429",
+    "jpeg": "https://cards.scryfall.io/normal/front/e/c/ecb7c19a-b4af-405d-b016-a546ed12a99d.jpg?1783918429"
+  },
+  "mana_cost": "{R}{G}",
+  "cmc": 2.0,
+  "type_line": "Legendary Creature — Elf Warrior",
+  "oracle_text": "Whenever Radha attacks, you may add {R}{R}.\n{T}: Add {G}.",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "G",
+    "R"
+  ],
+  "color_identity": [
+    "G",
+    "R"
+  ],
+  "keywords": [],
+  "produced_mana": [
+    "G",
+    "R"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "ca4c2884-e539-4b7f-980d-5d6a50220f2a",
+  "set": "dmr",
+  "set_name": "Dominaria Remastered",
+  "set_type": "masters",
+  "set_uri": "https://api.scryfall.com/sets/ca4c2884-e539-4b7f-980d-5d6a50220f2a",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Admr&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/dmr?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/ecb7c19a-b4af-405d-b016-a546ed12a99d/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A61d94fe7-b559-4bd4-94a7-f4ed4c853b4b&unique=prints",
+  "collector_number": "196",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "\"Step aside, weakling, or I'll swat you like the bug you are.\"",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Mila Pesic",
+  "artist_ids": [
+    "81c5ec23-220b-4efa-b7df-9e49dd371e8d"
+  ],
+  "illustration_id": "91263829-6fd5-468c-b3a7-2ce0128e36d7",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 6468,
+  "penny_rank": 5549,
+  "prices": {
+    "usd": "0.23",
+    "usd_foil": "0.34",
+    "usd_etched": null,
+    "eur": "0.13",
+    "eur_foil": "0.18",
+    "tix": "0.04"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=599070&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DRadha%252C%2BHeir%2Bto%2BKeld",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DRadha%252C%2BHeir%2Bto%2BKeld",
+    "edhrec": "https://edhrec.com/route/?cc=Radha%2C+Heir+to+Keld"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F457476%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=688759&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/107881?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

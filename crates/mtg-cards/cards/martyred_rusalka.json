@@ -1,0 +1,28 @@
+{
+  "oracle_id": "21bf5ae1-d7a0-406d-88fd-009dfa919096",
+  "name": "Martyred Rusalka",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Martyred Rusalka",
+      "oracle_fingerprint": "155ed4ecf1a3775dcb7cea1e378e3948",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{W}" }, { "Sacrifice": { "filter": [{ "Type": "Creature" }] } }],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["CantAttack"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

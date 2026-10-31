@@ -1,0 +1,26 @@
+{
+  "oracle_id": "0f12aec9-5898-4261-bebd-1b545e0aea68",
+  "name": "Mind Unbound",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mind Unbound",
+      "oracle_fingerprint": "8c8ad7c345eb9415c9b4812e80c6b837",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": { "Other": "lore" } } },
+              {
+                "Draw": {
+                  "count": { "Counters": { "on": "This", "counter": { "Other": "lore" } } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

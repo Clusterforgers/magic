@@ -1,0 +1,28 @@
+{
+  "oracle_id": "0acbc9a6-0de0-4096-b35c-1a586a1312ea",
+  "name": "Savage Surge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Savage Surge",
+      "oracle_fingerprint": "d5f0aa7c1e95b875f2c3c9679b8acb41",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Untap": { "what": { "Target": 0 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "oracle_id": "ea871b01-ebaf-4987-a2bf-949cdd367ad1",
+  "name": "Reito Lantern",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Reito Lantern",
+      "oracle_fingerprint": "5912244294f2695c4dac22a499f4d43a",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{3}",
+            "targets": [{ "what": { "Object": [{ "In": "Graveyard" }] } }],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Library": { "place": "Bottom" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

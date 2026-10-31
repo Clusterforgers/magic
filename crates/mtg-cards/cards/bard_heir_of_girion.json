@@ -1,0 +1,29 @@
+{
+  "oracle_id": "b0e88bd6-50a3-48d7-a15f-ec51f6bced0d",
+  "name": "Bard, Heir of Girion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bard, Heir of Girion",
+      "oracle_fingerprint": "af2c832b909d1866163394d23cfb8e54",
+      "abilities": [
+        { "Keyword": "Reach" },
+        { "Keyword": "Vigilance" },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }] },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

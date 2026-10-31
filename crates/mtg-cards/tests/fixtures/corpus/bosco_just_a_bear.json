@@ -1,0 +1,158 @@
+{
+  "object": "card",
+  "id": "dfb85545-22d0-4265-94e2-8805d2ccf0f8",
+  "oracle_id": "a213c650-06cc-4ea8-86f8-78ccfe103b38",
+  "multiverse_ids": [],
+  "resource_id": "FE5AEFACFAA3829F51E9B8CD3E65AF6C35D7C4FBFF0378BEA345C4B12D4D5285",
+  "mtgo_id": 145662,
+  "arena_id": 98277,
+  "tcgplayer_id": 662384,
+  "cardmarket_id": 857952,
+  "name": "Bosco, Just a Bear",
+  "lang": "en",
+  "released_at": "2025-11-21",
+  "uri": "https://api.scryfall.com/cards/dfb85545-22d0-4265-94e2-8805d2ccf0f8",
+  "scryfall_uri": "https://scryfall.com/card/tle/132/bosco-just-a-bear?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T01:06:57Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/d/f/dfb85545-22d0-4265-94e2-8805d2ccf0f8.jpg?1783904817",
+    "normal": "https://cards.scryfall.io/normal/front/d/f/dfb85545-22d0-4265-94e2-8805d2ccf0f8.jpg?1783904817",
+    "large": "https://cards.scryfall.io/large/front/d/f/dfb85545-22d0-4265-94e2-8805d2ccf0f8.jpg?1783904817",
+    "png": "https://cards.scryfall.io/png/front/d/f/dfb85545-22d0-4265-94e2-8805d2ccf0f8.png?1783904817",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/d/f/dfb85545-22d0-4265-94e2-8805d2ccf0f8.jpg?1783904817",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/d/f/dfb85545-22d0-4265-94e2-8805d2ccf0f8.jpg?1783904817",
+    "thumb": "https://cards.scryfall.io/thumb/front/d/f/dfb85545-22d0-4265-94e2-8805d2ccf0f8.webp?1783904817",
+    "grid": "https://cards.scryfall.io/grid/front/d/f/dfb85545-22d0-4265-94e2-8805d2ccf0f8.webp?1783904817",
+    "display": "https://cards.scryfall.io/display/front/d/f/dfb85545-22d0-4265-94e2-8805d2ccf0f8.webp?1783904817",
+    "art": "https://cards.scryfall.io/art/front/d/f/dfb85545-22d0-4265-94e2-8805d2ccf0f8.webp?1783904817",
+    "crop": "https://cards.scryfall.io/crop/front/d/f/dfb85545-22d0-4265-94e2-8805d2ccf0f8.webp?1783904817",
+    "jpeg": "https://cards.scryfall.io/normal/front/d/f/dfb85545-22d0-4265-94e2-8805d2ccf0f8.jpg?1783904817"
+  },
+  "mana_cost": "{4}{G}",
+  "cmc": 5.0,
+  "type_line": "Legendary Creature — Bear",
+  "oracle_text": "When Bosco enters, create a Food token for each legendary creature you control. (It's an artifact with \"{2}, {T}, Sacrifice this token: You gain 3 life.\")\n{2}{G}, Sacrifice a Food: Put two +1/+1 counters on Bosco. He gains trample until end of turn.",
+  "power": "4",
+  "toughness": "4",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Food"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "dfb85545-22d0-4265-94e2-8805d2ccf0f8",
+      "component": "combo_piece",
+      "name": "Bosco, Just a Bear",
+      "type_line": "Legendary Creature — Bear",
+      "uri": "https://api.scryfall.com/cards/dfb85545-22d0-4265-94e2-8805d2ccf0f8"
+    },
+    {
+      "object": "related_card",
+      "id": "d0e54f01-1301-481f-ace0-87966b5135f0",
+      "component": "token",
+      "name": "Food",
+      "type_line": "Token Artifact — Food",
+      "uri": "https://api.scryfall.com/cards/d0e54f01-1301-481f-ace0-87966b5135f0"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "arena",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "a75e6ceb-d62c-4063-8e96-f269e3a0b025",
+  "set": "tle",
+  "set_name": "Avatar: The Last Airbender Eternal",
+  "set_type": "eternal",
+  "set_uri": "https://api.scryfall.com/sets/a75e6ceb-d62c-4063-8e96-f269e3a0b025",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Atle&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/tle?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/dfb85545-22d0-4265-94e2-8805d2ccf0f8/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Aa213c650-06cc-4ea8-86f8-78ccfe103b38&unique=prints",
+  "collector_number": "132",
+  "digital": false,
+  "rarity": "uncommon",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Airi Yoshihisa",
+  "artist_ids": [
+    "03b3e022-a7a0-43f9-ada8-2e9989720103"
+  ],
+  "illustration_id": "b33136a0-b1ab-4abc-b3e1-a782a9a27c4a",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 13230,
+  "prices": {
+    "usd": "0.49",
+    "usd_foil": "4.31",
+    "usd_etched": null,
+    "eur": "0.43",
+    "eur_foil": "1.12",
+    "tix": "0.04"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DBosco%252C%2BJust%2Ba%2BBear",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DBosco%252C%2BJust%2Ba%2BBear",
+    "edhrec": "https://edhrec.com/route/?cc=Bosco%2C+Just+a+Bear"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F662384%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=857952&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/145662?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

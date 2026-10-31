@@ -1,0 +1,43 @@
+{
+  "oracle_id": "70a04e3f-e123-4925-9a02-9825488f1bc8",
+  "name": "Maulfist Doorbuster",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Maulfist Doorbuster",
+      "oracle_fingerprint": "dcd8a357cacc947e6d6359cc6789bcc6",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "PutCounters": { "on": "You", "counter": { "Other": "energy" }, "count": 2 } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "PayEnergy": 1 }],
+                  "paid": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": ["CantBlock"],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,151 @@
+{
+  "object": "card",
+  "id": "acadb754-4a3b-4633-b784-252c0e1ab650",
+  "oracle_id": "b272cb56-dcba-479e-9fba-5b31e616a95f",
+  "multiverse_ids": [
+    426893
+  ],
+  "mtgo_id": 63984,
+  "mtgo_foil_id": 63985,
+  "tcgplayer_id": 129785,
+  "cardmarket_id": 296735,
+  "name": "Trial of Strength",
+  "lang": "en",
+  "released_at": "2017-04-28",
+  "uri": "https://api.scryfall.com/cards/acadb754-4a3b-4633-b784-252c0e1ab650",
+  "scryfall_uri": "https://scryfall.com/card/akh/191/trial-of-strength?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T09:54:25Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/a/c/acadb754-4a3b-4633-b784-252c0e1ab650.jpg?1783936465",
+    "normal": "https://cards.scryfall.io/normal/front/a/c/acadb754-4a3b-4633-b784-252c0e1ab650.jpg?1783936465",
+    "large": "https://cards.scryfall.io/large/front/a/c/acadb754-4a3b-4633-b784-252c0e1ab650.jpg?1783936465",
+    "png": "https://cards.scryfall.io/png/front/a/c/acadb754-4a3b-4633-b784-252c0e1ab650.png?1783936465",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/a/c/acadb754-4a3b-4633-b784-252c0e1ab650.jpg?1783936465",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/a/c/acadb754-4a3b-4633-b784-252c0e1ab650.jpg?1783936465",
+    "thumb": "https://cards.scryfall.io/thumb/front/a/c/acadb754-4a3b-4633-b784-252c0e1ab650.webp?1783936465",
+    "grid": "https://cards.scryfall.io/grid/front/a/c/acadb754-4a3b-4633-b784-252c0e1ab650.webp?1783936465",
+    "display": "https://cards.scryfall.io/display/front/a/c/acadb754-4a3b-4633-b784-252c0e1ab650.webp?1783936465",
+    "art": "https://cards.scryfall.io/art/front/a/c/acadb754-4a3b-4633-b784-252c0e1ab650.webp?1783936465",
+    "crop": "https://cards.scryfall.io/crop/front/a/c/acadb754-4a3b-4633-b784-252c0e1ab650.webp?1783936465",
+    "jpeg": "https://cards.scryfall.io/normal/front/a/c/acadb754-4a3b-4633-b784-252c0e1ab650.jpg?1783936465"
+  },
+  "mana_cost": "{2}{G}",
+  "cmc": 3.0,
+  "type_line": "Enchantment",
+  "oracle_text": "When this enchantment enters, create a 4/2 green Beast creature token.\nWhen a Cartouche you control enters, return this enchantment to its owner's hand.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "29b7ecd1-c70e-467c-a9ea-99c2668c3405",
+      "component": "token",
+      "name": "Beast",
+      "type_line": "Token Creature — Beast",
+      "uri": "https://api.scryfall.com/cards/29b7ecd1-c70e-467c-a9ea-99c2668c3405"
+    },
+    {
+      "object": "related_card",
+      "id": "acadb754-4a3b-4633-b784-252c0e1ab650",
+      "component": "combo_piece",
+      "name": "Trial of Strength",
+      "type_line": "Enchantment",
+      "uri": "https://api.scryfall.com/cards/acadb754-4a3b-4633-b784-252c0e1ab650"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "02d1c536-68bc-4208-9b65-7741ef1f9da8",
+  "set": "akh",
+  "set_name": "Amonkhet",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/02d1c536-68bc-4208-9b65-7741ef1f9da8",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aakh&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/akh?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/acadb754-4a3b-4633-b784-252c0e1ab650/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ab272cb56-dcba-479e-9fba-5b31e616a95f&unique=prints",
+  "collector_number": "191",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "\"Instincts to guide. Strength to overcome.\"",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Kieran Yanner",
+  "artist_ids": [
+    "aa7e89ed-d294-4633-9057-ce04dacfcfa4"
+  ],
+  "illustration_id": "b7fdbc67-10c0-4bfa-a4c3-8a5aa5183bb2",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 28924,
+  "penny_rank": 11700,
+  "prices": {
+    "usd": "0.09",
+    "usd_foil": "0.32",
+    "usd_etched": null,
+    "eur": "0.05",
+    "eur_foil": "0.16",
+    "tix": "0.04"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=426893&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DTrial%2Bof%2BStrength",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DTrial%2Bof%2BStrength",
+    "edhrec": "https://edhrec.com/route/?cc=Trial+of+Strength"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F129785%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=296735&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/63984?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

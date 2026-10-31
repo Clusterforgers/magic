@@ -1,0 +1,36 @@
+{
+  "oracle_id": "d6d83a51-9d57-44a7-aae3-a96d43ec5ac8",
+  "name": "Guac & Marshmallow Pizza",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Guac & Marshmallow Pizza",
+      "oracle_fingerprint": "c4c936d8264df578ad99a628c2e1bb09",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Untap": { "what": { "Target": 0 } } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap", "SacrificeSelf"],
+            "effects": [{ "GainLife": { "amount": 3 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

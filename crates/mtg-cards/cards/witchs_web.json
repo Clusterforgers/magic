@@ -1,0 +1,31 @@
+{
+  "oracle_id": "6ec9a14a-0a62-4f8a-9147-3cab01411a65",
+  "name": "Witch's Web",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Witch's Web",
+      "oracle_fingerprint": "bf23716bc8baddfa6a918bcba0ead7cd",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "ModifyPT": { "power": 3, "toughness": 3 } },
+                    { "AddKeyword": "Reach" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Untap": { "what": { "Target": 0 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

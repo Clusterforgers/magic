@@ -1,0 +1,133 @@
+{
+  "object": "card",
+  "id": "e0b61fb2-11e5-45ae-873d-85f79f161950",
+  "oracle_id": "76aea8c6-3bab-45e9-afb4-65e5597bb2fa",
+  "multiverse_ids": [
+    145799
+  ],
+  "mtgo_id": 28623,
+  "mtgo_foil_id": 28624,
+  "tcgplayer_id": 15645,
+  "cardmarket_id": 17784,
+  "name": "Surge of Thoughtweft",
+  "lang": "en",
+  "released_at": "2007-10-12",
+  "uri": "https://api.scryfall.com/cards/e0b61fb2-11e5-45ae-873d-85f79f161950",
+  "scryfall_uri": "https://scryfall.com/card/lrw/43/surge-of-thoughtweft?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T11:41:48Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/e/0/e0b61fb2-11e5-45ae-873d-85f79f161950.jpg?1783942908",
+    "normal": "https://cards.scryfall.io/normal/front/e/0/e0b61fb2-11e5-45ae-873d-85f79f161950.jpg?1783942908",
+    "large": "https://cards.scryfall.io/large/front/e/0/e0b61fb2-11e5-45ae-873d-85f79f161950.jpg?1783942908",
+    "png": "https://cards.scryfall.io/png/front/e/0/e0b61fb2-11e5-45ae-873d-85f79f161950.png?1783942908",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/e/0/e0b61fb2-11e5-45ae-873d-85f79f161950.jpg?1783942908",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/e/0/e0b61fb2-11e5-45ae-873d-85f79f161950.jpg?1783942908",
+    "thumb": "https://cards.scryfall.io/thumb/front/e/0/e0b61fb2-11e5-45ae-873d-85f79f161950.webp?1783942908",
+    "grid": "https://cards.scryfall.io/grid/front/e/0/e0b61fb2-11e5-45ae-873d-85f79f161950.webp?1783942908",
+    "display": "https://cards.scryfall.io/display/front/e/0/e0b61fb2-11e5-45ae-873d-85f79f161950.webp?1783942908",
+    "art": "https://cards.scryfall.io/art/front/e/0/e0b61fb2-11e5-45ae-873d-85f79f161950.webp?1783942908",
+    "crop": "https://cards.scryfall.io/crop/front/e/0/e0b61fb2-11e5-45ae-873d-85f79f161950.webp?1783942908",
+    "jpeg": "https://cards.scryfall.io/normal/front/e/0/e0b61fb2-11e5-45ae-873d-85f79f161950.jpg?1783942908"
+  },
+  "mana_cost": "{1}{W}",
+  "cmc": 2.0,
+  "type_line": "Kindred Instant — Kithkin",
+  "oracle_text": "Creatures you control get +1/+1 until end of turn. If you control a Kithkin, draw a card.",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "30ec97cb-dca9-4bf4-a98b-310f9d8ceaff",
+  "set": "lrw",
+  "set_name": "Lorwyn",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/30ec97cb-dca9-4bf4-a98b-310f9d8ceaff",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Alrw&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/lrw?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/e0b61fb2-11e5-45ae-873d-85f79f161950/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A76aea8c6-3bab-45e9-afb4-65e5597bb2fa&unique=prints",
+  "collector_number": "43",
+  "digital": false,
+  "rarity": "common",
+  "flavor_text": "Kithkin weave together their very thoughts, creating a depth of cooperation unknown to other races.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Randy Gallegos",
+  "artist_ids": [
+    "a5048cc7-438a-4378-98e4-da99b78e1db0"
+  ],
+  "illustration_id": "380514bf-496e-4729-9909-2bb52da5447f",
+  "border_color": "black",
+  "frame": "2003",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 21784,
+  "penny_rank": 10414,
+  "prices": {
+    "usd": "0.21",
+    "usd_foil": "1.17",
+    "usd_etched": null,
+    "eur": "0.13",
+    "eur_foil": "0.36",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=145799&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DSurge%2Bof%2BThoughtweft",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DSurge%2Bof%2BThoughtweft",
+    "edhrec": "https://edhrec.com/route/?cc=Surge+of+Thoughtweft"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F15645%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=17784&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/28623?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

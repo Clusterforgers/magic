@@ -1,0 +1,21 @@
+{
+  "oracle_id": "094689cc-617a-426e-beb9-3f8de692cd5b",
+  "name": "Swooping Protector",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Swooping Protector",
+      "oracle_fingerprint": "51003422289e79bbb5e17360e2ce6523",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": "Flying" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": { "Other": "shield" }, "count": 1 } }
+          }
+        }
+      ]
+    }
+  ]
+}

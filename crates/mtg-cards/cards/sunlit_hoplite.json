@@ -1,0 +1,39 @@
+{
+  "oracle_id": "e99c58bd-b405-4474-bd32-1a993c9f2979",
+  "name": "Sunlit Hoplite",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sunlit Hoplite",
+      "oracle_fingerprint": "54def3dcb93062e1de3f8cfe6577b7ac",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "FirstStrike" }],
+            "condition": "YourTurn"
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "Type": "Planeswalker" },
+                    { "Subtype": "Elspeth" },
+                    { "ControlledBy": "You" }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

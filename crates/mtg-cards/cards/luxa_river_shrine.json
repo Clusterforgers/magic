@@ -1,0 +1,35 @@
+{
+  "oracle_id": "1eb64899-8865-48cc-bd58-529b1294ec99",
+  "name": "Luxa River Shrine",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Luxa River Shrine",
+      "oracle_fingerprint": "9734925ae29659a4bb21579ef024f1b4",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap"],
+            "effects": [
+              { "GainLife": { "amount": 1 } },
+              { "PutCounters": { "on": "This", "counter": { "Other": "brick" } } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "condition": {
+              "Compare": {
+                "left": { "Counters": { "on": "This", "counter": { "Other": "brick" } } },
+                "op": "Ge",
+                "right": 3
+              }
+            },
+            "effects": [{ "GainLife": { "amount": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

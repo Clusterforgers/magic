@@ -1,0 +1,28 @@
+{
+  "oracle_id": "411484ac-a87d-49e8-a7ef-0cd055a872b6",
+  "name": "Filth",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Filth",
+      "oracle_fingerprint": "603e4a94b74eb06c49d24ae3df4d7458",
+      "abilities": [
+        { "Keyword": { "Landwalk": [{ "Subtype": "Swamp" }] } },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": { "Landwalk": [{ "Subtype": "Swamp" }] } }],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Subtype": "Swamp" }, { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "from": "Graveyard"
+          }
+        }
+      ]
+    }
+  ]
+}

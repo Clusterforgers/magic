@@ -1,0 +1,32 @@
+{
+  "oracle_id": "7ce7decb-1438-4c3d-88d2-26b0b3996b33",
+  "name": "Replication Specialist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Replication Specialist",
+      "oracle_fingerprint": "e6c1601ce555f8fd0cf3db2750f136a6",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Artifact" }, { "Not": "Token" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{1}{U}",
+                  "paid": [{ "CreateToken": { "token": { "CopyOf": { "of": "Triggering" } } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

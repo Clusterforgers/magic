@@ -1,0 +1,27 @@
+{
+  "oracle_id": "bc63e7ca-e62a-4026-803d-eecdbbedf3c6",
+  "name": "Justice Strike",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Justice Strike",
+      "oracle_fingerprint": "5b7399f86dfb2b575442c9854548b204",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "source": { "Target": 0 },
+                  "to": { "Target": 0 },
+                  "amount": { "Stat": { "of": { "Target": 0 }, "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

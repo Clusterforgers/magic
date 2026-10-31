@@ -1,0 +1,27 @@
+{
+  "oracle_id": "43d79ee6-8ba1-4ec9-9bb2-907ed8401a2f",
+  "name": "Ultimo, Civilization's End",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ultimo, Civilization's End",
+      "oracle_fingerprint": "830115daf19cfff2a40d3dc7272b96a3",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Sacrifice": { "who": "Opponents", "filter": [{ "Type": "Creature" }] } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{B}" }, "DiscardSelf"],
+            "from": "Hand",
+            "effects": [{ "Sacrifice": { "who": "Opponents", "filter": [{ "Type": "Creature" }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

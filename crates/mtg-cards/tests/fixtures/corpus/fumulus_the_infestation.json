@@ -1,0 +1,158 @@
+{
+  "object": "card",
+  "id": "ee5e47c2-7648-4218-b42c-ed9650e12914",
+  "oracle_id": "c75f8365-71f1-415f-8bbc-9bacb8ddba0b",
+  "multiverse_ids": [
+    680942
+  ],
+  "mtgo_id": 132764,
+  "arena_id": 93606,
+  "tcgplayer_id": 590340,
+  "cardmarket_id": 795463,
+  "name": "Fumulus, the Infestation",
+  "lang": "en",
+  "released_at": "2024-11-15",
+  "uri": "https://api.scryfall.com/cards/ee5e47c2-7648-4218-b42c-ed9650e12914",
+  "scryfall_uri": "https://scryfall.com/card/j25/42/fumulus-the-infestation?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T02:14:17Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/e/e/ee5e47c2-7648-4218-b42c-ed9650e12914.jpg?1783908857",
+    "normal": "https://cards.scryfall.io/normal/front/e/e/ee5e47c2-7648-4218-b42c-ed9650e12914.jpg?1783908857",
+    "large": "https://cards.scryfall.io/large/front/e/e/ee5e47c2-7648-4218-b42c-ed9650e12914.jpg?1783908857",
+    "png": "https://cards.scryfall.io/png/front/e/e/ee5e47c2-7648-4218-b42c-ed9650e12914.png?1783908857",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/e/e/ee5e47c2-7648-4218-b42c-ed9650e12914.jpg?1783908857",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/e/e/ee5e47c2-7648-4218-b42c-ed9650e12914.jpg?1783908857",
+    "thumb": "https://cards.scryfall.io/thumb/front/e/e/ee5e47c2-7648-4218-b42c-ed9650e12914.webp?1783908857",
+    "grid": "https://cards.scryfall.io/grid/front/e/e/ee5e47c2-7648-4218-b42c-ed9650e12914.webp?1783908857",
+    "display": "https://cards.scryfall.io/display/front/e/e/ee5e47c2-7648-4218-b42c-ed9650e12914.webp?1783908857",
+    "art": "https://cards.scryfall.io/art/front/e/e/ee5e47c2-7648-4218-b42c-ed9650e12914.webp?1783908857",
+    "crop": "https://cards.scryfall.io/crop/front/e/e/ee5e47c2-7648-4218-b42c-ed9650e12914.webp?1783908857",
+    "jpeg": "https://cards.scryfall.io/normal/front/e/e/ee5e47c2-7648-4218-b42c-ed9650e12914.jpg?1783908857"
+  },
+  "mana_cost": "{3}{B}",
+  "cmc": 4.0,
+  "type_line": "Legendary Creature — Vampire Insect",
+  "oracle_text": "Flying, deathtouch\nWhenever a player sacrifices a nontoken creature, create a 1/1 black Insect creature token with flying.\nWhenever an Insect, Leech, Slug, or Worm you control attacks, defending player loses 1 life and you gain 1 life.",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Deathtouch",
+    "Flying"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "2172a126-2ea6-4b5c-84c2-7879c1982a3a",
+      "component": "token",
+      "name": "Insect",
+      "type_line": "Token Creature — Insect",
+      "uri": "https://api.scryfall.com/cards/2172a126-2ea6-4b5c-84c2-7879c1982a3a"
+    },
+    {
+      "object": "related_card",
+      "id": "ee5e47c2-7648-4218-b42c-ed9650e12914",
+      "component": "combo_piece",
+      "name": "Fumulus, the Infestation",
+      "type_line": "Legendary Creature — Vampire Insect",
+      "uri": "https://api.scryfall.com/cards/ee5e47c2-7648-4218-b42c-ed9650e12914"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "arena",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "9201567c-bab5-4720-aac9-260e6741f115",
+  "set": "j25",
+  "set_name": "Foundations Jumpstart",
+  "set_type": "draft_innovation",
+  "set_uri": "https://api.scryfall.com/sets/9201567c-bab5-4720-aac9-260e6741f115",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aj25&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/j25?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/ee5e47c2-7648-4218-b42c-ed9650e12914/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ac75f8365-71f1-415f-8bbc-9bacb8ddba0b&unique=prints",
+  "collector_number": "42",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Takotto",
+  "artist_ids": [
+    "4b3f480f-3946-462f-b4ae-23dea10d2423"
+  ],
+  "illustration_id": "ebf83360-5873-40a6-be79-320bb1a019a4",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 4852,
+  "prices": {
+    "usd": "7.08",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "6.31",
+    "eur_foil": null,
+    "tix": "5.37"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=680942&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DFumulus%252C%2Bthe%2BInfestation",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DFumulus%252C%2Bthe%2BInfestation",
+    "edhrec": "https://edhrec.com/route/?cc=Fumulus%2C+the+Infestation"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F590340%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=795463&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/132764?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

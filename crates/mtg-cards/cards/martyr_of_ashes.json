@@ -1,0 +1,30 @@
+{
+  "oracle_id": "7f00bc45-7c65-4455-9db0-58bd79bcdb4b",
+  "name": "Martyr of Ashes",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Martyr of Ashes",
+      "oracle_fingerprint": "f57a84de823d3ec7f5b1331aa855bac9",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{2}" },
+              { "RevealFromHand": { "filter": [{ "Color": "Red" }], "count": "X" } },
+              "SacrificeSelf"
+            ],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Each": [{ "Type": "Creature" }, { "Not": { "HasKeyword": "Flying" } }] },
+                  "amount": "X"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

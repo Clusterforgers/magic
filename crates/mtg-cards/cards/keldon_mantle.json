@@ -1,0 +1,43 @@
+{
+  "oracle_id": "170cc0c4-0fba-4751-8613-e934b0438364",
+  "name": "Keldon Mantle",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Keldon Mantle",
+      "oracle_fingerprint": "c1d6694f3393ceb3ea41dc0bc5354208",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        { "Activated": { "cost": "{B}", "effects": [{ "Regenerate": { "what": "Attached" } }] } },
+        {
+          "Activated": {
+            "cost": "{R}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Attached",
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{G}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Attached",
+                  "mods": [{ "AddKeyword": "Trample" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

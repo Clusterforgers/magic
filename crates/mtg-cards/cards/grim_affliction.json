@@ -1,0 +1,22 @@
+{
+  "oracle_id": "411ba1a2-30bb-4618-b874-6be0d996f07d",
+  "name": "Grim Affliction",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Grim Affliction",
+      "oracle_fingerprint": "617919fce3e5f688ce317053fa217865",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "-1/-1" } },
+              { "Proliferate": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

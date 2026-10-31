@@ -1,0 +1,26 @@
+{
+  "oracle_id": "1b6e0d65-202e-4fd3-861e-8d2eaffe3269",
+  "name": "Expedition Skulker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Expedition Skulker",
+      "oracle_fingerprint": "2e679c2cf2c504942f129ee5df0dc9c3",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Deathtouch" }],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Subtype": "Rogue" }, { "ControlledBy": "You" }, "Other"] },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

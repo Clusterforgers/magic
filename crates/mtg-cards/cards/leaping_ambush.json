@@ -1,0 +1,31 @@
+{
+  "oracle_id": "e920c955-66f5-4c6e-a2a8-8b282f9e456e",
+  "name": "Leaping Ambush",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Leaping Ambush",
+      "oracle_fingerprint": "378f8afed208d5c16b717eeae9a773f2",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "ModifyPT": { "power": 1, "toughness": 3 } },
+                    { "AddKeyword": "Reach" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Untap": { "what": { "Target": 0 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "oracle_id": "69858691-1190-4454-af0a-87c2ac4ab6ec",
+  "name": "Arisen Gorgon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Arisen Gorgon",
+      "oracle_fingerprint": "161638f37bc86cf1f2e1a0781761870c",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Deathtouch" }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "Type": "Planeswalker" },
+                    { "Subtype": "Liliana" },
+                    { "ControlledBy": "You" }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "oracle_id": "9ed4e48f-91bd-45f9-9f31-a2705b330713",
+  "name": "The Art of Tea",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Art of Tea",
+      "oracle_fingerprint": "8d961a4a3e388bf46795ce90e493bfe8",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } },
+              { "CreateToken": { "token": { "Named": "food" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

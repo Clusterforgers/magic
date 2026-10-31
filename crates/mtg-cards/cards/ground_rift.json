@@ -1,0 +1,34 @@
+{
+  "oracle_id": "c1f7d451-ca70-403d-81bf-8822876d1a54",
+  "name": "Ground Rift",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ground Rift",
+      "oracle_fingerprint": "61c8198d38cfe65022d4f0fbe25235f3",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "Not": { "HasKeyword": "Flying" } }]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["CantBlock"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "Storm" }
+      ]
+    }
+  ]
+}

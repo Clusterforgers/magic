@@ -1,0 +1,30 @@
+{
+  "oracle_id": "751321ac-af07-4b7e-976f-5bf4e4281470",
+  "name": "Assembly-Worker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Assembly-Worker",
+      "oracle_fingerprint": "030de92148811d2403275f819de5cff9",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "Subtype": "Assembly-Worker" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

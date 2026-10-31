@@ -1,0 +1,146 @@
+{
+  "object": "card",
+  "id": "19ad36d6-8bf4-490c-9980-b98a470af892",
+  "oracle_id": "81b67745-0b1f-4433-963d-9b9653fb4d95",
+  "multiverse_ids": [],
+  "resource_id": "AB16933DFA15630890E752C592DAC2A425C6029C2F1249AA2DBCCA94575154EF",
+  "mtgo_id": 141335,
+  "arena_id": 96064,
+  "tcgplayer_id": 633393,
+  "cardmarket_id": 826992,
+  "name": "Ride the Shoopuf",
+  "lang": "en",
+  "released_at": "2025-06-13",
+  "uri": "https://api.scryfall.com/cards/19ad36d6-8bf4-490c-9980-b98a470af892",
+  "scryfall_uri": "https://scryfall.com/card/fin/197/ride-the-shoopuf?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T01:36:24Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/1/9/19ad36d6-8bf4-490c-9980-b98a470af892.jpg?1783906584",
+    "normal": "https://cards.scryfall.io/normal/front/1/9/19ad36d6-8bf4-490c-9980-b98a470af892.jpg?1783906584",
+    "large": "https://cards.scryfall.io/large/front/1/9/19ad36d6-8bf4-490c-9980-b98a470af892.jpg?1783906584",
+    "png": "https://cards.scryfall.io/png/front/1/9/19ad36d6-8bf4-490c-9980-b98a470af892.png?1783906584",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/1/9/19ad36d6-8bf4-490c-9980-b98a470af892.jpg?1783906584",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/1/9/19ad36d6-8bf4-490c-9980-b98a470af892.jpg?1783906584",
+    "thumb": "https://cards.scryfall.io/thumb/front/1/9/19ad36d6-8bf4-490c-9980-b98a470af892.webp?1783906584",
+    "grid": "https://cards.scryfall.io/grid/front/1/9/19ad36d6-8bf4-490c-9980-b98a470af892.webp?1783906584",
+    "display": "https://cards.scryfall.io/display/front/1/9/19ad36d6-8bf4-490c-9980-b98a470af892.webp?1783906584",
+    "art": "https://cards.scryfall.io/art/front/1/9/19ad36d6-8bf4-490c-9980-b98a470af892.webp?1783906584",
+    "crop": "https://cards.scryfall.io/crop/front/1/9/19ad36d6-8bf4-490c-9980-b98a470af892.webp?1783906584",
+    "jpeg": "https://cards.scryfall.io/normal/front/1/9/19ad36d6-8bf4-490c-9980-b98a470af892.jpg?1783906584"
+  },
+  "mana_cost": "{1}{G}",
+  "cmc": 2.0,
+  "type_line": "Enchantment",
+  "oracle_text": "Landfall — Whenever a land you control enters, put a +1/+1 counter on target creature you control.\n{5}{G}{G}: This enchantment becomes a 7/7 Beast creature in addition to its other types.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Landfall"
+  ],
+  "legalities": {
+    "standard": "legal",
+    "future": "legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "arena",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "d7beb4b7-e1ff-4d35-ab07-5700f17ea1ea",
+  "set": "fin",
+  "set_name": "Final Fantasy",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/d7beb4b7-e1ff-4d35-ab07-5700f17ea1ea",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Afin&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/fin?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/19ad36d6-8bf4-490c-9980-b98a470af892/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A81b67745-0b1f-4433-963d-9b9653fb4d95&unique=prints",
+  "collector_number": "197",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "\"Ride ze shoopuf? All aboards!\"",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Leonardo Santanna",
+  "artist_ids": [
+    "f1f8e6d8-8fb3-472a-a32f-a4b1225bd054"
+  ],
+  "illustration_id": "2d7f32fb-be27-4fde-bd25-69a4feb0a909",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "enchantment"
+  ],
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "promo_types": [
+    "ffx",
+    "universesbeyond"
+  ],
+  "edhrec_rank": 3530,
+  "preview": {
+    "source": "TCGplayer",
+    "source_uri": "https://www.tcgplayer.com/content/article/Check-Out-ChannelFireball-s-Two-EXCLUSIVE-MTG%E2%80%94FINAL-FANTASY-Preview-Cards/987bb2a8-577a-4c66-840f-536de06149c0/",
+    "previewed_at": "2025-05-23"
+  },
+  "prices": {
+    "usd": "0.29",
+    "usd_foil": "0.41",
+    "usd_etched": null,
+    "eur": "0.19",
+    "eur_foil": "0.21",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DRide%2Bthe%2BShoopuf",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DRide%2Bthe%2BShoopuf",
+    "edhrec": "https://edhrec.com/route/?cc=Ride+the+Shoopuf"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F633393%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=826992&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/141335?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "oracle_id": "8854222e-590f-4fc0-b5d7-bf3d986b8507",
+  "name": "Momo, Rambunctious Rascal",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Momo, Rambunctious Rascal",
+      "oracle_fingerprint": "8fe6b1035e4dc8d4c678e63af6525476",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, "Tapped", { "ControlledBy": "Opponents" }]
+                }
+              }
+            ],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 4 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "oracle_id": "2a483d95-ff99-40b4-9071-6e78585090d5",
+  "name": "Combat Tutorial",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Combat Tutorial",
+      "oracle_fingerprint": "2dafdf9275531ccc32a3204ac768e4be",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": "Player" },
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "Draw": { "who": { "Target": 0 }, "count": 2 } },
+              { "PutCounters": { "on": { "Target": 1 }, "counter": "+1/+1" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

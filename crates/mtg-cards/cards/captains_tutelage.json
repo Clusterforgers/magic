@@ -1,0 +1,35 @@
+{
+  "oracle_id": "1d41aacf-e15d-4457-b12a-c71bcdb7b5de",
+  "name": "Captain's Tutelage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Captain's Tutelage",
+      "oracle_fingerprint": "c796d239581c336ae6df3d682cec57e9",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Attached",
+                  "mods": [{ "AddKeyword": "FirstStrike" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

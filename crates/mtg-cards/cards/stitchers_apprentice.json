@@ -1,0 +1,35 @@
+{
+  "oracle_id": "14bf3049-faa3-4c1f-a613-603e977a50a4",
+  "name": "Stitcher's Apprentice",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stitcher's Apprentice",
+      "oracle_fingerprint": "442969b2d4ee13a9388527ae85c8ae1a",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{U}" }, "Tap"],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Homunculus",
+                      "colors": ["Blue"],
+                      "types": ["Creature"],
+                      "subtypes": ["Homunculus"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  }
+                }
+              },
+              { "Sacrifice": { "filter": [{ "Type": "Creature" }] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

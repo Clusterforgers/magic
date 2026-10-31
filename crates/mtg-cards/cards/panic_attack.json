@@ -1,0 +1,29 @@
+{
+  "oracle_id": "c1346677-d89e-49d0-9819-08805f00bb64",
+  "name": "Panic Attack",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Panic Attack",
+      "oracle_fingerprint": "b55b3f81941e3c68feff79ca85accdef",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 0, "max": 3 } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["CantBlock"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

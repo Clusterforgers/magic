@@ -1,0 +1,43 @@
+{
+  "oracle_id": "2be283da-6d5a-442b-bd07-d06c16cb1214",
+  "name": "Jhessian Balmgiver",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jhessian Balmgiver",
+      "oracle_fingerprint": "c1b5651d25cd3f58a4b5a899ac54c391",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": { "Target": 0 } } },
+                  "by": { "PreventUpTo": 1 },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["CantBeBlocked"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

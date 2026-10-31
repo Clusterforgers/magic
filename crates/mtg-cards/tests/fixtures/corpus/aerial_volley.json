@@ -1,0 +1,133 @@
+{
+  "object": "card",
+  "id": "c5178301-f766-48d3-af07-6bd6f822c725",
+  "oracle_id": "ab855992-34da-42a2-b7c7-dec4db849159",
+  "multiverse_ids": [
+    398565
+  ],
+  "mtgo_id": 58084,
+  "mtgo_foil_id": 58085,
+  "tcgplayer_id": 100393,
+  "cardmarket_id": 283623,
+  "name": "Aerial Volley",
+  "lang": "en",
+  "released_at": "2015-07-17",
+  "uri": "https://api.scryfall.com/cards/c5178301-f766-48d3-af07-6bd6f822c725",
+  "scryfall_uri": "https://scryfall.com/card/ori/168/aerial-volley?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T10:25:25Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/c/5/c5178301-f766-48d3-af07-6bd6f822c725.jpg?1783938325",
+    "normal": "https://cards.scryfall.io/normal/front/c/5/c5178301-f766-48d3-af07-6bd6f822c725.jpg?1783938325",
+    "large": "https://cards.scryfall.io/large/front/c/5/c5178301-f766-48d3-af07-6bd6f822c725.jpg?1783938325",
+    "png": "https://cards.scryfall.io/png/front/c/5/c5178301-f766-48d3-af07-6bd6f822c725.png?1783938325",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/c/5/c5178301-f766-48d3-af07-6bd6f822c725.jpg?1783938325",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/c/5/c5178301-f766-48d3-af07-6bd6f822c725.jpg?1783938325",
+    "thumb": "https://cards.scryfall.io/thumb/front/c/5/c5178301-f766-48d3-af07-6bd6f822c725.webp?1783938325",
+    "grid": "https://cards.scryfall.io/grid/front/c/5/c5178301-f766-48d3-af07-6bd6f822c725.webp?1783938325",
+    "display": "https://cards.scryfall.io/display/front/c/5/c5178301-f766-48d3-af07-6bd6f822c725.webp?1783938325",
+    "art": "https://cards.scryfall.io/art/front/c/5/c5178301-f766-48d3-af07-6bd6f822c725.webp?1783938325",
+    "crop": "https://cards.scryfall.io/crop/front/c/5/c5178301-f766-48d3-af07-6bd6f822c725.webp?1783938325",
+    "jpeg": "https://cards.scryfall.io/normal/front/c/5/c5178301-f766-48d3-af07-6bd6f822c725.jpg?1783938325"
+  },
+  "mana_cost": "{G}",
+  "cmc": 1.0,
+  "type_line": "Instant",
+  "oracle_text": "Aerial Volley deals 3 damage divided as you choose among one, two, or three target creatures with flying.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "0eeb9a9a-20ac-404d-b55f-aeb7a43a7f62",
+  "set": "ori",
+  "set_name": "Magic Origins",
+  "set_type": "core",
+  "set_uri": "https://api.scryfall.com/sets/0eeb9a9a-20ac-404d-b55f-aeb7a43a7f62",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aori&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/ori?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/c5178301-f766-48d3-af07-6bd6f822c725/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Aab855992-34da-42a2-b7c7-dec4db849159&unique=prints",
+  "collector_number": "168",
+  "digital": false,
+  "rarity": "common",
+  "flavor_text": "Drakes can swerve to avoid a single arrow, but they can't dodge the whole sky.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Lake Hurwitz",
+  "artist_ids": [
+    "3677c64b-55e6-4a0d-a952-bdbb05531220"
+  ],
+  "illustration_id": "a5de70d1-da40-450b-b61e-f015ec528570",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 26485,
+  "penny_rank": 12355,
+  "prices": {
+    "usd": "0.11",
+    "usd_foil": "0.25",
+    "usd_etched": null,
+    "eur": "0.09",
+    "eur_foil": "0.25",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=398565&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DAerial%2BVolley",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DAerial%2BVolley",
+    "edhrec": "https://edhrec.com/route/?cc=Aerial+Volley"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F100393%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=283623&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/58084?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

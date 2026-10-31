@@ -1,0 +1,45 @@
+{
+  "oracle_id": "115bd33d-4875-4014-ae9f-0052f5acdbb2",
+  "name": "Snake Pit",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Snake Pit",
+      "oracle_fingerprint": "250bd7911c6022737d1024484d31f705",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [{ "AnyOf": [{ "Color": "Blue" }, { "Color": "Black" }] }],
+                "by": "Opponents"
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Snake",
+                            "colors": ["Green"],
+                            "types": ["Creature"],
+                            "subtypes": ["Snake"],
+                            "power": 1,
+                            "toughness": 1
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

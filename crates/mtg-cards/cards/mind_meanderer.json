@@ -1,0 +1,45 @@
+{
+  "oracle_id": "18d1765b-3b60-4dda-93a6-d02a4e53f185",
+  "name": "Mind Meanderer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mind Meanderer",
+      "oracle_fingerprint": "ce468687b738a8d0023138cd2cc77a8e",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Vigilance" }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "Type": "Planeswalker" },
+                    { "Subtype": "Jace" },
+                    { "ControlledBy": "You" }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [{ "Fight": { "what": "This", "with": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

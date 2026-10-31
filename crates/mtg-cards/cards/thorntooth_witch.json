@@ -1,0 +1,34 @@
+{
+  "oracle_id": "942eefa3-6775-428b-84aa-48c3bd78d3b8",
+  "name": "Thorntooth Witch",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thorntooth Witch",
+      "oracle_fingerprint": "c87d45dc0798d914674e0bae952d2aaf",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Subtype": "Treefolk" }], "by": "You" } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [{ "ModifyPT": { "power": 3, "toughness": -3 } }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

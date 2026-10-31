@@ -1,0 +1,15 @@
+{
+  "oracle_id": "d599a38c-7719-443e-bb59-55bd43a8fee6",
+  "name": "Confiscate",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Confiscate",
+      "oracle_fingerprint": "4077fffdfc025981ca533434127ace2e",
+      "abilities": [
+        { "Keyword": { "Enchant": [] } },
+        { "Static": { "affected": "Attached", "mods": [{ "SetController": "You" }] } }
+      ]
+    }
+  ]
+}

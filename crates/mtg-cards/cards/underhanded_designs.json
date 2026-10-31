@@ -1,0 +1,48 @@
+{
+  "oracle_id": "870185fc-7b05-47d3-95ff-97fbf12796d4",
+  "name": "Underhanded Designs",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Underhanded Designs",
+      "oracle_fingerprint": "28fdab564c9b3b2a198f53c4f5c53d56",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Artifact" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{1}",
+                  "paid": [
+                    { "LoseLife": { "who": "Opponents", "amount": 1 } },
+                    { "GainLife": { "amount": 1 } }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{B}" }, "SacrificeSelf"],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Type": "Artifact" }, { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 2
+              }
+            },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

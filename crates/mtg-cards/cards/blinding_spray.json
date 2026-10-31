@@ -1,0 +1,27 @@
+{
+  "oracle_id": "88ce2017-83a6-4b55-afba-371875bf2172",
+  "name": "Blinding Spray",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Blinding Spray",
+      "oracle_fingerprint": "9919470916b1587251510676756667a9",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] },
+                  "mods": [{ "ModifyPT": { "power": -4, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

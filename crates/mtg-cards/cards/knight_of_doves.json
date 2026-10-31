@@ -1,0 +1,41 @@
+{
+  "oracle_id": "d2e6fbcb-ebbd-40e8-8a01-b675fcacaf8e",
+  "name": "Knight of Doves",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Knight of Doves",
+      "oracle_fingerprint": "0dc0612e797a4417f82c4fa57d09eb25",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Enchantment" }, { "ControlledBy": "You" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Bird",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Bird"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

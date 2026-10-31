@@ -1,0 +1,33 @@
+{
+  "oracle_id": "b8376cca-ea96-478a-8e98-c4482031300a",
+  "name": "Sliver Queen",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sliver Queen",
+      "oracle_fingerprint": "16fc90b97194f8009609f76fd1c1bcc4",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{2}",
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Sliver",
+                      "types": ["Creature"],
+                      "subtypes": ["Sliver"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

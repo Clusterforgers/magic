@@ -1,0 +1,31 @@
+{
+  "oracle_id": "73b60c2c-7c74-4554-8861-daa0d6fc22b4",
+  "name": "Burrog Befuddler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Burrog Befuddler",
+      "oracle_fingerprint": "0a1f6eb7c32aa87f60ecef5dba3e576e",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": -1, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

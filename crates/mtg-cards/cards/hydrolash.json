@@ -1,0 +1,27 @@
+{
+  "oracle_id": "31279757-499a-4d52-aa81-76b6f1983b53",
+  "name": "Hydrolash",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hydrolash",
+      "oracle_fingerprint": "72f11fc70774c78ab37708eca3761fe8",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, "Attacking"] },
+                  "mods": [{ "ModifyPT": { "power": -2, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

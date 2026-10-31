@@ -1,0 +1,22 @@
+{
+  "oracle_id": "98014ad2-7a2b-45f5-808c-edd4d0b2c597",
+  "name": "Lost in the Mist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lost in the Mist",
+      "oracle_fingerprint": "99b342c6602205f8b84321ed4c4e6acc",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell"] } }, { "what": { "Object": [] } }],
+            "effects": [
+              { "Counter": { "what": { "Target": 0 } } },
+              { "Move": { "what": { "Target": 1 }, "to": "Hand" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

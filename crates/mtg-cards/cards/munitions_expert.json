@@ -1,0 +1,40 @@
+{
+  "oracle_id": "a0b16b11-69d9-4e94-aae3-298aa44ce3d4",
+  "name": "Munitions Expert",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Munitions Expert",
+      "oracle_fingerprint": "6d4f64d30a9fa642e11c75edc4ca2699",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "DealDamage": {
+                        "to": { "Target": 0 },
+                        "amount": { "Count": [{ "Subtype": "Goblin" }, { "ControlledBy": "You" }] }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "oracle_id": "c5fa1631-8685-49e1-baad-86ef72a9499c",
+  "name": "Goblin Fireleaper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Goblin Fireleaper",
+      "oracle_fingerprint": "323e88fbfae6d7c322d7a4ecb5dd1b3f",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{1}{R}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": { "Stat": { "of": "This", "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

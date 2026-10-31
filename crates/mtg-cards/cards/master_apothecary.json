@@ -1,0 +1,28 @@
+{
+  "oracle_id": "067b54e4-18f3-48e3-b824-3aba7fcf2408",
+  "name": "Master Apothecary",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Master Apothecary",
+      "oracle_fingerprint": "e9375b123d19d54bb844f2023c269084",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "TapPermanents": { "filter": [{ "Subtype": "Cleric" }] } }],
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": { "Target": 0 } } },
+                  "by": { "PreventUpTo": 2 },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "oracle_id": "d309e1e9-26e6-4a10-a3f4-352c7ba3f2ff",
+  "name": "Scrapheap Scrounger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Scrapheap Scrounger",
+      "oracle_fingerprint": "d4828f9315fdd8a74add2c1bafb7f79b",
+      "abilities": [
+        { "Static": { "affected": "This", "mods": ["CantBlock"] } },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{1}{B}" },
+              { "ExileFromGraveyard": { "filter": [{ "Type": "Creature" }, "Other"] } }
+            ],
+            "from": "Graveyard",
+            "effects": [{ "Move": { "what": "This", "to": { "Battlefield": {} } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

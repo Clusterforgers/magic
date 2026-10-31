@@ -1,0 +1,21 @@
+{
+  "oracle_id": "1ea20ecb-1919-4be7-b0bb-d79d2dec98fd",
+  "name": "Biting Tether",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Biting Tether",
+      "oracle_fingerprint": "a6102da0e0483e95a0b3dbe1f9340e39",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        { "Static": { "affected": "Attached", "mods": [{ "SetController": "You" }] } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [{ "PutCounters": { "on": "Attached", "counter": "-1/-1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

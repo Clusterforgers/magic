@@ -1,0 +1,31 @@
+{
+  "oracle_id": "0798eb13-83f1-4b7c-b537-83a9da2915a6",
+  "name": "Trial of Zeal",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Trial of Zeal",
+      "oracle_fingerprint": "379f66d0c1debb012a16583d206ed10e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 3 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Subtype": "Cartouche" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [{ "Move": { "what": "This", "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

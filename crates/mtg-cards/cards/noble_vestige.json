@@ -1,0 +1,31 @@
+{
+  "oracle_id": "63ec8167-2dc3-49a6-a7ed-6b1474bbda2c",
+  "name": "Noble Vestige",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Noble Vestige",
+      "oracle_fingerprint": "28057f857a16b4748ab8a06770134410",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [
+              { "what": { "Either": ["Player", { "Object": [{ "Type": "Planeswalker" }] }] } }
+            ],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": { "Target": 0 } } },
+                  "by": { "PreventUpTo": 1 },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

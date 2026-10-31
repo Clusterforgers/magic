@@ -1,0 +1,28 @@
+{
+  "oracle_id": "7165fade-ea96-4026-bc80-620729b8f70c",
+  "name": "Destructive Revelry",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Destructive Revelry",
+      "oracle_fingerprint": "47abff89100fa495ff8f3918e70df82d",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Enchantment" }] }]
+                }
+              }
+            ],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              { "DealDamage": { "to": { "ControllerOf": { "Target": 0 } }, "amount": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

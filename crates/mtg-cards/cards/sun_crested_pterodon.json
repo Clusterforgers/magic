@@ -1,0 +1,27 @@
+{
+  "oracle_id": "747dbf0c-dcea-49d1-ab6c-d74016d580a4",
+  "name": "Sun-Crested Pterodon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sun-Crested Pterodon",
+      "oracle_fingerprint": "df980719487b9530474fedbb837eb4ab",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Vigilance" }],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Subtype": "Dinosaur" }, { "ControlledBy": "You" }, "Other"] },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "oracle_id": "10e19453-84fb-4845-8db0-c9da52847e09",
+  "name": "Tower Geist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tower Geist",
+      "oracle_fingerprint": "23188ac03eaedeeac95d01d1ed672011",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "LookAtTop": { "count": 2, "as": "top" } },
+              { "Choose": { "from": { "Bound": "top" }, "as": "kept2", "rest_as": "rest3" } },
+              { "Move": { "what": { "Bound": "kept2" }, "to": "Hand" } },
+              { "Move": { "what": { "Bound": "rest3" }, "to": "Graveyard" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

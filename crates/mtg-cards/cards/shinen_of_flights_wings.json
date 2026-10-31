@@ -1,0 +1,30 @@
+{
+  "oracle_id": "5fa542e5-d3a7-45d3-ac1d-32546fbfe784",
+  "name": "Shinen of Flight's Wings",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shinen of Flight's Wings",
+      "oracle_fingerprint": "3a00ca5745046a9251f21ebfaad87a22",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{U}" }, "DiscardSelf"],
+            "from": "Hand",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Flying" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

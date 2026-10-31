@@ -1,0 +1,33 @@
+{
+  "oracle_id": "f0adab66-c3fe-4989-b7c8-ab7bdc7f0fd1",
+  "name": "Temporal Machinations",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Temporal Machinations",
+      "oracle_fingerprint": "2fff1c5dad771179c021c8c316fb5d5f",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": "Hand" } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "Type": "Artifact" }, { "ControlledBy": "You" }] },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

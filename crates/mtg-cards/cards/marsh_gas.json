@@ -1,0 +1,26 @@
+{
+  "oracle_id": "08ae9f91-48c8-4721-a82d-063defc1b727",
+  "name": "Marsh Gas",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Marsh Gas",
+      "oracle_fingerprint": "0ebc03901653a74ff5fef9272bb1a096",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }] },
+                  "mods": [{ "ModifyPT": { "power": -2, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

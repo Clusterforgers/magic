@@ -1,0 +1,36 @@
+{
+  "oracle_id": "8cbbb1f4-4654-4865-a14c-0c94cd5d8b19",
+  "name": "No Way Out",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "No Way Out",
+      "oracle_fingerprint": "8b15ed8894e98263a050a186de126724",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              { "Discard": { "who": { "Target": 0 }, "count": 2 } },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Zombie",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Zombie"],
+                      "power": 2,
+                      "toughness": 2,
+                      "abilities": [{ "Keyword": "Decayed" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

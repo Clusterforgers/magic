@@ -1,0 +1,31 @@
+{
+  "oracle_id": "b4f89885-eeb9-46c7-9820-9758b624ca24",
+  "name": "Tethermage's Advantage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tethermage's Advantage",
+      "oracle_fingerprint": "c372a661bf4599db4c5fcd7da5ee48dd",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "ModifyPT": { "power": 2, "toughness": 2 } },
+                    { "AddKeyword": "Reach" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Untap": { "what": { "Target": 0 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

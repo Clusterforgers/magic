@@ -1,0 +1,23 @@
+{
+  "oracle_id": "cdef800d-033e-4095-964d-9b6066f9fd36",
+  "name": "Phyrexian Archivist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Phyrexian Archivist",
+      "oracle_fingerprint": "46fa5aefd0b8b816f95a366cf0b05fde",
+      "abilities": [
+        { "Keyword": "Reach" },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap"],
+            "targets": [{ "what": { "Object": [{ "In": "Graveyard" }] } }],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Library": { "place": "Bottom" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

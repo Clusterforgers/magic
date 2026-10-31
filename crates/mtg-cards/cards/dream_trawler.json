@@ -1,0 +1,47 @@
+{
+  "oracle_id": "661b2159-4040-4a44-b182-46085416ebd9",
+  "name": "Dream Trawler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dream Trawler",
+      "oracle_fingerprint": "d10c05171eebc6c99d18ba716ba61165",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Lifelink" },
+        {
+          "Triggered": {
+            "when": { "Drew": { "who": "You" } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": { "when": { "Attacks": { "what": ["This"] } }, "effects": [{ "Draw": {} }] }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Discard": {} }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddKeyword": "Hexproof" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Tap": { "what": "This" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

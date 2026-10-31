@@ -1,0 +1,34 @@
+{
+  "oracle_id": "d93299d4-3aaf-48fb-8227-26203963c8b9",
+  "name": "Slayer of the Wicked",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Slayer of the Wicked",
+      "oracle_fingerprint": "dbe8e6630afe7e8ccc0e8f1b96ad2abe",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    {
+                      "AnyOf": [
+                        { "Subtype": "Vampire" },
+                        { "Subtype": "Werewolf" },
+                        { "Subtype": "Zombie" }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "May": { "effects": [{ "Destroy": { "what": { "Target": 0 } } }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

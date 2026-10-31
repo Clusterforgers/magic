@@ -1,0 +1,22 @@
+{
+  "oracle_id": "a936b84c-c350-4a1f-b4a7-86316f11c67f",
+  "name": "Wistful Thinking",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wistful Thinking",
+      "oracle_fingerprint": "1ac3796e73a782ba9af9d2e8cc509f9d",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              { "Draw": { "who": { "Target": 0 }, "count": 2 } },
+              { "Discard": { "who": { "Target": 0 }, "count": 4 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

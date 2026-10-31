@@ -1,0 +1,39 @@
+{
+  "oracle_id": "73f6619c-9d92-434e-9f06-52e0ff15cb5e",
+  "name": "Reptilian Reflection",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Reptilian Reflection",
+      "oracle_fingerprint": "0227c89fd7b4c9c561c3deccdd12e73e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Cycled": { "by": "You" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Continuous": {
+                        "affected": "This",
+                        "mods": [
+                          { "SetPT": { "power": 5, "toughness": 4 } },
+                          { "AddSubtype": "Dinosaur" },
+                          { "AddType": "Creature" },
+                          { "AddKeyword": "Trample" },
+                          { "AddKeyword": "Haste" }
+                        ],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

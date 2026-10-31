@@ -1,0 +1,44 @@
+{
+  "oracle_id": "cf1a4b18-62fa-46f3-baeb-c0f699c9cdde",
+  "name": "Ghost-Lit Warder",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ghost-Lit Warder",
+      "oracle_fingerprint": "f5f5e83f12fa8fc92bf8817d34f1c81e",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}{U}" }, "Tap"],
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [
+              {
+                "Pay": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "cost": "{2}",
+                  "unpaid": [{ "Counter": { "what": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}{U}" }, "DiscardSelf"],
+            "from": "Hand",
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [
+              {
+                "Pay": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "cost": "{4}",
+                  "unpaid": [{ "Counter": { "what": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

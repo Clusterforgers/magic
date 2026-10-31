@@ -1,0 +1,20 @@
+{
+  "oracle_id": "c650f497-92d6-48cf-8b59-5d61eb184dc0",
+  "name": "Disciplined Duelist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Disciplined Duelist",
+      "oracle_fingerprint": "0568673e195a3aec373ef67e65c89c06",
+      "abilities": [
+        { "Keyword": "DoubleStrike" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": { "Other": "shield" }, "count": 1 } }
+          }
+        }
+      ]
+    }
+  ]
+}

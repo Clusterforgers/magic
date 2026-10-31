@@ -1,0 +1,39 @@
+{
+  "oracle_id": "7ac49129-7da2-4729-b48c-b6da279c212e",
+  "name": "Chilling Trap",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Chilling Trap",
+      "oracle_fingerprint": "7005f8e01a5d46fdfd44fb0f6fb94cbc",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": -4, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "Subtype": "Wizard" }, { "ControlledBy": "You" }] },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "oracle_id": "bb8a55a5-596e-427c-b745-4de8b0dfb095",
+  "name": "Defender en-Vec",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Defender en-Vec",
+      "oracle_fingerprint": "3ea7a1256de051cc8f814234c8b78e48",
+      "abilities": [
+        { "Keyword": { "Fading": 4 } },
+        {
+          "Activated": {
+            "cost": [{ "RemoveCounters": { "counter": { "Other": "fade" } } }],
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": { "Target": 0 } } },
+                  "by": { "PreventUpTo": 2 },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

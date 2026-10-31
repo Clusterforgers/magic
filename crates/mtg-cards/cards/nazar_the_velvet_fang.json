@@ -1,0 +1,33 @@
+{
+  "oracle_id": "beeed1c5-2f51-4e40-87b9-9a6f810ee4cb",
+  "name": "Nazar, the Velvet Fang",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nazar, the Velvet Fang",
+      "oracle_fingerprint": "5cd753196ee3ed55bad466bfd45bdba1",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": { "LifeGained": { "who": "You" } },
+            "effects": [{ "PutCounters": { "on": "This", "counter": { "Other": "feeding" } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "RemoveCounters": { "counter": { "Other": "feeding" }, "count": 3 } }],
+                  "paid": [{ "Draw": { "count": 3 } }, { "LoseLife": { "amount": 3 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

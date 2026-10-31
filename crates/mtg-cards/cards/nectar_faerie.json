@@ -1,0 +1,33 @@
+{
+  "oracle_id": "6d0a2e5f-af10-4754-81d7-b7afa6282d7d",
+  "name": "Nectar Faerie",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nectar Faerie",
+      "oracle_fingerprint": "11b7e5ed21a4e425308b8a6a1fbd629f",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{B}" }, "Tap"],
+            "targets": [
+              {
+                "what": { "Object": [{ "AnyOf": [{ "Subtype": "Faerie" }, { "Subtype": "Elf" }] }] }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Lifelink" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

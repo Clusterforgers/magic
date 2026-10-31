@@ -1,0 +1,23 @@
+{
+  "oracle_id": "b1eb7a92-3055-426e-9716-cc6d2a69f0af",
+  "name": "Dinrova Horror",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dinrova Horror",
+      "oracle_fingerprint": "9f7353062442abfc06ee64f1c0dda3da",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": { "Object": [] } }],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": "Hand" } },
+              { "Discard": { "who": { "OwnerOf": { "Target": 0 } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

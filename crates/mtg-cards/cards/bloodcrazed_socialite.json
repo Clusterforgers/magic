@@ -1,0 +1,41 @@
+{
+  "oracle_id": "7e165b4e-4c8f-4a0f-bd6e-7b0a15b12d1d",
+  "name": "Bloodcrazed Socialite",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bloodcrazed Socialite",
+      "oracle_fingerprint": "d5ddfcf9c49c24fb17d9f80843c56bf6",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "CreateToken": { "token": { "Named": "blood" } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "Sacrifice": { "filter": [{ "Subtype": "Blood" }, "Token"] } }],
+                  "paid": [
+                    {
+                      "Continuous": {
+                        "affected": "This",
+                        "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "oracle_id": "bec0127a-ab3c-4923-93c2-c43ba8998091",
+  "name": "Fodder Launch",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fodder Launch",
+      "oracle_fingerprint": "caa2e2c11961cf3bed4e97354b42f442",
+      "abilities": [
+        {
+          "AdditionalCost": {
+            "cost": [{ "Sacrifice": { "filter": [{ "Subtype": "Goblin" }] } }],
+            "required": true
+          }
+        },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": -5, "toughness": -5 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "DealDamage": { "to": { "ControllerOf": { "Target": 0 } }, "amount": 5 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

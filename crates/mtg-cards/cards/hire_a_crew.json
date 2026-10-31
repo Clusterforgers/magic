@@ -1,0 +1,41 @@
+{
+  "oracle_id": "6eb7a870-b626-4326-9e4c-45193f8ce138",
+  "name": "Hire a Crew",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hire a Crew",
+      "oracle_fingerprint": "bf1220604a6652fec09a0d03afc87a61",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Villain",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Villain"],
+                      "power": 2,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Menace" }]
+                    }
+                  }
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "oracle_id": "f8df23ed-e239-435a-a4a9-cf10da6df28f",
+  "name": "Hell Swarm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hell Swarm",
+      "oracle_fingerprint": "b7dfbcde1a95f3ad4651c943f4e573c1",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }] },
+                  "mods": [{ "ModifyPT": { "power": -1, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

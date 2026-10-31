@@ -1,0 +1,39 @@
+{
+  "oracle_id": "cc261487-060f-47e6-ac5e-a204254058b3",
+  "name": "Riddleform",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Riddleform",
+      "oracle_fingerprint": "d7f537e87f0012e1b2af9fc5c7a3bc96",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Not": { "Type": "Creature" } }], "by": "You" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Continuous": {
+                        "affected": "This",
+                        "mods": [
+                          { "SetPT": { "power": 3, "toughness": 3 } },
+                          { "AddSubtype": "Sphinx" },
+                          { "AddType": "Creature" },
+                          { "AddKeyword": "Flying" }
+                        ],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Activated": { "cost": "{2}{U}", "effects": [{ "Scry": {} }] } }
+      ]
+    }
+  ]
+}

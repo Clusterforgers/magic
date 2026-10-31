@@ -1,0 +1,25 @@
+{
+  "oracle_id": "f27889b9-40d9-4cc7-b8af-8716c53c44f5",
+  "name": "Cerebral Download",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cerebral Download",
+      "oracle_fingerprint": "ef2395822a620cdfcfeed1e792d0d6c9",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Surveil": {
+                  "count": { "Count": [{ "Type": "Artifact" }, { "ControlledBy": "You" }] }
+                }
+              },
+              { "Draw": { "count": 3 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

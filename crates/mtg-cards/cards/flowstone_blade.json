@@ -1,0 +1,28 @@
+{
+  "oracle_id": "77a77622-dc5b-4ff2-a98b-732d44c8856e",
+  "name": "Flowstone Blade",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Flowstone Blade",
+      "oracle_fingerprint": "b430130ee87729cf2c971c494b3e7cb8",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Activated": {
+            "cost": "{R}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Attached",
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": -1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

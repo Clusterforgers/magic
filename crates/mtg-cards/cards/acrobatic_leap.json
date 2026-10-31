@@ -1,0 +1,31 @@
+{
+  "oracle_id": "1347224f-421e-4270-8e50-cf25c875909c",
+  "name": "Acrobatic Leap",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Acrobatic Leap",
+      "oracle_fingerprint": "7216b7171eb249bdfe147f24c559dbf3",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "ModifyPT": { "power": 1, "toughness": 3 } },
+                    { "AddKeyword": "Flying" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Untap": { "what": { "Target": 0 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

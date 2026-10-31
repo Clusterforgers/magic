@@ -1,0 +1,139 @@
+{
+  "object": "card",
+  "id": "fee05f7e-d4da-4a72-8140-d505eecbdd32",
+  "oracle_id": "72dc807b-35fb-4d69-ae4c-04eed0646170",
+  "multiverse_ids": [
+    677972
+  ],
+  "resource_id": "77FCE9D1D03D91B37D503FAB01E0BF20A379B0F4AE38CAFBDF5E14F85CD0B0E8",
+  "mtgo_id": 134838,
+  "arena_id": 93682,
+  "tcgplayer_id": 591717,
+  "cardmarket_id": 797931,
+  "name": "Battle-Rattle Shaman",
+  "lang": "en",
+  "released_at": "2024-11-15",
+  "uri": "https://api.scryfall.com/cards/fee05f7e-d4da-4a72-8140-d505eecbdd32",
+  "scryfall_uri": "https://scryfall.com/card/fdn/533/battle-rattle-shaman?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T02:15:53Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/f/e/fee05f7e-d4da-4a72-8140-d505eecbdd32.jpg?1783908953",
+    "normal": "https://cards.scryfall.io/normal/front/f/e/fee05f7e-d4da-4a72-8140-d505eecbdd32.jpg?1783908953",
+    "large": "https://cards.scryfall.io/large/front/f/e/fee05f7e-d4da-4a72-8140-d505eecbdd32.jpg?1783908953",
+    "png": "https://cards.scryfall.io/png/front/f/e/fee05f7e-d4da-4a72-8140-d505eecbdd32.png?1783908953",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/f/e/fee05f7e-d4da-4a72-8140-d505eecbdd32.jpg?1783908953",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/f/e/fee05f7e-d4da-4a72-8140-d505eecbdd32.jpg?1783908953",
+    "thumb": "https://cards.scryfall.io/thumb/front/f/e/fee05f7e-d4da-4a72-8140-d505eecbdd32.webp?1783908953",
+    "grid": "https://cards.scryfall.io/grid/front/f/e/fee05f7e-d4da-4a72-8140-d505eecbdd32.webp?1783908953",
+    "display": "https://cards.scryfall.io/display/front/f/e/fee05f7e-d4da-4a72-8140-d505eecbdd32.webp?1783908953",
+    "art": "https://cards.scryfall.io/art/front/f/e/fee05f7e-d4da-4a72-8140-d505eecbdd32.webp?1783908953",
+    "crop": "https://cards.scryfall.io/crop/front/f/e/fee05f7e-d4da-4a72-8140-d505eecbdd32.webp?1783908953",
+    "jpeg": "https://cards.scryfall.io/normal/front/f/e/fee05f7e-d4da-4a72-8140-d505eecbdd32.jpg?1783908953"
+  },
+  "mana_cost": "{3}{R}",
+  "cmc": 4.0,
+  "type_line": "Creature — Goblin Shaman",
+  "oracle_text": "At the beginning of combat on your turn, you may have target creature get +2/+0 until end of turn.",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "legal",
+    "future": "legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "arena",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "a7ecb771-d1b6-4dec-8cf5-8d45179f21e0",
+  "set": "fdn",
+  "set_name": "Foundations",
+  "set_type": "core",
+  "set_uri": "https://api.scryfall.com/sets/a7ecb771-d1b6-4dec-8cf5-8d45179f21e0",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Afdn&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/fdn?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/fee05f7e-d4da-4a72-8140-d505eecbdd32/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A72dc807b-35fb-4d69-ae4c-04eed0646170&unique=prints",
+  "collector_number": "533",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "A few moments of her rattle's infuriating clattering is enough to provoke even lifelong pacifists into a howling, violent rage.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Warren Mahy",
+  "artist_ids": [
+    "002c739e-aa1f-4c1d-921b-37cb2d1b1c5b"
+  ],
+  "illustration_id": "e94de36e-6e81-4037-b1b0-315394e08250",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "beginnerbox"
+  ],
+  "edhrec_rank": 19622,
+  "penny_rank": 15560,
+  "prices": {
+    "usd": "0.08",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.16",
+    "eur_foil": null,
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=677972&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DBattle-Rattle%2BShaman",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DBattle-Rattle%2BShaman",
+    "edhrec": "https://edhrec.com/route/?cc=Battle-Rattle+Shaman"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F591717%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=797931&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/134838?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

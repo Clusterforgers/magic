@@ -1,0 +1,22 @@
+{
+  "oracle_id": "41b929ad-0c44-4e50-84d3-13b318035543",
+  "name": "Courage in Crisis",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Courage in Crisis",
+      "oracle_fingerprint": "01d4b411fd8d51ef67d51cb5dfd67999",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } },
+              { "Proliferate": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

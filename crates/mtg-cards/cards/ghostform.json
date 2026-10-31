@@ -1,0 +1,29 @@
+{
+  "oracle_id": "8d813b72-8ead-4a61-88ff-e93c8d843196",
+  "name": "Ghostform",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ghostform",
+      "oracle_fingerprint": "3543c7744b80be962353e6f76d7a2926",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 0, "max": 2 } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["CantBeBlocked"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

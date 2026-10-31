@@ -1,0 +1,30 @@
+{
+  "oracle_id": "9ca9168f-54cb-4091-b80c-7c264773c1a2",
+  "name": "Dawnfluke",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dawnfluke",
+      "oracle_fingerprint": "e6f5efdcc0f96ab0626c3c2dcd138c49",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": { "Target": 0 } } },
+                  "by": { "PreventUpTo": 3 },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Evoke": "{W}" } }
+      ]
+    }
+  ]
+}

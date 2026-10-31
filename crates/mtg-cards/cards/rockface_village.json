@@ -1,0 +1,67 @@
+{
+  "oracle_id": "7e103748-3f76-42ce-a063-d0256b2dce2b",
+  "name": "Rockface Village",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rockface Village",
+      "oracle_fingerprint": "470ac769fc5d4f76a4a0a9a0ebddd004",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["Red"] },
+                  "only": [{ "Spell": { "types": ["Creature"] } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{R}" }, "Tap"],
+            "timing": "Sorcery",
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    {
+                      "AnyOf": [
+                        { "Subtype": "Lizard" },
+                        { "Subtype": "Mouse" },
+                        { "Subtype": "Otter" },
+                        { "Subtype": "Raccoon" }
+                      ]
+                    },
+                    { "ControlledBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "ModifyPT": { "power": 1, "toughness": 0 } },
+                    { "AddKeyword": "Haste" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

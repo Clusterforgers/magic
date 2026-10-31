@@ -1,0 +1,29 @@
+{
+  "oracle_id": "1253de62-6218-401c-9d98-a5ec8617e0d8",
+  "name": "Cosi's Ravager",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cosi's Ravager",
+      "oracle_fingerprint": "c41f302d087fb3b5d98a858c70810219",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "targets": [
+              { "what": { "Either": ["Player", { "Object": [{ "Type": "Planeswalker" }] }] } }
+            ],
+            "effects": [
+              { "May": { "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

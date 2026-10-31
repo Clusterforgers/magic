@@ -1,0 +1,35 @@
+{
+  "oracle_id": "3abd2342-f783-4871-ac78-1a54b35722c2",
+  "name": "Biosynthic Burst",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Biosynthic Burst",
+      "oracle_fingerprint": "45cdefe34579f04de9185af53b453382",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "AddKeyword": "Reach" },
+                    { "AddKeyword": "Trample" },
+                    { "AddKeyword": "Indestructible" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Untap": { "what": { "Target": 0 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

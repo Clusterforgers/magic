@@ -1,0 +1,23 @@
+{
+  "oracle_id": "985192cd-ceb6-48ad-80b9-e10fc544260e",
+  "name": "Jade-Cast Sentinel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jade-Cast Sentinel",
+      "oracle_fingerprint": "46fa5aefd0b8b816f95a366cf0b05fde",
+      "abilities": [
+        { "Keyword": "Reach" },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap"],
+            "targets": [{ "what": { "Object": [{ "In": "Graveyard" }] } }],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Library": { "place": "Bottom" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,63 @@
+{
+  "oracle_id": "2886f95e-c4e8-4770-b7de-40985f336cfb",
+  "name": "Crescent Island Temple",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Crescent Island Temple",
+      "oracle_fingerprint": "1681440c7a6631484b3ed1fac6a87712",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Monk",
+                      "colors": ["Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Monk"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Prowess" }]
+                    }
+                  },
+                  "count": { "Count": [{ "Subtype": "Shrine" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Subtype": "Shrine" }, "Other", { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Monk",
+                      "colors": ["Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Monk"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Prowess" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

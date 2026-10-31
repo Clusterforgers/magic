@@ -1,0 +1,26 @@
+{
+  "oracle_id": "f48dae33-ebf9-41ee-a61e-7573a2733db2",
+  "name": "Cephalid Vandal",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cephalid Vandal",
+      "oracle_fingerprint": "e9cacfd286e5a63fdc145591f76bed04",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": { "Other": "shred" } } },
+              {
+                "Mill": {
+                  "count": { "Counters": { "on": "This", "counter": { "Other": "shred" } } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

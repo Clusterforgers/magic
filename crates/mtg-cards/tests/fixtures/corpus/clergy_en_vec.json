@@ -1,0 +1,133 @@
+{
+  "object": "card",
+  "id": "fcb0e068-16d0-4e1c-acad-0a6d34148c5a",
+  "oracle_id": "a5a1b4c9-474a-42b7-b412-c2d43a3353db",
+  "multiverse_ids": [
+    4870
+  ],
+  "mtgo_id": 9659,
+  "mtgo_foil_id": 9660,
+  "tcgplayer_id": 5494,
+  "cardmarket_id": 8961,
+  "name": "Clergy en-Vec",
+  "lang": "en",
+  "released_at": "1997-10-14",
+  "uri": "https://api.scryfall.com/cards/fcb0e068-16d0-4e1c-acad-0a6d34148c5a",
+  "scryfall_uri": "https://scryfall.com/card/tmp/14/clergy-en-vec?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T12:44:28Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/f/c/fcb0e068-16d0-4e1c-acad-0a6d34148c5a.jpg?1783946668",
+    "normal": "https://cards.scryfall.io/normal/front/f/c/fcb0e068-16d0-4e1c-acad-0a6d34148c5a.jpg?1783946668",
+    "large": "https://cards.scryfall.io/large/front/f/c/fcb0e068-16d0-4e1c-acad-0a6d34148c5a.jpg?1783946668",
+    "png": "https://cards.scryfall.io/png/front/f/c/fcb0e068-16d0-4e1c-acad-0a6d34148c5a.png?1783946668",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/f/c/fcb0e068-16d0-4e1c-acad-0a6d34148c5a.jpg?1783946668",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/f/c/fcb0e068-16d0-4e1c-acad-0a6d34148c5a.jpg?1783946668",
+    "thumb": "https://cards.scryfall.io/thumb/front/f/c/fcb0e068-16d0-4e1c-acad-0a6d34148c5a.webp?1783946668",
+    "grid": "https://cards.scryfall.io/grid/front/f/c/fcb0e068-16d0-4e1c-acad-0a6d34148c5a.webp?1783946668",
+    "display": "https://cards.scryfall.io/display/front/f/c/fcb0e068-16d0-4e1c-acad-0a6d34148c5a.webp?1783946668",
+    "art": "https://cards.scryfall.io/art/front/f/c/fcb0e068-16d0-4e1c-acad-0a6d34148c5a.webp?1783946668",
+    "crop": "https://cards.scryfall.io/crop/front/f/c/fcb0e068-16d0-4e1c-acad-0a6d34148c5a.webp?1783946668",
+    "jpeg": "https://cards.scryfall.io/normal/front/f/c/fcb0e068-16d0-4e1c-acad-0a6d34148c5a.jpg?1783946668"
+  },
+  "mana_cost": "{1}{W}",
+  "cmc": 2.0,
+  "type_line": "Creature — Human Cleric",
+  "oracle_text": "{T}: Prevent the next 1 damage that would be dealt to any target this turn.",
+  "power": "1",
+  "toughness": "1",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "10df3a67-178e-4363-8668-34f0e6edf2a7",
+  "set": "tmp",
+  "set_name": "Tempest",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/10df3a67-178e-4363-8668-34f0e6edf2a7",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Atmp&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/tmp?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/fcb0e068-16d0-4e1c-acad-0a6d34148c5a/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Aa5a1b4c9-474a-42b7-b412-c2d43a3353db&unique=prints",
+  "collector_number": "14",
+  "digital": false,
+  "rarity": "common",
+  "flavor_text": "\"Faith's shield is hammered out by the blows of unbelievers.\"\n—Oracle *en*-Vec",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Heather Hudson",
+  "artist_ids": [
+    "4441fe52-9e41-40c1-9b74-8510426279ab"
+  ],
+  "illustration_id": "3a8d7e2c-38b6-4bbd-8f00-ff1202278a6c",
+  "border_color": "black",
+  "frame": "1997",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 29818,
+  "prices": {
+    "usd": "0.18",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.08",
+    "eur_foil": null,
+    "tix": "0.09"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=4870&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DClergy%2Ben-Vec",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DClergy%2Ben-Vec",
+    "edhrec": "https://edhrec.com/route/?cc=Clergy+en-Vec"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F5494%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=8961&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/9659?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

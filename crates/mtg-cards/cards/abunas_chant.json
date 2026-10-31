@@ -1,0 +1,39 @@
+{
+  "oracle_id": "2d4721f1-1a49-45aa-99d5-ab8c6f3f3ab6",
+  "name": "Abuna's Chant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Abuna's Chant",
+      "oracle_fingerprint": "b1259da7f1c157c403dfd18dcd53a138",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    { "effects": [{ "GainLife": { "amount": 5 } }] },
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                      "effects": [
+                        {
+                          "Shield": {
+                            "when": { "Damage": { "to": { "Target": 0 } } },
+                            "by": { "PreventUpTo": 5 },
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Entwine": "{2}" } }
+      ]
+    }
+  ]
+}

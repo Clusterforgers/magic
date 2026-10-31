@@ -1,0 +1,33 @@
+{
+  "oracle_id": "4fd567cb-0b8e-41dd-a2b7-87a196de294a",
+  "name": "Nantuko Tracer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nantuko Tracer",
+      "oracle_fingerprint": "6768debfba260d75bf0786022325ab23",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": { "Object": [{ "In": "Graveyard" }] } }],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Move": {
+                        "what": { "Target": 0 },
+                        "to": { "Library": { "place": "Bottom" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

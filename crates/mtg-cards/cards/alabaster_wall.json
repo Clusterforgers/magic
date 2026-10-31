@@ -1,0 +1,29 @@
+{
+  "oracle_id": "f9f52651-cc64-48c5-bc18-cd5f646dfb1f",
+  "name": "Alabaster Wall",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Alabaster Wall",
+      "oracle_fingerprint": "a4fad1cf9236219c5282d03b6d5d8c64",
+      "abilities": [
+        { "Keyword": "Defender" },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": { "Target": 0 } } },
+                  "by": { "PreventUpTo": 1 },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

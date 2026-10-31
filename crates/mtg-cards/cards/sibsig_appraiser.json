@@ -1,0 +1,24 @@
+{
+  "oracle_id": "5b51958d-533a-45e4-aac1-3c157670978b",
+  "name": "Sibsig Appraiser",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sibsig Appraiser",
+      "oracle_fingerprint": "4d8d48cc385288cdab120d7c638e3b78",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "LookAtTop": { "count": 2, "as": "top" } },
+              { "Choose": { "from": { "Bound": "top" }, "as": "kept2", "rest_as": "rest3" } },
+              { "Move": { "what": { "Bound": "kept2" }, "to": "Hand" } },
+              { "Move": { "what": { "Bound": "rest3" }, "to": "Graveyard" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

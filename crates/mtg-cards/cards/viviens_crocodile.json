@@ -1,0 +1,32 @@
+{
+  "oracle_id": "b49791f9-525c-4b04-954d-d7678c5565e3",
+  "name": "Vivien's Crocodile",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vivien's Crocodile",
+      "oracle_fingerprint": "b5f9cd4fa860e14c41fb8754e2f5090b",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "Type": "Planeswalker" },
+                    { "Subtype": "Vivien" },
+                    { "ControlledBy": "You" }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

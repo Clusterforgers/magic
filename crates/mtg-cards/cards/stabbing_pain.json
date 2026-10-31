@@ -1,0 +1,28 @@
+{
+  "oracle_id": "604ad5b3-7f11-455e-9442-65b7484238e5",
+  "name": "Stabbing Pain",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stabbing Pain",
+      "oracle_fingerprint": "258b1f490b261718355d083e16550c1b",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": -1, "toughness": -1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Tap": { "what": { "Target": 0 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

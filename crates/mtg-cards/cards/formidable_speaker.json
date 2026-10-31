@@ -1,0 +1,43 @@
+{
+  "oracle_id": "5bd06f9e-9a42-455d-ad26-24bc04e51c7c",
+  "name": "Formidable Speaker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Formidable Speaker",
+      "oracle_fingerprint": "f8fda61d169ddd592f7cb0cb970f7379",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "Discard": {} }],
+                  "paid": [
+                    {
+                      "Search": {
+                        "filter": [{ "Type": "Creature" }],
+                        "reveal": true,
+                        "as": "found"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+                    { "Shuffle": {} }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap"],
+            "targets": [{ "what": { "Object": ["Other"] } }],
+            "effects": [{ "Untap": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

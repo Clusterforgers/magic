@@ -1,0 +1,64 @@
+{
+  "oracle_id": "575f032a-6ae8-4f4f-ab0b-983e7c76ad7f",
+  "name": "Glint Hawk Idol",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Glint Hawk Idol",
+      "oracle_fingerprint": "defbb04c66a15f777881f72e7a31f6ac",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Artifact" }, "Other", { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Continuous": {
+                        "affected": "This",
+                        "mods": [
+                          { "SetPT": { "power": 2, "toughness": 2 } },
+                          { "SetCreatureTypes": ["Bird"] },
+                          { "AddType": "Artifact" },
+                          { "AddType": "Creature" },
+                          { "AddKeyword": "Flying" }
+                        ],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{W}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "SetPT": { "power": 2, "toughness": 2 } },
+                    { "SetCreatureTypes": ["Bird"] },
+                    { "AddType": "Artifact" },
+                    { "AddType": "Creature" },
+                    { "AddKeyword": "Flying" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

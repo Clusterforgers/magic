@@ -1,0 +1,35 @@
+{
+  "oracle_id": "be5f788a-8a2e-447c-9e65-f9fc197ddfc9",
+  "name": "Entropic Eidolon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Entropic Eidolon",
+      "oracle_fingerprint": "930dcc2678825e4e49f26314022125e9",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{B}" }, "SacrificeSelf"],
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              { "LoseLife": { "who": { "Target": 0 }, "amount": 1 } },
+              { "GainLife": { "amount": 1 } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [{ "Compare": { "stat": "Colors", "op": "Ge", "to": 2 } }],
+                "by": "You"
+              }
+            },
+            "from": "Graveyard",
+            "effects": [{ "May": { "effects": [{ "Move": { "what": "This", "to": "Hand" } }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

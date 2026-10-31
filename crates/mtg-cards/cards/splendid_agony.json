@@ -1,0 +1,27 @@
+{
+  "oracle_id": "e9958344-13d5-4f7b-acc8-904e5d99b90e",
+  "name": "Splendid Agony",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Splendid Agony",
+      "oracle_fingerprint": "8998260b6c401f9aa9a8de452d821c67",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }] },
+                "bounds": { "min": 1, "max": 2 },
+                "divide": 2
+              }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "-1/-1", "count": "Divided" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

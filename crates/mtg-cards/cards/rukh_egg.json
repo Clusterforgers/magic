@@ -1,0 +1,42 @@
+{
+  "oracle_id": "98116aec-2ab1-4bee-b727-9feff6274825",
+  "name": "Rukh Egg",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rukh Egg",
+      "oracle_fingerprint": "b1af72ca0b81321c2e1fd7b262ac9aa4",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Bird",
+                            "colors": ["Red"],
+                            "types": ["Creature"],
+                            "subtypes": ["Bird"],
+                            "power": 4,
+                            "toughness": 4,
+                            "abilities": [{ "Keyword": "Flying" }]
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

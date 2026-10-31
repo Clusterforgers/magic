@@ -1,0 +1,28 @@
+{
+  "oracle_id": "b2ac84e3-cc3c-49c6-918b-a407ef1ee06c",
+  "name": "Valor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Valor",
+      "oracle_fingerprint": "2c05b66cf82882407b39b10eb57c6e95",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": "FirstStrike" }],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Subtype": "Plains" }, { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "from": "Graveyard"
+          }
+        }
+      ]
+    }
+  ]
+}

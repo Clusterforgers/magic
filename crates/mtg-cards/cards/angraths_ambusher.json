@@ -1,0 +1,32 @@
+{
+  "oracle_id": "85791f11-44ab-4405-b284-1d91c7e0afbb",
+  "name": "Angrath's Ambusher",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Angrath's Ambusher",
+      "oracle_fingerprint": "b68991e16e7df87da790717452a1e68f",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "Type": "Planeswalker" },
+                    { "Subtype": "Angrath" },
+                    { "ControlledBy": "You" }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

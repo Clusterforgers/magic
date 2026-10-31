@@ -1,0 +1,33 @@
+{
+  "oracle_id": "ff0d5cbe-99d3-4d3b-9a5b-80223fc18869",
+  "name": "Updraft",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Updraft",
+      "oracle_fingerprint": "2cf31ce93e86a4077f7e4d4ff728ed2a",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Flying" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "Upkeep" } },
+                  "effects": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

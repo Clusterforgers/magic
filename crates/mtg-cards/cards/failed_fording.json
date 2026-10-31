@@ -1,0 +1,33 @@
+{
+  "oracle_id": "fe4bbe82-1d6b-4f3d-8cc0-f6df22d9e9fb",
+  "name": "Failed Fording",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Failed Fording",
+      "oracle_fingerprint": "be9342e0e2d00dea9a2f214b349d354f",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Not": { "Type": "Land" } }] } }],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": "Hand" } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "Subtype": "Desert" }, { "ControlledBy": "You" }] },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Surveil": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

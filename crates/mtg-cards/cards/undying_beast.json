@@ -1,0 +1,19 @@
+{
+  "oracle_id": "5ae03181-a436-4bad-be3a-6c9f6c0ed4d6",
+  "name": "Undying Beast",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Undying Beast",
+      "oracle_fingerprint": "d9d115c1373982f45120bebf8f38277c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [{ "Move": { "what": "This", "to": { "Library": { "place": "Top" } } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

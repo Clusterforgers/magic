@@ -1,0 +1,38 @@
+{
+  "oracle_id": "0a9276fc-387c-4bde-a6d6-b0dd7abee94b",
+  "name": "Abzan Runemark",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Abzan Runemark",
+      "oracle_fingerprint": "a5145e32438148ce9135b172bff4ceb4",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "AddKeyword": "Vigilance" }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "AnyOf": [{ "Color": "Black" }, { "Color": "Green" }] },
+                    { "ControlledBy": "You" }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

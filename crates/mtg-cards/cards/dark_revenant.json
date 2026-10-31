@@ -1,0 +1,20 @@
+{
+  "oracle_id": "7191f765-6e66-4bc4-8aa8-85280ac61d1e",
+  "name": "Dark Revenant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dark Revenant",
+      "oracle_fingerprint": "4278403d3dd62be74946dcadbb9240e0",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [{ "Move": { "what": "This", "to": { "Library": { "place": "Top" } } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

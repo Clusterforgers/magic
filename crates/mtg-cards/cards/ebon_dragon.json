@@ -1,0 +1,21 @@
+{
+  "oracle_id": "12e4d2bd-83e9-4120-a2e8-0645c0ed2387",
+  "name": "Ebon Dragon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ebon Dragon",
+      "oracle_fingerprint": "a7558933030bf08448cbc645ea218f6d",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [{ "May": { "effects": [{ "Discard": { "who": { "Target": 0 } } }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

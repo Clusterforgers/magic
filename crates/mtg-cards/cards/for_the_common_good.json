@@ -1,0 +1,29 @@
+{
+  "oracle_id": "de6e4aa2-23f1-46e5-a061-05522944e0c6",
+  "name": "For the Common Good",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "For the Common Good",
+      "oracle_fingerprint": "012090c084f88fb65793fbcf5de1b84b",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Token", { "ControlledBy": "You" }] } }],
+            "effects": [
+              { "CreateToken": { "token": { "CopyOf": { "of": { "Target": 0 } } }, "count": "X" } },
+              {
+                "Continuous": {
+                  "affected": { "Each": ["Token", { "ControlledBy": "You" }] },
+                  "mods": [{ "AddKeyword": "Indestructible" }],
+                  "duration": "UntilYourNextTurn"
+                }
+              },
+              { "GainLife": { "amount": { "Count": ["Token", { "ControlledBy": "You" }] } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

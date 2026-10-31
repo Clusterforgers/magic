@@ -1,0 +1,28 @@
+{
+  "oracle_id": "d0e33a3f-659a-4889-98f6-d0f385e259f1",
+  "name": "Squee's Toy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Squee's Toy",
+      "oracle_fingerprint": "689f9660438368b50f9221f5491bc3ed",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": { "Target": 0 } } },
+                  "by": { "PreventUpTo": 1 },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

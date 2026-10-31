@@ -1,0 +1,28 @@
+{
+  "oracle_id": "13f41253-364f-40a5-a7cd-84d8785b2460",
+  "name": "Bola Warrior",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bola Warrior",
+      "oracle_fingerprint": "10f6162180dde816fb5ad381dbe8cd64",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{R}" }, "Tap", { "Discard": {} }],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["CantBlock"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

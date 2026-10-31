@@ -1,0 +1,43 @@
+{
+  "oracle_id": "5f7a4ffb-83f7-46e5-b0a7-c8b068af6969",
+  "name": "Blazethorn Scarecrow",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Blazethorn Scarecrow",
+      "oracle_fingerprint": "b315f05d278ebd73e56b731d1a626ed6",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Haste" }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [{ "Type": "Creature" }, { "Color": "Red" }, { "ControlledBy": "You" }]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Wither" }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [{ "Type": "Creature" }, { "Color": "Green" }, { "ControlledBy": "You" }]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

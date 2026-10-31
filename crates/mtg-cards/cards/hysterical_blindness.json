@@ -1,0 +1,26 @@
+{
+  "oracle_id": "705531b3-77cc-4d1f-851b-45e03c029991",
+  "name": "Hysterical Blindness",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hysterical Blindness",
+      "oracle_fingerprint": "63303c4a1eac9dbd2538e97e5de1ae77",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] },
+                  "mods": [{ "ModifyPT": { "power": -4, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

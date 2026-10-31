@@ -1,0 +1,30 @@
+{
+  "oracle_id": "6c0f6673-bc24-4c84-b4e7-736283ffd60e",
+  "name": "Wanderwine Distracter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wanderwine Distracter",
+      "oracle_fingerprint": "39ff8be9bcd992d145d2a156e3bd09c8",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Tapped": { "what": ["This"] } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": -3, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

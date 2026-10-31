@@ -1,0 +1,33 @@
+{
+  "oracle_id": "d6cd8c51-dd5b-4037-b6ae-1776e3743338",
+  "name": "Rootgrapple",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rootgrapple",
+      "oracle_fingerprint": "faafba9ecd3a30c573b76e82f466c782",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Not": { "Type": "Creature" } }] } }],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "Subtype": "Treefolk" }, { "ControlledBy": "You" }] },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

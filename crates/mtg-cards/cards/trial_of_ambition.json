@@ -1,0 +1,33 @@
+{
+  "oracle_id": "bf614953-bd62-4000-a960-e2c26e1f7bb0",
+  "name": "Trial of Ambition",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Trial of Ambition",
+      "oracle_fingerprint": "7ad5c8da460fdcc990c77e71071f4b3d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              { "Sacrifice": { "who": { "Target": 0 }, "filter": [{ "Type": "Creature" }] } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Subtype": "Cartouche" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [{ "Move": { "what": "This", "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

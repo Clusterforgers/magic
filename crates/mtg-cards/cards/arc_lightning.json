@@ -1,0 +1,19 @@
+{
+  "oracle_id": "5acc8b39-3c3e-4012-8cfd-ac3c2c4ca982",
+  "name": "Arc Lightning",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Arc Lightning",
+      "oracle_fingerprint": "592b2b5fe3e671cca60dc801f9cc89d6",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget", "bounds": { "min": 1, "max": 3 }, "divide": 3 }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": "Divided" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "oracle_id": "61d94fe7-b559-4bd4-94a7-f4ed4c853b4b",
+  "name": "Radha, Heir to Keld",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Radha, Heir to Keld",
+      "oracle_fingerprint": "01875b5ffe1983e06fb451b200f8b4b8",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              { "May": { "effects": [{ "AddMana": { "mana": { "Fixed": ["Red", "Red"] } } }] } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Green"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

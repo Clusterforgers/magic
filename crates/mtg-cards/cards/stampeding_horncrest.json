@@ -1,0 +1,26 @@
+{
+  "oracle_id": "fa6413f9-aa32-4fdc-a539-327a4ea906fe",
+  "name": "Stampeding Horncrest",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stampeding Horncrest",
+      "oracle_fingerprint": "d953053491de05a99cae880df8530ada",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Haste" }],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Subtype": "Dinosaur" }, "Other", { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

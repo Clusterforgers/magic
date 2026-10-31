@@ -1,0 +1,35 @@
+{
+  "oracle_id": "d4b0a6e6-937d-428a-a469-bc09c30ac276",
+  "name": "Renegade Firebrand",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Renegade Firebrand",
+      "oracle_fingerprint": "ccf19f12682ec4e6dbf258f2d01dbce8",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              { "ModifyPT": { "power": 1, "toughness": 0 } },
+              { "AddKeyword": "FirstStrike" }
+            ],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "Type": "Planeswalker" },
+                    { "Subtype": "Chandra" },
+                    { "ControlledBy": "You" }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

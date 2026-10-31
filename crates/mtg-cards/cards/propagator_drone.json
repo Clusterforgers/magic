@@ -1,0 +1,48 @@
+{
+  "oracle_id": "9485db26-7e03-4a66-beeb-627a3bc6f367",
+  "name": "Propagator Drone",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Propagator Drone",
+      "oracle_fingerprint": "28902f8d4168a5355decd6ca084f4a17",
+      "abilities": [
+        { "Keyword": "Devoid" },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, "Token", { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": "Evolve" }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{3}{G}",
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Eldrazi Spawn",
+                      "types": ["Creature"],
+                      "subtypes": ["Eldrazi", "Spawn"],
+                      "power": 0,
+                      "toughness": 1,
+                      "abilities": [
+                        {
+                          "Activated": {
+                            "cost": ["SacrificeSelf"],
+                            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

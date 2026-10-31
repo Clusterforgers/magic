@@ -1,0 +1,26 @@
+{
+  "oracle_id": "14a555eb-9720-45b4-9eb5-77b739e1045c",
+  "name": "Angelic Quartermaster",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Angelic Quartermaster",
+      "oracle_fingerprint": "979af5dbb40cdced18b2f04b38341d4c",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, "Other"] },
+                "bounds": { "min": 0, "max": 2 }
+              }
+            ],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

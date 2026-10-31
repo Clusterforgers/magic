@@ -1,0 +1,35 @@
+{
+  "oracle_id": "b3ef64ad-a57e-44d9-9797-3f479741c497",
+  "name": "Windborne Charge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Windborne Charge",
+      "oracle_fingerprint": "88a2f58712bdd066fcb8349366acff6d",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                "bounds": { "min": 2, "max": 2 }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "ModifyPT": { "power": 2, "toughness": 2 } },
+                    { "AddKeyword": "Flying" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

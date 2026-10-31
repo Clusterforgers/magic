@@ -1,0 +1,24 @@
+{
+  "oracle_id": "cc65a99f-ac7f-4ded-bb00-a5daf51e4bcd",
+  "name": "Heal the Scars",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Heal the Scars",
+      "oracle_fingerprint": "c59e9eb9f53fea865c2da79cb515dfe7",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Regenerate": { "what": { "Target": 0 } } },
+              {
+                "GainLife": { "amount": { "Stat": { "of": { "Target": 0 }, "stat": "Toughness" } } }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

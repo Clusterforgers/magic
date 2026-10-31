@@ -1,0 +1,45 @@
+{
+  "oracle_id": "dd645241-2992-4c4e-a6a8-c2215d2340ae",
+  "name": "Sokenzan Smelter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sokenzan Smelter",
+      "oracle_fingerprint": "333de09897bad447733094c574294caa",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [
+                    { "Mana": "{1}" },
+                    { "Sacrifice": { "filter": [{ "Type": "Artifact" }] } }
+                  ],
+                  "paid": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Construct",
+                            "colors": ["Red"],
+                            "types": ["Artifact", "Creature"],
+                            "subtypes": ["Construct"],
+                            "power": 3,
+                            "toughness": 1,
+                            "abilities": [{ "Keyword": "Haste" }]
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

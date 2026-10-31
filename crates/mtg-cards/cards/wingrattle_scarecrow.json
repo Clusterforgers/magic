@@ -1,0 +1,43 @@
+{
+  "oracle_id": "034264da-a404-4037-b215-b095bba77490",
+  "name": "Wingrattle Scarecrow",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wingrattle Scarecrow",
+      "oracle_fingerprint": "acd6052aa0238893ec89f93378b29ea9",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Flying" }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [{ "Type": "Creature" }, { "Color": "Blue" }, { "ControlledBy": "You" }]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Persist" }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [{ "Type": "Creature" }, { "Color": "Black" }, { "ControlledBy": "You" }]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

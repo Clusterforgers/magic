@@ -1,0 +1,27 @@
+{
+  "oracle_id": "e5659c45-e064-4690-b90a-24ffe3793d4d",
+  "name": "Roku's Mastery",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Roku's Mastery",
+      "oracle_fingerprint": "30d31592818a4e24903f14831265884f",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": "X" } },
+              {
+                "If": {
+                  "condition": { "Compare": { "left": "X", "op": "Ge", "right": 4 } },
+                  "then": [{ "Scry": { "count": 2 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

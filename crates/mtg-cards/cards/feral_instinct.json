@@ -1,0 +1,33 @@
+{
+  "oracle_id": "f8f3fc11-25b4-4a23-9d79-f380a14f0420",
+  "name": "Feral Instinct",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Feral Instinct",
+      "oracle_fingerprint": "b358f91791fdb84ec94c2530b0a3dcbf",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "Upkeep" } },
+                  "effects": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

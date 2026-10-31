@@ -1,0 +1,38 @@
+{
+  "oracle_id": "59410454-93ff-41f0-ab62-cdaf156163d0",
+  "name": "Sultai Runemark",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sultai Runemark",
+      "oracle_fingerprint": "792126a5bcc2d77a1b15d2f1bafa2341",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "AddKeyword": "Deathtouch" }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "AnyOf": [{ "Color": "Green" }, { "Color": "Blue" }] },
+                    { "ControlledBy": "You" }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

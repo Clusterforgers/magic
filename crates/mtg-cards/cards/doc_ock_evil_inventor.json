@@ -1,0 +1,44 @@
+{
+  "oracle_id": "3e0738af-00ec-4707-a56d-85b5a5ce4529",
+  "name": "Doc Ock, Evil Inventor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Doc Ock, Evil Inventor",
+      "oracle_fingerprint": "3c65e57a67e213e598b0b3109fd9d505",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Artifact" },
+                    { "Not": { "Type": "Creature" } },
+                    { "ControlledBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "SetPT": { "power": 8, "toughness": 8 } },
+                    { "AddSubtype": "Robot" },
+                    { "AddSubtype": "Villain" },
+                    { "AddType": "Artifact" },
+                    { "AddType": "Creature" }
+                  ],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

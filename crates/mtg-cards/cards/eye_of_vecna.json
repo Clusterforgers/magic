@@ -1,0 +1,29 @@
+{
+  "oracle_id": "371a7bbf-5890-46d8-ae57-f020c103b465",
+  "name": "Eye of Vecna",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Eye of Vecna",
+      "oracle_fingerprint": "8dcadca8c17b1ca5bd58b2256c3ee0c4",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Draw": {} }, { "LoseLife": { "amount": 2 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "Pay": { "cost": "{2}", "paid": [{ "Draw": {} }, { "LoseLife": { "amount": 2 } }] }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

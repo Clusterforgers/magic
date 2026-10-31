@@ -1,0 +1,28 @@
+{
+  "oracle_id": "fcb03c54-5b9a-428d-bbf6-ef8977770c8d",
+  "name": "Anoint",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Anoint",
+      "oracle_fingerprint": "cc4153b6f89b9bb97d64bbc828ced49b",
+      "abilities": [
+        { "Keyword": { "Buyback": "{3}" } },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": { "Target": 0 } } },
+                  "by": { "PreventUpTo": 3 },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

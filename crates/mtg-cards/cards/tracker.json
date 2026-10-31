@@ -1,0 +1,34 @@
+{
+  "oracle_id": "86260d53-a68e-43cb-88ba-6a97c0b2f4f4",
+  "name": "Tracker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tracker",
+      "oracle_fingerprint": "2ab286bfb427a94a5529dbd0af4adbc2",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{G}{G}" }, "Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": { "Stat": { "of": "This", "stat": "Power" } }
+                }
+              },
+              {
+                "DealDamage": {
+                  "source": { "Target": 0 },
+                  "to": "This",
+                  "amount": { "Stat": { "of": { "Target": 0 }, "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "oracle_id": "06d63395-6d05-44d8-bae6-0155f8026e57",
+  "name": "Deadly Wanderings",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Deadly Wanderings",
+      "oracle_fingerprint": "3dbad2f021c9c2a603794eb59081b443",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+            "mods": [
+              { "ModifyPT": { "power": 2, "toughness": 0 } },
+              { "AddKeyword": "Deathtouch" },
+              { "AddKeyword": "Lifelink" }
+            ],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                "op": "Eq",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

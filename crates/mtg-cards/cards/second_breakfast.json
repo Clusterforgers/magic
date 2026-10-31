@@ -1,0 +1,30 @@
+{
+  "oracle_id": "bf5f68b8-8ae2-4d08-b86c-4e6d3b653fec",
+  "name": "Second Breakfast",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Second Breakfast",
+      "oracle_fingerprint": "71bca9a404c9d3a98b79836ba04db8e0",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 0, "max": 2 } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "CreateToken": { "token": { "Named": "food" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

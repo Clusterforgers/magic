@@ -1,0 +1,30 @@
+{
+  "oracle_id": "0296d57e-e5b9-456f-bb21-eb584adefb4c",
+  "name": "Gollum, Silent Slinker // Meager Meal",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gollum, Silent Slinker",
+      "oracle_fingerprint": "1a3c963b3c089d7d6a6ec3848e8caff2",
+      "abilities": [{ "Keyword": "Menace" }]
+    },
+    {
+      "name": "Meager Meal",
+      "oracle_fingerprint": "b9e994709b74c658dd97b8d2a9a10562",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 0, "max": 1 } },
+              { "what": "Player" }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } },
+              { "GainLife": { "who": { "Target": 1 }, "amount": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

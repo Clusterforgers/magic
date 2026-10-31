@@ -1,0 +1,28 @@
+{
+  "oracle_id": "504f21e8-82ac-4433-b5e9-640989480f58",
+  "name": "Arbor Armament",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Arbor Armament",
+      "oracle_fingerprint": "45d2651e4f064a10258cd4694664f2d1",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Reach" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

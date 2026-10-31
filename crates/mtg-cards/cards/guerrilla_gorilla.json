@@ -1,0 +1,31 @@
+{
+  "oracle_id": "6cb65b68-91b2-45ba-867b-3b31d6dd5643",
+  "name": "Guerrilla Gorilla",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Guerrilla Gorilla",
+      "oracle_fingerprint": "5d584b80408793a4cf71c5ba9455fa52",
+      "abilities": [
+        { "Keyword": "Reach" },
+        {
+          "Activated": {
+            "cost": ["SacrificeSelf"],
+            "timing": "Sorcery",
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Enchantment" }] },
+                    { "Not": { "Type": "Creature" } }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

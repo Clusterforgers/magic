@@ -1,0 +1,36 @@
+{
+  "oracle_id": "4b34a324-d939-453a-97e3-a21c584a0c74",
+  "name": "Altar of Shadows",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Altar of Shadows",
+      "oracle_fingerprint": "4767f02dabcac634286d4b615ab3c4c0",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Main1", "whose": "You" } },
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["Black"] },
+                  "times": { "Counters": { "on": "This", "counter": "charge" } }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{7}" }, "Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              { "PutCounters": { "on": "This", "counter": "charge" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

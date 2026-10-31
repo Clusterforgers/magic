@@ -1,0 +1,29 @@
+{
+  "oracle_id": "93e4308e-e701-440e-861a-a30324654095",
+  "name": "Silverflame Squire // On Alert",
+  "impl_status": "Full",
+  "faces": [
+    { "name": "Silverflame Squire", "oracle_fingerprint": "e3b0c44298fc1c149afbf4c8996fb924" },
+    {
+      "name": "On Alert",
+      "oracle_fingerprint": "ca883a1efe76a7722e79eb5fe150a3a4",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Untap": { "what": { "Target": 0 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

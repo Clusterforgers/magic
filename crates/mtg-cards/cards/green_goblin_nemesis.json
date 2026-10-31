@@ -1,0 +1,29 @@
+{
+  "oracle_id": "d1f1e48f-f1f4-497f-9112-79159d2f443b",
+  "name": "Green Goblin, Nemesis",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Green Goblin, Nemesis",
+      "oracle_fingerprint": "2e077b41329a6c5eb58efea44b7b48b0",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "Discarded": { "what": [{ "Not": { "Type": "Land" } }], "by": "You" } },
+            "targets": [
+              { "what": { "Object": [{ "Subtype": "Goblin" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Discarded": { "what": [{ "Type": "Land" }], "by": "You" } },
+            "effects": [{ "CreateToken": { "token": { "Named": "treasure" }, "tapped": true } }]
+          }
+        }
+      ]
+    }
+  ]
+}

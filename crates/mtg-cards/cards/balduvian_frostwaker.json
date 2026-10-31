@@ -1,0 +1,34 @@
+{
+  "oracle_id": "2cff1f9e-11a6-460c-8f5f-4c02424357e3",
+  "name": "Balduvian Frostwaker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Balduvian Frostwaker",
+      "oracle_fingerprint": "e6ce290392bf0ee03f5d957e934fe926",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{U}" }, "Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Land" }, { "Supertype": "Snow" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "SetPT": { "power": 2, "toughness": 2 } },
+                    { "SetColors": ["Blue"] },
+                    { "AddSubtype": "Elemental" },
+                    { "AddType": "Creature" },
+                    { "AddKeyword": "Flying" }
+                  ],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

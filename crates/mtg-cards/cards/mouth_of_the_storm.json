@@ -1,0 +1,29 @@
+{
+  "oracle_id": "832fbb1f-0ff5-4d6c-b1ee-2231923a6f64",
+  "name": "Mouth of the Storm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mouth of the Storm",
+      "oracle_fingerprint": "dee622d04ebd2d42f616d77711cb99d7",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": { "Ward": "{2}" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] },
+                  "mods": [{ "ModifyPT": { "power": -3, "toughness": 0 } }],
+                  "duration": "UntilYourNextTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

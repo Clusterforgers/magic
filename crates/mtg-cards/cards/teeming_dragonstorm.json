@@ -1,0 +1,46 @@
+{
+  "oracle_id": "2154cc68-41a4-4e88-9fe0-e0150dc0be45",
+  "name": "Teeming Dragonstorm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Teeming Dragonstorm",
+      "oracle_fingerprint": "ddf91bf7e615d39c0f304412ee045379",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Soldier",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Soldier"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  },
+                  "count": 2
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Subtype": "Dragon" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [{ "Move": { "what": "This", "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

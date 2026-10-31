@@ -1,0 +1,28 @@
+{
+  "oracle_id": "98d68954-bffe-460e-ab83-6a4bbb59cc13",
+  "name": "Kiku, Night's Flower",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kiku, Night's Flower",
+      "oracle_fingerprint": "1dbd51fdd9d53f839ec56fe05f029a63",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{B}{B}" }, "Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "source": { "Target": 0 },
+                  "to": { "Target": 0 },
+                  "amount": { "Stat": { "of": { "Target": 0 }, "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

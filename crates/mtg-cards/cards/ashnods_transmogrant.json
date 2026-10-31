@@ -1,0 +1,31 @@
+{
+  "oracle_id": "1a8072c9-e2b8-4173-af88-ed0dd64d10fe",
+  "name": "Ashnod's Transmogrant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ashnod's Transmogrant",
+      "oracle_fingerprint": "e2fb6a494e2a136ebd3c20306fb001f9",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap", "SacrificeSelf"],
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "Not": { "Type": "Artifact" } }] } }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddType": "Artifact" }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

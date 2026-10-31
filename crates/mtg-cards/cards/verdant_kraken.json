@@ -1,0 +1,34 @@
+{
+  "oracle_id": "83c61083-b357-4775-a855-5a9013cc2bdf",
+  "name": "Verdant Kraken",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Verdant Kraken",
+      "oracle_fingerprint": "10befc244bc2bec7e7cb4b788b121534",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Forest Tentacle",
+                      "colors": ["Green"],
+                      "types": ["Land", "Creature"],
+                      "subtypes": ["Forest", "Tentacle"],
+                      "power": 3,
+                      "toughness": 3
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

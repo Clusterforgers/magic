@@ -1,0 +1,31 @@
+{
+  "oracle_id": "a3acc388-4015-42e4-88ff-b35a91134d12",
+  "name": "Verdant Eidolon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Verdant Eidolon",
+      "oracle_fingerprint": "fc73b7b422f08dd7bacd18bfd7fa0288",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{G}" }, "SacrificeSelf"],
+            "effects": [{ "AddMana": { "mana": { "AnyColor": 3 } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [{ "Compare": { "stat": "Colors", "op": "Ge", "to": 2 } }],
+                "by": "You"
+              }
+            },
+            "from": "Graveyard",
+            "effects": [{ "May": { "effects": [{ "Move": { "what": "This", "to": "Hand" } }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

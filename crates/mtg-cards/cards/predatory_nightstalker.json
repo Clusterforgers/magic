@@ -1,0 +1,28 @@
+{
+  "oracle_id": "9d2ad65f-fba0-45e9-a5e6-bec63a9db979",
+  "name": "Predatory Nightstalker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Predatory Nightstalker",
+      "oracle_fingerprint": "89059b2629b257be6563b2ad1f0b602d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "Sacrifice": { "who": { "Target": 0 }, "filter": [{ "Type": "Creature" }] } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "oracle_id": "162aed84-f87f-4bd4-9cac-5008766bdfb7",
+  "name": "Noggle Ransacker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Noggle Ransacker",
+      "oracle_fingerprint": "a0cddc58cec47e7a3a33561038d5ca79",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "Draw": { "who": "EachPlayer", "count": 2 } },
+              { "Discard": { "who": "EachPlayer", "random": true } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "oracle_id": "abb9a164-34cd-41d7-8e89-5700fff336dd",
+  "name": "Siren of the Silent Song",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Siren of the Silent Song",
+      "oracle_fingerprint": "b7072780755fd47c367806f14c03a5fe",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "Untapped": { "what": ["This"] } },
+            "effects": [{ "Discard": { "who": "Opponents" } }, { "Mill": { "who": "Opponents" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

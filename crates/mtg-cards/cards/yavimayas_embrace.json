@@ -1,0 +1,21 @@
+{
+  "oracle_id": "d5cb0370-a6f0-40c0-8b8f-553fca23778d",
+  "name": "Yavimaya's Embrace",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Yavimaya's Embrace",
+      "oracle_fingerprint": "436474380fadd09d19df30a651b30bec",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        { "Static": { "affected": "Attached", "mods": [{ "SetController": "You" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }, { "AddKeyword": "Trample" }]
+          }
+        }
+      ]
+    }
+  ]
+}

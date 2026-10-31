@@ -1,0 +1,25 @@
+{
+  "oracle_id": "66107cfd-4bdb-4266-a650-940743555ea4",
+  "name": "Forked Lightning",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Forked Lightning",
+      "oracle_fingerprint": "c712dedb0381cc123fa9177de1e0a2a1",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }] },
+                "bounds": { "min": 1, "max": 3 },
+                "divide": 4
+              }
+            ],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": "Divided" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

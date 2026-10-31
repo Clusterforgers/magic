@@ -1,0 +1,28 @@
+{
+  "oracle_id": "ebf2816b-e042-43e9-8734-d3a896334c69",
+  "name": "Withstand",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Withstand",
+      "oracle_fingerprint": "8f7f62b614799094aa62eddb8fd04226",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": { "Target": 0 } } },
+                  "by": { "PreventUpTo": 3 },
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

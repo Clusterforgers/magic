@@ -1,0 +1,22 @@
+{
+  "oracle_id": "629b3aee-b8fd-495a-a988-815a0aaf3e82",
+  "name": "Dragonscale Boon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dragonscale Boon",
+      "oracle_fingerprint": "07902a52925294fa9bef278f5fe97bb0",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1", "count": 2 } },
+              { "Untap": { "what": { "Target": 0 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

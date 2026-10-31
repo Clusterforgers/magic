@@ -1,0 +1,39 @@
+{
+  "oracle_id": "071733a2-6dc6-4b6e-8ed6-a130d14657fd",
+  "name": "Peppersmoke",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Peppersmoke",
+      "oracle_fingerprint": "2031920d0e48fc85375def64b27a0753",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": -1, "toughness": -1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "Subtype": "Faerie" }, { "ControlledBy": "You" }] },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "oracle_id": "c30e89fa-8993-468d-b2ee-093c3950f520",
+  "name": "Hellraiser Goblin",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hellraiser Goblin",
+      "oracle_fingerprint": "8cf4dffc4750ebc1f62e249456698156",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": "Haste" }]
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "MustAttack": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

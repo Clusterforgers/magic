@@ -1,0 +1,58 @@
+{
+  "oracle_id": "fb711b7d-bd7f-48e3-a6de-a12f94ef55d2",
+  "name": "Priest of the Haunted Edge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Priest of the Haunted Edge",
+      "oracle_fingerprint": "f6bfed271752455b485c829c20bd0a71",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap", "SacrificeSelf"],
+            "timing": "Sorcery",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": {
+                          "Times": {
+                            "by": -1,
+                            "of": {
+                              "Count": [
+                                { "Type": "Land" },
+                                { "Supertype": "Snow" },
+                                { "ControlledBy": "You" }
+                              ]
+                            }
+                          }
+                        },
+                        "toughness": {
+                          "Times": {
+                            "by": -1,
+                            "of": {
+                              "Count": [
+                                { "Type": "Land" },
+                                { "Supertype": "Snow" },
+                                { "ControlledBy": "You" }
+                              ]
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

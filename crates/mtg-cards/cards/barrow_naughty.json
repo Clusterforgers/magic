@@ -1,0 +1,41 @@
+{
+  "oracle_id": "95664c29-9801-4dfc-9dbd-465abf6bb4ee",
+  "name": "Barrow Naughty",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Barrow Naughty",
+      "oracle_fingerprint": "0b318d4bea3db344cdd5286efe53184f",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Lifelink" }],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Subtype": "Faerie" }, "Other", { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{2}{B}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

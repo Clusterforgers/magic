@@ -1,0 +1,163 @@
+{
+  "object": "card",
+  "id": "75994e0b-b0c7-4b0d-8f48-4be303429bd6",
+  "oracle_id": "fcf22321-2f55-41ca-b8e1-4792540ba3ee",
+  "multiverse_ids": [
+    563152
+  ],
+  "mtgo_id": 100576,
+  "tcgplayer_id": 272786,
+  "cardmarket_id": 659228,
+  "name": "Cadira, Caller of the Small",
+  "lang": "en",
+  "released_at": "2022-06-10",
+  "uri": "https://api.scryfall.com/cards/75994e0b-b0c7-4b0d-8f48-4be303429bd6",
+  "scryfall_uri": "https://scryfall.com/card/clb/269/cadira-caller-of-the-small?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T06:04:56Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/7/5/75994e0b-b0c7-4b0d-8f48-4be303429bd6.jpg?1783922696",
+    "normal": "https://cards.scryfall.io/normal/front/7/5/75994e0b-b0c7-4b0d-8f48-4be303429bd6.jpg?1783922696",
+    "large": "https://cards.scryfall.io/large/front/7/5/75994e0b-b0c7-4b0d-8f48-4be303429bd6.jpg?1783922696",
+    "png": "https://cards.scryfall.io/png/front/7/5/75994e0b-b0c7-4b0d-8f48-4be303429bd6.png?1783922696",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/7/5/75994e0b-b0c7-4b0d-8f48-4be303429bd6.jpg?1783922696",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/7/5/75994e0b-b0c7-4b0d-8f48-4be303429bd6.jpg?1783922696",
+    "thumb": "https://cards.scryfall.io/thumb/front/7/5/75994e0b-b0c7-4b0d-8f48-4be303429bd6.webp?1783922696",
+    "grid": "https://cards.scryfall.io/grid/front/7/5/75994e0b-b0c7-4b0d-8f48-4be303429bd6.webp?1783922696",
+    "display": "https://cards.scryfall.io/display/front/7/5/75994e0b-b0c7-4b0d-8f48-4be303429bd6.webp?1783922696",
+    "art": "https://cards.scryfall.io/art/front/7/5/75994e0b-b0c7-4b0d-8f48-4be303429bd6.webp?1783922696",
+    "crop": "https://cards.scryfall.io/crop/front/7/5/75994e0b-b0c7-4b0d-8f48-4be303429bd6.webp?1783922696",
+    "jpeg": "https://cards.scryfall.io/normal/front/7/5/75994e0b-b0c7-4b0d-8f48-4be303429bd6.jpg?1783922696"
+  },
+  "mana_cost": "{1}{G}{W}",
+  "cmc": 3.0,
+  "type_line": "Legendary Creature — Orc Ranger",
+  "oracle_text": "Trample\nWhenever Cadira deals combat damage to a player, for each token you control, create a 1/1 white Rabbit creature token.",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "G",
+    "W"
+  ],
+  "color_identity": [
+    "G",
+    "W"
+  ],
+  "keywords": [
+    "Trample"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "ffb03f28-f327-4071-b08e-b72df6e69137",
+      "component": "combo_piece",
+      "name": "Cadira, Caller of the Small",
+      "type_line": "Legendary Creature — Orc Ranger",
+      "uri": "https://api.scryfall.com/cards/ffb03f28-f327-4071-b08e-b72df6e69137"
+    },
+    {
+      "object": "related_card",
+      "id": "22ca55e0-d269-4178-bc90-920a12066e4f",
+      "component": "token",
+      "name": "Rabbit",
+      "type_line": "Token Creature — Rabbit",
+      "uri": "https://api.scryfall.com/cards/22ca55e0-d269-4178-bc90-920a12066e4f"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "5e4c3fe8-fd57-4b20-ad56-c03790a16cea",
+  "set": "clb",
+  "set_name": "Commander Legends: Battle for Baldur's Gate",
+  "set_type": "draft_innovation",
+  "set_uri": "https://api.scryfall.com/sets/5e4c3fe8-fd57-4b20-ad56-c03790a16cea",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aclb&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/clb?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/75994e0b-b0c7-4b0d-8f48-4be303429bd6/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Afcf22321-2f55-41ca-b8e1-4792540ba3ee&unique=prints",
+  "collector_number": "269",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "She roams the border between wilderness and civilization, protecting those who need it most.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Alexandr Leskinen",
+  "artist_ids": [
+    "f7341fb0-cf38-4391-af7e-fb3f024d4eef"
+  ],
+  "illustration_id": "1fdf49ba-ac8e-4946-be89-9554a621613d",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 3964,
+  "preview": {
+    "source": "Ali Eldrazi",
+    "source_uri": "https://twitter.com/AliEldrazi/status/1527472646614548486",
+    "previewed_at": "2022-05-19"
+  },
+  "prices": {
+    "usd": "0.27",
+    "usd_foil": "4.39",
+    "usd_etched": null,
+    "eur": "0.23",
+    "eur_foil": "0.50",
+    "tix": "3.41"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=563152&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DCadira%252C%2BCaller%2Bof%2Bthe%2BSmall",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DCadira%252C%2BCaller%2Bof%2Bthe%2BSmall",
+    "edhrec": "https://edhrec.com/route/?cc=Cadira%2C+Caller+of+the+Small"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F272786%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=659228&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/100576?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

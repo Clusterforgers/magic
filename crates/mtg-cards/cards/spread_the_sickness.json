@@ -1,0 +1,19 @@
+{
+  "oracle_id": "142af8f1-6d6b-4043-8cc4-6632481972c1",
+  "name": "Spread the Sickness",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spread the Sickness",
+      "oracle_fingerprint": "6573c57def4726bd2a636b77a486a393",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }, { "Proliferate": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "oracle_id": "bd637245-52bc-4cc9-810d-253e69dc3394",
+  "name": "Butcher's Glee",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Butcher's Glee",
+      "oracle_fingerprint": "88ffe3ade44b494e6c96a272e7d1e5c3",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "ModifyPT": { "power": 3, "toughness": 0 } },
+                    { "AddKeyword": "Lifelink" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Regenerate": { "what": { "Target": 0 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

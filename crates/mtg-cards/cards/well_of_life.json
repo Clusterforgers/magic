@@ -1,0 +1,26 @@
+{
+  "oracle_id": "4e05d1a2-ad53-4f2e-aaea-7ec464b07c04",
+  "name": "Well of Life",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Well of Life",
+      "oracle_fingerprint": "33f66f3c057dfe2c99cc72172601bde8",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": [{ "Type": "Land" }, "Untapped", { "ControlledBy": "You" }] },
+                "op": "Eq",
+                "right": 0
+              }
+            },
+            "effects": [{ "GainLife": { "amount": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "oracle_id": "970dc070-3668-4584-9904-2897b27bb806",
+  "name": "Twin Bolt",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Twin Bolt",
+      "oracle_fingerprint": "c817b74fdd83bb4228f32df912b6104c",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget", "bounds": { "min": 1, "max": 2 }, "divide": 2 }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": "Divided" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

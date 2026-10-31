@@ -1,0 +1,21 @@
+{
+  "oracle_id": "195ab0c7-0848-4803-a299-9155e1f56a85",
+  "name": "Mesmerizing Dose",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mesmerizing Dose",
+      "oracle_fingerprint": "fecae81ced487a6b632ef9c7eb98eecc",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Tap": { "what": "Attached" } }, { "Proliferate": {} }]
+          }
+        },
+        { "Static": { "affected": "Attached", "mods": ["DoesntUntap"] } }
+      ]
+    }
+  ]
+}

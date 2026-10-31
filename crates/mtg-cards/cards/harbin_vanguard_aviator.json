@@ -1,0 +1,36 @@
+{
+  "oracle_id": "d827575f-e364-4a20-887e-3091e5501a4f",
+  "name": "Harbin, Vanguard Aviator",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Harbin, Vanguard Aviator",
+      "oracle_fingerprint": "16cd9ffb5d30df13ded71593cad9b2a9",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": {
+                "what": [{ "Subtype": "Soldier" }, { "ControlledBy": "You" }],
+                "at_least": 5
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [
+                    { "ModifyPT": { "power": 1, "toughness": 1 } },
+                    { "AddKeyword": "Flying" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

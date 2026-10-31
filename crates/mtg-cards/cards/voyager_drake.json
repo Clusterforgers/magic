@@ -1,0 +1,35 @@
+{
+  "oracle_id": "b2e68a8c-cf07-4c2c-8e23-7602a8ccf831",
+  "name": "Voyager Drake",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Voyager Drake",
+      "oracle_fingerprint": "4c45166f07647d898766d9b5f561ca0d",
+      "abilities": [
+        { "Keyword": { "Multikicker": "{U}" } },
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }] },
+                "bounds": { "min": 0, "max": "Kicks" }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Flying" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

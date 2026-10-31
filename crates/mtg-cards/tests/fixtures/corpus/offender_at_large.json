@@ -1,0 +1,160 @@
+{
+  "object": "card",
+  "id": "f096ff4a-85f4-46f1-9478-e8921f21309d",
+  "oracle_id": "c8c42851-1b1b-49dd-a97c-7eda57dadb13",
+  "multiverse_ids": [
+    646696
+  ],
+  "mtgo_id": 121754,
+  "arena_id": 89053,
+  "tcgplayer_id": 534148,
+  "cardmarket_id": 752486,
+  "name": "Offender at Large",
+  "lang": "en",
+  "released_at": "2024-02-09",
+  "uri": "https://api.scryfall.com/cards/f096ff4a-85f4-46f1-9478-e8921f21309d",
+  "scryfall_uri": "https://scryfall.com/card/mkm/138/offender-at-large?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:21:16Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/f/0/f096ff4a-85f4-46f1-9478-e8921f21309d.jpg?1783912876",
+    "normal": "https://cards.scryfall.io/normal/front/f/0/f096ff4a-85f4-46f1-9478-e8921f21309d.jpg?1783912876",
+    "large": "https://cards.scryfall.io/large/front/f/0/f096ff4a-85f4-46f1-9478-e8921f21309d.jpg?1783912876",
+    "png": "https://cards.scryfall.io/png/front/f/0/f096ff4a-85f4-46f1-9478-e8921f21309d.png?1783912876",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/f/0/f096ff4a-85f4-46f1-9478-e8921f21309d.jpg?1783912876",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/f/0/f096ff4a-85f4-46f1-9478-e8921f21309d.jpg?1783912876",
+    "thumb": "https://cards.scryfall.io/thumb/front/f/0/f096ff4a-85f4-46f1-9478-e8921f21309d.webp?1783912876",
+    "grid": "https://cards.scryfall.io/grid/front/f/0/f096ff4a-85f4-46f1-9478-e8921f21309d.webp?1783912876",
+    "display": "https://cards.scryfall.io/display/front/f/0/f096ff4a-85f4-46f1-9478-e8921f21309d.webp?1783912876",
+    "art": "https://cards.scryfall.io/art/front/f/0/f096ff4a-85f4-46f1-9478-e8921f21309d.webp?1783912876",
+    "crop": "https://cards.scryfall.io/crop/front/f/0/f096ff4a-85f4-46f1-9478-e8921f21309d.webp?1783912876",
+    "jpeg": "https://cards.scryfall.io/normal/front/f/0/f096ff4a-85f4-46f1-9478-e8921f21309d.jpg?1783912876"
+  },
+  "mana_cost": "{4}{R}",
+  "cmc": 5.0,
+  "type_line": "Creature — Giant Rogue",
+  "oracle_text": "Disguise {4}{R} (You may cast this card face down for {3} as a 2/2 creature with ward {2}. Turn it face up any time for its disguise cost.)\nWhen this creature enters or is turned face up, up to one target creature gets +2/+0 until end of turn.",
+  "power": "5",
+  "toughness": "4",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Disguise"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "241b3b6d-a25f-4a43-b5d6-1d1079e7e498",
+      "component": "combo_piece",
+      "name": "A Mysterious Creature",
+      "type_line": "Creature",
+      "uri": "https://api.scryfall.com/cards/241b3b6d-a25f-4a43-b5d6-1d1079e7e498"
+    },
+    {
+      "object": "related_card",
+      "id": "f096ff4a-85f4-46f1-9478-e8921f21309d",
+      "component": "combo_piece",
+      "name": "Offender at Large",
+      "type_line": "Creature — Giant Rogue",
+      "uri": "https://api.scryfall.com/cards/f096ff4a-85f4-46f1-9478-e8921f21309d"
+    }
+  ],
+  "legalities": {
+    "standard": "legal",
+    "future": "legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo",
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "2b17794b-15c3-4796-ad6f-0887a0eceeca",
+  "set": "mkm",
+  "set_name": "Murders at Karlov Manor",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/2b17794b-15c3-4796-ad6f-0887a0eceeca",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Amkm&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/mkm?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/f096ff4a-85f4-46f1-9478-e8921f21309d/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ac8c42851-1b1b-49dd-a97c-7eda57dadb13&unique=prints",
+  "collector_number": "138",
+  "digital": false,
+  "rarity": "common",
+  "flavor_text": "\"In a city this big, anyone can blend in.\"\n—Imel of the Foundway Associates",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Mike Bierek",
+  "artist_ids": [
+    "e5f52ef5-1a2e-4128-90b0-ccc71cd47ea7"
+  ],
+  "illustration_id": "c8484479-6a01-4263-8a0a-70629aac0e9d",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 27387,
+  "preview": {
+    "source": "Wizards of the Coast",
+    "source_uri": "",
+    "previewed_at": "2024-01-22"
+  },
+  "prices": {
+    "usd": "0.17",
+    "usd_foil": "0.15",
+    "usd_etched": null,
+    "eur": "0.07",
+    "eur_foil": "0.10",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=646696&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DOffender%2Bat%2BLarge",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DOffender%2Bat%2BLarge",
+    "edhrec": "https://edhrec.com/route/?cc=Offender+at+Large"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F534148%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=752486&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/121754?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

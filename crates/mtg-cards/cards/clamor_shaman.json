@@ -1,0 +1,31 @@
+{
+  "oracle_id": "7fd2dcb2-760d-461d-8e5b-693aacf548cf",
+  "name": "Clamor Shaman",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Clamor Shaman",
+      "oracle_fingerprint": "6f75358fd6392499d057768b494e2cf9",
+      "abilities": [
+        { "Keyword": "Riot" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["CantBlock"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "oracle_id": "4601ed7b-716e-4c89-b733-1eeabe8bf5a2",
+  "name": "Joo Dee, One of Many",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Joo Dee, One of Many",
+      "oracle_fingerprint": "c519405bb982ac97d7b68f175066ceaa",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{B}" }, "Tap"],
+            "timing": "Sorcery",
+            "effects": [
+              { "Surveil": {} },
+              { "CreateToken": { "token": { "CopyOf": { "of": "This" } } } },
+              {
+                "Sacrifice": {
+                  "filter": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

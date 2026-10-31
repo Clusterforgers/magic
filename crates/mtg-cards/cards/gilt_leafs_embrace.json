@@ -1,0 +1,35 @@
+{
+  "oracle_id": "5eb8bb1d-7567-4c24-913b-463b5fe463c4",
+  "name": "Gilt-Leaf's Embrace",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gilt-Leaf's Embrace",
+      "oracle_fingerprint": "493be1961057660e58b02417cf208265",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Attached",
+                  "mods": [{ "AddKeyword": "Trample" }, { "AddKeyword": "Indestructible" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

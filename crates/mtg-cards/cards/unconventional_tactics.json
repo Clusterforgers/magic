@@ -1,0 +1,44 @@
+{
+  "oracle_id": "95ee46ec-4b60-4fea-a09b-d15c083916b3",
+  "name": "Unconventional Tactics",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Unconventional Tactics",
+      "oracle_fingerprint": "7e5fd051d6dba3587c09b22e5f6f86de",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "ModifyPT": { "power": 3, "toughness": 3 } },
+                    { "AddKeyword": "Flying" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Subtype": "Zombie" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "from": "Graveyard",
+            "effects": [
+              { "Pay": { "cost": "{W}", "paid": [{ "Move": { "what": "This", "to": "Hand" } }] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

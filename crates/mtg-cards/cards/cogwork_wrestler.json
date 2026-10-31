@@ -1,0 +1,31 @@
+{
+  "oracle_id": "db27e3f0-5750-4c4b-9da9-70c3ab627f9c",
+  "name": "Cogwork Wrestler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cogwork Wrestler",
+      "oracle_fingerprint": "154b0e3d20c8eb57d1b7c5e02009ca6a",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": -2, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

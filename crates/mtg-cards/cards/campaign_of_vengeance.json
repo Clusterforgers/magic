@@ -1,0 +1,22 @@
+{
+  "oracle_id": "627e9668-5e1c-4ab6-83f4-612a42d0afce",
+  "name": "Campaign of Vengeance",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Campaign of Vengeance",
+      "oracle_fingerprint": "f30c661996f06e192fb1952dfa08303b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+            "effects": [
+              { "LoseLife": { "who": "Defending", "amount": 1 } },
+              { "GainLife": { "amount": 1 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

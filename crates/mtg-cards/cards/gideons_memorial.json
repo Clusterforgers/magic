@@ -1,0 +1,46 @@
+{
+  "oracle_id": "c8f08704-7330-4fa9-b456-2e96aa252a2c",
+  "name": "Gideon's Memorial",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gideon's Memorial",
+      "oracle_fingerprint": "a2ea0f7eb6b76411c2bbeaed8ed483c7",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, "Token", { "ControlledBy": "You" }] },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }, { "AddKeyword": "Vigilance" }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "AnyColor": 1 },
+                  "only": [{ "Spell": { "types": ["Planeswalker"] } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{W}" }, "DiscardSelf"],
+            "from": "Hand",
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "AnyOf": ["Attacking", "Blocking"] }]
+                }
+              }
+            ],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 4 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

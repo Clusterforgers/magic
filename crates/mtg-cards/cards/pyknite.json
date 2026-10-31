@@ -1,0 +1,26 @@
+{
+  "oracle_id": "857f9a8d-ba77-4afd-922d-994f66e478ef",
+  "name": "Pyknite",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pyknite",
+      "oracle_fingerprint": "18e77bf9c00971864ed3664c2218176c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "Upkeep" } },
+                  "effects": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

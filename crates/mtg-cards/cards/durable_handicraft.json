@@ -1,0 +1,44 @@
+{
+  "oracle_id": "8b85a5d4-1cc3-412d-99e7-778af68d79a5",
+  "name": "Durable Handicraft",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Durable Handicraft",
+      "oracle_fingerprint": "39795246cebc1102a9ff2632db852527",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{1}",
+                  "paid": [{ "PutCounters": { "on": "Triggering", "counter": "+1/+1" } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{5}{G}" }, "SacrificeSelf"],
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "counter": "+1/+1"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

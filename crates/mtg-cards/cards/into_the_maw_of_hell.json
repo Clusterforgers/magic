@@ -1,0 +1,25 @@
+{
+  "oracle_id": "5f0e8fd5-9db9-4507-a42f-cb99080b89e2",
+  "name": "Into the Maw of Hell",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Into the Maw of Hell",
+      "oracle_fingerprint": "077e252721a7b28987590c317702ab1b",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Land" }] } },
+              { "what": { "Object": [{ "Type": "Creature" }] } }
+            ],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              { "DealDamage": { "to": { "Target": 1 }, "amount": 13 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

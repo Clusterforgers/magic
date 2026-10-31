@@ -1,0 +1,32 @@
+{
+  "oracle_id": "91486e70-94e4-431f-8899-fef019bb206e",
+  "name": "Tezzeret's Ambition",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tezzeret's Ambition",
+      "oracle_fingerprint": "f7097ff49bbdbcab9f337c344c87f8d8",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Draw": { "count": 3 } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "Type": "Artifact" }, { "ControlledBy": "You" }] },
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [{ "Discard": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

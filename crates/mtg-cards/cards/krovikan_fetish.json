@@ -1,0 +1,33 @@
+{
+  "oracle_id": "20c7630d-a97f-4f09-9ec5-b7a1739107de",
+  "name": "Krovikan Fetish",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Krovikan Fetish",
+      "oracle_fingerprint": "ef692050fb1cce883b8a7808f1127e59",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "Upkeep" } },
+                  "effects": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

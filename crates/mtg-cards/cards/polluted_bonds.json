@@ -1,0 +1,27 @@
+{
+  "oracle_id": "13b33a41-c22b-4e7a-8323-abadf7f80961",
+  "name": "Polluted Bonds",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Polluted Bonds",
+      "oracle_fingerprint": "d45109f1a1716eab01ce35e175a96678",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Land" }, { "ControlledBy": "Opponents" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              { "LoseLife": { "who": { "ControllerOf": "Triggering" }, "amount": 2 } },
+              { "GainLife": { "amount": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

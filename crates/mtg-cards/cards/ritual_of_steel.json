@@ -1,0 +1,33 @@
+{
+  "oracle_id": "0af91b63-a874-4184-8f8f-3871429fd1ad",
+  "name": "Ritual of Steel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ritual of Steel",
+      "oracle_fingerprint": "2511913c844c71cd9da0c76a1b70302c",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "Upkeep" } },
+                  "effects": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 0, "toughness": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

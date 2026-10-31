@@ -1,0 +1,30 @@
+{
+  "oracle_id": "d586ef58-ca9e-4c6d-94d6-3b8d782b11e1",
+  "name": "Spider-Man, Web-Spinner",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spider-Man, Web-Spinner",
+      "oracle_fingerprint": "18e0ed26e8a8575ebf9b3c8da3341c33",
+      "abilities": [
+        { "Keyword": "DoubleStrike" },
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["CantBlock"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

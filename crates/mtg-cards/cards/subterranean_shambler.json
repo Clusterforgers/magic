@@ -1,0 +1,32 @@
+{
+  "oracle_id": "d06be0a6-0d45-4e95-b132-88ce80dd7cb6",
+  "name": "Subterranean Shambler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Subterranean Shambler",
+      "oracle_fingerprint": "dee10bd775b0f801c7f525f8824ab86f",
+      "abilities": [
+        { "Keyword": { "Echo": "{3}{R}" } },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "ZoneChange": { "what": ["This"], "from": "Battlefield" } }
+              ]
+            },
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Each": [{ "Type": "Creature" }, { "Not": { "HasKeyword": "Flying" } }] },
+                  "amount": 1
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

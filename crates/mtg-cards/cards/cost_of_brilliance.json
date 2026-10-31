@@ -1,0 +1,26 @@
+{
+  "oracle_id": "b45afde2-eaaf-4174-8082-d344efa54c44",
+  "name": "Cost of Brilliance",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cost of Brilliance",
+      "oracle_fingerprint": "5e399ac3f8a1f97ad4cea433a109f036",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": "Player" },
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 0, "max": 1 } }
+            ],
+            "effects": [
+              { "Draw": { "who": { "Target": 0 }, "count": 2 } },
+              { "LoseLife": { "who": { "Target": 0 }, "amount": 2 } },
+              { "PutCounters": { "on": { "Target": 1 }, "counter": "+1/+1" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

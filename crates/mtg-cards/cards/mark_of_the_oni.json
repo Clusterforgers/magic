@@ -1,0 +1,28 @@
+{
+  "oracle_id": "4ce00fdf-c4da-492a-81c9-8c93dd0bf620",
+  "name": "Mark of the Oni",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mark of the Oni",
+      "oracle_fingerprint": "a0ae3c66a9bd5a569bf55a7bf3424495",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        { "Static": { "affected": "Attached", "mods": [{ "SetController": "You" }] } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": [{ "Subtype": "Demon" }, { "ControlledBy": "You" }] },
+                "op": "Eq",
+                "right": 0
+              }
+            },
+            "effects": [{ "Sacrifice": { "filter": ["This"] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

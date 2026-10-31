@@ -1,0 +1,28 @@
+{
+  "oracle_id": "c70dded8-658b-4250-8057-54894350455c",
+  "name": "Loxodon Anchorite",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Loxodon Anchorite",
+      "oracle_fingerprint": "ad6fd8d0fb75544256fa19ebbe4778b5",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": { "Target": 0 } } },
+                  "by": { "PreventUpTo": 2 },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

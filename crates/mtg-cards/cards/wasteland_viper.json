@@ -1,0 +1,33 @@
+{
+  "oracle_id": "e30b4eb8-6393-486a-9f8e-970ad2351d8a",
+  "name": "Wasteland Viper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wasteland Viper",
+      "oracle_fingerprint": "987d1a653c83eb6b3bfe51d679592a3a",
+      "abilities": [
+        { "Keyword": "Deathtouch" },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{G}" }, "DiscardSelf"],
+            "from": "Hand",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Attacking"] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "ModifyPT": { "power": 1, "toughness": 2 } },
+                    { "AddKeyword": "Deathtouch" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

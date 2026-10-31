@@ -1,0 +1,19 @@
+{
+  "oracle_id": "c74d72ee-4795-41ca-b676-4d5a05bd12b7",
+  "name": "Slate Street Ruffian",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Slate Street Ruffian",
+      "oracle_fingerprint": "2a363e13d0ffaeff485e56ed06a61bf7",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "BecomesBlocked": { "what": ["This"] } },
+            "effects": [{ "Discard": { "who": "Defending" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

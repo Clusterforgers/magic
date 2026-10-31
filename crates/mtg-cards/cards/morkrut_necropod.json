@@ -1,0 +1,28 @@
+{
+  "oracle_id": "ed3990cd-fa67-427b-bbe4-a2b1942e9be2",
+  "name": "Morkrut Necropod",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Morkrut Necropod",
+      "oracle_fingerprint": "56e6301089da568f3fb22e08853e2cb5",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [{ "Attacks": { "what": ["This"] } }, { "Blocks": { "what": ["This"] } }]
+            },
+            "effects": [
+              {
+                "Sacrifice": {
+                  "filter": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Land" }] }, "Other"]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "oracle_id": "ed9c488a-9d44-4d2d-bcf8-81352193b8c2",
+  "name": "Aspirant's Ascent",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Aspirant's Ascent",
+      "oracle_fingerprint": "b726b39e2dba8c28c53ac311cf4aa5a8",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "ModifyPT": { "power": 1, "toughness": 3 } },
+                    { "AddKeyword": "Flying" },
+                    { "AddKeyword": { "Toxic": 1 } }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

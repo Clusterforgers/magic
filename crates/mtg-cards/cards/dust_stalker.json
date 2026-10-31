@@ -1,0 +1,30 @@
+{
+  "oracle_id": "69cd25d2-206c-4572-95e7-d66973c94358",
+  "name": "Dust Stalker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dust Stalker",
+      "oracle_fingerprint": "27f6f128618dd3d7c295f2228c7e8066",
+      "abilities": [
+        { "Keyword": "Devoid" },
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "Colorless", "Other"]
+                },
+                "op": "Eq",
+                "right": 0
+              }
+            },
+            "effects": [{ "Move": { "what": "This", "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

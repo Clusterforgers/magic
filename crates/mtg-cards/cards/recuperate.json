@@ -1,0 +1,38 @@
+{
+  "oracle_id": "07d7f9d2-5414-4aaf-b6f2-1fedf16c3af7",
+  "name": "Recuperate",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Recuperate",
+      "oracle_fingerprint": "94d82d5e489386d5888a321a881253e3",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    { "effects": [{ "GainLife": { "amount": 6 } }] },
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                      "effects": [
+                        {
+                          "Shield": {
+                            "when": { "Damage": { "to": { "Target": 0 } } },
+                            "by": { "PreventUpTo": 6 },
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

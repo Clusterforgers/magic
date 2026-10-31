@@ -1,0 +1,28 @@
+{
+  "oracle_id": "2e4f08c2-1bad-4a85-8aad-9bb34a5579b1",
+  "name": "Mugging",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mugging",
+      "oracle_fingerprint": "cf0877720d05805298ba65c93aa20056",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 2 } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["CantBlock"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

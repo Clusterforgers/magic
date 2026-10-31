@@ -1,0 +1,21 @@
+{
+  "oracle_id": "38b4798d-47cc-4ffd-8b0b-e90b5da2ee2d",
+  "name": "Naiad of Hidden Coves",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Naiad of Hidden Coves",
+      "oracle_fingerprint": "c80535f06ff43183e0e8142769aef9ad",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["Spell", { "ControlledBy": "You" }],
+            "change": "Reduce",
+            "mana": "{1}",
+            "condition": { "Not": "YourTurn" }
+          }
+        }
+      ]
+    }
+  ]
+}

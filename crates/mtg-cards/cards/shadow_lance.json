@@ -1,0 +1,29 @@
+{
+  "oracle_id": "f1a2a78c-2794-4bc9-9b06-49306378ef69",
+  "name": "Shadow Lance",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shadow Lance",
+      "oracle_fingerprint": "e0d9cb47ce9a5e2459fb248626fdf9e5",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        { "Static": { "affected": "Attached", "mods": [{ "AddKeyword": "FirstStrike" }] } },
+        {
+          "Activated": {
+            "cost": "{1}{B}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Attached",
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

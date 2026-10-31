@@ -1,0 +1,52 @@
+{
+  "oracle_id": "f0881756-de74-43b1-a9fe-c2fde93faf5a",
+  "name": "Subterranean Tremors",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Subterranean Tremors",
+      "oracle_fingerprint": "9f9ba8ad15318125ee110a2faab1db75",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Each": [{ "Type": "Creature" }, { "Not": { "HasKeyword": "Flying" } }] },
+                  "amount": "X"
+                }
+              },
+              {
+                "If": {
+                  "condition": { "Compare": { "left": "X", "op": "Ge", "right": 4 } },
+                  "then": [{ "Destroy": { "what": { "Each": [{ "Type": "Artifact" }] } } }]
+                }
+              },
+              {
+                "If": {
+                  "condition": { "Compare": { "left": "X", "op": "Ge", "right": 8 } },
+                  "then": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Lizard",
+                            "colors": ["Red"],
+                            "types": ["Creature"],
+                            "subtypes": ["Lizard"],
+                            "power": 8,
+                            "toughness": 8
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

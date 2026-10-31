@@ -1,0 +1,30 @@
+{
+  "oracle_id": "39322103-c40e-4d05-8e87-a92d1cbc7b68",
+  "name": "Veldrane of Sengir",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Veldrane of Sengir",
+      "oracle_fingerprint": "312bf2f9c198c284338e0d6eac395108",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{1}{B}{B}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "ModifyPT": { "power": -3, "toughness": 0 } },
+                    { "AddKeyword": { "Landwalk": [{ "Subtype": "Forest" }] } }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

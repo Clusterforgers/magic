@@ -1,0 +1,31 @@
+{
+  "oracle_id": "099b8d2c-b482-48dd-b6bc-dedf546d66c5",
+  "name": "Marang River Regent // Coil and Catch",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Marang River Regent",
+      "oracle_fingerprint": "75e4c4065c455705bbbf63efa90dec5d",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": { "Object": ["Other", { "Not": { "Type": "Land" } }] },
+                "bounds": { "min": 0, "max": 2 }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Coil and Catch",
+      "oracle_fingerprint": "70d85194fa0288c40b7a654a2ec2a77f",
+      "abilities": [{ "Spell": { "effects": [{ "Draw": { "count": 3 } }, { "Discard": {} }] } }]
+    }
+  ]
+}

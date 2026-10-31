@@ -1,0 +1,33 @@
+{
+  "oracle_id": "52512d7a-9b1c-4475-80aa-c95f4efa1015",
+  "name": "Fevered Strength",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fevered Strength",
+      "oracle_fingerprint": "ecace9e42828e9d5c3ba109c674404bc",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "Upkeep" } },
+                  "effects": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

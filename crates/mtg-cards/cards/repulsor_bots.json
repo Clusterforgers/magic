@@ -1,0 +1,28 @@
+{
+  "oracle_id": "facc26d5-bb53-4f91-9b8c-73bf4dd44fcd",
+  "name": "Repulsor Bots",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Repulsor Bots",
+      "oracle_fingerprint": "72322f528a328bab4a9c98e60aa43f12",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] }, "Other"]
+                },
+                "bounds": { "min": 0, "max": 2 }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

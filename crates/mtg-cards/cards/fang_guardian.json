@@ -1,0 +1,39 @@
+{
+  "oracle_id": "1e0b9767-8e51-4021-a8fb-22259e2f5347",
+  "name": "Fang Guardian",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fang Guardian",
+      "oracle_fingerprint": "db2fd4727456c955070f80f78329167c",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Creature" }, { "Subtype": "Vehicle" }] },
+                    { "ControlledBy": "You" },
+                    "Other"
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

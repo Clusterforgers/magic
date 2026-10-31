@@ -1,0 +1,29 @@
+{
+  "oracle_id": "f1fca987-3484-4a76-86b6-d61ef0a2cf0f",
+  "name": "Slaughterhorn",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Slaughterhorn",
+      "oracle_fingerprint": "c2ff16c91dd1b95370953b0fe4189ece",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{G}" }, "DiscardSelf"],
+            "from": "Hand",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Attacking"] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 3, "toughness": 2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

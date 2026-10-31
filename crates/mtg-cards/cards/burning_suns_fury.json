@@ -1,0 +1,33 @@
+{
+  "oracle_id": "9c0073d7-a12a-45ba-8ac3-9e2230e2fb06",
+  "name": "Burning Sun's Fury",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Burning Sun's Fury",
+      "oracle_fingerprint": "e145ec5f3338c4bad6d28c9d98772e0e",
+      "abilities": [
+        { "Keyword": "Convoke" },
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 0, "max": 2 } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "ModifyPT": { "power": 2, "toughness": 0 } },
+                    { "AddKeyword": "Haste" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

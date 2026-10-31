@@ -1,0 +1,34 @@
+{
+  "oracle_id": "b40e2aae-3a1d-4bc2-bf67-e821ec800434",
+  "name": "Blightcaster",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Blightcaster",
+      "oracle_fingerprint": "5834062b2f2f3ced6086d60113d16795",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Type": "Enchantment" }], "by": "You" } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [{ "ModifyPT": { "power": -2, "toughness": -2 } }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

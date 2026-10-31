@@ -1,0 +1,33 @@
+{
+  "oracle_id": "4fa2c9cb-106c-482c-9ba7-5bba2ea9e4a3",
+  "name": "Captain America, Unbowed",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Captain America, Unbowed",
+      "oracle_fingerprint": "bda4290c796cb6fcf2094dfaad0bc826",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [
+                      { "AnyOf": [{ "Subtype": "Soldier" }, { "Subtype": "Hero" }] },
+                      { "ControlledBy": "You" }
+                    ]
+                  },
+                  "mods": [{ "AddKeyword": "Indestructible" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

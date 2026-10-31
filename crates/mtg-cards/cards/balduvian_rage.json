@@ -1,0 +1,33 @@
+{
+  "oracle_id": "1bc7d73b-0f54-4807-b13a-3def0c5e5616",
+  "name": "Balduvian Rage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Balduvian Rage",
+      "oracle_fingerprint": "2222f362b7b20b1cfdd0dcfaf21337d7",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Attacking"] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": "X", "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "Upkeep" } },
+                  "effects": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

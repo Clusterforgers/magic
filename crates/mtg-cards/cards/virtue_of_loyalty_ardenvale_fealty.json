@@ -1,0 +1,56 @@
+{
+  "oracle_id": "f61f4307-4eec-476a-97e5-d4d3da2b54c3",
+  "name": "Virtue of Loyalty // Ardenvale Fealty",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Virtue of Loyalty",
+      "oracle_fingerprint": "05c75a57e43af354249a5a653f3432f5",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "counter": "+1/+1"
+                }
+              },
+              {
+                "Untap": { "what": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Ardenvale Fealty",
+      "oracle_fingerprint": "73d92dfd63e0dc68ae7de6ffdd0524d7",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Knight",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Knight"],
+                      "power": 2,
+                      "toughness": 2,
+                      "abilities": [{ "Keyword": "Vigilance" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "oracle_id": "e41162bf-1a4f-4e69-870a-faf9836c56d5",
+  "name": "Shiv's Embrace",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shiv's Embrace",
+      "oracle_fingerprint": "e8c37afdf6cc10294ec3de1f22da4fff",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }, { "AddKeyword": "Flying" }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{R}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Attached",
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

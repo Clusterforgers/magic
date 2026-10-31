@@ -1,0 +1,32 @@
+{
+  "oracle_id": "28a24aeb-1ede-4331-adae-6b2dfcd3e4da",
+  "name": "Cutthroat Maneuver",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cutthroat Maneuver",
+      "oracle_fingerprint": "a97ff2aa530a5c0e4109d0e39a8277bd",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 0, "max": 2 } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "ModifyPT": { "power": 1, "toughness": 1 } },
+                    { "AddKeyword": "Lifelink" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

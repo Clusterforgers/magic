@@ -1,0 +1,26 @@
+{
+  "oracle_id": "b7618312-6835-4851-9651-b5402001b3b0",
+  "name": "Swiftgear Drake",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Swiftgear Drake",
+      "oracle_fingerprint": "6327d2bba960ba4e01e8c486c88919fe",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              { "what": { "Object": [{ "In": "Graveyard" }] }, "bounds": { "min": 0, "max": 1 } }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Library": { "place": "Bottom" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "oracle_id": "16e9c452-6288-4da8-813d-2eb6b7a538c3",
+  "name": "Valley Mightcaller",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Valley Mightcaller",
+      "oracle_fingerprint": "a46b90fd0961f48029c267da6a1d6026",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  {
+                    "AnyOf": [
+                      { "Subtype": "Frog" },
+                      { "Subtype": "Rabbit" },
+                      { "Subtype": "Raccoon" },
+                      { "Subtype": "Squirrel" }
+                    ]
+                  },
+                  "Other",
+                  { "ControlledBy": "You" }
+                ],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

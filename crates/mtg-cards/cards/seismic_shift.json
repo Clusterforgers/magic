@@ -1,0 +1,31 @@
+{
+  "oracle_id": "b81894bc-d5ca-44ee-b837-bdb8fec32881",
+  "name": "Seismic Shift",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Seismic Shift",
+      "oracle_fingerprint": "ff7ae7bc6204e3acbcb23231f7ae9317",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Land" }] } },
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 0, "max": 2 } }
+            ],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 1 },
+                  "mods": ["CantBlock"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

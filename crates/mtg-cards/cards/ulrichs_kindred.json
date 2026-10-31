@@ -1,0 +1,38 @@
+{
+  "oracle_id": "41fd1557-8dba-4bbf-9954-5c4f4f541812",
+  "name": "Ulrich's Kindred",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ulrich's Kindred",
+      "oracle_fingerprint": "75b2c37f08ef3546ffb89bbeff3d15bb",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Activated": {
+            "cost": "{3}{G}",
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Subtype": "Wolf" }, { "Subtype": "Werewolf" }] },
+                    "Attacking"
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Indestructible" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

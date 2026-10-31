@@ -1,0 +1,29 @@
+{
+  "oracle_id": "dd2b59b4-281e-4b51-8998-9b20a846ddbf",
+  "name": "Merciless Javelineer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Merciless Javelineer",
+      "oracle_fingerprint": "01630a8b7fd06e2bc1eb01a41ef54a01",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, { "Discard": {} }],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "-1/-1" } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["CantBlock"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

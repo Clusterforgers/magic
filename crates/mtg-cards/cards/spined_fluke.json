@@ -1,0 +1,20 @@
+{
+  "oracle_id": "3c880ac2-0b22-4f7e-a55a-381de235e971",
+  "name": "Spined Fluke",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spined Fluke",
+      "oracle_fingerprint": "ea5c7f7cd645e9e9873e83e3ee17f127",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Sacrifice": { "filter": [{ "Type": "Creature" }] } }]
+          }
+        },
+        { "Activated": { "cost": "{B}", "effects": [{ "Regenerate": { "what": "This" } }] } }
+      ]
+    }
+  ]
+}

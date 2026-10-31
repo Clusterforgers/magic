@@ -1,0 +1,40 @@
+{
+  "oracle_id": "c23f260b-b7d3-4c25-a08a-dabdb99e1791",
+  "name": "United Front",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "United Front",
+      "oracle_fingerprint": "94e58787623d5eb327e803b8ac55e902",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Ally",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Ally"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": "X"
+                }
+              },
+              {
+                "PutCounters": {
+                  "on": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "counter": "+1/+1"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

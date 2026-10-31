@@ -1,0 +1,27 @@
+{
+  "oracle_id": "252330b1-67cf-4d9e-a413-917ba61e731f",
+  "name": "Shrink",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shrink",
+      "oracle_fingerprint": "9da76ddcc07b2516e2772a87925bb295",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": -5, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

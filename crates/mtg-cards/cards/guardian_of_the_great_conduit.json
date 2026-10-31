@@ -1,0 +1,33 @@
+{
+  "oracle_id": "1342bd59-91d3-4a5b-b853-542a52d7da6d",
+  "name": "Guardian of the Great Conduit",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Guardian of the Great Conduit",
+      "oracle_fingerprint": "8f02d46196f1eee5d16ccd422eeb58e5",
+      "abilities": [
+        { "Keyword": "Reach" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }, { "AddKeyword": "Vigilance" }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "Type": "Planeswalker" },
+                    { "Subtype": "Nissa" },
+                    { "ControlledBy": "You" }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

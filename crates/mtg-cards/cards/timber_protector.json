@@ -1,0 +1,38 @@
+{
+  "oracle_id": "9bc8a69b-6065-4ef7-a580-adb1e7c72ef4",
+  "name": "Timber Protector",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Timber Protector",
+      "oracle_fingerprint": "c0042c30e9f62571a0fd5f959b5c9c60",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                { "Subtype": "Treefolk" },
+                "Other",
+                { "ControlledBy": "You" }
+              ]
+            },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "AnyOf": [{ "Subtype": "Treefolk" }, { "Subtype": "Forest" }] },
+                "Other",
+                { "ControlledBy": "You" }
+              ]
+            },
+            "mods": [{ "AddKeyword": "Indestructible" }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,49 @@
+{
+  "oracle_id": "bda098cb-31ec-41a1-a9d7-122877cc69d2",
+  "name": "Ingris Stingerquill",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ingris Stingerquill",
+      "oracle_fingerprint": "86b6fdeac70a4447bd82f888b3fcaf45",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+            "effects": [
+              { "DealDamage": { "source": "Triggering", "to": "Opponents", "amount": 1 } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{4}",
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Cadet",
+                      "types": ["Creature"],
+                      "subtypes": ["Wizard", "Soldier"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  }
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

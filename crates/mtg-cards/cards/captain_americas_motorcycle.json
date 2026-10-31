@@ -1,0 +1,36 @@
+{
+  "oracle_id": "19e60344-57a8-41e0-8eca-87dbedf5a81a",
+  "name": "Captain America's Motorcycle",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Captain America's Motorcycle",
+      "oracle_fingerprint": "f9e5539e73261a97262f0ac6cd6e0fc3",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Creature" }, { "Subtype": "Vehicle" }] }]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Crew": 1 } }
+      ]
+    }
+  ]
+}

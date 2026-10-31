@@ -1,0 +1,30 @@
+{
+  "oracle_id": "9dbfa026-e364-4111-a03a-e9b1693bc7b7",
+  "name": "Rite of Undoing",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rite of Undoing",
+      "oracle_fingerprint": "4ebbbd10b8813c11ef5570e3d29dc7cd",
+      "abilities": [
+        { "Keyword": "Delve" },
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "ControlledBy": "You" }, { "Not": { "Type": "Land" } }] } },
+              {
+                "what": {
+                  "Object": [{ "Not": { "ControlledBy": "You" } }, { "Not": { "Type": "Land" } }]
+                }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": "Hand" } },
+              { "Move": { "what": { "Target": 1 }, "to": "Hand" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "oracle_id": "4ce6c946-7a93-4a8d-a2c9-086cbd036e3c",
+  "name": "Regenerate",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Regenerate",
+      "oracle_fingerprint": "e3e2cb9a408e9ae7a6df14abab1a0e17",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "Regenerate": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

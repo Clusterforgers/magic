@@ -1,0 +1,26 @@
+{
+  "oracle_id": "32654ffa-b869-4f8b-a153-4242e8f9d92e",
+  "name": "Big Bertha",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Big Bertha",
+      "oracle_fingerprint": "b1b101f186dcea670af5846b6bae3604",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": "X" } }
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{G}" }, "Tap"],
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

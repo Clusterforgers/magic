@@ -1,0 +1,27 @@
+{
+  "oracle_id": "96b611e9-38cc-4326-bb38-73084e99e6f5",
+  "name": "Frightcrawler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Frightcrawler",
+      "oracle_fingerprint": "14fd1a1ecf706f4122e28191d3e79e15",
+      "abilities": [
+        { "Keyword": "Fear" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }, "CantBlock"],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                "op": "Ge",
+                "right": 7
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

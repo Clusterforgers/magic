@@ -1,0 +1,73 @@
+{
+  "oracle_id": "07acb7e5-7aae-4d89-aabf-cbd329b3480b",
+  "name": "Prosperity Tycoon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Prosperity Tycoon",
+      "oracle_fingerprint": "010277e00dcc26b63bbf0a0b59978fc2",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Mercenary",
+                      "colors": ["Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Mercenary"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [
+                        {
+                          "Activated": {
+                            "cost": ["Tap"],
+                            "timing": "Sorcery",
+                            "targets": [
+                              {
+                                "what": {
+                                  "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                                }
+                              }
+                            ],
+                            "effects": [
+                              {
+                                "Continuous": {
+                                  "affected": { "Target": 0 },
+                                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+                                  "duration": "UntilEndOfTurn"
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, { "Sacrifice": { "filter": ["Token"] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddKeyword": "Indestructible" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Tap": { "what": "This" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

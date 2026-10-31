@@ -1,0 +1,33 @@
+{
+  "oracle_id": "7f113875-a411-463b-8b4d-91d1dee95c2a",
+  "name": "Scrap Compactor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Scrap Compactor",
+      "oracle_fingerprint": "a606cf74f49768df7d1f2bebc68650c3",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}" }, "Tap", "SacrificeSelf"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 3 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{6}" }, "Tap", "SacrificeSelf"],
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Creature" }, { "Subtype": "Vehicle" }] }]
+                }
+              }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

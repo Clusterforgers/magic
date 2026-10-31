@@ -1,0 +1,35 @@
+{
+  "oracle_id": "6401d0ae-4635-497d-91ef-ce2eabefb893",
+  "name": "Accelerated Evolution",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Accelerated Evolution",
+      "oracle_fingerprint": "420033e8b9b723aec53a9343fcdc9f19",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Attached",
+                  "mods": [{ "AddKeyword": "Hexproof" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

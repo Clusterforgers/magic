@@ -1,0 +1,34 @@
+{
+  "oracle_id": "3bc8a406-3ae7-4f56-a33c-b4a2c115b917",
+  "name": "Stern Scolding",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stern Scolding",
+      "oracle_fingerprint": "c35c46e2fcd4c8d0a37df3500ef20379",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    "Spell",
+                    { "Type": "Creature" },
+                    {
+                      "AnyOf": [
+                        { "Compare": { "stat": "Power", "op": "Le", "to": 2 } },
+                        { "Compare": { "stat": "Toughness", "op": "Le", "to": 2 } }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Counter": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

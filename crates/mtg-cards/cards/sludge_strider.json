@@ -1,0 +1,45 @@
+{
+  "oracle_id": "fe0d73b6-39eb-49cc-932b-f443d7638176",
+  "name": "Sludge Strider",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sludge Strider",
+      "oracle_fingerprint": "e6cada2ba64f5ec7474ec553c7ba1065",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                {
+                  "ZoneChange": {
+                    "what": [{ "Type": "Artifact" }, "Other", { "ControlledBy": "You" }],
+                    "to": "Battlefield"
+                  }
+                },
+                {
+                  "ZoneChange": {
+                    "what": [{ "Type": "Artifact" }, "Other", { "ControlledBy": "You" }],
+                    "from": "Battlefield"
+                  }
+                }
+              ]
+            },
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{1}",
+                  "paid": [
+                    { "LoseLife": { "who": { "Target": 0 }, "amount": 1 } },
+                    { "GainLife": { "amount": 1 } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "oracle_id": "aa8c5467-190a-4c6a-872c-56b8f8d01a2b",
+  "name": "Timid Drake",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Timid Drake",
+      "oracle_fingerprint": "9e8bfbf77cc81a846dd16053f1f3722d",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": { "what": [{ "Type": "Creature" }, "Other"], "to": "Battlefield" }
+            },
+            "effects": [{ "Move": { "what": "This", "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

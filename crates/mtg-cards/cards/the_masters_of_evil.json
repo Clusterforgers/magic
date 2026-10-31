@@ -1,0 +1,30 @@
+{
+  "oracle_id": "fcb1caea-e1ac-48f0-a67a-d4aadad490d9",
+  "name": "The Masters of Evil",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Masters of Evil",
+      "oracle_fingerprint": "7595d90c80cc6400ac15ac9444c473af",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Villain" }, "Other", { "ControlledBy": "You" }] },
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 1 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{B}" }, "DiscardSelf"],
+            "from": "Hand",
+            "effects": [
+              { "Search": { "filter": [{ "Subtype": "Plan" }], "reveal": true, "as": "found" } },
+              { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "oracle_id": "4ca5d2c7-621b-4d5e-9bf4-ff3ae271ba44",
+  "name": "Kinsbaile Balloonist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kinsbaile Balloonist",
+      "oracle_fingerprint": "50270486748713d269c20fc49f9a5599",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [{ "AddKeyword": "Flying" }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

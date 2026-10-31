@@ -1,0 +1,44 @@
+{
+  "oracle_id": "37043e1e-4556-45f7-9484-15dd8ed5272b",
+  "name": "Rat Out",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rat Out",
+      "oracle_fingerprint": "e6534794dad1679d9e1b001dd4583459",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 0, "max": 1 } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": -1, "toughness": -1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Rat",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Rat"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Static": { "affected": "This", "mods": ["CantBlock"] } }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

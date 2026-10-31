@@ -1,0 +1,32 @@
+{
+  "oracle_id": "7dfe701f-6572-4733-9da5-09397600bba7",
+  "name": "Tenacity",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tenacity",
+      "oracle_fingerprint": "773316bd9670e3f3045503af3c9895af",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [
+                    { "ModifyPT": { "power": 1, "toughness": 1 } },
+                    { "AddKeyword": "Lifelink" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Untap": { "what": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

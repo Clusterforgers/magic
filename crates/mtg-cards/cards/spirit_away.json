@@ -1,0 +1,21 @@
+{
+  "oracle_id": "15b618f0-281f-4745-8504-bd70e7b4a267",
+  "name": "Spirit Away",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spirit Away",
+      "oracle_fingerprint": "b4264cc2a54c3f47653ad174f049fc1b",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        { "Static": { "affected": "Attached", "mods": [{ "SetController": "You" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }, { "AddKeyword": "Flying" }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "oracle_id": "b7162f90-8430-4c1d-9f9a-a912bf1e9f50",
+  "name": "Riding the Dilu Horse",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Riding the Dilu Horse",
+      "oracle_fingerprint": "4304e7120d834dfeed99dabdc4daf345",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "ModifyPT": { "power": 2, "toughness": 2 } },
+                    { "AddKeyword": "Horsemanship" }
+                  ],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "oracle_id": "3517abe3-eb18-49af-9f1c-b372d2039d99",
+  "name": "Aquus Steed",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Aquus Steed",
+      "oracle_fingerprint": "d5c9fbe00412e6511967322d0a611bfb",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{U}" }, "Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": -2, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

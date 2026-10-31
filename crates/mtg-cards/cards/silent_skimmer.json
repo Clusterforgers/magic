@@ -1,0 +1,21 @@
+{
+  "oracle_id": "92198967-e89b-4213-a0fa-71361c8420dc",
+  "name": "Silent Skimmer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Silent Skimmer",
+      "oracle_fingerprint": "726f6cc8f5b617cacf1f7179ceaf6e4c",
+      "abilities": [
+        { "Keyword": "Devoid" },
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [{ "LoseLife": { "who": "Defending", "amount": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "oracle_id": "29bebbaf-d47c-4369-8ff9-81816758da86",
+  "name": "Childhood Horror",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Childhood Horror",
+      "oracle_fingerprint": "6f3b68b8f19ec14823e168e13f6ee69e",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }, "CantBlock"],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                "op": "Ge",
+                "right": 7
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

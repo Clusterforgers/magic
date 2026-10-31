@@ -1,0 +1,27 @@
+{
+  "oracle_id": "1940e56d-0972-4ca4-946c-bbd42dde1dcb",
+  "name": "Conservator",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Conservator",
+      "oracle_fingerprint": "285520e844c1d046f5bb7d829e6093fc",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}" }, "Tap"],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": "You" } },
+                  "by": { "PreventUpTo": 2 },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

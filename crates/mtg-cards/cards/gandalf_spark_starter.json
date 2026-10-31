@@ -1,0 +1,21 @@
+{
+  "oracle_id": "cd1a9d87-4c91-4456-8d88-19e0d6e0b200",
+  "name": "Gandalf, Spark Starter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gandalf, Spark Starter",
+      "oracle_fingerprint": "d57a59dfcd4221026ba0ac4e9eb5fe80",
+      "abilities": [
+        { "Keyword": "Reach" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "AnyTarget", "bounds": { "min": 1, "max": 3 }, "divide": 3 }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": "Divided" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

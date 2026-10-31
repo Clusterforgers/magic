@@ -1,0 +1,27 @@
+{
+  "oracle_id": "4fd3dafe-e6a4-49d5-950a-e2fcc77eda98",
+  "name": "Hampering Snare",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hampering Snare",
+      "oracle_fingerprint": "873de6a43da173b5311a5fb627906d00",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] },
+                  "mods": [{ "ModifyPT": { "power": -2, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Cycling": "{2}" } }
+      ]
+    }
+  ]
+}

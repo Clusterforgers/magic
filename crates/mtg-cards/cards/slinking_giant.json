@@ -1,0 +1,33 @@
+{
+  "oracle_id": "6d86dcaa-2295-4f4d-ada7-216f96138d81",
+  "name": "Slinking Giant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Slinking Giant",
+      "oracle_fingerprint": "a8e6cf0aa30aa61b02bd60d30b2fc481",
+      "abilities": [
+        { "Keyword": "Wither" },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "Blocks": { "what": ["This"] } },
+                { "BecomesBlocked": { "what": ["This"] } }
+              ]
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": -3, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

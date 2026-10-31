@@ -1,0 +1,29 @@
+{
+  "oracle_id": "65c0d59b-3a94-49af-94cd-2ab4820a51f3",
+  "name": "Mantle of Leadership",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mantle of Leadership",
+      "oracle_fingerprint": "165d31ea3b8c8cd366f98a4e9109c895",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": [{ "Type": "Creature" }], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Attached",
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

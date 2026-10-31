@@ -1,0 +1,41 @@
+{
+  "oracle_id": "0561043a-3896-4bb1-8ff5-ee674ddfea2a",
+  "name": "Sengir Autocrat",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sengir Autocrat",
+      "oracle_fingerprint": "5db95368924959365506aab5a3151abf",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Serf",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Serf"],
+                      "power": 0,
+                      "toughness": 1
+                    }
+                  },
+                  "count": 3
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield" } },
+            "effects": [{ "Exile": { "what": { "Each": [{ "Subtype": "Serf" }, "Token"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

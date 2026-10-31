@@ -1,0 +1,30 @@
+{
+  "oracle_id": "9391f8ee-3435-400c-8a50-79a75de18a90",
+  "name": "Nefashu",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nefashu",
+      "oracle_fingerprint": "6e761a60db7a2dbbb65f09e2a2a3e04b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 0, "max": 5 } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": -1, "toughness": -1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

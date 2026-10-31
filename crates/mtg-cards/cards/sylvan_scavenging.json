@@ -1,0 +1,71 @@
+{
+  "oracle_id": "398afdf2-4a12-430e-85c9-c68847230939",
+  "name": "Sylvan Scavenging",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sylvan Scavenging",
+      "oracle_fingerprint": "08b7370641a0fa641abc7c4ffb302008",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [
+                        {
+                          "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+                        }
+                      ],
+                      "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "If": {
+                            "condition": {
+                              "Compare": {
+                                "left": {
+                                  "Count": [
+                                    { "Type": "Creature" },
+                                    { "Compare": { "stat": "Power", "op": "Ge", "to": 4 } },
+                                    { "ControlledBy": "You" }
+                                  ]
+                                },
+                                "op": "Ge",
+                                "right": 1
+                              }
+                            },
+                            "then": [
+                              {
+                                "CreateToken": {
+                                  "token": {
+                                    "Custom": {
+                                      "name": "Raccoon",
+                                      "colors": ["Green"],
+                                      "types": ["Creature"],
+                                      "subtypes": ["Raccoon"],
+                                      "power": 3,
+                                      "toughness": 3
+                                    }
+                                  }
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

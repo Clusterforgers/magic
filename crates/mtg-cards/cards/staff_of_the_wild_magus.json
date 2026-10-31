@@ -1,0 +1,29 @@
+{
+  "oracle_id": "6bdff38d-0a52-42e5-86ea-edd7029b44f6",
+  "name": "Staff of the Wild Magus",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Staff of the Wild Magus",
+      "oracle_fingerprint": "5775fd7928b1e934a5fd3ad2985d41fc",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "SpellCast": { "what": [{ "Color": "Green" }], "by": "You" } },
+                {
+                  "ZoneChange": {
+                    "what": [{ "Subtype": "Forest" }, { "ControlledBy": "You" }],
+                    "to": "Battlefield"
+                  }
+                }
+              ]
+            },
+            "effects": [{ "GainLife": { "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

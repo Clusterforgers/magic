@@ -1,0 +1,26 @@
+{
+  "oracle_id": "3cdd795b-13b8-4812-89ee-d248368f915b",
+  "name": "Dapper Shieldmate",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dapper Shieldmate",
+      "oracle_fingerprint": "907120001147af551f745f8a186b370f",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": { "Other": "shield" }, "count": 1 } }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }],
+            "condition": "YourTurn"
+          }
+        }
+      ]
+    }
+  ]
+}

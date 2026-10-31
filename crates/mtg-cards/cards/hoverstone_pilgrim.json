@@ -1,0 +1,24 @@
+{
+  "oracle_id": "64399663-2c1e-447e-a3ed-c49ebd9f2231",
+  "name": "Hoverstone Pilgrim",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hoverstone Pilgrim",
+      "oracle_fingerprint": "217cefa448a7adc3453c94117f77a1ff",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": { "Ward": "{2}" } },
+        {
+          "Activated": {
+            "cost": "{2}",
+            "targets": [{ "what": { "Object": [{ "In": "Graveyard" }] } }],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Library": { "place": "Bottom" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

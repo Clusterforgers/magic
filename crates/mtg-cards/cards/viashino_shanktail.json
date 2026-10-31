@@ -1,0 +1,33 @@
+{
+  "oracle_id": "1e49f33b-84c0-4b68-abd4-e8c00b3ce98f",
+  "name": "Viashino Shanktail",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Viashino Shanktail",
+      "oracle_fingerprint": "980bbcdb09992f02ce1669ee5c3230b2",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{R}" }, "DiscardSelf"],
+            "from": "Hand",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Attacking"] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "ModifyPT": { "power": 3, "toughness": 1 } },
+                    { "AddKeyword": "FirstStrike" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

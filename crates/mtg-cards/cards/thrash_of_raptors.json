@@ -1,0 +1,26 @@
+{
+  "oracle_id": "5f554df8-c70f-4212-aec7-597fe8a88553",
+  "name": "Thrash of Raptors",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thrash of Raptors",
+      "oracle_fingerprint": "5a6049c7a9222e4cf9e191024b90c545",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }, { "AddKeyword": "Trample" }],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Subtype": "Dinosaur" }, "Other", { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

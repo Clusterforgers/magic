@@ -1,0 +1,45 @@
+{
+  "oracle_id": "b8bb97a8-5f5d-48e9-a4c1-b4c20efe7739",
+  "name": "Bedeck // Bedazzle",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bedeck",
+      "oracle_fingerprint": "7d59b725d147b71690f306cc8c5b5711",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 3, "toughness": -3 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Bedazzle",
+      "oracle_fingerprint": "89e140d9b23fb1420b11fd583b4c1ee6",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Land" }, { "Not": { "Supertype": "Basic" } }] } },
+              { "what": { "Either": ["Opponent", { "Object": [{ "Type": "Planeswalker" }] }] } }
+            ],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              { "DealDamage": { "to": { "Target": 1 }, "amount": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

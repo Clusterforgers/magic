@@ -1,0 +1,31 @@
+{
+  "oracle_id": "f14fb965-5ebc-427a-a5b8-149f54c64171",
+  "name": "Crown of Flames",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Crown of Flames",
+      "oracle_fingerprint": "277ee553f245491517cb81b3ff401b0a",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Activated": {
+            "cost": "{R}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Attached",
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": { "cost": "{R}", "effects": [{ "Move": { "what": "This", "to": "Hand" } }] }
+        }
+      ]
+    }
+  ]
+}

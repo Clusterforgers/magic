@@ -1,0 +1,32 @@
+{
+  "oracle_id": "2c90b7fa-d5bf-4c46-92d5-3014ea1bec50",
+  "name": "Kavu Runner",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kavu Runner",
+      "oracle_fingerprint": "50889f1f2e14b0616736717350a246c5",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Haste" }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "Type": "Creature" },
+                    { "AnyOf": [{ "Color": "White" }, { "Color": "Blue" }] },
+                    { "ControlledBy": "Opponents" }
+                  ]
+                },
+                "op": "Eq",
+                "right": 0
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "oracle_id": "8079007c-a07a-4d71-bb08-e1dd215297de",
+  "name": "Blessed Wine",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Blessed Wine",
+      "oracle_fingerprint": "844dcabb89aeef0d10ad7e061a071ea0",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "GainLife": { "amount": 1 } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "Upkeep" } },
+                  "effects": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "oracle_id": "2d7bef31-3447-4de6-9d0e-bd6749e7ecd5",
+  "name": "Sacred White Deer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sacred White Deer",
+      "oracle_fingerprint": "0a7866152b043663e19d7e07d6842c1f",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}{G}" }, "Tap"],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "Type": "Planeswalker" },
+                    { "Subtype": "Yanggu" },
+                    { "ControlledBy": "You" }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "GainLife": { "amount": 4 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

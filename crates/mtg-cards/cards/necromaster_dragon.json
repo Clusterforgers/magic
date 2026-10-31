@@ -1,0 +1,43 @@
+{
+  "oracle_id": "b03fc155-2a70-4106-853c-33bdc88d548c",
+  "name": "Necromaster Dragon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Necromaster Dragon",
+      "oracle_fingerprint": "783795545edde41a24282970d37abdb4",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{2}",
+                  "paid": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Zombie",
+                            "colors": ["Black"],
+                            "types": ["Creature"],
+                            "subtypes": ["Zombie"],
+                            "power": 2,
+                            "toughness": 2
+                          }
+                        }
+                      }
+                    },
+                    { "Mill": { "who": "Opponents", "count": 2 } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

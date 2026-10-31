@@ -1,0 +1,33 @@
+{
+  "oracle_id": "99ed6e18-7f14-4ea8-baee-ad6c081388ff",
+  "name": "Predatory Wurm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Predatory Wurm",
+      "oracle_fingerprint": "31ca206ea83c01e8db37a6b15992bc83",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "Type": "Planeswalker" },
+                    { "Subtype": "Garruk" },
+                    { "ControlledBy": "You" }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

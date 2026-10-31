@@ -1,0 +1,34 @@
+{
+  "oracle_id": "faddaa9d-3f70-49a2-81e6-22b16cf8e9fe",
+  "name": "Woodwraith Corrupter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Woodwraith Corrupter",
+      "oracle_fingerprint": "356af40c713fef65837f6da0644d7eac",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{B}{G}" }, "Tap"],
+            "targets": [{ "what": { "Object": [{ "Subtype": "Forest" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "SetPT": { "power": 4, "toughness": 4 } },
+                    { "SetColors": ["Black", "Green"] },
+                    { "AddSubtype": "Elemental" },
+                    { "AddSubtype": "Horror" },
+                    { "AddType": "Creature" }
+                  ],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "oracle_id": "6f6cbcd4-7a4b-4a38-bf29-995e82e658ce",
+  "name": "Expendable Lackey",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Expendable Lackey",
+      "oracle_fingerprint": "bb8d8775e10c601820e427714242725c",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{U}" }, "ExileSelf"],
+            "timing": "Sorcery",
+            "from": "Graveyard",
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Fish",
+                      "colors": ["Blue"],
+                      "types": ["Creature"],
+                      "subtypes": ["Fish"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Static": { "affected": "This", "mods": ["CantBeBlocked"] } }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

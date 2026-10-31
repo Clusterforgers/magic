@@ -1,0 +1,20 @@
+{
+  "oracle_id": "34400cf5-b8c4-4cf2-9186-51f12037cc51",
+  "name": "Blade Juggler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Blade Juggler",
+      "oracle_fingerprint": "a5aabdf94c3c67c0f94e84f7ef71c811",
+      "abilities": [
+        { "Keyword": { "Spectacle": "{2}{B}" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "DealDamage": { "to": "You", "amount": 1 } }, { "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

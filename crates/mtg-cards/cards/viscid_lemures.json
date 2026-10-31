@@ -1,0 +1,30 @@
+{
+  "oracle_id": "738d8d1c-4ceb-4115-89e1-1f2149fb4f5f",
+  "name": "Viscid Lemures",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Viscid Lemures",
+      "oracle_fingerprint": "90fe918342447ee0287508e299a4a47d",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{0}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "ModifyPT": { "power": -1, "toughness": 0 } },
+                    { "AddKeyword": { "Landwalk": [{ "Subtype": "Swamp" }] } }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

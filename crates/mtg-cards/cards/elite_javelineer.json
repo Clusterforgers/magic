@@ -1,0 +1,20 @@
+{
+  "oracle_id": "649300e2-c491-435d-92d5-f1b88f0e2e2e",
+  "name": "Elite Javelineer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Elite Javelineer",
+      "oracle_fingerprint": "150d7477f89e0d227128dc281a9ebd24",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Blocks": { "what": ["This"] } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Attacking"] } }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

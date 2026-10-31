@@ -1,0 +1,28 @@
+{
+  "oracle_id": "730809d7-cb8c-495c-8972-7e85b967358e",
+  "name": "Field Surgeon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Field Surgeon",
+      "oracle_fingerprint": "81a627e86ef71fa15f3eec87ba11c379",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "TapPermanents": { "filter": [{ "Type": "Creature" }] } }],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": { "Target": 0 } } },
+                  "by": { "PreventUpTo": 1 },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

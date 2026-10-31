@@ -1,0 +1,35 @@
+{
+  "oracle_id": "227f95ba-65b1-4399-8b12-39f8b1327d62",
+  "name": "Intimidator Initiate",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Intimidator Initiate",
+      "oracle_fingerprint": "6bd0511e25bd78ddfd80b32e6d249903",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Color": "Red" }] } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{1}",
+                  "paid": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": ["CantBlock"],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

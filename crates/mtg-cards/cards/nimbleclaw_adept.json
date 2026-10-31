@@ -1,0 +1,22 @@
+{
+  "oracle_id": "32e5a4ac-69c7-4de0-8b9f-dd86682f2ffd",
+  "name": "Nimbleclaw Adept",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nimbleclaw Adept",
+      "oracle_fingerprint": "6b43583408c26fc54b2b5d1b882444c1",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "timing": "Sorcery",
+            "limit": "OncePerTurn",
+            "targets": [{ "what": { "Object": ["Other"] }, "bounds": { "min": 2, "max": 2 } }],
+            "effects": [{ "Untap": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

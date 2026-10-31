@@ -1,0 +1,32 @@
+{
+  "oracle_id": "ccbf7141-69c9-407d-b68e-c1c63ddef213",
+  "name": "Faerie Duelist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Faerie Duelist",
+      "oracle_fingerprint": "fda001f9c0e4a7eee0fa5a9316407b79",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": -2, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

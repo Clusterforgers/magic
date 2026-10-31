@@ -1,0 +1,28 @@
+{
+  "oracle_id": "a498bc70-36e7-4454-bc44-906893df38b8",
+  "name": "Murderous Redcap",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Murderous Redcap",
+      "oracle_fingerprint": "3a431d843023bdaeb505aaa5ba0d2e8e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": { "Stat": { "of": "This", "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "Persist" }
+      ]
+    }
+  ]
+}

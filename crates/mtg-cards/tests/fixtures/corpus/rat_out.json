@@ -1,0 +1,157 @@
+{
+  "object": "card",
+  "id": "f2c42755-bf91-4c75-95c6-d2a60ba3492a",
+  "oracle_id": "37043e1e-4556-45f7-9484-15dd8ed5272b",
+  "multiverse_ids": [
+    629604
+  ],
+  "mtgo_id": 116522,
+  "arena_id": 86799,
+  "tcgplayer_id": 512382,
+  "cardmarket_id": 728048,
+  "name": "Rat Out",
+  "lang": "en",
+  "released_at": "2023-09-08",
+  "uri": "https://api.scryfall.com/cards/f2c42755-bf91-4c75-95c6-d2a60ba3492a",
+  "scryfall_uri": "https://scryfall.com/card/woe/103/rat-out?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:58:24Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/f/2/f2c42755-bf91-4c75-95c6-d2a60ba3492a.jpg?1783915104",
+    "normal": "https://cards.scryfall.io/normal/front/f/2/f2c42755-bf91-4c75-95c6-d2a60ba3492a.jpg?1783915104",
+    "large": "https://cards.scryfall.io/large/front/f/2/f2c42755-bf91-4c75-95c6-d2a60ba3492a.jpg?1783915104",
+    "png": "https://cards.scryfall.io/png/front/f/2/f2c42755-bf91-4c75-95c6-d2a60ba3492a.png?1783915104",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/f/2/f2c42755-bf91-4c75-95c6-d2a60ba3492a.jpg?1783915104",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/f/2/f2c42755-bf91-4c75-95c6-d2a60ba3492a.jpg?1783915104",
+    "thumb": "https://cards.scryfall.io/thumb/front/f/2/f2c42755-bf91-4c75-95c6-d2a60ba3492a.webp?1783915104",
+    "grid": "https://cards.scryfall.io/grid/front/f/2/f2c42755-bf91-4c75-95c6-d2a60ba3492a.webp?1783915104",
+    "display": "https://cards.scryfall.io/display/front/f/2/f2c42755-bf91-4c75-95c6-d2a60ba3492a.webp?1783915104",
+    "art": "https://cards.scryfall.io/art/front/f/2/f2c42755-bf91-4c75-95c6-d2a60ba3492a.webp?1783915104",
+    "crop": "https://cards.scryfall.io/crop/front/f/2/f2c42755-bf91-4c75-95c6-d2a60ba3492a.webp?1783915104",
+    "jpeg": "https://cards.scryfall.io/normal/front/f/2/f2c42755-bf91-4c75-95c6-d2a60ba3492a.jpg?1783915104"
+  },
+  "mana_cost": "{B}",
+  "cmc": 1.0,
+  "type_line": "Instant",
+  "oracle_text": "Up to one target creature gets -1/-1 until end of turn. You create a 1/1 black Rat creature token with \"This token can't block.\"",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "f2c42755-bf91-4c75-95c6-d2a60ba3492a",
+      "component": "combo_piece",
+      "name": "Rat Out",
+      "type_line": "Instant",
+      "uri": "https://api.scryfall.com/cards/f2c42755-bf91-4c75-95c6-d2a60ba3492a"
+    },
+    {
+      "object": "related_card",
+      "id": "1e0205f2-25c1-403b-b408-56e3f2d63b4d",
+      "component": "token",
+      "name": "Rat",
+      "type_line": "Token Creature — Rat",
+      "uri": "https://api.scryfall.com/cards/1e0205f2-25c1-403b-b408-56e3f2d63b4d"
+    }
+  ],
+  "legalities": {
+    "standard": "legal",
+    "future": "legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "arena",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "79139661-13ee-43c4-8bad-a8c069f1a1df",
+  "set": "woe",
+  "set_name": "Wilds of Eldraine",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/79139661-13ee-43c4-8bad-a8c069f1a1df",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Awoe&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/woe?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/f2c42755-bf91-4c75-95c6-d2a60ba3492a/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A37043e1e-4556-45f7-9484-15dd8ed5272b&unique=prints",
+  "collector_number": "103",
+  "digital": false,
+  "rarity": "common",
+  "flavor_text": "\"Hold this for me.\"\n—Totentanz, swarm piper",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Michele Giorgi",
+  "artist_ids": [
+    "60ff7459-c81d-41e6-bec1-4264c2161014"
+  ],
+  "illustration_id": "b830333d-3b0e-4444-9ebb-c3a14ef8b1e0",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 10343,
+  "penny_rank": 2928,
+  "preview": {
+    "source": "Screen Rant",
+    "source_uri": "https://twitter.com/screenrant/status/1691513869154275329/photo/4",
+    "previewed_at": "2023-08-15"
+  },
+  "prices": {
+    "usd": "0.31",
+    "usd_foil": "0.36",
+    "usd_etched": null,
+    "eur": "0.14",
+    "eur_foil": "0.13",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=629604&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DRat%2BOut",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DRat%2BOut",
+    "edhrec": "https://edhrec.com/route/?cc=Rat+Out"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F512382%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=728048&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/116522?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

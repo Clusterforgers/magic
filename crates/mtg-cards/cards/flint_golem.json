@@ -1,0 +1,19 @@
+{
+  "oracle_id": "0993c5f1-1e8f-4871-9904-6c5a00405f36",
+  "name": "Flint Golem",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Flint Golem",
+      "oracle_fingerprint": "6ee68287f490d21f789c75aec95788d1",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "BecomesBlocked": { "what": ["This"] } },
+            "effects": [{ "Mill": { "who": "Defending", "count": 3 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

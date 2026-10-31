@@ -1,0 +1,32 @@
+{
+  "oracle_id": "396b088d-f9af-4ee1-843f-dbe1633f9cc8",
+  "name": "Obyra's Attendants // Desperate Parry",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Obyra's Attendants",
+      "oracle_fingerprint": "75a4c2fe3b9e4d3cd2bd3d7787c7c138",
+      "abilities": [{ "Keyword": "Flying" }]
+    },
+    {
+      "name": "Desperate Parry",
+      "oracle_fingerprint": "7205c1d5ed4987892cdf1a374e6a9f31",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": -4, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

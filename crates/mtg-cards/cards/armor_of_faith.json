@@ -1,0 +1,34 @@
+{
+  "oracle_id": "1c482b20-b423-48ef-b162-53960d43b4f7",
+  "name": "Armor of Faith",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Armor of Faith",
+      "oracle_fingerprint": "efa1958a874919cfda881347c556fbf1",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{W}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Attached",
+                  "mods": [{ "ModifyPT": { "power": 0, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

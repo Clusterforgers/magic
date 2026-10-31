@@ -1,0 +1,38 @@
+{
+  "oracle_id": "76aea8c6-3bab-45e9-afb4-65e5597bb2fa",
+  "name": "Surge of Thoughtweft",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Surge of Thoughtweft",
+      "oracle_fingerprint": "625af987dcd4c65d16568f9722ba1a8f",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "Subtype": "Kithkin" }, { "ControlledBy": "You" }] },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

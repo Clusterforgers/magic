@@ -1,0 +1,24 @@
+{
+  "oracle_id": "9086d8ff-e375-4149-996d-2a88a7596c1c",
+  "name": "Devour in Shadow",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Devour in Shadow",
+      "oracle_fingerprint": "4d77c9ed364196efb85cc98fc4af36be",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 }, "regenerate": false } },
+              {
+                "LoseLife": { "amount": { "Stat": { "of": { "Target": 0 }, "stat": "Toughness" } } }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

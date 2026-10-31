@@ -1,0 +1,20 @@
+{
+  "oracle_id": "8ffbff60-a59d-4f71-864e-3c16cb61e43b",
+  "name": "Copper Carapace",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Copper Carapace",
+      "oracle_fingerprint": "f417201e336a5586a2e5285002b4f323",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }, "CantBlock"]
+          }
+        },
+        { "Keyword": { "Equip": "{3}" } }
+      ]
+    }
+  ]
+}

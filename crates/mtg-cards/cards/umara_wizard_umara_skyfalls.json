@@ -1,0 +1,49 @@
+{
+  "oracle_id": "6bc668f4-8fc7-4aaf-891b-277d8328b376",
+  "name": "Umara Wizard // Umara Skyfalls",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Umara Wizard",
+      "oracle_fingerprint": "256650b0823d34a44f904fa8fc980d1b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [
+                  {
+                    "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }, { "Subtype": "Wizard" }]
+                  }
+                ],
+                "by": "You"
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddKeyword": "Flying" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Umara Skyfalls",
+      "oracle_fingerprint": "d78f07fefc90e62ac7c139d2db82e747",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Blue"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

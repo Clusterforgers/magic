@@ -1,0 +1,60 @@
+{
+  "oracle_id": "c75f8365-71f1-415f-8bbc-9bacb8ddba0b",
+  "name": "Fumulus, the Infestation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fumulus, the Infestation",
+      "oracle_fingerprint": "dfe4bedd9b24fd8826edeafc39a672d1",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Deathtouch" },
+        {
+          "Triggered": {
+            "when": { "Sacrificed": { "what": [{ "Type": "Creature" }, { "Not": "Token" }] } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Insect",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Insect"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "Attacks": {
+                "what": [
+                  {
+                    "AnyOf": [
+                      { "Subtype": "Insect" },
+                      { "Subtype": "Leech" },
+                      { "Subtype": "Slug" },
+                      { "Subtype": "Worm" }
+                    ]
+                  },
+                  { "ControlledBy": "You" }
+                ]
+              }
+            },
+            "effects": [
+              { "LoseLife": { "who": "Defending", "amount": 1 } },
+              { "GainLife": { "amount": 1 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

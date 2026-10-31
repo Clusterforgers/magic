@@ -1,0 +1,33 @@
+{
+  "oracle_id": "c247382f-821e-4f3c-9d34-450794ce74c3",
+  "name": "Kami of Fire's Roar",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kami of Fire's Roar",
+      "oracle_fingerprint": "153d2df6bd21396cffc57ca6e0aa5c9a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [{ "AnyOf": [{ "Subtype": "Spirit" }, { "Subtype": "Arcane" }] }],
+                "by": "You"
+              }
+            },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["CantBlock"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

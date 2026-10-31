@@ -1,0 +1,136 @@
+{
+  "object": "card",
+  "id": "20609bfa-c3d3-4985-bbbc-ecbc30c42e5f",
+  "oracle_id": "7a82c183-1561-4276-9a75-6bbb9c2bee2e",
+  "multiverse_ids": [
+    677674
+  ],
+  "tcgplayer_id": 564072,
+  "cardmarket_id": 783929,
+  "name": "Slumbering Waterways",
+  "lang": "en",
+  "released_at": "2024-08-02",
+  "uri": "https://api.scryfall.com/cards/20609bfa-c3d3-4985-bbbc-ecbc30c42e5f",
+  "scryfall_uri": "https://scryfall.com/card/mb2/618/slumbering-waterways?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T02:41:41Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/2/0/20609bfa-c3d3-4985-bbbc-ecbc30c42e5f.jpg?1783910501",
+    "normal": "https://cards.scryfall.io/normal/front/2/0/20609bfa-c3d3-4985-bbbc-ecbc30c42e5f.jpg?1783910501",
+    "large": "https://cards.scryfall.io/large/front/2/0/20609bfa-c3d3-4985-bbbc-ecbc30c42e5f.jpg?1783910501",
+    "png": "https://cards.scryfall.io/png/front/2/0/20609bfa-c3d3-4985-bbbc-ecbc30c42e5f.png?1783910501",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/2/0/20609bfa-c3d3-4985-bbbc-ecbc30c42e5f.jpg?1783910501",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/2/0/20609bfa-c3d3-4985-bbbc-ecbc30c42e5f.jpg?1783910501",
+    "thumb": "https://cards.scryfall.io/thumb/front/2/0/20609bfa-c3d3-4985-bbbc-ecbc30c42e5f.webp?1783910501",
+    "grid": "https://cards.scryfall.io/grid/front/2/0/20609bfa-c3d3-4985-bbbc-ecbc30c42e5f.webp?1783910501",
+    "display": "https://cards.scryfall.io/display/front/2/0/20609bfa-c3d3-4985-bbbc-ecbc30c42e5f.webp?1783910501",
+    "art": "https://cards.scryfall.io/art/front/2/0/20609bfa-c3d3-4985-bbbc-ecbc30c42e5f.webp?1783910501",
+    "crop": "https://cards.scryfall.io/crop/front/2/0/20609bfa-c3d3-4985-bbbc-ecbc30c42e5f.webp?1783910501",
+    "jpeg": "https://cards.scryfall.io/normal/front/2/0/20609bfa-c3d3-4985-bbbc-ecbc30c42e5f.jpg?1783910501"
+  },
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land",
+  "oracle_text": "Slumbering Waterways enters the battlefield tapped.\n{T}: Add {G} or {U}.\nFlying, vigilance, trample",
+  "colors": [],
+  "color_identity": [
+    "G",
+    "U"
+  ],
+  "keywords": [
+    "Flying",
+    "Vigilance",
+    "Trample"
+  ],
+  "produced_mana": [
+    "G",
+    "U"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "not_legal",
+    "pauper": "not_legal",
+    "vintage": "not_legal",
+    "penny": "not_legal",
+    "commander": "not_legal",
+    "oathbreaker": "not_legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "not_legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "1e6879fe-2f29-4ad7-8d42-7f5bfb469f4a",
+  "set": "mb2",
+  "set_name": "Mystery Booster 2",
+  "set_type": "masters",
+  "set_uri": "https://api.scryfall.com/sets/1e6879fe-2f29-4ad7-8d42-7f5bfb469f4a",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Amb2&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/mb2?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/20609bfa-c3d3-4985-bbbc-ecbc30c42e5f/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A7a82c183-1561-4276-9a75-6bbb9c2bee2e&unique=prints",
+  "collector_number": "618",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Kevin Dubell",
+  "artist_ids": [
+    "1b916750-29c9-497e-8137-6117d3269452"
+  ],
+  "illustration_id": "5650bfc3-ec38-45c3-8387-3ffcfd90d68f",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "playtest"
+  ],
+  "prices": {
+    "usd": "0.26",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.25",
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=677674&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DSlumbering%2BWaterways",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DSlumbering%2BWaterways",
+    "edhrec": "https://edhrec.com/route/?cc=Slumbering+Waterways"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F564072%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=783929&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Slumbering+Waterways&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

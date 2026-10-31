@@ -1,0 +1,40 @@
+{
+  "oracle_id": "bcea5e7e-655d-48ea-871e-28ca49e5c574",
+  "name": "Drift of the Dead",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Drift of the Dead",
+      "oracle_fingerprint": "88b094d2e4b5f05461aede8647819c74",
+      "abilities": [
+        { "Keyword": "Defender" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "SetPT": {
+                  "power": {
+                    "Count": [
+                      { "Type": "Land" },
+                      { "Supertype": "Snow" },
+                      { "ControlledBy": "You" }
+                    ]
+                  },
+                  "toughness": {
+                    "Count": [
+                      { "Type": "Land" },
+                      { "Supertype": "Snow" },
+                      { "ControlledBy": "You" }
+                    ]
+                  }
+                }
+              }
+            ],
+            "defining": true
+          }
+        }
+      ]
+    }
+  ]
+}

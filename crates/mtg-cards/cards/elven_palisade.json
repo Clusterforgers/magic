@@ -1,0 +1,28 @@
+{
+  "oracle_id": "0fb94fa4-2aff-4636-ac1b-ed39dc9451a6",
+  "name": "Elven Palisade",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Elven Palisade",
+      "oracle_fingerprint": "347923f14a26c1a15b1a575f9d535258",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Sacrifice": { "filter": [{ "Subtype": "Forest" }] } }],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Attacking"] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": -3, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

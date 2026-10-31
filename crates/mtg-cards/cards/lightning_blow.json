@@ -1,0 +1,33 @@
+{
+  "oracle_id": "6b7bbdb7-bdd5-4eb1-912e-f2f810772ac8",
+  "name": "Lightning Blow",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lightning Blow",
+      "oracle_fingerprint": "62d163b7df5e7c7c092f77b8619b18cd",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "FirstStrike" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "Upkeep" } },
+                  "effects": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

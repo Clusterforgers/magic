@@ -1,0 +1,26 @@
+{
+  "oracle_id": "11bc7014-68d3-46e3-97cb-1f1b475e53af",
+  "name": "Red Priest of Yawgmoth",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Red Priest of Yawgmoth",
+      "oracle_fingerprint": "b72b15afe7c1ebd4101625eeda45c300",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap", { "Sacrifice": { "filter": [{ "Type": "Artifact" }] } }],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["Red"] },
+                  "times": { "Stat": { "of": "Paid", "stat": "ManaValue" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

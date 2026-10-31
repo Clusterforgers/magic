@@ -1,0 +1,41 @@
+{
+  "oracle_id": "8da8644c-75a1-4fe9-8e94-900d948d631c",
+  "name": "Healing Salve",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Healing Salve",
+      "oracle_fingerprint": "e9e4b2aa2b6508aacb34b1bbdc5d9c27",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [{ "what": "Player" }],
+                      "effects": [{ "GainLife": { "who": { "Target": 0 }, "amount": 3 } }]
+                    },
+                    {
+                      "targets": [{ "what": "AnyTarget" }],
+                      "effects": [
+                        {
+                          "Shield": {
+                            "when": { "Damage": { "to": { "Target": 0 } } },
+                            "by": { "PreventUpTo": 3 },
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

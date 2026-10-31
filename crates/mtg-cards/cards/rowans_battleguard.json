@@ -1,0 +1,33 @@
+{
+  "oracle_id": "ce07104c-8573-4dc0-a492-f9548d4317d2",
+  "name": "Rowan's Battleguard",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rowan's Battleguard",
+      "oracle_fingerprint": "cf636c672c08ba2697dc24426b0e2831",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": 3, "toughness": 0 } }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "Type": "Planeswalker" },
+                    { "ControlledBy": "You" },
+                    { "Subtype": "Rowan" }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

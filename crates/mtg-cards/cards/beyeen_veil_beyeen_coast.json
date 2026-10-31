@@ -1,0 +1,39 @@
+{
+  "oracle_id": "b03de49d-246f-44e2-9487-9e4e43ec7be4",
+  "name": "Beyeen Veil // Beyeen Coast",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Beyeen Veil",
+      "oracle_fingerprint": "4ca9aec84384371ed9d2649f303f4e8d",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] },
+                  "mods": [{ "ModifyPT": { "power": -2, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Beyeen Coast",
+      "oracle_fingerprint": "d78f07fefc90e62ac7c139d2db82e747",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Blue"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

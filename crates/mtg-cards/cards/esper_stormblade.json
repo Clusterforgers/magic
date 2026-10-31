@@ -1,0 +1,32 @@
+{
+  "oracle_id": "186b2fbd-8a59-4447-bd54-45a7c3ff5af2",
+  "name": "Esper Stormblade",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Esper Stormblade",
+      "oracle_fingerprint": "1c7728ebd868bb8cc863aa9a828f5d40",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }, { "AddKeyword": "Flying" }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "ControlledBy": "You" },
+                    { "Compare": { "stat": "Colors", "op": "Ge", "to": 2 } },
+                    "Other"
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

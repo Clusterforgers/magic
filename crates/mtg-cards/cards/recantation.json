@@ -1,0 +1,40 @@
+{
+  "oracle_id": "02269353-2949-4599-b5a3-f20fdb501285",
+  "name": "Recantation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Recantation",
+      "oracle_fingerprint": "47c7dbdbf551b2ed68c5146cf11f5f7d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [{ "PutCounters": { "on": "This", "counter": { "Other": "verse" } } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{U}" }, "SacrificeSelf"],
+            "targets": [
+              {
+                "what": { "Object": [] },
+                "bounds": {
+                  "min": 0,
+                  "max": { "Counters": { "on": "This", "counter": { "Other": "verse" } } }
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,151 @@
+{
+  "object": "card",
+  "id": "bdc5eb8a-4531-4408-90fe-9b352d71a052",
+  "oracle_id": "43a515f2-b53a-4bb4-bb6e-0d79c9162359",
+  "multiverse_ids": [
+    20847
+  ],
+  "mtgo_id": 13607,
+  "mtgo_foil_id": 13608,
+  "tcgplayer_id": 6544,
+  "cardmarket_id": 11622,
+  "name": "Giant Caterpillar",
+  "lang": "en",
+  "released_at": "1999-10-04",
+  "uri": "https://api.scryfall.com/cards/bdc5eb8a-4531-4408-90fe-9b352d71a052",
+  "scryfall_uri": "https://scryfall.com/card/mmq/249/giant-caterpillar?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T12:32:04Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/b/d/bdc5eb8a-4531-4408-90fe-9b352d71a052.jpg?1783945924",
+    "normal": "https://cards.scryfall.io/normal/front/b/d/bdc5eb8a-4531-4408-90fe-9b352d71a052.jpg?1783945924",
+    "large": "https://cards.scryfall.io/large/front/b/d/bdc5eb8a-4531-4408-90fe-9b352d71a052.jpg?1783945924",
+    "png": "https://cards.scryfall.io/png/front/b/d/bdc5eb8a-4531-4408-90fe-9b352d71a052.png?1783945924",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/b/d/bdc5eb8a-4531-4408-90fe-9b352d71a052.jpg?1783945924",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/b/d/bdc5eb8a-4531-4408-90fe-9b352d71a052.jpg?1783945924",
+    "thumb": "https://cards.scryfall.io/thumb/front/b/d/bdc5eb8a-4531-4408-90fe-9b352d71a052.webp?1783945924",
+    "grid": "https://cards.scryfall.io/grid/front/b/d/bdc5eb8a-4531-4408-90fe-9b352d71a052.webp?1783945924",
+    "display": "https://cards.scryfall.io/display/front/b/d/bdc5eb8a-4531-4408-90fe-9b352d71a052.webp?1783945924",
+    "art": "https://cards.scryfall.io/art/front/b/d/bdc5eb8a-4531-4408-90fe-9b352d71a052.webp?1783945924",
+    "crop": "https://cards.scryfall.io/crop/front/b/d/bdc5eb8a-4531-4408-90fe-9b352d71a052.webp?1783945924",
+    "jpeg": "https://cards.scryfall.io/normal/front/b/d/bdc5eb8a-4531-4408-90fe-9b352d71a052.jpg?1783945924"
+  },
+  "mana_cost": "{3}{G}",
+  "cmc": 4.0,
+  "type_line": "Creature — Insect",
+  "oracle_text": "{G}, Sacrifice this creature: Create a 1/1 green Insect creature token with flying named Butterfly at the beginning of the next end step.",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "bdc5eb8a-4531-4408-90fe-9b352d71a052",
+      "component": "combo_piece",
+      "name": "Giant Caterpillar",
+      "type_line": "Creature — Insect",
+      "uri": "https://api.scryfall.com/cards/bdc5eb8a-4531-4408-90fe-9b352d71a052"
+    },
+    {
+      "object": "related_card",
+      "id": "d7636957-f183-4f58-87a6-056cde657114",
+      "component": "token",
+      "name": "Butterfly",
+      "type_line": "Token Creature — Insect",
+      "uri": "https://api.scryfall.com/cards/d7636957-f183-4f58-87a6-056cde657114"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "385e11a4-492b-4d07-b4a6-a1409ef829b8",
+  "set": "mmq",
+  "set_name": "Mercadian Masques",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/385e11a4-492b-4d07-b4a6-a1409ef829b8",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ammq&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/mmq?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/bdc5eb8a-4531-4408-90fe-9b352d71a052/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A43a515f2-b53a-4bb4-bb6e-0d79c9162359&unique=prints",
+  "collector_number": "249",
+  "digital": false,
+  "rarity": "common",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Arnie Swekel",
+  "artist_ids": [
+    "af10ecf2-eb82-4100-97b2-6c236b0fa644"
+  ],
+  "illustration_id": "050a8c4e-f10f-4d1e-ad70-42423c0e16c5",
+  "border_color": "black",
+  "frame": "1997",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 27623,
+  "prices": {
+    "usd": "0.15",
+    "usd_foil": "0.98",
+    "usd_etched": null,
+    "eur": "0.07",
+    "eur_foil": "0.98",
+    "tix": "0.06"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=20847&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DGiant%2BCaterpillar",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DGiant%2BCaterpillar",
+    "edhrec": "https://edhrec.com/route/?cc=Giant+Caterpillar"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F6544%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=11622&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/13607?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

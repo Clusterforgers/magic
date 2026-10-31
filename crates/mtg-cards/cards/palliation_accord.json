@@ -1,0 +1,35 @@
+{
+  "oracle_id": "b3eb4527-dd8b-4aff-922a-7a4bff72f6be",
+  "name": "Palliation Accord",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Palliation Accord",
+      "oracle_fingerprint": "eac5295f2eecb71aa590e410f0022a35",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Tapped": { "what": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": { "Other": "palliation" } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "RemoveCounters": { "counter": { "Other": "palliation" } } }],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": "You" } },
+                  "by": { "PreventUpTo": 1 },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

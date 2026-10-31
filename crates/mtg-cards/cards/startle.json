@@ -1,0 +1,43 @@
+{
+  "oracle_id": "7996222e-68c8-4a5c-9531-c60cdd88ae05",
+  "name": "Startle",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Startle",
+      "oracle_fingerprint": "83dc201af8822bb7bca35323eddf4bf3",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": -2, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Zombie",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Zombie"],
+                      "power": 2,
+                      "toughness": 2,
+                      "abilities": [{ "Keyword": "Decayed" }]
+                    }
+                  }
+                }
+              },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

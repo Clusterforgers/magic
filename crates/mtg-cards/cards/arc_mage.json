@@ -1,0 +1,20 @@
+{
+  "oracle_id": "011bb6cc-f1a1-4790-befc-373acabf63b8",
+  "name": "Arc Mage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Arc Mage",
+      "oracle_fingerprint": "22e0e219e291a4f064e872ebf78ab58c",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{R}" }, "Tap", { "Discard": {} }],
+            "targets": [{ "what": "AnyTarget", "bounds": { "min": 1, "max": 2 }, "divide": 2 }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": "Divided" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

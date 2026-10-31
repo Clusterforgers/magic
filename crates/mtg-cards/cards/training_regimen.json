@@ -1,0 +1,30 @@
+{
+  "oracle_id": "f44bde8b-43e9-4719-ac60-b8f0cee8df9b",
+  "name": "Training Regimen",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Training Regimen",
+      "oracle_fingerprint": "7b2bac3b3ecb5cf4b3dfab6b8b88e3a2",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }, { "HasCounter": "+1/+1" }]
+            },
+            "mods": [{ "AddKeyword": "Trample" }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

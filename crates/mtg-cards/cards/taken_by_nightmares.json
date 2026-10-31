@@ -1,0 +1,33 @@
+{
+  "oracle_id": "e5557c9f-e4c2-41af-9fcc-371409e1dec6",
+  "name": "Taken by Nightmares",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Taken by Nightmares",
+      "oracle_fingerprint": "0cd789da803cc57083c69a5c0beda8b0",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 } } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "Type": "Enchantment" }, { "ControlledBy": "You" }] },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Scry": { "count": 2 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

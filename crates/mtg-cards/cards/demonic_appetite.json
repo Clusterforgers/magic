@@ -1,0 +1,26 @@
+{
+  "oracle_id": "52d34007-38c0-4858-8ec8-c622da916277",
+  "name": "Demonic Appetite",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Demonic Appetite",
+      "oracle_fingerprint": "7d6b17d93d86a86265963bffa641e820",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 3, "toughness": 3 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [{ "Sacrifice": { "filter": [{ "Type": "Creature" }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

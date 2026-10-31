@@ -1,0 +1,28 @@
+{
+  "oracle_id": "e6813885-b629-4bd4-b445-da8ab4363080",
+  "name": "Lost in a Labyrinth",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lost in a Labyrinth",
+      "oracle_fingerprint": "224638271b4cb6b84a6af6df974876af",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": -3, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Scry": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

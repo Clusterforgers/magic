@@ -1,0 +1,27 @@
+{
+  "oracle_id": "1d95b5c0-d193-4a03-9954-23861ac1c762",
+  "name": "Ghost-Spider, Gwen Stacy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ghost-Spider, Gwen Stacy",
+      "oracle_fingerprint": "e37ddb575a80d4a62b7eb72c14b51d04",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": "Defending",
+                  "amount": { "Count": [{ "Type": "Creature" }, "Attacking"] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "oracle_id": "412eb5ec-bf13-45fb-94b3-c41e62b19d1d",
+  "name": "Savior of the Sleeping",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Savior of the Sleeping",
+      "oracle_fingerprint": "130b66e7e4d25d379ea6372f7da562e2",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Enchantment" }, { "ControlledBy": "You" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

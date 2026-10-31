@@ -1,0 +1,32 @@
+{
+  "oracle_id": "46c128d5-92b7-4132-a865-4db299879579",
+  "name": "Martyr of Spores",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Martyr of Spores",
+      "oracle_fingerprint": "68281a8f85f0b52d6e9b19144fd14b92",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{1}" },
+              { "RevealFromHand": { "filter": [{ "Color": "Green" }], "count": "X" } },
+              "SacrificeSelf"
+            ],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": "X", "toughness": "X" } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

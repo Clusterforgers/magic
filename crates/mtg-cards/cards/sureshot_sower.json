@@ -1,0 +1,24 @@
+{
+  "oracle_id": "5bbc9d7d-91bd-4a58-8d19-f7be650720b7",
+  "name": "Sureshot Sower",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sureshot Sower",
+      "oracle_fingerprint": "4d10db80b14cb9323d942fa55c40d45b",
+      "abilities": [
+        { "Keyword": "Reach" },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}{G}" }, "DiscardSelf"],
+            "from": "Hand",
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "HasKeyword": "Flying" }] } }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

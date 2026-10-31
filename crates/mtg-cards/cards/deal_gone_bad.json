@@ -1,0 +1,28 @@
+{
+  "oracle_id": "e9ede348-f1dc-45ba-9e31-3129ccc182d1",
+  "name": "Deal Gone Bad",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Deal Gone Bad",
+      "oracle_fingerprint": "cd5e8456d5cf24e852b8aae3f10b5c0e",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }, { "what": "Player" }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": -3, "toughness": -3 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Mill": { "who": { "Target": 1 }, "count": 3 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

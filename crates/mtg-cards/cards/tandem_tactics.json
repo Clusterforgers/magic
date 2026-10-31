@@ -1,0 +1,30 @@
+{
+  "oracle_id": "e42cd4da-f049-4304-a16f-911769985e6c",
+  "name": "Tandem Tactics",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tandem Tactics",
+      "oracle_fingerprint": "452464d9aab3b48f179de253c082bd5c",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 0, "max": 2 } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "GainLife": { "amount": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

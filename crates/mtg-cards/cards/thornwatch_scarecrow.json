@@ -1,0 +1,43 @@
+{
+  "oracle_id": "fe01e07c-dbca-4598-a944-1b194df44260",
+  "name": "Thornwatch Scarecrow",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thornwatch Scarecrow",
+      "oracle_fingerprint": "799af743bae552d6a475af74399f3d0b",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Wither" }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [{ "Type": "Creature" }, { "Color": "Green" }, { "ControlledBy": "You" }]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Vigilance" }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [{ "Type": "Creature" }, { "Color": "White" }, { "ControlledBy": "You" }]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

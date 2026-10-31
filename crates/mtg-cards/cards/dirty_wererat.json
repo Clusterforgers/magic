@@ -1,0 +1,32 @@
+{
+  "oracle_id": "7fbd5f69-f6b4-4ad7-8e9e-47a798324f6c",
+  "name": "Dirty Wererat",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dirty Wererat",
+      "oracle_fingerprint": "0db47a3cf89bb96fa78817cd6c639859",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{B}" }, { "Discard": {} }],
+            "effects": [{ "Regenerate": { "what": "This" } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }, "CantBlock"],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                "op": "Ge",
+                "right": 7
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

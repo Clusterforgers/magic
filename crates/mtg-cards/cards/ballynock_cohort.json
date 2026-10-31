@@ -1,0 +1,34 @@
+{
+  "oracle_id": "7c415180-c179-474b-8c58-e7096bd2c763",
+  "name": "Ballynock Cohort",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ballynock Cohort",
+      "oracle_fingerprint": "493da63262aaaf2de42f9da51c631f03",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "Type": "Creature" },
+                    { "Color": "White" },
+                    "Other",
+                    { "ControlledBy": "You" }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

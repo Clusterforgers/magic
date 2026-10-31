@@ -1,0 +1,29 @@
+{
+  "oracle_id": "8c83d21a-6138-409f-8e00-75dcd14388e2",
+  "name": "Grisly Spectacle",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Grisly Spectacle",
+      "oracle_fingerprint": "039be5b67dc44f509503fa282022fe44",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "Not": { "Type": "Artifact" } }] } }
+            ],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              {
+                "Mill": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "count": { "Stat": { "of": { "Target": 0 }, "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

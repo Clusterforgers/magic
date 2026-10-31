@@ -1,0 +1,28 @@
+{
+  "oracle_id": "4527c622-cebe-41eb-9178-4895cccffe99",
+  "name": "Burning Cloak",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Burning Cloak",
+      "oracle_fingerprint": "d27000d223968fe5deb7fe0dd6590c5f",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

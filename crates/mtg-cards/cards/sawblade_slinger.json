@@ -1,0 +1,47 @@
+{
+  "oracle_id": "df7397b6-9a37-4012-8677-ae8e3b7c4bc3",
+  "name": "Sawblade Slinger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sawblade Slinger",
+      "oracle_fingerprint": "ffdcd8026431a0d6aa22e6b9fb2b0d78",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Modal": {
+                  "choose": { "min": 0, "max": 1 },
+                  "modes": [
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [{ "Type": "Artifact" }, { "ControlledBy": "Opponents" }]
+                          }
+                        }
+                      ],
+                      "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+                    },
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [{ "Subtype": "Zombie" }, { "ControlledBy": "Opponents" }]
+                          }
+                        }
+                      ],
+                      "effects": [{ "Fight": { "what": "This", "with": { "Target": 0 } } }]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

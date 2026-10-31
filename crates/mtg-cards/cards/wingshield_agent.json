@@ -1,0 +1,39 @@
+{
+  "oracle_id": "513034fc-873a-4877-afb2-39ece1ea6a7c",
+  "name": "Wingshield Agent",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wingshield Agent",
+      "oracle_fingerprint": "93028d8e1368a4b7ca469b49b9d6a7a3",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": { "Other": "shield" }, "count": 1 } }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, "Other"] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Flying" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

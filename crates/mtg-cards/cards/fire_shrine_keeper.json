@@ -1,0 +1,23 @@
+{
+  "oracle_id": "14537df5-e2c8-4906-99ac-742fb628fe08",
+  "name": "Fire Shrine Keeper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fire Shrine Keeper",
+      "oracle_fingerprint": "deacd8db01fd1701ae1192d509ba494c",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{7}{R}" }, "Tap", "SacrificeSelf"],
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 0, "max": 2 } }
+            ],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 3 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

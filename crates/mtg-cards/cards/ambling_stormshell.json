@@ -1,0 +1,29 @@
+{
+  "oracle_id": "75070eaf-c931-46e5-9aa1-b849e33580c6",
+  "name": "Ambling Stormshell",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ambling Stormshell",
+      "oracle_fingerprint": "2b6b329df51411278a90d93d04baa640",
+      "abilities": [
+        { "Keyword": { "Ward": "{2}" } },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": { "Other": "stun" }, "count": 3 } },
+              { "Draw": { "count": 3 } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Subtype": "Turtle" }], "by": "You" } },
+            "effects": [{ "Untap": { "what": "This" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

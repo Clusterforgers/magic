@@ -1,0 +1,29 @@
+{
+  "oracle_id": "48220e6c-5752-46e0-9b7f-f0eef274d929",
+  "name": "Star of Extinction",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Star of Extinction",
+      "oracle_fingerprint": "b78b942d06670c14478ec511e109e0c0",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Land" }] } }],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              {
+                "DealDamage": {
+                  "to": {
+                    "Each": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }]
+                  },
+                  "amount": 20
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

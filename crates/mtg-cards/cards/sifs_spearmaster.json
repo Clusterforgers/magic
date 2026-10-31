@@ -1,0 +1,27 @@
+{
+  "oracle_id": "9ae33bde-ccc9-40e2-9957-05cd9725f8cf",
+  "name": "Sif's Spearmaster",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sif's Spearmaster",
+      "oracle_fingerprint": "78691aca80bf86532222cad774bf5a7c",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": { "Stat": { "of": "This", "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

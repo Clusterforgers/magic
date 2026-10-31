@@ -1,0 +1,34 @@
+{
+  "oracle_id": "2b732c6a-f09c-4ac0-ae3a-1d8820b69aba",
+  "name": "Molder Beast",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Molder Beast",
+      "oracle_fingerprint": "1f73ac18037726cd5a5ce8dcfad9ed1e",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Artifact" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

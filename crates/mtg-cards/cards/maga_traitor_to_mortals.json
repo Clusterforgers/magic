@@ -1,0 +1,33 @@
+{
+  "oracle_id": "1fb1afc0-a3bf-4368-9ca0-47dd8c4c3c60",
+  "name": "Maga, Traitor to Mortals",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Maga, Traitor to Mortals",
+      "oracle_fingerprint": "6aef73107292df47672f42468137c433",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": "X" } }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "LoseLife": {
+                  "who": { "Target": 0 },
+                  "amount": { "Counters": { "on": "This", "counter": "+1/+1" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "oracle_id": "2546db90-1f6e-43f7-a116-2fefe67d489d",
+  "name": "Turn the Tide",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Turn the Tide",
+      "oracle_fingerprint": "4ca9aec84384371ed9d2649f303f4e8d",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] },
+                  "mods": [{ "ModifyPT": { "power": -2, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

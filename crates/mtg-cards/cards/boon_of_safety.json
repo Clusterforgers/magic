@@ -1,0 +1,22 @@
+{
+  "oracle_id": "34f0beae-a8e2-4474-9f7f-4735d3f26863",
+  "name": "Boon of Safety",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Boon of Safety",
+      "oracle_fingerprint": "914b940fec6b34845919808cff973e70",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "shield" } } },
+              { "Scry": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

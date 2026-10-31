@@ -1,0 +1,33 @@
+{
+  "oracle_id": "65c35934-796c-4495-a6b5-eea654dfcd55",
+  "name": "Reckless Pyrosurfer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Reckless Pyrosurfer",
+      "oracle_fingerprint": "8ce114e1c4a1353c13efc746aa221cd4",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddKeyword": "BattleCry" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

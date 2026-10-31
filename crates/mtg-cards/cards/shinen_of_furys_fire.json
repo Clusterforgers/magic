@@ -1,0 +1,30 @@
+{
+  "oracle_id": "5b3b512e-6849-4d2e-9352-a36bc1646a92",
+  "name": "Shinen of Fury's Fire",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shinen of Fury's Fire",
+      "oracle_fingerprint": "85fa8c2729c2b062de3c5c0ac2ca53b2",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{R}" }, "DiscardSelf"],
+            "from": "Hand",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

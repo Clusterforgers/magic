@@ -1,0 +1,33 @@
+{
+  "oracle_id": "14d85a83-323b-4e42-88bf-71167a8174e3",
+  "name": "Duskworker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Duskworker",
+      "oracle_fingerprint": "197df3f8dc4a50865fdd9abf44404137",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "BecomesBlocked": { "what": ["This"] } },
+            "effects": [{ "Regenerate": { "what": "This" } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{3}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

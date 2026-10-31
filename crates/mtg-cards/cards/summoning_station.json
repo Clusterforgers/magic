@@ -1,0 +1,45 @@
+{
+  "oracle_id": "01bba3b8-6372-437e-ab34-ae2c8105cd28",
+  "name": "Summoning Station",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Summoning Station",
+      "oracle_fingerprint": "377796f17b5a9a697dd5114d70d4c85b",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Pincher",
+                      "types": ["Creature"],
+                      "subtypes": ["Pincher"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Artifact" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [{ "May": { "effects": [{ "Untap": { "what": "This" } }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

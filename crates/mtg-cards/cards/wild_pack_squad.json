@@ -1,0 +1,30 @@
+{
+  "oracle_id": "294b2aa7-cb46-46bd-8241-69b26d73aa2d",
+  "name": "Wild Pack Squad",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wild Pack Squad",
+      "oracle_fingerprint": "b028249fbbc66d46669805758769feb6",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 0, "max": 1 } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "FirstStrike" }, { "AddKeyword": "Vigilance" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

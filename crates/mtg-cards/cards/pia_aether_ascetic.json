@@ -1,0 +1,36 @@
+{
+  "oracle_id": "6519dc16-4960-4220-aaa8-7e4279743714",
+  "name": "Pia, Aether Ascetic",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pia, Aether Ascetic",
+      "oracle_fingerprint": "99e5fd4aab669db41a45717e86025775",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "Discard": {} }],
+                  "paid": [
+                    {
+                      "Search": {
+                        "filter": [{ "Type": "Enchantment" }],
+                        "reveal": true,
+                        "as": "found"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+                    { "Shuffle": {} }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

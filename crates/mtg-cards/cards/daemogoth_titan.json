@@ -1,0 +1,21 @@
+{
+  "oracle_id": "a52e73bb-47cb-4912-9b81-4ae40641eabb",
+  "name": "Daemogoth Titan",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Daemogoth Titan",
+      "oracle_fingerprint": "47771b2dbc3381b808caec01022e9a43",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [{ "Attacks": { "what": ["This"] } }, { "Blocks": { "what": ["This"] } }]
+            },
+            "effects": [{ "Sacrifice": { "filter": [{ "Type": "Creature" }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

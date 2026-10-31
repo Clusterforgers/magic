@@ -1,0 +1,27 @@
+{
+  "oracle_id": "c079a636-cfd4-49cd-bcd4-54375b3fa355",
+  "name": "Defend the Celestus",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Defend the Celestus",
+      "oracle_fingerprint": "e6c23bb02d3b124c615c1472f3f60d9f",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                "bounds": { "min": 1, "max": 3 },
+                "divide": 3
+              }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1", "count": "Divided" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

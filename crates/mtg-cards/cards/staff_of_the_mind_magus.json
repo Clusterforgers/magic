@@ -1,0 +1,29 @@
+{
+  "oracle_id": "1466687f-cfe1-4e6e-ad8e-dca5e8e4c06d",
+  "name": "Staff of the Mind Magus",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Staff of the Mind Magus",
+      "oracle_fingerprint": "7ac2986fa5b37e9f9be52c862fc2a471",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "SpellCast": { "what": [{ "Color": "Blue" }], "by": "You" } },
+                {
+                  "ZoneChange": {
+                    "what": [{ "Subtype": "Island" }, { "ControlledBy": "You" }],
+                    "to": "Battlefield"
+                  }
+                }
+              ]
+            },
+            "effects": [{ "GainLife": { "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "oracle_id": "955e4c54-14c4-49bb-94e1-c6cc800c6d91",
+  "name": "Runebound Wolf",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Runebound Wolf",
+      "oracle_fingerprint": "9c9630630e427016f03afe29cb4df146",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}{R}" }, "Tap"],
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": {
+                    "Count": [
+                      { "AnyOf": [{ "Subtype": "Wolf" }, { "Subtype": "Werewolf" }] },
+                      { "ControlledBy": "You" }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

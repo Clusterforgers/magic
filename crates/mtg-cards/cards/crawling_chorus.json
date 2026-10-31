@@ -1,0 +1,38 @@
+{
+  "oracle_id": "99ba0d4f-b2bf-48ea-95d6-b6b85ee077ab",
+  "name": "Crawling Chorus",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Crawling Chorus",
+      "oracle_fingerprint": "87064111c33788a7c94b8c67c4665e92",
+      "abilities": [
+        { "Keyword": { "Toxic": 1 } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Phyrexian Mite",
+                      "types": ["Artifact", "Creature"],
+                      "subtypes": ["Phyrexian", "Mite"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [
+                        { "Keyword": { "Toxic": 1 } },
+                        { "Static": { "affected": "This", "mods": ["CantBlock"] } }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

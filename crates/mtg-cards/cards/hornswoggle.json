@@ -1,0 +1,22 @@
+{
+  "oracle_id": "71b178bd-3b37-4de9-97a3-96e23d5444a4",
+  "name": "Hornswoggle",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hornswoggle",
+      "oracle_fingerprint": "7bdab68cd29df88e413d616282998923",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell", { "Type": "Creature" }] } }],
+            "effects": [
+              { "Counter": { "what": { "Target": 0 } } },
+              { "CreateToken": { "token": { "Named": "treasure" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

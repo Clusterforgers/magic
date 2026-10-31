@@ -1,0 +1,25 @@
+{
+  "oracle_id": "8c8a3962-42a5-4070-8719-00d7483c7dbe",
+  "name": "Daring Demolition",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Daring Demolition",
+      "oracle_fingerprint": "c42e278d4e3e46d1974f577ace91ffd1",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Creature" }, { "Subtype": "Vehicle" }] }]
+                }
+              }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

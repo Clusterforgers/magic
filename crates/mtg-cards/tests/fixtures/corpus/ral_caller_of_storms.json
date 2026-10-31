@@ -1,0 +1,156 @@
+{
+  "object": "card",
+  "id": "c44f0c60-5732-4c25-9ba9-4829f1891762",
+  "oracle_id": "d7b10518-b6dc-4a39-881a-edd346034f28",
+  "multiverse_ids": [
+    455605
+  ],
+  "mtgo_id": 69357,
+  "arena_id": 68746,
+  "tcgplayer_id": 175567,
+  "cardmarket_id": 363839,
+  "name": "Ral, Caller of Storms",
+  "lang": "en",
+  "released_at": "2018-10-05",
+  "uri": "https://api.scryfall.com/cards/c44f0c60-5732-4c25-9ba9-4829f1891762",
+  "scryfall_uri": "https://scryfall.com/card/grn/265/ral-caller-of-storms?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T09:14:56Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/c/4/c44f0c60-5732-4c25-9ba9-4829f1891762.jpg?1783934096",
+    "normal": "https://cards.scryfall.io/normal/front/c/4/c44f0c60-5732-4c25-9ba9-4829f1891762.jpg?1783934096",
+    "large": "https://cards.scryfall.io/large/front/c/4/c44f0c60-5732-4c25-9ba9-4829f1891762.jpg?1783934096",
+    "png": "https://cards.scryfall.io/png/front/c/4/c44f0c60-5732-4c25-9ba9-4829f1891762.png?1783934096",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/c/4/c44f0c60-5732-4c25-9ba9-4829f1891762.jpg?1783934096",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/c/4/c44f0c60-5732-4c25-9ba9-4829f1891762.jpg?1783934096",
+    "thumb": "https://cards.scryfall.io/thumb/front/c/4/c44f0c60-5732-4c25-9ba9-4829f1891762.webp?1783934096",
+    "grid": "https://cards.scryfall.io/grid/front/c/4/c44f0c60-5732-4c25-9ba9-4829f1891762.webp?1783934096",
+    "display": "https://cards.scryfall.io/display/front/c/4/c44f0c60-5732-4c25-9ba9-4829f1891762.webp?1783934096",
+    "art": "https://cards.scryfall.io/art/front/c/4/c44f0c60-5732-4c25-9ba9-4829f1891762.webp?1783934096",
+    "crop": "https://cards.scryfall.io/crop/front/c/4/c44f0c60-5732-4c25-9ba9-4829f1891762.webp?1783934096",
+    "jpeg": "https://cards.scryfall.io/normal/front/c/4/c44f0c60-5732-4c25-9ba9-4829f1891762.jpg?1783934096"
+  },
+  "mana_cost": "{4}{U}{R}",
+  "cmc": 6.0,
+  "type_line": "Legendary Planeswalker — Ral",
+  "oracle_text": "+1: Draw a card.\n−2: Ral deals 3 damage divided as you choose among one, two, or three targets.\n−7: Draw seven cards. Ral deals 7 damage to each creature your opponents control.",
+  "loyalty": "4",
+  "colors": [
+    "R",
+    "U"
+  ],
+  "color_identity": [
+    "R",
+    "U"
+  ],
+  "keywords": [],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "a2660fae-6459-446d-85dc-3c9126c81cb3",
+      "component": "combo_piece",
+      "name": "Ral's Dispersal",
+      "type_line": "Instant",
+      "uri": "https://api.scryfall.com/cards/a2660fae-6459-446d-85dc-3c9126c81cb3"
+    },
+    {
+      "object": "related_card",
+      "id": "c44f0c60-5732-4c25-9ba9-4829f1891762",
+      "component": "combo_piece",
+      "name": "Ral, Caller of Storms",
+      "type_line": "Legendary Planeswalker — Ral",
+      "uri": "https://api.scryfall.com/cards/c44f0c60-5732-4c25-9ba9-4829f1891762"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "arena",
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": false,
+  "finishes": [
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "597c6d4a-8212-4903-a6af-12c4ae9e13f0",
+  "set": "grn",
+  "set_name": "Guilds of Ravnica",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/597c6d4a-8212-4903-a6af-12c4ae9e13f0",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Agrn&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/grn?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/c44f0c60-5732-4c25-9ba9-4829f1891762/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ad7b10518-b6dc-4a39-881a-edd346034f28&unique=prints",
+  "collector_number": "265",
+  "digital": false,
+  "rarity": "mythic",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Kieran Yanner",
+  "artist_ids": [
+    "aa7e89ed-d294-4633-9057-ce04dacfcfa4"
+  ],
+  "illustration_id": "d422d11c-5b96-4183-a146-a8f2cee7a25f",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "planeswalkerdeck"
+  ],
+  "edhrec_rank": 20635,
+  "prices": {
+    "usd": null,
+    "usd_foil": "1.18",
+    "usd_etched": null,
+    "eur": null,
+    "eur_foil": "0.93",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=455605&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DRal%252C%2BCaller%2Bof%2BStorms",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DRal%252C%2BCaller%2Bof%2BStorms",
+    "edhrec": "https://edhrec.com/route/?cc=Ral%2C+Caller+of+Storms"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F175567%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=363839&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/69357?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

@@ -1,0 +1,132 @@
+{
+  "object": "card",
+  "id": "783f220b-f860-4ebb-a424-22598bdd6fae",
+  "oracle_id": "efee0ca0-0897-4972-99c4-432561b6e9f8",
+  "multiverse_ids": [
+    198384
+  ],
+  "mtgo_id": 35743,
+  "mtgo_foil_id": 35744,
+  "tcgplayer_id": 34462,
+  "cardmarket_id": 22211,
+  "name": "Veteran's Reflexes",
+  "lang": "en",
+  "released_at": "2010-02-05",
+  "uri": "https://api.scryfall.com/cards/783f220b-f860-4ebb-a424-22598bdd6fae",
+  "scryfall_uri": "https://scryfall.com/card/wwk/23/veterans-reflexes?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T11:27:44Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/7/8/783f220b-f860-4ebb-a424-22598bdd6fae.jpg?1783942064",
+    "normal": "https://cards.scryfall.io/normal/front/7/8/783f220b-f860-4ebb-a424-22598bdd6fae.jpg?1783942064",
+    "large": "https://cards.scryfall.io/large/front/7/8/783f220b-f860-4ebb-a424-22598bdd6fae.jpg?1783942064",
+    "png": "https://cards.scryfall.io/png/front/7/8/783f220b-f860-4ebb-a424-22598bdd6fae.png?1783942064",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/7/8/783f220b-f860-4ebb-a424-22598bdd6fae.jpg?1783942064",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/7/8/783f220b-f860-4ebb-a424-22598bdd6fae.jpg?1783942064",
+    "thumb": "https://cards.scryfall.io/thumb/front/7/8/783f220b-f860-4ebb-a424-22598bdd6fae.webp?1783942064",
+    "grid": "https://cards.scryfall.io/grid/front/7/8/783f220b-f860-4ebb-a424-22598bdd6fae.webp?1783942064",
+    "display": "https://cards.scryfall.io/display/front/7/8/783f220b-f860-4ebb-a424-22598bdd6fae.webp?1783942064",
+    "art": "https://cards.scryfall.io/art/front/7/8/783f220b-f860-4ebb-a424-22598bdd6fae.webp?1783942064",
+    "crop": "https://cards.scryfall.io/crop/front/7/8/783f220b-f860-4ebb-a424-22598bdd6fae.webp?1783942064",
+    "jpeg": "https://cards.scryfall.io/normal/front/7/8/783f220b-f860-4ebb-a424-22598bdd6fae.jpg?1783942064"
+  },
+  "mana_cost": "{W}",
+  "cmc": 1.0,
+  "type_line": "Instant",
+  "oracle_text": "Target creature gets +1/+1 until end of turn. Untap that creature.",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "2f248ce6-c2a5-4c6f-a2be-0c593fbe173c",
+  "set": "wwk",
+  "set_name": "Worldwake",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/2f248ce6-c2a5-4c6f-a2be-0c593fbe173c",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Awwk&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/wwk?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/783f220b-f860-4ebb-a424-22598bdd6fae/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Aefee0ca0-0897-4972-99c4-432561b6e9f8&unique=prints",
+  "collector_number": "23",
+  "digital": false,
+  "rarity": "common",
+  "flavor_text": "\"Assume everything wants to kill you. At the very least, assume everything wants what's in your pack.\"",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Scott Chou",
+  "artist_ids": [
+    "9e048547-f9c3-4958-9c2c-91e45df7c6ae"
+  ],
+  "illustration_id": "137834f8-60ae-4ff5-9542-8541bf5024b8",
+  "border_color": "black",
+  "frame": "2003",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 22633,
+  "prices": {
+    "usd": "0.21",
+    "usd_foil": "0.34",
+    "usd_etched": null,
+    "eur": "0.15",
+    "eur_foil": "0.20",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=198384&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DVeteran%2527s%2BReflexes",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DVeteran%2527s%2BReflexes",
+    "edhrec": "https://edhrec.com/route/?cc=Veteran%27s+Reflexes"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F34462%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=22211&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/35743?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

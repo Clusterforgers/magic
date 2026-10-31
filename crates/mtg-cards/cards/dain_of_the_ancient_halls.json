@@ -1,0 +1,28 @@
+{
+  "oracle_id": "84702796-389a-4d7b-804b-de6ebd80a883",
+  "name": "Dáin of the Ancient Halls",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dáin of the Ancient Halls",
+      "oracle_fingerprint": "9c59f9d0705fb2f90f32f5e9a7cabc40",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": "Opponents",
+                  "amount": { "Count": [{ "Subtype": "Dwarf" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

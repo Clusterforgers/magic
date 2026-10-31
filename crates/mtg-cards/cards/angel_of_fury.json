@@ -1,0 +1,28 @@
+{
+  "oracle_id": "07eb70cf-e6af-4924-a00d-bdf2c6ba78e1",
+  "name": "Angel of Fury",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Angel of Fury",
+      "oracle_fingerprint": "13aeb2df8a0fe4e67c45670a282957f6",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "Move": { "what": "This", "to": { "Library": { "place": "Shuffled" } } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

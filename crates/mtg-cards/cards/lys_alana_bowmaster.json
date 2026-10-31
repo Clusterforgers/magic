@@ -1,0 +1,25 @@
+{
+  "oracle_id": "135e6545-4ec5-4136-9019-3fda92052b7a",
+  "name": "Lys Alana Bowmaster",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lys Alana Bowmaster",
+      "oracle_fingerprint": "5e8b23416219220c0cbd91fa6c1a6d40",
+      "abilities": [
+        { "Keyword": "Reach" },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Subtype": "Elf" }], "by": "You" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "HasKeyword": "Flying" }] } }
+            ],
+            "effects": [
+              { "May": { "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 2 } }] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

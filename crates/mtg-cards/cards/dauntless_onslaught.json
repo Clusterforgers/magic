@@ -1,0 +1,29 @@
+{
+  "oracle_id": "ce29f71a-6662-4be4-9915-5a4be87288e0",
+  "name": "Dauntless Onslaught",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dauntless Onslaught",
+      "oracle_fingerprint": "a4f549c3fa06cf57f3cd6933c6758b45",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 0, "max": 2 } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

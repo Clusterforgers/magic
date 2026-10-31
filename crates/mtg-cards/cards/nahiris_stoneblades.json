@@ -1,0 +1,29 @@
+{
+  "oracle_id": "769774f9-1d8d-406f-8b0c-2d6713e7ab3e",
+  "name": "Nahiri's Stoneblades",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nahiri's Stoneblades",
+      "oracle_fingerprint": "2831453b375bbf3910c999eec9418ba4",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 0, "max": 2 } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

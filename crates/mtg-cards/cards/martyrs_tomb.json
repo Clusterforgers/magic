@@ -1,0 +1,28 @@
+{
+  "oracle_id": "a0baa9eb-0b1e-4d90-a7a1-f7102f575467",
+  "name": "Martyrs' Tomb",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Martyrs' Tomb",
+      "oracle_fingerprint": "4f88faa619d9cc97fca324a718733c63",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "PayLife": 2 }],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": { "Target": 0 } } },
+                  "by": { "PreventUpTo": 1 },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "oracle_id": "efc9498a-b740-44de-aef3-01a1fa4ee49a",
+  "name": "Dredge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dredge",
+      "oracle_fingerprint": "b0df279ac0c974455236b9c2a1715280",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Sacrifice": {
+                  "filter": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Land" }] }]
+                }
+              },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

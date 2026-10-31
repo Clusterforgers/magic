@@ -1,0 +1,90 @@
+{
+  "oracle_id": "18563bc9-6090-4629-b304-89a67d93f635",
+  "name": "Tovolar's Huntmaster // Tovolar's Packleader",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tovolar's Huntmaster",
+      "oracle_fingerprint": "6408c8684949ecc36d1382431eca75b1",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Wolf",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Wolf"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  },
+                  "count": 2
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "Daybound" }
+      ]
+    },
+    {
+      "name": "Tovolar's Packleader",
+      "oracle_fingerprint": "dbba0713ecfb3a07dcc05152c7666975",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "Attacks": { "what": ["This"] } }
+              ]
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Wolf",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Wolf"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  },
+                  "count": 2
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{2}{G}{G}",
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Subtype": "Wolf" }, { "Subtype": "Werewolf" }] },
+                    "Other",
+                    { "ControlledBy": "You" }
+                  ]
+                }
+              },
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "Not": { "ControlledBy": "You" } }] }
+              }
+            ],
+            "effects": [{ "Fight": { "what": { "Target": 0 }, "with": { "Target": 1 } } }]
+          }
+        },
+        { "Keyword": "Nightbound" }
+      ]
+    }
+  ]
+}

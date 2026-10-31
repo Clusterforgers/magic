@@ -1,0 +1,32 @@
+{
+  "oracle_id": "4489a526-0e07-4d37-9e83-628f7eb256c6",
+  "name": "Enigma Eidolon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Enigma Eidolon",
+      "oracle_fingerprint": "2f28b568c3838c8ce59165801e75bac6",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{U}" }, "SacrificeSelf"],
+            "targets": [{ "what": "Player" }],
+            "effects": [{ "Mill": { "who": { "Target": 0 }, "count": 3 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [{ "Compare": { "stat": "Colors", "op": "Ge", "to": 2 } }],
+                "by": "You"
+              }
+            },
+            "from": "Graveyard",
+            "effects": [{ "May": { "effects": [{ "Move": { "what": "This", "to": "Hand" } }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

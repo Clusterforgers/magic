@@ -1,0 +1,31 @@
+{
+  "oracle_id": "dedf0d3a-090a-4cc3-b5ee-65b6cb990b72",
+  "name": "Plasma Jockey",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Plasma Jockey",
+      "oracle_fingerprint": "24e1c25c00b5ecd889a3cd5ea998d436",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["CantBlock"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Blitz": "{2}{R}" } }
+      ]
+    }
+  ]
+}

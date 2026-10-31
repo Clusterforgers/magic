@@ -1,0 +1,28 @@
+{
+  "oracle_id": "b27bc09a-ebea-498c-87f2-753852569a73",
+  "name": "Sparksmith",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sparksmith",
+      "oracle_fingerprint": "ba9aa5c2cff61a467d40289a9451f95c",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": { "Count": [{ "Subtype": "Goblin" }] }
+                }
+              },
+              { "DealDamage": { "to": "You", "amount": { "Count": [{ "Subtype": "Goblin" }] } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "oracle_id": "90a4c5ed-d268-4216-9b55-0a38406efd74",
+  "name": "Ghost-Lit Stalker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ghost-Lit Stalker",
+      "oracle_fingerprint": "8d04e93b3370ee71c61960f86fea4890",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{4}{B}" }, "Tap"],
+            "timing": "Sorcery",
+            "targets": [{ "what": "Player" }],
+            "effects": [{ "Discard": { "who": { "Target": 0 }, "count": 2 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{5}{B}{B}" }, "DiscardSelf"],
+            "timing": "Sorcery",
+            "from": "Hand",
+            "targets": [{ "what": "Player" }],
+            "effects": [{ "Discard": { "who": { "Target": 0 }, "count": 4 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

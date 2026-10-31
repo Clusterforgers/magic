@@ -1,0 +1,27 @@
+{
+  "oracle_id": "3cbd4c8e-fe3f-4a7c-90a5-7bc656d7bb10",
+  "name": "Spikeshot Goblin",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spikeshot Goblin",
+      "oracle_fingerprint": "bcb1fea78fae95593998b5c483f238e6",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{R}" }, "Tap"],
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": { "Stat": { "of": "This", "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

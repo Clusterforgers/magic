@@ -1,0 +1,38 @@
+{
+  "oracle_id": "9f7abd7d-1087-495c-8a52-2a2368cc1032",
+  "name": "Rabbit Response",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rabbit Response",
+      "oracle_fingerprint": "75e2eba7dbdc7aa7ddb54cc8bcdaeade",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "Subtype": "Rabbit" }, { "ControlledBy": "You" }] },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Scry": { "count": 2 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

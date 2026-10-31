@@ -1,0 +1,41 @@
+{
+  "oracle_id": "2d125ef5-074c-44eb-a1d0-c308d48bfbc2",
+  "name": "Invasion of Karsus // Refraction Elemental",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Invasion of Karsus",
+      "oracle_fingerprint": "c2de214170913a51822e8b0ba723c70f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": {
+                    "Each": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }]
+                  },
+                  "amount": 3
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Refraction Elemental",
+      "oracle_fingerprint": "af52486b080d065660297f27c4fee609",
+      "abilities": [
+        { "Keyword": { "Ward": [{ "PayLife": 2 }] } },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "by": "You" } },
+            "effects": [{ "DealDamage": { "to": "Opponents", "amount": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

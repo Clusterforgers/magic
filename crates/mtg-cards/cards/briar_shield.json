@@ -1,0 +1,34 @@
+{
+  "oracle_id": "9d437391-d476-4976-8714-6a1d3185ab52",
+  "name": "Briar Shield",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Briar Shield",
+      "oracle_fingerprint": "fca3b7f0fc5ddf0f19ce019097e839ea",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["SacrificeSelf"],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Attached",
+                  "mods": [{ "ModifyPT": { "power": 3, "toughness": 3 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

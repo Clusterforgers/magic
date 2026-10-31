@@ -1,0 +1,132 @@
+{
+  "object": "card",
+  "id": "4fb0c8a5-ea67-4c18-94b6-757e290ee34e",
+  "oracle_id": "a0daace2-92fc-4c7d-b497-94b4ba775559",
+  "multiverse_ids": [
+    159226
+  ],
+  "mtgo_id": 28027,
+  "mtgo_foil_id": 28028,
+  "name": "Chub Toad",
+  "lang": "en",
+  "released_at": "2007-09-10",
+  "uri": "https://api.scryfall.com/cards/4fb0c8a5-ea67-4c18-94b6-757e290ee34e",
+  "scryfall_uri": "https://scryfall.com/card/me1/116/chub-toad?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T11:42:19Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/4/f/4fb0c8a5-ea67-4c18-94b6-757e290ee34e.jpg?1783942939",
+    "normal": "https://cards.scryfall.io/normal/front/4/f/4fb0c8a5-ea67-4c18-94b6-757e290ee34e.jpg?1783942939",
+    "large": "https://cards.scryfall.io/large/front/4/f/4fb0c8a5-ea67-4c18-94b6-757e290ee34e.jpg?1783942939",
+    "png": "https://cards.scryfall.io/png/front/4/f/4fb0c8a5-ea67-4c18-94b6-757e290ee34e.png?1783942939",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/4/f/4fb0c8a5-ea67-4c18-94b6-757e290ee34e.jpg?1783942939",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/4/f/4fb0c8a5-ea67-4c18-94b6-757e290ee34e.jpg?1783942939",
+    "thumb": "https://cards.scryfall.io/thumb/front/4/f/4fb0c8a5-ea67-4c18-94b6-757e290ee34e.webp?1783942939",
+    "grid": "https://cards.scryfall.io/grid/front/4/f/4fb0c8a5-ea67-4c18-94b6-757e290ee34e.webp?1783942939",
+    "display": "https://cards.scryfall.io/display/front/4/f/4fb0c8a5-ea67-4c18-94b6-757e290ee34e.webp?1783942939",
+    "art": "https://cards.scryfall.io/art/front/4/f/4fb0c8a5-ea67-4c18-94b6-757e290ee34e.webp?1783942939",
+    "crop": "https://cards.scryfall.io/crop/front/4/f/4fb0c8a5-ea67-4c18-94b6-757e290ee34e.webp?1783942939",
+    "jpeg": "https://cards.scryfall.io/normal/front/4/f/4fb0c8a5-ea67-4c18-94b6-757e290ee34e.jpg?1783942939"
+  },
+  "mana_cost": "{2}{G}",
+  "cmc": 3.0,
+  "type_line": "Creature — Frog",
+  "oracle_text": "Whenever this creature blocks or becomes blocked, it gets +2/+2 until end of turn.",
+  "power": "1",
+  "toughness": "1",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "407d388d-1abf-4c1d-b0c6-f56280898a1a",
+  "set": "me1",
+  "set_name": "Masters Edition",
+  "set_type": "masters",
+  "set_uri": "https://api.scryfall.com/sets/407d388d-1abf-4c1d-b0c6-f56280898a1a",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ame1&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/me1?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/4fb0c8a5-ea67-4c18-94b6-757e290ee34e/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Aa0daace2-92fc-4c7d-b497-94b4ba775559&unique=prints",
+  "collector_number": "116",
+  "digital": true,
+  "rarity": "common",
+  "flavor_text": "\"Chub toad, chub toad\nAt the door.\nRun away quick\nOr you'll run no more.\"\n—Traditional children's rhyme",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Daniel Gelon",
+  "artist_ids": [
+    "63ac31a8-dd1a-4679-9f82-ece89429a084"
+  ],
+  "illustration_id": "db0bac33-3400-41c9-9b29-da000ab964a8",
+  "border_color": "black",
+  "frame": "1997",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 22289,
+  "penny_rank": 16827,
+  "prices": {
+    "usd": null,
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": null,
+    "eur_foil": null,
+    "tix": "0.04"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=159226&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DChub%2BToad",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DChub%2BToad",
+    "edhrec": "https://edhrec.com/route/?cc=Chub+Toad"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fmagic%2Fproduct%3FproductLineName%3Dmagic%26q%3DChub%2BToad%26view%3Dgrid",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products/Search?referrer=scryfall&searchString=Chub+Toad&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/28027?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "oracle_id": "a6a8861c-b6fe-45a6-86e4-9160c36362ff",
+  "name": "Goblin Elite Infantry",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Goblin Elite Infantry",
+      "oracle_fingerprint": "0f2655a8763d931f7ec31f1768df0240",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "Blocks": { "what": ["This"] } },
+                { "BecomesBlocked": { "what": ["This"] } }
+              ]
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": -1, "toughness": -1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

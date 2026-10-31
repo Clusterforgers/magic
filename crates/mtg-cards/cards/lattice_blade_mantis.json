@@ -1,0 +1,41 @@
+{
+  "oracle_id": "6755a7af-5b55-4245-a777-27e69979479b",
+  "name": "Lattice-Blade Mantis",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lattice-Blade Mantis",
+      "oracle_fingerprint": "705c527d036fe2360b86bfed7bea7821",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": { "Other": "oil" }, "count": 2 } }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "RemoveCounters": { "counter": { "Other": "oil" } } }],
+                  "paid": [
+                    { "Untap": { "what": "This" } },
+                    {
+                      "Continuous": {
+                        "affected": "This",
+                        "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

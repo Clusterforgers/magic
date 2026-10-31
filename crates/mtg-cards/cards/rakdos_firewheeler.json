@@ -1,0 +1,31 @@
+{
+  "oracle_id": "f81327c2-a0e4-475d-bb89-8a42b1ddc93c",
+  "name": "Rakdos Firewheeler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rakdos Firewheeler",
+      "oracle_fingerprint": "ff8423da1aa72cb7023bd256b4319fea",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              { "what": "Opponent" },
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 2 } },
+              { "DealDamage": { "to": { "Target": 1 }, "amount": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

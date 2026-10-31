@@ -1,0 +1,29 @@
+{
+  "oracle_id": "2f947056-fa10-4491-95e5-532ea3b76d10",
+  "name": "Scab-Clan Charger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Scab-Clan Charger",
+      "oracle_fingerprint": "e61fcfd6260b1ec376b4df1bf71aa377",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{G}" }, "DiscardSelf"],
+            "from": "Hand",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Attacking"] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 4 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

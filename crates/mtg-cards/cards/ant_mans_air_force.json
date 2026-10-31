@@ -1,0 +1,31 @@
+{
+  "oracle_id": "5d7eea87-b60f-4ab9-b485-30aadda0cd79",
+  "name": "Ant-Man's Air Force",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ant-Man's Air Force",
+      "oracle_fingerprint": "1537edb7181999693ead78bb10ad0d0c",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 0, "max": 1 } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": -1, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

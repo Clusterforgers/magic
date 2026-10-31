@@ -1,0 +1,32 @@
+{
+  "oracle_id": "77aaaad5-7960-453d-b024-6dacbca3d606",
+  "name": "Sheltering Word",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sheltering Word",
+      "oracle_fingerprint": "720d0880024b8a8802934c8c22e0617d",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Hexproof" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "GainLife": { "amount": { "Stat": { "of": { "Target": 0 }, "stat": "Toughness" } } }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

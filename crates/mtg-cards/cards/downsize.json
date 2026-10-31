@@ -1,0 +1,32 @@
+{
+  "oracle_id": "46537bac-b1eb-4c02-ba43-6c6b16c7729c",
+  "name": "Downsize",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Downsize",
+      "oracle_fingerprint": "a7dd4be34bf6c015b56fa707c75d751c",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "Not": { "ControlledBy": "You" } }] }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": -4, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Overload": "{2}{U}" } }
+      ]
+    }
+  ]
+}

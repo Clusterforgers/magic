@@ -1,0 +1,20 @@
+{
+  "oracle_id": "38ff7aa1-e2cb-450d-a18f-45841f9f9337",
+  "name": "Desecration Elemental",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Desecration Elemental",
+      "oracle_fingerprint": "4252115ec2b118e6467f124e5d931f2c",
+      "abilities": [
+        { "Keyword": "Fear" },
+        {
+          "Triggered": {
+            "when": { "SpellCast": {} },
+            "effects": [{ "Sacrifice": { "filter": [{ "Type": "Creature" }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "oracle_id": "5212f0a8-7341-4960-835b-2f4600ca1b2d",
+  "name": "Anointed Deacon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Anointed Deacon",
+      "oracle_fingerprint": "99a94a35e8ccde44b2f2135a047e13c2",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "targets": [{ "what": { "Object": [{ "Subtype": "Vampire" }] } }],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

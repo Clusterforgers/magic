@@ -1,0 +1,19 @@
+{
+  "oracle_id": "f5f2c98c-dd89-4b60-83e5-07f5fdc699ef",
+  "name": "Cyclopean Mummy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cyclopean Mummy",
+      "oracle_fingerprint": "095cdf1d684cdbe6bf65048875af9aa5",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [{ "Exile": { "what": "This" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

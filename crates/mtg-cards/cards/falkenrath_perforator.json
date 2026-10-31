@@ -1,0 +1,19 @@
+{
+  "oracle_id": "6e991808-fea4-46a8-9e87-7b5917f33ce8",
+  "name": "Falkenrath Perforator",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Falkenrath Perforator",
+      "oracle_fingerprint": "2148090a2bf4e77f677c87e2d90df763",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [{ "DealDamage": { "to": "Defending", "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

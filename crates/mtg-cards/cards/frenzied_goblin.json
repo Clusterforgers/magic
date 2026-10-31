@@ -1,0 +1,35 @@
+{
+  "oracle_id": "6ac470a1-c2be-4971-a5ca-10bb189ebe4d",
+  "name": "Frenzied Goblin",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Frenzied Goblin",
+      "oracle_fingerprint": "18f65a894492ca9e57e00fcce508dffc",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{R}",
+                  "paid": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": ["CantBlock"],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

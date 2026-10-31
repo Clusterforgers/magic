@@ -1,0 +1,24 @@
+{
+  "oracle_id": "437553c1-0aa4-4093-b6e5-c175ede5f278",
+  "name": "Malevolent Chandelier",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Malevolent Chandelier",
+      "oracle_fingerprint": "e1072343a2b5e9c9a908ebca94b3c8d8",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": "{2}",
+            "timing": "Sorcery",
+            "targets": [{ "what": { "Object": [{ "In": "Graveyard" }] } }],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Library": { "place": "Bottom" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

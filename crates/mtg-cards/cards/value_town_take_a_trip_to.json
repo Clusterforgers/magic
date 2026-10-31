@@ -1,0 +1,34 @@
+{
+  "oracle_id": "f4b47eff-88b0-49c0-b92a-286d083652f8",
+  "name": "Value Town // Take a Trip to...",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Value Town",
+      "oracle_fingerprint": "13617542a8d3688363001e95e8d7fee9",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "OneOf": ["Blue", "Red"] } } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Take a Trip to...",
+      "oracle_fingerprint": "07ba3e21ea21a9a35f50748842c0887a",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Draw": { "count": 2 } },
+              { "DealDamage": { "to": "Opponents", "amount": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

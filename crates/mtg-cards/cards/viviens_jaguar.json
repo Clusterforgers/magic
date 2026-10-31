@@ -1,0 +1,34 @@
+{
+  "oracle_id": "32412a41-2929-4417-90bc-21c5659eeb72",
+  "name": "Vivien's Jaguar",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vivien's Jaguar",
+      "oracle_fingerprint": "00bbdc23a68e3490b989259c3ffa2605",
+      "abilities": [
+        { "Keyword": "Reach" },
+        {
+          "Activated": {
+            "cost": "{2}{G}",
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "Type": "Planeswalker" },
+                    { "Subtype": "Vivien" },
+                    { "ControlledBy": "You" }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "from": "Graveyard",
+            "effects": [{ "Move": { "what": "This", "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "oracle_id": "3ec1b67a-5ff8-4ce7-8388-d11a23f76f0e",
+  "name": "Manticore of the Gauntlet",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Manticore of the Gauntlet",
+      "oracle_fingerprint": "9f9f989ea35780548f0f69d38fae4431",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+              { "what": { "Either": ["Opponent", { "Object": [{ "Type": "Planeswalker" }] }] } }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "-1/-1" } },
+              { "DealDamage": { "to": { "Target": 1 }, "amount": 3 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

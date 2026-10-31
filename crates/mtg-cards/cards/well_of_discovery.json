@@ -1,0 +1,26 @@
+{
+  "oracle_id": "d63185ac-c7cd-4501-9248-54d6caf7d091",
+  "name": "Well of Discovery",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Well of Discovery",
+      "oracle_fingerprint": "1446d54ca03725b4db29e53881efe03c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": [{ "Type": "Land" }, "Untapped", { "ControlledBy": "You" }] },
+                "op": "Eq",
+                "right": 0
+              }
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

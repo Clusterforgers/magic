@@ -1,0 +1,36 @@
+{
+  "oracle_id": "73829ae3-c8de-4e6d-9607-4b2e980ff144",
+  "name": "Voice of the Vermin",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Voice of the Vermin",
+      "oracle_fingerprint": "6430fcbe833706bb78341744989974b0",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": { "Other": "shield" }, "count": 1 } }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetPT": { "power": 4, "toughness": 4 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

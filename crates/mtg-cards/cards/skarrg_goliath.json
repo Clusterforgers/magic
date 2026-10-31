@@ -1,0 +1,33 @@
+{
+  "oracle_id": "72350461-8231-4737-a57f-f20fb5d179a3",
+  "name": "Skarrg Goliath",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Skarrg Goliath",
+      "oracle_fingerprint": "68998f86bc917aa20c9d507cedfb9d9c",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{5}{G}{G}" }, "DiscardSelf"],
+            "from": "Hand",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Attacking"] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "ModifyPT": { "power": 9, "toughness": 9 } },
+                    { "AddKeyword": "Trample" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

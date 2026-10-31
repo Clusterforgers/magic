@@ -1,0 +1,26 @@
+{
+  "oracle_id": "2091eb7e-2357-4ef8-b15e-1e6f82176340",
+  "name": "Mold Adder",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mold Adder",
+      "oracle_fingerprint": "944a309fe155d94f1e4c3a492620ac60",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [{ "AnyOf": [{ "Color": "Blue" }, { "Color": "Black" }] }],
+                "by": "Opponents"
+              }
+            },
+            "effects": [
+              { "May": { "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

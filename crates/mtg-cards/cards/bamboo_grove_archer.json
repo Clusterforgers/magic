@@ -1,0 +1,25 @@
+{
+  "oracle_id": "657f6318-aa09-46f1-ab69-896b17a48950",
+  "name": "Bamboo Grove Archer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bamboo Grove Archer",
+      "oracle_fingerprint": "b68adbd01c5827df64e5fb83db02adb3",
+      "abilities": [
+        { "Keyword": "Defender" },
+        { "Keyword": "Reach" },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{4}{G}" }, "DiscardSelf"],
+            "from": "Hand",
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "HasKeyword": "Flying" }] } }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "oracle_id": "8026533d-c0e7-48b7-9e1a-9a370899aa57",
+  "name": "Prosthetic Injector",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Prosthetic Injector",
+      "oracle_fingerprint": "a02976489cbad1145efafac904a35fdd",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "ModifyPT": { "power": 0, "toughness": 2 } },
+              { "AddKeyword": { "Toxic": 1 } }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{1}" } }
+      ]
+    }
+  ]
+}

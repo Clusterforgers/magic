@@ -1,0 +1,35 @@
+{
+  "oracle_id": "d7b10518-b6dc-4a39-881a-edd346034f28",
+  "name": "Ral, Caller of Storms",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ral, Caller of Storms",
+      "oracle_fingerprint": "7618feb682bd6260f9de5d18a40c9ad8",
+      "abilities": [
+        { "Loyalty": { "cost": { "Plus": 1 }, "effects": [{ "Draw": {} }] } },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 2 },
+            "targets": [{ "what": "AnyTarget", "bounds": { "min": 1, "max": 3 }, "divide": 3 }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": "Divided" } }]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 7 },
+            "effects": [
+              { "Draw": { "count": 7 } },
+              {
+                "DealDamage": {
+                  "to": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] },
+                  "amount": 7
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

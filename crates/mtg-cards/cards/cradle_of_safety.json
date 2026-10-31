@@ -1,0 +1,35 @@
+{
+  "oracle_id": "e0717287-9bff-446b-838d-6fc0adccc768",
+  "name": "Cradle of Safety",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cradle of Safety",
+      "oracle_fingerprint": "d94db9faa59cf339145d8fe0cce48012",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Attached",
+                  "mods": [{ "AddKeyword": "Hexproof" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

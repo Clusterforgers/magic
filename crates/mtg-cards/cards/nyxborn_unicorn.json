@@ -1,0 +1,21 @@
+{
+  "oracle_id": "b9304d88-a1de-4300-9425-50350969bd70",
+  "name": "Nyxborn Unicorn",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nyxborn Unicorn",
+      "oracle_fingerprint": "d344df42487e2d34fea14ff2e507c8e7",
+      "abilities": [
+        { "Keyword": { "Bestow": "{3}{W}" } },
+        { "Keyword": "Mentor" },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }, { "AddKeyword": "Mentor" }]
+          }
+        }
+      ]
+    }
+  ]
+}

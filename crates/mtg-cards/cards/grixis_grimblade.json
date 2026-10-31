@@ -1,0 +1,32 @@
+{
+  "oracle_id": "04b1280a-b084-4f65-a3f4-2ba41d6c26fa",
+  "name": "Grixis Grimblade",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Grixis Grimblade",
+      "oracle_fingerprint": "c8c14aa1b9991baa8315f9eeaa57ef15",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }, { "AddKeyword": "Deathtouch" }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "ControlledBy": "You" },
+                    { "Compare": { "stat": "Colors", "op": "Ge", "to": 2 } },
+                    "Other"
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

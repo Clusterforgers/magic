@@ -1,0 +1,22 @@
+{
+  "oracle_id": "b7593cf8-4dcb-473b-a2ef-180fffe66738",
+  "name": "Path of Peace",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Path of Peace",
+      "oracle_fingerprint": "821f9def18e11b98c55f1fd10bcd4094",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              { "GainLife": { "who": { "OwnerOf": { "Target": 0 } }, "amount": 4 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

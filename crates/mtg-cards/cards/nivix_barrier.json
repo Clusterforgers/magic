@@ -1,0 +1,30 @@
+{
+  "oracle_id": "aa4cb5fb-e81c-410f-8986-645671b0a1d3",
+  "name": "Nivix Barrier",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nivix Barrier",
+      "oracle_fingerprint": "dc55552d42d964ee7aef994af3d11329",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": "Defender" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Attacking"] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": -4, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

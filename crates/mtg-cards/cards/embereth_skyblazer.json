@@ -1,0 +1,43 @@
+{
+  "oracle_id": "783f8411-328a-4a00-9610-a058400cbd6d",
+  "name": "Embereth Skyblazer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Embereth Skyblazer",
+      "oracle_fingerprint": "add1d7e3bde56c9391debf953a3663c3",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Flying" }],
+            "condition": "YourTurn"
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{2}{R}",
+                  "paid": [
+                    {
+                      "Continuous": {
+                        "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                        "mods": [
+                          { "ModifyPT": { "power": { "Players": "Opponents" }, "toughness": 0 } }
+                        ],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

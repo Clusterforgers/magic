@@ -1,0 +1,37 @@
+{
+  "oracle_id": "e1c33cfe-1d48-463d-83bb-111374505194",
+  "name": "Umara Mystic",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Umara Mystic",
+      "oracle_fingerprint": "bcf110e7a0451b16c6318c4fa2b0d575",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [
+                  {
+                    "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }, { "Subtype": "Wizard" }]
+                  }
+                ],
+                "by": "You"
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

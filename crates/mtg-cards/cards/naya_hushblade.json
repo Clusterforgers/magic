@@ -1,0 +1,32 @@
+{
+  "oracle_id": "d1f986dc-e0f0-4cc6-9dc4-fe97608da332",
+  "name": "Naya Hushblade",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Naya Hushblade",
+      "oracle_fingerprint": "c38eade4122ab876b36e4759e381254e",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }, { "AddKeyword": "Shroud" }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "Compare": { "stat": "Colors", "op": "Ge", "to": 2 } },
+                    "Other",
+                    { "ControlledBy": "You" }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

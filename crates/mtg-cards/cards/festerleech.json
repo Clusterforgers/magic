@@ -1,0 +1,34 @@
+{
+  "oracle_id": "d14fdc1d-62bc-4e9c-b79b-8c9c3232f0bc",
+  "name": "Festerleech",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Festerleech",
+      "oracle_fingerprint": "9eff9b19f9079a8eba62b5c601e5bf4a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [{ "Mill": { "count": 2 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{1}{B}",
+            "limit": "OncePerTurn",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

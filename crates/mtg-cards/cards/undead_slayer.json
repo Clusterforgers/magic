@@ -1,0 +1,34 @@
+{
+  "oracle_id": "08fc069e-7fdd-4726-aa08-a96bbd2bcaa3",
+  "name": "Undead Slayer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Undead Slayer",
+      "oracle_fingerprint": "dc29147f394a2339206c47f4c118be07",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{W}" }, "Tap"],
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    {
+                      "AnyOf": [
+                        { "Subtype": "Skeleton" },
+                        { "Subtype": "Vampire" },
+                        { "Subtype": "Zombie" }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Exile": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

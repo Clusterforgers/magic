@@ -1,0 +1,27 @@
+{
+  "oracle_id": "3776d11b-18fb-4451-a8f8-bda4c7c23776",
+  "name": "Honden of Night's Reach",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Honden of Night's Reach",
+      "oracle_fingerprint": "f325ffdbf4e98492962bd46ed6631c75",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Discard": {
+                  "who": { "Target": 0 },
+                  "count": { "Count": [{ "Subtype": "Shrine" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

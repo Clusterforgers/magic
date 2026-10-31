@@ -1,0 +1,38 @@
+{
+  "oracle_id": "590c2455-90f7-4ff6-a6cf-5d0d25575cda",
+  "name": "Temur Runemark",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Temur Runemark",
+      "oracle_fingerprint": "6a01aaa06ef8ec0a0e51ad4488d7bef6",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "AddKeyword": "Trample" }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "AnyOf": [{ "Color": "Blue" }, { "Color": "Red" }] },
+                    { "ControlledBy": "You" }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

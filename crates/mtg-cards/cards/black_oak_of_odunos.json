@@ -1,0 +1,31 @@
+{
+  "oracle_id": "5fc888d1-241f-45e1-9c20-3c5ae0aadc30",
+  "name": "Black Oak of Odunos",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Black Oak of Odunos",
+      "oracle_fingerprint": "97f470fb6e6f94e0de0c8c8de7a3b4ab",
+      "abilities": [
+        { "Keyword": "Defender" },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{B}" },
+              { "TapPermanents": { "filter": [{ "Type": "Creature" }, "Other"] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

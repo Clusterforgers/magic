@@ -1,0 +1,23 @@
+{
+  "oracle_id": "60674ef7-f8e2-41e8-bab3-0100cfc9fbe9",
+  "name": "Cogwork Archivist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cogwork Archivist",
+      "oracle_fingerprint": "46fa5aefd0b8b816f95a366cf0b05fde",
+      "abilities": [
+        { "Keyword": "Reach" },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap"],
+            "targets": [{ "what": { "Object": [{ "In": "Graveyard" }] } }],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Library": { "place": "Bottom" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

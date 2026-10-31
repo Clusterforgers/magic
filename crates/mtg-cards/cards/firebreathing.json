@@ -1,0 +1,28 @@
+{
+  "oracle_id": "8603bf74-faab-4910-8e45-0f2e3b318efb",
+  "name": "Firebreathing",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Firebreathing",
+      "oracle_fingerprint": "a947fc363af3916ec402db4907b13454",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Activated": {
+            "cost": "{R}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Attached",
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

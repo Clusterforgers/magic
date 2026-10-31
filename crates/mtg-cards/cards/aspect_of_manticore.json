@@ -1,0 +1,35 @@
+{
+  "oracle_id": "899f3758-bb06-4f9c-81eb-7a9002f03245",
+  "name": "Aspect of Manticore",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Aspect of Manticore",
+      "oracle_fingerprint": "c796d239581c336ae6df3d682cec57e9",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Attached",
+                  "mods": [{ "AddKeyword": "FirstStrike" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

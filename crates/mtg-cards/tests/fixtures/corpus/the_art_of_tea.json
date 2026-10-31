@@ -1,0 +1,157 @@
+{
+  "object": "card",
+  "id": "1897db0c-db6d-4018-bf2a-9221bb0d6e61",
+  "oracle_id": "9ed4e48f-91bd-45f9-9f31-a2705b330713",
+  "multiverse_ids": [],
+  "resource_id": "B9170790F8DCDFA649444351F691C29852447E32A69F04B4C7B898705B6EC263",
+  "mtgo_id": 145656,
+  "arena_id": 98274,
+  "tcgplayer_id": 662379,
+  "cardmarket_id": 857950,
+  "name": "The Art of Tea",
+  "lang": "en",
+  "released_at": "2025-11-21",
+  "uri": "https://api.scryfall.com/cards/1897db0c-db6d-4018-bf2a-9221bb0d6e61",
+  "scryfall_uri": "https://scryfall.com/card/tle/129/the-art-of-tea?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T01:06:56Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/1/8/1897db0c-db6d-4018-bf2a-9221bb0d6e61.jpg?1783904816",
+    "normal": "https://cards.scryfall.io/normal/front/1/8/1897db0c-db6d-4018-bf2a-9221bb0d6e61.jpg?1783904816",
+    "large": "https://cards.scryfall.io/large/front/1/8/1897db0c-db6d-4018-bf2a-9221bb0d6e61.jpg?1783904816",
+    "png": "https://cards.scryfall.io/png/front/1/8/1897db0c-db6d-4018-bf2a-9221bb0d6e61.png?1783904816",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/1/8/1897db0c-db6d-4018-bf2a-9221bb0d6e61.jpg?1783904816",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/1/8/1897db0c-db6d-4018-bf2a-9221bb0d6e61.jpg?1783904816",
+    "thumb": "https://cards.scryfall.io/thumb/front/1/8/1897db0c-db6d-4018-bf2a-9221bb0d6e61.webp?1783904816",
+    "grid": "https://cards.scryfall.io/grid/front/1/8/1897db0c-db6d-4018-bf2a-9221bb0d6e61.webp?1783904816",
+    "display": "https://cards.scryfall.io/display/front/1/8/1897db0c-db6d-4018-bf2a-9221bb0d6e61.webp?1783904816",
+    "art": "https://cards.scryfall.io/art/front/1/8/1897db0c-db6d-4018-bf2a-9221bb0d6e61.webp?1783904816",
+    "crop": "https://cards.scryfall.io/crop/front/1/8/1897db0c-db6d-4018-bf2a-9221bb0d6e61.webp?1783904816",
+    "jpeg": "https://cards.scryfall.io/normal/front/1/8/1897db0c-db6d-4018-bf2a-9221bb0d6e61.jpg?1783904816"
+  },
+  "mana_cost": "{1}{G}",
+  "cmc": 2.0,
+  "type_line": "Instant — Lesson",
+  "oracle_text": "Put a +1/+1 counter on up to one target creature you control. Create a Food token. (It's an artifact with \"{2}, {T}, Sacrifice this token: You gain 3 life.\")",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Food"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "1897db0c-db6d-4018-bf2a-9221bb0d6e61",
+      "component": "combo_piece",
+      "name": "The Art of Tea",
+      "type_line": "Instant — Lesson",
+      "uri": "https://api.scryfall.com/cards/1897db0c-db6d-4018-bf2a-9221bb0d6e61"
+    },
+    {
+      "object": "related_card",
+      "id": "d0e54f01-1301-481f-ace0-87966b5135f0",
+      "component": "token",
+      "name": "Food",
+      "type_line": "Token Artifact — Food",
+      "uri": "https://api.scryfall.com/cards/d0e54f01-1301-481f-ace0-87966b5135f0"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "arena",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "a75e6ceb-d62c-4063-8e96-f269e3a0b025",
+  "set": "tle",
+  "set_name": "Avatar: The Last Airbender Eternal",
+  "set_type": "eternal",
+  "set_uri": "https://api.scryfall.com/sets/a75e6ceb-d62c-4063-8e96-f269e3a0b025",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Atle&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/tle?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/1897db0c-db6d-4018-bf2a-9221bb0d6e61/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A9ed4e48f-91bd-45f9-9f31-a2705b330713&unique=prints",
+  "collector_number": "129",
+  "digital": false,
+  "rarity": "common",
+  "flavor_text": "\"The secret ingredient is love.\"\n—Iroh",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Eilene Cherie",
+  "artist_ids": [
+    "9f1739c4-f188-4c36-b95d-c66f0047b434"
+  ],
+  "illustration_id": "4619ea86-0ed1-42ac-b804-89fd9f164c28",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "lesson"
+  ],
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 16869,
+  "prices": {
+    "usd": "0.27",
+    "usd_foil": "0.33",
+    "usd_etched": null,
+    "eur": "0.33",
+    "eur_foil": "0.23",
+    "tix": "0.04"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DThe%2BArt%2Bof%2BTea",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DThe%2BArt%2Bof%2BTea",
+    "edhrec": "https://edhrec.com/route/?cc=The+Art+of+Tea"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F662379%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=857950&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/145656?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

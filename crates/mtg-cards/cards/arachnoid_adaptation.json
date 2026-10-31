@@ -1,0 +1,31 @@
+{
+  "oracle_id": "042cc9d9-ad13-401f-b2f5-c2f1558d7e44",
+  "name": "Arachnoid Adaptation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Arachnoid Adaptation",
+      "oracle_fingerprint": "c372a661bf4599db4c5fcd7da5ee48dd",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "ModifyPT": { "power": 2, "toughness": 2 } },
+                    { "AddKeyword": "Reach" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Untap": { "what": { "Target": 0 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

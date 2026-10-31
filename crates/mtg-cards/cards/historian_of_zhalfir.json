@@ -1,0 +1,32 @@
+{
+  "oracle_id": "87e9065d-814a-47fa-9e92-19fb6fd6d78c",
+  "name": "Historian of Zhalfir",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Historian of Zhalfir",
+      "oracle_fingerprint": "00533a1004afcdef415403749ef2c48f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "Type": "Planeswalker" },
+                    { "Subtype": "Teferi" },
+                    { "ControlledBy": "You" }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

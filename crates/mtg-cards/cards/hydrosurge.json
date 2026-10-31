@@ -1,0 +1,27 @@
+{
+  "oracle_id": "4c2059d5-9a2e-4b89-a617-9125eb0cd570",
+  "name": "Hydrosurge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hydrosurge",
+      "oracle_fingerprint": "9da76ddcc07b2516e2772a87925bb295",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": -5, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "oracle_id": "cac79a2b-1de3-4461-95ac-fa0f1129cd6b",
+  "name": "Tezzeret's Strider",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tezzeret's Strider",
+      "oracle_fingerprint": "2ecd9580d5080a048106fa6168ea965a",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Menace" }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "Type": "Planeswalker" },
+                    { "Subtype": "Tezzeret" },
+                    { "ControlledBy": "You" }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

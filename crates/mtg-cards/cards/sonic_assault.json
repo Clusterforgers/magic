@@ -1,0 +1,23 @@
+{
+  "oracle_id": "dfe9e485-c070-4efd-8c35-69d4eb3f58e4",
+  "name": "Sonic Assault",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sonic Assault",
+      "oracle_fingerprint": "c5354e02bb6f635861b9cadd71f68348",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Tap": { "what": { "Target": 0 } } },
+              { "DealDamage": { "to": { "ControllerOf": { "Target": 0 } }, "amount": 2 } }
+            ]
+          }
+        },
+        { "Keyword": "JumpStart" }
+      ]
+    }
+  ]
+}

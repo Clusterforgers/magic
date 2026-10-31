@@ -1,0 +1,27 @@
+{
+  "oracle_id": "3871cad2-e793-4c41-ac79-f84cbc2634a5",
+  "name": "Nantuko Shaman",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nantuko Shaman",
+      "oracle_fingerprint": "eb140b4b751d516c40bf4a33e0b69efb",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": [{ "Type": "Land" }, "Tapped", { "ControlledBy": "You" }] },
+                "op": "Eq",
+                "right": 0
+              }
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        },
+        { "Keyword": { "Suspend": { "time": 1, "cost": "{2}{G}{G}" } } }
+      ]
+    }
+  ]
+}

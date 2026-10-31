@@ -1,0 +1,27 @@
+{
+  "oracle_id": "8cd0fcac-800a-431c-aca9-804998704606",
+  "name": "Mind Ravel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mind Ravel",
+      "oracle_fingerprint": "77d00c2c14c9b410b01729a8bf85a612",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              { "Discard": { "who": { "Target": 0 } } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "Upkeep" } },
+                  "effects": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

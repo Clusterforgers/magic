@@ -1,0 +1,28 @@
+{
+  "oracle_id": "40e8ade9-9cec-4983-ab11-d9e6278fb29f",
+  "name": "Weed-Pruner Poplar",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Weed-Pruner Poplar",
+      "oracle_fingerprint": "30e2332549f9cdf7fd10f31c1ded3a0b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Other"] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": -1, "toughness": -1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "oracle_id": "2ebe4c68-87eb-474d-a4c4-0468835b4900",
+  "name": "Shocking Grasp",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shocking Grasp",
+      "oracle_fingerprint": "e6ffae2380247ee0f4c61251ef7c1571",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": -2, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

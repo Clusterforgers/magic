@@ -1,0 +1,48 @@
+{
+  "oracle_id": "8b3726f1-20b8-42ec-8f9b-b361515c3f05",
+  "name": "Restless Fortress",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Restless Fortress",
+      "oracle_fingerprint": "2e1700cae280bbae28c8e4cf0302dec0",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "OneOf": ["White", "Black"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{2}{W}{B}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "SetPT": { "power": 1, "toughness": 4 } },
+                    { "SetColors": ["White", "Black"] },
+                    { "AddSubtype": "Nightmare" },
+                    { "AddType": "Creature" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              { "LoseLife": { "who": "Defending", "amount": 2 } },
+              { "GainLife": { "amount": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

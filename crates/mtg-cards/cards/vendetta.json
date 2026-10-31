@@ -1,0 +1,26 @@
+{
+  "oracle_id": "50a16634-ebf7-477f-ad6f-23332599f838",
+  "name": "Vendetta",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vendetta",
+      "oracle_fingerprint": "674cff7c65a62a36e30545f43700f40d",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "Not": { "Color": "Black" } }] } }
+            ],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 }, "regenerate": false } },
+              {
+                "LoseLife": { "amount": { "Stat": { "of": { "Target": 0 }, "stat": "Toughness" } } }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

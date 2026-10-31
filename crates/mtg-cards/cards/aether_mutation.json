@@ -1,0 +1,36 @@
+{
+  "oracle_id": "6697fe5b-90ac-4321-aa2f-cdc6ec283cb4",
+  "name": "Aether Mutation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Aether Mutation",
+      "oracle_fingerprint": "2b3fb56757275135bd7d8696da9fd2cc",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": "Hand" } },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Saproling",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Saproling"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": { "Stat": { "of": { "Target": 0 }, "stat": "ManaValue" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

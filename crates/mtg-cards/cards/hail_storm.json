@@ -1,0 +1,32 @@
+{
+  "oracle_id": "73eacb1f-3d35-4ead-bead-f85e6cfc17ab",
+  "name": "Hail Storm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hail Storm",
+      "oracle_fingerprint": "110f46c474bb82f372d236c8bd2c3273",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Each": [{ "Type": "Creature" }, "Attacking"] },
+                  "amount": 2
+                }
+              },
+              { "DealDamage": { "to": "You", "amount": 1 } },
+              {
+                "DealDamage": {
+                  "to": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "amount": 1
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

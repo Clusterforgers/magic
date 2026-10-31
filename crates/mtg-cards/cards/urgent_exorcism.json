@@ -1,0 +1,25 @@
+{
+  "oracle_id": "2f87ebc6-68b0-4121-bfaf-b412b077d75b",
+  "name": "Urgent Exorcism",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Urgent Exorcism",
+      "oracle_fingerprint": "5df4fe38fb3f0574ae54ef6b7e6947ef",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Subtype": "Spirit" }, { "Type": "Enchantment" }] }]
+                }
+              }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

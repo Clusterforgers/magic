@@ -1,0 +1,35 @@
+{
+  "oracle_id": "c5b4131e-13aa-4a22-b8f5-e5f9d366cb4f",
+  "name": "Tahngarth, Talruum Hero",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tahngarth, Talruum Hero",
+      "oracle_fingerprint": "fb53cb7c5f693f5b8dd46ea3a3a1e5e6",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{R}" }, "Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": { "Stat": { "of": "This", "stat": "Power" } }
+                }
+              },
+              {
+                "DealDamage": {
+                  "source": { "Target": 0 },
+                  "to": "This",
+                  "amount": { "Stat": { "of": { "Target": 0 }, "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

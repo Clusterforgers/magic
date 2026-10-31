@@ -1,0 +1,32 @@
+{
+  "oracle_id": "de5c6c9d-04a2-4287-8c6e-fdf56c411507",
+  "name": "Unrooted Ancestor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Unrooted Ancestor",
+      "oracle_fingerprint": "2167e1686ca7e3cc41f5cc23ceb2788d",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{1}" },
+              { "Sacrifice": { "filter": [{ "Type": "Creature" }, "Other"] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddKeyword": "Indestructible" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Tap": { "what": "This" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

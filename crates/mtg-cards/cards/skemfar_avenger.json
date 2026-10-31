@@ -1,0 +1,30 @@
+{
+  "oracle_id": "47c67df1-52f5-459f-b83e-6b971be9b294",
+  "name": "Skemfar Avenger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Skemfar Avenger",
+      "oracle_fingerprint": "93f046b1ffc0f0c3e6a298343cfad715",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "AnyOf": [{ "Subtype": "Elf" }, { "Subtype": "Berserker" }] },
+                  { "Not": "Token" },
+                  "Other",
+                  { "ControlledBy": "You" }
+                ],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [{ "Draw": {} }, { "LoseLife": { "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

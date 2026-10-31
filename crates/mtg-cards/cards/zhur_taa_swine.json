@@ -1,0 +1,29 @@
+{
+  "oracle_id": "dcc31cbf-f75d-4584-a97b-aa9d19d7b142",
+  "name": "Zhur-Taa Swine",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Zhur-Taa Swine",
+      "oracle_fingerprint": "67efd9e49e1fff4dde7c5e78d9fb7f47",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{R}{G}" }, "DiscardSelf"],
+            "from": "Hand",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Attacking"] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 5, "toughness": 4 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

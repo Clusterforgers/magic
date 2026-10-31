@@ -1,0 +1,28 @@
+{
+  "oracle_id": "6e5f1088-a5ab-48ec-be27-c88eb164cf63",
+  "name": "Woolly Mammoths",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Woolly Mammoths",
+      "oracle_fingerprint": "130b5bd6d7b9ab4cac5e04e3688bb325",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Trample" }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [{ "Type": "Land" }, { "Supertype": "Snow" }, { "ControlledBy": "You" }]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

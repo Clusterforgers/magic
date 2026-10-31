@@ -1,0 +1,32 @@
+{
+  "oracle_id": "9a639f82-24b6-4b54-8b9e-1fbc0f0094bf",
+  "name": "Attendant of Vraska",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Attendant of Vraska",
+      "oracle_fingerprint": "f4eb19cce94707620589806146a239dd",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "Type": "Planeswalker" },
+                    { "Subtype": "Vraska" },
+                    { "ControlledBy": "You" }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "GainLife": { "amount": { "Stat": { "of": "This", "stat": "Power" } } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "oracle_id": "ea34ec71-2f3b-4119-937d-4629cbf7ac5e",
+  "name": "Glint-Sleeve Siphoner",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Glint-Sleeve Siphoner",
+      "oracle_fingerprint": "8d49e09b006ae5db360bc533eb36f5a7",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "Attacks": { "what": ["This"] } }
+              ]
+            },
+            "effects": [{ "PutCounters": { "on": "You", "counter": { "Other": "energy" } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "PayEnergy": 2 }],
+                  "paid": [{ "Draw": {} }, { "LoseLife": { "amount": 1 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

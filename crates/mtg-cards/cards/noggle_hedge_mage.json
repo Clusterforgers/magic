@@ -1,0 +1,45 @@
+{
+  "oracle_id": "16069935-4aeb-481f-98f2-46387775540f",
+  "name": "Noggle Hedge-Mage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Noggle Hedge-Mage",
+      "oracle_fingerprint": "4109e1d9ba4177e15f7f3f706d10c4cb",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": [{ "Subtype": "Island" }, { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 2
+              }
+            },
+            "targets": [{ "what": { "Object": [] }, "bounds": { "min": 2, "max": 2 } }],
+            "effects": [{ "May": { "effects": [{ "Tap": { "what": { "Target": 0 } } }] } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": [{ "Subtype": "Mountain" }, { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 2
+              }
+            },
+            "targets": [
+              { "what": { "Either": ["Player", { "Object": [{ "Type": "Planeswalker" }] }] } }
+            ],
+            "effects": [
+              { "May": { "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 2 } }] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

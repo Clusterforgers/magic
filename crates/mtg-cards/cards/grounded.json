@@ -1,0 +1,15 @@
+{
+  "oracle_id": "cca3557c-c911-494e-95e7-cebec3442d63",
+  "name": "Grounded",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Grounded",
+      "oracle_fingerprint": "ce2359ce5bfdefbd950216ebab31a8fc",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        { "Static": { "affected": "Attached", "mods": [{ "RemoveKeyword": "Flying" }] } }
+      ]
+    }
+  ]
+}

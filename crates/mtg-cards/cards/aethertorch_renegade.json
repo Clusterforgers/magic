@@ -1,0 +1,37 @@
+{
+  "oracle_id": "7db864fe-e0b7-4b32-8706-2ad01f93f7ca",
+  "name": "Aethertorch Renegade",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Aethertorch Renegade",
+      "oracle_fingerprint": "d4da43497828060db028ceb9aebe7f49",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "PutCounters": { "on": "You", "counter": { "Other": "energy" }, "count": 4 } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap", { "PayEnergy": 2 }],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap", { "PayEnergy": 8 }],
+            "targets": [
+              { "what": { "Either": ["Player", { "Object": [{ "Type": "Planeswalker" }] }] } }
+            ],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 6 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

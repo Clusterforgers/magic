@@ -1,0 +1,33 @@
+{
+  "oracle_id": "53e540b5-8338-4b21-a61a-c5b7fe652a6e",
+  "name": "Undercity Uprising",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Undercity Uprising",
+      "oracle_fingerprint": "a2a9b5ac6e91dfb996404fde0a944730",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "Not": { "ControlledBy": "You" } }] }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [{ "AddKeyword": "Deathtouch" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Fight": { "what": { "Target": 0 }, "with": { "Target": 1 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "oracle_id": "30572dd1-c982-4872-9f35-a91ed8b238f7",
+  "name": "Antler Skulkin",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Antler Skulkin",
+      "oracle_fingerprint": "f56cbd566ffce38fc058356d16f9f423",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{2}",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, { "Color": "White" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Persist" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

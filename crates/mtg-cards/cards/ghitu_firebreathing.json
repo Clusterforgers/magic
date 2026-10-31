@@ -1,0 +1,32 @@
+{
+  "oracle_id": "893cdd4f-0b22-4ddc-98a3-5d202564ffa5",
+  "name": "Ghitu Firebreathing",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ghitu Firebreathing",
+      "oracle_fingerprint": "727e9ddf73247a99453643c414c7d8dd",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Activated": {
+            "cost": "{R}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Attached",
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": { "cost": "{R}", "effects": [{ "Move": { "what": "This", "to": "Hand" } }] }
+        }
+      ]
+    }
+  ]
+}

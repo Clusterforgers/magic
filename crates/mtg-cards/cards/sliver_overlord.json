@@ -1,0 +1,38 @@
+{
+  "oracle_id": "762d864b-69bc-43ac-af2f-e18186010169",
+  "name": "Sliver Overlord",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sliver Overlord",
+      "oracle_fingerprint": "b0ef3ad1468555f6081ab83d689f110b",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{3}",
+            "effects": [
+              { "Search": { "filter": [{ "Subtype": "Sliver" }], "reveal": true, "as": "found" } },
+              { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+              { "Shuffle": {} }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{3}",
+            "targets": [{ "what": { "Object": [{ "Subtype": "Sliver" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "oracle_id": "c8e53740-c633-42f8-9e02-3434d6dc0b30",
+  "name": "Puncture Bolt",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Puncture Bolt",
+      "oracle_fingerprint": "4a8c8477d272ae4aea0d6a99ba914d37",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 1 } },
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "-1/-1" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "oracle_id": "c645fab4-51ac-440c-b112-57777c8f4676",
+  "name": "Corrupted Conscience",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Corrupted Conscience",
+      "oracle_fingerprint": "1b136b9be16b6d5f77c481365ce0910e",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        { "Static": { "affected": "Attached", "mods": [{ "SetController": "You" }] } },
+        { "Static": { "affected": "Attached", "mods": [{ "AddKeyword": "Infect" }] } }
+      ]
+    }
+  ]
+}

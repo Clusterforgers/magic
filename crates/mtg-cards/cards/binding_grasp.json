@@ -1,0 +1,29 @@
+{
+  "oracle_id": "1ebdc091-16d5-4803-821a-ac8c4696b5bc",
+  "name": "Binding Grasp",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Binding Grasp",
+      "oracle_fingerprint": "6b7eb37331967d1e40c6d90df1f6d60a",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              { "Pay": { "cost": "{1}{U}", "unpaid": [{ "Sacrifice": { "filter": ["This"] } }] } }
+            ]
+          }
+        },
+        { "Static": { "affected": "Attached", "mods": [{ "SetController": "You" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 0, "toughness": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

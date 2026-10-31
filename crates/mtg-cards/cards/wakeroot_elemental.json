@@ -1,0 +1,34 @@
+{
+  "oracle_id": "edc6db57-3519-4649-9c4a-5cf264cce26f",
+  "name": "Wakeroot Elemental",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wakeroot Elemental",
+      "oracle_fingerprint": "1388bdb9fa3b6eab2ccc046d248614a8",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{G}{G}{G}{G}{G}",
+            "targets": [{ "what": { "Object": [{ "Type": "Land" }, { "ControlledBy": "You" }] } }],
+            "effects": [
+              { "Untap": { "what": { "Target": 0 } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "SetPT": { "power": 5, "toughness": 5 } },
+                    { "AddSubtype": "Elemental" },
+                    { "AddType": "Creature" },
+                    { "AddKeyword": "Haste" }
+                  ],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

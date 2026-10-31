@@ -1,0 +1,23 @@
+{
+  "oracle_id": "d3f4aa87-a89e-43f8-abc3-712e6bf08889",
+  "name": "Shambling Cie'th",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shambling Cie'th",
+      "oracle_fingerprint": "245ff35fd08e6969f6347a83430521a3",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Not": { "Type": "Creature" } }], "by": "You" } },
+            "from": "Graveyard",
+            "effects": [
+              { "Pay": { "cost": "{B}", "paid": [{ "Move": { "what": "This", "to": "Hand" } }] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

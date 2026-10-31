@@ -1,0 +1,29 @@
+{
+  "oracle_id": "aa0c6fea-c90c-4b65-aa1e-18e5b34ea6e3",
+  "name": "Eldrazi Aggressor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Eldrazi Aggressor",
+      "oracle_fingerprint": "87740a079b58dbc3658edbc36bffab72",
+      "abilities": [
+        { "Keyword": "Devoid" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Haste" }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "Colorless", "Other"]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

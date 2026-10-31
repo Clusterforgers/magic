@@ -1,0 +1,37 @@
+{
+  "oracle_id": "47944bf1-b954-4143-b479-45c10071e35a",
+  "name": "Haunted Hellride",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Haunted Hellride",
+      "oracle_fingerprint": "6bf64f328873ba23ee8b3c036e5906b8",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+            },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "ModifyPT": { "power": 1, "toughness": 0 } },
+                    { "AddKeyword": "Deathtouch" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Untap": { "what": { "Target": 0 } } }
+            ]
+          }
+        },
+        { "Keyword": { "Crew": 1 } }
+      ]
+    }
+  ]
+}

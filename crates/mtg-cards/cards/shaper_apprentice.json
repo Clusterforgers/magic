@@ -1,0 +1,26 @@
+{
+  "oracle_id": "ee6b0bb4-9c40-435b-8a5d-fd89d7e29ae1",
+  "name": "Shaper Apprentice",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shaper Apprentice",
+      "oracle_fingerprint": "6e2cc94e9cace72fa29847c09e0290d1",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Flying" }],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Subtype": "Merfolk" }, "Other", { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

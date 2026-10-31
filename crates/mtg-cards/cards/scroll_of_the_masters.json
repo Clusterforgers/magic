@@ -1,0 +1,45 @@
+{
+  "oracle_id": "f2c7adde-492b-4585-8385-42d7e0d6e914",
+  "name": "Scroll of the Masters",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Scroll of the Masters",
+      "oracle_fingerprint": "b8bf8dc8443b8d344f9635d23d48d507",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Not": { "Type": "Creature" } }], "by": "You" } },
+            "effects": [{ "PutCounters": { "on": "This", "counter": { "Other": "lore" } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}" }, "Tap"],
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": { "Counters": { "on": "This", "counter": { "Other": "lore" } } },
+                        "toughness": {
+                          "Counters": { "on": "This", "counter": { "Other": "lore" } }
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

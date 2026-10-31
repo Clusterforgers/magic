@@ -1,0 +1,26 @@
+{
+  "oracle_id": "92c824da-2351-43bd-9fa0-d09709ad8205",
+  "name": "Basri's Acolyte",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Basri's Acolyte",
+      "oracle_fingerprint": "c79c45083e66fde3abaf6206898738f4",
+      "abilities": [
+        { "Keyword": "Lifelink" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "Other"] },
+                "bounds": { "min": 0, "max": 2 }
+              }
+            ],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

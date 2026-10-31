@@ -1,0 +1,35 @@
+{
+  "oracle_id": "4c591977-f2af-4a6e-a0be-3dfb45a3598b",
+  "name": "Nebelgast Intruder",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nebelgast Intruder",
+      "oracle_fingerprint": "a1771aaf2222fe243532799d408eda9c",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": -2, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

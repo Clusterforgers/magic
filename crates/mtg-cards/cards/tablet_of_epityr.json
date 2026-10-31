@@ -1,0 +1,25 @@
+{
+  "oracle_id": "691896d7-9894-4845-be1d-08b053897fdb",
+  "name": "Tablet of Epityr",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tablet of Epityr",
+      "oracle_fingerprint": "c549dc3a2fa04521acee74cb3f3d6818",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Artifact" }, { "ControlledBy": "You" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [{ "Pay": { "cost": "{1}", "paid": [{ "GainLife": { "amount": 1 } }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

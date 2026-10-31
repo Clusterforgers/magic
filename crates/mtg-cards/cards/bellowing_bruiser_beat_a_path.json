@@ -1,0 +1,34 @@
+{
+  "oracle_id": "cdb84830-faf2-4beb-8d57-ad696d75876b",
+  "name": "Bellowing Bruiser // Beat a Path",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bellowing Bruiser",
+      "oracle_fingerprint": "de3b46da4da8a98c381a34e6ef132641",
+      "abilities": [{ "Keyword": "Haste" }]
+    },
+    {
+      "name": "Beat a Path",
+      "oracle_fingerprint": "fd193a2e1f56e67c36fce2c2889b3570",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 0, "max": 2 } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["CantBlock"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "oracle_id": "ba14843d-6b7f-4e3d-b5ba-fc573fa8bf50",
+  "name": "Coordinated Assault",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Coordinated Assault",
+      "oracle_fingerprint": "ec4c474f77f00b03dfadfa717730804c",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 0, "max": 2 } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "ModifyPT": { "power": 1, "toughness": 0 } },
+                    { "AddKeyword": "FirstStrike" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

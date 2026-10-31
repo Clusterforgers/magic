@@ -1,0 +1,20 @@
+{
+  "oracle_id": "5b95a5ed-a6b2-4044-9273-2021d27794e9",
+  "name": "Blight Sickle",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Blight Sickle",
+      "oracle_fingerprint": "7942f26aeb260ea9ac1c5f3b59c8ac19",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }, { "AddKeyword": "Wither" }]
+          }
+        },
+        { "Keyword": { "Equip": "{2}" } }
+      ]
+    }
+  ]
+}

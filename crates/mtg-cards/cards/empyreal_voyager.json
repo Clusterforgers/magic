@@ -1,0 +1,29 @@
+{
+  "oracle_id": "e7112d60-1154-4770-9ec4-c7038157be8a",
+  "name": "Empyreal Voyager",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Empyreal Voyager",
+      "oracle_fingerprint": "2466bdb26e0fbf9786d3458a95ec5947",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": "You",
+                  "counter": { "Other": "energy" },
+                  "count": "Triggering"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

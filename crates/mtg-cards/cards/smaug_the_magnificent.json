@@ -1,0 +1,35 @@
+{
+  "oracle_id": "c53b7602-5e36-4900-896c-844bf6eac22e",
+  "name": "Smaug the Magnificent",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Smaug the Magnificent",
+      "oracle_fingerprint": "d461dc56a9905e2a31ae6d54b3aedf92",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": { "Count": [{ "Subtype": "Treasure" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [{ "CreateToken": { "token": { "Named": "treasure" } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

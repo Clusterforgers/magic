@@ -1,0 +1,34 @@
+{
+  "oracle_id": "89838d28-6026-417d-9ec3-0081911291fb",
+  "name": "Grixis Battlemage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Grixis Battlemage",
+      "oracle_fingerprint": "1798bdf6a7d1fcd6f3ba4c8390a1d367",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{U}" }, "Tap"],
+            "effects": [{ "Draw": {} }, { "Discard": {} }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{R}" }, "Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["CantBlock"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

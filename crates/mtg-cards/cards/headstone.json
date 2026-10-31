@@ -1,0 +1,27 @@
+{
+  "oracle_id": "cbf767d4-9be4-417a-bbf7-0c72ede727b4",
+  "name": "Headstone",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Headstone",
+      "oracle_fingerprint": "b67e7568be04ef212762635fed1817db",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "In": "Graveyard" }] } }],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 } } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "Upkeep" } },
+                  "effects": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

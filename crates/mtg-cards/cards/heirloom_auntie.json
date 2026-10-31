@@ -1,0 +1,34 @@
+{
+  "oracle_id": "cc9523da-f48e-49ab-9989-a4031dafb426",
+  "name": "Heirloom Auntie",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Heirloom Auntie",
+      "oracle_fingerprint": "7e787f2d8e335eed906486be78ba1a6f",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "-1/-1", "count": 2 } }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              { "Surveil": {} },
+              { "RemoveCounters": { "from": "This", "counter": "-1/-1" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

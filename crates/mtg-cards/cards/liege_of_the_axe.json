@@ -1,0 +1,21 @@
+{
+  "oracle_id": "d838969a-b219-4964-bc7e-df0348392bbe",
+  "name": "Liege of the Axe",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Liege of the Axe",
+      "oracle_fingerprint": "e98abf9d42a33733c2f8a4b13faeee2e",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        { "Keyword": { "Morph": "{1}{W}" } },
+        {
+          "Triggered": {
+            "when": { "TurnedFaceUp": { "what": ["This"] } },
+            "effects": [{ "Untap": { "what": "This" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

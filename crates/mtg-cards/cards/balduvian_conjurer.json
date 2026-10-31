@@ -1,0 +1,28 @@
+{
+  "oracle_id": "3eb21641-90e1-4865-b7be-a21d52b7b56b",
+  "name": "Balduvian Conjurer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Balduvian Conjurer",
+      "oracle_fingerprint": "4f001340d5ba6e0f007f215caa25b05c",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Land" }, { "Supertype": "Snow" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetPT": { "power": 2, "toughness": 2 } }, { "AddType": "Creature" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

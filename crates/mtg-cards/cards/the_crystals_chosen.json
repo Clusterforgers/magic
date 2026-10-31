@@ -1,0 +1,39 @@
+{
+  "oracle_id": "df4ef2f8-2591-4be3-b905-4f9ff9c538ea",
+  "name": "The Crystal's Chosen",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Crystal's Chosen",
+      "oracle_fingerprint": "031a0bf22431fd779b8f5af09c0c9fab",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Hero",
+                      "types": ["Creature"],
+                      "subtypes": ["Hero"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": 4
+                }
+              },
+              {
+                "PutCounters": {
+                  "on": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "counter": "+1/+1"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

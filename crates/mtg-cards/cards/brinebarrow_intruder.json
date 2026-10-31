@@ -1,0 +1,31 @@
+{
+  "oracle_id": "eba73313-5ec5-4004-8040-658861b71a8f",
+  "name": "Brinebarrow Intruder",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Brinebarrow Intruder",
+      "oracle_fingerprint": "154b0e3d20c8eb57d1b7c5e02009ca6a",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": -2, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

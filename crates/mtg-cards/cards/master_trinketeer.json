@@ -1,0 +1,44 @@
+{
+  "oracle_id": "aa57f607-c5eb-45a7-bfb1-adce0aef49c7",
+  "name": "Master Trinketeer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Master Trinketeer",
+      "oracle_fingerprint": "269c0caecca46beaf9e3ea8b7e3ef9be",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "AnyOf": [{ "Subtype": "Servo" }, { "Subtype": "Thopter" }] },
+                { "ControlledBy": "You" }
+              ]
+            },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{3}{W}",
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Servo",
+                      "types": ["Artifact", "Creature"],
+                      "subtypes": ["Servo"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,151 @@
+{
+  "object": "card",
+  "id": "034215f1-62f5-49ce-a818-44577138b508",
+  "oracle_id": "951b59c5-6d5a-4fca-b3ae-e783814e7e7a",
+  "multiverse_ids": [
+    370412
+  ],
+  "mtgo_id": 48900,
+  "mtgo_foil_id": 48901,
+  "tcgplayer_id": 68413,
+  "cardmarket_id": 262104,
+  "name": "Reach of Branches",
+  "lang": "en",
+  "released_at": "2013-06-07",
+  "uri": "https://api.scryfall.com/cards/034215f1-62f5-49ce-a818-44577138b508",
+  "scryfall_uri": "https://scryfall.com/card/mma/158/reach-of-branches?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T10:52:53Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/0/3/034215f1-62f5-49ce-a818-44577138b508.jpg?1783939973",
+    "normal": "https://cards.scryfall.io/normal/front/0/3/034215f1-62f5-49ce-a818-44577138b508.jpg?1783939973",
+    "large": "https://cards.scryfall.io/large/front/0/3/034215f1-62f5-49ce-a818-44577138b508.jpg?1783939973",
+    "png": "https://cards.scryfall.io/png/front/0/3/034215f1-62f5-49ce-a818-44577138b508.png?1783939973",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/0/3/034215f1-62f5-49ce-a818-44577138b508.jpg?1783939973",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/0/3/034215f1-62f5-49ce-a818-44577138b508.jpg?1783939973",
+    "thumb": "https://cards.scryfall.io/thumb/front/0/3/034215f1-62f5-49ce-a818-44577138b508.webp?1783939973",
+    "grid": "https://cards.scryfall.io/grid/front/0/3/034215f1-62f5-49ce-a818-44577138b508.webp?1783939973",
+    "display": "https://cards.scryfall.io/display/front/0/3/034215f1-62f5-49ce-a818-44577138b508.webp?1783939973",
+    "art": "https://cards.scryfall.io/art/front/0/3/034215f1-62f5-49ce-a818-44577138b508.webp?1783939973",
+    "crop": "https://cards.scryfall.io/crop/front/0/3/034215f1-62f5-49ce-a818-44577138b508.webp?1783939973",
+    "jpeg": "https://cards.scryfall.io/normal/front/0/3/034215f1-62f5-49ce-a818-44577138b508.jpg?1783939973"
+  },
+  "mana_cost": "{4}{G}",
+  "cmc": 5.0,
+  "type_line": "Kindred Instant — Treefolk",
+  "oracle_text": "Create a 2/5 green Treefolk Shaman creature token.\nWhenever a Forest you control enters, you may return this card from your graveyard to your hand.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "d75c1ada-2a49-49e8-800d-f11d08263dde",
+      "component": "token",
+      "name": "Treefolk Shaman",
+      "type_line": "Token Creature — Treefolk Shaman",
+      "uri": "https://api.scryfall.com/cards/d75c1ada-2a49-49e8-800d-f11d08263dde"
+    },
+    {
+      "object": "related_card",
+      "id": "034215f1-62f5-49ce-a818-44577138b508",
+      "component": "combo_piece",
+      "name": "Reach of Branches",
+      "type_line": "Kindred Instant — Treefolk",
+      "uri": "https://api.scryfall.com/cards/034215f1-62f5-49ce-a818-44577138b508"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "0b7020f2-336d-4706-9ce6-f6710b9ebd5c",
+  "set": "mma",
+  "set_name": "Modern Masters",
+  "set_type": "masters",
+  "set_uri": "https://api.scryfall.com/sets/0b7020f2-336d-4706-9ce6-f6710b9ebd5c",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Amma&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/mma?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/034215f1-62f5-49ce-a818-44577138b508/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A951b59c5-6d5a-4fca-b3ae-e783814e7e7a&unique=prints",
+  "collector_number": "158",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "Growth has no limits.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Zack Stella",
+  "artist_ids": [
+    "17bc7f55-958b-43f4-bb40-09746d05b3f9"
+  ],
+  "illustration_id": "6d19c512-7740-4eae-8afd-c929f9dcf863",
+  "border_color": "black",
+  "frame": "2003",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 15006,
+  "penny_rank": 7738,
+  "prices": {
+    "usd": "0.34",
+    "usd_foil": "1.14",
+    "usd_etched": null,
+    "eur": "0.28",
+    "eur_foil": "0.65",
+    "tix": "0.04"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=370412&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DReach%2Bof%2BBranches",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DReach%2Bof%2BBranches",
+    "edhrec": "https://edhrec.com/route/?cc=Reach+of+Branches"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F68413%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=262104&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/48900?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "oracle_id": "9364b5bc-3e78-4b9d-9993-0081bbe2eef6",
+  "name": "Moriok Rigger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Moriok Rigger",
+      "oracle_fingerprint": "4cc7308f923a7ffab8c68f97751b7062",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Artifact" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              { "May": { "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

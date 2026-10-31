@@ -1,0 +1,31 @@
+{
+  "oracle_id": "f2025f2e-c931-48dd-af21-8f0a591befb4",
+  "name": "Escape from Orthanc",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Escape from Orthanc",
+      "oracle_fingerprint": "7216b7171eb249bdfe147f24c559dbf3",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "ModifyPT": { "power": 1, "toughness": 3 } },
+                    { "AddKeyword": "Flying" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Untap": { "what": { "Target": 0 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

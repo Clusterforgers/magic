@@ -1,0 +1,29 @@
+{
+  "oracle_id": "b72fd535-0051-4f59-9d99-75895f751006",
+  "name": "Twinshot Sniper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Twinshot Sniper",
+      "oracle_fingerprint": "4c33ac4e8e761ba479a4dd460a43e5b1",
+      "abilities": [
+        { "Keyword": "Reach" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 2 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{R}" }, "DiscardSelf"],
+            "from": "Hand",
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

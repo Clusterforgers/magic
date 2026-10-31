@@ -1,0 +1,45 @@
+{
+  "oracle_id": "7df45a2a-75bc-4343-8dad-3a642efd13ee",
+  "name": "Metalhead",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Metalhead",
+      "oracle_fingerprint": "928d324dfd4c59cf695d2f5171525771",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] }, "Other"]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{R}" },
+              { "Sacrifice": { "filter": [{ "Type": "Artifact" }, "Other"] } }
+            ],
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": "+1/+1" } },
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddKeyword": "Menace" }, { "AddKeyword": "Haste" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

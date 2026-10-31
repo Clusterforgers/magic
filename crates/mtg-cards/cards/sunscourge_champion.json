@@ -1,0 +1,20 @@
+{
+  "oracle_id": "f5e9c69f-b949-4e9a-91d8-e0d52f8d8d3e",
+  "name": "Sunscourge Champion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sunscourge Champion",
+      "oracle_fingerprint": "6f7686c197b05955837bbe6c31542109",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "GainLife": { "amount": { "Stat": { "of": "This", "stat": "Power" } } } }]
+          }
+        },
+        { "Keyword": { "Eternalize": [{ "Mana": "{2}{W}{W}" }, { "Discard": {} }] } }
+      ]
+    }
+  ]
+}

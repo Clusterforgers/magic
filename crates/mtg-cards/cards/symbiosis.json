@@ -1,0 +1,29 @@
+{
+  "oracle_id": "787b494b-731b-4e99-8e46-157bc86f6eea",
+  "name": "Symbiosis",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Symbiosis",
+      "oracle_fingerprint": "2031e7b9b892af8269360dd7e5511bd4",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 2, "max": 2 } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

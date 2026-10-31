@@ -1,0 +1,53 @@
+{
+  "oracle_id": "fe7bf8ca-88ae-4c6d-8d71-ef170a87c0d0",
+  "name": "Brotherhood's End",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Brotherhood's End",
+      "oracle_fingerprint": "3a8a2affa2d7a68a5ff636d6f47f423d",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "effects": [
+                        {
+                          "DealDamage": {
+                            "to": {
+                              "Each": [
+                                { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }
+                              ]
+                            },
+                            "amount": 3
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "Destroy": {
+                            "what": {
+                              "Each": [
+                                { "Type": "Artifact" },
+                                { "Compare": { "stat": "ManaValue", "op": "Le", "to": 3 } }
+                              ]
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

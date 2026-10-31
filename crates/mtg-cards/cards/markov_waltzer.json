@@ -1,0 +1,35 @@
+{
+  "oracle_id": "bc9ac394-15b6-4d95-acca-5dc247235d2b",
+  "name": "Markov Waltzer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Markov Waltzer",
+      "oracle_fingerprint": "dd24f8d0a5861b09d4457f50d4077e54",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                "bounds": { "min": 0, "max": 2 }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

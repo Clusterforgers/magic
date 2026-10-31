@@ -1,0 +1,27 @@
+{
+  "oracle_id": "3ceaeb1b-8b25-453d-ac09-e466cfdd9c77",
+  "name": "Undying Evil",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Undying Evil",
+      "oracle_fingerprint": "687a3d0cc62276041c8952b9614a6324",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Undying" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

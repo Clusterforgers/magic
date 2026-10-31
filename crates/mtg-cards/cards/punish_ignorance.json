@@ -1,0 +1,23 @@
+{
+  "oracle_id": "0fc56124-bdcd-4f4f-886f-0fafcf8003bc",
+  "name": "Punish Ignorance",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Punish Ignorance",
+      "oracle_fingerprint": "f1b523fdc245cd3fd725228406f41c76",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [
+              { "Counter": { "what": { "Target": 0 } } },
+              { "LoseLife": { "who": { "ControllerOf": { "Target": 0 } }, "amount": 3 } },
+              { "GainLife": { "amount": 3 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

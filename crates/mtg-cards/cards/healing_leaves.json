@@ -1,0 +1,41 @@
+{
+  "oracle_id": "9c675e7a-1d68-44b2-9c1a-543b73782437",
+  "name": "Healing Leaves",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Healing Leaves",
+      "oracle_fingerprint": "e9e4b2aa2b6508aacb34b1bbdc5d9c27",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [{ "what": "Player" }],
+                      "effects": [{ "GainLife": { "who": { "Target": 0 }, "amount": 3 } }]
+                    },
+                    {
+                      "targets": [{ "what": "AnyTarget" }],
+                      "effects": [
+                        {
+                          "Shield": {
+                            "when": { "Damage": { "to": { "Target": 0 } } },
+                            "by": { "PreventUpTo": 3 },
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

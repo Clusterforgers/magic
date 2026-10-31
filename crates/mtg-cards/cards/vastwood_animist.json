@@ -1,0 +1,37 @@
+{
+  "oracle_id": "0b331f27-0d78-4d22-b546-36c5dec37606",
+  "name": "Vastwood Animist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vastwood Animist",
+      "oracle_fingerprint": "fe569974867d1a764caea53ba818e4df",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Land" }, { "ControlledBy": "You" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "SetPT": {
+                        "power": { "Count": [{ "Subtype": "Ally" }, { "ControlledBy": "You" }] },
+                        "toughness": { "Count": [{ "Subtype": "Ally" }, { "ControlledBy": "You" }] }
+                      }
+                    },
+                    { "AddSubtype": "Elemental" },
+                    { "AddType": "Creature" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,139 @@
+{
+  "object": "card",
+  "id": "c11e4420-06f3-48e2-91d1-a9199483add2",
+  "oracle_id": "c079a636-cfd4-49cd-bcd4-54375b3fa355",
+  "multiverse_ids": [
+    534969
+  ],
+  "resource_id": "A4BC4A83F9118009B17EF6E04D7728211001DB6989CB164BA4B33B4CE3265BE9",
+  "mtgo_id": 93352,
+  "arena_id": 78540,
+  "tcgplayer_id": 247985,
+  "cardmarket_id": 574806,
+  "name": "Defend the Celestus",
+  "lang": "en",
+  "released_at": "2021-09-24",
+  "uri": "https://api.scryfall.com/cards/c11e4420-06f3-48e2-91d1-a9199483add2",
+  "scryfall_uri": "https://scryfall.com/card/mid/182/defend-the-celestus?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T06:52:59Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/c/1/c11e4420-06f3-48e2-91d1-a9199483add2.jpg?1783925579",
+    "normal": "https://cards.scryfall.io/normal/front/c/1/c11e4420-06f3-48e2-91d1-a9199483add2.jpg?1783925579",
+    "large": "https://cards.scryfall.io/large/front/c/1/c11e4420-06f3-48e2-91d1-a9199483add2.jpg?1783925579",
+    "png": "https://cards.scryfall.io/png/front/c/1/c11e4420-06f3-48e2-91d1-a9199483add2.png?1783925579",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/c/1/c11e4420-06f3-48e2-91d1-a9199483add2.jpg?1783925579",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/c/1/c11e4420-06f3-48e2-91d1-a9199483add2.jpg?1783925579",
+    "thumb": "https://cards.scryfall.io/thumb/front/c/1/c11e4420-06f3-48e2-91d1-a9199483add2.webp?1783925579",
+    "grid": "https://cards.scryfall.io/grid/front/c/1/c11e4420-06f3-48e2-91d1-a9199483add2.webp?1783925579",
+    "display": "https://cards.scryfall.io/display/front/c/1/c11e4420-06f3-48e2-91d1-a9199483add2.webp?1783925579",
+    "art": "https://cards.scryfall.io/art/front/c/1/c11e4420-06f3-48e2-91d1-a9199483add2.webp?1783925579",
+    "crop": "https://cards.scryfall.io/crop/front/c/1/c11e4420-06f3-48e2-91d1-a9199483add2.webp?1783925579",
+    "jpeg": "https://cards.scryfall.io/normal/front/c/1/c11e4420-06f3-48e2-91d1-a9199483add2.jpg?1783925579"
+  },
+  "mana_cost": "{2}{G}{G}",
+  "cmc": 4.0,
+  "type_line": "Instant",
+  "oracle_text": "Distribute three +1/+1 counters among one, two, or three target creatures you control.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "arena",
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "44b8eb8f-fa23-401a-98b5-1fbb9871128e",
+  "set": "mid",
+  "set_name": "Innistrad: Midnight Hunt",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/44b8eb8f-fa23-401a-98b5-1fbb9871128e",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Amid&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/mid?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/c11e4420-06f3-48e2-91d1-a9199483add2/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ac079a636-cfd4-49cd-bcd4-54375b3fa355&unique=prints",
+  "collector_number": "182",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "Witch, werewolf, and cathar stood shoulder to shoulder around the Sungold Lock at the center of the ritual, ready to stop Tovolar's assault—or die trying.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Andrey Kuzinskiy",
+  "artist_ids": [
+    "c04ff0b2-67a1-4238-82f7-6c67de734b56"
+  ],
+  "illustration_id": "234b488b-c63f-4eae-9e96-0dfa903cfb24",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": true,
+  "edhrec_rank": 20561,
+  "preview": {
+    "source": "Mashable",
+    "source_uri": "https://mashable.com/article/magic-the-gathering-innistrad-midnight-hunt",
+    "previewed_at": "2021-09-06"
+  },
+  "prices": {
+    "usd": "0.21",
+    "usd_foil": "0.15",
+    "usd_etched": null,
+    "eur": "0.10",
+    "eur_foil": "0.13",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=534969&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DDefend%2Bthe%2BCelestus",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DDefend%2Bthe%2BCelestus",
+    "edhrec": "https://edhrec.com/route/?cc=Defend+the+Celestus"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F247985%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=574806&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/93352?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

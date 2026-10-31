@@ -1,0 +1,19 @@
+{
+  "oracle_id": "667cffdd-8951-4223-8895-fa46e9f14b96",
+  "name": "Fuel for the Cause",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fuel for the Cause",
+      "oracle_fingerprint": "eb2b6fb7645f9b15b4b235d98cf9211f",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [{ "Counter": { "what": { "Target": 0 } } }, { "Proliferate": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

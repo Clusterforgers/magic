@@ -1,0 +1,27 @@
+{
+  "oracle_id": "58ac4cce-506e-4d6e-a19c-0e875fbfcd81",
+  "name": "Heidar, Rimewind Master",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Heidar, Rimewind Master",
+      "oracle_fingerprint": "014165b70aee35cf0f07eb6b28bc11fc",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap"],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Supertype": "Snow" }, { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 4
+              }
+            },
+            "targets": [{ "what": { "Object": [] } }],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

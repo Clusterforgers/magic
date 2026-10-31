@@ -1,0 +1,20 @@
+{
+  "oracle_id": "61e00946-7df7-4298-91b2-c656169e6601",
+  "name": "Kjeldoran Dead",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kjeldoran Dead",
+      "oracle_fingerprint": "ea5c7f7cd645e9e9873e83e3ee17f127",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Sacrifice": { "filter": [{ "Type": "Creature" }] } }]
+          }
+        },
+        { "Activated": { "cost": "{B}", "effects": [{ "Regenerate": { "what": "This" } }] } }
+      ]
+    }
+  ]
+}

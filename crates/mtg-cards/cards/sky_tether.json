@@ -1,0 +1,20 @@
+{
+  "oracle_id": "06548af1-4fda-435c-ac32-bbf7afafb34e",
+  "name": "Sky Tether",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sky Tether",
+      "oracle_fingerprint": "d7846d0d3f7b34a4e2f54c093b366ec1",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "AddKeyword": "Defender" }, { "RemoveKeyword": "Flying" }]
+          }
+        }
+      ]
+    }
+  ]
+}

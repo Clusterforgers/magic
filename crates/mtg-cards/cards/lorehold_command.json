@@ -1,0 +1,69 @@
+{
+  "oracle_id": "107becb1-f8a3-4777-b39f-a0456c2d580e",
+  "name": "Lorehold Command",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lorehold Command",
+      "oracle_fingerprint": "1be086d4ad8789f416dd3642cd81a528",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "choose": { "min": 2, "max": 2 },
+                  "modes": [
+                    {
+                      "effects": [
+                        {
+                          "CreateToken": {
+                            "token": {
+                              "Custom": {
+                                "name": "Spirit",
+                                "colors": ["Red", "White"],
+                                "types": ["Creature"],
+                                "subtypes": ["Spirit"],
+                                "power": 3,
+                                "toughness": 2
+                              }
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": {
+                              "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                            },
+                            "mods": [
+                              { "ModifyPT": { "power": 1, "toughness": 0 } },
+                              { "AddKeyword": "Indestructible" },
+                              { "AddKeyword": "Haste" }
+                            ],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [{ "what": "AnyTarget" }, { "what": "Player" }],
+                      "effects": [
+                        { "DealDamage": { "to": { "Target": 0 }, "amount": 3 } },
+                        { "GainLife": { "who": { "Target": 1 }, "amount": 3 } }
+                      ]
+                    },
+                    { "effects": [{ "Sacrifice": { "filter": [] } }, { "Draw": { "count": 2 } }] }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

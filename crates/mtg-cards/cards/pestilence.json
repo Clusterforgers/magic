@@ -1,0 +1,31 @@
+{
+  "oracle_id": "dafe63ef-f3d6-45e7-877a-573da92ba85e",
+  "name": "Pestilence",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pestilence",
+      "oracle_fingerprint": "1ac4b61f309bad589247cb0442ba9baa",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "if": {
+              "Compare": { "left": { "Count": [{ "Type": "Creature" }] }, "op": "Eq", "right": 0 }
+            },
+            "effects": [{ "Sacrifice": { "filter": ["This"] } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{B}",
+            "effects": [
+              { "DealDamage": { "to": { "Each": [{ "Type": "Creature" }] }, "amount": 1 } },
+              { "DealDamage": { "to": "EachPlayer", "amount": 1 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

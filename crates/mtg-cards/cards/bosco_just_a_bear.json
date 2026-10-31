@@ -1,0 +1,47 @@
+{
+  "oracle_id": "a213c650-06cc-4ea8-86f8-78ccfe103b38",
+  "name": "Bosco, Just a Bear",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bosco, Just a Bear",
+      "oracle_fingerprint": "31273bc877345b5a19105c2727df9e61",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": { "Named": "food" },
+                  "count": {
+                    "Count": [
+                      { "Type": "Creature" },
+                      { "Supertype": "Legendary" },
+                      { "ControlledBy": "You" }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{G}" }, { "Sacrifice": { "filter": [{ "Subtype": "Food" }] } }],
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": "+1/+1", "count": 2 } },
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddKeyword": "Trample" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

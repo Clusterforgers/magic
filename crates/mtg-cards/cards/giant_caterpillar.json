@@ -1,0 +1,42 @@
+{
+  "oracle_id": "43a515f2-b53a-4bb4-bb6e-0d79c9162359",
+  "name": "Giant Caterpillar",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Giant Caterpillar",
+      "oracle_fingerprint": "fd0ffeb8c6f37f97088a9b4f7fc85daa",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{G}" }, "SacrificeSelf"],
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Butterfly",
+                            "colors": ["Green"],
+                            "types": ["Creature"],
+                            "subtypes": ["Insect"],
+                            "power": 1,
+                            "toughness": 1,
+                            "abilities": [{ "Keyword": "Flying" }]
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

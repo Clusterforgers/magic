@@ -1,0 +1,20 @@
+{
+  "oracle_id": "08fa1bee-cedf-4a29-9b02-cbdcc0926f8f",
+  "name": "Commander Greven il-Vec",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Commander Greven il-Vec",
+      "oracle_fingerprint": "89beef8557229a9dfd5961b4f451b72d",
+      "abilities": [
+        { "Keyword": "Fear" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Sacrifice": { "filter": [{ "Type": "Creature" }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

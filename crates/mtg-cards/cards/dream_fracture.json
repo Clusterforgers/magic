@@ -1,0 +1,23 @@
+{
+  "oracle_id": "c5843d13-855f-41dd-ac13-3c7f7e18bb39",
+  "name": "Dream Fracture",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dream Fracture",
+      "oracle_fingerprint": "911829011689a647a5b150a39eb07162",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [
+              { "Counter": { "what": { "Target": 0 } } },
+              { "Draw": { "who": { "ControllerOf": { "Target": 0 } } } },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,139 @@
+{
+  "object": "card",
+  "id": "dc2e1a93-4b5c-4f89-9e11-1693dee64b63",
+  "oracle_id": "dec9edbb-677b-4773-8bc4-b388d7592276",
+  "multiverse_ids": [
+    450230
+  ],
+  "mtgo_id": 68099,
+  "arena_id": 68248,
+  "tcgplayer_id": 168624,
+  "cardmarket_id": 359832,
+  "name": "Court Cleric",
+  "lang": "en",
+  "released_at": "2018-07-13",
+  "uri": "https://api.scryfall.com/cards/dc2e1a93-4b5c-4f89-9e11-1693dee64b63",
+  "scryfall_uri": "https://scryfall.com/card/m19/283/court-cleric?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T09:21:30Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/d/c/dc2e1a93-4b5c-4f89-9e11-1693dee64b63.jpg?1783934490",
+    "normal": "https://cards.scryfall.io/normal/front/d/c/dc2e1a93-4b5c-4f89-9e11-1693dee64b63.jpg?1783934490",
+    "large": "https://cards.scryfall.io/large/front/d/c/dc2e1a93-4b5c-4f89-9e11-1693dee64b63.jpg?1783934490",
+    "png": "https://cards.scryfall.io/png/front/d/c/dc2e1a93-4b5c-4f89-9e11-1693dee64b63.png?1783934490",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/d/c/dc2e1a93-4b5c-4f89-9e11-1693dee64b63.jpg?1783934490",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/d/c/dc2e1a93-4b5c-4f89-9e11-1693dee64b63.jpg?1783934490",
+    "thumb": "https://cards.scryfall.io/thumb/front/d/c/dc2e1a93-4b5c-4f89-9e11-1693dee64b63.webp?1783934490",
+    "grid": "https://cards.scryfall.io/grid/front/d/c/dc2e1a93-4b5c-4f89-9e11-1693dee64b63.webp?1783934490",
+    "display": "https://cards.scryfall.io/display/front/d/c/dc2e1a93-4b5c-4f89-9e11-1693dee64b63.webp?1783934490",
+    "art": "https://cards.scryfall.io/art/front/d/c/dc2e1a93-4b5c-4f89-9e11-1693dee64b63.webp?1783934490",
+    "crop": "https://cards.scryfall.io/crop/front/d/c/dc2e1a93-4b5c-4f89-9e11-1693dee64b63.webp?1783934490",
+    "jpeg": "https://cards.scryfall.io/normal/front/d/c/dc2e1a93-4b5c-4f89-9e11-1693dee64b63.jpg?1783934490"
+  },
+  "mana_cost": "{W}",
+  "cmc": 1.0,
+  "type_line": "Creature — Human Cleric",
+  "oracle_text": "Lifelink (Damage dealt by this creature also causes you to gain that much life.)\nThis creature gets +1/+1 as long as you control an Ajani planeswalker.",
+  "power": "1",
+  "toughness": "1",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Lifelink"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "arena",
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "2f5f2509-56db-414d-9a7e-6e312ec3760c",
+  "set": "m19",
+  "set_name": "Core Set 2019",
+  "set_type": "core",
+  "set_uri": "https://api.scryfall.com/sets/2f5f2509-56db-414d-9a7e-6e312ec3760c",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Am19&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/m19?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/dc2e1a93-4b5c-4f89-9e11-1693dee64b63/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Adec9edbb-677b-4773-8bc4-b388d7592276&unique=prints",
+  "collector_number": "283",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "\"The healers of Bant are second to none. I owe them a great deal for their tutelage.\"\n—Ajani Goldmane",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Mark Behm",
+  "artist_ids": [
+    "ccf77963-723f-4137-b364-7417079e8ab9"
+  ],
+  "illustration_id": "3e70e07b-143d-426e-8128-ba0714cafd88",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "planeswalkerdeck"
+  ],
+  "edhrec_rank": 28101,
+  "prices": {
+    "usd": "0.16",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.14",
+    "eur_foil": null,
+    "tix": "0.90"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=450230&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DCourt%2BCleric",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DCourt%2BCleric",
+    "edhrec": "https://edhrec.com/route/?cc=Court+Cleric"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F168624%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=359832&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/68099?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "oracle_id": "15b86440-2040-47ae-ab4e-8445b3e24462",
+  "name": "Ajani's Comrade",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ajani's Comrade",
+      "oracle_fingerprint": "daede07ecf5514721e398186da41c278",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "Type": "Planeswalker" },
+                    { "Subtype": "Ajani" },
+                    { "ControlledBy": "You" }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "oracle_id": "52c53132-146a-4912-8e0f-1d4d9937fff3",
+  "name": "Staff of Zegon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Staff of Zegon",
+      "oracle_fingerprint": "cd2849304e7d1ffadcf5b7c268cae92a",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}" }, "Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": -2, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

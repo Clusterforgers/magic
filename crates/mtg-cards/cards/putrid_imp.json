@@ -1,0 +1,40 @@
+{
+  "oracle_id": "7192ff07-9a84-49ad-a40c-ce255ce21544",
+  "name": "Putrid Imp",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Putrid Imp",
+      "oracle_fingerprint": "a4a032b933174c059691245d613bc164",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Discard": {} }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddKeyword": "Flying" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }, "CantBlock"],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                "op": "Ge",
+                "right": 7
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

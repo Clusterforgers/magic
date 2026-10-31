@@ -1,0 +1,36 @@
+{
+  "oracle_id": "c8c42851-1b1b-49dd-a97c-7eda57dadb13",
+  "name": "Offender at Large",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Offender at Large",
+      "oracle_fingerprint": "9efc338def85fdede7b24502284613bc",
+      "abilities": [
+        { "Keyword": { "Disguise": "{4}{R}" } },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "TurnedFaceUp": { "what": ["This"] } }
+              ]
+            },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 0, "max": 1 } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "oracle_id": "7127fc35-600c-4397-8c01-5327d3c4944b",
+  "name": "Dingus Staff",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dingus Staff",
+      "oracle_fingerprint": "98b92b7c286f9a38be4996e3d5df034c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [{ "DealDamage": { "to": { "ControllerOf": "Triggering" }, "amount": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

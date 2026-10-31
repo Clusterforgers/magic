@@ -1,0 +1,36 @@
+{
+  "oracle_id": "1bcac664-835a-4474-8ca4-263801bde08e",
+  "name": "Boggart Prankster",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Boggart Prankster",
+      "oracle_fingerprint": "1bc71347db1b59c4082c1a58d379a94e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+            },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Subtype": "Goblin" }, "Attacking", { "ControlledBy": "You" }]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

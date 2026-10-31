@@ -1,0 +1,25 @@
+{
+  "oracle_id": "e0d638d2-2c5b-415c-95e7-74bf8d88794f",
+  "name": "Freyalise's Charm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Freyalise's Charm",
+      "oracle_fingerprint": "b86115e19f9ceab39cb82eb887b77911",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Color": "Black" }], "by": "Opponents" } },
+            "effects": [{ "Pay": { "cost": "{G}{G}", "paid": [{ "Draw": {} }] } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{G}{G}",
+            "effects": [{ "Move": { "what": "This", "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "oracle_id": "5b0dcf09-df51-4ad3-848e-c0ffb25824f9",
+  "name": "Nimblewright Schematic",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nimblewright Schematic",
+      "oracle_fingerprint": "9d407f34820bd1d69414f4b65a0b7b92",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } }
+              ]
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Construct",
+                      "types": ["Artifact", "Creature"],
+                      "subtypes": ["Construct"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

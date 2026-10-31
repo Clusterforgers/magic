@@ -1,0 +1,20 @@
+{
+  "oracle_id": "c152b677-5e75-43da-be1d-876b7b83e2f4",
+  "name": "Corrupt Official",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Corrupt Official",
+      "oracle_fingerprint": "8a5cef163fc9d8bdde86375941a2a5fe",
+      "abilities": [
+        { "Activated": { "cost": "{2}{B}", "effects": [{ "Regenerate": { "what": "This" } }] } },
+        {
+          "Triggered": {
+            "when": { "BecomesBlocked": { "what": ["This"] } },
+            "effects": [{ "Discard": { "who": "Defending", "random": true } }]
+          }
+        }
+      ]
+    }
+  ]
+}

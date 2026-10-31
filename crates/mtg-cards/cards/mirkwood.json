@@ -1,0 +1,45 @@
+{
+  "oracle_id": "cd49aa99-bf84-4edd-aecc-6dae78b73412",
+  "name": "Mirkwood",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mirkwood",
+      "oracle_fingerprint": "1d4c631f488e9716a12d44250f0aade0",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "OneOf": ["Black", "Green"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{B}{G}" }, "Tap", "SacrificeSelf"],
+            "timing": "Sorcery",
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    {
+                      "AnyOf": [
+                        { "Subtype": "Bear" },
+                        { "Subtype": "Spider" },
+                        { "Subtype": "Wolf" }
+                      ]
+                    },
+                    { "ControlledBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1", "count": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

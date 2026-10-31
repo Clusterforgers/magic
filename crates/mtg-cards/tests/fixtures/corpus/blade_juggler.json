@@ -1,0 +1,135 @@
+{
+  "object": "card",
+  "id": "42665f2d-0815-44d9-a5a9-c7ec4226bcf0",
+  "oracle_id": "34400cf5-b8c4-4cf2-9186-51f12037cc51",
+  "multiverse_ids": [
+    651841
+  ],
+  "mtgo_id": 122996,
+  "tcgplayer_id": 535198,
+  "cardmarket_id": 753186,
+  "name": "Blade Juggler",
+  "lang": "en",
+  "released_at": "2024-02-23",
+  "uri": "https://api.scryfall.com/cards/42665f2d-0815-44d9-a5a9-c7ec4226bcf0",
+  "scryfall_uri": "https://scryfall.com/card/clu/106/blade-juggler?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:15:50Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/4/2/42665f2d-0815-44d9-a5a9-c7ec4226bcf0.jpg?1783912550",
+    "normal": "https://cards.scryfall.io/normal/front/4/2/42665f2d-0815-44d9-a5a9-c7ec4226bcf0.jpg?1783912550",
+    "large": "https://cards.scryfall.io/large/front/4/2/42665f2d-0815-44d9-a5a9-c7ec4226bcf0.jpg?1783912550",
+    "png": "https://cards.scryfall.io/png/front/4/2/42665f2d-0815-44d9-a5a9-c7ec4226bcf0.png?1783912550",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/4/2/42665f2d-0815-44d9-a5a9-c7ec4226bcf0.jpg?1783912550",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/4/2/42665f2d-0815-44d9-a5a9-c7ec4226bcf0.jpg?1783912550",
+    "thumb": "https://cards.scryfall.io/thumb/front/4/2/42665f2d-0815-44d9-a5a9-c7ec4226bcf0.webp?1783912550",
+    "grid": "https://cards.scryfall.io/grid/front/4/2/42665f2d-0815-44d9-a5a9-c7ec4226bcf0.webp?1783912550",
+    "display": "https://cards.scryfall.io/display/front/4/2/42665f2d-0815-44d9-a5a9-c7ec4226bcf0.webp?1783912550",
+    "art": "https://cards.scryfall.io/art/front/4/2/42665f2d-0815-44d9-a5a9-c7ec4226bcf0.webp?1783912550",
+    "crop": "https://cards.scryfall.io/crop/front/4/2/42665f2d-0815-44d9-a5a9-c7ec4226bcf0.webp?1783912550",
+    "jpeg": "https://cards.scryfall.io/normal/front/4/2/42665f2d-0815-44d9-a5a9-c7ec4226bcf0.jpg?1783912550"
+  },
+  "mana_cost": "{4}{B}",
+  "cmc": 5.0,
+  "type_line": "Creature — Human Rogue",
+  "oracle_text": "Spectacle {2}{B} (You may cast this spell for its spectacle cost rather than its mana cost if an opponent lost life this turn.)\nWhen this creature enters, it deals 1 damage to you and you draw a card.",
+  "power": "3",
+  "toughness": "2",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Spectacle"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "d4bfabcf-a859-43a4-9d8a-665533c8b174",
+  "set": "clu",
+  "set_name": "Ravnica: Clue Edition",
+  "set_type": "draft_innovation",
+  "set_uri": "https://api.scryfall.com/sets/d4bfabcf-a859-43a4-9d8a-665533c8b174",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aclu&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/clu?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/42665f2d-0815-44d9-a5a9-c7ec4226bcf0/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A34400cf5-b8c4-4cf2-9186-51f12037cc51&unique=prints",
+  "collector_number": "106",
+  "digital": false,
+  "rarity": "common",
+  "watermark": "rakdos",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Dmitry Burmak",
+  "artist_ids": [
+    "9872f5c0-274a-48ce-a9ad-6f0d5654e29c"
+  ],
+  "illustration_id": "e42179da-30c3-412e-bf37-7dd78a88f527",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 23539,
+  "penny_rank": 14066,
+  "prices": {
+    "usd": "0.17",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.18",
+    "eur_foil": null,
+    "tix": "0.01"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=651841&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DBlade%2BJuggler",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DBlade%2BJuggler",
+    "edhrec": "https://edhrec.com/route/?cc=Blade+Juggler"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F535198%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=753186&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/122996?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

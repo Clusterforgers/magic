@@ -1,0 +1,28 @@
+{
+  "oracle_id": "a8c0b41b-916c-4da9-9c39-a058c91a78f4",
+  "name": "Change of Heart",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Change of Heart",
+      "oracle_fingerprint": "0a51f9596f4af38d1fd4d745d90e1a92",
+      "abilities": [
+        { "Keyword": { "Buyback": "{3}" } },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["CantAttack"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

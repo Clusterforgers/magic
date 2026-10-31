@@ -1,0 +1,15 @@
+{
+  "oracle_id": "cd8ae9f2-edac-473a-8846-c08219e617c3",
+  "name": "Steal Artifact",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Steal Artifact",
+      "oracle_fingerprint": "4ac4cb8cabacb5839bf66b94ead66f87",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Artifact" }] } },
+        { "Static": { "affected": "Attached", "mods": [{ "SetController": "You" }] } }
+      ]
+    }
+  ]
+}

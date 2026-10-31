@@ -1,0 +1,135 @@
+{
+  "object": "card",
+  "id": "9ef5d122-cf18-42c3-be24-cfd92bd18be9",
+  "oracle_id": "65c0d59b-3a94-49af-94cd-2ab4820a51f3",
+  "multiverse_ids": [
+    122349
+  ],
+  "mtgo_id": 26243,
+  "mtgo_foil_id": 26244,
+  "tcgplayer_id": 14758,
+  "cardmarket_id": 14188,
+  "name": "Mantle of Leadership",
+  "lang": "en",
+  "released_at": "2007-02-02",
+  "uri": "https://api.scryfall.com/cards/9ef5d122-cf18-42c3-be24-cfd92bd18be9",
+  "scryfall_uri": "https://scryfall.com/card/plc/9/mantle-of-leadership?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T11:46:09Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/9/e/9ef5d122-cf18-42c3-be24-cfd92bd18be9.jpg?1783943169",
+    "normal": "https://cards.scryfall.io/normal/front/9/e/9ef5d122-cf18-42c3-be24-cfd92bd18be9.jpg?1783943169",
+    "large": "https://cards.scryfall.io/large/front/9/e/9ef5d122-cf18-42c3-be24-cfd92bd18be9.jpg?1783943169",
+    "png": "https://cards.scryfall.io/png/front/9/e/9ef5d122-cf18-42c3-be24-cfd92bd18be9.png?1783943169",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/9/e/9ef5d122-cf18-42c3-be24-cfd92bd18be9.jpg?1783943169",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/9/e/9ef5d122-cf18-42c3-be24-cfd92bd18be9.jpg?1783943169",
+    "thumb": "https://cards.scryfall.io/thumb/front/9/e/9ef5d122-cf18-42c3-be24-cfd92bd18be9.webp?1783943169",
+    "grid": "https://cards.scryfall.io/grid/front/9/e/9ef5d122-cf18-42c3-be24-cfd92bd18be9.webp?1783943169",
+    "display": "https://cards.scryfall.io/display/front/9/e/9ef5d122-cf18-42c3-be24-cfd92bd18be9.webp?1783943169",
+    "art": "https://cards.scryfall.io/art/front/9/e/9ef5d122-cf18-42c3-be24-cfd92bd18be9.webp?1783943169",
+    "crop": "https://cards.scryfall.io/crop/front/9/e/9ef5d122-cf18-42c3-be24-cfd92bd18be9.webp?1783943169",
+    "jpeg": "https://cards.scryfall.io/normal/front/9/e/9ef5d122-cf18-42c3-be24-cfd92bd18be9.jpg?1783943169"
+  },
+  "mana_cost": "{1}{W}",
+  "cmc": 2.0,
+  "type_line": "Enchantment — Aura",
+  "oracle_text": "Flash (You may cast this spell any time you could cast an instant.)\nEnchant creature\nWhenever a creature enters, enchanted creature gets +2/+2 until end of turn.",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Enchant",
+    "Flash"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "5a1b571c-73e9-4c14-b9d4-a62507d85789",
+  "set": "plc",
+  "set_name": "Planar Chaos",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/5a1b571c-73e9-4c14-b9d4-a62507d85789",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aplc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/plc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/9ef5d122-cf18-42c3-be24-cfd92bd18be9/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A65c0d59b-3a94-49af-94cd-2ab4820a51f3&unique=prints",
+  "collector_number": "9",
+  "digital": false,
+  "rarity": "uncommon",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Thomas M. Baxa",
+  "artist_ids": [
+    "ff346569-557d-4043-ae44-97c2c7cabd7d"
+  ],
+  "illustration_id": "fe8128ee-52d2-404b-b5f6-0f273aecdf5d",
+  "border_color": "black",
+  "frame": "2003",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 23392,
+  "penny_rank": 17492,
+  "prices": {
+    "usd": "0.29",
+    "usd_foil": "1.22",
+    "usd_etched": null,
+    "eur": "0.13",
+    "eur_foil": "0.37",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=122349&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DMantle%2Bof%2BLeadership",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DMantle%2Bof%2BLeadership",
+    "edhrec": "https://edhrec.com/route/?cc=Mantle+of+Leadership"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F14758%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=14188&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/26243?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

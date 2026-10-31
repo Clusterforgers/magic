@@ -1,0 +1,30 @@
+{
+  "oracle_id": "ee8fd844-4551-4e44-9740-00d2e76eb337",
+  "name": "Hallowed Ground",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hallowed Ground",
+      "oracle_fingerprint": "0c66e9650f3cbafff36de0117163d59a",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{W}{W}",
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Land" },
+                    { "Not": { "Supertype": "Snow" } },
+                    { "ControlledBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

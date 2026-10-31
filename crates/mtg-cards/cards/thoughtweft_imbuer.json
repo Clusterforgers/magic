@@ -1,0 +1,38 @@
+{
+  "oracle_id": "9dee8c0b-71e0-4a94-b411-78b29b599847",
+  "name": "Thoughtweft Imbuer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thoughtweft Imbuer",
+      "oracle_fingerprint": "f6d7621311633de8512e2adbaf08018a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AttacksAlone": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Triggering",
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": { "Count": [{ "Subtype": "Kithkin" }, { "ControlledBy": "You" }] },
+                        "toughness": {
+                          "Count": [{ "Subtype": "Kithkin" }, { "ControlledBy": "You" }]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

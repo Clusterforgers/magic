@@ -1,0 +1,44 @@
+{
+  "oracle_id": "d2824464-963b-48db-a482-cc08a0a97332",
+  "name": "Tendril of the Mycotyrant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tendril of the Mycotyrant",
+      "oracle_fingerprint": "a30a45bca82690af28f4b7ec928b5275",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{5}{G}{G}",
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Land" },
+                    { "Not": { "Type": "Creature" } },
+                    { "ControlledBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1", "count": 7 } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "SetPT": { "power": 0, "toughness": 0 } },
+                    { "AddSubtype": "Fungus" },
+                    { "AddType": "Creature" },
+                    { "AddKeyword": "Haste" }
+                  ],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

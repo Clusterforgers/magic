@@ -1,0 +1,45 @@
+{
+  "oracle_id": "de3ed52e-7cc2-49ea-96d9-4254aac46168",
+  "name": "Angel's Tomb",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Angel's Tomb",
+      "oracle_fingerprint": "87882cde6b1626e8c0566a87136b3957",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Continuous": {
+                        "affected": "This",
+                        "mods": [
+                          { "SetPT": { "power": 3, "toughness": 3 } },
+                          { "SetColors": ["White"] },
+                          { "SetCreatureTypes": ["Angel"] },
+                          { "AddType": "Artifact" },
+                          { "AddType": "Creature" },
+                          { "AddKeyword": "Flying" }
+                        ],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

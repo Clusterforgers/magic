@@ -1,0 +1,29 @@
+{
+  "oracle_id": "bd8bc927-e50a-4fab-9803-0602a841c7c2",
+  "name": "Staff of the Sun Magus",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Staff of the Sun Magus",
+      "oracle_fingerprint": "845fd367483bbc9133123aeb811a9722",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "SpellCast": { "what": [{ "Color": "White" }], "by": "You" } },
+                {
+                  "ZoneChange": {
+                    "what": [{ "Subtype": "Plains" }, { "ControlledBy": "You" }],
+                    "to": "Battlefield"
+                  }
+                }
+              ]
+            },
+            "effects": [{ "GainLife": { "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

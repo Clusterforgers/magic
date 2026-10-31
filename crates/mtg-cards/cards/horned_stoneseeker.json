@@ -1,0 +1,26 @@
+{
+  "oracle_id": "78d74d6a-e1aa-4d70-92c3-b5338959d2fb",
+  "name": "Horned Stoneseeker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Horned Stoneseeker",
+      "oracle_fingerprint": "31b9fbae526254ec6c2f1ca3bf5fd8e7",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "CreateToken": { "token": { "Named": "powerstone" }, "tapped": true } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield" } },
+            "effects": [{ "Sacrifice": { "filter": [{ "Subtype": "Powerstone" }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

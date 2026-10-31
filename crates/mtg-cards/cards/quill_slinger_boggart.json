@@ -1,0 +1,22 @@
+{
+  "oracle_id": "593b229b-579b-4052-8a00-dac787b149b1",
+  "name": "Quill-Slinger Boggart",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Quill-Slinger Boggart",
+      "oracle_fingerprint": "db52cd7b97a113dfa58a7a7a1e680a49",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Subtype": "Kithkin" }] } },
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              { "May": { "effects": [{ "LoseLife": { "who": { "Target": 0 }, "amount": 1 } }] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

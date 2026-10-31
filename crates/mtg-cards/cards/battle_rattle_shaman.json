@@ -1,0 +1,34 @@
+{
+  "oracle_id": "72dc807b-35fb-4d69-ae4c-04eed0646170",
+  "name": "Battle-Rattle Shaman",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Battle-Rattle Shaman",
+      "oracle_fingerprint": "1d2ae13221e983657d9e80bd9505838f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "oracle_id": "083dcc19-3357-48e4-94e8-8da5bbfba210",
+  "name": "Gideon's Company",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gideon's Company",
+      "oracle_fingerprint": "5e60e911e8be89fe82b2ebb241f14d67",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "LifeGained": { "who": "You" } },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1", "count": 2 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{3}{W}",
+            "targets": [
+              { "what": { "Object": [{ "Type": "Planeswalker" }, { "Subtype": "Gideon" }] } }
+            ],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "loyalty" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

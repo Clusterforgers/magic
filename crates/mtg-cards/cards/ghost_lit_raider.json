@@ -1,0 +1,28 @@
+{
+  "oracle_id": "3d772c44-a756-406d-a83f-f671a81513b0",
+  "name": "Ghost-Lit Raider",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ghost-Lit Raider",
+      "oracle_fingerprint": "5bd8d3e3be4a57c1d4a911e993b79178",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{R}" }, "Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 2 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}{R}" }, "DiscardSelf"],
+            "from": "Hand",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 4 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

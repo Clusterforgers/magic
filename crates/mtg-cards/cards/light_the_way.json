@@ -1,0 +1,44 @@
+{
+  "oracle_id": "83917116-d2d8-4701-a79f-af17486706ae",
+  "name": "Light the Way",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Light the Way",
+      "oracle_fingerprint": "cf6554ef2cde07a473bcb84cf9c4f4bc",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [
+                              { "AnyOf": [{ "Type": "Creature" }, { "Subtype": "Vehicle" }] }
+                            ]
+                          }
+                        }
+                      ],
+                      "effects": [
+                        { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } },
+                        { "Untap": { "what": { "Target": 0 } } }
+                      ]
+                    },
+                    {
+                      "targets": [{ "what": { "Object": [{ "ControlledBy": "You" }] } }],
+                      "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

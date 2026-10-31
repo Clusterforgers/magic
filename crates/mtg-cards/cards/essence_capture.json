@@ -1,0 +1,28 @@
+{
+  "oracle_id": "0f730bd9-2060-46b1-9208-0ac6562e8b2a",
+  "name": "Essence Capture",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Essence Capture",
+      "oracle_fingerprint": "8b8b165b8279691f24593e85439f9715",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": ["Spell", { "Type": "Creature" }] } },
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "Counter": { "what": { "Target": 0 } } },
+              { "PutCounters": { "on": { "Target": 1 }, "counter": "+1/+1" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

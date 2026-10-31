@@ -1,0 +1,22 @@
+{
+  "oracle_id": "381a3e8e-71dd-48e4-ab62-53478bde4a14",
+  "name": "Agate-Blade Assassin",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Agate-Blade Assassin",
+      "oracle_fingerprint": "e9bfc40cdbae087d78ef5b0f1fbe13be",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              { "LoseLife": { "who": "Defending", "amount": 1 } },
+              { "GainLife": { "amount": 1 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

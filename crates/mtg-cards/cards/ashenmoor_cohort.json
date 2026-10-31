@@ -1,0 +1,33 @@
+{
+  "oracle_id": "c627f1a8-9a57-4eb9-a8a5-2c285446fe97",
+  "name": "Ashenmoor Cohort",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ashenmoor Cohort",
+      "oracle_fingerprint": "da78f827180d450b3dbf1b41dfa5472e",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "Type": "Creature" },
+                    { "Color": "Black" },
+                    { "ControlledBy": "You" },
+                    "Other"
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "oracle_id": "955bfcb8-6477-4ed0-b6e7-8940874ae5e4",
+  "name": "Send in the Pest",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Send in the Pest",
+      "oracle_fingerprint": "f8dcbc71b1295862ccacc87c2c21b55c",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Discard": { "who": "Opponents" } },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Pest",
+                      "colors": ["Black", "Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Pest"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [
+                        {
+                          "Triggered": {
+                            "when": { "Attacks": { "what": ["This"] } },
+                            "effects": [{ "GainLife": { "amount": 1 } }]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

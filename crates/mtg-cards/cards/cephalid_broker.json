@@ -1,0 +1,23 @@
+{
+  "oracle_id": "18bb35a8-01ac-414f-9a45-e550060ff905",
+  "name": "Cephalid Broker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cephalid Broker",
+      "oracle_fingerprint": "2561c415b703c79339702e429ed9a391",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              { "Draw": { "who": { "Target": 0 }, "count": 2 } },
+              { "Discard": { "who": { "Target": 0 }, "count": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

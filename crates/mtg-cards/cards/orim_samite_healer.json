@@ -1,0 +1,28 @@
+{
+  "oracle_id": "9d405e5b-0cee-4c8f-b3ef-65765853b8a4",
+  "name": "Orim, Samite Healer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Orim, Samite Healer",
+      "oracle_fingerprint": "e78fd8b6f4b6f1cc6fc532120acee6e8",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": { "Target": 0 } } },
+                  "by": { "PreventUpTo": 3 },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "oracle_id": "f46e9fa0-2ed7-4a94-8ad4-031e87a6da45",
+  "name": "Spireside Infiltrator",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spireside Infiltrator",
+      "oracle_fingerprint": "d7be01f59567b9bc6f16b8819f25713b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Tapped": { "what": ["This"] } },
+            "effects": [{ "DealDamage": { "to": "Opponents", "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

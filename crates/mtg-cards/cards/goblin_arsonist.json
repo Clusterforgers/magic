@@ -1,0 +1,22 @@
+{
+  "oracle_id": "c1177f22-a1cf-4da3-a68d-ff954e878403",
+  "name": "Goblin Arsonist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Goblin Arsonist",
+      "oracle_fingerprint": "75c0ba46a30e94fd7773dead217576b6",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              { "May": { "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

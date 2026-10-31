@@ -1,0 +1,45 @@
+{
+  "oracle_id": "27b5d9d8-cc19-46be-9862-405cf7ef5408",
+  "name": "Rotwidow Pack",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rotwidow Pack",
+      "oracle_fingerprint": "8bbe57ccecb8b9c5f99a82dbc3bd3c5c",
+      "abilities": [
+        { "Keyword": "Reach" },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{3}{B}{G}" },
+              { "ExileFromGraveyard": { "filter": [{ "Type": "Creature" }] } }
+            ],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Spider",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Spider"],
+                      "power": 1,
+                      "toughness": 2,
+                      "abilities": [{ "Keyword": "Reach" }]
+                    }
+                  }
+                }
+              },
+              {
+                "LoseLife": {
+                  "who": "Opponents",
+                  "amount": { "Count": [{ "Subtype": "Spider" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

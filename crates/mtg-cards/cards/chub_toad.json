@@ -1,0 +1,32 @@
+{
+  "oracle_id": "a0daace2-92fc-4c7d-b497-94b4ba775559",
+  "name": "Chub Toad",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Chub Toad",
+      "oracle_fingerprint": "f2e8a80078b9ecb26bdc1821da6d2563",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "Blocks": { "what": ["This"] } },
+                { "BecomesBlocked": { "what": ["This"] } }
+              ]
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

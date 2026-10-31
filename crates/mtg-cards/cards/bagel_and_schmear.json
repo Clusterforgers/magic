@@ -1,0 +1,32 @@
+{
+  "oracle_id": "1389c9fa-fec2-4212-a7aa-6dfb318dc202",
+  "name": "Bagel and Schmear",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bagel and Schmear",
+      "oracle_fingerprint": "a75fec8b05e94db967b650cb7ed0dd76",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{W}" }, "Tap", "SacrificeSelf"],
+            "timing": "Sorcery",
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 0, "max": 1 } }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } },
+              { "Draw": {} }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap", "SacrificeSelf"],
+            "effects": [{ "GainLife": { "amount": 3 } }, { "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

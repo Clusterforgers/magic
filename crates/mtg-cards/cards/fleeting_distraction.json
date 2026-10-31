@@ -1,0 +1,28 @@
+{
+  "oracle_id": "b36271cb-cda2-434a-a580-6050dc460409",
+  "name": "Fleeting Distraction",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fleeting Distraction",
+      "oracle_fingerprint": "8716b74a5ebb57086d08fbe2f476b3ba",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": -1, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

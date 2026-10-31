@@ -1,0 +1,29 @@
+{
+  "oracle_id": "a21e773e-1f23-42af-a1bf-b92c84b7436e",
+  "name": "Kithkin Mourncaller",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kithkin Mourncaller",
+      "oracle_fingerprint": "5ef2e08b234d6cd7783d652614fce8ec",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "AnyOf": [{ "Subtype": "Kithkin" }, { "Subtype": "Elf" }] },
+                  { "OwnedBy": "You" },
+                  "Attacking"
+                ],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [{ "May": { "effects": [{ "Draw": {} }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "oracle_id": "97f548b1-6398-4dc7-b5eb-da5a3f24ddb7",
+  "name": "King Suleiman",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "King Suleiman",
+      "oracle_fingerprint": "8b6462df4149c7d1e9420d775d8fe968",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Subtype": "Djinn" }, { "Subtype": "Efreet" }] }]
+                }
+              }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

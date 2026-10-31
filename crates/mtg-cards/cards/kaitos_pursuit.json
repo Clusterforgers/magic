@@ -1,0 +1,33 @@
+{
+  "oracle_id": "23b7fd18-3129-448f-881f-947ba988f98d",
+  "name": "Kaito's Pursuit",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kaito's Pursuit",
+      "oracle_fingerprint": "1489f43a6ede4ab314a9c75de738a641",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              { "Discard": { "who": { "Target": 0 }, "count": 2 } },
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [
+                      { "AnyOf": [{ "Subtype": "Ninja" }, { "Subtype": "Rogue" }] },
+                      { "ControlledBy": "You" }
+                    ]
+                  },
+                  "mods": [{ "AddKeyword": "Menace" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

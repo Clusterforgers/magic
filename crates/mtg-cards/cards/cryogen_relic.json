@@ -1,0 +1,38 @@
+{
+  "oracle_id": "106e9c0d-67a2-4db7-97d9-03e1ea1b40b5",
+  "name": "Cryogen Relic",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cryogen Relic",
+      "oracle_fingerprint": "a6128e43caa00f5c86aea39f0edb31fb",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "ZoneChange": { "what": ["This"], "from": "Battlefield" } }
+              ]
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{U}" }, "SacrificeSelf"],
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, "Tapped"] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "stun" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

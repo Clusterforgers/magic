@@ -1,0 +1,33 @@
+{
+  "oracle_id": "013c42a4-d555-46c9-9d57-b50d6b59ae9e",
+  "name": "Heal",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Heal",
+      "oracle_fingerprint": "8faaf1dda60a6bd720b3240eb555d055",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": { "Target": 0 } } },
+                  "by": { "PreventUpTo": 1 },
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "Upkeep" } },
+                  "effects": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

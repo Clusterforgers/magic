@@ -1,0 +1,45 @@
+{
+  "oracle_id": "81b67745-0b1f-4433-963d-9b9653fb4d95",
+  "name": "Ride the Shoopuf",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ride the Shoopuf",
+      "oracle_fingerprint": "f61ab3fb4b81a5e88b84101b3e0976e6",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{5}{G}{G}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "SetPT": { "power": 7, "toughness": 7 } },
+                    { "AddSubtype": "Beast" },
+                    { "AddType": "Creature" }
+                  ],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

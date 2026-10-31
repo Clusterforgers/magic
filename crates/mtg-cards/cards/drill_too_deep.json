@@ -1,0 +1,46 @@
+{
+  "oracle_id": "0413e0e4-c8f8-44c3-a749-c799766bc8cd",
+  "name": "Drill Too Deep",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Drill Too Deep",
+      "oracle_fingerprint": "7976799dd1d797f711d9e88a1304d900",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [
+                              { "AnyOf": [{ "Subtype": "Spacecraft" }, { "Subtype": "Planet" }] },
+                              { "ControlledBy": "You" }
+                            ]
+                          }
+                        }
+                      ],
+                      "effects": [
+                        {
+                          "PutCounters": { "on": { "Target": 0 }, "counter": "charge", "count": 5 }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Artifact" }] } }],
+                      "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "oracle_id": "c2459c41-82b4-4ca2-b634-11b55ddb63d9",
+  "name": "Electropotence",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Electropotence",
+      "oracle_fingerprint": "280a93032e31fce7920134be0dca0d59",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{2}{R}",
+                  "paid": [
+                    {
+                      "DealDamage": {
+                        "source": "Triggering",
+                        "to": { "Target": 0 },
+                        "amount": { "Stat": { "of": "Triggering", "stat": "Power" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

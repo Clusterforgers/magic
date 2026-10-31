@@ -1,0 +1,29 @@
+{
+  "oracle_id": "a09c134b-7802-4526-9250-ec5cc637d9c0",
+  "name": "Urabrask's Anointer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Urabrask's Anointer",
+      "oracle_fingerprint": "3bf33dfb536f3dd22c099ad9cdf98612",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": {
+                    "Count": [{ "ControlledBy": "You" }, { "HasCounter": { "Other": "oil" } }]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "oracle_id": "d3caee32-25b7-4ef7-9f9a-e31d08720086",
+  "name": "Renegade Wheelsmith",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Renegade Wheelsmith",
+      "oracle_fingerprint": "49d8ac5be3d8266a886c54321dbb4793",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Tapped": { "what": ["This"] } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["CantBlock"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

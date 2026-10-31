@@ -1,0 +1,35 @@
+{
+  "oracle_id": "292cd535-916e-486e-b0cc-ecdb9477287d",
+  "name": "Proud Pack-Rhino",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Proud Pack-Rhino",
+      "oracle_fingerprint": "8b165fcdb9980c74001fac404fc831ce",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [{ "what": { "Object": [] } }],
+                      "effects": [
+                        {
+                          "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "shield" } }
+                        }
+                      ]
+                    },
+                    { "effects": [{ "Proliferate": {} }] }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

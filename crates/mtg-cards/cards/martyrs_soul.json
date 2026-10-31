@@ -1,0 +1,27 @@
+{
+  "oracle_id": "886382dc-5284-4b84-ad8c-8d8463d42fa0",
+  "name": "Martyr's Soul",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Martyr's Soul",
+      "oracle_fingerprint": "49a7cc909a87b9c06b70bd30712fde42",
+      "abilities": [
+        { "Keyword": "Convoke" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": [{ "Type": "Land" }, "Tapped", { "ControlledBy": "You" }] },
+                "op": "Eq",
+                "right": 0
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1", "count": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

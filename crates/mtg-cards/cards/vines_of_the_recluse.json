@@ -1,0 +1,31 @@
+{
+  "oracle_id": "5372445b-5f67-435e-a736-61c6cb4f9c6e",
+  "name": "Vines of the Recluse",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vines of the Recluse",
+      "oracle_fingerprint": "9ee6b69441fc64f8d380f7d5193de251",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "ModifyPT": { "power": 1, "toughness": 2 } },
+                    { "AddKeyword": "Reach" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Untap": { "what": { "Target": 0 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

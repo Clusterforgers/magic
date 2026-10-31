@@ -1,0 +1,33 @@
+{
+  "oracle_id": "85d03947-a39a-4f4f-97c3-6d1094c9248e",
+  "name": "Wrecking Ogre",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wrecking Ogre",
+      "oracle_fingerprint": "b51119054c89da46658274dd1fe6aecf",
+      "abilities": [
+        { "Keyword": "DoubleStrike" },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}{R}{R}" }, "DiscardSelf"],
+            "from": "Hand",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Attacking"] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "ModifyPT": { "power": 3, "toughness": 3 } },
+                    { "AddKeyword": "DoubleStrike" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

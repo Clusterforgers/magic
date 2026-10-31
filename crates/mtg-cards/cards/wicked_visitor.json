@@ -1,0 +1,25 @@
+{
+  "oracle_id": "10330a79-a416-40da-bf5a-8b7cbd9a0498",
+  "name": "Wicked Visitor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wicked Visitor",
+      "oracle_fingerprint": "8b09416e4540f03552a42a57a76c2ffb",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Enchantment" }, { "ControlledBy": "You" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [{ "LoseLife": { "who": "Opponents", "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

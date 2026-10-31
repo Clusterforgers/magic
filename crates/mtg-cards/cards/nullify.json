@@ -1,0 +1,25 @@
+{
+  "oracle_id": "5ea295af-e117-49cc-836b-da16b5d5bbdf",
+  "name": "Nullify",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nullify",
+      "oracle_fingerprint": "1bc03e2ffa6129e13ee5f87e47c948b1",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": ["Spell", { "AnyOf": [{ "Type": "Creature" }, { "Subtype": "Aura" }] }]
+                }
+              }
+            ],
+            "effects": [{ "Counter": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

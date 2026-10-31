@@ -1,0 +1,23 @@
+{
+  "oracle_id": "7a82c183-1561-4276-9a75-6bbb9c2bee2e",
+  "name": "Slumbering Waterways",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Slumbering Waterways",
+      "oracle_fingerprint": "58aed18c1a5fd9666605b4342a0e6eed",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "OneOf": ["Green", "Blue"] } } }]
+          }
+        },
+        { "Keyword": "Flying" },
+        { "Keyword": "Vigilance" },
+        { "Keyword": "Trample" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "oracle_id": "8cd65dcd-e36d-47b1-b011-961c79004cb0",
+  "name": "Netter en-Dal",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Netter en-Dal",
+      "oracle_fingerprint": "a9a44aa1264e1e380749f703d451ac06",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{W}" }, "Tap", { "Discard": {} }],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["CantAttack"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

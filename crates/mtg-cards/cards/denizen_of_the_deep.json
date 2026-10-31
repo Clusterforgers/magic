@@ -1,0 +1,26 @@
+{
+  "oracle_id": "fc1bb5b9-5e36-4154-b683-e62f4f66f2b6",
+  "name": "Denizen of the Deep",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Denizen of the Deep",
+      "oracle_fingerprint": "eb6be4e839ca3bc6f45fbca2cfa06c5e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Each": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }] },
+                  "to": "Hand"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

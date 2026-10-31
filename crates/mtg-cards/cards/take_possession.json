@@ -1,0 +1,16 @@
+{
+  "oracle_id": "112df1e4-01aa-4e01-b56f-b5ae519c87fd",
+  "name": "Take Possession",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Take Possession",
+      "oracle_fingerprint": "e78776f41eb8d53f4ca5d6cddfcda632",
+      "abilities": [
+        { "Keyword": "SplitSecond" },
+        { "Keyword": { "Enchant": [] } },
+        { "Static": { "affected": "Attached", "mods": [{ "SetController": "You" }] } }
+      ]
+    }
+  ]
+}

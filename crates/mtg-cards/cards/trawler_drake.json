@@ -1,0 +1,39 @@
+{
+  "oracle_id": "4fe38c9e-6fa0-4e05-9d3f-8fd635c457fb",
+  "name": "Trawler Drake",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Trawler Drake",
+      "oracle_fingerprint": "69151a8be104b05f3e92c211d5d99517",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": { "Other": "oil" }, "count": 1 } }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": { "Counters": { "on": "This", "counter": { "Other": "oil" } } },
+                  "toughness": { "Counters": { "on": "This", "counter": { "Other": "oil" } } }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Not": { "Type": "Creature" } }], "by": "You" } },
+            "effects": [{ "PutCounters": { "on": "This", "counter": { "Other": "oil" } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

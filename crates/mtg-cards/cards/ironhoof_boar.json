@@ -1,0 +1,34 @@
+{
+  "oracle_id": "90266ce6-4360-4de4-9b06-adff7d6c378b",
+  "name": "Ironhoof Boar",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ironhoof Boar",
+      "oracle_fingerprint": "5956868514574eb82258ba9a7b330d48",
+      "abilities": [
+        { "Keyword": "Trample" },
+        { "Keyword": "Haste" },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{R}" }, "DiscardSelf"],
+            "from": "Hand",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "ModifyPT": { "power": 3, "toughness": 1 } },
+                    { "AddKeyword": "Trample" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

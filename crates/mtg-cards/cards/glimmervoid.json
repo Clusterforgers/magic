@@ -1,0 +1,32 @@
+{
+  "oracle_id": "b92e9854-4527-4133-8615-e282a213e7e3",
+  "name": "Glimmervoid",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Glimmervoid",
+      "oracle_fingerprint": "a5ab3eeaed1577281e3bd07b13ff1a66",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": [{ "Type": "Artifact" }, { "ControlledBy": "You" }] },
+                "op": "Eq",
+                "right": 0
+              }
+            },
+            "effects": [{ "Sacrifice": { "filter": ["This"] } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

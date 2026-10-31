@@ -1,0 +1,32 @@
+{
+  "oracle_id": "3d133b18-f1c7-48de-82a6-affb0514b96b",
+  "name": "Dovin's Automaton",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dovin's Automaton",
+      "oracle_fingerprint": "a490806ba83051a27f5f1c053d4fe90b",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }, { "AddKeyword": "Vigilance" }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "Type": "Planeswalker" },
+                    { "Subtype": "Dovin" },
+                    { "ControlledBy": "You" }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

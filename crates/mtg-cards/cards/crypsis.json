@@ -1,0 +1,36 @@
+{
+  "oracle_id": "6077e650-32f9-4954-8286-9c8a3f3227ae",
+  "name": "Crypsis",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Crypsis",
+      "oracle_fingerprint": "04b6a4367438af020608fa784ceb65bf",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "AddKeyword": {
+                        "Protection": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }]
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Untap": { "what": { "Target": 0 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

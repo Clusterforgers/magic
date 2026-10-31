@@ -1,0 +1,27 @@
+{
+  "oracle_id": "29d828fa-a813-48f6-8dcb-43f6047b88a3",
+  "name": "Ray of Erasure",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ray of Erasure",
+      "oracle_fingerprint": "e4775f401a2711c5b5bf0571378a1acf",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              { "Mill": { "who": { "Target": 0 } } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "Upkeep" } },
+                  "effects": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

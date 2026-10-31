@@ -1,0 +1,27 @@
+{
+  "oracle_id": "ce1678a1-441a-4303-a83a-d7d138b366fd",
+  "name": "Kiku's Shadow",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kiku's Shadow",
+      "oracle_fingerprint": "5b7399f86dfb2b575442c9854548b204",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "source": { "Target": 0 },
+                  "to": { "Target": 0 },
+                  "amount": { "Stat": { "of": { "Target": 0 }, "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

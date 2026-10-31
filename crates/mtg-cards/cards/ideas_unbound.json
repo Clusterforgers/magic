@@ -1,0 +1,26 @@
+{
+  "oracle_id": "6b4d34bc-fa64-4c42-90e0-190671a5b988",
+  "name": "Ideas Unbound",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ideas Unbound",
+      "oracle_fingerprint": "cee1bc6a433d36199a0ae0c70e78e02e",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Draw": { "count": 3 } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [{ "Discard": { "count": 3 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

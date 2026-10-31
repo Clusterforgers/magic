@@ -1,0 +1,40 @@
+{
+  "oracle_id": "e119ba58-85e4-49ec-a2f8-3d094187c99d",
+  "name": "Pure // Simple",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pure",
+      "oracle_fingerprint": "cff60c4d86d439bd07726c45fa0f69ee",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Compare": { "stat": "Colors", "op": "Ge", "to": 2 } }] } }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Simple",
+      "oracle_fingerprint": "33919ee5bb1906a199e3b98861cd0acc",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Destroy": {
+                  "what": {
+                    "Each": [{ "AnyOf": [{ "Subtype": "Aura" }, { "Subtype": "Equipment" }] }]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

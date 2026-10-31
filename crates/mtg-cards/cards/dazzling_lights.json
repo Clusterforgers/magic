@@ -1,0 +1,28 @@
+{
+  "oracle_id": "394709f0-2d29-4a2d-be05-7b22fec57763",
+  "name": "Dazzling Lights",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dazzling Lights",
+      "oracle_fingerprint": "0208ba5f1accaf1410a28929778c059c",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": -3, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Surveil": { "count": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

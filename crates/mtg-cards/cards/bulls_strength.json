@@ -1,0 +1,31 @@
+{
+  "oracle_id": "a5f10b54-10db-4c92-a596-8afea4e470f5",
+  "name": "Bull's Strength",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bull's Strength",
+      "oracle_fingerprint": "8e30fa9c98c6d447022601f0daf69c29",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "ModifyPT": { "power": 2, "toughness": 2 } },
+                    { "AddKeyword": "Trample" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Untap": { "what": { "Target": 0 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

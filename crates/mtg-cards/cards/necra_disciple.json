@@ -1,0 +1,34 @@
+{
+  "oracle_id": "ef85a5eb-9cde-47b7-97e4-daa9aa9d4676",
+  "name": "Necra Disciple",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Necra Disciple",
+      "oracle_fingerprint": "f02d0ebea3e7f4958dabc2682a1c2fb2",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{G}" }, "Tap"],
+            "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{W}" }, "Tap"],
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": { "Target": 0 } } },
+                  "by": { "PreventUpTo": 1 },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

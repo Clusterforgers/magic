@@ -1,0 +1,34 @@
+{
+  "oracle_id": "e2bfac84-0e2f-4f3e-8d87-a555c26093a6",
+  "name": "Undead Executioner",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Undead Executioner",
+      "oracle_fingerprint": "8f6104dec457d46c39f14c414c907309",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [{ "ModifyPT": { "power": -2, "toughness": -2 } }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

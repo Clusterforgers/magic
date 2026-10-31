@@ -1,0 +1,30 @@
+{
+  "oracle_id": "b2ecaae4-41ee-4c61-b5ce-db4364b307fc",
+  "name": "Village Watch // Village Reavers",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Village Watch",
+      "oracle_fingerprint": "0131ea49cc4e95e13b6bb9449c5a83ff",
+      "abilities": [{ "Keyword": "Haste" }, { "Keyword": "Daybound" }]
+    },
+    {
+      "name": "Village Reavers",
+      "oracle_fingerprint": "f32608cc5cebf42a2ddc4b8f83277553",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "AnyOf": [{ "Subtype": "Wolf" }, { "Subtype": "Werewolf" }] },
+                { "ControlledBy": "You" }
+              ]
+            },
+            "mods": [{ "AddKeyword": "Haste" }]
+          }
+        },
+        { "Keyword": "Nightbound" }
+      ]
+    }
+  ]
+}

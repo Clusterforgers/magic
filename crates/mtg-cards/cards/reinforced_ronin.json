@@ -1,0 +1,27 @@
+{
+  "oracle_id": "5e891927-b6cb-40ae-8270-0e72820fd7f5",
+  "name": "Reinforced Ronin",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Reinforced Ronin",
+      "oracle_fingerprint": "c5bde716bf13e47a271af8d513803465",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [{ "Move": { "what": "This", "to": "Hand" } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{R}" }, "DiscardSelf"],
+            "from": "Hand",
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

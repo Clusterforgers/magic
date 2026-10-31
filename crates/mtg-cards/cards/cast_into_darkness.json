@@ -1,0 +1,20 @@
+{
+  "oracle_id": "4160e621-3f13-486b-af17-728ce85f7ea5",
+  "name": "Cast into Darkness",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cast into Darkness",
+      "oracle_fingerprint": "3142dec74712fe907ec63fba98b4f2a1",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": -2, "toughness": 0 } }, "CantBlock"]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "oracle_id": "5b7b1839-2b44-4446-80b4-ddb59e4e835e",
+  "name": "Undercity's Embrace",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Undercity's Embrace",
+      "oracle_fingerprint": "e94141fa1207d5c19e154858596dd7a7",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              { "Sacrifice": { "who": { "Target": 0 }, "filter": [{ "Type": "Creature" }] } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Count": [
+                          { "Type": "Creature" },
+                          { "ControlledBy": "You" },
+                          { "Compare": { "stat": "Power", "op": "Ge", "to": 4 } }
+                        ]
+                      },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "GainLife": { "amount": 4 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
