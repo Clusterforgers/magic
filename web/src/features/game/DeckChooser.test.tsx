@@ -43,7 +43,7 @@ async function open({
   const auth = createAuthStore({
     api: { ...offlineAccounts, myGames: async () => [] },
     initial: signedIn
-      ? { status: 'signed-in', user: { id: 'u', username: 'Ada_L' } }
+      ? { status: 'signed-in', user: { id: 'u', username: 'Ada_L', is_admin: false } }
       : { status: 'unavailable' },
   })
   await renderInRouter(
