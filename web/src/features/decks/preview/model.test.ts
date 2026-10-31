@@ -209,6 +209,33 @@ describe('adapters', () => {
     expect(data.source).toBe('Your deck')
   })
 
+  it('carries the draft of each card, the cards to read and the deck they are read for', () => {
+    const report = reportOf([
+      reportCard('Waiting', { support: 'manual', draft: 'pending' }),
+      reportCard('Waiting', { support: 'manual', draft: 'pending', zone: 'sideboard' }),
+      reportCard('Read Card', { support: 'read', draft: 'approved' }),
+      reportCard('Plain', { support: 'manual' }),
+    ])
+    const view = deckView({
+      id: 'deck-9',
+      report,
+      cards: [
+        lineOf('Waiting'),
+        lineOf('Waiting', 1, { zone: 'sideboard' }),
+        lineOf('Read Card'),
+        lineOf('Plain'),
+      ],
+    })
+    const data = previewFromDeck(view)
+    expect(data.cards.map((entry) => [entry.name, entry.draft])).toEqual([
+      ['Waiting', 'pending'],
+      ['Read Card', 'approved'],
+      ['Plain', undefined],
+    ])
+    expect(data.toRead).toBe(1)
+    expect(data.readTarget).toEqual({ deck: 'deck-9' })
+  })
+
   it('reads a precon with its source line and leaves out an entry the card data lacks', () => {
     const view: PreconView = {
       precon: {
@@ -262,5 +289,7 @@ describe('adapters', () => {
     expect(data.source).toBe('Precon C18, Commander Deck')
     expect(data.commanders).toHaveLength(1)
     expect(data.cards.map((entry) => entry.name)).toEqual(['Sol Ring'])
+    expect(data.readTarget).toEqual({ precon: 'c18-x' })
+    expect(data.toRead).toBe(view.precon.summary.to_read)
   })
 })

@@ -4,11 +4,15 @@
  */
 import { issueWords } from '@/features/game/deckWords'
 import { cardsByHand, runsWhole } from '@/lib/byHand'
+import { RUNS_ON_READS } from '@/lib/toRead'
 import type { DeckReport, DeckState } from '@/protocol/generated'
 
 /** The verdict of one deck at one table. */
 export type Verdict =
-  { kind: 'runs' } | { kind: 'hand'; cards: number; names: string[] } | { kind: 'blocked'; reasons: string[] }
+  | { kind: 'runs' }
+  | { kind: 'reads'; cards: number }
+  | { kind: 'hand'; cards: number; names: string[]; toRead: number }
+  | { kind: 'blocked'; reasons: string[] }
 
 const plural = (n: number, one: string, many = `${one}s`): string => `${n} ${n === 1 ? one : many}`
 
@@ -20,21 +24,32 @@ export function verdictOf(report: DeckReport): Verdict {
   if (state === 'blocked' && reasons.length === 0) reasons.push('The deck cannot be played as it stands.')
   if (reasons.length > 0) return { kind: 'blocked', reasons }
   const cards = counts.manual + counts.partial + counts.stale
-  if (cards === 0) return { kind: 'runs' }
+  if (cards === 0) return counts.read === 0 ? { kind: 'runs' } : { kind: 'reads', cards: counts.read }
   const names = [...new Set(report.cards.filter((card) => !runsWhole(card.support)).map((card) => card.name))]
-  return { kind: 'hand', cards, names }
+  return { kind: 'hand', cards, names, toRead: report.summary.to_read }
 }
 
 /** The state the verdict's badge shows: the words of the rest of the web (icon and text) with the verdict's label. */
 export function verdictState(verdict: Verdict): DeckState {
-  return verdict.kind === 'runs' ? 'verified' : verdict.kind === 'hand' ? 'manual_play' : 'blocked'
+  switch (verdict.kind) {
+    case 'runs':
+      return 'verified'
+    case 'reads':
+      return 'read'
+    case 'hand':
+      return 'manual_play'
+    case 'blocked':
+      return 'blocked'
+  }
 }
 
-/** "Whole deck runs", "3 cards played by hand" or "Cannot be taken". */
+/** "Whole deck runs", "Runs on reads", "3 cards played by hand" or "Cannot be taken". */
 export function verdictLabel(verdict: Verdict): string {
   switch (verdict.kind) {
     case 'runs':
       return 'Whole deck runs'
+    case 'reads':
+      return RUNS_ON_READS
     case 'hand':
       return cardsByHand(verdict.cards)
     case 'blocked':

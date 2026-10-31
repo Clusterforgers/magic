@@ -3,4 +3,4 @@
 /**
  * What a deck is, as far as the table is concerned.
  */
-export type DeckState = "verified" | "manual_play" | "blocked" | "unchecked";
+export type DeckState = "verified" | "read" | "manual_play" | "blocked" | "unchecked";

@@ -83,7 +83,7 @@ pub struct DeckView {
     pub updated_at: String,
     /// The lines in the owner's order.
     pub cards: Vec<DeckLineView>,
-    /// `verified`, `manual_play`, `blocked`, or `unchecked` when no check is stored or the deck or its
+    /// `verified`, `read`, `manual_play`, `blocked`, or `unchecked` when no check is stored or the deck or its
     /// cards' rules changed since.
     pub state: DeckState,
     /// True exactly when `state` is `verified`: the stored check is clean, its hashes equal the ones

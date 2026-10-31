@@ -15,8 +15,9 @@ use std::collections::BTreeMap;
 use mtg_core::color::ColorSet;
 use serde::{Deserialize, Serialize};
 
+use crate::draft::ReadState;
 use crate::load::Library;
-use crate::support::{Caps, PrintedCard, Reason, Support};
+use crate::support::{Caps, PrintedCard, Reason, Support, SupportRecord};
 
 pub use hashes::{coverage_hash, deck_hash};
 pub use legality::{Issue, IssueCode, SUPPORTED_FORMATS, is_supported_format};
@@ -115,7 +116,9 @@ pub struct Counts {
     pub total: u32,
     /// Copies of `verified` cards.
     pub verified: u32,
-    /// Copies of `read` cards: drafts a player approved, which the game runs like `verified` ones.
+    /// Copies of `read` cards: drafts a player approved, which the game runs like `verified` ones. A check stored
+    /// before the Read tier has none.
+    #[serde(default)]
     pub read: u32,
     /// Copies of `partial` cards.
     pub partial: u32,
@@ -159,7 +162,10 @@ pub struct ZoneCounts {
 pub enum DeckState {
     /// Legal, and every card of every zone is `verified`.
     Verified,
-    /// Legal, with some cards that are not `verified`; the table resolves them by hand.
+    /// Legal, and every card of every zone is `verified` or `read`, at least one `read`: the game runs all of it, part
+    /// of it on the reads of players.
+    Read,
+    /// Legal, with some cards that are neither `verified` nor `read`; the table resolves them by hand.
     ManualPlay,
     /// Illegal in its format, or holds an `unplayable` card.
     Blocked,
@@ -168,13 +174,28 @@ pub enum DeckState {
 }
 
 impl DeckState {
-    /// How bad the state is for playing: `verified` < `manual_play` < `blocked`; `unchecked` has no rank.
+    /// How bad the state is for playing: `verified` < `read` < `manual_play` < `blocked`; `unchecked` has no rank.
     const fn rank(self) -> Option<u8> {
         match self {
             DeckState::Verified => Some(0),
-            DeckState::ManualPlay => Some(1),
-            DeckState::Blocked => Some(2),
+            DeckState::Read => Some(1),
+            DeckState::ManualPlay => Some(2),
+            DeckState::Blocked => Some(3),
             DeckState::Unchecked => None,
+        }
+    }
+
+    /// The state of a deck from whether it has legality issues and its copies by support state.
+    fn of(has_issues: bool, counts: &Counts) -> DeckState {
+        let runs_whole = counts.verified.saturating_add(counts.read);
+        if has_issues || counts.unplayable > 0 {
+            DeckState::Blocked
+        } else if runs_whole < counts.total {
+            DeckState::ManualPlay
+        } else if counts.read > 0 {
+            DeckState::Read
+        } else {
+            DeckState::Verified
         }
     }
 }
@@ -186,7 +207,7 @@ pub struct Summary {
     /// The format the deck was checked in.
     pub format: String,
     /// `blocked` if the deck is illegal or holds an unplayable card, `manual_play` if some card is
-    /// not verified, otherwise `verified`.
+    /// neither verified nor read, `read` if some are read, otherwise `verified`.
     pub state: DeckState,
     /// Copies by support state across all zones.
     pub counts: Counts,
@@ -194,6 +215,11 @@ pub struct Summary {
     pub zones: Vec<ZoneCounts>,
     /// How many legality issues the deck has.
     pub issues: u32,
+    /// How many distinct cards of the deck, in any zone, are drafts that wait for a player to read them: the draft is
+    /// `pending`, new or changed since its last read, and played by hand until then. A check stored before the Read
+    /// tier has none.
+    #[serde(default)]
+    pub to_read: u32,
 }
 
 /// One card of a deck as the report shows it.
@@ -210,6 +236,11 @@ pub struct ReportCard {
     pub count: u32,
     /// How far the game plays the card.
     pub support: Support,
+    /// The read state of the card's draft, which decides it once approved; left out while the card has no such draft
+    /// (`Library::draft_state`).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[cfg_attr(feature = "ts", ts(optional))]
+    pub draft: Option<ReadState>,
     /// The clauses left to the table, each with the span of oracle text it covers.
     pub reasons: Vec<Reason>,
 }
@@ -239,16 +270,11 @@ impl DeckReport {
     }
 
     /// Replaces the legality, as a table's rules judge it, and the summary with it: `issues` counts them and the state
-    /// is `blocked` while one is left or a card is `unplayable`, else `manual_play` while a card is not `verified`.
+    /// is `blocked` while one is left or a card is `unplayable`, else `manual_play` while a card is neither `verified`
+    /// nor `read`, else `read` while one is `read`.
     pub fn set_legality(&mut self, legality: Vec<Issue>) {
         self.summary.issues = u32::try_from(legality.len()).unwrap_or(u32::MAX);
-        self.summary.state = if !legality.is_empty() || self.summary.counts.unplayable > 0 {
-            DeckState::Blocked
-        } else if self.summary.counts.verified < self.summary.counts.total {
-            DeckState::ManualPlay
-        } else {
-            DeckState::Verified
-        };
+        self.summary.state = DeckState::of(!legality.is_empty(), &self.summary.counts);
         self.legality = legality;
     }
 }
@@ -270,39 +296,44 @@ fn name_of<'a>(facts: Option<&'a CardFacts>, oracle_id: &'a str) -> &'a str {
     facts.map_or(oracle_id, |facts| facts.printed.name.as_str())
 }
 
-/// Checks a deck: its legality in `format`, the support of each card and the hashes of the marker.
-///
-/// `cards` holds the facts of every card the database knows, keyed by oracle id in lower case; a
-/// card of `lines` it lacks is reported as unplayable and as a legality issue. `library` and `caps`
-/// decide each card's support (`Library::support`): the report depends on nothing else, so the same
-/// deck gives the same report anywhere and a change of rules or engine shows in `coverage_hash`.
-pub fn deck_report(
-    format: &str,
-    lines: &[DeckLine],
+/// The support record and the draft state of each distinct card of a deck, by oracle id; a card the database lacks has
+/// no record.
+type Judged = (
+    BTreeMap<String, Option<SupportRecord>>,
+    BTreeMap<String, ReadState>,
+);
+
+/// Decides every distinct card of `deck`: its support, and the state of its draft while it has one that matters.
+fn judge(
+    deck: &BTreeMap<(DeckZone, String), u32>,
     cards: &BTreeMap<String, CardFacts>,
     library: &Library,
     caps: &Caps,
-) -> DeckReport {
-    let deck = merged(lines);
+) -> Judged {
     let mut supports = BTreeMap::new();
+    let mut drafts = BTreeMap::new();
     for (_, id) in deck.keys() {
-        supports.entry(id.clone()).or_insert_with(|| {
-            cards
-                .get(id)
-                .map(|facts| library.support(&facts.printed, caps))
-        });
+        if supports.contains_key(id) {
+            continue;
+        }
+        let facts = cards.get(id);
+        supports.insert(
+            id.clone(),
+            facts.map(|facts| library.support(&facts.printed, caps)),
+        );
+        if let Some(read) = facts.and_then(|facts| library.draft_state(&facts.printed, caps)) {
+            drafts.insert(id.clone(), read);
+        }
     }
+    (supports, drafts)
+}
 
-    let coverage: Vec<(String, String)> = supports
-        .iter()
-        .map(|(id, record)| {
-            let fingerprint = record
-                .as_ref()
-                .map_or_else(|| "unknown".to_owned(), |record| record.fingerprint.clone());
-            (id.clone(), fingerprint)
-        })
-        .collect();
-
+/// The cards of a deck as the report lists them: by zone, each zone by name.
+fn report_cards(
+    deck: &BTreeMap<(DeckZone, String), u32>,
+    cards: &BTreeMap<String, CardFacts>,
+    (supports, drafts): &Judged,
+) -> Vec<ReportCard> {
     let mut reported: Vec<ReportCard> = Vec::new();
     for zone in DeckZone::ALL {
         let mut in_zone: Vec<ReportCard> = deck
@@ -330,6 +361,7 @@ pub fn deck_report(
                     zone,
                     count: *count,
                     support,
+                    draft: drafts.get(id).copied(),
                     reasons,
                 }
             })
@@ -337,9 +369,11 @@ pub fn deck_report(
         in_zone.sort_by_cached_key(|card| (card.name.to_lowercase(), card.oracle_id.clone()));
         reported.extend(in_zone);
     }
+    reported
+}
 
-    let mut legality = legality::check(format, &deck, cards);
-    legality.extend(companion::issues(format, &deck, cards, library, caps));
+/// The copies of a deck by support state, overall and per zone for the zones that hold cards.
+fn count_zones(reported: &[ReportCard]) -> (Counts, Vec<ZoneCounts>) {
     let mut counts = Counts::default();
     let mut zones = Vec::new();
     for zone in DeckZone::ALL {
@@ -355,23 +389,56 @@ pub fn deck_report(
             });
         }
     }
-    let state = if !legality.is_empty() || counts.unplayable > 0 {
-        DeckState::Blocked
-    } else if counts.verified < counts.total {
-        DeckState::ManualPlay
-    } else {
-        DeckState::Verified
-    };
+    (counts, zones)
+}
+
+/// Checks a deck: its legality in `format`, the support of each card and the hashes of the marker.
+///
+/// `cards` holds the facts of every card the database knows, keyed by oracle id in lower case; a
+/// card of `lines` it lacks is reported as unplayable and as a legality issue. `library` and `caps`
+/// decide each card's support (`Library::support`) and the read state of its draft
+/// (`Library::draft_state`): the report depends on nothing else, so the same deck gives the same
+/// report anywhere and a change of rules or engine shows in `coverage_hash`.
+pub fn deck_report(
+    format: &str,
+    lines: &[DeckLine],
+    cards: &BTreeMap<String, CardFacts>,
+    library: &Library,
+    caps: &Caps,
+) -> DeckReport {
+    let deck = merged(lines);
+    let judged = judge(&deck, cards, library, caps);
+    let coverage: Vec<(String, String)> = judged
+        .0
+        .iter()
+        .map(|(id, record)| {
+            let fingerprint = record
+                .as_ref()
+                .map_or_else(|| "unknown".to_owned(), |record| record.fingerprint.clone());
+            (id.clone(), fingerprint)
+        })
+        .collect();
+    let reported = report_cards(&deck, cards, &judged);
+    let to_read = judged
+        .1
+        .values()
+        .filter(|read| **read == ReadState::Pending)
+        .count();
+
+    let mut legality = legality::check(format, &deck, cards);
+    legality.extend(companion::issues(format, &deck, cards, library, caps));
+    let (counts, zones) = count_zones(&reported);
     DeckReport {
         deck_hash: hashes::deck_hash_of(&deck),
         coverage_hash: coverage_hash(&coverage),
         format: format.to_owned(),
         summary: Summary {
             format: format.to_owned(),
-            state,
+            state: DeckState::of(!legality.is_empty(), &counts),
             counts,
             zones,
             issues: u32::try_from(legality.len()).unwrap_or(u32::MAX),
+            to_read: u32::try_from(to_read).unwrap_or(u32::MAX),
         },
         legality,
         cards: reported,

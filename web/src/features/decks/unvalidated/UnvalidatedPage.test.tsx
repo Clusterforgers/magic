@@ -11,7 +11,7 @@ import { renderApp } from '@/test-utils/appHarness'
 import { renderInRouter } from '@/test-utils/router'
 import { fixMarksClient } from '../../fixmarks/client'
 import { deckView } from '../fakeDecks'
-import { FIXTURE_DECKS, fixtureCardsApi, fixtureDecksApi } from './fixture'
+import { deckOf, filler, FIXTURE_DECKS, fixtureCardsApi, fixtureDecksApi, reportLine } from './fixture'
 import type { FixtureOptions } from './fixture'
 import { UnvalidatedPage } from './UnvalidatedPage'
 
@@ -291,6 +291,58 @@ describe('Copy as text', () => {
         `Mana Drain (Partial) - decks: ${ATRAXA}, Izzet Spells\n  - The delayed mana is not implemented`,
       ),
     )
+  })
+})
+
+describe('the drafts that wait for a read', () => {
+  const WAITERS = [
+    deckOf('deck-w', 'Waiters', [
+      reportLine('rhystic', 'main', 'pending'),
+      reportLine('drain', 'main', 'wrong'),
+      reportLine('remora'),
+      filler(90),
+    ]),
+    deckOf('deck-v', 'Others', [reportLine('rhystic', 'main', 'pending'), filler(60)]),
+  ]
+
+  it('says on each card whether its draft waits for a read or was found wrong, and nothing for a card with none', async () => {
+    await renderPage({ decks: WAITERS })
+    await settled()
+    expect(
+      within(itemOf('Rhystic Study')).getByText('A draft of its rules waits for a player to read it'),
+    ).toBeInTheDocument()
+    expect(within(itemOf('Mana Drain')).getByText(/found the draft of its rules wrong/)).toBeInTheDocument()
+    expect(itemOf('Mystic Remora').querySelector('[data-slot="draft-note"]')).toBeNull()
+  })
+
+  it('counts the cards to read once on a chip, in the summary and on a filter that narrows to them', async () => {
+    const { user } = await renderPage({ decks: WAITERS })
+    await settled()
+    const filter = screen.getByRole('group', { name: 'Show cards in state' })
+    expect(
+      within(filter)
+        .getAllByRole('button')
+        .map((button) => button.textContent),
+    ).toEqual(['All (3)', 'Partial (1)', 'Manual (1)', 'Stale (1)', 'To read (1)'])
+    expect(document.querySelector('[data-slot="to-read-summary"]')).toHaveTextContent('1 card to read')
+    await user.click(within(filter).getByRole('button', { name: 'To read (1)' }))
+    expect(cardNames(await settled())).toEqual(['Rhystic Study'])
+  })
+
+  it('names the deck to read for when the list is of one deck', async () => {
+    await renderPage({ decks: WAITERS, deckId: 'deck-w' })
+    await settled()
+    expect(document.querySelector('[data-slot="to-read-summary"] [data-slot="to-read"]')).toHaveAttribute(
+      'data-read-path',
+      '/read?deck=deck-w',
+    )
+  })
+
+  it('shows no count and no filter for decks with no draft waiting', async () => {
+    await renderPage()
+    await settled()
+    expect(document.querySelector('[data-slot="to-read-summary"]')).toBeNull()
+    expect(screen.queryByRole('button', { name: /^To read/ })).toBeNull()
   })
 })
 

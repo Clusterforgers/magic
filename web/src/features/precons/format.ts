@@ -1,30 +1,33 @@
 /** The precon browser as plain data: a deck's check in words, the filters, the dates and the copyable list. Pure, so tables test it. */
 import { cardsText } from '@/features/decks/format'
 import { BY_HAND, byHandCopies, cardsByHand, runsWhole } from '@/lib/byHand'
+import { cardsOnReads, RUNS_ON_READS } from '@/lib/toRead'
 import { copyText } from '@/features/decks/unvalidated/model'
 import type { FaceTexts, FlaggedCard } from '@/features/decks/unvalidated/model'
 import type { DeckZone, PreconCardView, PreconListItem, PreconView } from '@/protocol/generated'
 
-/** How a game treats a precon: it runs the whole deck, some cards are played by hand, or it cannot take the deck. */
-export type PreconStatus = 'whole' | 'hand' | 'blocked'
+/** How a game treats a precon: it runs the whole deck, runs it with cards on a player's read, plays cards by hand, or cannot take the deck. */
+export type PreconStatus = 'whole' | 'read' | 'hand' | 'blocked'
 
 /** The statuses from the best to the worst, which the state filter lists in this order. */
-export const STATUSES: readonly PreconStatus[] = ['whole', 'hand', 'blocked']
+export const STATUSES: readonly PreconStatus[] = ['whole', 'read', 'hand', 'blocked']
 
 /** The status of a precon: `blocked` when the server's `playable` is false or the check blocks it. */
 export function statusOf(precon: Pick<PreconListItem, 'state' | 'playable'>): PreconStatus {
   if (!precon.playable || precon.state === 'blocked') return 'blocked'
-  return precon.state === 'verified' ? 'whole' : 'hand'
+  if (precon.state === 'verified') return 'whole'
+  return precon.state === 'read' ? 'read' : 'hand'
 }
 
 /** The words of a status for the state filter. */
 export const STATUS_LABEL: Readonly<Record<PreconStatus, string>> = {
   whole: 'Whole deck runs',
+  read: RUNS_ON_READS,
   hand: `Some cards ${BY_HAND}`,
   blocked: 'Cannot be taken',
 }
 
-/** The badge's words: "Whole deck runs", "3 cards played by hand" or "Cannot be taken". */
+/** The badge's words: "Whole deck runs", "Runs on reads", "3 cards played by hand" or "Cannot be taken". */
 export function statusWords(precon: PreconListItem): string {
   const status = statusOf(precon)
   if (status !== 'hand') return STATUS_LABEL[status]
@@ -103,6 +106,7 @@ export function checkLine(precon: PreconListItem): string {
   const { counts } = precon.summary
   const hand = byHandCopies(counts)
   const parts = [
+    counts.read > 0 ? cardsOnReads(counts.read) : null,
     hand > 0 ? `${hand} ${BY_HAND}` : null,
     counts.unplayable > 0 ? `${counts.unplayable} unplayable` : null,
   ].filter((part) => part !== null)

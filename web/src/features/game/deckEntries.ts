@@ -3,6 +3,7 @@
  * the search and filters over them. Pure, so the rows' words and the filters are tested without a page.
  */
 import { BY_HAND, byHandCopies } from '@/lib/byHand'
+import { RUNS_ON_READS } from '@/lib/toRead'
 import { cardsText } from '@/features/decks/format'
 import type { DeckInfo } from '@/net/api'
 import type { Counts, DeckListItem, DeckState, PreconListItem } from '@/protocol/generated'
@@ -31,6 +32,8 @@ export interface DeckEntry {
   counts: Counts | null
   /** The deck's own check state. */
   state: DeckState
+  /** Distinct cards whose draft waits for a read; none for a built-in deck. */
+  toRead: number
   /** The set code of a precon. */
   set: string | null
   /** What else search matches: the kind of precon. */
@@ -78,6 +81,7 @@ export function entryOfDeck(deck: DeckListItem): DeckEntry {
       deck.commanders.length === 0 ? null : identityOf(deck.commanders.map((card) => card.color_identity)),
     counts: deck.summary.counts,
     state: deck.state,
+    toRead: deck.summary.to_read,
     set: null,
     extra: '',
     listed: [],
@@ -97,6 +101,7 @@ export function entryOfPrecon(precon: PreconListItem): DeckEntry {
     identity: null,
     counts: precon.summary.counts,
     state: precon.playable ? precon.state : 'blocked',
+    toRead: precon.summary.to_read,
     set: precon.set,
     extra: precon.deck_type ?? '',
     listed: [],
@@ -116,6 +121,7 @@ export function entryOfBuiltIn(deck: DeckInfo): DeckEntry {
     identity: null,
     counts: null,
     state: 'verified',
+    toRead: 0,
     set: null,
     extra: deck.color,
     listed: deck.cards,
@@ -129,10 +135,11 @@ export function entryFacts(entry: DeckEntry): string {
     .join(' · ')
 }
 
-/** The chip of a row: "Whole deck runs", "9 played by hand", "Cannot be taken" or "Not checked yet". */
+/** The chip of a row: "Whole deck runs", "Runs on reads", "9 played by hand", "Cannot be taken" or "Not checked yet". */
 export function entrySupport(entry: DeckEntry): { state: DeckState; label: string } {
   if (entry.state === 'blocked') return { state: 'blocked', label: 'Cannot be taken' }
   if (entry.state === 'unchecked') return { state: 'unchecked', label: 'Not checked yet' }
+  if (entry.state === 'read') return { state: 'read', label: RUNS_ON_READS }
   const hand = entry.counts === null ? 0 : byHandCopies(entry.counts)
   if (entry.state === 'verified' && hand === 0) return { state: 'verified', label: 'Whole deck runs' }
   return { state: 'manual_play', label: `${hand} ${BY_HAND}` }
@@ -158,7 +165,8 @@ export function filterEntries(entries: readonly DeckEntry[], filter: DeckFilter)
     }
     if (filter.support === 'all') return true
     const hand = entry.counts === null ? 0 : byHandCopies(entry.counts)
-    if (filter.support === 'verified') return entry.state === 'verified' && hand === 0
+    if (filter.support === 'verified')
+      return (entry.state === 'verified' || entry.state === 'read') && hand === 0
     return hand > 0
   })
 }

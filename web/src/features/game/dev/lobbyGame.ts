@@ -72,7 +72,7 @@ function storedDeck(
     verified: state === 'verified',
     changed: false,
     checked_at: '2026-10-17T12:00:00Z',
-    summary: { format, state, counts: tally, zones: [{ zone: 'main', counts: tally }], issues },
+    summary: { format, state, counts: tally, zones: [{ zone: 'main', counts: tally }], issues, to_read: 0 },
     commanders: [],
   }
 }

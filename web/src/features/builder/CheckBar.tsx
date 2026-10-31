@@ -6,7 +6,10 @@ import { Label } from '@/components/ui/label'
 import { NativeSelect, NativeSelectOption } from '@/components/ui/native-select'
 import { Switch } from '@/components/ui/switch'
 import { countsText } from '@/features/decks/format'
+import { ToRead } from '@/features/decks/ToRead'
 import { cn } from '@/lib/utils'
+import { cardsToRead } from '@/lib/toRead'
+import type { ReadTarget } from '@/lib/toRead'
 import type { Counts } from '@/protocol/generated'
 import type { SortKey } from './report'
 import type { CheckStatus } from './useLiveCheck'
@@ -14,6 +17,10 @@ import type { CheckStatus } from './useLiveCheck'
 interface CheckBarProps {
   /** Copies by support state, from the report's summary. */
   counts: Counts
+  /** Distinct cards whose draft waits for a read, from the report's summary. */
+  toRead: number
+  /** The saved deck the cards are read for; none while the deck is not saved. */
+  readTarget?: ReadTarget
   /** The counts are those of the saved deck while the draft's cards differ: no check of the draft has come back. */
   asSaved: boolean
   /** Whether the counts are of the draft on screen, a newer check is on its way, or the check failed. */
@@ -38,6 +45,8 @@ interface CheckBarProps {
  */
 export function CheckBar({
   counts,
+  toRead,
+  readTarget,
   asSaved,
   status,
   error,
@@ -59,6 +68,11 @@ export function CheckBar({
           {countsText(counts)}
           {asSaved ? <span className="font-normal text-muted-foreground"> · as saved</span> : null}
         </p>
+        {toRead === 0 ? null : (
+          <p data-slot="check-to-read" className="text-sm tabular-nums">
+            <ToRead count={toRead} target={readTarget} />
+          </p>
+        )}
         <p
           data-slot="check-status"
           role="status"
@@ -70,7 +84,7 @@ export function CheckBar({
               Checking…
             </>
           ) : checked ? (
-            `Checked: ${countsText(counts)}.`
+            `Checked: ${countsText(counts)}${toRead === 0 ? '' : `, ${cardsToRead(toRead)}`}.`
           ) : null}
         </p>
       </div>

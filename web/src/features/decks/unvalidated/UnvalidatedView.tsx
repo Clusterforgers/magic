@@ -10,8 +10,10 @@ import { Skeleton } from '@/components/ui/skeleton'
 import type { CardsApi } from '@/net/cards'
 import type { DecksApi } from '@/net/decks'
 import type { FixMarksApi } from '@/net/fixMarks'
+import { TO_READ_TITLE } from '@/lib/toRead'
 import { SUPPORT_LABEL } from '../format'
-import { copyText, filterCards, groupByDeck, mergeDecks, stateCounts } from './model'
+import { ToRead } from '../ToRead'
+import { copyText, filterCards, groupByDeck, mergeDecks, stateCounts, waitsForRead } from './model'
 import type { FlaggedCard, StateFilter } from './model'
 import { UnvalidatedCard } from './UnvalidatedCard'
 import { useCardTexts } from './useCardTexts'
@@ -80,7 +82,11 @@ export function UnvalidatedView({ api, cards, scope, fixMarks }: UnvalidatedView
   const merged = mergeDecks(decks)
   const groups = groupByDeck(decks)
   const states = stateCounts(merged)
-  const filter = chosen === 'all' || states.some(([name]) => name === chosen) ? chosen : 'all'
+  const toRead = merged.filter(waitsForRead).length
+  const filter =
+    chosen === 'all' || (chosen === 'to_read' && toRead > 0) || states.some(([name]) => name === chosen)
+      ? chosen
+      : 'all'
   const shown = filterCards(merged, filter)
   const { faces, pending } = useCardTexts(
     cards,
@@ -240,6 +246,9 @@ export function UnvalidatedView({ api, cards, scope, fixMarks }: UnvalidatedView
                     value: name,
                     text: `${SUPPORT_LABEL[name]} (${count})`,
                   })),
+                  ...(toRead === 0
+                    ? []
+                    : [{ value: 'to_read' as const, text: `${TO_READ_TITLE} (${toRead})` }]),
                 ]}
                 onChange={setChosen}
               />
@@ -257,6 +266,11 @@ export function UnvalidatedView({ api, cards, scope, fixMarks }: UnvalidatedView
           <p className="text-sm text-muted-foreground" data-slot="summary">
             {`${shown.length} ${shown.length === 1 ? 'card' : 'cards'} in ${single ? 'this deck' : `${groups.length} of ${state.saved} ${state.saved === 1 ? 'deck' : 'decks'}`}`}
           </p>
+          {toRead === 0 ? null : (
+            <p data-slot="to-read-summary" className="text-sm">
+              <ToRead count={toRead} target={single ? { deck: scope.id } : undefined} />
+            </p>
+          )}
           {unread > 0 ? (
             <p className="text-sm text-muted-foreground" role="status">
               {`The text of ${unread} ${unread === 1 ? 'card' : 'cards'} could not be read, so ${unread === 1 ? 'its' : 'their'} clauses show without the quote.`}

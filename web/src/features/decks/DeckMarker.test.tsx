@@ -1,4 +1,4 @@
-// Goal: the marker beside a deck's name says the badge's word for a clean saved check, a deck played by hand, a blocked deck and one never checked, and "Changed since the last check" for a draft that differs from the saved deck or a stored check that is stale, whatever state the saved deck had, so a Verified marker never outlives the deck it was earned by.
+// Goal: the marker beside a deck's name says the badge's word for a clean saved check, a deck that runs on reads, a deck played by hand, a blocked deck and one never checked, and "Changed since the last check" for a draft that differs from the saved deck or a stored check that is stale, whatever state the saved deck had, so a Verified marker never outlives the deck it was earned by.
 import { render } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import type { DeckState } from '@/protocol/generated'
@@ -7,6 +7,7 @@ import type { MarkerChange, MarkerKind } from './DeckMarker'
 
 const CASES: ReadonlyArray<readonly [string, DeckState, MarkerChange, MarkerKind, string]> = [
   ['a clean saved check', 'verified', {}, 'verified', 'Verified'],
+  ['a deck on reads', 'read', {}, 'read', 'Runs on reads'],
   ['a deck played by hand', 'manual_play', {}, 'manual_play', 'Played by hand'],
   ['a blocked deck', 'blocked', {}, 'blocked', 'Blocked'],
   ['a deck never checked', 'unchecked', { changed: false }, 'unchecked', 'Unchecked'],
@@ -19,6 +20,7 @@ const CASES: ReadonlyArray<readonly [string, DeckState, MarkerChange, MarkerKind
     'changed',
     'Changed since the last check',
   ],
+  ['a draft of a deck on reads', 'read', { dirty: true }, 'changed', 'Changed since the last check'],
   ['a draft of a blocked deck', 'blocked', { dirty: true }, 'changed', 'Changed since the last check'],
   ['a draft of an unchecked deck', 'unchecked', { dirty: true }, 'changed', 'Changed since the last check'],
 ]

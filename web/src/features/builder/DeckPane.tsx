@@ -57,6 +57,8 @@ export type DeckPart = 'deck' | 'stats'
 
 interface DeckPaneProps {
   draft: Draft
+  /** The saved deck, which its cards to read are read for. */
+  deckId?: string
   /** The check state of the deck as last saved. */
   state: DeckState
   /** A check is stored but the deck, the rules of its cards or the engine changed since it. */
@@ -147,6 +149,7 @@ function Disclosure({
  */
 export function DeckPane({
   draft,
+  deckId,
   state,
   changed,
   check,
@@ -292,6 +295,8 @@ export function DeckPane({
           <div className="max-lg:group-data-[part=stats]/pane:hidden">
             <CheckBar
               counts={counts}
+              toRead={report.summary.to_read}
+              readTarget={deckId === undefined ? undefined : { deck: deckId }}
               asSaved={asSaved}
               status={check.status}
               error={check.error}
