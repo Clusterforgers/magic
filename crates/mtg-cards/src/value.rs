@@ -157,6 +157,11 @@ impl CounterKind {
         CounterKind::Other("lore".to_owned())
     }
 
+    /// The defense counter of a battle (CR 310.4).
+    pub fn defense() -> Self {
+        CounterKind::Other("defense".to_owned())
+    }
+
     /// The keyword a counter of this kind gives its permanent (CR 122.1b): a counter named for a keyword that adds no
     /// ability of its own. `exalted` and `decayed` counters are not among them.
     pub fn keyword(&self) -> Option<Keyword> {

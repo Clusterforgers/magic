@@ -50,6 +50,9 @@ fn in_force(
 ) -> impl Iterator<Item = &Taxing> {
     let defender = defending_player(state, target);
     let walker = matches!(target, AttackTarget::Planeswalker(_));
+    // A tax protects players and their planeswalkers; the battle a player protects is neither.
+    let battle =
+        matches!(target, AttackTarget::Planeswalker(id) if crate::battle::is_battle(state, id));
     attack_taxes(state).iter().filter(move |taxing| {
         let tax = &taxing.tax;
         let protects = match tax.attacked {
@@ -58,6 +61,7 @@ fn in_force(
             Attacked::Planeswalkers => walker,
         };
         protects
+            && !battle
             && defender.is_some_and(|defender| tax.players.contains(&defender))
             && taxes_creature(state, taxing, object)
     })

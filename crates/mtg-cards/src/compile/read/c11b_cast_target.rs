@@ -28,6 +28,7 @@ fn c11b_cast(what: Ref, free: bool, bind: Option<String>) -> Effect {
         free,
         play: false,
         way: None,
+        transformed: false,
         bind,
         otherwise: Vec::new(),
     }

@@ -282,6 +282,13 @@ fn preset_state(
         }
     }
     // A planeswalker starts with its printed loyalty unless the setup says how many loyalty counters it holds (CR 306.5b).
+    // A battle starts with its printed defense, a protector aside (CR 310.4b).
+    if preset.card.type_set().contains(CardType::Battle)
+        && !counters.contains_key(&CounterKind::defense())
+        && let Some(defense) = preset.card.defense.filter(|defense| *defense > 0)
+    {
+        counters.insert(CounterKind::defense(), defense);
+    }
     if preset.card.type_set().contains(CardType::Planeswalker)
         && !counters.contains_key(&CounterKind::Loyalty)
         && let Some(loyalty) = preset.card.loyalty.filter(|loyalty| *loyalty > 0)

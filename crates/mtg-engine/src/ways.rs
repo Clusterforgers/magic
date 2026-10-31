@@ -760,8 +760,7 @@ pub(crate) fn grantable(
     state: &GameState,
     player: PlayerId,
     id: ObjectId,
-    free: bool,
-    way: Option<CastWay>,
+    (free, way, transformed): (bool, Option<CastWay>, bool),
 ) -> bool {
     // Players cannot cast spells while a spell with split second is on the stack, whatever lets them (CR 702.61a, 101.2).
     if crate::keywords::split_second_on_stack(state)
@@ -770,7 +769,20 @@ pub(crate) fn grantable(
         return false;
     }
     if faces::is_multi_face(state, id) {
-        return !faces::grantable_faces(state, player, id, Granted { free, way }).is_empty();
+        return !faces::grantable_faces(
+            state,
+            player,
+            id,
+            Granted {
+                free,
+                way,
+                transformed,
+            },
+        )
+        .is_empty();
+    }
+    if transformed {
+        return false;
     }
     grantable_as_is(state, player, id, free, way)
 }

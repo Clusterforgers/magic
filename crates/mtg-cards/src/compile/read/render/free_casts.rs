@@ -33,6 +33,7 @@ pub(super) fn text(effects: &[Effect]) -> Option<(String, usize)> {
             free: true,
             play: false,
             way: None,
+            transformed: false,
             bind: None,
             otherwise,
         },

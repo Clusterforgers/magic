@@ -87,6 +87,7 @@ pub fn assemble(printed: &PrintedCard, rules: Option<&Card>, caps: &Caps) -> Ass
         definition
             .abilities
             .extend(intrinsic_abilities(&definition));
+        definition.rules.extend(siege_rules(&definition));
         if attach && let Some(face) = rules.and_then(|card| card.faces.get(index)) {
             let runs = |ability: &&Ability| caps.missing(&used_primitives(ability)).is_empty();
             for lowered in face.abilities.iter().filter(runs).filter_map(lower) {
@@ -761,6 +762,32 @@ fn intrinsic_abilities(definition: &CardDefinition) -> Vec<AbilityDef> {
         .iter()
         .filter(|(name, _)| definition.subtypes.iter().any(|subtype| subtype.0 == *name))
         .map(|&(_, produces)| AbilityDef::Mana(ManaAbility { produces }))
+        .collect()
+}
+
+/// As a Siege enters, its controller chooses an opponent to protect it (CR 310.11a).
+const SIEGE_PROTECTOR: &str =
+    r#"{"Replacement":{"when":{"Enters":{"what":["This"]}},"by":{"Choose":"Opponent"}}}"#;
+
+/// When a Siege is defeated, it is exiled and its controller casts it transformed without paying its mana cost (CR
+/// 310.11b): the last defense counter has left it.
+const SIEGE_DEFEATED: &str = r#"{"Triggered":{"when":{"CountersRemoved":{"what":["This"],"counter":{"Other":"defense"}}},"if":{"Compare":{"left":{"Counters":{"on":"This","counter":{"Other":"defense"}}},"op":"Eq","right":0}},"effects":[{"Exile":{"what":"This","as":"siege"}},{"CastFromZone":{"what":{"Bound":"siege"},"free":true,"transformed":true}}]}}"#;
+
+/// The rules a Siege has by its subtype (CR 310.11): the protector it enters with and what its defeat does. The reminder
+/// text of the card says so, and no rules file repeats them.
+fn siege_rules(definition: &CardDefinition) -> Vec<Arc<Ability>> {
+    let siege = definition.is_type(CardType::Battle)
+        && definition
+            .subtypes
+            .iter()
+            .any(|subtype| subtype.0 == "Siege");
+    if !siege {
+        return Vec::new();
+    }
+    [SIEGE_PROTECTOR, SIEGE_DEFEATED]
+        .into_iter()
+        .filter_map(|json| serde_json::from_str::<Ability>(json).ok())
+        .map(Arc::new)
         .collect()
 }
 

@@ -42,8 +42,8 @@ fn join_attack(
     Ok(())
 }
 
-/// Damage to a permanent: marked on a creature (CR 120.3e), taken off a planeswalker as that many loyalty counters
-/// (CR 120.3c), both for a planeswalker that is a creature too. A planeswalker is told by the card it prints, so a creature
+/// Damage to a permanent: marked on a creature (CR 120.3e), taken off a planeswalker or a battle as that many counters
+/// (CR 120.3c, 120.3h), both for one that is a creature too. A planeswalker or battle is told by the card it prints, so a creature
 /// that takes damage never asks the layers.
 fn damage_object(
     state: &mut GameState,
@@ -55,7 +55,11 @@ fn damage_object(
     let walker = state
         .object(id)
         .is_some_and(|o| o.base_types().contains(CardType::Planeswalker));
-    let creature = !walker || characteristics(state, id).is_some_and(|c| c.is_creature());
+    let battle = state
+        .object(id)
+        .is_some_and(|o| o.base_types().contains(CardType::Battle));
+    let creature =
+        !(walker || battle) || characteristics(state, id).is_some_and(|c| c.is_creature());
     // Any damage from a source with deathtouch marks a creature for destruction (CR 704.5h).
     let deathtouched =
         amount > 0 && deathtouch && characteristics(state, id).is_some_and(|c| c.is_creature());
@@ -72,13 +76,21 @@ fn damage_object(
         }
         perm.deathtouched |= deathtouched;
     }
-    if walker {
-        // The damage dealt is all of it; the counters that go are as many as there are.
-        let removed = amount.min(perm.counters_of(&CounterKind::Loyalty));
+    // The damage dealt is all of it; the counters that go are as many as there are: loyalty for a planeswalker (CR
+    // 120.3c) and defense for a battle (CR 120.3h).
+    for (is, kind) in [
+        (walker, CounterKind::Loyalty),
+        (battle, CounterKind::defense()),
+    ] {
+        let removed = if is {
+            amount.min(perm.counters_of(&kind))
+        } else {
+            0
+        };
         if removed > 0 {
-            let delta = -i32::try_from(removed)
-                .map_err(|_| invalid("too many loyalty counters removed"))?;
-            change(&mut perm.counters, &CounterKind::Loyalty, delta)?;
+            let delta =
+                -i32::try_from(removed).map_err(|_| invalid("too many counters removed"))?;
+            change(&mut perm.counters, &kind, delta)?;
         }
     }
     if counters && amount > 0 {

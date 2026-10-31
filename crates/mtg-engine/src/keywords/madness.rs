@@ -48,6 +48,7 @@ impl KeywordRules for Madness {
                     free: false,
                     play: false,
                     way: Some(CastWay::Madness),
+                    transformed: false,
                     bind: None,
                     otherwise: vec![Effect::Move {
                         what: Ref::This,

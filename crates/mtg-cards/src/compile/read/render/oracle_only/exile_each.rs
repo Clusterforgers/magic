@@ -31,6 +31,7 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
             free: true,
             play: false,
             way: None,
+            transformed: false,
             bind: None,
             otherwise,
         },

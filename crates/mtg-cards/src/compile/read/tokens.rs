@@ -23,7 +23,7 @@ pub enum Token {
 }
 
 /// The nouns a card calls itself by after "this".
-const SOURCE_NOUNS: [&str; 17] = [
+const SOURCE_NOUNS: [&str; 18] = [
     "token",
     "creature",
     "saga",
@@ -41,6 +41,7 @@ const SOURCE_NOUNS: [&str; 17] = [
     "card",
     "class",
     "emblem",
+    "siege",
 ];
 
 /// The text with its whitespace collapsed and the card's names ("this creature") written as `~`.

@@ -102,7 +102,7 @@ pub(super) fn move_object(
         object.permanent = None;
         state.combat.remove_object(id);
         // Creatures attacking a planeswalker that leaves go on attacking nothing (CR 506.4c).
-        state.combat.planeswalker_left(id);
+        state.combat.permanent_left(id);
     }
     if to == Zone::Battlefield {
         let mut permanent = PermanentState::entering(timestamp, paid, way, x, face, spent);
@@ -609,6 +609,6 @@ fn leave_game(state: &mut GameState, id: ObjectId) -> Result<(), EngineError> {
         state.resolving = None;
     }
     state.combat.remove_object(id);
-    state.combat.planeswalker_left(id);
+    state.combat.permanent_left(id);
     player_mut(state, object.owner).map(|_| ())
 }

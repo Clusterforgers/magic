@@ -430,6 +430,8 @@ fn c10_pa_attacked_players(
                 player: *player,
                 planeswalker: false,
             }),
+            // A battle is attacked, not its protector (CR 506.3).
+            AttackTarget::Planeswalker(walker) if crate::battle::is_battle(pre, *walker) => None,
             AttackTarget::Planeswalker(walker) => Some(Happened::AttackedPlayer {
                 attacker: *attacker,
                 player: controller_of(pre, *walker).or_else(|| controller_of(post, *walker))?,
@@ -691,6 +693,34 @@ impl<'a> Look<'a> {
     }
 }
 
+/// The defense counters that the damage of a batch took off the battle `hit` (CR 120.3h), as one removal at the last
+/// damage event of the batch to it, so a trigger on the counters sees what the whole batch did once.
+fn defense_removed(look: Look<'_>, hit: ObjectId) -> Option<Happened> {
+    let again = look.later.iter().any(|event| {
+        matches!(event, Event::DamageDealt { target: DamageTarget::Object(next), .. } if *next == hit)
+    });
+    if again || !crate::battle::is_battle(look.pre, hit) {
+        return None;
+    }
+    let defense = CounterKind::defense();
+    let held = |state: &GameState| {
+        state
+            .object(hit)
+            .and_then(GameObject::permanent)
+            .map_or(0, |permanent| permanent.counters_of(&defense))
+    };
+    let before = held(look.pre);
+    let removed = before.saturating_sub(held(look.post));
+    let delta = -i32::try_from(removed).ok()?;
+    (removed > 0).then_some(Happened::Counters {
+        on: hit,
+        counter: defense,
+        delta,
+        before,
+        nth: 0,
+    })
+}
+
 /// How many counters of the kind `on` held before the change: those it holds after the batch, less this change and the
 /// changes of the same counters that follow it in the batch.
 fn counters_before(look: Look<'_>, changed: &CountersChanged, on: ObjectRef) -> u32 {
@@ -854,6 +884,9 @@ fn about_players_and_permanents(
                 },
                 amount: *amount,
             });
+            if let DamageTarget::Object(hit) = target {
+                found.extend(defense_removed(look, *hit));
+            }
             // Damage to a player makes them lose that much life (CR 120.3a), unless it is infect (poison counters, CR 120.3b)
             // or a rule says it causes none.
             if let DamageTarget::Player(player) = target

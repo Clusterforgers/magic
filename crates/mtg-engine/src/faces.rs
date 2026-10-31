@@ -135,7 +135,20 @@ pub(crate) fn grantable_faces(
     id: ObjectId,
     granted: Granted,
 ) -> Vec<Option<u8>> {
-    candidates(state, id)
+    // Cast transformed, a transforming card is its back face as the spell (CR 712.4).
+    let faces = if granted.transformed {
+        let transforms = state
+            .object(id)
+            .is_some_and(|object| object.whole_card().layout == Layout::Transform);
+        if transforms {
+            vec![Some(1)]
+        } else {
+            Vec::new()
+        }
+    } else {
+        candidates(state, id)
+    };
+    faces
         .into_iter()
         .filter(|face| {
             let view = state.with_face(id, *face);

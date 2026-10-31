@@ -2,6 +2,7 @@
 //! control, as a new object, once that permanent has left.
 
 use crate::attach;
+use crate::battle;
 use crate::events::{Event, ZoneCause};
 use crate::loyalty;
 use crate::object::{GameObject, ObjectRef};
@@ -51,6 +52,7 @@ fn back(state: &GameState, card: &GameObject) -> Vec<Event> {
         cause: ZoneCause::Moved,
     }];
     events.extend(loyalty::entering(state, id));
+    events.extend(battle::entering(state, id));
     events.extend(saga::entering(state, id));
     events.extend(host.map(|to| Event::Attached { object: id, to }));
     events

@@ -86,6 +86,7 @@ pub fn after_exiling(r: &mut Reader<'_>, effects: &mut Vec<Effect>) -> Option<()
                 free: true,
                 play: false,
                 way: None,
+                transformed: false,
                 bind: None,
                 otherwise: Vec::new(),
             }
@@ -229,6 +230,7 @@ fn free_cast(what: Ref, play: bool) -> Effect {
         free: true,
         play,
         way: None,
+        transformed: false,
         bind: None,
         otherwise: Vec::new(),
     }
@@ -361,6 +363,7 @@ pub fn text(effect: &Effect) -> Option<String> {
             free: true,
             play: false,
             way: None,
+            transformed: false,
             bind: None,
             otherwise,
         } if name == FOUND && otherwise.is_empty() => {
@@ -418,6 +421,7 @@ pub fn free_cast_from_hand(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
             free: true,
             play: false,
             way: None,
+            transformed: false,
             bind: None,
             otherwise: Vec::new(),
         },

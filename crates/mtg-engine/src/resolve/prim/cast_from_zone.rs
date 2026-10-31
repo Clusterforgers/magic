@@ -37,6 +37,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         free,
         play,
         way,
+        transformed,
         ..
     } = effect
     else {
@@ -62,7 +63,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
             card.zone() != crate::zones::Zone::Battlefield
                 && may_play_land_while_resolving(state, player, cx.resolving.object())
         } else {
-            ways::grantable(state, player, card.id(), *free, *way)
+            ways::grantable(state, player, card.id(), (*free, *way, *transformed))
         }
     };
     match (next, after) {
@@ -112,6 +113,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                 card: card.id(),
                 free: *free,
                 way: *way,
+                transformed: *transformed,
             }))
         }
         (Some((first, Choice::YesNo(true))), Some((second, Choice::YesNo(cast))))

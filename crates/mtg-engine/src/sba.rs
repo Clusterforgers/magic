@@ -155,6 +155,8 @@ pub(crate) fn check(state: &GameState) -> Vec<Event> {
     };
     let died = leaving(&events);
     events.extend(crate::saga::sacrifices(state, &died));
+    let died = leaving(&events);
+    events.extend(crate::battle::state_based(state, &died));
     // A Saga creature sacrificed in this pass leaves with its counters too: it has no counters to annihilate.
     let died = leaving(&events);
     events.extend(annihilation(state, &died));
