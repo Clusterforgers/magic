@@ -107,7 +107,7 @@ async fn a_seat_that_goes_and_comes_back_is_told_to_every_other_seat(
     for (index, client) in clients.iter_mut().enumerate() {
         let messages = client.drain();
         if index == victim {
-            assert!(presence(&messages).is_empty());
+            assert_eq!(presence(&messages), []);
             assert_eq!(snapshot_flags(&messages), vec![true; players]);
         } else {
             assert_eq!(presence(&messages), [(seat(victim), true)]);
@@ -135,7 +135,7 @@ async fn a_second_socket_of_a_seat_or_a_spectators_socket_tells_nobody(
     assert!(handle.join(PlayerId::from_index(players)).await.is_err());
     handle.status().await.unwrap();
     for client in &mut clients {
-        assert!(presence(&client.drain()).is_empty());
+        assert_eq!(presence(&client.drain()), []);
     }
     assert_eq!(
         handle.status().await.unwrap().connected,
@@ -153,7 +153,7 @@ async fn a_batch_after_a_drop_carries_the_flag(#[values(2, 3)] players: usize) {
     // Seat 0 concedes: every other connected seat gets a batch whose table reads the victim as away.
     clients[0].say(&handle, ClientMessage::Concede).await;
     handle.status().await.unwrap();
-    let witness = if players > 2 { 1 } else { 0 };
+    let witness = usize::from(players > 2);
     let tables: Vec<Vec<bool>> = clients[witness]
         .drain()
         .iter()
