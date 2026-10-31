@@ -1,0 +1,30 @@
+{
+  "oracle_id": "ae120613-97d6-4393-b39d-c3e6c076f5d6",
+  "name": "Deflecting Swat",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Deflecting Swat",
+      "oracle_fingerprint": "c6a60ec3035447a23e1aadae058b4c60",
+      "abilities": [
+        {
+          "FreeCast": {
+            "condition": {
+              "Compare": {
+                "left": { "Count": ["Commander", { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell", "Other"] } }],
+            "effects": [{ "Choose": { "from": { "Target": 0 }, "as": "new_target" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "oracle_id": "c8d22139-7b25-4bb1-b0d9-d4c622401edf",
+  "name": "Germination Practicum",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Germination Practicum",
+      "oracle_fingerprint": "6f808f4d8739ea380dc02f16449d4220",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "counter": "+1/+1",
+                  "count": 2
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "Partner" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "oracle_id": "5a7cd356-c07b-47dd-b089-8ecdd0e15581",
+  "name": "Hungry Ridgewolf",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hungry Ridgewolf",
+      "oracle_fingerprint": "b381d58a750d844b4c2d248a4f087eb0",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }, { "AddKeyword": "Trample" }],
+            "condition": {
+              "Any": [
+                {
+                  "Compare": { "left": { "Count": ["Commander", "This"] }, "op": "Ge", "right": 1 }
+                },
+                {
+                  "Compare": { "left": { "Count": ["Commander", "This"] }, "op": "Ge", "right": 1 }
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

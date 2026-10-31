@@ -1,0 +1,24 @@
+{
+  "oracle_id": "5def9f38-0a0b-4e8d-9f9d-29dcb46520b4",
+  "name": "Esper Sentinel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Esper Sentinel",
+      "oracle_fingerprint": "f19481f3e67668cbbfc0cc174f434882",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Nth": {
+                "event": { "SpellCast": { "what": [{ "Not": { "Type": "Creature" } }] } },
+                "nth": 1
+              }
+            },
+            "effects": [{ "Pay": { "who": "Triggering", "cost": "{X}" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

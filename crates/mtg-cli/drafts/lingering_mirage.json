@@ -1,0 +1,27 @@
+{
+  "oracle_id": "cce17310-585d-4738-8d5b-bbad65008c37",
+  "name": "Lingering Mirage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lingering Mirage",
+      "oracle_fingerprint": "b9f995d70e8ce7c94bc6b760ec4846ff",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Land" }] } },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Land" },
+                { "ControlledBy": "You" },
+                { "HasAttached": [{ "Is": "This" }] }
+              ]
+            },
+            "mods": [{ "SetTypes": ["Land"] }, { "AddSubtype": "Island" }]
+          }
+        },
+        { "Keyword": { "Cycling": "{2}" } }
+      ]
+    }
+  ]
+}

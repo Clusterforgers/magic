@@ -1,0 +1,27 @@
+{
+  "oracle_id": "fb80aaba-352a-4b58-8db2-1e02d542819c",
+  "name": "Deathlace",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Deathlace",
+      "oracle_fingerprint": "fb8724684420742ea001bd8ed65f18a4",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Either": [{ "Object": ["Spell"] }, { "Object": [] }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetColors": ["Black"] }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

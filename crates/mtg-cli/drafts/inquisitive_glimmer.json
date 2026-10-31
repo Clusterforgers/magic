@@ -1,0 +1,27 @@
+{
+  "oracle_id": "4abb227a-534e-4300-9009-065a10f10e8a",
+  "name": "Inquisitive Glimmer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Inquisitive Glimmer",
+      "oracle_fingerprint": "c002b6321b4007a643194620173b9d5b",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["Spell", { "Type": "Enchantment" }, { "ControlledBy": "You" }],
+            "change": "Reduce",
+            "mana": "{1}"
+          }
+        },
+        {
+          "CostModifier": {
+            "applies_to": ["Unblocked", "Spell"],
+            "change": "Reduce",
+            "mana": "{1}"
+          }
+        }
+      ]
+    }
+  ]
+}

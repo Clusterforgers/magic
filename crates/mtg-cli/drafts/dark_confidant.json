@@ -1,0 +1,28 @@
+{
+  "oracle_id": "2068185c-1b50-47d0-aa3f-bf505d199428",
+  "name": "Dark Confidant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dark Confidant",
+      "oracle_fingerprint": "20982e5e2be24c7d531aded6a97a1a70",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              { "LookAtTop": { "as": "top" } },
+              { "Reveal": { "what": { "Bound": "top" } } },
+              { "Move": { "what": { "Bound": "top" }, "to": "Hand" } },
+              {
+                "LoseLife": {
+                  "amount": { "Stat": { "of": { "Bound": "top" }, "stat": "ManaValue" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

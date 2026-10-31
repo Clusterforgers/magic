@@ -1,0 +1,16 @@
+{
+  "oracle_id": "d1dfb359-d8f9-491e-88f7-95193b220200",
+  "name": "Long-Term Plans",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Long-Term Plans",
+      "oracle_fingerprint": "5a9b66011f44d850227276c09eccade9",
+      "abilities": [
+        {
+          "Spell": { "effects": [{ "Search": { "filter": [], "as": "card" } }, { "Shuffle": {} }] }
+        }
+      ]
+    }
+  ]
+}

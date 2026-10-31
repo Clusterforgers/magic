@@ -1,0 +1,34 @@
+{
+  "oracle_id": "2c87565b-3902-4b11-b894-6922f66008ba",
+  "name": "Giant Trap Door Spider",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Giant Trap Door Spider",
+      "oracle_fingerprint": "7c6d0f26bea5341c924f1c065dc1eb46",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{1}{R}{G}" },
+              { "TapPermanents": { "filter": [] } },
+              { "TapPermanents": { "filter": [] } }
+            ],
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "Not": { "HasKeyword": "Flying" } },
+                    { "AttackingPlayer": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Exile": { "what": "This" } }, { "Exile": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "oracle_id": "b68e965a-96f4-447a-99be-35dbd27846e9",
+  "name": "Heartless Hidetsugu",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Heartless Hidetsugu",
+      "oracle_fingerprint": "44169d4b00ebdba8c13bd9e7f047d7e5",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "TapPermanents": { "filter": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "player",
+                  "effects": [
+                    {
+                      "DealDamage": {
+                        "to": { "Bound": "player" },
+                        "amount": {
+                          "Half": { "of": { "Life": { "Bound": "player" } }, "up": false }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

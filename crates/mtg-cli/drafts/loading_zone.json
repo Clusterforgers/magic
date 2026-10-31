@@ -1,0 +1,24 @@
+{
+  "oracle_id": "16156274-8dc0-439c-94c4-e8c89bbb5687",
+  "name": "Loading Zone",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Loading Zone",
+      "oracle_fingerprint": "bd24c7d7deb87409b4b745e16c0db6aa",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": {
+              "CountersPut": {
+                "on": { "Each": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }
+              }
+            },
+            "by": { "Multiply": 2 }
+          }
+        },
+        { "Keyword": { "Ward": "{G}" } }
+      ]
+    }
+  ]
+}

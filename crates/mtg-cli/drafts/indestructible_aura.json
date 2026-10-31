@@ -1,0 +1,27 @@
+{
+  "oracle_id": "e10e8d56-bba6-412d-970e-c24969f32b5b",
+  "name": "Indestructible Aura",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Indestructible Aura",
+      "oracle_fingerprint": "1a5f1ba597c122de5558fb875d7a0447",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": { "Target": 0 } } },
+                  "by": "Prevent",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

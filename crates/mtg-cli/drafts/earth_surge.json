@@ -1,0 +1,22 @@
+{
+  "oracle_id": "fb8fae53-3b06-41d8-baa0-638820a4b550",
+  "name": "Earth Surge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Earth Surge",
+      "oracle_fingerprint": "6c02056a6c2958a279e6edc829fcf52b",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+            "condition": {
+              "Matches": { "subject": "This", "selector": [{ "Subtype": "Creature" }] }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

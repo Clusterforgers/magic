@@ -1,0 +1,39 @@
+{
+  "oracle_id": "49e0af9d-eb76-4ad6-b60a-430ae353728c",
+  "name": "Empty the Catacombs",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Empty the Catacombs",
+      "oracle_fingerprint": "56fba1b78e0dd345d8a495e234d3827a",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "player",
+                  "effects": [
+                    {
+                      "Move": {
+                        "what": {
+                          "Each": [
+                            { "Type": "Creature" },
+                            { "In": "Graveyard" },
+                            { "OwnedBy": { "Bound": "player" } }
+                          ]
+                        },
+                        "to": "Hand"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "oracle_id": "1313da2f-92bb-4862-9153-373972cc1520",
+  "name": "Descent into Avernus",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Descent into Avernus",
+      "oracle_fingerprint": "2ed7ab601726088736ad343c2ac67ca6",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": { "Other": "descent" }, "count": 2 } },
+              {
+                "CreateToken": {
+                  "who": "EachPlayer",
+                  "token": {
+                    "Custom": {
+                      "name": "Treasure",
+                      "types": ["Artifact"],
+                      "subtypes": ["Treasure"],
+                      "toughness": 0
+                    }
+                  }
+                }
+              },
+              {
+                "DealDamage": {
+                  "to": "EachPlayer",
+                  "amount": { "Counters": { "on": "This", "counter": { "Other": "descent" } } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

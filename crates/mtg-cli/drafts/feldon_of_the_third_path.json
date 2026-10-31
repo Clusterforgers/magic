@@ -1,0 +1,48 @@
+{
+  "oracle_id": "be094704-5232-4b10-beeb-aa9bbfae063d",
+  "name": "Feldon of the Third Path",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Feldon of the Third Path",
+      "oracle_fingerprint": "99a1ace233af6346140f8e6f8bfe1e2e",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{R}" }, "Tap"],
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "In": "Graveyard" }, { "Type": "Creature" }, { "OwnedBy": "You" }]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "CopyOf": { "of": { "Target": 0 }, "except": [{ "AddType": "Artifact" }] }
+                  },
+                  "as": "copy"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "copy" },
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "Forever"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [{ "Sacrifice": { "filter": [{ "Is": { "Bound": "copy" } }] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

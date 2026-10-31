@@ -1,0 +1,25 @@
+{
+  "oracle_id": "9a6ff511-3c8f-446e-8cad-b8997a753958",
+  "name": "Elven Riders",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Elven Riders",
+      "oracle_fingerprint": "13a620584c4d2dd2cdaafb11f992d069",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "CantBeBlockedBy": [
+                  { "Not": { "AnyOf": [{ "Subtype": "Wall" }, { "HasKeyword": "Flying" }] } }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

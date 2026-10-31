@@ -1,0 +1,40 @@
+{
+  "oracle_id": "d46dcc75-55ff-4226-a392-a49755d269d2",
+  "name": "Inspiring Leader",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Inspiring Leader",
+      "oracle_fingerprint": "90165488c3376241cd20fff3bee0403a",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                { "ControlledBy": "You" },
+                { "Subtype": "Commander" }
+              ]
+            },
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Static": {
+                    "affected": {
+                      "Each": [
+                        { "Type": "Creature" },
+                        { "ControlledBy": "You" },
+                        { "Subtype": "Token" }
+                      ]
+                    },
+                    "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

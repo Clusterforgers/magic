@@ -1,0 +1,27 @@
+{
+  "oracle_id": "eec1de80-4b3d-481d-a235-c299e0381830",
+  "name": "Lifelace",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lifelace",
+      "oracle_fingerprint": "d1c485259cb8e6bd9a2e048eed8c5bd6",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Either": [{ "Object": ["Spell"] }, { "Object": [] }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetColors": ["Green"] }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "oracle_id": "c4c1e49d-5f14-486c-acf2-1952512b12b2",
+  "name": "Energybending",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Energybending",
+      "oracle_fingerprint": "9ed51b0de37668f78cf84311a988f3fe",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Land" }, { "ControlledBy": "You" }] },
+                  "mods": [{ "AddType": "Planeswalker" }, { "AddType": "Creature" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

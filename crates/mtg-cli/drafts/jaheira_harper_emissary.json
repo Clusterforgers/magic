@@ -1,0 +1,12 @@
+{
+  "oracle_id": "e63f78a6-3e38-4904-ae76-b2447e4dae3c",
+  "name": "Jaheira, Harper Emissary",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jaheira, Harper Emissary",
+      "oracle_fingerprint": "3bc0131caf32ee4c505fcee1778b7525",
+      "abilities": [{ "Keyword": "Hexproof" }, { "Keyword": "Hexproof" }]
+    }
+  ]
+}

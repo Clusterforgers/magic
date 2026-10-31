@@ -1,0 +1,31 @@
+{
+  "oracle_id": "b8602f19-6fc2-43c4-b0c4-2cd11d5dbda2",
+  "name": "Keen Duelist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Keen Duelist",
+      "oracle_fingerprint": "8c3056621f38b7ef97fb1ce2c8574566",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "player",
+                  "effects": [
+                    { "RevealUntil": { "filter": [], "as": "card", "revealed_as": "seen" } },
+                    { "LoseLife": { "amount": { "Stat": { "of": "This", "stat": "ManaValue" } } } },
+                    { "Move": { "what": "This", "to": "Hand" } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

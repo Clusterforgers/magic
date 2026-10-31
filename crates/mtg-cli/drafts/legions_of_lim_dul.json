@@ -1,0 +1,12 @@
+{
+  "oracle_id": "70b69803-1870-4441-954b-dba5b433fcb2",
+  "name": "Legions of Lim-Dûl",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Legions of Lim-Dûl",
+      "oracle_fingerprint": "c9d31062908a06ef78d242326dd3728e",
+      "abilities": [{ "Keyword": { "Landwalk": [{ "Subtype": "Snow" }, { "Subtype": "Swamp" }] } }]
+    }
+  ]
+}

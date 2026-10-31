@@ -1,0 +1,21 @@
+{
+  "oracle_id": "22ba474e-f6e6-450d-a4cf-0739f0b51079",
+  "name": "Defense Grid",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Defense Grid",
+      "oracle_fingerprint": "5767a4a5b191410eef6e9bb650ad2033",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["Spell"],
+            "change": "Increase",
+            "mana": "{3}",
+            "condition": { "Not": { "CastWith": "Flashback" } }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "oracle_id": "35ba0e70-da7c-4ed9-b8ec-7dd5c5ce110e",
+  "name": "Eerie Interference",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Eerie Interference",
+      "oracle_fingerprint": "49d6fc0278c9b3593b28e455f9aebb31",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": "You", "source": [{ "Type": "Creature" }] } },
+                  "by": "Prevent",
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Shield": {
+                  "when": {
+                    "Damage": {
+                      "to": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                      "source": [{ "Type": "Creature" }]
+                    }
+                  },
+                  "by": "Prevent",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,154 @@
+{
+  "object": "card",
+  "id": "0360f1ff-15c9-48e3-89eb-fbc4bf140c55",
+  "oracle_id": "be094704-5232-4b10-beeb-aa9bbfae063d",
+  "multiverse_ids": [
+    612525
+  ],
+  "mtgo_id": 111010,
+  "tcgplayer_id": 491600,
+  "cardmarket_id": 705808,
+  "name": "Feldon of the Third Path",
+  "lang": "en",
+  "released_at": "2023-04-21",
+  "uri": "https://api.scryfall.com/cards/0360f1ff-15c9-48e3-89eb-fbc4bf140c55",
+  "scryfall_uri": "https://scryfall.com/card/moc/277/feldon-of-the-third-path?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T04:32:30Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/0/3/0360f1ff-15c9-48e3-89eb-fbc4bf140c55.jpg?1783917150",
+    "normal": "https://cards.scryfall.io/normal/front/0/3/0360f1ff-15c9-48e3-89eb-fbc4bf140c55.jpg?1783917150",
+    "large": "https://cards.scryfall.io/large/front/0/3/0360f1ff-15c9-48e3-89eb-fbc4bf140c55.jpg?1783917150",
+    "png": "https://cards.scryfall.io/png/front/0/3/0360f1ff-15c9-48e3-89eb-fbc4bf140c55.png?1783917150",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/0/3/0360f1ff-15c9-48e3-89eb-fbc4bf140c55.jpg?1783917150",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/0/3/0360f1ff-15c9-48e3-89eb-fbc4bf140c55.jpg?1783917150",
+    "thumb": "https://cards.scryfall.io/thumb/front/0/3/0360f1ff-15c9-48e3-89eb-fbc4bf140c55.webp?1783917150",
+    "grid": "https://cards.scryfall.io/grid/front/0/3/0360f1ff-15c9-48e3-89eb-fbc4bf140c55.webp?1783917150",
+    "display": "https://cards.scryfall.io/display/front/0/3/0360f1ff-15c9-48e3-89eb-fbc4bf140c55.webp?1783917150",
+    "art": "https://cards.scryfall.io/art/front/0/3/0360f1ff-15c9-48e3-89eb-fbc4bf140c55.webp?1783917150",
+    "crop": "https://cards.scryfall.io/crop/front/0/3/0360f1ff-15c9-48e3-89eb-fbc4bf140c55.webp?1783917150",
+    "jpeg": "https://cards.scryfall.io/normal/front/0/3/0360f1ff-15c9-48e3-89eb-fbc4bf140c55.jpg?1783917150"
+  },
+  "mana_cost": "{1}{R}{R}",
+  "cmc": 3.0,
+  "type_line": "Legendary Creature — Human Artificer",
+  "oracle_text": "{2}{R}, {T}: Create a token that's a copy of target creature card in your graveyard, except it's an artifact in addition to its other types. It gains haste. Sacrifice it at the beginning of the next end step.",
+  "power": "2",
+  "toughness": "3",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "4b976756-e988-4211-95c2-0e3587118488",
+      "component": "token",
+      "name": "Copy",
+      "type_line": "Token",
+      "uri": "https://api.scryfall.com/cards/4b976756-e988-4211-95c2-0e3587118488"
+    },
+    {
+      "object": "related_card",
+      "id": "0360f1ff-15c9-48e3-89eb-fbc4bf140c55",
+      "component": "combo_piece",
+      "name": "Feldon of the Third Path",
+      "type_line": "Legendary Creature — Human Artificer",
+      "uri": "https://api.scryfall.com/cards/0360f1ff-15c9-48e3-89eb-fbc4bf140c55"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "6bba5de9-5afb-42af-a7eb-24ac854bf671",
+  "set": "moc",
+  "set_name": "March of the Machine Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/6bba5de9-5afb-42af-a7eb-24ac854bf671",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Amoc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/moc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/0360f1ff-15c9-48e3-89eb-fbc4bf140c55/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Abe094704-5232-4b10-beeb-aa9bbfae063d&unique=prints",
+  "collector_number": "277",
+  "digital": false,
+  "rarity": "mythic",
+  "flavor_text": "\"She will come back to me.\"",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Chase Stone",
+  "artist_ids": [
+    "2d753f61-5f5b-468e-97ea-8e0fdd347340"
+  ],
+  "illustration_id": "20675649-b91c-46cb-a61c-a8e2e7ab2659",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 1568,
+  "prices": {
+    "usd": "1.24",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.87",
+    "eur_foil": null,
+    "tix": "4.23"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=612525&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DFeldon%2Bof%2Bthe%2BThird%2BPath",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DFeldon%2Bof%2Bthe%2BThird%2BPath",
+    "edhrec": "https://edhrec.com/route/?cc=Feldon+of+the+Third+Path"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F491600%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=705808&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/111010?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}
