@@ -433,6 +433,8 @@ fn the_tally_counts_cards_and_copies_by_state() {
         tally,
         [
             (Bucket::Verified, 2, 17),
+            (Bucket::Read, 0, 0),
+            (Bucket::Waiting, 0, 0),
             (Bucket::Partial, 1, 1),
             (Bucket::Manual, 1, 6),
             (Bucket::Other, 1, 2),
@@ -509,6 +511,7 @@ fn blocked(name: &str, blockers: &[&str]) -> CardResult {
             .iter()
             .map(|&label| Blocker::Clause(label.to_owned()))
             .collect(),
+        waiting: false,
         copies: BTreeMap::from([("deck".to_owned(), 1)]),
     }
 }
@@ -597,6 +600,8 @@ coverage: 3 precons, 5 distinct cards, 26 copies
 
 state      cards  share   copies  share
 verified       2  40.0%       17  65.4%
+read           0   0.0%        0   0.0%
+waiting        0   0.0%        0   0.0%
 partial        1  20.0%        1   3.8%
 manual         1  20.0%        6  23.1%
 other          1  20.0%        2   7.7%
@@ -630,6 +635,8 @@ coverage: 1 precon, 11 distinct cards, 11 copies
 
 state      cards  share   copies  share
 verified       0   0.0%        0   0.0%
+read           0   0.0%        0   0.0%
+waiting        0   0.0%        0   0.0%
 partial        0   0.0%        0   0.0%
 manual        11 100.0%       11 100.0%
 other          0   0.0%        0   0.0%

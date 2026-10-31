@@ -102,7 +102,13 @@ fn the_cards_are_counted_by_state() {
         .collect();
     assert_eq!(
         states,
-        [("verified", 1), ("partial", 1), ("manual", 1), ("other", 0)]
+        [
+            ("verified", 1),
+            ("read", 0),
+            ("partial", 1),
+            ("manual", 1),
+            ("other", 0)
+        ]
     );
 }
 
@@ -318,7 +324,7 @@ fn the_report_prints_the_numbers_the_rankings_and_with_detail_every_card() {
     let summary = survey.render(ROWS, false);
     for wanted in [
         "forge-check: 6 stored cards, 5 with a Forge script (83.3%), 1 without",
-        "state of those cards: verified 1, partial 4, manual 0, other 0",
+        "state of those cards: verified 1, read 0, partial 4, manual 0, other 0",
         "verbs Forge names that our rules lack",
         "unread tail, all cards with a clause left to the table: 4 cards; 3 have items we do not read, 1 have none",
         "unread tail, those whose rules read nothing: 0 cards; 0 have items we do not read, 0 have none",

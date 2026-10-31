@@ -52,6 +52,8 @@ pub enum Command {
     CheckRules(CheckRulesArgs),
     /// List the cards players marked as important to fix, the most marked first, with each card's support state and newest note.
     FixMarks(FixMarksArgs),
+    /// List the verdicts players gave the drafts of the read tier, newest first; `--wrong` keeps the wrong ones and `--quick` the accounts that judged different cards less than 4 seconds apart.
+    Reads(ReadsArgs),
     /// Cross-check the rules of the stored precon cards against Forge's card scripts, read from a local checkout: the verbs Forge names that the rules lack, and the unread tail grouped by Forge API and key.
     ForgeCheck(ForgeCheckArgs),
     /// Ask a model for the rules of cards and keep the proposals the checker accepts (needs `ANTHROPIC_API_KEY` and costs money; --dry-run sends nothing).
@@ -207,6 +209,23 @@ pub struct CheckRulesArgs {
 #[derive(Debug, Args)]
 pub struct FixMarksArgs {
     /// How many cards the table lists, the most marked first.
+    #[arg(long, value_name = "N", default_value_t = 50)]
+    pub limit: u32,
+}
+
+/// Options of `reads`.
+#[derive(Debug, Args)]
+pub struct ReadsArgs {
+    /// Only the `wrong` verdicts.
+    #[arg(long)]
+    pub wrong: bool,
+
+    /// Only the verdicts that an account gave on different cards less than 4 seconds after or before another, with a count
+    /// per account; a reader who does not read the sheets.
+    #[arg(long)]
+    pub quick: bool,
+
+    /// How many verdicts the table lists, the newest first.
     #[arg(long, value_name = "N", default_value_t = 50)]
     pub limit: u32,
 }
