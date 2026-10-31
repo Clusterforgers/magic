@@ -35,7 +35,8 @@ const NOT_VERIFIED: &[(&str, Support, usize)] = &[
     ("Bebop, Skull & Crossbones", Partial, 2),
 ];
 
-/// The abilities a Verified card carries: those of its file the engine runs, and the mana ability each basic land type gives.
+/// The abilities a Verified card carries: those of its file the engine runs, the mana ability each basic land type gives and
+/// the two rules of each Siege face (CR 310.11).
 fn abilities_of_a_verified_card(name: &str) -> usize {
     let library = mtg_cards::builtin::library().unwrap();
     let file = library
@@ -59,7 +60,16 @@ fn abilities_of_a_verified_card(name: &str) -> usize {
     } else {
         0
     };
-    file + land_types
+    let sieges = if definition.is_multi_face() {
+        definition
+            .faces
+            .iter()
+            .map(|face| mtg_cards::assemble::siege_rules(face).len())
+            .sum()
+    } else {
+        mtg_cards::assemble::siege_rules(&definition).len()
+    };
+    file + land_types + sieges
 }
 
 /// The state and the number of abilities a corpus card is expected to arrive with.
