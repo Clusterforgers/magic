@@ -29,3 +29,11 @@ A CronJob dumps the database every night onto its own volume next to the databas
 ## Card data
 
 The card tables are filled by the CronJob `magic-ingest` (`fetch scryfall --printings`, `fetch decks`, `ingest`, `compile`), started by hand after the first install and whenever Scryfall's data should refresh. Pictures load from the Scryfall CDN as games ask for them and stay in the cache volume.
+
+## Operations
+
+Read-only checks of the running game, from a machine that reaches the cluster:
+
+- State: `kubectl -n magic get deploy,pods` and `curl -s https://magic.hivemindcloud.dk/healthz`; the server log is `kubectl -n magic logs deploy/magic-server -c server`.
+- Cards players marked as important to fix: `kubectl -n magic exec deploy/magic-server -c server -- mtg-cli fix-marks --limit 30`.
+- Games that ended in `failed` (each is an engine or server bug to reproduce): `kubectl -n magic exec magic-db-0 -- psql -U magic -d magic -Atc "select id, failure_reason, failure from games where status = 'failed' order by created_at desc limit 10"`; `select status, count(*) from games group by 1` counts them all.

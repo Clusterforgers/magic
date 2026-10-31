@@ -1029,7 +1029,7 @@ Vocabulary of other engines against this DSL. Sources: P = phase.rs (MIT or Apac
 
 ## Tasks
 
-The order of the M3 work; `ROADMAP.md` lists the pieces. A structural task changes how abilities, characteristics, events, costs or views are shaped, so it runs alone and before the tasks that fill one stub. The rows after (c) are in build order.
+The order of the M3 work; `cards-backlog.md` lists the pieces. A structural task changes how abilities, characteristics, events, costs or views are shaped, so it runs alone and before the tasks that fill one stub. The rows after (c) are in build order.
 
 | Item | Delivers | Needs |
 |---|---|---|
