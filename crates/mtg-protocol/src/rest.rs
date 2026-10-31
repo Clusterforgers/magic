@@ -108,6 +108,24 @@ impl fmt::Debug for AccountDeletion {
     }
 }
 
+/// The body of `POST /api/admin/users/{id}/password`: the password the admin sets for an account.
+///
+/// `Debug` never prints the password.
+#[derive(Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
+#[serde(deny_unknown_fields)]
+pub struct PasswordReset {
+    /// 10 to 128 characters, like any password.
+    pub password: String,
+}
+
+impl fmt::Debug for PasswordReset {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.debug_struct("PasswordReset")
+            .field("password", &"<redacted>")
+            .finish()
+    }
+}
+
 /// The signed-in account, as `register`, `login` and `GET /api/auth/me` answer.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
 pub struct UserView {
@@ -162,7 +180,7 @@ pub struct AccountOptions {
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, TS)]
 #[serde(rename_all = "snake_case")]
 pub enum AuthErrorCode {
-    /// 400: the body is not a `Credentials` object.
+    /// 400: the body is not the object the request takes (it never quotes what was sent).
     InvalidRequest,
     /// 400: the username breaks the rules above.
     InvalidUsername,
@@ -174,6 +192,10 @@ pub enum AuthErrorCode {
     RegistrationClosed,
     /// 403: the signed-in account is not the admin, which the route needs.
     Forbidden,
+    /// 404: no account has the id an admin route names.
+    UnknownAccount,
+    /// 409: the admin account cannot be deleted, and its password changes only in Account settings.
+    AdminAccount,
     /// 401: the username and password do not match an account; the same answer for an unknown
     /// username and a wrong password. Also the answer to a wrong password that confirms a
     /// password change or an account deletion.
@@ -198,13 +220,15 @@ pub enum AuthErrorCode {
 
 impl AuthErrorCode {
     /// Every code, in declaration order.
-    pub const ALL: [AuthErrorCode; 15] = [
+    pub const ALL: [AuthErrorCode; 17] = [
         AuthErrorCode::InvalidRequest,
         AuthErrorCode::InvalidUsername,
         AuthErrorCode::InvalidPassword,
         AuthErrorCode::UsernameTaken,
         AuthErrorCode::RegistrationClosed,
         AuthErrorCode::Forbidden,
+        AuthErrorCode::UnknownAccount,
+        AuthErrorCode::AdminAccount,
         AuthErrorCode::InvalidCredentials,
         AuthErrorCode::TooManyAttempts,
         AuthErrorCode::Unauthenticated,
@@ -225,6 +249,8 @@ impl AuthErrorCode {
             AuthErrorCode::UsernameTaken => "username_taken",
             AuthErrorCode::RegistrationClosed => "registration_closed",
             AuthErrorCode::Forbidden => "forbidden",
+            AuthErrorCode::UnknownAccount => "unknown_account",
+            AuthErrorCode::AdminAccount => "admin_account",
             AuthErrorCode::InvalidCredentials => "invalid_credentials",
             AuthErrorCode::TooManyAttempts => "too_many_attempts",
             AuthErrorCode::Unauthenticated => "unauthenticated",

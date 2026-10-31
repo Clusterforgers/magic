@@ -10,7 +10,7 @@ use mtg_engine::state::GameResult;
 use mtg_protocol::rest::{
     AccountDeletion, AccountList, AccountOptions, AccountRow, AuthErrorCode, CreatedAccount,
     Credentials, MyGame, MyGameSeat, MyGameStatus, MyGames, PASSWORD_MAX_CHARS, PASSWORD_MIN_CHARS,
-    PasswordChange, USERNAME_MAX_CHARS, USERNAME_MIN_CHARS, UserView,
+    PasswordChange, PasswordReset, USERNAME_MAX_CHARS, USERNAME_MIN_CHARS, UserView,
 };
 use rstest::rstest;
 use serde_json::{Value, json};
@@ -24,15 +24,17 @@ fn index(code: AuthErrorCode) -> usize {
         AuthErrorCode::UsernameTaken => 3,
         AuthErrorCode::RegistrationClosed => 4,
         AuthErrorCode::Forbidden => 5,
-        AuthErrorCode::InvalidCredentials => 6,
-        AuthErrorCode::TooManyAttempts => 7,
-        AuthErrorCode::Unauthenticated => 8,
-        AuthErrorCode::ForbiddenOrigin => 9,
-        AuthErrorCode::PayloadTooLarge => 10,
-        AuthErrorCode::UnsupportedMediaType => 11,
-        AuthErrorCode::AccountsUnavailable => 12,
-        AuthErrorCode::Unavailable => 13,
-        AuthErrorCode::Internal => 14,
+        AuthErrorCode::UnknownAccount => 6,
+        AuthErrorCode::AdminAccount => 7,
+        AuthErrorCode::InvalidCredentials => 8,
+        AuthErrorCode::TooManyAttempts => 9,
+        AuthErrorCode::Unauthenticated => 10,
+        AuthErrorCode::ForbiddenOrigin => 11,
+        AuthErrorCode::PayloadTooLarge => 12,
+        AuthErrorCode::UnsupportedMediaType => 13,
+        AuthErrorCode::AccountsUnavailable => 14,
+        AuthErrorCode::Unavailable => 15,
+        AuthErrorCode::Internal => 16,
     }
 }
 
@@ -159,6 +161,16 @@ fn settings_bodies_have_the_documented_wire_shape() {
         serde_json::from_value::<AccountDeletion>(value).unwrap(),
         deletion
     );
+
+    let reset = PasswordReset {
+        password: "the new passphrase".into(),
+    };
+    let value = serde_json::to_value(&reset).unwrap();
+    assert_eq!(value, json!({"password": "the new passphrase"}));
+    assert_eq!(
+        serde_json::from_value::<PasswordReset>(value).unwrap(),
+        reset
+    );
 }
 
 #[rstest]
@@ -179,7 +191,8 @@ fn password_changes_that_are_not_exactly_two_passwords_are_refused(#[case] body:
 #[case::number(json!({"password": 1_234_567_890}))]
 #[case::string(json!("a long passphrase"))]
 fn deletions_that_are_not_exactly_a_password_are_refused(#[case] body: Value) {
-    assert!(serde_json::from_value::<AccountDeletion>(body).is_err());
+    assert!(serde_json::from_value::<AccountDeletion>(body.clone()).is_err());
+    assert!(serde_json::from_value::<PasswordReset>(body).is_err());
 }
 
 #[test]
@@ -188,10 +201,14 @@ fn debug_output_of_the_settings_bodies_never_shows_a_password() {
         current_password: "old-secret-phrase".into(),
         new_password: "new-secret-phrase".into(),
     };
+    let reset = PasswordReset {
+        password: "reset-secret-phrase".into(),
+    };
     let deletion = AccountDeletion {
         password: "confirm-secret-phrase".into(),
     };
     for shown in [
+        format!("{reset:?}"),
         format!("{change:?}"),
         format!("{change:#?}"),
         format!("{deletion:?}"),

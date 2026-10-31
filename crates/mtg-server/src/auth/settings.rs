@@ -13,9 +13,10 @@ use axum::http::{HeaderMap, StatusCode};
 use axum::response::{IntoResponse, Response};
 use mtg_protocol::rest::{AccountDeletion, AuthErrorCode, PasswordChange};
 
+use super::admin::admin_cannot_be_deleted;
 use super::{Auth, client_address, failure, internal, too_many, unavailable};
-use crate::accounts::{Accounts, User};
-use crate::api::{ApiError, read_json};
+use crate::accounts::{Accounts, Outcome, User};
+use crate::api::{ApiError, read_credentials};
 use crate::cookie;
 use crate::credentials::{check_password, password_rules};
 use crate::secret::TokenDigest;
@@ -86,7 +87,7 @@ pub(crate) async fn change_password(
     let address = client_address(&request, auth.config.trusted_proxies);
     let headers = request.headers().clone();
     let user = auth.require_user(&headers).await?;
-    let body: PasswordChange = read_json(request).await?;
+    let body: PasswordChange = read_credentials(request).await?;
 
     check_password(&body.new_password).map_err(|_| {
         failure(
@@ -126,7 +127,8 @@ pub(crate) async fn change_password(
 
 /// `DELETE /api/auth/account`: deletes the signed-in account. Its decks, sessions and seat
 /// bindings go in one transaction; then it leaves the live games ([`Registry::forget_user`]) and
-/// the cookie is cleared.
+/// the cookie is cleared. The admin's account is refused with 409
+/// `admin_account`, since nothing makes another one.
 ///
 /// [`Registry::forget_user`]: crate::registry::Registry::forget_user
 pub(crate) async fn delete_account(
@@ -141,11 +143,17 @@ pub(crate) async fn delete_account(
     let address = client_address(&request, auth.config.trusted_proxies);
     let headers = request.headers().clone();
     let user = auth.require_user(&headers).await?;
-    let body: AccountDeletion = read_json(request).await?;
+    // Decided before the body is read: nothing makes another admin, so this one stays.
+    if user.is_admin {
+        return Err(admin_cannot_be_deleted());
+    }
+    let body: AccountDeletion = read_credentials(request).await?;
 
     confirm(auth, accounts, &user, &headers, address, body.password).await?;
-    if !accounts.delete_user(user.id).await.map_err(unavailable)? {
-        return Err(auth.unauthenticated(&headers));
+    match accounts.delete_user(user.id).await.map_err(unavailable)? {
+        Outcome::Done => {}
+        Outcome::Gone => return Err(auth.unauthenticated(&headers)),
+        Outcome::Admin => return Err(admin_cannot_be_deleted()),
     }
     tracing::info!(user = %user.id, "account deleted");
     app.registry().forget_user(user.id).await;

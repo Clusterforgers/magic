@@ -5,4 +5,4 @@
  *
  * `message` is for people and may change, the code is for programs.
  */
-export type AuthErrorCode = "invalid_request" | "invalid_username" | "invalid_password" | "username_taken" | "registration_closed" | "forbidden" | "invalid_credentials" | "too_many_attempts" | "unauthenticated" | "forbidden_origin" | "payload_too_large" | "unsupported_media_type" | "accounts_unavailable" | "unavailable" | "internal";
+export type AuthErrorCode = "invalid_request" | "invalid_username" | "invalid_password" | "username_taken" | "registration_closed" | "forbidden" | "unknown_account" | "admin_account" | "invalid_credentials" | "too_many_attempts" | "unauthenticated" | "forbidden_origin" | "payload_too_large" | "unsupported_media_type" | "accounts_unavailable" | "unavailable" | "internal";

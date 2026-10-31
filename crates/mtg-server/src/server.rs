@@ -243,6 +243,24 @@ impl Server {
     }
 }
 
+/// The account routes: signing in and out, the settings of the signed-in account and the admin's.
+fn account_routes() -> Router<AppState> {
+    Router::new()
+        .route("/api/auth/register", post(auth::register))
+        .route("/api/auth/login", post(auth::login))
+        .route("/api/auth/logout", post(auth::logout))
+        .route("/api/auth/password", post(auth::change_password))
+        .route("/api/auth/account", delete(auth::delete_account))
+        .route("/api/auth/me", get(auth::me))
+        .route("/api/auth/options", get(auth::options))
+        .route(
+            "/api/admin/users",
+            get(auth::list_accounts).post(auth::create_account),
+        )
+        .route("/api/admin/users/{id}", delete(auth::remove_account))
+        .route("/api/admin/users/{id}/password", post(auth::reset_password))
+}
+
 /// All routes of the server.
 pub(crate) fn router(state: AppState) -> Router {
     let origins = state
@@ -316,17 +334,7 @@ pub(crate) fn router(state: AppState) -> Router {
         )
         .route("/api/join", post(lobbies::join_by_code))
         .route("/api/lobbies", get(lobbies::list))
-        .route("/api/auth/register", post(auth::register))
-        .route("/api/auth/login", post(auth::login))
-        .route("/api/auth/logout", post(auth::logout))
-        .route("/api/auth/password", post(auth::change_password))
-        .route("/api/auth/account", delete(auth::delete_account))
-        .route("/api/auth/me", get(auth::me))
-        .route("/api/auth/options", get(auth::options))
-        .route(
-            "/api/admin/users",
-            get(auth::list_accounts).post(auth::create_account),
-        )
+        .merge(account_routes())
         .route("/api/me/games", get(my_games::list))
         .route("/api/me/games/{id}", delete(my_games::remove))
         .route("/ws/{game}/{token}", get(ws::upgrade))
