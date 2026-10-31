@@ -310,6 +310,11 @@ fn gaps(text: &str) -> Vec<String> {
     json!({"Spell": {"targets": [{"what": {"Object": [{"Type": "Creature"}, {"ControlledBy": "You"}]}}],
         "effects": [{"CreateToken": {"token": {"CopyOf": {"of": {"Target": 0}}}, "count": 2}}]}})
 )]
+#[case::at_the_next_end_step(
+    "Name:Test Lantern\nTypes:Instant\nA:SP$ DelayedTrigger | Mode$ Phase | Phase$ End of Turn | Execute$ Gain\nSVar:Gain:DB$ GainLife | LifeAmount$ 3\n",
+    json!({"Spell": {"effects": [{"DelayedTrigger": {"when": {"StepBegins": {"step": "End", "whose": "EachPlayer"}},
+        "effects": [{"GainLife": {"amount": 3}}]}}]}})
+)]
 #[case::look_and_take_one(
     "Name:Test Glimpse\nTypes:Sorcery\nA:SP$ Dig | DigNum$ 3 | ChangeNum$ 1\n",
     json!({"Spell": {"effects": [

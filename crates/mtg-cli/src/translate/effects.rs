@@ -84,6 +84,7 @@ fn line(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         "Cleanup" => cleanup(p),
         "Effect" => effects_effect::effects(ctx, p),
         "Charm" => one(charm(ctx, p)),
+        "DelayedTrigger" => one(delayed(ctx, p)),
         "Dig" => effects_zone::dig(ctx, p),
         "CopyPermanent" => tokens::copy_permanent(ctx, p),
         "Destroy" | "DestroyAll" | "Counter" | "Pump" | "PumpAll" | "PutCounter"
@@ -227,6 +228,31 @@ fn charm(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
         modal["choose"] = json!({"min": min, "max": max});
     }
     Ok(json!({ "Modal": modal }))
+}
+
+/// `DelayedTrigger` at a step ("at the beginning of the next end step, ..."): the part named by `Execute$` happens then.
+fn delayed(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
+    only(
+        p,
+        "DelayedTrigger",
+        &["Mode", "Phase", "ValidPlayer", "Execute", "NextTurn"],
+    )?;
+    if p.get("Mode") != Some("Phase") {
+        return unmapped("key:DelayedTrigger.Mode");
+    }
+    let step = super::triggers::step(p.get("Phase").unwrap_or_default())?;
+    let whose = match p.get("ValidPlayer") {
+        None | Some("Player") => "EachPlayer",
+        Some("You") => "You",
+        Some(other) => return unmapped(format!("key:DelayedTrigger.ValidPlayer={other}")),
+    };
+    let Some(execute) = p.get("Execute") else {
+        return unmapped("key:DelayedTrigger.no-Execute");
+    };
+    let part = ctx.sub(execute)?;
+    let effects = chain_at(ctx, &part, false)?;
+    let when = json!({"StepBegins": {"step": step, "whose": whose}});
+    Ok(json!({"DelayedTrigger": {"when": when, "effects": effects}}))
 }
 
 fn proliferate(p: &Params) -> Tr<Value> {

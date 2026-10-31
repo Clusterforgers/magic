@@ -156,7 +156,8 @@ fn changes_zone(ctx: &Ctx, p: &Params) -> Tr<Value> {
     Ok(json!({ "ZoneChange": pattern }))
 }
 
-fn step(word: &str) -> Tr<&'static str> {
+/// The step a Forge `Phase$` word names.
+pub fn step(word: &str) -> Tr<&'static str> {
     Ok(match word {
         "Upkeep" => "Upkeep",
         "Draw" => "Draw",
