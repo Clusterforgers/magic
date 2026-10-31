@@ -32,9 +32,18 @@ fn world() -> World {
     })
     .collect();
     let mut world = World::new(&[], tokens);
-    world
-        .subtypes
-        .extend(["Elf", "Goblin", "Wizard", "Aura", "Equipment"].map(str::to_owned));
+    world.subtypes.extend(
+        [
+            "Elf",
+            "Goblin",
+            "Wizard",
+            "Aura",
+            "Equipment",
+            "Plains",
+            "Island",
+        ]
+        .map(str::to_owned),
+    );
     world
 }
 
@@ -245,6 +254,32 @@ fn gaps(text: &str) -> Vec<String> {
         "effects": [{"Exile": {"what": {"Target": 0}, "as": "exiled"}},
             {"Continuous": {"affected": {"Bound": "exiled"},
                 "mods": [{"ModifyPT": {"power": 1, "toughness": 1}}], "duration": "UntilEndOfTurn"}}]}})
+)]
+#[case::shock_land(
+    "Name:Test Fountain\nTypes:Land\nR:Event$ Moved | ValidCard$ Card.Self | Destination$ Battlefield | ReplaceWith$ DBTap | ReplacementResult$ Updated\nSVar:DBTap:DB$ Tap | Defined$ Self | ETB$ True | UnlessCost$ PayLife<2> | UnlessPayer$ You\n",
+    json!({"Replacement": {"when": {"Enters": {"what": ["This"]}}, "by": {"PayLifeOrTapped": 2}}})
+)]
+#[case::check_land(
+    "Name:Test Fortress\nTypes:Land\nR:Event$ Moved | ValidCard$ Card.Self | Destination$ Battlefield | ReplaceWith$ LandTapped | ReplacementResult$ Updated\nSVar:LandTapped:DB$ Tap | Defined$ Self | ETB$ True | ConditionPresent$ Plains.YouCtrl,Island.YouCtrl | ConditionCompare$ EQ0\n",
+    json!({"Replacement": {"when": {"Enters": {"what": ["This"]}}, "by": "Tapped",
+        "condition": {"Not": {"Compare": {"left": {"Count": [{"AnyOf": [{"Subtype": "Plains"}, {"Subtype": "Island"}]},
+            {"ControlledBy": "You"}]}, "op": "Ge", "right": 1}}}}})
+)]
+#[case::prevention(
+    "Name:Test Salve\nTypes:Instant\nA:SP$ PreventDamage | ValidTgts$ Any | Amount$ 3\n",
+    json!({"Spell": {"targets": [{"what": "AnyTarget"}],
+        "effects": [{"Shield": {"when": {"Damage": {"to": {"Target": 0}}}, "by": {"PreventUpTo": 3},
+            "duration": "UntilEndOfTurn"}}]}})
+)]
+#[case::secondary_static_joins_the_first(
+    "Name:Test Chains\nTypes:Enchantment Aura\nS:Mode$ Continuous | Affected$ Creature.EnchantedBy | AddPower$ 2 | AddToughness$ 2\nS:Mode$ CantBlock | ValidCard$ Creature.EnchantedBy | Secondary$ True\n",
+    json!({"Static": {"affected": "Attached", "mods": [{"ModifyPT": {"power": 2, "toughness": 2}}, "CantBlock"]}})
+)]
+#[case::a_condition_on_a_part(
+    "Name:Test Boon\nTypes:Sorcery\nA:SP$ Draw | SubAbility$ Gain\nSVar:Gain:DB$ GainLife | LifeAmount$ 2 | ConditionPresent$ Artifact.YouCtrl | ConditionCompare$ GE1\n",
+    json!({"Spell": {"effects": [{"Draw": {}}, {"If": {"condition": {"Compare": {"left": {"Count":
+        [{"Type": "Artifact"}, {"ControlledBy": "You"}]}, "op": "Ge", "right": 1}},
+        "then": [{"GainLife": {"amount": 2}}]}}]}})
 )]
 fn a_line_becomes_the_ability_of_the_dsl(#[case] script: &str, #[case] expected: Value) {
     let mut found = abilities(script);

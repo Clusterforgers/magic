@@ -45,6 +45,11 @@ impl Stored {
         self.cards.contains_key(slug)
     }
 
+    /// The oracle id of the stored card with this slug.
+    pub fn oracle_id(&self, slug: &str) -> Option<&str> {
+        self.cards.get(slug).map(|card| card.oracle_id.as_str())
+    }
+
     /// What the corpus or the compiler makes of the card today: `corpus-verified`, `compiled-verified`, `partial`,
     /// `manual` and the like, the words of the support states.
     pub fn today(&self, slug: &str) -> String {

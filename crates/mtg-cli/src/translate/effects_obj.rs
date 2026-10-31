@@ -16,6 +16,7 @@ pub fn effects(ctx: &mut Ctx, p: &Params, api: &str) -> Tr<Vec<Value>> {
         "DestroyAll" => one(destroy_all(ctx, p)),
         "DamageAll" => one(damage_all(ctx, p)),
         "Counter" => one(counter(ctx, p)),
+        "PreventDamage" => one(prevent_damage(ctx, p)),
         "Pump" => pump(ctx, p),
         "PumpAll" => pump_all(ctx, p),
         "Animate" => animate(ctx, p),
@@ -84,32 +85,33 @@ fn damage_all(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
 }
 
 fn counter(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
-    only(
-        p,
-        "Counter",
-        &["TargetType", "ValidTgts", "UnlessCost", "UnlessPayer"],
-    )?;
+    only(p, "Counter", &["TargetType", "ValidTgts"])?;
     if p.get("TargetType") != Some("Spell") {
         return unmapped("key:Counter.TargetType");
     }
     let mut selector = vec![json!("Spell")];
     selector.extend(selector_any(ctx, p.get("ValidTgts").unwrap_or("Card"))?);
     let what = ctx.target(json!({"what": {"Object": selector}}))?;
-    let counter = json!({"Counter": {"what": what.clone()}});
-    let Some(unless) = p.get("UnlessCost") else {
-        return Ok(counter);
+    Ok(json!({"Counter": {"what": what}}))
+}
+
+/// `PreventDamage`: the next damage to the target this turn is prevented, up to an amount or all of it.
+fn prevent_damage(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
+    only(
+        p,
+        "PreventDamage",
+        &["Amount", "ValidTgts", "Defined", "TargetMin", "TargetMax"],
+    )?;
+    let by = match p.get("Amount") {
+        Some("All") => json!("Prevent"),
+        Some(text) => match amount(ctx, text)?.as_u64() {
+            Some(number) => json!({ "PreventUpTo": number }),
+            None => return unmapped("key:PreventDamage.Amount-count"),
+        },
+        None => return unmapped("key:PreventDamage.no-Amount"),
     };
-    if !matches!(p.get("UnlessPayer"), None | Some("TargetedController")) {
-        return unmapped("key:Counter.UnlessPayer");
-    }
-    let Value::String(cost) = super::cost::cost(ctx, unless)? else {
-        return unmapped("key:Counter.UnlessCost-shape");
-    };
-    if cost.contains('X') {
-        return unmapped("key:Counter.UnlessCost-X");
-    }
-    let who = json!({ "ControllerOf": what });
-    Ok(json!({"Pay": {"who": who, "cost": cost, "unpaid": [counter]}}))
+    let to = subject(ctx, p, "", None)?;
+    Ok(json!({"Shield": {"when": {"Damage": {"to": to}}, "by": by, "duration": "UntilEndOfTurn"}}))
 }
 
 /// The restriction a hidden keyword (`HIDDEN CARDNAME can't block.`) stands for.

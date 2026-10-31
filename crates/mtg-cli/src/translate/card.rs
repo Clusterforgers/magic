@@ -89,11 +89,8 @@ pub fn translate_face(world: &World, face: &Face) -> FaceOut {
             merged_trigger(&mut ctx, &group).map(|ability| vec![ability]),
         );
     }
-    for body in &face.statics {
-        take(
-            &mut out,
-            static_line(&mut ctx, body).map(|ability| vec![ability]),
-        );
+    for result in static_abilities(&mut ctx, &face.statics) {
+        take(&mut out, result.map(|ability| vec![ability]));
     }
     for body in &face.replacements {
         take(
@@ -127,6 +124,60 @@ fn trigger_groups(bodies: &[String]) -> Vec<Vec<&String>> {
         }
     }
     groups
+}
+
+/// The static abilities of the lines, a line marked `Secondary$` joined to the one before it when both change the same
+/// objects ("gets +2/+2 and can't block"); a secondary line that fails takes the line before it down with it.
+fn static_abilities(ctx: &mut Ctx, bodies: &[String]) -> Vec<Tr<Value>> {
+    let mut out: Vec<Tr<Value>> = Vec::new();
+    for body in bodies {
+        let secondary = Params::parse(body).get("Secondary") == Some("True");
+        let result = static_line(ctx, body);
+        if secondary && let Some(previous) = out.last_mut() {
+            match (&result, previous.is_ok()) {
+                (Ok(second), true) => {
+                    if let Ok(first) = previous
+                        && join_statics(first, second)
+                    {
+                        continue;
+                    }
+                }
+                (Err(_), true) => {
+                    *previous = result;
+                    continue;
+                }
+                _ => {}
+            }
+        }
+        out.push(result);
+    }
+    out
+}
+
+/// Adds the modifications of `second` to `first` when both are `Static` abilities that differ only in them.
+fn join_statics(first: &mut Value, second: &Value) -> bool {
+    let (Some(mine), Some(theirs)) = (
+        first.get_mut("Static").and_then(Value::as_object_mut),
+        second.get("Static").and_then(Value::as_object),
+    ) else {
+        return false;
+    };
+    let rest = |map: &serde_json::Map<String, Value>| {
+        map.iter()
+            .filter(|(key, _)| key.as_str() != "mods")
+            .map(|(key, value)| (key.clone(), value.clone()))
+            .collect::<Vec<_>>()
+    };
+    if rest(mine) != rest(theirs) {
+        return false;
+    }
+    let (Some(Value::Array(own)), Some(Value::Array(more))) =
+        (mine.get_mut("mods"), theirs.get("mods"))
+    else {
+        return false;
+    };
+    own.extend(more.iter().cloned());
+    true
 }
 
 /// One trigger from a group of lines: the event patterns of the lines joined as alternatives when the rest of the

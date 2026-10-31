@@ -18,6 +18,7 @@ const TOP: usize = 15;
 struct Row {
     blocked: BTreeSet<String>,
     freed: usize,
+    weight: f64,
 }
 
 /// What a run read and what became of it.
@@ -43,7 +44,7 @@ pub struct Funnel {
 
 impl Funnel {
     /// Counts a card; true when it has a proposal to write.
-    pub fn add(&mut self, card: &CardOut, ranked: bool) -> bool {
+    pub fn add(&mut self, card: &CardOut, ranked: bool, weight: f64) -> bool {
         self.read += 1;
         let names: BTreeSet<&str> = card.gaps().map(|gap| gap.0.as_str()).collect();
         if !ranked {
@@ -54,6 +55,7 @@ impl Funnel {
             row.blocked.insert(card.name.clone());
             if names.len() == 1 {
                 row.freed += 1;
+                row.weight += weight;
             }
         }
         if card.lines() == 0 {
@@ -90,7 +92,14 @@ impl Funnel {
     /// The ledger as TSV: `kind`, `reason`, `blocked`, `freed`, `weight`, `examples`.
     pub fn ledger(&self) -> String {
         let mut text = String::from("kind\treason\tblocked\tfreed\tweight\texamples\n");
-        for (name, row) in self.ranked() {
+        let mut rows = self.ranked();
+        rows.sort_by(|a, b| {
+            b.1.weight
+                .total_cmp(&a.1.weight)
+                .then(b.1.freed.cmp(&a.1.freed))
+                .then(b.1.blocked.len().cmp(&a.1.blocked.len()))
+        });
+        for (name, row) in rows {
             let examples: Vec<&str> = row
                 .blocked
                 .iter()
@@ -99,9 +108,10 @@ impl Funnel {
                 .collect();
             let _ = writeln!(
                 text,
-                "unmapped\t{name}\t{}\t{}\t0\t{}",
+                "unmapped\t{name}\t{}\t{}\t{:.6}\t{}",
                 row.blocked.len(),
                 row.freed,
+                row.weight,
                 examples.join("; ")
             );
         }

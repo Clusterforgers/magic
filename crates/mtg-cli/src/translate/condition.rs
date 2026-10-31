@@ -52,6 +52,53 @@ pub fn condition(ctx: &Ctx, p: &Params) -> Tr<Option<Value>> {
     })
 }
 
+/// The keys of a condition on one line of an ability chain and the keys of [`condition`] they stand for.
+const PREFIXED: [(&str, &str); 5] = [
+    ("ConditionPresent", "IsPresent"),
+    ("ConditionZone", "PresentZone"),
+    ("ConditionCompare", "PresentCompare"),
+    ("ConditionCheckSVar", "CheckSVar"),
+    ("ConditionSVarCompare", "SVarCompare"),
+];
+
+/// The condition a line of a chain states with `ConditionPresent$` and the like, and the line without those keys.
+pub fn prefixed(ctx: &Ctx, p: &Params) -> Tr<(Option<Value>, Params)> {
+    let renamed: Vec<String> = PREFIXED
+        .iter()
+        .filter_map(|(from, to)| p.get(from).map(|value| format!("{to}$ {value}")))
+        .collect();
+    if renamed.is_empty() {
+        return Ok((None, p.clone()));
+    }
+    let condition = condition(ctx, &Params::parse(&renamed.join(" | ")))?;
+    let keys: Vec<&str> = PREFIXED.iter().map(|(from, _)| *from).collect();
+    Ok((condition, p.without(&keys)))
+}
+
+/// A condition under which a permanent enters tapped, as the DSL states it: "unless it holds" (`Not(Compare Ge n)`) for
+/// the comparisons that mean "fewer than".
+pub fn tapped_when(condition: Value) -> Value {
+    let Some(compare) = condition.get("Compare") else {
+        return condition;
+    };
+    let (Some(op), Some(right)) = (
+        compare.get("op").and_then(Value::as_str),
+        compare.get("right").and_then(Value::as_i64),
+    ) else {
+        return condition;
+    };
+    let below = match (op, right) {
+        ("Lt", n) => n,
+        ("Le", n) => n + 1,
+        ("Eq", 0) => 1,
+        _ => return condition,
+    };
+    let mut atleast = condition.clone();
+    atleast["Compare"]["op"] = json!("Ge");
+    atleast["Compare"]["right"] = json!(below);
+    json!({ "Not": atleast })
+}
+
 /// The condition a named Forge condition stands for (`Condition$ Threshold`).
 fn named(name: &str) -> Tr<Value> {
     let yours = |extra: Value| vec![extra, json!({"OwnedBy": "You"})];

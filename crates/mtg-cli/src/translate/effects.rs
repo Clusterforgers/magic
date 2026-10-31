@@ -3,6 +3,7 @@
 use serde_json::{Value, json};
 
 use super::amount::amount;
+use super::condition::prefixed;
 use super::ctx::{Ctx, Tr, only, unmapped};
 use super::valid::{defined, subject};
 use super::{effects_effect, effects_obj, effects_zone, tokens};
@@ -16,7 +17,14 @@ pub fn chain(ctx: &mut Ctx, params: &Params) -> Tr<Vec<Value>> {
 /// The effects of a line and of the sub-abilities after it. A part that is not the ability itself (`top`) and has a cost
 /// is paid as it resolves: its effects and those after it happen if the cost is paid.
 pub fn chain_at(ctx: &mut Ctx, p: &Params, top: bool) -> Tr<Vec<Value>> {
-    let mut effects = line(ctx, p)?;
+    let (condition, own) = prefixed(ctx, p)?;
+    let mut effects = line(ctx, &own.without(&["UnlessCost", "UnlessPayer"]))?;
+    if let Some(unless) = p.get("UnlessCost") {
+        effects = unless_pays(ctx, p, unless, effects)?;
+    }
+    if let Some(condition) = condition {
+        effects = vec![json!({"If": {"condition": condition, "then": effects}})];
+    }
     if let Some(name) = p.get("SubAbility") {
         let next = ctx.sub(name)?;
         effects.extend(chain_at(ctx, &next, false)?);
@@ -28,6 +36,26 @@ pub fn chain_at(ctx: &mut Ctx, p: &Params, top: bool) -> Tr<Vec<Value>> {
         }
         _ => Ok(effects),
     }
+}
+
+/// `UnlessCost$`: the effects happen unless the player named by `UnlessPayer$` pays.
+fn unless_pays(ctx: &Ctx, p: &Params, unless: &str, effects: Vec<Value>) -> Tr<Vec<Value>> {
+    let who = match p.get("UnlessPayer") {
+        Some("You") => json!("You"),
+        Some("TargetedController") => json!({ "ControllerOf": ctx.last_target()? }),
+        None if api_of(p)? == "Counter" => json!({ "ControllerOf": ctx.last_target()? }),
+        Some(other) => return unmapped(format!("key:Unless.UnlessPayer={other}")),
+        None => return unmapped("key:Unless.no-UnlessPayer"),
+    };
+    let Value::String(cost) = super::cost::cost(ctx, unless)? else {
+        return unmapped("key:Unless.UnlessCost-shape");
+    };
+    if cost.contains('X') {
+        return unmapped("key:Unless.UnlessCost-X");
+    }
+    Ok(vec![
+        json!({"Pay": {"who": who, "cost": cost, "unpaid": effects}}),
+    ])
 }
 
 /// The API a line names.
@@ -57,7 +85,7 @@ fn line(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         "Charm" => one(charm(ctx, p)),
         "Destroy" | "DestroyAll" | "Counter" | "Pump" | "PumpAll" | "PutCounter"
         | "RemoveCounter" | "Tap" | "Untap" | "TapAll" | "UntapAll" | "Sacrifice"
-        | "Regenerate" | "Fight" | "GainControl" | "DamageAll" | "Animate" => {
+        | "Regenerate" | "Fight" | "GainControl" | "DamageAll" | "Animate" | "PreventDamage" => {
             effects_obj::effects(ctx, p, api)
         }
         "ChangeZone" | "ChangeZoneAll" => effects_zone::effects(ctx, p, api),

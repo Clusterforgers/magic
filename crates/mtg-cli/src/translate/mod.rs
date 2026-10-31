@@ -41,6 +41,7 @@ use crate::args::TranslateForgeArgs;
 use crate::cache::Cache;
 use crate::error::CliError;
 use crate::forge::script::{Face, Script, fold, read_checkout};
+use crate::popularity::Popularity;
 use card::{CardOut, translate_script};
 use ctx::World;
 use report::Funnel;
@@ -64,6 +65,7 @@ pub async fn translate_forge(
         .clone()
         .unwrap_or_else(|| cache.path("proposals/forge"));
     let mut funnel = Funnel::default();
+    let popularity = Popularity::from_cache(cache).ok();
     let mut index = String::from("slug\tname\ttranslated\ttoday\n");
     for script in &scripts {
         if !wanted.is_empty() && !selected(script, &wanted) {
@@ -79,7 +81,13 @@ pub async fn translate_forge(
             Some(stored) if card.translated() > 0 => stored.today(&stem),
             _ => String::new(),
         };
-        let written = funnel.add(&card, !today.ends_with("verified"));
+        let weight = match (&stored, &popularity) {
+            (Some(stored), Some(ranks)) => {
+                stored.oracle_id(&stem).map_or(0.0, |id| ranks.weight(id))
+            }
+            _ => 0.0,
+        };
+        let written = funnel.add(&card, !today.ends_with("verified"), weight);
         if written {
             write_proposal(&out_dir, &card)?;
             let state = if card.gaps().next().is_none() {
