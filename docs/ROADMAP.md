@@ -47,6 +47,8 @@ One item is one piece of about 15 minutes and one line: the outcome, the cards i
 
 Items that touch the running game come first.
 
+- [~] (v93a) (hold-flag) The client's by-hand hold follows the server's rule: the wire says whether a manual clause is owed at resolution, so "Apply the card's text by hand" shows only while the seat is held, names the card and ends "then continue" (`docs/server.md`, Stops; `web/src/play/byHand.ts`)
+- [~] (ad1d) (admin-guards) The admin account cannot be deleted from Account settings (409 and a plain warning), `docs/deploy.md` names the recovery, and the Accounts page scrolls to the new credentials, "Copy both" adds the site address, the headings agree, the credential routes do not echo serde detail and the new-password field opts out of saved logins
 - [~] (ad1a) (admin-users) The account named by `MTG_ADMIN_USERNAME` is the admin and the only one who makes accounts: the server marks it at start, `POST /api/admin/users` and an accounts page in the client create and list accounts, and the chart closes self-registration (`docs/server.md`, Accounts)
 - [ ] (d1c) A copy of the nightly database dumps off queen (a Longhorn backup target or a scheduled copy to another machine), so losing queen does not lose the accounts and decks (`docs/deploy.md`)
 - [ ] (d1b) The release script's steps as a GitHub Actions workflow on a published release, so a release needs no dev machine (`docs/deploy.md`)
