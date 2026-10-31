@@ -8,7 +8,9 @@ use mtg_cards::effect::Effect;
 use mtg_cards::refs::Ref;
 use mtg_cards::value::Amount;
 use mtg_core::color::Color;
+use mtg_core::ids::PlayerId;
 use mtg_engine::Event;
+use mtg_engine::zones::Zone;
 use mtg_protocol::{EventView, HiddenEvent};
 use mtg_testkit::cards::{forest, gain_life, instant, island};
 use mtg_testkit::trigger_cards::{creature_with, trigger, when, with_rules};
@@ -26,8 +28,8 @@ fn failing() -> Effect {
     }
 }
 
-fn on_a_read(card: Arc<CardDefinition>) -> Arc<CardDefinition> {
-    let mut definition = (*card).clone();
+fn on_a_read(card: &Arc<CardDefinition>) -> Arc<CardDefinition> {
+    let mut definition = (**card).clone();
     definition.read = true;
     Arc::new(definition)
 }
@@ -44,14 +46,14 @@ enum Source {
 /// Seat 0 holds the card (or a spell that draws) and lands; every other seat has a library to draw from.
 fn table(seats: usize, source: Source) -> Table {
     let faulty = match source {
-        Source::Spell => on_a_read(with_rules(
+        Source::Spell => on_a_read(&with_rules(
             &instant("Faulty", 0, &[Color::Green]),
             vec![Ability::Spell {
                 targets: Vec::new(),
                 effects: vec![gain_life(2), failing()],
             }],
         )),
-        Source::DrawTrigger => on_a_read(creature_with(
+        Source::DrawTrigger => on_a_read(&creature_with(
             "Faulty",
             vec![trigger(when::you_draw(), vec![gain_life(2), failing()])],
         )),
@@ -72,8 +74,16 @@ fn table(seats: usize, source: Source) -> Table {
     Table::new(scenario)
 }
 
-/// Plays the source out and returns, for each seat, the view of the one `AbilityLeftToTable` that the batches hold.
-fn played(table: &mut Table, source: Source) -> Vec<EventView> {
+/// How many abilities fail: one spell, or one trigger for each of the two cards a Study draws.
+const fn expected(source: Source) -> usize {
+    match source {
+        Source::Spell => 1,
+        Source::DrawTrigger => 2,
+    }
+}
+
+/// Plays the source out and returns, for each seat, the views of the `AbilityLeftToTable` events that the batches hold.
+fn played(table: &mut Table, source: Source) -> Vec<Vec<EventView>> {
     let seats = table.views.len();
     let mut found: Vec<Vec<EventView>> = vec![Vec::new(); seats];
     let mut collect = |run: crate::common::table::Run| {
@@ -92,13 +102,14 @@ fn played(table: &mut Table, source: Source) -> Vec<EventView> {
         }
         collect(table.run(|driver: &mut Driver| driver.pass()));
     }
+    for seen in &found {
+        assert_eq!(
+            seen.len(),
+            expected(source),
+            "{source:?}: the events a seat is told"
+        );
+    }
     found
-        .into_iter()
-        .map(|mut seen| {
-            assert_eq!(seen.len(), 1, "{source:?}: one event for a seat");
-            seen.remove(0)
-        })
-        .collect()
 }
 
 fn is_left(view: &EventView) -> bool {
@@ -112,12 +123,26 @@ fn is_left(view: &EventView) -> bool {
 #[rstest]
 fn a_failing_spell_is_told_whole_to_every_seat(#[values(2, 3, 4)] seats: usize) {
     let mut table = table(seats, Source::Spell);
-    for (seat, view) in played(&mut table, Source::Spell).into_iter().enumerate() {
-        let EventView::Public(Event::AbilityLeftToTable(left)) = view else {
-            panic!("seat {seat}: {view:?}");
+    let spell = table
+        .driver
+        .state()
+        .zone(Zone::Hand(PlayerId::from_index(0)))
+        .iter()
+        .copied()
+        .find(|id| {
+            table
+                .driver
+                .state()
+                .object(*id)
+                .is_some_and(|o| o.card().name == "Faulty")
+        })
+        .unwrap();
+    for (seat, views) in played(&mut table, Source::Spell).into_iter().enumerate() {
+        let [EventView::Public(Event::AbilityLeftToTable(left))] = views.as_slice() else {
+            panic!("seat {seat}: {views:?}");
         };
         assert_eq!(left.controller.index(), 0, "seat {seat}");
-        assert_eq!(left.source.id, table.driver.id_of("Faulty").unwrap());
+        assert_eq!(left.source.id, spell, "seat {seat}");
     }
 }
 
@@ -128,21 +153,26 @@ fn a_failing_trigger_on_a_card_drawn_is_hidden_from_the_seats_that_cannot_see_th
     let mut table = table(seats, Source::DrawTrigger);
     let views = played(&mut table, Source::DrawTrigger);
     let watcher = table.driver.id_of("Faulty").unwrap();
-    for (seat, view) in views.into_iter().enumerate() {
-        match (seat, view) {
-            (0, EventView::Public(Event::AbilityLeftToTable(left))) => {
-                assert_eq!(left.source.id, watcher);
+    for (seat, seen) in views.into_iter().enumerate() {
+        for view in seen {
+            match (seat, view) {
+                (0, EventView::Public(Event::AbilityLeftToTable(left))) => {
+                    assert_eq!(left.source.id, watcher);
+                }
+                (
+                    seat,
+                    EventView::Hidden(HiddenEvent::AbilityLeftToTable { source, controller }),
+                ) if seat > 0 => {
+                    assert_eq!((source.id, controller.index()), (watcher, 0), "seat {seat}");
+                    let json = serde_json::to_string(&HiddenEvent::AbilityLeftToTable {
+                        source,
+                        controller,
+                    })
+                    .unwrap();
+                    assert!(!json.contains("text"), "seat {seat} reads no words: {json}");
+                }
+                (seat, view) => panic!("seat {seat}: {view:?}"),
             }
-            (seat, EventView::Hidden(HiddenEvent::AbilityLeftToTable { source, controller }))
-                if seat > 0 =>
-            {
-                assert_eq!((source.id, controller.index()), (watcher, 0), "seat {seat}");
-                let json =
-                    serde_json::to_string(&HiddenEvent::AbilityLeftToTable { source, controller })
-                        .unwrap();
-                assert!(!json.contains("text"), "seat {seat} reads no words: {json}");
-            }
-            (seat, view) => panic!("seat {seat}: {view:?}"),
         }
     }
 }
