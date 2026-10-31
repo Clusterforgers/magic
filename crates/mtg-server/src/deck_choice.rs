@@ -12,7 +12,6 @@
 use axum::http::{HeaderMap, StatusCode};
 use mtg_cards::CardDefinition;
 use mtg_cards::deck::{DeckReport, DeckZone, Issue, IssueCode};
-use mtg_cards::support::Support;
 use mtg_core::house::HouseRules;
 use mtg_db::DeckId;
 use mtg_engine::format::{Commander, DeckError, FormatRules, Normal, RuleSet};
@@ -389,7 +388,7 @@ pub(crate) fn manual_cards(report: &DeckReport) -> u32 {
             matches!(
                 card.zone,
                 DeckZone::Main | DeckZone::Commander | DeckZone::Companion
-            ) && card.support != Support::Verified
+            ) && !card.support.runs_whole()
         })
         .map(|card| card.count)
         .fold(0, u32::saturating_add)
@@ -548,6 +547,7 @@ pub(crate) fn engine_issue(error: DeckError, format: FormatKind) -> Issue {
 mod tests {
     //! Goal: the library of a stored deck is its main deck's cards in line order with copies side by side, the table is told only the main deck's manual copies, the game's format adds its own issues to the deck check's, and a refusal reaches the wire as a 422 with its issues or a 404 that tells nothing about the deck.
     use mtg_cards::deck::{Counts, DeckState, ReportCard, Summary};
+    use mtg_cards::support::Support;
     use rstest::rstest;
 
     use super::*;
@@ -568,6 +568,7 @@ mod tests {
             zone,
             count,
             support,
+            draft: None,
             reasons: Vec::new(),
         }
     }
@@ -585,6 +586,7 @@ mod tests {
                 counts: Counts::default(),
                 zones: Vec::new(),
                 issues: 0,
+                to_read: 0,
             },
         }
     }
@@ -647,6 +649,15 @@ mod tests {
         card(DeckZone::Main, Support::Manual, 3),
         card(DeckZone::Main, Support::Stale, 4),
     ], 9)]
+    #[case::a_read_card_is_run_whole(vec![
+        card(DeckZone::Main, Support::Verified, 40),
+        card(DeckZone::Main, Support::Read, 4),
+        card(DeckZone::Main, Support::Manual, 1),
+        card(DeckZone::Commander, Support::Read, 1),
+    ], 1)]
+    #[case::a_deck_of_reads_is_played_by_hand_nowhere(vec![
+        card(DeckZone::Main, Support::Read, 60),
+    ], 0)]
     #[case::the_sideboard_never_reaches_the_game(vec![
         card(DeckZone::Main, Support::Verified, 60),
         card(DeckZone::Sideboard, Support::Manual, 15),

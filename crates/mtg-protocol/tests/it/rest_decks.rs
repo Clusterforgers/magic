@@ -9,6 +9,7 @@ use mtg_cards::deck::{
     Counts, DeckReport, DeckState, DeckZone, Issue, IssueCode, ReportCard, StoredCheck, Summary,
     ZoneCounts,
 };
+use mtg_cards::draft::ReadState;
 use mtg_cards::support::Support;
 use mtg_protocol::rest::{
     CardColor, CardHit, CardImages, CardSuggestion, CheckRequest, DeckBody, DeckErrorCode,
@@ -56,6 +57,7 @@ fn summary() -> Summary {
             counts,
         }],
         issues: 1,
+        to_read: 0,
     }
 }
 
@@ -77,6 +79,7 @@ fn report() -> DeckReport {
             zone: DeckZone::Main,
             count: 4,
             support: Support::Verified,
+            draft: None,
             reasons: vec![],
         }],
         summary: summary(),
@@ -347,7 +350,47 @@ fn the_report_and_the_stored_check_travel_as_the_design_defines_them() {
 }
 
 #[rstest]
+#[case::pending(ReadState::Pending, "pending")]
+#[case::approved(ReadState::Approved, "approved")]
+#[case::wrong(ReadState::Wrong, "wrong")]
+fn a_drafted_card_and_the_count_to_read_travel_in_the_report(
+    #[case] draft: ReadState,
+    #[case] word: &str,
+) {
+    let mut report = report();
+    report.cards[0].draft = Some(draft);
+    report.summary.to_read = 3;
+    report.summary.state = DeckState::Read;
+    let value = serde_json::to_value(&report).unwrap();
+    assert_eq!(value["cards"][0]["draft"], json!(word));
+    assert_eq!(value["summary"]["to_read"], json!(3));
+    assert_eq!(value["summary"]["state"], json!("read"));
+    assert_eq!(serde_json::from_value::<DeckReport>(value).unwrap(), report);
+}
+
+#[test]
+fn a_card_without_a_draft_leaves_the_key_out_and_an_old_check_still_reads() {
+    let value = serde_json::to_value(report()).unwrap();
+    assert!(value["cards"][0].get("draft").is_none());
+    assert_eq!(value["summary"]["to_read"], json!(0));
+
+    // A check stored before the Read tier has neither `counts.read` nor `summary.to_read`.
+    let old = json!({
+        "deck_hash": "d", "coverage_hash": "c", "checked_at": "2026-10-19T12:00:00Z",
+        "summary": {
+            "format": "modern", "state": "verified",
+            "counts": {"total": 60, "verified": 60, "partial": 0, "manual": 0, "stale": 0, "unplayable": 0},
+            "zones": [], "issues": 0
+        }
+    });
+    let stored = serde_json::from_value::<StoredCheck>(old).unwrap();
+    assert_eq!(stored.summary.state, DeckState::Verified);
+    assert_eq!((stored.summary.counts.read, stored.summary.to_read), (0, 0));
+}
+
+#[rstest]
 #[case(DeckState::Verified, "verified")]
+#[case(DeckState::Read, "read")]
 #[case(DeckState::ManualPlay, "manual_play")]
 #[case(DeckState::Blocked, "blocked")]
 #[case(DeckState::Unchecked, "unchecked")]
@@ -459,7 +502,7 @@ fn the_bindings_carry_the_deck_types() {
     );
     assert!(
         files["DeckState.ts"]
-            .contains("\"verified\" | \"manual_play\" | \"blocked\" | \"unchecked\"")
+            .contains("\"verified\" | \"read\" | \"manual_play\" | \"blocked\" | \"unchecked\"")
     );
     assert!(files["DeckView.ts"].contains("state: DeckState"));
     assert!(files["DeckView.ts"].contains("check: StoredCheck | null"));

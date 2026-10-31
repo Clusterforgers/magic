@@ -275,6 +275,63 @@ fn an_approved_draft_gives_a_read_record_that_differs_from_a_verified_one_of_the
 }
 
 #[rstest]
+#[case::no_draft(Rules::Nothing, Draft::None, None)]
+#[case::pending(Rules::Nothing, Draft::Pending, Some(ReadState::Pending))]
+#[case::approved(Rules::Nothing, Draft::Approved, Some(ReadState::Approved))]
+#[case::wrong(Rules::Nothing, Draft::Wrong, Some(ReadState::Wrong))]
+#[case::approved_before_an_edit(
+    Rules::Nothing,
+    Draft::ApprovedBeforeAnEdit,
+    Some(ReadState::Pending)
+)]
+#[case::a_whole_file_outranks(Rules::File(Shape::Whole), Draft::Approved, None)]
+#[case::a_partial_file_outranks(Rules::File(Shape::Partial), Draft::Pending, None)]
+#[case::a_verified_row_outranks(Rules::Compiled(Shape::Whole), Draft::Pending, None)]
+#[case::a_partial_row_gives_way(
+    Rules::Compiled(Shape::Partial),
+    Draft::Pending,
+    Some(ReadState::Pending)
+)]
+#[case::a_manual_row_gives_way(
+    Rules::Compiled(Shape::Manual),
+    Draft::Approved,
+    Some(ReadState::Approved)
+)]
+#[case::a_stale_row_gives_way(Rules::Compiled(Shape::Stale), Draft::Wrong, Some(ReadState::Wrong))]
+fn the_draft_state_shows_the_draft_that_decides_a_card_or_would_once_read(
+    #[case] rules: Rules,
+    #[case] draft: Draft,
+    #[case] expected: Option<ReadState>,
+) {
+    let (_, shown) = bolt();
+    let library = with_draft(&library_of(rules), draft, &shown);
+    assert_eq!(library.draft_state(&shown, &Caps::everything()), expected);
+}
+
+#[rstest]
+#[case::the_engine_runs_everything(Caps::everything(), Some(ReadState::Pending))]
+#[case::the_engine_lacks_the_damage(Caps::from_names(["Ability.Spell"]), None)]
+#[case::the_engine_runs_nothing(Caps::none(), None)]
+fn the_draft_state_is_none_where_the_engine_could_not_run_the_draft_once_read(
+    #[case] caps: Caps,
+    #[case] expected: Option<ReadState>,
+) {
+    let (_, shown) = bolt();
+    let library = with_draft(&Library::default(), Draft::Pending, &shown);
+    assert_eq!(library.draft_state(&shown, &caps), expected);
+}
+
+#[test]
+fn the_draft_state_is_none_for_text_the_draft_was_not_written_for() {
+    let (_, shown) = bolt();
+    let library = with_draft(&Library::default(), Draft::Approved, &shown);
+    assert_eq!(
+        library.draft_state(&after_an_erratum(&shown), &Caps::everything()),
+        None
+    );
+}
+
+#[rstest]
 #[case::the_engine_runs_everything(Caps::everything(), Support::Read)]
 #[case::the_engine_runs_what_the_draft_uses(Caps::from_names(["Ability.Spell", "Effect.DealDamage"]), Support::Read)]
 #[case::the_engine_lacks_the_damage(Caps::from_names(["Ability.Spell"]), Support::Manual)]

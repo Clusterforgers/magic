@@ -13,6 +13,7 @@ mod compile_real;
 mod compile_shapes;
 mod corpus;
 mod deck_companion;
+mod deck_read;
 mod deck_report;
 mod deck_table;
 mod fixture_real;

@@ -10,9 +10,9 @@ use serde::de::DeserializeOwned;
 use crate::ability::Ability;
 use crate::assemble::{Assembled, assemble_record};
 use crate::card::{Card, ImplStatus, TokenFile};
-use crate::draft::{Draft, DraftRules};
+use crate::draft::{Draft, DraftRules, ReadState};
 use crate::pretty::pretty;
-use crate::support::{Caps, PrintedCard, Support, SupportRecord, support};
+use crate::support::{Caps, PrintedCard, Support, SupportRecord, read_support, support};
 use crate::validate::{Problem, check_card, check_printed, check_token};
 
 /// A problem in a file: which file, where inside it, and what.
@@ -454,6 +454,26 @@ impl Library {
         self.drafts.get(oracle_id)
     }
 
+    /// Whether the rules a card has already (a rules file, or a `Verified` compiled row) decide it before any draft does.
+    fn outranks_drafts(&self, id: &str, rules: Option<&Card>, record: &SupportRecord) -> bool {
+        record.support == Support::Verified || (rules.is_some() && !self.generated.contains(id))
+    }
+
+    /// What the deck check shows of a card's draft: the read state that counts for `printed` (a verdict on another hash
+    /// counts for nothing, so an edited draft or text is `pending` again) while the draft decides the card or would
+    /// once read, that is while no rules file or `Verified` row outranks it and the engine runs it whole. `None`
+    /// for a card without such a draft.
+    pub fn draft_state(&self, printed: &PrintedCard, caps: &Caps) -> Option<ReadState> {
+        let id = printed.oracle_id.as_str();
+        let rules = self.card(id);
+        let draft = self.drafts.get(id)?;
+        if self.outranks_drafts(id, rules, &support(rules, printed, caps)) {
+            return None;
+        }
+        read_support(&draft.card, printed, caps)?;
+        Some(draft.state_for(printed))
+    }
+
     /// The rules that decide an imported card and their support record, by the precedence of the Read tier: a rules
     /// file, then a `Verified` compiled row, then a draft in state `Read`, then a compiled row of any other state, then
     /// nothing (a card with no rules text plays as printed).
@@ -461,9 +481,7 @@ impl Library {
         let id = printed.oracle_id.as_str();
         let rules = self.card(id);
         let record = support(rules, printed, caps);
-        let outranks = record.support == Support::Verified
-            || (rules.is_some() && !self.generated.contains(id));
-        if !outranks
+        if !self.outranks_drafts(id, rules, &record)
             && let Some(draft) = self.drafts.get(id)
             && let Some(read) = draft.record(printed, caps)
         {

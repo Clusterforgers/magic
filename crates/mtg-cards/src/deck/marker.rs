@@ -99,6 +99,7 @@ mod tests {
                 counts: Counts::default(),
                 zones: Vec::new(),
                 issues: 0,
+                to_read: 0,
             },
         }
     }
@@ -117,6 +118,11 @@ mod tests {
     #[case::a_ban_since_the_check(Some(("d", "c", DeckState::Verified)), ("d", "c", DeckState::Blocked), DeckState::Blocked, false)]
     #[case::manual_since_the_check(Some(("d", "c", DeckState::Verified)), ("d", "c", DeckState::ManualPlay), DeckState::ManualPlay, false)]
     #[case::a_check_that_was_not_clean_is_not_cleared_by_now(Some(("d", "c", DeckState::ManualPlay)), ("d", "c", DeckState::Verified), DeckState::ManualPlay, false)]
+    #[case::reads_give_no_verified_marker(Some(("d", "c", DeckState::Read)), ("d", "c", DeckState::Read), DeckState::Read, false)]
+    #[case::a_read_since_the_check(Some(("d", "c", DeckState::Verified)), ("d", "c", DeckState::Read), DeckState::Read, false)]
+    #[case::a_check_on_reads_is_not_cleared_by_now(Some(("d", "c", DeckState::Read)), ("d", "c", DeckState::Verified), DeckState::Read, false)]
+    #[case::a_draft_to_read_since_the_check(Some(("d", "c", DeckState::Read)), ("d", "c", DeckState::ManualPlay), DeckState::ManualPlay, false)]
+    #[case::a_ban_on_a_deck_of_reads(Some(("d", "c", DeckState::Read)), ("d", "c", DeckState::Blocked), DeckState::Blocked, false)]
     #[case::a_stored_unchecked_is_nothing(Some(("d", "c", DeckState::Unchecked)), ("d", "c", DeckState::Verified), DeckState::Unchecked, false)]
     fn the_marker_is_derived_from_both_checks(
         #[case] before: Option<(&str, &str, DeckState)>,
