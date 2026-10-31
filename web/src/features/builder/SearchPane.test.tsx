@@ -123,7 +123,7 @@ describe('adding', () => {
 })
 
 describe('the filters', () => {
-  it('send colour identity as letters in WUBRG order, and a toggle that is on says so', async () => {
+  it('send color identity as letters in WUBRG order, and a toggle that is on says so', async () => {
     const { user, cards } = await renderBuilder()
     const pane = within(searchPane())
     await user.click(pane.getByRole('button', { name: 'Green' }))

@@ -560,6 +560,46 @@ fn issues_name_their_card_and_zone() {
     assert_eq!(issue.message, "Tolarian Academy is banned in modern");
 }
 
+#[rstest]
+#[case::a_card_outside_the_identity(
+    vec![
+        line(Commander, "Colorless Legend", 1),
+        line(Main, "Forest", 98),
+        line(Main, "Sol Ring", 1),
+    ],
+    "Forest has G in its color identity, outside the commander's (colorless)"
+)]
+#[case::a_third_color_of_a_hybrid_commander(
+    vec![
+        line(Commander, "Rhys the Redeemed", 1),
+        line(Main, "Forest", 97),
+        line(Main, "Sol Ring", 1),
+        line(Main, "Island", 1),
+    ],
+    "Island has U in its color identity, outside the commander's (WG)"
+)]
+fn the_identity_issue_says_color_in_the_spelling_of_the_rest_of_the_app(
+    #[case] lines: Vec<DeckLine>,
+    #[case] message: &str,
+) {
+    let found = report("commander", &lines);
+    let said: Vec<&str> = found
+        .legality
+        .iter()
+        .filter(|issue| issue.code == IssueCode::ColorIdentity)
+        .map(|issue| issue.message.as_str())
+        .collect();
+    assert!(said.contains(&message), "{said:?}");
+    assert!(
+        found
+            .legality
+            .iter()
+            .all(|issue| !issue.message.to_lowercase().contains("colour")),
+        "{:?}",
+        found.legality
+    );
+}
+
 // ---- support ----
 
 const TEXT_PARTIAL: &str = "Flying\nDraw a card.";

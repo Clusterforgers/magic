@@ -5,6 +5,7 @@ import { describe, expect, it } from 'vitest'
 import type { Counts, DeckState, Support } from '@/protocol/generated'
 import { counts, deckIn, importResult, lineOf, summary } from './fakeDecks'
 import {
+  BLOCKED_MEANING,
   cardsText,
   checkNote,
   countsText,
@@ -15,7 +16,25 @@ import {
   SOURCE_LABEL,
   STATE_LABEL,
   SUPPORT_LABEL,
+  unvalidatedLink,
 } from './format'
+
+describe('unvalidatedLink', () => {
+  it.each<[string, Partial<Counts>, string]>([
+    ['nothing to show', {}, ''],
+    ['a partial card', { partial: 1 }, 'Show the 1 card played by hand'],
+    [
+      'manual, partial and stale copies together',
+      { manual: 2, partial: 1, stale: 1 },
+      'Show the 4 cards played by hand',
+    ],
+    ['one unplayable card', { unplayable: 1 }, 'Show the 1 unplayable card'],
+    ['unplayable cards', { unplayable: 2 }, 'Show the 2 unplayable cards'],
+    ['both', { manual: 7, unplayable: 1 }, 'Show the 7 cards played by hand and 1 unplayable card'],
+  ])('names %s as "%s"', (_what, held, words) => {
+    expect(unvalidatedLink(counts(held))).toBe(words)
+  })
+})
 
 describe('hasUnvalidated', () => {
   it.each([
@@ -148,17 +167,17 @@ describe('checkNote', () => {
   })
 
   it.each([
-    ['one issue', 1, 0, '1 legality issue'],
-    ['several issues', 3, 0, '3 legality issues'],
-    ['one unplayable card', 0, 1, '1 unplayable card'],
-    ['unplayable cards', 0, 2, '2 unplayable cards'],
-    ['both', 2, 1, '2 legality issues, 1 unplayable card'],
-    ['neither', 0, 0, 'Cannot be played as it stands'],
-  ])('says what blocks a deck with %s', (_what, issues, unplayable, note) => {
+    ['one issue', 1, 0, '1 legality issue. '],
+    ['several issues', 3, 0, '3 legality issues. '],
+    ['one unplayable card', 0, 1, '1 unplayable card. '],
+    ['unplayable cards', 0, 2, '2 unplayable cards. '],
+    ['both', 2, 1, '2 legality issues, 1 unplayable card. '],
+    ['neither', 0, 0, ''],
+  ])('says what blocks a deck with %s, and what blocked means', (_what, issues, unplayable, what) => {
     const deck = deckIn('blocked', {
       summary: summary({ state: 'blocked', issues, counts: counts({ unplayable }) }),
     })
-    expect(checkNote(deck)).toBe(note)
+    expect(checkNote(deck)).toBe(`${what}${BLOCKED_MEANING}.`)
   })
 
   it.each([

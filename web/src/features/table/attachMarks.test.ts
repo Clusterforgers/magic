@@ -61,7 +61,7 @@ const RULE_MARKS: Record<GivenRule, RuleMark> = {
   SetController: ['Stolen', 'Stolen', 'changes controller', 'restrict'],
   SwitchPowerToughness: ['Swaps P/T', 'P/T swap', 'power and toughness are switched', 'plain'],
   ChangeTypes: ['New types', 'Types', 'changes its types', 'plain'],
-  SetColors: ['New colour', 'Colour', 'changes its colour', 'plain'],
+  SetColors: ['New color', 'Color', 'changes its color', 'plain'],
   Goaded: ['Goaded', 'Goaded', 'is goaded', 'restrict'],
   UmbraArmor: ['Umbra', 'Umbra', 'umbra armor, so it is not destroyed', 'raise'],
 }

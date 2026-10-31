@@ -72,9 +72,9 @@ fn the_walker_names_the_primitive_that_is_missing(
     }
     if !missing.is_empty() {
         assert!(
-            reasons
+            reasons.iter().any(|reason| missing
                 .iter()
-                .any(|reason| missing.iter().any(|m| reason.contains(m))),
+                .any(|m| { reason.contains(&m.rsplit('.').next().unwrap_or(m).to_lowercase()) })),
             "{missing:?} is named: {reasons:?}"
         );
     }

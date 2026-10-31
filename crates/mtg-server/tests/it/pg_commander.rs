@@ -593,7 +593,7 @@ fn refused_decks() -> Vec<(&'static str, Value, &'static str)> {
             "copies",
         ),
         (
-            "outside the colour identity",
+            "outside the color identity",
             deck(
                 "Red",
                 "commander",

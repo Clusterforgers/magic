@@ -90,7 +90,7 @@ describe('the rows', () => {
     const row = await screen.findByRole('option', { name: /Atraxa Superfriends/ })
     expect(row).toHaveTextContent(/Atraxa, Praetors’ Voice/)
     expect(
-      within(row).getByRole('img', { name: /Colour identity: White, Blue, Black and Green/ }),
+      within(row).getByRole('img', { name: /Color identity: White, Blue, Black and Green/ }),
     ).toBeInTheDocument()
     expect(screen.queryByRole('option', { name: /^Burn/ })).toBeNull()
     expect(screen.getByText('3 decks are in other formats and not shown.')).toBeInTheDocument()
@@ -162,7 +162,7 @@ describe('search and filters', () => {
       expect(screen.getByRole('option', { name: new RegExp(`^${name}`) })).toBeInTheDocument()
   })
 
-  it('filters by colour identity and clears the filters', async () => {
+  it('filters by color identity and clears the filters', async () => {
     width(true)
     const { user } = await open({ switches: { decks: 'many' } })
     await screen.findByRole('option', { name: /Atraxa Superfriends/ })

@@ -151,7 +151,7 @@ fn what_the_engine_lacks_is_a_blocker_of_an_accepted_proposal() {
     assert!(
         report
             .render(false)
-            .contains("blocker   face 0: the engine does not run"),
+            .contains("blocker   face 0: you apply this by hand; the game does not run yet"),
         "{}",
         report.render(false)
     );

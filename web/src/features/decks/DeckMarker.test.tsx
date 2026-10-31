@@ -53,6 +53,19 @@ describe('DeckMarker', () => {
     expect(new Set(icons).size).toBe(5)
   })
 
+  it.each<[string, DeckState, MarkerChange, string | null]>([
+    ['a blocked deck', 'blocked', {}, 'Cannot be taken to a game until its issues are fixed'],
+    ['a verified deck', 'verified', {}, null],
+    ['a deck played by hand', 'manual_play', {}, null],
+    ['a deck never checked', 'unchecked', { changed: false }, null],
+    ['a draft of a blocked deck', 'blocked', { dirty: true }, null],
+  ])('describes what %s means in the lobby’s words', (_what, state, change, meaning) => {
+    const { container } = render(<DeckMarker state={state} {...change} />)
+    const found = container.querySelector('[data-marker]')
+    if (meaning === null) expect(found).not.toHaveAttribute('title')
+    else expect(found).toHaveAttribute('title', meaning)
+  })
+
   it('takes a class for placement', () => {
     const { container } = render(<DeckMarker state="verified" className="ml-2" />)
     expect(container.querySelector('[data-marker]')).toHaveClass('ml-2')

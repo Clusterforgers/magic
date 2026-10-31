@@ -1,7 +1,17 @@
 // Goal: Import deck reads a pasted list or a chosen file in two steps: it refuses an empty, over-long or oversized list before sending, sends the text and the chosen format and lets the server detect the kind of list, then shows what was read together with the ignored parts, the lines no card was found for and the lines that were no entries, and saves the resolved cards under a name only after the review; failures stay in the dialog with their reason.
 import { screen, waitFor, within } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
-import { deckError, deckItem, importResult, lineOf } from './fakeDecks'
+import {
+  cardHit,
+  deckError,
+  deckItem,
+  importResult,
+  legalityIssue,
+  lineOf,
+  oracleIdOf,
+  reportCard,
+  reportOf,
+} from './fakeDecks'
 import { MAX_IMPORT_FILE_BYTES, MAX_IMPORT_LINES } from './rules'
 import { listed, renderDecks, requests } from './renderDecks'
 
@@ -79,8 +89,8 @@ describe('the first step', () => {
     await app.user.selectOptions(screen.getByLabelText('Format'), 'modern')
     await review(app)
     expect(app.server.imports).toEqual([{ text: LIST, source: null, format: 'modern' }])
-    expect(app.server.calls.at(-1)?.url).toBe('/api/decks/import')
-    expect(app.server.calls.at(-1)?.init?.credentials).toBe('include')
+    const sent = app.server.calls.find((call) => call.url === '/api/decks/import')
+    expect(sent?.init?.credentials).toBe('include')
   })
 
   it('reads a chosen file into the list and suggests its name for the deck', async () => {
@@ -290,6 +300,7 @@ describe('saving', () => {
     expect(requests(app.server.calls)).toEqual([
       'GET /api/decks',
       'POST /api/decks/import',
+      'POST /api/decks/check',
       'POST /api/decks',
     ])
   })
@@ -349,4 +360,64 @@ describe('saving', () => {
       expect(app.server.created).toHaveLength(2)
     },
   )
+})
+
+describe('the check of the list in the review', () => {
+  const FIREBALL = lineOf('Fireball', 3, { card: cardHit('Fireball', { support: 'manual' }) })
+  const MOUNTAIN = lineOf('Mountain', 20)
+  const check = () => document.querySelector<HTMLElement>('[data-slot="import-check"]') as HTMLElement
+
+  it('names the support of the list before it is saved, as the builder bar does', async () => {
+    const app = await openImport({ importResult: importResult({ cards: [MOUNTAIN, FIREBALL] }) })
+    await app.user.selectOptions(screen.getByLabelText('Format'), 'modern')
+    await review(app)
+    expect(within(check()).getByText('20 of 23 verified, 3 played by hand')).toBeInTheDocument()
+    expect(check()).toHaveAttribute('data-state', 'manual_play')
+    const sent = app.server.calls.find((call) => call.url === '/api/decks/check')
+    expect(JSON.parse(String(sent?.init?.body))).toEqual({
+      deck: null,
+      format: 'modern',
+      cards: [
+        { zone: 'main', oracle_id: oracleIdOf('Mountain'), printing_id: null, count: 20 },
+        { zone: 'main', oracle_id: oracleIdOf('Fireball'), printing_id: null, count: 3 },
+      ],
+    })
+  })
+
+  it('names what the list breaks in its format and what blocked means, and still lets it be saved', async () => {
+    const issue = legalityIssue(
+      'A Commander deck has exactly 100 cards with its commanders, this one has 20.',
+    )
+    const app = await openImport({
+      importResult: importResult({ cards: [MOUNTAIN] }),
+      report: reportOf([reportCard('Mountain', { count: 20 })], [issue]),
+    })
+    const form = await review(app)
+    expect(check()).toHaveAttribute('data-state', 'blocked')
+    expect(within(check()).getByText('Not legal in Commander')).toBeInTheDocument()
+    expect(
+      within(check()).getByText(/exactly 100 cards with its commanders, this one has 20/),
+    ).toBeInTheDocument()
+    expect(within(check()).getByText('20 of 20 verified')).toBeInTheDocument()
+    expect(
+      within(check()).getByText(
+        'You can still save it. Cannot be taken to a game until its issues are fixed.',
+      ),
+    ).toBeInTheDocument()
+    expect(within(form).getByRole('button', { name: 'Save deck' })).toBeEnabled()
+  })
+
+  it('says the deck is checked when it is saved if the check does not answer', async () => {
+    const app = await openImport({ override: { check: () => deckError(503, 'decks_unavailable') } })
+    const form = await review(app)
+    expect(within(check()).getByText('The deck is checked when it is saved.')).toBeInTheDocument()
+    expect(within(form).getByRole('button', { name: 'Save deck' })).toBeEnabled()
+  })
+
+  it('does not check a list that read no card', async () => {
+    const app = await openImport({ importResult: importResult({ cards: [] }) })
+    await review(app)
+    expect(document.querySelector('[data-slot="import-check"]')).toBeNull()
+    expect(requests(app.server.calls)).toEqual(['GET /api/decks', 'POST /api/decks/import'])
+  })
 })

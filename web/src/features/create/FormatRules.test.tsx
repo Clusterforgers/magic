@@ -12,7 +12,7 @@ describe('the rules of a format, named', () => {
       'Commander tax 2',
       'Commander damage 21',
       'Singleton decks',
-      'Colour identity enforced',
+      'Color identity enforced',
       'Decks of 100 cards',
     ])
   })
@@ -24,7 +24,7 @@ describe('the form', () => {
     expect(screen.getByRole('radio', { name: /^Commander/ })).toBeChecked()
     const line = document.querySelector('[data-slot="format-rules"]')
     expect(line).toHaveTextContent(
-      'Commander rules: Starting life 40 · 1 free mulligan · Commander tax 2 · Commander damage 21 · Singleton decks · Colour identity enforced · Decks of 100 cards',
+      'Commander rules: Starting life 40 · 1 free mulligan · Commander tax 2 · Commander damage 21 · Singleton decks · Color identity enforced · Decks of 100 cards',
     )
     expect(line).toHaveTextContent('House rules')
     await user.click(screen.getByRole('radio', { name: /^Normal/ }))

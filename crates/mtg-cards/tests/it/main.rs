@@ -19,6 +19,7 @@ mod fixture_real;
 mod generated;
 mod hand_written;
 mod linked_exile;
+mod player_words;
 mod printed;
 mod proposal;
 mod proposal_blocks;

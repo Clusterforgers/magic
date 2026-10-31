@@ -10,13 +10,13 @@
         { "Rule": { "rule": { "SkipDrawStep": "You" } } },
         {
           "Manual": {
-            "reason": "the proposed rules do not cover this clause",
+            "reason": "you apply this clause by hand",
             "span": { "start": 21, "end": 59 }
           }
         },
         {
           "Manual": {
-            "reason": "the proposed rules do not cover this clause",
+            "reason": "you apply this clause by hand",
             "span": { "start": 60, "end": 90 }
           }
         }

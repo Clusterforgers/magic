@@ -70,7 +70,7 @@ describe('the stats', () => {
       panel.getByRole('list', { name: 'Cards by type' }).querySelector('[data-kind="land"]'),
     ).toHaveTextContent('20')
     expect(panel.getByText('20 lands, 8 spells')).toBeInTheDocument()
-    expect(panel.getByRole('img', { name: 'Colour identity: Black, Red and Green' })).toBeInTheDocument()
+    expect(panel.getByRole('img', { name: 'Color identity: Black, Red and Green' })).toBeInTheDocument()
   })
 })
 

@@ -8,8 +8,8 @@ use crate::card::{Card, ImplStatus};
 use crate::load::{LoadError, parse_json};
 use crate::support::{PrintedCard, oracle_fingerprint};
 
-/// Why the checker leaves a clause to the table.
-const OPEN_REASON: &str = "the proposed rules do not cover this clause";
+/// What the player does with a clause the proposal leaves open.
+const OPEN_REASON: &str = "you apply this clause by hand";
 
 /// Reads the text of a proposal as a JSON object.
 pub(super) fn read(text: &str, file: &str) -> Result<Value, LoadError> {

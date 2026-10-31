@@ -1,5 +1,5 @@
 /** Words for the decks page: format names, the check state and its note, card counts and the kind of a pasted list. */
-import { BY_HAND, BY_HAND_TITLE, byHandCopies } from '@/lib/byHand'
+import { BY_HAND, BY_HAND_TITLE, byHandCopies, cardsByHand } from '@/lib/byHand'
 import type {
   Counts,
   DeckListItem,
@@ -47,6 +47,9 @@ export const STATE_LABEL: Readonly<Record<DeckState, string>> = {
   unchecked: 'Unchecked',
 }
 
+/** What a blocked deck cannot do, in the lobby's words, for the badge's hover and the pages that say more. */
+export const BLOCKED_MEANING = 'Cannot be taken to a game until its issues are fixed'
+
 /** The word of each support state; a mark shows it beside an icon so colour never carries the meaning alone. */
 export const SUPPORT_LABEL: Readonly<Record<Support, string>> = {
   verified: 'Verified',
@@ -78,6 +81,19 @@ export const hasUnvalidated = (counts: Counts): boolean =>
   counts.partial + counts.manual + counts.stale + counts.unplayable > 0
 
 /**
+ * The words of the link to the cards a check found the game does not run whole: "Show the 7 cards played by hand",
+ * "Show the 2 unplayable cards", or both. Empty when it found none.
+ */
+export function unvalidatedLink(counts: Counts): string {
+  const hand = byHandCopies(counts)
+  const parts = [
+    hand > 0 ? cardsByHand(hand) : null,
+    counts.unplayable > 0 ? plural(counts.unplayable, 'unplayable card') : null,
+  ].filter((part) => part !== null)
+  return parts.length === 0 ? '' : `Show the ${parts.join(' and ')}`
+}
+
+/**
  * The line under a deck's name that explains its check state: how many cards are played by hand, what blocks it, or that
  * it was never checked. A verified deck, and one that changed since its check, need no line: its marker says so.
  */
@@ -93,7 +109,7 @@ export function checkNote(deck: DeckListItem): string | null {
         issues > 0 ? plural(issues, 'legality issue') : null,
         counts.unplayable > 0 ? plural(counts.unplayable, 'unplayable card') : null,
       ].filter((part) => part !== null)
-      return parts.length > 0 ? parts.join(', ') : 'Cannot be played as it stands'
+      return `${parts.length > 0 ? `${parts.join(', ')}. ` : ''}${BLOCKED_MEANING}.`
     }
     case 'unchecked':
       return deck.changed ? null : 'Not checked yet'

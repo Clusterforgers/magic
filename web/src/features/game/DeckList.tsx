@@ -166,7 +166,7 @@ export function DeckList({
         </div>
         <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
           {colours ? (
-            <div role="group" aria-label="Colour identity" className="flex items-center gap-1">
+            <div role="group" aria-label="Color identity" className="flex items-center gap-1">
               {Object.keys(COLOUR_NAME).map((letter) => {
                 const on = filter.colours.includes(letter)
                 return (

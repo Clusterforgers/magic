@@ -10,7 +10,7 @@
         { "Keyword": { "Mutate": "{5}{G}" } },
         {
           "Manual": {
-            "reason": "a triggered ability the compiler does not read yet",
+            "reason": "you apply this triggered ability by hand",
             "span": { "start": 187, "end": 400 }
           }
         }

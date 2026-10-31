@@ -23,7 +23,7 @@
         },
         {
           "Manual": {
-            "reason": "the proposed rules do not cover this clause",
+            "reason": "you apply this clause by hand",
             "span": { "start": 85, "end": 94 }
           }
         }

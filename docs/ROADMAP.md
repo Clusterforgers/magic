@@ -458,12 +458,10 @@ The server is settled first, then the web is built once against the final types.
 - [ ] Verify the MTGO and Arena export parsers against real exports, with companions and custom cards (`docs/data-sources.md`)
 - [ ] (v1f) A spectator's connection in the server: a socket that holds no seat, is sent `StateView::for_spectator` and the spectator's batches, and a rule for who may watch
 - [ ] Spectators in the web and a "waiting on" message for tables of three or more
-- [ ] (v91a) The by-hand reasons players read (deck preview, the table's by-hand list) say what the player does, without "the compiler does not read yet" (`mtg-cards` `compile/manual.rs`, `ByHandList`)
-- [ ] (v91b) The import review names the support of the list before it is saved ("19 of 26 verified, 7 played by hand") and its format issues, not only the lines not found (`ImportDialog.tsx`)
-- [ ] (v91c) The decks list row says how many cards are played by hand, as the builder bar does, in place of a bare "Not validated cards" link (`DeckLibrary.tsx`)
-- [ ] (v91d) The deck state badge says what "Blocked" means ("Cannot be taken to a game until its issues are fixed", the lobby's words) (`DeckStateBadge.tsx`)
-- [ ] (v91g) One spelling of colour identity across the builder filters ("Colour identity") and the server's deck issues ("color identity") (`mtg-server` deck check)
 - [ ] (v91j) Validator walk, part two: cast a Manual card in a 3-seat game and apply each clause with the Commands panel; a duel to a winner with a counterspell, a trick, a sacrifice, a mulligan, a concession, a leave and a reconnect; the bank seen by others; a keyboard-only turn with focus order and mark contrast (needs the e2e driver: simple bots play no lands)
+- [ ] (v91k) The house rule key `colour_identity` is spelled `color_identity` on the wire, in the stored rules and in `mtg-core` `house.rs`, with the stored games migrated
+- [ ] (v91l) The printed-gap reasons say what the player does, as the clause reasons do, not "the engine cannot pay {X} in a mana cost yet" (`mtg-cards` `assemble.rs`, the coverage tests)
+- [ ] (v91m) The lobby deck pane's "Not validated cards" link names how many cards are played by hand, as the decks list row does (`features/game/DeckPane.tsx`)
 
 ## M8 Polish and deploy
 

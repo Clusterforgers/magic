@@ -269,8 +269,11 @@ fn gate(card: &Card, printed: &PrintedCard, caps: &Caps) -> (Support, Vec<Clause
                 face: index,
                 span: whole_text(text),
                 reason: format!(
-                    "the engine does not run {} yet",
-                    gaps.into_iter().collect::<Vec<_>>().join(", ")
+                    "you apply this by hand; the game does not run yet: {}",
+                    gaps.iter()
+                        .map(|name| plain_name(name))
+                        .collect::<Vec<_>>()
+                        .join(", ")
                 ),
             });
         }
@@ -283,6 +286,24 @@ fn gate(card: &Card, printed: &PrintedCard, caps: &Caps) -> (Support, Vec<Clause
         Support::Partial
     };
     (state, clauses)
+}
+
+/// A primitive's name in words a player reads: `Effect.DealDamage` is "deal damage".
+fn plain_name(name: &str) -> String {
+    let leaf = name.rsplit('.').next().unwrap_or(name);
+    let chars: Vec<char> = leaf.chars().collect();
+    let mut words = String::new();
+    for (at, &ch) in chars.iter().enumerate() {
+        let before = at.checked_sub(1).and_then(|i| chars.get(i));
+        let after = chars.get(at + 1);
+        let starts_word = ch.is_uppercase()
+            && before.is_some_and(|b| !b.is_uppercase() || after.is_some_and(|a| a.is_lowercase()));
+        if starts_word {
+            words.push(' ');
+        }
+        words.extend(ch.to_lowercase());
+    }
+    words
 }
 
 /// Whether `text` says anything outside parentheses.
@@ -467,7 +488,7 @@ mod tests {
         assert_eq!(record.clauses.len(), 1);
         assert_eq!(record.clauses[0].span, Span { start: 0, end: 44 });
         assert!(
-            record.clauses[0].reason.contains("Effect.DealDamage"),
+            record.clauses[0].reason.ends_with("deal damage"),
             "{:?}",
             record.clauses
         );

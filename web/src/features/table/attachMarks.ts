@@ -48,7 +48,7 @@ const RULES: Record<GivenRule, RuleWords> = {
   SetController: give('Stolen', 'Stolen', 'changes controller', 'restrict'),
   SwitchPowerToughness: give('Swaps P/T', 'P/T swap', 'power and toughness are switched', 'plain'),
   ChangeTypes: give('New types', 'Types', 'changes its types', 'plain'),
-  SetColors: give('New colour', 'Colour', 'changes its colour', 'plain'),
+  SetColors: give('New color', 'Color', 'changes its color', 'plain'),
   Goaded: give('Goaded', 'Goaded', 'is goaded', 'restrict'),
   UmbraArmor: give('Umbra', 'Umbra', 'umbra armor, so it is not destroyed', 'raise'),
 }

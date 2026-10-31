@@ -268,7 +268,7 @@ fn a_clause_the_game_does_not_run_is_a_missing_primitive_and_an_open_clause_name
             (ClauseState::Open, "Fire becomes a 4/4 creature."),
             (
                 ClauseState::Manual {
-                    reason: "the proposed rules do not cover this clause".to_owned(),
+                    reason: "you apply this clause by hand".to_owned(),
                 },
                 "Roll a d20.",
             ),
@@ -278,8 +278,8 @@ fn a_clause_the_game_does_not_run_is_a_missing_primitive_and_an_open_clause_name
             Support::Partial,
             vec![
                 ("the engine does not run Cost.Untap yet", 0),
-                ("the proposed rules do not cover this clause", 1),
-                ("the proposed rules do not cover this clause", 2),
+                ("you apply this clause by hand", 1),
+                ("you apply this clause by hand", 2),
             ],
         )),
     );

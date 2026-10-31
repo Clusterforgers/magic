@@ -121,9 +121,9 @@ export function TypeBars({ types }: { types: readonly { kind: CardKind; label: s
 /** The spells of a deck by colour as a disc with the letter and the count; colour is never the only sign. */
 export function ColourCounts({ colours }: { colours: readonly { letter: string; count: number }[] }) {
   return (
-    <figure data-slot="colour-counts" className="grid min-w-0 gap-1">
-      <figcaption className="text-xs font-medium">Spells by colour</figcaption>
-      <ul aria-label="Spells by colour" className="flex flex-wrap gap-x-3 gap-y-1">
+    <figure data-slot="color-counts" className="grid min-w-0 gap-1">
+      <figcaption className="text-xs font-medium">Spells by color</figcaption>
+      <ul aria-label="Spells by color" className="flex flex-wrap gap-x-3 gap-y-1">
         {colours.map(({ letter, count }) => (
           <li
             key={letter}

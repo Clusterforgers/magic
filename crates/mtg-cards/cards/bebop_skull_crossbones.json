@@ -11,7 +11,7 @@
         { "Keyword": "Deathtouch" },
         {
           "Manual": {
-            "reason": "a triggered ability the compiler does not read yet",
+            "reason": "you apply this triggered ability by hand",
             "span": { "start": 164, "end": 305 }
           }
         }
