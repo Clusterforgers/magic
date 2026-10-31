@@ -14,9 +14,10 @@ use mtg_cards::{Caps, PrintedCard};
 
 use super::budget::{Budget, Stop};
 use super::examples::ExampleIndex;
+use super::forge_hint::{ForgeHints, HintRecord, HintState};
 use super::model::{ModelClient, ModelError, Request, Response};
 use super::outcome::{Outcome, ProposeReport, Tally};
-use super::prompt::{card_prompt, extract_json, first_request, repair_request};
+use super::prompt::{extract_json, first_request, hinted_card_prompt, repair_request};
 use super::status::status_line;
 use super::store::Store;
 use crate::error::CliError;
@@ -37,6 +38,47 @@ pub struct Context<'a> {
     pub system: String,
     /// The hand-written cards, for the examples.
     pub examples: ExampleIndex,
+    /// How many solved examples each prompt holds (`--solved-examples`); 0 means the hand-written ones.
+    pub solved_examples: usize,
+    /// The scripts of Forge (`--forge-hint`), when the run hints with them.
+    pub forge: Option<ForgeHints>,
+}
+
+/// The first message about a card and how it was made.
+pub struct CardMessage {
+    /// The message text.
+    pub text: String,
+    /// How many examples it holds.
+    pub examples: usize,
+    /// Whether it holds a Forge hint.
+    pub hint: HintState,
+}
+
+impl Context<'_> {
+    /// The first message about `card`: its text, the Forge hint of the run when the card has one, and `examples` nearest
+    /// examples (the run's solved count replaces it).
+    pub fn card_message(&self, card: &PrintedCard, examples: usize) -> CardMessage {
+        let near = self.examples.nearest(card, examples);
+        let hint = self.forge.as_ref().map(|forge| forge.hint(card));
+        let state = match &hint {
+            None => HintState::Off,
+            Some(Some(_)) => HintState::Hinted,
+            Some(None) => HintState::Unhinted,
+        };
+        CardMessage {
+            text: hinted_card_prompt(card, &near, hint.flatten().as_deref()),
+            examples: near.len(),
+            hint: state,
+        }
+    }
+
+    /// The hint modes the run used for a card in this state.
+    pub fn hint_record(&self, hint: HintState) -> HintRecord {
+        HintRecord {
+            solved_examples: self.solved_examples,
+            forge_hint: hint,
+        }
+    }
 }
 
 /// The settings of a run.
@@ -75,6 +117,7 @@ enum Asked {
 struct Finished {
     outcome: Outcome,
     requests: u32,
+    hint: HintState,
 }
 
 /// What the workers of a run share, behind one lock: the budget and the stop rules are checked and updated together.
@@ -199,6 +242,7 @@ impl<'a> Session<'a> {
                 Ok(Finished {
                     outcome: Outcome::NotRun,
                     requests: 0,
+                    hint: HintState::Off,
                 })
             } else {
                 self.card(card)
@@ -230,6 +274,11 @@ impl<'a> Session<'a> {
             state.failures = 0;
         }
         state.tally.add(&finished.outcome);
+        match finished.hint {
+            HintState::Off => {}
+            HintState::Hinted => state.tally.hinted += 1,
+            HintState::Unhinted => state.tally.unhinted += 1,
+        }
         drop(state);
         if finished.outcome != Outcome::NotRun {
             let why = match &finished.outcome {
@@ -248,24 +297,23 @@ impl<'a> Session<'a> {
     /// One card: ask, check, and repair once when the checker rejects the answer.
     fn card(&self, printed: &PrintedCard) -> Result<Finished, CliError> {
         let mut requests = 0;
-        let near = self.ctx.examples.nearest(printed, self.options.examples);
-        let first = first_request(
-            &self.options.model,
-            &self.ctx.system,
-            card_prompt(printed, &near),
-        );
+        let message = self.ctx.card_message(printed, self.options.examples);
+        let hint = message.hint;
+        let first = first_request(&self.options.model, &self.ctx.system, message.text);
         let answer = match self.ask(&first, false, &mut requests) {
             Ok(answer) => answer,
             Err(Asked::Budget) => {
                 return Ok(Finished {
                     outcome: Outcome::NotRun,
                     requests,
+                    hint: HintState::Off,
                 });
             }
             Err(Asked::Failed(error)) => {
                 return Ok(Finished {
                     outcome: unanswered(error)?,
                     requests,
+                    hint,
                 });
             }
         };
@@ -279,8 +327,9 @@ impl<'a> Session<'a> {
             }
         }
         Ok(Finished {
-            outcome: self.keep(printed, &attempt)?,
+            outcome: self.keep(printed, &attempt, hint)?,
             requests,
+            hint,
         })
     }
 
@@ -315,8 +364,14 @@ impl<'a> Session<'a> {
         Attempt { json, report }
     }
 
-    /// Saves the attempt as an accepted proposal, or as a rejected one with the report.
-    fn keep(&self, printed: &PrintedCard, attempt: &Attempt) -> Result<Outcome, CliError> {
+    /// Saves the attempt as an accepted proposal, or as a rejected one with the report, and the hint modes of the run when
+    /// it used any.
+    fn keep(
+        &self,
+        printed: &PrintedCard,
+        attempt: &Attempt,
+        hint: HintState,
+    ) -> Result<Outcome, CliError> {
         let outcome = Outcome::of(&attempt.report);
         match (&attempt.report.rules, outcome.is_kept()) {
             (Some(rules), true) => {
@@ -327,6 +382,10 @@ impl<'a> Session<'a> {
                 &attempt.json,
                 &attempt.report.render(false),
             )?,
+        }
+        let record = self.ctx.hint_record(hint);
+        if !record.is_plain() {
+            self.store.save_hints(&printed.name, &record)?;
         }
         Ok(outcome)
     }

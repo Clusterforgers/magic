@@ -140,7 +140,7 @@ Open card, compiler and wording items: `docs/cards-backlog.md`.
 
 - [ ] Target: every stored card Verified, or as near as the rules allow; after each round `compile` and `coverage` are re-run and the numbers go on the Status line
 - [~] (rt1) (read-tier-design) A card whose rules the checker cannot prove is played automatically once a signed-in player read them next to the engine's own English and marked them correct, and by hand again after one "reads wrong": the design in `docs/` and the pieces as new items (`docs/cards-dsl.md`, Model-assisted reading)
-- [~] (t14b) (forge-hint) `mtg-cli propose --forge-hint` adds the Forge script lines of a card (read at run time from a read-only checkout, nothing copied into the repository) to the prompt, and an A/B against `--solved-examples` on the same sample says which hint the checker accepts more often (a checkout needs the owner's approval; `docs/reference-engines.md`)
+- [ ] (t14c) A/B of `--forge-hint` against `--solved-examples` on the same 100 cards: which hint the checker accepts more often; the result goes into `docs/cards-dsl.md`
 - [ ] Gate: every corpus card is Verified or played through manual clauses and actions that show each unread clause, and fuzz games with a deck from each cluster pass every invariant, and a four-seat Commander game plays from the lobby to a winner in the web
 
 ## Tooling

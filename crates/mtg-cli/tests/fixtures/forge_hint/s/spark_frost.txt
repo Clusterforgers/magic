@@ -1,0 +1,13 @@
+Name:Spark
+ManaCost:1 R
+Types:Instant
+A:SP$ Singe | Cost$ 1 R | ValidTgts$ Any | NumSinge$ 2 | SpellDescription$ Spark singes any target for 2.
+Oracle:Spark singes any target for 2.
+
+ALTERNATE
+
+Name:Frost
+ManaCost:1 U
+Types:Instant
+A:SP$ Chill | Cost$ 1 U | ValidTgts$ Creature | SpellDescription$ Frost chills target creature.
+Oracle:Frost chills target creature.
