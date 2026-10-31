@@ -19,7 +19,7 @@ use crate::effect::{Effect, Produce};
 use crate::keyword::Keyword;
 use crate::mana::ManaCostX;
 use crate::refs::{Ref, Selector, ZoneKind};
-use crate::spend::SpendOn;
+use crate::spend::{SpendOn, WhenSpent};
 use crate::support::{
     Caps, Clause, PrintedCard, PrintedFace, Support, SupportRecord, support, whole_text,
 };
@@ -309,12 +309,18 @@ pub(crate) fn bare_tap_mana(ability: &Ability) -> Option<&Produce> {
             times,
             only,
             lasts,
+            when_spent,
         },
     ] = effects.as_slice()
     else {
         return None;
     };
-    (targets.is_empty() && times.is_one() && only.is_empty() && lasts.is_step()).then_some(mana)
+    (targets.is_empty()
+        && times.is_one()
+        && only.is_empty()
+        && lasts.is_step()
+        && when_spent.is_none())
+    .then_some(mana)
 }
 
 /// The mana a plain `{T}: Add {X}` adds: a bare tap ability (`bare_tap_mana`) of one fixed mana.
@@ -492,6 +498,8 @@ pub struct ManaShape<'a> {
     pub then: &'a [Effect],
     /// What the mana may be spent on; none listed means anything.
     pub only: &'a [SpendOn],
+    /// What spending the mana to cast a spell sets off.
+    pub when_spent: Option<&'a WhenSpent>,
 }
 
 impl ManaShape<'_> {
@@ -621,6 +629,7 @@ pub fn mana_shape(ability: &Ability) -> Option<ManaShape<'_>> {
             times,
             only,
             lasts,
+            when_spent,
         },
         then @ ..,
     ] = effects
@@ -672,6 +681,7 @@ pub fn mana_shape(ability: &Ability) -> Option<ManaShape<'_>> {
             before,
             then,
             only,
+            when_spent: when_spent.as_deref(),
         })
 }
 

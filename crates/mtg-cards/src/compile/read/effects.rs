@@ -1538,6 +1538,7 @@ fn add_mana(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         times,
         only: Vec::new(),
         lasts: ManaLasts::Step,
+        when_spent: None,
     }];
     effects.extend(gained);
     // "..., where X is the total power of attacking creatures. Spend this mana only to cast spells.": the where clause

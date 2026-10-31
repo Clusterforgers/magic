@@ -46,6 +46,7 @@ pub fn mana_trigger(ability: &Ability) -> Option<ManaTrigger<'_>> {
             times,
             only,
             lasts,
+            when_spent: None,
         },
     ] = effects.as_slice()
     else {

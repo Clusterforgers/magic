@@ -2099,13 +2099,7 @@ impl Writer<'_> {
                 what,
                 to: Destination::Hand,
             } => self.returned_to_hand(what).or_else(|| self.moved(effect))?,
-            Effect::AddMana {
-                who,
-                mana,
-                times,
-                only,
-                lasts,
-            } => self.mana_added(who, (mana, times), only, *lasts)?,
+            Effect::AddMana { .. } => self.mana_added_by(effect)?,
             // "you get {E}{E}": energy is a counter on the player, written with its symbol.
             Effect::PutCounters { count, .. } if gets_energy(effect) => {
                 format!("you get {}", costs::energy_text(count)?)
@@ -2760,6 +2754,22 @@ impl Writer<'_> {
         Some(clauses.join(" and "))
     }
 
+    /// An effect that adds mana as text; none for mana that sets something off when it is spent, which no sentence here writes.
+    fn mana_added_by(&mut self, effect: &Effect) -> Option<String> {
+        let Effect::AddMana {
+            who,
+            mana,
+            times,
+            only,
+            lasts,
+            when_spent: None,
+        } = effect
+        else {
+            return None;
+        };
+        self.mana_added(who, (mana, times), only, *lasts)
+    }
+
     /// Mana added to a pool: "add {R}{R}" for you, "target player adds one mana of any color" for another player.
     fn mana_added(
         &mut self,
@@ -2798,6 +2808,7 @@ impl Writer<'_> {
                 times,
                 only,
                 lasts,
+                when_spent: None,
             },
             Effect::GainLife {
                 who: Ref::You,

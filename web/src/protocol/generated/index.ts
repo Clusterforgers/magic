@@ -254,6 +254,7 @@ export type { UserView } from "./UserView";
 export type { Visibility } from "./Visibility";
 export type { VisibilityBody } from "./VisibilityBody";
 export type { W11dVentured } from "./W11dVentured";
+export type { WhenSpent } from "./WhenSpent";
 export type { YesNoChoice } from "./YesNoChoice";
 export type { YesNoOptions } from "./YesNoOptions";
 export type { YieldUntil } from "./YieldUntil";

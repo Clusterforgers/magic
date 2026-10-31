@@ -290,6 +290,7 @@ mod mana_leftovers;
 mod mana_leftovers_fuzz;
 mod mana_limits;
 mod mana_payment;
+mod mana_rider;
 mod mana_spent;
 mod mana_takes;
 mod mana_wordings;

@@ -1,0 +1,28 @@
+{
+  "id": "b1aaa7b0-1cac-4a92-b880-7ef1ac00618f",
+  "oracle_id": "b473e293-59e3-4e04-acf2-622604aeb25f",
+  "name": "Path of Ancestry",
+  "lang": "en",
+  "layout": "normal",
+  "set": "mbc",
+  "collector_number": "80",
+  "rarity": "common",
+  "released_at": "2026-10-19",
+  "digital": false,
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land",
+  "oracle_text": "This land enters tapped.\n{T}: Add one mana of any color in your commander's color identity. When that mana is spent to cast a creature spell that shares a creature type with your commander, scry 1. (Look at the top card of your library. You may put that card on the bottom.)",
+  "colors": [],
+  "color_identity": [],
+  "keywords": [
+    "Scry"
+  ],
+  "produced_mana": [
+    "B",
+    "G",
+    "R",
+    "U",
+    "W"
+  ]
+}

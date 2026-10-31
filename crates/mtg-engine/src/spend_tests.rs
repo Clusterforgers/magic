@@ -1,6 +1,6 @@
 //! Goal: restricted mana counts toward a payment only where its restriction allows it, and `can_afford`, `auto_payment`, `check_payment` and `complete_payment` agree with a brute-force check of every payment for pools of unrestricted and restricted mana, sources of restricted mana, plain, hybrid and Phyrexian costs, and every kind of spend.
 
-use mtg_cards::spend::{SpendFilter, SpendOn, SpendTraits};
+use mtg_cards::spend::{SpendFilter, SpendOn, SpendTraits, WhenSpent};
 use mtg_core::card::CardType;
 use mtg_core::ids::ObjectId;
 use mtg_core::mana::{ManaCost, ManaType};
@@ -33,6 +33,15 @@ fn ability(has_x: bool) -> Spend {
         traits: SpendTraits::default(),
         has_x,
     }
+}
+
+/// A rider on mana: it sets something off when the mana is spent on a creature spell.
+fn rider() -> SpendOn {
+    SpendOn::When(Box::new(WhenSpent {
+        spell: SpendFilter::of_type(CardType::Creature),
+        effects: Vec::new(),
+        source: Some(ObjectId(1)),
+    }))
 }
 
 fn only_for(card_type: CardType) -> Vec<SpendOn> {
@@ -75,6 +84,11 @@ fn tap(object: u64) -> ManaSource {
 #[case::a_cost_without_x(&[SpendOn::CostWithX], spell_of(&[CardType::Instant], false), false)]
 #[case::x_of_neither(&[SpendOn::CostWithX], Spend { has_x: true, ..Spend::other() }, false)]
 #[case::restricted_for_neither(&[SpendOn::Spell(SpendFilter::default())], Spend::other(), false)]
+#[case::a_rider_alone_limits_nothing_for_a_spell(&[rider()], spell_of(&[CardType::Instant], false), true)]
+#[case::a_rider_alone_limits_nothing_for_an_ability(&[rider()], ability(false), true)]
+#[case::a_rider_alone_limits_nothing_for_neither(&[rider()], Spend::other(), true)]
+#[case::a_use_beside_a_rider_still_limits(&[rider(), SpendOn::abilities()], spell_of(&[CardType::Creature], false), false)]
+#[case::a_use_beside_a_rider_allows_its_own(&[rider(), SpendOn::abilities()], ability(false), true)]
 fn a_spend_allows_what_a_restriction_lists(
     #[case] only: &[SpendOn],
     #[case] spend: Spend,
@@ -237,11 +251,13 @@ const TYPES: [ManaType; 4] = [
     ManaType::Colorless,
 ];
 
-fn restrictions() -> [Vec<SpendOn>; 3] {
+fn restrictions() -> [Vec<SpendOn>; 4] {
     [
         only_for(CardType::Creature),
         vec![SpendOn::abilities()],
         vec![SpendOn::CostWithX],
+        // A rider restricts nothing.
+        vec![rider()],
     ]
 }
 
@@ -268,8 +284,8 @@ type Case = (
 fn case() -> impl Strategy<Value = Case> {
     (
         prop::collection::vec(0usize..4, 0..3),
-        prop::collection::vec((0usize..4, 0usize..3), 0..3),
-        prop::collection::vec((0usize..4, prop::option::of(0usize..3)), 0..3),
+        prop::collection::vec((0usize..4, 0usize..4), 0..3),
+        prop::collection::vec((0usize..4, prop::option::of(0usize..4)), 0..3),
         prop::sample::select(vec![
             "{1}",
             "{2}",

@@ -48,6 +48,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         times,
         only,
         lasts,
+        when_spent,
     } = effect
     else {
         return Err(wrong_effect("AddMana"));
@@ -83,6 +84,13 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     let Some(only) = mtg_cards::spend::resolve_uses(only, chosen_type) else {
         return Ok(Run::events(Vec::new()));
     };
+    // The mana may be spent on anything; a rider remembers the permanent that made the mana.
+    let mut only = only;
+    only.extend(
+        when_spent
+            .as_deref()
+            .and_then(|rider| rider.entry(chosen_type, source)),
+    );
     let only = &only;
     let mut events = Vec::new();
     // The types a player picks between and how many mana of the one picked.

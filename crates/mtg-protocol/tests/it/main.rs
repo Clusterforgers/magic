@@ -44,6 +44,7 @@ mod log_names;
 mod loyalty_view;
 mod mana_cost_hidden;
 mod mana_lasts_view;
+mod mana_rider_hidden;
 mod manifest_view;
 mod manual_library_view;
 mod manual_roll_view;
