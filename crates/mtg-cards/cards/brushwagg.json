@@ -1,0 +1,32 @@
+{
+  "oracle_id": "33a981ac-878d-4257-936f-55b4e6543c12",
+  "name": "Brushwagg",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Brushwagg",
+      "oracle_fingerprint": "0727dec4518e626184d69c366bf3a05f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "Blocks": { "what": ["This"] } },
+                { "BecomesBlocked": { "what": ["This"] } }
+              ]
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": -2, "toughness": 2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -12,6 +12,7 @@ mod pairing;
 mod render;
 mod repair;
 
+pub(crate) use pairing::pair_card;
 pub use repair::{Repair, RepairClass};
 
 use std::collections::BTreeSet;

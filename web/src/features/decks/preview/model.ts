@@ -140,7 +140,7 @@ export function typeCounts(
 
 /** Copies by support state over `cards`. */
 export function supportCounts(cards: readonly PreviewCard[]): Counts {
-  const counts: Counts = { total: 0, verified: 0, partial: 0, manual: 0, stale: 0, unplayable: 0 }
+  const counts: Counts = { total: 0, verified: 0, read: 0, partial: 0, manual: 0, stale: 0, unplayable: 0 }
   for (const card of cards) {
     counts.total += card.count
     counts[card.support] += card.count

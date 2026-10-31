@@ -1,0 +1,27 @@
+{
+  "oracle_id": "c993ebf8-972f-41c7-9870-d7f8aa9a69d9",
+  "name": "Inner Struggle",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Inner Struggle",
+      "oracle_fingerprint": "5b7399f86dfb2b575442c9854548b204",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "source": { "Target": 0 },
+                  "to": { "Target": 0 },
+                  "amount": { "Stat": { "of": { "Target": 0 }, "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

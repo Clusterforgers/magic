@@ -7,6 +7,7 @@ pub mod c11i_http;
 pub mod c11i_openai;
 pub mod examples;
 pub mod fake;
+pub mod forge_hint;
 pub mod model;
 pub mod outcome;
 pub mod prompt;
@@ -36,6 +37,7 @@ use crate::w2a_promote::w2a_promote;
 use anthropic::{AnthropicClient, AnthropicConfig, ApiKey};
 use c11i_openai::{OpenAi, OpenAiClient};
 use examples::ExampleIndex;
+use forge_hint::{ForgeHints, HintState};
 use model::{ModelClient, estimate_tokens};
 use outcome::ProposeReport;
 use session::{Context, Options, Session};
@@ -64,6 +66,8 @@ pub fn context(cards: &[PrintedCard]) -> Result<Context<'static>, CliError> {
         caps: mtg_engine::caps(),
         system: prompt::system_prompt(&dsl_reference()),
         examples: ExampleIndex::build(library, cards),
+        solved_examples: 0,
+        forge: None,
     })
 }
 
@@ -120,8 +124,8 @@ pub fn dry_run_in(
     let Some(first) = targets.first().and_then(|at| cards.get(*at)) else {
         return Err(CliError::Config("no card is selected".into()));
     };
-    let near = ctx.examples.nearest(first, options.examples);
-    let message = prompt::card_prompt(first, &near);
+    let built = ctx.card_message(first, options.examples);
+    let message = built.text;
     let request = prompt::first_request(&options.model, &ctx.system, message.clone());
     let per_request = request.estimated_tokens();
     let count = u64::try_from(targets.len()).unwrap_or(u64::MAX);
@@ -137,8 +141,16 @@ pub fn dry_run_in(
         ctx.system.len(),
         ctx.system.len() - prompt::instructions().len(),
         message.len(),
-        near.len()
+        built.examples
     );
+    let hint_line = match built.hint {
+        HintState::Off => "",
+        HintState::Hinted => "forge hint: the script lines of the first card are in its prompt\n",
+        HintState::Unhinted => {
+            "forge hint: the first card has no script, or nothing in it to show\n"
+        }
+    };
+    text.push_str(hint_line);
     let _ = writeln!(
         text,
         "estimated input tokens of the first request: {per_request} (an upper estimate, 3 bytes a token)\n\
@@ -340,13 +352,21 @@ async fn precon_oracle_ids(db: &Database) -> Result<BTreeSet<String>, CliError> 
     Ok(ids.into_iter().map(|id| id.0).collect())
 }
 
-/// The context of a run; with `--solved-examples K` its examples are the K nearest solved cards of the database.
+/// The Forge scripts of `--forge-hint DIR`, opened before the first request so that a wrong folder ends the run at once.
+pub fn forge_hints_of(args: &ProposeArgs) -> Result<Option<ForgeHints>, CliError> {
+    args.forge_hint.as_deref().map(ForgeHints::open).transpose()
+}
+
+/// The context of a run; with `--solved-examples K` its examples are the K nearest solved cards of the database, and with
+/// `--forge-hint DIR` it holds the Forge scripts.
 async fn w19b_context_of(
     db: &Database,
     cards: &[PrintedCard],
     args: &ProposeArgs,
 ) -> Result<Context<'static>, CliError> {
     let mut ctx = context(cards)?;
+    ctx.forge = forge_hints_of(args)?;
+    ctx.solved_examples = args.solved_examples;
     if args.solved_examples > 0 {
         let solved =
             W19bSolvedExamples::load(db, args.solved_examples, args.examples_train_only).await?;

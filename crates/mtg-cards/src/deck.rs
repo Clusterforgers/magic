@@ -115,6 +115,8 @@ pub struct Counts {
     pub total: u32,
     /// Copies of `verified` cards.
     pub verified: u32,
+    /// Copies of `read` cards: drafts a player approved, which the game runs like `verified` ones.
+    pub read: u32,
     /// Copies of `partial` cards.
     pub partial: u32,
     /// Copies of `manual` cards.
@@ -130,6 +132,7 @@ impl Counts {
         self.total = self.total.saturating_add(copies);
         let slot = match support {
             Support::Verified => &mut self.verified,
+            Support::Read => &mut self.read,
             Support::Partial => &mut self.partial,
             Support::Manual => &mut self.manual,
             Support::Stale => &mut self.stale,

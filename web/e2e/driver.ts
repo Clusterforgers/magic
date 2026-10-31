@@ -51,6 +51,8 @@ export interface Seen {
   command: Card[]
   /** Cards on this seat's battlefield the prompt marks legal. */
   board: Card[]
+  /** The zone chips (graveyard, exile) that hold a card the prompt marks legal, as "graveyard 1". */
+  zones: string[]
 }
 
 type Observed = { over: true } | Seen
@@ -89,6 +91,9 @@ export function look(arg: { me: string; answered: string | null }): Observed | n
     hand: legal(`ul[aria-label="${arg.me}'s hand"]`),
     command: legal(`ul[aria-label="${arg.me}'s commanders in the command zone"]`),
     board: legal(`section[aria-label="${arg.me}'s battlefield"]`),
+    zones: Array.from(document.querySelectorAll<HTMLElement>('[data-zone][data-legal]')).map(
+      (zone) => `${zone.dataset['zone'] ?? '?'} ${zone.dataset['legal'] ?? '?'}`,
+    ),
   }
 }
 
@@ -106,16 +111,18 @@ export function attackersOffered(own: readonly string[]): string[] {
 }
 
 /**
- * A priority window with nothing to play: no card of the hand, no commander in the command zone and no ability on the
- * battlefield is legal, so it can be passed and nothing else. An untapped land is marked legal for its mana ability,
- * which is never a play (`can_act`, [arena-flow.md](../../docs/arena-flow.md)), so a land alone leaves the window idle;
- * any other legal permanent is read as an ability to use. The server asks only a seat with a stop or Full Control.
+ * A priority window with nothing to play: no card of the hand, the command zone, the graveyard or the exile and no
+ * ability on the battlefield is legal, so it can be passed and nothing else. An untapped land is marked legal for its
+ * mana ability, which is never a play (`can_act`, [arena-flow.md](../../docs/arena-flow.md)), so a land alone leaves the
+ * window idle; a land that names an ability to activate (a sacrifice outlet, a cycling land) is a play, like any other
+ * legal permanent. The server asks only a seat with a play, a stop, Full Control or a by-hand clause to apply.
  */
 export const isIdle = (seen: Seen): boolean =>
   seen.kind === 'Priority' &&
   seen.hand.length === 0 &&
   seen.command.length === 0 &&
-  seen.board.every((permanent) => permanent.land)
+  seen.zones.length === 0 &&
+  seen.board.every((permanent) => permanent.land && !hasAbility(permanent))
 
 /** How often a play is chosen in one window before the run leaves it alone: a play that comes back unanswered is tried once more. */
 const MAX_TRIES = 2
