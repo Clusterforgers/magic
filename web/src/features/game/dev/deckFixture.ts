@@ -126,7 +126,7 @@ function make(deck: FixtureDeck): Made {
 }
 
 const tally = (made: Made): Counts => {
-  const all: Counts = { total: 0, verified: 0, partial: 0, manual: 0, stale: 0, unplayable: 0 }
+  const all: Counts = { total: 0, verified: 0, read: 0, partial: 0, manual: 0, stale: 0, unplayable: 0 }
   for (const line of [
     ...made.main,
     ...made.commanders.map((card) => ({ card, count: 1, support: 'verified' as const })),

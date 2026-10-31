@@ -24,6 +24,7 @@ import { DoorMarks } from './DoorMarks'
 import { GrantMarks } from './GrantMarks'
 import { NoteMark, RevealedMark } from './HandMarks'
 import { ByHandMark } from './manual/ByHand'
+import { ReadMark } from './manual/ReadMark'
 import { ManaPips } from './ManaPips'
 import { statBadge } from './overlay'
 import { usePrinted } from './printed'
@@ -243,6 +244,7 @@ export function TextFace({
         )}
       >
         <ByHandMark object={object} spot="chip" compact={size === 'compact'} text={classes.text} />
+        <ReadMark object={object} spot="chip" compact={size === 'compact'} text={classes.text} />
         {chips.map(({ label, tone }) => (
           <span
             key={label}

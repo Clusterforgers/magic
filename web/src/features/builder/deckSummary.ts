@@ -4,7 +4,7 @@
  */
 import { KIND_LABEL, KIND_ORDER, kindOf } from '@/features/decks/preview/model'
 import type { CardKind, DeckPreviewData, PreviewCard } from '@/features/decks/preview/model'
-import { byHandCopies, cardsByHand } from '@/lib/byHand'
+import { byHandCopies, cardsByHand, runsWhole } from '@/lib/byHand'
 import type { CardHit, Counts, Support } from '@/protocol/generated'
 import type { Draft, Line } from './deckEdit'
 import { checkOf, reasonLines, SUPPORT_ORDER } from './report'
@@ -93,7 +93,7 @@ export function handCards(draft: Draft, checks: ReadonlyMap<string, LineCheck>):
   const found = new Map<string, HandCard>()
   for (const line of draft.lines) {
     const check = checkOf(checks, line)
-    if (check.support === 'verified') continue
+    if (runsWhole(check.support)) continue
     const kept = found.get(line.card.oracle_id)
     if (kept === undefined) {
       found.set(line.card.oracle_id, {
