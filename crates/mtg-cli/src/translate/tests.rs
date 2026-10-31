@@ -310,6 +310,61 @@ fn gaps(text: &str) -> Vec<String> {
     json!({"Spell": {"targets": [{"what": {"Object": [{"Type": "Creature"}, {"ControlledBy": "You"}]}}],
         "effects": [{"CreateToken": {"token": {"CopyOf": {"of": {"Target": 0}}}, "count": 2}}]}})
 )]
+#[case::tap_untap_regenerate(
+    "Name:Test Rest\nTypes:Creature Elf\nA:AB$ Untap | Cost$ 1 G | Defined$ Self\n",
+    json!({"Activated": {"cost": "{1}{G}", "effects": [{"Untap": {"what": "This"}}]}})
+)]
+#[case::regenerate_itself(
+    "Name:Test Shell\nTypes:Creature Elf\nA:AB$ Regenerate | Cost$ G\n",
+    json!({"Activated": {"cost": "{G}", "effects": [{"Regenerate": {"what": "This"}}]}})
+)]
+#[case::tap_all(
+    "Name:Test Chill\nTypes:Sorcery\nA:SP$ TapAll | ValidCards$ Creature.OppCtrl\n",
+    json!({"Spell": {"effects": [{"Tap": {"what": {"Each": [{"Type": "Creature"}, {"ControlledBy": "Opponents"}]}}}]}})
+)]
+#[case::mill_scry_surveil(
+    "Name:Test Delve\nTypes:Sorcery\nA:SP$ Mill | NumCards$ 3 | Defined$ You | SubAbility$ Look\nSVar:Look:DB$ Scry | ScryNum$ 2 | SubAbility$ Sift\nSVar:Sift:DB$ Surveil | Amount$ 1\n",
+    json!({"Spell": {"effects": [{"Mill": {"count": 3}}, {"Scry": {"count": 2}}, {"Surveil": {}}]}})
+)]
+#[case::random_discard_of_a_target_player(
+    "Name:Test Rake\nTypes:Sorcery\nA:SP$ Discard | ValidTgts$ Opponent | NumCards$ 2 | Mode$ Random\n",
+    json!({"Spell": {"targets": [{"what": "Opponent"}],
+        "effects": [{"Discard": {"who": {"Target": 0}, "count": 2, "random": true}}]}})
+)]
+#[case::damage_to_all(
+    "Name:Test Storm\nTypes:Sorcery\nA:SP$ DamageAll | NumDmg$ 2 | ValidCards$ Creature | ValidPlayers$ Player\n",
+    json!({"Spell": {"effects": [
+        {"DealDamage": {"to": {"Each": [{"Type": "Creature"}]}, "amount": 2}},
+        {"DealDamage": {"to": "EachPlayer", "amount": 2}}]}})
+)]
+#[case::counters_on_all(
+    "Name:Test Rally\nTypes:Sorcery\nA:SP$ PutCounterAll | ValidCards$ Creature.YouCtrl | CounterType$ P1P1 | CounterNum$ 1\n",
+    json!({"Spell": {"effects": [{"PutCounters": {"on": {"Each": [{"Type": "Creature"}, {"ControlledBy": "You"}]},
+        "counter": "+1/+1"}}]}})
+)]
+#[case::restricted_mana(
+    "Name:Test Forge\nTypes:Artifact\nA:AB$ Mana | Cost$ T | Produced$ R | RestrictValid$ Spell.Creature\n",
+    json!({"Activated": {"cost": ["Tap"], "effects": [{"AddMana": {"mana": {"Fixed": ["Red"]},
+        "only": [{"Spell": {"types": ["Creature"]}}]}}]}})
+)]
+#[case::cannot_be_blocked_by_big_creatures(
+    "Name:Test Sneak\nTypes:Creature Elf\nS:Mode$ CantBlockBy | ValidAttacker$ Creature.Self | ValidBlocker$ Creature.powerGE3\n",
+    json!({"Static": {"affected": "This", "mods": [{"CantBeBlockedBy": [{"Type": "Creature"},
+        {"Compare": {"stat": "Power", "op": "Ge", "to": 3}}]}]}})
+)]
+#[case::attacks_each_combat(
+    "Name:Test Rage\nTypes:Creature Goblin\nS:Mode$ MustAttack | ValidCreature$ Card.Self\n",
+    json!({"Rule": {"rule": {"MustAttack": "This"}}})
+)]
+#[case::spells_cost_more(
+    "Name:Test Tax\nTypes:Enchantment\nS:Mode$ RaiseCost | ValidCard$ Card | Type$ Spell | Activator$ Player.Opponent | Amount$ 1\n",
+    json!({"CostModifier": {"applies_to": ["Spell", {"ControlledBy": "Opponents"}], "change": "Increase", "mana": "{1}"}})
+)]
+#[case::an_opponent_sacrifices(
+    "Name:Test Edict\nTypes:Sorcery\nA:SP$ Sacrifice | ValidTgts$ Opponent | SacValid$ Creature\n",
+    json!({"Spell": {"targets": [{"what": "Opponent"}],
+        "effects": [{"Sacrifice": {"who": {"Target": 0}, "filter": [{"Type": "Creature"}]}}]}})
+)]
 #[case::at_the_next_end_step(
     "Name:Test Lantern\nTypes:Instant\nA:SP$ DelayedTrigger | Mode$ Phase | Phase$ End of Turn | Execute$ Gain\nSVar:Gain:DB$ GainLife | LifeAmount$ 3\n",
     json!({"Spell": {"effects": [{"DelayedTrigger": {"when": {"StepBegins": {"step": "End", "whose": "EachPlayer"}},

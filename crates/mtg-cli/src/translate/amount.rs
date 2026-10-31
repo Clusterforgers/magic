@@ -72,8 +72,9 @@ fn expression_amount(ctx: &Ctx, expression: &str) -> Tr<Value> {
     if let Some(rest) = expression.strip_prefix("Count$") {
         return count_amount(ctx, rest);
     }
-    if let Some(amount) = event_amount(ctx, expression)? {
-        return Ok(amount);
+    let (base, steps) = expression.split_once('/').unwrap_or((expression, ""));
+    if let Some(amount) = event_amount(ctx, base)? {
+        return apply_steps(amount, steps);
     }
     if let Some(rest) = expression.strip_prefix("Targeted$") {
         return targeted_amount(rest, &ctx.last_target()?);
@@ -133,10 +134,13 @@ fn targeted_amount(what: &str, of: &Value) -> Tr<Value> {
 
 /// The amount of a `Count$` expression: its base and the `/Plus.N`, `/Minus.N`, `/Twice` or `/Times.N` steps after it.
 fn count_amount(ctx: &Ctx, expression: &str) -> Tr<Value> {
-    let mut parts = expression.split('/');
-    let first = parts.next().unwrap_or_default();
-    let mut value = count_base(ctx, first)?;
-    for step in parts {
+    let (first, steps) = expression.split_once('/').unwrap_or((expression, ""));
+    apply_steps(count_base(ctx, first)?, steps)
+}
+
+/// The `/Plus.N`, `/Minus.N`, `/Twice` and `/Times.N` steps that follow the base of an expression.
+fn apply_steps(mut value: Value, steps: &str) -> Tr<Value> {
+    for step in steps.split('/').filter(|step| !step.is_empty()) {
         value = match step.split_once('.') {
             Some(("Plus", n)) => sum(&value, parse_number(n)?),
             Some(("Minus", n)) => sum(&value, -parse_number(n)?),
