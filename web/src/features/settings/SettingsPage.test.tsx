@@ -203,6 +203,42 @@ describe('deleting the account', () => {
     expect(app.store.getState().status).toBe('signed-in')
   })
 
+  it('does not offer the admin account to be deleted, and says why in plain words', async () => {
+    const app = await open({ admin: ADA.username })
+    await screen.findByRole('form', { name: 'Change password' })
+    const section = screen.getByRole('region', { name: 'Delete account' })
+    expect(section).toHaveTextContent(
+      'This account makes accounts for your friends, so it cannot be deleted.',
+    )
+    expect(section).not.toHaveTextContent(/your decks are deleted/i)
+    expect(deleteButton()).toBeDisabled()
+    expect(deleteButton()).toHaveAccessibleDescription(/cannot be deleted/)
+    await app.user.click(deleteButton())
+    expect(screen.queryByRole('alertdialog')).not.toBeInTheDocument()
+    expect(sentTo(app, '/api/auth/account')).toHaveLength(0)
+    expect(app.store.getState().status).toBe('signed-in')
+  })
+
+  it('still offers every other account the deletion', async () => {
+    await open({ admin: 'someone_else' })
+    await screen.findByRole('form', { name: 'Change password' })
+    const section = screen.getByRole('region', { name: 'Delete account' })
+    expect(section).toHaveTextContent('This cannot be undone.')
+    expect(section).not.toHaveTextContent(/makes accounts for your friends/)
+    expect(deleteButton()).toBeEnabled()
+  })
+
+  it('says the same words if the server refuses the admin account after all', async () => {
+    const app = await open({ override: { account: () => authError(409, 'admin_account') } })
+    const box = await ask(app)
+    await app.user.type(box.getByLabelText('Password'), ADA.password)
+    await app.user.click(box.getByRole('button', { name: 'Delete account' }))
+    expect(
+      await box.findByText('This account makes accounts for your friends, so it cannot be deleted.'),
+    ).toBeInTheDocument()
+    expect(app.store.getState().status).toBe('signed-in')
+  })
+
   it('wants a password before it sends anything', async () => {
     const app = await open()
     const box = await ask(app)

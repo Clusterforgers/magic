@@ -32,7 +32,7 @@ One item is one piece of about 15 minutes and one line: the outcome, the cards i
 - Engine: zones, turns, priority, stack, combat with forecast, layers (CR 613), replacement and prevention, counters, planeswalkers, battles and Sieges, attachments, copies and faces, Rooms, soulbond, mutate, phasing, day and night, vehicles, the Monarch and the initiative, bots, `mtg-testkit` (`docs/engine.md`).
 - Card language and compiler: the DSL, the reader framework, the renderer with goldens, the corpus ratchet, templates for every ability shape and stored `card_rules` (`docs/cards-dsl.md`).
 - Model-assisted reading: `check-rules`, `propose` (a local OpenAI-style server), `promote` (`--draft` writes the 355 first read-tier drafts, which `compile` stores in `card_drafts`), the repair of mechanical slips, writers for the accepted wordings, `coverage --all`, the gap ledger and `export-pairs` (`docs/cards-dsl.md`).
-- Protocol and server: generated bindings with a drift test, the game actor, a WebSocket per seat, persistence and resume, accounts, lobbies, open games, precons, concurrent keep and mulligan, seat presence, the snapshot log (`docs/protocol.md`, `docs/server.md`).
+- Protocol and server: generated bindings with a drift test, the game actor, a WebSocket per seat, persistence and resume, accounts (the admin makes, resets and removes them), lobbies, open games, precons, concurrent keep and mulligan, seat presence, the snapshot log (`docs/protocol.md`, `docs/server.md`).
 - Game flow: auto-pass, response clocks, yields, stops, Full Control, the timer bank, the by-hand window and leak tests (`docs/arena-flow.md`).
 - Commander: house rules, format rules, deck check, Partner, companion in the engine, tax, commander damage and any number of seats (`docs/server.md`).
 - Manual play: the Commands panel, by-hand clauses with chips, manual actions at any time on any turn and fix marks (`docs/web.md`, `docs/protocol.md`).
@@ -47,8 +47,6 @@ One item is one piece of about 15 minutes and one line: the outcome, the cards i
 
 Items that touch the running game come first.
 
-- [~] (ad1d) (admin-guards) The admin account cannot be deleted from Account settings (409 and a plain warning), `docs/deploy.md` names the recovery, and the Accounts page scrolls to the new credentials, "Copy both" adds the site address, the headings agree, the credential routes do not echo serde detail and the new-password field opts out of saved logins
-- [ ] (ad1b) The admin resets a friend's password and removes an account from the Accounts page (the removed account leaves its live games as in `DELETE /api/auth/account`), since a forgotten password has no other way back (`docs/server.md`, Admin)
 - [ ] (ad1c) The Accounts page in the layout gate at the six sizes in both themes (a dev route that stands for it) and an e2e spec of the admin flow on the Postgres server: sign-in, make an account, the friend signs in, the closed sign-up page (`docs/web.md`)
 - [ ] (d1c) A copy of the nightly database dumps off queen (a Longhorn backup target or a scheduled copy to another machine), so losing queen does not lose the accounts and decks (`docs/deploy.md`)
 - [ ] (d1b) The release script's steps as a GitHub Actions workflow on a published release, so a release needs no dev machine (`docs/deploy.md`)

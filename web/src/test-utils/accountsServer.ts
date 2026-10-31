@@ -25,7 +25,7 @@ export interface AccountsScript {
   throttleAfter?: number
   /**
    * Replaces the answer of one endpoint (`me`, `register`, `login`, `logout`, `games`, `removeGame`, `password`,
-   * `account`, `options`, `listAccounts`, `createAccount`).
+   * `account`, `options`, `listAccounts`, `createAccount`, `resetPassword`, `removeAccount`).
    */
   override?: Partial<
     Record<
@@ -39,7 +39,9 @@ export interface AccountsScript {
       | 'account'
       | 'options'
       | 'listAccounts'
-      | 'createAccount',
+      | 'createAccount'
+      | 'resetPassword'
+      | 'removeAccount',
       (call: FetchCall) => Response | Promise<Response>
     >
   >
@@ -54,6 +56,10 @@ export interface AccountsServer {
   credentials: unknown[]
   /** The bodies of every `POST /api/admin/users` request, parsed, in order. */
   created: unknown[]
+  /** Every password the admin set, as the account's id and the password, in order. */
+  resets: { id: string; password: unknown }[]
+  /** The ids of the accounts the admin removed, in order. */
+  removed: string[]
   /** The username signed in right now (what the cookie stands for), or null. */
   readonly signedIn: string | null
   /** The accounts that exist, by username as registered. */
@@ -100,6 +106,8 @@ export function startAccounts(script: AccountsScript = {}): AccountsServer {
   let failures = 0
   const credentials: unknown[] = []
   const created: unknown[] = []
+  const resets: { id: string; password: unknown }[] = []
+  const removed: string[] = []
 
   const find = (name: string): string | undefined =>
     [...users.keys()].find((known) => known.toLowerCase() === name.toLowerCase())
@@ -174,6 +182,36 @@ export function startAccounts(script: AccountsScript = {}): AccountsServer {
     return jsonResponse(201, { id: idOf(sent.username), username: sent.username })
   }
 
+  // `POST /api/admin/users/{id}/password` and `DELETE /api/admin/users/{id}`: 401, 403, then an unknown id (404)
+  // and the admin's own account (409) before the body is read, as on the server.
+  function adminOnAccount(id: string): { refused: Response } | { name: string } {
+    const refused = adminOnly()
+    if (refused !== null) return { refused }
+    const name = [...users.keys()].find((known) => idOf(known) === id)
+    if (name === undefined) return { refused: authError(404, 'unknown_account', 'there is no such account') }
+    if (isAdmin(name)) return { refused: authError(409, 'admin_account', 'this is the admin account') }
+    return { name }
+  }
+
+  function resetPassword(id: string, call: FetchCall): Response {
+    const found = adminOnAccount(id)
+    if ('refused' in found) return found.refused
+    const sent = body(call)
+    if (!isRecord(sent) || typeof sent.password !== 'string') return authError(400, 'invalid_request')
+    resets.push({ id, password: sent.password })
+    if (passwordProblem(sent.password) !== null) return authError(400, 'invalid_password')
+    users.set(found.name, sent.password)
+    return new Response(null, { status: 204 })
+  }
+
+  function removeAccount(id: string): Response {
+    const found = adminOnAccount(id)
+    if ('refused' in found) return found.refused
+    removed.push(id)
+    users.delete(found.name)
+    return new Response(null, { status: 204 })
+  }
+
   function logout(): Response {
     signedIn = null
     return new Response(null, { status: 204 })
@@ -231,6 +269,15 @@ export function startAccounts(script: AccountsScript = {}): AccountsServer {
       const game = decodeURIComponent(path.slice('/api/me/games/'.length))
       return script.override?.removeGame?.(call) ?? removeGame(game)
     }
+    if (path.startsWith('/api/admin/users/')) {
+      const [id = '', rest] = path.slice('/api/admin/users/'.length).split('/')
+      if (rest === 'password' && call.init?.method === 'POST') {
+        return script.override?.resetPassword?.(call) ?? resetPassword(decodeURIComponent(id), call)
+      }
+      if (rest === undefined && call.init?.method === 'DELETE') {
+        return script.override?.removeAccount?.(call) ?? removeAccount(decodeURIComponent(id))
+      }
+    }
     switch (path) {
       case '/api/auth/register':
         return script.override?.register?.(call) ?? register(call)
@@ -271,6 +318,8 @@ export function startAccounts(script: AccountsScript = {}): AccountsServer {
     calls: fake.calls,
     credentials,
     created,
+    resets,
+    removed,
     get signedIn() {
       return signedIn
     },

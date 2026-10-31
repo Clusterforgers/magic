@@ -85,6 +85,16 @@ export interface AuthState {
    */
   createAccount(credentials: Credentials): Promise<CreateResult>
   /**
+   * Sets the password of an account that is not the admin's and ends its sessions; admin only. The password is not
+   * kept. A 404 reloads the list, since the account is gone.
+   */
+  resetAccountPassword(id: string, password: string): Promise<SettingsResult>
+  /**
+   * Removes an account that is not the admin's, with its decks; admin only. The list reloads; an account that is
+   * already gone counts as removed.
+   */
+  removeAccount(id: string): Promise<SettingsResult>
+  /**
    * Takes a failed game off the user's list. The row goes at once on success; when the server says it holds no such
    * game for this user, the list is loaded again and shows what is true.
    */
@@ -147,6 +157,13 @@ export function createAuthStore({ api = accountsApi, initial }: AuthDeps = {}): 
       if (!isCode(error, 'accounts_unavailable')) return false
       become('unavailable', null)
       return true
+    }
+
+    // What an admin call that failed says about who is signed in, shared by the three calls on accounts.
+    function adminFailed(error: unknown): void {
+      if (isCode(error, 'unauthenticated')) become('signed-out', null)
+      else if (isCode(error, 'forbidden')) demoted()
+      else unavailable(error)
     }
 
     async function enter(call: () => Promise<UserView>): Promise<AuthResult> {
@@ -281,11 +298,47 @@ export function createAuthStore({ api = accountsApi, initial }: AuthDeps = {}): 
           void get().loadAccounts()
           return { ok: true, account }
         } catch (error) {
-          if (isCode(error, 'unauthenticated')) become('signed-out', null)
-          else if (isCode(error, 'forbidden')) demoted()
-          else unavailable(error)
+          adminFailed(error)
           return { ok: false, error }
         }
+      },
+
+      async resetAccountPassword(id, password) {
+        if (get().status !== 'signed-in' || get().user?.is_admin !== true) {
+          return { ok: false, error: NOT_ADMIN }
+        }
+        try {
+          await api.resetPassword(id, { password })
+          return { ok: true }
+        } catch (error) {
+          adminFailed(error)
+          // An account that is gone shows as gone: the list loads again.
+          if (isCode(error, 'unknown_account')) void get().loadAccounts()
+          return { ok: false, error }
+        }
+      },
+
+      async removeAccount(id) {
+        if (get().status !== 'signed-in' || get().user?.is_admin !== true) {
+          return { ok: false, error: NOT_ADMIN }
+        }
+        try {
+          await api.removeAccount(id)
+        } catch (error) {
+          adminFailed(error)
+          // Already gone is what was asked for; the list loads again and shows what is true.
+          if (isCode(error, 'unknown_account')) {
+            void get().loadAccounts()
+            return { ok: true }
+          }
+          return { ok: false, error }
+        }
+        // The row goes at once; the reload confirms what the server holds.
+        set((state) => ({
+          accounts: { ...state.accounts, users: state.accounts.users.filter((row) => row.id !== id) },
+        }))
+        void get().loadAccounts()
+        return { ok: true }
       },
 
       async removeGame(game) {
@@ -324,6 +377,8 @@ export const offlineAccounts: AccountsApi = {
   registrationOptions: () => Promise.reject(OFFLINE),
   listAccounts: () => Promise.reject(OFFLINE),
   createAccount: () => Promise.reject(OFFLINE),
+  resetPassword: () => Promise.reject(OFFLINE),
+  removeAccount: () => Promise.reject(OFFLINE),
   myGames: () => Promise.reject(OFFLINE),
   removeGame: () => Promise.reject(OFFLINE),
   changePassword: () => Promise.reject(OFFLINE),

@@ -111,8 +111,8 @@ pub struct AttemptLimits {
     pub login_per_username: u32,
     /// Registrations one address may try.
     pub register_per_ip: u32,
-    /// Accounts one admin may make through `POST /api/admin/users` inside `window`, so the route cannot be
-    /// used to burn CPU on password hashes. Counted apart from `register_per_ip`.
+    /// Accounts one admin may make, set a password for or remove through the admin routes inside `window`, so they
+    /// cannot be used to burn CPU on password hashes. Counted apart from `register_per_ip`.
     pub admin_creates_per_account: u32,
     /// Length of the window in which join code misses are counted.
     pub code_window: Duration,

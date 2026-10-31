@@ -1,7 +1,7 @@
 /**
  * The account endpoints of `mtg-server` (docs/server.md, Accounts): register, sign in, sign out, who am I, whether
  * registering is open, the signed-in user's games, changing the password, deleting the account, and the admin's list
- * of accounts and the call that makes one. The bodies are the generated types of `mtg_protocol::rest`; every answer is checked at
+ * of accounts and the calls that make one, set a password for one and remove one. The bodies are the generated types of `mtg_protocol::rest`; every answer is checked at
  * runtime before it is returned and every failure is an `AccountError` with a stable code. Every request carries the
  * session cookie (`credentials: 'include'`), so a page on another origin that the server lists works as well.
  */
@@ -16,6 +16,7 @@ import type {
   MyGameSeat,
   MyGameStatus,
   PasswordChange,
+  PasswordReset,
   UserView,
 } from '@/protocol/generated'
 import type { Fetch } from './api'
@@ -30,6 +31,8 @@ const AUTH_CODES: Record<AuthErrorCode, true> = {
   username_taken: true,
   registration_closed: true,
   forbidden: true,
+  unknown_account: true,
+  admin_account: true,
   invalid_credentials: true,
   too_many_attempts: true,
   unauthenticated: true,
@@ -92,6 +95,10 @@ export interface AccountsApi {
   listAccounts(): Promise<AccountRow[]>
   /** `POST /api/admin/users`: makes an account for someone else without signing it in; admin only. */
   createAccount(credentials: Credentials): Promise<CreatedAccount>
+  /** `POST /api/admin/users/{id}/password`: sets an account's password and ends its sessions; admin only, never the admin's own. */
+  resetPassword(id: string, reset: PasswordReset): Promise<void>
+  /** `DELETE /api/admin/users/{id}`: removes an account with its decks, as deleting it oneself does; admin only, never the admin's own. */
+  removeAccount(id: string): Promise<void>
   /** `GET /api/me/games`: the games the user holds a seat in, as the server sorted them. */
   myGames(): Promise<MyGame[]>
   /** `DELETE /api/me/games/{id}`: takes a failed game off the user's list; rejects with a 404 when there is none. */
@@ -206,7 +213,7 @@ function failure(response: Response, body: unknown): AccountError {
 
 const send = (
   method: 'POST' | 'DELETE',
-  body?: Credentials | PasswordChange | AccountDeletion,
+  body?: Credentials | PasswordChange | PasswordReset | AccountDeletion,
 ): RequestInit => ({
   method,
   credentials: 'include',
@@ -215,7 +222,7 @@ const send = (
     : { headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) }),
 })
 
-const post = (body?: Credentials | PasswordChange): RequestInit => send('POST', body)
+const post = (body?: Credentials | PasswordChange | PasswordReset): RequestInit => send('POST', body)
 
 const get: RequestInit = { credentials: 'include' }
 
@@ -256,6 +263,12 @@ export function createAccountsApi(options: AccountsOptions = {}): AccountsApi {
     registrationOptions: () => call('/api/auth/options', readOptions, get),
     listAccounts: () => call('/api/admin/users', readRows, get),
     createAccount: (credentials) => call('/api/admin/users', readCreated, post(credentials)),
+    resetPassword: async (id, reset) => {
+      await call(`/api/admin/users/${encodeURIComponent(id)}/password`, () => true, post(reset))
+    },
+    removeAccount: async (id) => {
+      await call(`/api/admin/users/${encodeURIComponent(id)}`, () => true, send('DELETE'))
+    },
     myGames: () => call('/api/me/games', readGames, get),
     removeGame: async (game) => {
       await call(`/api/me/games/${encodeURIComponent(game)}`, () => true, send('DELETE'))
