@@ -39,7 +39,7 @@ One item is one piece of about 15 minutes and one line: the outcome, the cards i
 - Web table: lanes and card sizes, the seat corner, click combat, the mana strip, legible play (flights, spotlight, target arrows, marks), Equipment tucked at its host with its grants, hand reasons, fit at six sizes and a 12 px text floor (`docs/web.md`, `docs/ui-design.md`).
 - Lobby, decks and precons: invites, the deck builder with pictures and stats, import and export, the deck check, the not-validated list and the precon browser (`docs/web.md`).
 - Card images: a server cache with a warm-up, and pictures in the table, builder and preview (`docs/server.md`, `docs/web.md`).
-- Testing: scenarios, invariants and fuzz decks, `scripts/check.sh` with the `affected` mode, and Playwright specs including the four-seat Commander game with precons or the owner's deck (`E2E_DECK=owner`).
+- Testing: scenarios, invariants and fuzz decks, `scripts/check.sh` with the `gate` and `affected` modes, content stamps and side-by-side test binaries, and Playwright specs including the four-seat Commander game with precons or the owner's deck (`E2E_DECK=owner`).
 - Deployment: two amd64 images, the Helm chart and ArgoCD app in `k3s-cluster-manifests`, `scripts/release.sh` (build, push, roll out, roll back) and a nightly `pg_dump` onto its own volume (`docs/deploy.md`).
 - Reference engines: Forge, XMage and Magarena surveyed (`docs/reference-engines.md`).
 
@@ -162,10 +162,6 @@ Open card, compiler and wording items: `docs/cards-backlog.md`.
 
 ## Tooling
 
-- [~] (ts1a) (check-fast) `scripts/check.sh gate` for agents: fmt, clippy of the changed crates, the tests of the changed crates only; agents run it instead of `affected`, the orchestrator runs `affected` once per batch (an engine or card change: 35 to 60 min to about 8 min; `scripts/check.sh`, `docs/agents.md`, `docs/testing.md`; no dependency)
-- [~] (ts1b) (check-fast) A committed slow-test list (`scripts/slow-tests.txt`: `hidden_info`, `dk1e_deck`, `house_commander` and the other 287 tests over 5 s) skipped by the gate and run by the batch run; a gate test over 5 s off the list fails the gate (`mtg-testkit` 650 s to about 120 s, `mtg-protocol` 272 s to about 40 s; after ts1a)
-- [~] (ts1c) (check-fast) Test binaries, the Postgres crates and the web run side by side with a thread budget from the cores and the running checks instead of the fixed slots; the run cap is per binary (tests 1,750 to 1,950 s to about 750 s; `scripts/check.sh`; no dependency)
-- [~] (ts1d) (check-fast) Stamps keyed by content (a crate's sources, its workspace dependencies' sources, `Cargo.lock`, the toolchain) instead of the tree hash, so a merge reruns only crates whose key changed and a checked commit releases without a new check (`scripts/check.sh`, `scripts/tests`; no dependency)
 - [ ] (ts1e) The release images build while the batch run of the release commit runs, both images at once, and `scripts/release.sh` reuses them from the build cache (release after the check: 600 s to about 120 s; `scripts/release.sh`, `docs/deploy.md`; after ts1d)
 - [ ] (ts1f) A diff of card files only tests those cards, the test modules and fixture decks that name them and a fixed sample, and the batch run tests the whole corpus (a card change to about 3 min; `scripts/check.sh`; after ts1a)
 - [ ] (ts1g) The `mtg-testkit` `it` binary splits into about six binaries by family, so one test edit rebuilds in about 30 s instead of 136 s and the families run side by side (`crates/mtg-testkit/tests`; after ts1c)
@@ -173,6 +169,7 @@ Open card, compiler and wording items: `docs/cards-backlog.md`.
 - [ ] (ts1i) Each Postgres test run gets its own server or database prefix, so the global Postgres lock goes (lock waits up to 1,087 s; `scripts/check.sh`, `crates/mtg-db`; after ts1c, covers t5a)
 - [ ] (ts1j) The built-in library loads from a snapshot made at build time instead of 1.1 s of parsing per process, so nextest with per-test timeouts can replace the run cap (`crates/mtg-cards`; after ts1c)
 - [ ] (ts1k) The check ends with the seconds of each test binary and the 20 slowest tests, and the tag run sets `MTG_FUZZ_GAMES` to the long count (`scripts/check.sh`, `docs/testing.md`; after ts1b)
+- [ ] (ts1l) A change to `web/src/protocol/` (bindings, fixtures) selects the `mtg-protocol` tests in `affected` and the gate, whose tests read those files (their stamp key already hashes them; `scripts/lib/check-plan.sh`, `scripts/tests/check_select.sh`; no dependency)
 - [ ] (dep) Cargo and web dependencies are current; the piece runs alone between rounds (`docs/agents.md`)
 - [ ] (t5a) The Postgres lock covers only the `sqlx::test` tests: the other tests of `mtg-server` and `mtg-cli` run outside it (one full check: 398 s under the lock, 1,087 s waiting for it)
 - [ ] (t5b) The `mtg-testkit` `it` binary needs fewer test-seconds: over 90% is `Engine::apply` (`priority_options` 36%, `triggers::detect` 24%, `layers::compute` 14%, whole-object clones), so the next cut is in the engine; opt-level 3 for `mtg-cards` and mimalloc save about 5% and slow every rebuild, so they are not adopted

@@ -18,7 +18,7 @@ Browser-hosted Magic: The Gathering for friends. Rust backend + engine, React/Ty
 - Every change ships with tests that justify it.
 
 ## Commands
-- `scripts/check.sh [fast|rust|web|all|affected [BASE]]` runs fmt, clippy, tests (fail-fast); `affected` tests only what the diff against the merge-base with origin/main can break (`--list` shows it), and a tree that passed skips its phases (`--force` reruns); `scripts/setup.sh` enables the git hooks once.
+- `scripts/check.sh [fast|rust|web|all|affected [BASE]|gate [BASE]]` runs fmt, clippy, tests (fail-fast, binaries side by side); `gate` (agents) tests only the crates the diff against the merge-base with origin/main changes, without `scripts/slow-tests.txt`; `affected` (orchestrator, once per batch) tests what the diff can break, slow tests included (`--list` shows the selection); content that passed skips its phases (`--force` reruns); `scripts/setup.sh` enables the git hooks once.
 - `scripts/release.sh [vX.Y.Z]` builds the two images, pushes them to the cluster registry, points the manifests at the tag and waits for the rollout; `--rollback vX.Y.Z` returns to an older tag (`docs/deploy.md`).
 - Raw: `cargo fmt --all` · `cargo clippy --workspace --all-targets -- -D warnings` · `cargo test --workspace`
 - `docker compose up -d db` starts local Postgres; DB tests use `sqlx::test`, and `sqlx::query!` is checked offline against committed `.sqlx/` (refresh steps in `.cargo/config.toml`).
