@@ -9,10 +9,11 @@ import type { CardKind } from './model'
 /** The label of a curve bucket: its mana value, "7+" for the last. */
 export const curveLabel = (bucket: number): string => (bucket === CURVE_LAST ? `${CURVE_LAST}+` : `${bucket}`)
 
-const SUPPORT_SHOWN: readonly Support[] = ['verified', 'partial', 'manual', 'stale', 'unplayable']
+const SUPPORT_SHOWN: readonly Support[] = ['verified', 'read', 'partial', 'manual', 'stale', 'unplayable']
 // Whole class names, so Tailwind can see them.
 const SEGMENT: Readonly<Record<Support, string>> = {
   verified: 'bg-support-verified',
+  read: 'bg-support-read',
   partial: 'bg-support-partial',
   manual: 'bg-support-manual',
   stale: 'bg-support-stale',
@@ -21,7 +22,7 @@ const SEGMENT: Readonly<Record<Support, string>> = {
 
 /**
  * The copies of a deck by support state: a bar with a segment per state and, under it, the state's mark with its count
- * (Verified, Partial and Manual always, Stale and Unplayable when the deck has some).
+ * (Verified, Partial and Manual always, Read, Stale and Unplayable when the deck has some).
  */
 export function SupportBar({ counts }: { counts: Counts }) {
   const { total } = counts

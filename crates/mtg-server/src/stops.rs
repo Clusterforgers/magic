@@ -13,6 +13,7 @@
 
 use std::collections::BTreeMap;
 
+use mtg_cards::ManualClause;
 use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_engine::events::ResolutionOutcome;
 use mtg_engine::turn::Step;
@@ -69,14 +70,21 @@ pub(crate) fn place(state: &GameState) -> Place {
     (turn.active(), turn.step())
 }
 
-/// The objects on the stack of `state` whose rules text holds clauses left to the table, with their controllers: what
-/// [`Stops::resolved`] needs to know once one of them has resolved and left.
+/// The objects on the stack of `state` whose rules text holds clauses the table is owed when they resolve
+/// ([`ManualClause::owed_at_resolution`]), with their controllers: what [`Stops::resolved`] needs to know once one of
+/// them has resolved and left.
 pub(crate) fn by_hand_on_stack(state: &GameState) -> Vec<(ObjectId, PlayerId)> {
     state
         .stack()
         .iter()
         .filter_map(|id| state.object(*id))
-        .filter(|object| !object.card().manual.is_empty())
+        .filter(|object| {
+            object
+                .card()
+                .manual
+                .iter()
+                .any(ManualClause::owed_at_resolution)
+        })
         .map(|object| (object.id(), object.controller()))
         .collect()
 }

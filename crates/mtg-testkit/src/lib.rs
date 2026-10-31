@@ -112,6 +112,7 @@ pub mod scenario;
 pub mod script_error;
 pub mod shown_by_hand;
 pub mod small_cards;
+pub mod smoke;
 pub mod soulbond_cards;
 pub mod spectacle_cards;
 pub mod split_second_cards;

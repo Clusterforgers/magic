@@ -1,0 +1,23 @@
+{
+  "oracle_id": "90b3e2df-182d-4dad-9934-597a048fefc6",
+  "name": "Devastate",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Devastate",
+      "oracle_fingerprint": "3123e51f3d76d1ce932e89c159389f73",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Land" }] } }],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              { "DealDamage": { "to": { "Each": [{ "Type": "Creature" }] }, "amount": 1 } },
+              { "DealDamage": { "to": "EachPlayer", "amount": 1 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

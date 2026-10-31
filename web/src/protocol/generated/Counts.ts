@@ -13,6 +13,10 @@ total: number,
  */
 verified: number, 
 /**
+ * Copies of `read` cards: drafts a player approved, which the game runs like `verified` ones.
+ */
+read: number, 
+/**
  * Copies of `partial` cards.
  */
 partial: number, 

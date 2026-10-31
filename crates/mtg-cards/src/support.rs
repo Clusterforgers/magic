@@ -56,6 +56,9 @@ pub struct PrintedCard {
 pub enum Support {
     /// Rules exist, cover the text, the text is unchanged and the engine runs every primitive used.
     Verified,
+    /// A whole draft the checker could not prove, read and found correct by a player; the game runs it like `Verified`
+    /// but counts it apart (`docs/cards-dsl.md`, Read tier).
+    Read,
     /// Rules exist except the listed clauses.
     Partial,
     /// No rules, or the engine runs none of them: the table resolves the card by hand.
@@ -64,6 +67,13 @@ pub enum Support {
     Stale,
     /// The engine cannot host the card.
     Unplayable,
+}
+
+impl Support {
+    /// Whether the game runs every rule of the card, so nothing is played by hand: `Verified` or `Read`.
+    pub const fn runs_whole(self) -> bool {
+        matches!(self, Support::Verified | Support::Read)
+    }
 }
 
 /// A clause of the oracle text the game cannot run, with the reason in plain words.
@@ -200,9 +210,30 @@ pub fn implementation_hash(card: &Card) -> String {
     digest(&[&json])
 }
 
+/// The hash a player's read is given on: SHA-256 (first 16 bytes as hex) over the oracle id, each face's current
+/// oracle fingerprint and the implementation hash of the draft. A changed draft or an erratum gives a new hash, so the
+/// verdicts on the old one count for nothing; the engine's `Caps` do not enter it.
+pub fn read_hash(printed: &PrintedCard, draft: &Card) -> String {
+    let current = current_fingerprints(printed);
+    let implementation = implementation_hash(draft);
+    let mut parts: Vec<&[u8]> = vec![printed.oracle_id.as_bytes()];
+    parts.extend(current.iter().map(String::as_bytes));
+    parts.push(implementation.as_bytes());
+    digest(&parts)
+}
+
+fn current_fingerprints(printed: &PrintedCard) -> Vec<String> {
+    printed
+        .faces
+        .iter()
+        .map(|face| oracle_fingerprint(&face.oracle_text))
+        .collect()
+}
+
 fn state_tag(state: Support) -> &'static str {
     match state {
         Support::Verified => "verified",
+        Support::Read => "read",
         Support::Partial => "partial",
         Support::Manual => "manual",
         Support::Stale => "stale",
@@ -343,11 +374,7 @@ fn unfiled(printed: &PrintedCard, caps: &Caps) -> (Support, Vec<Clause>) {
 
 /// The support of one card: a pure function of its rules file (if any), its imported text and the engine's capabilities.
 pub fn support(card: Option<&Card>, printed: &PrintedCard, caps: &Caps) -> SupportRecord {
-    let current: Vec<String> = printed
-        .faces
-        .iter()
-        .map(|face| oracle_fingerprint(&face.oracle_text))
-        .collect();
+    let current = current_fingerprints(printed);
     let (state, clauses) = match card.map(|c| (c, c.impl_status)) {
         None => unfiled(printed, caps),
         Some((_, ImplStatus::Manual)) => (Support::Manual, Vec::new()),
@@ -376,6 +403,31 @@ pub fn support(card: Option<&Card>, printed: &PrintedCard, caps: &Caps) -> Suppo
         support: state,
         clauses,
     }
+}
+
+/// The `Read` record of a draft the engine can run whole: what `Verified` would be for it, as `Read`. `None` while the
+/// draft is not whole, its text drifted, or the engine lacks a primitive it uses; whether a player approved it is the
+/// caller's question.
+pub(crate) fn read_support(
+    draft: &Card,
+    printed: &PrintedCard,
+    caps: &Caps,
+) -> Option<SupportRecord> {
+    if draft.impl_status != ImplStatus::Full {
+        return None;
+    }
+    let proven = support(Some(draft), printed, caps);
+    (proven.support == Support::Verified).then(|| SupportRecord {
+        fingerprint: fingerprint(
+            &printed.oracle_id,
+            Support::Read,
+            &proven.clauses,
+            Some(draft),
+            &current_fingerprints(printed),
+        ),
+        support: Support::Read,
+        ..proven
+    })
 }
 
 #[cfg(test)]
@@ -449,6 +501,46 @@ mod tests {
     ) {
         assert_eq!(oracle_fingerprint(left) == oracle_fingerprint(right), equal);
         assert_eq!(oracle_fingerprint(left).len(), 32);
+    }
+
+    #[rstest]
+    #[case::verified(Support::Verified, true)]
+    #[case::read(Support::Read, true)]
+    #[case::partial(Support::Partial, false)]
+    #[case::manual(Support::Manual, false)]
+    #[case::stale(Support::Stale, false)]
+    #[case::unplayable(Support::Unplayable, false)]
+    fn only_verified_and_read_cards_run_whole(#[case] state: Support, #[case] whole: bool) {
+        assert_eq!(state.runs_whole(), whole);
+    }
+
+    #[rstest]
+    #[case::the_engine_runs_it(Caps::everything(), Some(Support::Read))]
+    #[case::the_engine_lacks_a_primitive(Caps::none(), None)]
+    fn a_read_record_is_what_a_verified_one_would_be(
+        #[case] caps: Caps,
+        #[case] expected: Option<Support>,
+    ) {
+        let rules = card(ImplStatus::Full, vec![bolt_ability()], TEXT);
+        let record = read_support(&rules, &printed(TEXT), &caps);
+        assert_eq!(record.as_ref().map(|r| r.support), expected);
+        if let Some(record) = record {
+            let verified = support(Some(&rules), &printed(TEXT), &caps);
+            assert_eq!(verified.support, Support::Verified);
+            assert_eq!(record.clauses, vec![]);
+            assert_ne!(record.fingerprint, verified.fingerprint);
+        }
+    }
+
+    #[rstest]
+    #[case::partial(ImplStatus::Partial)]
+    #[case::manual(ImplStatus::Manual)]
+    fn only_a_full_draft_has_a_read_record(#[case] status: ImplStatus) {
+        let rules = card(status, vec![bolt_ability()], TEXT);
+        assert_eq!(
+            read_support(&rules, &printed(TEXT), &Caps::everything()),
+            None
+        );
     }
 
     #[test]

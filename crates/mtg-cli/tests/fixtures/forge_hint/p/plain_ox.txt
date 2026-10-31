@@ -1,0 +1,5 @@
+Name:Plain Ox
+ManaCost:2
+Types:Creature Ox
+PT:2/2
+Oracle:
