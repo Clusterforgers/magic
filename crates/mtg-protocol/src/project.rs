@@ -1,10 +1,10 @@
 //! Building a viewer's [`StateView`] from the full game state, and the visibility rule it rests on.
 
-use mtg_cards::CardDefinition;
 use mtg_cards::ability::Ability;
 use mtg_cards::compile::protection_quality_word;
 use mtg_cards::keyword::Keyword;
 use mtg_cards::value::CounterKind;
+use mtg_cards::{CardDefinition, CardIdentity};
 use mtg_core::card::{CardType, CardTypes, Subtype};
 use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_engine::characteristics::{characteristics, controller_of};
@@ -272,6 +272,21 @@ fn merged_view(object: &GameObject) -> Vec<MergedCardView> {
     })
 }
 
+/// Which printed card the object shows: the card of the face in use. A Room has no printed side of its own while both
+/// doors are locked, so a Room shows the whole card's.
+fn identity_of(
+    state: &GameState,
+    object: &GameObject,
+    card: &CardDefinition,
+) -> Option<CardIdentity> {
+    let shown = if state.dk1c5_doors(object.id()).is_some() {
+        object.whole_card()
+    } else {
+        card
+    };
+    shown.identity.clone()
+}
+
 /// The name the viewer reads on the object: the card's, except for an ability on the stack of a permanent that still lies
 /// face down and that the viewer may not look at, which is named after its source, and a face-down permanent has no name
 /// (CR 708.2a).
@@ -374,6 +389,7 @@ impl ObjectView {
                     .iter()
                     .any(|subtype| subtype.0 == "Class")
                     .then(|| p.level()),
+                doors: state.dk1c5_doors(id),
             }),
             kind: object.kind(),
             source: object.ability().map(|ability| ability.source().id),
@@ -406,7 +422,7 @@ impl ObjectView {
                 Vec::new()
             },
             note: mtg_engine::sight::note_of(state, id).map(str::to_owned),
-            identity: card.identity.clone().filter(|_| printed),
+            identity: identity_of(state, object, card).filter(|_| printed),
             activated,
         })
     }

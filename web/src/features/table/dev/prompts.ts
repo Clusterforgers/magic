@@ -26,6 +26,7 @@ import type { Fixture } from './fixture'
 import { LOOKED_MOMENTS, LOOKED_PROMPTS } from './lookedPrompts'
 import { lookTopMoment } from './lookTopScene'
 import { paySources, paySourcesTable } from './paySources'
+import { roomsTable, withRooms } from './roomsScene'
 
 /** Builds the decision the viewer of a fixture faces. */
 export type DevPrompt = (fixture: Fixture) => PendingDecision
@@ -410,6 +411,8 @@ export const DEV_PROMPTS: Record<string, DevPrompt> = {
   'priority-wait': priority,
   // The same with abilities to activate on two creatures, a graveyard card and the commander (`dev/abilityScene.ts`).
   'priority-abilities': withAbilities(priority),
+  // The same with Rooms of the viewer's whose locked doors it may unlock (`dev/roomsScene.ts`).
+  'priority-rooms': withRooms(priority),
   attack,
   block,
   'block-clock': (fixture) => ({ ...block(fixture), deadlineMs: 45_000 }),
@@ -487,6 +490,7 @@ export const DEV_TABLES: Record<string, DevTable> = {
   'priority-end': quietMoment('End', true),
   'priority-wait': quietMoment('Upkeep', false),
   'priority-abilities': abilitiesTable,
+  'priority-rooms': roomsTable,
   yield: quietMoment('Upkeep', false, false),
   // Passing until the stack is empty is asked over a stack: the fixture's three spells, the active seat holding priority.
   'yield-resolve': (fixture) =>

@@ -71,3 +71,21 @@ pub(super) fn dk1c5_unlock_text(who: &Ref) -> Option<String> {
 fn room(r: &mut Reader<'_>) -> Option<()> {
     (r.name() == Some("Room")).then_some(())
 }
+
+/// "return a card from your graveyard to your hand or unlock a locked door of a Room you control": two sentences joined
+/// by "or" are a choice of the controller between them as the effect resolves. Tried after every sentence shape, so
+/// a shape that reads the whole sentence (a target of "artifact or enchantment") wins.
+pub(super) fn dk1c5_either(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
+    let first = super::effects::templates().find_map(|template| {
+        r.attempt(|r| {
+            let found = template(r)?;
+            r.need("or")?;
+            Some(found)
+        })
+    })?;
+    let second = super::effects::one_sentence(r)?;
+    // "You may draw a card or discard a card" does not say what the player may do: it stays with the table.
+    let optional = |steps: &[Effect]| steps.iter().any(|step| matches!(step, Effect::May { .. }));
+    (!optional(&first) && !optional(&second)).then_some(())?;
+    Some(vec![Effect::Either { first, second }])
+}

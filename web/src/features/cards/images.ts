@@ -91,10 +91,16 @@ export function imageSourceOf(object: ObjectView): ImageSource | null {
 
 /** Whether the table draws a neutral card back for an object: it lies face down or the viewer may not see it. */
 export function showsBack(object: ObjectView): boolean {
-  return object.identity === undefined && (object.face_down === true || object.name === '')
+  // A Room with both doors locked has no name (CR 709.5c) and is no hidden card.
+  return (
+    object.identity === undefined &&
+    object.permanent?.doors === undefined &&
+    (object.face_down === true || object.name === '')
+  )
 }
 
 /** The face of a card the object shows: the face in use, else the front. */
 export function faceOf(object: ObjectView): number {
-  return object.face ?? 0
+  // The halves of a Room are doors of one picture, not faces to turn over.
+  return object.permanent?.doors === undefined ? (object.face ?? 0) : 0
 }

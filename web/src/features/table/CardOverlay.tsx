@@ -12,6 +12,7 @@ import type { ChipTone, CombatRole, CounterChip, Links } from './cardModel'
 import { CARD_CORNER } from '@/features/cards/CardImage'
 import { SIZE } from './cardSize'
 import { roomFor } from './attachMarks'
+import { DoorMarks } from './DoorMarks'
 import { GrantMarks } from './GrantMarks'
 import { isUnattached } from '@/play/hosts'
 import type { CardSize } from './cardSize'
@@ -100,6 +101,7 @@ export function Overlay({
   const corner = CORNER[turned ? 'turned' : 'upright']
   const unattached = isUnattached(object)
   const paired = object.paired_with !== undefined
+  const doors = links?.doors
   const hasFoot =
     damage !== undefined ||
     counters.length > 0 ||
@@ -107,6 +109,7 @@ export function Overlay({
     attaches.length > 0 ||
     unattached ||
     paired ||
+    doors !== undefined ||
     revealed ||
     handNote !== undefined
   // The marks of the attachments get the lines of the foot stack that the damage, counters and links leave.
@@ -116,6 +119,7 @@ export function Overlay({
     (host === undefined ? 0 : 1) +
     (unattached ? 1 : 0) +
     (paired ? 1 : 0) +
+    (doors === undefined ? 0 : 2) +
     (revealed ? 1 : 0) +
     (handNote === undefined ? 0 : 1)
   const footWidth = width * FOOT_SHARE
@@ -190,6 +194,9 @@ export function Overlay({
               <span className={cn('truncate', size === 'compact' && 'sr-only')}>Paired</span>
             </span>
           ) : null}
+          {doors === undefined ? null : (
+            <DoorMarks doors={doors} compact={size === 'compact'} text={text} spot="foot" />
+          )}
           {unattached ? (
             <span
               data-slot="card-unattached"

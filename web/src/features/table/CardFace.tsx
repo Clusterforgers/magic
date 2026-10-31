@@ -20,12 +20,14 @@ import { FRAME, SIZE } from './cardSize'
 import type { CardSize } from './cardSize'
 import { isUnattached } from '@/play/hosts'
 import { BackFace, ImageFace, useDrawnWidth } from './ImageFace'
+import { DoorMarks } from './DoorMarks'
 import { GrantMarks } from './GrantMarks'
 import { NoteMark, RevealedMark } from './HandMarks'
 import { ByHandMark } from './manual/ByHand'
 import { ManaPips } from './ManaPips'
 import { statBadge } from './overlay'
 import { usePrinted } from './printed'
+import { roomTitle } from './rooms'
 import type { CardNote } from './prompt/marks'
 
 interface CardFaceProps {
@@ -82,7 +84,11 @@ const ART_ROW_PX = 20
 function artRoom(height: number, chips: number, links: Links | undefined): number {
   const rows = Math.floor((height - FACE_FRAME_PX) / ART_ROW_PX)
   return (
-    rows - (chips > 0 ? 1 : 0) - (links?.host === undefined ? 0 : 1) - (links?.partner === undefined ? 0 : 1)
+    rows -
+    (chips > 0 ? 1 : 0) -
+    (links?.host === undefined ? 0 : 1) -
+    (links?.partner === undefined ? 0 : 1) -
+    (links?.doors === undefined ? 0 : 2)
   )
 }
 
@@ -216,7 +222,9 @@ export function TextFace({
       )}
     >
       <span className={cn(classes.name, parts.name, 'leading-tight font-semibold')}>
-        <span className={cn('block break-words hyphens-auto', nameLines)}>{object.name}</span>
+        <span className={cn('block break-words hyphens-auto', nameLines)}>
+          {roomTitle(object.name, links?.doors)}
+        </span>
       </span>
       {(full || (cost && !turned)) && object.mana_cost !== null ? (
         <ManaPips
@@ -279,6 +287,9 @@ export function TextFace({
           span={width * ART_SHARE}
           text={classes.text}
         />
+        {links?.doors === undefined ? null : (
+          <DoorMarks doors={links.doors} compact={size === 'compact'} text={classes.text} spot="art" />
+        )}
         {object.paired_with === undefined ? null : (
           <span
             data-slot="card-paired"

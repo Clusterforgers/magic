@@ -4,6 +4,8 @@ import { createPortal } from 'react-dom'
 import { usePlay } from '@/features/game/gameContext'
 import type { MenuTarget } from '../manual/menuStore'
 import { containerOf, usePlaced, useReturnFocus } from '../manual/popup'
+import { roomTitle } from '../rooms'
+import { useDoors } from '../useDoors'
 import type { Play } from './activations'
 
 /** Props of `AbilityChooser`. */
@@ -27,7 +29,8 @@ const items = (panel: HTMLElement): HTMLElement[] => [
  */
 export function AbilityChooser({ target, plays, onPick, onClose }: AbilityChooserProps) {
   const panel = useRef<HTMLDivElement>(null)
-  const name = usePlay((state) => state.objectsById[target.id]?.name ?? 'the card')
+  const object = usePlay((state) => state.objectsById[target.id])
+  const name = roomTitle(object?.name ?? 'the card', useDoors(object))
   useReturnFocus(target)
   usePlaced(panel, target)
   useEffect(() => {

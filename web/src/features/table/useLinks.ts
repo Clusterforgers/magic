@@ -7,6 +7,7 @@ import { attachedWords, attachesOf } from './attachMarks'
 import type { Links } from './cardModel'
 import { useSeatNamer } from './names'
 import { useFrontFaceName } from './printed'
+import { useDoors } from './useDoors'
 
 /** The name of the creature a creature is paired with: hidden when the viewer may not look at it, or not in the store. */
 function partnerName(partner: ObjectView | undefined): string {
@@ -41,11 +42,12 @@ export function useLinks(object: ObjectView | undefined): Links {
     object?.copy?.of === undefined ? undefined : state.objectsById[object.copy.of]?.name,
   )
   const frontFace = useFrontFaceName(object)
+  const doors = useDoors(object)
   const partner = usePlay((state) =>
     object?.paired_with === undefined ? undefined : partnerName(state.objectsById[object.paired_with]),
   )
   return useMemo(
-    () => ({ host, attaches, spoken, copyOf, frontFace, partner }),
-    [host, attaches, spoken, copyOf, frontFace, partner],
+    () => ({ host, attaches, spoken, copyOf, frontFace, partner, doors }),
+    [host, attaches, spoken, copyOf, frontFace, partner, doors],
   )
 }

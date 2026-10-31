@@ -1,0 +1,28 @@
+{
+  "id": "ab38adb5-8f16-4a4a-8dbc-f6ec14ca6c9f",
+  "oracle_id": "c53d958a-f660-4d2e-87cd-87702f973b3a",
+  "name": "Ghostly Dancers",
+  "lang": "en",
+  "layout": "normal",
+  "set": "dsk",
+  "collector_number": "13",
+  "rarity": "rare",
+  "released_at": "2024-09-27",
+  "digital": false,
+  "mana_cost": "{3}{W}{W}",
+  "cmc": 5.0,
+  "type_line": "Creature — Spirit",
+  "oracle_text": "Flying\nWhen this creature enters, return an enchantment card from your graveyard to your hand or unlock a locked door of a Room you control.\nEerie — Whenever an enchantment you control enters and whenever you fully unlock a Room, create a 3/1 white Spirit creature token with flying.",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Flying",
+    "Eerie"
+  ],
+  "power": "2",
+  "toughness": "5"
+}

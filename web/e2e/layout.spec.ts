@@ -186,6 +186,7 @@ const STOPS: readonly Stop[] = [
     'board=duel&reveal=1&prompt=priority&turn=you',
     'pass',
   ),
+  tableStop('The table (dev), the duel board, Rooms', 'board=duel&prompt=priority-rooms&turn=you', 'pass'),
   tableStop(
     'The table (dev), 4 seats, revealed cards and notes',
     'seats=4&reveal=1&prompt=priority&turn=you',

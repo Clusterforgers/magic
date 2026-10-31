@@ -2436,6 +2436,10 @@ impl Walker<'_> {
                 w.effect_list("first", first, false);
                 w.effect_list("second", second, false);
             }
+            Effect::Either { first, second } => {
+                w.effect_list("first", first, false);
+                w.effect_list("second", second, false);
+            }
             Effect::Vote {
                 options,
                 secret,

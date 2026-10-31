@@ -1,21 +1,42 @@
 //! `Effect::VillainousChoice`: a player faces a villainous choice (CR 701.56) and the resolution goes on with the option
 //! they choose.
 
+use mtg_cards::ability::Ability;
+use mtg_cards::compile::render_ability;
 use mtg_cards::effect::Effect;
+use mtg_core::ids::PlayerId;
 
 use super::wrong_effect;
 use crate::choose::{ChoiceOption, OptionChooser, Optioned, pick_options};
 use crate::resolve::{Cx, Next, ResolveError, Run};
 use crate::wording;
 
-/// How an option is offered: what its effects do as a card says it, or its place when there are no words for them.
+/// How an option is offered: what its effects do as a card says it (the prompt wording of a short effect, else the
+/// card's own sentence), or its place when there are no words for them.
 fn w2d_label(effects: &[Effect], fallback: &str) -> ChoiceOption {
-    let text = wording::may(effects);
-    let text = text.strip_suffix('?').unwrap_or(&text);
+    let asked = wording::may(effects);
+    let sentence = || {
+        render_ability(&Ability::Spell {
+            targets: Vec::new(),
+            effects: effects.to_vec(),
+        })
+    };
+    let text = match asked.strip_suffix('?') {
+        Some(text) if !text.is_empty() => text.to_owned(),
+        _ => sentence()
+            .map(|text| {
+                let mut text = text.trim_end_matches('.').to_owned();
+                if let Some(first) = text.get_mut(..1) {
+                    first.make_ascii_uppercase();
+                }
+                text
+            })
+            .unwrap_or_default(),
+    };
     ChoiceOption::Label(if text.is_empty() {
         fallback.to_owned()
     } else {
-        text.to_owned()
+        text
     })
 }
 
@@ -37,13 +58,24 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     else {
         return Ok(Run::events(Vec::new()));
     };
+    choose_between(cx, player, first, second, "Face a villainous choice.")
+}
+
+/// `player` chooses one of the two lists, a public choice, and the step goes into it.
+pub(super) fn choose_between(
+    cx: &Cx<'_>,
+    player: PlayerId,
+    first: &[Effect],
+    second: &[Effect],
+    text: &str,
+) -> Result<Run, ResolveError> {
     let chooser = OptionChooser {
         player,
         options: vec![
             w2d_label(first, "The first option"),
             w2d_label(second, "The second option"),
         ],
-        text: "Face a villainous choice.".to_owned(),
+        text: text.to_owned(),
     };
     Ok(match pick_options(cx, &[chooser])? {
         Optioned::Ask(decision) => Run::Ask(decision),

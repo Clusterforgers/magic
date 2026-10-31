@@ -25,6 +25,7 @@ import { clausesOf } from './manual/clauses'
 import { useCardMark } from './prompt/marks'
 import { noteName, revealedLine, revealedPlace } from './revealed'
 import { combatRoleIn } from './selectors'
+import { roomTitle } from './rooms'
 import { useLinks } from './useLinks'
 
 // Whole class names, so Tailwind can see them.
@@ -120,7 +121,7 @@ function PreviewBody({ target }: { target: PreviewTarget }) {
         />
       </div>
       <div className={cn('grid content-start gap-1 text-sm', wide ? 'mt-3' : 'min-w-0 flex-1')}>
-        <p className="font-semibold">{object.name}</p>
+        <p className="font-semibold">{roomTitle(object.name, links.doors)}</p>
         {reason === undefined ? null : (
           <p
             data-slot="preview-reason"
