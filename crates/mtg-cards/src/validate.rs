@@ -15,7 +15,7 @@ use crate::effect::{Destination, DieRow, Effect, Mode, Order, Place, Produce, To
 use crate::keyword::Keyword;
 use crate::modify::{CastPermission, Duration, GameRule, Modification};
 use crate::refs::{Bounds, Pred, Ref, Selector, TargetSpec, Targetable, ZoneKind};
-use crate::spend::SpendOn;
+use crate::spend::{SpendOn, WhenSpent};
 use crate::support::{PrintedCard, PrintedFace, oracle_fingerprint};
 use crate::trigger::{ReplaceBy, ReplaceWhen, TriggerPattern};
 use crate::value::CastWay;
@@ -1958,6 +1958,33 @@ impl Walker<'_> {
         self.scope.names.pop();
     }
 
+    /// The rider of mana that sets something off when it is spent to cast a spell: the player's own mana, a kind of spell
+    /// that exists and effects that read the spell as `spell`.
+    fn rider(&mut self, who: &Ref, rider: &WhenSpent) {
+        if *who != Ref::You {
+            self.problem("a rider is for the mana of the player who controls the ability");
+        }
+        let filter = &rider.spell;
+        if filter.types.iter().any(|t| filter.without.contains(t)) {
+            self.problem("a rider names a card type it also excludes");
+        }
+        if rider.source.is_some() {
+            self.problem("the permanent of a rider is filled in by the engine");
+        }
+        if rider.effects.is_empty() {
+            self.problem("a rider does nothing");
+        }
+        self.uses("Effect", "AddMana.WhenSpent");
+        let saved = std::mem::replace(&mut self.scope.in_trigger, true);
+        self.effect_list_with(
+            "effects",
+            &rider.effects,
+            false,
+            Some(("spell", Kind::Object)),
+        );
+        self.scope.in_trigger = saved;
+    }
+
     /// The mana an effect adds: no list that adds nothing, a choice of at least two, and the amounts and conditions it reads.
     fn produce(&mut self, mana: &Produce) {
         match mana {
@@ -2339,6 +2366,7 @@ impl Walker<'_> {
                 times,
                 only,
                 lasts,
+                when_spent,
             } => {
                 w.at("who", |w| w.reference(who, Kind::Player));
                 if only.iter().any(|on| matches!(on, SpendOn::Spell(f) | SpendOn::Ability(f) if f.types.iter().any(|t| f.without.contains(t)))) {
@@ -2349,6 +2377,9 @@ impl Walker<'_> {
                 }
                 if !lasts.is_step() {
                     w.uses("Effect", "AddMana.Lasts");
+                }
+                if let Some(rider) = when_spent {
+                    w.at("when_spent", |w| w.rider(who, rider));
                 }
                 w.at("mana", |w| w.produce(mana));
                 w.at("times", |w| w.amount(times));

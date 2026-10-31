@@ -358,7 +358,12 @@ pub(crate) fn pay_answer(
         &|option, taken| mana_ability::activation(state, player, option, taken),
     )?;
     Ok(match outcome {
-        Outcome::Events(events) => Outcome::Events(parts::mill::in_turn(state, player, events)),
+        Outcome::Events(events) => {
+            let mut events = parts::mill::in_turn(state, player, events);
+            // The mana a cast spends can set off an ability as the spell is cast.
+            events.extend(crate::spend_rider::created(state, player, options, &events));
+            Outcome::Events(events)
+        }
         other => other,
     })
 }

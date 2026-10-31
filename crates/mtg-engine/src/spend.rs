@@ -4,6 +4,7 @@
 //! spell or an ability its restriction allows, and a source whose mana is restricted is a source of such a payment only.
 
 use mtg_cards::spend::{ManaLasts, SpendOn, SpendTraits};
+use mtg_core::card::Subtype;
 use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_core::mana::ManaType;
 use serde::{Deserialize, Serialize};
@@ -70,6 +71,7 @@ impl Spend {
         let mut traits = traits_of(state, spell);
         if let Some(object) = state.object(spell) {
             traits.not_owned = object.owner() != caster;
+            traits.shares_commander_type = shares_commander_type(state, spell, caster);
             // A card on its way to the stack is still in its zone; one on the stack remembers where it came from.
             traits.from_graveyard = match object.zone() {
                 Zone::Graveyard(_) => true,
@@ -124,9 +126,10 @@ impl Spend {
         }
     }
 
-    /// Whether mana restricted to `only` may be spent on this; mana with no restriction may be spent on anything.
+    /// Whether mana restricted to `only` may be spent on this; mana with no restriction, or with a rider alone, may be
+    /// spent on anything.
     pub fn allows(&self, only: &[SpendOn]) -> bool {
-        only.is_empty()
+        !only.iter().any(SpendOn::restricts)
             || only.iter().any(|on| match on {
                 SpendOn::Spell(filter) => {
                     self.kind == SpendKind::Spell && filter.holds(&self.traits)
@@ -135,6 +138,8 @@ impl Spend {
                     self.kind == SpendKind::Ability && filter.holds(&self.traits)
                 }
                 SpendOn::CostWithX => self.kind != SpendKind::Other && self.has_x,
+                // A rider limits nothing, so it neither allows nor refuses a payment.
+                SpendOn::When(_) => false,
             })
     }
 
@@ -166,10 +171,53 @@ fn traits_of(state: &GameState, id: ObjectId) -> SpendTraits {
         supertypes: card.supertypes.iter().copied().collect(),
         subtypes,
         colors: u8::try_from(chars.colors.iter().count()).unwrap_or(u8::MAX),
+        color_set: chars.colors,
         value: object.mana_value(),
         x_in_cost: card.x_in_cost > 0,
         ..SpendTraits::default()
     }
+}
+
+/// The creature types `id` has now, and whether it has every one (a changeling).
+fn creature_types(state: &GameState, id: ObjectId) -> Option<(Vec<Subtype>, bool)> {
+    let (object, chars) = (state.object(id)?, characteristics(state, id)?);
+    let card = object.card();
+    let mut types: Vec<Subtype> = Vec::new();
+    let printed = card
+        .subtypes
+        .iter()
+        .filter(|subtype| chars.has_subtype(&card.subtypes, subtype));
+    for subtype in chars.subtypes.iter().chain(printed) {
+        if subtype.is_creature_type() && !types.contains(subtype) {
+            types.push(subtype.clone());
+        }
+    }
+    Some((types, chars.all_creature_types))
+}
+
+/// Whether `spell` shares a creature type with a commander `caster` owns: a changeling shares one with anything that has
+/// a creature type, and a commander with none (or none at all) shares nothing.
+fn shares_commander_type(state: &GameState, spell: ObjectId, caster: PlayerId) -> bool {
+    // Every spell asks, so the work waits for a commander and for a spell with a creature type.
+    let mut commanders = state
+        .commanders()
+        .filter(|id| state.object(*id).is_some_and(|o| o.owner() == caster))
+        .peekable();
+    if commanders.peek().is_none() {
+        return false;
+    }
+    let Some((own, own_all)) =
+        creature_types(state, spell).filter(|(own, all)| *all || !own.is_empty())
+    else {
+        return false;
+    };
+    commanders
+        .filter_map(|id| creature_types(state, id))
+        .any(|(theirs, their_all)| {
+            theirs.iter().any(|subtype| own.contains(subtype))
+                || their_all
+                || (own_all && !theirs.is_empty())
+        })
 }
 
 /// One mana source of a payment as it is activated: the mana its own cost takes from the pool just before.

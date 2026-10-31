@@ -1,7 +1,12 @@
-//! What mana added with a restriction may be spent on ("Spend this mana only to cast creature spells").
+//! What mana added with a restriction may be spent on ("Spend this mana only to cast creature spells"), and what happens
+//! when mana is spent on a kind of spell ("When that mana is spent to cast a creature spell, scry 1").
 
 use mtg_core::card::{CardType, CardTypes, Subtype, Supertype};
+use mtg_core::color::{Color, ColorSet};
+use mtg_core::ids::ObjectId;
 use serde::{Deserialize, Serialize};
+
+use crate::effect::Effect;
 
 /// A kind of spell, or of the source of an ability: every part that is listed must hold.
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Default, Serialize, Deserialize)]
@@ -24,6 +29,10 @@ pub struct SpendFilter {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     #[cfg_attr(feature = "ts", ts(as = "Option<Vec<Subtype>>", optional))]
     pub subtypes: Vec<Subtype>,
+    /// Has at least one of these colors ("a red spell"); none listed means any.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<Vec<Color>>", optional))]
+    pub colors: Vec<Color>,
     /// Has two or more colors.
     #[serde(default, skip_serializing_if = "is_false")]
     #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
@@ -52,11 +61,18 @@ pub enum SpendFact {
     NotOwned,
     /// It is cast from a graveyard ("a spell from your graveyard").
     FromGraveyard,
+    /// It shares a creature type with a commander of the caster ("a creature spell that shares a creature type with your commander").
+    SharesCommanderType,
 }
 
 #[allow(clippy::trivially_copy_pass_by_ref)]
 const fn is_false(flag: &bool) -> bool {
     !*flag
+}
+
+#[allow(clippy::trivially_copy_pass_by_ref)]
+const fn no_colors(colors: &ColorSet) -> bool {
+    colors.is_empty()
 }
 
 #[allow(clippy::trivially_copy_pass_by_ref)]
@@ -68,6 +84,8 @@ pub(crate) const fn is_zero(number: &u32) -> bool {
 /// What a spell or an ability source is, as far as a restriction reads it.
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Default, Serialize, Deserialize)]
 #[cfg_attr(feature = "ts", derive(ts_rs::TS))]
+// Each flag is a separate fact a filter reads, and each is left out of the wire form while false.
+#[allow(clippy::struct_excessive_bools)]
 pub struct SpendTraits {
     /// Its card types.
     pub types: CardTypes,
@@ -81,6 +99,10 @@ pub struct SpendTraits {
     pub subtypes: Vec<Subtype>,
     /// How many colors it has.
     pub colors: u8,
+    /// Which colors it has.
+    #[serde(default, skip_serializing_if = "no_colors")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<ColorSet>", optional))]
+    pub color_set: ColorSet,
     /// Its mana value.
     #[serde(default, skip_serializing_if = "is_zero")]
     #[cfg_attr(feature = "ts", ts(as = "Option<u32>", optional))]
@@ -97,6 +119,10 @@ pub struct SpendTraits {
     #[serde(default, skip_serializing_if = "is_false")]
     #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
     pub from_graveyard: bool,
+    /// It shares a creature type with a commander of the caster.
+    #[serde(default, skip_serializing_if = "is_false")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
+    pub shares_commander_type: bool,
 }
 
 impl SpendFilter {
@@ -133,12 +159,14 @@ impl SpendFilter {
                     .any(|s| traits.supertypes.contains(s)))
             && (self.subtypes.is_empty()
                 || self.subtypes.iter().any(|s| traits.subtypes.contains(s)))
+            && (self.colors.is_empty() || self.colors.iter().any(|c| traits.color_set.contains(*c)))
             && (!self.multicolored || traits.colors >= 2)
             && traits.value >= self.min_value
             && self.facts.iter().all(|fact| match fact {
                 SpendFact::XInCost => traits.x_in_cost,
                 SpendFact::NotOwned => traits.not_owned,
                 SpendFact::FromGraveyard => traits.from_graveyard,
+                SpendFact::SharesCommanderType => traits.shares_commander_type,
             })
     }
 }
@@ -176,15 +204,62 @@ pub enum SpendOn {
     Ability(SpendFilter),
     /// Paying a cost that has {X} in it, of a spell or of an ability.
     CostWithX,
+    /// Not a restriction: the mana may be spent on anything, and spending it on a spell of the kind sets off the effects
+    /// ("When that mana is spent to cast a creature spell, scry 1").
+    When(Box<WhenSpent>),
+}
+
+/// What happens when a mana is spent to cast a spell of some kind: a triggered ability of the permanent that added the
+/// mana, controlled by the player who spends it, that triggers as the spell is cast. The ability can read the spell as
+/// the name `spell` and as the triggering object.
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
+#[serde(deny_unknown_fields)]
+pub struct WhenSpent {
+    /// The spells whose casting the mana must pay for to set it off.
+    pub spell: SpendFilter,
+    /// What the ability does.
+    #[cfg_attr(feature = "ts", ts(type = "unknown"))]
+    pub effects: Vec<Effect>,
+    /// The permanent that added the mana, filled in as the mana is added; a card file leaves it out.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[cfg_attr(feature = "ts", ts(optional))]
+    pub source: Option<ObjectId>,
+}
+
+impl WhenSpent {
+    /// The rider as the entry of `only` for mana added by `source`; `None` when its spells ask for a creature type and
+    /// none was chosen, so the mana sets nothing off.
+    pub fn entry(&self, chosen: Option<&Subtype>, source: Option<ObjectId>) -> Option<SpendOn> {
+        Some(SpendOn::When(Box::new(WhenSpent {
+            spell: self.spell.resolved(chosen)?,
+            effects: self.effects.clone(),
+            source,
+        })))
+    }
 }
 
 impl SpendOn {
+    /// Whether the use limits what the mana may be spent on; a rider does not.
+    pub const fn restricts(&self) -> bool {
+        !matches!(self, SpendOn::When(_))
+    }
+
+    /// The riders among `only`: what spending the mana on a spell sets off.
+    pub fn riders(only: &[SpendOn]) -> impl Iterator<Item = &WhenSpent> {
+        only.iter().filter_map(|on| match on {
+            SpendOn::When(rider) => Some(&**rider),
+            _ => None,
+        })
+    }
+
     /// The use with the chosen creature type put in its filter; `None` when it asks for a type and none was chosen.
     pub fn resolved(&self, chosen: Option<&Subtype>) -> Option<SpendOn> {
         Some(match self {
             SpendOn::Spell(filter) => SpendOn::Spell(filter.resolved(chosen)?),
             SpendOn::Ability(filter) => SpendOn::Ability(filter.resolved(chosen)?),
             SpendOn::CostWithX => SpendOn::CostWithX,
+            SpendOn::When(rider) => rider.entry(chosen, rider.source)?,
         })
     }
 
@@ -203,7 +278,8 @@ impl SpendOn {
 /// and `None` when that leaves a restriction no use satisfies.
 pub fn resolve_uses(only: &[SpendOn], chosen: Option<&Subtype>) -> Option<Vec<SpendOn>> {
     let kept: Vec<SpendOn> = only.iter().filter_map(|on| on.resolved(chosen)).collect();
-    (only.is_empty() || !kept.is_empty()).then_some(kept)
+    let restricted = only.iter().any(SpendOn::restricts);
+    (!restricted || kept.iter().any(SpendOn::restricts)).then_some(kept)
 }
 
 #[cfg(test)]
@@ -347,8 +423,92 @@ mod tests {
     )]
     #[case::abilities(SpendOn::abilities(), r#"{"Ability":{}}"#)]
     #[case::x(SpendOn::CostWithX, r#""CostWithX""#)]
+    #[case::a_rider(
+        SpendOn::When(Box::new(scry_rider(SpendFilter {
+            types: vec![CardType::Creature],
+            facts: vec![SpendFact::SharesCommanderType],
+            ..SpendFilter::default()
+        }))),
+        r#"{"When":{"spell":{"types":["Creature"],"facts":["SharesCommanderType"]},"effects":[{"Scry":{}}]}}"#
+    )]
     fn a_use_is_written_without_its_empty_parts(#[case] on: SpendOn, #[case] json: &str) {
         assert_eq!(serde_json::to_string(&on).unwrap(), json);
         assert_eq!(serde_json::from_str::<SpendOn>(json).unwrap(), on);
+    }
+
+    /// "When that mana is spent to cast <spell>, scry 1."
+    fn scry_rider(spell: SpendFilter) -> WhenSpent {
+        WhenSpent {
+            spell,
+            effects: vec![Effect::Scry {
+                who: crate::refs::Ref::You,
+                count: crate::value::Amount::one(),
+            }],
+            source: None,
+        }
+    }
+
+    #[rstest]
+    #[case::a_color_held(r#"{"colors":["Red"]}"#, &[Color::Red], true)]
+    #[case::one_of_two_colors(r#"{"colors":["Red","Blue"]}"#, &[Color::Blue, Color::Green], true)]
+    #[case::another_color(r#"{"colors":["Red"]}"#, &[Color::Green], false)]
+    #[case::colorless(r#"{"colors":["Red"]}"#, &[], false)]
+    #[case::any_color_when_none_listed(r"{}", &[], true)]
+    fn a_filter_of_colors_holds_for_a_spell_of_one_of_them(
+        #[case] json: &str,
+        #[case] colors: &[Color],
+        #[case] holds: bool,
+    ) {
+        let filter: SpendFilter = serde_json::from_str(json).unwrap();
+        let spell = SpendTraits {
+            color_set: colors.iter().fold(ColorSet::EMPTY, |set, c| set.with(*c)),
+            ..SpendTraits::default()
+        };
+        assert_eq!(filter.holds(&spell), holds);
+    }
+
+    #[rstest]
+    #[case::sharing(true, true)]
+    #[case::not_sharing(false, false)]
+    fn the_commander_fact_reads_what_the_engine_worked_out(
+        #[case] shares: bool,
+        #[case] holds: bool,
+    ) {
+        let filter: SpendFilter =
+            serde_json::from_str(r#"{"types":["Creature"],"facts":["SharesCommanderType"]}"#)
+                .unwrap();
+        let mut spell = traits(&[CardType::Creature], &[], &[], 1);
+        spell.shares_commander_type = shares;
+        assert_eq!(filter.holds(&spell), holds);
+        spell.types = CardTypes::default();
+        assert!(!filter.holds(&spell), "a creature spell only");
+    }
+
+    #[test]
+    fn a_rider_restricts_nothing_and_a_restriction_beside_it_still_needs_a_use() {
+        let rider = SpendOn::When(Box::new(scry_rider(chosen_creature())));
+        let rider_alone = [rider.clone()];
+        assert!(!rider.restricts());
+        // A rider whose spells ask for a chosen type is dropped without one; the mana is still unrestricted.
+        assert_eq!(resolve_uses(&rider_alone, None), Some(Vec::new()));
+        let chosen = elf();
+        let kept = resolve_uses(&rider_alone, Some(&chosen)).unwrap();
+        assert!(matches!(
+            &kept[..],
+            [SpendOn::When(r)] if r.spell.subtypes == [elf()] && !r.spell.chosen_type
+        ));
+        // A restriction that cannot be satisfied is not made satisfiable by a rider beside it.
+        let both = [SpendOn::Spell(chosen_creature()), rider];
+        assert_eq!(resolve_uses(&both, None), None);
+        assert_eq!(SpendOn::riders(&kept).count(), 1);
+    }
+
+    #[test]
+    fn a_rider_remembers_the_permanent_that_made_the_mana() {
+        let rider = scry_rider(SpendFilter::of_type(CardType::Creature));
+        let entry = rider.entry(None, Some(ObjectId(7))).unwrap();
+        assert!(matches!(&entry, SpendOn::When(r) if r.source == Some(ObjectId(7))));
+        // Resolving it again keeps the permanent.
+        assert_eq!(entry.resolved(None), Some(entry.clone()));
     }
 }

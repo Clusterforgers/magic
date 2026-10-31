@@ -65,6 +65,7 @@ pub fn effects(r: &mut Reader<'_>, when: &TriggerPattern) -> Option<Vec<Effect>>
         times: Amount::one(),
         only: Vec::<SpendOn>::new(),
         lasts: ManaLasts::Step,
+        when_spent: None,
     }])
 }
 

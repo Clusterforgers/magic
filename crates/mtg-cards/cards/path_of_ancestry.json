@@ -1,0 +1,30 @@
+{
+  "oracle_id": "b473e293-59e3-4e04-acf2-622604aeb25f",
+  "name": "Path of Ancestry",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Path of Ancestry",
+      "oracle_fingerprint": "9388724edef3f471285dac5836fd502e",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "CommanderIdentity": 1 },
+                  "when_spent": {
+                    "spell": { "types": ["Creature"], "facts": ["SharesCommanderType"] },
+                    "effects": [{ "Scry": {} }]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

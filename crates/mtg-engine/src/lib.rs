@@ -49,6 +49,7 @@ mod saga;
 mod sba;
 mod soulbond;
 mod spell_keywords;
+mod spend_rider;
 #[cfg(test)]
 mod spend_tests;
 mod steps;

@@ -10,7 +10,7 @@ use mtg_cards::load::{canonical, parse_json};
 use mtg_cards::mana::ManaCostX;
 use mtg_cards::modify::{CastPermission, Duration, GameRule, Modification};
 use mtg_cards::refs::{AbilityKind, Bounds, Pred, Ref, Selector, TargetSpec, Targetable, ZoneKind};
-use mtg_cards::spend::{ManaLasts, SpendFact, SpendFilter, SpendOn};
+use mtg_cards::spend::{ManaLasts, SpendFact, SpendFilter, SpendOn, WhenSpent};
 use mtg_cards::trigger::{EntersChoice, ReplaceBy, ReplaceWhen, Step, TriggerPattern};
 use mtg_cards::value::{Amount, CastWay, Cmp, Condition, CounterKind, StatKind};
 use mtg_core::card::{CardType, Subtype, Supertype};
@@ -343,6 +343,7 @@ fn spend_filter() -> impl Strategy<Value = SpendFilter> {
         vec(select(vec![CardType::Creature, CardType::Land]), 0..2),
         vec(select(vec![Supertype::Legendary, Supertype::Basic]), 0..2),
         vec(select(vec!["Dragon", "Elf"]), 0..2),
+        vec(color(), 0..3),
         (any::<bool>(), any::<bool>()),
         (
             0u32..8,
@@ -351,6 +352,7 @@ fn spend_filter() -> impl Strategy<Value = SpendFilter> {
                     SpendFact::XInCost,
                     SpendFact::NotOwned,
                     SpendFact::FromGraveyard,
+                    SpendFact::SharesCommanderType,
                 ]),
                 0..3,
             ),
@@ -362,6 +364,7 @@ fn spend_filter() -> impl Strategy<Value = SpendFilter> {
                 without,
                 supertypes,
                 subtypes,
+                colors,
                 (multicolored, chosen_type),
                 (min_value, facts),
             )| SpendFilter {
@@ -372,6 +375,7 @@ fn spend_filter() -> impl Strategy<Value = SpendFilter> {
                     .into_iter()
                     .map(|s| Subtype(s.to_owned()))
                     .collect(),
+                colors,
                 multicolored,
                 chosen_type,
                 min_value,
@@ -385,6 +389,14 @@ fn spend_on() -> impl Strategy<Value = SpendOn> {
         spend_filter().prop_map(SpendOn::Spell),
         spend_filter().prop_map(SpendOn::Ability),
         Just(SpendOn::CostWithX),
+        (spend_filter(), 1u32..3).prop_map(|(spell, count)| SpendOn::When(Box::new(WhenSpent {
+            spell,
+            effects: vec![Effect::Scry {
+                who: Ref::You,
+                count: Amount::Fixed(i32::try_from(count).unwrap_or(1)),
+            }],
+            source: None,
+        }))),
     ]
 }
 
@@ -837,14 +849,25 @@ fn leaf_effect() -> impl Strategy<Value = Effect> {
             ],
             amount(),
             vec(spend_on(), 0..3),
-            select(vec![ManaLasts::Step, ManaLasts::Combat, ManaLasts::Turn])
+            select(vec![ManaLasts::Step, ManaLasts::Combat, ManaLasts::Turn]),
+            proptest::option::of((spend_filter(), 1u32..3)),
         )
-            .prop_map(|(who, mana, times, only, lasts)| Effect::AddMana {
+            .prop_map(|(who, mana, times, only, lasts, rider)| Effect::AddMana {
                 who,
                 mana,
                 times,
                 only,
-                lasts
+                lasts,
+                when_spent: rider.map(|(spell, count)| {
+                    Box::new(WhenSpent {
+                        spell,
+                        effects: vec![Effect::Scry {
+                            who: Ref::You,
+                            count: Amount::Fixed(i32::try_from(count).unwrap_or(1)),
+                        }],
+                        source: None,
+                    })
+                }),
             }),
         (reference(), counter(), amount()).prop_map(|(on, counter, count)| Effect::PutCounters {
             on,

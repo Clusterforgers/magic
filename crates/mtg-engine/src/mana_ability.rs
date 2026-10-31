@@ -293,6 +293,13 @@ fn rule_mana(state: &GameState, player: PlayerId, id: ObjectId, printed: usize) 
         let Some(only) = mtg_cards::spend::resolve_uses(shape.only, chosen) else {
             continue;
         };
+        // The mana may be spent on anything; a rider remembers the permanent that makes the mana.
+        let mut only = only;
+        only.extend(
+            shape
+                .when_spent
+                .and_then(|rider| rider.entry(chosen, Some(id))),
+        );
         let once = shape.once;
         // Every use takes others, so what limits the uses is what the cost takes.
         let repeat = !tap

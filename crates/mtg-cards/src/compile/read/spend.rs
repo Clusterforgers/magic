@@ -329,6 +329,7 @@ fn qualifier_text(filter: &SpendFilter) -> String {
             SpendFact::XInCost => " with {X} in their mana costs",
             SpendFact::NotOwned => " you don't own",
             SpendFact::FromGraveyard => " from your graveyard",
+            SpendFact::SharesCommanderType => " that shares a creature type with your commander",
         });
     }
     text

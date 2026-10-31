@@ -43,6 +43,7 @@ const SCALAR_KEYS: &[&str] = &[
     "damage",
     "casts",
     "tax",
+    "delayed",
     "commander_lethal",
     "power",
     "toughness",
@@ -179,6 +180,8 @@ pub(crate) fn leaks(value: &Value, hidden: &BTreeMap<ObjectId, String>) -> Vec<S
                 let names_an_effect = key == "EffectExpired"
                     || key == "RuleExpired"
                     || key == "ShieldUsed"
+                    // A delayed trigger is named by a delayed id, no object's either.
+                    || (map.contains_key("once") && map.contains_key("this_turn"))
                     || (map.contains_key("duration")
                         && (map.contains_key("timestamp") || map.contains_key("turn")));
                 map.iter()

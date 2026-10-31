@@ -177,7 +177,7 @@ impl Builder<'_> {
         match ty {
             "String" | "str" => json!({"type": "string"}),
             "bool" => json!({"type": "boolean"}),
-            "i8" | "i16" | "i32" | "i64" | "u8" | "u16" | "u32" | "u64" | "usize" => {
+            "i8" | "i16" | "i32" | "i64" | "u8" | "u16" | "u32" | "u64" | "usize" | "ObjectId" => {
                 json!({"type": "integer"})
             }
             name if self.by_name.contains_key(name) => json!({"$ref": format!("#/$defs/{name}")}),
