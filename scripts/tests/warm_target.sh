@@ -203,6 +203,10 @@ ln -s "$scratch/elsewhere" "$wt/target"
 check "a symlinked target is refused" "$(! WARM_CWD=$wt warm use --replace >/dev/null 2>&1 && echo 0 || echo 1)"
 equal "a refused symlink keeps what it points to" "$(cat "$scratch/elsewhere/file")" keep
 rm -f "$wt/target"
+echo file >"$wt/target"
+check "a target that is a file is refused" "$(! WARM_CWD=$wt warm use --replace >/dev/null 2>&1 && echo 0 || echo 1)"
+equal "a refused file target is kept" "$(cat "$wt/target")" file
+rm -f "$wt/target"
 check "use outside a checkout is refused" "$(! (cd "$scratch" && "$script" use >/dev/null 2>&1) && echo 0 || echo 1)"
 check "an unknown command is refused" "$(! "$script" frobnicate >/dev/null 2>&1 && echo 0 || echo 1)"
 
@@ -220,6 +224,7 @@ mkdir -p "$wt/crates/a"
 equal "run shows the checkout at the canonical path" "$(cd "$wt" && "$script" run -- pwd -P)" "$MTG_WARM_CACHE/ws"
 equal "run keeps the subdirectory" "$(cd "$wt/crates/a" && "$script" run pwd -P)" "$MTG_WARM_CACHE/ws/crates/a"
 equal "run gives the command the checkout's files" "$(cd "$wt" && "$script" run -- cat sibling.txt)" sibling
+equal "git works at the canonical path" "$(cd "$wt" && "$script" run -- git rev-parse --show-toplevel)" "$MTG_WARM_CACHE/ws"
 equal "run passes the exit status" "$( (cd "$wt" && "$script" run -- bash -c 'exit 7') >/dev/null 2>&1; echo $?)" 7
 equal "run inside a namespace runs in place" "$(cd "$wt" && MTG_WARM_IN_NS=1 "$script" run -- pwd -P)" "$(cd "$wt" && pwd -P)"
 equal "run without namespaces runs in place" "$(cd "$wt" && FAKE_NO_NS=1 "$script" run -- pwd -P 2>/dev/null)" "$(cd "$wt" && pwd -P)"

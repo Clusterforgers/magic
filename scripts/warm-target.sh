@@ -189,6 +189,7 @@ cmd_use() {
   dest=$root/target
   cache=$(cache_root)
   if [[ -L $dest ]]; then die "$dest is a symlink; not touching it"; fi
+  if [[ -e $dest && ! -d $dest ]]; then die "$dest is not a directory; not touching it"; fi
   if [[ -n $(ls -A "$dest" 2>/dev/null) ]] && ((!replace)); then
     die "$dest is not empty; pass --replace to discard it"
   fi
@@ -237,6 +238,7 @@ cmd_run() {
 # prune <cache>: remove the entries beyond the newest MTG_WARM_KEEP, and leftovers of a crashed refresh.
 prune() {
   local cache=$1 keep=${MTG_WARM_KEEP:-2} i leftover names=()
+  ((keep >= 1)) || keep=1
   mapfile -t names < <(entries "$cache")
   for ((i = keep; i < ${#names[@]}; i++)); do
     echo "warm-target: removing ${names[i]}"
@@ -312,7 +314,7 @@ main() {
     refresh) cmd_refresh "$@" ;;
     run) cmd_run "$@" ;;
     build-steps) warm_build ;;
-    *) sed -n '2,14p' "$0" | sed 's/^# \{0,1\}//' && exit 2 ;;
+    *) sed -n '2,15p' "$0" | sed 's/^# \{0,1\}//' && exit 2 ;;
   esac
 }
 
