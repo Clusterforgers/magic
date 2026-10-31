@@ -14,12 +14,13 @@ pub fn effects(ctx: &mut Ctx, p: &Params, api: &str) -> Tr<Vec<Value>> {
     match api {
         "Destroy" => one(destroy(ctx, p)),
         "DestroyAll" => one(destroy_all(ctx, p)),
-        "DamageAll" => one(damage_all(ctx, p)),
+        "DamageAll" => damage_all(ctx, p),
+        "PutCounterAll" => one(put_counter_all(ctx, p)),
         "Counter" => one(counter(ctx, p)),
         "PreventDamage" => one(prevent_damage(ctx, p)),
         "Pump" => pump(ctx, p),
         "PumpAll" => pump_all(ctx, p),
-        "Animate" => animate(ctx, p),
+        "Animate" | "AnimateAll" => animate(ctx, p),
         "PutCounter" => one(put_counter(ctx, p)),
         "RemoveCounter" => one(remove_counter(ctx, p)),
         "Tap" => one(simple(ctx, p, "Tap", "Tap")),
@@ -77,11 +78,40 @@ fn destroy_all(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     Ok(json!({"Destroy": {"what": {"Each": selector_any(ctx, valid)?}, "regenerate": regenerate}}))
 }
 
-fn damage_all(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
-    only(p, "DamageAll", &["NumDmg", "ValidCards"])?;
+fn damage_all(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
+    only(p, "DamageAll", &["NumDmg", "ValidCards", "ValidPlayers"])?;
     let valid = p.get("ValidCards").unwrap_or_default();
     let amount = amount(ctx, p.get("NumDmg").unwrap_or("1"))?;
-    Ok(json!({"DealDamage": {"to": {"Each": selector_any(ctx, valid)?}, "amount": amount}}))
+    let mut effects =
+        vec![json!({"DealDamage": {"to": {"Each": selector_any(ctx, valid)?}, "amount": amount}})];
+    match p.get("ValidPlayers") {
+        None => {}
+        Some("Player") => {
+            effects.push(json!({"DealDamage": {"to": "EachPlayer", "amount": amount}}));
+        }
+        Some("Opponent" | "Player.Opponent") => {
+            effects.push(json!({"DealDamage": {"to": "Opponents", "amount": amount}}));
+        }
+        Some(other) => return unmapped(format!("key:DamageAll.ValidPlayers={other}")),
+    }
+    Ok(effects)
+}
+
+/// `PutCounterAll`: counters on every object that matches.
+fn put_counter_all(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
+    only(
+        p,
+        "PutCounterAll",
+        &["ValidCards", "CounterType", "CounterNum"],
+    )?;
+    let Some(kind) = p.get("CounterType").and_then(counter_kind) else {
+        return unmapped("key:PutCounterAll.CounterType");
+    };
+    let valid = p.get("ValidCards").unwrap_or_default();
+    let count = amount(ctx, p.get("CounterNum").unwrap_or("1"))?;
+    Ok(
+        json!({"PutCounters": {"on": {"Each": selector_any(ctx, valid)?}, "counter": kind, "count": count}}),
+    )
 }
 
 fn counter(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
@@ -214,13 +244,18 @@ fn animate(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             "OverwriteColors",
             "Keywords",
             "RemoveCreatureTypes",
+            "ValidCards",
             "Duration",
             "TargetMin",
             "TargetMax",
         ],
     )?;
     let duration = duration(p.get("Duration"))?;
-    let affected = objects(subject(ctx, p, "", None)?)?;
+    // `AnimateAll` names the objects by a valid-string.
+    let affected = match p.get("ValidCards") {
+        Some(valid) => json!({"Each": selector_any(ctx, valid)?}),
+        None => objects(subject(ctx, p, "", None)?)?,
+    };
     let mut mods = Vec::new();
     match (p.get("Power"), p.get("Toughness")) {
         (Some(power), Some(toughness)) => {
@@ -350,6 +385,11 @@ fn sacrifice(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
             "TargetMax",
         ],
     )?;
+    if let Some(valid) = p.get("ValidTgts")
+        && !matches!(valid, "Player" | "Opponent" | "Player.Opponent")
+    {
+        return unmapped("key:Sacrifice.ValidTgts-objects");
+    }
     let who = subject(ctx, p, "You", None)?;
     let filter = match p.get("SacValid").unwrap_or("Self") {
         "Self" => vec![json!("This")],

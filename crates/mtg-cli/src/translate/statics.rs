@@ -26,6 +26,9 @@ pub fn static_line(ctx: &mut Ctx, body: &str) -> Tr<Value> {
         "RaiseCost" => cost_modifier(ctx, &p, "Increase")?,
         other => return unmapped(format!("static:{other}")),
     };
+    if condition.is_some() && ability.pointer("/Static/defining").is_some() {
+        return unmapped("key:Static.Continuous.defining-with-condition");
+    }
     if let Some(condition) = condition
         && let Some(inner) = ability.as_object_mut().and_then(|o| o.values_mut().next())
     {
@@ -139,6 +142,13 @@ fn continuous(ctx: &Ctx, p: &Params) -> Tr<Value> {
         Some(other) => return unmapped(format!("key:Static.EffectZone={other}")),
     }
     if p.get("CharacteristicDefining") == Some("True") {
+        // Only power and toughness are defined this way here, and always, never under a condition.
+        if mods
+            .iter()
+            .any(|modification| modification.get("SetPT").is_none())
+        {
+            return unmapped("key:Static.Continuous.defining-other-than-stats");
+        }
         ability["defining"] = json!(true);
     }
     Ok(json!({ "Static": ability }))

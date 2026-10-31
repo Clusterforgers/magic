@@ -229,8 +229,36 @@ fn take(out: &mut FaceOut, result: Tr<Vec<Value>>) {
     }
 }
 
+/// Whether an ability or a mode declares a target that nothing reads: the rules refuse that.
+fn has_unused_target(value: &Value) -> bool {
+    match value {
+        Value::Object(map) => {
+            if let Some(Value::Array(targets)) = map.get("targets") {
+                let rest: String = map
+                    .iter()
+                    .filter(|(key, _)| key.as_str() != "targets")
+                    .map(|(_, inner)| inner.to_string())
+                    .collect();
+                let unused = (0..targets.len()).any(|at| {
+                    !rest.contains(&format!("{{\"Target\":{at}}}"))
+                        && !rest.contains(&format!("\"TargetCount\":{at}"))
+                });
+                if unused {
+                    return true;
+                }
+            }
+            map.values().any(has_unused_target)
+        }
+        Value::Array(items) => items.iter().any(has_unused_target),
+        _ => false,
+    }
+}
+
 /// The ability in canonical form, or the gap that names why the DSL does not read it.
 fn checked(value: Value) -> Tr<Value> {
+    if has_unused_target(&value) {
+        return unmapped("targets:unused");
+    }
     match serde_json::from_value::<Ability>(value) {
         Ok(ability) => serde_json::to_value(&ability).or_else(|_| unmapped("invalid:serialize")),
         Err(error) => unmapped(format!("invalid:{}", reason(&error.to_string()))),

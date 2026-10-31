@@ -88,9 +88,8 @@ fn line(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         "CopyPermanent" => tokens::copy_permanent(ctx, p),
         "Destroy" | "DestroyAll" | "Counter" | "Pump" | "PumpAll" | "PutCounter"
         | "RemoveCounter" | "Tap" | "Untap" | "TapAll" | "UntapAll" | "Sacrifice"
-        | "Regenerate" | "Fight" | "GainControl" | "DamageAll" | "Animate" | "PreventDamage" => {
-            effects_obj::effects(ctx, p, api)
-        }
+        | "Regenerate" | "Fight" | "GainControl" | "DamageAll" | "Animate" | "PreventDamage"
+        | "PutCounterAll" | "AnimateAll" => effects_obj::effects(ctx, p, api),
         "ChangeZone" | "ChangeZoneAll" => effects_zone::effects(ctx, p, api),
         "Token" | "Mana" | "Investigate" => tokens::effects(ctx, p, api),
         other => unmapped(format!("effect:{other}")),
