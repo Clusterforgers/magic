@@ -47,6 +47,7 @@ One item is one piece of about 15 minutes and one line: the outcome, the cards i
 
 Items that touch the running game come first.
 
+- [~] (ad1a) (admin-users) The account named by `MTG_ADMIN_USERNAME` is the admin and the only one who makes accounts: the server marks it at start, `POST /api/admin/users` and an accounts page in the client create and list accounts, and the chart closes self-registration (`docs/server.md`, Accounts)
 - [ ] (d1c) A copy of the nightly database dumps off queen (a Longhorn backup target or a scheduled copy to another machine), so losing queen does not lose the accounts and decks (`docs/deploy.md`)
 - [ ] (d1b) The release script's steps as a GitHub Actions workflow on a published release, so a release needs no dev machine (`docs/deploy.md`)
 - [ ] (v92w) The priority prompt of a seat held at its by-hand window says "Apply the card's text by hand, then pass" (12 px or more), from the resolution of its own object with `ObjectView.manual` (`docs/server.md`, Stops and Full Control)
@@ -138,7 +139,8 @@ The table and its prompts are live; the items below polish them.
 Open card, compiler and wording items: `docs/cards-backlog.md`.
 
 - [ ] Target: every stored card Verified, or as near as the rules allow; after each round `compile` and `coverage` are re-run and the numbers go on the Status line
-- [ ] (t14b) `mtg-cli propose --forge-hint` adds the Forge script lines of a card (read at run time from a read-only checkout, nothing copied into the repository) to the prompt, and an A/B against `--solved-examples` on the same sample says which hint the checker accepts more often (a checkout needs the owner's approval; `docs/reference-engines.md`)
+- [~] (rt1) (read-tier-design) A card whose rules the checker cannot prove is played automatically once a signed-in player read them next to the engine's own English and marked them correct, and by hand again after one "reads wrong": the design in `docs/` and the pieces as new items (`docs/cards-dsl.md`, Model-assisted reading)
+- [~] (t14b) (forge-hint) `mtg-cli propose --forge-hint` adds the Forge script lines of a card (read at run time from a read-only checkout, nothing copied into the repository) to the prompt, and an A/B against `--solved-examples` on the same sample says which hint the checker accepts more often (a checkout needs the owner's approval; `docs/reference-engines.md`)
 - [ ] Gate: every corpus card is Verified or played through manual clauses and actions that show each unread clause, and fuzz games with a deck from each cluster pass every invariant, and a four-seat Commander game plays from the lobby to a winner in the web
 
 ## Tooling
