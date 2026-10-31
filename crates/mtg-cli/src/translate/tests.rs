@@ -409,6 +409,27 @@ fn a_token_with_an_ability_of_its_own_carries_it() {
     );
 }
 
+#[rstest]
+#[case::paid_for_x("Count$xPaid", json!("X"))]
+#[case::creatures_you_control("Count$Valid Creature.YouCtrl", json!({"Count": [{"Type": "Creature"}, {"ControlledBy": "You"}]}))]
+#[case::one_more("Count$Valid Creature.YouCtrl/Plus.1", json!({"Sum": [{"Count": [{"Type": "Creature"}, {"ControlledBy": "You"}]}, 1]}))]
+#[case::twice_the_life("Count$YourLifeTotal/Twice", json!({"Times": {"by": 2, "of": {"Life": "You"}}}))]
+#[case::opponents("PlayerCountOpponents$Amount", json!({"Players": "Opponents"}))]
+#[case::that_much("TriggerCount$DamageAmount", json!("Triggering"))]
+#[case::power_of_the_sacrificed("Sacrificed$CardPower", json!({"Stat": {"of": "Paid", "stat": "Power"}}))]
+#[case::number("Number$4", json!(4))]
+fn an_expression_of_a_named_part_is_an_amount(#[case] expression: &str, #[case] expected: Value) {
+    let script = format!(
+        "Name:T\nTypes:Sorcery\nA:SP$ DealDamage | ValidTgts$ Any | NumDmg$ X\nSVar:X:{expression}\n"
+    );
+    let found = abilities(&script);
+    assert_eq!(found.len(), 1, "{:?}", gaps(&script));
+    assert_eq!(
+        found[0]["Spell"]["effects"][0]["DealDamage"]["amount"],
+        expected
+    );
+}
+
 #[test]
 fn a_saga_has_a_triggered_ability_for_each_chapter() {
     let found = abilities(

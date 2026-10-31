@@ -268,6 +268,7 @@ pub fn defined(ctx: &Ctx, word: &str) -> Tr<Value> {
         "Opponent" | "Player.Opponent" => Ok(json!("Opponents")),
         "Player" => Ok(json!("EachPlayer")),
         "Self" | "Card.Self" => Ok(json!("This")),
+        "Sacrificed" => Ok(json!("Paid")),
         "Targeted" | "TargetedPlayer" | "TargetedCard" => ctx.last_target(),
         "ParentTarget" => ctx.parent(),
         "TargetedController" => controller(ctx.last_target()?),

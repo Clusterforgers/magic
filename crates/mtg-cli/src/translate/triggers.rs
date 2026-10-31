@@ -81,8 +81,12 @@ fn about_this(value: &mut Value) {
                 *value = json!("You");
                 return;
             }
-            for inner in map.values_mut() {
-                about_this(inner);
+            for (key, inner) in map.iter_mut() {
+                // "That much" is an amount of the event, not the card.
+                let is_amount = matches!(key.as_str(), "amount" | "count" | "power" | "toughness");
+                if !(is_amount && *inner == json!("Triggering")) {
+                    about_this(inner);
+                }
             }
         }
         Value::Array(items) => items.iter_mut().for_each(about_this),

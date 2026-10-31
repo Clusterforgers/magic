@@ -72,6 +72,9 @@ fn expression_amount(ctx: &Ctx, expression: &str) -> Tr<Value> {
     if let Some(rest) = expression.strip_prefix("Count$") {
         return count_amount(ctx, rest);
     }
+    if let Some(amount) = event_amount(ctx, expression)? {
+        return Ok(amount);
+    }
     if let Some(rest) = expression.strip_prefix("Targeted$") {
         return targeted_amount(rest, &ctx.last_target()?);
     }
@@ -88,6 +91,33 @@ fn head(expression: &str) -> String {
         .next()
         .unwrap_or_default()
         .to_owned()
+}
+
+/// The amounts that name an object of the event or of the cost (`TriggerCount$DamageAmount`, `TriggeredCard$CardPower`,
+/// `Sacrificed$CardManaCost`, `Remembered$CardManaCost`) and the count of opponents; `None` for any other expression.
+fn event_amount(ctx: &Ctx, expression: &str) -> Tr<Option<Value>> {
+    let Some((head, what)) = expression.split_once('$') else {
+        return Ok(None);
+    };
+    let of = match head {
+        "TriggerCount" => {
+            return match what {
+                "DamageAmount" | "LifeAmount" | "Amount" => Ok(Some(json!("Triggering"))),
+                other => unmapped(format!("amount:TriggerCount${other}")),
+            };
+        }
+        "PlayerCountOpponents" if what == "Amount" => {
+            return Ok(Some(json!({"Players": "Opponents"})));
+        }
+        "TriggeredCard" => json!("Triggering"),
+        "Sacrificed" => json!("Paid"),
+        "Remembered" if what != "Amount" => match &ctx.remembered {
+            Some(remembered) => remembered.clone(),
+            None => return unmapped("amount:Remembered-without-a-change"),
+        },
+        _ => return Ok(None),
+    };
+    targeted_amount(what, &of).map(Some)
 }
 
 /// A stat of the latest target.
