@@ -284,12 +284,7 @@ describe('closing the preview', () => {
     const { user } = await renderBuilder({ cards: { details: [boltDetail()] } })
     await user.click(nameButton(deckLine('Lightning Bolt'), 'Lightning Bolt'))
     const preview = await dialog('Lightning Bolt')
-    expect(preview).toHaveClass(
-      'max-sm:bottom-0',
-      'max-sm:w-full',
-      'max-sm:rounded-b-none',
-      'sm:max-w-2xl',
-    )
+    expect(preview).toHaveClass('max-sm:bottom-0', 'max-sm:w-full', 'max-sm:rounded-b-none', 'sm:max-w-2xl')
   })
 })
 
