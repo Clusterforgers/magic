@@ -1,5 +1,6 @@
 //! The account endpoints: `POST /api/auth/register`, `login`, `logout` and `password`, `DELETE
-//! /api/auth/account`, and `GET /api/auth/me`.
+//! /api/auth/account`, `GET /api/auth/me` and `GET /api/auth/options`; the admin's `/api/admin/users` is in
+//! [`admin`].
 //!
 //! A session is a random 256-bit token in the `mtg_session` cookie; the database keeps only its
 //! SHA-256. Passwords are Argon2id hashes. Logging in answers the same way for a username that
@@ -32,8 +33,10 @@ use crate::secret::{SessionToken, TokenDigest};
 use crate::server::AppState;
 use crate::throttle::{Blocked, Throttle};
 
+mod admin;
 mod settings;
 
+pub(crate) use admin::{create_account, list_accounts, options};
 pub(crate) use settings::{change_password, delete_account};
 
 /// What the account endpoints share: the tables, the hasher and the counters of failed tries.
@@ -323,6 +326,7 @@ fn user_view(user: &User) -> UserView {
     UserView {
         id: user.id.to_string(),
         username: user.username.clone(),
+        is_admin: user.is_admin,
     }
 }
 

@@ -12,7 +12,7 @@ import { renderInRouter } from '@/test-utils/router'
 import { useJoinGame } from './useJoinGame'
 import type { JoinGame } from './useJoinGame'
 
-const ADA: UserView = { id: 'u1', username: 'Ada_L' }
+const ADA: UserView = { id: 'u1', username: 'Ada_L', is_admin: false }
 const CODE = 'K7M29QXA'
 
 /** Renders the hook on a store that starts as `status`; `me` answers while that is `loading`. */

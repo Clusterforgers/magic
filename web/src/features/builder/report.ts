@@ -5,15 +5,23 @@
 import type { DeckReport, Issue, Reason, Support } from '@/protocol/generated'
 import type { Line } from './deckEdit'
 
-/** The support states from the worst to the best: what stops a deck, what is done by hand, what is nearly there. */
-export const SUPPORT_ORDER: readonly Support[] = ['unplayable', 'manual', 'stale', 'partial', 'verified']
+/** The support states from the worst to the best: what stops a deck, what is done by hand, what is nearly there, what runs on a read. */
+export const SUPPORT_ORDER: readonly Support[] = [
+  'unplayable',
+  'manual',
+  'stale',
+  'partial',
+  'read',
+  'verified',
+]
 
 const RANK: Readonly<Record<Support, number>> = {
   unplayable: 0,
   manual: 1,
   stale: 2,
   partial: 3,
-  verified: 4,
+  read: 4,
+  verified: 5,
 }
 
 /** True for a state the game does not run whole. */

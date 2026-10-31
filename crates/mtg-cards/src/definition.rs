@@ -12,6 +12,8 @@ use mtg_core::mana::{ManaCost, ManaType};
 use serde::{Deserialize, Serialize};
 
 use crate::ability::Ability;
+use crate::compile::{ClauseKind, classify_clause};
+use crate::effect::is_false;
 use crate::modify::Modification;
 use crate::value::Amount;
 
@@ -45,6 +47,27 @@ pub struct ManualClause {
     pub text: String,
     /// Why the engine leaves it to the table, in plain words.
     pub reason: String,
+}
+
+impl ManualClause {
+    /// Whether its controller owes it when a spell or ability of its card resolves, so that the table asks them to
+    /// apply it then: false when every line of the clause is an activated or loyalty ability, which a player uses when
+    /// it matters and which a resolution does not call for. A clause that reads as anything else is owed.
+    pub fn owed_at_resolution(&self) -> bool {
+        let standing = |line: &str| {
+            matches!(
+                classify_clause(line, false),
+                ClauseKind::Activated | ClauseKind::Loyalty
+            )
+        };
+        let mut lines = self
+            .text
+            .lines()
+            .map(str::trim)
+            .filter(|line| !line.is_empty())
+            .peekable();
+        lines.peek().is_none() || lines.any(|line| !standing(line))
+    }
 }
 
 /// Which printed card a definition is: what a client needs to find its image and text. The server sets it; the rules
@@ -156,6 +179,10 @@ pub struct CardDefinition {
     /// card is cast and resolves without them and its controller does them by hand.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub manual: Vec<ManualClause>,
+    /// Whether this face runs on a player's read: its rules are a draft the checker could not prove, approved by a
+    /// player (`docs/cards-dsl.md`, Read tier). The table shows it; a resolution that fails is then left to the table.
+    #[serde(default, skip_serializing_if = "is_false")]
+    pub read: bool,
     /// Every face of a card with more than one, in Scryfall's order, each with its own rules; empty for a card with one face.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub faces: Vec<CardDefinition>,
@@ -184,6 +211,7 @@ impl CardDefinition {
             rules: Vec::new(),
             layout: Layout::Normal,
             manual: Vec::new(),
+            read: false,
             faces: Vec::new(),
             identity: None,
         }
@@ -432,12 +460,48 @@ impl CardDefinition {
 
 #[cfg(test)]
 mod tests {
-    //! Goal: card definition helpers derive colors, values and basic lands consistently.
+    //! Goal: card definition helpers derive colors, values and basic lands consistently, and a clause left to the table is owed when a spell or ability of its card resolves unless every line of it is an activated or loyalty ability.
     use super::*;
     use rstest::rstest;
 
     use crate::effect::Effect;
     use crate::refs::Ref;
+
+    #[rstest]
+    #[case::tap_ability(
+        "{T}: Draw a card. Activate only if you created a token this turn.",
+        false
+    )]
+    #[case::mana_ability("{T}: Add {C}.", false)]
+    #[case::cost_word("Sacrifice a creature: You gain 1 life.", false)]
+    #[case::loyalty_abilities(
+        "+1: Draw a card.\n\u{2212}2: Destroy target creature.\n0: Scry 1.",
+        false
+    )]
+    #[case::two_activated_lines("{2}: Scry 1.\n{T}, Sacrifice ~: Draw a card.", false)]
+    #[case::triggered("Whenever an enchantment you control enters, draw a card.", true)]
+    #[case::ability_word_trigger(
+        "Landfall \u{2014} Whenever a land enters under your control, draw a card.",
+        true
+    )]
+    #[case::additional_cost(
+        "As an additional cost to cast this spell, you may sacrifice one or more creatures. When you do, copy this spell for each creature sacrificed this way.",
+        true
+    )]
+    #[case::spell_effect("Each player draws two cards.", true)]
+    #[case::keyword("Cascade", true)]
+    #[case::one_standing_among_others("{T}: Draw a card.\nWhen ~ enters, you gain 2 life.", true)]
+    #[case::empty("", true)]
+    fn a_clause_is_owed_at_resolution_unless_it_is_only_activated_or_loyalty_abilities(
+        #[case] text: &str,
+        #[case] owed: bool,
+    ) {
+        let clause = ManualClause {
+            text: text.to_owned(),
+            reason: "you apply this by hand".to_owned(),
+        };
+        assert_eq!(clause.owed_at_resolution(), owed, "{text}");
+    }
 
     fn legendary_elf() -> CardDefinition {
         CardDefinition::new("Elf Lord")

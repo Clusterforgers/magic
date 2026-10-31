@@ -49,7 +49,7 @@ fn uuid_of(id: &OracleId) -> Option<Uuid> {
 }
 
 /// A note as it is stored: trimmed, and none when it is empty.
-fn clean(note: Option<&str>) -> Option<&str> {
+pub(crate) fn clean(note: Option<&str>) -> Option<&str> {
     note.map(str::trim).filter(|note| !note.is_empty())
 }
 

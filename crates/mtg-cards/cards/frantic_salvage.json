@@ -1,0 +1,29 @@
+{
+  "oracle_id": "9d2e7099-dcd5-428f-a732-2a82b8d1dd1a",
+  "name": "Frantic Salvage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Frantic Salvage",
+      "oracle_fingerprint": "b5e6d397925af6902c457fd6546e1954",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Artifact" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
+                },
+                "bounds": { "min": 0, "max": null }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Library": { "place": "Top" } } } },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

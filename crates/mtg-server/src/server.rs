@@ -122,6 +122,9 @@ impl Server {
             cards.with_images(Images::new(&config.images))
         };
         let auth = Auth::new(&config.auth, Some(pool.clone()));
+        auth.sync_admin()
+            .await
+            .map_err(|error| RecordError::Unavailable(error.to_string()))?;
         let registry = Registry::with_card_source(&config, pool, cards.clone());
         let resumed = registry.resume().await?;
         tracing::info!(
@@ -319,6 +322,11 @@ pub(crate) fn router(state: AppState) -> Router {
         .route("/api/auth/password", post(auth::change_password))
         .route("/api/auth/account", delete(auth::delete_account))
         .route("/api/auth/me", get(auth::me))
+        .route("/api/auth/options", get(auth::options))
+        .route(
+            "/api/admin/users",
+            get(auth::list_accounts).post(auth::create_account),
+        )
         .route("/api/me/games", get(my_games::list))
         .route("/api/me/games/{id}", delete(my_games::remove))
         .route("/ws/{game}/{token}", get(ws::upgrade))

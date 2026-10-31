@@ -32,7 +32,7 @@ The per-card support lookup (`Library::support` in `mtg-cards`), the report (`mt
 
 ## The report
 
-`DeckReport { deck_hash, coverage_hash, format, legality: [Issue], cards: [{oracle_id, name, zone, count, support, reasons: [{face, span, text}]}], summary }`; `summary` is `{format, state, counts, zones, issues}` with copies by support state (`total`, `verified`, `partial`, `manual`, `stale`, `unplayable`) overall and per zone, and `state` one of `verified`, `manual_play`, `blocked` (a report is never `unchecked`).
+`DeckReport { deck_hash, coverage_hash, format, legality: [Issue], cards: [{oracle_id, name, zone, count, support, reasons: [{face, span, text}]}], summary }`; `summary` is `{format, state, counts, zones, issues}` with copies by support state (`total`, `verified`, `read`, `partial`, `manual`, `stale`, `unplayable`) overall and per zone, and `state` one of `verified`, `manual_play`, `blocked` (a report is never `unchecked`).
 
 - One pure function in `mtg-cards` (`deck_report(format, lines, cards, library, caps)` in the `deck` module) over the deck, the facts of its cards and the rules library serves the deck endpoints, the CLI and tests.
 - Legality is its own section (`legality`, a list of `Issue {code, message, zone, oracle_id, name}`), so "illegal" and "not implemented" never blur. The rules:

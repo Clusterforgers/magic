@@ -9,7 +9,10 @@ export type AuthMode = 'login' | 'register'
 /** The settings forms, which confirm with the current password: changing it and deleting the account. */
 export type SettingsMode = 'password' | 'delete'
 
-type Mode = AuthMode | SettingsMode
+/** The admin's form that makes an account for someone else: it has the register form's fields and its own wording. */
+export type AdminMode = 'admin'
+
+type Mode = AuthMode | SettingsMode | AdminMode
 
 /** An error ready to show: the field it belongs to, or the whole form, and the sentence. */
 export interface ShownError {
@@ -23,6 +26,9 @@ const SETTINGS_MODES: ReadonlySet<Mode> = new Set(['password', 'delete'])
 const OUT_OF_DATE =
   'This page and the server do not agree on how to talk to each other. Reload the page; if that does not help, the app needs an update.'
 const TRY_LATER = 'The server ran into a problem. Try again in a moment.'
+
+/** What a visitor is told where an account would be made on a server that leaves it to the admin. */
+export const CLOSED = 'New accounts are made by the admin. Ask them to add you.'
 
 /** "30 seconds", "about 15 minutes", "about 2 hours"; "a few minutes" when the server did not say. */
 export function waitText(seconds: number | null): string {
@@ -48,15 +54,15 @@ const MESSAGES: Record<AccountErrorCode, (error: AccountError, mode: Mode) => Sh
     field: 'password',
     message: `The server does not accept that password. Use ${PASSWORD_RULE}`,
   }),
-  username_taken: () => ({
+  username_taken: (_error, mode) => ({
     field: 'username',
     message:
-      'That username is already taken (upper and lower case count as the same). Choose another one, or sign in if it is yours.',
+      mode === 'admin'
+        ? 'That username is already taken (upper and lower case count as the same). Choose another one.'
+        : 'That username is already taken (upper and lower case count as the same). Choose another one, or sign in if it is yours.',
   }),
-  registration_closed: () =>
-    form(
-      'This server is not taking new accounts right now. Ask whoever runs it, or play as a guest with a seat link.',
-    ),
+  registration_closed: () => form(CLOSED),
+  forbidden: () => form('Only the admin can make accounts.'),
   invalid_credentials: (_error, mode) =>
     SETTINGS_MODES.has(mode)
       ? { field: 'current', message: 'That is not your current password. Check it and try again.' }
@@ -65,7 +71,9 @@ const MESSAGES: Record<AccountErrorCode, (error: AccountError, mode: Mode) => Sh
     form(
       mode === 'register'
         ? `Too many attempts to make an account from here. Wait ${waitText(error.retryAfter)} before trying again.`
-        : `Too many failed attempts. Wait ${waitText(error.retryAfter)} before trying again.`,
+        : mode === 'admin'
+          ? `You have made many accounts in a short time. Wait ${waitText(error.retryAfter)} before making another.`
+          : `Too many failed attempts. Wait ${waitText(error.retryAfter)} before trying again.`,
     ),
   unauthenticated: () => form('You are not signed in. Sign in and try again.'),
   forbidden_origin: () =>

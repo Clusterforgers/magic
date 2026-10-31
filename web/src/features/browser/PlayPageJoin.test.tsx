@@ -20,7 +20,7 @@ afterEach(() => {
   localStorage.clear()
 })
 
-const ADA: UserView = { id: 'u1', username: 'Ada_L' }
+const ADA: UserView = { id: 'u1', username: 'Ada_L', is_admin: false }
 const BO = lobbyRow({ game: 'g1', host: 'Bo', filled: 2, total: 4 })
 
 function accountStore(status: AuthStatus, me?: AccountsApi['me']) {

@@ -75,13 +75,25 @@ pub struct Assembled {
 /// Builds the definition of one oracle card from its imported record and its rules, if it has any.
 ///
 /// The printed side always comes from `printed`. The abilities of the rules are attached only when
-/// the support record says the engine runs them (`Verified` or `Partial`), and then only those the
+/// the support record says the engine runs them (`Verified`, `Read` or `Partial`), and then only those the
 /// engine runs; every other card has the printed side alone. A card with no file is `Verified` when it
 /// has no rules text (a vanilla creature, a basic land) and `Manual` otherwise. The mana abilities the
 /// basic land types give are part of the printed side (CR 305.6), so they are always there.
 pub fn assemble(printed: &PrintedCard, rules: Option<&Card>, caps: &Caps) -> Assembled {
-    let record = support(rules, printed, caps);
-    let attach = matches!(record.support, Support::Verified | Support::Partial);
+    assemble_record(printed, rules, support(rules, printed, caps), caps)
+}
+
+/// [`assemble`] for a card whose support record is decided: a `Read` draft is attached like a `Verified` file.
+pub(crate) fn assemble_record(
+    printed: &PrintedCard,
+    rules: Option<&Card>,
+    record: SupportRecord,
+    caps: &Caps,
+) -> Assembled {
+    let attach = matches!(
+        record.support,
+        Support::Verified | Support::Read | Support::Partial
+    );
     let face_of = |index: usize| -> CardDefinition {
         let mut definition = printed_side(&printed.faces[index]);
         definition
@@ -100,6 +112,7 @@ pub fn assemble(printed: &PrintedCard, rules: Option<&Card>, caps: &Caps) -> Ass
             }
         }
         definition.manual = manual_clauses(&record, attach, index, printed);
+        definition.read = record.support == Support::Read;
         definition
     };
     let definition = match (played_layout(printed, caps), printed.faces.len()) {
@@ -127,7 +140,7 @@ fn manual_clauses(
         .get(index)
         .map_or("", |face| face.oracle_text.as_str());
     let named = || record.clauses.iter().filter(|clause| clause.face == index);
-    if record.support == Support::Verified {
+    if record.support.runs_whole() {
         return Vec::new();
     }
     if !attach {
@@ -193,6 +206,7 @@ fn whole_card(
                 .unwrap_or_default();
             whole.color_indicator = (union != from_cost).then_some(union);
             whole.manual = faces.iter().flat_map(|face| face.manual.clone()).collect();
+            whole.read = faces.iter().any(|face| face.read);
             // The card as a whole is what a fused split spell is (CR 702.102c), so it carries that spell's rules.
             whole.rules.extend(fused_spell(&faces).map(Arc::new));
             whole
@@ -1051,6 +1065,7 @@ fn printed_side(face: &PrintedFace) -> CardDefinition {
         rules: Vec::new(),
         layout: Layout::Normal,
         manual: Vec::new(),
+        read: false,
         faces: Vec::new(),
         identity: None,
     }

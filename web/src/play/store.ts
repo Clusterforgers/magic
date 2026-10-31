@@ -137,6 +137,12 @@ export interface PlayState {
    */
   fullControl: FullControlMode
   /**
+   * Whether this seat owes the table the clauses of a spell or ability of its own that resolved (`ObjectView.manual`),
+   * so the server asks it at every priority window until it passes: read from the events as the server reads them
+   * (`byHand.ts`), since the server does not say so.
+   */
+  byHand: boolean
+  /**
    * The seats that are away (`Presence`), by seat: milliseconds left before the game acts for each at the last whole
    * second, or null when it has no clock. Who is away is `PlayerView.connected`; this only adds the time.
    */
@@ -170,6 +176,7 @@ export function initialPlayState(): PlayState {
     yielding: null,
     stops: [],
     fullControl: 'Off',
+    byHand: false,
     away: {},
   }
 }

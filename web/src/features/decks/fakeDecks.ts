@@ -25,6 +25,7 @@ import type { FetchCall } from '@/test-utils/fakeFetch'
 export const counts = (over: Partial<Counts> = {}): Counts => ({
   total: 100,
   verified: 100,
+  read: 0,
   partial: 0,
   manual: 0,
   stale: 0,

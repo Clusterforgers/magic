@@ -1,4 +1,4 @@
-//! Goal: a seat whose spell or ability with clauses left to the table has just resolved is asked at its next priority window, in its own main phases, its end step and another seat's turn, with 2 to 4 seats, whatever its stops or Full Control mode, until it passes or its normal response clock passes for it; the same card without such a clause is passed for at once, no other seat is asked or kept waiting, and only the held seat is sent the decision.
+//! Goal: a seat whose spell or ability with clauses left to the table has just resolved is asked at its next priority window, in its own main phases, its end step and another seat's turn, with 2 to 4 seats, whatever its stops or Full Control mode, until it passes or its normal response clock passes for it; the same card without such a clause, or whose only clauses are activated or loyalty abilities to use later, is passed for at once, no other seat is asked or kept waiting, and only the held seat is sent the decision.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::common;
@@ -20,6 +20,9 @@ use std::sync::Arc;
 
 /// The seat that casts or activates the card.
 const ME: usize = 1;
+
+/// A clause the seat owes when its card resolves: a trigger to apply.
+const TRIGGER: &str = "Whenever an enchantment you control enters, draw a card.";
 
 /// A response clock of 10 s and an active-player clock of 30 s, with the dwell off.
 const CLOCKS: Pace = Pace {
@@ -59,30 +62,26 @@ impl Use {
         if self == Use::OpponentsTurn { 0 } else { ME }
     }
 
-    /// The card, with or without a clause left to the table.
-    fn card(self, manual: bool) -> Arc<CardDefinition> {
+    /// The card, with the clause left to the table if there is one.
+    fn card(self, clause: Option<&str>) -> Arc<CardDefinition> {
         let card = match self {
             Use::Main1 | Use::Main2 => free_creature("Tracker", 1, 1),
             Use::End => instant("Omen", 0, &[]),
             Use::OpponentsTurn => healer("Seer", 0),
         };
-        if manual {
-            by_hand(
-                card,
-                "Whenever an enchantment you control enters, draw a card.",
-            )
-        } else {
-            card
+        match clause {
+            Some(text) => by_hand(card, text),
+            None => card,
         }
     }
 
     /// `seats` seats with nothing castable in their libraries and the card in the seat's hand or on its battlefield.
-    fn setup(self, seats: usize, manual: bool) -> GameSetup {
+    fn setup(self, seats: usize, clause: Option<&str>) -> GameSetup {
         let mut scenario = Scenario::new(seats).at(3, self.active(), self.step());
         for seat in 0..seats {
             scenario = scenario.library(seat, vec![giant(); 30]);
         }
-        let card = self.card(manual);
+        let card = self.card(clause);
         let scenario = if self == Use::OpponentsTurn {
             scenario.battlefield(ME, [ready(card)])
         } else {
@@ -217,12 +216,12 @@ impl Table {
 async fn after_resolution(
     seats: usize,
     kind: Use,
-    manual: bool,
+    clause: Option<&str>,
     mode: FullControlMode,
     stop: bool,
     config: GameConfig,
 ) -> (Table, Vec<(usize, (u32, Step))>, Option<Asked>) {
-    let mut table = Table::join(kind.setup(seats, manual), config, seats).await;
+    let mut table = Table::join(kind.setup(seats, clause), config, seats).await;
     // NextWindow lets the seat use the card wherever it is; it ends with the pass over the card.
     let mode = if mode == FullControlMode::Off {
         FullControlMode::NextWindow
@@ -256,8 +255,15 @@ async fn the_seat_is_asked_after_its_by_hand_card_resolves_and_nobody_else_waits
     #[values(Use::Main1, Use::Main2, Use::End, Use::OpponentsTurn)] kind: Use,
     #[values(true, false)] manual: bool,
 ) {
-    let (mut table, passed, next) =
-        after_resolution(seats, kind, manual, FullControlMode::Off, false, windowed()).await;
+    let (mut table, passed, next) = after_resolution(
+        seats,
+        kind,
+        manual.then_some(TRIGGER),
+        FullControlMode::Off,
+        false,
+        windowed(),
+    )
+    .await;
     let held = (3, kind.step());
     assert!(
         passed
@@ -295,7 +301,8 @@ async fn stops_and_full_control_ask_the_held_window_once(
     #[case] mode: FullControlMode,
     #[case] stop: bool,
 ) {
-    let (mut table, _, next) = after_resolution(3, kind, true, mode, stop, windowed()).await;
+    let (mut table, _, next) =
+        after_resolution(3, kind, Some(TRIGGER), mode, stop, windowed()).await;
     let next = next.expect("the game goes on");
     let held = (3, kind.step());
     assert_eq!((next.seat, next.place), (ME, held), "{kind:?}");
@@ -315,8 +322,15 @@ async fn the_response_clock_passes_for_a_held_seat_that_does_not_answer(
         pace: CLOCKS,
         ..windowed()
     };
-    let (mut table, _, next) =
-        after_resolution(seats, kind, true, FullControlMode::Off, false, config).await;
+    let (mut table, _, next) = after_resolution(
+        seats,
+        kind,
+        Some(TRIGGER),
+        FullControlMode::Off,
+        false,
+        config,
+    )
+    .await;
     let next = next.expect("the game goes on");
     let held = (3, kind.step());
     assert_eq!((next.seat, next.place), (ME, held));
@@ -331,4 +345,37 @@ async fn the_response_clock_passes_for_a_held_seat_that_does_not_answer(
     }
     let after = table.window().await.expect("the game goes on");
     assert_ne!((after.seat, after.place), (ME, held));
+}
+
+#[rstest]
+#[tokio::test]
+async fn a_card_whose_only_clauses_are_abilities_to_use_later_holds_no_window(
+    #[values(2, 4)] seats: usize,
+    #[values(Use::Main1, Use::Main2, Use::End, Use::OpponentsTurn)] kind: Use,
+    #[values(
+        "{T}: Draw a card. Activate only if you created a token this turn.",
+        "+1: Draw a card.\n\u{2212}2: Destroy target creature."
+    )]
+    clause: &str,
+) {
+    let (table, passed, next) = after_resolution(
+        seats,
+        kind,
+        Some(clause),
+        FullControlMode::Off,
+        false,
+        windowed(),
+    )
+    .await;
+    let held = (3, kind.step());
+    // Nothing is owed when the card resolves, so the seat is passed for like one whose card has no clause.
+    let at = next.as_ref().map(|asked| (asked.seat, asked.place));
+    assert_ne!(at, Some((ME, held)), "{kind:?}: {clause}");
+    assert!(
+        passed
+            .iter()
+            .all(|(seat, place)| *seat == ME || *place != held),
+        "only the card's seat was asked in its step: {passed:?}"
+    );
+    assert!(table.others_asked.is_empty(), "{:?}", table.others_asked);
 }

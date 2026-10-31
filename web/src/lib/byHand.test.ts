@@ -3,12 +3,21 @@ import { readFileSync, readdirSync, statSync } from 'node:fs'
 import { join, relative } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { countsText, STATE_LABEL } from '@/features/decks/format'
-import { cardsByHand, BY_HAND, BY_HAND_TITLE, byHandCopies, PARTLY_BY_HAND } from './byHand'
-import type { Counts } from '@/protocol/generated'
+import {
+  cardsByHand,
+  BY_HAND,
+  BY_HAND_TITLE,
+  byHandCopies,
+  ON_A_READ,
+  PARTLY_BY_HAND,
+  runsWhole,
+} from './byHand'
+import type { Counts, Support } from '@/protocol/generated'
 
 const counts = (found: Partial<Counts>): Counts => ({
   total: 100,
   verified: 100,
+  read: 0,
   partial: 0,
   manual: 0,
   stale: 0,
@@ -38,8 +47,25 @@ describe('the words', () => {
     ['a clean deck', counts({}), 0],
     ['partial, manual and stale copies add up', counts({ partial: 1, manual: 2, stale: 3 }), 6],
     ['unplayable copies are not played at all', counts({ unplayable: 4 }), 0],
+    ['read copies run whole, so none is played by hand', counts({ verified: 96, read: 4 }), 0],
   ])('count the copies of %s', (_what, given, copies) => {
     expect(byHandCopies(given)).toBe(copies)
+  })
+
+  it.each<[Support, boolean]>([
+    ['verified', true],
+    ['read', true],
+    ['partial', false],
+    ['manual', false],
+    ['stale', false],
+    ['unplayable', false],
+  ])('say that a %s card runs whole: %s', (support, whole) => {
+    expect(runsWhole(support)).toBe(whole)
+  })
+
+  it('word a card on a read apart from the cards played by hand', () => {
+    expect(ON_A_READ).toBe("runs on a player's read")
+    expect(ON_A_READ).not.toContain('hand')
   })
 
   it('name the check state of a deck and its counts', () => {

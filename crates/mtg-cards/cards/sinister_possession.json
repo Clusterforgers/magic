@@ -1,0 +1,25 @@
+{
+  "oracle_id": "6ee431f3-64ec-4015-8f5a-9c2ac6004ebd",
+  "name": "Sinister Possession",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sinister Possession",
+      "oracle_fingerprint": "c2585d06cdfae1f013273f95c2dcaa1a",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "Attacks": { "what": [{ "Is": "Attached" }] } },
+                { "Blocks": { "what": [{ "Is": "Attached" }] } }
+              ]
+            },
+            "effects": [{ "LoseLife": { "who": { "ControllerOf": "Triggering" }, "amount": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

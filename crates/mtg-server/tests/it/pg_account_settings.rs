@@ -25,6 +25,7 @@ fn roomy_limits() -> AttemptLimits {
         login_per_ip: 10_000,
         login_per_username: 10_000,
         register_per_ip: 10_000,
+        admin_creates_per_account: 10_000,
         code_window: Duration::from_secs(600),
         code_misses_per_ip: 10_000,
         lobby_window: Duration::from_secs(600),

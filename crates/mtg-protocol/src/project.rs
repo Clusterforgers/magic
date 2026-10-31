@@ -421,6 +421,7 @@ impl ObjectView {
             } else {
                 Vec::new()
             },
+            read: printed && card.read,
             note: mtg_engine::sight::note_of(state, id).map(str::to_owned),
             identity: identity_of(state, object, card).filter(|_| printed),
             activated,
@@ -462,6 +463,7 @@ impl ObjectView {
             copy: None,
             merged: Vec::new(),
             manual: Vec::new(),
+            read: false,
             note: None,
             identity: None,
             activated: Vec::new(),

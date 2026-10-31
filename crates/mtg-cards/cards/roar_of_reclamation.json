@@ -1,0 +1,39 @@
+{
+  "oracle_id": "a4372c4c-3577-43ca-a801-1f2bd1488a2f",
+  "name": "Roar of Reclamation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Roar of Reclamation",
+      "oracle_fingerprint": "87e707ed39a971ba6300423e5838cbba",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "player",
+                  "effects": [
+                    {
+                      "Move": {
+                        "what": {
+                          "Each": [
+                            { "Type": "Artifact" },
+                            { "In": "Graveyard" },
+                            { "OwnedBy": { "Bound": "player" } }
+                          ]
+                        },
+                        "to": { "Battlefield": {} }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

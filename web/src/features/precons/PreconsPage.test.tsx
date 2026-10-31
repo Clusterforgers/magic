@@ -75,7 +75,7 @@ async function open({ user, createGame, cards = cardServer(), ...script }: Optio
     initial:
       user === undefined
         ? { status: 'signed-out', user: null }
-        : { status: 'signed-in', user: { id: 'u1', username: user } },
+        : { status: 'signed-in', user: { id: 'u1', username: user, is_admin: false } },
   })
   const view = await renderInRouter(
     <AuthContext.Provider value={auth}>

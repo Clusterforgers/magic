@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "SELECT u.id, u.username\n             FROM sessions s JOIN users u ON u.id = s.user_id\n             WHERE s.token_digest = $1 AND s.expires_at > now()",
+  "query": "SELECT u.id, u.username, u.is_admin\n             FROM sessions s JOIN users u ON u.id = s.user_id\n             WHERE s.token_digest = $1 AND s.expires_at > now()",
   "describe": {
     "columns": [
       {
@@ -24,6 +24,17 @@
             "name": "username"
           }
         }
+      },
+      {
+        "ordinal": 2,
+        "name": "is_admin",
+        "type_info": "Bool",
+        "origin": {
+          "Table": {
+            "table": "users",
+            "name": "is_admin"
+          }
+        }
       }
     ],
     "parameters": {
@@ -33,8 +44,9 @@
     },
     "nullable": [
       false,
+      false,
       false
     ]
   },
-  "hash": "960cf0970d92b361d0db09d1c19f98d68ea48e4684ab887ce1363dc686c10d30"
+  "hash": "5fb59290a49bdcaeac2906ea9da23a3ada544458bbae5ebdb24d6e21a1f6cc0d"
 }

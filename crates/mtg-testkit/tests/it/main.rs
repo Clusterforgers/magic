@@ -404,6 +404,7 @@ mod search_fuzz;
 mod search_pairs;
 mod seed_campaigns;
 mod small_effects_fuzz;
+mod smoke;
 mod soulbond;
 mod spectacle;
 mod spectacle_fuzz;

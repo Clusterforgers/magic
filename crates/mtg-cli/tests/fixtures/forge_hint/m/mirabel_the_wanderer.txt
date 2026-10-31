@@ -1,0 +1,9 @@
+Name:Mirabel, the Wanderer
+ManaCost:3 W
+Types:Legendary Creature Elf Nomad
+PT:3/3
+R:Event$ Drain | ActiveZones$ Battlefield | ValidPlayer$ You | ReplaceWith$ Spare | Description$ If you would be drained, you are drained for 1 less instead.
+SVar:Spare:DB$ ReplaceEffect | VarName$ Amount | VarValue$ X
+SVar:X:ReplaceCount$Amount/Minus.1
+FlavorName:The Long Road
+Oracle:If you would be drained, you are drained for 1 less instead.

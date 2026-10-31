@@ -11,4 +11,9 @@ id: string,
 /**
  * The username as it was registered.
  */
-username: string, };
+username: string, 
+/**
+ * Whether this is the admin account, the only one that makes accounts; read from the database on every
+ * request, so the client may show an Accounts page on it but the server stays the judge.
+ */
+is_admin: boolean, };

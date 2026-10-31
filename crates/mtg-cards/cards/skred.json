@@ -1,0 +1,26 @@
+{
+  "oracle_id": "026318be-e3dd-4d5c-bd77-53ce23a2e7cc",
+  "name": "Skred",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Skred",
+      "oracle_fingerprint": "cc0edaca743c8aa60d0ec64de18445e0",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": { "Count": [{ "Supertype": "Snow" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -9,10 +9,12 @@ use sqlx::postgres::PgPoolOptions;
 use crate::card_rules::CardRulesRepo;
 use crate::cards::CardRepo;
 use crate::decks::DeckRepo;
+use crate::drafts::DraftRepo;
 use crate::error::DbError;
 use crate::fix_marks::FixMarkRepo;
 use crate::import::Importer;
 use crate::precons::PreconRepo;
+use crate::reads::ReadRepo;
 use crate::runs::ImportRuns;
 
 /// Migrations embedded at compile time from `migrations/`.
@@ -75,6 +77,16 @@ impl Database {
     /// Cards accounts marked as important to fix.
     pub fn fix_marks(&self) -> FixMarkRepo {
         FixMarkRepo::new(self.pool.clone())
+    }
+
+    /// Read-tier drafts of cards the checker cannot prove.
+    pub fn drafts(&self) -> DraftRepo {
+        DraftRepo::new(self.pool.clone())
+    }
+
+    /// Verdicts players gave the drafts.
+    pub fn reads(&self) -> ReadRepo {
+        ReadRepo::new(self.pool.clone())
     }
 
     /// Precon deck listing and loading.

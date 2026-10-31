@@ -13,7 +13,7 @@ import { PlayPage } from './PlayPage'
 async function open(status: AuthStatus, myGames: () => Promise<MyGame[]>) {
   const store = createAuthStore({
     api: { ...offlineAccounts, myGames },
-    initial: { status, user: status === 'signed-in' ? { id: 'u1', username: 'Ada' } : null },
+    initial: { status, user: status === 'signed-in' ? { id: 'u1', username: 'Ada', is_admin: false } : null },
   })
   await renderInRouter(
     <AuthContext.Provider value={store}>

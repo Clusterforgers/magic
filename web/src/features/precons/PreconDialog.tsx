@@ -14,7 +14,7 @@ import { clauseLines } from '@/features/decks/unvalidated/model'
 import type { FaceTexts } from '@/features/decks/unvalidated/model'
 import { useCardTexts } from '@/features/decks/unvalidated/useCardTexts'
 import { SupportMark, supportEdge } from '@/features/decks/SupportMark'
-import { BY_HAND, BY_HAND_TITLE } from '@/lib/byHand'
+import { BY_HAND, BY_HAND_TITLE, runsWhole } from '@/lib/byHand'
 import { cn } from '@/lib/utils'
 import type { CardsApi } from '@/net/cards'
 import type { PreconBoard, PreconListItem, PreconView } from '@/protocol/generated'
@@ -106,7 +106,7 @@ function Board({
   faces: FaceTexts
   pending: boolean
 }) {
-  const cards = onlyHand ? board.cards.filter((card) => card.support !== 'verified') : board.cards
+  const cards = onlyHand ? board.cards.filter((card) => !runsWhole(card.support)) : board.cards
   if (cards.length === 0) return null
   const id = `precon-board-${board.board}`
   return (

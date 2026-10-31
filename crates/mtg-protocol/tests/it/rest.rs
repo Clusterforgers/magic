@@ -8,9 +8,9 @@ use crate::common::generated;
 use mtg_core::ids::PlayerId;
 use mtg_engine::state::GameResult;
 use mtg_protocol::rest::{
-    AccountDeletion, AuthErrorCode, Credentials, MyGame, MyGameSeat, MyGameStatus, MyGames,
-    PASSWORD_MAX_CHARS, PASSWORD_MIN_CHARS, PasswordChange, USERNAME_MAX_CHARS, USERNAME_MIN_CHARS,
-    UserView,
+    AccountDeletion, AccountList, AccountOptions, AccountRow, AuthErrorCode, CreatedAccount,
+    Credentials, MyGame, MyGameSeat, MyGameStatus, MyGames, PASSWORD_MAX_CHARS, PASSWORD_MIN_CHARS,
+    PasswordChange, USERNAME_MAX_CHARS, USERNAME_MIN_CHARS, UserView,
 };
 use rstest::rstest;
 use serde_json::{Value, json};
@@ -23,15 +23,16 @@ fn index(code: AuthErrorCode) -> usize {
         AuthErrorCode::InvalidPassword => 2,
         AuthErrorCode::UsernameTaken => 3,
         AuthErrorCode::RegistrationClosed => 4,
-        AuthErrorCode::InvalidCredentials => 5,
-        AuthErrorCode::TooManyAttempts => 6,
-        AuthErrorCode::Unauthenticated => 7,
-        AuthErrorCode::ForbiddenOrigin => 8,
-        AuthErrorCode::PayloadTooLarge => 9,
-        AuthErrorCode::UnsupportedMediaType => 10,
-        AuthErrorCode::AccountsUnavailable => 11,
-        AuthErrorCode::Unavailable => 12,
-        AuthErrorCode::Internal => 13,
+        AuthErrorCode::Forbidden => 5,
+        AuthErrorCode::InvalidCredentials => 6,
+        AuthErrorCode::TooManyAttempts => 7,
+        AuthErrorCode::Unauthenticated => 8,
+        AuthErrorCode::ForbiddenOrigin => 9,
+        AuthErrorCode::PayloadTooLarge => 10,
+        AuthErrorCode::UnsupportedMediaType => 11,
+        AuthErrorCode::AccountsUnavailable => 12,
+        AuthErrorCode::Unavailable => 13,
+        AuthErrorCode::Internal => 14,
     }
 }
 
@@ -54,10 +55,45 @@ fn credentials_have_the_documented_wire_shape() {
     let user = UserView {
         id: "0b3c8a52-3f1e-4a5c-9d0e-6f1a2b3c4d5e".into(),
         username: "Ann_1".into(),
+        is_admin: false,
     };
     assert_eq!(
         serde_json::to_value(&user).unwrap(),
-        json!({"id": "0b3c8a52-3f1e-4a5c-9d0e-6f1a2b3c4d5e", "username": "Ann_1"})
+        json!({"id": "0b3c8a52-3f1e-4a5c-9d0e-6f1a2b3c4d5e", "username": "Ann_1", "is_admin": false})
+    );
+}
+
+#[test]
+fn the_admin_bodies_have_the_documented_wire_shape() {
+    let id = "0b3c8a52-3f1e-4a5c-9d0e-6f1a2b3c4d5e";
+    let created = CreatedAccount {
+        id: id.into(),
+        username: "Bob_2".into(),
+    };
+    assert_eq!(
+        serde_json::to_value(&created).unwrap(),
+        json!({"id": id, "username": "Bob_2"})
+    );
+    let list = AccountList {
+        users: vec![AccountRow {
+            id: id.into(),
+            username: "Ann_1".into(),
+            created_at: "2026-10-31T09:30:00Z".into(),
+            is_admin: true,
+        }],
+    };
+    let value = serde_json::to_value(&list).unwrap();
+    assert_eq!(
+        value,
+        json!({"users": [{"id": id, "username": "Ann_1", "created_at": "2026-10-31T09:30:00Z", "is_admin": true}]})
+    );
+    assert_eq!(serde_json::from_value::<AccountList>(value).unwrap(), list);
+    assert_eq!(
+        serde_json::to_value(AccountOptions {
+            registration_open: false
+        })
+        .unwrap(),
+        json!({"registration_open": false})
     );
 }
 
@@ -329,6 +365,10 @@ fn the_bindings_carry_the_account_types() {
         "AuthErrorCode.ts",
         "PasswordChange.ts",
         "AccountDeletion.ts",
+        "CreatedAccount.ts",
+        "AccountRow.ts",
+        "AccountList.ts",
+        "AccountOptions.ts",
     ] {
         assert!(files.contains_key(needed), "missing {needed}");
         assert!(files["index.ts"].contains(needed.trim_end_matches(".ts")));
@@ -339,6 +379,9 @@ fn the_bindings_carry_the_account_types() {
     assert!(files["Credentials.ts"].contains("username: string"));
     assert!(files["Credentials.ts"].contains("password: string"));
     assert!(files["UserView.ts"].contains("id: string"));
+    assert!(files["UserView.ts"].contains("is_admin: boolean"));
+    assert!(files["AccountRow.ts"].contains("is_admin: boolean"));
+    assert!(files["AccountOptions.ts"].contains("registration_open: boolean"));
     // The union lists exactly the codes the server can send.
     for code in AuthErrorCode::ALL {
         assert!(

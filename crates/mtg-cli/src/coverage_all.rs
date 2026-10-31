@@ -183,6 +183,7 @@ fn rank_shares(entries: &[Entry<'_>]) -> Vec<RankShare> {
 const fn state_name(state: Support) -> &'static str {
     match state {
         Support::Verified => "verified",
+        Support::Read => "read",
         Support::Partial => "partial",
         Support::Manual => "manual",
         Support::Stale => "stale",

@@ -1,0 +1,32 @@
+{
+  "oracle_id": "557cc9a7-c8cc-4823-b108-2dfe648c789d",
+  "name": "Spare from Evil",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spare from Evil",
+      "oracle_fingerprint": "91eb9d921590017554e1e873b6feeab7",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [
+                    {
+                      "AddKeyword": {
+                        "Protection": [{ "Type": "Creature" }, { "Not": { "Subtype": "Human" } }]
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -895,10 +895,10 @@ fn the_report_keeps_its_wire_shape() {
         json!({
             "format": "freeform",
             "state": "manual_play",
-            "counts": {"total": 3, "verified": 2, "partial": 1, "manual": 0, "stale": 0, "unplayable": 0},
+            "counts": {"total": 3, "verified": 2, "read": 0, "partial": 1, "manual": 0, "stale": 0, "unplayable": 0},
             "zones": [
-                {"zone": "main", "counts": {"total": 2, "verified": 2, "partial": 0, "manual": 0, "stale": 0, "unplayable": 0}},
-                {"zone": "sideboard", "counts": {"total": 1, "verified": 0, "partial": 1, "manual": 0, "stale": 0, "unplayable": 0}}
+                {"zone": "main", "counts": {"total": 2, "verified": 2, "read": 0, "partial": 0, "manual": 0, "stale": 0, "unplayable": 0}},
+                {"zone": "sideboard", "counts": {"total": 1, "verified": 0, "read": 0, "partial": 1, "manual": 0, "stale": 0, "unplayable": 0}}
             ],
             "issues": 0
         })

@@ -1,0 +1,132 @@
+{
+  "object": "card",
+  "id": "b43be50a-8624-46f6-860a-39ffbfbdaa6a",
+  "oracle_id": "c993ebf8-972f-41c7-9870-d7f8aa9a69d9",
+  "multiverse_ids": [
+    409921
+  ],
+  "mtgo_id": 60232,
+  "mtgo_foil_id": 60233,
+  "tcgplayer_id": 116411,
+  "cardmarket_id": 289185,
+  "name": "Inner Struggle",
+  "lang": "en",
+  "released_at": "2016-04-08",
+  "uri": "https://api.scryfall.com/cards/b43be50a-8624-46f6-860a-39ffbfbdaa6a",
+  "scryfall_uri": "https://scryfall.com/card/soi/167/inner-struggle?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T10:15:48Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/b/4/b43be50a-8624-46f6-860a-39ffbfbdaa6a.jpg?1783937748",
+    "normal": "https://cards.scryfall.io/normal/front/b/4/b43be50a-8624-46f6-860a-39ffbfbdaa6a.jpg?1783937748",
+    "large": "https://cards.scryfall.io/large/front/b/4/b43be50a-8624-46f6-860a-39ffbfbdaa6a.jpg?1783937748",
+    "png": "https://cards.scryfall.io/png/front/b/4/b43be50a-8624-46f6-860a-39ffbfbdaa6a.png?1783937748",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/b/4/b43be50a-8624-46f6-860a-39ffbfbdaa6a.jpg?1783937748",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/b/4/b43be50a-8624-46f6-860a-39ffbfbdaa6a.jpg?1783937748",
+    "thumb": "https://cards.scryfall.io/thumb/front/b/4/b43be50a-8624-46f6-860a-39ffbfbdaa6a.webp?1783937748",
+    "grid": "https://cards.scryfall.io/grid/front/b/4/b43be50a-8624-46f6-860a-39ffbfbdaa6a.webp?1783937748",
+    "display": "https://cards.scryfall.io/display/front/b/4/b43be50a-8624-46f6-860a-39ffbfbdaa6a.webp?1783937748",
+    "art": "https://cards.scryfall.io/art/front/b/4/b43be50a-8624-46f6-860a-39ffbfbdaa6a.webp?1783937748",
+    "crop": "https://cards.scryfall.io/crop/front/b/4/b43be50a-8624-46f6-860a-39ffbfbdaa6a.webp?1783937748",
+    "jpeg": "https://cards.scryfall.io/normal/front/b/4/b43be50a-8624-46f6-860a-39ffbfbdaa6a.jpg?1783937748"
+  },
+  "mana_cost": "{3}{R}",
+  "cmc": 4.0,
+  "type_line": "Instant",
+  "oracle_text": "Target creature deals damage to itself equal to its power.",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "5e914d7e-c1e9-446c-a33d-d093c02b2743",
+  "set": "soi",
+  "set_name": "Shadows over Innistrad",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/5e914d7e-c1e9-446c-a33d-d093c02b2743",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Asoi&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/soi?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/b43be50a-8624-46f6-860a-39ffbfbdaa6a/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ac993ebf8-972f-41c7-9870-d7f8aa9a69d9&unique=prints",
+  "collector_number": "167",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "\"Reflect upon your evils lest they reflect upon you.\"\n—Inquisitor Laerin",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Mathias Kollros",
+  "artist_ids": [
+    "2ae0dd12-047c-4efb-80d7-bccc3bac5fba"
+  ],
+  "illustration_id": "14883774-4ac2-4c7c-8ed9-19b9c1b404c1",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 25173,
+  "prices": {
+    "usd": "0.07",
+    "usd_foil": "0.30",
+    "usd_etched": null,
+    "eur": "0.11",
+    "eur_foil": "0.12",
+    "tix": "0.04"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=409921&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DInner%2BStruggle",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DInner%2BStruggle",
+    "edhrec": "https://edhrec.com/route/?cc=Inner+Struggle"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F116411%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=289185&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/60232?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

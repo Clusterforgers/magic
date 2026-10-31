@@ -1,0 +1,5 @@
+Name:Kael's Lantern
+ManaCost:2
+Types:Artifact
+A:AB$ Glow | Cost$ T | ValidTgts$ Creature | TgtPrompt$ Select target creature | NumGlow$ 1 | SpellDescription$ Target creature glows.
+Oracle:{T}: Target creature glows.

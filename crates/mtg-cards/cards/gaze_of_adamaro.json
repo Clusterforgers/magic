@@ -1,0 +1,26 @@
+{
+  "oracle_id": "91a69925-1e9b-433a-ad58-88bfd3c4bc46",
+  "name": "Gaze of Adamaro",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gaze of Adamaro",
+      "oracle_fingerprint": "5609c9f998f238afae861eecb0c5111e",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": { "Count": [{ "In": "Hand" }, { "OwnedBy": { "Target": 0 } }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

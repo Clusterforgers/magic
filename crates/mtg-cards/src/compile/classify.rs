@@ -1,9 +1,11 @@
 //! Stage 3: the shape of a clause, which decides how the compiler reads it.
 
+use serde::{Deserialize, Serialize};
+
 use super::keywords;
 
 /// The shape of a clause of oracle text.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub enum ClauseKind {
     /// A keyword with its parameter.
     Keyword,

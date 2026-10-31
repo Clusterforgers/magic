@@ -11,7 +11,7 @@ use rstest::rstest;
 use super::measure::w19b_measure;
 use super::retrieve::{W19bIndex, W19bQuery, w19b_mask, w19b_terms};
 use super::*;
-use crate::propose::prompt::card_prompt;
+use crate::propose::prompt::{card_prompt, hinted_card_prompt};
 use crate::propose::w19b_solved::W19bSolvedExamples;
 
 fn printed(name: &str, type_line: &str, text: &str, keywords: &[&str]) -> PrintedCard {
@@ -288,6 +288,34 @@ fn the_pairs_are_the_verified_non_token_cards_as_json_lines() {
     assert_eq!(
         w19b_summary(&pairs),
         "1 pairs: corpus 0 train + 0 held out; compiled 1 train + 0 held out"
+    );
+}
+
+#[test]
+fn the_forge_hint_and_the_solved_cards_are_independent_sections_in_either_arm_of_a_run() {
+    let (wanted, pairs) = table();
+    let solved = W19bSolvedExamples::new(&pairs, 2, true);
+    let near = solved.nearest(&wanted);
+    let hint = "K:Flying";
+    let both = hinted_card_prompt(&wanted, &near, Some(hint));
+    let (card_and_hint, examples) = both
+        .split_once("\nSolved examples")
+        .unwrap_or_else(|| panic!("the examples follow the hint:\n{both}"));
+    assert!(
+        card_and_hint.contains("Forge script of this card"),
+        "{both}"
+    );
+    assert!(card_and_hint.ends_with(&format!("{hint}\n")), "{both}");
+    assert!(examples.contains("Example: Near"), "{both}");
+    // Without the hint the prompt is the one of `--solved-examples` alone; without the examples, the hint alone.
+    assert_eq!(
+        hinted_card_prompt(&wanted, &near, None),
+        card_prompt(&wanted, &near)
+    );
+    let only_hint = hinted_card_prompt(&wanted, &[], Some(hint));
+    assert!(
+        only_hint.contains(hint) && !only_hint.contains("Solved examples"),
+        "{only_hint}"
     );
 }
 

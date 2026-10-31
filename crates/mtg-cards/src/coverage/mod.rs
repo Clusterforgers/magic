@@ -104,7 +104,7 @@ pub enum Bucket {
     Partial,
     /// `Manual`.
     Manual,
-    /// `Stale` and `Unplayable`.
+    /// `Read`, `Stale` and `Unplayable`.
     Other,
 }
 
@@ -123,7 +123,7 @@ impl Bucket {
             Support::Verified => Bucket::Verified,
             Support::Partial => Bucket::Partial,
             Support::Manual => Bucket::Manual,
-            Support::Stale | Support::Unplayable => Bucket::Other,
+            Support::Read | Support::Stale | Support::Unplayable => Bucket::Other,
         }
     }
 
@@ -420,7 +420,7 @@ fn blockers_of(
 ) -> BTreeSet<Blocker> {
     let rules = |what: &str| BTreeSet::from([Blocker::Rules(what.to_owned())]);
     match state {
-        Support::Verified => return BTreeSet::new(),
+        Support::Verified | Support::Read => return BTreeSet::new(),
         Support::Stale => return rules("stale"),
         Support::Unplayable => return rules("unplayable"),
         Support::Partial | Support::Manual => {}

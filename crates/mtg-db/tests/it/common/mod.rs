@@ -3,6 +3,7 @@
 #![allow(dead_code)]
 
 pub mod corpus;
+pub mod drafts;
 pub mod precon;
 pub mod search;
 

@@ -1,0 +1,25 @@
+{
+  "oracle_id": "774e53b2-5aec-43e1-b4fe-8812b8430401",
+  "name": "Churning Eddy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Churning Eddy",
+      "oracle_fingerprint": "7d74848fca832f32f12a78084cc2073c",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] } },
+              { "what": { "Object": [{ "Type": "Land" }] } }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": "Hand" } },
+              { "Move": { "what": { "Target": 1 }, "to": "Hand" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -24,6 +24,7 @@ use crate::modify::Modification;
 use crate::support::{PrintedCard, PrintedFace, has_rules_text, oracle_fingerprint};
 
 pub use classify::ClauseKind;
+pub use classify::classify as classify_clause;
 pub use keywords::quality_word as protection_quality_word;
 pub use keywords::read as read_keyword;
 pub use keywords::read_all as read_keywords;

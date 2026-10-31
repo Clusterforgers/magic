@@ -3,7 +3,7 @@
  * played by hand, or the table cannot take it, with the reasons. Pure, so the wording is tested without a page.
  */
 import { issueWords } from '@/features/game/deckWords'
-import { cardsByHand } from '@/lib/byHand'
+import { cardsByHand, runsWhole } from '@/lib/byHand'
 import type { DeckReport, DeckState } from '@/protocol/generated'
 
 /** The verdict of one deck at one table. */
@@ -21,9 +21,7 @@ export function verdictOf(report: DeckReport): Verdict {
   if (reasons.length > 0) return { kind: 'blocked', reasons }
   const cards = counts.manual + counts.partial + counts.stale
   if (cards === 0) return { kind: 'runs' }
-  const names = [
-    ...new Set(report.cards.filter((card) => card.support !== 'verified').map((card) => card.name)),
-  ]
+  const names = [...new Set(report.cards.filter((card) => !runsWhole(card.support)).map((card) => card.name))]
   return { kind: 'hand', cards, names }
 }
 

@@ -25,6 +25,8 @@ mod proposal;
 mod proposal_blocks;
 mod proposal_names;
 mod proposal_repair;
+mod read_sheet;
+mod read_tier;
 mod reminder_cards;
 mod roundtrip;
 mod transform_cards;

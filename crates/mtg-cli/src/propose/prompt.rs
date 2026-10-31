@@ -38,8 +38,17 @@ pub fn instructions() -> &'static str {
     INSTRUCTIONS
 }
 
+/// The heading of the Forge hint section: what the lines are and how they may be used.
+pub const FORGE_HINT_HEADING: &str = "Forge script of this card (another engine's reading of the same card). Use it to find the right effects, costs, triggers and conditions for the oracle text above; it is not a format to copy, it can differ from the oracle text, and the oracle text stays the only ground truth. Your answer is written in the DSL of the reference only:";
+
 /// The first message about a card: its text, then the nearest solved examples, then the request.
 pub fn card_prompt(card: &PrintedCard, examples: &[&Example]) -> String {
+    hinted_card_prompt(card, examples, None)
+}
+
+/// [`card_prompt`] with the Forge hint (the script lines of the card) as a section of its own after the card's text and
+/// before the examples.
+pub fn hinted_card_prompt(card: &PrintedCard, examples: &[&Example], hint: Option<&str>) -> String {
     let mut text = format!("{CARD_MARKER}{}\nLayout: {}\n", card.name, card.layout);
     if !card.keywords.is_empty() {
         let _ = writeln!(text, "Keywords (Scryfall): {}", card.keywords.join(", "));
@@ -74,6 +83,9 @@ pub fn card_prompt(card: &PrintedCard, examples: &[&Example]) -> String {
             }
         }
         let _ = writeln!(text, "Oracle text:\n{}", face.oracle_text);
+    }
+    if let Some(hint) = hint {
+        let _ = write!(text, "\n{FORGE_HINT_HEADING}\n{hint}\n");
     }
     if !examples.is_empty() {
         text.push_str("\nSolved examples with close wording (oracle text, then the rules that are accepted for it):\n");
@@ -237,6 +249,48 @@ mod tests {
             text.ends_with(
                 "Write the rules of Shivan Dragon now. Reply with the JSON object only."
             )
+        );
+    }
+
+    #[test]
+    fn the_forge_hint_is_a_section_of_its_own_between_the_card_and_the_examples_and_only_when_given()
+     {
+        let example = Example::plain("Wind Drake", "Creature — Drake", "Flying", "{\"faces\":[]}");
+        let plain = card_prompt(&dragon(), &[&example]);
+        assert!(!plain.contains("Forge"), "{plain}");
+        assert_eq!(hinted_card_prompt(&dragon(), &[&example], None), plain);
+
+        let hint = "K:Flying\nA:AB$ Pump | Cost$ R";
+        let text = hinted_card_prompt(&dragon(), &[&example], Some(hint));
+        let at = |part: &str| {
+            text.find(part)
+                .unwrap_or_else(|| panic!("missing {part:?} in\n{text}"))
+        };
+        let order = [
+            at("Card: Shivan Dragon"),
+            at("Oracle text:\nFlying"),
+            at("Forge script of this card"),
+            at(hint),
+            at("Solved examples with close wording"),
+            at("Write the rules of Shivan Dragon now."),
+        ];
+        assert!(
+            order.windows(2).all(|pair| pair[0] < pair[1]),
+            "{order:?}\n{text}"
+        );
+        for stated in [
+            "another engine's reading of the same card",
+            "not a format to copy",
+            "the only ground truth",
+            "DSL of the reference only",
+        ] {
+            assert!(FORGE_HINT_HEADING.contains(stated), "{stated}");
+        }
+        assert!(text.ends_with("Reply with the JSON object only."));
+        let alone = hinted_card_prompt(&dragon(), &[], Some(hint));
+        assert!(
+            alone.contains(hint) && !alone.contains("Solved examples"),
+            "{alone}"
         );
     }
 

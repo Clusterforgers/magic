@@ -117,6 +117,12 @@ describe('countsText', () => {
       '4 of 10 verified, 5 played by hand, 1 unplayable',
     ],
     ['an unplayable card', counts({ verified: 99, unplayable: 1 }), '99 of 100 verified, 1 unplayable'],
+    ['read cards', counts({ verified: 96, read: 4 }), '96 of 100 verified, 4 on reads'],
+    [
+      'read cards beside the others (a read card is not played by hand)',
+      counts({ total: 10, verified: 3, read: 2, partial: 1, manual: 2, stale: 1, unplayable: 1 }),
+      '3 of 10 verified, 2 on reads, 4 played by hand, 1 unplayable',
+    ],
     ['no cards', counts({ total: 0, verified: 0 }), '0 of 0 verified'],
   ] satisfies ReadonlyArray<[string, Counts, string]>)('words %s', (_what, given, text) => {
     expect(countsText(given)).toBe(text)

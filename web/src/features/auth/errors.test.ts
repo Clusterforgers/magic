@@ -3,10 +3,10 @@ import { describe, expect, it } from 'vitest'
 import { AccountError, AUTH_ERROR_CODES } from '@/net/accounts'
 import type { AccountErrorCode } from '@/net/accounts'
 import { accountErrorText, describeAccountError, waitText } from './errors'
-import type { AuthMode, SettingsMode } from './errors'
+import type { AdminMode, AuthMode, SettingsMode } from './errors'
 
 const ALL_CODES: readonly AccountErrorCode[] = [...AUTH_ERROR_CODES, 'unknown', 'network', 'bad_response']
-const MODES: (AuthMode | SettingsMode)[] = ['login', 'register', 'password', 'delete']
+const MODES: (AuthMode | SettingsMode | AdminMode)[] = ['login', 'register', 'password', 'delete', 'admin']
 const error = (code: AccountErrorCode, extra: { status?: number; message?: string; wait?: number } = {}) =>
   new AccountError(code, extra.status ?? 400, extra.message ?? 'server words', extra.wait ?? null)
 
@@ -28,6 +28,7 @@ describe('describeAccountError', () => {
     ['invalid_credentials', 'form'],
     ['too_many_attempts', 'form'],
     ['registration_closed', 'form'],
+    ['forbidden', 'form'],
     ['accounts_unavailable', 'form'],
     ['unavailable', 'form'],
     ['internal', 'form'],
@@ -90,10 +91,24 @@ describe('describeAccountError', () => {
     )
   })
 
-  it('says a closed server takes no new accounts and that guests can still play', () => {
-    expect(describeAccountError(error('registration_closed'), 'register').message).toMatch(
-      /not taking new accounts.*guest/i,
+  it('says a closed server leaves new accounts to the admin and to ask them', () => {
+    expect(describeAccountError(error('registration_closed'), 'register').message).toBe(
+      'New accounts are made by the admin. Ask them to add you.',
     )
+  })
+
+  it('says only the admin makes accounts when a signed-in account is not the admin', () => {
+    const shown = describeAccountError(error('forbidden', { status: 403 }), 'admin')
+    expect(shown).toEqual({ field: 'form', message: 'Only the admin can make accounts.' })
+  })
+
+  it('speaks to the admin, not to a visitor, on the form that makes accounts', () => {
+    const taken = describeAccountError(error('username_taken', { status: 409 }), 'admin')
+    expect(taken.field).toBe('username')
+    expect(taken.message).toMatch(/already taken.*Choose another one\.$/)
+    expect(taken.message).not.toMatch(/sign in/i)
+    const slow = describeAccountError(error('too_many_attempts', { wait: 900 }), 'admin').message
+    expect(slow).toMatch(/many accounts.*about 15 minutes/i)
   })
 
   it('says a server without accounts has none, and that a seat link still works', () => {

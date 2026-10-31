@@ -5,8 +5,14 @@ import type { PlayState } from '@/play/store'
 import { must } from '@/test-utils/batches'
 import { KINDS } from '@/test-utils/decisions'
 import { renderTable } from '@/test-utils/tableHarness'
-import { HAND_GROW_VAR } from './layout'
-import { OPENING_CARD_MAX_PX, openingDockNeed } from './handFit'
+import { clampedHeight, HAND_GROW_VAR, HAND_PHONE_CLAMP } from './layout'
+import {
+  HAND_DOCK_SIDES_PX,
+  HAND_FLOOR_PX,
+  handCardWidth,
+  OPENING_CARD_MAX_PX,
+  openingDockNeed,
+} from './handFit'
 
 /** The room every element reports; jsdom has no layout. */
 const room = { width: 0, height: 0 }
@@ -18,6 +24,7 @@ beforeEach(() => {
 
 afterEach(() => {
   vi.restoreAllMocks()
+  vi.unstubAllGlobals()
 })
 
 const hand = (): HTMLElement => screen.getByRole('list', { name: "Alice's hand" })
@@ -71,6 +78,85 @@ describe('the hand dock at a decision', () => {
       state: waitingOn('Mulligan'),
       options: { viewport: { width: 390, height: 844 } },
     })
+    expect(grown()).toBe('')
+  })
+})
+
+/** The room the zone of a phone's hand dock leaves its cards: the dock (`HAND_PHONE_CLAMP`) less its border and padding. */
+const phoneRoom = (width: number, height: number) => ({
+  width: width - HAND_DOCK_SIDES_PX,
+  height: Math.round(clampedHeight(HAND_PHONE_CLAMP, height)) - 9,
+})
+
+describe('the opening hand on a phone', () => {
+  // The hand of 7 and two partner commanders do not fit one row of cards 68 px wide, so the row scrolls.
+  it.each<[string, number, number]>([
+    ['390x844', 390, 844],
+    ['414x896', 414, 896],
+    ['360x740', 360, 740],
+    ['320x568', 320, 568],
+    ['600x960', 600, 960],
+  ])(
+    'at %s draws the cards the size they have at any other decision, in a row that scrolls, and grows no dock',
+    (_name, width, height) => {
+      const seen = (kind: 'Mulligan' | 'Priority') => {
+        Object.assign(room, phoneRoom(width, height))
+        const table = renderTable({
+          seats: 2,
+          state: waitingOn(kind),
+          options: { viewport: { width, height } },
+        })
+        const drawn = {
+          card: cardWidth(),
+          scrolls: hand().getAttribute('data-scrolls'),
+          rows: hand().getAttribute('data-rows'),
+          grown: grown(),
+        }
+        table.unmount()
+        return drawn
+      }
+      const opening = seen('Mulligan')
+      expect(opening).toEqual(seen('Priority'))
+      expect(opening.scrolls).toBe('true')
+      expect(opening.rows).toBe('1')
+      expect(opening.grown).toBe('')
+      // As wide as the dock's height holds, down to the narrowest card of a hand and never the opening hand's 136 px.
+      const widest = handCardWidth(phoneRoom(width, height).height - 8)
+      expect(opening.card).toBe(Math.min(HAND_FLOOR_PX, widest))
+      expect(opening.card).toBeLessThan(OPENING_CARD_MAX_PX)
+    },
+  )
+
+  it('draws the cards of a 390x844 phone 68 px wide', () => {
+    Object.assign(room, phoneRoom(390, 844))
+    expect(room).toEqual({ width: 366, height: 109 })
+    renderTable({
+      seats: 2,
+      state: waitingOn('Mulligan'),
+      options: { viewport: { width: 390, height: 844 } },
+    })
+    expect(cardWidth()).toBe(HAND_FLOOR_PX)
+    expect(hand()).toHaveAttribute('data-scrolls', 'true')
+  })
+
+  it("keeps the size of a touch screen's cards, as the hand has at any other decision", () => {
+    vi.stubGlobal(
+      'matchMedia',
+      (query: string) =>
+        ({
+          matches: query === '(pointer: coarse)',
+          addEventListener: () => undefined,
+          removeEventListener: () => undefined,
+        }) as unknown as MediaQueryList,
+    )
+    Object.assign(room, phoneRoom(390, 844))
+    renderTable({
+      seats: 2,
+      state: waitingOn('Mulligan'),
+      options: { viewport: { width: 390, height: 844 } },
+    })
+    expect(cardWidth()).toBe(handCardWidth(room.height - 8))
+    expect(hand()).toHaveAttribute('data-scrolls', 'true')
     expect(grown()).toBe('')
   })
 })

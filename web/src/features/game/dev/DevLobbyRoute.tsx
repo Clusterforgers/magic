@@ -63,7 +63,7 @@ export function DevLobbyRoute() {
         api: { ...offlineAccounts, myGames: async () => [] },
         initial:
           account === true
-            ? { status: 'signed-in', user: { id: 'dev-ada', username: 'Ada_L' } }
+            ? { status: 'signed-in', user: { id: 'dev-ada', username: 'Ada_L', is_admin: false } }
             : { status: 'unavailable' },
       }),
     [account],

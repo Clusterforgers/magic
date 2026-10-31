@@ -409,6 +409,8 @@ export const DEV_PROMPTS: Record<string, DevPrompt> = {
   'priority-main': priority,
   'priority-end': priority,
   'priority-wait': priority,
+  // The viewer's own spell with clauses left to the table has resolved: the prompt says to apply them (`devGame` sets `byHand`).
+  'priority-byhand': priority,
   // The same with abilities to activate on two creatures, a graveyard card and the commander (`dev/abilityScene.ts`).
   'priority-abilities': withAbilities(priority),
   // The same with Rooms of the viewer's whose locked doors it may unlock (`dev/roomsScene.ts`).
@@ -489,6 +491,7 @@ export const DEV_TABLES: Record<string, DevTable> = {
   'priority-main': quietMoment('Main1', true),
   'priority-end': quietMoment('End', true),
   'priority-wait': quietMoment('Upkeep', false),
+  'priority-byhand': quietMoment('Main1', true),
   'priority-abilities': abilitiesTable,
   'priority-rooms': roomsTable,
   yield: quietMoment('Upkeep', false, false),

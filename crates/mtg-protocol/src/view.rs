@@ -265,6 +265,11 @@ pub struct ObjectView {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     #[ts(as = "Option<Vec<ManualClause>>", optional)]
     pub manual: Vec<ManualClause>,
+    /// Whether its card runs on a player's read (`CardDefinition.read` of the face in use, `docs/cards-dsl.md`, Read
+    /// tier), for every seat that sees its face; left out while false.
+    #[serde(default, skip_serializing_if = "is_false")]
+    #[ts(as = "Option<bool>", optional)]
+    pub read: bool,
     /// The note a seat put on the object by hand, which every seat that sees the object reads; left out while there is
     /// none.
     #[serde(default, skip_serializing_if = "Option::is_none")]

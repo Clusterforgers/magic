@@ -1,10 +1,10 @@
-// Goal: the sign-in store moves between loading, signed in, signed out and unavailable exactly as the server's answers say, a failed sign-in never lets anyone in, a sign-out clears the user and the games, answers for an old question never overwrite a newer state, a failed game leaves the list when the server removes it and stays when it cannot, and no password is ever kept.
-import { describe, expect, it } from 'vitest'
+// Goal: the sign-in store moves between loading, signed in, signed out and unavailable exactly as the server's answers say, a failed sign-in never lets anyone in, a sign-out clears the user and the games, answers for an old question never overwrite a newer state, a failed game leaves the list when the server removes it and stays when it cannot, no password is ever kept, the server is asked once whether registering is open, and the admin's list and form follow the admin flag the server gives and take it back when the server does.
+import { describe, expect, it, vi } from 'vitest'
 import { AccountError } from '@/net/accounts'
 import { authError, idOf, listed, startAccounts } from '@/test-utils/accountsServer'
 import type { AccountsScript } from '@/test-utils/accountsServer'
 import { jsonResponse } from '@/test-utils/fakeFetch'
-import { createAuthStore, NO_GAMES, offlineAccounts } from './store'
+import { createAuthStore, NO_ACCOUNTS, NO_GAMES, offlineAccounts } from './store'
 
 const ADA = { username: 'Ada_L', password: 'correct horse battery' }
 const NEW = { username: 'Bo_new', password: 'another long passphrase' }
@@ -37,7 +37,7 @@ describe('starting', () => {
       status: 'signed-in',
       user: { id: idOf(ADA.username), username: ADA.username },
     })
-    expect(server.calls.map((call) => call.url)).toEqual(['/api/auth/me'])
+    expect(server.calls.map((call) => call.url)).toEqual(['/api/auth/options', '/api/auth/me'])
     expect(server.calls[0]?.init?.credentials).toBe('include')
   })
 
@@ -69,7 +69,7 @@ describe('starting', () => {
     const { state, server } = setup({ signedIn: ADA.username })
     await Promise.all([state().start(), state().start()])
     await state().start()
-    expect(server.calls).toHaveLength(1)
+    expect(server.calls.map((call) => call.url)).toEqual(['/api/auth/options', '/api/auth/me'])
   })
 
   it('asks nothing when the store was given its state', async () => {
@@ -149,7 +149,10 @@ describe('signing in', () => {
     const { state, server } = setup()
     await state().start()
     const result = await state().login(ADA)
-    expect(result).toEqual({ ok: true, user: { id: idOf(ADA.username), username: ADA.username } })
+    expect(result).toEqual({
+      ok: true,
+      user: { id: idOf(ADA.username), username: ADA.username, is_admin: false },
+    })
     expect(state()).toMatchObject({ status: 'signed-in', user: { username: ADA.username } })
     expect(server.credentials).toEqual([ADA])
   })
@@ -274,7 +277,7 @@ describe('signing out', () => {
     const { state, server } = setup()
     await state().start()
     expect(await state().logout()).toBe(true)
-    expect(server.calls.map((call) => call.url)).toEqual(['/api/auth/me'])
+    expect(server.calls.map((call) => call.url)).toEqual(['/api/auth/options', '/api/auth/me'])
   })
 
   it('drops a game list that was still on its way', async () => {
@@ -325,7 +328,7 @@ describe('loading the games', () => {
     const { state, server } = setup()
     await state().start()
     await state().loadGames()
-    expect(server.calls.map((call) => call.url)).toEqual(['/api/auth/me'])
+    expect(server.calls.map((call) => call.url)).toEqual(['/api/auth/options', '/api/auth/me'])
     expect(state().games).toEqual(NO_GAMES)
   })
 
@@ -438,6 +441,144 @@ describe('removing a failed game', () => {
     await state().start()
     const result = await state().removeGame('broken')
     expect(result).toMatchObject({ ok: false, error: { code: 'unauthenticated' } })
-    expect(server.calls.map((call) => call.url)).toEqual(['/api/auth/me'])
+    expect(server.calls.map((call) => call.url)).toEqual(['/api/auth/options', '/api/auth/me'])
+  })
+})
+
+describe('the registration option', () => {
+  it.each([
+    ['open', {}, 'open'],
+    ['closed', { closed: true }, 'closed'],
+  ] as const)('reads %s from the server when it starts', async (_what, script, expected) => {
+    const { state } = setup(script)
+    expect(state().registration).toBe('unknown')
+    await state().start()
+    expect(state().registration).toBe(expected)
+  })
+
+  it('stays unknown, and the form stays, when the server does not answer', async () => {
+    const { state } = setup({ override: { options: () => authError(500, 'internal') } })
+    await state().start()
+    expect(state()).toMatchObject({ status: 'signed-out', registration: 'unknown' })
+  })
+
+  it('is read for a signed-in account too, without holding the sign-in back', async () => {
+    const { state } = setup({ signedIn: ADA.username, closed: true })
+    await state().start()
+    expect(state()).toMatchObject({ status: 'signed-in', registration: 'closed' })
+  })
+})
+
+describe("the admin's accounts", () => {
+  const BO = { username: 'Bo_new', password: 'another long passphrase' }
+
+  async function asAdmin(script: AccountsScript = {}) {
+    const made = setup({ admin: ADA.username, signedIn: ADA.username, closed: true, ...script })
+    await made.state().start()
+    return made
+  }
+
+  it('carries the admin flag from who-am-I, and only for the admin', async () => {
+    const admin = await asAdmin()
+    expect(admin.state().user).toMatchObject({ username: ADA.username, is_admin: true })
+    const other = setup({ admin: 'someone_else', signedIn: ADA.username })
+    await other.state().start()
+    expect(other.state().user).toMatchObject({ is_admin: false })
+  })
+
+  it('lists the accounts, oldest first, for the admin', async () => {
+    const { state } = await asAdmin()
+    await state().loadAccounts()
+    expect(state().accounts.status).toBe('ready')
+    expect(state().accounts.users.map((one) => one.username)).toEqual([ADA.username])
+    expect(state().accounts.users[0]).toMatchObject({ is_admin: true })
+  })
+
+  it('asks the server for nothing unless the signed-in account is the admin', async () => {
+    const { state, server } = setup({ admin: 'someone_else', signedIn: ADA.username })
+    await state().start()
+    const before = server.calls.length
+    await state().loadAccounts()
+    const result = await state().createAccount(BO)
+    expect(result).toMatchObject({ ok: false, error: { code: 'forbidden' } })
+    expect(server.calls).toHaveLength(before)
+    expect(state().accounts).toEqual(NO_ACCOUNTS)
+  })
+
+  it('makes an account without signing it in, then reloads the list', async () => {
+    const { state, server } = await asAdmin()
+    await state().loadAccounts()
+    const result = await state().createAccount(BO)
+    expect(result).toEqual({ ok: true, account: { id: idOf(BO.username), username: BO.username } })
+    expect(server.created).toEqual([BO])
+    expect(server.signedIn).toBe(ADA.username)
+    expect(state()).toMatchObject({ status: 'signed-in', user: { username: ADA.username } })
+    await vi.waitFor(() =>
+      expect(state().accounts.users.map((one) => one.username)).toEqual([ADA.username, BO.username]),
+    )
+  })
+
+  it.each([
+    ['a taken username', 409, 'username_taken'],
+    ['a username the server refuses', 400, 'invalid_username'],
+    ['a throttled admin', 429, 'too_many_attempts'],
+    ['a database that is down', 503, 'unavailable'],
+  ] as const)('keeps everything as it was after %s', async (_what, status, code) => {
+    const { state } = await asAdmin({ override: { createAccount: () => authError(status, code) } })
+    const result = await state().createAccount(BO)
+    expect(result).toMatchObject({ ok: false, error: { code, status } })
+    expect(state()).toMatchObject({ status: 'signed-in', user: { is_admin: true } })
+  })
+
+  it('stops counting the account as the admin when the server says forbidden', async () => {
+    const { state } = await asAdmin({ override: { createAccount: () => authError(403, 'forbidden') } })
+    await state().loadAccounts()
+    const result = await state().createAccount(BO)
+    expect(result).toMatchObject({ ok: false, error: { code: 'forbidden' } })
+    expect(state()).toMatchObject({ status: 'signed-in', user: { username: ADA.username, is_admin: false } })
+    expect(state().accounts).toEqual(NO_ACCOUNTS)
+  })
+
+  it('turns signed out when the session has ended, on a list as on a creation', async () => {
+    const lost = await asAdmin({ override: { listAccounts: () => authError(401, 'unauthenticated') } })
+    await lost.state().loadAccounts()
+    expect(lost.state()).toMatchObject({ status: 'signed-out', user: null, accounts: NO_ACCOUNTS })
+    const gone = await asAdmin({ override: { createAccount: () => authError(401, 'unauthenticated') } })
+    await gone.state().createAccount(BO)
+    expect(gone.state()).toMatchObject({ status: 'signed-out', user: null })
+  })
+
+  it('keeps the last list and says why when a reload fails', async () => {
+    const row = { id: 'u-1', username: ADA.username, created_at: '2026-10-10T09:30:00Z', is_admin: true }
+    let asked = 0
+    const { state } = await asAdmin({
+      override: {
+        listAccounts: () =>
+          (asked += 1) === 1 ? jsonResponse(200, { users: [row] }) : authError(503, 'unavailable'),
+      },
+    })
+    await state().loadAccounts()
+    expect(state().accounts.status).toBe('ready')
+    await state().loadAccounts()
+    expect(state().accounts.status).toBe('failed')
+    expect(state().accounts.users).toHaveLength(1)
+    expect(state().accounts.error).toMatch(/cannot check accounts right now/i)
+  })
+
+  it('drops a list that was still on its way when someone else signs in', async () => {
+    const late = deferred<Response>()
+    const { state } = await asAdmin({ override: { listAccounts: () => late.promise } })
+    const loading = state().loadAccounts()
+    await state().logout()
+    late.resolve(jsonResponse(200, { users: [] }))
+    await loading
+    expect(state().accounts).toEqual(NO_ACCOUNTS)
+  })
+
+  it('clears the list and the flag with the sign-out', async () => {
+    const { state } = await asAdmin()
+    await state().loadAccounts()
+    await state().logout()
+    expect(state()).toMatchObject({ status: 'signed-out', user: null, accounts: NO_ACCOUNTS })
   })
 })

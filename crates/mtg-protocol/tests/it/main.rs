@@ -65,6 +65,7 @@ mod preview_fixture;
 mod projection;
 mod random_mode_view;
 mod random_pick_view;
+mod read_view;
 mod refill_hidden;
 mod required_cost_hidden;
 mod rest;

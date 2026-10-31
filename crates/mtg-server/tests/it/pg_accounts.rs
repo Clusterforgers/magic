@@ -24,6 +24,7 @@ fn roomy_limits() -> AttemptLimits {
         login_per_ip: 10_000,
         login_per_username: 10_000,
         register_per_ip: 10_000,
+        admin_creates_per_account: 10_000,
         code_window: Duration::from_secs(600),
         code_misses_per_ip: 10_000,
         lobby_window: Duration::from_secs(600),
@@ -107,7 +108,10 @@ async fn registering_signs_in_and_logging_out_ends_the_session(pool: PgPool) {
 
     let who = ann.get(addr, "/api/auth/me").await;
     assert_eq!(who.status, 200);
-    assert_eq!(who.json(), json!({"id": ann.id, "username": "Ann_1"}));
+    assert_eq!(
+        who.json(),
+        json!({"id": ann.id, "username": "Ann_1", "is_admin": false})
+    );
     assert_eq!(who.header("cache-control"), Some("no-store"));
     sets_no_cookie(&who);
 
@@ -766,6 +770,7 @@ async fn registrations_are_throttled_per_address_and_refused_ones_do_not_count(p
     let server = start_with(&pool, |config| {
         config.auth.limits = AttemptLimits {
             register_per_ip: 2,
+            admin_creates_per_account: 10_000,
             ..roomy_limits()
         };
     })

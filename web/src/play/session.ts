@@ -20,6 +20,7 @@ import type { ManualReply } from './manualLedger'
 import { previewKey } from './preview'
 import { canHoldStop } from './stops'
 import { mergeLogNames, rememberDeparted } from './rememberNames'
+import { owesByHand } from './byHand'
 import { appendChat, appendLog, createPlayStore, mergeHistory } from './store'
 import type { PlayState, PlayStore } from './store'
 import { applyBatch, fromFirstBatch, fromSnapshot, indexById, withBank, withPresence } from './view'
@@ -274,9 +275,12 @@ export function createSession(deps: SessionDeps): Session {
     awayClocks.clear()
     setState((state) => {
       const view = fromSnapshot(state.view, message.state)
+      const objectsById = view.objects === state.view?.objects ? state.objectsById : indexById(view.objects)
       return {
         view,
-        objectsById: view.objects === state.view?.objects ? state.objectsById : indexById(view.objects),
+        objectsById,
+        // The history is the latest events: a pass or a resolution in it decides, else what was held stays.
+        byHand: owesByHand(state.byHand, message.log ?? [], state.seat, state.objectsById, objectsById),
         seq: message.seq,
         pending: null, // the server sends the current decision right after the snapshot
         preview: null,
@@ -316,6 +320,7 @@ export function createSession(deps: SessionDeps): Session {
       view,
       objectsById,
       seq: batch.from_seq + batch.events.length,
+      byHand: owesByHand(state.byHand, batch.events, state.seat, state.objectsById, objectsById),
       log: appendLog(state.log, batch.from_seq, batch.events, state.objectsById, objectsById),
       logNames: rememberDeparted(state.logNames, state.objectsById, batch.gone),
       phase: state.result === null ? 'playing' : 'over',

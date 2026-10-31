@@ -1,0 +1,19 @@
+{
+  "oracle_id": "c5f611c9-9e6e-4719-ad71-8686327a8564",
+  "name": "Protection of the Hekma",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Protection of the Hekma",
+      "oracle_fingerprint": "c0ff6f89a823e319111371c8a885db1f",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Damage": { "to": "You", "source": [{ "ControlledBy": "Opponents" }] } },
+            "by": { "PreventUpTo": 1 }
+          }
+        }
+      ]
+    }
+  ]
+}

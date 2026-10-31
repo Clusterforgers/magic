@@ -20,7 +20,7 @@ afterEach(() => {
   localStorage.clear()
 })
 
-const ADA: UserView = { id: 'u1', username: 'Ada_L' }
+const ADA: UserView = { id: 'u1', username: 'Ada_L', is_admin: false }
 /** As an address can carry it, and as the server reads it. */
 const TYPED = 'k7m2-9qxa'
 const CODE = 'K7M29QXA'

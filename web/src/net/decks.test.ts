@@ -190,6 +190,10 @@ describe('answers that do not match the types', () => {
     ['a deck without its check time', { decks: [{ ...item, checked_at: undefined }] }],
     ['a deck whose counts are negative', { decks: [{ ...item, summary: noCounts }] }],
     [
+      'a deck whose counts lack the read copies',
+      { decks: [{ ...item, summary: { ...summary(), counts: { ...counts(), read: undefined } } }] },
+    ],
+    [
       'a deck whose summary zone is unknown',
       { decks: [{ ...item, summary: { ...summary(), zones: [{ zone: 'x', counts: counts() }] } }] },
     ],

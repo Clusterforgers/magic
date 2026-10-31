@@ -113,17 +113,19 @@ describe('groups and counts', () => {
 
 describe('support counts', () => {
   const cards = [
-    card('A', { count: 90 }),
+    card('A', { count: 85 }),
     card('B', { count: 3, support: 'manual' }),
     card('C', { count: 2, support: 'partial' }),
     card('D', { support: 'stale' }),
     card('E', { count: 4, support: 'unplayable' }),
+    card('R', { count: 5, support: 'read' }),
   ]
 
   it('adds copies by state and in all', () => {
     expect(supportCounts(cards)).toEqual({
       total: 100,
-      verified: 90,
+      verified: 85,
+      read: 5,
       partial: 2,
       manual: 3,
       stale: 1,

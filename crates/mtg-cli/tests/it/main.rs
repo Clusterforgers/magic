@@ -13,6 +13,7 @@ mod fetch_printings;
 mod fetch_scryfall;
 mod fix_marks;
 mod forge_check;
+mod forge_hint;
 mod gaps;
 mod ingest;
 mod ingest_printings;

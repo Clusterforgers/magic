@@ -1,0 +1,26 @@
+{
+  "oracle_id": "37cf4ee6-e146-4354-afc8-6b59b0700e87",
+  "name": "Vortex Runner",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vortex Runner",
+      "oracle_fingerprint": "9175376b8ac58f6bcf2fa63ec8cc87ef",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }, "CantBeBlocked"],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 8
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

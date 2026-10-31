@@ -1,0 +1,15 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "UPDATE card_drafts SET retired = true\n                 WHERE oracle_id = $1 AND read_hash <> $2 AND NOT retired",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Uuid",
+        "Text"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "a1ac2fa1785ae6ad8cbcdd5527252e7d760bd7a0b235f355344041fb059b5e3f"
+}

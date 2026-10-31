@@ -24,7 +24,7 @@ async function renderPage({
   const cards = fixtureCardsApi(fixture)
   const auth = createAuthStore({
     api: { ...offlineAccounts, myGames: async () => [] },
-    initial: { status: 'signed-in', user: { id: 'ada', username: 'Ada_L' } },
+    initial: { status: 'signed-in', user: { id: 'ada', username: 'Ada_L', is_admin: false } },
   })
   const view = await renderInRouter(
     <AuthContext value={auth}>
@@ -266,7 +266,7 @@ describe('Copy as text', () => {
     const decks = fixtureDecksApi()
     const auth = createAuthStore({
       api: { ...offlineAccounts, myGames: async () => [] },
-      initial: { status: 'signed-in', user: { id: 'ada', username: 'Ada_L' } },
+      initial: { status: 'signed-in', user: { id: 'ada', username: 'Ada_L', is_admin: false } },
     })
     await renderInRouter(
       <AuthContext value={auth}>
@@ -339,7 +339,7 @@ describe('the states of the page', () => {
     const decks = { ...fixtureDecksApi(), list: () => new Promise<never>(() => undefined) }
     const auth = createAuthStore({
       api: { ...offlineAccounts, myGames: async () => [] },
-      initial: { status: 'signed-in', user: { id: 'ada', username: 'Ada_L' } },
+      initial: { status: 'signed-in', user: { id: 'ada', username: 'Ada_L', is_admin: false } },
     })
     await renderInRouter(
       <AuthContext value={auth}>

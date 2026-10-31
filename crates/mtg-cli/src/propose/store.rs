@@ -6,6 +6,7 @@ use std::path::{Path, PathBuf};
 use mtg_cards::card::Card;
 use mtg_cards::load::{canonical, slug};
 
+use super::forge_hint::HintRecord;
 use crate::error::CliError;
 
 /// The folder of the proposals of a run.
@@ -48,6 +49,13 @@ impl Store {
         Ok(path)
     }
 
+    /// Saves the hint modes the card was asked with as `meta/<slug>.json`, so that runs of an A/B can be told apart.
+    pub fn save_hints(&self, name: &str, record: &HintRecord) -> Result<(), CliError> {
+        let path = self.dir.join("meta").join(format!("{}.json", slug(name)));
+        let json = serde_json::to_string_pretty(record).unwrap_or_default();
+        write(&path, &format!("{json}\n"))
+    }
+
     /// Saves what the model wrote last and the checker's report, both under `rejected/`.
     pub fn save_rejected(&self, name: &str, json: &str, report: &str) -> Result<(), CliError> {
         write(&self.rejected_path(name, "json"), &format!("{json}\n"))?;
@@ -78,6 +86,26 @@ mod tests {
             faces: Vec::new(),
             notes: None,
         }
+    }
+
+    #[test]
+    fn the_hint_modes_of_a_card_are_saved_in_a_folder_of_their_own() {
+        use crate::propose::forge_hint::HintState;
+        let dir = tempfile::tempdir().unwrap();
+        let store = Store::new(dir.path());
+        let record = HintRecord {
+            solved_examples: 5,
+            forge_hint: HintState::Unhinted,
+        };
+        store.save_hints("Wind Drake", &record).unwrap();
+        let saved = fs::read_to_string(dir.path().join("meta/wind_drake.json")).unwrap();
+        let json: serde_json::Value = serde_json::from_str(&saved).unwrap();
+        assert_eq!(
+            json,
+            serde_json::json!({"solved_examples": 5, "forge_hint": "unhinted"})
+        );
+        // A file in that folder is no proposal.
+        assert!(!store.has("Wind Drake"));
     }
 
     #[test]

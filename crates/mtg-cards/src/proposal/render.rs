@@ -63,6 +63,7 @@ impl Report {
 fn support_word(state: Support) -> &'static str {
     match state {
         Support::Verified => "Verified",
+        Support::Read => "Read",
         Support::Partial => "Partial",
         Support::Manual => "Manual",
         Support::Stale => "Stale",

@@ -3,12 +3,12 @@
  * clauses quoted from the oracle text, and the text that lists them. Pure, so tables test it.
  */
 import { reasonLines } from '@/features/builder/report'
-import { BY_HAND, PARTLY_BY_HAND } from '@/lib/byHand'
+import { BY_HAND, PARTLY_BY_HAND, runsWhole } from '@/lib/byHand'
 import type { Reason, ReportCard, Support } from '@/protocol/generated'
 import { SUPPORT_LABEL } from '../format'
 
 /** The support states of a card the game does not run whole. */
-export type Unvalidated = Exclude<Support, 'verified'>
+export type Unvalidated = Exclude<Support, 'verified' | 'read'>
 
 /** The states in the order the filters list them. */
 export const UNVALIDATED: readonly Unvalidated[] = ['partial', 'manual', 'stale', 'unplayable']
@@ -44,13 +44,14 @@ export interface DeckGroup {
 /** What a card says when it has no clause of its own: the card is still played by hand. */
 export const NO_CLAUSE: Readonly<Record<Support, string>> = {
   verified: '',
+  read: '',
   partial: PARTLY_BY_HAND,
   manual: BY_HAND,
   stale: `its text changed since the rules were written, so it is ${BY_HAND}`,
   unplayable: 'the game cannot play it',
 }
 
-const isUnvalidated = (support: Support): support is Unvalidated => support !== 'verified'
+const isUnvalidated = (support: Support): support is Unvalidated => !runsWhole(support)
 
 const byName = (a: FlaggedCard, b: FlaggedCard): number =>
   a.name.localeCompare(b.name, 'en', { sensitivity: 'base' }) || a.oracleId.localeCompare(b.oracleId)

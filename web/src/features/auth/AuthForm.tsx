@@ -6,8 +6,8 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { AccountError } from '@/net/accounts'
-import { useAuthStore } from './context'
-import { describeAccountError } from './errors'
+import { useAuth, useAuthStore } from './context'
+import { CLOSED, describeAccountError } from './errors'
 import type { AuthMode } from './errors'
 import { Field } from './Field'
 import { describedBy } from './fieldIds'
@@ -54,6 +54,7 @@ interface AuthFormProps {
  */
 export function AuthForm({ mode, next }: AuthFormProps) {
   const store = useAuthStore()
+  const registrationClosed = useAuth((state) => state.registration === 'closed')
   const words = WORDS[mode]
   const [pending, setPending] = useState(false)
   const [problems, setProblems] = useState<Problems>(NO_PROBLEMS)
@@ -174,16 +175,20 @@ export function AuthForm({ mode, next }: AuthFormProps) {
         {pending ? words.pending : words.submit}
       </Button>
 
-      <p className="border-t pt-4 text-sm text-muted-foreground">
-        {words.other.question}{' '}
-        <Link
-          to={words.other.to}
-          search={next === undefined ? {} : { next }}
-          className="font-medium text-foreground underline underline-offset-3"
-        >
-          {words.other.action}
-        </Link>
-      </p>
+      {mode === 'login' && registrationClosed ? (
+        <p className="border-t pt-4 text-sm text-muted-foreground">No account yet? {CLOSED}</p>
+      ) : (
+        <p className="border-t pt-4 text-sm text-muted-foreground">
+          {words.other.question}{' '}
+          <Link
+            to={words.other.to}
+            search={next === undefined ? {} : { next }}
+            className="font-medium text-foreground underline underline-offset-3"
+          >
+            {words.other.action}
+          </Link>
+        </p>
+      )}
     </form>
   )
 }

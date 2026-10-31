@@ -231,7 +231,7 @@ describe('signing in', () => {
     // A second press, or Enter, sends nothing more.
     await app.user.keyboard('{Enter}')
     expect(sentTo(app, '/api/auth/login')).toHaveLength(1)
-    answer(jsonResponse(200, { id: 'id-ada', username: ADA.username }))
+    answer(jsonResponse(200, { id: 'id-ada', username: ADA.username, is_admin: false }))
     await waitFor(() => expect(app.store.getState().status).toBe('signed-in'))
     expect(sentTo(app, '/api/auth/login')).toHaveLength(1)
   })
@@ -391,7 +391,10 @@ describe('registering', () => {
   })
 
   it.each([
-    ['a closed server', { closed: true }],
+    [
+      'a registration closed since the page opened',
+      { override: { register: () => authError(403, 'registration_closed') } },
+    ],
     ['a refused password', { override: { register: () => authError(400, 'invalid_password') } }],
   ])('empties the password after %s', async (_name, options) => {
     const app = await open('/register', options)
@@ -409,11 +412,15 @@ describe('registering', () => {
     expect(username()).toHaveAttribute('aria-invalid', 'false')
   })
 
-  it('says a closed server takes no new accounts', async () => {
-    const app = await open('/register', { closed: true })
+  it('tells a registration that was closed after the page opened to ask the admin', async () => {
+    const app = await open('/register', {
+      override: { register: () => authError(403, 'registration_closed') },
+    })
     await type(app, NEW.username, NEW.password)
     await app.user.click(submitButton('Create account'))
-    expect(await screen.findByRole('alert')).toHaveTextContent(/not taking new accounts.*guest/i)
+    expect(await screen.findByRole('alert')).toHaveTextContent(
+      'New accounts are made by the admin. Ask them to add you.',
+    )
     expect(screen.getByRole('alert')).toHaveFocus()
   })
 
@@ -579,5 +586,58 @@ describe('mounting twice', () => {
     const app = await open('/login', {}, true)
     expect(sentTo(app, '/api/auth/me')).toHaveLength(1)
     expect(screen.getAllByRole('form')).toHaveLength(1)
+  })
+})
+
+describe('a server where the admin makes the accounts', () => {
+  /** Opens a page and waits for the sign-in state and for the answer about registering. */
+  async function openClosed(url: string, accounts: AccountsScript = {}) {
+    const app = await renderApp(url, { accounts: { users, closed: true, ...accounts } })
+    await waitFor(() => expect(app.store.getState().status).not.toBe('loading'))
+    await waitFor(() => expect(app.store.getState().registration).not.toBe('unknown'))
+    return app
+  }
+
+  it('says so on the sign-up page in place of a form that could only fail', async () => {
+    const app = await openClosed('/register')
+    expect(
+      await screen.findByRole('heading', { level: 1, name: 'New accounts are made by the admin' }),
+    ).toBeVisible()
+    expect(screen.getByText(/Ask them to add you/)).toBeVisible()
+    expect(screen.queryByRole('form')).not.toBeInTheDocument()
+    expect(screen.queryByLabelText('Password')).not.toBeInTheDocument()
+    expect(document.title).toBe('Create an account · Magic')
+    expect(sentTo(app, '/api/auth/register')).toHaveLength(0)
+  })
+
+  it('leads from the sign-up notice to the sign-in form, keeping the way on', async () => {
+    const app = await openClosed('/register?next=/games')
+    const link = await within(await screen.findByRole('main')).findByRole('link', { name: 'Sign in' })
+    expect(link.getAttribute('href')).toMatch(/^\/login\?next=(%2F|\/)games$/)
+    await app.user.click(link)
+    expect(await screen.findByRole('form', { name: 'Sign in' })).toBeInTheDocument()
+  })
+
+  it('tells the sign-in form to ask the admin instead of offering to create an account', async () => {
+    await openClosed('/login')
+    const note = await screen.findByText(/No account yet\?/)
+    expect(note).toHaveTextContent('No account yet? New accounts are made by the admin. Ask them to add you.')
+    expect(within(form()).queryByRole('link', { name: 'Create one' })).not.toBeInTheDocument()
+  })
+
+  it('keeps the form and the link where registering is open', async () => {
+    const app = await renderApp('/register', { accounts: { users } })
+    await waitFor(() => expect(app.store.getState().registration).toBe('open'))
+    expect(await screen.findByRole('form', { name: 'Create an account' })).toBeInTheDocument()
+    expect(screen.queryByText(/made by the admin/)).not.toBeInTheDocument()
+  })
+
+  it('keeps the form when the server does not say, since the server judges the submit', async () => {
+    const app = await renderApp('/register', {
+      accounts: { users, override: { options: () => authError(500, 'internal') } },
+    })
+    await waitFor(() => expect(app.store.getState().status).toBe('signed-out'))
+    expect(app.store.getState().registration).toBe('unknown')
+    expect(await screen.findByRole('form', { name: 'Create an account' })).toBeInTheDocument()
   })
 })

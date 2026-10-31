@@ -1,4 +1,4 @@
-// Goal: the driver's own helpers read a prompt as the pages draw it: which cards of a hand are for casting and which for an ability alone, how a click on a card with an ability is answered in the chooser, the turn of a banner, the cards a Priority window marks legal in the hand, the command zone and the battlefield, which windows count as idle, which defender an attack aims at, and that a play which comes back to its window unanswered is tried twice there.
+// Goal: the driver's own helpers read a prompt as the pages draw it: which cards of a hand are for casting and which for an ability alone, how a click on a card with an ability is answered in the chooser, the turn of a banner, the cards a Priority window marks legal in the hand, the command zone and the battlefield and the zones that hold one, which windows count as idle (a land with an ability to activate and a legal card in the graveyard or exile are plays), which defender an attack aims at, and that a play which comes back to its window unanswered is tried twice there.
 import { expect, test } from '@playwright/test'
 import {
   aimAt,
@@ -16,7 +16,7 @@ import type { Card, Seen } from './driver'
 const card = (id: string): Card => ({ id, label: `Card ${id}`, land: false })
 const land = (id: string): Card => ({ id, label: `Forest ${id}, Basic Land`, land: true })
 
-const priority = (legal: Partial<Pick<Seen, 'hand' | 'command' | 'board'>>): Seen => ({
+const priority = (legal: Partial<Pick<Seen, 'hand' | 'command' | 'board' | 'zones'>>): Seen => ({
   over: false,
   kind: 'Priority',
   id: '1',
@@ -26,6 +26,7 @@ const priority = (legal: Partial<Pick<Seen, 'hand' | 'command' | 'board'>>): See
   hand: [],
   command: [],
   board: [],
+  zones: [],
   ...legal,
 })
 
@@ -50,6 +51,21 @@ test.describe('driver helpers', () => {
       seen: priority({ board: [land('4'), land('5')] }),
       idle: true,
     },
+    {
+      name: 'a land with an ability to activate is legal',
+      seen: priority({
+        board: [
+          {
+            id: '6',
+            label:
+              'High Market, Land, Tap: add colorless mana, available, Activate tap, Sacrifice a creature: You gain 1 life.',
+            land: true,
+          },
+        ],
+      }),
+      idle: false,
+    },
+    { name: 'a card in the graveyard is legal', seen: priority({ zones: ['graveyard 1'] }), idle: false },
     {
       name: 'an untapped land and an ability on the battlefield are legal',
       seen: priority({ board: [land('4'), card('3')] }),
@@ -87,6 +103,8 @@ test.describe('driver helpers', () => {
       <ul aria-label="Ada's commanders in the command zone">
         <li><button data-object-id="2" data-highlight="legal" aria-label="Emmara, Soul of the Accord">2</button></li>
       </ul>
+      <button data-zone="graveyard" data-legal="2">Graveyard</button>
+      <button data-zone="exile">Exile</button>
       <section aria-label="Ada's battlefield">
         <button data-object-id="3" data-highlight="legal" aria-label="Sol Ring">3</button>
         <button data-object-id="4" aria-label="Swamp, Basic Land">4</button>
@@ -101,6 +119,7 @@ test.describe('driver helpers', () => {
     expect(seen.hand).toEqual([{ id: '1', label: 'Forest, Basic Land', land: true }])
     expect(seen.command.map((c) => c.id)).toEqual(['2'])
     expect(seen.board.map((c) => c.id)).toEqual(['3'])
+    expect(seen.zones).toEqual(['graveyard 2'])
     expect(isIdle(seen)).toBe(false)
     // The prompt that was answered is not read again.
     expect(await page.evaluate(look, { me: 'Ada', answered: '7' })).toBeNull()

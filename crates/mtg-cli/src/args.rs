@@ -355,6 +355,12 @@ pub struct ProposeArgs {
     /// Take the solved examples only from the train part of the `export-pairs` split (its default percent and seed).
     #[arg(long, requires = "solved_examples")]
     pub examples_train_only: bool,
+
+    /// Add the lines of the card's Forge script (read at run time from `forge-gui/res/cardsfolder` of a read-only checkout
+    /// of Forge; nothing is copied or saved) to its prompt as another engine's reading of the same card. Works with every
+    /// provider and with or without `--solved-examples`; a card without a script gets no hint.
+    #[arg(long, value_name = "DIR")]
+    pub forge_hint: Option<PathBuf>,
 }
 
 /// Options of `export-pairs`.

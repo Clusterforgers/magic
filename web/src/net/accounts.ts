@@ -1,12 +1,16 @@
 /**
- * The account endpoints of `mtg-server` (docs/server.md, Accounts): register, sign in, sign out, who am I, the
- * signed-in user's games, changing the password and deleting the account. The bodies are the generated types of `mtg_protocol::rest`; every answer is checked at
+ * The account endpoints of `mtg-server` (docs/server.md, Accounts): register, sign in, sign out, who am I, whether
+ * registering is open, the signed-in user's games, changing the password, deleting the account, and the admin's list
+ * of accounts and the call that makes one. The bodies are the generated types of `mtg_protocol::rest`; every answer is checked at
  * runtime before it is returned and every failure is an `AccountError` with a stable code. Every request carries the
  * session cookie (`credentials: 'include'`), so a page on another origin that the server lists works as well.
  */
 import type {
   AccountDeletion,
+  AccountOptions,
+  AccountRow,
   AuthErrorCode,
+  CreatedAccount,
   Credentials,
   MyGame,
   MyGameSeat,
@@ -25,6 +29,7 @@ const AUTH_CODES: Record<AuthErrorCode, true> = {
   invalid_password: true,
   username_taken: true,
   registration_closed: true,
+  forbidden: true,
   invalid_credentials: true,
   too_many_attempts: true,
   unauthenticated: true,
@@ -81,6 +86,12 @@ export interface AccountsApi {
   logout(): Promise<void>
   /** `GET /api/auth/me`: the signed-in account; rejects with `unauthenticated` when there is none. */
   me(): Promise<UserView>
+  /** `GET /api/auth/options`: whether registering is open; anybody may ask. */
+  registrationOptions(): Promise<AccountOptions>
+  /** `GET /api/admin/users`: every account, oldest first; rejects with `forbidden` unless the caller is the admin. */
+  listAccounts(): Promise<AccountRow[]>
+  /** `POST /api/admin/users`: makes an account for someone else without signing it in; admin only. */
+  createAccount(credentials: Credentials): Promise<CreatedAccount>
   /** `GET /api/me/games`: the games the user holds a seat in, as the server sorted them. */
   myGames(): Promise<MyGame[]>
   /** `DELETE /api/me/games/{id}`: takes a failed game off the user's list; rejects with a 404 when there is none. */
@@ -96,7 +107,35 @@ const isStatus = (value: unknown): value is MyGameStatus => isText(value) && Obj
 
 function readUser(body: unknown): UserView | null {
   if (!isRecord(body) || !isText(body.id) || !isText(body.username)) return null
+  if (typeof body.is_admin !== 'boolean') return null
+  return { id: body.id, username: body.username, is_admin: body.is_admin }
+}
+
+function readCreated(body: unknown): CreatedAccount | null {
+  if (!isRecord(body) || !isText(body.id) || !isText(body.username)) return null
   return { id: body.id, username: body.username }
+}
+
+function readOptions(body: unknown): AccountOptions | null {
+  if (!isRecord(body) || typeof body.registration_open !== 'boolean') return null
+  return { registration_open: body.registration_open }
+}
+
+function readRow(item: unknown): AccountRow | null {
+  if (!isRecord(item) || !isText(item.id) || !isText(item.username) || !isText(item.created_at)) return null
+  if (typeof item.is_admin !== 'boolean') return null
+  return { id: item.id, username: item.username, created_at: item.created_at, is_admin: item.is_admin }
+}
+
+function readRows(body: unknown): AccountRow[] | null {
+  if (!isRecord(body) || !isListOf(body.users, isRecord)) return null
+  const rows: AccountRow[] = []
+  for (const item of body.users) {
+    const row = readRow(item)
+    if (row === null) return null
+    rows.push(row)
+  }
+  return rows
 }
 
 function readSeat(item: unknown): MyGameSeat | null {
@@ -214,6 +253,9 @@ export function createAccountsApi(options: AccountsOptions = {}): AccountsApi {
       await call('/api/auth/logout', () => true, post())
     },
     me: () => call('/api/auth/me', readUser, get),
+    registrationOptions: () => call('/api/auth/options', readOptions, get),
+    listAccounts: () => call('/api/admin/users', readRows, get),
+    createAccount: (credentials) => call('/api/admin/users', readCreated, post(credentials)),
     myGames: () => call('/api/me/games', readGames, get),
     removeGame: async (game) => {
       await call(`/api/me/games/${encodeURIComponent(game)}`, () => true, send('DELETE'))

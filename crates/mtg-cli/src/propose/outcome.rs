@@ -84,6 +84,10 @@ pub struct Tally {
     pub invalid: usize,
     /// Accepted with nothing modelled.
     pub empty: usize,
+    /// Cards asked with a Forge hint.
+    pub hinted: usize,
+    /// Cards asked in a run with `--forge-hint` that had no script, or nothing in it to show.
+    pub unhinted: usize,
     /// No answer from the API.
     pub failed: usize,
     /// Skipped by `--resume`.
@@ -156,6 +160,14 @@ impl ProposeReport {
         for (label, count) in rows {
             let _ = writeln!(text, "  {label:<28}{count:>6}");
         }
+        if tally.hinted + tally.unhinted > 0 {
+            for (label, count) in [
+                ("Forge hint: hinted", tally.hinted),
+                ("Forge hint: unhinted", tally.unhinted),
+            ] {
+                let _ = writeln!(text, "  {label:<28}{count:>6}");
+            }
+        }
         let usage = self.budget.usage();
         let _ = writeln!(
             text,
@@ -210,6 +222,37 @@ mod tests {
         tally.skipped = 2;
         assert_eq!(tally.total(), outcomes.len() + 2);
         assert_eq!((tally.verified, tally.partial, tally.not_run), (2, 1, 1));
+    }
+
+    #[test]
+    fn the_summary_counts_hinted_cards_only_in_a_run_that_hints() {
+        let render = |hinted, unhinted| {
+            ProposeReport {
+                model: "m".into(),
+                tally: Tally {
+                    verified: 2,
+                    hinted,
+                    unhinted,
+                    ..Tally::default()
+                },
+                budget: Budget::new(10, 5000),
+                stopped: None,
+                out: PathBuf::from("/tmp/out"),
+            }
+            .render()
+        };
+        assert!(!render(0, 0).contains("Forge hint"));
+        let text = render(12, 3);
+        assert!(
+            text.contains("Forge hint: hinted              12\n"),
+            "{text}"
+        );
+        assert!(
+            text.contains("Forge hint: unhinted             3\n"),
+            "{text}"
+        );
+        // Hints are not outcomes: the cards stay counted once.
+        assert!(text.starts_with("propose: 2 cards"), "{text}");
     }
 
     fn report(state: Option<ClauseState>, problems: bool, support: Option<Support>) -> Report {

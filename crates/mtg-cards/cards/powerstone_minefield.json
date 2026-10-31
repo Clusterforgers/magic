@@ -1,0 +1,24 @@
+{
+  "oracle_id": "3a8a67ad-e4ff-4b55-9976-a2f13cc9b41b",
+  "name": "Powerstone Minefield",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Powerstone Minefield",
+      "oracle_fingerprint": "d182ff6bc524fda1274765e28f4f4294",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "Attacks": { "what": [{ "Type": "Creature" }] } },
+                { "Blocks": { "what": [{ "Type": "Creature" }] } }
+              ]
+            },
+            "effects": [{ "DealDamage": { "to": "Triggering", "amount": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

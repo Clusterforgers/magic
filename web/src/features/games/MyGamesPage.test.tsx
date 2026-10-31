@@ -114,7 +114,7 @@ describe('a server without accounts', () => {
     ).toBeInTheDocument()
     expect(screen.getByRole('heading', { level: 2, name: 'No list of games here' })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: 'Create game' })).toHaveAttribute('href', '/new')
-    expect(app.accounts.calls.map((call) => call.url)).toEqual(['/api/auth/me'])
+    expect(app.accounts.calls.map((call) => call.url)).toEqual(['/api/auth/options', '/api/auth/me'])
     expect(screen.queryByRole('navigation', { name: 'Account' })).toBeNull()
   })
 })

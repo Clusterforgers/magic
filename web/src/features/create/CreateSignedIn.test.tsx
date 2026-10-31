@@ -75,7 +75,9 @@ describe('a signed-in creator', () => {
     await waitFor(() => expect(app.rest.count('/api/demo-decks')).toBeGreaterThan(0))
     await app.settle()
     expect(screen.queryByRole('form', { name: 'Create a game' })).toBeNull()
-    answer(new Response(JSON.stringify({ id: 'x', username: ADA.username }), { status: 200 }))
+    answer(
+      new Response(JSON.stringify({ id: 'x', username: ADA.username, is_admin: false }), { status: 200 }),
+    )
     expect(await screen.findByRole('form', { name: 'Create a game' })).toBeInTheDocument()
     expect(seatName()).toHaveValue('Ada_L')
   })
@@ -197,6 +199,6 @@ describe('a server without accounts', () => {
     const app = await openCreate({ unavailable: true })
     expect(note()).toBeNull()
     expect(seatName()).toHaveValue('Player 1')
-    expect(app.accounts.calls.map((call) => call.url)).toEqual(['/api/auth/me'])
+    expect(app.accounts.calls.map((call) => call.url)).toEqual(['/api/auth/options', '/api/auth/me'])
   })
 })

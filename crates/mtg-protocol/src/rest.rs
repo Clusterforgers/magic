@@ -115,6 +115,45 @@ pub struct UserView {
     pub id: String,
     /// The username as it was registered.
     pub username: String,
+    /// Whether this is the admin account, the only one that makes accounts; read from the database on every
+    /// request, so the client may show an Accounts page on it but the server stays the judge.
+    pub is_admin: bool,
+}
+
+/// The account `POST /api/admin/users` made; it is not signed in.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
+pub struct CreatedAccount {
+    /// The new account's id (a UUID).
+    pub id: String,
+    /// The username as it was registered.
+    pub username: String,
+}
+
+/// One row of `GET /api/admin/users`; never a password hash or a session.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
+pub struct AccountRow {
+    /// The account's id (a UUID).
+    pub id: String,
+    /// The username as it was registered.
+    pub username: String,
+    /// When the account was made, as `YYYY-MM-DDTHH:MM:SSZ` (UTC).
+    pub created_at: String,
+    /// Whether this is the admin account.
+    pub is_admin: bool,
+}
+
+/// The answer of `GET /api/admin/users`: every account, oldest first.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
+pub struct AccountList {
+    /// The accounts.
+    pub users: Vec<AccountRow>,
+}
+
+/// The answer of `GET /api/auth/options`, which anybody may ask: what a visitor can do before signing in.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, TS)]
+pub struct AccountOptions {
+    /// Whether `POST /api/auth/register` accepts new accounts (`MTG_REGISTRATION=open`).
+    pub registration_open: bool,
 }
 
 /// The `error` code of a failed account request; the body is `{error, message}`.
@@ -133,6 +172,8 @@ pub enum AuthErrorCode {
     UsernameTaken,
     /// 403: the server does not accept new accounts.
     RegistrationClosed,
+    /// 403: the signed-in account is not the admin, which the route needs.
+    Forbidden,
     /// 401: the username and password do not match an account; the same answer for an unknown
     /// username and a wrong password. Also the answer to a wrong password that confirms a
     /// password change or an account deletion.
@@ -157,12 +198,13 @@ pub enum AuthErrorCode {
 
 impl AuthErrorCode {
     /// Every code, in declaration order.
-    pub const ALL: [AuthErrorCode; 14] = [
+    pub const ALL: [AuthErrorCode; 15] = [
         AuthErrorCode::InvalidRequest,
         AuthErrorCode::InvalidUsername,
         AuthErrorCode::InvalidPassword,
         AuthErrorCode::UsernameTaken,
         AuthErrorCode::RegistrationClosed,
+        AuthErrorCode::Forbidden,
         AuthErrorCode::InvalidCredentials,
         AuthErrorCode::TooManyAttempts,
         AuthErrorCode::Unauthenticated,
@@ -182,6 +224,7 @@ impl AuthErrorCode {
             AuthErrorCode::InvalidPassword => "invalid_password",
             AuthErrorCode::UsernameTaken => "username_taken",
             AuthErrorCode::RegistrationClosed => "registration_closed",
+            AuthErrorCode::Forbidden => "forbidden",
             AuthErrorCode::InvalidCredentials => "invalid_credentials",
             AuthErrorCode::TooManyAttempts => "too_many_attempts",
             AuthErrorCode::Unauthenticated => "unauthenticated",
