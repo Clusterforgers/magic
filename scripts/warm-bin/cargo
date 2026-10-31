@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+# `cargo` for a checkout whose target started warm (scripts/warm-target.sh use): runs the real cargo at the canonical
+# path so the warm artifacts are reused. Any other checkout gets the real cargo unchanged. Put this directory first in PATH.
+set -euo pipefail
+self=$(cd "$(dirname "$0")" && pwd)
+path=":$PATH:"
+path=${path//:"$self":/:}
+path=${path#:}
+path=${path%:}
+real=$(PATH=$path command -v cargo) || {
+  echo "warm-bin/cargo: no cargo in PATH" >&2
+  exit 127
+}
+root=$(git rev-parse --show-toplevel 2>/dev/null || true)
+if [[ -n ${MTG_WARM_IN_NS-} || -z $root || ! -e $root/target/.warm-target ]]; then exec "$real" "$@"; fi
+exec "$self/../warm-target.sh" run -- "$real" "$@"

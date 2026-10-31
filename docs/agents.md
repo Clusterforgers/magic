@@ -8,6 +8,7 @@ Use it for every delegated task and keep the brief itself short.
 
 ```
 Task: <one roadmap item, one focused piece, about 15 minutes; at about 80 model turns commit and report what is left>
+Start: `scripts/warm-target.sh use` copies the warm `target` into the new worktree; afterwards prefix every cargo or check command with `PATH=$PWD/scripts/warm-bin:$PATH` (docs/testing.md, Warm worktrees).
 Read first: CLAUDE.md, docs/ROADMAP.md (cards: docs/cards-backlog.md), <only the files you need>
 Scope: only <crate or folder>; no edits elsewhere except append-only workspace deps.
 Deliver: <list>
@@ -37,6 +38,7 @@ Report (max 15 lines): files added, public API in one line each, test counts, de
 - After a restart, run `git worktree list` and read each worktree's `git status` before resuming or redoing anything.
 - When the load stays high or a check does not finish, run `scripts/agent-status.sh`: it shows the CPU by worktree, test binaries running for over 15 minutes with the threads that burn CPU (a hung game), processes whose worktree is gone, wait loops that match themselves and the scratch databases. Tell the agent of a hung test to kill the run and find the seed.
 - Run as many agents at once as are certain not to affect each other: different crates, modules, roadmap items, e2e ports and scratch databases, never the same file or decision. Structure items that reshape shared code run alone.
+- Warm worktrees: after each green batch, with the merge pushed and no agent compiling, run `scripts/warm-target.sh refresh` (a cold build of the check's cargo calls in a clean copy of `main`, about 7 minutes, 12 GB per entry, the newest two kept in `~/.cache/mtg-cli/warm-target`); an agent whose worktree starts from that commit runs `scripts/warm-target.sh use` (30 to 65 s for the copy, then the check's cargo calls finish in seconds instead of a cold 7 minutes). `scripts/warm-target.sh list` shows the entries.
 - Disk: every worktree builds its own `target/` (tens of GB each). After merging an agent, remove its worktree and branch (`git worktree remove`, then `git branch -d`); an agent deletes its own `target/` in its last step. Keep one agent worktree per running agent.
 - Push `main` to origin after every merge and before launching agents: an `isolation: worktree` agent branches from `origin/main`, and agents run elsewhere see a claimed piece (`[~]` in the roadmap) only once it is pushed.
 - Run about six agents at once at most (24 cores): each runs one cargo job at a time and ends with `git merge main` and `scripts/check.sh gate` (after a clean merge of a `main` that moved meanwhile, only the fast check); the orchestrator fast-forwards `main` to its tip when `main` is an ancestor and otherwise sends the agent back to merge.
