@@ -179,25 +179,28 @@ fn mana_type(word: &str) -> Option<&'static str> {
 }
 
 fn mana(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
-    only(p, "Mana", &["Produced", "Amount"])?;
+    only(p, "Mana", &["Produced", "Amount", "RestrictValid"])?;
     let produced = p.get("Produced").unwrap_or_default();
     let times = p.get("Amount").unwrap_or("1");
     let words: Vec<&str> = produced.split_whitespace().collect();
-    let mana = match words.as_slice() {
-        ["Any"] | ["Combo", "Any"] => json!({"AnyColor": amount(ctx, times)?}),
+    let mut effect = match words.as_slice() {
+        ["Any"] | ["Combo", "Any"] => json!({"mana": {"AnyColor": amount(ctx, times)?}}),
         ["Combo", rest @ ..] if times == "1" && rest.len() > 1 => {
             let types: Option<Vec<&str>> = rest.iter().map(|w| mana_type(w)).collect();
             match types {
-                Some(types) => json!({ "OneOf": types }),
+                Some(types) => json!({"mana": {"OneOf": types}}),
                 None => return unmapped("key:Mana.Produced=Combo"),
             }
         }
         fixed if !fixed.is_empty() && fixed.iter().all(|w| mana_type(w).is_some()) => {
-            return fixed_mana(ctx, fixed, times);
+            fixed_mana(ctx, fixed, times)?
         }
         _ => return unmapped("key:Mana.Produced"),
     };
-    Ok(json!({"AddMana": {"mana": mana}}))
+    if let Some(restriction) = p.get("RestrictValid") {
+        effect["only"] = json!([spend_on(restriction)?]);
+    }
+    Ok(json!({ "AddMana": effect }))
 }
 
 /// Fixed mana: the listed types, repeated `times` times (a number repeats the list, anything else is a count).
@@ -205,7 +208,44 @@ fn fixed_mana(ctx: &Ctx, words: &[&str], times: &str) -> Tr<Value> {
     let types: Vec<&str> = words.iter().filter_map(|w| mana_type(w)).collect();
     if let Ok(repeat) = times.parse::<usize>() {
         let all: Vec<&str> = (0..repeat).flat_map(|_| types.iter().copied()).collect();
-        return Ok(json!({"AddMana": {"mana": {"Fixed": all}}}));
+        return Ok(json!({"mana": {"Fixed": all}}));
     }
-    Ok(json!({"AddMana": {"mana": {"Fixed": types}, "times": amount(ctx, times)?}}))
+    Ok(json!({"mana": {"Fixed": types}, "times": amount(ctx, times)?}))
+}
+
+/// What mana may be spent on: spells of the card types or supertype a `RestrictValid$` of spells names.
+fn spend_on(restriction: &str) -> Tr<Value> {
+    let mut types = Vec::new();
+    let mut without = Vec::new();
+    let mut supertypes = Vec::new();
+    for alternative in restriction.split(',') {
+        let Some(word) = alternative.strip_prefix("Spell.") else {
+            return unmapped(format!("key:Mana.RestrictValid={restriction}"));
+        };
+        match word.strip_prefix("non") {
+            Some(rest) if CARD_TYPES.contains(&rest) => without.push(rest),
+            _ if CARD_TYPES.contains(&word) => types.push(word),
+            _ if SUPERTYPES.contains(&word) => supertypes.push(word),
+            _ => return unmapped(format!("key:Mana.RestrictValid={restriction}")),
+        }
+    }
+    let kinds = [
+        !types.is_empty(),
+        !without.is_empty(),
+        !supertypes.is_empty(),
+    ];
+    if kinds.iter().filter(|kind| **kind).count() != 1 {
+        return unmapped(format!("key:Mana.RestrictValid={restriction}"));
+    }
+    let mut filter = json!({});
+    if !types.is_empty() {
+        filter["types"] = json!(types);
+    }
+    if !without.is_empty() {
+        filter["without"] = json!(without);
+    }
+    if !supertypes.is_empty() {
+        filter["supertypes"] = json!(supertypes);
+    }
+    Ok(json!({ "Spell": filter }))
 }
