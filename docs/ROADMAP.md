@@ -465,15 +465,11 @@ The server is settled first, then the web is built once against the final types.
 - [~] (v92b) (byhand-window) A seat whose by-hand card just resolved keeps a priority window in its own turn to apply the clauses; auto-pass now ends the turn at once when nothing else is playable (server pass rules)
 - [~] (v92c) (log-words) The log names a triggered ability that resolves ("An ability of Parasitic Impetus resolves") instead of "a card begins to resolve" and "a card finishes resolving" (`eventText.ts`, `LogPanel` names)
 - [~] (v92d) (log-words) The by-hand log line of a triggered or static clause says when to apply it ("whenever …"), not "when it resolves" (`byHandLine`)
-- [~] (v92e) (panel-polish) The Mana row of the Commands panel keeps the colour last added instead of returning to Green after each Add (`manual/panel/commands.ts`)
 - [~] (v92f) (log-words) A draw by hand names the cards drawn in the drawer's own log, as an ordinary draw does (`manualLog.ts`)
-- [~] (v92g) (panel-polish) The opening hand is readable while the Mulligan prompt waits: its cards are about 70 px wide at 1440x900 (`HandDock`)
 - [~] (v92h) (log-words) The mulligan status says "kept" for a seat that kept, not "keeping" (`OpeningStatus.tsx`)
-- [~] (v92i) (panel-polish) The game-over screen opens the final board and the log for a look back (`GameOver`)
-- [~] (v92j) (panel-polish) The card picked in the Commands panel carries a mark on the table while its commands show (`CardGroup.tsx`)
-- [~] (v92k) (panel-polish) No text under 12 px at the table: the mana letters of a card's pips (6 px) and the Log tab's unread count (11 px)
 - [ ] (v92l) Keyboard-only walk of a whole turn: focus order, the focus return after H and Escape across a resize, contrast of the by-hand and unplayable marks in both themes
 - [ ] (v92m) Duel walk by hand of a counterspell, a combat trick and a sacrifice, and of the timer bank as the other seat sees it (needs a seat that has earned an extension)
+- [ ] (v92n) The opening hand on a phone (390x844) is readable while the Mulligan prompt waits: its cards stay 68 px wide in a scrolling row, as the hand dock keeps its size under 640 px (`openingGrowMost`, `HandDock`)
 
 ## M8 Polish and deploy
 

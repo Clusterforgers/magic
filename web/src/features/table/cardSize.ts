@@ -65,18 +65,6 @@ export const PIP: Record<PipTone, string> = {
   generic: 'bg-muted text-foreground',
 }
 
-/** The ink that reads on a fill of this tone. */
-export const PIP_INK: Record<PipTone, string> = {
-  white: 'text-on-mana-white',
-  blue: 'text-on-mana-blue',
-  black: 'text-on-mana-black',
-  red: 'text-on-mana-red',
-  green: 'text-on-mana-green',
-  gold: 'text-on-mana-gold',
-  colorless: 'text-on-mana-colorless',
-  generic: 'text-foreground',
-}
-
 // A split symbol (hybrid) is a diagonal gradient with a hard edge in the middle: `from` is the upper left half and
 // `to` the lower right one. Whole class names, so Tailwind can see them.
 /** The upper left half of a split mana symbol. */
@@ -102,6 +90,9 @@ export const PIP_TO: Record<PipTone, string> = {
   colorless: 'to-mana-colorless',
   generic: 'to-muted',
 }
+
+/** The mark of the card the Commands panel acts on: a dashed outline beside the solid rings of a prompt's marks. */
+export const PICKED = 'outline-3 outline-dashed outline-offset-4 outline-primary'
 
 /** How the decision layer's marks look on a card. */
 export const HIGHLIGHT: Record<Highlight, string> = {

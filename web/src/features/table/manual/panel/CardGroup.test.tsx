@@ -173,6 +173,54 @@ describe('choosing the card', () => {
   })
 })
 
+describe('the mark on the card picked', () => {
+  const marked = (): number[] =>
+    [...document.querySelectorAll<HTMLElement>('button[data-object-id][data-picked]')].map((button) =>
+      Number(button.dataset.objectId),
+    )
+
+  /** Steps of a player: each is a press on a card, or on a button of the panel. */
+  type Step = 'arm' | 'cancel' | 'clear' | [card: number]
+  const play = async (user: ReturnType<typeof renderPick>['user'], steps: Step[]): Promise<void> => {
+    for (const step of steps) {
+      if (step === 'arm') await user.click(pickButton())
+      else if (step === 'cancel') await user.keyboard('{Escape}')
+      else if (step === 'clear')
+        await user.click(screen.getByRole('button', { name: 'Clear the picked card' }))
+      else await user.click(cardButton(step[0]))
+    }
+  }
+
+  it.each<[string, Step[], number[]]>([
+    ['nothing before a pick', [], []],
+    ['nothing while the first pick waits', ['arm'], []],
+    ['the card chosen', ['arm', [MINE]], [MINE]],
+    ['the other card after Pick another card', ['arm', [MINE], 'arm', [THEIRS]], [THEIRS]],
+    ['the card it had while a new pick waits', ['arm', [MINE], 'arm'], [MINE]],
+    ['the card it had after Escape', ['arm', [MINE], 'arm', 'cancel'], [MINE]],
+    ['nothing after Clear', ['arm', [MINE], 'clear'], []],
+  ])('is on %s', async (_what, steps, expected) => {
+    const { user } = renderPick()
+    await play(user, steps)
+    expect(marked()).toEqual(expected)
+  })
+
+  it('is spoken in the name of the card and only there', async () => {
+    const { user } = renderPick()
+    expect(cardButton(MINE).getAttribute('aria-label')).not.toContain('Commands panel')
+    await play(user, ['arm', [MINE]])
+    expect(cardButton(MINE)).toHaveAccessibleName(/, picked in the Commands panel$/)
+    expect(cardButton(THEIRS).getAttribute('aria-label')).not.toContain('Commands panel')
+  })
+
+  it('draws a dashed outline, apart from the rings a prompt gives a card', async () => {
+    const { user } = renderPick()
+    await play(user, ['arm', [MINE]])
+    expect(cardButton(MINE)).toHaveClass('outline-dashed', 'outline-3')
+    expect(cardButton(THEIRS)).not.toHaveClass('outline-dashed')
+  })
+})
+
 describe('the commands of the card picked', () => {
   async function pick(id = MINE, answer?: ManualResult | 'silence') {
     const harness = renderPick(answer)

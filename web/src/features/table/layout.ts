@@ -182,6 +182,11 @@ export const HAND_PHONE_CLAMP: HeightClamp = { min: 96, vh: 14, max: 120 }
  * window height (`HAND_GROW_VAR`, `handDockNeed`); the boards give up that room.
  */
 export const HAND_GROW_VH = 23
+/**
+ * While an opening hand waits for its keep or mulligan the dock may take this percent of the window height to draw the
+ * hand large (`openingDockNeed`): the boards are empty then.
+ */
+export const OPENING_GROW_VH = 32
 /** The custom property of the table's main area that holds the height the hand dock needs for its rows, in px. */
 export const HAND_GROW_VAR = '--hand-grow'
 /** The own board is this many times as tall as the opponents' area (`minmax(0, 1.15fr)` against `minmax(0, 1fr)`). */
@@ -287,6 +292,11 @@ export function gridRows(
 /** The tallest the hand dock grows for its rows in a window of these regions, in px; 0 on a phone, whose dock keeps its size. */
 export function handGrowMost(regions: Pick<Regions, 'phone' | 'main'>): number {
   return regions.phone ? 0 : (regions.main.height * HAND_GROW_VH) / 100
+}
+
+/** The tallest the hand dock grows for an opening hand in a window of these regions, in px; 0 on a phone, whose dock keeps its size. */
+export function openingGrowMost(regions: Pick<Regions, 'phone' | 'main'>): number {
+  return regions.phone ? 0 : (regions.main.height * OPENING_GROW_VH) / 100
 }
 
 const weight = (px: number | undefined): number => Math.round((px ?? 0) * 100) / 100

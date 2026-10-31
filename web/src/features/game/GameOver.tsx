@@ -1,12 +1,12 @@
 import { Link } from '@tanstack/react-router'
-import { FlagIcon, HandshakeIcon, PlusIcon, SwordsIcon, TrophyIcon } from 'lucide-react'
+import { EyeIcon, FlagIcon, HandshakeIcon, PlusIcon, SwordsIcon, TrophyIcon } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import { useEffect, useRef } from 'react'
 import { useShallow } from 'zustand/react/shallow'
 import { useFitWindow } from '@/components/appChrome'
 import { PageShell } from '@/components/PageShell'
 import { Pill } from '@/components/Pill'
-import { buttonVariants } from '@/components/ui/button'
+import { Button, buttonVariants } from '@/components/ui/button'
 import { useAuth } from '@/features/auth/context'
 import { cn } from '@/lib/utils'
 import { useGame, usePlay } from './gameContext'
@@ -32,10 +32,11 @@ const EYEBROW: Record<EndKind, string> = {
 
 /**
  * The end of the game: who won and how, how each seat finished, and the ways on (a new game, the Play page and, for
- * an account, My games). The page fits the window under the header; only the list of seats scrolls, so the headline
- * and the buttons stay in view at any size.
+ * an account, My games). `onReview` adds a button that closes the result for a look at the final table and log (see
+ * `ReviewBar`). The page fits the window under the header; only the list of seats scrolls, so the headline and the
+ * buttons stay in view at any size.
  */
-export function GameOver() {
+export function GameOver({ onReview }: { onReview?: () => void }) {
   useFitWindow()
   const { lookup } = useGame()
   const { result, seat, view } = usePlay(
@@ -104,6 +105,18 @@ export function GameOver() {
             <PlusIcon aria-hidden="true" />
             Create another game
           </Link>
+          {onReview === undefined || view === null ? null : (
+            <Button
+              size="lg"
+              variant="outline"
+              data-slot="review-open"
+              className="col-span-2 sm:col-auto"
+              onClick={onReview}
+            >
+              <EyeIcon aria-hidden="true" />
+              Look at the table and log
+            </Button>
+          )}
           <Link
             to="/"
             className={cn(

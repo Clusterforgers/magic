@@ -22,6 +22,7 @@ import { ConnectionNotice } from './ConnectionNotice'
 import { GameContext } from './gameContext'
 import { GameOver } from './GameOver'
 import { Lobby } from './Lobby'
+import { ReviewBar } from './ReviewBar'
 import { SeatLinkMissing } from './SeatLinkMissing'
 import { ServerNotice } from './ServerNotice'
 import { useGameInfo } from './useGameInfo'
@@ -143,6 +144,7 @@ function SeatedGame({ gameId, token, name, api, decks, precons, deps }: SeatedGa
   const context = useMemo(() => ({ game: gameId, session, lookup }), [gameId, session, lookup])
 
   const connection = connectionOf(state)
+  const [review, setReview] = useState(false)
   const over = state.phase === 'over' && state.result !== null
   const ended =
     connection.kind === 'replaced' || connection.kind === 'stopped' || connection.kind === 'closed'
@@ -152,7 +154,8 @@ function SeatedGame({ gameId, token, name, api, decks, precons, deps }: SeatedGa
   let screen: ReactElement | null = null
   let title = connection.kind === 'closed' ? 'Game closed' : ended ? 'Disconnected' : 'Connecting'
   if (over) {
-    screen = <GameOver />
+    // The result closes for a look at the final table and its log, and comes back from the strip above them.
+    screen = review ? <GameTable /> : <GameOver onReview={() => setReview(true)} />
     title = 'Game over'
   } else if (state.seat !== null && !ended) {
     screen =
@@ -184,7 +187,8 @@ function SeatedGame({ gameId, token, name, api, decks, precons, deps }: SeatedGa
       <ServerNotice message={state.notice} onDismiss={session.dismissNotice} />
     ) : null
   // The table is exactly the window, so a notice over it floats under its top bar instead of pushing it down.
-  const floating = screen !== null && state.phase === 'playing'
+  const looking = over && review
+  const floating = screen !== null && (state.phase === 'playing' || looking)
   return (
     <GameContext value={context}>
       {floating ? (
@@ -194,6 +198,11 @@ function SeatedGame({ gameId, token, name, api, decks, precons, deps }: SeatedGa
         >
           {connectionNotice === null ? null : <div className="pointer-events-auto">{connectionNotice}</div>}
           {serverNotice === null ? null : <div className="pointer-events-auto">{serverNotice}</div>}
+          {looking ? (
+            <div className="pointer-events-auto">
+              <ReviewBar onResult={() => setReview(false)} />
+            </div>
+          ) : null}
         </div>
       ) : (
         <>

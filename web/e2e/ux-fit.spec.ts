@@ -1,4 +1,4 @@
-// Goal: four fit defects of the layout stay fixed at the sizes of the design (1440x900, 1366x768, 1280x720, 1024x768, 390x844): the host sees the invite link and code of the lobby without scrolling; a hand of ten or more cards ends inside its dock, never under the controls, with its tags whole or an icon; the turn banner lies over neither the step ladder nor the turn badge while it shows; and the seat zone labels and counter chips read at 12 px or more.
+// Goal: five fit defects of the layout stay fixed at the sizes of the design (1440x900, 1366x768, 1280x720, 1024x768, 390x844): the host sees the invite link and code of the lobby without scrolling; a hand of ten or more cards ends inside its dock, never under the controls, with its tags whole or an icon; the turn banner lies over neither the step ladder nor the turn badge while it shows; the opening hand is drawn large while the Mulligan prompt waits, with Keep and Mulligan in reach; and the table has no text under 12 px, the letters of a mana symbol included.
 import { expect, test } from '@playwright/test'
 import type { Page } from '@playwright/test'
 import { DEV_WEB_URL } from './ports'
@@ -200,6 +200,56 @@ test.describe('the turn banner', () => {
   }
 })
 
+test.describe('the opening hand', () => {
+  // The fixture hand: 7 cards and two partner commanders share one line, so the width limits the cards (a table with one
+  // commander gives 122 px at 1440x900); a hand dock that does not grow draws them 68 to 78 px wide.
+  const LEAST: Record<string, number> = { '1440x900': 100, '1366x768': 96, '1280x720': 92, '1024x768': 88 }
+
+  for (const size of SIZES.filter((one) => one.width >= 1024)) {
+    test(`is drawn large while the Mulligan prompt waits at ${label(size)}, Keep and Mulligan in reach`, async ({
+      page,
+    }) => {
+      await page.setViewportSize(size)
+      await page.goto(`${DEV_WEB_URL}/dev/table?seats=2&prompt=mulligan`)
+      await page.waitForSelector('[data-region="hand"] button[data-object-id]')
+      await page.waitForTimeout(400)
+      const seen = await page.evaluate(() => {
+        const box = (element: Element | null | undefined) => {
+          const { left, top, right, bottom } = element?.getBoundingClientRect() ?? new DOMRect()
+          return { left, top, right, bottom }
+        }
+        const button = (name: string) =>
+          [...document.querySelectorAll('button')].find((each) => each.textContent?.trim() === name)
+        const widths = [...document.querySelectorAll('[data-region="hand"] button[data-object-id]')].map(
+          (card) => card.getBoundingClientRect().width,
+        )
+        const keep = box(button('Keep'))
+        const hit = document.elementFromPoint((keep.left + keep.right) / 2, (keep.top + keep.bottom) / 2)
+        return {
+          widths,
+          dock: box(document.querySelector('[data-region="hand"]')),
+          keep,
+          keepFree: hit !== null && button('Keep')?.contains(hit) === true,
+          mulligan: box(button('Mulligan')),
+          scrolls: document.documentElement.scrollHeight > window.innerHeight,
+        }
+      })
+      expect(Math.min(...seen.widths), `${label(size)}: card widths`).toBeGreaterThanOrEqual(
+        LEAST[label(size)] ?? 88,
+      )
+      // The row holds every card side by side, none above another.
+      expect(new Set(seen.widths.map(Math.round)).size).toBe(1)
+      expect(seen.dock.bottom).toBeLessThanOrEqual(size.height + 1)
+      expect(seen.keepFree, 'Keep is not covered').toBe(true)
+      for (const each of [seen.keep, seen.mulligan]) {
+        expect(each.top).toBeGreaterThanOrEqual(0)
+        expect(each.bottom).toBeLessThan(seen.dock.top)
+      }
+      expect(seen.scrolls, 'the page scrolls').toBe(false)
+    })
+  }
+})
+
 test.describe('the text floor of the table', () => {
   test('seat zone labels and counter chips read at 12 px or more', async ({ page }) => {
     for (const size of SIZES) {
@@ -213,8 +263,8 @@ test.describe('the text floor of the table', () => {
         for (let node = words.nextNode(); node !== null; node = words.nextNode()) {
           const text = (node.nodeValue ?? '').replace(/\s+/g, ' ').trim()
           const parent = node.parentElement
-          // The letters of a mana symbol are part of a picture that has its own spoken name (`role="img"`).
-          if (text === '' || parent === null || parent.closest('svg, [role="img"]') !== null) continue
+          // The letters of a mana symbol count too, though the symbol is a picture with its own spoken name (`role="img"`).
+          if (text === '' || parent === null || parent.closest('svg') !== null) continue
           const px = parseFloat(getComputedStyle(parent).fontSize)
           if (px < 12) found.push(`${Math.round(px * 10) / 10}px ${text.slice(0, 20)}`)
         }

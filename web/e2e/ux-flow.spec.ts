@@ -1,4 +1,4 @@
-// Goal: three flow defects of the web client stay fixed on the dev routes (no server): a phone opens a saved deck on its Deck tab with the report, and a wide window shows both panes; the Mana row of the Commands panel starts on a colour of the seat's commander identity; and a seat working in the Commands panel sees the response clock there, in view at 1440x900 and 390x844.
+// Goal: five flow defects of the web client stay fixed on the dev routes (no server): a phone opens a saved deck on its Deck tab with the report, and a wide window shows both panes; the Mana row of the Commands panel starts on a colour of the seat’s commander identity and returns to it after each Add; the card picked in the Commands panel carries a dashed mark on the table; and a seat working in the Commands panel sees the response clock there, in view at 1440x900 and 390x844.
 import { expect, test } from '@playwright/test'
 import type { Page } from '@playwright/test'
 import { DEV_WEB_URL } from './ports'
@@ -59,6 +59,45 @@ test.describe('the Commands panel', () => {
     await expect(mana).toBeVisible()
     // The fixture seat's commander is Tymna the Weaver, white and black.
     await expect(mana).toHaveValue('White')
+  })
+
+  test('the Mana row returns to the commander’s colour after each Add, and keeps a pick until then', async ({
+    page,
+  }) => {
+    await page.setViewportSize(WIDE)
+    await page.goto(`${DEV_WEB_URL}/dev/table?seats=2&panel=mana`)
+    const mana = page.locator('select[aria-label="Mana"]')
+    const apply = page.locator('[data-slot="command-apply"]')
+    await expect(mana).toHaveValue('White')
+    for (const colour of ['Red', 'Blue']) {
+      await mana.selectOption(colour)
+      await expect(mana).toHaveValue(colour)
+      await apply.click()
+      await expect(page.getByText(/^Done: /).first()).toBeVisible()
+      await expect(mana).toHaveValue('White')
+    }
+  })
+
+  test('the card picked in the Commands panel carries a dashed mark on the table', async ({ page }) => {
+    await page.setViewportSize(WIDE)
+    await page.goto(`${DEV_WEB_URL}/dev/table?seats=2&panel=card`)
+    const picked = page.locator('[data-group="card"] [data-slot="card-picked"]')
+    await expect(picked).toBeVisible()
+    const mark = page.locator('button[data-object-id][data-picked]')
+    await expect(mark).toHaveCount(1)
+    await expect(mark).toBeVisible()
+    expect((await mark.getAttribute('aria-label')) ?? '').toMatch(/, picked in the Commands panel$/)
+    const style = await mark.evaluate((element) => {
+      const css = getComputedStyle(element)
+      return { style: css.outlineStyle, width: parseFloat(css.outlineWidth) }
+    })
+    expect(style).toEqual({ style: 'dashed', width: 3 })
+    // The panel names the card the mark is on.
+    const name = (await picked.locator('span.font-medium').textContent()) ?? ''
+    expect(((await mark.getAttribute('aria-label')) ?? '').startsWith(name)).toBe(true)
+    // Clearing the pick takes the mark off.
+    await page.getByRole('button', { name: 'Clear the picked card' }).click()
+    await expect(page.locator('button[data-object-id][data-picked]')).toHaveCount(0)
   })
 
   for (const size of [WIDE, PHONE]) {

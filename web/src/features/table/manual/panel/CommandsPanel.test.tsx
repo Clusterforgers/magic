@@ -1,5 +1,5 @@
 // Goal: the Commands panel is the first and default tab of a seat's side column and absent for a viewer that is no seat; a command opens in place, shows the change it will make before anything is sent, sends the exact action on Apply or Enter, says it was sent, and closes on Escape with the focus back on its row; an inert command says why and sends nothing; the Mana row opens on a colour of the seat's commander identity.
-import { screen, within } from '@testing-library/react'
+import { act, screen, within } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
 import type { ManualResult } from '@/play/manualLedger'
 import type { PlayState } from '@/play/store'
@@ -296,6 +296,38 @@ describe('the Mana row', () => {
     await table.user.click(within(panel).getByRole('button', { name: /^Add/ }))
     expect(manual).toHaveBeenCalledWith({ AddMana: { mana: 'Red', count: 1 } })
     expect(within(panel).getByRole('combobox', { name: 'Mana' })).toHaveValue('White')
+  })
+
+  it.each<[string, 'ok' | 'later pick', string]>([
+    ['the server took the action', 'ok', 'White'],
+    ['the seat picked Blue while the action was on its way', 'later pick', 'Blue'],
+  ])('answers late: %s, so the row shows %s', async (_what, mode, expected) => {
+    let reply: ((result: ManualResult) => void) | undefined
+    const table = renderTable({
+      seats: 2,
+      options: { viewport: WIDE },
+      ui: <CommandsPanel />,
+      state: withCommander(['White', 'Blue', 'Black'], ESPER),
+      session: {
+        manual: (_action, answer) => {
+          reply = answer
+          return true
+        },
+      },
+    })
+    const panel = screen.getByRole('region', { name: 'Commands' })
+    const row = within(panel)
+      .getAllByRole('button', { name: /^Mana/ })
+      .find((button) => button.hasAttribute('aria-expanded'))
+    if (row === undefined) throw new Error('no Mana row')
+    await table.user.click(row)
+    const select = within(panel).getByRole('combobox', { name: 'Mana' })
+    await table.user.selectOptions(select, 'Red')
+    await table.user.click(within(panel).getByRole('button', { name: /^Add/ }))
+    expect(select).toHaveValue('Red')
+    if (mode === 'later pick') await table.user.selectOptions(select, 'Blue')
+    act(() => reply?.({ ok: true }))
+    expect(within(panel).getByRole('combobox', { name: 'Mana' })).toHaveValue(expected)
   })
 })
 

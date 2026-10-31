@@ -4,7 +4,7 @@ import { cn } from '@/lib/utils'
 import type { ObjectId } from '@/protocol/generated'
 import { cardLabel } from './cardModel'
 import type { Highlight } from './cardModel'
-import { HIGHLIGHT, SIZE } from './cardSize'
+import { HIGHLIGHT, PICKED, SIZE } from './cardSize'
 import type { CardSize } from './cardSize'
 import { CardFace } from './CardFace'
 import { useCreatureOutlook } from './combat/drawn'
@@ -18,6 +18,7 @@ import { fxAttr, fxSide, isMarkFx } from './fx/model'
 import { useDrawnWidth } from './ImageFace'
 import { ManaStrip } from './ManaStrip'
 import { BY_HAND_KEY, clausesOf } from './manual/clauses'
+import { useIsPicked } from './manual/panel/pick'
 import { useManualMenu } from './manual/useManualMenu'
 import { useCardMark, useMarksStore } from './prompt/marks'
 import type { CardSelect } from './prompt/marks'
@@ -44,6 +45,9 @@ export interface CardProps {
   /** Words added to the spoken name, such as where the card waits and what casting it costs. */
   words?: string
 }
+
+/** What the picked mark adds to a card's spoken name. */
+const PICKED_WORDS = 'picked in the Commands panel'
 
 /** What a mark adds to a card's spoken name; a selection that reads as pressed needs no extra word. */
 const MARK_WORDS: Record<Highlight, string> = {
@@ -86,6 +90,7 @@ export const Card = memo(function Card({
   const onSelect = givenSelect ?? (promptSelects ? marks.select : undefined)
   const handlers = usePreviewHandlers(id, onSelect === undefined ? undefined : (from) => onSelect(id, from))
   const manual = useManualMenu(id)
+  const picked = useIsPicked(id)
   if (object === undefined) return null
   const tapped = object.permanent?.tapped === true
   const attached = object.attached_to !== undefined || object.attached_player !== undefined
@@ -93,7 +98,11 @@ export const Card = memo(function Card({
   const listKey = manual.onKeyDown !== undefined && clausesOf(object).length > 0 ? BY_HAND_KEY : undefined
   const markWords =
     highlight === undefined || (pressable && highlight === 'selected') ? '' : `, ${MARK_WORDS[highlight]}`
-  const spoken = [...(note === undefined ? [] : [note.words]), ...handMarkWords(place, object.note)]
+  const spoken = [
+    ...(note === undefined ? [] : [note.words]),
+    ...handMarkWords(place, object.note),
+    ...(picked ? [PICKED_WORDS] : []),
+  ]
   const words = spoken.length === 0 ? markWords : `${markWords}, ${spoken.join(', ')}`
   return (
     <button
@@ -101,6 +110,7 @@ export const Card = memo(function Card({
       data-object-id={id}
       data-highlight={highlight}
       data-cue={note?.cue}
+      data-picked={picked || undefined}
       data-size={size}
       data-tapped={tapped || undefined}
       data-attached={attached || undefined}
@@ -124,6 +134,7 @@ export const Card = memo(function Card({
         'group/card relative grid h-(--card-h) w-(--card-w) shrink-0 place-items-center rounded-md outline-offset-2 outline-primary focus-visible:outline-2',
         fit ? null : SIZE[size].vars,
         highlight === undefined ? null : HIGHLIGHT[highlight],
+        picked ? PICKED : null,
         // A card that says why it is dimmed is read whole while it says so.
         note?.hint === undefined
           ? null
