@@ -1,7 +1,7 @@
 /** The log lines of manual actions: the sentence of an action and the events of its change that the sentence already tells. */
 import type { LogEntry } from '@/play/store'
 import type { Event, EventView, ManualAction, ObjectId, Zone } from '@/protocol/generated'
-import { describeHiddenManual, describeManual } from '../eventText'
+import { describeHiddenManual, describeManual, joinWords } from '../eventText'
 import type { EventNames } from '../eventText'
 
 /** The events that carry out `action`, by variant name; `Move` also reads the zone it left from the first of them. */
@@ -68,15 +68,20 @@ export function leftFrom(log: readonly LogEntry[], at: number, count: number): Z
   return undefined
 }
 
-/** The cards the `count` events after the action at `at` tell the viewer: a look at the library or a reveal. */
+/**
+ * The cards the `count` events after the action at `at` tell the viewer: a look at the library, a reveal, or the cards
+ * drawn (only a viewer who may see them gets a public draw; the others get a hidden one and so no cards).
+ */
 function shownIn(log: readonly LogEntry[], at: number, count: number): ObjectId[] | undefined {
+  const drawn: ObjectId[] = []
   for (const entry of log.slice(at + 1, at + 1 + count)) {
     const inner = 'Public' in entry.event ? entry.event.Public : null
     if (inner === null || typeof inner === 'string') continue
     if ('LibraryLooked' in inner) return inner.LibraryLooked.cards
     if ('Revealed' in inner) return inner.Revealed.cards
+    if ('CardDrawn' in inner) drawn.push(inner.CardDrawn.object)
   }
-  return undefined
+  return drawn.length === 0 ? undefined : drawn
 }
 
 /** The result the `count` events after the action at `at` tell: a coin or a die rolled by hand. */
@@ -94,7 +99,7 @@ export interface ManualRun {
   /** The events right after the action that its sentence tells again. */
   consumed: number
   from: Zone | undefined
-  /** The cards the run told the viewer: those looked at or revealed. */
+  /** The cards the run told the viewer: those looked at, revealed or drawn. */
   shown?: ObjectId[]
   /** The result of a coin or a die rolled by hand. */
   rolled?: number
@@ -165,17 +170,33 @@ function momentOf(event: EventView): { id: ObjectId; cast: boolean } | null {
   return null
 }
 
+/** A triggered clause ("Whenever ...", "At the beginning of ...", possibly after an ability word such as "Landfall — "). */
+const TRIGGERED = /^(?:[^—:.]{1,40} — )?(?:when|whenever|at the beginning of|at the end of|at end of)\b/i
+
+/**
+ * When the table applies each kind of clause of a card that is cast: an effect of a spell as it resolves, a triggered
+ * clause whenever it triggers, any other clause of a permanent (static or activated) while it is on the battlefield.
+ */
+export function applyWhen(clauses: readonly string[], permanent: boolean): string {
+  const moments = clauses.map((clause) => {
+    if (TRIGGERED.test(clause.trim())) return 'whenever it triggers'
+    return permanent ? 'while it is on the battlefield' : 'when it resolves'
+  })
+  return joinWords([...new Set(moments)])
+}
+
 /**
  * What a card leaves to the table when it is cast, resolves, is played or enters the battlefield (by an effect or by
  * hand): the clauses of its rules the engine does not run, quoted, so the seat sees what to apply by hand at the
- * moment it can. A permanent spell enters as it resolves, so it is told there and not again. Null for any other event
- * and for a card without such clauses (or one whose clauses the viewer does not know).
+ * moment it can. At the cast the line says when each kind applies (`applyWhen`); a permanent spell enters as it
+ * resolves, so it is told there and not again. Null for any other event and for a card without such clauses (or one
+ * whose clauses the viewer does not know).
  */
 export function byHandLine(event: EventView, names: EventNames): string | null {
   const moment = momentOf(event)
   const clauses = moment === null ? [] : (names.clauses?.(moment.id) ?? [])
   if (moment === null || clauses.length === 0) return null
-  const when = moment.cast ? ' when it resolves' : ''
+  const when = moment.cast ? ` ${applyWhen(clauses, names.permanent?.(moment.id) ?? false)}` : ''
   return `${names.card(moment.id)} has rules to apply by hand${when}: ${clauses.map(quoted).join('; ')}`
 }
 

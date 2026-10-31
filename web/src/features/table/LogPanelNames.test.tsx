@@ -46,3 +46,25 @@ describe('the log lines about objects that left the view', () => {
     expect(text.some((line) => line.includes(`${held?.name} dies`))).toBe(true)
   })
 })
+
+describe('the log lines about an ability the view holds', () => {
+  it('name the ability after its source card, not as the card itself', () => {
+    const probe = renderTable({ seats: 2, ui: <LogPanel /> })
+    const held = Object.values(probe.store.getState().objectsById).find((object) => object.name !== '')
+    probe.unmount()
+    expect(held).toBeDefined()
+    if (held === undefined) return
+    const ability = GONE + 1
+    renderTable({
+      seats: 2,
+      ui: <LogPanel />,
+      state: (first) => ({
+        ...first,
+        objectsById: { ...first.objectsById, [ability]: { ...held, id: ability, source: held.id } },
+        log: [{ seq: 0, event: { Public: { ResolutionBegan: { object: ability } } } }],
+      }),
+    })
+    const items = within(screen.getByRole('log', { name: 'Game log' })).getAllByRole('listitem')
+    expect(items.map((item) => item.textContent)).toContain(`An ability of ${held.name} begins to resolve`)
+  })
+})

@@ -36,6 +36,10 @@ export interface EventNames {
   card(id: ObjectId): string
   /** The clauses of a card's rules that are left to the table, when the viewer knows them. */
   clauses?(id: ObjectId): readonly string[]
+  /** Whether the card is a permanent card, whose clauses are its abilities and not the effects of a spell. */
+  permanent?(id: ObjectId): boolean
+  /** The card an ability on the stack comes from, when the log knows the object is an ability. */
+  ability?(id: ObjectId): ObjectId | undefined
 }
 
 /** One log line. Minor lines (priority passes, mana, untaps) are drawn quietly. */
@@ -46,6 +50,16 @@ export interface LogLine {
 
 const line = (text: string): LogLine => ({ text, minor: false })
 const quiet = (text: string): LogLine => ({ text, minor: true })
+
+/**
+ * A spell or ability on the stack by name: a spell as its card is named, an ability as "an ability of" its source
+ * (capitalised at the start of a sentence), so a trigger is never mistaken for the card it comes from.
+ */
+function stackName(n: EventNames, id: ObjectId, start: boolean): string {
+  const source = n.ability?.(id)
+  if (source === undefined) return n.card(id)
+  return `${start ? 'An' : 'an'} ability of ${n.card(source)}`
+}
 
 const cards = (count: number): string => `${count} ${count === 1 ? 'card' : 'cards'}`
 
@@ -360,7 +374,12 @@ export function describeManual(
   }
   if ('Tap' in action) return `${who} taps ${n.card(action.Tap.object)} (by hand)`
   if ('Untap' in action) return `${who} untaps ${n.card(action.Untap.object)} (by hand)`
-  if ('Draw' in action) return `${who} draws ${cards(action.Draw.count)} (by hand)`
+  if ('Draw' in action) {
+    // The drawer is told the cards, as an ordinary draw does; the others see how many.
+    const { count } = action.Draw
+    const said = shown !== undefined && shown.length === count ? joinWords(shown.map(n.card)) : cards(count)
+    return `${who} draws ${said} (by hand)`
+  }
   if ('Discard' in action) return `${who} discards ${n.card(action.Discard.object)} (by hand)`
   if ('Attach' in action) {
     return `${who} attaches ${n.card(action.Attach.object)} to ${n.card(action.Attach.to)} (by hand)`
@@ -498,17 +517,18 @@ function isPipeline(event: Event): event is PipelineEvent {
  * returns Hill Giant to Bo's hand". Null for every other move, which keeps its plain line.
  */
 function byResolving(
-  by: string,
+  resolving: ObjectId,
   name: string,
   from: Zone,
   to: Zone,
   cause: ZoneCause,
   n: EventNames,
 ): string | null {
+  const by = stackName(n, resolving, false)
   if (cause === 'Exiled' || cause === 'Destroyed') return `${name} ${BECAUSE[cause]} by ${by}`
   if (cause === 'Buried') return `${name} is destroyed by ${by} and can't be regenerated`
   const bounced = cause === 'Moved' && from === 'Battlefield' && typeof to !== 'string' && 'Hand' in to
-  return bounced ? `${by} returns ${name} to ${zoneWord(to, n)}` : null
+  return bounced ? `${stackName(n, resolving, true)} returns ${name} to ${zoneWord(to, n)}` : null
 }
 
 function describePipeline(event: PipelineEvent, n: EventNames, context?: EventContext): LogLine {
@@ -538,7 +558,8 @@ function describePipeline(event: PipelineEvent, n: EventNames, context?: EventCo
     return line(`A delayed ability of ${n.card(event.DelayedTriggerCreated.source.id)} is set up`)
   }
   if ('DelayedTriggerExpired' in event) return quiet('A delayed ability ends without triggering')
-  if ('ResolutionBegan' in event) return quiet(`${n.card(event.ResolutionBegan.object)} begins to resolve`)
+  if ('ResolutionBegan' in event)
+    return quiet(`${stackName(n, event.ResolutionBegan.object, true)} begins to resolve`)
   if ('ChoiceMade' in event) {
     const { player, choice } = event.ChoiceMade
     return quiet(`${n.seat(player)} ${describeChoice(choice, n)}`)
@@ -546,21 +567,24 @@ function describePipeline(event: PipelineEvent, n: EventNames, context?: EventCo
   if ('StepDone' in event) return quiet('A step of the resolution is done')
   if ('ResolutionEnded' in event) {
     const { object, outcome } = event.ResolutionEnded
-    if (outcome === 'Fizzled') return line(`${n.card(object)} does nothing: its targets are gone`)
+    if (outcome === 'Fizzled') return line(`${stackName(n, object, true)} does nothing: its targets are gone`)
     if (outcome === 'Countered') {
       const by = context?.resolving
       return line(
-        by === undefined ? `${n.card(object)} is countered` : `${n.card(by)} counters ${n.card(object)}`,
+        by === undefined
+          ? `${stackName(n, object, true)} is countered`
+          : `${stackName(n, by, true)} counters ${stackName(n, object, false)}`,
       )
     }
-    if (outcome === 'Lapsed') return line(`${n.card(object)} does nothing: its condition is no longer true`)
-    return quiet(`${n.card(object)} finishes resolving`)
+    if (outcome === 'Lapsed')
+      return line(`${stackName(n, object, true)} does nothing: its condition is no longer true`)
+    return quiet(`${stackName(n, object, true)} finishes resolving`)
   }
   if ('ZoneChanged' in event) {
     const { object, from, to, cause } = event.ZoneChanged
     const by = context?.resolving
     if (by !== undefined && by !== object) {
-      const done = byResolving(n.card(by), n.card(object), from, to, cause, n)
+      const done = byResolving(by, n.card(object), from, to, cause, n)
       if (done !== null) return line(done)
     }
     if (typeof to !== 'string' && 'Command' in to) {
@@ -680,7 +704,7 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
   }
   if ('AbilityCopied' in event) {
     const { controller, of } = event.AbilityCopied
-    return line(`${n.seat(controller)} copies the ability of ${n.card(of.id)}`)
+    return line(`${n.seat(controller)} copies the ability of ${n.card(n.ability?.(of.id) ?? of.id)}`)
   }
   if ('CopyEnded' in event) return line(`${n.card(event.CopyEnded.object)} stops being a copy`)
   if ('CardCopied' in event) {

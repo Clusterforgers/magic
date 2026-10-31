@@ -3,7 +3,7 @@ import type { LogEntry } from '@/play/store'
 import type { Event, PlayerId, PlayerView } from '@/protocol/generated'
 import { commanderDamageLine } from './commander'
 import { commanderHits } from './commanderLog'
-import { eventContexts } from './eventContext'
+import { abilitySources, eventContexts } from './eventContext'
 import { describeEvent, joinWords } from './eventText'
 import type { EventNames } from './eventText'
 import { byHandLine, manualRun, manualText, remember } from './manual/manualLog'
@@ -48,7 +48,9 @@ export interface FoldOptions {
  * short). A round in which everybody passed with nothing to resolve (a step that went by) is left out, since the next
  * step says it; so is a round that has no event after it yet, which waits for that event to say what it was.
  */
-export function foldLog(log: readonly LogEntry[], names: EventNames, options: FoldOptions): FoldedLine[] {
+export function foldLog(log: readonly LogEntry[], given: EventNames, options: FoldOptions): FoldedLine[] {
+  const sources = abilitySources(log.map((entry) => entry.event))
+  const names: EventNames = { ...given, ability: (id) => given.ability?.(id) ?? sources.get(id) }
   const lines: FoldedLine[] = []
   let passed: PlayerId[] = []
   let first = 0

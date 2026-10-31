@@ -12,7 +12,7 @@ function kindOf(status: MulliganStatus): 'choosing' | 'done' | 'again' {
 }
 
 /**
- * During the opening hands, one line that lists every seat with what it is doing: deciding, keeping (and how many
+ * During the opening hands, one line that lists every seat with what it is doing: deciding, kept (and how many
  * cards it still bottoms), taking a mulligan, and how many mulligans it has taken. It is the public part of what the
  * seat panels say, in one place, so a table of any size shows it at a glance. Nothing before or after that stage.
  */

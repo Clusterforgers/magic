@@ -106,10 +106,10 @@ test('four seats are each asked to keep or mulligan within a second of the start
       }),
     )
     for (const ms of after) expect(ms).toBeLessThan(1_000)
-    // One seat keeps; the others keep their own prompt and read that seat as keeping.
+    // One seat keeps; the others keep their own prompt and read that seat as kept.
     await ada.page.getByRole('button', { name: 'Keep', exact: true }).click()
     for (const { page } of players.slice(1)) {
-      await expect(page.locator('[data-seat-status="0"]')).toContainText('Ada: keeping')
+      await expect(page.locator('[data-seat-status="0"]')).toContainText('Ada: kept')
       await expect(page.getByRole('button', { name: 'Keep', exact: true })).toBeVisible()
     }
     for (const player of players) expect(player.errors, `${player.name}'s page errors`).toEqual([])
