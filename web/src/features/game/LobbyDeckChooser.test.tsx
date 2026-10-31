@@ -183,8 +183,10 @@ describe('the decks on offer', () => {
         .map((item) => item.textContent),
     ).toEqual(['A Pauper deck holds no rares.', '2 cards the game cannot play.'])
     expect(document.querySelector('[data-slot="deck-blocked"]')).toBeNull()
-    expect(document.querySelector('[data-slot="ready-hint"]')?.textContent).toBe(
-      'Ready needs a deck. Choose one under Your deck. Pauper Affinity cannot be taken at this table.',
+    await waitFor(() =>
+      expect(document.querySelector('[data-slot="ready-hint"]')?.textContent).toBe(
+        'Ready needs a deck. Choose one under Your deck. Pauper Affinity cannot be taken at this table.',
+      ),
     )
     expect(document.body.textContent?.match(/holds no rares/g)).toHaveLength(1)
     expect(document.body.textContent?.match(/cannot play/g)).toHaveLength(1)
