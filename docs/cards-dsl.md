@@ -1055,6 +1055,57 @@ Vocabulary of other engines against this DSL. Sources: P = phase.rs (MIT or Apac
 
 `mtg-cli forge-check --forge <Forge checkout>` sets the stored precon cards against Forge's scripts, which are read at run time and never stored: the verbs Forge names that the rules lack, and the unread tail grouped by Forge API and key (`reference-engines.md`, Cross-check report). Its map from Forge names to the verbs of this DSL is `crates/mtg-cli/src/forge/map.txt`.
 
+## Generality
+
+A gap is a missing parameter of an existing node before it is a new node: Forge covers about 34,000 cards with about 190 parametric effects, selector strings, `Count$` amounts and an `Effect` object that carries statics, triggers and replacements for a duration. The 636 missing-primitive and missing-writer gaps of the sweep ledger (`orch/gaps5`) sort into three classes:
+
+| Class | Meaning | Gaps (primitive + writer) |
+|---|---|---|
+| PARAM | Existing nodes express it with another selector, amount, condition, duration or cost; the draft left it unread (269 "no rule for" clauses) or the writer lacks the wording | 454 (306 + 148) |
+| GENERAL | One new node or option frees it and similar cards | 154 (147 + 7) |
+| ONE-OFF | Unique (piles, text-box swaps, digital-only actions, Un-cards, Mindslaver) | 28 |
+
+The engine already has most escape hatches as separate nodes: `Continuous` (statics), `Rule`, `Shield` (replacements) and `DelayedTrigger { once: false, this_turn }` (a granted trigger) together are Forge's `Effect`; `Pay { who, cost: OneOf }` is its `UnlessCost` with `UnlessPayer`; `Compare` against `Greatest` inside `RepeatEach` is its `GreatestCardManaCost`. The largest lever is the drafter, which needs these shapes, not new nodes.
+
+| Node or option | Parameters | Ledger gaps (cards blocked) | Forge wordings in 34k | Forge shape |
+|---|---|---|---|---|
+| Amount options | `StatKind::BasePower`, `Distinct` over colours, `CommanderColors(Ref)`, targets of the triggering spell, damage prevented this way | 18 (19) | 400 | `Count$` expressions |
+| `Amount::Tally` | `event` (cast, died, entered, created, resolved), `who`, `filter: Selector`; `TurnNumber`, `Condition::StartingPlayer` | 6 (6) | 210 | `Count$ThisTurnCast_<valid>` |
+| `GameRule::CantCast` | `who`, `filter`, `more_than`, `unless: Condition` | 8 (8) | 140 | static `CantBeCast`, `NumLimitEachTurn` |
+| Mana ability of any shape | X in the cost, a choice (Nykthos), no `{T}`, untap costs | 3 (19) | 110 | `AB$ Mana` with `Amount$`, `Produced$ Chosen` |
+| Rule options | `UntapDuring { what, whose }`, `MaxHandSize { who, set or change }`, `TriggerAgain.source`, `NoLegendRule(Ref)`, `Ability::OpeningHand` | 15 (17) | 165 | `UntapOtherPlayer`, `RaiseMaxHandSize$`, `Panharmonicon`, `MayEffectFromOpeningHand` |
+| Keyword macros | A keyword the assembler expands into existing nodes (Bushido, Modular, Mobilize, populate, endure, earthbend) | 14 (15) | 365 | keywords expanded in `CardFactoryUtil` |
+| Keyword lock and combat permissions | `RemoveKeyword.cant_have`, as though no hexproof, no defender, untapped; `CantAttackAlone`, `MustBeBlocked` | 7 (7) | 220 | `CantHaveKeyword$`, `CanAttackDefender`, `CanBlockTapped` |
+| Zone statics and uses | `Static.affected` on the stack, hand, graveyard or exile (cascade, convoke, improvise, flashback); `uses` for "the next spell", `Shield.uses` for "the next time" | 11 (11) | 190 | `AffectedZone$`, `Effect` with `ForgetOnMoved` |
+| Writer composition | Name the unwritten part of a `Replacement`, `Rule` or `CostModifier`; compose a frame with parts written alone | 7 (81) | n/a | n/a |
+| Activated-ability modifiers | `CostModifier.applies_to` an ability kind (equip, cycling, loyalty), `change: Instead(cost)`, activate as though haste | 10 (10) | 30 | static `ReduceCost` with `Type$ Ability` |
+| Copy exceptions | `BecomeCopy.except` keeps the source's ability, sets name and supertype; types added on a return | 4 (5) | 50 | `Clone` keys `AddTypes$`, `GainThisAbility$` |
+| Cost parts | `PutCounters`, `UntapPermanents`, `Exert`, `RemoveCountersAmong`, counted sacrifices | 7 (7) | 40 | cost parts `AddCounter`, `untapXType`, `Exert` |
+| `Effect::ChangeTargets` | `what`, `to: Selector`, single-target filter | 3 (4) | 25 | `ChangeTargets` |
+
+Mechanics without a node (the Ring tempts you, speed, search triggers and replacements) are by-demand tasks, item (h). Forge counts are wording matches, overlap, and include cards already read.
+
+Near-duplicate families, each a candidate for one parametric node:
+
+| Family | Variants | Parametric form |
+|---|---|---|
+| Keyword-action triggers (`Proliferated`, `Explored`, `Connived`, `BecomesMonstrous`, `DiceRolled`, `W11cCrime`, ...) | 26 | `Did { action, who, what }` |
+| `TurnTally` and this-way counts (`Destroyed`, `Exiled`, `Devoured`, `LifeLostThisWay`, ...) | 30 | `Tally { event, who, filter }`, `ThisWay { event, filter }` |
+| Combat restrictions (`CantAttack`, `CantBlock`, `MaxBlockers`, ...) and combat rules (`MustAttack`, `AttackLimit`, ...) | 19 | `Restrict { action, by, unless }` |
+| Pred status and history (`Tapped`, `Monstrous`, `Goaded`, `FaceDown`, `EnteredThisTurn`, `DamagedThisTurn`, ...) | 16 | `Status(kind)`, `ThisTurn(event)` |
+| Amount aggregates (`Life`, `LowestLife`, `HighestLife`, `LowestHand`, `Greatest`, `Total`, `Distinct`, `Devotion`, ...) | 13 | `Aggregate { op, over, stat }` |
+| `ReplaceBy` enters and prevention (`Tapped`, `PayLifeOrTapped`, `RevealOrTapped`, `PreventUpTo`, `PreventAllBut`, ...) | 11 | `Enters { tapped, unless, counters }`, `Prevent { amount, then }` |
+| Player prohibitions (`CantGainLife`, `CantDraw`, `CantSearch`, `CantCastSpells`, `SkipDrawStep`, ...) | 10 | `Cant { who, action }` |
+| Attack and block triggers (`Attacks`, `AttacksAlone`, `AttacksPlayer`, `GroupAttacks`, `Blocks`, ...) | 10 | `Attacks { what, at, alone, at_least }` |
+| Type changes (`AddType`, `RemoveType`, `SetTypes`, `AddSubtype`, `SetCreatureTypes`, ...) | 8 | `Types { add, remove, set }` |
+| Library digs (`LookAtTop`, `RevealUntil`, `ExileUntil`, `ExileTop`, `ExileHidden`, `Reveal`) | 6 | `Dig { count or until, reveal, to }` |
+
+| Rule | Reason |
+|---|---|
+| A general node is added beside the variants it could replace; the reader writes it only for wordings they cannot express | No `Verified` card changes, and the corpus ratchet stays green |
+| A family migrates later in one piece: the old variants lower into the new node, the writer keeps their wordings, and `reproduced.txt` is unchanged | A rename is a data change the tests check, not a behaviour change |
+| A new keyword that is a template of existing nodes is a macro, not an engine file | Keywords stay one enum; behaviour stays in the primitives |
+
 ## Tasks
 
 The order of the M3 work; `cards-backlog.md` lists the pieces. A structural task changes how abilities, characteristics, events, costs or views are shaped, so it runs alone and before the tasks that fill one stub. The rows after (c) are in build order.
