@@ -784,7 +784,7 @@ pub(crate) fn printed_gaps(printed: &PrintedCard, caps: &Caps) -> Vec<Clause> {
                 face,
                 span: whole_text(&shown.oracle_text),
                 reason: format!(
-                    "the engine plays only the front face of a card, so {} cannot be cast or turned over",
+                    "you cast or turn over {} by hand: the game plays only the front face of a card",
                     shown.name
                 ),
             });
@@ -923,10 +923,13 @@ fn read_face(face: &PrintedFace) -> Read {
                     needs: None,
                     reason: match error {
                         ParseManaCostError::Unsupported(symbol) => format!(
-                            "the mana cost has the symbol {{{symbol}}}, which the engine does not know yet"
+                            "you pay the {{{symbol}}} in the mana cost by hand: the game does not know the symbol"
                         ),
                         ParseManaCostError::Malformed(_) => {
-                            format!("the mana cost {:?} cannot be read", face.mana_cost)
+                            format!(
+                                "you pay the mana cost {:?} by hand: the game cannot read it",
+                                face.mana_cost
+                            )
                         }
                     },
                 });
@@ -937,7 +940,7 @@ fn read_face(face: &PrintedFace) -> Read {
     if cost.as_ref().is_some_and(ManaCostX::has_x) {
         gaps.push(Gap {
             needs: Some(X_COST),
-            reason: "the engine cannot pay {X} in a mana cost yet".to_owned(),
+            reason: "you choose and pay the {X} in the mana cost by hand".to_owned(),
         });
     }
     let types = read_type_line(&face.type_line);
@@ -945,7 +948,7 @@ fn read_face(face: &PrintedFace) -> Read {
         gaps.push(Gap {
             needs: None,
             reason: format!(
-                "the type line has words the engine does not know: {}",
+                "you apply the type line by hand: the game does not know {}",
                 types.unknown.join(", ")
             ),
         });
@@ -968,14 +971,14 @@ fn read_face(face: &PrintedFace) -> Read {
     let defense = number("defense", face.defense.as_deref()).and_then(|n| u32::try_from(n).ok());
     if !variable.is_empty() {
         let (verb, what, source) = if variable.len() == 1 {
-            ("is", "a number", "it comes")
+            ("it is", "a number", "it comes")
         } else {
-            ("are", "numbers", "they come")
+            ("they are", "numbers", "they come")
         };
         gaps.push(Gap {
             needs: Some(VARIABLE_STATS),
             reason: format!(
-                "the printed {} {verb} not {what}, so {source} from an ability the engine does not run yet",
+                "you work out the printed {} by hand: {verb} not {what}, so {source} from an ability the game does not run yet",
                 variable.join(" and "),
             ),
         });
@@ -1686,9 +1689,17 @@ mod tests {
     }
 
     #[rstest]
-    #[case::star_power(Some("*"), Some("2"), "power is not a number")]
-    #[case::star_toughness(Some("2"), Some("1+*"), "toughness is not a number")]
-    #[case::both(Some("*"), Some("*"), "power and toughness are not numbers")]
+    #[case::star_power(Some("*"), Some("2"), "printed power by hand: it is not a number")]
+    #[case::star_toughness(
+        Some("2"),
+        Some("1+*"),
+        "printed toughness by hand: it is not a number"
+    )]
+    #[case::both(
+        Some("*"),
+        Some("*"),
+        "printed power and toughness by hand: they are not numbers"
+    )]
     fn a_stat_that_is_not_a_number_makes_the_card_manual(
         #[case] power: Option<&str>,
         #[case] toughness: Option<&str>,
@@ -1722,7 +1733,7 @@ mod tests {
     #[rstest]
     #[case::x_in_the_cost("{X}{G}", "Creature \u{2014} Elf", X_COST, "{X}")]
     #[case::snow_in_the_cost("{1}{S}", "Creature \u{2014} Elf", "", "{S}")]
-    #[case::garbage_cost("1G", "Creature \u{2014} Elf", "", "cannot be read")]
+    #[case::garbage_cost("1G", "Creature \u{2014} Elf", "", "the game cannot read it")]
     #[case::a_type_of_no_game_here("{G}", "Plane \u{2014} Dominaria", "", "Plane")]
     fn what_the_definition_cannot_hold_or_play_makes_the_card_manual(
         #[case] cost: &str,

@@ -459,7 +459,6 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (v1f) A spectator's connection in the server: a socket that holds no seat, is sent `StateView::for_spectator` and the spectator's batches, and a rule for who may watch
 - [ ] Spectators in the web and a "waiting on" message for tables of three or more
 - [ ] (v91k) The house rule key `colour_identity` is spelled `color_identity` on the wire, in the stored rules and in `mtg-core` `house.rs`, with the stored games migrated
-- [~] (v91l) (log-words) The printed-gap reasons say what the player does, as the clause reasons do, not "the engine cannot pay {X} in a mana cost yet" (`mtg-cards` `assemble.rs`, the coverage tests)
 - [~] (v92a) (presence) A seat that loses its connection shows as away to the other seats, with the time before the game answers for it; today they read only "Waiting for <name>" (`PlayerView` presence, seat pod)
 - [~] (v92b) (byhand-window) A seat whose by-hand card just resolved keeps a priority window in its own turn to apply the clauses; auto-pass now ends the turn at once when nothing else is playable (server pass rules)
 - [~] (v92e) (panel-polish) The Mana row of the Commands panel keeps the colour last added instead of returning to Green after each Add (`manual/panel/commands.ts`)

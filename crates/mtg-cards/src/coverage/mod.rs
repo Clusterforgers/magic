@@ -23,7 +23,8 @@ use crate::support::{Caps, PrintedCard, Support, support};
 use crate::validate::{check_printed, used_primitives};
 
 /// What the report says of a printed gap that lies on a face the engine does not play.
-const FACES_GAP: &str = "the engine plays only the front face of a card";
+const FACES_GAP: &str =
+    "you cast or turn over the other face by hand: the game plays only the front face of a card";
 
 /// A card of the analysed decks, with the copies each deck holds.
 #[derive(Debug, Clone, PartialEq, Eq)]
