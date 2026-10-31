@@ -3,7 +3,7 @@ import { usePlay } from '@/features/game/gameContext'
 import type { ObjectId, ObjectView, PlayerId, PlayerView } from '@/protocol/generated'
 import { castCostLine } from './commander'
 import { HandBacks } from './Hand'
-import { COMMAND_GAP_PX, handDockNeed, handLayout } from './handFit'
+import { COMMAND_GAP_PX, handDockNeed, handLayout, OPENING_CARD_MAX_PX, openingDockNeed } from './handFit'
 import { HAND_GROW_VAR } from './layout'
 import { HandFan } from './HandFan'
 import type { HandCommander } from './HandFan'
@@ -58,9 +58,11 @@ export function commandersInHand(
 export const HandDock = memo(function HandDock({
   seat,
   growMost = 0,
+  openingMost = 0,
 }: {
   seat: PlayerId
   growMost?: number
+  openingMost?: number
 }) {
   const owner = useSeatNamer()(seat)
   const player = usePlay((state) => playerOf(state, seat))
@@ -71,27 +73,30 @@ export const HandDock = memo(function HandDock({
   const zone = useRef<HTMLDivElement>(null)
   const room = useContentBox(zone)
   const coarse = useCoarsePointer()
+  // While the keep or mulligan waits, the hand is the one thing to read: its cards grow and the dock with them.
+  const opening = usePlay((state) => state.pending !== null && 'Mulligan' in state.pending.decision.kind)
+  const cap = opening ? OPENING_CARD_MAX_PX : undefined
   const layouts = useMemo(() => {
     if (room === null || cards === null) return undefined
     const width = room.width - 2 * PAD_PX
     const height = room.height - 2 * PAD_PX
-    if (waiting.size === 0) return { hand: handLayout({ width, height, count: cards.length, coarse }) }
+    if (waiting.size === 0) return { hand: handLayout({ width, height, count: cards.length, coarse, cap }) }
     // The commanders take one card's width each, and a divider, at the head of the dock; the hand fits the rest.
-    const all = handLayout({ width, height, count: cards.length + waiting.size, coarse })
+    const all = handLayout({ width, height, count: cards.length + waiting.size, coarse, cap })
     const head = waiting.size * (all.box.width + all.gap) + COMMAND_GAP_PX
-    const hand = handLayout({ width: Math.max(0, width - head), height, count: cards.length, coarse })
+    const hand = handLayout({ width: Math.max(0, width - head), height, count: cards.length, coarse, cap })
     const command: HandLayout = { ...hand, rows: 1, perRow: waiting.size, scrolls: false, overlap: 0 }
     return { hand, command }
-  }, [room, cards, waiting, coarse])
+  }, [room, cards, waiting, coarse, cap])
+  const lineWidth = room === null ? 0 : room.width - 2 * PAD_PX
   const need =
-    room === null || cards === null || coarse || growMost <= 0
+    room === null || cards === null || coarse
       ? 0
-      : handDockNeed({
-          width: room.width - 2 * PAD_PX,
-          count: cards.length,
-          commanders: waiting.size,
-          most: growMost,
-        })
+      : opening
+        ? openingDockNeed({ width: lineWidth, count: cards.length, commanders: waiting.size, most: openingMost })
+        : growMost <= 0
+          ? 0
+          : handDockNeed({ width: lineWidth, count: cards.length, commanders: waiting.size, most: growMost })
   useLayoutEffect(() => {
     const main = zone.current?.closest<HTMLElement>('[data-slot="table-main"]')
     if (main == null || need <= 0) return undefined

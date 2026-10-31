@@ -8,6 +8,8 @@ import {
   HAND_GAP_PX,
   handDockNeed,
   handLayout,
+  OPENING_CARD_MAX_PX,
+  openingDockNeed,
   handRowPx,
 } from './handFit'
 
@@ -80,5 +82,54 @@ describe('handRowPx', () => {
     const inner = handRowPx(count, commanders) - HAND_DOCK_SIDES_PX
     expect(handDockNeed({ width: inner, count, commanders, most: 1000 })).toBe(0)
     expect(handDockNeed({ width: inner - 1, count, commanders, most: 1000 })).toBeGreaterThan(0)
+  })
+})
+
+describe('openingDockNeed', () => {
+  const heightOf = (cardWidth: number): number => Math.ceil(cardWidth * 1.4) + HAND_DOCK_CHROME_PX
+
+  it.each([
+    // width of the line, cards, commanders, tallest dock, card width drawn
+    [1018, 7, 1, 288, 122],
+    [1018, 7, 2, 288, 108],
+    [960, 7, 1, 246, 114],
+    [875, 7, 0, 246, 120],
+    [1700, 7, 1, 288, 136],
+    [1018, 7, 1, 170, 109],
+  ])(
+    'a %i px line with %i cards and %i commanders, up to %i px, draws cards %i px wide',
+    (width, count, commanders, most, card) => {
+      const need = openingDockNeed({ width, count, commanders, most })
+      const head = commanders > 0 ? COMMAND_GAP_PX : 0
+      const layout = handLayout({
+        width: width - head,
+        height: need - HAND_DOCK_CHROME_PX,
+        count: count + commanders,
+        cap: OPENING_CARD_MAX_PX,
+      })
+      expect(layout.rows).toBe(1)
+      expect(layout.box.width).toBe(card)
+      expect(need).toBe(heightOf(card))
+      expect(need).toBeLessThanOrEqual(most)
+    },
+  )
+
+  it.each([
+    // The hand does not fit one row of readable cards, or there is no room to grow: the dock keeps its size.
+    [400, 7, 1, 288],
+    [600, 14, 2, 288],
+    [1018, 7, 1, 0],
+  ])(
+    'a %i px line with %i cards and %i commanders, up to %i px, grows nothing',
+    (width, count, commanders, most) => {
+      expect(openingDockNeed({ width, count, commanders, most })).toBe(0)
+    },
+  )
+
+  it('draws the cards of an opening hand wider than the cards of any other hand', () => {
+    expect(handLayout({ width: 1500, height: 260, count: 8 }).box.width).toBeLessThan(OPENING_CARD_MAX_PX)
+    expect(handLayout({ width: 1500, height: 260, count: 8, cap: OPENING_CARD_MAX_PX }).box.width).toBe(
+      OPENING_CARD_MAX_PX,
+    )
   })
 })

@@ -20,10 +20,13 @@ export const HAND_MAX_ROWS = 3
  */
 export const HAND_HEAD_PX = 54
 
-/** The widest card the hand dock of this height (px) holds in one line: its height over the card's shape, between the fit limits. */
-export function handCardWidth(height: number): number {
+/** The widest card of an opening hand in px: the table has nothing else to read while the hand is judged. */
+export const OPENING_CARD_MAX_PX = 136
+
+/** The widest card the hand dock of this height (px) holds in one line: its height over the card's shape, between the fit limits and `cap`. */
+export function handCardWidth(height: number, cap: number = FIT_LIMITS.maxWidth): number {
   const fits = Number.isFinite(height) ? Math.floor(height / CARD_ASPECT) : FIT_LIMITS.minWidth
-  return Math.max(FIT_LIMITS.minWidth, Math.min(FIT_LIMITS.maxWidth, fits))
+  return Math.max(FIT_LIMITS.minWidth, Math.min(cap, fits))
 }
 
 /** What the hand dock draws round its cards in px: its top edge, its padding and the line's padding. */
@@ -62,6 +65,26 @@ export function handDockNeed({ width, count, commanders, most }: DockNeedInput):
 }
 
 /**
+ * How tall the hand dock must be (px, with its chrome) to draw an opening hand in one row of the widest cards the line
+ * holds, up to `OPENING_CARD_MAX_PX`, so the hand is read while it is judged; 0 when one row of cards over
+ * `HAND_FLOOR_PX` does not hold it or `most` (the tallest the dock may grow) leaves no more than the usual size. Like
+ * `handDockNeed` it reads the width only.
+ */
+export function openingDockNeed({ width, count, commanders, most }: DockNeedInput): number {
+  if (most <= 0) return 0
+  const head = commanders > 0 ? COMMAND_GAP_PX : 0
+  const all = handLayout({
+    width: Math.max(0, width - head),
+    height: most - HAND_DOCK_CHROME_PX,
+    count: Math.max(1, count) + commanders,
+    cap: OPENING_CARD_MAX_PX,
+  })
+  if (all.rows > 1 || all.scrolls) return 0
+  // Rounded up, so the dock's own height holds the same card width again.
+  return Math.ceil(all.box.width * CARD_ASPECT) + HAND_DOCK_CHROME_PX
+}
+
+/**
  * The room the commanders' box takes besides its cards and one gap, in px: the padding of its line and of the hand's,
  * its divider line and the dock's own gap. Counted as the DOM draws it, so a full row never runs past the dock.
  */
@@ -89,6 +112,8 @@ export interface HandInput {
   count: number
   /** A touch screen: a hand that does not fit keeps the full card size and scrolls, since a thumb needs the room. */
   coarse?: boolean
+  /** The widest card in px; `FIT_LIMITS.maxWidth` when left out. */
+  cap?: number
 }
 
 /** The size, rows and lift of the cards of a hand. */
@@ -114,8 +139,8 @@ export interface HandLayout {
  * to `HAND_FLOOR_PX` first, then wraps into two or three balanced rows, each lying over the one before it so that its
  * top (name and cost) shows, and scrolls only when even that does not hold it.
  */
-export function handLayout({ width, height, count, coarse = false }: HandInput): HandLayout {
-  const widest = handCardWidth(height)
+export function handLayout({ width, height, count, coarse = false, cap }: HandInput): HandLayout {
+  const widest = handCardWidth(height, cap)
   const floor = Math.min(widest, HAND_FLOOR_PX)
   const room = Math.max(0, width)
   const cards = Math.max(1, count)
