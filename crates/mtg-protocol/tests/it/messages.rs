@@ -782,6 +782,13 @@ fn every_event_view_variant_round_trips() {
         HiddenEvent::StepDone {
             position: vec![1, 0, 2],
         },
+        HiddenEvent::AbilityLeftToTable {
+            source: ObjectRef {
+                id: ObjectId(4),
+                counter: 1,
+            },
+            controller: player,
+        },
     ];
     for event in hidden {
         round_trip(&EventView::Hidden(event));
@@ -1517,6 +1524,11 @@ fn primitive_events() -> Vec<Event> {
             controller: player,
             chosen: Some(Chosen::Color(Color::Green)),
         },
+        Event::AbilityLeftToTable(Box::new(mtg_engine::resolve::LeftToTable {
+            source: ObjectRef { id: a, counter: 0 },
+            controller: player,
+            text: "Draw a card.".into(),
+        })),
     ]
 }
 

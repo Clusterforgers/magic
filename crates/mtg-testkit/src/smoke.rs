@@ -170,7 +170,11 @@ impl SmokeReport {
 /// abilities and triggers run under every invariant and the watchdog. The first failed game ends the run; otherwise the
 /// card fails when no game used it.
 pub fn smoke_card(card: &CardDefinition, seeds: &[u64]) -> SmokeReport {
-    let card = Arc::new(card.clone());
+    let mut card = card.clone();
+    // A card on a player's read leaves a failing ability to the table; the gate is there to see the error.
+    card.read = false;
+    card.faces.iter_mut().for_each(|face| face.read = false);
+    let card = Arc::new(card);
     let mut report = SmokeReport {
         card: card.name.clone(),
         games: 0,

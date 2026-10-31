@@ -203,6 +203,7 @@ mod fabricate_learn;
 mod face_rules;
 mod faces;
 mod faces_fuzz;
+mod fail_soft;
 mod fight;
 mod fight_fuzz;
 mod fight_targets;

@@ -39,6 +39,7 @@ mod identity_view;
 mod improvise_hidden;
 mod impulse_hidden;
 mod keyword_view;
+mod left_to_table_hidden;
 mod lobby_message;
 mod log_names;
 mod loyalty_view;

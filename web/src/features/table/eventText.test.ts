@@ -293,6 +293,10 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
     { ResolutionEnded: { object: 4, outcome: 'Resolved' } },
     'Lightning Bolt finishes resolving',
   ],
+  AbilityLeftToTable: [
+    { AbilityLeftToTable: { source: { id: 6, counter: 0 }, controller: 0, text: 'Draw a card.' } },
+    "Jace Beleren's ability could not be run by the game: apply its text by hand",
+  ],
   ZoneChanged: [
     { ZoneChanged: { object: 1, from: 'Battlefield', to: { Graveyard: 0 }, cause: 'Destroyed' } },
     'Grizzly Bears is destroyed',
@@ -466,6 +470,10 @@ const HIDDEN: Record<VariantName<HiddenEvent>, [HiddenEvent, string]> = {
   AbilityPutOnStack: [
     { AbilityPutOnStack: { object: 90, source: { id: 6, counter: 0 }, controller: 0 } },
     'An ability of Jace Beleren goes on the stack',
+  ],
+  AbilityLeftToTable: [
+    { AbilityLeftToTable: { source: { id: 6, counter: 0 }, controller: 1 } },
+    'An ability of Jace Beleren could not be run by the game: Bo applies it by hand',
   ],
   TriggerRemoved: [
     { TriggerRemoved: { source: { id: 6, counter: 0 }, ability: 1 } },

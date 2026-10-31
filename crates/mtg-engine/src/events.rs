@@ -17,6 +17,7 @@ use crate::library::{CardsFound, LibraryLooked, Revealed, Scried, Surveilled};
 use crate::manual::{ManualAction, ManualRoll};
 use crate::object::{Chosen, FaceDown, ObjectRef};
 use crate::player::LossReason;
+use crate::resolve::LeftToTable;
 use crate::rules::RuleEffect;
 use crate::snapshot::Snapshot;
 use crate::spend::Restricted;
@@ -516,6 +517,9 @@ pub enum Event {
         /// How it ended.
         outcome: ResolutionOutcome,
     },
+    /// A step of a spell or ability of a card that runs on a player's read failed, so the rest of it is left to the table: the
+    /// steps before it stand and the resolution ends right after (`docs/engine.md`, Fail-soft resolution).
+    AbilityLeftToTable(Box<LeftToTable>),
     /// An object moved from one zone to another.
     ZoneChanged {
         /// The object.
@@ -1086,6 +1090,7 @@ impl Event {
             | Event::ChoiceMade { .. }
             | Event::StepDone { .. }
             | Event::ResolutionEnded { .. }
+            | Event::AbilityLeftToTable(_)
             | Event::LifeGained { .. }
             | Event::LifeLost { .. }
             | Event::ManualAction { .. }

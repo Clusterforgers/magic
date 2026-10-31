@@ -129,6 +129,18 @@ fn a_rules_file_whose_effect_errors_fails_with_the_engine_error() {
 }
 
 #[test]
+fn the_gate_sees_the_error_of_a_card_that_already_runs_on_a_read() {
+    let mut read = (*erroring_spell()).clone();
+    read.read = true;
+    let report = smoke(&read);
+    assert!(
+        matches!(&report.failure, Some(SmokeFailure::Engine { detail, .. }) if detail.contains("nothing")),
+        "fail-soft resolution must not hide the error from the gate: {:?}",
+        report.failure
+    );
+}
+
+#[test]
 fn a_card_that_loops_fails_as_a_stuck_game() {
     let report = smoke(&looping_creature());
     assert!(
