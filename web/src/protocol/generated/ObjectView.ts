@@ -160,9 +160,9 @@ merged?: Array<MergedCardView>,
  */
 manual?: Array<ManualClause>, 
 /**
- * Whether some clause in `manual` is owed when a spell or ability of its card resolves, which holds the controller at
- * the by-hand window (`CardDefinition::manual_owed`; false when every clause is an activated or loyalty ability);
- * shown wherever `manual` is, left out while false.
+ * Whether some clause of its card left to the table is owed when it resolves, which holds the controller at the
+ * by-hand window (`CardDefinition::manual_owed`; false when every clause is an activated or loyalty ability); shown
+ * wherever `manual` is and on an ability on the stack that names its source, left out while false.
  */
 manual_owed?: boolean, 
 /**
