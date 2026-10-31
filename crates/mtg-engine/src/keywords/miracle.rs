@@ -41,6 +41,7 @@ impl KeywordRules for Miracle {
                 free: false,
                 play: false,
                 way: Some(CastWay::Miracle),
+                transformed: false,
                 bind: None,
                 otherwise: Vec::new(),
             }],

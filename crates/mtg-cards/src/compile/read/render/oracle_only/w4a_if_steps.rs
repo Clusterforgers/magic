@@ -58,6 +58,7 @@ pub(super) fn w4a_step_texts(before: &[Effect], steps: &[Effect]) -> Vec<String>
                 free: true,
                 play: false,
                 way: None,
+                transformed: false,
                 bind: None,
                 otherwise,
             },

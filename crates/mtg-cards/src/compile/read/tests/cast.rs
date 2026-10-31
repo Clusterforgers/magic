@@ -53,6 +53,7 @@ fn the_sentences_of_an_exile_until_a_card_is_found_and_its_free_cast_read_one_by
             free: true,
             play: false,
             way: None,
+            transformed: false,
             bind: None,
             otherwise: Vec::new()
         }

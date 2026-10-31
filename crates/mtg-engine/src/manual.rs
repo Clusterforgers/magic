@@ -21,6 +21,7 @@ use serde::{Deserialize, Serialize};
 use thiserror::Error;
 
 use crate::attach;
+use crate::battle;
 use crate::caps::caps;
 use crate::choose::Target;
 use crate::combat::DamageTarget;
@@ -757,6 +758,7 @@ fn moves(
     }
     if to == ManualZone::Battlefield {
         events.extend(loyalty::entering(state, id));
+        events.extend(battle::entering(state, id));
         events.extend(saga::entering(state, id));
     }
     Ok(events)

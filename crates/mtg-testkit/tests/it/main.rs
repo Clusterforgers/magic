@@ -538,6 +538,7 @@ mod dk1b_attach;
 mod dk1a_dog_umbra;
 mod dk1a_rune_of_sustenance;
 mod dk1a_shardmages_rescue;
+mod dk1b2_invasion;
 
 // deck-casting
 mod dk1c2_pearl_ear;

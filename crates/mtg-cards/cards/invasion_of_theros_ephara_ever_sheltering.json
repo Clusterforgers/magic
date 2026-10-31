@@ -1,0 +1,67 @@
+{
+  "oracle_id": "ba5f7f37-352a-4b9c-b648-0ba5c8d842fc",
+  "name": "Invasion of Theros // Ephara, Ever-Sheltering",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Invasion of Theros",
+      "oracle_fingerprint": "359c0cd0df1bdfc062d622a6991578e8",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Search": {
+                  "filter": [
+                    {
+                      "AnyOf": [
+                        { "Subtype": "Aura" },
+                        { "Subtype": "God" },
+                        { "Subtype": "Demigod" }
+                      ]
+                    }
+                  ],
+                  "reveal": true,
+                  "as": "card"
+                }
+              },
+              { "Move": { "what": { "Bound": "card" }, "to": "Hand" } },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Ephara, Ever-Sheltering",
+      "oracle_fingerprint": "9202b19d1f34b34383d0c0ce66ed5d15",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Lifelink" }, { "AddKeyword": "Indestructible" }],
+            "condition": {
+              "Compare": {
+                "left": { "Count": ["Other", { "Type": "Enchantment" }, { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 3
+              }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Enchantment" }, "Other", { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

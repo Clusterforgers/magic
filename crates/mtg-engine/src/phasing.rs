@@ -235,7 +235,7 @@ pub(crate) fn fold_out(
     state.zones.remove(Zone::Battlefield, id);
     state.zones.insert(Zone::PhasedOut, id, Placement::Top);
     state.combat.remove_object(id);
-    state.combat.planeswalker_left(id);
+    state.combat.permanent_left(id);
     // "For each creature that phased out this way" reads what the resolving spell or ability phased out.
     let reference = object.reference();
     if let Some(resolving) = state.resolving.as_mut() {

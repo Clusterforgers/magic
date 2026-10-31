@@ -30,6 +30,7 @@ impl Writer<'_> {
             free: true,
             play: false,
             way: None,
+            transformed: false,
             bind: None,
             otherwise: Vec::new(),
         };

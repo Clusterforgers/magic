@@ -30,7 +30,7 @@ use crate::zones::Zone;
 pub enum AttackTarget {
     /// A player.
     Player(PlayerId),
-    /// A planeswalker.
+    /// A planeswalker, or a battle its protector defends (CR 506.2): the permanent attacked, told apart by its type.
     Planeswalker(ObjectId),
 }
 
@@ -219,8 +219,8 @@ impl CombatState {
         self.attackers.retain(|a| a.target != target);
     }
 
-    /// The planeswalker `id` left the battlefield: the creatures attacking it go on attacking nothing (CR 506.4c).
-    pub(crate) fn planeswalker_left(&mut self, id: ObjectId) {
+    /// The planeswalker or battle `id` left the battlefield: the creatures attacking it go on attacking nothing (CR 506.4c).
+    pub(crate) fn permanent_left(&mut self, id: ObjectId) {
         for attacker in &mut self.attackers {
             if attacker.target == AttackTarget::Planeswalker(id) {
                 attacker.target_left = true;
@@ -240,6 +240,9 @@ impl CombatState {
 pub fn defending_player(state: &GameState, target: AttackTarget) -> Option<PlayerId> {
     match target {
         AttackTarget::Player(p) => Some(p),
+        AttackTarget::Planeswalker(id) if crate::battle::is_battle(state, id) => {
+            crate::battle::protector(state, id)
+        }
         AttackTarget::Planeswalker(id) => controller_of(state, id),
     }
 }
@@ -279,7 +282,8 @@ pub(crate) fn w7d_leave_on_control_change(state: &mut GameState) {
     }
 }
 
-/// What `player` may attack: the players the table's attack range allows and the planeswalkers they control.
+/// What `player` may attack: the players the table's attack range allows, the planeswalkers they control and the battles
+/// they protect (CR 508.1b).
 pub(crate) fn defenders_for(state: &GameState, player: PlayerId) -> Vec<AttackTarget> {
     let seats = state.ruleset().defending_seats(state, player);
     let mut targets: Vec<AttackTarget> = seats.iter().copied().map(AttackTarget::Player).collect();
@@ -288,6 +292,11 @@ pub(crate) fn defenders_for(state: &GameState, player: PlayerId) -> Vec<AttackTa
             characteristics(state, id).is_some_and(|c| c.types.contains(CardType::Planeswalker));
         let hostile = controller_of(state, id).is_some_and(|c| seats.contains(&c));
         if is_walker && hostile {
+            targets.push(AttackTarget::Planeswalker(id));
+        }
+        if crate::battle::is_battle(state, id)
+            && crate::battle::protector(state, id).is_some_and(|p| seats.contains(&p))
+        {
             targets.push(AttackTarget::Planeswalker(id));
         }
     }

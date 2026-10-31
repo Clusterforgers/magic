@@ -2079,6 +2079,15 @@ impl Walker<'_> {
         ) {
             self.uses("Effect", "Move.Transformed");
         }
+        if matches!(
+            effect,
+            Effect::CastFromZone {
+                transformed: true,
+                ..
+            }
+        ) {
+            self.uses("Effect", "CastFromZone.Transformed");
+        }
         match effect {
             Effect::Move {
                 to: Destination::Battlefield { .. },
@@ -3950,6 +3959,7 @@ mod tests {
     #[case::a_move_shuffled_in(r#"{"Spell":{"effects":[{"Move":{"what":"This","to":{"Library":{"place":"Shuffled","order":"Random"}}}}]}}"#, &["Ability.Spell", "Effect.Move"])]
     #[case::a_move_to_the_battlefield_attached(r#"{"Spell":{"targets":[{"what":{"Object":[{"Type":"Creature"}]}}],"effects":[{"Move":{"what":"This","to":{"BattlefieldAttached":{"to":{"Target":0}}}}}]}}"#, &["Ability.Spell", "Effect.Move", "Effect.Move.Battlefield", "Effect.Move.Attached"])]
     #[case::a_move_to_the_battlefield(r#"{"Spell":{"effects":[{"Move":{"what":"This","to":{"Battlefield":{}}}}]}}"#, &["Ability.Spell", "Effect.Move", "Effect.Move.Battlefield"])]
+    #[case::a_cast_transformed(r#"{"Spell":{"effects":[{"Exile":{"what":"This","as":"card"}},{"CastFromZone":{"what":{"Bound":"card"},"free":true,"transformed":true}}]}}"#, &["Ability.Spell", "Effect.Exile", "Effect.CastFromZone", "Effect.CastFromZone.Transformed"])]
     #[case::a_move_to_the_battlefield_transformed(r#"{"Spell":{"effects":[{"Move":{"what":"This","to":{"Battlefield":{"transformed":true}}}}]}}"#, &["Ability.Spell", "Effect.Move", "Effect.Move.Battlefield", "Effect.Move.Transformed"])]
     #[case::a_move_to_the_top_in_a_random_order(r#"{"Spell":{"effects":[{"Move":{"what":"This","to":{"Library":{"place":"Top","order":"Random"}}}}]}}"#, &["Ability.Spell", "Effect.Move", "Effect.Move.Random.Top"])]
     #[case::a_move_to_the_bottom_in_a_random_order(r#"{"Spell":{"effects":[{"Move":{"what":"This","to":{"Library":{"place":"Bottom","order":"Random"}}}}]}}"#, &["Ability.Spell", "Effect.Move"])]

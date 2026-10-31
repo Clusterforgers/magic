@@ -186,6 +186,8 @@ pub(crate) struct Granted {
     pub(crate) free: bool,
     /// The alternative cost it is cast for: its madness cost, or nothing for suspend.
     pub(crate) way: Option<CastWay>,
+    /// The card is cast transformed: its back face is the spell (CR 712.4).
+    pub(crate) transformed: bool,
 }
 
 impl Needs {
@@ -325,9 +327,14 @@ impl Pending {
         spell: ObjectId,
         free: bool,
         way: Option<CastWay>,
+        transformed: bool,
     ) -> Self {
         Pending {
-            granted: Some(Granted { free, way }),
+            granted: Some(Granted {
+                free,
+                way,
+                transformed,
+            }),
             ..Pending::new(player, What::Spell(spell))
         }
     }

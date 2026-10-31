@@ -158,6 +158,8 @@ pub struct Cast {
     pub free: bool,
     /// The alternative cost it is cast for.
     pub way: Option<mtg_cards::value::CastWay>,
+    /// The card is cast transformed.
+    pub transformed: bool,
 }
 
 /// Where a step goes after its effect.
@@ -465,8 +467,13 @@ pub(crate) fn next(state: &GameState) -> flow::Progress {
             card,
             free,
             way,
+            transformed,
         })) => flow::Progress::Put(Box::new(Pending::during_resolution(
-            player, card, free, way,
+            player,
+            card,
+            free,
+            way,
+            transformed,
         ))),
         Err(error) => flow::Progress::Fail(error),
     }

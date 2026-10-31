@@ -1060,6 +1060,7 @@ fn effect() -> impl Strategy<Value = Effect> {
                         free,
                         play,
                         way,
+                        transformed: free && play,
                         bind: None,
                         otherwise,
                     }

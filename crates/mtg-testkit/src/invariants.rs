@@ -1202,8 +1202,15 @@ impl InvariantChecker {
             .shadow
             .object(object)
             .map(mtg_engine::object::GameObject::base_types);
-        let walker = printed.is_some_and(|types| types.contains(CardType::Planeswalker));
+        // Damage to a planeswalker or a battle takes loyalty or defense counters, not marked damage (CR 120.3c, 120.3h).
+        let battle = printed.is_some_and(|types| types.contains(CardType::Battle));
+        let walker = battle || printed.is_some_and(|types| types.contains(CardType::Planeswalker));
         let creature = printed.is_some_and(|types| types.contains(CardType::Creature));
+        let counter = if battle {
+            CounterKind::defense()
+        } else {
+            CounterKind::Loyalty
+        };
         if (!walker || creature) && form.makes_counters() {
             // Wither and infect: -1/-1 counters instead of damage marked (CR 120.3d).
             if let Some(on) = self.shadow.object(object).map(GameObject::reference) {
@@ -1217,10 +1224,10 @@ impl InvariantChecker {
             *self.expected_damage.entry(object).or_default() += amount;
         }
         if walker && let Some(held) = self.expected_object_counters.get_mut(&object) {
-            if let Some(loyalty) = held.get_mut(&CounterKind::Loyalty) {
+            if let Some(loyalty) = held.get_mut(&counter) {
                 *loyalty = (*loyalty - i64::from(amount)).max(0);
                 if *loyalty == 0 {
-                    held.remove(&CounterKind::Loyalty);
+                    held.remove(&counter);
                 }
             }
             if held.is_empty() {

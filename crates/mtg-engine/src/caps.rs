@@ -149,6 +149,7 @@ const RUNS: &[&str] = &[
     "Effect.Manifest",
     "Effect.Cloak",
     "Effect.CastFromZone",
+    "Effect.CastFromZone.Transformed",
     "Effect.Destroy",
     "Effect.Exile",
     "Effect.Sacrifice",
@@ -841,6 +842,7 @@ mod tests {
     #[case::manifesting("Effect.Manifest", true)]
     #[case::cloaking("Effect.Cloak", true)]
     #[case::casting_during_a_resolution("Effect.CastFromZone", true)]
+    #[case::casting_during_a_resolution_transformed("Effect.CastFromZone.Transformed", true)]
     #[case::cascading("Keyword.Cascade", true)]
     #[case::convoking("Keyword.Convoke", true)]
     #[case::delving("Keyword.Delve", true)]

@@ -3,6 +3,7 @@
 use mtg_core::ids::{ObjectId, PlayerId};
 
 use crate::attach;
+use crate::battle;
 use crate::events::{Event, ResolutionOutcome};
 use crate::loyalty;
 use crate::resolve;
@@ -49,6 +50,7 @@ pub(crate) fn resolve_top(state: &GameState) -> Option<Vec<Event>> {
 pub(crate) fn resolved(state: &GameState, id: ObjectId) -> Vec<Event> {
     let mut events = vec![Event::SpellResolved { object: id }];
     events.extend(loyalty::entering(state, id));
+    events.extend(battle::entering(state, id));
     events.extend(saga::entering(state, id));
     events.extend(attach::entering(state, id));
     events

@@ -196,8 +196,8 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (st1a) The Stasis family is measured in a scratch database after `compile`: Stasis Field ("has base power and toughness 0/2, has defender, and loses all other abilities" now reads), Stasis Cell ("{3}{U}: Attach this Aura to target creature") and Stunning Strike ("tap enchanted creature and remove it from combat") each become Verified or name the clause the checker still lacks, and each gets its Scryfall record in the corpus
 - [ ] (st1b) "Its activated abilities can't be activated" (Arrest, Stasis Cocoon) is a restriction the compiler reads and the activation rules enforce (`Modification` and the activation check)
 - [ ] (eq1j) `gives` of an Aura on a player names the rules it gives outside keywords ("Enchanted player can't cast spells", skipped draws), which the layers do not record for players (`gives.rs`, `layers.rs` `PlayerHeld`)
-- [ ] (dk1f) The cards of the owner's Commander deck (Moxfield aC62AXAX40mNKJDy3yf_tw, commander Y'shtola, Night's Blessed; `dk1e_deck::the_owners_deck_lists` prints the table) that the engine still plays by hand: 89 of its 90 distinct cards are Verified; Partial: Invasion of Theros // Ephara (dk1b2)
-- [~] (dk1b2) (invasion) Invasion of Theros // Ephara, Ever-Sheltering: the checker writers for a search of an Aura, God or Demigod card put into the hand, for `AddKeyword` of lifelink and indestructible under a count of other enchantments, and for an enchantment entering under your control (a `ZoneChange` trigger with `Other`), and the Siege rules of the battle (defense, protector, defeated, cast transformed; see c11)
+- [ ] (dk1b2a) Sieges in the compiler and the checker: the readers and writers for "search your library for an Aura, God, or Demigod card, reveal it, put it into your hand, then shuffle", for "~ has lifelink and indestructible as long as you control at least three other enchantments" and for "this Siege" self-references, so Invasion of Theros // Ephara is reproduced (`reproduced.txt`) and the other Sieges read
+- [ ] (dk1b2b) Battles in the protocol and the web: `AttackTarget::Planeswalker` names a battle too, so the table calls it a planeswalker; a permanent target with battle labels, defense counters and the protector shown on the Siege, and a test of the private search in `mtg-protocol` for Invasion of Theros
 - [ ] (dk1c4a) The soulbond cards the compiler still leaves out (the other 19 soulbond cards read whole; run `coverage` for their states): the damage trigger "Whenever ~ or a creature it's paired with is dealt damage" (Donna Noble), "If it's paired with a creature" in a spell (Joint Assault), the quoted death and attack grants with an amount of its own (Doom Weaver, Imperious Mindbreaker, Breathkeeper Seraph, Mirage Phalanx), "unless it's paired with a creature with soulbond" (Flowering Lumberknot), a second sentence about the partner (Tarelily), and Battlebond with a battle (Azra Matchthrower)
 - [ ] (dk1c5c) Rooms: lock a door (Marina Vendrell, Keys to the House), a token copy of a half (Blu) and the copiable door state (CR 707.2)
 - [ ] (dk1c5d) Rooms on the web: the log line names the door unlocked ("Alice unlocks Grand Entryway"), and the preview of a Room marks a door the viewer can unlock now (`PriorityOptions.unlockable`, `CardPreview`)
@@ -430,7 +430,7 @@ The server is settled first, then the web is built once against the final types.
 
 ### Layouts
 
-- [ ] (c11) Rooms, Battles, the initiative and dungeons, and the remaining long-tail mechanics found by the report, one task each
+- [ ] (c11) Rooms, the initiative and dungeons, and the remaining long-tail mechanics found by the report, one task each
 - [ ] (c11c) The other 24 transforming Sagas, the two precon flip cards and the `prepare` layout's back face; frees about 37 cards (Budoka Gardener, Nezumi Graverobber)
 
 ### Tooling

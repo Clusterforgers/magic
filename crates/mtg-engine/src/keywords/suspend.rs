@@ -76,6 +76,7 @@ impl KeywordRules for Suspend {
                     free: true,
                     play: false,
                     way: Some(CastWay::Suspend),
+                    transformed: false,
                     bind: None,
                     otherwise: Vec::new(),
                 }],

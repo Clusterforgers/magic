@@ -19,6 +19,7 @@ fn cast(play: bool) -> Effect {
         free: true,
         play,
         way: None,
+        transformed: false,
         bind: None,
         otherwise: Vec::new(),
     }
