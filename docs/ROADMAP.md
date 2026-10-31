@@ -462,7 +462,7 @@ The server is settled first, then the web is built once against the final types.
 - [~] (v91l) (log-words) The printed-gap reasons say what the player does, as the clause reasons do, not "the engine cannot pay {X} in a mana cost yet" (`mtg-cards` `assemble.rs`, the coverage tests)
 - [~] (v91m) (log-words) The lobby deck pane's "Not validated cards" link names how many cards are played by hand, as the decks list row does (`features/game/DeckPane.tsx`)
 - [~] (v92a) (presence) A seat that loses its connection shows as away to the other seats, with the time before the game answers for it; today they read only "Waiting for <name>" (`PlayerView` presence, seat pod)
-- [~] (v92b) (byhand-window) A seat whose by-hand card just resolved keeps a priority window in its own turn to apply the clauses; auto-pass now ends the turn at once when nothing else is playable (server pass rules)
+- [ ] (v92w) The priority prompt of a seat held at its by-hand window says "Apply the card's text by hand, then pass" (12 px or more), from the resolution of its own object with `ObjectView.manual` (`docs/server.md`, Stops and Full Control)
 - [~] (v92c) (log-words) The log names a triggered ability that resolves ("An ability of Parasitic Impetus resolves") instead of "a card begins to resolve" and "a card finishes resolving" (`eventText.ts`, `LogPanel` names)
 - [~] (v92d) (log-words) The by-hand log line of a triggered or static clause says when to apply it ("whenever …"), not "when it resolves" (`byHandLine`)
 - [~] (v92e) (panel-polish) The Mana row of the Commands panel keeps the colour last added instead of returning to Green after each Add (`manual/panel/commands.ts`)

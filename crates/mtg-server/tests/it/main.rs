@@ -1,6 +1,7 @@
 //! Goal: the server's games, transport, accounts and persistence end to end; one test binary so the crate's integration tests share one link and run together on the thread pool.
 
 mod auto_pass;
+mod by_hand_window;
 mod common;
 mod companion_recipe;
 mod companion_resume;

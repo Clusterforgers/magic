@@ -2,13 +2,13 @@
 
 use std::sync::Arc;
 
-use mtg_cards::CardDefinition;
 use mtg_cards::ability::{Ability, Timing};
 use mtg_cards::cost::{Cost, CostItem};
 use mtg_cards::effect::{Destination, Effect, Order, Place};
 use mtg_cards::keyword::Keyword;
 use mtg_cards::refs::{Bounds, Pred, Ref, Selector, TargetSpec, Targetable, ZoneKind};
 use mtg_cards::value::Amount;
+use mtg_cards::{CardDefinition, ManualClause};
 use mtg_core::card::CardType;
 use mtg_core::color::Color;
 use mtg_core::mana::{ManaCost, ManaSymbol};
@@ -254,6 +254,27 @@ pub fn draw(count: i32) -> Effect {
         who: Ref::You,
         count: Amount::Fixed(count),
     }
+}
+
+/// `card` with the clause `text` left to the table: the engine runs the rest and the players apply `text` by hand.
+pub fn by_hand(card: Arc<CardDefinition>, text: &str) -> Arc<CardDefinition> {
+    let mut card = Arc::unwrap_or_clone(card);
+    card.manual.push(ManualClause {
+        text: text.to_owned(),
+        reason: "left to the table".to_owned(),
+    });
+    Arc::new(card)
+}
+
+/// A 1/1 creature for `{generic}{W}` with "{T}: You gain 1 life."
+pub fn healer(name: &str, generic: u32) -> Arc<CardDefinition> {
+    Arc::new(
+        CardDefinition::new(name)
+            .with_type(CardType::Creature)
+            .with_mana_cost(cost(generic, &[Color::White]))
+            .with_power_toughness(1, 1)
+            .with_rules(tap_ability(Timing::Instant, Vec::new(), vec![gain_life(1)])),
+    )
 }
 
 /// An ability a player activates by tapping the permanent: `{T}: effects`.

@@ -13,7 +13,8 @@
 
 use std::collections::BTreeMap;
 
-use mtg_core::ids::PlayerId;
+use mtg_core::ids::{ObjectId, PlayerId};
+use mtg_engine::events::ResolutionOutcome;
 use mtg_engine::turn::Step;
 use mtg_engine::{Event, GameState};
 use mtg_protocol::{ErrorCode, FullControlMode, ServerMessage, Stop, StopSide};
@@ -48,6 +49,9 @@ struct Held {
     /// Keyed by the place alone, so a seat holds one stop there whatever its `keep`.
     stops: BTreeMap<(StopSide, Step), bool>,
     full_control: FullControlMode,
+    /// Whether a spell or ability of the seat with clauses left to the table resolved and the seat has not passed
+    /// priority since: it is asked at its next priority window, as at a stop, to apply them.
+    by_hand: bool,
 }
 
 /// The stops and the Full Control mode of every seat of one game.
@@ -63,6 +67,18 @@ pub(crate) type Place = (PlayerId, Step);
 pub(crate) fn place(state: &GameState) -> Place {
     let turn = state.turn();
     (turn.active(), turn.step())
+}
+
+/// The objects on the stack of `state` whose rules text holds clauses left to the table, with their controllers: what
+/// [`Stops::resolved`] needs to know once one of them has resolved and left.
+pub(crate) fn by_hand_on_stack(state: &GameState) -> Vec<(ObjectId, PlayerId)> {
+    state
+        .stack()
+        .iter()
+        .filter_map(|id| state.object(*id))
+        .filter(|object| !object.card().manual.is_empty())
+        .map(|object| (object.id(), object.controller()))
+        .collect()
 }
 
 impl Stops {
@@ -189,6 +205,36 @@ impl Stops {
             };
             if held.stops.get(&(side, step)) == Some(&false) {
                 held.stops.remove(&(side, step));
+            }
+        }
+    }
+
+    /// Whether `seat` owes the table the clauses of a spell or ability of its own that just resolved: it is asked at
+    /// its next priority window, as at a stop, until it passes.
+    pub(crate) fn by_hand(&self, seat: PlayerId) -> bool {
+        self.seats
+            .get(seat.index())
+            .is_some_and(|held| held.by_hand)
+    }
+
+    /// Follows `events`, applied with `on_stack` ([`by_hand_on_stack`]) on the stack: a seat that passes priority
+    /// owes nothing, and the controller of one of those objects that resolves owes its clauses.
+    pub(crate) fn resolved(&mut self, on_stack: &[(ObjectId, PlayerId)], events: &[Event]) {
+        for event in events {
+            let (seat, owes) = match event {
+                Event::PriorityPassed { player } => (*player, false),
+                Event::SpellResolved { object }
+                | Event::ResolutionEnded {
+                    object,
+                    outcome: ResolutionOutcome::Resolved,
+                } => match on_stack.iter().find(|(id, _)| id == object) {
+                    Some(&(_, controller)) => (controller, true),
+                    None => continue,
+                },
+                _ => continue,
+            };
+            if let Some(held) = self.seats.get_mut(seat.index()) {
+                held.by_hand = owes;
             }
         }
     }
@@ -378,7 +424,7 @@ impl<S: EventStore> GameActor<S> {
 
 #[cfg(test)]
 mod tests {
-    //! Goal: a seat holds one stop per side and step with the `keep` it was last given, only in a step where a player gets priority, a refusal changes nothing, seats are independent, the list is told in a fixed order whenever it changes (a changed `keep` too) and not otherwise, a one-turn stop goes once the game has left its step (and a lasting one never does), a pass ends `NextWindow` and no other mode, auto-pass is every mode but `Held`, a seat that left the game or a finished game holds nothing, and a seat that changes hands in the lobby starts from the defaults again.
+    //! Goal: a seat holds one stop per side and step with the `keep` it was last given, only in a step where a player gets priority, a refusal changes nothing, seats are independent, the list is told in a fixed order whenever it changes (a changed `keep` too) and not otherwise, a one-turn stop goes once the game has left its step (and a lasting one never does), a pass ends `NextWindow` and no other mode, auto-pass is every mode but `Held`, a seat that left the game or a finished game holds nothing, and a seat that changes hands in the lobby starts from the defaults again; a seat owes the clauses of its own object that resolved with clauses left to the table until it passes, and is never told so.
     use super::*;
     use mtg_engine::Engine;
     use mtg_testkit::Scenario;
@@ -566,6 +612,55 @@ mod tests {
         assert_eq!(stops.stops(nobody), []);
         assert_eq!(stops.full_control(nobody), FullControlMode::Off);
         assert_eq!(stops, Stops::new(2));
+    }
+
+    fn resolution(object: u64, outcome: ResolutionOutcome) -> Event {
+        Event::ResolutionEnded {
+            object: ObjectId(object),
+            outcome,
+        }
+    }
+
+    fn passed(player: PlayerId) -> Event {
+        Event::PriorityPassed { player }
+    }
+
+    #[rstest]
+    #[case::a_spell(vec![Event::SpellResolved { object: ObjectId(7) }], [false, true])]
+    #[case::an_ability(vec![resolution(7, ResolutionOutcome::Resolved)], [false, true])]
+    #[case::a_foe_object(vec![resolution(8, ResolutionOutcome::Resolved)], [true, false])]
+    #[case::fizzled(vec![resolution(7, ResolutionOutcome::Fizzled)], [false, false])]
+    #[case::countered(vec![resolution(7, ResolutionOutcome::Countered)], [false, false])]
+    #[case::not_by_hand(vec![resolution(9, ResolutionOutcome::Resolved)], [false, false])]
+    #[case::pass_after(vec![resolution(7, ResolutionOutcome::Resolved), passed(ME)], [false, false])]
+    #[case::pass_before(vec![passed(ME), resolution(7, ResolutionOutcome::Resolved)], [false, true])]
+    #[case::foe_passes(vec![resolution(7, ResolutionOutcome::Resolved), passed(FOE)], [false, true])]
+    fn a_seat_owes_the_clauses_of_its_object_that_resolved_until_it_passes(
+        #[case] events: Vec<Event>,
+        #[case] owed: [bool; 2],
+    ) {
+        // Objects 7 (the seat's) and 8 (the foe's) hold clauses left to the table; 9 holds none and is not listed.
+        let on_stack = [(ObjectId(7), ME), (ObjectId(8), FOE)];
+        let mut stops = Stops::new(2);
+        stops.resolved(&on_stack, &events);
+        assert_eq!([stops.by_hand(FOE), stops.by_hand(ME)], owed);
+        // Nobody is told: the list and the mode are unchanged.
+        assert_eq!(stops.clone().replace(Stops::new(2)), []);
+        stops.resolved(&[], &[passed(FOE), passed(ME)]);
+        assert_eq!([stops.by_hand(FOE), stops.by_hand(ME)], [false, false]);
+    }
+
+    #[test]
+    fn a_seat_that_changes_hands_owes_nothing_and_one_the_table_lacks_never_does() {
+        let mut stops = Stops::new(2);
+        let spell = Event::SpellResolved {
+            object: ObjectId(7),
+        };
+        stops.resolved(&[(ObjectId(7), ME), (ObjectId(7), PlayerId(5))], &[spell]);
+        assert!(stops.by_hand(ME));
+        stops.reset(ME, FullControlMode::Off);
+        assert!(!stops.by_hand(ME));
+        assert!(!stops.by_hand(PlayerId(5)));
     }
 
     #[test]
