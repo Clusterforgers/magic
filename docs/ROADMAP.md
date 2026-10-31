@@ -48,6 +48,10 @@ One item is one piece of about 15 minutes and one line: the outcome, the cards i
 Items that touch the running game come first.
 
 - [ ] (v95a) Choosing a card for an effect: the card under the cursor or chosen is shown large at the side (the preview) so its text reads, and a choice among cards in a graveyard, exile, hand or on the battlefield shows the cards themselves, not only their names (`docs/web.md`, prompts)
+- [ ] (v96a) A precon deck can be marked as a favourite from the precon browser and the deck chooser, and then appears in the account's own deck list (stored per account; `docs/web.md`, `docs/server.md`)
+- [ ] (v96b) The Reveal effect shows the revealed card clearly to every seat that may see it: large, with its picture, and named in the log with who revealed it (`docs/web.md`)
+- [ ] (v96c) The deck chooser can sort by the number of cards played by hand (fewest first) as well as by name, with the count on each row (`docs/web.md`)
+- [ ] (v96d) The deck chooser loads the picture of every visible deck when the list opens, not only after a click (`docs/web.md`)
 - [ ] (ad1c) The Accounts page in the layout gate at the six sizes in both themes (a dev route that stands for it) and an e2e spec of the admin flow on the Postgres server: sign-in, make an account, the friend signs in, the closed sign-up page (`docs/web.md`)
 - [ ] (d1c) A copy of the nightly database dumps off queen (a Longhorn backup target or a scheduled copy to another machine), so losing queen does not lose the accounts and decks (`docs/deploy.md`)
 - [ ] (d1b) The release script's steps as a GitHub Actions workflow on a published release, so a release needs no dev machine (`docs/deploy.md`)
