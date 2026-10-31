@@ -1,0 +1,46 @@
+{
+  "oracle_id": "8a83ecee-092b-456c-803f-a9aaa17c4da9",
+  "name": "Exploration Broodship",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Exploration Broodship",
+      "oracle_fingerprint": "18fc3d1848c8b979c9385e59d6353e72",
+      "abilities": [
+        { "Keyword": "Station" },
+        { "Rule": { "rule": { "AdditionalLandPlays": {} } } },
+        {
+          "Rule": { "rule": { "MayCast": { "what": [{ "Targeting": [{ "Type": "Creature" }] }] } } }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddType": "Artifact" }, { "AddType": "Creature" }],
+            "condition": {
+              "Compare": {
+                "left": { "Stat": { "of": "This", "stat": "Power" } },
+                "op": "Ge",
+                "right": {
+                  "Count": [
+                    { "Type": "Artifact" },
+                    { "Type": "Creature" },
+                    { "Type": "Land" },
+                    { "Type": "Planeswalker" },
+                    { "Type": "Battle" },
+                    { "Type": "Enchantment" },
+                    { "Type": "Instant" },
+                    { "Type": "Sorcery" },
+                    { "Type": "Artifact" },
+                    { "Type": "Land" },
+                    { "Type": "Planeswalker" },
+                    { "Type": "Battle" }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

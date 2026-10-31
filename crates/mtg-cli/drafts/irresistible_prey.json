@@ -1,0 +1,22 @@
+{
+  "oracle_id": "cb102767-f8d8-4477-9a24-07686870bda7",
+  "name": "Irresistible Prey",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Irresistible Prey",
+      "oracle_fingerprint": "64b7d50b87af592febf413ef77e3d992",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Rule": { "rule": { "MustBlock": { "Target": 0 } }, "duration": "UntilEndOfTurn" } },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

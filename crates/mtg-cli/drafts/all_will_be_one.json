@@ -1,0 +1,58 @@
+{
+  "oracle_id": "477374dc-042c-48f7-9ebe-99c15d8ae04f",
+  "name": "All Will Be One",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "All Will Be One",
+      "oracle_fingerprint": "8142ec52a48eccf584981719956b8192",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "CountersPut": {
+                "what": [
+                  {
+                    "AnyOf": [
+                      { "Type": "Creature" },
+                      { "Type": "Artifact" },
+                      { "Type": "Enchantment" },
+                      { "Type": "Planeswalker" },
+                      { "Type": "Battle" },
+                      { "Type": "Land" },
+                      { "Type": "Instant" },
+                      { "Type": "Sorcery" }
+                    ]
+                  },
+                  { "Type": "Creature" }
+                ]
+              }
+            },
+            "targets": [
+              {
+                "what": {
+                  "Either": [
+                    { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] },
+                    { "Object": [{ "Type": "Planeswalker" }, { "ControlledBy": "Opponents" }] },
+                    { "Object": [{ "Type": "Creature" }, { "In": "Battlefield" }] },
+                    { "Object": [{ "Type": "Planeswalker" }, { "In": "Battlefield" }] },
+                    { "Object": [{ "Type": "Creature" }, { "In": "Hand" }] },
+                    { "Object": [{ "Type": "Planeswalker" }, { "In": "Hand" }] },
+                    { "Object": [{ "Type": "Creature" }, { "In": "Graveyard" }] },
+                    { "Object": [{ "Type": "Planeswalker" }, { "In": "Graveyard" }] },
+                    { "Object": [{ "Type": "Land" }, { "In": "Battlefield" }] },
+                    { "Object": [{ "Type": "Land" }, { "In": "Graveyard" }] },
+                    { "Object": [{ "Type": "Instant" }, { "In": "Graveyard" }] },
+                    { "Object": [{ "Type": "Sorcery" }, { "In": "Graveyard" }] },
+                    { "Object": [{ "Type": "Artifact" }, { "In": "Graveyard" }] }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": "Triggering" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

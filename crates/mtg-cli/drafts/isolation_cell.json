@@ -1,0 +1,24 @@
+{
+  "oracle_id": "56c558f3-535d-49aa-a2de-54e0bb598483",
+  "name": "Isolation Cell",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Isolation Cell",
+      "oracle_fingerprint": "a13d8e40c0d8f662a93db498170f412f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Type": "Creature" }], "by": "Opponents" } },
+            "if": {
+              "Not": {
+                "Matches": { "subject": "Triggering", "selector": [{ "HasKeyword": "Lifelink" }] }
+              }
+            },
+            "effects": [{ "Pay": { "who": "Triggering", "cost": "{2}" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

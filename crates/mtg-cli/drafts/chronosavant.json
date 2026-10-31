@@ -1,0 +1,22 @@
+{
+  "oracle_id": "969c9864-f78b-46b2-b35b-c9adaf355c2d",
+  "name": "Chronosavant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Chronosavant",
+      "oracle_fingerprint": "e18dcaf365ee8087245d434fc08cda9a",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{1}{W}",
+            "effects": [
+              { "Move": { "what": "This", "to": { "Battlefield": { "tapped": true } } } },
+              { "Move": { "what": "This", "to": "Graveyard" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

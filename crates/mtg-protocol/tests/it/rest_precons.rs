@@ -31,6 +31,7 @@ fn summary(state: DeckState) -> Summary {
             counts,
         }],
         issues: 0,
+        to_read: 0,
     }
 }
 

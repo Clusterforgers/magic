@@ -1,0 +1,27 @@
+{
+  "oracle_id": "493ecd11-e980-42da-a79e-cddd9a94cc7a",
+  "name": "Temple Thief",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Temple Thief",
+      "oracle_fingerprint": "5d523cfbb24fe15c20cf4cb3430a2b38",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "CantBeBlockedBy": [
+                  { "HasAttached": [{ "Type": "Artifact" }] },
+                  { "Type": "Creature" }
+                ]
+              },
+              { "CantBeBlockedBy": [{ "Type": "Enchantment" }, { "Type": "Creature" }] }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

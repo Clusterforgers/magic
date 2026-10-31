@@ -1,0 +1,38 @@
+{
+  "oracle_id": "58aec411-167d-4709-8560-793eaaed62c5",
+  "name": "Gifts Ungiven",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gifts Ungiven",
+      "oracle_fingerprint": "982749a903dc9884c6003cd58332fa8a",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Search": {
+                  "filter": [],
+                  "count": { "min": 0, "max": 1 },
+                  "reveal": true,
+                  "as": "card"
+                }
+              },
+              {
+                "Choose": {
+                  "who": "Opponents",
+                  "from": { "Each": [{ "In": "Library" }, { "Is": { "Bound": "card" } }] },
+                  "as": "chosen",
+                  "rest_as": "rest"
+                }
+              },
+              { "Move": { "what": { "Bound": "chosen" }, "to": "Graveyard" } },
+              { "Move": { "what": { "Bound": "rest" }, "to": "Hand" } },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

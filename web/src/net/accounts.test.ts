@@ -37,6 +37,15 @@ const calls: [string, (api: AccountsApi) => Promise<unknown>, number, unknown, s
     'POST',
     '/api/admin/users',
   ],
+  [
+    'resetPassword',
+    (api) => api.resetPassword('u-2', { password: 'a fresh passphrase' }),
+    200,
+    {},
+    'POST',
+    '/api/admin/users/u-2/password',
+  ],
+  ['removeAccount', (api) => api.removeAccount('u-2'), 200, {}, 'DELETE', '/api/admin/users/u-2'],
 ]
 
 describe('requests', () => {
@@ -90,6 +99,27 @@ describe('requests', () => {
     expect(fake.calls[0]?.init?.credentials).toBe('include')
     expect(fake.calls[0]?.init?.headers).toEqual({ 'content-type': 'application/json' })
     expect(JSON.parse(String(fake.calls[0]?.init?.body))).toEqual(change)
+  })
+
+  it('sets the password of an account with a POST of the password as JSON, and accepts the empty 204', async () => {
+    const fake = fakeFetch(() => new Response(null, { status: 204 }))
+    const reset = { password: 'a fresh passphrase' }
+    await expect(
+      createAccountsApi({ fetch: fake.fetch }).resetPassword('u 1/2', reset),
+    ).resolves.toBeUndefined()
+    expect(fake.calls[0]?.url).toBe('/api/admin/users/u%201%2F2/password')
+    expect(fake.calls[0]?.init?.method).toBe('POST')
+    expect(fake.calls[0]?.init?.headers).toEqual({ 'content-type': 'application/json' })
+    expect(JSON.parse(String(fake.calls[0]?.init?.body))).toEqual(reset)
+  })
+
+  it('removes an account with a DELETE that has no body, and accepts the empty 204', async () => {
+    const fake = fakeFetch(() => new Response(null, { status: 204 }))
+    await expect(createAccountsApi({ fetch: fake.fetch }).removeAccount('u 1/2')).resolves.toBeUndefined()
+    expect(fake.calls[0]?.url).toBe('/api/admin/users/u%201%2F2')
+    expect(fake.calls[0]?.init?.method).toBe('DELETE')
+    expect(fake.calls[0]?.init?.credentials).toBe('include')
+    expect(fake.calls[0]?.init?.body).toBeUndefined()
   })
 
   it('deletes the account with a DELETE that carries the password as JSON, and accepts the empty 204', async () => {
@@ -260,6 +290,8 @@ describe('failures', () => {
     username_taken: 409,
     registration_closed: 403,
     forbidden: 403,
+    unknown_account: 404,
+    admin_account: 409,
     invalid_credentials: 401,
     too_many_attempts: 429,
     unauthenticated: 401,

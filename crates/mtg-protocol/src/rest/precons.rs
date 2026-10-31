@@ -34,7 +34,7 @@ pub struct PreconListItem {
     /// The format the deck check judged it in: `commander` for a deck with a commander, else
     /// `freeform`.
     pub format: String,
-    /// The deck check: `verified`, `manual_play` or `blocked`. It is derived from the cards' rules and
+    /// The deck check: `verified`, `read`, `manual_play` or `blocked`. It is derived from the cards' rules and
     /// the engine's capabilities each time they change, so it is never `unchecked`.
     pub state: DeckState,
     /// True exactly when `state` is `verified`.

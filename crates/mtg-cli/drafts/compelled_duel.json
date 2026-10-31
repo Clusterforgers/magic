@@ -1,0 +1,28 @@
+{
+  "oracle_id": "256cc907-2a13-4f43-9d37-2e52034cdaf4",
+  "name": "Compelled Duel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Compelled Duel",
+      "oracle_fingerprint": "32654afd808e1b3ed82e0c260176b55f",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 3, "toughness": 3 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Rule": { "rule": { "MustBlock": { "Target": 0 } }, "duration": "UntilEndOfTurn" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

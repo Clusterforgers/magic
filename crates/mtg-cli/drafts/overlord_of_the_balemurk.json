@@ -1,0 +1,51 @@
+{
+  "oracle_id": "652e87af-7cf0-407f-9fb7-1a630fb8dd47",
+  "name": "Overlord of the Balemurk",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Overlord of the Balemurk",
+      "oracle_fingerprint": "b736b411f3c7383903bc1e84b9cad7a4",
+      "abilities": [
+        { "Keyword": "Improvise" },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "Attacks": { "what": ["This"] } }
+              ]
+            },
+            "effects": [
+              { "Mill": { "count": 4 } },
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "In": "Graveyard" },
+                            { "OwnedBy": "You" },
+                            {
+                              "AnyOf": [
+                                { "Type": "Planeswalker" },
+                                { "Not": { "Subtype": "Avatar" } }
+                              ]
+                            }
+                          ]
+                        },
+                        "as": "returned"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "returned" }, "to": "Hand" } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

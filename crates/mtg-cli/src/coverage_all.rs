@@ -4,7 +4,7 @@
 use std::collections::BTreeMap;
 use std::fmt::Write as _;
 
-use mtg_cards::coverage::{Blocker, BlockerCount, CardResult, PreconCard, Report, analyze};
+use mtg_cards::coverage::{Blocker, BlockerCount, CardResult, PreconCard, Report, analyze_with};
 use mtg_cards::support::Support;
 use mtg_db::{CardSearch, Database};
 
@@ -13,6 +13,7 @@ use crate::audit::stored_cards_matching;
 use crate::cache::Cache;
 use crate::error::CliError;
 use crate::popularity::Popularity;
+use crate::reads::draft_library;
 
 /// How many cards, in rank order, the list written by `--out` takes its non-verified cards from.
 pub const SWEEP_CARDS: usize = 2_000;
@@ -48,9 +49,16 @@ pub async fn coverage_all(
             copies: BTreeMap::new(),
         })
         .collect();
-    let report = analyze(&cards, &mtg_engine::caps());
+    let (library, skipped) = draft_library(db).await?;
+    let report = analyze_with(&cards, &library, &mtg_engine::caps());
     let entries = entries(&report, &popularity);
     let mut text = render(&report, &entries, args.top);
+    if skipped > 0 {
+        let _ = writeln!(
+            text,
+            "\n{skipped} stored drafts do not load and are left out"
+        );
+    }
     if let Some(path) = &args.out {
         let lines = sweep_lines(&entries, SWEEP_CARDS);
         let mut body = lines.join("\n");
@@ -71,14 +79,17 @@ pub async fn coverage_all(
 }
 
 /// One card of the pool with its rank and its weight.
-struct Entry<'a> {
-    rank: Option<u32>,
-    weight: f64,
-    result: &'a CardResult,
+pub(crate) struct Entry<'a> {
+    /// The EDHREC rank; none when the card has no rank.
+    pub(crate) rank: Option<u32>,
+    /// The popularity weight of the card.
+    pub(crate) weight: f64,
+    /// The card as analysed.
+    pub(crate) result: &'a CardResult,
 }
 
 /// The cards of the report, the ranked ones first by rank (ties by name), then the cards without a rank by name.
-fn entries<'a>(report: &'a Report, popularity: &Popularity) -> Vec<Entry<'a>> {
+pub(crate) fn entries<'a>(report: &'a Report, popularity: &Popularity) -> Vec<Entry<'a>> {
     let mut entries: Vec<Entry<'a>> = report
         .cards
         .iter()
@@ -191,6 +202,15 @@ const fn state_name(state: Support) -> &'static str {
     }
 }
 
+/// The state of a card in the sweep list: its support state, or `waiting` when a draft of it awaits a read.
+fn sweep_state(result: &CardResult) -> &'static str {
+    if result.waiting {
+        "waiting"
+    } else {
+        state_name(result.support)
+    }
+}
+
 /// A field of a line of the sweep list: tabs and line breaks become spaces.
 fn field(text: &str) -> String {
     text.replace(['\t', '\n', '\r'], " ")
@@ -209,7 +229,7 @@ fn sweep_lines(entries: &[Entry<'_>], limit: usize) -> Vec<String> {
             let blocker = entry.result.blockers.iter().next().map(Blocker::label);
             Some(format!(
                 "{rank}\t{}\t{}\t{}",
-                state_name(entry.result.support),
+                sweep_state(entry.result),
                 field(&entry.result.name),
                 field(&blocker.unwrap_or_default())
             ))
@@ -356,6 +376,7 @@ mod tests {
                 .iter()
                 .map(|shape| Blocker::Clause((*shape).to_owned()))
                 .collect::<BTreeSet<_>>(),
+            waiting: false,
             copies: BTreeMap::new(),
         }
     }
@@ -560,6 +581,20 @@ mod tests {
     }
 
     #[test]
+    fn the_sweep_list_names_a_card_waiting_for_a_read_apart_from_partial_and_manual() {
+        let mut waiting = result("b", Support::Manual, &["x"]);
+        waiting.waiting = true;
+        let report = Report {
+            cards: vec![result("a", Support::Partial, &["y"]), waiting],
+        };
+        let entries = entries(&report, &popularity());
+
+        let lines = sweep_lines(&entries, 2_000);
+
+        assert_eq!(lines, ["1\tpartial\tCard a\ty", "2\twaiting\tCard b\tx"]);
+    }
+
+    #[test]
     fn the_sweep_list_leaves_out_cards_without_a_rank_and_cleans_its_fields() {
         let mut odd = result("a", Support::Partial, &["two\twords\nand more"]);
         odd.name = "Tab\there".to_owned();
@@ -575,6 +610,7 @@ mod tests {
 
     #[rstest]
     #[case(Support::Verified, "verified")]
+    #[case(Support::Read, "read")]
     #[case(Support::Partial, "partial")]
     #[case(Support::Manual, "manual")]
     #[case(Support::Stale, "stale")]

@@ -1,0 +1,22 @@
+{
+  "oracle_id": "aa286dd5-aa19-446d-9003-684d81eb57ca",
+  "name": "Laboratory Maniac",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Laboratory Maniac",
+      "oracle_fingerprint": "72ae6ec008dac47b47383571d800472e",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Draw": {} },
+            "by": { "Instead": [{ "WinGame": {} }] },
+            "condition": {
+              "Compare": { "left": { "Count": [{ "In": "Library" }] }, "op": "Eq", "right": 0 }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

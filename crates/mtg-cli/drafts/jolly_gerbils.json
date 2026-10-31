@@ -1,0 +1,19 @@
+{
+  "oracle_id": "8e22bf51-1b1b-459b-af78-91188b6e3f09",
+  "name": "Jolly Gerbils",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jolly Gerbils",
+      "oracle_fingerprint": "34c48fe86783dab7dee77e88fa30d3f1",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "GroupAttacks": { "what": [{ "OwnedBy": "You" }] } },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

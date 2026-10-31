@@ -229,6 +229,39 @@ fn take(out: &mut FaceOut, result: Tr<Vec<Value>>) {
     }
 }
 
+/// Whether an ability reads `Paid` (what the cost took) though its cost takes no objects: the rules refuse that.
+fn reads_paid_without_objects(value: &Value) -> bool {
+    const TAKES: [&str; 6] = [
+        "Sacrifice",
+        "Discard",
+        "ExileFromGraveyard",
+        "ExileFromHand",
+        "TapPermanents",
+        "ReturnToHand",
+    ];
+    match value {
+        Value::Object(map) => {
+            if let Some(cost) = map.get("cost") {
+                let takes = cost.as_array().is_some_and(|items| {
+                    items
+                        .iter()
+                        .any(|item| TAKES.iter().any(|key| item.get(key).is_some()))
+                });
+                let reads = map
+                    .iter()
+                    .filter(|(key, _)| key.as_str() != "cost")
+                    .any(|(_, inner)| inner.to_string().contains("\"Paid\""));
+                if reads && !takes {
+                    return true;
+                }
+            }
+            map.values().any(reads_paid_without_objects)
+        }
+        Value::Array(items) => items.iter().any(reads_paid_without_objects),
+        _ => false,
+    }
+}
+
 /// Whether an ability or a mode declares a target that nothing reads: the rules refuse that.
 fn has_unused_target(value: &Value) -> bool {
     match value {
@@ -258,6 +291,9 @@ fn has_unused_target(value: &Value) -> bool {
 fn checked(value: Value) -> Tr<Value> {
     if has_unused_target(&value) {
         return unmapped("targets:unused");
+    }
+    if reads_paid_without_objects(&value) {
+        return unmapped("paid:cost-takes-no-objects");
     }
     match serde_json::from_value::<Ability>(value) {
         Ok(ability) => serde_json::to_value(&ability).or_else(|_| unmapped("invalid:serialize")),

@@ -13,7 +13,6 @@
 
 use std::collections::BTreeMap;
 
-use mtg_cards::ManualClause;
 use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_engine::events::ResolutionOutcome;
 use mtg_engine::turn::Step;
@@ -71,20 +70,14 @@ pub(crate) fn place(state: &GameState) -> Place {
 }
 
 /// The objects on the stack of `state` whose rules text holds clauses the table is owed when they resolve
-/// ([`ManualClause::owed_at_resolution`]), with their controllers: what [`Stops::resolved`] needs to know once one of
-/// them has resolved and left.
+/// ([`mtg_cards::CardDefinition::manual_owed`], the flag `ObjectView::manual_owed` tells clients), with their
+/// controllers: what [`Stops::resolved`] needs to know once one of them has resolved and left.
 pub(crate) fn by_hand_on_stack(state: &GameState) -> Vec<(ObjectId, PlayerId)> {
     state
         .stack()
         .iter()
         .filter_map(|id| state.object(*id))
-        .filter(|object| {
-            object
-                .card()
-                .manual
-                .iter()
-                .any(ManualClause::owed_at_resolution)
-        })
+        .filter(|object| object.card().manual_owed())
         .map(|object| (object.id(), object.controller()))
         .collect()
 }
@@ -432,10 +425,12 @@ impl<S: EventStore> GameActor<S> {
 
 #[cfg(test)]
 mod tests {
-    //! Goal: a seat holds one stop per side and step with the `keep` it was last given, only in a step where a player gets priority, a refusal changes nothing, seats are independent, the list is told in a fixed order whenever it changes (a changed `keep` too) and not otherwise, a one-turn stop goes once the game has left its step (and a lasting one never does), a pass ends `NextWindow` and no other mode, auto-pass is every mode but `Held`, a seat that left the game or a finished game holds nothing, and a seat that changes hands in the lobby starts from the defaults again; a seat owes the clauses of its own object that resolved with clauses left to the table until it passes, and is never told so.
+    //! Goal: a seat holds one stop per side and step with the `keep` it was last given, only in a step where a player gets priority, a refusal changes nothing, seats are independent, the list is told in a fixed order whenever it changes (a changed `keep` too) and not otherwise, a one-turn stop goes once the game has left its step (and a lasting one never does), a pass ends `NextWindow` and no other mode, auto-pass is every mode but `Held`, a seat that left the game or a finished game holds nothing, and a seat that changes hands in the lobby starts from the defaults again; a seat owes the clauses of its own object that resolved with clauses left to the table until it passes, and is never told so. and the objects it holds a seat for are those the wire flags (`ObjectView::manual_owed`), for a spell and for an ability.
     use super::*;
     use mtg_engine::Engine;
-    use mtg_testkit::Scenario;
+    use mtg_protocol::ObjectView;
+    use mtg_testkit::cards::{by_hand, free_creature, healer};
+    use mtg_testkit::{Driver, Scenario, ready};
     use rstest::rstest;
 
     const ME: PlayerId = PlayerId(1);
@@ -965,5 +960,49 @@ mod tests {
         }
         // A seat the table does not have passes into thin air.
         Stops::new(2).passed(PlayerId(9));
+    }
+
+    /// Puts a spell of seat 0 with the clause `text` on the stack, or with `ability` an ability of its permanent, and
+    /// returns the driver and the object.
+    fn on_the_stack(text: &str, ability: bool) -> (Driver, ObjectId) {
+        let scenario = if ability {
+            Scenario::new(2).battlefield(0, [ready(by_hand(healer("Held", 0), text))])
+        } else {
+            Scenario::new(2).hand(0, [by_hand(free_creature("Held", 1, 1), text)])
+        };
+        let mut driver = Driver::from_scenario(scenario).unwrap();
+        if ability {
+            driver.begin_activation("Held").unwrap();
+        } else {
+            driver.cast("Held").unwrap();
+        }
+        let top = *driver.state().stack().last().unwrap();
+        (driver, top)
+    }
+
+    #[rstest]
+    #[case::mana_ability("{T}: Add {C}.", false)]
+    #[case::activated_ability("{2}, {T}: Draw a card.", false)]
+    #[case::loyalty_abilities("+1: Draw a card.\n\u{2212}2: Destroy target creature.", false)]
+    #[case::a_trigger("Whenever this creature dies, each opponent loses 1 life.", true)]
+    #[case::a_trigger_among_standing_clauses(
+        "{T}: Add {C}.\nWhen ~ enters, you gain 2 life.",
+        true
+    )]
+    fn the_seat_is_held_for_the_objects_the_wire_flags(
+        #[case] text: &str,
+        #[case] owed: bool,
+        #[values(false, true)] ability: bool,
+    ) {
+        let (driver, top) = on_the_stack(text, ability);
+        let held = by_hand_on_stack(driver.state()).contains(&(top, FOE));
+        assert_eq!(held, owed, "{text}");
+        for viewer in [FOE, ME, PlayerId(2)] {
+            let shown = ObjectView::of(driver.state(), viewer, top).unwrap();
+            assert_eq!(
+                shown.manual_owed, held,
+                "{viewer:?} reads what the server holds the seat by"
+            );
+        }
     }
 }

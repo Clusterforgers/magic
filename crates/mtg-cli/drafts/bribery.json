@@ -1,0 +1,23 @@
+{
+  "oracle_id": "6d194882-ca37-49bb-ac9f-a751c53850a8",
+  "name": "Bribery",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bribery",
+      "oracle_fingerprint": "e2e6ca52e9e8aca92c2c6c0f8f716b19",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              { "Search": { "filter": [{ "Type": "Creature" }], "as": "c" } },
+              { "Move": { "what": { "Bound": "c" }, "to": { "Battlefield": { "under": "You" } } } },
+              { "Shuffle": { "who": { "Target": 0 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -5,7 +5,17 @@
  */
 import { COLOURS } from '@/features/builder/identity'
 import { reasonLines } from '@/features/builder/report'
-import type { CardHit, Counts, DeckView, DeckZone, PreconView, Reason, Support } from '@/protocol/generated'
+import type { ReadTarget } from '@/lib/toRead'
+import type {
+  CardHit,
+  Counts,
+  DeckView,
+  DeckZone,
+  PreconView,
+  Reason,
+  ReadState,
+  Support,
+} from '@/protocol/generated'
 
 /** The groups a deck's cards fall into on the preview, in the order they are drawn. */
 export type CardKind =
@@ -57,6 +67,8 @@ export interface PreviewCard {
   /** The colour identity letters of the card. */
   identity: readonly string[]
   support: Support
+  /** The read state of the draft that decides the card, once it has one. */
+  draft?: ReadState
   /** Why the game does not run the card whole, as sentences; empty for a card that runs. */
   reasons: readonly string[]
 }
@@ -73,6 +85,10 @@ export interface DeckPreviewData {
   /** The main deck (and a companion, which the game plays from outside the deck). */
   cards: PreviewCard[]
   sideboard: PreviewCard[]
+  /** Distinct cards whose draft waits for a read, from the deck's check; none when the check was not read. */
+  toRead?: number
+  /** The deck the cards are read for, once the deck is a stored deck or a precon. */
+  readTarget?: ReadTarget
 }
 
 /** The group of a card: its first face's types, a land before a creature before the spells (an artifact creature is a creature). */
@@ -184,6 +200,7 @@ function previewCard(
   count: number,
   support: Support,
   reasons: readonly Reason[],
+  draft?: ReadState,
 ): PreviewCard {
   return {
     oracleId: card.oracle_id,
@@ -194,6 +211,7 @@ function previewCard(
     manaCost: card.mana_cost,
     identity: card.color_identity,
     support,
+    draft,
     reasons: support === 'verified' ? [] : reasonLines(reasons).map((line) => line.text),
   }
 }
@@ -215,11 +233,19 @@ export function previewFromDeck(view: DeckView, source = 'Your deck'): DeckPrevi
     commanders: [],
     cards: [],
     sideboard: [],
+    toRead: view.report.summary.to_read,
+    readTarget: { deck: view.id },
   }
   for (const line of view.cards) {
     const checked = report.get(`${line.zone}:${line.card.oracle_id}`)
     data[ZONE_BOARD[line.zone]].push(
-      previewCard(line.card, line.count, checked?.support ?? line.card.support, checked?.reasons ?? []),
+      previewCard(
+        line.card,
+        line.count,
+        checked?.support ?? line.card.support,
+        checked?.reasons ?? [],
+        checked?.draft,
+      ),
     )
   }
   return data
@@ -237,6 +263,8 @@ export function previewFromPrecon(view: PreconView): DeckPreviewData {
     commanders: [],
     cards: [],
     sideboard: [],
+    toRead: precon.summary.to_read,
+    readTarget: { precon: precon.code },
   }
   for (const board of view.boards) {
     for (const entry of board.cards) {

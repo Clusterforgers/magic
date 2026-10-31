@@ -1,4 +1,4 @@
-import { BanIcon, CircleDashedIcon, HandIcon, ShieldCheckIcon } from 'lucide-react'
+import { BanIcon, BookOpenCheckIcon, CircleDashedIcon, HandIcon, ShieldCheckIcon } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import type { ComponentProps } from 'react'
 import { Pill } from '@/components/Pill'
@@ -10,6 +10,11 @@ import { BLOCKED_MEANING, STATE_LABEL } from './format'
 // Whole class names, so Tailwind can see them. A pill has no destructive tone, so Blocked tints the neutral one.
 const LOOK: Record<DeckState, { Icon: LucideIcon; tone: PillTone; className?: string }> = {
   verified: { Icon: ShieldCheckIcon, tone: 'success' },
+  read: {
+    Icon: BookOpenCheckIcon,
+    tone: 'neutral',
+    className: 'border-support-read bg-support-read/12 text-support-read',
+  },
   manual_play: { Icon: HandIcon, tone: 'warning' },
   blocked: { Icon: BanIcon, tone: 'neutral', className: 'bg-destructive/12 text-destructive' },
   unchecked: { Icon: CircleDashedIcon, tone: 'neutral' },
@@ -22,7 +27,7 @@ interface DeckStateBadgeProps extends Omit<ComponentProps<typeof Pill>, 'tone' |
 }
 
 /**
- * The check state of a deck as a pill: an icon and a word (Verified, Played by hand, Blocked, Unchecked), never colour
+ * The check state of a deck as a pill: an icon and a word (Verified, Runs on reads, Played by hand, Blocked, Unchecked), never colour
  * alone. A blocked deck's pill carries what that means as its description.
  */
 export function DeckStateBadge({ state, label, className, ...props }: DeckStateBadgeProps) {

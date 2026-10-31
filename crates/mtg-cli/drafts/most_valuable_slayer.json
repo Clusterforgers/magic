@@ -1,0 +1,31 @@
+{
+  "oracle_id": "f5bece93-afb3-4fa4-83a8-d7eaac032522",
+  "name": "Most Valuable Slayer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Most Valuable Slayer",
+      "oracle_fingerprint": "b06ccf8969a3b84453a2168bb61e3120",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "PlayerAttacks": { "by": "You", "at": "Opponents" } },
+            "targets": [{ "what": { "Object": ["Attacking", "ChosenSubtype"] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "ModifyPT": { "power": 1, "toughness": 0 } },
+                    { "AddKeyword": "FirstStrike" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

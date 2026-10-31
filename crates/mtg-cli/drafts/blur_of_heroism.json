@@ -1,0 +1,20 @@
+{
+  "oracle_id": "b4a9b328-f976-4390-be9a-711ef357a50d",
+  "name": "Blur of Heroism",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Blur of Heroism",
+      "oracle_fingerprint": "44139e00616fabb88fb7c403e27e8cca",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": [{ "Is": "This" }], "to": "Battlefield" } },
+            "effects": [{ "Draw": {} }]
+          }
+        },
+        { "Rule": { "rule": { "MayCast": { "what": [{ "Subtype": "Hero" }] } } } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "oracle_id": "0636b6c3-0662-420a-b30d-f0a14e7c512d",
+  "name": "Mirkwood Bats",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mirkwood Bats",
+      "oracle_fingerprint": "732a8a0304470ac0f03dd272a32db154",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                {
+                  "ZoneChange": {
+                    "what": [{ "ControlledBy": "You" }, { "Is": "This" }],
+                    "to": "Battlefield"
+                  }
+                },
+                { "Sacrificed": { "what": [{ "ControlledBy": "You" }, { "Is": "This" }] } }
+              ]
+            },
+            "effects": [{ "LoseLife": { "who": "Opponents", "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

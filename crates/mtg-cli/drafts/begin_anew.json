@@ -1,0 +1,29 @@
+{
+  "oracle_id": "3ced2aa2-f102-4192-bb40-685b8f175c97",
+  "name": "Begin Anew",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Begin Anew",
+      "oracle_fingerprint": "ff4053885ad4f0f33a1e1c565bfce02a",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Destroy": { "what": { "Each": [{ "Type": "Creature" }] } } },
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [{ "ControlledBy": "You" }, { "Type": "Creature" }, { "In": "Hand" }]
+                  },
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "oracle_id": "0466f23c-d07c-4015-82d5-eab4b226f1ff",
+  "name": "Amazing Acrobatics",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Amazing Acrobatics",
+      "oracle_fingerprint": "8384d668e9db0afb70a8517014e32e21",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [{ "what": { "Object": ["Spell"] } }],
+                      "effects": [{ "Counter": { "what": { "Target": 0 } } }]
+                    },
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }] }, "divide": 1 }],
+                      "effects": [{ "Tap": { "what": { "Target": 0 } } }]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

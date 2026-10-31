@@ -1,0 +1,36 @@
+{
+  "oracle_id": "e4b3e0af-5caa-47c1-b5be-c56a875cbb15",
+  "name": "As Foretold",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "As Foretold",
+      "oracle_fingerprint": "bd0c9f0fd2ad69d23d98f01d431c55f8",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [{ "PutCounters": { "on": "This", "counter": { "Other": "time" } } }]
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": {
+                "what": [{ "AnyOf": [{ "Type": "Creature" }, { "Subtype": "Creature" }] }],
+                "free": true
+              }
+            },
+            "condition": {
+              "Compare": {
+                "left": { "Stat": { "of": "This", "stat": "ManaValue" } },
+                "op": "Le",
+                "right": { "Counters": { "on": "This", "counter": { "Other": "time" } } }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

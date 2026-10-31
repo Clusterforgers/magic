@@ -1,0 +1,30 @@
+{
+  "oracle_id": "c235015e-a7a9-4f8d-bf4a-cf68b3847f83",
+  "name": "Scapeshift",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Scapeshift",
+      "oracle_fingerprint": "5457fe58689b94285f947047e45bec6f",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Search": {
+                  "filter": [{ "Type": "Land" }],
+                  "count": { "min": 0, "max": 1 },
+                  "as": "land"
+                }
+              },
+              {
+                "Move": { "what": { "Bound": "land" }, "to": { "Battlefield": { "tapped": true } } }
+              },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

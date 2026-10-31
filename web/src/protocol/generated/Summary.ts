@@ -13,7 +13,7 @@ export type Summary = {
 format: string, 
 /**
  * `blocked` if the deck is illegal or holds an unplayable card, `manual_play` if some card is
- * not verified, otherwise `verified`.
+ * neither verified nor read, `read` if some are read, otherwise `verified`.
  */
 state: DeckState, 
 /**
@@ -27,4 +27,10 @@ zones: Array<ZoneCounts>,
 /**
  * How many legality issues the deck has.
  */
-issues: number, };
+issues: number, 
+/**
+ * How many distinct cards of the deck, in any zone, are drafts that wait for a player to read them: the draft is
+ * `pending`, new or changed since its last read, and played by hand until then. A check stored before the Read
+ * tier has none.
+ */
+to_read: number, };

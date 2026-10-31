@@ -1,6 +1,6 @@
 /** A stored deck whose report names each card's support, for tests of what the builder shows of the check. */
 import { legalityIssue, lineOf, reportCard, reportOf } from '@/features/decks/fakeDecks'
-import type { CardHit, DeckLineView, DeckView, Reason, Support } from '@/protocol/generated'
+import type { CardHit, DeckLineView, DeckView, Reason, ReadState, Support } from '@/protocol/generated'
 import { BOLT, DURESS, ELVES, GROWTH, MOUNTAIN, SOL_RING } from './renderBuilder'
 
 /** A clause of a card's text the game leaves to the table. */
@@ -13,6 +13,8 @@ export interface Entry {
   support: Support
   zone?: 'main' | 'sideboard' | 'commander'
   reasons?: Reason[]
+  /** The read state of the draft that decides the card. */
+  draft?: ReadState
 }
 
 /** Twenty Mountains and a card of each state: Partial, Manual, Stale and Unplayable, and Duress in the sideboard. */
@@ -50,6 +52,7 @@ export function checked(
         count: entry.count,
         support: entry.support,
         reasons: entry.reasons ?? [],
+        draft: entry.draft,
       }),
     ),
     issues.map((text) => legalityIssue(text)),

@@ -1,0 +1,62 @@
+{
+  "oracle_id": "3be3d7e6-7860-438a-b8c8-ef154c18c163",
+  "name": "Arid Archway",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Arid Archway",
+      "oracle_fingerprint": "9e2d333b115d237fccabc7a3d1a2c495",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Choose": {
+                  "from": { "Each": [{ "ControlledBy": "You" }, { "Type": "Land" }] },
+                  "as": "returned"
+                }
+              },
+              { "Move": { "what": { "Bound": "returned" }, "to": "Hand" } },
+              {
+                "If": {
+                  "condition": {
+                    "All": [
+                      {
+                        "Matches": {
+                          "subject": { "Bound": "returned" },
+                          "selector": ["HasAnyCounter"]
+                        }
+                      },
+                      {
+                        "Matches": {
+                          "subject": { "Bound": "returned" },
+                          "selector": ["HasAnyCounter"]
+                        }
+                      },
+                      {
+                        "Matches": {
+                          "subject": { "Bound": "returned" },
+                          "selector": ["HasAnyCounter"]
+                        }
+                      }
+                    ]
+                  },
+                  "then": [{ "Surveil": {} }]
+                }
+              },
+              { "Tap": { "what": "This" } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless", "Colorless"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

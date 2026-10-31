@@ -1,0 +1,29 @@
+{
+  "oracle_id": "db7c5a2f-9aea-4b14-86cf-7af79d6484af",
+  "name": "Hidden Horror",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hidden Horror",
+      "oracle_fingerprint": "debd488b3d92adbac37fd40f37a88355",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [
+                    { "Discard": { "filter": [{ "Type": "Creature" }] } },
+                    { "Discard": { "filter": [{ "Type": "Creature" }] } }
+                  ],
+                  "unpaid": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

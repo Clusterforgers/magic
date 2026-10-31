@@ -19,7 +19,7 @@ use uuid::Uuid;
 const ADMIN: &str = "Chrisser";
 
 /// Limits no test trips by accident; the throttle tests set their own.
-fn roomy_limits() -> AttemptLimits {
+pub(crate) fn roomy_limits() -> AttemptLimits {
     AttemptLimits {
         window: Duration::from_secs(600),
         login_per_ip: 10_000,
@@ -91,7 +91,7 @@ async fn make(by: &Browser, server: &TestServer, name: &str, password: &str) -> 
     .await
 }
 
-async fn count(pool: &PgPool, table: &str) -> i64 {
+pub(crate) async fn count(pool: &PgPool, table: &str) -> i64 {
     // `table` is always one of this file's own literals.
     sqlx::query_scalar(sqlx::AssertSqlSafe(format!("SELECT count(*) FROM {table}")))
         .fetch_one(pool)
@@ -100,7 +100,7 @@ async fn count(pool: &PgPool, table: &str) -> i64 {
 }
 
 /// The usernames that are admin, sorted.
-async fn admins(pool: &PgPool) -> Vec<String> {
+pub(crate) async fn admins(pool: &PgPool) -> Vec<String> {
     sqlx::query_scalar("SELECT username FROM users WHERE is_admin ORDER BY username")
         .fetch_all(pool)
         .await
@@ -108,12 +108,12 @@ async fn admins(pool: &PgPool) -> Vec<String> {
 }
 
 /// The reply sets no cookie at all.
-fn sets_no_cookie(reply: &Reply) {
+pub(crate) fn sets_no_cookie(reply: &Reply) {
     let lines = reply.headers_named("set-cookie");
     assert_eq!(lines.len(), 0, "unexpected cookies: {lines:?}");
 }
 
-fn error_of(reply: &Reply) -> (u16, String) {
+pub(crate) fn error_of(reply: &Reply) -> (u16, String) {
     (reply.status, reply.error_code())
 }
 

@@ -1,0 +1,29 @@
+{
+  "oracle_id": "2772e3cc-10e0-420f-b183-71ebaf3580e1",
+  "name": "Urban Burgeoning",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Urban Burgeoning",
+      "oracle_fingerprint": "4b71f9e74c6dddafc9e97e291d022fc9",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Land" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Triggered": {
+                    "when": { "StepBegins": { "step": "Untap", "whose": "Opponents" } },
+                    "effects": [{ "Untap": { "what": "Attached" } }]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

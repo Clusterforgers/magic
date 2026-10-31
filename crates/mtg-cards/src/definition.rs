@@ -337,6 +337,12 @@ impl CardDefinition {
         self
     }
 
+    /// Whether some clause left to the table is owed when a spell or ability of this card resolves: what holds its
+    /// controller at the by-hand window ([`ManualClause::owed_at_resolution`]).
+    pub fn manual_owed(&self) -> bool {
+        self.manual.iter().any(ManualClause::owed_at_resolution)
+    }
+
     /// The basic land for `color`, or Wastes for `None`.
     pub fn basic_land(color: Option<Color>) -> Self {
         let (name, subtype, mana) = match color {
@@ -501,6 +507,25 @@ mod tests {
             reason: "you apply this by hand".to_owned(),
         };
         assert_eq!(clause.owed_at_resolution(), owed, "{text}");
+    }
+
+    #[rstest]
+    #[case::no_clause(&[], false)]
+    #[case::only_a_mana_ability(&["{T}: Add {C}."], false)]
+    #[case::only_a_loyalty_clause(&["+1: Draw a card.\n\u{2212}2: Destroy target creature."], false)]
+    #[case::two_standing_clauses(&["{T}: Add {C}.", "{2}, {T}: Draw a card."], false)]
+    #[case::only_a_trigger(&["Whenever this creature dies, each opponent loses 1 life."], true)]
+    #[case::a_trigger_among_standing_clauses(&["{T}: Add {C}.", "When ~ enters, you gain 2 life."], true)]
+    fn a_card_owes_its_controller_when_some_clause_is_owed_at_resolution(
+        #[case] clauses: &[&str],
+        #[case] owed: bool,
+    ) {
+        let card = clauses
+            .iter()
+            .fold(CardDefinition::new("Held"), |card, text| {
+                card.with_manual(*text, "you apply this by hand")
+            });
+        assert_eq!(card.manual_owed(), owed, "{clauses:?}");
     }
 
     fn legendary_elf() -> CardDefinition {

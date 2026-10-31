@@ -1,0 +1,24 @@
+{
+  "oracle_id": "3bcf090c-e890-4a9f-a8aa-6079e4ec9947",
+  "name": "Ancient Greenwarden",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ancient Greenwarden",
+      "oracle_fingerprint": "d4e747a3594f33c45df9bc33d5dadb38",
+      "abilities": [
+        { "Keyword": "Reach" },
+        { "Rule": { "rule": { "MayCast": { "what": [{ "Type": "Land" }] } } } },
+        {
+          "Rule": {
+            "rule": {
+              "TriggerAgain": {
+                "cause": { "ZoneChange": { "what": [{ "Type": "Land" }], "to": "Battlefield" } }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

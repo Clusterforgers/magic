@@ -5,7 +5,15 @@
 import type { CardsApi } from '@/net/cards'
 import { DeckError } from '@/net/decks'
 import type { DecksApi } from '@/net/decks'
-import type { CardDetail, DeckListItem, DeckReport, Reason, ReportCard, Support } from '@/protocol/generated'
+import type {
+  CardDetail,
+  DeckListItem,
+  DeckReport,
+  Reason,
+  ReadState,
+  ReportCard,
+  Support,
+} from '@/protocol/generated'
 import { cardHit, deckIn, deckView, oracleIdOf, reportCard, reportOf, summary } from '../fakeDecks'
 
 /** Text the production build must not contain (`devBuild.test.ts` looks for it). */
@@ -113,9 +121,13 @@ const reasonsOf = (spec: CardSpec): Reason[] =>
   })
 
 /** The line of a report for a card of the fixture. */
-export const reportLine = (key: keyof typeof CARDS, zone: ReportCard['zone'] = 'main'): ReportCard => {
+export const reportLine = (
+  key: keyof typeof CARDS,
+  zone: ReportCard['zone'] = 'main',
+  draft?: ReadState,
+): ReportCard => {
   const spec = CARDS[key] as CardSpec
-  return reportCard(spec.name, { zone, support: spec.support, reasons: reasonsOf(spec) })
+  return reportCard(spec.name, { zone, support: spec.support, reasons: reasonsOf(spec), draft })
 }
 
 /** What `GET /api/cards/{oracle_id}` answers for a card of the fixture. */
@@ -149,7 +161,7 @@ export interface FixtureDeck {
   report: DeckReport
 }
 
-function deckOf(
+export function deckOf(
   id: string,
   name: string,
   cards: ReadonlyArray<ReportCard>,
@@ -160,13 +172,18 @@ function deckOf(
     item: deckIn(state, {
       id,
       name,
-      summary: summary({ state, counts: report.summary.counts, zones: report.summary.zones }),
+      summary: summary({
+        state,
+        counts: report.summary.counts,
+        zones: report.summary.zones,
+        to_read: report.summary.to_read,
+      }),
     }),
     report,
   }
 }
 
-const filler = (count: number): ReportCard => reportCard('Forest', { count })
+export const filler = (count: number): ReportCard => reportCard('Forest', { count })
 
 /** The decks of the fixture, most recently saved first. */
 export const FIXTURE_DECKS: readonly FixtureDeck[] = [

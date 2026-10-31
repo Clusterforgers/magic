@@ -1,5 +1,6 @@
 /** Words for the decks page: format names, the check state and its note, card counts and the kind of a pasted list. */
 import { BY_HAND, BY_HAND_TITLE, byHandCopies, cardsByHand } from '@/lib/byHand'
+import { RUNS_ON_READS } from '@/lib/toRead'
 import type {
   Counts,
   DeckListItem,
@@ -42,6 +43,7 @@ export function formatLabel(key: string): string {
 /** The word of each check state; the badge shows it beside an icon so colour never carries the meaning alone. */
 export const STATE_LABEL: Readonly<Record<DeckState, string>> = {
   verified: 'Verified',
+  read: RUNS_ON_READS,
   manual_play: BY_HAND_TITLE,
   blocked: 'Blocked',
   unchecked: 'Unchecked',
@@ -104,6 +106,7 @@ export function checkNote(deck: DeckListItem): string | null {
   switch (deck.state) {
     case 'verified':
       return null
+    case 'read':
     case 'manual_play':
       return countsText(counts)
     case 'blocked': {

@@ -1,0 +1,28 @@
+{
+  "oracle_id": "de5a8edb-c41a-4f3a-9231-c54486ba7739",
+  "name": "Kozilek's Pathfinder",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kozilek's Pathfinder",
+      "oracle_fingerprint": "2cc6a71ebbaad1c884935668bf53c6ca",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{C}",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "CantBeBlockedBy": [] }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

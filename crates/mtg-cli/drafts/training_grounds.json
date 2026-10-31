@@ -1,0 +1,14 @@
+{
+  "oracle_id": "8de3eabe-9a8f-4865-beef-a4888c081d39",
+  "name": "Training Grounds",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Training Grounds",
+      "oracle_fingerprint": "7561b1cb92f25a59837ce84ab609aadb",
+      "abilities": [
+        { "CostModifier": { "applies_to": ["Spell", "This"], "change": "Reduce", "mana": "{2}" } }
+      ]
+    }
+  ]
+}

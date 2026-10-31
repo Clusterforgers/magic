@@ -1,0 +1,21 @@
+{
+  "oracle_id": "f6069a4f-744e-43e8-9f8b-7c13b8b0187f",
+  "name": "Repercussion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Repercussion",
+      "oracle_fingerprint": "04ded6b6068e48ac4461f5641f41b550",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": [], "to": "Triggering" } },
+            "effects": [
+              { "DealDamage": { "to": { "ControllerOf": "Triggering" }, "amount": "Triggering" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

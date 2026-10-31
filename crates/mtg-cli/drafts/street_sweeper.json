@@ -1,0 +1,20 @@
+{
+  "oracle_id": "613d1a33-9fe5-48db-8277-955a055a787e",
+  "name": "Street Sweeper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Street Sweeper",
+      "oracle_fingerprint": "48b06ac9d8f1aee782e0bd991e58e3da",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

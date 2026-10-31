@@ -1,0 +1,28 @@
+{
+  "oracle_id": "260f95c5-4058-4627-981f-98b9eafc2265",
+  "name": "Cranial Archive",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cranial Archive",
+      "oracle_fingerprint": "a5da67bd60d4752e74a89a75069464dd",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "ExileSelf"],
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Each": [{ "In": "Graveyard" }, { "OwnedBy": { "Target": 0 } }] },
+                  "to": { "Library": { "place": "Shuffled" } }
+                }
+              },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

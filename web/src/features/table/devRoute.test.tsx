@@ -9,7 +9,8 @@ import { TEST_VIEWPORT } from '@/test-utils/tableHarness'
 import { FIRST_MOVE_MS } from './dev/DevFxControls'
 import { FIXTURE_MARKER } from './dev/fixture'
 import { DEV_FX } from './devSearch'
-import { BY_HAND_TEXT } from './prompt/priorityText'
+
+const BY_HAND_WORDS = /^Apply .+'s text by hand, then continue\.$/
 
 /** The real route tree, loaded fresh so the route sees the `import.meta.env.DEV` the test has set. */
 async function visit(url: string) {
@@ -131,11 +132,11 @@ describe('/dev/table with a prompt', () => {
 
   it('?prompt=priority-byhand reads the by-hand words, and ?prompt=priority the usual ones', async () => {
     await visit('/dev/table?seats=2&prompt=priority-byhand')
-    expect(await screen.findByText(BY_HAND_TEXT)).toHaveAttribute('data-slot', 'prompt-text')
+    expect(await screen.findByText(BY_HAND_WORDS)).toHaveAttribute('data-slot', 'prompt-text')
     cleanup()
     await visit('/dev/table?seats=2&prompt=priority')
     await findPrimary()
-    expect(screen.queryByText(BY_HAND_TEXT)).toBeNull()
+    expect(screen.queryByText(BY_HAND_WORDS)).toBeNull()
   })
 
   it('ignores a prompt it does not know', async () => {

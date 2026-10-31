@@ -1,0 +1,22 @@
+{
+  "oracle_id": "c2157f2c-a3a4-47aa-b33e-b2c65e11c2e5",
+  "name": "Kitesail Apprentice",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kitesail Apprentice",
+      "oracle_fingerprint": "0bf4f52a0d058c4c225bade99f39096e",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }, { "AddKeyword": "Flying" }],
+            "condition": {
+              "Matches": { "subject": "This", "selector": [{ "HasKeyword": "Evolve" }] }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

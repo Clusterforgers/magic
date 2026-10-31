@@ -1,0 +1,43 @@
+{
+  "oracle_id": "913e6182-706a-4872-8c8a-e146b0ae0738",
+  "name": "Sword of Hearth and Home",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sword of Hearth and Home",
+      "oracle_fingerprint": "26c37ac36e1a4af2b04cf3f06c9484f6",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "ModifyPT": { "power": 2, "toughness": 2 } },
+              { "AddKeyword": { "Protection": [{ "Color": "Green" }] } },
+              { "AddKeyword": { "Protection": [{ "Color": "White" }] } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": [{ "Is": "Attached" }], "to": "EachPlayer" } },
+            "targets": [
+              {
+                "what": { "Object": [{ "OwnedBy": "You" }, { "Type": "Creature" }] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "creature" } },
+              {
+                "Search": { "filter": [{ "Supertype": "Basic" }, { "Type": "Land" }], "as": "land" }
+              },
+              { "Move": { "what": { "Bound": "land" }, "to": { "Battlefield": {} } } },
+              { "Shuffle": {} }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{2}" } }
+      ]
+    }
+  ]
+}

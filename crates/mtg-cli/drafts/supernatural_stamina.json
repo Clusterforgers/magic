@@ -1,0 +1,50 @@
+{
+  "oracle_id": "65756e6d-9825-4ed6-91c4-79f1e3bd4ae5",
+  "name": "Supernatural Stamina",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Supernatural Stamina",
+      "oracle_fingerprint": "3a9f5d1d51ee31986ca60d6f66969e5b",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "ModifyPT": { "power": 2, "toughness": 0 } },
+                    {
+                      "GrantAbility": {
+                        "Triggered": {
+                          "when": {
+                            "ZoneChange": {
+                              "what": ["This"],
+                              "from": "Battlefield",
+                              "to": "Graveyard"
+                            }
+                          },
+                          "effects": [
+                            {
+                              "Move": {
+                                "what": "Triggering",
+                                "to": { "Battlefield": { "tapped": true } }
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

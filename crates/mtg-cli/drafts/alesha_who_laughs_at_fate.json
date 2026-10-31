@@ -1,0 +1,54 @@
+{
+  "oracle_id": "17ce2c17-b69b-4ebf-9c3c-c64e771af101",
+  "name": "Alesha, Who Laughs at Fate",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Alesha, Who Laughs at Fate",
+      "oracle_fingerprint": "bf260c6df0bad4c15a4800205bdf192c",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "Attackers" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "In": "Graveyard" },
+                    { "OwnedBy": "You" },
+                    {
+                      "Compare": {
+                        "stat": "ManaValue",
+                        "op": "Le",
+                        "to": { "Stat": { "of": "This", "stat": "Power" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } },
+              { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

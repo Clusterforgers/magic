@@ -1,0 +1,15 @@
+{
+  "oracle_id": "8be4745e-36d8-430f-945e-c8a7fde9b4f6",
+  "name": "Jodah, Archmage Eternal",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jodah, Archmage Eternal",
+      "oracle_fingerprint": "b5e878cc1480cc1a4b48ac8677ec46a2",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Rule": { "rule": { "MayCast": { "what": [{ "Subtype": "Spell" }] } } } }
+      ]
+    }
+  ]
+}

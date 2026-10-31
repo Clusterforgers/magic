@@ -3,10 +3,18 @@ import { describe, expect, it } from 'vitest'
 import { AccountError, AUTH_ERROR_CODES } from '@/net/accounts'
 import type { AccountErrorCode } from '@/net/accounts'
 import { accountErrorText, describeAccountError, waitText } from './errors'
-import type { AdminMode, AuthMode, SettingsMode } from './errors'
+import type { AdminMode, AdminRowMode, AuthMode, SettingsMode } from './errors'
 
 const ALL_CODES: readonly AccountErrorCode[] = [...AUTH_ERROR_CODES, 'unknown', 'network', 'bad_response']
-const MODES: (AuthMode | SettingsMode | AdminMode)[] = ['login', 'register', 'password', 'delete', 'admin']
+const MODES: (AuthMode | SettingsMode | AdminMode | AdminRowMode)[] = [
+  'login',
+  'register',
+  'password',
+  'delete',
+  'admin',
+  'admin-reset',
+  'admin-remove',
+]
 const error = (code: AccountErrorCode, extra: { status?: number; message?: string; wait?: number } = {}) =>
   new AccountError(code, extra.status ?? 400, extra.message ?? 'server words', extra.wait ?? null)
 
@@ -109,6 +117,39 @@ describe('describeAccountError', () => {
     expect(taken.message).not.toMatch(/sign in/i)
     const slow = describeAccountError(error('too_many_attempts', { wait: 900 }), 'admin').message
     expect(slow).toMatch(/many accounts.*about 15 minutes/i)
+  })
+
+  it('tells the admin plainly that the admin account stays, in the words of the action', () => {
+    const refused = (mode: AdminRowMode | SettingsMode) =>
+      describeAccountError(error('admin_account', { status: 409 }), mode)
+    for (const mode of ['delete', 'admin-remove'] as const) {
+      expect(refused(mode)).toEqual({
+        field: 'form',
+        message: 'This account makes accounts for your friends, so it cannot be deleted.',
+      })
+    }
+    expect(refused('admin-reset').message).toBe(
+      'This is your own account. Change its password under Account settings.',
+    )
+  })
+
+  it('says an account is gone, and that the changes to accounts were many, on the two row actions', () => {
+    for (const mode of ['admin-reset', 'admin-remove'] as const) {
+      const gone = describeAccountError(error('unknown_account', { status: 404 }), mode)
+      expect(gone).toEqual({
+        field: 'form',
+        message: 'That account is already gone. The list shows who is left.',
+      })
+      const slow = describeAccountError(error('too_many_attempts', { wait: 900 }), mode).message
+      expect(slow).toMatch(/changed many accounts.*about 15 minutes/i)
+      expect(slow).not.toMatch(/make an account/i)
+    }
+  })
+
+  it('puts a refused new password on the password field of the reset form', () => {
+    const shown = describeAccountError(error('invalid_password'), 'admin-reset')
+    expect(shown.field).toBe('password')
+    expect(shown.message).toMatch(/10 to 128 characters/)
   })
 
   it('says a server without accounts has none, and that a seat link still works', () => {

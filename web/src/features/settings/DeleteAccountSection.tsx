@@ -10,7 +10,7 @@ import {
 } from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { useAuthStore } from '@/features/auth/context'
+import { useAuth, useAuthStore } from '@/features/auth/context'
 import { describeAccountError } from '@/features/auth/errors'
 import { Field } from '@/features/auth/Field'
 import { describedBy } from '@/features/auth/fieldIds'
@@ -28,6 +28,8 @@ interface DeleteAccountSectionProps {
 export function DeleteAccountSection({ onDeleting }: DeleteAccountSectionProps) {
   const store = useAuthStore()
   const navigate = useNavigate()
+  // Nothing makes another admin, so the admin's account stays; the server refuses it as well (409).
+  const isAdmin = useAuth((state) => state.user?.is_admin === true)
   const [open, setOpen] = useState(false)
   const [pending, setPending] = useState(false)
   const [problem, setProblem] = useState<string | null>(null)
@@ -68,14 +70,27 @@ export function DeleteAccountSection({ onDeleting }: DeleteAccountSectionProps) 
         <h2 id="delete-account-title" className="text-lg font-semibold tracking-tight">
           Delete account
         </h2>
-        <p className="text-sm text-muted-foreground">
-          This cannot be undone. Your decks are deleted and you are signed out everywhere. You leave your
-          games: a seat you took in a lobby is given back, a lobby you host is closed, and a seat in a game
-          that is running stays at the table for its link. Games keep the name you played under. The username
-          can be taken again.
-        </p>
+        {isAdmin ? (
+          <p id="delete-admin-note" className="text-sm">
+            This account makes accounts for your friends, so it cannot be deleted.
+          </p>
+        ) : (
+          <p className="text-sm text-muted-foreground">
+            This cannot be undone. Your decks are deleted and you are signed out everywhere. You leave your
+            games: a seat you took in a lobby is given back, a lobby you host is closed, and a seat in a game
+            that is running stays at the table for its link. Games keep the name you played under. The
+            username can be taken again.
+          </p>
+        )}
       </div>
-      <Button type="button" variant="destructive" className="w-full sm:w-fit" onClick={() => setOpen(true)}>
+      <Button
+        type="button"
+        variant="destructive"
+        className="w-full sm:w-fit"
+        disabled={isAdmin}
+        aria-describedby={isAdmin ? 'delete-admin-note' : undefined}
+        onClick={() => setOpen(true)}
+      >
         Delete account…
       </Button>
 

@@ -1,0 +1,19 @@
+{
+  "oracle_id": "d5021db4-64d3-4a0f-9167-499ccbe16e1e",
+  "name": "Storm of Steel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Storm of Steel",
+      "oracle_fingerprint": "70b5d8036cb67db077bb83f4d0b07656",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget", "divide": 2 }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

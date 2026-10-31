@@ -1,0 +1,22 @@
+{
+  "oracle_id": "d15eed8e-6c2c-4427-9f72-a46e90c562b9",
+  "name": "Satyr Piper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Satyr Piper",
+      "oracle_fingerprint": "42945940179054389d443517fce7da7f",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{3}{G}",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Rule": { "rule": { "MustBlock": { "Target": 0 } }, "duration": "UntilEndOfTurn" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

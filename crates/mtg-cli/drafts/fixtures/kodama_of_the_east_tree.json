@@ -1,0 +1,144 @@
+{
+  "object": "card",
+  "id": "af5105ee-09e2-4344-ab39-00f0e9034c47",
+  "oracle_id": "cb1afab6-b9c8-4b9c-840b-24106523a783",
+  "multiverse_ids": [
+    497759
+  ],
+  "mtgo_id": 85260,
+  "tcgplayer_id": 226404,
+  "cardmarket_id": 510455,
+  "name": "Kodama of the East Tree",
+  "lang": "en",
+  "released_at": "2020-11-20",
+  "uri": "https://api.scryfall.com/cards/af5105ee-09e2-4344-ab39-00f0e9034c47",
+  "scryfall_uri": "https://scryfall.com/card/cmr/239/kodama-of-the-east-tree?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T07:46:29Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/a/f/af5105ee-09e2-4344-ab39-00f0e9034c47.jpg?1783928789",
+    "normal": "https://cards.scryfall.io/normal/front/a/f/af5105ee-09e2-4344-ab39-00f0e9034c47.jpg?1783928789",
+    "large": "https://cards.scryfall.io/large/front/a/f/af5105ee-09e2-4344-ab39-00f0e9034c47.jpg?1783928789",
+    "png": "https://cards.scryfall.io/png/front/a/f/af5105ee-09e2-4344-ab39-00f0e9034c47.png?1783928789",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/a/f/af5105ee-09e2-4344-ab39-00f0e9034c47.jpg?1783928789",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/a/f/af5105ee-09e2-4344-ab39-00f0e9034c47.jpg?1783928789",
+    "thumb": "https://cards.scryfall.io/thumb/front/a/f/af5105ee-09e2-4344-ab39-00f0e9034c47.webp?1783928789",
+    "grid": "https://cards.scryfall.io/grid/front/a/f/af5105ee-09e2-4344-ab39-00f0e9034c47.webp?1783928789",
+    "display": "https://cards.scryfall.io/display/front/a/f/af5105ee-09e2-4344-ab39-00f0e9034c47.webp?1783928789",
+    "art": "https://cards.scryfall.io/art/front/a/f/af5105ee-09e2-4344-ab39-00f0e9034c47.webp?1783928789",
+    "crop": "https://cards.scryfall.io/crop/front/a/f/af5105ee-09e2-4344-ab39-00f0e9034c47.webp?1783928789",
+    "jpeg": "https://cards.scryfall.io/normal/front/a/f/af5105ee-09e2-4344-ab39-00f0e9034c47.jpg?1783928789"
+  },
+  "mana_cost": "{4}{G}{G}",
+  "cmc": 6.0,
+  "type_line": "Legendary Creature — Spirit",
+  "oracle_text": "Reach\nWhenever another permanent you control enters, if it wasn't put onto the battlefield with this ability, you may put a permanent card with equal or lesser mana value from your hand onto the battlefield.\nPartner (You can have two commanders if both have partner.)",
+  "power": "6",
+  "toughness": "6",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Reach",
+    "Partner"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "39de6fbf-1f11-48d0-8f04-f0407f6a0732",
+  "set": "cmr",
+  "set_name": "Commander Legends",
+  "set_type": "draft_innovation",
+  "set_uri": "https://api.scryfall.com/sets/39de6fbf-1f11-48d0-8f04-f0407f6a0732",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Acmr&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/cmr?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/af5105ee-09e2-4344-ab39-00f0e9034c47/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Acb1afab6-b9c8-4b9c-840b-24106523a783&unique=prints",
+  "collector_number": "239",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Daarken",
+  "artist_ids": [
+    "e607a0d4-fc12-4c01-9e3f-501f5269b9cb"
+  ],
+  "illustration_id": "f2ab3d75-bcdb-4454-8bbf-e0533038828d",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 1000,
+  "preview": {
+    "source": "Trader-Online.de",
+    "source_uri": "https://www.youtube.com/watch?v=mWq7uZGarWI",
+    "previewed_at": "2020-10-27"
+  },
+  "prices": {
+    "usd": "3.97",
+    "usd_foil": "6.48",
+    "usd_etched": null,
+    "eur": "3.69",
+    "eur_foil": "5.70",
+    "tix": "11.27"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=497759&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DKodama%2Bof%2Bthe%2BEast%2BTree",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DKodama%2Bof%2Bthe%2BEast%2BTree",
+    "edhrec": "https://edhrec.com/route/?cc=Kodama+of+the+East+Tree"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F226404%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=510455&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/85260?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

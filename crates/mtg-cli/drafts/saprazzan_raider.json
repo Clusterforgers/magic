@@ -1,0 +1,19 @@
+{
+  "oracle_id": "ca011fb1-fdc6-4eec-9344-c247339292ab",
+  "name": "Saprazzan Raider",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Saprazzan Raider",
+      "oracle_fingerprint": "d6ff04dad5305deb0ccd3d6fd927df9b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "BecomesBlocked": { "what": [{ "Is": "This" }] } },
+            "effects": [{ "Move": { "what": "Triggering", "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

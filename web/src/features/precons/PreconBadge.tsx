@@ -5,12 +5,13 @@ import type { PreconStatus } from './format'
 
 const AS_STATE: Record<PreconStatus, DeckState> = {
   whole: 'verified',
+  read: 'read',
   hand: 'manual_play',
   blocked: 'blocked',
 }
 
 /**
- * What the game does with a precon as a pill: an icon and the words ("Whole deck runs", "3 cards played by hand",
+ * What the game does with a precon as a pill: an icon and the words ("Whole deck runs", "Runs on reads", "3 cards played by hand",
  * "Cannot be taken"), never colour alone.
  */
 export function PreconBadge({

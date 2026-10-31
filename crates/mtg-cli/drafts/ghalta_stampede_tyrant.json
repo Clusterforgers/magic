@@ -1,0 +1,31 @@
+{
+  "oracle_id": "b8f16311-be5a-4648-b024-849a61dff0bc",
+  "name": "Ghalta, Stampede Tyrant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ghalta, Stampede Tyrant",
+      "oracle_fingerprint": "a5730452557717e4994a1322a6ffb7ef",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [{ "In": "Hand" }, { "OwnedBy": "You" }, { "Type": "Creature" }]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "card"
+                }
+              },
+              { "Move": { "what": { "Bound": "card" }, "to": { "Battlefield": {} } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

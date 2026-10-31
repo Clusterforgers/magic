@@ -1,0 +1,17 @@
+{
+  "oracle_id": "43febbcd-ecbe-4edb-ad90-7fc6dc381d05",
+  "name": "Exalted Sunborn",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Exalted Sunborn",
+      "oracle_fingerprint": "94fcdc5f3de595ef6714500e7bb25443",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Lifelink" },
+        { "Replacement": { "when": { "TokenCreation": {} }, "by": { "Multiply": 2 } } },
+        { "Keyword": { "Ward": "{1}{W}" } }
+      ]
+    }
+  ]
+}

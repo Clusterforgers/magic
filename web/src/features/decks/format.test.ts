@@ -81,6 +81,7 @@ describe('formatLabel', () => {
 describe('STATE_LABEL', () => {
   it.each([
     ['verified', 'Verified'],
+    ['read', 'Runs on reads'],
     ['manual_play', 'Played by hand'],
     ['blocked', 'Blocked'],
     ['unchecked', 'Unchecked'],
@@ -170,6 +171,13 @@ describe('checkNote', () => {
   ])('counts %s in a deck that is played by hand', (_what, deckCounts, note) => {
     const deck = deckIn('manual_play', { summary: summary({ state: 'manual_play', counts: deckCounts }) })
     expect(checkNote(deck)).toBe(note)
+  })
+
+  it('counts the copies on reads in a deck that runs on reads', () => {
+    const deck = deckIn('read', {
+      summary: summary({ state: 'read', counts: counts({ verified: 96, read: 4 }) }),
+    })
+    expect(checkNote(deck)).toBe('96 of 100 verified, 4 on reads')
   })
 
   it.each([

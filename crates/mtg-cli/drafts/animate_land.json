@@ -1,0 +1,28 @@
+{
+  "oracle_id": "b2bd58ea-b2c6-47f1-b082-7969f093bbc6",
+  "name": "Animate Land",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Animate Land",
+      "oracle_fingerprint": "a3f651159b986fca01bb7c40fbf9c9e3",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Land" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetPT": { "power": 3, "toughness": 3 } }, { "AddType": "Creature" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Attach": { "what": { "Target": 0 }, "to": { "Target": 0 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

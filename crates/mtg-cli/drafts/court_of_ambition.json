@@ -1,0 +1,34 @@
+{
+  "oracle_id": "652e71a9-e46f-41b3-8695-76b3606b1955",
+  "name": "Court of Ambition",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Court of Ambition",
+      "oracle_fingerprint": "f06bd60fa71c71156bda77da80834d3a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "BecomeMonarch": {} }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "If": {
+                  "condition": { "Monarch": "You" },
+                  "then": [{ "LoseLife": { "who": "Opponents", "amount": 6 } }],
+                  "otherwise": [{ "LoseLife": { "who": "Opponents", "amount": 3 } }]
+                }
+              },
+              { "If": { "condition": { "Monarch": "You" }, "then": [] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

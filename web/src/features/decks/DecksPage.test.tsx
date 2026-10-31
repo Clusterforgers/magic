@@ -151,6 +151,7 @@ describe('the list', () => {
 describe('the check state of a deck', () => {
   const WORDS: ReadonlyArray<readonly [DeckState, string]> = [
     ['verified', 'Verified'],
+    ['read', 'Runs on reads'],
     ['manual_play', 'Played by hand'],
     ['blocked', 'Blocked'],
     ['unchecked', 'Unchecked'],
@@ -213,6 +214,32 @@ describe('the check state of a deck', () => {
     await renderDecks({ decks: [{ ...deck, name: 'Probe' }] })
     await screen.findByRole('list', { name: 'Your decks' })
     expect(within(rowOf('Probe')).getByText(note)).toBeInTheDocument()
+  })
+
+  it('says how many cards wait for a read, with the address of the deck, and nothing for a deck with none', async () => {
+    await renderDecks({
+      decks: [
+        deckIn('manual_play', {
+          id: 'w1',
+          name: 'Waiting',
+          summary: summary({
+            state: 'manual_play',
+            counts: counts({ verified: 96, manual: 4 }),
+            to_read: 3,
+          }),
+        }),
+        deckIn('manual_play', {
+          id: 'p1',
+          name: 'Plain',
+          summary: summary({ state: 'manual_play', counts: counts({ verified: 96, manual: 4 }) }),
+        }),
+      ],
+    })
+    await screen.findByRole('list', { name: 'Your decks' })
+    expect(
+      within(rowOf('Waiting')).getByText('3 cards to read').closest('[data-slot="to-read"]'),
+    ).toHaveAttribute('data-read-path', '/read?deck=w1')
+    expect(rowOf('Plain').querySelector('[data-slot="to-read"]')).toBeNull()
   })
 
   it('adds no line to a verified deck', async () => {

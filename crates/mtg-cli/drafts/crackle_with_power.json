@@ -1,0 +1,26 @@
+{
+  "oracle_id": "273f5483-b67e-4dd6-bba8-c0a047fa34d7",
+  "name": "Crackle with Power",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Crackle with Power",
+      "oracle_fingerprint": "52d38cded15a1276a879adebb6ab0a0a",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget", "bounds": { "min": 0, "max": 1 } }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": { "Times": { "by": 5, "of": "X" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

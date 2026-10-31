@@ -1,0 +1,34 @@
+{
+  "oracle_id": "4f515250-0f1f-4fb7-aa75-b703b81ccd4a",
+  "name": "Silent-Blade Oni",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Silent-Blade Oni",
+      "oracle_fingerprint": "5cdb683eef3001bda4c9b9d57a6f3685",
+      "abilities": [
+        { "Keyword": { "Ninjutsu": "{4}{U}{B}" } },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "CastFromZone": {
+                        "what": { "Each": [{ "In": "Hand" }, { "OwnedBy": "Triggering" }] },
+                        "free": true
+                      }
+                    }
+                  ]
+                }
+              },
+              { "Manifest": { "count": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

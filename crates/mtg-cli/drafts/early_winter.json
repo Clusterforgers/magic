@@ -1,0 +1,47 @@
+{
+  "oracle_id": "fbf2653e-9cc4-442f-bc73-6e2ba6e067cb",
+  "name": "Early Winter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Early Winter",
+      "oracle_fingerprint": "27a8873e86f154fd05a1a1daa3f6d790",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                      "effects": [{ "Exile": { "what": { "Target": 0 } } }]
+                    },
+                    {
+                      "targets": [{ "what": "Opponent" }],
+                      "effects": [
+                        {
+                          "Choose": {
+                            "who": { "Target": 0 },
+                            "from": {
+                              "Each": [
+                                { "ControlledBy": { "Target": 0 } },
+                                { "Type": "Enchantment" }
+                              ]
+                            },
+                            "as": "x"
+                          }
+                        },
+                        { "Exile": { "what": { "Bound": "x" } } }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "oracle_id": "21fa2442-6eac-4dce-a9cc-76f0053fdb8f",
+  "name": "Peer into the Abyss",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Peer into the Abyss",
+      "oracle_fingerprint": "de8267fbb067d64853fbb8f96032217c",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Draw": {
+                  "count": {
+                    "Half": {
+                      "of": { "Count": [{ "In": "Library" }, { "OwnedBy": { "Target": 0 } }] },
+                      "up": true
+                    }
+                  }
+                }
+              },
+              {
+                "LoseLife": {
+                  "who": { "Target": 0 },
+                  "amount": { "Half": { "of": { "Life": { "Target": 0 } }, "up": true } }
+                }
+              },
+              {
+                "Draw": {
+                  "count": {
+                    "Half": {
+                      "of": { "Count": [{ "In": "Library" }, { "OwnedBy": { "Target": 0 } }] },
+                      "up": true
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

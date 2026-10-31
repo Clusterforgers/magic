@@ -1,0 +1,33 @@
+{
+  "oracle_id": "ef295a34-0325-49dd-87a6-546dde395082",
+  "name": "Typhoon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Typhoon",
+      "oracle_fingerprint": "f131dee852d8ace36be27878ef0d13ee",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "Opponents",
+                  "as": "opponent",
+                  "effects": [
+                    {
+                      "DealDamage": {
+                        "to": { "Bound": "opponent" },
+                        "amount": { "Count": [{ "Type": "Instant" }] }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

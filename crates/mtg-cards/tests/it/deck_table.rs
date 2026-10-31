@@ -92,6 +92,7 @@ fn report(state: DeckState, counts: Counts, legality: Vec<Issue>) -> DeckReport 
             counts,
             zones: Vec::new(),
             issues: u32::try_from(legality.len()).unwrap(),
+            to_read: 0,
         },
         legality,
         cards: Vec::new(),

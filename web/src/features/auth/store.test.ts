@@ -575,6 +575,97 @@ describe("the admin's accounts", () => {
     expect(state().accounts).toEqual(NO_ACCOUNTS)
   })
 
+  describe("a friend's account", () => {
+    const FRIEND = { username: 'Cy_3', password: 'cy has a long password' }
+    const friends = { [ADA.username]: ADA.password, [FRIEND.username]: FRIEND.password }
+
+    it('sets a password the admin chose and tells the server nothing else', async () => {
+      const { state, server } = await asAdmin({ users: friends })
+      await state().loadAccounts()
+      const result = await state().resetAccountPassword(idOf(FRIEND.username), 'a fresh passphrase')
+      expect(result).toEqual({ ok: true })
+      expect(server.resets).toEqual([{ id: idOf(FRIEND.username), password: 'a fresh passphrase' }])
+      expect(server.users.get(FRIEND.username)).toBe('a fresh passphrase')
+      expect(server.signedIn).toBe(ADA.username)
+      expect(JSON.stringify(state())).not.toContain('a fresh passphrase')
+    })
+
+    it('removes the account, drops the row at once and reloads the list', async () => {
+      const { state, server } = await asAdmin({ users: friends })
+      await state().loadAccounts()
+      expect(state().accounts.users).toHaveLength(2)
+      const result = await state().removeAccount(idOf(FRIEND.username))
+      expect(result).toEqual({ ok: true })
+      expect(server.removed).toEqual([idOf(FRIEND.username)])
+      expect(state().accounts.users.map((one) => one.username)).toEqual([ADA.username])
+      await vi.waitFor(() => expect(state().accounts.status).toBe('ready'))
+      expect(state().accounts.users.map((one) => one.username)).toEqual([ADA.username])
+    })
+
+    it('asks the server for nothing unless the signed-in account is the admin', async () => {
+      const { state, server } = setup({ admin: 'someone_else', signedIn: ADA.username })
+      await state().start()
+      const before = server.calls.length
+      expect(await state().resetAccountPassword('id-x', 'a fresh passphrase')).toMatchObject({
+        ok: false,
+        error: { code: 'forbidden' },
+      })
+      expect(await state().removeAccount('id-x')).toMatchObject({ ok: false, error: { code: 'forbidden' } })
+      expect(server.calls).toHaveLength(before)
+    })
+
+    it.each([
+      ['a password the rules refuse', 400, 'invalid_password'],
+      ["the admin's own account", 409, 'admin_account'],
+      ['a throttled admin', 429, 'too_many_attempts'],
+      ['a database that is down', 503, 'unavailable'],
+    ] as const)('keeps everything as it was after %s', async (_what, status, code) => {
+      const refuse = () => authError(status, code)
+      const { state } = await asAdmin({
+        users: friends,
+        override: { resetPassword: refuse, removeAccount: refuse },
+      })
+      await state().loadAccounts()
+      const reset = await state().resetAccountPassword(idOf(FRIEND.username), 'a fresh passphrase')
+      expect(reset).toMatchObject({ ok: false, error: { code, status } })
+      const removal = await state().removeAccount(idOf(FRIEND.username))
+      expect(removal).toMatchObject({ ok: false, error: { code, status } })
+      expect(state()).toMatchObject({ status: 'signed-in', user: { is_admin: true } })
+      expect(state().accounts.users).toHaveLength(2)
+    })
+
+    it('reloads the list when the account is already gone, and counts a removal of it as done', async () => {
+      const gone = () => authError(404, 'unknown_account')
+      const { state, server } = await asAdmin({
+        users: friends,
+        override: { resetPassword: gone, removeAccount: gone },
+      })
+      await state().loadAccounts()
+      const listings = () => server.calls.filter((call) => call.url === '/api/admin/users').length
+      const before = listings()
+      const reset = await state().resetAccountPassword(idOf(FRIEND.username), 'a fresh passphrase')
+      expect(reset).toMatchObject({ ok: false, error: { code: 'unknown_account' } })
+      const removal = await state().removeAccount(idOf(FRIEND.username))
+      expect(removal).toEqual({ ok: true })
+      await vi.waitFor(() => expect(listings()).toBe(before + 2))
+    })
+
+    it('stops counting the account as the admin on forbidden and turns signed out on unauthenticated', async () => {
+      const demoted = await asAdmin({
+        users: friends,
+        override: { removeAccount: () => authError(403, 'forbidden') },
+      })
+      await demoted.state().removeAccount(idOf(FRIEND.username))
+      expect(demoted.state()).toMatchObject({ status: 'signed-in', user: { is_admin: false } })
+      const lost = await asAdmin({
+        users: friends,
+        override: { resetPassword: () => authError(401, 'unauthenticated') },
+      })
+      await lost.state().resetAccountPassword(idOf(FRIEND.username), 'a fresh passphrase')
+      expect(lost.state()).toMatchObject({ status: 'signed-out', user: null })
+    })
+  })
+
   it('clears the list and the flag with the sign-out', async () => {
     const { state } = await asAdmin()
     await state().loadAccounts()

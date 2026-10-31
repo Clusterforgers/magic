@@ -1,6 +1,7 @@
 //! `promote`: the proposals the checker accepts become corpus cards, a rules file in `cards/` and the card's Scryfall
 //! record from the cache as its fixture (`docs/cards-dsl.md`, Model-assisted reading).
 
+pub mod draft;
 pub mod fixture;
 
 use std::collections::{BTreeMap, BTreeSet};
@@ -18,6 +19,7 @@ use crate::args::PromoteArgs;
 use crate::audit::stored_cards;
 use crate::cache::Cache;
 use crate::compile::names_of;
+use crate::drafts::{self, SmokeKind};
 use crate::error::CliError;
 use fixture::{w2a_oracle_cards, w2a_records};
 
@@ -43,6 +45,12 @@ pub enum W2aSkip {
     Repeated,
     /// The cached Oracle Cards file has no record of the card.
     NoRecord,
+    /// An `Unchecked` proposal that is not a whole card: it has a `Manual` ability or a status other than `full`.
+    NotWhole,
+    /// The engine would not run the draft as a `Read` card (the loader refuses it or a primitive is missing).
+    NotRead,
+    /// The draft fails the smoke gate.
+    Smoke(SmokeKind),
 }
 
 impl W2aSkip {
@@ -57,6 +65,9 @@ impl W2aSkip {
             W2aSkip::NamesOutside => "names a card outside the corpus".into(),
             W2aSkip::Repeated => "an earlier file promotes it".into(),
             W2aSkip::NoRecord => "no record in the cached Oracle Cards file".into(),
+            W2aSkip::NotWhole => "unchecked, and not a whole card".into(),
+            W2aSkip::NotRead => "the engine does not run it as a Read card".into(),
+            W2aSkip::Smoke(kind) => format!("fails the smoke gate: {}", kind.word()),
         }
     }
 }
@@ -72,6 +83,8 @@ pub struct W2aPromotion {
     pub state: Support,
     /// The completed rules.
     pub rules: Card,
+    /// Whether it becomes a draft for players to read (an `Unchecked` proposal) and not a corpus card.
+    pub draft: bool,
 }
 
 /// What becomes of one proposal file.
@@ -83,6 +96,8 @@ pub struct W2aDecision {
     pub card: String,
     /// The promotion, or why there is none.
     pub outcome: Result<W2aPromotion, W2aSkip>,
+    /// More about a skip, such as the game that failed the smoke gate.
+    pub detail: Option<String>,
 }
 
 /// What the decisions are made against.
@@ -102,6 +117,8 @@ pub struct W2aBasis<'a> {
     pub out: &'a Path,
     /// Whether accepted `Partial` proposals are promoted too.
     pub partial: bool,
+    /// Whether `Unchecked` proposals that are whole cards become drafts.
+    pub draft: bool,
 }
 
 impl W2aBasis<'_> {
@@ -123,6 +140,9 @@ impl W2aBasis<'_> {
         }
         let report = check(text, printed, self.library, self.names, self.caps);
         let verdict = report.verdict();
+        if self.draft && verdict == Verdict::Unchecked {
+            return draft::decide(printed, slug, report);
+        }
         let (Verdict::Accepted, Some(record), Some(rules)) =
             (verdict, report.support, report.rules)
         else {
@@ -140,6 +160,7 @@ impl W2aBasis<'_> {
             oracle_id: printed.oracle_id.clone(),
             state,
             rules,
+            draft: false,
         })
     }
 }
@@ -181,6 +202,7 @@ pub fn w2a_decide(basis: &W2aBasis, files: &[(PathBuf, String)]) -> Vec<W2aDecis
                 file: file.clone(),
                 card: stem.to_owned(),
                 outcome: Err(W2aSkip::NoCard),
+                detail: None,
             });
             continue;
         };
@@ -189,13 +211,15 @@ pub fn w2a_decide(basis: &W2aBasis, files: &[(PathBuf, String)]) -> Vec<W2aDecis
         } else {
             basis.decide_one(printed, text)
         };
-        if outcome.is_ok() {
+        // Drafts are sorted out after the smoke gate: the first one that passes wins.
+        if matches!(&outcome, Ok(promotion) if !promotion.draft) {
             promoted.insert(printed.oracle_id.clone());
         }
         decisions.push(W2aDecision {
             file: file.clone(),
             card: printed.name.clone(),
             outcome,
+            detail: None,
         });
     }
     decisions
@@ -222,24 +246,42 @@ pub fn w2a_attach_records(
     Ok(records)
 }
 
-/// Writes the rules file and the fixture of every promotion; returns the rules files.
+/// What a run wrote.
+#[derive(Debug, Clone, PartialEq, Default)]
+pub struct W2aWritten {
+    /// The rules files written, corpus cards and drafts.
+    pub files: Vec<PathBuf>,
+    /// The slugs of the drafts removed because their card became a corpus card.
+    pub superseded: Vec<String>,
+}
+
+/// Writes the rules file and the fixture of every promotion, a corpus card below `out` and a draft below `drafts`; a
+/// corpus card removes the draft of the same card.
 pub fn w2a_write(
     out: &Path,
+    drafts: &Path,
     decisions: &[W2aDecision],
     records: &BTreeMap<String, String>,
-) -> Result<Vec<PathBuf>, CliError> {
-    let mut written = Vec::new();
+) -> Result<W2aWritten, CliError> {
+    let mut written = W2aWritten::default();
     for promotion in decisions.iter().filter_map(|d| d.outcome.as_ref().ok()) {
         let Some(record) = records.get(&promotion.oracle_id) else {
             continue;
         };
+        if promotion.draft {
+            written.files.push(draft::write(drafts, promotion, record)?);
+            continue;
+        }
         let file = format!("{}.json", promotion.slug);
         let rules = out.join("cards").join(&file);
         let fixture = out.join(W2A_FIXTURES).join(&file);
         std::fs::write(&rules, canonical(&promotion.rules))
             .map_err(|source| CliError::io(&rules, source))?;
         std::fs::write(&fixture, record).map_err(|source| CliError::io(&fixture, source))?;
-        written.push(rules);
+        written.files.push(rules);
+        if draft::remove_superseded(drafts, &promotion.slug)? {
+            written.superseded.push(promotion.slug.clone());
+        }
     }
     Ok(written)
 }
@@ -251,23 +293,35 @@ pub struct W2aPromoted {
     pub decisions: Vec<W2aDecision>,
     /// The rules files written; empty in a dry run.
     pub written: Vec<PathBuf>,
+    /// The slugs of the drafts removed because their card became a corpus card.
+    pub superseded: Vec<String>,
     /// Whether nothing was written.
     pub dry_run: bool,
+    /// Whether `Unchecked` proposals were considered as drafts.
+    pub drafting: bool,
 }
 
 impl W2aPromoted {
     /// One line for each file, then the counts.
     pub fn render(&self) -> String {
-        let verb = if self.dry_run {
-            "would promote"
+        let (verb, draft_verb) = if self.dry_run {
+            ("would promote", "would draft")
         } else {
-            "promoted"
+            ("promoted", "drafted")
         };
         let mut text = String::new();
         let mut skips: BTreeMap<String, usize> = BTreeMap::new();
-        let mut count = 0;
+        let (mut count, mut drafts) = (0, 0);
         for decision in &self.decisions {
             match &decision.outcome {
+                Ok(promotion) if promotion.draft => {
+                    drafts += 1;
+                    let _ = writeln!(
+                        text,
+                        "{draft_verb} {}: drafts/{}.json",
+                        decision.card, promotion.slug
+                    );
+                }
                 Ok(promotion) => {
                     count += 1;
                     let state = promotion.state;
@@ -279,25 +333,32 @@ impl W2aPromoted {
                 }
                 Err(skip) => {
                     *skips.entry(skip.reason()).or_insert(0) += 1;
-                    let _ = writeln!(
+                    let _ = write!(
                         text,
                         "skipped {} ({}): {}",
                         decision.card,
                         decision.file.display(),
                         skip.reason()
                     );
+                    if let Some(detail) = &decision.detail {
+                        let _ = write!(text, " ({detail})");
+                    }
+                    text.push('\n');
                 }
             }
+        }
+        for slug in &self.superseded {
+            let _ = writeln!(text, "removed the draft of {slug}: it is a corpus card now");
         }
         let tally: Vec<String> = skips
             .iter()
             .map(|(reason, n)| format!("{n} {reason}"))
             .collect();
-        let _ = write!(
-            text,
-            "{count} {verb}, {} skipped",
-            self.decisions.len() - count
-        );
+        let _ = write!(text, "{count} {verb}");
+        if self.drafting || drafts > 0 {
+            let _ = write!(text, ", {drafts} {draft_verb}");
+        }
+        let _ = write!(text, ", {} skipped", self.decisions.len() - count - drafts);
         if !tally.is_empty() {
             let _ = write!(text, ": {}", tally.join(", "));
         }
@@ -353,18 +414,28 @@ pub async fn w2a_promote_against(
         caps: &caps,
         out: &out,
         partial: args.partial,
+        draft: args.draft,
     };
     let mut decisions = w2a_decide(&basis, &files);
     let records = w2a_attach_records(&mut decisions, &w2a_oracle_cards(cache)?)?;
+    if args.draft {
+        draft::gate(&basis, &mut decisions, !args.no_smoke);
+    }
+    let drafts = args
+        .drafts
+        .clone()
+        .unwrap_or_else(|| PathBuf::from(drafts::DEFAULT_DIR));
     let written = if args.dry_run {
-        Vec::new()
+        W2aWritten::default()
     } else {
-        w2a_write(&out, &decisions, &records)?
+        w2a_write(&out, &drafts, &decisions, &records)?
     };
     Ok(W2aPromoted {
         decisions,
-        written,
+        written: written.files,
+        superseded: written.superseded,
         dry_run: args.dry_run,
+        drafting: args.draft,
     })
 }
 

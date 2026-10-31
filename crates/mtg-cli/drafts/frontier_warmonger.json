@@ -1,0 +1,40 @@
+{
+  "oracle_id": "9cb741ae-14d6-4a8d-bfad-703abfe3682c",
+  "name": "Frontier Warmonger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Frontier Warmonger",
+      "oracle_fingerprint": "32c1caff246115793e999427c6d460df",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "AttacksPlayerOrPlaneswalker": {
+                  "what": [{ "Type": "Creature" }],
+                  "at": "Opponents"
+                }
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "AttackingPlayer": "Opponents" },
+                      { "AttackingPlayer": "Opponents" }
+                    ]
+                  },
+                  "mods": [{ "AddKeyword": "Menace" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

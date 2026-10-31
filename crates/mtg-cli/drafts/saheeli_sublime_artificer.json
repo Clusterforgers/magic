@@ -1,0 +1,65 @@
+{
+  "oracle_id": "ab655810-f67e-4576-9174-35b16f5e3235",
+  "name": "Saheeli, Sublime Artificer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Saheeli, Sublime Artificer",
+      "oracle_fingerprint": "beb5b31316f1711fd6a64534c735e58d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "by": "You" } },
+            "if": {
+              "Matches": {
+                "subject": "Triggering",
+                "selector": [{ "Not": { "Type": "Creature" } }]
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Servo",
+                      "types": ["Artifact", "Creature"],
+                      "subtypes": ["Servo"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 2 },
+            "targets": [
+              { "what": { "Object": [{ "ControlledBy": "You" }, { "Type": "Artifact" }] } },
+              {
+                "what": {
+                  "Object": [
+                    { "ControlledBy": "You" },
+                    { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "BecomeCopy": {
+                  "what": { "Target": 0 },
+                  "of": { "Target": 1 },
+                  "except": [{ "AddType": "Artifact" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

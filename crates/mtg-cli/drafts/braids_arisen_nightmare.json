@@ -1,0 +1,71 @@
+{
+  "oracle_id": "e0445c80-fa53-4c3e-881e-940e9fce7f57",
+  "name": "Braids, Arisen Nightmare",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Braids, Arisen Nightmare",
+      "oracle_fingerprint": "98016e0fe28756770e5b5737e911c13c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [
+                    {
+                      "Sacrifice": {
+                        "filter": [
+                          {
+                            "AnyOf": [
+                              { "Type": "Artifact" },
+                              { "Type": "Creature" },
+                              { "Type": "Enchantment" },
+                              { "Type": "Land" },
+                              { "Type": "Planeswalker" }
+                            ]
+                          }
+                        ]
+                      }
+                    },
+                    { "PayLife": 1 }
+                  ]
+                }
+              },
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Pay": {
+                        "who": "Opponents",
+                        "cost": [
+                          {
+                            "Sacrifice": {
+                              "filter": [
+                                {
+                                  "AnyOf": [
+                                    { "Type": "Artifact" },
+                                    { "Type": "Creature" },
+                                    { "Type": "Enchantment" },
+                                    { "Type": "Land" },
+                                    { "Type": "Planeswalker" }
+                                  ]
+                                }
+                              ]
+                            }
+                          },
+                          { "PayLife": 1 }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

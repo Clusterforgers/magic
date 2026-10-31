@@ -4,7 +4,7 @@
  */
 import { reasonLines } from '@/features/builder/report'
 import { BY_HAND, PARTLY_BY_HAND, runsWhole } from '@/lib/byHand'
-import type { Reason, ReportCard, Support } from '@/protocol/generated'
+import type { Reason, ReadState, ReportCard, Support } from '@/protocol/generated'
 import { SUPPORT_LABEL } from '../format'
 
 /** The support states of a card the game does not run whole. */
@@ -32,6 +32,8 @@ export interface FlaggedCard {
   support: Unvalidated
   /** The clauses left to the table; none for a card with no rules file, whose whole text is left. */
   reasons: readonly Reason[]
+  /** The read state of the draft that decides the card, once it has one. */
+  draft?: ReadState
   decks: readonly DeckRef[]
 }
 
@@ -66,6 +68,7 @@ function flaggedIn(deck: CheckedDeck): FlaggedCard[] {
       name: card.name,
       support: card.support,
       reasons: card.reasons,
+      draft: card.draft,
       decks: [{ id: deck.id, name: deck.name }],
     })
   }
@@ -98,14 +101,21 @@ export function mergeDecks(decks: readonly CheckedDeck[]): FlaggedCard[] {
   return [...merged.values()].sort((a, b) => b.decks.length - a.decks.length || byName(a, b))
 }
 
-/** A filter of the list: every card, or those in one state. */
-export type StateFilter = 'all' | Unvalidated
+/** A filter of the list: every card, those whose draft waits for a read, or those in one state. */
+export type StateFilter = 'all' | 'to_read' | Unvalidated
+
+/** Whether a card's draft waits for a player to read it. */
+export const waitsForRead = (card: { draft?: ReadState }): boolean => card.draft === 'pending'
 
 /** The cards in `filter`'s state. */
-export const filterCards = <T extends { support: Unvalidated }>(
+export function filterCards<T extends { support: Unvalidated; draft?: ReadState }>(
   cards: readonly T[],
   filter: StateFilter,
-): T[] => (filter === 'all' ? [...cards] : cards.filter((card) => card.support === filter))
+): T[] {
+  if (filter === 'all') return [...cards]
+  if (filter === 'to_read') return cards.filter(waitsForRead)
+  return cards.filter((card) => card.support === filter)
+}
 
 /** The states that have cards, with how many, in the order of the filters. */
 export function stateCounts(cards: readonly { support: Unvalidated }[]): Array<[Unvalidated, number]> {

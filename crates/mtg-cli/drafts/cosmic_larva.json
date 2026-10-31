@@ -1,0 +1,28 @@
+{
+  "oracle_id": "97428d25-d850-4a98-8852-9440e06a9091",
+  "name": "Cosmic Larva",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cosmic Larva",
+      "oracle_fingerprint": "635214fa8defeb5cb5036ba97ec0d3ba",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "Sacrifice": { "filter": [{ "Type": "Land" }], "count": 2 } }],
+                  "unpaid": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              },
+              { "Scry": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

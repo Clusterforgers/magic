@@ -1,0 +1,19 @@
+{
+  "oracle_id": "057fa60b-10b0-4612-be0d-157076c82241",
+  "name": "Choke",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Choke",
+      "oracle_fingerprint": "a595edc50881cfb1cbf42d90b7e3c2ac",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Land" }, { "Subtype": "Island" }] },
+            "mods": ["DoesntUntap"]
+          }
+        }
+      ]
+    }
+  ]
+}

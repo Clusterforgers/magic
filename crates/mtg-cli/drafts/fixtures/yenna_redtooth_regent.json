@@ -1,0 +1,167 @@
+{
+  "object": "card",
+  "id": "e635d461-254a-434e-8e5d-dea61dd8ca4f",
+  "oracle_id": "0adede77-5181-4190-8066-4797cefe0189",
+  "multiverse_ids": [
+    629720
+  ],
+  "mtgo_id": 116782,
+  "arena_id": 86929,
+  "tcgplayer_id": 513096,
+  "cardmarket_id": 729563,
+  "name": "Yenna, Redtooth Regent",
+  "lang": "en",
+  "released_at": "2023-09-08",
+  "uri": "https://api.scryfall.com/cards/e635d461-254a-434e-8e5d-dea61dd8ca4f",
+  "scryfall_uri": "https://scryfall.com/card/woe/219/yenna-redtooth-regent?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:57:46Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/e/6/e635d461-254a-434e-8e5d-dea61dd8ca4f.jpg?1783915066",
+    "normal": "https://cards.scryfall.io/normal/front/e/6/e635d461-254a-434e-8e5d-dea61dd8ca4f.jpg?1783915066",
+    "large": "https://cards.scryfall.io/large/front/e/6/e635d461-254a-434e-8e5d-dea61dd8ca4f.jpg?1783915066",
+    "png": "https://cards.scryfall.io/png/front/e/6/e635d461-254a-434e-8e5d-dea61dd8ca4f.png?1783915066",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/e/6/e635d461-254a-434e-8e5d-dea61dd8ca4f.jpg?1783915066",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/e/6/e635d461-254a-434e-8e5d-dea61dd8ca4f.jpg?1783915066",
+    "thumb": "https://cards.scryfall.io/thumb/front/e/6/e635d461-254a-434e-8e5d-dea61dd8ca4f.webp?1783915066",
+    "grid": "https://cards.scryfall.io/grid/front/e/6/e635d461-254a-434e-8e5d-dea61dd8ca4f.webp?1783915066",
+    "display": "https://cards.scryfall.io/display/front/e/6/e635d461-254a-434e-8e5d-dea61dd8ca4f.webp?1783915066",
+    "art": "https://cards.scryfall.io/art/front/e/6/e635d461-254a-434e-8e5d-dea61dd8ca4f.webp?1783915066",
+    "crop": "https://cards.scryfall.io/crop/front/e/6/e635d461-254a-434e-8e5d-dea61dd8ca4f.webp?1783915066",
+    "jpeg": "https://cards.scryfall.io/normal/front/e/6/e635d461-254a-434e-8e5d-dea61dd8ca4f.jpg?1783915066"
+  },
+  "mana_cost": "{2}{G}{W}",
+  "cmc": 4.0,
+  "type_line": "Legendary Creature — Elf Noble",
+  "oracle_text": "{2}, {T}: Choose target enchantment you control that doesn't have the same name as another permanent you control. Create a token that's a copy of it, except it isn't legendary. If the token is an Aura, untap Yenna, then scry 2. Activate only as a sorcery.",
+  "power": "4",
+  "toughness": "4",
+  "colors": [
+    "G",
+    "W"
+  ],
+  "color_identity": [
+    "G",
+    "W"
+  ],
+  "keywords": [
+    "Scry"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "a02f04f7-a345-4aa9-933c-1969f0cdd5c6",
+      "component": "combo_piece",
+      "name": "Yenna, Redtooth Regent",
+      "type_line": "Legendary Creature — Elf Noble",
+      "uri": "https://api.scryfall.com/cards/a02f04f7-a345-4aa9-933c-1969f0cdd5c6"
+    },
+    {
+      "object": "related_card",
+      "id": "4b976756-e988-4211-95c2-0e3587118488",
+      "component": "token",
+      "name": "Copy",
+      "type_line": "Token",
+      "uri": "https://api.scryfall.com/cards/4b976756-e988-4211-95c2-0e3587118488"
+    }
+  ],
+  "legalities": {
+    "standard": "legal",
+    "future": "legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "arena",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "79139661-13ee-43c4-8bad-a8c069f1a1df",
+  "set": "woe",
+  "set_name": "Wilds of Eldraine",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/79139661-13ee-43c4-8bad-a8c069f1a1df",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Awoe&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/woe?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/e635d461-254a-434e-8e5d-dea61dd8ca4f/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A0adede77-5181-4190-8066-4797cefe0189&unique=prints",
+  "collector_number": "219",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "\"My people are both bloom and thorn.\"",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Justyna Dura",
+  "artist_ids": [
+    "d2340aef-8ca9-4e0d-864c-6a4e8d5e350a"
+  ],
+  "illustration_id": "42c8525d-aa7d-4b00-afaa-2f479e915bfd",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 3016,
+  "penny_rank": 14651,
+  "preview": {
+    "source": "AliasV",
+    "source_uri": "https://twitter.com/AliasVEDH/status/1693632905782702172",
+    "previewed_at": "2023-08-21"
+  },
+  "prices": {
+    "usd": "1.91",
+    "usd_foil": "2.63",
+    "usd_etched": null,
+    "eur": "1.81",
+    "eur_foil": "2.22",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=629720&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DYenna%252C%2BRedtooth%2BRegent",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DYenna%252C%2BRedtooth%2BRegent",
+    "edhrec": "https://edhrec.com/route/?cc=Yenna%2C+Redtooth+Regent"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F513096%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=729563&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/116782?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

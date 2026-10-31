@@ -1,0 +1,16 @@
+{
+  "oracle_id": "06bb4272-25d1-46db-8585-15f919267e1e",
+  "name": "One with the Multiverse",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "One with the Multiverse",
+      "oracle_fingerprint": "a860506123b432ac6d318edf50c0f1a1",
+      "abilities": [
+        { "Rule": { "rule": { "LookAtTopAnyTime": "You" } } },
+        { "Rule": { "rule": { "MayCast": { "what": [{ "Type": "Land" }] } } } },
+        { "Rule": { "rule": { "MayCast": { "from": "Library" } } } }
+      ]
+    }
+  ]
+}

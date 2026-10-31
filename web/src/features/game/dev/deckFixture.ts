@@ -155,7 +155,7 @@ export function fixtureListItem(deck: FixtureDeck): DeckListItem {
     format: deck.format,
     state,
     verified: state === 'verified',
-    summary: { format: deck.format, state, counts, zones: [{ zone: 'main', counts }], issues: 0 },
+    summary: { format: deck.format, state, counts, zones: [{ zone: 'main', counts }], issues: 0, to_read: 0 },
     commanders: made.commanders,
   })
 }
@@ -204,7 +204,7 @@ export function fixturePreconItem(deck: FixtureDeck & { set: string; state?: Dec
     state,
     verified: state === 'verified',
     playable: state !== 'blocked',
-    summary: { format: 'commander', state, counts, zones: [{ zone: 'main', counts }], issues: 0 },
+    summary: { format: 'commander', state, counts, zones: [{ zone: 'main', counts }], issues: 0, to_read: 0 },
   }
 }
 

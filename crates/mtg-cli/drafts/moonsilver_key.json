@@ -1,0 +1,52 @@
+{
+  "oracle_id": "373395b2-f04b-46c9-b9f4-4f6815b71009",
+  "name": "Moonsilver Key",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Moonsilver Key",
+      "oracle_fingerprint": "c0327f445da78bf80236dda9fd17e5cb",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{1}" },
+              {
+                "TapPermanents": {
+                  "filter": [
+                    { "Type": "Artifact" },
+                    {
+                      "HasKeyword": {
+                        "Typecycling": { "find": [{ "Type": "Artifact" }], "cost": "{C}" }
+                      }
+                    }
+                  ]
+                }
+              },
+              { "Sacrifice": { "filter": [{ "Type": "Artifact" }] } },
+              { "PayLife": 1 }
+            ],
+            "effects": [
+              {
+                "Search": {
+                  "filter": [
+                    { "Type": "Artifact" },
+                    {
+                      "HasKeyword": {
+                        "Typecycling": { "find": [{ "Type": "Artifact" }], "cost": "{C}" }
+                      }
+                    }
+                  ],
+                  "reveal": true,
+                  "as": "card"
+                }
+              },
+              { "Move": { "what": { "Bound": "card" }, "to": "Hand" } },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

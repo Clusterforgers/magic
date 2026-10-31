@@ -1,0 +1,38 @@
+{
+  "oracle_id": "4669e8c7-fc37-4b97-9cb7-8d29b43d9176",
+  "name": "Overlord of the Hauntwoods",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Overlord of the Hauntwoods",
+      "oracle_fingerprint": "d40b077237fac5fd13c8dbed12e8237d",
+      "abilities": [
+        { "Keyword": "Improvise" },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "Attacks": { "what": ["This"] } }
+              ]
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Everywhere",
+                      "types": ["Land"],
+                      "subtypes": ["Plains", "Island", "Swamp", "Mountain", "Forest"]
+                    }
+                  },
+                  "tapped": true
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

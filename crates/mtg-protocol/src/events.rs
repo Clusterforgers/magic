@@ -7,7 +7,7 @@ use mtg_engine::abilities::Cause;
 use mtg_engine::apply_event;
 use mtg_engine::events::{Event, ZoneCause};
 use mtg_engine::manual::{ManualAction, ManualZone};
-use mtg_engine::object::ObjectRef;
+use mtg_engine::object::{GameObject, ObjectRef};
 use mtg_engine::resolve::Shown;
 use mtg_engine::snapshot::Snapshot;
 use mtg_engine::state::GameState;
@@ -133,6 +133,14 @@ pub enum HiddenEvent {
         /// The ability's new object.
         object: ObjectId,
         /// The object it comes from, as it was.
+        source: ObjectRef,
+        /// Who controls it.
+        controller: PlayerId,
+    },
+    /// An ability that triggered on a card the viewer cannot see could not be run by the game: which ability, never the card or
+    /// its words.
+    AbilityLeftToTable {
+        /// The object with the ability, as it was.
         source: ObjectRef,
         /// Who controls it.
         controller: PlayerId,
@@ -264,6 +272,7 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         // A triggered ability can be about a card that only some seats can see.
         Event::AbilityTriggered(_)
         | Event::AbilityPutOnStack(_)
+        | Event::AbilityLeftToTable(_)
         | Event::TriggerRemoved { .. }
         | Event::DelayedTriggerCreated(_) => redact_triggers(before, event, viewer),
         Event::HandDealt { .. }
@@ -545,6 +554,23 @@ fn redact_triggers(before: &GameState, event: &Event, viewer: PlayerId) -> Optio
             source: *source,
             ability: *ability,
         }),
+        // The ability that fails is the one resolving; it is hidden as it was when it went on the stack.
+        Event::AbilityLeftToTable(left)
+            if before
+                .resolving()
+                .and_then(|resolving| before.object(resolving.object()))
+                .and_then(GameObject::ability)
+                .is_some_and(|ability| {
+                    ability.cause().is_some_and(|cause| {
+                        !snapshot_known(before, ability.snapshot(), viewer) || unseen_cause(cause)
+                    })
+                }) =>
+        {
+            Some(HiddenEvent::AbilityLeftToTable {
+                source: left.source,
+                controller: left.controller,
+            })
+        }
         Event::DelayedTriggerCreated(created)
             if !snapshot_known(before, &created.snapshot, viewer)
                 || created

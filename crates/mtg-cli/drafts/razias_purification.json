@@ -1,0 +1,42 @@
+{
+  "oracle_id": "60e95faf-1496-4298-9588-52b50b05fc6b",
+  "name": "Razia's Purification",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Razia's Purification",
+      "oracle_fingerprint": "fd2352b2fa0a105468e242a3fc2424ad",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "player",
+                  "effects": [
+                    {
+                      "Choose": {
+                        "who": { "Bound": "player" },
+                        "from": { "Each": [{ "ControlledBy": { "Bound": "player" } }] },
+                        "count": { "min": 3, "max": 3 },
+                        "as": "kept",
+                        "rest_as": "rest"
+                      }
+                    },
+                    {
+                      "Sacrifice": {
+                        "who": { "Bound": "player" },
+                        "filter": [{ "Is": { "Bound": "rest" } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

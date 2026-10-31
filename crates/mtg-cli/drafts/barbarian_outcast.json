@@ -1,0 +1,29 @@
+{
+  "oracle_id": "49d44e89-b94e-43f7-a996-f50651df9264",
+  "name": "Barbarian Outcast",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Barbarian Outcast",
+      "oracle_fingerprint": "bc0a00ec84cc3e828957958b5c721141",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "State": {
+                "condition": {
+                  "Compare": {
+                    "left": { "Count": [{ "Type": "Sorcery" }] },
+                    "op": "Eq",
+                    "right": 0
+                  }
+                }
+              }
+            },
+            "effects": [{ "Sacrifice": { "filter": ["This"] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

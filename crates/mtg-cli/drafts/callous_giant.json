@@ -1,0 +1,26 @@
+{
+  "oracle_id": "7a2336ff-c8ed-4daa-b182-403c21bc8133",
+  "name": "Callous Giant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Callous Giant",
+      "oracle_fingerprint": "1de2eb536f574b3b0648e650f6b7cc45",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Damage": { "to": "This" } },
+            "by": { "PreventRemovingCounter": "+1/+1" },
+            "condition": {
+              "Compare": {
+                "left": { "Stat": { "of": "This", "stat": "Toughness" } },
+                "op": "Le",
+                "right": { "Count": [{ "HasAttached": [] }] }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

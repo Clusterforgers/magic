@@ -1,0 +1,27 @@
+{
+  "oracle_id": "e334b8bd-01d2-42b6-83f8-4f9d29f8ad0d",
+  "name": "Wet Willie of the Damned",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wet Willie of the Damned",
+      "oracle_fingerprint": "1657ce732c17237d7934f50653768632",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": { "Half": { "of": 5, "up": false } }
+                }
+              },
+              { "GainLife": { "amount": { "Half": { "of": 5, "up": false } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

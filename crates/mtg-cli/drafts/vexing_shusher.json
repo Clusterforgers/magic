@@ -1,0 +1,28 @@
+{
+  "oracle_id": "a20a7cf8-2075-47ad-9229-36264b112e61",
+  "name": "Vexing Shusher",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vexing Shusher",
+      "oracle_fingerprint": "2d830ea66db00a3dec11c4d00aa217f1",
+      "abilities": [
+        { "Rule": { "rule": { "CantBeCountered": "This" }, "from": "Stack" } },
+        {
+          "Activated": {
+            "cost": "{R/G}",
+            "targets": [{ "what": { "Object": [{ "Subtype": "Spell" }] } }],
+            "effects": [
+              {
+                "Rule": {
+                  "rule": { "CantBeCountered": { "Target": 0 } },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -2,7 +2,7 @@
  * The deck check as the builder draws it (docs/deck-check.md, "Highlighting"): what the report says of each line, the
  * order issues come in, and the words of a reason or a legality issue. Pure, so tables test it.
  */
-import type { DeckReport, Issue, Reason, Support } from '@/protocol/generated'
+import type { DeckReport, Issue, Reason, ReadState, Support } from '@/protocol/generated'
 import type { Line } from './deckEdit'
 
 /** The support states from the worst to the best: what stops a deck, what is done by hand, what is nearly there, what runs on a read. */
@@ -31,6 +31,8 @@ export const isIssue = (support: Support): boolean => support !== 'verified'
 export interface LineCheck {
   support: Support
   reasons: readonly Reason[]
+  /** The read state of the draft that decides the card, once it has one. */
+  draft?: ReadState
 }
 
 /** The report's verdict on each card by oracle id; a card is judged once, in whichever zone it sits. */
@@ -38,7 +40,7 @@ export function checksOf(report: DeckReport): ReadonlyMap<string, LineCheck> {
   const checks = new Map<string, LineCheck>()
   for (const card of report.cards) {
     if (!checks.has(card.oracle_id))
-      checks.set(card.oracle_id, { support: card.support, reasons: card.reasons })
+      checks.set(card.oracle_id, { support: card.support, reasons: card.reasons, draft: card.draft })
   }
   return checks
 }

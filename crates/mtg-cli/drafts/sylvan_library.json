@@ -1,0 +1,29 @@
+{
+  "oracle_id": "92eed395-62ca-4293-882b-8565c40daab5",
+  "name": "Sylvan Library",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sylvan Library",
+      "oracle_fingerprint": "32a6459a69873eb74023faaedb891e3a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Draw", "whose": "You" } },
+            "if": {
+              "Matches": {
+                "subject": "Triggering",
+                "selector": [
+                  { "OwnedBy": "You" },
+                  { "In": "Hand" },
+                  { "HasKeyword": "FirstStrike" }
+                ]
+              }
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

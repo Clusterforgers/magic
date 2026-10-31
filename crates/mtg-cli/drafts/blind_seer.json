@@ -1,0 +1,28 @@
+{
+  "oracle_id": "f905b72d-734a-44e8-b118-c8de889994a9",
+  "name": "Blind Seer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Blind Seer",
+      "oracle_fingerprint": "448d368e4520e01113cb7068c08962bf",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{1}{U}",
+            "targets": [{ "what": { "Either": [{ "Object": ["Spell"] }, { "Object": [] }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetColors": ["White", "Blue", "Black", "Red", "Green", "White"] }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

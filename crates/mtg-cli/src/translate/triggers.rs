@@ -34,6 +34,18 @@ pub fn triggered(ctx: &mut Ctx, body: &str) -> Tr<Value> {
     };
     let part = ctx.sub(execute)?;
     let mut effects = chain_at(ctx, &part, false)?;
+    // An event of a player (a life gain, a step, a spell cast) has no object to change.
+    let about_a_player = when
+        .as_object()
+        .and_then(|map| map.values().next())
+        .is_some_and(|inner| inner.get("what").is_none());
+    if about_a_player
+        && json!(effects)
+            .to_string()
+            .contains("\"affected\":\"Triggering\"")
+    {
+        return unmapped("trigger:object-effect-on-a-player-event");
+    }
     let itself = is_about_itself(&when);
     if itself {
         for effect in &mut effects {

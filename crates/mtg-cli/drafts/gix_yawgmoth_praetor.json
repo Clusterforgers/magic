@@ -1,0 +1,56 @@
+{
+  "oracle_id": "928d977e-cff0-4e0e-83bb-16d73a754f35",
+  "name": "Gix, Yawgmoth Praetor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gix, Yawgmoth Praetor",
+      "oracle_fingerprint": "571c9dd650a4b525b070e48699a74258",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": [{ "Type": "Creature" }], "to": "Opponents" } },
+            "effects": [
+              {
+                "May": {
+                  "who": { "ControllerOf": "This" },
+                  "effects": [
+                    { "Draw": { "who": { "ControllerOf": "Triggering" } } },
+                    { "Pay": { "cost": [{ "PayLife": 1 }] } }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{4}{B}{B}{B}" }, { "Discard": { "count": "X" } }],
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              { "ExileTop": { "who": { "Target": 0 }, "as": "exiled" } },
+              {
+                "Rule": {
+                  "rule": { "MayCast": { "who": { "Target": 0 }, "from": "Exile", "play": true } },
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Rule": {
+                  "rule": { "MayCast": { "who": { "Target": 0 }, "from": "Exile", "play": true } },
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Rule": {
+                  "rule": { "MayCast": { "from": "Exile", "play": true } },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

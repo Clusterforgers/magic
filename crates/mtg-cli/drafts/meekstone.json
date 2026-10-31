@@ -1,0 +1,30 @@
+{
+  "oracle_id": "5ba73182-30a7-4bad-9cb6-c0feecc2db33",
+  "name": "Meekstone",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Meekstone",
+      "oracle_fingerprint": "b559b52b4ffbf3f869f97e46ec9e7e4f",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                {
+                  "Compare": {
+                    "stat": "Power",
+                    "op": "Ge",
+                    "to": { "Greatest": { "of": [{ "Type": "Creature" }], "stat": "Power" } }
+                  }
+                }
+              ]
+            },
+            "mods": ["DoesntUntap"]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -12,7 +12,10 @@ export type SettingsMode = 'password' | 'delete'
 /** The admin's form that makes an account for someone else: it has the register form's fields and its own wording. */
 export type AdminMode = 'admin'
 
-type Mode = AuthMode | SettingsMode | AdminMode
+/** The admin's two actions on a listed account: setting its password and removing the account. */
+export type AdminRowMode = 'admin-reset' | 'admin-remove'
+
+type Mode = AuthMode | SettingsMode | AdminMode | AdminRowMode
 
 /** An error ready to show: the field it belongs to, or the whole form, and the sentence. */
 export interface ShownError {
@@ -63,6 +66,13 @@ const MESSAGES: Record<AccountErrorCode, (error: AccountError, mode: Mode) => Sh
   }),
   registration_closed: () => form(CLOSED),
   forbidden: () => form('Only the admin can make accounts.'),
+  unknown_account: () => form('That account is already gone. The list shows who is left.'),
+  admin_account: (_error, mode) =>
+    form(
+      mode === 'admin-reset'
+        ? 'This is your own account. Change its password under Account settings.'
+        : 'This account makes accounts for your friends, so it cannot be deleted.',
+    ),
   invalid_credentials: (_error, mode) =>
     SETTINGS_MODES.has(mode)
       ? { field: 'current', message: 'That is not your current password. Check it and try again.' }
@@ -73,7 +83,9 @@ const MESSAGES: Record<AccountErrorCode, (error: AccountError, mode: Mode) => Sh
         ? `Too many attempts to make an account from here. Wait ${waitText(error.retryAfter)} before trying again.`
         : mode === 'admin'
           ? `You have made many accounts in a short time. Wait ${waitText(error.retryAfter)} before making another.`
-          : `Too many failed attempts. Wait ${waitText(error.retryAfter)} before trying again.`,
+          : mode === 'admin-reset' || mode === 'admin-remove'
+            ? `You have changed many accounts in a short time. Wait ${waitText(error.retryAfter)} before the next change.`
+            : `Too many failed attempts. Wait ${waitText(error.retryAfter)} before trying again.`,
     ),
   unauthenticated: () => form('You are not signed in. Sign in and try again.'),
   forbidden_origin: () =>

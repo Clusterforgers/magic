@@ -1,0 +1,26 @@
+{
+  "oracle_id": "57828973-df3d-4288-988d-147a3016120e",
+  "name": "Wirecat",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wirecat",
+      "oracle_fingerprint": "ffd2d8f37f239b67a8fcc57eee71b447",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": ["CantAttack", "CantBlock"],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Type": "Enchantment" }] },
+                "op": "Gt",
+                "right": 0
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

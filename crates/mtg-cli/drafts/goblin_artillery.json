@@ -1,0 +1,23 @@
+{
+  "oracle_id": "06db7444-0225-48c8-ab04-d69ff06e97b6",
+  "name": "Goblin Artillery",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Goblin Artillery",
+      "oracle_fingerprint": "d97e8dd164e52a17f3f3a24c7c7ffb82",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 2 } },
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 3 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

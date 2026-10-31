@@ -1,4 +1,4 @@
-// Goal: the Accounts page is for the admin alone (everyone else is told so and nothing is asked of the server), makes an account with exactly the typed username and password once, fills a random 16-character password in plain text on request, shows the new credentials once for copying without keeping them anywhere, signs nobody in, puts every refusal in plain words on the right field, lists the accounts oldest first and is reachable from the keyboard.
+// Goal: the Accounts page is for the admin alone (everyone else is told so and nothing is asked of the server), makes an account with exactly the typed username and password once, fills a random 16-character password in plain text on request, shows the new credentials once (address, username and password) for copying without keeping them anywhere, scrolls them into view with the focus on Copy both, signs nobody in, puts every refusal in plain words on the right field, lists the accounts oldest first and is reachable from the keyboard.
 import { screen, waitFor, within } from '@testing-library/react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { flashStore } from '@/lib/flash'
@@ -24,7 +24,7 @@ const users = { [ADA.username]: ADA.password, Cy_3: 'cy has a long password' }
 const form = () => screen.getByRole('form', { name: 'Make an account' })
 const username = () => screen.getByLabelText('Username')
 const password = () => screen.getByLabelText('Password')
-const create = () => within(form()).getByRole('button', { name: 'Create account' })
+const create = () => within(form()).getByRole('button', { name: 'Make account' })
 const makePassword = () => within(form()).getByRole('button', { name: 'Make a password' })
 const sentTo = (app: App, path: string, method = 'POST') =>
   app.accounts.calls.filter((call) => call.url === path && (call.init?.method ?? 'GET') === method)
@@ -68,7 +68,11 @@ describe('the page for the admin', () => {
     await open()
     expect(await screen.findByRole('form', { name: 'Make an account' })).toHaveAttribute('method', 'post')
     expect(username()).toHaveAttribute('autocomplete', 'off')
-    expect(password()).toHaveAttribute('autocomplete', 'off')
+    // A new password: Firefox must not offer to save the friend's login under the admin's own entry.
+    expect(password()).toHaveAttribute('autocomplete', 'new-password')
+    expect(password()).toHaveAttribute('data-1p-ignore')
+    expect(password()).toHaveAttribute('data-lpignore', 'true')
+    expect(password()).toHaveAttribute('data-bwignore', 'true')
     expect(password()).toHaveAttribute('type', 'password')
     expect(username()).toHaveAccessibleDescription(/3 to 32 characters/)
     expect(password()).toHaveAccessibleDescription(/10 to 128 characters/)
@@ -222,14 +226,14 @@ describe('making an account', () => {
     expect(shown).toHaveTextContent(BO.username)
     expect(shown).toHaveTextContent(generated)
     expect(shown).toHaveTextContent('Tell your friend to change it under Account settings.')
+    expect(shown).toHaveTextContent(window.location.origin)
     expect(username()).toHaveValue('')
     expect(password()).toHaveValue('')
     expect(password()).toHaveAttribute('type', 'password')
-    expect(username()).toHaveFocus()
     expect(app.accounts.users.get(BO.username)).toBe(generated)
   })
 
-  it('copies both lines, and removes them from the page when the admin is done', async () => {
+  it('copies the address, the username and the password, and removes them from the page when the admin is done', async () => {
     const writeText = vi.fn(() => Promise.resolve())
     const app = await open()
     Object.defineProperty(navigator, 'clipboard', {
@@ -241,8 +245,10 @@ describe('making an account', () => {
     await fill(app, BO.username, BO.password)
     await app.user.click(create())
     await screen.findByRole('region', { name: 'The new account' })
-    await app.user.click(screen.getByRole('button', { name: 'Copy the username and password' }))
-    expect(writeText).toHaveBeenCalledWith(`Username: ${BO.username}\nPassword: ${BO.password}`)
+    await app.user.click(screen.getByRole('button', { name: 'Copy both, with the site address' }))
+    expect(writeText).toHaveBeenCalledWith(
+      `Address: ${window.location.origin}\nUsername: ${BO.username}\nPassword: ${BO.password}`,
+    )
     await app.user.click(screen.getByRole('button', { name: 'Done' }))
     expect(screen.queryByRole('region', { name: 'The new account' })).not.toBeInTheDocument()
     expect(document.body).not.toHaveTextContent(BO.password)
@@ -260,6 +266,47 @@ describe('making an account', () => {
     const shown = await screen.findByRole('region', { name: 'The new account' })
     expect(shown).toHaveTextContent('Di_4')
     expect(shown).not.toHaveTextContent(BO.password)
+  })
+
+  it('scrolls the new credentials into view and puts the focus on Copy both, not back on the empty form', async () => {
+    const scroll = vi.fn()
+    Object.defineProperty(Element.prototype, 'scrollIntoView', {
+      value: scroll,
+      configurable: true,
+      writable: true,
+    })
+    const app = await open()
+    await screen.findByRole('form', { name: 'Make an account' })
+    await fill(app, BO.username, BO.password)
+    await app.user.click(create())
+    const shown = await screen.findByRole('region', { name: 'The new account' })
+    expect(scroll).toHaveBeenCalled()
+    expect(scroll.mock.contexts.at(-1)).toBe(shown)
+    expect(within(shown).getByRole('button', { name: /^Copy both/ })).toHaveFocus()
+    expect(username()).not.toHaveFocus()
+    Reflect.deleteProperty(Element.prototype, 'scrollIntoView')
+  })
+
+  it('moves the focus to the credentials of the next account as well', async () => {
+    const app = await open()
+    await screen.findByRole('form', { name: 'Make an account' })
+    await fill(app, BO.username, BO.password)
+    await app.user.click(create())
+    await screen.findByRole('region', { name: 'The new account' })
+    await fill(app, 'Di_4', 'a different passphrase')
+    await app.user.click(create())
+    await waitFor(() => expect(app.accounts.created).toHaveLength(2))
+    await waitFor(() => expect(screen.getByRole('button', { name: /^Copy both/ })).toHaveFocus())
+    expect(screen.getByRole('region', { name: 'The new account' })).toHaveTextContent('Di_4')
+  })
+
+  it('names the form and its button alike, and says plainly how the friend gets in', async () => {
+    await open()
+    const card = await screen.findByRole('form', { name: 'Make an account' })
+    expect(within(card).getByRole('button', { name: 'Make account' })).toHaveAttribute('type', 'submit')
+    expect(card).toHaveTextContent('Your friend signs in with the username and password you set here.')
+    expect(card).not.toHaveTextContent(/signed in by it/i)
+    expect(screen.queryByRole('button', { name: 'Create account' })).not.toBeInTheDocument()
   })
 
   it('keeps the password nowhere in the browser', async () => {
@@ -413,7 +460,7 @@ describe('the keyboard', () => {
       'made-password',
       'Make a password',
       'Show the password',
-      'Create account',
+      'Make account',
     ])
   })
 

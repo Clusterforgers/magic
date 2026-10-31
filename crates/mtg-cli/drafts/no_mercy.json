@@ -1,0 +1,19 @@
+{
+  "oracle_id": "b9538d53-480b-481a-abbf-83ab17e1a45b",
+  "name": "No Mercy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "No Mercy",
+      "oracle_fingerprint": "7e14bf089ba7478622eb65ce258e24a7",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": [{ "Type": "Creature" }], "to": "You" } },
+            "effects": [{ "Destroy": { "what": "Triggering" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

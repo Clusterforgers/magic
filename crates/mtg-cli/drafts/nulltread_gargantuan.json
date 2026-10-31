@@ -1,0 +1,27 @@
+{
+  "oracle_id": "acc74d59-f587-46a2-a90b-865f721d494d",
+  "name": "Nulltread Gargantuan",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nulltread Gargantuan",
+      "oracle_fingerprint": "fdb3a622a969c7ea44e7f95ebc3be5a5",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "as": "chosen"
+                }
+              },
+              { "Move": { "what": { "Bound": "chosen" }, "to": { "Library": { "place": "Top" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

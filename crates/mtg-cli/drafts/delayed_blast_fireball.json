@@ -1,0 +1,107 @@
+{
+  "oracle_id": "99915b5a-5092-4900-8824-6de2aab1b2c1",
+  "name": "Delayed Blast Fireball",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Delayed Blast Fireball",
+      "oracle_fingerprint": "f7720c136ce52966e8020abd33f522fb",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "If": {
+                  "condition": { "CastWith": "Foretold" },
+                  "then": [
+                    {
+                      "DealDamage": {
+                        "source": "This",
+                        "to": {
+                          "Each": [
+                            {
+                              "Targeting": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }]
+                            }
+                          ]
+                        },
+                        "amount": 5
+                      }
+                    },
+                    {
+                      "DealDamage": {
+                        "source": "This",
+                        "to": {
+                          "Each": [
+                            {
+                              "Targeting": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }]
+                            }
+                          ]
+                        },
+                        "amount": 5
+                      }
+                    },
+                    {
+                      "DealDamage": {
+                        "source": "This",
+                        "to": {
+                          "Each": [
+                            {
+                              "Targeting": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }]
+                            }
+                          ]
+                        },
+                        "amount": 5
+                      }
+                    }
+                  ],
+                  "otherwise": [
+                    {
+                      "DealDamage": {
+                        "source": "This",
+                        "to": {
+                          "Each": [
+                            {
+                              "Targeting": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }]
+                            }
+                          ]
+                        },
+                        "amount": 2
+                      }
+                    },
+                    {
+                      "DealDamage": {
+                        "source": "This",
+                        "to": {
+                          "Each": [
+                            {
+                              "Targeting": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }]
+                            }
+                          ]
+                        },
+                        "amount": 2
+                      }
+                    },
+                    {
+                      "DealDamage": {
+                        "source": "This",
+                        "to": {
+                          "Each": [
+                            {
+                              "Targeting": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }]
+                            }
+                          ]
+                        },
+                        "amount": 2
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Foretell": "{4}{R}{R}" } }
+      ]
+    }
+  ]
+}

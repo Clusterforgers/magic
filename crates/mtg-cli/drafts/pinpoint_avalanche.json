@@ -1,0 +1,27 @@
+{
+  "oracle_id": "d619cce4-036a-4da2-ae64-f43fc095ebe9",
+  "name": "Pinpoint Avalanche",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pinpoint Avalanche",
+      "oracle_fingerprint": "95ef376ae414113a694fe4cbd9868a09",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 4 } },
+              {
+                "Rule": {
+                  "rule": { "DamageCantBePrevented": { "source": [{ "Targeting": [] }] } },
+                  "duration": "WhileSourceOnBattlefield"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

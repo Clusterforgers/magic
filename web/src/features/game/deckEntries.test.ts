@@ -83,12 +83,29 @@ describe('the support chip', () => {
       'manual_play',
       '9 played by hand',
     ],
+    ['read', counts({ total: 100, verified: 96, read: 4 }), 'read', 'Runs on reads'],
+    [
+      'manual_play',
+      counts({ total: 100, verified: 90, read: 4, manual: 6 }),
+      'manual_play',
+      '6 played by hand',
+    ],
     ['blocked', counts({ total: 100, verified: 98, unplayable: 2 }), 'blocked', 'Cannot be taken'],
     ['unchecked', counts({}), 'unchecked', 'Not checked yet'],
   ] as const)('says %s in words', (state, tally, shown, label) => {
     const entry = entryOfDeck(deckIn(state, { summary: { ...deckIn(state).summary, counts: tally } }))
     expect(entrySupport(entry)).toEqual({ state: shown, label })
   })
+
+  it.each([0, 3])(
+    'carries the %i cards to read of a deck and a precon, and a built-in deck has none',
+    (toRead) => {
+      const summary = { ...deckIn('manual_play').summary, to_read: toRead }
+      expect(entryOfDeck(deckIn('manual_play', { summary })).toRead).toBe(toRead)
+      expect(entryOfPrecon(precon({ summary })).toRead).toBe(toRead)
+      expect(entryOfBuiltIn({ id: 'b', name: 'Mono Red', color: 'Red', size: 60, cards: [] }).toRead).toBe(0)
+    },
+  )
 
   it('treats a precon the game cannot take as blocked whatever its state says', () => {
     expect(entrySupport(entryOfPrecon(precon({ playable: false }))).label).toBe('Cannot be taken')
@@ -148,6 +165,17 @@ describe('filters', () => {
     ['all', ['a', 'b', 'precon:c18-x']],
   ] as const)('filters by support %s', (support, expected) => {
     expect(ids(filterEntries(entries, { ...NO_FILTER, support }))).toEqual(expected)
+  })
+
+  it('lists a deck that runs on reads with the decks that run whole, not with those played by hand', () => {
+    const reads = entryOfDeck(
+      deckIn('read', {
+        id: 'r',
+        summary: { ...deckIn('read').summary, counts: counts({ total: 100, verified: 96, read: 4 }) },
+      }),
+    )
+    expect(ids(filterEntries([reads], { ...NO_FILTER, support: 'verified' }))).toEqual(['r'])
+    expect(ids(filterEntries([reads], { ...NO_FILTER, support: 'hand' }))).toEqual([])
   })
 
   it('takes the format of the game: a Commander game takes decks with a commander', () => {

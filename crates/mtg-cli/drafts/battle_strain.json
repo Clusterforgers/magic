@@ -1,0 +1,22 @@
+{
+  "oracle_id": "c4d49ecc-8650-4e91-9a39-a4a25213a5f7",
+  "name": "Battle Strain",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Battle Strain",
+      "oracle_fingerprint": "a0a737c422d2ca5ba37ce9bea1012ce0",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Blocks": { "what": [{ "Type": "Creature" }] } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "DealDamage": { "to": { "ControllerOf": { "Target": 0 } }, "amount": 1 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

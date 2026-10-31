@@ -1,0 +1,22 @@
+{
+  "oracle_id": "11eb31d9-cbcb-4ec5-abab-dfa646addbba",
+  "name": "Hesitation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hesitation",
+      "oracle_fingerprint": "2b1230884365f63947997018b4dad37c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": {} },
+            "effects": [
+              { "Sacrifice": { "filter": ["This"] } },
+              { "Counter": { "what": "Triggering" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

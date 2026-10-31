@@ -1,0 +1,27 @@
+{
+  "oracle_id": "1718a442-b878-4690-b608-a013de3d79fc",
+  "name": "Light-Paws, Emperor's Voice",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Light-Paws, Emperor's Voice",
+      "oracle_fingerprint": "ea29170aa119702482fc5477f64ba3d1",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": [{ "ControlledBy": "You" }], "to": "Battlefield" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "Search": { "filter": [{ "HasKeyword": "Aftermath" }], "as": "card" } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

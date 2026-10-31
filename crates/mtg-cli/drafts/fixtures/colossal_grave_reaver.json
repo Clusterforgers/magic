@@ -1,0 +1,137 @@
+{
+  "object": "card",
+  "id": "7c3f7d76-528a-490a-852a-071adcd7bd55",
+  "oracle_id": "df8e0d1b-b47c-4807-9c9b-84dcec835254",
+  "multiverse_ids": [
+    695979
+  ],
+  "mtgo_id": 138117,
+  "tcgplayer_id": 624504,
+  "cardmarket_id": 818706,
+  "name": "Colossal Grave-Reaver",
+  "lang": "en",
+  "released_at": "2025-04-11",
+  "uri": "https://api.scryfall.com/cards/7c3f7d76-528a-490a-852a-071adcd7bd55",
+  "scryfall_uri": "https://scryfall.com/card/tdc/50/colossal-grave-reaver?utm_source=api",
+  "layout": "normal",
+  "highres_image": false,
+  "image_status": "lowres",
+  "image_updated_at": "2026-07-13T01:46:05Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/7/c/7c3f7d76-528a-490a-852a-071adcd7bd55.jpg?1783907165",
+    "normal": "https://cards.scryfall.io/normal/front/7/c/7c3f7d76-528a-490a-852a-071adcd7bd55.jpg?1783907165",
+    "large": "https://cards.scryfall.io/large/front/7/c/7c3f7d76-528a-490a-852a-071adcd7bd55.jpg?1783907165",
+    "png": "https://cards.scryfall.io/png/front/7/c/7c3f7d76-528a-490a-852a-071adcd7bd55.png?1783907165",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/7/c/7c3f7d76-528a-490a-852a-071adcd7bd55.jpg?1783907165",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/7/c/7c3f7d76-528a-490a-852a-071adcd7bd55.jpg?1783907165",
+    "thumb": "https://cards.scryfall.io/thumb/front/7/c/7c3f7d76-528a-490a-852a-071adcd7bd55.webp?1783907165",
+    "grid": "https://cards.scryfall.io/grid/front/7/c/7c3f7d76-528a-490a-852a-071adcd7bd55.webp?1783907165",
+    "display": "https://cards.scryfall.io/display/front/7/c/7c3f7d76-528a-490a-852a-071adcd7bd55.webp?1783907165",
+    "art": "https://cards.scryfall.io/art/front/7/c/7c3f7d76-528a-490a-852a-071adcd7bd55.webp?1783907165",
+    "crop": "https://cards.scryfall.io/crop/front/7/c/7c3f7d76-528a-490a-852a-071adcd7bd55.webp?1783907165",
+    "jpeg": "https://cards.scryfall.io/normal/front/7/c/7c3f7d76-528a-490a-852a-071adcd7bd55.jpg?1783907165"
+  },
+  "mana_cost": "{6}{B}{G}",
+  "cmc": 8.0,
+  "type_line": "Creature — Dragon",
+  "oracle_text": "Flying\nWhenever this creature enters or attacks, mill three cards.\nWhenever one or more creature cards are put into your graveyard from your library, put one of them onto the battlefield.",
+  "power": "7",
+  "toughness": "6",
+  "colors": [
+    "B",
+    "G"
+  ],
+  "color_identity": [
+    "B",
+    "G"
+  ],
+  "keywords": [
+    "Flying",
+    "Mill"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "bca9779c-0a0b-4ac1-8794-f3fc25549cf4",
+  "set": "tdc",
+  "set_name": "Tarkir: Dragonstorm Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/bca9779c-0a0b-4ac1-8794-f3fc25549cf4",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Atdc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/tdc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/7c3f7d76-528a-490a-852a-071adcd7bd55/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Adf8e0d1b-b47c-4807-9c9b-84dcec835254&unique=prints",
+  "collector_number": "50",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Bryan Sola",
+  "artist_ids": [
+    "e6879299-a28b-48bc-8db1-9cafcf36de09"
+  ],
+  "illustration_id": "c449874f-b30d-4570-ba66-0836a3ee9740",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 1855,
+  "prices": {
+    "usd": "12.01",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "11.98",
+    "eur_foil": null,
+    "tix": "8.26"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=695979&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DColossal%2BGrave-Reaver",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DColossal%2BGrave-Reaver",
+    "edhrec": "https://edhrec.com/route/?cc=Colossal+Grave-Reaver"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F624504%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=818706&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/138117?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

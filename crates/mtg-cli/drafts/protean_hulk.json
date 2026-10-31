@@ -1,0 +1,21 @@
+{
+  "oracle_id": "10180e2f-90c5-4d41-ba44-16b14948f923",
+  "name": "Protean Hulk",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Protean Hulk",
+      "oracle_fingerprint": "37b08ed4ebb14e1afe26ec505646ecb5",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": { "what": [{ "Is": "This" }], "from": "Battlefield", "to": "Graveyard" }
+            },
+            "effects": [{ "Manifest": { "count": 0 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

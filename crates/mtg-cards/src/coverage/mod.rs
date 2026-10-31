@@ -4,6 +4,8 @@
 //! engine's [`Caps`] and its [`Blocker`]s; the [`Report`] ranks the blockers by the cards they hold back
 //! (`docs/cards-dsl.md`, Compiler and Manual fallback).
 
+#[cfg(test)]
+mod draft_tests;
 mod render;
 mod shape;
 #[cfg(test)]
@@ -18,6 +20,7 @@ use crate::assemble::printed_gaps;
 use crate::builtin;
 use crate::card::{Card, ImplStatus};
 use crate::compile::{Compiled, compile};
+use crate::draft::ReadState;
 use crate::load::{Library, Source, canonical, slug};
 use crate::support::{Caps, PrintedCard, Support, support};
 use crate::validate::{check_printed, used_primitives};
@@ -42,6 +45,8 @@ pub enum RulesSource {
     HandWritten,
     /// The compiler's reading of the oracle text.
     Compiled,
+    /// A draft a player read and found correct (Read tier).
+    Draft,
     /// None: the card has no rules text, or the data cannot hold it.
     Absent,
 }
@@ -82,8 +87,11 @@ pub struct CardResult {
     pub rules: RulesSource,
     /// How well the game plays it.
     pub support: Support,
-    /// What holds it back; empty exactly when it is `Verified`.
+    /// What holds it back; empty exactly when it is `Verified` or `Read`.
     pub blockers: BTreeSet<Blocker>,
+    /// Whether a draft of the card waits for its first read: it is pending, or stale since the text or the draft changed,
+    /// and no rules file or `Verified` reading outranks it.
+    pub waiting: bool,
     /// Copies in each deck, by the deck's label.
     pub copies: BTreeMap<String, u32>,
 }
@@ -93,6 +101,15 @@ impl CardResult {
     pub fn total_copies(&self) -> u32 {
         self.copies.values().sum()
     }
+
+    /// The bucket the report counts the card in: `Waiting` for a card with a draft to read, else that of its state.
+    pub fn bucket(&self) -> Bucket {
+        if self.waiting {
+            Bucket::Waiting
+        } else {
+            Bucket::of(self.support)
+        }
+    }
 }
 
 /// The states the report groups cards by.
@@ -100,30 +117,37 @@ impl CardResult {
 pub enum Bucket {
     /// `Verified`.
     Verified,
-    /// `Partial`.
+    /// `Read`: a draft a player read and found correct.
+    Read,
+    /// A card whose draft waits for its first read; it plays by hand (`Partial` or `Manual`) until then.
+    Waiting,
+    /// `Partial`, with no draft waiting.
     Partial,
-    /// `Manual`.
+    /// `Manual`, with no draft waiting.
     Manual,
-    /// `Read`, `Stale` and `Unplayable`.
+    /// `Stale` and `Unplayable`.
     Other,
 }
 
 impl Bucket {
     /// Every bucket in report order.
-    pub const ALL: [Bucket; 4] = [
+    pub const ALL: [Bucket; 6] = [
         Bucket::Verified,
+        Bucket::Read,
+        Bucket::Waiting,
         Bucket::Partial,
         Bucket::Manual,
         Bucket::Other,
     ];
 
-    /// The bucket of a state.
+    /// The bucket of a state alone; it is never `Waiting`, which needs the card's draft ([`CardResult::bucket`]).
     pub const fn of(state: Support) -> Bucket {
         match state {
             Support::Verified => Bucket::Verified,
+            Support::Read => Bucket::Read,
             Support::Partial => Bucket::Partial,
             Support::Manual => Bucket::Manual,
-            Support::Read | Support::Stale | Support::Unplayable => Bucket::Other,
+            Support::Stale | Support::Unplayable => Bucket::Other,
         }
     }
 
@@ -131,6 +155,8 @@ impl Bucket {
     pub const fn name(self) -> &'static str {
         match self {
             Bucket::Verified => "verified",
+            Bucket::Read => "read",
+            Bucket::Waiting => "waiting",
             Bucket::Partial => "partial",
             Bucket::Manual => "manual",
             Bucket::Other => "other",
@@ -195,10 +221,7 @@ impl Report {
         Bucket::ALL
             .into_iter()
             .map(|bucket| {
-                let of_bucket = self
-                    .cards
-                    .iter()
-                    .filter(|card| Bucket::of(card.support) == bucket);
+                let of_bucket = self.cards.iter().filter(|card| card.bucket() == bucket);
                 let (cards, copies) = of_bucket.fold((0, 0), |(cards, copies), card| {
                     (cards + 1, copies + card.total_copies())
                 });
@@ -292,7 +315,8 @@ impl Report {
     }
 }
 
-/// Reads every card through the embedded hand-written rules, else the compiler's, and judges it for `caps`.
+/// Reads every card through the embedded hand-written rules, else the compiler's, and judges it for `caps`; a draft the
+/// library holds counts after them (`Read` once approved, otherwise the card waits for a read).
 ///
 /// Cards with the same oracle id are one card, with their copies added up.
 pub fn analyze(cards: &[PreconCard], caps: &Caps) -> Report {
@@ -355,14 +379,50 @@ pub fn analyze_with(cards: &[PreconCard], hand_written: &Library, caps: &Caps) -
     Report { cards: results }
 }
 
+/// One card judged: its rules, then its draft, which counts when no rules file or `Verified` reading outranks it
+/// ([`Library::support`] has the precedence).
 fn judge(
     printed: &PrintedCard,
     copies: BTreeMap<String, u32>,
     context: &Context<'_>,
 ) -> CardResult {
+    let (mut rules, mut state, mut blockers) = judge_rules(printed, context);
+    let hand_written = context.hand_written;
+    let id = printed.oracle_id.as_str();
+    let rules_file = hand_written
+        .file_of(id)
+        .is_some_and(|file| !file.starts_with("card_rules/"));
+    let mut waiting = false;
+    if state != Support::Verified
+        && !rules_file
+        && let Some(draft) = hand_written.draft(id)
+    {
+        if let Some(read) = draft.record(printed, context.caps) {
+            (rules, state, blockers) = (RulesSource::Draft, read.support, BTreeSet::new());
+        } else {
+            waiting = draft.state_for(printed) == ReadState::Pending;
+        }
+    }
+    CardResult {
+        oracle_id: printed.oracle_id.clone(),
+        name: printed.name.clone(),
+        rules,
+        support: state,
+        blockers,
+        waiting,
+        copies,
+    }
+}
+
+/// The rules that decide a card without its draft (a rules file, else the compiler's reading), the state they earn and
+/// what holds it back.
+fn judge_rules(
+    printed: &PrintedCard,
+    context: &Context<'_>,
+) -> (RulesSource, Support, BTreeSet<Blocker>) {
     let (hand_written, caps) = (context.hand_written, context.caps);
     let compiled = compile(printed);
-    let (rules, state, blockers) = if let Some(card) = hand_written.card(&printed.oracle_id) {
+    if let Some(card) = hand_written.card(&printed.oracle_id) {
         let state = hand_written.support(printed, caps).support;
         let blockers = blockers_of(Some(card), state, printed, &compiled, caps);
         (RulesSource::HandWritten, state, blockers)
@@ -383,14 +443,6 @@ fn judge(
         let state = support(None, printed, caps).support;
         let blockers = blockers_of(None, state, printed, &compiled, caps);
         (RulesSource::Absent, state, blockers)
-    };
-    CardResult {
-        oracle_id: printed.oracle_id.clone(),
-        name: printed.name.clone(),
-        rules,
-        support: state,
-        blockers,
-        copies,
     }
 }
 

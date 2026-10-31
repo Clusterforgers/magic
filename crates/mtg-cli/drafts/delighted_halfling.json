@@ -1,0 +1,32 @@
+{
+  "oracle_id": "f9d3b046-0b95-4103-a630-4b3fb88bb60b",
+  "name": "Delighted Halfling",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Delighted Halfling",
+      "oracle_fingerprint": "a8cbf012f81463a8a742e7c477856a5e",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "AnyColor": 1 },
+                  "only": [{ "Spell": { "types": ["Creature"], "without": ["Enchantment"] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

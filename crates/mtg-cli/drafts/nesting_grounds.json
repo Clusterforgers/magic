@@ -1,0 +1,38 @@
+{
+  "oracle_id": "d27bb97d-286b-4947-8d7b-443e4df93319",
+  "name": "Nesting Grounds",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nesting Grounds",
+      "oracle_fingerprint": "3894d0de3c186faaa05d49fb1e0d08cb",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap"],
+            "timing": "Sorcery",
+            "targets": [
+              { "what": { "Object": [{ "ControlledBy": "You" }] } },
+              { "what": { "Object": [] } }
+            ],
+            "effects": [
+              {
+                "MoveCounters": {
+                  "from": { "Target": 0 },
+                  "to": { "Target": 1 },
+                  "counter": "+1/+1"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

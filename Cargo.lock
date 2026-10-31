@@ -1438,6 +1438,7 @@ dependencies = [
  "mtg-db",
  "mtg-engine",
  "mtg-import",
+ "mtg-testkit",
  "proptest",
  "reqwest",
  "rstest",

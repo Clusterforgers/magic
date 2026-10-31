@@ -60,6 +60,24 @@ describe.each([2, 4])('the log of a %i seat game', (count) => {
     expect(fold(events, seats)).toEqual(['Card 7 begins to resolve', 'Bo loses 2 life', 'Bo loses 1 life'])
   })
 
+  it('tells an ability the game could not run in full weight between the steps it did and the end of its resolution', () => {
+    const events = [
+      resolving(7),
+      life(1, 2),
+      pub({ StepDone: { position: [1], bound: [], snapshots: [] } }),
+      pub({ AbilityLeftToTable: { source: { id: 7, counter: 0 }, controller: 0, text: 'Bo loses 3 life.' } }),
+      pub({ ResolutionEnded: { object: 7, outcome: 'Resolved' } }),
+    ]
+    expect(fold(events, seats)).toEqual([
+      'Card 7 begins to resolve',
+      'Bo loses 2 life',
+      "Card 7's ability could not be run by the game: apply its text by hand",
+      'Card 7 finishes resolving',
+    ])
+    const folded = foldLog(logOf(events), names, { seats })
+    expect(folded.map((line) => line.minor)).toEqual([true, false, false, true])
+  })
+
   it('counts a round the same with or without the grants, and a seat that passes twice once', () => {
     const events = [cast(0, 7), ...all, pass(0), resolving(7)]
     expect(fold(events, seats)).toEqual([

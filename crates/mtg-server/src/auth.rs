@@ -24,7 +24,7 @@ use tokio::sync::watch;
 use tokio::task::JoinHandle;
 
 use crate::accounts::{AccountError, Accounts, User};
-use crate::api::{ApiError, read_json};
+use crate::api::{ApiError, read_credentials};
 use crate::config::{AuthConfig, Registration};
 use crate::cookie;
 use crate::credentials::{Username, check_password, password_rules};
@@ -36,7 +36,7 @@ use crate::throttle::{Blocked, Throttle};
 mod admin;
 mod settings;
 
-pub(crate) use admin::{create_account, list_accounts, options};
+pub(crate) use admin::{create_account, list_accounts, options, remove_account, reset_password};
 pub(crate) use settings::{change_password, delete_account};
 
 /// What the account endpoints share: the tables, the hasher and the counters of failed tries.
@@ -192,7 +192,7 @@ pub(crate) async fn register(
     }
     let address = client_address(&request, auth.config.trusted_proxies);
     let headers = request.headers().clone();
-    let credentials: Credentials = read_json(request).await?;
+    let credentials: Credentials = read_credentials(request).await?;
 
     let name = Username::parse(&credentials.username).map_err(|_| {
         failure(
@@ -254,7 +254,7 @@ pub(crate) async fn login(
     }
     let address = client_address(&request, auth.config.trusted_proxies);
     let headers = request.headers().clone();
-    let credentials: Credentials = read_json(request).await?;
+    let credentials: Credentials = read_credentials(request).await?;
 
     // A name or password that breaks the rules cannot belong to an account. It gets the answer a
     // wrong password gets, and costs no hashing, so it needs no counting either.

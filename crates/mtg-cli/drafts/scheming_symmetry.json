@@ -1,0 +1,26 @@
+{
+  "oracle_id": "6dfb50d7-359b-4644-90e3-7ecdacee7c12",
+  "name": "Scheming Symmetry",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Scheming Symmetry",
+      "oracle_fingerprint": "54e49663a590e6a829ce9077a5b564a1",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }, { "what": "Player" }],
+            "effects": [
+              { "Search": { "who": { "Target": 0 }, "filter": [], "as": "found1" } },
+              { "Shuffle": { "who": { "Target": 0 } } },
+              { "Move": { "what": { "Bound": "found1" }, "to": { "Library": { "place": "Top" } } } },
+              { "Search": { "who": { "Target": 1 }, "filter": [], "as": "found2" } },
+              { "Shuffle": { "who": { "Target": 1 } } },
+              { "Move": { "what": { "Bound": "found2" }, "to": { "Library": { "place": "Top" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

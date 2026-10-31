@@ -1,0 +1,35 @@
+{
+  "oracle_id": "f525cf10-e24c-4c46-9a13-6f8579d09d50",
+  "name": "Winds of Change",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Winds of Change",
+      "oracle_fingerprint": "03c1e8246575d4a4fa312e7c5bc76527",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "player",
+                  "effects": [
+                    {
+                      "Move": {
+                        "what": { "Each": [{ "In": "Hand" }, { "OwnedBy": { "Bound": "player" } }] },
+                        "to": { "Library": { "place": "Shuffled" } }
+                      }
+                    },
+                    { "Draw": { "who": { "Bound": "player" } } },
+                    { "Counter": { "what": "This" } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

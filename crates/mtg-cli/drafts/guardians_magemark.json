@@ -1,0 +1,27 @@
+{
+  "oracle_id": "95348ba4-038d-4f86-8be0-eb1a68a1f231",
+  "name": "Guardian's Magemark",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Guardian's Magemark",
+      "oracle_fingerprint": "6f5eab379ad6b82399aca5cb5e2e3e1b",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                { "ControlledBy": "You" },
+                { "HasAttached": [{ "Type": "Artifact" }] }
+              ]
+            },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

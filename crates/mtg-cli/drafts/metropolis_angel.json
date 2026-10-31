@@ -1,0 +1,24 @@
+{
+  "oracle_id": "c29b592c-7115-4464-beba-e79f62691593",
+  "name": "Metropolis Angel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Metropolis Angel",
+      "oracle_fingerprint": "718a037f8de5870e98273966c490541e",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }, { "HasAttached": [] }]
+              }
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

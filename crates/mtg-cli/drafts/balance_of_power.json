@@ -1,0 +1,48 @@
+{
+  "oracle_id": "c57ee68e-6832-4d4c-b710-fc03a2c10a9c",
+  "name": "Balance of Power",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Balance of Power",
+      "oracle_fingerprint": "7209a7eb7055e46e3fa024f721dfd0b2",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "In": "Hand" }, { "OwnedBy": { "Target": 0 } }] },
+                      "op": "Gt",
+                      "right": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] }
+                    }
+                  },
+                  "then": [
+                    {
+                      "Draw": {
+                        "count": {
+                          "Sum": [
+                            { "Count": [{ "In": "Hand" }, { "OwnedBy": { "Target": 0 } }] },
+                            {
+                              "Times": {
+                                "by": -1,
+                                "of": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] }
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,51 @@
+{
+  "oracle_id": "cb1afab6-b9c8-4b9c-840b-24106523a783",
+  "name": "Kodama of the East Tree",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kodama of the East Tree",
+      "oracle_fingerprint": "588f5c4972f878569b5901475f1d85fb",
+      "abilities": [
+        { "Keyword": "Reach" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This", "Token"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "May": {
+                  "who": "Triggering",
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "In": "Hand" },
+                            { "OwnedBy": "You" },
+                            {
+                              "AnyOf": [
+                                { "Type": "Artifact" },
+                                { "Type": "Creature" },
+                                { "Type": "Enchantment" },
+                                { "Type": "Land" },
+                                { "Type": "Planeswalker" }
+                              ]
+                            },
+                            { "Compare": { "stat": "ManaValue", "op": "Le", "to": "Triggering" } }
+                          ]
+                        },
+                        "as": "card"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "card" }, "to": { "Battlefield": {} } } }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "Partner" }
+      ]
+    }
+  ]
+}

@@ -57,7 +57,7 @@ fn owners(
 }
 
 /// The wording of an ability: the renderer's first, else the first of the wordings the checker accepts.
-fn wording(ability: &Ability) -> Option<String> {
+pub(super) fn wording(ability: &Ability) -> Option<String> {
     render_ability(ability).or_else(|| written_variants(ability).into_iter().next())
 }
 

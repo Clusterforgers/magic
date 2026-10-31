@@ -1,0 +1,32 @@
+{
+  "oracle_id": "2b0afb89-0944-4861-b9c3-e909e2ac215e",
+  "name": "Badgermole Cub",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Badgermole Cub",
+      "oracle_fingerprint": "1897d1fcad1891540c3125309611fa72",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Rule": {
+                  "rule": "GraveyardCardsUntargetable",
+                  "duration": "WhileSourceOnBattlefield"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "TappedForMana": { "what": [{ "Type": "Creature" }], "by": "You" } },
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Green"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

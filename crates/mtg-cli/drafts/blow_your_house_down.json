@@ -1,0 +1,33 @@
+{
+  "oracle_id": "a44e8d98-3bc8-42ce-b09f-a3b947d9ce53",
+  "name": "Blow Your House Down",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Blow Your House Down",
+      "oracle_fingerprint": "53c8ba797261182ccf9ceaccb214f72d",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }] },
+                "bounds": { "min": 0, "max": 1 },
+                "divide": { "TargetCount": 0 }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["CantBlock"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

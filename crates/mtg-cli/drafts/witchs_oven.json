@@ -1,0 +1,33 @@
+{
+  "oracle_id": "8fa0fe02-2452-4386-8e0c-165757b0f0a3",
+  "name": "Witch's Oven",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Witch's Oven",
+      "oracle_fingerprint": "7abd075fe22fb7430999496acaad7c58",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap", { "Sacrifice": { "filter": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Stat": { "of": "Paid", "stat": "Toughness" } },
+                      "op": "Ge",
+                      "right": 4
+                    }
+                  },
+                  "then": [{ "CreateToken": { "token": { "Named": "food" }, "count": 2 } }],
+                  "otherwise": [{ "CreateToken": { "token": { "Named": "food" } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,49 @@
+{
+  "oracle_id": "325032d5-c452-4454-8976-82f86fee5ab8",
+  "name": "Agent of the Iron Throne",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Agent of the Iron Throne",
+      "oracle_fingerprint": "a26aa3d5559b62cf3bfee8a4606e0c5a",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Activated": { "cost": [], "effects": [{ "Transform": { "what": "This" } }] }
+                }
+              },
+              {
+                "GrantAbility": {
+                  "Triggered": {
+                    "when": {
+                      "ZoneChange": {
+                        "what": [
+                          { "Type": "Artifact" },
+                          { "Type": "Creature" },
+                          { "ControlledBy": "You" }
+                        ],
+                        "from": "Battlefield",
+                        "to": "Graveyard"
+                      }
+                    },
+                    "effects": [{ "LoseLife": { "who": "Opponents", "amount": 1 } }]
+                  }
+                }
+              }
+            ],
+            "condition": {
+              "Matches": {
+                "subject": "This",
+                "selector": [{ "Is": "This" }, { "Is": "This" }, { "OwnedBy": "You" }]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "oracle_id": "169705c3-32c1-4628-b108-c37ca5f27e24",
+  "name": "Ruin Ghost",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ruin Ghost",
+      "oracle_fingerprint": "6275487e63165fdc2c80a57ca965353f",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{W}" },
+              {
+                "TapPermanents": {
+                  "filter": [{ "Type": "Creature" }, { "Subtype": "Spirit" }],
+                  "count": 0
+                }
+              }
+            ],
+            "targets": [{ "what": { "Object": [{ "Type": "Land" }, { "ControlledBy": "You" }] } }],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              {
+                "Move": {
+                  "what": { "Bound": "exiled" },
+                  "to": { "Battlefield": { "under": "You" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

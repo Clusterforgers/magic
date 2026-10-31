@@ -1,0 +1,31 @@
+{
+  "oracle_id": "8a2e53f9-8100-488f-8504-b59e9bd1cc29",
+  "name": "Rite of Flame",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rite of Flame",
+      "oracle_fingerprint": "bd1a55fd6f38b6a6ec02779a585e6766",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["Red"] },
+                  "times": { "Count": [{ "In": "Graveyard" }, { "Named": "Rite of Flame" }] }
+                }
+              },
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["Red"] },
+                  "times": { "Count": [{ "In": "Graveyard" }, { "Named": "Rite of Flame" }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

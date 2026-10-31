@@ -160,6 +160,12 @@ merged?: Array<MergedCardView>,
  */
 manual?: Array<ManualClause>, 
 /**
+ * Whether some clause of its card left to the table is owed when it resolves, which holds the controller at the
+ * by-hand window (`CardDefinition::manual_owed`; false when every clause is an activated or loyalty ability); shown
+ * wherever `manual` is and on an ability on the stack that names its source, left out while false.
+ */
+manual_owed?: boolean, 
+/**
  * Whether its card runs on a player's read (`CardDefinition.read` of the face in use, `docs/cards-dsl.md`, Read
  * tier), for every seat that sees its face; left out while false.
  */

@@ -1,0 +1,19 @@
+{
+  "oracle_id": "7177361a-f86f-4a50-b517-229cb1eaac07",
+  "name": "Reservoir Walker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Reservoir Walker",
+      "oracle_fingerprint": "7afa9260253d87ec2f7f018a451adf05",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "GainLife": { "amount": 3 } }, { "AddPhase": { "phases": ["Main"] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

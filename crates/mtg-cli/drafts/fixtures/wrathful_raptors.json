@@ -1,0 +1,140 @@
+{
+  "object": "card",
+  "id": "49243e92-93e3-4090-b4f7-86fa4ca2fef5",
+  "oracle_id": "1ba92b64-d821-4c24-aed6-fc90d0c63c10",
+  "multiverse_ids": [
+    640048
+  ],
+  "mtgo_id": 119182,
+  "tcgplayer_id": 526217,
+  "cardmarket_id": 743465,
+  "name": "Wrathful Raptors",
+  "lang": "en",
+  "released_at": "2023-11-17",
+  "uri": "https://api.scryfall.com/cards/49243e92-93e3-4090-b4f7-86fa4ca2fef5",
+  "scryfall_uri": "https://scryfall.com/card/lcc/88/wrathful-raptors?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:38:28Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/4/9/49243e92-93e3-4090-b4f7-86fa4ca2fef5.jpg?1783913908",
+    "normal": "https://cards.scryfall.io/normal/front/4/9/49243e92-93e3-4090-b4f7-86fa4ca2fef5.jpg?1783913908",
+    "large": "https://cards.scryfall.io/large/front/4/9/49243e92-93e3-4090-b4f7-86fa4ca2fef5.jpg?1783913908",
+    "png": "https://cards.scryfall.io/png/front/4/9/49243e92-93e3-4090-b4f7-86fa4ca2fef5.png?1783913908",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/4/9/49243e92-93e3-4090-b4f7-86fa4ca2fef5.jpg?1783913908",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/4/9/49243e92-93e3-4090-b4f7-86fa4ca2fef5.jpg?1783913908",
+    "thumb": "https://cards.scryfall.io/thumb/front/4/9/49243e92-93e3-4090-b4f7-86fa4ca2fef5.webp?1783913908",
+    "grid": "https://cards.scryfall.io/grid/front/4/9/49243e92-93e3-4090-b4f7-86fa4ca2fef5.webp?1783913908",
+    "display": "https://cards.scryfall.io/display/front/4/9/49243e92-93e3-4090-b4f7-86fa4ca2fef5.webp?1783913908",
+    "art": "https://cards.scryfall.io/art/front/4/9/49243e92-93e3-4090-b4f7-86fa4ca2fef5.webp?1783913908",
+    "crop": "https://cards.scryfall.io/crop/front/4/9/49243e92-93e3-4090-b4f7-86fa4ca2fef5.webp?1783913908",
+    "jpeg": "https://cards.scryfall.io/normal/front/4/9/49243e92-93e3-4090-b4f7-86fa4ca2fef5.jpg?1783913908"
+  },
+  "mana_cost": "{4}{R}",
+  "cmc": 5.0,
+  "type_line": "Creature — Dinosaur",
+  "oracle_text": "Trample\nWhenever a Dinosaur you control is dealt damage, it deals that much damage to any target that isn't a Dinosaur.",
+  "power": "5",
+  "toughness": "5",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Trample"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "d253edc3-5bc7-4cf1-9446-a8540dedffa5",
+  "set": "lcc",
+  "set_name": "The Lost Caverns of Ixalan Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/d253edc3-5bc7-4cf1-9446-a8540dedffa5",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Alcc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/lcc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/49243e92-93e3-4090-b4f7-86fa4ca2fef5/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A1ba92b64-d821-4c24-aed6-fc90d0c63c10&unique=prints",
+  "collector_number": "88",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "They gulp down their prey on the run, claws dripping with blood as they hunt for their next meal.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "April Prime",
+  "artist_ids": [
+    "266f773b-5c80-4803-9b95-5a985af90548"
+  ],
+  "illustration_id": "fb48126a-d23a-42b3-a8cd-984cffe578ad",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 2643,
+  "preview": {
+    "source": "MTG Muddstah",
+    "source_uri": "https://youtu.be/Q2oJ_cxBG-I?si=RznU7Imz6dXAaccB",
+    "previewed_at": "2023-11-01"
+  },
+  "prices": {
+    "usd": "7.08",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "5.27",
+    "eur_foil": null,
+    "tix": "1.72"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=640048&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DWrathful%2BRaptors",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DWrathful%2BRaptors",
+    "edhrec": "https://edhrec.com/route/?cc=Wrathful+Raptors"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F526217%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=743465&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/119182?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "oracle_id": "e05f3236-dc82-4353-87ab-d26ae7caa0e7",
+  "name": "Fugitive Druid",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fugitive Druid",
+      "oracle_fingerprint": "454f77cdf2807ff406ec1b730408bcec",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "BecomesTarget": { "what": ["This"], "by": ["Spell", "Attacking"] } },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

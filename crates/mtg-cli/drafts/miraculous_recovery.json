@@ -1,0 +1,28 @@
+{
+  "oracle_id": "cea73a4b-e10a-4517-a92b-24a08321009f",
+  "name": "Miraculous Recovery",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Miraculous Recovery",
+      "oracle_fingerprint": "8999b539ddca1ef78865405e22d0e858",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
+                }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } },
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

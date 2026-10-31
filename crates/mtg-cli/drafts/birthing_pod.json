@@ -1,0 +1,52 @@
+{
+  "oracle_id": "f8b9dd54-0837-47f4-ad14-7a0322d46d5f",
+  "name": "Birthing Pod",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Birthing Pod",
+      "oracle_fingerprint": "f30f6e6be01e9bf97bcc59005fe409fc",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{1}{G/P}" },
+              { "TapPermanents": { "filter": [{ "Type": "Artifact" }, { "Is": "This" }] } },
+              { "Sacrifice": { "filter": [{ "Targeting": [] }] } }
+            ],
+            "effects": [
+              {
+                "Search": {
+                  "filter": [
+                    { "Type": "Creature" },
+                    {
+                      "Compare": {
+                        "stat": "ManaValue",
+                        "op": "Eq",
+                        "to": {
+                          "Sum": [
+                            { "Stat": { "of": "This", "stat": "ManaValue" } },
+                            {
+                              "Count": [
+                                { "Type": "Creature" },
+                                { "In": "Graveyard" },
+                                { "OwnedBy": "You" }
+                              ]
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  ],
+                  "as": "card"
+                }
+              },
+              { "Move": { "what": { "Bound": "card" }, "to": { "Battlefield": {} } } },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

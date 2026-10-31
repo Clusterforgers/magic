@@ -89,7 +89,8 @@ export function AccountsPage() {
       <header className="grid gap-1">
         <h1 className="text-2xl font-semibold tracking-tight">Accounts</h1>
         <p className="text-base text-muted-foreground">
-          You are the admin: only you can make accounts. Friends cannot register themselves.
+          You are the admin: only you can make accounts, set a new password for a friend who forgot theirs,
+          and remove an account. Friends cannot register themselves.
         </p>
       </header>
       <NewAccountForm />

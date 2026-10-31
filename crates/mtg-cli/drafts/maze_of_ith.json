@@ -1,0 +1,29 @@
+{
+  "oracle_id": "38a12bd7-4394-44a8-91a0-6a4ff7fa4f71",
+  "name": "Maze of Ith",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Maze of Ith",
+      "oracle_fingerprint": "ce04e5f29a9fd87afe35dc37598bf382",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap", "Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Attacking"] } }],
+            "effects": [
+              { "Untap": { "what": { "Target": 0 } } },
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": { "Target": 0 } } },
+                  "by": "Prevent",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

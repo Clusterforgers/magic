@@ -1,5 +1,6 @@
 import { PlayIcon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { ToRead } from '@/features/decks/ToRead'
 import { useMediaQuery } from '@/hooks/useMediaQuery'
 import { cn } from '@/lib/utils'
 import type { PreconListItem } from '@/protocol/generated'
@@ -62,6 +63,7 @@ function Check({ precon }: { precon: PreconListItem }) {
   return (
     <div className="grid justify-items-start gap-1">
       <PreconBadge precon={precon} id={statusId(precon)} />
+      <ToRead count={precon.summary.to_read} target={{ precon: precon.code }} className="text-xs" />
       {statusOf(precon) === 'blocked' ? (
         <span className="text-xs whitespace-nowrap text-muted-foreground">Details list what stops it.</span>
       ) : null}

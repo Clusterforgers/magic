@@ -1,0 +1,23 @@
+{
+  "oracle_id": "3e7879d5-62ea-4c9a-9fc0-659d70f3a8e1",
+  "name": "Unscrupulous Agent",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Unscrupulous Agent",
+      "oracle_fingerprint": "92d6deb0575e7e44c87854893ea467d8",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              { "what": "Opponent" },
+              { "what": { "Object": [{ "In": "Hand" }, { "OwnedBy": { "Target": 0 } }] } }
+            ],
+            "effects": [{ "Exile": { "what": { "Target": 1 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

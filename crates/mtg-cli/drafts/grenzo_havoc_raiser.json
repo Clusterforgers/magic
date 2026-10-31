@@ -1,0 +1,28 @@
+{
+  "oracle_id": "80788290-1569-4c7f-b263-b4da7b31a9d1",
+  "name": "Grenzo, Havoc Raiser",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Grenzo, Havoc Raiser",
+      "oracle_fingerprint": "0cb791bd841433798e97c484bbe79d00",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                "to": "EachPlayer"
+              }
+            },
+            "effects": [
+              {
+                "Rule": { "rule": { "MayCast": { "from": "Exile" } }, "duration": "UntilEndOfTurn" }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

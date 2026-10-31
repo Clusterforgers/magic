@@ -1,0 +1,30 @@
+{
+  "oracle_id": "a1b7fbfc-c510-4b1c-a2b9-c1204c699393",
+  "name": "Hunting Kavu",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hunting Kavu",
+      "oracle_fingerprint": "7c6d0f26bea5341c924f1c065dc1eb46",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{R}{G}" }, "Tap"],
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "Not": { "HasKeyword": "Flying" } },
+                    { "AttackingPlayer": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Exile": { "what": "This" } }, { "Exile": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

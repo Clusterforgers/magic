@@ -1,0 +1,19 @@
+{
+  "oracle_id": "c387f46f-ad91-4964-8dc6-acefe537fe3c",
+  "name": "Unsubstantiate",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Unsubstantiate",
+      "oracle_fingerprint": "bea9e569bd7acf172b2757b70e927c97",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "AnyOf": ["Spell", { "Type": "Creature" }] }] } }],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

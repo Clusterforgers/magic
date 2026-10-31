@@ -1,0 +1,39 @@
+{
+  "oracle_id": "2ffb38ec-5852-4e91-85a5-cfccd1f23556",
+  "name": "Tarrian's Soulcleaver",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tarrian's Soulcleaver",
+      "oracle_fingerprint": "0ea7ff4c91b424f91a57c422fab0dee7",
+      "abilities": [
+        { "Static": { "affected": "Attached", "mods": [{ "AddKeyword": "Vigilance" }] } },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                {
+                  "ZoneChange": {
+                    "what": [{ "Type": "Artifact" }],
+                    "from": "Battlefield",
+                    "to": "Graveyard"
+                  }
+                },
+                {
+                  "ZoneChange": {
+                    "what": [{ "Type": "Creature" }],
+                    "from": "Battlefield",
+                    "to": "Graveyard"
+                  }
+                }
+              ]
+            },
+            "if": { "Not": { "Matches": { "subject": "This", "selector": [{ "Is": "This" }] } } },
+            "effects": [{ "PutCounters": { "on": "Attached", "counter": "+1/+1" } }]
+          }
+        },
+        { "Keyword": { "Equip": "{2}" } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "oracle_id": "37108cd4-bbab-4ce3-9ed6-f60e8422e703",
+  "name": "Ragavan, Nimble Pilferer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ragavan, Nimble Pilferer",
+      "oracle_fingerprint": "6b43e1f333de39f51426622ba7532b1d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer" } },
+            "effects": [
+              { "CreateToken": { "token": { "Named": "treasure" } } },
+              { "ExileTop": { "as": "card" } },
+              {
+                "Rule": {
+                  "rule": { "MayCast": { "from": "Exile", "only": { "Bound": "card" } } },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Dash": "{1}{R}" } }
+      ]
+    }
+  ]
+}

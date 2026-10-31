@@ -1,0 +1,32 @@
+{
+  "oracle_id": "3966bd03-a98e-43b6-a0c0-10d4d81c173c",
+  "name": "Render Silent",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Render Silent",
+      "oracle_fingerprint": "289d282cebdf358e37417a94a7eddc67",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [
+              { "Counter": { "what": { "Target": 0 } } },
+              {
+                "Rule": {
+                  "rule": {
+                    "CantCastSpells": {
+                      "who": { "ControllerOf": { "Target": 0 } },
+                      "your_turn": true
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "oracle_id": "5b5bf1fa-6502-4790-b66b-f0f8504ebc7c",
+  "name": "Cabal Ritual",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cabal Ritual",
+      "oracle_fingerprint": "98000f065f826bd162d6c456ce7145f7",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                      "op": "Ge",
+                      "right": 7
+                    }
+                  },
+                  "then": [
+                    {
+                      "AddMana": {
+                        "mana": { "Fixed": ["Black", "Black", "Black", "Black", "Black"] }
+                      }
+                    },
+                    { "Rule": { "rule": "GraveyardCardsUntargetable", "duration": "Forever" } }
+                  ],
+                  "otherwise": [{ "AddMana": { "mana": { "Fixed": ["Black", "Black", "Black"] } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

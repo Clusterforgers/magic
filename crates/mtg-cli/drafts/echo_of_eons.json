@@ -1,0 +1,29 @@
+{
+  "oracle_id": "23d3e5fe-3f82-44cf-91a1-6646a12a0255",
+  "name": "Echo of Eons",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Echo of Eons",
+      "oracle_fingerprint": "014067a18caa7cc8b0f7236fd97c8564",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Move": {
+                  "what": {
+                    "Each": [{ "In": "Hand" }, { "In": "Graveyard" }, { "OwnedBy": "EachPlayer" }]
+                  },
+                  "to": { "Library": { "place": "Shuffled" } }
+                }
+              },
+              { "Draw": { "who": "EachPlayer" } }
+            ]
+          }
+        },
+        { "Keyword": { "Flashback": "{2}{U}" } }
+      ]
+    }
+  ]
+}

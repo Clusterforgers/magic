@@ -30,9 +30,21 @@ A fresh install therefore goes in this order:
 
 1. Install with `registration: open` and no admin, and register the owner's account through the client.
 2. Set `server.admin` to that username and `server.registration` to `closed`, and roll the server out.
-3. Sign in as the owner: the account menu shows Accounts, where friends are added; they change the password under Account settings.
+3. Sign in as the owner: the account menu shows Accounts, where friends are added, given a new password when they forget theirs and removed; they change the password under Account settings.
 
 Until step 2 anyone who reaches the site can register, and could take the owner's name first, so step 1 follows the install at once.
+
+The admin account cannot be deleted, in Account settings or from the Accounts page, so the owner cannot lock the house by accident. The admin's own password changes under Account settings only; a forgotten admin password has no way back from the site.
+
+### A lost or mistyped admin
+
+If `server.admin` names no account (a typo) or the owner needs a fresh account, nobody can make accounts. Recover with the same steps as an install:
+
+1. Set `server.registration` to `open` and `server.admin` to the name the new account will have, and roll the server out.
+2. Register that account through the client.
+3. Set `server.registration` back to `closed`, roll the server out, and sign in: the account menu shows Accounts.
+
+The server marks the account named by `server.admin` at each start, so the rollout in step 3 is what makes the new account the admin; the previous admin account is a plain account from the first rollout on and can be removed from the Accounts page. Accounts and decks of the friends stay as they are. While registration is open anyone who reaches the site could register first and take the name, so do the steps without a pause.
 
 ## Backups
 

@@ -1,0 +1,21 @@
+{
+  "oracle_id": "5c58f2eb-2617-4d10-a393-6e4a9eddd1dd",
+  "name": "Dinosaur Hunter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dinosaur Hunter",
+      "oracle_fingerprint": "a500c0fe0b14890ba732682af0301db6",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": { "source": ["This"], "to": { "Each": [{ "Subtype": "Dinosaur" }] } }
+            },
+            "effects": [{ "Destroy": { "what": "Triggering" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -513,6 +513,7 @@ mod tests {
                     },
                 }],
                 issues: 0,
+                to_read: 0,
             },
         }
     }

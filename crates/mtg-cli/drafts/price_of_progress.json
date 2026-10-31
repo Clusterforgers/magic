@@ -1,0 +1,44 @@
+{
+  "oracle_id": "e9da499c-fa43-4e94-8395-5c030ff39502",
+  "name": "Price of Progress",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Price of Progress",
+      "oracle_fingerprint": "f89eb5ffcf18adc9559125e119f34c5d",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "player",
+                  "effects": [
+                    {
+                      "DealDamage": {
+                        "to": { "Bound": "player" },
+                        "amount": {
+                          "Times": {
+                            "by": 2,
+                            "of": {
+                              "Count": [
+                                { "Type": "Land" },
+                                { "Not": { "Supertype": "Basic" } },
+                                { "ControlledBy": { "Bound": "player" } }
+                              ]
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

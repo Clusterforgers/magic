@@ -33,6 +33,8 @@ pub const GAME_BODY_LIMIT: usize = 256 * 1024;
 pub const MAX_NAME_CHARS: usize = 32;
 /// Longest part of a parser message echoed to the client, in characters.
 const MAX_DETAIL_CHARS: usize = 120;
+/// What a body with a password in it is told when it does not parse; it never quotes the body.
+const BAD_CREDENTIALS_BODY: &str = "the body is not a valid request: send a JSON object with exactly the fields this request needs";
 
 /// A failed request: a status and a short machine-readable code plus message, and any headers the
 /// answer needs (`Retry-After`, a cookie to clear).
@@ -391,6 +393,27 @@ pub(crate) async fn read_json_limited<T: serde::de::DeserializeOwned>(
     request: Request,
     limit: usize,
 ) -> Result<T, ApiError> {
+    read_body(request, limit, |error| {
+        let detail: String = error.to_string().chars().take(MAX_DETAIL_CHARS).collect();
+        format!("the body is not a valid request: {detail}")
+    })
+    .await
+}
+
+/// [`read_json`] for a body that carries a password: a body that does not parse is answered with a
+/// fixed message, because the detail of a parse error can quote what was sent.
+pub(crate) async fn read_credentials<T: serde::de::DeserializeOwned>(
+    request: Request,
+) -> Result<T, ApiError> {
+    read_body(request, BODY_LIMIT, |_| BAD_CREDENTIALS_BODY.to_owned()).await
+}
+
+/// Reads a bounded `application/json` body into a `T`; `refusal` words the 400 for a body that does not parse.
+async fn read_body<T: serde::de::DeserializeOwned>(
+    request: Request,
+    limit: usize,
+    refusal: impl FnOnce(serde_json::Error) -> String,
+) -> Result<T, ApiError> {
     if !is_json(request.headers()) {
         return Err(ApiError::new(
             StatusCode::UNSUPPORTED_MEDIA_TYPE,
@@ -416,10 +439,7 @@ pub(crate) async fn read_json_limited<T: serde::de::DeserializeOwned>(
     let bytes = axum::body::to_bytes(request.into_body(), limit)
         .await
         .map_err(|_| too_large())?;
-    serde_json::from_slice(&bytes).map_err(|error| {
-        let detail: String = error.to_string().chars().take(MAX_DETAIL_CHARS).collect();
-        ApiError::invalid(format!("the body is not a valid request: {detail}"))
-    })
+    serde_json::from_slice(&bytes).map_err(|error| ApiError::invalid(refusal(error)))
 }
 
 fn is_json(headers: &HeaderMap) -> bool {

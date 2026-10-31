@@ -1,0 +1,28 @@
+{
+  "oracle_id": "e1e5ad8c-d425-44ad-a8f6-e9290667f6f5",
+  "name": "Bellowing Saddlebrute",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bellowing Saddlebrute",
+      "oracle_fingerprint": "c7f01830840fac622458d7fcaff08097",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": {
+              "Not": {
+                "Compare": {
+                  "left": { "Tallied": { "who": "You", "what": "Attackers" } },
+                  "op": "Ge",
+                  "right": 1
+                }
+              }
+            },
+            "effects": [{ "LoseLife": { "amount": 4 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

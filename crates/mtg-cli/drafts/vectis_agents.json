@@ -1,0 +1,30 @@
+{
+  "oracle_id": "fd9bb758-a763-46bf-9e56-4be26e271741",
+  "name": "Vectis Agents",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vectis Agents",
+      "oracle_fingerprint": "fe61c6d5242f9df3ebea0474b3b4d45f",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{U}{B}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "ModifyPT": { "power": -2, "toughness": 0 } },
+                    { "CantBeBlockedBy": [] }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

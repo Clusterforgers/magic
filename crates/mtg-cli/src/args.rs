@@ -52,6 +52,8 @@ pub enum Command {
     CheckRules(CheckRulesArgs),
     /// List the cards players marked as important to fix, the most marked first, with each card's support state and newest note.
     FixMarks(FixMarksArgs),
+    /// List the verdicts players gave the drafts of the read tier, newest first; `--wrong` keeps the wrong ones and `--quick` the accounts that judged different cards less than 4 seconds apart.
+    Reads(ReadsArgs),
     /// Cross-check the rules of the stored precon cards against Forge's card scripts, read from a local checkout: the verbs Forge names that the rules lack, and the unread tail grouped by Forge API and key.
     ForgeCheck(ForgeCheckArgs),
     /// Translate the Forge card scripts of a read-only checkout into proposals in the format `propose` writes, with mappers and no model; `check-rules` then judges them.
@@ -234,6 +236,23 @@ pub struct FixMarksArgs {
     pub limit: u32,
 }
 
+/// Options of `reads`.
+#[derive(Debug, Args)]
+pub struct ReadsArgs {
+    /// Only the `wrong` verdicts.
+    #[arg(long)]
+    pub wrong: bool,
+
+    /// Only the verdicts that an account gave on different cards less than 4 seconds after or before another, with a count
+    /// per account; a reader who does not read the sheets.
+    #[arg(long)]
+    pub quick: bool,
+
+    /// How many verdicts the table lists, the newest first.
+    #[arg(long, value_name = "N", default_value_t = 50)]
+    pub limit: u32,
+}
+
 /// The API `propose` asks.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, clap::ValueEnum)]
 pub enum Provider {
@@ -409,6 +428,7 @@ pub struct ExportPairsArgs {
 
 /// Options of `promote`.
 #[derive(Debug, Args)]
+#[allow(clippy::struct_excessive_bools)]
 pub struct PromoteArgs {
     /// List what would be promoted and why the other files are skipped, and write nothing.
     #[arg(long)]
@@ -421,6 +441,19 @@ pub struct PromoteArgs {
     /// The `mtg-cards` crate directory, holding `cards/` and `tests/fixtures/corpus/` (default: `crates/mtg-cards`).
     #[arg(long, value_name = "DIR")]
     pub out: Option<PathBuf>,
+
+    /// Also write the proposals the checker marks `Unchecked` that are whole cards and pass the smoke gate as drafts
+    /// for players to read (`drafts/<slug>.json` and its record).
+    #[arg(long)]
+    pub draft: bool,
+
+    /// With `--draft`: do not play the drafts in the smoke gate (for tests).
+    #[arg(long, requires = "draft")]
+    pub no_smoke: bool,
+
+    /// With `--draft`: the drafts directory (default: `crates/mtg-cli/drafts`).
+    #[arg(long, value_name = "DIR", requires = "draft")]
+    pub drafts: Option<PathBuf>,
 
     /// The proposal files, each named `<slug>.json` after its card.
     #[arg(value_name = "FILE", required = true)]

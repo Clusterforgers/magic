@@ -1,0 +1,32 @@
+{
+  "oracle_id": "e822bf3d-3a29-4a02-9ae8-e2830ce70f15",
+  "name": "Plant Elemental",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Plant Elemental",
+      "oracle_fingerprint": "f12b7dfceeefaa06f44f86163132dd93",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "Sacrifice": { "filter": ["This", "Other", "Token"] } }],
+                  "unpaid": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              },
+              {
+                "Pay": {
+                  "cost": [{ "Sacrifice": { "filter": ["This", "Other", "Token"] } }],
+                  "unpaid": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

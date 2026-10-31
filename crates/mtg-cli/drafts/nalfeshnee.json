@@ -1,0 +1,26 @@
+{
+  "oracle_id": "97a85a3e-258e-49b7-8ebe-7efee808da7a",
+  "name": "Nalfeshnee",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nalfeshnee",
+      "oracle_fingerprint": "29987d75a6e3406365502b746a673ee5",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "In": "Exile" }], "by": "You" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [{ "CopySpell": { "what": "Triggering", "new_targets": true } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

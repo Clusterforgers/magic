@@ -19,6 +19,7 @@ mtg-db.workspace = true
 mtg-import.workspace = true
 mtg-cards.workspace = true
 mtg-engine.workspace = true
+mtg-testkit.workspace = true
 chrono.workspace = true
 clap.workspace = true
 flate2.workspace = true

@@ -1,0 +1,19 @@
+{
+  "oracle_id": "1212cc74-ff66-479e-8e1b-504446e1c6d9",
+  "name": "Relentless Rohirrim",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Relentless Rohirrim",
+      "oracle_fingerprint": "97b9119655097db91c670b9cd62e7976",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Manifest": { "as": "x" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

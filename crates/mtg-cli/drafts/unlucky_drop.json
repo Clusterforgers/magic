@@ -1,0 +1,31 @@
+{
+  "oracle_id": "98ebde8c-b47d-440b-93cb-a1407b807074",
+  "name": "Unlucky Drop",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Unlucky Drop",
+      "oracle_fingerprint": "3971123fdd834fc0911b6f266fae5db2",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Either": [
+                    { "Object": [{ "Type": "Artifact" }] },
+                    { "Object": [{ "Type": "Creature" }] }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Library": { "place": "Top" } } } },
+              { "Move": { "what": { "Target": 0 }, "to": { "Library": { "place": "Bottom" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

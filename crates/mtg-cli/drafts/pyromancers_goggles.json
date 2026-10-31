@@ -1,0 +1,19 @@
+{
+  "oracle_id": "f76bcbfe-483f-4e63-8425-76feca1abf3e",
+  "name": "Pyromancer's Goggles",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pyromancer's Goggles",
+      "oracle_fingerprint": "7e3f723d1d19820342394295dd6efe95",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "TapPermanents": { "filter": [{ "Is": "This" }] } }],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Red"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

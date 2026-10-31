@@ -1,0 +1,32 @@
+{
+  "oracle_id": "09618da4-6e2d-4047-96d7-0576c0754e7d",
+  "name": "End the Festivities",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "End the Festivities",
+      "oracle_fingerprint": "b9cd1e9da7deb786d187f69665bc3326",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "DealDamage": { "to": { "Each": [{ "ControlledBy": "Opponents" }] }, "amount": 1 } },
+              {
+                "DealDamage": {
+                  "to": {
+                    "Each": [
+                      { "ControlledBy": "Opponents" },
+                      { "Type": "Creature" },
+                      { "Type": "Planeswalker" }
+                    ]
+                  },
+                  "amount": 1
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

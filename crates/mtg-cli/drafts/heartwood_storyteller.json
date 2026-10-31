@@ -1,0 +1,19 @@
+{
+  "oracle_id": "82e6da87-f8a4-4897-bf0f-c0f2cd06b8b1",
+  "name": "Heartwood Storyteller",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Heartwood Storyteller",
+      "oracle_fingerprint": "f68fb103d12979963b4729d5469a9cf8",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Not": { "Type": "Creature" } }] } },
+            "effects": [{ "May": { "who": "Opponents", "effects": [{ "Draw": {} }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

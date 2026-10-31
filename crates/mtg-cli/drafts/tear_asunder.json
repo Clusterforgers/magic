@@ -1,0 +1,35 @@
+{
+  "oracle_id": "610af0f7-b5e3-43fb-9d02-7c59bd99034c",
+  "name": "Tear Asunder",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tear Asunder",
+      "oracle_fingerprint": "f3230d1df4aad5746295ea5c7029c4d0",
+      "abilities": [
+        { "Keyword": { "Kicker": "{1}{B}" } },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Enchantment" }] }]
+                }
+              },
+              { "what": { "Object": [{ "Not": { "Type": "Land" } }] } }
+            ],
+            "effects": [
+              {
+                "If": {
+                  "condition": "Kicked",
+                  "then": [{ "Move": { "what": { "Target": 1 }, "to": "Graveyard" } }],
+                  "otherwise": [{ "Move": { "what": { "Target": 0 }, "to": "Graveyard" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

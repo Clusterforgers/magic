@@ -1,0 +1,35 @@
+{
+  "oracle_id": "981b0e21-e5e6-4a1e-bfde-679d56623f7f",
+  "name": "Ad Nauseam",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ad Nauseam",
+      "oracle_fingerprint": "a27a9461bbe259b31ebf744acc515185",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "You",
+                  "as": "player",
+                  "effects": [
+                    { "LookAtTop": { "as": "top" } },
+                    { "Reveal": { "what": { "Bound": "top" } } },
+                    { "Move": { "what": { "Bound": "top" }, "to": "Hand" } },
+                    {
+                      "LoseLife": {
+                        "amount": { "Stat": { "of": { "Bound": "top" }, "stat": "ManaValue" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

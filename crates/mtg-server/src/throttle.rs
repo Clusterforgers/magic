@@ -34,7 +34,7 @@ enum Key {
     LoginName(String),
     /// Registrations tried from one network.
     RegisterAddress(IpAddr),
-    /// Accounts one admin account made through the admin route.
+    /// Accounts one admin account made, set a password for or removed through the admin routes.
     AdminCreate(UserId),
     /// Join code lookups from one network that were started and did not (yet) find a game.
     CodeAddress(IpAddr),
@@ -242,8 +242,9 @@ impl Throttle {
         self.admit(now, &wanted).map(|(_, exhausted)| exhausted)
     }
 
-    /// Counts an account `admin` is about to make through the admin route, or says to wait. It has a budget of
-    /// its own per admin account: it never uses up the registrations of an address, and nothing hands it back.
+    /// Counts an account `admin` is about to make, set a password for or remove through the admin routes, or says
+    /// to wait. It has a budget of its own per admin account: it never uses up the registrations of an address,
+    /// and nothing hands it back.
     pub(crate) fn begin_admin_create(&self, now: Instant, admin: UserId) -> Result<(), Blocked> {
         let wanted = [(
             Key::AdminCreate(admin),

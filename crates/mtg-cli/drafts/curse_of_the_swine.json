@@ -1,0 +1,43 @@
+{
+  "oracle_id": "5669ea7c-c4fc-494c-896b-4bce9b494817",
+  "name": "Curse of the Swine",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Curse of the Swine",
+      "oracle_fingerprint": "0933c79b69c0cca87c0269fd7f63f2db",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [] } }],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 } } },
+              {
+                "RepeatEach": {
+                  "over": { "Target": 0 },
+                  "as": "token",
+                  "effects": [
+                    {
+                      "CreateToken": {
+                        "who": { "ControllerOf": { "Target": 0 } },
+                        "token": {
+                          "Custom": {
+                            "name": "Boar",
+                            "types": ["Creature"],
+                            "subtypes": ["Boar"],
+                            "power": 2,
+                            "toughness": 2
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

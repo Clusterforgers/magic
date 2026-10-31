@@ -1,0 +1,33 @@
+{
+  "oracle_id": "1b9c9083-62c3-46fd-a2a0-6de7de88a3c3",
+  "name": "Stream of Acid",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stream of Acid",
+      "oracle_fingerprint": "dc00f540672c05757a606c2ab523d6df",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    {
+                      "AnyOf": [
+                        { "Type": "Land" },
+                        { "Type": "Creature" },
+                        { "Not": { "Color": "Black" } }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

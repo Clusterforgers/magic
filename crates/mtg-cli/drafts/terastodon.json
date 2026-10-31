@@ -1,0 +1,49 @@
+{
+  "oracle_id": "17975a20-2c13-4325-be1e-0bcda5063a2d",
+  "name": "Terastodon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Terastodon",
+      "oracle_fingerprint": "81b378417c7aabab291a0225b19bc29d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Not": { "Type": "Creature" } }] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              {
+                "RepeatEach": {
+                  "over": { "Target": 0 },
+                  "as": "each_target",
+                  "effects": [
+                    {
+                      "CreateToken": {
+                        "who": { "ControllerOf": { "Target": 0 } },
+                        "token": {
+                          "Custom": {
+                            "name": "Elephant",
+                            "types": ["Creature"],
+                            "subtypes": ["Elephant"],
+                            "power": 3,
+                            "toughness": 3
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

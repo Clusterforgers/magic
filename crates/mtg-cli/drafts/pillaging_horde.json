@@ -1,0 +1,26 @@
+{
+  "oracle_id": "ad07cb55-cc4f-40be-b16a-bd3d3ca94249",
+  "name": "Pillaging Horde",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pillaging Horde",
+      "oracle_fingerprint": "81c706eeca147b423fec060d780bcef6",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "Discard": { "filter": [{ "Type": "Creature" }] } }, { "Discard": {} }],
+                  "unpaid": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

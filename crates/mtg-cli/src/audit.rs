@@ -36,7 +36,7 @@ pub async fn audit(db: &Database, args: &AuditArgs) -> Result<String, CliError> 
 }
 
 /// Every stored deck card, in name order.
-pub(crate) async fn stored_cards(db: &Database) -> Result<Vec<PrintedCard>, CliError> {
+pub async fn stored_cards(db: &Database) -> Result<Vec<PrintedCard>, CliError> {
     stored_cards_matching(db, &CardSearch::default()).await
 }
 

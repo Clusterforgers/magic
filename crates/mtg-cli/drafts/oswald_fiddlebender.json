@@ -1,0 +1,31 @@
+{
+  "oracle_id": "dbc9ea19-cf68-41d3-88a8-b5ab8df75c5a",
+  "name": "Oswald Fiddlebender",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Oswald Fiddlebender",
+      "oracle_fingerprint": "c16f34b8b30882a280b4fdce093349e1",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap", "SacrificeSelf"],
+            "effects": [
+              {
+                "Search": {
+                  "filter": [
+                    { "Type": "Artifact" },
+                    { "Compare": { "stat": "ManaValue", "op": "Eq", "to": { "Players": "You" } } }
+                  ],
+                  "as": "card"
+                }
+              },
+              { "Move": { "what": { "Bound": "card" }, "to": { "Battlefield": {} } } },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -85,8 +85,8 @@ A companion (CR 702.139, `companions.rs`) is a card a seat names before the game
 
 ### Fail-soft resolution
 
-- A card in state `Read` runs rules no checker proved ([cards-dsl.md](cards-dsl.md), Read tier), so its errors must not stop a game. When a step of a spell or ability whose source definition has `read` returns a `ResolveError`, the engine keeps the steps already folded, drops the rest, logs `AbilityLeftToTable {source, controller, text}` (boxed; `text` is the printed clause) and goes on as after a resolution, so the table resolves the ability by hand. The same error from any other card stays an `EngineError`, which the tests must catch.
-- Tests: a table of failing steps (a read card and a card that is not) at two to four seats, with the log replayed to the same state hash.
+- A card in state `Read` runs rules no checker proved ([cards-dsl.md](cards-dsl.md), Read tier), so its errors must not stop a game. When a step of a spell or ability whose source definition has `read` returns a `ResolveError`, the engine keeps the steps already folded, drops the rest, logs `AbilityLeftToTable {source, controller, text}` (boxed; `text` is the printed clause) and goes on as after a resolution, so the table resolves the ability by hand. The event is folded as a note (no state changes); `text` is the sheet's wording of the ability ([cards-dsl.md](cards-dsl.md), Sheet), empty when nothing words it; the source is the definition that holds the ability (a granted ability follows the card it sits on). The same error from any other card stays an `EngineError`, which the tests must catch.
+- Tests: `fail_soft.rs` in `mtg-testkit` tables a failing spell, trigger and activated ability (a read card and a card that is not) at two to four seats, with the log replayed to the same state hash, and whole bot games of failing read cards under every invariant.
 
 ## Mana costs
 

@@ -1,0 +1,39 @@
+{
+  "oracle_id": "b10ad415-0aae-4d70-82e6-a4055a40cbe4",
+  "name": "Sword of War and Peace",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sword of War and Peace",
+      "oracle_fingerprint": "210d9f009b3bf9821c76b8dc9d567c34",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "ModifyPT": { "power": 2, "toughness": 2 } },
+              { "AddKeyword": { "Protection": [{ "Color": "Red" }] } },
+              { "AddKeyword": { "Protection": [{ "Color": "White" }] } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": [{ "Is": "Attached" }], "to": "EachPlayer" } },
+            "effects": [
+              {
+                "DealDamage": {
+                  "source": "This",
+                  "to": "Triggering",
+                  "amount": { "Count": [{ "In": "Hand" }, { "OwnedBy": "Triggering" }] }
+                }
+              },
+              { "GainLife": { "amount": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] } } }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{2}" } }
+      ]
+    }
+  ]
+}

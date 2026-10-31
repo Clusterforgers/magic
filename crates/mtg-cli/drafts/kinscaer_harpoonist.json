@@ -1,0 +1,35 @@
+{
+  "oracle_id": "8ee98d6a-6a7e-411d-818c-816d84cfb7cd",
+  "name": "Kinscaer Harpoonist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kinscaer Harpoonist",
+      "oracle_fingerprint": "1fb559b39ab9c0be42924df764bc3a8f",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [{ "RemoveKeyword": "Flying" }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

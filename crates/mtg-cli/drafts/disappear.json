@@ -1,0 +1,23 @@
+{
+  "oracle_id": "039e2e39-8f7f-43f2-8448-de35ef7b8dc1",
+  "name": "Disappear",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Disappear",
+      "oracle_fingerprint": "2011566586e465486574661b06bbc083",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Activated": {
+            "cost": "{U}",
+            "effects": [
+              { "Move": { "what": "Attached", "to": "Hand" } },
+              { "Move": { "what": "This", "to": "Hand" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

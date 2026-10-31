@@ -1,0 +1,24 @@
+{
+  "oracle_id": "a349e526-882c-454f-ba79-ad17340f8153",
+  "name": "Avalanche",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Avalanche",
+      "oracle_fingerprint": "76e0b578b1193bf5bf75a0dd1c0f6278",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Land" }, { "Subtype": "Snow" }] },
+                "bounds": { "min": "X", "max": 1 }
+              }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

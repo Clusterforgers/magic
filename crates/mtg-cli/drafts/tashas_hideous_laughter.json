@@ -1,0 +1,28 @@
+{
+  "oracle_id": "e352f5b9-6406-4914-bc79-f24608be6bc9",
+  "name": "Tasha's Hideous Laughter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tasha's Hideous Laughter",
+      "oracle_fingerprint": "02daa41d435a978d0a30c1d3f4dcff0d",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "ExileUntil": {
+                  "who": { "Target": 0 },
+                  "filter": [],
+                  "as": "found",
+                  "exiled_as": "exiled"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

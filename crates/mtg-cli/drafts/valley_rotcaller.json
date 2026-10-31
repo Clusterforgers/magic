@@ -1,0 +1,94 @@
+{
+  "oracle_id": "8da0599a-8f63-4dba-857f-b4e10b7191b6",
+  "name": "Valley Rotcaller",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Valley Rotcaller",
+      "oracle_fingerprint": "41ce2f56c4472f2f3a6bc5a22183b76c",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "LoseLife": {
+                  "who": "Opponents",
+                  "amount": {
+                    "Sum": [
+                      {
+                        "Count": [
+                          { "Subtype": "Squirrel" },
+                          { "ControlledBy": "You" },
+                          { "OwnedBy": "You" }
+                        ]
+                      },
+                      {
+                        "Count": [
+                          { "Subtype": "Bat" },
+                          { "ControlledBy": "You" },
+                          { "OwnedBy": "You" }
+                        ]
+                      },
+                      {
+                        "Count": [
+                          { "Subtype": "Lizard" },
+                          { "ControlledBy": "You" },
+                          { "OwnedBy": "You" }
+                        ]
+                      },
+                      {
+                        "Count": [
+                          { "Subtype": "Rat" },
+                          { "ControlledBy": "You" },
+                          { "OwnedBy": "You" }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "GainLife": {
+                  "amount": {
+                    "Sum": [
+                      {
+                        "Count": [
+                          { "Subtype": "Squirrel" },
+                          { "ControlledBy": "You" },
+                          { "OwnedBy": "You" }
+                        ]
+                      },
+                      {
+                        "Count": [
+                          { "Subtype": "Bat" },
+                          { "ControlledBy": "You" },
+                          { "OwnedBy": "You" }
+                        ]
+                      },
+                      {
+                        "Count": [
+                          { "Subtype": "Lizard" },
+                          { "ControlledBy": "You" },
+                          { "OwnedBy": "You" }
+                        ]
+                      },
+                      {
+                        "Count": [
+                          { "Subtype": "Rat" },
+                          { "ControlledBy": "You" },
+                          { "OwnedBy": "You" }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

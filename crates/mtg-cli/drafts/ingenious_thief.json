@@ -1,0 +1,21 @@
+{
+  "oracle_id": "73ea2949-5812-478d-8f09-00743ce4d40f",
+  "name": "Ingenious Thief",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ingenious Thief",
+      "oracle_fingerprint": "941f7b785817643c526e12d3b726fc88",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Player" }],
+            "effects": [{ "LookAtTop": { "who": { "Target": 0 }, "as": "hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

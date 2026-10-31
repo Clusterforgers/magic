@@ -37,7 +37,7 @@ updated_at: string,
  */
 cards: Array<DeckLineView>, 
 /**
- * `verified`, `manual_play`, `blocked`, or `unchecked` when no check is stored or the deck or its
+ * `verified`, `read`, `manual_play`, `blocked`, or `unchecked` when no check is stored or the deck or its
  * cards' rules changed since.
  */
 state: DeckState, 

@@ -7,6 +7,7 @@
 //! stands at the same step (`docs/cards-dsl.md`, Execution).
 
 mod inline;
+mod left;
 mod prim;
 mod share;
 mod tree;
@@ -19,6 +20,7 @@ use mtg_cards::effect::Effect;
 use mtg_core::ids::{ObjectId, PlayerId};
 
 pub(crate) use inline::{run_inline, w5d_run_instead};
+pub use left::LeftToTable;
 pub(crate) use prim::lower;
 pub use value::{Bindings, ResolveError, Scope};
 pub(crate) use value::{CastTargets, zone_kind};
@@ -386,13 +388,29 @@ fn step_with(
     let Some(rules) = rules_of(state, object) else {
         return Ok(Progress::Done(finish(state, object)));
     };
-    let scope = scope_of(state, object, resolving, &rules);
+    // A rules error of a card on a player's read leaves the ability to the table; any other card's stops the game.
+    run_step(state, resolving, object, &rules, run).or_else(|error| {
+        left::left_to_table(state, object, &rules)
+            .map(Progress::Done)
+            .ok_or_else(|| error.into())
+    })
+}
+
+/// The step of `rules`, the rules of `object`, at which `resolving` stands.
+fn run_step(
+    state: &GameState,
+    resolving: &Resolving,
+    object: &GameObject,
+    rules: &Ability,
+    run: impl Fn(&Cx<'_>, &Effect) -> Result<Run, ResolveError>,
+) -> Result<Progress, ResolveError> {
+    let scope = scope_of(state, object, resolving, rules);
     // CR 603.4: a triggered ability whose "if" is no longer true as it resolves does nothing.
     if resolving.position == START
         && let Ability::Triggered {
             intervening_if: Some(condition),
             ..
-        } = &*rules
+        } = rules
         && !scope.holds(condition)?
     {
         return Ok(Progress::Done(vec![Event::ResolutionEnded {

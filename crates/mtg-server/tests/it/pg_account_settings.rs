@@ -500,7 +500,7 @@ async fn world(pool: &PgPool) -> World {
 }
 
 /// A public game of `seats` seats made by `host`, whose seat 0 is held and bound.
-async fn make_as(server: &TestServer, host: &Browser, seats: usize) -> Made {
+pub(crate) async fn make_as(server: &TestServer, host: &Browser, seats: usize) -> Made {
     let body = lobby::body(&host.username, seats, 1, "public").to_string();
     let reply = host.post(server.addr, "/api/games", &body).await;
     assert_eq!(reply.status, 201, "{}", reply.text());
@@ -519,7 +519,7 @@ async fn make_as(server: &TestServer, host: &Browser, seats: usize) -> Made {
 
 /// Every column of the public schema that can hold an id or a name as text, with the number of
 /// rows whose value contains `needle`, for the ones that have any.
-async fn mentions(pool: &PgPool, needle: &str) -> Vec<String> {
+pub(crate) async fn mentions(pool: &PgPool, needle: &str) -> Vec<String> {
     let columns: Vec<(String, String)> = sqlx::query_as(
         "SELECT table_name, column_name FROM information_schema.columns
          WHERE table_schema = 'public'
@@ -541,7 +541,11 @@ async fn mentions(pool: &PgPool, needle: &str) -> Vec<String> {
     found
 }
 
-async fn seat_row(pool: &PgPool, game: &str, seat: i32) -> (String, String, Option<Uuid>, bool) {
+pub(crate) async fn seat_row(
+    pool: &PgPool,
+    game: &str,
+    seat: i32,
+) -> (String, String, Option<Uuid>, bool) {
     sqlx::query_as(
         "SELECT state, name, user_id, token_digest IS NOT NULL FROM seats
          WHERE game_id = $1 AND seat = $2",
@@ -553,7 +557,7 @@ async fn seat_row(pool: &PgPool, game: &str, seat: i32) -> (String, String, Opti
     .unwrap()
 }
 
-async fn status_of(pool: &PgPool, game: &str) -> String {
+pub(crate) async fn status_of(pool: &PgPool, game: &str) -> String {
     sqlx::query_scalar("SELECT status FROM games WHERE id = $1")
         .bind(Uuid::parse_str(game).unwrap())
         .fetch_one(pool)

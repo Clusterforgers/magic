@@ -1,0 +1,41 @@
+{
+  "oracle_id": "0452be2a-e97a-4269-a9e3-b616265ecb2e",
+  "name": "Vivi Ornitier",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vivi Ornitier",
+      "oracle_fingerprint": "2a79571481aad073382453b0b3756288",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{0}",
+            "condition": "YourTurn",
+            "limit": "OncePerTurn",
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": {
+                    "AnyCombination": {
+                      "count": { "Stat": { "of": "This", "stat": "Power" } },
+                      "among": ["Blue", "Red"]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "by": "You" } },
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": { "Other": "+1/+1" } } },
+              { "DealDamage": { "source": "This", "to": "Opponents", "amount": 1 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

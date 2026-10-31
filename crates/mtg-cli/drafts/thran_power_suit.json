@@ -1,0 +1,40 @@
+{
+  "oracle_id": "3952c288-5633-4e40-abe6-18940d079644",
+  "name": "Thran Power Suit",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thran Power Suit",
+      "oracle_fingerprint": "f5db9e1b9ef5bde76b1effc09f1cd8de",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": {
+                    "Count": [
+                      { "Type": "Artifact" },
+                      { "Subtype": "Aura" },
+                      { "Subtype": "Equipment" }
+                    ]
+                  },
+                  "toughness": {
+                    "Count": [
+                      { "Type": "Artifact" },
+                      { "Subtype": "Aura" },
+                      { "Subtype": "Equipment" }
+                    ]
+                  }
+                }
+              },
+              { "AddKeyword": { "Ward": "{2}" } }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{2}" } }
+      ]
+    }
+  ]
+}

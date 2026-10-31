@@ -1,0 +1,35 @@
+{
+  "oracle_id": "788bd9ae-b78e-4c86-bf12-d4e19780491a",
+  "name": "Mudbrawler Cohort",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mudbrawler Cohort",
+      "oracle_fingerprint": "7a5bf1925042dd9c654eec137a2b5d39",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "ControlledBy": "You" },
+                    { "Color": "Red" },
+                    { "Not": { "Type": "Creature" } }
+                  ]
+                },
+                "op": "Gt",
+                "right": {
+                  "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }, { "Color": "Red" }]
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

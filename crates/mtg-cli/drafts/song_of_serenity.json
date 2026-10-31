@@ -1,0 +1,25 @@
+{
+  "oracle_id": "4c543799-1b72-4f32-a5be-475c0134ac0f",
+  "name": "Song of Serenity",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Song of Serenity",
+      "oracle_fingerprint": "5c45fdce8c6d8f71bec447557c07c5ff",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                { "HasAttached": [{ "HasKeyword": { "Enchant": [{ "Type": "Creature" }] } }] },
+                "DamagedThisTurn"
+              ]
+            },
+            "mods": ["CantAttack", "CantBlock"]
+          }
+        }
+      ]
+    }
+  ]
+}

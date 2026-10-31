@@ -1,0 +1,54 @@
+{
+  "oracle_id": "d5ea905b-4bb6-48d0-9082-c472703db550",
+  "name": "Bloodchief Ascension",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bloodchief Ascension",
+      "oracle_fingerprint": "fa413c0ea50ee7fe3cf98207ca8c786f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "Opponents", "what": "LifeLost" } },
+                "op": "Ge",
+                "right": 2
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [{ "PutCounters": { "on": "This", "counter": { "Other": "quest" } } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": [{ "OwnedBy": "Opponents" }], "to": "Graveyard" } },
+            "if": {
+              "Compare": {
+                "left": { "Counters": { "on": "This", "counter": { "Other": "quest" } } },
+                "op": "Ge",
+                "right": 3
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "LoseLife": { "who": "Triggering", "amount": 2 } },
+                    { "GainLife": { "amount": 2 } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

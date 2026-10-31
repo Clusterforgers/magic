@@ -1,0 +1,42 @@
+{
+  "oracle_id": "88cf4c1a-5863-45fc-b76d-7ad33b175b2b",
+  "name": "Burgeoning",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Burgeoning",
+      "oracle_fingerprint": "f422b4c79dbbf44a067677953cd901c7",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Land" }, { "ControlledBy": "Opponents" }],
+                "from": "Hand",
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [{ "In": "Hand" }, { "OwnedBy": "You" }, { "Type": "Land" }]
+                        },
+                        "as": "card"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "card" }, "to": { "Battlefield": {} } } }
+                  ]
+                }
+              },
+              { "TimeTravel": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

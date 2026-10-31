@@ -1,0 +1,27 @@
+{
+  "oracle_id": "9b157b9a-92da-4054-8441-04fb4e415d77",
+  "name": "Stumpsquall Hydra",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stumpsquall Hydra",
+      "oracle_fingerprint": "e8baf6b23612123667e413f6079c5815",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Is": "This" }, { "Is": "This" }, { "Is": "This" }] },
+                "divide": "X"
+              }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1", "count": "Divided" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

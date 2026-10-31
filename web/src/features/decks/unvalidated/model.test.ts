@@ -1,7 +1,16 @@
 // Goal: the not-validated list groups the cards of checked decks by deck and merges them by card (the cards held by most decks first, then by name), narrows them to a state, quotes each clause from the text of its face by spans counted in Unicode scalar values, and writes the copy text in exactly one format.
 import { describe, expect, it } from 'vitest'
 import { reportCard } from '../fakeDecks'
-import { clauseLines, copyText, filterCards, groupByDeck, mergeDecks, quoteOf, stateCounts } from './model'
+import {
+  clauseLines,
+  copyText,
+  filterCards,
+  groupByDeck,
+  mergeDecks,
+  quoteOf,
+  stateCounts,
+  waitsForRead,
+} from './model'
 import type { CheckedDeck, FlaggedCard } from './model'
 
 const clause = (text: string, face = 0, start = 0, end = 4) => ({ face, span: { start, end }, text })
@@ -108,6 +117,41 @@ describe('filterCards and stateCounts', () => {
       ['manual', 1],
     ])
     expect(stateCounts([])).toEqual([])
+  })
+})
+
+describe('the drafts that wait for a read', () => {
+  const waiting = deck('w', 'Waiters', [
+    reportCard('Zed', { support: 'manual', draft: 'pending' }),
+    reportCard('Alpha', { support: 'partial', draft: 'wrong', reasons: [clause('half done')] }),
+    reportCard('Beta', { support: 'stale', draft: 'pending' }),
+    reportCard('Plain', { support: 'manual' }),
+    reportCard('Reader', { support: 'read', draft: 'approved' }),
+  ])
+  const merged = mergeDecks([waiting, B])
+
+  it('carries the state of a draft to the card, once, and lists no card that runs on a read', () => {
+    expect(merged.map((card) => [card.name, card.draft])).toEqual([
+      ['Beta', 'pending'],
+      ['Zed', 'pending'],
+      ['Alpha', 'wrong'],
+      ['Plain', undefined],
+    ])
+  })
+
+  it.each([
+    ['all', ['Beta', 'Zed', 'Alpha', 'Plain']],
+    ['to_read', ['Beta', 'Zed']],
+    ['manual', ['Zed', 'Plain']],
+  ] as const)('the %s filter keeps %j', (filter, kept) => {
+    expect(names(filterCards(merged, filter))).toEqual(kept)
+  })
+
+  it('counts a draft that was found wrong as played by hand but not as waiting', () => {
+    expect(merged.filter(waitsForRead)).toHaveLength(2)
+    expect(waitsForRead({ draft: 'wrong' })).toBe(false)
+    expect(waitsForRead({ draft: 'approved' })).toBe(false)
+    expect(waitsForRead({})).toBe(false)
   })
 })
 

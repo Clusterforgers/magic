@@ -42,7 +42,7 @@ card_count: number,
  */
 format: string, 
 /**
- * The deck check: `verified`, `manual_play` or `blocked`. It is derived from the cards' rules and
+ * The deck check: `verified`, `read`, `manual_play` or `blocked`. It is derived from the cards' rules and
  * the engine's capabilities each time they change, so it is never `unchecked`.
  */
 state: DeckState, 

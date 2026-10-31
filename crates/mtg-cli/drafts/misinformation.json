@@ -1,0 +1,31 @@
+{
+  "oracle_id": "03dc8820-ec10-42c1-8200-d323cfcbf2b0",
+  "name": "Misinformation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Misinformation",
+      "oracle_fingerprint": "8a7b257c0ea39aa169790db9ffe6a1cd",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "In": "Graveyard" }, { "OwnedBy": "Opponents" }] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Target": 0 },
+                  "to": { "Library": { "place": "Top", "order": "Chosen" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "oracle_id": "dc748941-fd91-4a0e-b0c4-04c9092ff158",
+  "name": "Hedron Matrix",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hedron Matrix",
+      "oracle_fingerprint": "fcd56233c02536e89928397043633cdf",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": { "Stat": { "of": "Attached", "stat": "ManaValue" } },
+                  "toughness": { "Stat": { "of": "Attached", "stat": "ManaValue" } }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{4}" } }
+      ]
+    }
+  ]
+}

@@ -1,8 +1,10 @@
 import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@/components/ui/dialog'
+import { DraftNote } from '@/features/decks/DraftNote'
 import { unvalidatedLink } from '@/features/decks/format'
 import { SupportMark } from '@/features/decks/SupportMark'
+import { ToRead } from '@/features/decks/ToRead'
 import { BY_HAND, cardsByHand, runsWhole } from '@/lib/byHand'
 import { copiesOf, supportCounts } from './model'
 import type { DeckPreviewData, PreviewCard } from './model'
@@ -38,6 +40,11 @@ export function NotValidatedDialog({ deck }: { deck: DeckPreviewData }) {
             {cardsByHand(copiesOf(cards))}: the game does not run {copiesOf(cards) === 1 ? 'it' : 'them'}{' '}
             whole.
           </DialogDescription>
+          {deck.toRead === undefined || deck.toRead === 0 ? null : (
+            <p data-slot="deck-to-read" className="text-sm">
+              <ToRead count={deck.toRead} target={deck.readTarget} />
+            </p>
+          )}
           <ul aria-label={`Cards ${BY_HAND}`} className="grid gap-3">
             {cards.map((card) => (
               <li key={card.oracleId} className="grid gap-1 border-b pb-2 last:border-b-0">
@@ -50,6 +57,7 @@ export function NotValidatedDialog({ deck }: { deck: DeckPreviewData }) {
                     {reason}
                   </span>
                 ))}
+                <DraftNote draft={card.draft} />
               </li>
             ))}
           </ul>

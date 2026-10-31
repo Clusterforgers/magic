@@ -1,0 +1,22 @@
+{
+  "oracle_id": "6d56aeb1-0a50-46b6-abdb-cd6575a98dc3",
+  "name": "Praetor's Grasp",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Praetor's Grasp",
+      "oracle_fingerprint": "485e57979f20de24186ce6ce346d47d6",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Search": { "filter": [], "as": "searched" } },
+              { "Move": { "what": { "Bound": "searched" }, "to": "Graveyard" } },
+              { "Shuffle": { "who": "Opponents" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "oracle_id": "fdfac093-a5c0-47b4-9052-e0af517d83cf",
+  "name": "Dance of the Manse",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dance of the Manse",
+      "oracle_fingerprint": "25b79bae2859f2aea8da32c71bdbe7a8",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Artifact" }] } }],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

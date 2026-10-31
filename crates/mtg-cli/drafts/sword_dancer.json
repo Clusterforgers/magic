@@ -1,0 +1,35 @@
+{
+  "oracle_id": "9ae49b45-a38f-4bd6-aa08-b5a5da6e75a1",
+  "name": "Sword Dancer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sword Dancer",
+      "oracle_fingerprint": "f703f85425dc5573b0b01ff4830e23b2",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              "Tap",
+              "Tap",
+              "Tap",
+              { "TapPower": { "filter": [{ "Type": "Creature" }], "power": 1 } },
+              "Tap",
+              "Tap",
+              { "TapPower": { "filter": [{ "Type": "Creature" }], "power": 1 } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

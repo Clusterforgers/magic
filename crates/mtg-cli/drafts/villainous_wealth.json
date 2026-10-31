@@ -1,0 +1,34 @@
+{
+  "oracle_id": "f2fae95d-074b-4c0c-99cd-f9385a424c05",
+  "name": "Villainous Wealth",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Villainous Wealth",
+      "oracle_fingerprint": "15e69e6bbfbf853c9c8e614d6a693536",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              { "ExileTop": { "who": { "Target": 0 }, "count": "X", "as": "exiled" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "what": [{ "Compare": { "stat": "ManaValue", "op": "Le", "to": "X" } }],
+                      "from": "Exile",
+                      "free": true,
+                      "only": { "Bound": "exiled" }
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

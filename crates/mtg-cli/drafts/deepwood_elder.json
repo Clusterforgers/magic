@@ -1,0 +1,33 @@
+{
+  "oracle_id": "ffb62e4a-802d-4f1e-b92e-ec0919baafd5",
+  "name": "Deepwood Elder",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Deepwood Elder",
+      "oracle_fingerprint": "34c703ac1e4474d36c98f0acb6686c98",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{X}{G}{G}" }, "Tap", { "Discard": {} }],
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Land" }] },
+                "bounds": { "min": { "Stat": { "of": "This", "stat": "Power" } }, "max": 1 }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddSubtype": "Forest" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

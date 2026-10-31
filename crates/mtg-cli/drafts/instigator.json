@@ -1,0 +1,30 @@
+{
+  "oracle_id": "0fe1a1f7-41c9-415e-a5e3-b5ba0c0271e5",
+  "name": "Instigator",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Instigator",
+      "oracle_fingerprint": "94258830c1a131540e3da07ff38465c6",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["SacrificeSelf", "Tap", { "Discard": {} }],
+            "effects": [
+              {
+                "Rule": {
+                  "rule": {
+                    "MustAttack": {
+                      "Each": [{ "Type": "Creature" }, { "ControlledBy": "AttachedPlayer" }]
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

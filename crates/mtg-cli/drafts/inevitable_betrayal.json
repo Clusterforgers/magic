@@ -1,0 +1,31 @@
+{
+  "oracle_id": "aa5e9269-b1db-4bf0-a548-24f999f60e44",
+  "name": "Inevitable Betrayal",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Inevitable Betrayal",
+      "oracle_fingerprint": "45b133c6fdf441cee48f51824a3c371d",
+      "abilities": [
+        { "Keyword": { "Suspend": { "time": 3, "cost": "{1}{U}{U}" } } },
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Search": {
+                  "filter": [{ "Type": "Creature" }, { "OwnedBy": { "Target": 0 } }],
+                  "as": "card"
+                }
+              },
+              {
+                "Move": { "what": { "Bound": "card" }, "to": { "Battlefield": { "under": "You" } } }
+              },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

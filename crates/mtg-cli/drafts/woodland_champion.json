@@ -1,0 +1,31 @@
+{
+  "oracle_id": "675321d7-2cf0-4e0b-9517-d711b22865ab",
+  "name": "Woodland Champion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Woodland Champion",
+      "oracle_fingerprint": "da423dcf0d7eea6974c16314b2586752",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "ZoneChange": { "what": ["Token", { "ControlledBy": "You" }], "to": "Battlefield" }
+              }
+            },
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": "This",
+                  "counter": "+1/+1",
+                  "count": { "Count": [{ "Is": "Triggering" }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "oracle_id": "e1976b6c-7e43-4f4a-b082-f95495a1b260",
+  "name": "Singularity Rupture",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Singularity Rupture",
+      "oracle_fingerprint": "f7bcce73a0e878c7fe31b5eafb69cf51",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player", "bounds": { "min": 0, "max": 1 } }],
+            "effects": [
+              { "Destroy": { "what": { "Each": [{ "Type": "Creature" }] } } },
+              {
+                "RepeatEach": {
+                  "over": { "Target": 0 },
+                  "as": "this",
+                  "effects": [{ "Mill": { "who": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

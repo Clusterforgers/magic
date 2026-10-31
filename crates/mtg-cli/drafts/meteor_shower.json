@@ -1,0 +1,25 @@
+{
+  "oracle_id": "d2110083-b30f-43f1-9352-7536f5e19d3c",
+  "name": "Meteor Shower",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Meteor Shower",
+      "oracle_fingerprint": "470b6f8c76b690d54a231221c8142f4c",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": "AnyTarget",
+                "bounds": { "min": 1, "max": null },
+                "divide": { "Sum": ["X", { "Count": [] }] }
+              }
+            ],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": "Divided" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "oracle_id": "aadd10d0-6dd0-4bdc-8d93-ff08e29a5863",
+  "name": "Drannith Magistrate",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Drannith Magistrate",
+      "oracle_fingerprint": "e715ec507144569964610973e5cd2179",
+      "abilities": [{ "Rule": { "rule": { "CantCastSpells": { "who": "Opponents" } } } }]
+    }
+  ]
+}

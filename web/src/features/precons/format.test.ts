@@ -12,6 +12,7 @@ import {
   NO_FILTERS,
   releaseText,
   setOptions,
+  STATUSES,
   statusOf,
   statusWords,
 } from './format'
@@ -24,6 +25,13 @@ describe('statusOf and statusWords', () => {
   it.each<[string, ReturnType<typeof preconItem>, PreconStatus, string]>([
     ['a clean deck', checked(preconItem()), 'whole', 'Whole deck runs'],
     ['one card by hand', checked(preconItem(), { manual: 1 }), 'hand', '1 card played by hand'],
+    ['approved reads beside verified cards', checked(preconItem(), { read: 4 }), 'read', 'Runs on reads'],
+    [
+      'a card by hand beside the reads',
+      checked(preconItem(), { read: 4, manual: 1, toRead: 1 }),
+      'hand',
+      '1 card played by hand',
+    ],
     [
       'partial, manual and stale copies add up',
       checked(preconItem(), { partial: 2, manual: 3, stale: 1 }),
@@ -47,6 +55,21 @@ describe('statusOf and statusWords', () => {
       '95 of 100 cards verified; 5 played by hand',
     )
     expect(checkLine(preconItem())).toBe('100 of 100 cards verified')
+  })
+
+  it('counts the cards on reads apart from the verified ones and from those played by hand', () => {
+    expect(checkLine(checked(preconItem(), { read: 4 }))).toBe('96 of 100 cards verified; 4 cards on reads')
+    expect(checkLine(checked(preconItem(), { read: 4, manual: 2, toRead: 2 }))).toBe(
+      '94 of 100 cards verified; 4 cards on reads, 2 played by hand',
+    )
+  })
+
+  it('lists the precons that run on reads under their own state, between whole and by hand', () => {
+    expect(STATUSES).toEqual(['whole', 'read', 'hand', 'blocked'])
+    const decks = [deck('Whole'), checked(deck('Reads'), { read: 3 }), checked(deck('Hand'), { manual: 3 })]
+    expect(filterPrecons(decks, { ...NO_FILTERS, status: 'read' }).map((item) => item.name)).toEqual([
+      'Reads',
+    ])
   })
 })
 

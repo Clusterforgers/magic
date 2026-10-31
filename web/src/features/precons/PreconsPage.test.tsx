@@ -150,6 +150,50 @@ describe('the list', () => {
   })
 })
 
+describe('the reads', () => {
+  const READS = [
+    checked(preconItem({ code: 'r1', name: 'On Reads', set: 'RRR' }), { read: 4 }),
+    checked(preconItem({ code: 'r2', name: 'Waiting', set: 'WWW' }), { manual: 3, toRead: 2 }),
+    preconItem({ code: 'r3', name: 'Plain', set: 'PPP' }),
+  ]
+
+  it('gives a deck that runs on reads its own badge and a deck with drafts waiting its count', async () => {
+    await open({ precons: READS })
+    await listed()
+    const onReads = rowOf('On Reads')
+    expect(within(onReads).getByText('Runs on reads').closest('[data-precon-status]')).toHaveAttribute(
+      'data-precon-status',
+      'read',
+    )
+    expect(within(onReads).queryByText(/to read/)).toBeNull()
+    const waiting = rowOf('Waiting')
+    expect(within(waiting).getByText('3 cards played by hand')).toBeInTheDocument()
+    expect(within(waiting).getByText('2 cards to read').closest('[data-slot="to-read"]')).toHaveAttribute(
+      'data-read-path',
+      '/read?precon=r2',
+    )
+    expect(within(rowOf('Plain')).queryByText(/to read/)).toBeNull()
+  })
+
+  it('filters by the state of a deck that runs on reads', async () => {
+    const page = await open({ precons: READS })
+    await listed()
+    await page.user.selectOptions(screen.getByLabelText('Deck check'), 'Runs on reads')
+    expect(rows().map((row) => within(row).getByRole('rowheader').textContent)).toEqual([
+      expect.stringContaining('On Reads'),
+    ])
+  })
+
+  it('says the reads and the drafts waiting in the details', async () => {
+    const page = await open({ precons: READS })
+    await listed()
+    await page.user.click(screen.getByRole('button', { name: 'Details of Waiting' }))
+    const dialog = await screen.findByRole('dialog', { name: 'Waiting' })
+    expect(within(dialog).getByText('2 cards to read')).toBeInTheDocument()
+    expect(within(dialog).getByText('97 of 100 cards verified; 3 played by hand')).toBeInTheDocument()
+  })
+})
+
 describe('the other states', () => {
   it('says it is loading while the list is on its way', async () => {
     await open({ override: () => new Promise<Response>(() => undefined) })

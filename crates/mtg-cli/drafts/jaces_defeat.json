@@ -1,0 +1,32 @@
+{
+  "oracle_id": "8ed8e27b-2137-4e19-99bb-5e0d6d32e3af",
+  "name": "Jace's Defeat",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jace's Defeat",
+      "oracle_fingerprint": "37d032698881dbf35a4fa38ffd00206d",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell", "Colorless"] } }],
+            "effects": [
+              { "Counter": { "what": { "Target": 0 } } },
+              {
+                "If": {
+                  "condition": {
+                    "Matches": {
+                      "subject": { "Target": 0 },
+                      "selector": [{ "Named": "Jace, the Mind Sculptor" }]
+                    }
+                  },
+                  "then": [{ "Scry": { "count": 2 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

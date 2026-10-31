@@ -1,0 +1,19 @@
+{
+  "oracle_id": "56aec5bd-a8e8-403f-b339-0fc817426428",
+  "name": "Clash of Wills",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Clash of Wills",
+      "oracle_fingerprint": "9443fb4884208c8b62783e8fe5e3ad12",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [{ "Pay": { "who": { "ControllerOf": { "Target": 0 } }, "cost": "{X}" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

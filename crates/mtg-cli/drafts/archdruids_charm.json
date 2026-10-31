@@ -1,0 +1,86 @@
+{
+  "oracle_id": "3c1ef404-e2c6-486d-a5a2-d5779c71d498",
+  "name": "Archdruid's Charm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Archdruid's Charm",
+      "oracle_fingerprint": "0322924889a3e713627f9c3c1c8225d8",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "effects": [
+                        {
+                          "Search": {
+                            "filter": [{ "Type": "Creature" }, { "Type": "Land" }],
+                            "reveal": true,
+                            "as": "card"
+                          }
+                        },
+                        {
+                          "If": {
+                            "condition": {
+                              "Matches": {
+                                "subject": { "Bound": "card" },
+                                "selector": [{ "Type": "Land" }]
+                              }
+                            },
+                            "then": [
+                              {
+                                "Move": {
+                                  "what": { "Bound": "card" },
+                                  "to": { "Battlefield": { "tapped": true } }
+                                }
+                              },
+                              { "Move": { "what": { "Bound": "card" }, "to": "Hand" } }
+                            ]
+                          }
+                        },
+                        { "Transform": { "what": { "Bound": "card" } } }
+                      ]
+                    },
+                    {
+                      "targets": [
+                        {
+                          "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+                        },
+                        {
+                          "what": {
+                            "Object": [{ "Type": "Creature" }, { "Not": { "ControlledBy": "You" } }]
+                          }
+                        }
+                      ],
+                      "effects": [
+                        { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } },
+                        {
+                          "DealDamage": {
+                            "source": { "Target": 0 },
+                            "to": { "Target": 1 },
+                            "amount": { "Stat": { "of": { "Target": 0 }, "stat": "Power" } }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [
+                        {
+                          "what": { "Object": [{ "Type": "Artifact" }, { "Type": "Enchantment" }] }
+                        }
+                      ],
+                      "effects": [{ "Exile": { "what": { "Target": 0 } } }]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

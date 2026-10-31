@@ -133,6 +133,14 @@ source: ObjectRef,
 /**
  * Who controls it.
  */
+controller: PlayerId, } } | { "AbilityLeftToTable": { 
+/**
+ * The object with the ability, as it was.
+ */
+source: ObjectRef, 
+/**
+ * Who controls it.
+ */
 controller: PlayerId, } } | { "TriggerRemoved": { 
 /**
  * The object with the ability, as it was.
