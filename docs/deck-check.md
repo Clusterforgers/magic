@@ -8,13 +8,16 @@ The per-card support lookup (`Library::support` in `mtg-cards`), the report (`mt
 
 - Card support, per oracle id, is computed from the card's rules file, its imported oracle text and the primitives the engine runs ([cards-dsl.md](cards-dsl.md) owns the definitions):
   - `Verified`: the rules cover the whole text, the text is unchanged, and the engine runs every primitive used. A card with no file and no rules text once reminder text (parentheses) is removed, such as a vanilla creature or a basic land, is `Verified` too.
+  - `Read`: a whole draft the checker could not prove, read and found correct by a player; it runs like `Verified` and is counted apart ([cards-dsl.md](cards-dsl.md), Read tier).
   - `Partial`: implemented except the listed clauses; each carries a plain reason and the span of oracle text it covers.
   - `Manual`: no implementation; the table resolves the whole text by hand.
   - `Stale`: the oracle text changed since the rules were written (errata). Counts as `Manual` until reviewed.
   - `Unplayable`: the engine cannot host the card at all (digital-only actions, ante, joke-set mechanics).
 - Deck state:
   - `Verified`: legal, and every card of every zone is `Verified`, the sideboard included.
-  - `Played by hand` (`manual_play`): legal, with some cards not `Verified`.
+  - `Runs on reads` (`read`): legal, and every card is `Verified` or `Read`, at least one `Read`.
+  - `Played by hand` (`manual_play`): legal, with some cards neither `Verified` nor `Read`.
+- To read: a card whose current draft no player has judged (`pending`) is played by hand and counted in `summary.to_read` (distinct cards); each such card of the report carries `draft: pending`, and a card with a wrong read `draft: wrong`.
   - `Blocked`: illegal, or holds an `Unplayable` card.
   - `Unchecked`: never checked, or changed since.
 
