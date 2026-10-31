@@ -27,7 +27,12 @@ const flags = (h: ReturnType<typeof caughtUp>): boolean[] =>
 
 describe('the session', () => {
   it.each([
-    { name: 'away with a clock', message: presence(1, false, 12_000), view: [true, false], away: { 1: 12_000 } },
+    {
+      name: 'away with a clock',
+      message: presence(1, false, 12_000),
+      view: [true, false],
+      away: { 1: 12_000 },
+    },
     { name: 'away without a clock', message: presence(1, false), view: [true, false], away: { 1: null } },
     { name: 'back again', message: presence(1, true), view: [true, true], away: {} },
   ])('$name', ({ message, view, away }) => {

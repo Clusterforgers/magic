@@ -66,6 +66,8 @@ export interface DevSearch {
   stops?: string
   /** The Full Control mode the viewer already holds, `next` or `held`; off when missing. */
   fc?: 'next' | 'held'
+  /** A seat shown away, with 12 s before the game acts for it. */
+  away?: number
   /** Cards in the viewer's hand (0 to 24), to look at a large hand; 7 when missing. */
   hand?: number
   /** The step the turn is in, such as `main2` or `declareattackers`, to look at the theme of its phase; the fixture's own when missing. */
@@ -127,6 +129,7 @@ export function parseDevSearch(search: Record<string, unknown>): DevSearch {
     stops:
       typeof search.stops === 'string' && parseStopSpec(search.stops).length > 0 ? search.stops : undefined,
     fc: search.fc === 'next' || search.fc === 'held' ? search.fc : undefined,
+    away: whole(search.away),
     cards: search.cards === 'real' ? 'real' : undefined,
     step: typeof search.step === 'string' ? STEP_BY_NAME.get(search.step.toLowerCase()) : undefined,
     hand:

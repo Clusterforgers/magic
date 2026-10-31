@@ -13,7 +13,8 @@ const name = (seat: number): string => NAMES[seat] ?? `Seat ${seat}`
 /** A table of four whose seats have the given (connected, lost) flags and away clocks. */
 function table(seats: [connected: boolean, lost: boolean][], away: PlayState['away'] = {}): PlayState {
   const players = seats.map(
-    ([connected, lost], seat) => ({ seat, connected, lost: lost ? 'Conceded' : null }) as unknown as PlayerView,
+    ([connected, lost], seat) =>
+      ({ seat, connected, lost: lost ? 'Conceded' : null }) as unknown as PlayerView,
   )
   return { ...initialPlayState(), view: { players } as unknown as StateView, away }
 }
@@ -38,8 +39,13 @@ describe('awaySeats', () => {
     [false, false],
     [false, true],
   ]
-  it.each([
-    { name: 'the waited-on seat that is away', waiting: others(1), away: {}, expected: [{ seat: 1, leftMs: null }] },
+  it.each<{ name: string; waiting: Waiting; away: Record<number, number>; expected: AwaySeat[] }>([
+    {
+      name: 'the waited-on seat that is away',
+      waiting: others(1),
+      away: {},
+      expected: [{ seat: 1, leftMs: null }],
+    },
     { name: 'nobody when the waited-on seat is here', waiting: others(0), away: {}, expected: [] },
     {
       name: 'a clocked seat after the waited-on ones',

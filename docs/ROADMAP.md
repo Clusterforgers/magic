@@ -47,7 +47,7 @@ Ready pieces, grouped by the code they touch. A group runs one piece at a time, 
 - Card data: Scryfall and MTGJSON import, deck-list parsers, the schema with card search and precons, and `mtg-cli` fetch, ingest, compile and coverage.
 - Engine core: zones, turns, priority, stack, combat with forecast and block preview, bots with a repeat guard, `mtg-testkit`, and crowded tables of thousands of permanents.
 - Protocol and server: generated wire bindings with a drift test, the game actor, a WebSocket per seat, persistence and resume, accounts, lobbies, open games and precons.
-- Game flow: auto-pass, response clocks, yields, stops, Full Control, idle windows, the timer bank and leak tests (`docs/arena-flow.md`).
+- Game flow: auto-pass, response clocks, yields, stops, Full Control, idle windows, the timer bank, seat presence (away marks with the time before the game acts) and leak tests (`docs/arena-flow.md`).
 - First-game smoke test: two accounts play real precons from the lobby through turn 9, and four accounts a Commander game through turn 6 (`web/e2e/precon-game.spec.ts`); four accounts play four Commander precons from the lobby through mulligans, casts from the command zone with their tax and commander damage to a winner (`web/e2e/commander-four.spec.ts`), in real browsers.
 - Web: the game UI with prompts for all eight decision kinds, manual payment that the engine always accepts (several mana, sources that cost mana) and the number prompt for X with its total cost, the N-seat table with log, stack and animations, lobby, account pages, the UI rebuild and clock-free e2e tests.
 - Popular-card edges: a delayed trigger reads the stats of its resolution's targets as they last were (Mana Drain), and no token is made for a player who loses in the same batch (CR 800.4a).
@@ -461,7 +461,6 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (v91k) The house rule key `colour_identity` is spelled `color_identity` on the wire, in the stored rules and in `mtg-core` `house.rs`, with the stored games migrated
 - [~] (v91l) (log-words) The printed-gap reasons say what the player does, as the clause reasons do, not "the engine cannot pay {X} in a mana cost yet" (`mtg-cards` `assemble.rs`, the coverage tests)
 - [~] (v91m) (log-words) The lobby deck pane's "Not validated cards" link names how many cards are played by hand, as the decks list row does (`features/game/DeckPane.tsx`)
-- [~] (v92a) (presence) A seat that loses its connection shows as away to the other seats, with the time before the game answers for it; today they read only "Waiting for <name>" (`PlayerView` presence, seat pod)
 - [~] (v92b) (byhand-window) A seat whose by-hand card just resolved keeps a priority window in its own turn to apply the clauses; auto-pass now ends the turn at once when nothing else is playable (server pass rules)
 - [~] (v92c) (log-words) The log names a triggered ability that resolves ("An ability of Parasitic Impetus resolves") instead of "a card begins to resolve" and "a card finishes resolving" (`eventText.ts`, `LogPanel` names)
 - [~] (v92d) (log-words) The by-hand log line of a triggered or static clause says when to apply it ("whenever …"), not "when it resolves" (`byHandLine`)

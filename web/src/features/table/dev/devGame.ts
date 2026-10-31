@@ -6,7 +6,7 @@ import type { Session } from '@/play/session'
 import { canHoldStop } from '@/play/stops'
 import { appendChat, createPlayStore, initialPlayState } from '@/play/store'
 import type { PendingDecision, PlayState, PlayStore } from '@/play/store'
-import { indexById } from '@/play/view'
+import { indexById, withPresence } from '@/play/view'
 import type { FullControlMode, HouseRules, PlayerId, StateView, Step, Stop } from '@/protocol/generated'
 import { devPreview } from './devForecast'
 import { withStop } from './devStops'
@@ -186,6 +186,8 @@ export interface FixtureGameOptions extends FixtureOptions {
   stops?: Stop[]
   /** The Full Control mode the viewer holds from the start; off when left out. */
   fullControl?: FullControlMode
+  /** A seat whose client is gone, with 12 s before the game acts for it, for the away mark and note. */
+  away?: PlayerId
 }
 
 /** The house rules `rules` gives the fixture table: two differ from Commander's own and one is its own. */
@@ -221,6 +223,12 @@ export function fixtureGame(options: FixtureGameOptions): GameContextValue {
   store.setState(fixtureState(fixture, shown))
   if (options.stops !== undefined) store.setState({ stops: options.stops })
   if (options.fullControl !== undefined) store.setState({ fullControl: options.fullControl })
+  const away = options.away
+  if (away !== undefined)
+    store.setState((state) => ({
+      view: state.view === null ? null : withPresence(state.view, away, false),
+      away: { [away]: 12_000 },
+    }))
   // A seat that is already yielding faces no priority decision, only the line that says it is passing.
   if (Object.hasOwn(DEV_YIELDS, name)) store.setState({ yielding: DEV_YIELDS[name] ?? null })
   // The dev table answers a preview after a moment, so the "checking outcome" state can be looked at too.

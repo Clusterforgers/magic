@@ -260,9 +260,12 @@ fn dwell_range() -> std::ops::RangeInclusive<u64> {
 }
 
 /// What an observer may be sent while it waits: a `Welcome`, the lobby before the game, the game's events, its end and
-/// the decisions of its own (which depend on its own hand only: what it is told must be the same in both games).
-/// Anything else (`Yielding`, `Stops`, `FullControl`, a snapshot, an error) can depend on somebody else's hand.
-const MAY_BE_SENT: [&str; 5] = ["Welcome", "Lobby", "Events", "GameOver", "Decision"];
+/// the decisions of its own (which depend on its own hand only: what it is told must be the same in both games), and the
+/// presence of the other seats (public: a client that went once the game ended, the same in both games). Anything else
+/// (`Yielding`, `Stops`, `FullControl`, a snapshot, an error) can depend on somebody else's hand.
+const MAY_BE_SENT: [&str; 6] = [
+    "Welcome", "Lobby", "Events", "GameOver", "Decision", "Presence",
+];
 
 /// Everything that differs between what the seats that do not hold the card were sent in the two games, and everything
 /// they were sent that could depend on the hand; empty when the table cannot tell the games apart.
