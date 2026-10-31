@@ -83,6 +83,11 @@ A companion (CR 702.139, `companions.rs`) is a card a seat names before the game
 - A turn whose active player has left goes on without one (CR 800.4): `GameState::active_player` is `None` while `TurnState::active` keeps the seat the turn belongs to. Untap, draw, attack declaration and the hand-size discard are skipped; every step that grants priority starts with the next player in turn order (`active_or_next`), where the stack resolves and the steps end as in any turn; the beginning of a step triggers what names every player's step, with no player to refer to, and nothing that names the active player's or an opponent's step; cleanup ends the effects until end of turn, and the next turn goes to the next player in turn order. A game of two ends at once. The table view says it with `TurnView.active_left` ([protocol.md](protocol.md), State projection).
 - An effect whose duration has ended stops applying at once; the later `EffectExpired` event only prunes it.
 
+### Fail-soft resolution
+
+- A card in state `Read` runs rules no checker proved ([cards-dsl.md](cards-dsl.md), Read tier), so its errors must not stop a game. When a step of a spell or ability whose source definition has `read` returns a `ResolveError`, the engine keeps the steps already folded, drops the rest, logs `AbilityLeftToTable {source, controller, text}` (boxed; `text` is the printed clause) and goes on as after a resolution, so the table resolves the ability by hand. The same error from any other card stays an `EngineError`, which the tests must catch.
+- Tests: a table of failing steps (a read card and a card that is not) at two to four seats, with the log replayed to the same state hash.
+
 ## Mana costs
 
 - `ManaCost` (`mtg-core`) is a canonical list of `ManaSymbol`: `Generic`, `Colored`, `Colorless`, `Hybrid` (`{W/U}`), `MonoHybrid` (`{2/W}`), `Phyrexian` (`{W/P}`), `HybridPhyrexian` (`{G/U/P}`), `ColorlessHybrid` (`{C/W}`) and `ColorlessPhyrexian` (`{C/P}`).

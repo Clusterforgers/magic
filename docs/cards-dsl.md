@@ -17,7 +17,7 @@ Scope: the data model, loader, validation, support records, the corpus and card 
 | Replacement | A step in front of the fold; the affected player orders several (CR 616.1). |
 | Static abilities | Derived when characteristics are derived (CR 613); never stored as effects. |
 | Keywords | Enum variants with parameters; behaviour in one engine file each. |
-| Support | `Verified`, `Partial`, `Manual`, `Stale` and `Unplayable` are computed from the file, the imported text and the engine's capabilities. |
+| Support | `Verified`, `Read`, `Partial`, `Manual`, `Stale` and `Unplayable` are computed from the file, the imported text, the engine's capabilities and the stored read verdicts. |
 
 ## Decisions
 
@@ -36,6 +36,7 @@ Scope: the data model, loader, validation, support records, the corpus and card 
 | D11 | Keywords: one enum, one engine file each | An exhaustive `match` flags a forgotten keyword; parallel tasks touch separate files | Keywords as strings, a shared registry file |
 | D12 | Validation in three levels; all errors are collected | A file is judged where the information is | Checking when the engine uses a card, stopping at the first error |
 | D13 | The compiler writes the same files; an unreadable clause becomes a `Manual` ability | One reader and one validator; a deck is never blocked | A second format, refusing decks with unimplemented cards |
+| D14 | Read tier: a whole draft the checker cannot prove (`Unchecked`) runs automatically once one signed-in player read it beside the engine's own English and found it correct, and by hand after one "reads wrong"; verdicts are stored per rules hash, the state is still computed (D6) | The checker has no writer for many valid rules; a human read is fast when the engine's reading is shown, and `Verified` keeps its proof | A model review, a stored per-card flag, drafts in the corpus (the ratchet and `NOT_VERIFIED` stay about `Verified`), drafts only in the database (not reviewed by commit, lost with the data, absent from tests) |
 
 ## Files
 
@@ -222,6 +223,7 @@ Condition = Not | All | Any | Compare{left,op,right} | Matches{subject,selector}
 | State | Meaning | From |
 |---|---|---|
 | `Verified` | Rules cover the whole text, the text is unchanged, the engine runs every primitive used; or there is no text to cover | `impl_status: Full`, equal fingerprints, `Caps` cover the primitives; or no file and no rules text on any face once reminder text is removed, and no printed gap |
+| `Read` | A whole draft the checker could not prove, read and found correct by a player; runs like `Verified` | A draft with no `Manual` ability, equal fingerprints, `Caps` covering every primitive, and at least one "correct" and no "wrong" verdict on its `read_hash` (Read tier) |
 | `Partial` | Rules exist except the listed clauses | `impl_status: Partial`, or `Full` with primitives the engine lacks |
 | `Manual` | No rules, or the engine runs none of them | No file and rules text, `impl_status: Manual`, or no primitive covered |
 | `Stale` | The oracle text or the face list changed since the rules were written; counts as `Manual` | `Full` or `Partial` with a different fingerprint |
@@ -240,6 +242,23 @@ Condition = Not | All | Any | Compare{left,op,right} | Matches{subject,selector}
 | `implementation_hash(card)` | The same digest of the compact JSON of every face's abilities. |
 | `SupportRecord.fingerprint` | SHA-256 (first 16 bytes) over `oracle_id`, state, clauses, implementation hash, stored fingerprints and current fingerprints. It changes with the data, the imported text and the engine's coverage of the card. The deck's `coverage_hash` is built from `(oracle_id, fingerprint)` (`deck-check.md`). |
 | `Library::support(&PrintedCard, &Caps)` | The pure per-card lookup the deck check calls. |
+
+### Read tier
+
+A card the checker cannot prove runs automatically once a player has read it (D14). `Verified` keeps its proof; `Read` is counted on its own wherever states are counted.
+
+| Item | Rule |
+|---|---|
+| Draft | A whole rules file (no `Manual` ability) whose checker verdict is `Unchecked`: valid, nothing contradicts the text, a construct has no writer. `Invalid` and `Mismatch` proposals never become drafts; an `Accepted` one is promoted into the corpus as `Verified`. Drafts are `crates/mtg-cli/drafts/<slug>.json` with the card's record as `drafts/fixtures/<slug>.json`, outside the corpus (Model-assisted reading, Drafts). |
+| `read_hash` | SHA-256 (first 16 bytes as 32 hex characters) over the oracle id, each face's current `oracle_fingerprint` and the draft's `implementation_hash`. A changed draft or an erratum gives a new hash; `Caps` do not enter it. |
+| Verdict | `correct`, or `wrong` with a note, by one account on one `read_hash`; the account's newest verdict on that hash counts ([server.md](server.md), Reads). The server's own `wrong` (a resolution that failed in a game) has no account. |
+| Read state | Per `read_hash`: `wrong` when a counting verdict is `wrong`, else `approved` when one is `correct`, else `pending`. A verdict on another hash counts for nothing, so a changed draft or text is read again. |
+| State | `Read` when the draft is `approved`, its fingerprints equal the imported text's and `Caps` cover every primitive it uses; otherwise the draft is ignored and the card keeps the state its file or compiled row gives. |
+| Precedence | A rules file, then a `Verified` compiled row, then a draft in state `Read`, then a `Partial` compiled row, then nothing. A pending or wrong draft changes no game. |
+| Library | `Library::with_drafts(&[DraftRules {oracle_id, read_hash, rules, read}])` keeps each card's current draft and its read state; `support` and `assemble` follow the precedence; `Library::draft(oracle_id)` serves the review and the deck check. It stays pure: the server reads the rows and the verdicts. |
+| Definition | `assemble` sets `CardDefinition.read` for a card in state `Read` (left out of the JSON while false, so no other fingerprint changes); the table shows it and fail-soft resolution reads it ([engine.md](engine.md), Fail-soft resolution). |
+| Sheet | `mtg_cards::read::sheet(&Card, &PrintedCard) -> ReadSheet`: for each printed clause the ability it pairs with (the checker's pairing), the renderer's first wording when a writer exists, and `steps`, a plain list of what the ability does from a total walk of the type tree (every variant has words; a node without them is named by its variant), so a reader never meets a blank. |
+| Smoke gate | `mtg_testkit::smoke::smoke_card(&CardDefinition, seeds) -> SmokeReport`: bot games at two and four seats, each library holding copies of the card beside basic lands and vanilla creatures, bots that prefer to cast it and use its abilities, under every invariant and the watchdog. A draft passes when no game fails and the card was cast or one of its abilities used at least once. |
 
 ## Execution
 
@@ -839,6 +858,15 @@ With `--schema`, Ollama accepts the schema with `gpt-oss:20b` and every answer f
 ```
 
 A server on another machine is reached through a tunnel, `ssh -L 11434:localhost:11434 HOST`, so `--base-url` stays `http://localhost:11434/v1` and the server never listens on the network.
+
+**Drafts.** A whole card the checker cannot prove goes to the players instead of waiting for a writer (Read tier). The checker stays the filter, and the smoke gate keeps a draft that breaks a game from ever being offered.
+
+- `mtg-cli promote --draft FILE...` checks each proposal: an `Accepted` one is promoted as without `--draft`; an `Unchecked` one with no `Manual` ability whose card is not `Verified` and that passes the smoke gate becomes `drafts/<slug>.json` (the completed rules in canonical form) and `drafts/fixtures/<slug>.json` (the record from the cached Oracle Cards file); every other is listed with its verdict or the failed game's seed. A draft replaces the file of the same card.
+- `cargo test -p mtg-cli drafts::` checks every draft against its record: valid, verdict `Unchecked`, whole, fingerprints current, the card not `Verified` without it, one draft and one record per card. `drafts_smoke::` smokes a seeded sample of 64 drafts; `MTG_DRAFT_SMOKE=all` smokes every one before a release.
+- `mtg-cli` embeds the directory at build time. `compile` adds each draft whose `read_hash` is not stored to `card_drafts` and marks the stored drafts the build no longer holds `retired`; rows are never deleted, so a game that started on one resumes ([server.md](server.md), Reads).
+- First yield, at no model cost: the stored `Unchecked` proposals of the sweeps (`crates/mtg-cards/tests/fixtures/proposals/`, the local-model runs) through `promote --draft`.
+- Then one Sonnet agent per precon: `coverage --deck CODE` lists the cards that are neither `Verified`, `Read` nor drafted; the agent writes the rules of each, runs `check-rules --verbose` until it is neither `Invalid` nor `Mismatch`, and runs `promote --draft`. One commit per precon; no goldens or scenarios per clause, since a player reads each draft before it runs. A card that needs a primitive the engine lacks goes to the gap ledger.
+- A "reads wrong" verdict adds a fix mark with its note; the fix is a new draft (a new `read_hash`), which is read again.
 
 ## Worked example: Archon of Cruelty
 

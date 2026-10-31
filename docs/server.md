@@ -177,7 +177,7 @@ The holder of a seat chooses the deck it plays while the game is in its lobby: t
 
 ## Cards and decks
 
-`Server::open_with(config, pool, cards)` takes the `CardSource` (database, rules, `Caps`) that the games, the card endpoints and the deck check share; `Server::open` makes one. The rules are the embedded files and the rows of `card_rules` that `mtg-cli compile` writes ([data-sources.md](data-sources.md)): the library is built again whenever a row was added, written again or removed (one cheap query per request tells), a file wins over a row for the same card, and a row this build cannot read is left out and logged. Every card of a request is judged under one snapshot of them. A server without a database answers 503 `cards_unavailable` and 503 `decks_unavailable`.
+`Server::open_with(config, pool, cards)` takes the `CardSource` (database, rules, `Caps`) that the games, the card endpoints and the deck check share; `Server::open` makes one. The rules are the embedded files and the rows of `card_rules` that `mtg-cli compile` writes ([data-sources.md](data-sources.md)): the library is built again whenever a row was added, written again or removed (one cheap query per request tells), a file wins over a row for the same card, and a row this build cannot read is left out and logged. Drafts a player approved join them by the precedence of the read tier ([Reads](#reads)). Every card of a request is judged under one snapshot of them. A server without a database answers 503 `cards_unavailable` and 503 `decks_unavailable`.
 
 ### Cards
 
@@ -268,6 +268,23 @@ Blank values are no filter; an unknown parameter or a malformed value is 400 `in
 - One row per account and card (`PRIMARY KEY (user_id, oracle_id)`), so marking twice counts once. `user_id` has no foreign key, like `decks.owner`: `Accounts::delete_user` calls `FixMarkRepo::delete_all_of` in its transaction. A card deleted from `cards` takes its marks (`ON DELETE CASCADE`).
 - A note is trimmed; an empty one is none. It holds at most 280 characters (`MAX_FIX_NOTE_CHARS`; the table checks the same limit) and no control character but a line break, else 400 `invalid_request`.
 - No endpoint shows another account's mark. `FixMarkRepo::ranked(limit)` counts accounts per card, the most marked first, ties by the newest mark and then name, with the note of the newest mark that has one; `mtg-cli fix-marks` joins the support state and prints it ([data-sources.md](data-sources.md)), and `check-rules --gaps --marks` weighs gaps by the marks of the cards they free ([cards-dsl.md](cards-dsl.md)).
+
+### Reads
+
+`reads.rs` and `mtg-db`'s `DraftRepo` (`card_drafts`) and `ReadRepo` (`card_reads`). A player reads a draft beside the engine's reading and judges it ([cards-dsl.md](cards-dsl.md), Read tier). Accounts are made by the admin, so every signed-in account may judge; a guest reads nothing. Every route needs a signed-in account: 503 `cards_unavailable` without a database, then 401 `unauthenticated`. The origin guard covers `PUT`; bodies are `application/json` of at most 4 KiB.
+
+| Endpoint | Behaviour |
+|---|---|
+| `GET /api/reads?deck=<uuid>` or `?precon=<code>` | `ReadQueue {cards}`: the deck's cards whose current draft is `pending`, in deck order, then those `approved` that this account has not judged. A deck of another account is 404, like an unknown one. |
+| `GET /api/reads/{oracle_id}` | `ReadCard`: the printed faces, the `read_hash`, the sheet, the read state, the number of accounts that judged it correct, this account's verdict and whether that verdict was on an older hash. A card with no current draft is 404 `not_found`. |
+| `PUT /api/reads/{oracle_id}` | `ReadVerdict {read_hash, verdict, note?}` records the account's verdict: 200 `ReadCard`. A hash that is not the current draft's is 409 `stale_read` with the current `ReadCard`; `wrong` without a note is 400 `invalid_request`. |
+
+- `card_drafts (oracle_id, read_hash, rules jsonb, retired, created_at)`, primary key `(oracle_id, read_hash)`, is written only by `mtg-cli compile` from the drafts the build embeds; a card's current draft is its one row not `retired`. `card_reads (id, user_id, oracle_id, read_hash, verdict, note, created_at)` is append-only: an account's newest row on a hash is its verdict, and `user_id` is null for the server's own verdict. `ReadRepo::state` gives the read state of each current draft in one query.
+- A note follows the fix-mark rules (trimmed, at most 280 characters, no control character but a line break). A `wrong` verdict and the account's fix mark of the card, with the note, are written in one transaction, so the ranked fix marks are the list of wrong reads; `mtg-cli reads` prints the verdicts by card, account and time (`--wrong`, and `--quick` for one account's verdicts less than 4 s apart).
+- Verdicts count per account in 15-minute windows (`AttemptLimits::read_verdicts_per_user`, 150); over it the answer is 429 `rate_limited` with `Retry-After`. `Accounts::delete_user` calls `ReadRepo::delete_all_of` in its transaction; a card that account alone approved is `pending` again.
+- `CardSource` loads the current drafts with their read state beside `card_rules` (`Library::with_drafts`) and builds the library again when `DraftRepo::version`, a digest of both tables, changes, in the same cheap query as `CardRulesRepo::version`. A verdict reaches the card endpoints, the deck check and the precon index at once, and a game when it starts.
+- Pinning: when a game starts, its recipe stores `reads`, the `read_hash` of every card it plays in state `Read` (left out of the JSON while empty). Resume and replay build those cards from their `card_drafts` rows, whatever the verdicts are now, so a verdict never changes a game that runs and never fails its resume; a pinned row that is gone fails the game like a lost card.
+- An `AbilityLeftToTable` event ([engine.md](engine.md), Fail-soft resolution) appends the server's `wrong` verdict on that card's pinned hash with the error as its note, so the card is played by hand from the next game; `mtg-cli fix-marks` lists those verdicts beside the marks.
 
 ## Pace of play
 
