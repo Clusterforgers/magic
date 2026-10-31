@@ -2,6 +2,23 @@
 
 Open card, compiler and wording items by code area; the rules of `docs/ROADMAP.md` apply (one line per item, claims, ids). The gap ledger (`mtg-cli check-rules --gaps`, `coverage --all`) ranks them by the popularity of the cards they hold back. Design and task order: `docs/cards-dsl.md` (Tasks).
 
+## Generality
+
+- [ ] (gn1a) Blame names the unwritten part of a `Replacement`, `Rule` and `CostModifier` ability instead of "the combination"; splits 54 ledger cards into node gaps (Academy Manufactor, Harmonic Prodigy, Urza's Incubator); `mtg-cards/src/proposal/blame.rs`
+- [ ] (gn1b) Amount options: `StatKind::BasePower`, `Distinct` over colours, `CommanderColors`, targets of the triggering spell, damage prevented this way; frees about 19 ledger cards (War Room, Faeburrow Elder, Kutzil); `mtg-cards/src/value.rs`, engine evaluator, reader atoms
+- [ ] (gn1c) `Amount::Tally { event, who, filter }` beside `TurnTally`, with `TurnNumber` and `Condition::StartingPlayer`; frees about 6 ledger cards (Starting Town, Idol of Oblivion, Ashling, Flame Dancer); `value.rs`, engine tallies
+- [ ] (gn1d) `GameRule::CantCast { who, filter, more_than, unless }` and `CastOnly` with tally conditions (after gn1c); frees about 8 ledger cards (Rakdos, Lord of Riots, Moderation, Curse of Exhaustion); `modify.rs`, engine casting
+- [ ] (gn1e) Mana abilities of any shape (`Ability.ManaAbility.Other`: X, a choice, no `{T}`, untap costs) run as mana abilities; frees about 19 ledger cards (Nykthos, Shrine to Nyx, Energy Refractor, Urza's Saga); engine mana payment, `caps.rs`
+- [ ] (gn1f) Rule options: `UntapDuring { what, whose }`, `MaxHandSize`, `TriggerAgain.source`, `NoLegendRule`, `Ability::OpeningHand`; frees about 17 ledger cards (Seedborn Muse, Jin-Gitaxias, Core Augur, Leyline of Anticipation); `modify.rs`, `ability.rs`, engine rules
+- [ ] (gn1g) Keyword macros: a keyword the assembler expands into existing nodes, then Bushido, Modular, Mobilize, populate, endure, earthbend; frees about 15 ledger cards (Power Depot, Warden of the Grove, Fire Nation Palace); `keyword.rs`, `assemble.rs`
+- [ ] (gn1h) Keyword lock and combat permissions: `RemoveKeyword.cant_have`, as though no hexproof, defender or tapped, `CantAttackAlone`, `MustBeBlocked`; frees about 7 ledger cards (Archetype of Imagination, Arcane Lighthouse, Assault Formation); `modify.rs`, engine layers and combat
+- [ ] (gn1i) Zone statics: `Static.affected` on the stack, hand, graveyard or exile for cast keywords, `uses` for "the next spell" and `Shield.uses` for "the next time"; frees about 11 ledger cards (Imoti, Lier, Archway of Innovation, Words of Worship); `ability.rs`, `effect.rs`, engine casting
+- [ ] (gn1j) Writer composition: a frame writes with parts that write alone, for the combinations gn1a names (after gn1a); frees about 27 ledger cards (Sylvan Library, Vanquisher's Banner, Emry, Lurker of the Loch); `compile/read/render`
+- [ ] (gn1k) Activated-ability modifiers: `CostModifier.applies_to` an ability kind with `change: Instead(cost)`, activate as though haste, loyalty twice; frees about 10 ledger cards (Thousand-Year Elixir, Fluctuator, Forge Anew); `ability.rs`, engine announcement
+- [ ] (gn1l) Copy exceptions: `BecomeCopy.except` keeps the source's ability and sets name and supertype, types added on a return (with o2fb); frees about 5 ledger cards (Thespian's Stage, Enduring Vitality, Sarkhan, Soul Aflame); `effect.rs`, `become_copy.rs`
+- [ ] (gn1m) Cost parts `PutCounters`, `UntapPermanents`, `Exert`, `RemoveCountersAmong` and counted sacrifices (with g6d); frees about 7 ledger cards (Devoted Druid, Arena of Glory, Tekuthal); `cost.rs`, engine `price.rs`
+- [ ] (gn1n) `Effect::ChangeTargets { what, to }` on the copy retarget path; frees about 4 ledger cards (Misdirection, Redirect Lightning, Bolt Bend); `effect.rs`, `prim/retarget.rs`
+
 ## Costs and casting
 
 - [ ] (g2e) The mode prompt offers a mode with X in its target filter only when some payable X has its targets, so choosing a mode never backs the cast out
