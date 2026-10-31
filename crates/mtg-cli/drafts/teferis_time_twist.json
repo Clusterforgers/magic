@@ -1,0 +1,65 @@
+{
+  "oracle_id": "f5479d4f-bc4b-4452-a944-41be623f8367",
+  "name": "Teferi's Time Twist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Teferi's Time Twist",
+      "oracle_fingerprint": "5beba273b9263a50cd07eae3316d4008",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "ControlledBy": "You" }] } }],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    { "Move": { "what": { "Bound": "exiled" }, "to": { "Battlefield": {} } } },
+                    {
+                      "If": {
+                        "condition": {
+                          "Matches": {
+                            "subject": { "Bound": "exiled" },
+                            "selector": [{ "Type": "Creature" }]
+                          }
+                        },
+                        "then": [
+                          { "PutCounters": { "on": { "Bound": "exiled" }, "counter": "+1/+1" } }
+                        ]
+                      }
+                    },
+                    {
+                      "DelayedTrigger": {
+                        "when": { "StepBegins": { "step": "End" } },
+                        "effects": [
+                          { "Move": { "what": { "Bound": "exiled" }, "to": { "Battlefield": {} } } },
+                          {
+                            "If": {
+                              "condition": {
+                                "Matches": {
+                                  "subject": { "Bound": "exiled" },
+                                  "selector": [{ "Type": "Creature" }]
+                                }
+                              },
+                              "then": [
+                                {
+                                  "PutCounters": { "on": { "Bound": "exiled" }, "counter": "+1/+1" }
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

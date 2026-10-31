@@ -1,0 +1,132 @@
+{
+  "object": "card",
+  "id": "63c5e1dd-2fe6-4734-8406-7bcdf17aa60c",
+  "oracle_id": "b9538d53-480b-481a-abbf-83ab17e1a45b",
+  "multiverse_ids": [
+    598969
+  ],
+  "mtgo_id": 107679,
+  "tcgplayer_id": 457115,
+  "cardmarket_id": 688479,
+  "name": "No Mercy",
+  "lang": "en",
+  "released_at": "2023-01-13",
+  "uri": "https://api.scryfall.com/cards/63c5e1dd-2fe6-4734-8406-7bcdf17aa60c",
+  "scryfall_uri": "https://scryfall.com/card/dmr/95/no-mercy?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T04:54:34Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/6/3/63c5e1dd-2fe6-4734-8406-7bcdf17aa60c.jpg?1783918474",
+    "normal": "https://cards.scryfall.io/normal/front/6/3/63c5e1dd-2fe6-4734-8406-7bcdf17aa60c.jpg?1783918474",
+    "large": "https://cards.scryfall.io/large/front/6/3/63c5e1dd-2fe6-4734-8406-7bcdf17aa60c.jpg?1783918474",
+    "png": "https://cards.scryfall.io/png/front/6/3/63c5e1dd-2fe6-4734-8406-7bcdf17aa60c.png?1783918474",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/6/3/63c5e1dd-2fe6-4734-8406-7bcdf17aa60c.jpg?1783918474",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/6/3/63c5e1dd-2fe6-4734-8406-7bcdf17aa60c.jpg?1783918474",
+    "thumb": "https://cards.scryfall.io/thumb/front/6/3/63c5e1dd-2fe6-4734-8406-7bcdf17aa60c.webp?1783918474",
+    "grid": "https://cards.scryfall.io/grid/front/6/3/63c5e1dd-2fe6-4734-8406-7bcdf17aa60c.webp?1783918474",
+    "display": "https://cards.scryfall.io/display/front/6/3/63c5e1dd-2fe6-4734-8406-7bcdf17aa60c.webp?1783918474",
+    "art": "https://cards.scryfall.io/art/front/6/3/63c5e1dd-2fe6-4734-8406-7bcdf17aa60c.webp?1783918474",
+    "crop": "https://cards.scryfall.io/crop/front/6/3/63c5e1dd-2fe6-4734-8406-7bcdf17aa60c.webp?1783918474",
+    "jpeg": "https://cards.scryfall.io/normal/front/6/3/63c5e1dd-2fe6-4734-8406-7bcdf17aa60c.jpg?1783918474"
+  },
+  "mana_cost": "{2}{B}{B}",
+  "cmc": 4.0,
+  "type_line": "Enchantment",
+  "oracle_text": "Whenever a creature deals damage to you, destroy it.",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "ca4c2884-e539-4b7f-980d-5d6a50220f2a",
+  "set": "dmr",
+  "set_name": "Dominaria Remastered",
+  "set_type": "masters",
+  "set_uri": "https://api.scryfall.com/sets/ca4c2884-e539-4b7f-980d-5d6a50220f2a",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Admr&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/dmr?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/63c5e1dd-2fe6-4734-8406-7bcdf17aa60c/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ab9538d53-480b-481a-abbf-83ab17e1a45b&unique=prints",
+  "collector_number": "95",
+  "digital": false,
+  "rarity": "mythic",
+  "flavor_text": "\"We had years to prepare, while they had mere minutes.\"\n—Kerrick, sleeper agent",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Mark Tedin",
+  "artist_ids": [
+    "9ee9a9cc-c09e-486f-918b-69f80cbc4188"
+  ],
+  "illustration_id": "d8a435e9-d5c7-4251-b395-5a876a93c519",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 1456,
+  "prices": {
+    "usd": "25.35",
+    "usd_foil": "29.08",
+    "usd_etched": null,
+    "eur": "20.75",
+    "eur_foil": "20.28",
+    "tix": "1.93"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=598969&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DNo%2BMercy",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DNo%2BMercy",
+    "edhrec": "https://edhrec.com/route/?cc=No+Mercy"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F457115%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=688479&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/107679?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

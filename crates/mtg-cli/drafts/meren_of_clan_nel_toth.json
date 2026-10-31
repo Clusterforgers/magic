@@ -1,0 +1,55 @@
+{
+  "oracle_id": "0310dfdb-0498-488d-9f1a-279f8239e024",
+  "name": "Meren of Clan Nel Toth",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Meren of Clan Nel Toth",
+      "oracle_fingerprint": "dfb770791d428f9fdcd570ee01f54a79",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "ControlledBy": "You" },
+                  { "Not": { "Is": "This" } }
+                ],
+                "to": "Graveyard"
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "You", "counter": "+1/+1" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Stat": { "of": "Triggering", "stat": "ManaValue" } },
+                      "op": "Le",
+                      "right": { "Counters": { "on": "You", "counter": "+1/+1" } }
+                    }
+                  },
+                  "then": [{ "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }],
+                  "otherwise": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

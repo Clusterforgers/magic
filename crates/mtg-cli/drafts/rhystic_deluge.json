@@ -1,0 +1,20 @@
+{
+  "oracle_id": "d59cfff9-2bce-439a-9456-ae68eabbf67d",
+  "name": "Rhystic Deluge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rhystic Deluge",
+      "oracle_fingerprint": "1c15df9baabfe8c805962906cf913ea6",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{U}",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "Pay": { "who": { "ControllerOf": { "Target": 0 } }, "cost": "{1}" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

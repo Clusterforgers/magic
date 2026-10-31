@@ -1,0 +1,28 @@
+{
+  "oracle_id": "17df95b2-49ef-43ca-b3c8-66a270f457a7",
+  "name": "Rogue Kavu",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rogue Kavu",
+      "oracle_fingerprint": "5597001692810a5ad12866834bd99dab",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "AttacksAlone": { "what": ["This"] } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Attach": { "what": "This", "to": "This" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

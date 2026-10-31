@@ -1,0 +1,21 @@
+{
+  "oracle_id": "851be993-35d7-4566-96a0-3fe84d17979e",
+  "name": "Sanguine Sacrament",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sanguine Sacrament",
+      "oracle_fingerprint": "dc00a3b3fcee880b2cf065436c7050b3",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "GainLife": { "amount": { "Times": { "by": 2, "of": "X" } } } },
+              { "Move": { "what": "This", "to": { "Library": { "place": "Bottom" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

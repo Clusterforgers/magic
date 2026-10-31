@@ -1,0 +1,153 @@
+{
+  "object": "card",
+  "id": "ca940b4e-6f5e-4492-b6e0-dbf619eddadd",
+  "oracle_id": "7e6fd429-f925-4ff7-9c6e-34c2c9d15d04",
+  "multiverse_ids": [
+    209720
+  ],
+  "mtgo_id": 38311,
+  "mtgo_foil_id": 38312,
+  "tcgplayer_id": 36464,
+  "cardmarket_id": 242784,
+  "name": "Relic Putrescence",
+  "lang": "en",
+  "released_at": "2010-10-01",
+  "uri": "https://api.scryfall.com/cards/ca940b4e-6f5e-4492-b6e0-dbf619eddadd",
+  "scryfall_uri": "https://scryfall.com/card/som/77/relic-putrescence?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T11:22:08Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/c/a/ca940b4e-6f5e-4492-b6e0-dbf619eddadd.jpg?1783941728",
+    "normal": "https://cards.scryfall.io/normal/front/c/a/ca940b4e-6f5e-4492-b6e0-dbf619eddadd.jpg?1783941728",
+    "large": "https://cards.scryfall.io/large/front/c/a/ca940b4e-6f5e-4492-b6e0-dbf619eddadd.jpg?1783941728",
+    "png": "https://cards.scryfall.io/png/front/c/a/ca940b4e-6f5e-4492-b6e0-dbf619eddadd.png?1783941728",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/c/a/ca940b4e-6f5e-4492-b6e0-dbf619eddadd.jpg?1783941728",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/c/a/ca940b4e-6f5e-4492-b6e0-dbf619eddadd.jpg?1783941728",
+    "thumb": "https://cards.scryfall.io/thumb/front/c/a/ca940b4e-6f5e-4492-b6e0-dbf619eddadd.webp?1783941728",
+    "grid": "https://cards.scryfall.io/grid/front/c/a/ca940b4e-6f5e-4492-b6e0-dbf619eddadd.webp?1783941728",
+    "display": "https://cards.scryfall.io/display/front/c/a/ca940b4e-6f5e-4492-b6e0-dbf619eddadd.webp?1783941728",
+    "art": "https://cards.scryfall.io/art/front/c/a/ca940b4e-6f5e-4492-b6e0-dbf619eddadd.webp?1783941728",
+    "crop": "https://cards.scryfall.io/crop/front/c/a/ca940b4e-6f5e-4492-b6e0-dbf619eddadd.webp?1783941728",
+    "jpeg": "https://cards.scryfall.io/normal/front/c/a/ca940b4e-6f5e-4492-b6e0-dbf619eddadd.jpg?1783941728"
+  },
+  "mana_cost": "{2}{B}",
+  "cmc": 3.0,
+  "type_line": "Enchantment — Aura",
+  "oracle_text": "Enchant artifact\nWhenever enchanted artifact becomes tapped, its controller gets a poison counter.",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Enchant"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "470618f6-f67f-44c6-a086-285632508915",
+      "component": "combo_piece",
+      "name": "Poison Counter",
+      "type_line": "Card",
+      "uri": "https://api.scryfall.com/cards/470618f6-f67f-44c6-a086-285632508915"
+    },
+    {
+      "object": "related_card",
+      "id": "ca940b4e-6f5e-4492-b6e0-dbf619eddadd",
+      "component": "combo_piece",
+      "name": "Relic Putrescence",
+      "type_line": "Enchantment — Aura",
+      "uri": "https://api.scryfall.com/cards/ca940b4e-6f5e-4492-b6e0-dbf619eddadd"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "8f403072-9b22-4e69-8d59-22dc4c97fd8d",
+  "set": "som",
+  "set_name": "Scars of Mirrodin",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/8f403072-9b22-4e69-8d59-22dc4c97fd8d",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Asom&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/som?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/ca940b4e-6f5e-4492-b6e0-dbf619eddadd/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A7e6fd429-f925-4ff7-9c6e-34c2c9d15d04&unique=prints",
+  "collector_number": "77",
+  "digital": false,
+  "rarity": "common",
+  "watermark": "phyrexian",
+  "flavor_text": "\"Until we shed the curse of sentience, we must endure its grotesque handiwork.\"\n—Vorinclex, Voice of Hunger",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Allen Williams",
+  "artist_ids": [
+    "8a56d854-b424-45ec-9262-e993a382a961"
+  ],
+  "illustration_id": "a9b48566-9490-4a24-9e6b-08856e5d1eed",
+  "border_color": "black",
+  "frame": "2003",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 18309,
+  "prices": {
+    "usd": "0.24",
+    "usd_foil": "1.43",
+    "usd_etched": null,
+    "eur": "0.23",
+    "eur_foil": "0.31",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=209720&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DRelic%2BPutrescence",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DRelic%2BPutrescence",
+    "edhrec": "https://edhrec.com/route/?cc=Relic+Putrescence"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F36464%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=242784&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/38311?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

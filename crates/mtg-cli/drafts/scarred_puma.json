@@ -1,0 +1,26 @@
+{
+  "oracle_id": "e28e1921-797b-4e6e-8058-3929af46eeb5",
+  "name": "Scarred Puma",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Scarred Puma",
+      "oracle_fingerprint": "26818afa0515a71ecfde7aa6291c066e",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": ["CantAttack"],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Type": "Creature" }, { "AttackingPlayer": "You" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

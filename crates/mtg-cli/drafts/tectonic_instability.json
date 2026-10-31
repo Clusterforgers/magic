@@ -1,0 +1,30 @@
+{
+  "oracle_id": "0e68ee36-9649-490a-8483-fc8bdc23f161",
+  "name": "Tectonic Instability",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tectonic Instability",
+      "oracle_fingerprint": "ca02894a3df0ec6ea75ae51c3b235298",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": [{ "Type": "Land" }], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Tap": {
+                  "what": {
+                    "Each": [
+                      { "Subtype": "Land" },
+                      { "ControlledBy": { "ControllerOf": "Triggering" } }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

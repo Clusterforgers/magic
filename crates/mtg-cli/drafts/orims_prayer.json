@@ -1,0 +1,23 @@
+{
+  "oracle_id": "f387b1c6-25a6-4fff-90d3-fff027b247a5",
+  "name": "Orim's Prayer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Orim's Prayer",
+      "oracle_fingerprint": "ab05517a957e66c6db201b66021187ca",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Batch": { "AttacksPlayer": { "what": [{ "Type": "Creature" }], "at": "You" } }
+            },
+            "effects": [
+              { "GainLife": { "amount": { "Count": [{ "Type": "Creature" }, "Attacking"] } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

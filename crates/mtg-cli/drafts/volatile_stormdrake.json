@@ -1,0 +1,32 @@
+{
+  "oracle_id": "08d64b16-9221-4532-890c-d5cdbf181e28",
+  "name": "Volatile Stormdrake",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Volatile Stormdrake",
+      "oracle_fingerprint": "a70c8fefd674985dcd580e2b94a92c0f",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Hexproof" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              {
+                "ExchangeControl": {
+                  "what": [{ "Target": 0 }, { "Target": 0 }],
+                  "duration": "Forever"
+                }
+              },
+              { "PutCounters": { "on": "You", "counter": { "Other": "energy" }, "count": 4 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

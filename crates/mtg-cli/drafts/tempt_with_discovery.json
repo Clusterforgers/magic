@@ -1,0 +1,14 @@
+{
+  "oracle_id": "4baa6145-216e-476b-b178-aaaa1e633701",
+  "name": "Tempt with Discovery",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tempt with Discovery",
+      "oracle_fingerprint": "d270ecb1100e4396f832f2c1634dd972",
+      "abilities": [
+        { "Spell": { "effects": [{ "Search": { "filter": [{ "Type": "Land" }], "as": "land" } }] } }
+      ]
+    }
+  ]
+}

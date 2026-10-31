@@ -1,0 +1,36 @@
+{
+  "oracle_id": "867dbd5a-c3cf-41ce-980b-c9babc6f30f2",
+  "name": "Minas Morgul, Dark Fortress",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Minas Morgul, Dark Fortress",
+      "oracle_fingerprint": "fbe689b7182ee695e6d2e6215f28d8f5",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Black"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}{B}" }, "Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddSubtype": "Wraith" }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

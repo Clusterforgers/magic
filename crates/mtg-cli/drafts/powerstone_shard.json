@@ -1,0 +1,32 @@
+{
+  "oracle_id": "769c45ae-5d49-4815-944e-98790ad4efb0",
+  "name": "Powerstone Shard",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Powerstone Shard",
+      "oracle_fingerprint": "bb824e62ccde126f3140ab9f5708ae3c",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["Colorless"] },
+                  "times": {
+                    "Count": [
+                      { "Type": "Artifact" },
+                      { "ControlledBy": "You" },
+                      { "Named": "Powerstone Shard" }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

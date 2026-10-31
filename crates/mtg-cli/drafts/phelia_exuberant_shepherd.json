@@ -1,0 +1,51 @@
+{
+  "oracle_id": "5d86a59a-ba1f-45f7-b829-dca6f9f3e624",
+  "name": "Phelia, Exuberant Shepherd",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Phelia, Exuberant Shepherd",
+      "oracle_fingerprint": "fe175897f7401ef232372d93f6a3f6f9",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Not": { "Type": "Land" } }, { "Not": "Token" }, { "Not": "Other" }]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "Attacks": { "what": ["This"] } },
+                  "effects": [
+                    { "Move": { "what": { "Bound": "exiled" }, "to": { "Battlefield": {} } } },
+                    {
+                      "If": {
+                        "condition": {
+                          "Matches": {
+                            "subject": { "Bound": "exiled" },
+                            "selector": [{ "OwnedBy": "You" }]
+                          }
+                        },
+                        "then": [
+                          { "PutCounters": { "on": { "Bound": "exiled" }, "counter": "+1/+1" } }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "oracle_id": "7652f328-e142-494b-a869-772ced10c26a",
+  "name": "Sulfuric Vortex",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sulfuric Vortex",
+      "oracle_fingerprint": "2184c67b9552ff3265e36c599a78cb5f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "effects": [{ "DealDamage": { "to": "Triggering", "amount": 2 } }]
+          }
+        },
+        { "Replacement": { "when": { "LifeGain": {} }, "by": "Prevent" } }
+      ]
+    }
+  ]
+}

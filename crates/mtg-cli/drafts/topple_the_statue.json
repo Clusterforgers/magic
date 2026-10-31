@@ -1,0 +1,30 @@
+{
+  "oracle_id": "3883f5de-92bf-4692-80e5-f03365bf7112",
+  "name": "Topple the Statue",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Topple the Statue",
+      "oracle_fingerprint": "de299aed2c4e7d1f980b4ca9f0d6de88",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [] } }],
+            "effects": [
+              { "Tap": { "what": { "Target": 0 } } },
+              {
+                "If": {
+                  "condition": {
+                    "Matches": { "subject": { "Target": 0 }, "selector": [{ "Type": "Artifact" }] }
+                  },
+                  "then": [{ "Destroy": { "what": { "Target": 0 } } }]
+                }
+              },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

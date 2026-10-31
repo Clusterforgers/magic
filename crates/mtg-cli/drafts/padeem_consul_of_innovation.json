@@ -1,0 +1,37 @@
+{
+  "oracle_id": "0c7ba712-6a99-4d2f-9242-a2163a11f69c",
+  "name": "Padeem, Consul of Innovation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Padeem, Consul of Innovation",
+      "oracle_fingerprint": "fdefa904f8caa5b60debfe3d3a7ed18a",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Artifact" }, { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": "Hexproof" }, "AddAllCreatureTypes"]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Greatest": {
+                    "of": [{ "Type": "Artifact" }, { "ControlledBy": "You" }],
+                    "stat": "ManaValue"
+                  }
+                },
+                "op": "Ge",
+                "right": { "Greatest": { "of": [{ "Type": "Artifact" }], "stat": "ManaValue" } }
+              }
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

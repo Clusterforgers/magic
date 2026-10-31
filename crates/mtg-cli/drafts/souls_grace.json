@@ -1,0 +1,21 @@
+{
+  "oracle_id": "42946216-59e2-46dc-b770-5e604512f949",
+  "name": "Soul's Grace",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Soul's Grace",
+      "oracle_fingerprint": "10d29d525a291cce60c7a03fd0f135e3",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "GainLife": { "amount": { "Stat": { "of": { "Target": 0 }, "stat": "Power" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "oracle_id": "d1fc2549-40d5-41c8-b3ab-07ea13e9381d",
+  "name": "Reyav, Master Smith",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Reyav, Master Smith",
+      "oracle_fingerprint": "b6b79f63327697b29a2db3857786096d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Attacks": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "ControlledBy": "You" },
+                  { "HasAttached": [{ "Type": "Artifact" }, { "Type": "Enchantment" }] }
+                ]
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Triggering",
+                  "mods": [{ "AddKeyword": "DoubleStrike" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

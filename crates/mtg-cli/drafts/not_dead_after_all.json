@@ -1,0 +1,52 @@
+{
+  "oracle_id": "380c367f-73ea-485f-a37b-5af0ba160893",
+  "name": "Not Dead After All",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Not Dead After All",
+      "oracle_fingerprint": "73c521ae8ea029ecabfddcca1aca5cf4",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "GrantAbility": {
+                        "Triggered": {
+                          "when": {
+                            "ZoneChange": {
+                              "what": ["This"],
+                              "from": "Battlefield",
+                              "to": "Graveyard"
+                            }
+                          },
+                          "effects": [
+                            {
+                              "Move": {
+                                "what": "Triggering",
+                                "to": { "Battlefield": { "tapped": true } }
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    },
+                    { "ModifyPT": { "power": 1, "toughness": 1 } }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

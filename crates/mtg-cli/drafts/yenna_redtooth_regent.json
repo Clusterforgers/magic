@@ -1,0 +1,66 @@
+{
+  "oracle_id": "0adede77-5181-4190-8066-4797cefe0189",
+  "name": "Yenna, Redtooth Regent",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Yenna, Redtooth Regent",
+      "oracle_fingerprint": "fa5b2b36af598e202ebd5ab6df47ae17",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{2}{W}{G}" },
+              {
+                "TapPermanents": {
+                  "filter": [{ "ControlledBy": "You" }, { "Type": "Enchantment" }]
+                }
+              }
+            ],
+            "timing": "Sorcery",
+            "targets": [
+              { "what": { "Object": [{ "Type": "Enchantment" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "CopyOf": {
+                      "of": { "Target": 0 },
+                      "except": [{ "RemoveSupertype": "Legendary" }]
+                    }
+                  },
+                  "as": "token"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Matches": {
+                      "subject": { "Bound": "token" },
+                      "selector": [{ "Type": "Enchantment" }]
+                    }
+                  },
+                  "then": [{ "Untap": { "what": { "Bound": "token" } } }, { "Scry": {} }]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Not": {
+                      "Matches": {
+                        "subject": { "Bound": "token" },
+                        "selector": [{ "Type": "Enchantment" }]
+                      }
+                    }
+                  },
+                  "then": []
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

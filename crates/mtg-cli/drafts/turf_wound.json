@@ -1,0 +1,22 @@
+{
+  "oracle_id": "8dc48180-1482-40c4-8c5f-1724018e9c5b",
+  "name": "Turf Wound",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Turf Wound",
+      "oracle_fingerprint": "271a743f66936335a2f874eadd40cdf6",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              { "Rule": { "rule": { "CantDraw": { "Target": 0 } }, "duration": "UntilEndOfTurn" } },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

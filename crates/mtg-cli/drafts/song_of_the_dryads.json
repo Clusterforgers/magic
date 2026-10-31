@@ -1,0 +1,20 @@
+{
+  "oracle_id": "7c3944fa-7c86-4979-85a9-86196aa94594",
+  "name": "Song of the Dryads",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Song of the Dryads",
+      "oracle_fingerprint": "187753f70de49920bb3144113e390470",
+      "abilities": [
+        { "Keyword": { "Enchant": [] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "SetTypes": ["Land"] }, { "SetColors": [] }, "AddAllCreatureTypes"]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "oracle_id": "dd4cf149-2fae-40e5-b50b-639f6bcec65e",
+  "name": "Thousand-Year Storm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thousand-Year Storm",
+      "oracle_fingerprint": "c35562ace7b48d27171a93e5bf9c9698",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                "by": "You"
+              }
+            },
+            "effects": [
+              { "BecomeCopy": { "what": "Triggering", "of": "Triggering", "duration": "Forever" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

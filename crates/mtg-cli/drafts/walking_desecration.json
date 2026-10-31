@@ -1,0 +1,34 @@
+{
+  "oracle_id": "dab6de91-29c1-4bbc-987f-b0e613999d7f",
+  "name": "Walking Desecration",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Walking Desecration",
+      "oracle_fingerprint": "a2edd4f45bdc25270d46b6957dc72a4f",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{B}" },
+              {
+                "TapPermanents": {
+                  "filter": [{ "Targeting": [{ "ControlledBy": "You" }] }],
+                  "count": "X"
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Rule": {
+                  "rule": { "MustAttack": { "Each": [{ "Type": "Creature" }, "ChosenSubtype"] } },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

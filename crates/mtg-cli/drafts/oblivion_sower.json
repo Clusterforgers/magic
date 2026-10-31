@@ -1,0 +1,38 @@
+{
+  "oracle_id": "d39b9f64-dc9b-413f-8d05-e21ef46d6756",
+  "name": "Oblivion Sower",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Oblivion Sower",
+      "oracle_fingerprint": "840cdf25c6d492b88e729e96e3f4b167",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Is": "This" }], "by": "You" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              { "ExileTop": { "who": { "Target": 0 }, "count": 4, "as": "exiled" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Is": { "Bound": "exiled" } },
+                      { "OwnedBy": { "Target": 0 } },
+                      { "Type": "Land" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "card"
+                }
+              },
+              {
+                "Move": { "what": { "Bound": "card" }, "to": { "Battlefield": { "under": "You" } } }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

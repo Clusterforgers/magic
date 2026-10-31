@@ -1,0 +1,47 @@
+{
+  "oracle_id": "5a61d51e-1a3f-49f6-9a94-a708dd6f69df",
+  "name": "Waiting in the Weeds",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Waiting in the Weeds",
+      "oracle_fingerprint": "68ca38c1190a92ab242549a004633223",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "player",
+                  "effects": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Cat",
+                            "types": ["Creature"],
+                            "subtypes": ["Cat"],
+                            "power": 1,
+                            "toughness": 1
+                          }
+                        },
+                        "count": {
+                          "Count": [
+                            { "Subtype": "Forest" },
+                            { "ControlledBy": { "Bound": "player" } },
+                            { "Not": "Tapped" }
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

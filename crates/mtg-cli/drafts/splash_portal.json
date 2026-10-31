@@ -1,0 +1,40 @@
+{
+  "oracle_id": "29b537f5-4d9f-40ed-b38b-e8faa2b5af7d",
+  "name": "Splash Portal",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Splash Portal",
+      "oracle_fingerprint": "fef4b31c20c0fe4c55ca0ed71dfc5e43",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "gone" } },
+              { "Move": { "what": { "Bound": "gone" }, "to": { "Battlefield": {} } } },
+              {
+                "If": {
+                  "condition": {
+                    "Matches": {
+                      "subject": { "Target": 0 },
+                      "selector": [
+                        { "Subtype": "Bird" },
+                        { "Subtype": "Frog" },
+                        { "Subtype": "Otter" },
+                        { "Subtype": "Rat" }
+                      ]
+                    }
+                  },
+                  "then": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

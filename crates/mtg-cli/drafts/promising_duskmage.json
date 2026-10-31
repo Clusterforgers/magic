@@ -1,0 +1,20 @@
+{
+  "oracle_id": "44958014-7e30-4e70-9aef-b148843f9c45",
+  "name": "Promising Duskmage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Promising Duskmage",
+      "oracle_fingerprint": "feb02b7035bd16388c039929d46b35db",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Graveyard" } },
+            "if": { "Matches": { "subject": "This", "selector": [{ "HasCounter": "+1/+1" }] } },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

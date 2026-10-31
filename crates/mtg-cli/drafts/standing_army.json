@@ -1,0 +1,20 @@
+{
+  "oracle_id": "ae4725e4-7455-4aa7-9360-81e957d7afa8",
+  "name": "Standing Army",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Standing Army",
+      "oracle_fingerprint": "83d340d9b429288c901f0109fc68dca8",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Vigilance" }],
+            "condition": { "Step": "Cleanup" }
+          }
+        }
+      ]
+    }
+  ]
+}

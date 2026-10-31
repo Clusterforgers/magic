@@ -1,0 +1,18 @@
+{
+  "oracle_id": "da790c72-63e7-4955-9435-d073767f9bb5",
+  "name": "Oversoul of Dusk",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Oversoul of Dusk",
+      "oracle_fingerprint": "6bcae98d70ab3cca459e92b6cb785746",
+      "abilities": [
+        {
+          "Keyword": {
+            "Protection": [{ "Color": "Blue" }, { "Color": "Black" }, { "Color": "Red" }]
+          }
+        }
+      ]
+    }
+  ]
+}

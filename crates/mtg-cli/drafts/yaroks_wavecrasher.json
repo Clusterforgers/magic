@@ -1,0 +1,35 @@
+{
+  "oracle_id": "30868d69-2ba3-4373-9d47-4bc8978f35d1",
+  "name": "Yarok's Wavecrasher",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Yarok's Wavecrasher",
+      "oracle_fingerprint": "3b2b6bdd6dc6b6c996acf6dda5a32eac",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "ReturnToHand": { "filter": ["Other", { "Type": "Creature" }] } }]
+                }
+              },
+              {
+                "Pay": {
+                  "cost": [{ "ReturnToHand": { "filter": ["Other", { "Type": "Creature" }] } }]
+                }
+              },
+              {
+                "Pay": {
+                  "cost": [{ "ReturnToHand": { "filter": ["Other", { "Type": "Creature" }] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

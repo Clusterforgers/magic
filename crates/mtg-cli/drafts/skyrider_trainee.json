@@ -1,0 +1,20 @@
+{
+  "oracle_id": "d8b6d9be-11a6-402c-a847-ec6cababe560",
+  "name": "Skyrider Trainee",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Skyrider Trainee",
+      "oracle_fingerprint": "37da7e160eb5e4be3c8d11cf40172931",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Flying" }],
+            "condition": { "Any": ["IsDay"] }
+          }
+        }
+      ]
+    }
+  ]
+}

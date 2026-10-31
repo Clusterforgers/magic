@@ -1,0 +1,20 @@
+{
+  "oracle_id": "9b5cfbb7-21ed-491d-b77d-547e4d30a7da",
+  "name": "Phyrexian Vindicator",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Phyrexian Vindicator",
+      "oracle_fingerprint": "fbf8bf27707cd1db96f457958e9eb9a6",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Replacement": {
+            "when": { "Damage": { "to": "This" } },
+            "by": { "PreventAnd": [{ "DealDamage": { "to": "Chosen", "amount": "Triggering" } }] }
+          }
+        }
+      ]
+    }
+  ]
+}

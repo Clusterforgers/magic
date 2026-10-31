@@ -1,0 +1,26 @@
+{
+  "oracle_id": "68b41a04-8cb0-4edf-b488-a219494453ae",
+  "name": "Varragoth, Bloodsky Sire",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Varragoth, Bloodsky Sire",
+      "oracle_fingerprint": "26b8f43848e70fae75b931b9785dfe6a",
+      "abilities": [
+        { "Keyword": "Deathtouch" },
+        {
+          "Activated": {
+            "cost": "{1}{B}",
+            "limit": "OncePerTurn",
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              { "Search": { "who": { "Target": 0 }, "filter": [], "as": "card" } },
+              { "Shuffle": {} },
+              { "Move": { "what": { "Bound": "card" }, "to": { "Library": { "place": "Top" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

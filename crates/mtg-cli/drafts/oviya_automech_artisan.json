@@ -1,0 +1,67 @@
+{
+  "oracle_id": "b01649b8-b0b5-4cf6-aea7-291f3407859e",
+  "name": "Oviya, Automech Artisan",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Oviya, Automech Artisan",
+      "oracle_fingerprint": "e1f4eb7b2f562e2dc05d65d5b8ce5f6a",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [{ "HasKeyword": { "Typecycling": { "find": [], "cost": "{G}" } } }]
+            },
+            "mods": [{ "AddKeyword": "Trample" }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{G}" }, "Tap"],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "In": "Hand" },
+                            { "OwnedBy": "You" },
+                            { "AnyOf": [{ "Type": "Creature" }, { "Subtype": "Vehicle" }] }
+                          ]
+                        },
+                        "as": "card",
+                        "rest_as": "artifact"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "card" }, "to": { "Battlefield": {} } } },
+                    {
+                      "If": {
+                        "condition": {
+                          "Matches": {
+                            "subject": { "Bound": "card" },
+                            "selector": [{ "Is": "This" }]
+                          }
+                        },
+                        "then": [
+                          {
+                            "PutCounters": {
+                              "on": { "Bound": "card" },
+                              "counter": "+1/+1",
+                              "count": 2
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

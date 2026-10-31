@@ -1,0 +1,35 @@
+{
+  "oracle_id": "f0b4331b-ddd3-4f11-ba16-67c651c8954c",
+  "name": "Solemnity",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Solemnity",
+      "oracle_fingerprint": "797d164ad06e173f20a649e996dc49db",
+      "abilities": [
+        { "Replacement": { "when": { "CountersPut": { "on": "EachPlayer" } }, "by": "Prevent" } },
+        {
+          "Replacement": {
+            "when": { "CountersPut": {} },
+            "by": "Prevent",
+            "condition": {
+              "Matches": {
+                "subject": "This",
+                "selector": [
+                  {
+                    "AnyOf": [
+                      { "Type": "Artifact" },
+                      { "Type": "Creature" },
+                      { "Type": "Enchantment" },
+                      { "Type": "Land" }
+                    ]
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
