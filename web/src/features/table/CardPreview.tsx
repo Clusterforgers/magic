@@ -2,6 +2,7 @@ import { Play, X } from 'lucide-react'
 import { useEffect } from 'react'
 import { usePlay } from '@/features/game/gameContext'
 import { Button } from '@/components/ui/button'
+import { BY_HAND_TITLE } from '@/lib/byHand'
 import { cn } from '@/lib/utils'
 import { abilityText, costText, keywordLine, powerToughness, statusWords, typeLine } from './cardModel'
 import { ManaPreviewLine } from './ManaStrip'
@@ -20,6 +21,7 @@ import {
   pairLine,
   zoneText,
 } from './previewText'
+import { clausesOf } from './manual/clauses'
 import { useCardMark } from './prompt/marks'
 import { noteName, revealedLine, revealedPlace } from './revealed'
 import { combatRoleIn } from './selectors'
@@ -90,6 +92,7 @@ function PreviewBody({ target }: { target: PreviewTarget }) {
   const pt = powerToughness(object)
   const keywords = keywordLine(object)
   const activated = activatedLines(object, note?.usable)
+  const manual = clausesOf(object)
   const status = statusWords(object, role)
   const hosted = hostLine(object, links.host)
   const paired = pairLine(links.partner)
@@ -131,7 +134,7 @@ function PreviewBody({ target }: { target: PreviewTarget }) {
         {pt === null ? null : <p>Power/toughness {pt}</p>}
         {keywords === null ? null : <p data-slot="preview-keywords">Keywords: {keywords}</p>}
         {object.abilities.length === 0 ? (
-          activated.length === 0 ? (
+          activated.length === 0 && manual.length === 0 ? (
             <p className="text-muted-foreground">No abilities.</p>
           ) : null
         ) : (
@@ -142,6 +145,16 @@ function PreviewBody({ target }: { target: PreviewTarget }) {
           </ul>
         )}
         <ManaPreviewLine object={object} />
+        {manual.length === 0 ? null : (
+          <div data-slot="preview-by-hand">
+            <p className="font-medium">{BY_HAND_TITLE}:</p>
+            <ul aria-label={BY_HAND_TITLE} className="grid gap-0.5">
+              {manual.map((clause, index) => (
+                <li key={index}>{clause.text}</li>
+              ))}
+            </ul>
+          </div>
+        )}
         {activated.length === 0 ? null : (
           <ul aria-label="Activated abilities" data-slot="preview-activated" className="grid gap-0.5">
             {activated.map((line) => (

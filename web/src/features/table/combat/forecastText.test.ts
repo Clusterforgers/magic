@@ -17,6 +17,7 @@ const CREATURES: Record<number, string> = {
   4: 'your Goblin',
   5: "Cy's Wall",
   9: "Bo's Jace",
+  10: "cy_42's Elf",
 }
 const PLAYERS = ['you', 'Bo', 'Cy']
 
@@ -67,6 +68,11 @@ describe('forecastSentences', () => {
         }),
       ]),
       ['Your Grizzly Bears is unblocked and would deal 2 damage to Bo.'],
+    ],
+    [
+      'an attacker of a player whose name starts lower case, which keeps its spelling',
+      forecast([attack({ attacker: 10, deals: [{ source: 10, target: { Player: 0 }, amount: 1 }] })]),
+      ["cy_42's Elf is unblocked and would deal 1 damage to you."],
     ],
     [
       'an unblocked attacker with no power',
