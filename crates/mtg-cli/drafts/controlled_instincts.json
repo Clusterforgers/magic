@@ -1,0 +1,22 @@
+{
+  "oracle_id": "7d56d2e2-e83b-4505-af8e-1fd207e161af",
+  "name": "Controlled Instincts",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Controlled Instincts",
+      "oracle_fingerprint": "e89490027363938ad7badc7fcc415cdf",
+      "abilities": [
+        {
+          "Keyword": {
+            "Enchant": [
+              { "Type": "Creature" },
+              { "AnyOf": [{ "Color": "Red" }, { "Color": "Green" }] }
+            ]
+          }
+        },
+        { "Static": { "affected": "Attached", "mods": ["DoesntUntap"] } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "oracle_id": "5f7f133e-58ea-41ab-b1be-be4b400fac4c",
+  "name": "Coat of Arms",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Coat of Arms",
+      "oracle_fingerprint": "496433d0c786c31d7329cd64c8145701",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": {
+                    "Count": [{ "Type": "Creature" }, { "SharesSubtype": "This" }, "Other"]
+                  },
+                  "toughness": {
+                    "Count": [{ "Type": "Creature" }, { "SharesSubtype": "This" }, "Other"]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "oracle_id": "d11e627b-8a48-411d-a261-2c9a02a758ba",
+  "name": "Breena, the Demagogue",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Breena, the Demagogue",
+      "oracle_fingerprint": "e68c81863eacfd9bc03381d17936f524",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "AttacksPlayer": { "what": [{ "Type": "Creature" }], "at": "Opponents" } },
+            "if": {
+              "Matches": {
+                "subject": "Triggering",
+                "selector": [
+                  { "Compare": { "stat": "Toughness", "op": "Gt", "to": "LifeLostThisWay" } },
+                  "This"
+                ]
+              }
+            },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              { "Draw": { "who": "Triggering" } },
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1", "count": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

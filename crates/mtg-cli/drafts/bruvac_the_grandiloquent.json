@@ -1,0 +1,16 @@
+{
+  "oracle_id": "274b999f-f193-48fd-9a4a-0fdaf535e6c3",
+  "name": "Bruvac the Grandiloquent",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bruvac the Grandiloquent",
+      "oracle_fingerprint": "6abaeed91c745c1e3121388bb932ea12",
+      "abilities": [
+        {
+          "Replacement": { "when": { "LifeGain": { "who": "Opponents" } }, "by": { "Multiply": 2 } }
+        }
+      ]
+    }
+  ]
+}

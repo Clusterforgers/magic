@@ -1,0 +1,39 @@
+{
+  "oracle_id": "81686da0-85fc-4938-962b-24443de3ada1",
+  "name": "Crush Underfoot",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Crush Underfoot",
+      "oracle_fingerprint": "1f4b2c3e5b9c3cbc00a98131d25d3433",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "ControlledBy": "You" },
+                      { "Subtype": "Giant" },
+                      { "Type": "Creature" }
+                    ]
+                  },
+                  "as": "creature"
+                }
+              },
+              {
+                "DealDamage": {
+                  "source": { "Bound": "creature" },
+                  "to": { "Target": 0 },
+                  "amount": { "Stat": { "of": { "Bound": "creature" }, "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

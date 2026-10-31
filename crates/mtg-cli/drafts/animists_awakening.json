@@ -1,0 +1,47 @@
+{
+  "oracle_id": "6f1bfe50-b61a-4fdd-963c-40d59117bdf4",
+  "name": "Animist's Awakening",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Animist's Awakening",
+      "oracle_fingerprint": "425cb466bb9844e72e239c95e00123fb",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "LookAtTop": { "count": "X", "as": "top" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [{ "In": "Library" }, { "Is": { "Bound": "top" } }, { "Type": "Land" }]
+                  },
+                  "count": {
+                    "min": {
+                      "Count": [
+                        { "In": "Library" },
+                        { "Is": { "Bound": "top" } },
+                        { "Type": "Land" }
+                      ]
+                    },
+                    "max": 1
+                  },
+                  "as": "kept"
+                }
+              },
+              {
+                "Move": { "what": { "Bound": "kept" }, "to": { "Battlefield": { "tapped": true } } }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

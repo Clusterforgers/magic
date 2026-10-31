@@ -1,0 +1,138 @@
+{
+  "object": "card",
+  "id": "233f4a05-057b-48f4-8f56-8d4a060a40e4",
+  "oracle_id": "77eda626-5cef-496d-b291-cfa1ee6fc1fb",
+  "multiverse_ids": [],
+  "resource_id": "2FE7FA7EE014B169F6EA76F276C83441C57FCEC7C1D47B9212011FF146681610",
+  "mtgo_id": 144824,
+  "arena_id": 97447,
+  "tcgplayer_id": 660572,
+  "cardmarket_id": 855721,
+  "name": "Cycle of Renewal",
+  "lang": "en",
+  "released_at": "2025-11-21",
+  "uri": "https://api.scryfall.com/cards/233f4a05-057b-48f4-8f56-8d4a060a40e4",
+  "scryfall_uri": "https://scryfall.com/card/tla/170/cycle-of-renewal?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T01:09:07Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/2/3/233f4a05-057b-48f4-8f56-8d4a060a40e4.jpg?1783904947",
+    "normal": "https://cards.scryfall.io/normal/front/2/3/233f4a05-057b-48f4-8f56-8d4a060a40e4.jpg?1783904947",
+    "large": "https://cards.scryfall.io/large/front/2/3/233f4a05-057b-48f4-8f56-8d4a060a40e4.jpg?1783904947",
+    "png": "https://cards.scryfall.io/png/front/2/3/233f4a05-057b-48f4-8f56-8d4a060a40e4.png?1783904947",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/2/3/233f4a05-057b-48f4-8f56-8d4a060a40e4.jpg?1783904947",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/2/3/233f4a05-057b-48f4-8f56-8d4a060a40e4.jpg?1783904947",
+    "thumb": "https://cards.scryfall.io/thumb/front/2/3/233f4a05-057b-48f4-8f56-8d4a060a40e4.webp?1783904947",
+    "grid": "https://cards.scryfall.io/grid/front/2/3/233f4a05-057b-48f4-8f56-8d4a060a40e4.webp?1783904947",
+    "display": "https://cards.scryfall.io/display/front/2/3/233f4a05-057b-48f4-8f56-8d4a060a40e4.webp?1783904947",
+    "art": "https://cards.scryfall.io/art/front/2/3/233f4a05-057b-48f4-8f56-8d4a060a40e4.webp?1783904947",
+    "crop": "https://cards.scryfall.io/crop/front/2/3/233f4a05-057b-48f4-8f56-8d4a060a40e4.webp?1783904947",
+    "jpeg": "https://cards.scryfall.io/normal/front/2/3/233f4a05-057b-48f4-8f56-8d4a060a40e4.jpg?1783904947"
+  },
+  "mana_cost": "{2}{G}",
+  "cmc": 3.0,
+  "type_line": "Instant — Lesson",
+  "oracle_text": "Sacrifice a land. Search your library for up to two basic land cards, put them onto the battlefield tapped, then shuffle.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "legal",
+    "future": "legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "arena",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "118f7e64-5caa-4cb7-99a8-184f4d3a7422",
+  "set": "tla",
+  "set_name": "Avatar: The Last Airbender",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/118f7e64-5caa-4cb7-99a8-184f4d3a7422",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Atla&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/tla?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/233f4a05-057b-48f4-8f56-8d4a060a40e4/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A77eda626-5cef-496d-b291-cfa1ee6fc1fb&unique=prints",
+  "collector_number": "170",
+  "digital": false,
+  "rarity": "common",
+  "flavor_text": "\"These acorns are everywhere, Aang. That means the forest will grow back.\"\n—Katara",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Jocelin Carmes",
+  "artist_ids": [
+    "473a83a0-540d-41a3-ad45-126fa6813306"
+  ],
+  "illustration_id": "cbab1e34-600d-48ab-b131-66b1082fc446",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "lesson"
+  ],
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 1894,
+  "penny_rank": 7654,
+  "prices": {
+    "usd": "0.28",
+    "usd_foil": "0.39",
+    "usd_etched": null,
+    "eur": "0.09",
+    "eur_foil": "0.18",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DCycle%2Bof%2BRenewal",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DCycle%2Bof%2BRenewal",
+    "edhrec": "https://edhrec.com/route/?cc=Cycle+of+Renewal"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F660572%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=855721&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/144824?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

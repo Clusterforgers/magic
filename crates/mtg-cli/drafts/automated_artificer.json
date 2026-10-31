@@ -1,0 +1,26 @@
+{
+  "oracle_id": "600e1093-5619-49b3-b193-bd263e4fde33",
+  "name": "Automated Artificer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Automated Artificer",
+      "oracle_fingerprint": "920b4a3c538b78387f94a3e6c61dacee",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["Colorless"] },
+                  "only": [{ "Spell": { "types": ["Artifact"] } }, { "Ability": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "oracle_id": "b2aabfaf-5996-4b41-987a-6bd941f6ae88",
+  "name": "Bloodscent",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bloodscent",
+      "oracle_fingerprint": "d9c0a615e0a55531a191313b70df4626",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Rule": { "rule": { "MustBlock": { "Target": 0 } }, "duration": "UntilEndOfTurn" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

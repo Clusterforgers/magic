@@ -1,0 +1,20 @@
+{
+  "oracle_id": "19d8937e-23fb-4758-a306-0e7af9bb44c4",
+  "name": "Aettir and Priwen",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Aettir and Priwen",
+      "oracle_fingerprint": "cda4854c07311f0d51214d40c74c0c54",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "SetPT": { "power": { "Life": "You" }, "toughness": { "Life": "You" } } }]
+          }
+        },
+        { "Keyword": { "Equip": "{5}" } }
+      ]
+    }
+  ]
+}

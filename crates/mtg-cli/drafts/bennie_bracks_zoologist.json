@@ -1,0 +1,27 @@
+{
+  "oracle_id": "17bd7ef7-8b4b-4a2d-a667-c751e10e2a47",
+  "name": "Bennie Bracks, Zoologist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bennie Bracks, Zoologist",
+      "oracle_fingerprint": "43e487721318ae683effe38602321a76",
+      "abilities": [
+        { "Keyword": "Convoke" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "CreaturesDied" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}
