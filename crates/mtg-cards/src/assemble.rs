@@ -87,7 +87,9 @@ pub fn assemble(printed: &PrintedCard, rules: Option<&Card>, caps: &Caps) -> Ass
         definition
             .abilities
             .extend(intrinsic_abilities(&definition));
-        definition.rules.extend(siege_rules(&definition));
+        if attach {
+            definition.rules.extend(siege_rules(&definition));
+        }
         if attach && let Some(face) = rules.and_then(|card| card.faces.get(index)) {
             let runs = |ability: &&Ability| caps.missing(&used_primitives(ability)).is_empty();
             for lowered in face.abilities.iter().filter(runs).filter_map(lower) {
@@ -774,8 +776,9 @@ const SIEGE_PROTECTOR: &str =
 const SIEGE_DEFEATED: &str = r#"{"Triggered":{"when":{"CountersRemoved":{"what":["This"],"counter":{"Other":"defense"}}},"if":{"Compare":{"left":{"Counters":{"on":"This","counter":{"Other":"defense"}}},"op":"Eq","right":0}},"effects":[{"Exile":{"what":"This","as":"siege"}},{"CastFromZone":{"what":{"Bound":"siege"},"free":true,"transformed":true}}]}}"#;
 
 /// The rules a Siege has by its subtype (CR 310.11): the protector it enters with and what its defeat does. The reminder
-/// text of the card says so, and no rules file repeats them.
-fn siege_rules(definition: &CardDefinition) -> Vec<Arc<Ability>> {
+/// text of the card says so, and no rules file repeats them; like the rules of a file they are attached to a card the
+/// engine plays whole.
+pub fn siege_rules(definition: &CardDefinition) -> Vec<Arc<Ability>> {
     let siege = definition.is_type(CardType::Battle)
         && definition
             .subtypes

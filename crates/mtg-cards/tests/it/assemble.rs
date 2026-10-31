@@ -264,11 +264,12 @@ fn rules_are_attached_only_when_the_support_record_says_the_engine_runs_them() {
                     shown.layout == mtg_cards::definition::Layout::Split
                         && matches!(**r, mtg_cards::ability::Ability::Spell { .. })
                 };
+                // A Siege has the rules of its subtype besides those of its file (CR 310.11).
+                let siege = mtg_cards::assemble::siege_rules(shown);
                 assert!(
-                    shown
-                        .rules
-                        .iter()
-                        .all(|r| fused(r) || lowered.contains(&Lowered::Rules(r.clone()))),
+                    shown.rules.iter().all(|r| fused(r)
+                        || siege.contains(r)
+                        || lowered.contains(&Lowered::Rules(r.clone()))),
                     "{}: carries more rules than it has",
                     record.name
                 );
