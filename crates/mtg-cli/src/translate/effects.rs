@@ -1,0 +1,184 @@
+//! Effects: the chain of an ability line and its sub-abilities, and the verbs that act on players (damage, life, cards).
+
+use serde_json::{Value, json};
+
+use super::amount::amount;
+use super::ctx::{Ctx, Tr, only, unmapped};
+use super::valid::{defined, subject};
+use super::{effects_obj, effects_zone, tokens};
+use crate::forge::script::Params;
+
+/// The effects of an ability line and of the sub-abilities it names, in order.
+pub fn chain(ctx: &mut Ctx, params: &Params) -> Tr<Vec<Value>> {
+    chain_at(ctx, params, true)
+}
+
+/// The effects of a line and of the sub-abilities after it. A part that is not the ability itself (`top`) and has a cost
+/// is paid as it resolves: its effects and those after it happen if the cost is paid.
+pub fn chain_at(ctx: &mut Ctx, p: &Params, top: bool) -> Tr<Vec<Value>> {
+    let mut effects = line(ctx, p)?;
+    if let Some(name) = p.get("SubAbility") {
+        let next = ctx.sub(name)?;
+        effects.extend(chain_at(ctx, &next, false)?);
+    }
+    match p.get("Cost") {
+        Some(text) if !top => {
+            let cost = super::cost::cost(ctx, text)?;
+            Ok(vec![json!({"Pay": {"cost": cost, "paid": effects}})])
+        }
+        _ => Ok(effects),
+    }
+}
+
+/// The API a line names.
+fn api_of(params: &Params) -> Tr<&str> {
+    ["SP", "AB", "DB"]
+        .into_iter()
+        .find_map(|head| params.get(head))
+        .map_or_else(|| unmapped("line:no-api"), Ok)
+}
+
+/// The effects of one line, without its sub-abilities.
+fn line(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
+    let api = api_of(p)?;
+    let one = |value: Tr<Value>| value.map(|value| vec![value]);
+    match api {
+        "DealDamage" => one(deal_damage(ctx, p)),
+        "Draw" => one(draw(ctx, p)),
+        "GainLife" => one(life(ctx, p, "GainLife")),
+        "LoseLife" => one(life(ctx, p, "LoseLife")),
+        "Discard" => one(discard(ctx, p)),
+        "Mill" => one(count_verb(ctx, p, "Mill", "NumCards")),
+        "Scry" => one(count_verb(ctx, p, "Scry", "ScryNum")),
+        "Surveil" => one(count_verb(ctx, p, "Surveil", "Amount")),
+        "Proliferate" => one(proliferate(p)),
+        "Cleanup" => cleanup(p),
+        "Charm" => one(charm(ctx, p)),
+        "Destroy" | "DestroyAll" | "Counter" | "Pump" | "PumpAll" | "PutCounter" | "RemoveCounter"
+        | "Tap" | "Untap" | "TapAll" | "UntapAll" | "Sacrifice" | "Regenerate" | "Fight"
+        | "GainControl" | "DamageAll" | "SacrificeAll" => effects_obj::effects(ctx, p, api),
+        "ChangeZone" | "ChangeZoneAll" => effects_zone::effects(ctx, p, api),
+        "Token" | "Mana" | "Investigate" => tokens::effects(ctx, p, api),
+        other => unmapped(format!("effect:{other}")),
+    }
+}
+
+/// `Cleanup`: bookkeeping of remembered objects, which the translator does not use.
+fn cleanup(p: &Params) -> Tr<Vec<Value>> {
+    only(
+        p,
+        "Cleanup",
+        &["ClearRemembered", "ClearImprinted", "ClearTriggered"],
+    )?;
+    Ok(Vec::new())
+}
+
+fn deal_damage(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
+    only(
+        p,
+        "DealDamage",
+        &[
+            "NumDmg", "ValidTgts", "Defined", "TargetMin", "TargetMax", "DamageSource",
+            "DividedAsYouChoose",
+        ],
+    )?;
+    let to = subject(ctx, p, "Self", None)?;
+    let amount = if p.has("DividedAsYouChoose") {
+        json!("Divided")
+    } else {
+        amount(ctx, p.get("NumDmg").unwrap_or("1"))?
+    };
+    let mut effect = json!({"to": to, "amount": amount});
+    if let Some(source) = p.get("DamageSource") {
+        effect["source"] = defined(ctx, source)?;
+    }
+    Ok(json!({ "DealDamage": effect }))
+}
+
+/// The player of a line: its target or `Defined$` word, `You` when it has neither.
+fn player(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
+    subject(ctx, p, "You", None)
+}
+
+fn draw(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
+    only(
+        p,
+        "Draw",
+        &["NumCards", "Defined", "ValidTgts", "TargetMin", "TargetMax"],
+    )?;
+    let who = player(ctx, p)?;
+    let count = amount(ctx, p.get("NumCards").unwrap_or("1"))?;
+    Ok(json!({"Draw": {"who": who, "count": count}}))
+}
+
+fn life(ctx: &mut Ctx, p: &Params, verb: &str) -> Tr<Value> {
+    only(
+        p,
+        verb,
+        &["LifeAmount", "Defined", "ValidTgts", "TargetMin", "TargetMax"],
+    )?;
+    let who = player(ctx, p)?;
+    let amount = amount(ctx, p.get("LifeAmount").unwrap_or("1"))?;
+    Ok(json!({ verb: {"who": who, "amount": amount} }))
+}
+
+fn discard(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
+    only(
+        p,
+        "Discard",
+        &["NumCards", "Defined", "ValidTgts", "Mode", "TargetMin", "TargetMax"],
+    )?;
+    let random = match p.get("Mode") {
+        None | Some("TgtChoose") => false,
+        Some("Random") => true,
+        Some(other) => return unmapped(format!("key:Discard.Mode={other}")),
+    };
+    let who = player(ctx, p)?;
+    let count = amount(ctx, p.get("NumCards").unwrap_or("1"))?;
+    Ok(json!({"Discard": {"who": who, "count": count, "random": random}}))
+}
+
+/// A verb of a player and a count: mill, scry, surveil.
+fn count_verb(ctx: &mut Ctx, p: &Params, verb: &str, key: &str) -> Tr<Value> {
+    only(
+        p,
+        verb,
+        &[key, "Defined", "ValidTgts", "TargetMin", "TargetMax"],
+    )?;
+    let who = player(ctx, p)?;
+    let count = amount(ctx, p.get(key).unwrap_or("1"))?;
+    Ok(json!({ verb: {"who": who, "count": count} }))
+}
+
+/// `Charm`: a modal spell or ability whose modes are the named parts of `Choices$`, each with targets of its own.
+fn charm(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
+    only(p, "Charm", &["Choices", "CharmNum", "MinCharmNum"])?;
+    let Some(choices) = p.get("Choices") else {
+        return unmapped("key:Charm.no-Choices");
+    };
+    let outer = std::mem::take(&mut ctx.targets);
+    let mut modes = Vec::new();
+    for name in choices.split(',') {
+        let part = ctx.sub(name)?;
+        let effects = chain_at(ctx, &part, true)?;
+        let mut mode = json!({ "effects": effects });
+        if !ctx.targets.is_empty() {
+            mode["targets"] = Value::Array(std::mem::take(&mut ctx.targets));
+        }
+        modes.push(mode);
+    }
+    ctx.targets = outer;
+    let max = p.get("CharmNum").unwrap_or("1");
+    let min = p.get("MinCharmNum").unwrap_or(max);
+    let (min, max) = (amount(ctx, min)?, amount(ctx, max)?);
+    let mut modal = json!({ "modes": modes });
+    if (&min, &max) != (&json!(1), &json!(1)) {
+        modal["choose"] = json!({"min": min, "max": max});
+    }
+    Ok(json!({ "Modal": modal }))
+}
+
+fn proliferate(p: &Params) -> Tr<Value> {
+    only(p, "Proliferate", &[])?;
+    Ok(json!({"Proliferate": {}}))
+}

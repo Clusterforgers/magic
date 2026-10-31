@@ -26,6 +26,7 @@ pub mod popularity;
 pub mod progress;
 pub mod propose;
 pub mod status;
+pub mod translate;
 pub mod w19b_pairs;
 pub mod w2a_promote;
 
@@ -122,6 +123,14 @@ pub async fn run(cli: Cli, progress: Progress) -> Result<String, CliError> {
         Command::ForgeCheck(args) => {
             let db = connect(cli.database_url).await?;
             forge::forge_check(&db, &args).await
+        }
+        Command::TranslateForge(args) => {
+            let db = if args.stored {
+                Some(connect(cli.database_url).await?)
+            } else {
+                None
+            };
+            translate::translate_forge(&cache, db.as_ref(), &args).await
         }
         Command::Coverage(args) => {
             let db = connect(cli.database_url).await?;

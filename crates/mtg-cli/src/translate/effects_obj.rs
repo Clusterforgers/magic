@@ -1,0 +1,222 @@
+//! Effects on objects: destroy, counter, pump, counters, tap, sacrifice, fight and gain control.
+
+use serde_json::{Value, json};
+
+use super::amount::{amount, counter_kind};
+use super::ctx::{Ctx, Tr, only, unmapped};
+use super::keyword::keyword_list;
+use super::valid::{defined, selector_any, subject};
+use crate::forge::script::Params;
+
+/// The effects of a verb on objects.
+pub fn effects(ctx: &mut Ctx, p: &Params, api: &str) -> Tr<Vec<Value>> {
+    let one = |value: Tr<Value>| value.map(|value| vec![value]);
+    match api {
+        "Destroy" => one(destroy(ctx, p)),
+        "DestroyAll" => one(destroy_all(ctx, p)),
+        "DamageAll" => one(damage_all(ctx, p)),
+        "Counter" => one(counter(ctx, p)),
+        "Pump" => pump(ctx, p),
+        "PumpAll" => pump_all(ctx, p),
+        "PutCounter" => one(put_counter(ctx, p)),
+        "RemoveCounter" => one(remove_counter(ctx, p)),
+        "Tap" => one(simple(ctx, p, "Tap", "Tap")),
+        "Untap" => one(simple(ctx, p, "Untap", "Untap")),
+        "Regenerate" => one(simple(ctx, p, "Regenerate", "Regenerate")),
+        "TapAll" => one(all_of(ctx, p, "Tap")),
+        "UntapAll" => one(all_of(ctx, p, "Untap")),
+        "Sacrifice" => one(sacrifice(ctx, p)),
+        "Fight" => one(fight(ctx, p)),
+        "GainControl" => gain_control(ctx, p),
+        other => unmapped(format!("effect:{other}")),
+    }
+}
+
+/// How long an effect lasts: its `Duration$` word, until end of turn when it has none.
+pub fn duration(word: Option<&str>) -> Tr<&'static str> {
+    match word {
+        None | Some("EOT") => Ok("UntilEndOfTurn"),
+        Some("Permanent") => Ok("Forever"),
+        Some("UntilEndOfCombat") => Ok("UntilEndOfCombat"),
+        Some("UntilYourNextTurn") => Ok("UntilYourNextTurn"),
+        Some("UntilHostLeavesPlay") => Ok("WhileSourceOnBattlefield"),
+        Some(other) => unmapped(format!("duration:{other}")),
+    }
+}
+
+fn simple(ctx: &mut Ctx, p: &Params, api: &str, verb: &str) -> Tr<Value> {
+    only(p, api, &["ValidTgts", "Defined", "TargetMin", "TargetMax"])?;
+    let what = subject(ctx, p, "", None)?;
+    Ok(json!({ verb: {"what": what} }))
+}
+
+/// `TapAll`, `UntapAll`: the verb on every object the valid-string names.
+fn all_of(ctx: &mut Ctx, p: &Params, verb: &str) -> Tr<Value> {
+    only(p, verb, &["ValidCards"])?;
+    let valid = p.get("ValidCards").unwrap_or_default();
+    Ok(json!({ verb: {"what": {"Each": selector_any(ctx, valid)?}} }))
+}
+
+fn destroy(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
+    only(
+        p,
+        "Destroy",
+        &["ValidTgts", "Defined", "NoRegen", "TargetMin", "TargetMax"],
+    )?;
+    let what = subject(ctx, p, "", None)?;
+    let regenerate = p.get("NoRegen") != Some("True");
+    Ok(json!({"Destroy": {"what": what, "regenerate": regenerate}}))
+}
+
+fn destroy_all(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
+    only(p, "DestroyAll", &["ValidCards", "NoRegen"])?;
+    let valid = p.get("ValidCards").unwrap_or_default();
+    let regenerate = p.get("NoRegen") != Some("True");
+    Ok(json!({"Destroy": {"what": {"Each": selector_any(ctx, valid)?}, "regenerate": regenerate}}))
+}
+
+fn damage_all(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
+    only(p, "DamageAll", &["NumDmg", "ValidCards"])?;
+    let valid = p.get("ValidCards").unwrap_or_default();
+    let amount = amount(ctx, p.get("NumDmg").unwrap_or("1"))?;
+    Ok(json!({"DealDamage": {"to": {"Each": selector_any(ctx, valid)?}, "amount": amount}}))
+}
+
+fn counter(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
+    only(p, "Counter", &["TargetType", "ValidTgts"])?;
+    if p.get("TargetType") != Some("Spell") {
+        return unmapped("key:Counter.TargetType");
+    }
+    let mut selector = vec![json!("Spell")];
+    selector.extend(selector_any(ctx, p.get("ValidTgts").unwrap_or("Card"))?);
+    let what = ctx.target(json!({"what": {"Object": selector}}))?;
+    Ok(json!({"Counter": {"what": what}}))
+}
+
+/// The modifications of a pump line: power and toughness, then keywords.
+fn pump_mods(ctx: &Ctx, p: &Params) -> Tr<Vec<Value>> {
+    let mut mods = Vec::new();
+    if p.has("NumAtt") || p.has("NumDef") {
+        let power = amount(ctx, p.get("NumAtt").unwrap_or("0"))?;
+        let toughness = amount(ctx, p.get("NumDef").unwrap_or("0"))?;
+        mods.push(json!({"ModifyPT": {"power": power, "toughness": toughness}}));
+    }
+    if let Some(keywords) = p.get("KW") {
+        for keyword in keyword_list(ctx, keywords)? {
+            mods.push(json!({ "AddKeyword": keyword }));
+        }
+    }
+    if mods.is_empty() {
+        return unmapped("key:Pump.nothing");
+    }
+    Ok(mods)
+}
+
+fn pump(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
+    only(
+        p,
+        "Pump",
+        &[
+            "NumAtt", "NumDef", "KW", "Defined", "ValidTgts", "Duration", "IsCurse", "TargetMin",
+            "TargetMax",
+        ],
+    )?;
+    let duration = duration(p.get("Duration"))?;
+    let affected = subject(ctx, p, "", None)?;
+    let mods = pump_mods(ctx, p)?;
+    Ok(vec![
+        json!({"Continuous": {"affected": affected, "mods": mods, "duration": duration}}),
+    ])
+}
+
+fn pump_all(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
+    only(
+        p,
+        "PumpAll",
+        &["NumAtt", "NumDef", "KW", "ValidCards", "Duration", "IsCurse"],
+    )?;
+    let duration = duration(p.get("Duration"))?;
+    let valid = p.get("ValidCards").unwrap_or_default();
+    let affected = json!({"Each": selector_any(ctx, valid)?});
+    let mods = pump_mods(ctx, p)?;
+    Ok(vec![
+        json!({"Continuous": {"affected": affected, "mods": mods, "duration": duration}}),
+    ])
+}
+
+fn put_counter(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
+    only(
+        p,
+        "PutCounter",
+        &[
+            "CounterType", "CounterNum", "Defined", "ValidTgts", "TargetMin", "TargetMax",
+            "DividedAsYouChoose",
+        ],
+    )?;
+    let Some(kind) = p.get("CounterType").and_then(counter_kind) else {
+        return unmapped("key:PutCounter.CounterType");
+    };
+    let on = subject(ctx, p, "", None)?;
+    let count = if p.has("DividedAsYouChoose") {
+        json!("Divided")
+    } else {
+        amount(ctx, p.get("CounterNum").unwrap_or("1"))?
+    };
+    Ok(json!({"PutCounters": {"on": on, "counter": kind, "count": count}}))
+}
+
+fn remove_counter(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
+    only(
+        p,
+        "RemoveCounter",
+        &["CounterType", "CounterNum", "Defined", "ValidTgts", "TargetMin", "TargetMax"],
+    )?;
+    let Some(kind) = p.get("CounterType").and_then(counter_kind) else {
+        return unmapped("key:RemoveCounter.CounterType");
+    };
+    let from = subject(ctx, p, "", None)?;
+    let count = amount(ctx, p.get("CounterNum").unwrap_or("1"))?;
+    Ok(json!({"RemoveCounters": {"from": from, "counter": kind, "count": count}}))
+}
+
+fn sacrifice(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
+    only(p, "Sacrifice", &["Defined", "SacValid", "Amount"])?;
+    let who = defined(ctx, p.get("Defined").unwrap_or("You"))?;
+    let filter = match p.get("SacValid").unwrap_or("Self") {
+        "Self" => vec![json!("This")],
+        valid => selector_any(ctx, valid)?,
+    };
+    let count = amount(ctx, p.get("Amount").unwrap_or("1"))?;
+    Ok(json!({"Sacrifice": {"who": who, "filter": filter, "count": count}}))
+}
+
+fn fight(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
+    only(p, "Fight", &["Defined", "ValidTgts", "TargetMin", "TargetMax"])?;
+    if p.get("Defined") != Some("Self") || !p.has("ValidTgts") {
+        return unmapped("key:Fight.shape");
+    }
+    let with = subject(ctx, p, "", None)?;
+    Ok(json!({"Fight": {"what": "This", "with": with}}))
+}
+
+fn gain_control(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
+    only(
+        p,
+        "GainControl",
+        &["ValidTgts", "Defined", "LoseControl", "TargetMin", "TargetMax", "NewController"],
+    )?;
+    if p.has("NewController") {
+        return unmapped("key:GainControl.NewController");
+    }
+    let duration = match p.get("LoseControl") {
+        None => "Forever",
+        Some("EOT") => "UntilEndOfTurn",
+        Some(other) => return unmapped(format!("key:GainControl.LoseControl={other}")),
+    };
+    let affected = subject(ctx, p, "", None)?;
+    Ok(vec![json!({"Continuous": {
+        "affected": affected,
+        "mods": [{"SetController": "You"}],
+        "duration": duration,
+    }})])
+}
