@@ -3,47 +3,12 @@
 # Each case commits a probe change on top of HEAD into a throwaway object store and lists the diff of the two commits.
 set -euo pipefail
 cd "$(dirname "$0")/../.."
-
-scratch=$(mktemp -d "${TMPDIR:-/tmp}/check-select.XXXXXX")
-trap 'rm -rf "$scratch"' EXIT
-# New objects land in the scratch store; the repository's own objects are read through the alternate.
-GIT_ALTERNATE_OBJECT_DIRECTORIES="$(git rev-parse --path-format=absolute --git-common-dir)/objects"
-export GIT_ALTERNATE_OBJECT_DIRECTORIES GIT_OBJECT_DIRECTORY="$scratch/objects"
-mkdir -p "$GIT_OBJECT_DIRECTORY"
-export GIT_AUTHOR_NAME=probe GIT_AUTHOR_EMAIL=probe@localhost GIT_COMMITTER_NAME=probe GIT_COMMITTER_EMAIL=probe@localhost
-export MTG_CHECK_STAMPS="$scratch/stamps"
-
-head=$(git rev-parse HEAD)
-failures=0 cases=0
-
-# probe_commit <path...>: a commit on top of HEAD that changes (or adds) each path of the tree of HEAD or $probe_tree.
-probe_commit() {
-  local index="$scratch/index" path blob tree
-  GIT_INDEX_FILE="$index" git read-tree "${probe_tree:-$head}"
-  for path in "$@"; do
-    blob=$(echo "probe $path" | git hash-object -w --stdin)
-    GIT_INDEX_FILE="$index" git update-index --add --cacheinfo "100644,$blob,$path"
-  done
-  tree=$(GIT_INDEX_FILE="$index" git write-tree)
-  git commit-tree -p "$head" -m probe "$tree"
-}
-
-# field <listing> <label>: the sorted words after "<label>: " in a listing.
-field() {
-  sed -n "s/^$2: //p" <<<"$1" | tr ' ' '\n' | sort | tr '\n' ' ' | sed 's/ $//'
-}
+# shellcheck source=probe.bash
+source scripts/tests/probe.bash
 
 # expect <name> <listing> <without Postgres> <with Postgres> <web>
 expect() {
-  local got_other got_pg got_web
-  got_other=$(field "$2" "tests without Postgres")
-  got_pg=$(field "$2" "tests with Postgres")
-  got_web=$(field "$2" "web")
-  cases=$((cases + 1))
-  if [[ "$got_other|$got_pg|$got_web" != "$3|$4|$5" ]]; then
-    failures=$((failures + 1))
-    echo "FAIL $1: got [$got_other|$got_pg|$got_web], want [$3|$4|$5]"
-  fi
+  check "$1" "$(field "$2" "tests without Postgres")|$(field "$2" "tests with Postgres")|$(field "$2" "web")" "$3|$4|$5"
 }
 
 # case_diff <name> <without Postgres> <with Postgres> <web> -- <changed path...>
@@ -87,8 +52,4 @@ done
 expect "stamped" "$(scripts/check.sh affected --list "$(probe_commit crates/mtg-db/src/lib.rs)")" - mtg-cli none
 expect "forced" "$(scripts/check.sh affected --list --force "$(probe_commit crates/mtg-db/src/lib.rs)")" - "$all_pg" none
 
-if ((failures)); then
-  echo "check_select: $failures of $cases cases failed"
-  exit 1
-fi
-echo "check_select: $cases cases ok"
+finish check_select

@@ -3,7 +3,15 @@
 # Sourced by check.sh after check-plan.sh and check-run.sh.
 
 # unit_crate <unit>: the crate a unit tests; crate_left <crate>: its units still running.
-declare -A unit_crate crate_left
+declare -A unit_crate=() crate_left=()
+
+# One line, because the words of a unit are kept one per line.
+web_script='pnpm --silent typecheck && pnpm --silent lint && pnpm --silent format && if [ "$1" = full ]; then pnpm --silent test; else pnpm exec vitest run --changed "$2" --passWithNoTests; fi'
+
+# add_web_unit <web dir> <full|changed> <base>: the web checks, with every test or only those a diff against base touches.
+add_web_unit() {
+  add_unit web web "$1" "$web_threads" "" "$(printf '%s\n' bash -c "$web_script" _ "$2" "$3")"
+}
 
 # add_test_units <json log> <skip args...>: one unit per test binary of the log, the biggest binary first. A binary runs
 # from its crate folder with the environment cargo gives a test, so the feature set of the one build is the one tested.

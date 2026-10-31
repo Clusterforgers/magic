@@ -8,9 +8,9 @@
 #   `--list` prints the chosen phases and exits (`affected --list BASE HEAD` lists the diff of two commits).
 # A phase that passed on the same content (sources of a crate and of its workspace dependencies, Cargo.lock, toolchain)
 # leaves a stamp in ~/.cache/mtg-check; every worktree with that content skips it unless --force.
-# Test binaries run side by side within a thread budget: the cores (MTG_TEST_THREADS) split among the checks running,
-# a quarter of the share per binary (RUST_TEST_THREADS overrides); a binary is killed after MTG_TEST_TIMEOUT minutes
-# (default 40; a float is fine). CARGO_BUILD_JOBS (default 4) bounds the compiles.
+# Test binaries and the web checks run side by side within a thread budget: the cores (MTG_TEST_THREADS) split among
+# the checks running, the biggest binary first with the most threads (RUST_TEST_THREADS fixes them); a binary is killed
+# after MTG_TEST_TIMEOUT minutes (default 40; a float is fine). CARGO_BUILD_JOBS (default 4) bounds the compiles.
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
@@ -39,7 +39,7 @@ fi
 [[ "$mode" != gate ]] || gate=1
 
 phases=("fmt" "clippy" "check" "script tests" "test build" "tests" "lock wait" "web")
-declare -A secs
+declare -A secs=()
 trap 'kill_units; [[ -z "$run_dir" ]] || rm -rf "$run_dir"' EXIT
 trap 'exit 130' INT TERM
 
@@ -80,7 +80,7 @@ stamp() {
 # --- Plan --------------------------------------------------------------------------------------------------------
 
 other_sel=() pg_sel=() clippy_sel=() check_sel=()
-declare -A tested
+declare -A tested=()
 
 [[ "$mode" == web ]] || load_graph
 case "$mode" in
@@ -223,15 +223,12 @@ on_unit_ok() {
   fi
 }
 
-web_script='pnpm --silent typecheck && pnpm --silent lint && pnpm --silent format &&
-  if [ "$1" = full ]; then pnpm --silent test; else pnpm exec vitest run --changed "$2" --passWithNoTests; fi'
-
 root=$(pwd)
 take_lease
 init_units
 # The web checks do not touch cargo: start them first, they run while the Rust phases compile.
 if [[ "$web_sel" != none ]]; then
-  add_unit web web "$root/web" "$web_threads" "" "$(printf '%s\n' bash -c "$web_script" _ "$web_sel" "$base")"
+  add_web_unit "$root/web" "$web_sel" "$base"
   start_ready
 fi
 

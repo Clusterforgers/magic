@@ -6,7 +6,7 @@
 pg_crates=" mtg-db mtg-server mtg-cli "
 # Inputs a crate reads outside its own folder and its workspace dependencies.
 declare -A extra_inputs=([mtg-protocol]="web/src/protocol")
-declare -A crate_dir crate_deps
+declare -A crate_dir=() crate_deps=()
 all_crates=()
 slow_file="scripts/slow-tests.txt"
 slow_limit=5
@@ -32,7 +32,7 @@ load_graph() {
 
 # --- Selection ---------------------------------------------------------------------------------------------------
 
-declare -A hit
+declare -A hit=()
 select_all=0 web_sel=none gate=0
 
 # classify <path>: mark what a changed file can break. The gate leaves the check scripts to the script tests.
@@ -88,7 +88,7 @@ closure() {
 # --- Content keys and stamps -------------------------------------------------------------------------------------
 
 stamp_file="${MTG_CHECK_STAMPS:-${XDG_CACHE_HOME:-$HOME/.cache}/mtg-check/stamps}"
-declare -A tree_cache
+declare -A tree_cache=()
 rust_tc="" node_v=""
 
 # snapshot_tree: the git tree of the working directory (tracked and untracked files, not ignored ones), clean or not.
@@ -171,8 +171,9 @@ thread_share() {
   echo $((share < 4 ? 4 : share))
 }
 
-# unit_threads <share>: the test threads of one test binary, a quarter of the share between 2 and 8.
+# unit_threads <free threads> <binaries waiting>: the test threads of the next binary, a third of the free ones while
+# three or more wait (the biggest binary comes first and takes the most), between 2 and 12.
 unit_threads() {
-  local t=$(($1 / 4))
-  echo $((t < 2 ? 2 : t > 8 ? 8 : t))
+  local t=$(($1 / ($2 < 3 ? ($2 > 0 ? $2 : 1) : 3)))
+  echo $((t < 2 ? 2 : t > 12 ? 12 : t))
 }

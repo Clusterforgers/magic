@@ -38,7 +38,7 @@ current_share() {
 # --- Units -------------------------------------------------------------------------------------------------------
 
 # A unit is one process: a test binary or the web checks. Its words and environment are one entry per line.
-declare -A u_kind u_dir u_cmd u_env u_need u_lock u_log u_start unit_secs running
+declare -A u_kind=() u_dir=() u_cmd=() u_env=() u_need=() u_lock=() u_log=() u_start=() unit_secs=() running=()
 queue=()
 used=0 lock_held=0 tick_pid="" run_dir="" pg_fd_open=0
 
@@ -86,13 +86,15 @@ launch_unit() {
 
 # start_ready: start the queued units that fit the thread share (a unit that needs the Postgres lock waits for it).
 start_ready() {
-  local share threads name need rest=() blocked=0
+  local share free left name need rest=() blocked=0
   share=$(current_share)
-  threads="${RUST_TEST_THREADS:-$(unit_threads "$share")}"
+  left=${#queue[@]}
   for name in "${queue[@]}"; do
+    free=$((share - used))
     need="${u_need[$name]}"
-    [[ "$need" != auto ]] || need="$threads"
-    if ((${#running[@]} > 0 && used + need > share)); then
+    [[ "$need" != auto ]] || need="${RUST_TEST_THREADS:-$(unit_threads "$free" "$left")}"
+    left=$((left - 1))
+    if ((${#running[@]} > 0 && need > free)); then
       rest+=("$name")
       continue
     fi
@@ -238,5 +240,5 @@ report_units() {
     echo "$warn"
   fi
   for name in "${!unit_secs[@]}"; do echo "${unit_secs[$name]} $name"; done | sort -rn | head -n 4 |
-    awk 'BEGIN { printf "slowest units:" } { printf " %s %ss%s", $2, $1, NR < 4 ? "," : "" } END { print "" }'
+    awk '{ printf "%s%s %ss", NR > 1 ? ", " : "slowest units: ", $2, $1 } END { print "" }'
 }
