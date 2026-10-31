@@ -138,7 +138,6 @@ The table and its prompts are live; the items below polish them.
 Open card, compiler and wording items: `docs/cards-backlog.md`.
 
 - [ ] Target: every stored card Verified, or as near as the rules allow; after each round `compile` and `coverage` are re-run and the numbers go on the Status line
-- [~] (rt1c) (read-sheet) `mtg_cards::read::sheet`: for each printed clause the paired ability, the renderer's wording and a total step list, tabled over the corpus and the stored proposals with no blank row; frees the review screen's content (`crates/mtg-cards/src/read/`; no dependency)
 - [~] (rt1d) (read-smoke) `mtg_testkit::smoke::smoke_card` plays one card in bot games at two and four seats under every invariant and the watchdog and counts its uses, tabled over Verified and broken cards; frees the smoke gate (`crates/mtg-testkit/src/smoke.rs`; no dependency)
 - [ ] (rt1e) Fail-soft resolution: a `ResolveError` in an ability of a `read` card logs `AbilityLeftToTable` and the table resolves it by hand, with its line in the web feed; frees a live game from a bad draft (`mtg-engine` resolve, `mtg-protocol`, `web/` table; `docs/engine.md`; after rt1b)
 - [ ] (rt1f) `mtg-cli promote --draft` writes `drafts/<slug>.json` and its record after the checker and the smoke gate, `mtg-cli` embeds the directory, `compile` stores it in `card_drafts`, with the `drafts::` and `drafts_smoke::` tests; then the sweeps' stored `Unchecked` proposals become the first drafts (`crates/mtg-cli`; after rt1a and rt1d)
@@ -149,6 +148,7 @@ Open card, compiler and wording items: `docs/cards-backlog.md`.
 - [ ] (rt1k) `coverage` counts `Read` apart and the cards waiting for a read, `--deck CODE` lists the cards to draft, and `mtg-cli reads` prints the verdicts (`--wrong`, `--quick`); the Status line gets the Read count (`crates/mtg-cli` coverage, reads; after rt1a and rt1b)
 - [ ] (rt1l) Validator walk (Opus): read a precon's queue on screen at 1400 and 390 px, judge one card wrong, start a game and see the approved cards run and the wrong one played by hand; defects become lettered items (after rt1f and rt1j)
 - [ ] (t14c) A/B of `--forge-hint` against `--solved-examples` on the same 100 cards: which hint the checker accepts more often; the result goes into `docs/cards-dsl.md`
+- [ ] (rt1m) The checker finishes on every proposal: `check` does not return on `pop2/rejected/tempt_with_vengeance.json` (a Spell with `RepeatEach` nested ten deep, the renderer writes every wording of each level), so a nested or very long effect list gets a bounded set of wordings and the verdict `Invalid` or `Unchecked`; then `NEVER_FINISH` in `tests/it/read_sheet.rs` goes (`crates/mtg-cards` render, proposal; no dependency)
 - [ ] Gate: every corpus card is Verified or played through manual clauses and actions that show each unread clause, and fuzz games with a deck from each cluster pass every invariant, and a four-seat Commander game plays from the lobby to a winner in the web
 
 ## Tooling
