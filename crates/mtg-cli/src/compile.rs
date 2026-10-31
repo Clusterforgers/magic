@@ -613,6 +613,9 @@ mod tests {
             text.contains("Card 19:") && !text.contains("Card 20:"),
             "{text}"
         );
-        assert!(text.ends_with("and 2 more"), "{text}");
+        assert!(
+            text.contains("and 2 more\n  drafts: 0 in the build"),
+            "{text}"
+        );
     }
 }
