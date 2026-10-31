@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Goal: `scripts/check.sh affected --list` picks the phases a diff can break, and a passed-tree stamp skips a crate.
+# Goal: `scripts/check.sh affected --list` picks the phases a diff can break, and a content stamp skips a crate.
 # Each case commits a probe change on top of HEAD into a throwaway object store and lists the diff of the two commits.
 set -euo pipefail
 cd "$(dirname "$0")/../.."
@@ -16,10 +16,10 @@ export MTG_CHECK_STAMPS="$scratch/stamps"
 head=$(git rev-parse HEAD)
 failures=0 cases=0
 
-# probe_commit <path...>: a commit on top of HEAD that changes (or adds) each path.
+# probe_commit <path...>: a commit on top of HEAD that changes (or adds) each path of the tree of HEAD or $probe_tree.
 probe_commit() {
   local index="$scratch/index" path blob tree
-  GIT_INDEX_FILE="$index" git read-tree "$head"
+  GIT_INDEX_FILE="$index" git read-tree "${probe_tree:-$head}"
   for path in "$@"; do
     blob=$(echo "probe $path" | git hash-object -w --stdin)
     GIT_INDEX_FILE="$index" git update-index --add --cacheinfo "100644,$blob,$path"
@@ -66,21 +66,26 @@ case_diff "bindings" - - full -- web/src/protocol/generated/Rule.ts
 case_diff "mtg-protocol" "mtg-protocol" "mtg-server" full -- crates/mtg-protocol/src/lib.rs
 case_diff "Cargo.lock" "$all_other" "$all_pg" full -- Cargo.lock
 case_diff "check.sh" "$all_other" "$all_pg" full -- scripts/check.sh
+case_diff "check lib" "$all_other" "$all_pg" full -- scripts/lib/check-plan.sh
+case_diff "slow list" - - none -- scripts/slow-tests.txt
 case_diff "mtg-db" - "$all_pg" none -- crates/mtg-db/src/lib.rs
 case_diff "migration" - "$all_pg" none -- crates/mtg-db/migrations/9999_probe.sql
 case_diff ".sqlx" - "$all_pg" none -- .sqlx/query-probe.json
 case_diff "web and mtg-cli" - "mtg-cli" changed -- web/src/lib/flash.ts crates/mtg-cli/src/main.rs
 
-# A stamp for this clean tree skips those crates: the diff runs from a probe base back to the working tree.
-if [[ -z "$(git status --porcelain)" ]]; then
-  tc=$(rustc -V | tr ' ' '_')
-  printf '%s %s test:%s\n' "$(git rev-parse 'HEAD^{tree}')" "$tc" mtg-db "$(git rev-parse 'HEAD^{tree}')" "$tc" mtg-server \
-    >"$MTG_CHECK_STAMPS"
-  expect "stamped" "$(scripts/check.sh affected --list "$(probe_commit crates/mtg-db/src/lib.rs)")" - mtg-cli none
-  expect "forced" "$(scripts/check.sh affected --list --force "$(probe_commit crates/mtg-db/src/lib.rs)")" - "$all_pg" none
-else
-  echo "check_select: stamp cases skipped (dirty worktree)"
-fi
+# A stamp for the content of the working tree skips those crates: the diff runs from a probe base back to the tree.
+# shellcheck source=../lib/check-plan.sh
+source scripts/lib/check-plan.sh
+load_graph
+snap=$(snapshot_tree)
+probe_tree="$snap"
+: >"$MTG_CHECK_STAMPS"
+for crate in mtg-db mtg-server; do
+  stamp_line "$snap" test "$crate"
+  echo "$REPLY" >>"$MTG_CHECK_STAMPS"
+done
+expect "stamped" "$(scripts/check.sh affected --list "$(probe_commit crates/mtg-db/src/lib.rs)")" - mtg-cli none
+expect "forced" "$(scripts/check.sh affected --list --force "$(probe_commit crates/mtg-db/src/lib.rs)")" - "$all_pg" none
 
 if ((failures)); then
   echo "check_select: $failures of $cases cases failed"

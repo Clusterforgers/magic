@@ -1,0 +1,2 @@
+# Tests that take over 5 seconds: `scripts/check.sh gate` skips them, `affected` and `all` run them.
+# One name per line, a substring of the test path (libtest `--skip`); `#` starts a comment.
