@@ -1,7 +1,7 @@
 /** Goal: the Priority prompt tells the player in plain words what they may do (play a land, cast a spell, tap for mana, pass), says when they are responding to a spell on the stack, and groups mana abilities by permanent. */
 import { describe, expect, it } from 'vitest'
 import type { ManaOption, PriorityOptions } from '@/protocol/generated'
-import { manaByPermanent, priorityText } from './priorityText'
+import { BY_HAND_TEXT, manaByPermanent, priorityText } from './priorityText'
 import type { StackTop } from './priorityText'
 
 const NAMES = ['Ana', 'Bo', 'Cy']
@@ -75,6 +75,21 @@ describe('priorityText', () => {
   ])('says it for %s', (_name, given, top, expected) => {
     expect(priorityText(given, top, 0, name)).toBe(expected)
   })
+
+  it.each([
+    ['nothing to do', options(), null],
+    ['a land and a spell', options({ playable_lands: [1], castable: [2] }), null],
+    ['no pass', options({ can_pass: false }), null],
+    ['your own spell on the stack', options({ castable: [2] }), bolt],
+    ['an opponent spell on the stack', options(), growth],
+  ])(
+    'says to apply the card by hand, then pass, at the by-hand window whatever the options: %s',
+    (_name, given, top) => {
+      expect(priorityText(given, top, 0, name, true)).toBe(BY_HAND_TEXT)
+      expect(BY_HAND_TEXT).toBe("Apply the card's text by hand, then pass.")
+      expect(priorityText(given, top, 0, name, false)).toBe(priorityText(given, top, 0, name))
+    },
+  )
 })
 
 describe('manaByPermanent', () => {
