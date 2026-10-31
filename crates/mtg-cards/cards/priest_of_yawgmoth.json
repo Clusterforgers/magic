@@ -1,0 +1,26 @@
+{
+  "oracle_id": "cb6465f9-dcf8-4258-aa18-661ad252b58b",
+  "name": "Priest of Yawgmoth",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Priest of Yawgmoth",
+      "oracle_fingerprint": "6efa1d0c7213c4ce1848e4a21b4cd5f2",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap", { "Sacrifice": { "filter": [{ "Type": "Artifact" }] } }],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["Black"] },
+                  "times": { "Stat": { "of": "Paid", "stat": "ManaValue" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

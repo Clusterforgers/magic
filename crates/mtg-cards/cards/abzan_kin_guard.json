@@ -1,0 +1,31 @@
+{
+  "oracle_id": "b292d183-1ba9-40b4-9cba-bd70bf1380ef",
+  "name": "Abzan Kin-Guard",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Abzan Kin-Guard",
+      "oracle_fingerprint": "5425f2fd919f73683ebdc775c3b83ca4",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Lifelink" }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "AnyOf": [{ "Color": "White" }, { "Color": "Black" }] },
+                    { "ControlledBy": "You" }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

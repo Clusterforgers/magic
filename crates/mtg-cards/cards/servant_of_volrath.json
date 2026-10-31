@@ -1,0 +1,19 @@
+{
+  "oracle_id": "4e389b61-7b31-42ba-a19b-2502f63fd34a",
+  "name": "Servant of Volrath",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Servant of Volrath",
+      "oracle_fingerprint": "76337861a178ed6bc7abdfd7793e48e6",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield" } },
+            "effects": [{ "Sacrifice": { "filter": [{ "Type": "Creature" }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

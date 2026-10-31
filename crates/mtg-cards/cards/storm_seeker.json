@@ -1,0 +1,26 @@
+{
+  "oracle_id": "e694bf97-9deb-44f1-9d26-264b57596346",
+  "name": "Storm Seeker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Storm Seeker",
+      "oracle_fingerprint": "208929b9adbed1b86e23daf6ab2cda29",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": { "Count": [{ "In": "Hand" }, { "OwnedBy": { "Target": 0 } }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
