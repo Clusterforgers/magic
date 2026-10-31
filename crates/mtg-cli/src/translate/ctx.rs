@@ -156,7 +156,7 @@ impl<'a> Ctx<'a> {
         }
     }
 
-    /// The reference to the target declared before the current line ("ParentTarget" in a sub-ability).
+    /// The reference to the target declared before the current line (`ParentTarget` in a sub-ability).
     pub fn parent(&self) -> Tr<Value> {
         match self.parent_target {
             Some(index) => Ok(json!({ "Target": index })),

@@ -5,7 +5,7 @@ use serde_json::{Value, json};
 use super::amount::amount;
 use super::card::translate_face;
 use super::ctx::{CARD_TYPES, Ctx, SUPERTYPES, Tr, only, unmapped};
-use super::valid::defined;
+use super::valid::{defined, objects, subject};
 use crate::forge::script::{Face, Params};
 
 /// The effects of `Token`, `Investigate` and `Mana`.
@@ -19,6 +19,29 @@ pub fn effects(ctx: &mut Ctx, p: &Params, api: &str) -> Tr<Vec<Value>> {
         _ => mana(ctx, p)?,
     };
     Ok(vec![effect])
+}
+
+/// `CopyPermanent`: a token that is a copy of a permanent, with none of Forge's exceptions.
+pub fn copy_permanent(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
+    only(
+        p,
+        "CopyPermanent",
+        &[
+            "Defined",
+            "ValidTgts",
+            "TargetMin",
+            "TargetMax",
+            "NumCopies",
+            "TokenTapped",
+        ],
+    )?;
+    let of = objects(subject(ctx, p, "", None)?)?;
+    let count = amount(ctx, p.get("NumCopies").unwrap_or("1"))?;
+    Ok(vec![json!({"CreateToken": {
+        "token": {"CopyOf": {"of": of}},
+        "count": count,
+        "tapped": p.get("TokenTapped") == Some("True"),
+    }})])
 }
 
 /// The predefined tokens of the corpus, by the subtype of their script.

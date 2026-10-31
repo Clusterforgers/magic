@@ -296,6 +296,20 @@ fn gaps(text: &str) -> Vec<String> {
         {"what": {"Object": [{"Type": "Creature"}, {"Not": {"ControlledBy": "You"}}]}}],
         "effects": [{"Fight": {"what": {"Target": 0}, "with": {"Target": 1}}}]}})
 )]
+#[case::you_attack(
+    "Name:Test Banner\nTypes:Enchantment\nT:Mode$ AttackersDeclared | AttackingPlayer$ You | ValidAttackers$ Creature | ValidAttackersAmount$ GE2 | Execute$ TrigDraw\nSVar:TrigDraw:DB$ Draw\n",
+    json!({"Triggered": {"when": {"GroupAttacks": {"what": [{"Type": "Creature"}, {"ControlledBy": "You"}],
+        "at_least": 2}}, "effects": [{"Draw": {}}]}})
+)]
+#[case::you_cycle_a_card(
+    "Name:Test Drain\nTypes:Enchantment\nT:Mode$ Cycled | ValidCard$ Card.YouOwn | Execute$ TrigDraw\nSVar:TrigDraw:DB$ Draw\n",
+    json!({"Triggered": {"when": {"Cycled": {"by": "You"}}, "effects": [{"Draw": {}}]}})
+)]
+#[case::a_token_copy(
+    "Name:Test Mirror\nTypes:Sorcery\nA:SP$ CopyPermanent | ValidTgts$ Creature.YouCtrl | NumCopies$ 2\n",
+    json!({"Spell": {"targets": [{"what": {"Object": [{"Type": "Creature"}, {"ControlledBy": "You"}]}}],
+        "effects": [{"CreateToken": {"token": {"CopyOf": {"of": {"Target": 0}}}, "count": 2}}]}})
+)]
 #[case::look_and_take_one(
     "Name:Test Glimpse\nTypes:Sorcery\nA:SP$ Dig | DigNum$ 3 | ChangeNum$ 1\n",
     json!({"Spell": {"effects": [

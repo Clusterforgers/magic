@@ -21,7 +21,7 @@ pub fn chain_at(ctx: &mut Ctx, p: &Params, top: bool) -> Tr<Vec<Value>> {
     let (condition, own) = prefixed(ctx, p)?;
     let mut effects = line(ctx, &own.without(&["UnlessCost", "UnlessPayer"]))?;
     if let Some(unless) = p.get("UnlessCost") {
-        effects = unless_pays(ctx, p, unless, effects)?;
+        effects = unless_pays(ctx, p, unless, &effects)?;
     }
     if let Some(condition) = condition {
         effects = vec![json!({"If": {"condition": condition, "then": effects}})];
@@ -40,7 +40,7 @@ pub fn chain_at(ctx: &mut Ctx, p: &Params, top: bool) -> Tr<Vec<Value>> {
 }
 
 /// `UnlessCost$`: the effects happen unless the player named by `UnlessPayer$` pays.
-fn unless_pays(ctx: &Ctx, p: &Params, unless: &str, effects: Vec<Value>) -> Tr<Vec<Value>> {
+fn unless_pays(ctx: &Ctx, p: &Params, unless: &str, effects: &[Value]) -> Tr<Vec<Value>> {
     let who = match p.get("UnlessPayer") {
         Some("You") => json!("You"),
         Some("TargetedController") => json!({ "ControllerOf": ctx.last_target()? }),
@@ -85,6 +85,7 @@ fn line(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         "Effect" => effects_effect::effects(ctx, p),
         "Charm" => one(charm(ctx, p)),
         "Dig" => effects_zone::dig(ctx, p),
+        "CopyPermanent" => tokens::copy_permanent(ctx, p),
         "Destroy" | "DestroyAll" | "Counter" | "Pump" | "PumpAll" | "PutCounter"
         | "RemoveCounter" | "Tap" | "Untap" | "TapAll" | "UntapAll" | "Sacrifice"
         | "Regenerate" | "Fight" | "GainControl" | "DamageAll" | "Animate" | "PreventDamage" => {

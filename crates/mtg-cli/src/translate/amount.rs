@@ -73,10 +73,10 @@ fn expression_amount(ctx: &Ctx, expression: &str) -> Tr<Value> {
         return count_amount(ctx, rest);
     }
     if let Some(rest) = expression.strip_prefix("Targeted$") {
-        return targeted_amount(rest, ctx.last_target()?);
+        return targeted_amount(rest, &ctx.last_target()?);
     }
     if let Some(rest) = expression.strip_prefix("ParentTargeted$") {
-        return targeted_amount(rest, ctx.parent()?);
+        return targeted_amount(rest, &ctx.parent()?);
     }
     unmapped(format!("amount:{}", head(expression)))
 }
@@ -91,7 +91,7 @@ fn head(expression: &str) -> String {
 }
 
 /// A stat of the latest target.
-fn targeted_amount(what: &str, of: Value) -> Tr<Value> {
+fn targeted_amount(what: &str, of: &Value) -> Tr<Value> {
     let stat = match what {
         "CardPower" => "Power",
         "CardToughness" => "Toughness",

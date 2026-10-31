@@ -9,7 +9,13 @@ use super::valid::selector_any;
 use crate::forge::script::Params;
 
 /// The keys every trigger line may carry besides its mode's own.
-const COMMON: [&str; 4] = ["Mode", "Execute", "TriggerZones", "OptionalDecider"];
+const COMMON: [&str; 5] = [
+    "Mode",
+    "Execute",
+    "TriggerZones",
+    "OptionalDecider",
+    "NoResolvingCheck",
+];
 
 /// A trigger line as a `Triggered` ability.
 pub fn triggered(ctx: &mut Ctx, body: &str) -> Tr<Value> {
@@ -102,6 +108,10 @@ fn pattern(ctx: &Ctx, p: &Params) -> Tr<Value> {
         "ChangesZone" => changes_zone(ctx, p),
         "Phase" => phase(p),
         "Attacks" => attacks(ctx, p),
+        "AttackersDeclared" => attackers_declared(ctx, p),
+        "Discarded" => card_event(ctx, p, "Discarded"),
+        "Cycled" => card_event(ctx, p, "Cycled"),
+        "TurnFaceUp" => what_trigger(ctx, p, "TurnedFaceUp"),
         "SpellCast" => spell_cast(ctx, p),
         "DamageDone" => damage_done(ctx, p),
         "Drawn" => drawn(p),
@@ -177,6 +187,66 @@ fn attacks(ctx: &Ctx, p: &Params) -> Tr<Value> {
         "Attacks"
     };
     Ok(json!({ variant: {"what": what} }))
+}
+
+/// The cards a player-related trigger is about and the player: the controller or owner in the valid-string is the player.
+fn card_and_player(ctx: &Ctx, valid: &str) -> Tr<(Vec<Value>, Option<&'static str>)> {
+    let mut what = selector_any(ctx, valid)?;
+    let mut by = None;
+    for (who, name) in [
+        (json!({"ControlledBy": "You"}), "You"),
+        (json!({"OwnedBy": "You"}), "You"),
+        (json!({"OwnedBy": "Opponents"}), "Opponents"),
+        (json!({"ControlledBy": "Opponents"}), "Opponents"),
+    ] {
+        if let Some(at) = what.iter().position(|pred| *pred == who) {
+            what.remove(at);
+            by = Some(name);
+        }
+    }
+    Ok((what, by))
+}
+
+/// `Discarded` and `Cycled`: a card is discarded or cycled, by a player or as itself.
+fn card_event(ctx: &Ctx, p: &Params, variant: &str) -> Tr<Value> {
+    keys(p, variant, &["ValidCard"])?;
+    let (what, by) = card_and_player(ctx, p.get("ValidCard").unwrap_or("Card"))?;
+    let mut pattern = json!({});
+    if !what.is_empty() {
+        pattern["what"] = json!(what);
+    }
+    if let Some(by) = by {
+        pattern["by"] = json!(by);
+    }
+    Ok(json!({ variant: pattern }))
+}
+
+/// "Whenever you attack" and "whenever you attack with two or more creatures".
+fn attackers_declared(ctx: &Ctx, p: &Params) -> Tr<Value> {
+    keys(
+        p,
+        "AttackersDeclared",
+        &["AttackingPlayer", "ValidAttackers", "ValidAttackersAmount"],
+    )?;
+    if p.get("AttackingPlayer") != Some("You") {
+        return unmapped("key:Trigger.AttackersDeclared.AttackingPlayer");
+    }
+    let mut what = selector_any(ctx, p.get("ValidAttackers").unwrap_or("Creature"))?;
+    if !what.contains(&json!({"ControlledBy": "You"})) {
+        what.push(json!({"ControlledBy": "You"}));
+    }
+    let mut pattern = json!({ "what": what });
+    match p.get("ValidAttackersAmount") {
+        None => {}
+        Some(amount) => match amount
+            .strip_prefix("GE")
+            .and_then(|n| n.parse::<u32>().ok())
+        {
+            Some(least) if least >= 2 => pattern["at_least"] = json!(least),
+            _ => return unmapped("key:Trigger.AttackersDeclared.ValidAttackersAmount"),
+        },
+    }
+    Ok(json!({ "GroupAttacks": pattern }))
 }
 
 fn player_ref(word: Option<&str>) -> Tr<&'static str> {
