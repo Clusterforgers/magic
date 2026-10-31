@@ -86,6 +86,8 @@ pub struct Ctx<'a> {
     pub targets: Vec<Value>,
     /// The objects the latest zone change moved (`RememberChanged$`), which `Defined$ Remembered` names later.
     pub remembered: Option<Value>,
+    /// The latest target the ability had declared before the line being translated (`Defined$ ParentTarget`).
+    pub parent_target: Option<u8>,
     binds: usize,
     depth: usize,
 }
@@ -104,6 +106,7 @@ impl<'a> Ctx<'a> {
             world,
             targets: Vec::new(),
             remembered: None,
+            parent_target: None,
             binds: 0,
             depth: 0,
         }
@@ -113,6 +116,7 @@ impl<'a> Ctx<'a> {
     pub fn reset(&mut self) {
         self.targets.clear();
         self.remembered = None;
+        self.parent_target = None;
         self.binds = 0;
         self.depth = 0;
     }
@@ -150,6 +154,21 @@ impl<'a> Ctx<'a> {
             Ok(index) if !self.targets.is_empty() => Ok(json!({ "Target": index })),
             _ => unmapped("defined:Targeted-without-target"),
         }
+    }
+
+    /// The reference to the target declared before the current line ("ParentTarget" in a sub-ability).
+    pub fn parent(&self) -> Tr<Value> {
+        match self.parent_target {
+            Some(index) => Ok(json!({ "Target": index })),
+            None => unmapped("defined:ParentTarget-without-target"),
+        }
+    }
+
+    /// Notes the latest target declared so far as the parent target of the lines that follow.
+    pub fn mark_parent(&mut self) {
+        self.parent_target = u8::try_from(self.targets.len().saturating_sub(1))
+            .ok()
+            .filter(|_| !self.targets.is_empty());
     }
 
     /// A name for a result bound by one step and read by a later one.

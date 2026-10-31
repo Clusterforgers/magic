@@ -269,6 +269,7 @@ pub fn defined(ctx: &Ctx, word: &str) -> Tr<Value> {
         "Player" => Ok(json!("EachPlayer")),
         "Self" | "Card.Self" => Ok(json!("This")),
         "Targeted" | "TargetedPlayer" | "TargetedCard" => ctx.last_target(),
+        "ParentTarget" => ctx.parent(),
         "TargetedController" => controller(ctx.last_target()?),
         "TargetedOwner" => Ok(json!({ "OwnerOf": ctx.last_target()? })),
         "Enchanted" | "Equipped" => Ok(json!("Attached")),

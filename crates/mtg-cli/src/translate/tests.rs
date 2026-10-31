@@ -281,6 +281,36 @@ fn gaps(text: &str) -> Vec<String> {
         [{"Type": "Artifact"}, {"ControlledBy": "You"}]}, "op": "Ge", "right": 1}},
         "then": [{"GainLife": {"amount": 2}}]}}]}})
 )]
+#[case::a_creature_deals_damage_equal_to_its_power(
+    "Name:Test Bite\nTypes:Sorcery\nA:SP$ Pump | ValidTgts$ Creature.YouCtrl | SubAbility$ Hit\nSVar:Hit:DB$ DealDamage | ValidTgts$ Creature.YouDontCtrl | NumDmg$ X | DamageSource$ ParentTarget\nSVar:X:ParentTargeted$CardPower\n",
+    json!({"Spell": {"targets": [
+        {"what": {"Object": [{"Type": "Creature"}, {"ControlledBy": "You"}]}},
+        {"what": {"Object": [{"Type": "Creature"}, {"Not": {"ControlledBy": "You"}}]}}],
+        "effects": [{"DealDamage": {"source": {"Target": 0}, "to": {"Target": 1},
+            "amount": {"Stat": {"of": {"Target": 0}, "stat": "Power"}}}}]}})
+)]
+#[case::two_creatures_fight(
+    "Name:Test Duel\nTypes:Sorcery\nA:SP$ Pump | ValidTgts$ Creature.YouCtrl | SubAbility$ Fight\nSVar:Fight:DB$ Fight | Defined$ ParentTarget | ValidTgts$ Creature.YouDontCtrl\n",
+    json!({"Spell": {"targets": [
+        {"what": {"Object": [{"Type": "Creature"}, {"ControlledBy": "You"}]}},
+        {"what": {"Object": [{"Type": "Creature"}, {"Not": {"ControlledBy": "You"}}]}}],
+        "effects": [{"Fight": {"what": {"Target": 0}, "with": {"Target": 1}}}]}})
+)]
+#[case::look_and_take_one(
+    "Name:Test Glimpse\nTypes:Sorcery\nA:SP$ Dig | DigNum$ 3 | ChangeNum$ 1\n",
+    json!({"Spell": {"effects": [
+        {"LookAtTop": {"count": 3, "as": "top"}},
+        {"Choose": {"from": {"Bound": "top"}, "as": "kept2", "rest_as": "rest3"}},
+        {"Move": {"what": {"Bound": "kept2"}, "to": "Hand"}},
+        {"Move": {"what": {"Bound": "rest3"}, "to": {"Library": {"place": "Bottom", "order": "Chosen"}}}}]}})
+)]
+#[case::search_then_put_on_top(
+    "Name:Test Whisper\nTypes:Sorcery\nA:SP$ ChangeZone | Origin$ Library | Destination$ Library | LibraryPosition$ 0 | ChangeType$ Card | ChangeNum$ 1\n",
+    json!({"Spell": {"effects": [
+        {"Search": {"filter": [], "as": "found"}},
+        {"Shuffle": {}},
+        {"Move": {"what": {"Bound": "found"}, "to": {"Library": {"place": "Top"}}}}]}})
+)]
 fn a_line_becomes_the_ability_of_the_dsl(#[case] script: &str, #[case] expected: Value) {
     let mut found = abilities(script);
     assert_eq!(found.len(), 1, "{:?}", gaps(script));
@@ -295,7 +325,10 @@ fn normal(value: Value) -> Value {
 }
 
 #[rstest]
-#[case::unknown_effect("Name:T\nTypes:Sorcery\nA:SP$ Dig | DigNum$ 3\n", "effect:Dig")]
+#[case::unknown_effect(
+    "Name:T\nTypes:Sorcery\nA:SP$ RollDice | Sides$ 6\n",
+    "effect:RollDice"
+)]
 #[case::unread_key(
     "Name:T\nTypes:Sorcery\nA:SP$ Draw | NumCards$ 1 | Foo$ Bar\n",
     "key:Draw.Foo"
@@ -379,7 +412,7 @@ fn a_saga_has_a_triggered_ability_for_each_chapter() {
 #[test]
 fn only_the_lines_that_map_are_written_and_the_rest_are_gaps() {
     let card = translate(
-        "Name:T\nTypes:Creature Elf\nK:Flying\nA:AB$ Dig | Cost$ T | DigNum$ 2\nK:Trample\n",
+        "Name:T\nTypes:Creature Elf\nK:Flying\nA:AB$ RollDice | Cost$ T | Sides$ 6\nK:Trample\n",
     );
     assert_eq!((card.lines(), card.translated()), (3, 2));
     assert_eq!(card.gaps().count(), 1);

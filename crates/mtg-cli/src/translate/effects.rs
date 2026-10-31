@@ -17,6 +17,7 @@ pub fn chain(ctx: &mut Ctx, params: &Params) -> Tr<Vec<Value>> {
 /// The effects of a line and of the sub-abilities after it. A part that is not the ability itself (`top`) and has a cost
 /// is paid as it resolves: its effects and those after it happen if the cost is paid.
 pub fn chain_at(ctx: &mut Ctx, p: &Params, top: bool) -> Tr<Vec<Value>> {
+    ctx.mark_parent();
     let (condition, own) = prefixed(ctx, p)?;
     let mut effects = line(ctx, &own.without(&["UnlessCost", "UnlessPayer"]))?;
     if let Some(unless) = p.get("UnlessCost") {
@@ -83,6 +84,7 @@ fn line(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         "Cleanup" => cleanup(p),
         "Effect" => effects_effect::effects(ctx, p),
         "Charm" => one(charm(ctx, p)),
+        "Dig" => effects_zone::dig(ctx, p),
         "Destroy" | "DestroyAll" | "Counter" | "Pump" | "PumpAll" | "PutCounter"
         | "RemoveCounter" | "Tap" | "Untap" | "TapAll" | "UntapAll" | "Sacrifice"
         | "Regenerate" | "Fight" | "GainControl" | "DamageAll" | "Animate" | "PreventDamage" => {

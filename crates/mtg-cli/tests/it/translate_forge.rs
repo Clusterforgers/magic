@@ -12,7 +12,7 @@ use mtg_cli::translate::translate_forge;
 use serde_json::{Value, json};
 
 const BOLT: &str = "Name:Quartz Spark\nManaCost:R\nTypes:Instant\nA:SP$ DealDamage | ValidTgts$ Any | NumDmg$ 3 | SpellDescription$ Quartz Spark deals 3 damage to any target.\nOracle:Quartz Spark deals 3 damage to any target.\n";
-const SEER: &str = "Name:Willow Seer\nManaCost:1 U\nTypes:Creature Human Wizard\nPT:1/2\nK:Flying\nT:Mode$ ChangesZone | Origin$ Any | Destination$ Battlefield | ValidCard$ Card.Self | Execute$ TrigDraw | TriggerDescription$ When Willow Seer enters, draw a card.\nSVar:TrigDraw:DB$ Draw | NumCards$ 1\nA:AB$ Dig | Cost$ T | DigNum$ 3\nOracle:Flying\\nWhen Willow Seer enters, draw a card.\n";
+const SEER: &str = "Name:Willow Seer\nManaCost:1 U\nTypes:Creature Human Wizard\nPT:1/2\nK:Flying\nT:Mode$ ChangesZone | Origin$ Any | Destination$ Battlefield | ValidCard$ Card.Self | Execute$ TrigDraw | TriggerDescription$ When Willow Seer enters, draw a card.\nSVar:TrigDraw:DB$ Draw | NumCards$ 1\nA:AB$ RollDice | Cost$ T | Sides$ 6\nOracle:Flying\\nWhen Willow Seer enters, draw a card.\n";
 const VANILLA: &str = "Name:Plain Ox\nManaCost:2\nTypes:Creature Ox\nPT:2/2\nOracle:\n";
 const TWO_FACED: &str = "Name:Ember Pup\nManaCost:R\nTypes:Creature Dog\nPT:1/1\nK:Haste\nALTERNATE\nName:Ember Hound\nManaCost:no cost\nTypes:Creature Dog\nPT:3/3\nK:Trample\nOracle:Trample\n";
 
@@ -125,7 +125,7 @@ async fn the_ledger_names_what_was_left_out_and_the_cards_it_holds_back() {
     );
     assert_eq!(
         lines.next(),
-        Some("unmapped\teffect:Dig\t1\t1\t0\tWillow Seer")
+        Some("unmapped\teffect:RollDice\t1\t1\t0.000000\tWillow Seer")
     );
     let index = fs::read_to_string(out.join("translate-index.tsv")).unwrap();
     assert!(

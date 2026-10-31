@@ -73,7 +73,10 @@ fn expression_amount(ctx: &Ctx, expression: &str) -> Tr<Value> {
         return count_amount(ctx, rest);
     }
     if let Some(rest) = expression.strip_prefix("Targeted$") {
-        return targeted_amount(ctx, rest);
+        return targeted_amount(rest, ctx.last_target()?);
+    }
+    if let Some(rest) = expression.strip_prefix("ParentTargeted$") {
+        return targeted_amount(rest, ctx.parent()?);
     }
     unmapped(format!("amount:{}", head(expression)))
 }
@@ -88,14 +91,14 @@ fn head(expression: &str) -> String {
 }
 
 /// A stat of the latest target.
-fn targeted_amount(ctx: &Ctx, what: &str) -> Tr<Value> {
+fn targeted_amount(what: &str, of: Value) -> Tr<Value> {
     let stat = match what {
         "CardPower" => "Power",
         "CardToughness" => "Toughness",
         "CardManaCost" => "ManaValue",
         other => return unmapped(format!("amount:Targeted${other}")),
     };
-    Ok(json!({"Stat": {"of": ctx.last_target()?, "stat": stat}}))
+    Ok(json!({"Stat": {"of": of, "stat": stat}}))
 }
 
 /// The amount of a `Count$` expression: its base and the `/Plus.N`, `/Minus.N`, `/Twice` or `/Times.N` steps after it.

@@ -5,7 +5,7 @@ use serde_json::{Value, json};
 use super::amount::{amount, counter_kind};
 use super::ctx::{Ctx, Tr, only, unmapped};
 use super::keyword::{keyword_list, keyword_value};
-use super::valid::{objects, selector_any, subject};
+use super::valid::{defined, objects, selector_any, subject};
 use crate::forge::script::Params;
 
 /// The effects of a verb on objects.
@@ -163,6 +163,14 @@ fn pump(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     )?;
     let duration = duration(p.get("Duration"))?;
     let affected = objects(subject(ctx, p, "Self", None)?)?;
+    // A pump that only chooses a target ("target creature you control deals damage ... to target creature") changes
+    // nothing itself; the part after it uses the target.
+    if !(p.has("NumAtt") || p.has("NumDef") || p.has("KW"))
+        && p.has("ValidTgts")
+        && p.has("SubAbility")
+    {
+        return Ok(Vec::new());
+    }
     let mods = pump_mods(ctx, p)?;
     Ok(vec![
         json!({"Continuous": {"affected": affected, "mods": mods, "duration": duration}}),
@@ -357,11 +365,13 @@ fn fight(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
         "Fight",
         &["Defined", "ValidTgts", "TargetMin", "TargetMax"],
     )?;
-    if p.get("Defined") != Some("Self") || !p.has("ValidTgts") {
+    if !p.has("ValidTgts") {
         return unmapped("key:Fight.shape");
     }
+    // The fighter is named before the second creature is chosen: the card itself or the earlier target.
+    let what = defined(ctx, p.get("Defined").unwrap_or_default())?;
     let with = subject(ctx, p, "", None)?;
-    Ok(json!({"Fight": {"what": "This", "with": with}}))
+    Ok(json!({"Fight": {"what": what, "with": with}}))
 }
 
 fn gain_control(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {

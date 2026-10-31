@@ -41,9 +41,10 @@ fn goes(p: &Params, destination: &str) -> Tr<Goes> {
         "Graveyard" => Goes::To(json!("Graveyard")),
         "Battlefield" => Goes::To(json!({"Battlefield": {"tapped": tapped}})),
         "Library" => {
-            let place = match p.get("LibraryPosition") {
-                Some("0") => "Top",
-                Some("-1") => "Bottom",
+            let place = match (p.get("LibraryPosition"), p.get("Shuffle")) {
+                (Some("0"), _) => "Top",
+                (Some("-1"), _) => "Bottom",
+                (None, Some("True")) => "Shuffled",
                 _ => return unmapped("key:ChangeZone.LibraryPosition"),
             };
             Goes::To(json!({"Library": {"place": place}}))
@@ -71,6 +72,7 @@ fn change_zone(ctx: &mut Ctx, p: &Params, origin: &str, destination: &str) -> Tr
             "TargetMin",
             "TargetMax",
             "LibraryPosition",
+            "Shuffle",
             "Tapped",
             "RememberChanged",
         ],
@@ -106,11 +108,10 @@ fn search(ctx: &mut Ctx, p: &Params, destination: &str) -> Tr<Vec<Value>> {
             "RememberChanged",
             "Reveal",
             "LibraryPosition",
+            "Shuffle",
+            "Optional",
         ],
     )?;
-    if destination == "Library" {
-        return unmapped("key:ChangeZone.Search-to-library");
-    }
     let filter = selector_any(ctx, p.get("ChangeType").unwrap_or("Card"))?;
     let filter_is_open = filter.is_empty();
     let bind = ctx.fresh("found");
@@ -126,11 +127,103 @@ fn search(ctx: &mut Ctx, p: &Params, destination: &str) -> Tr<Vec<Value>> {
     if p.get("RememberChanged") == Some("True") {
         ctx.remembered = Some(found.clone());
     }
-    Ok(vec![
-        json!({ "Search": find }),
-        moves(&found, goes(p, destination)?),
-        json!({"Shuffle": {}}),
-    ])
+    let search = json!({ "Search": find });
+    let put = moves(&found, goes(p, destination)?);
+    let shuffle = json!({"Shuffle": {}});
+    let mut effects = match (destination, p.get("Shuffle")) {
+        // The shuffle comes first when the card goes back on top: "then shuffle and put that card on top".
+        ("Library", _) => vec![search, shuffle, put],
+        (_, Some("False")) => vec![search, put],
+        _ => vec![search, put, shuffle],
+    };
+    if p.get("Optional") == Some("True") {
+        effects = vec![json!({"May": {"effects": effects}})];
+    }
+    Ok(effects)
+}
+
+/// `Dig`: look at the top cards, take some, put the rest somewhere ("look at the top four cards of your library; you may
+/// reveal a creature card from among them and put it into your hand; put the rest on the bottom in any order").
+pub fn dig(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
+    only(
+        p,
+        "Dig",
+        &[
+            "DigNum",
+            "ChangeNum",
+            "ChangeValid",
+            "Optional",
+            "Reveal",
+            "DestinationZone",
+            "DestinationZone2",
+            "RestRandomOrder",
+            "Defined",
+            "Tapped",
+            "NoReveal",
+            "ForceRevealToController",
+        ],
+    )?;
+    if !matches!(p.get("Defined"), None | Some("You")) {
+        return unmapped("key:Dig.Defined");
+    }
+    let count = amount(ctx, p.get("DigNum").unwrap_or("1"))?;
+    let top = ctx.fresh("top");
+    let kept = ctx.fresh("kept");
+    let rest = ctx.fresh("rest");
+    let from_top = json!({ "Bound": top });
+    let taken = match p.get("ChangeNum") {
+        None | Some("1") => 1,
+        Some(n) => n
+            .parse::<u64>()
+            .map_or_else(|_| unmapped("key:Dig.ChangeNum"), Ok)?,
+    };
+    let filter = p.get("ChangeValid");
+    let may = p.get("Optional") == Some("True") || filter.is_some();
+    let mut choose = match filter {
+        Some(valid) => {
+            let mut selector = vec![json!({"In": "Library"}), json!({"Is": from_top})];
+            selector.extend(selector_any(ctx, valid)?);
+            json!({"from": {"Each": selector}, "as": kept})
+        }
+        None => json!({"from": from_top, "as": kept, "rest_as": rest}),
+    };
+    if may || taken != 1 {
+        let min = if may { 0 } else { taken };
+        choose["count"] = json!({"min": min, "max": taken});
+    }
+    let to = match p.get("DestinationZone") {
+        None | Some("Hand") => json!("Hand"),
+        Some("Graveyard") => json!("Graveyard"),
+        Some("Battlefield") => {
+            json!({"Battlefield": {"tapped": p.get("Tapped") == Some("True")}})
+        }
+        Some(other) => return unmapped(format!("key:Dig.DestinationZone={other}")),
+    };
+    let order = if p.get("RestRandomOrder") == Some("True") {
+        "Random"
+    } else {
+        "Chosen"
+    };
+    let rest_to = match p.get("DestinationZone2") {
+        None => json!({"Library": {"place": "Bottom", "order": order}}),
+        Some("Graveyard") => json!("Graveyard"),
+        Some(other) => return unmapped(format!("key:Dig.DestinationZone2={other}")),
+    };
+    let rest_ref = if filter.is_some() {
+        from_top.clone()
+    } else {
+        json!({ "Bound": rest })
+    };
+    let mut effects = vec![
+        json!({"LookAtTop": {"count": count, "as": top}}),
+        json!({ "Choose": choose }),
+    ];
+    if p.get("Reveal") == Some("True") {
+        effects.push(json!({"Reveal": {"what": {"Bound": kept}}}));
+    }
+    effects.push(json!({"Move": {"what": {"Bound": kept}, "to": to}}));
+    effects.push(json!({"Move": {"what": rest_ref, "to": rest_to}}));
+    Ok(effects)
 }
 
 fn change_zone_all(ctx: &mut Ctx, p: &Params, origin: &str, destination: &str) -> Tr<Vec<Value>> {
@@ -143,6 +236,7 @@ fn change_zone_all(ctx: &mut Ctx, p: &Params, origin: &str, destination: &str) -
             "ChangeType",
             "Tapped",
             "LibraryPosition",
+            "Shuffle",
         ],
     )?;
     if origin == "Library" {
