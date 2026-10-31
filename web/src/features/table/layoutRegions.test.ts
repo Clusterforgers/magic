@@ -1,4 +1,4 @@
-// Goal: the table's regions follow the window: the rows always add up to the window height with the minimums of the design (44 px bar, 56 to 88 px shared strip, 112 to 200 px hand dock), the side area is a column, a rail or a sheet by width, the CSS templates equal the numbers, and the mode and seat arrangement follow the seat count and the width of a board column (grid for 2 to 4 seats unless a column would be under 280 px, focus otherwise, the menu overriding), and in focus mode the strip of tiles leads with the seat whose turn it is.
+// Goal: the table's regions follow the window: the rows always add up to the window height with the minimums of the design (44 px bar, 56 to 88 px shared strip, 112 to 200 px hand dock), the side area is a column, a rail or a sheet by width, the CSS templates equal the numbers, and the mode and seat arrangement follow the seat count and the width of a board column (grid for 2 to 4 seats unless a column would be under 280 px, focus otherwise, the menu overriding), in focus mode the strip of tiles leads with the seat whose turn it is, and the hand dock grows for a large or an opening hand from a 640 px window and keeps its size on a phone.
 import { describe, expect, it } from 'vitest'
 import { must } from '@/test-utils/batches'
 import { handRowPx } from './handFit'
@@ -15,9 +15,13 @@ import {
   gridColumnWidth,
   gridRows,
   HAND_CLAMP,
+  HAND_GROW_VH,
   HAND_PHONE_CLAMP,
+  handGrowMost,
   mainColumns,
   MIN_COLUMN_PX,
+  OPENING_GROW_VH,
+  openingGrowMost,
   planTable,
   regionSizes,
   SHARED_CLAMP,
@@ -446,4 +450,29 @@ describe('the form of the controls dock', () => {
       expect(dockForm(regionSizes({ width, height: 900 })), `${width} px`).not.toBe('full')
     }
   })
+})
+
+describe('the room the hand dock grows to', () => {
+  // A phone's dock keeps its size under every decision, and a window from 640 px gives the hand the room.
+  it.each<[string, Viewport, boolean]>([
+    ['320x568', { width: 320, height: 568 }, false],
+    ['390x844', { width: 390, height: 844 }, false],
+    ['639x1000', { width: 639, height: 1000 }, false],
+    ['640x1000', { width: 640, height: 1000 }, true],
+    ['768x1024', { width: 768, height: 1024 }, true],
+    ['1440x900', { width: 1440, height: 900 }, true],
+    ['1920x1080', { width: 1920, height: 1080 }, true],
+  ])(
+    'in a window of %s the dock grows for a large hand and for an opening hand: %s',
+    (_name, viewport, grows) => {
+      const regions = regionSizes(viewport)
+      expect(regions.phone).toBe(!grows)
+      expect(handGrowMost(regions) > 0).toBe(grows)
+      expect(openingGrowMost(regions) > 0).toBe(grows)
+      if (!grows) return
+      expect(handGrowMost(regions)).toBeCloseTo((regions.main.height * HAND_GROW_VH) / 100)
+      expect(openingGrowMost(regions)).toBeCloseTo((regions.main.height * OPENING_GROW_VH) / 100)
+      expect(openingGrowMost(regions)).toBeGreaterThan(handGrowMost(regions))
+    },
+  )
 })

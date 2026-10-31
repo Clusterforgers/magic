@@ -51,7 +51,6 @@ Items that touch the running game come first.
 - [ ] (d1c) A copy of the nightly database dumps off queen (a Longhorn backup target or a scheduled copy to another machine), so losing queen does not lose the accounts and decks (`docs/deploy.md`)
 - [ ] (d1b) The release script's steps as a GitHub Actions workflow on a published release, so a release needs no dev machine (`docs/deploy.md`)
 - [~] (v92w) (hand-prompts) The priority prompt of a seat held at its by-hand window says "Apply the card's text by hand, then pass" (12 px or more), from the resolution of its own object with `ObjectView.manual` (`docs/server.md`, Stops and Full Control)
-- [~] (v92n) (hand-prompts) The opening hand on a phone (390x844) is readable while the Mulligan prompt waits: its cards stay 68 px wide in a scrolling row, as the hand dock keeps its size under 640 px (`openingGrowMost`, `HandDock`)
 - [ ] (v92l) Keyboard-only walk of a whole turn: focus order, the focus return after H and Escape across a resize, contrast of the by-hand and unplayable marks in both themes
 - [ ] (v92m) Duel walk by hand of a counterspell, a combat trick and a sacrifice, and of the timer bank as the other seat sees it (needs a seat that has earned an extension)
 - [ ] (v91k) The house rule key `colour_identity` is spelled `color_identity` on the wire, in the stored rules and in `mtg-core` `house.rs`, with the stored games migrated
