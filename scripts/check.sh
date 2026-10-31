@@ -40,7 +40,7 @@ fi
 
 phases=("fmt" "clippy" "check" "script tests" "test build" "tests" "lock wait" "web")
 declare -A secs=()
-trap 'kill_units; [[ -z "$run_dir" ]] || rm -rf "$run_dir"' EXIT
+trap 'kill_units; [[ -z "$run_dir" ]] || rm -rf "$run_dir"; rm -f "$lease_dir/run.$$"' EXIT
 trap 'exit 130' INT TERM
 
 # --- Diff --------------------------------------------------------------------------------------------------------
