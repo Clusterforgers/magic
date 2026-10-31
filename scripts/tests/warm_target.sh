@@ -235,6 +235,15 @@ equal "the shim leaves a cold checkout alone" "$(cargo_in "$wt")" "real cargo in
 mv "$wt/target/.unmarked" "$wt/target/.warm-target"
 equal "the shim runs in place inside a namespace" "$(MTG_WARM_IN_NS=1 cargo_in "$wt")" "real cargo in $(cd "$wt" && pwd -P): build -p a"
 
+# The default build repeats the cargo calls of check.sh: clippy, then the Postgres crates and the others as two test builds.
+mkdir -p "$scratch/steps/crates/a" "$scratch/steps/crates/mtg-db" "$scratch/steps/crates/mtg-core" "$scratch/rec"
+printf '#!/usr/bin/env bash\necho "$*" >>"%s/calls"\n' "$scratch" >"$scratch/rec/cargo"
+chmod +x "$scratch/rec/cargo"
+(cd "$scratch/steps" && PATH="$scratch/rec:$PATH" "$script" build-steps)
+equal "the default build mirrors check.sh" "$(cat "$scratch/calls")" "clippy --workspace --all-targets --quiet
+test -p a -p mtg-core --no-run --quiet
+test -p mtg-db --no-run --quiet"
+
 # A refresh prunes only entries of its own cache: other directories survive, even when old.
 touch -d '2 days ago' "$MTG_WARM_CACHE/keepme"
 MTG_WARM_KEEP=1 warm refresh "$c3" >/dev/null 2>&1

@@ -38,8 +38,19 @@ ns_run() {
     warm-ns "$root" "$canon" "$sub" "$@"
 }
 
-# The command `refresh` builds with: the test profile of the workspace and the clippy check of every target.
-default_build='cargo test --workspace --no-run --quiet && cargo clippy --workspace --all-targets --quiet'
+# warm_build: the cargo calls of `scripts/check.sh`, run in the current directory. Cargo unifies dependency features per
+# package selection, so the Postgres crates (as check.sh splits them) and the other crates are two builds of their own.
+warm_build() {
+  local pg=(mtg-cli mtg-db mtg-server) pg_args=() other_args=() dir name
+  for dir in crates/*/; do
+    name=${dir#crates/}
+    name=${name%/}
+    if [[ " ${pg[*]} " == *" $name "* ]]; then pg_args+=(-p "$name"); else other_args+=(-p "$name"); fi
+  done
+  cargo clippy --workspace --all-targets --quiet
+  ((${#other_args[@]} == 0)) || cargo test "${other_args[@]}" --no-run --quiet
+  ((${#pg_args[@]} == 0)) || cargo test "${pg_args[@]}" --no-run --quiet
+}
 
 # Files of a target that rustc writes once under a unique name and replaces by rename, never in place:
 # the only ones the hardlink method shares between the cache and the worktrees.
@@ -268,7 +279,11 @@ cmd_refresh() {
     find "$build" -print0 | xargs -0 -r touch -h -d "@$ref_time" --
     echo "warm-target: building $key"
     canon_ok || die "refresh needs a user and mount namespace (unshare -Urm); this machine has none"
-    ns_run "$build" "" env -u CARGO_TARGET_DIR bash -c "${MTG_WARM_BUILD:-$default_build}"
+    if [[ -n ${MTG_WARM_BUILD-} ]]; then
+      ns_run "$build" "" env -u CARGO_TARGET_DIR bash -c "$MTG_WARM_BUILD"
+    else
+      ns_run "$build" "" env -u CARGO_TARGET_DIR "$(readlink -f "$0")" build-steps
+    fi
     mkdir -p "$tmp"
     mv -T -- "$build/target" "$tmp/target"
     # In-place writes to a shared file then fail instead of corrupting every worktree.
@@ -296,6 +311,7 @@ main() {
     use) cmd_use "$@" ;;
     refresh) cmd_refresh "$@" ;;
     run) cmd_run "$@" ;;
+    build-steps) warm_build ;;
     *) sed -n '2,14p' "$0" | sed 's/^# \{0,1\}//' && exit 2 ;;
   esac
 }
