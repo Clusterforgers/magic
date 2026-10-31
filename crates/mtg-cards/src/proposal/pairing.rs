@@ -15,13 +15,13 @@ use crate::trigger::TriggerPattern;
 
 /// The pairing of a whole card.
 #[derive(Debug, Default)]
-pub(super) struct Paired {
+pub(crate) struct Paired {
     /// Every clause of every face in order.
-    pub clauses: Vec<ClauseReport>,
+    pub(crate) clauses: Vec<ClauseReport>,
     /// Abilities without a clause.
-    pub strays: Vec<Stray>,
+    pub(crate) strays: Vec<Stray>,
     /// For each face and each ability as proposed, where the clause it stands for starts.
-    pub places: Vec<Vec<Option<u32>>>,
+    pub(crate) places: Vec<Vec<Option<u32>>>,
 }
 
 impl Paired {
@@ -35,7 +35,7 @@ impl Paired {
 }
 
 /// Pairs the abilities of every face with the clauses of its text.
-pub(super) fn pair_card(card: &Card, clauses: &[Clause], printed: &PrintedCard) -> Paired {
+pub(crate) fn pair_card(card: &Card, clauses: &[Clause], printed: &PrintedCard) -> Paired {
     let faces = clauses
         .iter()
         .map(|clause| clause.face + 1)

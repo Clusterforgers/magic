@@ -25,6 +25,7 @@ pub mod mana_trigger;
 pub mod modify;
 pub mod pretty;
 pub mod proposal;
+pub mod read;
 pub mod reference;
 pub mod refs;
 pub mod spend;
