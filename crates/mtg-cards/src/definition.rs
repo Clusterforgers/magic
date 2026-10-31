@@ -12,6 +12,7 @@ use mtg_core::mana::{ManaCost, ManaType};
 use serde::{Deserialize, Serialize};
 
 use crate::ability::Ability;
+use crate::effect::is_false;
 use crate::modify::Modification;
 use crate::value::Amount;
 
@@ -156,6 +157,10 @@ pub struct CardDefinition {
     /// card is cast and resolves without them and its controller does them by hand.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub manual: Vec<ManualClause>,
+    /// Whether this face runs on a player's read: its rules are a draft the checker could not prove, approved by a
+    /// player (`docs/cards-dsl.md`, Read tier). The table shows it; a resolution that fails is then left to the table.
+    #[serde(default, skip_serializing_if = "is_false")]
+    pub read: bool,
     /// Every face of a card with more than one, in Scryfall's order, each with its own rules; empty for a card with one face.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub faces: Vec<CardDefinition>,
@@ -184,6 +189,7 @@ impl CardDefinition {
             rules: Vec::new(),
             layout: Layout::Normal,
             manual: Vec::new(),
+            read: false,
             faces: Vec::new(),
             identity: None,
         }
