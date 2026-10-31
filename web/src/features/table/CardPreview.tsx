@@ -10,8 +10,9 @@ import { PreviewCard } from './PreviewCard'
 import { useCreatureOutlook } from './combat/drawn'
 import { outlookText } from './combat/forecastText'
 import { useSeatNamer } from './names'
-import { dockOf, usePreviewStore, usePreviewTarget } from './preview'
+import { usePreviewStore, usePreviewTarget } from './preview'
 import type { Dock, PreviewTarget } from './preview'
+import { previewFit } from './previewFit'
 import {
   activatedLines,
   attachLine,
@@ -30,15 +31,16 @@ import { useLinks } from './useLinks'
 
 // Whole class names, so Tailwind can see them.
 const DOCK: Record<Dock, string> = {
-  right: 'top-16 right-3 w-72',
-  left: 'top-16 left-3 w-72',
-  top: 'inset-x-2 top-14 flex gap-3',
-  bottom: 'inset-x-2 bottom-16 flex gap-3',
+  right: 'right-3',
+  left: 'left-3',
+  top: 'inset-x-2',
+  bottom: 'inset-x-2',
 }
 
 /**
  * The large view of the card under the pointer or keyboard focus, with its abilities text. It docks at the edge of
- * the screen away from its card, so it never covers what it shows. A click pins it; Escape or Close dismisses it.
+ * the screen away from its card and draws the picture up to twice the size the table gives it (`previewFit`), so it
+ * never covers what it shows and the card's own text reads. A click pins it; Escape or Close dismisses it.
  * Nothing is subscribed to until a card is shown, so the idle preview costs a game no renders.
  */
 export function CardPreview() {
@@ -88,8 +90,8 @@ function PreviewBody({ target }: { target: PreviewTarget }) {
   }, [gone, store])
 
   if (object === undefined) return null
-  const dock = dockOf(target.anchor, { width: window.innerWidth, height: window.innerHeight })
-  const wide = dock === 'left' || dock === 'right'
+  const fit = previewFit(target.anchor, { width: window.innerWidth, height: window.innerHeight })
+  const { dock, beside } = fit
   const pt = powerToughness(object)
   const keywords = keywordLine(object)
   const activated = activatedLines(object, note?.usable)
@@ -104,23 +106,32 @@ function PreviewBody({ target }: { target: PreviewTarget }) {
       aria-label="Card preview"
       data-testid="card-preview"
       data-dock={dock}
+      data-picture={fit.picture}
       data-pinned={target.pinned || undefined}
+      style={{
+        top: fit.top ?? undefined,
+        bottom: fit.bottom ?? undefined,
+        width: fit.width ?? undefined,
+        maxHeight: fit.maxHeight,
+      }}
       className={cn(
-        'fixed z-[60] max-h-[calc(100dvh-5rem)] overflow-y-auto rounded-xl bg-popover p-3 text-popover-foreground shadow-lg ring-1 ring-foreground/15',
+        'fixed z-[60] overflow-y-auto rounded-xl bg-popover p-3 text-popover-foreground shadow-lg ring-1 ring-foreground/15',
         DOCK[dock],
+        beside ? 'flex gap-3' : null,
         target.pinned ? null : 'pointer-events-none',
       )}
     >
-      <div className="shrink-0">
+      <div className={cn('shrink-0', beside ? null : 'mx-auto w-fit')}>
         <PreviewCard
           key={id}
           object={object}
           role={role}
-          size={wide ? 'large' : 'medium'}
+          size={beside ? 'medium' : 'large'}
+          width={fit.picture}
           revealed={place !== undefined}
         />
       </div>
-      <div className={cn('grid content-start gap-1 text-sm', wide ? 'mt-3' : 'min-w-0 flex-1')}>
+      <div className={cn('grid content-start gap-1 text-sm', beside ? 'min-w-0 flex-1' : 'mt-3')}>
         <p className="font-semibold">{roomTitle(object.name, links.doors)}</p>
         {reason === undefined ? null : (
           <p
@@ -190,10 +201,13 @@ function PreviewBody({ target }: { target: PreviewTarget }) {
           {zoneText(object.zone, name)}. {controlText(object, name)}.
         </p>
         {target.pinned ? (
-          <Button variant="outline" size="sm" className="mt-1 w-fit" onClick={() => store.dismiss()}>
-            <X aria-hidden="true" />
-            Close preview
-          </Button>
+          // Stays at the foot of the panel while the lines above it scroll.
+          <div className="sticky -bottom-3 -mb-3 bg-popover pt-1 pb-3">
+            <Button variant="outline" size="sm" onClick={() => store.dismiss()}>
+              <X aria-hidden="true" />
+              Close preview
+            </Button>
+          </div>
         ) : null}
       </div>
     </div>

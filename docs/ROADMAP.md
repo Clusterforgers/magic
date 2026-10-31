@@ -48,7 +48,6 @@ One item is one piece of about 15 minutes and one line: the outcome, the cards i
 Items that touch the running game come first.
 
 - [ ] (v95a) Choosing a card for an effect: the card under the cursor or chosen is shown large at the side (the preview) so its text reads, and a choice among cards in a graveyard, exile, hand or on the battlefield shows the cards themselves, not only their names (`docs/web.md`, prompts)
-- [~] (v94a) (card-zoom) The highlighted card (under the pointer or selected, the spotlight or preview) is drawn larger so its text reads, without covering prompts or controls, at 1440x900 and on a phone (`docs/web.md`)
 - [ ] (ad1c) The Accounts page in the layout gate at the six sizes in both themes (a dev route that stands for it) and an e2e spec of the admin flow on the Postgres server: sign-in, make an account, the friend signs in, the closed sign-up page (`docs/web.md`)
 - [ ] (d1c) A copy of the nightly database dumps off queen (a Longhorn backup target or a scheduled copy to another machine), so losing queen does not lose the accounts and decks (`docs/deploy.md`)
 - [ ] (d1b) The release script's steps as a GitHub Actions workflow on a published release, so a release needs no dev machine (`docs/deploy.md`)

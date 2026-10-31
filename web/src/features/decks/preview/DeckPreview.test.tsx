@@ -163,6 +163,16 @@ describe('the deck preview', () => {
     expect(screen.queryByRole('dialog')).toBeNull()
   })
 
+  it('draws the large card up to 408 px wide, capped by the window height and the dialog width', async () => {
+    const user = userEvent.setup()
+    render(<DeckPreview deck={DECK} />)
+    await user.click(screen.getByRole('button', { name: 'Odd Dragon, played by hand' }))
+    const zoom = await screen.findByRole('dialog')
+    expect(zoom).toHaveClass('max-w-lg')
+    const picture = zoom.querySelector('[data-slot="card-image"]')
+    expect(picture).toHaveClass('w-[min(100%,25.5rem,calc((100dvh-15rem)*5/7))]')
+  })
+
   it('draws a body of its own under the header while the cards load', () => {
     render(<DeckPreview deck={{ ...DECK, cards: [] }} body={<p>Loading</p>} />)
     expect(screen.getByText('Loading')).toBeInTheDocument()

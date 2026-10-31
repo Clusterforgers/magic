@@ -3,6 +3,7 @@ import { screen, waitFor, within } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import { cardHit, deckError, lineOf } from '@/features/decks/fakeDecks'
 import type { CardDetail, CardFaceView, CardHit, Reason, Span } from '@/protocol/generated'
+import { must } from '@/test-utils/batches'
 import { jsonResponse } from '@/test-utils/fakeFetch'
 import { cardDetail } from './fakeCards'
 import { BOLT, copies, deckLine, MOUNTAIN, renderBuilder, searchBox, searchPane } from './renderBuilder'
@@ -129,6 +130,20 @@ describe('opening the preview', () => {
     expect(back).toHaveTextContent('Stomp')
     expect(back).toHaveTextContent('Instant — Adventure')
     expect(oracle(back as HTMLElement)).toHaveTextContent(/Then exile this card\./)
+  })
+
+  it('draws each face at 256 px (1.6 times the old size), wrapping rather than shrinking to the dialog', async () => {
+    const { user } = await renderBuilder({
+      view: { cards: [lineOf('Mountain', 20, { card: MOUNTAIN }), lineOf('x', 1, { card: GIANT })] },
+      cards: { details: [giantDetail()] },
+    })
+    await user.click(nameButton(deckLine('Bonecrusher Giant'), 'Bonecrusher Giant // Stomp'))
+    const preview = await dialog('Bonecrusher Giant // Stomp')
+    const strip = must(preview.querySelector('[data-slot="preview-pictures"]'))
+    expect(strip).toHaveClass('flex-wrap', 'min-w-0')
+    const pictures = strip.querySelectorAll('[data-slot="card-image"]')
+    expect(pictures).toHaveLength(2)
+    for (const picture of pictures) expect(picture).toHaveClass('w-64', 'max-w-full')
   })
 })
 
@@ -269,7 +284,12 @@ describe('closing the preview', () => {
     const { user } = await renderBuilder({ cards: { details: [boltDetail()] } })
     await user.click(nameButton(deckLine('Lightning Bolt'), 'Lightning Bolt'))
     const preview = await dialog('Lightning Bolt')
-    expect(preview).toHaveClass('max-sm:bottom-0', 'max-sm:w-full', 'max-sm:rounded-b-none', 'sm:max-w-xl')
+    expect(preview).toHaveClass(
+      'max-sm:bottom-0',
+      'max-sm:w-full',
+      'max-sm:rounded-b-none',
+      'sm:max-w-2xl',
+    )
   })
 })
 

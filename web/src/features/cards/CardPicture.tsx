@@ -2,6 +2,8 @@ import { useState } from 'react'
 import type { ReactElement, PointerEvent as ReactPointerEvent } from 'react'
 import { cn } from '@/lib/utils'
 import { CardImage } from './CardImage'
+import { hoverFit } from './hoverFit'
+import type { HoverFit } from './hoverFit'
 import { useImageChoice } from './imageSetting'
 import { cardImageUrl } from './images'
 import type { ImageSize } from './images'
@@ -48,19 +50,10 @@ export function CardPicture({
   )
 }
 
-/** Where the hover picture stands: beside the element, kept inside the window. */
-function placeBeside(rect: DOMRect): { left: number; top: number } {
-  const width = 244
-  const height = 342
-  const right = rect.right + 12
-  const left = right + width <= window.innerWidth ? right : Math.max(8, rect.left - width - 12)
-  const top = Math.min(Math.max(8, rect.top - height / 3), Math.max(8, window.innerHeight - height - 8))
-  return { left, top }
-}
-
 /**
- * Wraps a card's name so hovering it shows the card's picture beside it, for a pointer only (the name's own preview
- * dialog serves the keyboard). The picture is fixed to the window, so a scrolling list never clips it.
+ * Wraps a card's name so hovering it shows the card's picture beside it, large enough to read its text (`hoverFit`),
+ * for a pointer only (the name's own preview dialog serves the keyboard). The picture is fixed to the window, so a
+ * scrolling list never clips it.
  */
 export function HoverPicture({
   oracleId,
@@ -74,9 +67,15 @@ export function HoverPicture({
   /** Classes of the wrapper, which takes the name's place in its layout. */
   className?: string
 }) {
-  const [at, setAt] = useState<{ left: number; top: number } | null>(null)
+  const [at, setAt] = useState<HoverFit | null>(null)
   const show = (event: ReactPointerEvent<HTMLElement>) => {
-    if (event.pointerType === 'mouse') setAt(placeBeside(event.currentTarget.getBoundingClientRect()))
+    if (event.pointerType === 'mouse')
+      setAt(
+        hoverFit(event.currentTarget.getBoundingClientRect(), {
+          width: window.innerWidth,
+          height: window.innerHeight,
+        }),
+      )
   }
   return (
     <span className={cn('flex min-w-0', className)} onPointerEnter={show} onPointerLeave={() => setAt(null)}>
@@ -84,10 +83,10 @@ export function HoverPicture({
       {at === null ? null : (
         <span
           data-slot="hover-picture"
-          className="pointer-events-none fixed z-50 w-61 drop-shadow-lg"
-          style={{ left: at.left, top: at.top }}
+          className="pointer-events-none fixed z-50 drop-shadow-lg"
+          style={{ left: at.left, top: at.top, width: at.width }}
         >
-          <CardPicture oracleId={oracleId} name={name} alt="" className="w-61" />
+          <CardPicture oracleId={oracleId} name={name} alt="" className="w-full" />
         </span>
       )}
     </span>

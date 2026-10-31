@@ -41,4 +41,15 @@ describe('HoverPicture', () => {
     act(() => fireEvent.pointerLeave(screen.getByRole('button'), { pointerType }))
     expect(container.querySelector('[data-slot="hover-picture"]')).toBeNull()
   })
+
+  it('draws the picture at the width the window allows, up to twice the old one', () => {
+    const { container } = render(
+      <HoverPicture oracleId="bolt" name="Lightning Bolt">
+        <button type="button">Lightning Bolt</button>
+      </HoverPicture>,
+    )
+    act(() => fireEvent.pointerEnter(screen.getByRole('button'), { pointerType: 'mouse' }))
+    const shown = container.querySelector<HTMLElement>('[data-slot="hover-picture"]')
+    expect(shown?.style.width).toBe('488px')
+  })
 })

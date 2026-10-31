@@ -1,4 +1,4 @@
-// Goal: the preview draws the picture of the face in use at the size the table draws the card at (normal, never a large one that waits for the CDN behind every other picture), by the printing a deck line chose or else by the card, its oracle text as selectable text, and turns a card of several faces over to the other face's picture.
+// Goal: the preview draws the picture of the face in use at the size the table draws the card at or at a width of its own (the normal picture at any width, never a large one that waits for the CDN behind every other picture), by the printing a deck line chose or else by the card, its oracle text as selectable text, and turns a card of several faces over to the other face's picture.
 import { act, fireEvent, screen } from '@testing-library/react'
 import { afterEach, describe, expect, it } from 'vitest'
 import { resetImageMemory } from '@/features/cards/CardImage'
@@ -84,7 +84,40 @@ describe('the picture the preview asks for', () => {
     expect(srcs(container)).toEqual([url])
   })
 
-  it('is the size the table gives a card of the preview width', () => {
+  it('is the size the table gives a card of the old preview width', () => {
     for (const width of [SIZE_PX.medium, SIZE_PX.large]) expect(imageSizeFor(width)).toBe('normal')
+  })
+})
+
+describe('PreviewCard at a width of its own', () => {
+  it.each([240, 384, 480])(
+    'sets the box to %i px wide and 7/5 of it high, and still asks for the normal picture',
+    async (width) => {
+      const view = renderTable({
+        ui: (
+          <PreviewCard
+            object={permanent({}, { identity: { oracle_id: 'dfc' } })}
+            role={null}
+            size="large"
+            width={width}
+            api={api([face('Grizzly Bears', 'Bears.')])}
+          />
+        ),
+      })
+      await act(async () => {
+        await Promise.resolve()
+      })
+      const box = view.container.querySelector<HTMLElement>('div.grid.gap-2')
+      expect(box?.style.getPropertyValue('--card-w')).toBe(`${width}px`)
+      expect(box?.style.getPropertyValue('--card-h')).toBe(`${(width * 7) / 5}px`)
+      expect(srcs(view.container)).toEqual(['/api/images/oracle/dfc/0/normal'])
+    },
+  )
+
+  it('leaves the box to the size when no width is given', async () => {
+    const { container } = await draw([face('Grizzly Bears', 'Bears.')])
+    expect(container.querySelector<HTMLElement>('div.grid.gap-2')?.style.getPropertyValue('--card-w')).toBe(
+      '',
+    )
   })
 })

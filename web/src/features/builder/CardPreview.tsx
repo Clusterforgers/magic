@@ -228,7 +228,7 @@ function Body({ card, api, fixMarks }: { card: CardHit; api: CardsApi; fixMarks?
           />
         )}
       </header>
-      <div data-slot="preview-pictures" className="flex gap-2">
+      <div data-slot="preview-pictures" className="flex min-w-0 flex-wrap gap-2">
         {Array.from({ length: hasManyFaces(card) ? 2 : 1 }, (_, face) => (
           <CardPicture
             key={face}
@@ -236,7 +236,7 @@ function Body({ card, api, fixMarks }: { card: CardHit; api: CardsApi; fixMarks?
             name={card.name}
             face={face}
             alt={face === 0 ? card.name : ''}
-            className="w-40 max-w-[calc(50%-0.25rem)]"
+            className="w-64 max-w-full"
           />
         ))}
       </div>
@@ -299,7 +299,7 @@ export function CardPreview({ card, open, api, onClose, finalFocus, fixMarks }: 
         <DialogContent
           finalFocus={finalFocus}
           data-slot="card-preview"
-          className="p-4 max-sm:top-auto max-sm:bottom-0 max-sm:left-0 max-sm:max-h-[90dvh] max-sm:w-full max-sm:max-w-none max-sm:translate-x-0 max-sm:translate-y-0 max-sm:rounded-b-none max-sm:border-x-0 max-sm:border-b-0 sm:max-w-xl sm:p-6"
+          className="p-4 max-sm:top-auto max-sm:bottom-0 max-sm:left-0 max-sm:max-h-[90dvh] max-sm:w-full max-sm:max-w-none max-sm:translate-x-0 max-sm:translate-y-0 max-sm:rounded-b-none max-sm:border-x-0 max-sm:border-b-0 sm:max-w-2xl sm:p-6"
         >
           <Body key={card.oracle_id} card={card} api={api} fixMarks={fixMarks} />
         </DialogContent>
