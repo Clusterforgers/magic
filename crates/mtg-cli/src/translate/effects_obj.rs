@@ -5,7 +5,7 @@ use serde_json::{Value, json};
 use super::amount::{amount, counter_kind};
 use super::ctx::{Ctx, Tr, only, unmapped};
 use super::keyword::keyword_list;
-use super::valid::{defined, selector_any, subject};
+use super::valid::{defined, objects, selector_any, subject};
 use crate::forge::script::Params;
 
 /// The effects of a verb on objects.
@@ -18,6 +18,7 @@ pub fn effects(ctx: &mut Ctx, p: &Params, api: &str) -> Tr<Vec<Value>> {
         "Counter" => one(counter(ctx, p)),
         "Pump" => pump(ctx, p),
         "PumpAll" => pump_all(ctx, p),
+        "Animate" => animate(ctx, p),
         "PutCounter" => one(put_counter(ctx, p)),
         "RemoveCounter" => one(remove_counter(ctx, p)),
         "Tap" => one(simple(ctx, p, "Tap", "Tap")),
@@ -46,7 +47,7 @@ pub fn duration(word: Option<&str>) -> Tr<&'static str> {
 
 fn simple(ctx: &mut Ctx, p: &Params, api: &str, verb: &str) -> Tr<Value> {
     only(p, api, &["ValidTgts", "Defined", "TargetMin", "TargetMax"])?;
-    let what = subject(ctx, p, "", None)?;
+    let what = subject(ctx, p, "Self", None)?;
     Ok(json!({ verb: {"what": what} }))
 }
 
@@ -122,7 +123,7 @@ fn pump(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         ],
     )?;
     let duration = duration(p.get("Duration"))?;
-    let affected = subject(ctx, p, "", None)?;
+    let affected = objects(subject(ctx, p, "Self", None)?)?;
     let mods = pump_mods(ctx, p)?;
     Ok(vec![
         json!({"Continuous": {"affected": affected, "mods": mods, "duration": duration}}),
@@ -144,6 +145,87 @@ fn pump_all(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     ])
 }
 
+/// `Animate`: the object becomes something else for a while ("becomes a 4/4 Elemental creature with flying").
+fn animate(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
+    only(
+        p,
+        "Animate",
+        &[
+            "Defined", "ValidTgts", "Types", "Power", "Toughness", "Colors", "OverwriteColors", "Keywords",
+            "RemoveCreatureTypes", "Duration", "TargetMin", "TargetMax",
+        ],
+    )?;
+    let duration = duration(p.get("Duration"))?;
+    let affected = objects(subject(ctx, p, "", None)?)?;
+    let mut mods = Vec::new();
+    match (p.get("Power"), p.get("Toughness")) {
+        (Some(power), Some(toughness)) => {
+            let (power, toughness) = (amount(ctx, power)?, amount(ctx, toughness)?);
+            mods.push(json!({"SetPT": {"power": power, "toughness": toughness}}));
+        }
+        (None, None) => {}
+        _ => return unmapped("key:Animate.half-stats"),
+    }
+    if let Some(colors) = p.get("Colors") {
+        if p.get("OverwriteColors") != Some("True") {
+            return unmapped("key:Animate.Colors-added");
+        }
+        mods.push(json!({"SetColors": color_names(colors)?}));
+    }
+    mods.extend(type_mods(ctx, p)?);
+    if let Some(keywords) = p.get("Keywords") {
+        for keyword in keyword_list(ctx, keywords)? {
+            mods.push(json!({ "AddKeyword": keyword }));
+        }
+    }
+    if mods.is_empty() {
+        return unmapped("key:Animate.nothing");
+    }
+    Ok(vec![
+        json!({"Continuous": {"affected": affected, "mods": mods, "duration": duration}}),
+    ])
+}
+
+/// Colours as the DSL names them.
+fn color_names(colors: &str) -> Tr<Vec<&'static str>> {
+    colors
+        .split(',')
+        .map(|word| match word.trim() {
+            "White" => Ok("White"),
+            "Blue" => Ok("Blue"),
+            "Black" => Ok("Black"),
+            "Red" => Ok("Red"),
+            "Green" => Ok("Green"),
+            other => unmapped(format!("key:Animate.Colors={other}")),
+        })
+        .collect()
+}
+
+/// The type changes of an animate line: the creature types it sets or adds, then the card types it adds.
+fn type_mods(ctx: &Ctx, p: &Params) -> Tr<Vec<Value>> {
+    let Some(types) = p.get("Types") else {
+        return Ok(Vec::new());
+    };
+    let (mut card_types, mut subtypes) = (Vec::new(), Vec::new());
+    for word in types.split(',').map(str::trim) {
+        if super::ctx::CARD_TYPES.contains(&word) {
+            card_types.push(word);
+        } else if ctx.world.subtypes.contains(word) {
+            subtypes.push(word);
+        } else {
+            return unmapped(format!("key:Animate.Types={word}"));
+        }
+    }
+    let mut mods = Vec::new();
+    if p.get("RemoveCreatureTypes") == Some("True") {
+        mods.push(json!({"SetCreatureTypes": subtypes}));
+    } else {
+        mods.extend(subtypes.iter().map(|name| json!({"AddSubtype": name})));
+    }
+    mods.extend(card_types.iter().map(|name| json!({"AddType": name})));
+    Ok(mods)
+}
+
 fn put_counter(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     only(
         p,
@@ -156,7 +238,7 @@ fn put_counter(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     let Some(kind) = p.get("CounterType").and_then(counter_kind) else {
         return unmapped("key:PutCounter.CounterType");
     };
-    let on = subject(ctx, p, "", None)?;
+    let on = subject(ctx, p, "Self", None)?;
     let count = if p.has("DividedAsYouChoose") {
         json!("Divided")
     } else {
@@ -174,7 +256,7 @@ fn remove_counter(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     let Some(kind) = p.get("CounterType").and_then(counter_kind) else {
         return unmapped("key:RemoveCounter.CounterType");
     };
-    let from = subject(ctx, p, "", None)?;
+    let from = subject(ctx, p, "Self", None)?;
     let count = amount(ctx, p.get("CounterNum").unwrap_or("1"))?;
     Ok(json!({"RemoveCounters": {"from": from, "counter": kind, "count": count}}))
 }
@@ -213,7 +295,7 @@ fn gain_control(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         Some("EOT") => "UntilEndOfTurn",
         Some(other) => return unmapped(format!("key:GainControl.LoseControl={other}")),
     };
-    let affected = subject(ctx, p, "", None)?;
+    let affected = objects(subject(ctx, p, "", None)?)?;
     Ok(vec![json!({"Continuous": {
         "affected": affected,
         "mods": [{"SetController": "You"}],

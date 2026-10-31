@@ -50,6 +50,7 @@ fn affected(ctx: &Ctx, p: &Params) -> Tr<Value> {
         (Some(word), None | Some("Creature" | "Card" | "Permanent")) => static_defined(ctx, word),
         (Some(_), Some(_)) => unmapped("static-affected:Defined+Affected"),
         (None, Some(valid)) => affected_valid(ctx, valid),
+        (None, None) if p.get("CharacteristicDefining") == Some("True") => Ok(json!("This")),
         (None, None) => unmapped("static-affected:none"),
     }
 }

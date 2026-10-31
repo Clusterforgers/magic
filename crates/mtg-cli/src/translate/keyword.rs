@@ -5,6 +5,7 @@ use serde_json::{Value, json};
 use super::amount::{amount, counter_kind};
 use super::cost::cost;
 use super::ctx::{Ctx, Tr, is_hint, unmapped};
+use super::effects::chain_at;
 use super::valid::selector_any;
 use crate::forge::script::Params;
 
@@ -178,7 +179,19 @@ fn other_keyword(ctx: &Ctx, name: &str, first: Option<&str>, second: Option<&str
             (Ok(time), Some(cost_text)) => Ok(json!({"Suspend": {"time": time, "cost": cost(ctx, cost_text)?}})),
             _ => unmapped("keyword:Suspend"),
         },
-        ("Partner", Some(with)) => Ok(json!({"PartnerWith": with})),
+        ("Partner", Some(group)) => Ok(json!({"PartnerGroup": group})),
+        ("Partner with", Some(with)) => Ok(json!({"PartnerWith": with})),
+        ("Landwalk", Some(land)) => Ok(json!({"Landwalk": selector_any(ctx, land)?})),
+        ("TypeCycling", Some(find)) => {
+            let find = match find {
+                "Basic" => vec![json!({"Supertype": "Basic"}), json!({"Type": "Land"})],
+                other => selector_any(ctx, other)?,
+            };
+            let Some(cost_text) = second else {
+                return unmapped("keyword:TypeCycling-shape");
+            };
+            Ok(json!({"Typecycling": {"find": find, "cost": cost(ctx, cost_text)?}}))
+        }
         (word, None) if word.ends_with("walk") => landwalk(word),
         _ => unmapped(format!("keyword:{name}")),
     }
@@ -194,6 +207,40 @@ fn landwalk(word: &str) -> Tr<Value> {
         _ => return unmapped(format!("keyword:{word}")),
     };
     Ok(json!({"Landwalk": [{"Subtype": land}]}))
+}
+
+/// The abilities a `K:` line stands for: those of `keyword_ability`, or the chapters of a Saga.
+pub fn keyword_abilities(ctx: &mut Ctx, body: &str) -> Vec<Tr<Value>> {
+    match body.strip_prefix("Chapter:") {
+        Some(rest) => chapters(ctx, rest),
+        None => vec![keyword_ability(ctx, body)],
+    }
+}
+
+/// `Chapter:3:First,Second,Third`: a triggered ability for each chapter, from the part the chapter names.
+fn chapters(ctx: &mut Ctx, rest: &str) -> Vec<Tr<Value>> {
+    let mut fields = rest.split(':');
+    let count = fields.next().and_then(|count| count.parse::<usize>().ok());
+    let names: Vec<&str> = fields.next().unwrap_or_default().split(',').collect();
+    if count != Some(names.len()) || fields.next().is_some() {
+        return vec![unmapped("keyword:Chapter-shape")];
+    }
+    names
+        .iter()
+        .enumerate()
+        .map(|(at, name)| chapter(ctx, at + 1, name))
+        .collect()
+}
+
+fn chapter(ctx: &mut Ctx, number: usize, name: &str) -> Tr<Value> {
+    ctx.reset();
+    let part = ctx.sub(name)?;
+    let effects = chain_at(ctx, &part, false)?;
+    let mut ability = json!({"when": {"Chapter": {"number": number}}, "effects": effects});
+    if !ctx.targets.is_empty() {
+        ability["targets"] = Value::Array(ctx.targets.clone());
+    }
+    Ok(json!({ "Triggered": ability }))
 }
 
 /// The ability a `K:` line stands for: a keyword, or the replacement of a permanent that enters with counters or makes a

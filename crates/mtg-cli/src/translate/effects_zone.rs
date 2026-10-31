@@ -78,7 +78,7 @@ fn search(ctx: &mut Ctx, p: &Params, destination: &str) -> Tr<Vec<Value>> {
         p,
         "ChangeZone.Search",
         &[
-            "Origin", "Destination", "ChangeType", "ChangeNum", "Hidden", "Mandatory", "Tapped",
+            "Origin", "Destination", "ChangeType", "ChangeNum", "Hidden", "Mandatory", "Tapped", "ShuffleNonMandatory",
             "Reveal", "LibraryPosition",
         ],
     )?;
@@ -86,13 +86,14 @@ fn search(ctx: &mut Ctx, p: &Params, destination: &str) -> Tr<Vec<Value>> {
         return unmapped("key:ChangeZone.Search-to-library");
     }
     let filter = selector_any(ctx, p.get("ChangeType").unwrap_or("Card"))?;
+    let filter_is_open = filter.is_empty();
     let bind = ctx.fresh("found");
     let mut find = json!({"filter": filter, "as": bind});
     match p.get("ChangeNum") {
         None | Some("1") => {}
         Some(n) => find["count"] = json!({"min": 0, "max": amount(ctx, n)?}),
     }
-    if p.get("Reveal") == Some("True") {
+    if p.get("Reveal") == Some("True") || (destination == "Hand" && !filter_is_open) {
         find["reveal"] = json!(true);
     }
     let found = json!({ "Bound": bind });

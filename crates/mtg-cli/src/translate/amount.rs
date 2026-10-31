@@ -8,7 +8,7 @@ use super::valid::{defined, selector_in};
 /// The DSL name of a counter kind (`P1P1` is `+1/+1`).
 pub fn counter_kind(word: &str) -> Option<Value> {
     let word = word.trim();
-    if word.is_empty() || !word.chars().all(|c| c.is_ascii_alphanumeric() || c == '_') {
+    if word.is_empty() || !word.chars().all(|c| c.is_ascii_uppercase() || c.is_ascii_digit() || c == '_') {
         return None;
     }
     Some(match word {

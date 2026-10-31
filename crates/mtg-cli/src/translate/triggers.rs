@@ -28,9 +28,18 @@ pub fn triggered(ctx: &mut Ctx, body: &str) -> Tr<Value> {
     };
     let part = ctx.sub(execute)?;
     let mut effects = chain_at(ctx, &part, false)?;
+    let itself = is_about_itself(&when);
+    if itself {
+        for effect in &mut effects {
+            about_this(effect);
+        }
+    }
     match p.get("OptionalDecider") {
         None => {}
         Some("You") => effects = vec![json!({"May": {"effects": effects}})],
+        Some("TriggeredCardController") if itself => {
+            effects = vec![json!({"May": {"effects": effects}})];
+        }
         Some(other) => return unmapped(format!("key:Trigger.OptionalDecider={other}")),
     }
     let mut ability = json!({"when": when, "effects": effects});
@@ -44,6 +53,33 @@ pub fn triggered(ctx: &mut Ctx, body: &str) -> Tr<Value> {
         ability["targets"] = Value::Array(ctx.targets.clone());
     }
     Ok(json!({ "Triggered": ability }))
+}
+
+/// Whether a pattern is about the card itself ("when this creature dies"), so that "that creature" is the card and its
+/// controller is "you".
+fn is_about_itself(when: &Value) -> bool {
+    when.as_object()
+        .and_then(|map| map.values().next())
+        .and_then(|inner| inner.get("what"))
+        .is_some_and(|what| *what == json!(["This"]))
+}
+
+/// Rewrites the references to the triggering object in the effects of a trigger about itself.
+fn about_this(value: &mut Value) {
+    match value {
+        Value::Object(map) => {
+            if map.len() == 1 && map.get("ControllerOf") == Some(&json!("Triggering")) {
+                *value = json!("You");
+                return;
+            }
+            for inner in map.values_mut() {
+                about_this(inner);
+            }
+        }
+        Value::Array(items) => items.iter_mut().for_each(about_this),
+        Value::String(word) if word == "Triggering" => *value = json!("This"),
+        _ => {}
+    }
 }
 
 /// Checks the keys of a trigger line against those a mode reads.

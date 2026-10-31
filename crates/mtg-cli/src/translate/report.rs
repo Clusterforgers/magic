@@ -25,6 +25,8 @@ struct Row {
 pub struct Funnel {
     /// Scripts read.
     pub read: usize,
+    /// Cards the corpus or the compiler already makes `Verified`, which the ranking of gaps leaves out.
+    pub verified_today: usize,
     /// Scripts of cards the database does not store (with `--stored`).
     pub unstored: usize,
     /// Cards with no rule line at all (vanilla, or only an Oracle line), which have nothing to translate.
@@ -41,10 +43,13 @@ pub struct Funnel {
 
 impl Funnel {
     /// Counts a card; true when it has a proposal to write.
-    pub fn add(&mut self, card: &CardOut) -> bool {
+    pub fn add(&mut self, card: &CardOut, ranked: bool) -> bool {
         self.read += 1;
         let names: BTreeSet<&str> = card.gaps().map(|gap| gap.0.as_str()).collect();
-        for name in &names {
+        if !ranked {
+            self.verified_today += 1;
+        }
+        for name in names.iter().filter(|_| ranked) {
             let row = self.rows.entry((*name).to_owned()).or_default();
             row.blocked.insert(card.name.clone());
             if names.len() == 1 {
@@ -109,6 +114,13 @@ impl Funnel {
             self.plain,
             self.unstored
         );
+        if self.verified_today > 0 {
+            let _ = writeln!(
+                text,
+                "{} of the proposals are for cards that are Verified already (corpus or compiler); the rankings leave them out",
+                self.verified_today
+            );
+        }
         let mut reasons: Vec<(&String, &usize)> = self.first.iter().collect();
         reasons.sort_by(|a, b| b.1.cmp(a.1).then(a.0.cmp(b.0)));
         text.push_str("skipped, by the first unmapped construct:\n");

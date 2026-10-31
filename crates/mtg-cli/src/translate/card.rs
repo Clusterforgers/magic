@@ -5,7 +5,7 @@ use serde_json::{Value, json};
 
 use super::ability::ability_line;
 use super::ctx::{Ctx, Tr, Unmapped, World, unmapped};
-use super::keyword::keyword_ability;
+use super::keyword::keyword_abilities;
 use super::replacements::replacement_line;
 use super::statics::static_line;
 use super::triggers::triggered;
@@ -76,13 +76,15 @@ pub fn translate_face(world: &World, face: &Face) -> FaceOut {
     let mut ctx = Ctx::new(face, world);
     let mut out = FaceOut::default();
     for body in &face.keywords {
-        take(&mut out, keyword_ability(&mut ctx, body).map(Some));
+        for result in keyword_abilities(&mut ctx, body) {
+            take(&mut out, result.map(Some));
+        }
     }
     for body in &face.abilities {
         take(&mut out, ability_line(&mut ctx, body));
     }
-    for body in &face.triggers {
-        take(&mut out, triggered(&mut ctx, body).map(Some));
+    for group in trigger_groups(&face.triggers) {
+        take(&mut out, merged_trigger(&mut ctx, &group).map(Some));
     }
     for body in &face.statics {
         take(&mut out, static_line(&mut ctx, body).map(Some));
@@ -91,6 +93,65 @@ pub fn translate_face(world: &World, face: &Face) -> FaceOut {
         take(&mut out, replacement_line(&mut ctx, body).map(Some));
     }
     out
+}
+
+/// The trigger lines grouped as the card prints them: lines that run the same part, one of them marked `Secondary$`,
+/// are one printed trigger ("when this enters or attacks"); every other line stands alone.
+fn trigger_groups(bodies: &[String]) -> Vec<Vec<&String>> {
+    let mut groups: Vec<Vec<&String>> = Vec::new();
+    for body in bodies {
+        let params = Params::parse(body);
+        let execute = params.get("Execute").map(str::to_owned);
+        let secondary = params.get("Secondary") == Some("True");
+        let same = |group: &Vec<&String>| {
+            let first = Params::parse(group[0]);
+            execute.is_some()
+                && first.get("Execute") == execute.as_deref()
+                && (secondary || group.iter().any(|b| Params::parse(b).get("Secondary") == Some("True")))
+        };
+        match groups.iter_mut().find(|group| same(group)) {
+            Some(group) => group.push(body),
+            None => groups.push(vec![body]),
+        }
+    }
+    groups
+}
+
+/// One trigger from a group of lines: the event patterns of the lines joined as alternatives when the rest of the
+/// abilities is the same.
+fn merged_trigger(ctx: &mut Ctx, group: &[&String]) -> Tr<Value> {
+    let mut abilities = Vec::new();
+    for body in group {
+        abilities.push(triggered(ctx, body)?);
+    }
+    let mut merged = abilities.remove(0);
+    for other in abilities {
+        let (Some(mine), Some(theirs)) = (
+            merged.get_mut("Triggered").and_then(Value::as_object_mut),
+            other.get("Triggered").and_then(Value::as_object),
+        ) else {
+            return unmapped("trigger:merge-shape");
+        };
+        let rest = |map: &serde_json::Map<String, Value>| {
+            map.iter()
+                .filter(|(key, _)| key.as_str() != "when")
+                .map(|(key, value)| (key.clone(), value.clone()))
+                .collect::<Vec<_>>()
+        };
+        if rest(mine) != rest(theirs) {
+            return unmapped("trigger:Secondary-with-different-effects");
+        }
+        let (Some(first), Some(second)) = (mine.get("when").cloned(), theirs.get("when").cloned()) else {
+            return unmapped("trigger:merge-shape");
+        };
+        let mut alternatives = match first.get("AnyOf") {
+            Some(Value::Array(list)) => list.clone(),
+            _ => vec![first],
+        };
+        alternatives.push(second);
+        mine.insert("when".to_owned(), json!({ "AnyOf": alternatives }));
+    }
+    Ok(merged)
 }
 
 /// Records the result of one line: the ability when it parses, else the gap.

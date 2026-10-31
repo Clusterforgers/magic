@@ -93,6 +93,9 @@ fn custom(ctx: &Ctx, face: &Face, words: &[&str]) -> Tr<Value> {
     if let Some(colors) = &face.colors {
         spec["colors"] = colors_of(colors)?;
     }
+    if words.contains(&"Creature") != face.pt.is_some() {
+        return unmapped("token:stats-shape");
+    }
     if let Some(pt) = &face.pt {
         let (power, toughness) = parse_pt(pt)?;
         spec["power"] = json!(power);

@@ -171,6 +171,56 @@ fn gaps(text: &str) -> Vec<String> {
         {"effects": [{"Draw": {"count": 2}}]},
         {"targets": [{"what": "AnyTarget"}], "effects": [{"DealDamage": {"to": {"Target": 0}, "amount": 2}}]}]}}]}})
 )]
+#[case::animate(
+    "Name:Test Den\nTypes:Land\nA:AB$ Animate | Cost$ 2 R | Defined$ Self | Power$ 3 | Toughness$ 3 | Types$ Creature,Goblin | RemoveCreatureTypes$ True | Colors$ Red | OverwriteColors$ True | Keywords$ Haste\n",
+    json!({"Activated": {"cost": "{2}{R}", "effects": [{"Continuous": {"affected": "This",
+        "mods": [{"SetPT": {"power": 3, "toughness": 3}}, {"SetColors": ["Red"]},
+            {"SetCreatureTypes": ["Goblin"]}, {"AddType": "Creature"}, {"AddKeyword": "Haste"}],
+        "duration": "UntilEndOfTurn"}}]}})
+)]
+#[case::enters_with_counters(
+    "Name:Test Hatchling\nTypes:Creature Elf\nK:etbCounter:P1P1:2\n",
+    json!({"Replacement": {"when": {"Enters": {"what": ["This"]}}, "by": {"WithCounters": {"counter": "+1/+1", "count": 2}}}})
+)]
+#[case::enters_choosing(
+    "Name:Test Totem\nTypes:Artifact\nK:ETBReplacement:Other:ChooseColor\nSVar:ChooseColor:DB$ ChooseColor | Defined$ You | AILogic$ Most\n",
+    json!({"Replacement": {"when": {"Enters": {"what": ["This"]}}, "by": {"Choose": "Color"}}})
+)]
+#[case::condition_on_a_static(
+    "Name:Test Knight\nTypes:Creature Elf\nS:Mode$ Continuous | Affected$ Card.Self | AddKeyword$ Flying | IsPresent$ Wizard.YouCtrl | PresentCompare$ GE2\n",
+    json!({"Static": {"affected": "This", "mods": [{"AddKeyword": "Flying"}],
+        "condition": {"Compare": {"left": {"Count": [{"Subtype": "Wizard"}, {"ControlledBy": "You"}]}, "op": "Ge", "right": 2}}}})
+)]
+#[case::cost_reduction(
+    "Name:Test Lantern\nTypes:Artifact\nS:Mode$ ReduceCost | ValidCard$ Creature | Type$ Spell | Activator$ You | Amount$ 1\n",
+    json!({"CostModifier": {"applies_to": ["Spell", {"Type": "Creature"}, {"ControlledBy": "You"}],
+        "change": "Reduce", "mana": "{1}"}})
+)]
+#[case::cannot_block(
+    "Name:Test Wall\nTypes:Creature Elf\nS:Mode$ CantBlock | ValidCard$ Card.Self\n",
+    json!({"Static": {"affected": "This", "mods": ["CantBlock"]}})
+)]
+#[case::pay_on_resolution(
+    "Name:Test Prodigy\nTypes:Creature Elf\nT:Mode$ Attacks | ValidCard$ Card.Self | Execute$ TrigDraw\nSVar:TrigDraw:AB$ Draw | Cost$ 1 U | NumCards$ 1\n",
+    json!({"Triggered": {"when": {"Attacks": {"what": ["This"]}},
+        "effects": [{"Pay": {"cost": "{1}{U}", "paid": [{"Draw": {}}]}}]}})
+)]
+#[case::the_controller_of_a_dying_card_is_you(
+    "Name:Test Martyr\nTypes:Creature Elf\nT:Mode$ ChangesZone | Origin$ Battlefield | Destination$ Graveyard | ValidCard$ Card.Self | Execute$ TrigGain\nSVar:TrigGain:DB$ GainLife | Defined$ TriggeredCardController | LifeAmount$ 3\n",
+    json!({"Triggered": {"when": {"ZoneChange": {"what": ["This"], "from": "Battlefield", "to": "Graveyard"}},
+        "effects": [{"GainLife": {"amount": 3}}]}})
+)]
+#[case::two_events_one_trigger(
+    "Name:Test Pup\nTypes:Creature Dog\nT:Mode$ ChangesZone | Origin$ Any | Destination$ Battlefield | ValidCard$ Card.Self | Execute$ TrigDraw\nT:Mode$ Attacks | ValidCard$ Card.Self | Execute$ TrigDraw | Secondary$ True\nSVar:TrigDraw:DB$ Draw\n",
+    json!({"Triggered": {"when": {"AnyOf": [
+        {"ZoneChange": {"what": ["This"], "to": "Battlefield"}}, {"Attacks": {"what": ["This"]}}]},
+        "effects": [{"Draw": {}}]}})
+)]
+#[case::either_of_two_kinds(
+    "Name:Test Snap\nTypes:Instant\nA:SP$ Destroy | ValidTgts$ Creature.attacking,Creature.blocking\n",
+    json!({"Spell": {"targets": [{"what": {"Object": [{"Type": "Creature"}, {"AnyOf": ["Attacking", "Blocking"]}]}}],
+        "effects": [{"Destroy": {"what": {"Target": 0}}}]}})
+)]
 fn a_line_becomes_the_ability_of_the_dsl(#[case] script: &str, #[case] expected: Value) {
     let mut found = abilities(script);
     assert_eq!(found.len(), 1, "{:?}", gaps(script));
@@ -216,6 +266,20 @@ fn a_construct_without_a_mapper_leaves_its_line_out_and_is_named(
 ) {
     assert!(abilities(script).is_empty());
     assert_eq!(gaps(script), vec![gap.to_owned()]);
+}
+
+#[test]
+fn a_saga_has_a_triggered_ability_for_each_chapter() {
+    let found = abilities(
+        "Name:Test Saga\nTypes:Enchantment Saga\nK:Chapter:2:DBOne,DBTwo\nSVar:DBOne:DB$ Draw\nSVar:DBTwo:DB$ GainLife | LifeAmount$ 2\n",
+    );
+    assert_eq!(
+        found,
+        vec![
+            json!({"Triggered": {"when": {"Chapter": {"number": 1}}, "effects": [{"Draw": {}}]}}),
+            json!({"Triggered": {"when": {"Chapter": {"number": 2}}, "effects": [{"GainLife": {"amount": 2}}]}}),
+        ]
+    );
 }
 
 #[test]

@@ -180,30 +180,37 @@ const NOT_CREATURE_TYPES: [&str; 22] = [
     "Swamp", "Lesson", "Trap",
 ];
 
-/// A comma-separated list of alternatives as a selector: one alternative, or alternatives that differ only in their
-/// first predicate (`Instant.YouCtrl,Sorcery.YouCtrl`).
+/// A comma-separated list of alternatives as a selector: one alternative, or alternatives that share their predicates but
+/// one each (`Instant.YouCtrl,Sorcery.YouCtrl`, `Creature.attacking,Creature.blocking`).
 pub fn selector_any(ctx: &Ctx, spec: &str) -> Tr<Vec<Value>> {
     let alternatives: Vec<&str> = spec.split(',').collect();
     if let [only] = alternatives.as_slice() {
         return selector(ctx, only);
     }
-    let mut heads = Vec::new();
-    let mut tail: Option<Vec<Value>> = None;
-    for alternative in alternatives {
-        let mut preds = selector(ctx, alternative)?;
-        if preds.is_empty() {
-            return unmapped("valid:or-with-open-alternative");
+    let lists: Vec<Vec<Value>> = alternatives
+        .iter()
+        .map(|alternative| selector(ctx, alternative))
+        .collect::<Tr<_>>()?;
+    let common: Vec<Value> = lists[0]
+        .iter()
+        .filter(|pred| lists.iter().all(|list| list.contains(pred)))
+        .cloned()
+        .collect();
+    let mut different = Vec::new();
+    for list in &lists {
+        let rest: Vec<&Value> = list.iter().filter(|pred| !common.contains(pred)).collect();
+        match rest.as_slice() {
+            [one] => different.push((*one).clone()),
+            [] => return unmapped("valid:or-with-open-alternative"),
+            _ => return unmapped("valid:or-with-different-properties"),
         }
-        let head = preds.remove(0);
-        if tail.as_ref().is_some_and(|seen| *seen != preds) {
-            return unmapped("valid:or-with-different-properties");
-        }
-        tail = Some(preds);
-        heads.push(head);
     }
-    let mut out = vec![json!({"AnyOf": heads})];
-    out.extend(tail.unwrap_or_default());
-    Ok(out)
+    // The choice stands where the first alternative has its own predicate.
+    let any = json!({"AnyOf": different});
+    Ok(lists[0]
+        .iter()
+        .map(|pred| if common.contains(pred) { pred.clone() } else { any.clone() })
+        .collect())
 }
 
 /// A selector over the cards of a zone: the alternatives with `In(zone)` added when the zone is not the battlefield.
@@ -246,6 +253,19 @@ pub fn defined(ctx: &Ctx, word: &str) -> Tr<Value> {
         "DefendingPlayer" | "TriggeredDefendingPlayer" => Ok(json!("Defending")),
         other => unmapped(format!("defined:{other}")),
     }
+}
+
+/// The reference when it names objects, not players: an effect on objects (pump, animate, gain control) refuses a player.
+pub fn objects(reference: Value) -> Tr<Value> {
+    let player = match &reference {
+        Value::String(word) => matches!(word.as_str(), "You" | "Opponents" | "EachPlayer" | "AttachedPlayer"),
+        Value::Object(map) => map.contains_key("ControllerOf") || map.contains_key("OwnerOf"),
+        _ => false,
+    };
+    if player {
+        return unmapped("defined:player-for-an-object-effect");
+    }
+    Ok(reference)
 }
 
 /// The target specification `ValidTgts$` and its bounds stand for, as the DSL writes it.

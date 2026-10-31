@@ -56,7 +56,7 @@ fn line(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         "Charm" => one(charm(ctx, p)),
         "Destroy" | "DestroyAll" | "Counter" | "Pump" | "PumpAll" | "PutCounter" | "RemoveCounter"
         | "Tap" | "Untap" | "TapAll" | "UntapAll" | "Sacrifice" | "Regenerate" | "Fight"
-        | "GainControl" | "DamageAll" | "SacrificeAll" => effects_obj::effects(ctx, p, api),
+        | "GainControl" | "DamageAll" | "Animate" => effects_obj::effects(ctx, p, api),
         "ChangeZone" | "ChangeZoneAll" => effects_zone::effects(ctx, p, api),
         "Token" | "Mana" | "Investigate" => tokens::effects(ctx, p, api),
         other => unmapped(format!("effect:{other}")),

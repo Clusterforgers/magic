@@ -74,10 +74,13 @@ pub async fn translate_forge(
             funnel.unstored += 1;
             continue;
         }
-        let written = funnel.add(&card);
+        let today = match &stored {
+            Some(stored) if card.translated() > 0 => stored.today(&stem),
+            _ => String::new(),
+        };
+        let written = funnel.add(&card, !today.ends_with("verified"));
         if written {
             write_proposal(&out_dir, &card)?;
-            let today = stored.as_ref().map_or_else(String::new, |stored| stored.today(&stem));
             let state = if card.gaps().next().is_none() { "whole" } else { "partial" };
             let _ = writeln!(index, "{stem}\t{}\t{state}\t{today}", card.name);
         }
