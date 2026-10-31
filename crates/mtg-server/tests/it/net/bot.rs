@@ -190,7 +190,8 @@ impl WsBot {
             | ServerMessage::Yielding { .. }
             | ServerMessage::Stops { .. }
             | ServerMessage::FullControl { .. }
-            | ServerMessage::Bank { .. } => {}
+            | ServerMessage::Bank { .. }
+            | ServerMessage::Presence { .. } => {}
             ServerMessage::GameOver { result } => return Some(Stop::Over(result)),
             ServerMessage::Forecast { .. } => {
                 panic!("a bot never previews, so it is sent no forecast")

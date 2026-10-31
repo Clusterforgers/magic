@@ -364,4 +364,21 @@ pub enum ServerMessage {
         /// Extensions the seat now holds.
         bank: u8,
     },
+    /// A seat's client connected or went away while the game runs, or a seat that is away was asked something.
+    ///
+    /// Public: sent to every other connected seat whenever the seat gains its first connection or loses its last one, and
+    /// whenever a seat that is away is issued a decision or its clock is extended; a client that joins hears it for each
+    /// seat that is away on a clock. A seat taken over by a new connection stays connected and nobody is told. Batches and
+    /// snapshots carry the same flag in each `PlayerView`. Never stored, so a replay never sees it.
+    Presence {
+        /// The seat whose connection changed.
+        seat: PlayerId,
+        /// Whether a client is connected to it now.
+        connected: bool,
+        /// Milliseconds before the game answers for a seat that is away, counted from when this is sent; absent while it
+        /// is connected or has no decision on a clock.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        #[ts(optional)]
+        deadline_ms: Option<u64>,
+    },
 }

@@ -16,6 +16,7 @@ import type {
   Stop,
   YieldUntil,
 } from '@/protocol/generated'
+import type { AwayTimes } from './awayClocks'
 import { hostsBefore } from './hosts'
 import { namesToRemember } from './rememberNames'
 import type { HostRef } from './hosts'
@@ -135,6 +136,11 @@ export interface PlayState {
    * `FullControl` message, never by the page.
    */
   fullControl: FullControlMode
+  /**
+   * The seats that are away (`Presence`), by seat: milliseconds left before the game acts for each at the last whole
+   * second, or null when it has no clock. Who is away is `PlayerView.connected`; this only adds the time.
+   */
+  away: AwayTimes
 }
 
 /** The store type: a vanilla zustand store; in React read it with `useStore(store, selector)` from `zustand`. */
@@ -164,6 +170,7 @@ export function initialPlayState(): PlayState {
     yielding: null,
     stops: [],
     fullControl: 'Off',
+    away: {},
   }
 }
 

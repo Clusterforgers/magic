@@ -27,6 +27,7 @@ use serde_json::Value;
 /// Keys whose bare numbers count the cards of a pile, while a list under the same key names them.
 const COUNT_KEYS: &[&str] = &["top", "bottom", "graveyard"];
 
+/// Flags such as a seat's `connected` (presence) are public and never checked: a bool names no object.
 /// Keys whose numbers are counters or seat numbers, never object ids.
 const SCALAR_KEYS: &[&str] = &[
     "PayLife",

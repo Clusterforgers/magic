@@ -17,7 +17,7 @@ import { LifeFx } from './fx/LifeFx'
 import { ManaPool } from './ManaPool'
 import { usePodRoom } from './podRoom'
 import { useSeatNamer } from './names'
-import { ACTIVE_EDGE, CountChip, PriorityDot, SeatDot, YOUR_TURN_EDGE } from './PodParts'
+import { ACTIVE_EDGE, AwayMark, CountChip, PriorityDot, SeatDot, YOUR_TURN_EDGE } from './PodParts'
 import { podCounts, podState, podStateWords, priorityName, showsPriorityDot } from './podFigures'
 import { exileOf, holdsPriority, isActiveSeat, isYourTurn, NO_IDS, playerOf } from './selectors'
 import { describeMulligan } from './turnText'
@@ -105,6 +105,8 @@ export const SeatPanel = memo(function SeatPanel({ seat, variant = 'panel' }: Se
   const taxLoose = chips.tax.filter((chip) => !drawn.includes(chip.key))
   const counts = podCounts(player, exile.length)
   const eliminated = player.lost !== null
+  // A seat whose client is gone; one that left the game for good is eliminated instead.
+  const away = !eliminated && !player.connected
   const marks = {
     'aria-label': flags.you ? `${owner} (you)` : owner,
     'data-seat': seat,
@@ -112,6 +114,7 @@ export const SeatPanel = memo(function SeatPanel({ seat, variant = 'panel' }: Se
     'data-active': flags.active || undefined,
     'data-your-turn': flags.cue || undefined,
     'data-eliminated': eliminated || undefined,
+    'data-away': away || undefined,
     'data-state': podState(flags.active, flags.priority),
     'data-defender': defender.state,
     onClick: defender.state === undefined ? undefined : pickOnClick(defender.pick),
@@ -153,6 +156,7 @@ export const SeatPanel = memo(function SeatPanel({ seat, variant = 'panel' }: Se
       {showsPriorityDot(flags.active, flags.priority) ? (
         <PriorityDot label={priorityName(owner, flags.you)} />
       ) : null}
+      {away ? <AwayMark /> : null}
     </div>
   )
 

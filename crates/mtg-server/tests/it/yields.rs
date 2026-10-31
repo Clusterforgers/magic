@@ -196,6 +196,7 @@ fn shape(message: &ServerMessage) -> String {
         ServerMessage::Stops { .. } => "stops".into(),
         ServerMessage::FullControl { .. } => "full control".into(),
         ServerMessage::Bank { .. } => "bank".into(),
+        ServerMessage::Presence { .. } => "presence".into(),
     }
 }
 

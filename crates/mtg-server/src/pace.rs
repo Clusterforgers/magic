@@ -421,6 +421,7 @@ impl<S: EventStore> GameActor<S> {
         } = extended;
         let seat = decision.player;
         self.seats.broadcast(&ServerMessage::Bank { seat, bank });
+        self.tell_away(seat, Some(deadline_ms));
         self.seats.send(
             seat,
             ServerMessage::Decision {

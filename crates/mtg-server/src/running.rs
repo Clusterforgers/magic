@@ -406,6 +406,16 @@ impl Running {
         })
     }
 
+    /// Milliseconds before the table answers for `seat`: the time left on its decision that was sent, `None` when it has
+    /// none on a clock. A decision held back for its dwell was never sent, so it has none here either.
+    pub(crate) fn time_left(&self, seat: PlayerId) -> Option<u64> {
+        let pending = self
+            .all()
+            .find(|p| p.decision.player == seat && !p.hidden)?;
+        let due = pending.due?;
+        Some(millis(due.saturating_duration_since(Instant::now())))
+    }
+
     /// What a client needs to catch up: a snapshot, its pending decision and the result if the game is over.
     ///
     /// The decision carries the time its clock has left, not the time it started with. One that is held back for its

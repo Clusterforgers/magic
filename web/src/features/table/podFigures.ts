@@ -117,6 +117,8 @@ export interface TileFacts {
   active: boolean
   priority: boolean
   eliminated: boolean
+  /** No client is connected to the seat (it is still in the game). */
+  away?: boolean
   focused: boolean
   /** The commander tax and damage chips in words; none by default. */
   commander?: readonly string[]
@@ -142,6 +144,7 @@ export function tileName(facts: TileFacts): string {
     facts.active ? 'active turn' : null,
     facts.priority ? 'has priority' : null,
     facts.eliminated ? 'eliminated' : null,
+    facts.away === true ? 'away' : null,
     facts.focused ? 'shown now' : null,
   ]
   return `Show ${facts.name}'s board. ${figures.filter((part) => part !== null).join(', ')}`

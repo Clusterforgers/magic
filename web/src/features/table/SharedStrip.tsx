@@ -5,6 +5,8 @@ import { cn } from '@/lib/utils'
 import { CombatLegend } from './combat/CombatLegend'
 import { useSeatNamer } from './names'
 import { OpeningStatus } from './OpeningStatus'
+import { AwayMark } from './PodParts'
+import { awaySeats, awayText, untimed } from './presenceText'
 import { NothingToDoBanner } from './prompt/NothingToDoBanner'
 import { ownDecision } from './prompt/ownDecision'
 import { PromptHost } from './prompt/PromptHost'
@@ -38,6 +40,7 @@ export function SharedStrip({
   const stage = usePlay((state) => state.view?.stage ?? 'PreGame')
   const priority = usePlay((state) => state.view?.priority ?? null)
   const waiting = usePlay(useStable(waitingOn))
+  const away = usePlay(useStable((state) => awaySeats(state, waitingOn(state))))
   const mine = usePlay((state) => ownDecision(state) !== null)
   const yourTurn = usePlay(isYourTurn)
   const holder = priorityText(priority, stage, name)
@@ -85,6 +88,15 @@ export function SharedStrip({
                   className="w-fit rounded-md bg-muted px-2 py-1 text-sm font-medium"
                 >
                   {waitingText(waiting, name)}
+                  {away.length === 0 ? null : (
+                    <span data-slot="away-note">
+                      {' · '}
+                      <AwayMark className="mr-1" />
+                      {/* The seconds tick away to the eye; the live line speaks only who is away, once. */}
+                      <span aria-hidden="true">{awayText(away, name)}</span>
+                      <span className="sr-only">{awayText(untimed(away), name)}</span>
+                    </span>
+                  )}
                 </p>
               )}
             </div>

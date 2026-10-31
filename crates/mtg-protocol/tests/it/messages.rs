@@ -53,7 +53,7 @@ use serde::de::DeserializeOwned;
 use serde_json::json;
 
 const CLIENT_VARIANTS: usize = 14;
-const SERVER_VARIANTS: usize = 13;
+const SERVER_VARIANTS: usize = 14;
 
 const YIELDS: [YieldUntil; 3] = [
     YieldUntil::Resolve,
@@ -124,6 +124,7 @@ fn server_index(message: &ServerMessage) -> usize {
         ServerMessage::Stops { .. } => 10,
         ServerMessage::FullControl { .. } => 11,
         ServerMessage::Bank { .. } => 12,
+        ServerMessage::Presence { .. } => 13,
     }
 }
 
@@ -685,6 +686,13 @@ fn server_samples() -> Vec<ServerMessage> {
         seat: PlayerId(1),
         bank,
     }));
+    out.extend([(true, None), (false, None), (false, Some(9_500))].map(
+        |(connected, deadline_ms)| ServerMessage::Presence {
+            seat: PlayerId(2),
+            connected,
+            deadline_ms,
+        },
+    ));
     for code in [
         ErrorCode::UnsupportedVersion,
         ErrorCode::BadMessage,

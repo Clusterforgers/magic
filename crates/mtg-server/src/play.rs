@@ -9,6 +9,7 @@ use mtg_protocol::{
 use thiserror::Error;
 
 use crate::actor::{Fatal, GameActor, Phase, not_started};
+use crate::presence;
 use crate::running::{Halt, Issued, Rejection, Step};
 use crate::stops::{self, Stops};
 use crate::store::{EventStore, StoreError};
@@ -192,7 +193,7 @@ impl<S: EventStore> GameActor<S> {
         }
     }
 
-    /// Projects `events` for the connected seats, then saves them; nothing is sent yet.
+    /// Projects `events` for the connected seats with who is connected, then saves them; nothing is sent yet.
     pub(crate) async fn persist(
         &mut self,
         before: &GameState,
@@ -203,12 +204,16 @@ impl<S: EventStore> GameActor<S> {
             return Ok(Vec::new()); // a cast in progress changes nothing worth saving or showing
         }
         let viewers = self.seats.connected();
-        let batches = if viewers.is_empty() {
+        let mut batches = if viewers.is_empty() {
             Vec::new()
         } else {
             project_events(before, events, &viewers, from_seq)?
         };
         self.store.append(self.id, from_seq, events).await?;
+        for batch in &mut batches {
+            presence::stamp(&mut batch.table, &viewers);
+        }
+        self.presence.told(&viewers);
         Ok(viewers.into_iter().zip(batches).collect())
     }
 
@@ -237,6 +242,7 @@ impl<S: EventStore> GameActor<S> {
         } in next
         {
             let seat = decision.player;
+            self.tell_away(seat, deadline_ms);
             self.seats.send(
                 seat,
                 ServerMessage::Decision {

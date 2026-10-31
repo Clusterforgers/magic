@@ -87,6 +87,7 @@ const samples: Record<string, Record<string, unknown>> = {
   },
   FullControl: { type: 'FullControl', mode: 'NextWindow' },
   Bank: { type: 'Bank', seat: 1, bank: 2 },
+  Presence: { type: 'Presence', seat: 1, connected: false },
 }
 
 describe('parseFrame on real traffic', () => {
@@ -274,6 +275,10 @@ describe('parseFrame checks the fields of each message', () => {
     ['Bank', 'bank as text', ['bank'], '2'],
     ['Bank', 'bank as a fraction', ['bank'], 1.5],
     ['Bank', 'bank as null', ['bank'], null],
+    ['Presence', 'seat as text', ['seat'], '1'],
+    ['Presence', 'connected as text', ['connected'], 'yes'],
+    ['Presence', 'deadline_ms as text', ['deadline_ms'], '9000'],
+    ['Presence', 'deadline_ms as negative', ['deadline_ms'], -5],
     ['Decision', 'decision as text', ['decision'], 'Priority'],
     ['Decision', 'player as text', ['decision', 'player'], 'me'],
     ['Decision', 'kind as text', ['decision', 'kind'], 'Priority'],

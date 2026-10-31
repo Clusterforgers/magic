@@ -207,13 +207,14 @@ impl<S: EventStore> GameActor<S> {
         }
     }
 
-    /// Tells a lobby of the clients that went away without leaving: hung up, or fell too far behind.
+    /// Tells a lobby of the clients that went away without leaving (hung up, or fell too far behind), and a running
+    /// game of every seat whose client came or went ([`GameActor::push_presence`]).
     ///
     /// Nobody says so, so it is looked for after every command (any of them may be the one that finds a closed queue
     /// first) and whenever a queue closes while the actor is idle.
     pub(crate) fn announce_departures(&mut self) {
         if !self.in_lobby() {
-            self.seats.take_gone();
+            self.push_presence();
             return;
         }
         self.seats.connected();
