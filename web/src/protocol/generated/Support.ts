@@ -3,4 +3,4 @@
 /**
  * Whether and how well the game plays a card (`docs/deck-check.md`).
  */
-export type Support = "verified" | "partial" | "manual" | "stale" | "unplayable";
+export type Support = "verified" | "read" | "partial" | "manual" | "stale" | "unplayable";

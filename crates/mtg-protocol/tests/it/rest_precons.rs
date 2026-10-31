@@ -16,6 +16,7 @@ fn summary(state: DeckState) -> Summary {
     let counts = Counts {
         total: 100,
         verified: 90,
+        read: 0,
         partial: 4,
         manual: 6,
         stale: 0,
