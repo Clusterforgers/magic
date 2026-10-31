@@ -34,6 +34,15 @@ How the checks run, where the time of a check and a release goes, and the design
 | Web (typecheck, lint, format, vitest) | 106 to 121 |
 | Release images (server and web, one after the other, after the check) | about 600 |
 
+Gate, warm worktree, load 5 to 7:
+
+| Change | Seconds |
+| --- | --- |
+| Docs only | 11 |
+| Engine file (clippy 17, check of four dependents 8, build 37, tests of `mtg-engine` and `mtg-testkit` 57) | 136 |
+| Card file (clippy, check, tests of `mtg-cards` and `mtg-testkit`; a failing test ends the run at 22 s) | 105 |
+| First gate of a fresh worktree: builds the feature sets of the crate selection once | +220 |
+
 Per binary (`cargo test` binaries, 6 threads, load 10 to 17): `mtg-testkit::it` 925 s for 17,517 tests, `mtg-protocol::it` 337 s for 1,465, `mtg-cards::it` 96 s for 770, every other binary under 11 s. Test-seconds per binary with one process per test (nextest): `mtg-testkit::it` 18,517, `mtg-protocol::it` 1,650, `mtg-cards::it` 504, all others under 160.
 
 - Each test process loads the built-in library once (`OnceLock`, about 1.1 s), so one process per test (nextest) costs 19,000 test-seconds of loading; libtest in one process pays it once.

@@ -73,23 +73,27 @@ check "web: lock file" "$(web_changed pnpm-lock.yaml)" changed
 # A dirty tree keys like the commit of the same content, ignored files stay out and the real index stays as it was.
 repo="$scratch/repo"
 mkdir "$repo"
-unset GIT_OBJECT_DIRECTORY GIT_ALTERNATE_OBJECT_DIRECTORIES
+# A commit hook runs this with GIT_DIR and GIT_INDEX_FILE set; the scratch repository must not see any of them.
+for var in $(compgen -e | grep '^GIT_' || true); do unset "$var"; done
+export GIT_AUTHOR_NAME=probe GIT_AUTHOR_EMAIL=probe@localhost GIT_COMMITTER_NAME=probe GIT_COMMITTER_EMAIL=probe@localhost
+export GIT_CONFIG_COUNT=1 GIT_CONFIG_KEY_0=core.hooksPath GIT_CONFIG_VALUE_0=/dev/null
 cd "$repo"
-  git init -q
-  mkdir -p crates/a
-  echo one >crates/a/x.rs
-  echo '*.log' >.gitignore
-  git add -A
-  git commit -qm one
-  check "clean snapshot" "$(snapshot_tree)" "$(git rev-parse 'HEAD^{tree}')"
-  echo two >crates/a/x.rs
-  echo new >crates/a/y.rs
-  echo junk >crates/a/z.log
-  dirty=$(snapshot_tree)
-  check "index untouched" "$(git status --porcelain | tr '\n' '|')" " M crates/a/x.rs|?? crates/a/y.rs|"
-  git add -A
-  git commit -qm two
-  check "dirty snapshot" "$dirty" "$(git rev-parse 'HEAD^{tree}')"
-  echo gone >crates/a/y.rs && rm crates/a/x.rs
-  check "deleted file" "$([[ "$(snapshot_tree)" != "$dirty" ]] && echo differs)" differs
+git init -q
+[[ "$(git rev-parse --show-toplevel)" == "$(realpath "$repo")" ]] || { echo "check_key: not in the scratch repository" >&2 && exit 1; }
+mkdir -p crates/a
+echo one >crates/a/x.rs
+echo "*.log" >.gitignore
+git add -A
+git commit -qm one
+check "clean snapshot" "$(snapshot_tree)" "$(git rev-parse 'HEAD^{tree}')"
+echo two >crates/a/x.rs
+echo new >crates/a/y.rs
+echo junk >crates/a/z.log
+dirty=$(snapshot_tree)
+check "index untouched" "$(git status --porcelain | tr '\n' '|')" " M crates/a/x.rs|?? crates/a/y.rs|"
+git add -A
+git commit -qm two
+check "dirty snapshot" "$dirty" "$(git rev-parse 'HEAD^{tree}')"
+echo gone >crates/a/y.rs && rm crates/a/x.rs
+check "deleted file" "$([[ "$(snapshot_tree)" != "$dirty" ]] && echo differs)" differs
 finish check_key
