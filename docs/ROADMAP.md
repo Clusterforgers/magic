@@ -197,11 +197,11 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (st1b) "Its activated abilities can't be activated" (Arrest, Stasis Cocoon) is a restriction the compiler reads and the activation rules enforce (`Modification` and the activation check)
 - [ ] (eq1j) `gives` of an Aura on a player names the rules it gives outside keywords ("Enchanted player can't cast spells", skipped draws), which the layers do not record for players (`gives.rs`, `layers.rs` `PlayerHeld`)
 - [ ] (dk1f) The cards of the owner's Commander deck (Moxfield aC62AXAX40mNKJDy3yf_tw, commander Y'shtola, Night's Blessed; `dk1e_deck::the_owners_deck_lists` prints the table) that the engine still plays by hand: 88 of its 90 distinct cards are Verified; Partial: Invasion of Theros // Ephara (dk1b2), Ghostly Dancers (dk1c5a)
-- [ ] (t15e3) The table's mana pool draws a unit whose `only` holds `SpendOn::When` riders alone (Path of Ancestry's mana) as plain mana, not as locked restricted mana (`ManaPool.tsx`, `manaRestricted`)
-- [ ] (dk1b2) Invasion of Theros // Ephara, Ever-Sheltering: the checker writers for a search of an Aura, God or Demigod card put into the hand, for `AddKeyword` of lifelink and indestructible under a count of other enchantments, and for an enchantment entering under your control (a `ZoneChange` trigger with `Other`), and the Siege rules of the battle (defense, protector, defeated, cast transformed; see c11)
+- [~] (t15e3) (rooms-web) The table's mana pool draws a unit whose `only` holds `SpendOn::When` riders alone (Path of Ancestry's mana) as plain mana, not as locked restricted mana (`ManaPool.tsx`, `manaRestricted`)
+- [~] (dk1b2) (invasion) Invasion of Theros // Ephara, Ever-Sheltering: the checker writers for a search of an Aura, God or Demigod card put into the hand, for `AddKeyword` of lifelink and indestructible under a count of other enchantments, and for an enchantment entering under your control (a `ZoneChange` trigger with `Other`), and the Siege rules of the battle (defense, protector, defeated, cast transformed; see c11)
 - [ ] (dk1c4a) The soulbond cards the compiler still leaves out (the other 19 soulbond cards read whole; run `coverage` for their states): the damage trigger "Whenever ~ or a creature it's paired with is dealt damage" (Donna Noble), "If it's paired with a creature" in a spell (Joint Assault), the quoted death and attack grants with an amount of its own (Doom Weaver, Imperious Mindbreaker, Breathkeeper Seraph, Mirage Phalanx), "unless it's paired with a creature with soulbond" (Flowering Lumberknot), a second sentence about the partner (Tarelily), and Battlebond with a battle (Azra Matchthrower)
-- [ ] (dk1c5a) Ghostly Dancers: "return an enchantment card from your graveyard to your hand or unlock a locked door of a Room you control" (a choice between two effects at resolution)
-- [ ] (dk1c5b) Rooms on the web: a door badge on the permanent, the preview with both halves, "Unlock <door>" in the priority chooser (`PriorityOptions.unlockable`)
+- [~] (dk1c5a) (rooms-web) Ghostly Dancers: "return an enchantment card from your graveyard to your hand or unlock a locked door of a Room you control" (a choice between two effects at resolution)
+- [~] (dk1c5b) (rooms-web) Rooms on the web: a door badge on the permanent, the preview with both halves, "Unlock <door>" in the priority chooser (`PriorityOptions.unlockable`)
 - [ ] (dk1c5c) Rooms: lock a door (Marina Vendrell, Keys to the House), a token copy of a half (Blu) and the copiable door state (CR 707.2)
 - [ ] (dk1d2a) Orzhov Charm: the reader of "Return target creature you control and all Auras you control attached to it to their owner's hand." (the Auras then the creature) and "Destroy target creature and you lose life equal to its toughness.", so the compiler makes the card without its rules file
 - [ ] (lb1a) The precon list item carries the commanders' cards (picture, colour identity), so a precon row in the lobby chooser shows its commanders and the chooser filters precons by colour identity
@@ -459,19 +459,19 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (v1f) A spectator's connection in the server: a socket that holds no seat, is sent `StateView::for_spectator` and the spectator's batches, and a rule for who may watch
 - [ ] Spectators in the web and a "waiting on" message for tables of three or more
 - [ ] (v91k) The house rule key `colour_identity` is spelled `color_identity` on the wire, in the stored rules and in `mtg-core` `house.rs`, with the stored games migrated
-- [ ] (v91l) The printed-gap reasons say what the player does, as the clause reasons do, not "the engine cannot pay {X} in a mana cost yet" (`mtg-cards` `assemble.rs`, the coverage tests)
-- [ ] (v91m) The lobby deck pane's "Not validated cards" link names how many cards are played by hand, as the decks list row does (`features/game/DeckPane.tsx`)
-- [ ] (v92a) A seat that loses its connection shows as away to the other seats, with the time before the game answers for it; today they read only "Waiting for <name>" (`PlayerView` presence, seat pod)
-- [ ] (v92b) A seat whose by-hand card just resolved keeps a priority window in its own turn to apply the clauses; auto-pass now ends the turn at once when nothing else is playable (server pass rules)
-- [ ] (v92c) The log names a triggered ability that resolves ("An ability of Parasitic Impetus resolves") instead of "a card begins to resolve" and "a card finishes resolving" (`eventText.ts`, `LogPanel` names)
-- [ ] (v92d) The by-hand log line of a triggered or static clause says when to apply it ("whenever …"), not "when it resolves" (`byHandLine`)
-- [ ] (v92e) The Mana row of the Commands panel keeps the colour last added instead of returning to Green after each Add (`manual/panel/commands.ts`)
-- [ ] (v92f) A draw by hand names the cards drawn in the drawer's own log, as an ordinary draw does (`manualLog.ts`)
-- [ ] (v92g) The opening hand is readable while the Mulligan prompt waits: its cards are about 70 px wide at 1440x900 (`HandDock`)
-- [ ] (v92h) The mulligan status says "kept" for a seat that kept, not "keeping" (`OpeningStatus.tsx`)
-- [ ] (v92i) The game-over screen opens the final board and the log for a look back (`GameOver`)
-- [ ] (v92j) The card picked in the Commands panel carries a mark on the table while its commands show (`CardGroup.tsx`)
-- [ ] (v92k) No text under 12 px at the table: the mana letters of a card's pips (6 px) and the Log tab's unread count (11 px)
+- [~] (v91l) (log-words) The printed-gap reasons say what the player does, as the clause reasons do, not "the engine cannot pay {X} in a mana cost yet" (`mtg-cards` `assemble.rs`, the coverage tests)
+- [~] (v91m) (log-words) The lobby deck pane's "Not validated cards" link names how many cards are played by hand, as the decks list row does (`features/game/DeckPane.tsx`)
+- [~] (v92a) (presence) A seat that loses its connection shows as away to the other seats, with the time before the game answers for it; today they read only "Waiting for <name>" (`PlayerView` presence, seat pod)
+- [~] (v92b) (byhand-window) A seat whose by-hand card just resolved keeps a priority window in its own turn to apply the clauses; auto-pass now ends the turn at once when nothing else is playable (server pass rules)
+- [~] (v92c) (log-words) The log names a triggered ability that resolves ("An ability of Parasitic Impetus resolves") instead of "a card begins to resolve" and "a card finishes resolving" (`eventText.ts`, `LogPanel` names)
+- [~] (v92d) (log-words) The by-hand log line of a triggered or static clause says when to apply it ("whenever …"), not "when it resolves" (`byHandLine`)
+- [~] (v92e) (panel-polish) The Mana row of the Commands panel keeps the colour last added instead of returning to Green after each Add (`manual/panel/commands.ts`)
+- [~] (v92f) (log-words) A draw by hand names the cards drawn in the drawer's own log, as an ordinary draw does (`manualLog.ts`)
+- [~] (v92g) (panel-polish) The opening hand is readable while the Mulligan prompt waits: its cards are about 70 px wide at 1440x900 (`HandDock`)
+- [~] (v92h) (log-words) The mulligan status says "kept" for a seat that kept, not "keeping" (`OpeningStatus.tsx`)
+- [~] (v92i) (panel-polish) The game-over screen opens the final board and the log for a look back (`GameOver`)
+- [~] (v92j) (panel-polish) The card picked in the Commands panel carries a mark on the table while its commands show (`CardGroup.tsx`)
+- [~] (v92k) (panel-polish) No text under 12 px at the table: the mana letters of a card's pips (6 px) and the Log tab's unread count (11 px)
 - [ ] (v92l) Keyboard-only walk of a whole turn: focus order, the focus return after H and Escape across a resize, contrast of the by-hand and unplayable marks in both themes
 - [ ] (v92m) Duel walk by hand of a counterspell, a combat trick and a sacrifice, and of the timer bank as the other seat sees it (needs a seat that has earned an extension)
 
