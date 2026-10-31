@@ -900,7 +900,8 @@ fn the_report_keeps_its_wire_shape() {
                 {"zone": "main", "counts": {"total": 2, "verified": 2, "read": 0, "partial": 0, "manual": 0, "stale": 0, "unplayable": 0}},
                 {"zone": "sideboard", "counts": {"total": 1, "verified": 0, "read": 0, "partial": 1, "manual": 0, "stale": 0, "unplayable": 0}}
             ],
-            "issues": 0
+            "issues": 0,
+            "to_read": 0
         })
     );
     for key in ["deck_hash", "coverage_hash"] {
