@@ -119,6 +119,11 @@ export function useArmed(): boolean {
   return usePickValue(usePickStore(), (state) => state.phase === 'armed', false)
 }
 
+/** Whether the Commands panel shows the commands of card `id`: the card on the table then carries the picked mark. */
+export function useIsPicked(id: ObjectId): boolean {
+  return usePickValue(usePickStore(), (state) => pickedCard(state) === id, false)
+}
+
 /** The whole pick state; idle outside a table. */
 export function usePick(): PickState {
   return usePickValue(usePickStore(), (state) => state, IDLE)

@@ -42,7 +42,7 @@ function MadeRun({ made, sizeClass }: { made: readonly ManaType[]; sizeClass: st
         return count > 3 ? (
           <span key={`${mana}-${at}`} className="inline-flex items-center gap-px">
             <Pip pip={pip} sizeClass={sizeClass} />
-            <span aria-hidden="true" data-count={count} className="text-[0.85em] font-semibold tabular-nums">
+            <span aria-hidden="true" data-count={count} className="font-semibold tabular-nums">
               ×{count}
             </span>
           </span>
@@ -110,7 +110,7 @@ export function ManaMade({ gives, sizeClass, words = false, className }: ManaMad
         ))
       )}
       {words && gives.sacrifice ? (
-        <span aria-hidden="true" className="text-[0.85em] text-muted-foreground">
+        <span aria-hidden="true" className="text-muted-foreground">
           sacrifice
         </span>
       ) : null}

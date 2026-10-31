@@ -213,8 +213,8 @@ test.describe('the text floor of the table', () => {
         for (let node = words.nextNode(); node !== null; node = words.nextNode()) {
           const text = (node.nodeValue ?? '').replace(/\s+/g, ' ').trim()
           const parent = node.parentElement
-          // The letters of a mana symbol are part of a picture that has its own spoken name (`role="img"`).
-          if (text === '' || parent === null || parent.closest('svg, [role="img"]') !== null) continue
+          // The letters of a mana symbol count too, though the symbol is a picture with its own spoken name (`role="img"`).
+          if (text === '' || parent === null || parent.closest('svg') !== null) continue
           const px = parseFloat(getComputedStyle(parent).fontSize)
           if (px < 12) found.push(`${Math.round(px * 10) / 10}px ${text.slice(0, 20)}`)
         }

@@ -155,7 +155,7 @@ function Rail() {
                 onClick={() => side.activate(tab)}
               >
                 <Icon aria-hidden="true" className="size-5" />
-                <Count tab={tab} hidden className="absolute top-0.5 right-0.5 h-4 min-w-4 text-label" />
+                <Count tab={tab} hidden className="absolute top-0.5 right-0.5 h-4 min-w-4 text-xs" />
               </TabsTrigger>
             )
           })}
@@ -214,7 +214,7 @@ export function SideSheetButton({ compact = false }: { compact?: boolean }) {
         <span
           aria-hidden="true"
           data-slot="side-count"
-          className="absolute top-0.5 right-0.5 inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-primary px-1 text-label font-medium text-on-primary tabular-nums"
+          className="absolute top-0.5 right-0.5 inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-primary px-1 text-xs font-medium text-on-primary tabular-nums"
         >
           {countLabel(waiting)}
         </span>

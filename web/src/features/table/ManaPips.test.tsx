@@ -1,4 +1,4 @@
-/** Goal: a row of mana symbols draws every kind of cost symbol the rules know (plain, hybrid split in two, monocolored hybrid with its 2, Phyrexian with the phi mark), hides the drawing from a screen reader and names the whole cost, symbol by symbol, in words. */
+/** Goal: a row of mana symbols draws every kind of cost symbol the rules know (plain, hybrid split in two halves with no letters under the 12 px floor, Phyrexian with the phi mark), hides the drawing from a screen reader and names the whole cost, symbol by symbol, in words. */
 import { render, screen } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import { cost } from '@/test-utils/mana'
@@ -35,18 +35,18 @@ describe('ManaPips', () => {
   })
 
   it.each([
-    ['{W/U}', 'from-mana-white', 'to-mana-blue', 'WU'],
-    ['{G/W}', 'from-mana-green', 'to-mana-white', 'GW'],
-    ['{R/G}', 'from-mana-red', 'to-mana-green', 'RG'],
-    ['{C/W}', 'from-mana-colorless', 'to-mana-white', 'CW'],
-    ['{2/W}', 'from-muted', 'to-mana-white', '2W'],
-    ['{2/B}', 'from-muted', 'to-mana-black', '2B'],
-  ])('draws %s as a disc split in two with a letter in each half', (text, from, to, letters) => {
+    ['{W/U}', 'from-mana-white', 'to-mana-blue'],
+    ['{G/W}', 'from-mana-green', 'to-mana-white'],
+    ['{R/G}', 'from-mana-red', 'to-mana-green'],
+    ['{C/W}', 'from-mana-colorless', 'to-mana-white'],
+    ['{2/W}', 'from-muted', 'to-mana-white'],
+    ['{2/B}', 'from-muted', 'to-mana-black'],
+  ])('draws %s as a disc split in two halves with no letter, whose name tells the colours', (text, from, to) => {
     const [pip] = draw(text).pips
     expect(pip?.className).toContain('bg-linear-to-br')
     expect(pip?.className).toContain(from)
     expect(pip?.className).toContain(to)
-    expect(pip?.textContent).toBe(letters)
+    expect(pip?.textContent).toBe('')
   })
 
   it.each([
