@@ -50,15 +50,15 @@ Items that touch the running game come first.
 - [~] (ad1a) (admin-users) The account named by `MTG_ADMIN_USERNAME` is the admin and the only one who makes accounts: the server marks it at start, `POST /api/admin/users` and an accounts page in the client create and list accounts, and the chart closes self-registration (`docs/server.md`, Accounts)
 - [ ] (d1c) A copy of the nightly database dumps off queen (a Longhorn backup target or a scheduled copy to another machine), so losing queen does not lose the accounts and decks (`docs/deploy.md`)
 - [ ] (d1b) The release script's steps as a GitHub Actions workflow on a published release, so a release needs no dev machine (`docs/deploy.md`)
-- [ ] (v92w) The priority prompt of a seat held at its by-hand window says "Apply the card's text by hand, then pass" (12 px or more), from the resolution of its own object with `ObjectView.manual` (`docs/server.md`, Stops and Full Control)
-- [ ] (v92n) The opening hand on a phone (390x844) is readable while the Mulligan prompt waits: its cards stay 68 px wide in a scrolling row, as the hand dock keeps its size under 640 px (`openingGrowMost`, `HandDock`)
+- [~] (v92w) (hand-prompts) The priority prompt of a seat held at its by-hand window says "Apply the card's text by hand, then pass" (12 px or more), from the resolution of its own object with `ObjectView.manual` (`docs/server.md`, Stops and Full Control)
+- [~] (v92n) (hand-prompts) The opening hand on a phone (390x844) is readable while the Mulligan prompt waits: its cards stay 68 px wide in a scrolling row, as the hand dock keeps its size under 640 px (`openingGrowMost`, `HandDock`)
 - [ ] (v92l) Keyboard-only walk of a whole turn: focus order, the focus return after H and Escape across a resize, contrast of the by-hand and unplayable marks in both themes
 - [ ] (v92m) Duel walk by hand of a counterspell, a combat trick and a sacrifice, and of the timer bank as the other seat sees it (needs a seat that has earned an extension)
 - [ ] (v91k) The house rule key `colour_identity` is spelled `color_identity` on the wire, in the stored rules and in `mtg-core` `house.rs`, with the stored games migrated
 - [ ] (w2j) An attach line of a rebuilt log has no old host: `Snapshot` could carry the host each attach event of its window replaced (its name in `names`), so the line reads "moves from A to B" as it did live (`play/store.ts` `mergeHistory`, `hosts.ts`)
 - [ ] (fx1b) A cap on the fix marks of one account and a rate limit on the fix-mark routes
 - [ ] (f1b) Playtest polish of the table, builder and lobby against the UI wishes (fits the viewport, clear turn indicators, open-games list, card images at every size), with `/dev/*` screenshots at six sizes in both themes, so the first real games can start
-- [ ] (k3d) A four-seat precon game asks a seat many priority windows in which nothing is marked legal ("Your turn · 12 · Precombat main" three times in a row): find what the server offers there (a graveyard or exile cast, an unmarked ability) and mark it, or pass for the seat (`commander-four.spec.ts` prints them as "idle windows")
+- [~] (k3d) (idle-windows) A four-seat precon game asks a seat many priority windows in which nothing is marked legal ("Your turn · 12 · Precombat main" three times in a row): find what the server offers there (a graveyard or exile cast, an unmarked ability) and mark it, or pass for the seat (`commander-four.spec.ts` prints them as "idle windows")
 - [ ] (pl2l) `join.spec.ts` "a guest follows an invite link" timed out once on the Join button in a full run and never in 50 solo runs: a recurrence needs a Playwright trace (`retain-on-failure`) to name the cause
 
 ## M4 Commander
