@@ -176,8 +176,12 @@ pub fn quick_accounts(reads: &[StoredRead], quick: &BTreeSet<i64>) -> String {
         counts.into_iter().filter(|(_, (n, _))| *n > 0).collect();
     accounts.sort_by_key(|&(user, (quick, all))| (std::cmp::Reverse(quick), user, all));
     let mut text = format!(
-        "{} accounts gave verdicts on different cards less than {} s apart\n{:<36}  {:>5}  {:>5}\n",
-        accounts.len(),
+        "{} gave verdicts on different cards less than {} s apart\n{:<36}  {:>5}  {:>5}\n",
+        if accounts.len() == 1 {
+            "1 account".to_owned()
+        } else {
+            format!("{} accounts", accounts.len())
+        },
         QUICK_GAP.num_seconds(),
         "account",
         "quick",
@@ -295,20 +299,16 @@ mod tests {
 
     use super::*;
 
-    fn account(n: u128) -> Option<Uuid> {
-        Some(Uuid::from_u128(n))
-    }
-
     fn at(millis: i64) -> DateTime<Utc> {
         Utc.timestamp_millis_opt(1_700_000_000_000 + millis)
             .single()
             .unwrap_or_default()
     }
 
-    fn read(id: i64, by: Option<Uuid>, card: &str, millis: i64, verdict: Verdict) -> StoredRead {
+    fn read(id: i64, by: u128, card: &str, millis: i64, verdict: Verdict) -> StoredRead {
         StoredRead {
             id,
-            user_id: by,
+            user_id: (by != 0).then(|| Uuid::from_u128(by)),
             oracle_id: OracleId(card.to_owned()),
             name: card.to_uppercase(),
             read_hash: format!("hash-{card}"),
@@ -346,10 +346,7 @@ mod tests {
     ) {
         let reads: Vec<StoredRead> = given
             .iter()
-            .map(|&(id, by, card, millis)| {
-                let by = (by != 0).then(|| Uuid::from_u128(by));
-                read(id, by, card, millis, Verdict::Correct)
-            })
+            .map(|&(id, by, card, millis)| read(id, by, card, millis, Verdict::Correct))
             .collect();
         assert_eq!(quick_ids(&reads).into_iter().collect::<Vec<_>>(), flagged);
     }
@@ -366,13 +363,13 @@ mod tests {
 
     #[test]
     fn rows_come_newest_first_with_the_state_of_the_draft_they_are_on() {
-        let mut replaced = read(3, account(2), "c", 3_000, Verdict::Correct);
+        let mut replaced = read(3, 2, "c", 3_000, Verdict::Correct);
         replaced.read_hash = "an older hash".to_owned();
         let reads = [
-            read(1, account(1), "a", 1_000, Verdict::Wrong),
-            read(2, None, "b", 2_000, Verdict::Wrong),
+            read(1, 1, "a", 1_000, Verdict::Wrong),
+            read(2, 0, "b", 2_000, Verdict::Wrong),
             replaced,
-            read(4, account(1), "a", 3_000, Verdict::Correct),
+            read(4, 1, "a", 3_000, Verdict::Correct),
         ];
         let states = [
             state("a", ReadState::Wrong),
@@ -389,10 +386,10 @@ mod tests {
         assert_eq!(
             seen,
             [
-                ("A", Some(ReadState::Wrong), account(1)),
-                ("C", None, account(2)),
+                ("A", Some(ReadState::Wrong), Some(Uuid::from_u128(1))),
+                ("C", None, Some(Uuid::from_u128(2))),
                 ("B", Some(ReadState::Wrong), None),
-                ("A", Some(ReadState::Wrong), account(1)),
+                ("A", Some(ReadState::Wrong), Some(Uuid::from_u128(1))),
             ]
         );
     }
@@ -419,11 +416,11 @@ mod tests {
                 row(
                     "Sol Ring",
                     Some(ReadState::Wrong),
-                    account(7),
+                    Some(Uuid::from_u128(7)),
                     Some("adds\nthe wrong mana"),
                 ),
                 row("Opt", Some(ReadState::Approved), None, None),
-                row("Gone", None, account(8), None),
+                row("Gone", None, Some(Uuid::from_u128(8)), None),
             ],
             9,
             false,
@@ -463,13 +460,13 @@ mod tests {
     #[test]
     fn the_account_summary_counts_quick_and_all_verdicts_the_quickest_first() {
         let reads = [
-            read(1, account(1), "a", 0, Verdict::Correct),
-            read(2, account(1), "b", 1_000, Verdict::Correct),
-            read(3, account(1), "c", 60_000, Verdict::Correct),
-            read(4, account(2), "a", 0, Verdict::Correct),
-            read(5, account(2), "b", 1_000, Verdict::Correct),
-            read(6, account(2), "c", 2_000, Verdict::Correct),
-            read(7, account(3), "a", 0, Verdict::Correct),
+            read(1, 1, "a", 0, Verdict::Correct),
+            read(2, 1, "b", 1_000, Verdict::Correct),
+            read(3, 1, "c", 60_000, Verdict::Correct),
+            read(4, 2, "a", 0, Verdict::Correct),
+            read(5, 2, "b", 1_000, Verdict::Correct),
+            read(6, 2, "c", 2_000, Verdict::Correct),
+            read(7, 3, "a", 0, Verdict::Correct),
         ];
         let text = quick_accounts(&reads, &quick_ids(&reads));
         let lines: Vec<&str> = text.lines().collect();

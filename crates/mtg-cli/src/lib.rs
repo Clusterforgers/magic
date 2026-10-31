@@ -102,17 +102,7 @@ pub async fn run(cli: Cli, progress: Progress) -> Result<String, CliError> {
         Command::Status => status::status(&cache, cli.database_url.as_deref())
             .await
             .map(|text| text.trim_end().to_owned()),
-        Command::Audit(args) => {
-            let db = connect(cli.database_url).await?;
-            let text = audit::audit(&db, &args).await?;
-            let Some(path) = &args.file else {
-                return Ok(text);
-            };
-            tokio::fs::write(path, format!("{text}\n"))
-                .await
-                .map_err(|source| CliError::io(path, source))?;
-            Ok(format!("audit: written to {}", path.display()))
-        }
+        Command::Audit(args) => audit_command(cli.database_url, &args).await,
         Command::Compile(args) => {
             let db = connect(cli.database_url).await?;
             Ok(compile::compile(&db, &args).await?.render())
@@ -142,6 +132,22 @@ pub async fn run(cli: Cli, progress: Progress) -> Result<String, CliError> {
             w19b_pairs::w19b_export_pairs(&db, &args).await
         }
     }
+}
+
+/// `audit`: the sample as text, or written to the file `--file` names.
+async fn audit_command(
+    database_url: Option<String>,
+    args: &args::AuditArgs,
+) -> Result<String, CliError> {
+    let db = connect(database_url).await?;
+    let text = audit::audit(&db, args).await?;
+    let Some(path) = &args.file else {
+        return Ok(text);
+    };
+    tokio::fs::write(path, format!("{text}\n"))
+        .await
+        .map_err(|source| CliError::io(path, source))?;
+    Ok(format!("audit: written to {}", path.display()))
 }
 
 /// `check-rules`: the reports, or with `--gaps` the ledger (the ranks come from the cache, read before the database is).

@@ -211,3 +211,49 @@ pub async fn count(pool: &PgPool, table: &str) -> i64 {
         .await
         .unwrap_or_else(|e| panic!("count of {table} reads: {e}"))
 }
+
+/// The stored card named `name`, as the strings the compiler reads.
+pub async fn printed_named(db: &mtg_db::Database, name: &str) -> mtg_cards::PrintedCard {
+    let id: String = sqlx::query_scalar("SELECT oracle_id::text FROM cards WHERE name = $1")
+        .bind(name)
+        .fetch_one(db.pool())
+        .await
+        .unwrap_or_else(|e| panic!("{name} is stored: {e}"));
+    let card = db
+        .cards()
+        .get(&mtg_import::ids::OracleId(id))
+        .await
+        .unwrap_or_else(|e| panic!("{name} reads: {e}"))
+        .unwrap_or_else(|| panic!("{name} is stored"));
+    mtg_cli::coverage::printed_card(&card)
+}
+
+/// Stores a whole draft of the single-faced card `name` that casts like Lightning Bolt, written for the text the card has
+/// now, as its current draft, and returns its key. The embedded corpus has the rules it copies.
+pub async fn store_draft(db: &mtg_db::Database, name: &str) -> mtg_db::DraftKey {
+    let printed = printed_named(db, name).await;
+    let library = mtg_cards::builtin::library().unwrap_or_else(|e| panic!("{e}"));
+    let mut card = library
+        .card_by_name("Lightning Bolt")
+        .unwrap_or_else(|| panic!("the corpus has Lightning Bolt"))
+        .clone();
+    card.oracle_id = printed.oracle_id.clone();
+    card.name = printed.name.clone();
+    card.faces[0].name.clone_from(&printed.faces[0].name);
+    card.faces[0].oracle_fingerprint =
+        mtg_cards::support::oracle_fingerprint(&printed.faces[0].oracle_text);
+    let key = mtg_db::DraftKey {
+        oracle_id: mtg_import::ids::OracleId(printed.oracle_id.clone()),
+        read_hash: mtg_cards::support::read_hash(&printed, &card),
+    };
+    let draft = mtg_db::NewDraft {
+        oracle_id: key.oracle_id.clone(),
+        read_hash: key.read_hash.clone(),
+        rules: serde_json::to_value(&card).unwrap_or_else(|e| panic!("{e}")),
+    };
+    db.drafts()
+        .insert(&[draft])
+        .await
+        .unwrap_or_else(|e| panic!("the draft of {name} is stored: {e}"));
+    key
+}
