@@ -1,0 +1,53 @@
+{
+  "oracle_id": "7bc4c7e2-6758-4a85-84e7-03ab93981106",
+  "name": "Tinybones, the Pickpocket",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tinybones, the Pickpocket",
+      "oracle_fingerprint": "934bc46198b57c64f1dac139b092a2f6",
+      "abilities": [
+        { "Keyword": "Deathtouch" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "In": "Graveyard" },
+                    { "OwnedBy": "Triggering" },
+                    { "Type": "Creature" },
+                    { "Type": "Artifact" },
+                    { "Type": "Enchantment" },
+                    { "Type": "Planeswalker" },
+                    { "Not": { "Type": "Land" } }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "CastFromZone": { "who": "Triggering", "what": { "Target": 0 }, "free": true }
+                    }
+                  ]
+                }
+              },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": { "who": "Triggering", "what": [{ "Is": { "Target": 0 } }] }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

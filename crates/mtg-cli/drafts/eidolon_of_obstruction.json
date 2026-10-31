@@ -1,0 +1,21 @@
+{
+  "oracle_id": "15d38195-b661-42c1-82c9-1af2a3ba2ea5",
+  "name": "Eidolon of Obstruction",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Eidolon of Obstruction",
+      "oracle_fingerprint": "1030e412c4caced451b3930c75afea13",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        {
+          "CostModifier": {
+            "applies_to": ["Renowned", "Spell"],
+            "change": "Increase",
+            "mana": "{1}"
+          }
+        }
+      ]
+    }
+  ]
+}

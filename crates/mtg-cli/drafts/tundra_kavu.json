@@ -1,0 +1,28 @@
+{
+  "oracle_id": "b0b7d88b-694b-4bbe-888d-05245e7d1c3e",
+  "name": "Tundra Kavu",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tundra Kavu",
+      "oracle_fingerprint": "e8ef15da0e9245e219838e43c01d7841",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Land" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddSubtype": "Plains" }, { "AddSubtype": "Island" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

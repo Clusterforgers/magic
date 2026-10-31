@@ -1,0 +1,39 @@
+{
+  "oracle_id": "df8e0d1b-b47c-4807-9c9b-84dcec835254",
+  "name": "Colossal Grave-Reaver",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Colossal Grave-Reaver",
+      "oracle_fingerprint": "2ef4b15391a5dd309962ea0ffbf77039",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "Attacks": { "what": ["This"] } }
+              ]
+            },
+            "effects": [{ "Mill": { "count": 3 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "ZoneChange": {
+                  "what": [{ "Type": "Creature" }, { "OwnedBy": "You" }],
+                  "from": "Library",
+                  "to": "Graveyard"
+                }
+              }
+            },
+            "effects": [{ "Move": { "what": "This", "to": "Graveyard" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

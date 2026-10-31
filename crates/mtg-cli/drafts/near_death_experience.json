@@ -1,0 +1,20 @@
+{
+  "oracle_id": "2afb027f-3c02-46cf-97a1-af0e946ee477",
+  "name": "Near-Death Experience",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Near-Death Experience",
+      "oracle_fingerprint": "695da6f6b64d598d144ea253c6f8dd05",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "if": { "Compare": { "left": { "Life": "You" }, "op": "Eq", "right": 1 } },
+            "effects": [{ "WinGame": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

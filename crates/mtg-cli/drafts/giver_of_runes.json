@@ -1,0 +1,38 @@
+{
+  "oracle_id": "4ec85850-f274-4c0c-9a03-0488267caa14",
+  "name": "Giver of Runes",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Giver of Runes",
+      "oracle_fingerprint": "1c5a68d54f09867f1786e577d36dde98",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "ControlledBy": "You" },
+                    { "Not": { "Targeting": [] } }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["AddProtectionFromChosenColor"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

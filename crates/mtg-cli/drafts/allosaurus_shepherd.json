@@ -1,0 +1,46 @@
+{
+  "oracle_id": "98295bdc-db58-4e1f-ad4c-63092aea207e",
+  "name": "Allosaurus Shepherd",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Allosaurus Shepherd",
+      "oracle_fingerprint": "73a088f0dacbcad3b29e814c755f6e67",
+      "abilities": [
+        { "Rule": { "rule": { "CantBeCountered": "This" }, "from": "Stack" } },
+        {
+          "Rule": {
+            "rule": {
+              "CantBeCountered": {
+                "Each": ["Spell", { "Color": "Green" }, { "ControlledBy": "You" }]
+              }
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{4}{G}{G}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "Subtype": "Elf" },
+                      { "ControlledBy": "You" }
+                    ]
+                  },
+                  "mods": [
+                    { "SetPT": { "power": 5, "toughness": 5 } },
+                    { "AddSubtype": "Dinosaur" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

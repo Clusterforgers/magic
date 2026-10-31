@@ -1,0 +1,29 @@
+{
+  "oracle_id": "16f6438d-2a29-41cb-bf0c-4d02bd66112b",
+  "name": "Hermit Druid",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hermit Druid",
+      "oracle_fingerprint": "f0201217f9f453edf427225f2ab357e4",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{G}" }, { "TapPermanents": { "filter": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "RevealUntil": {
+                  "filter": [{ "Type": "Land" }, { "Subtype": "Basic" }],
+                  "as": "found",
+                  "revealed_as": "revealed"
+                }
+              },
+              { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+              { "Move": { "what": { "Bound": "revealed" }, "to": "Graveyard" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

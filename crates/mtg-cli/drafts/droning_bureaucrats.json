@@ -1,0 +1,42 @@
+{
+  "oracle_id": "21dc394e-ba82-4f27-8014-9236690d10a4",
+  "name": "Droning Bureaucrats",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Droning Bureaucrats",
+      "oracle_fingerprint": "74d891b3c87fd2e3d386abd2fdbeba6d",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{X}" },
+              {
+                "TapPermanents": {
+                  "filter": [
+                    { "Type": "Creature" },
+                    { "Compare": { "stat": "ManaValue", "op": "Eq", "to": "X" } }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "Compare": { "stat": "ManaValue", "op": "Eq", "to": "X" } }
+                    ]
+                  },
+                  "mods": [{ "CantAttackYou": "Player" }, { "CantBeBlockedBy": [] }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

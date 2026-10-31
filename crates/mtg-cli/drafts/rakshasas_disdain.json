@@ -1,0 +1,19 @@
+{
+  "oracle_id": "a8fe6204-9f55-45e5-99b3-43f2761ce8a3",
+  "name": "Rakshasa's Disdain",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rakshasa's Disdain",
+      "oracle_fingerprint": "9fb3b1e41a42436d71dba663d97b7d6e",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [{ "Pay": { "who": { "ControllerOf": { "Target": 0 } }, "cost": "{X}" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

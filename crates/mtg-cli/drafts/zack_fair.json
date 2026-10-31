@@ -1,0 +1,38 @@
+{
+  "oracle_id": "e84d146a-1c67-49df-b062-622794e45c42",
+  "name": "Zack Fair",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Zack Fair",
+      "oracle_fingerprint": "95a35b65d86cb28da8ce2e09176eaddc",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": 1 } }
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, { "Sacrifice": { "filter": [{ "Type": "Creature" }] } }],
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddKeyword": "Indestructible" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } },
+              { "Manifest": { "count": 0 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

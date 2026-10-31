@@ -1,0 +1,22 @@
+{
+  "oracle_id": "8f0179fe-6d7d-49cc-ab06-d3b402c6fc8d",
+  "name": "Living Lands",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Living Lands",
+      "oracle_fingerprint": "5e2aaa3c433cf42a53f116d83cf7399d",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Forest" }] },
+            "mods": [
+              { "SetTypes": ["Land", "Creature"] },
+              { "SetPT": { "power": 1, "toughness": 1 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

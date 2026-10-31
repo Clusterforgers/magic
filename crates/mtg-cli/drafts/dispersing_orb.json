@@ -1,0 +1,20 @@
+{
+  "oracle_id": "dabc4ba1-3f90-4cea-a737-d41537cce729",
+  "name": "Dispersing Orb",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dispersing Orb",
+      "oracle_fingerprint": "fbcf27e8f6b95d3a4b17bdf545886b46",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}{U}" }, { "Sacrifice": { "filter": [] } }],
+            "targets": [{ "what": { "Object": [] } }],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "oracle_id": "9b06f2bf-146d-4b30-b467-e16f1a942253",
+  "name": "Dracogenesis",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dracogenesis",
+      "oracle_fingerprint": "dd430ab047d3248d2156deee2c3cbec1",
+      "abilities": [{ "Rule": { "rule": { "MayCast": { "what": [{ "HasKeyword": "Haste" }] } } } }]
+    }
+  ]
+}

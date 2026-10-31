@@ -1,0 +1,61 @@
+{
+  "oracle_id": "bd9d761f-79cc-4082-8375-51af582f1472",
+  "name": "Kozilek's Unsealing",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kozilek's Unsealing",
+      "oracle_fingerprint": "09783661a3ee500f1d0f9d80274e085b",
+      "abilities": [
+        { "Keyword": "Devoid" },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "Compare": { "stat": "ManaValue", "op": "Ge", "to": 4 } },
+                  { "Compare": { "stat": "ManaValue", "op": "Le", "to": 6 } }
+                ],
+                "by": "You"
+              }
+            },
+            "from": "Stack",
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Eldrazi Spawn",
+                      "types": ["Creature"],
+                      "subtypes": ["Eldrazi", "Spawn"],
+                      "power": 0,
+                      "toughness": 1
+                    }
+                  },
+                  "count": 2
+                }
+              },
+              { "AddMana": { "mana": { "Fixed": ["Colorless"] } } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "Compare": { "stat": "ManaValue", "op": "Ge", "to": 7 } }
+                ],
+                "by": "You"
+              }
+            },
+            "from": "Stack",
+            "effects": [{ "Draw": { "count": 3 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,57 @@
+{
+  "oracle_id": "76372327-41ec-4516-abff-3b612e073629",
+  "name": "Kona, Rescue Beastie",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kona, Rescue Beastie",
+      "oracle_fingerprint": "83097e785d44f1fbe10c9c23e97b1787",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Main2", "whose": "You" } },
+            "if": {
+              "Matches": {
+                "subject": "This",
+                "selector": [{ "Is": "This" }, { "HasKeyword": "Trample" }]
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "In": "Hand" },
+                            { "OwnedBy": "You" },
+                            {
+                              "AnyOf": [
+                                { "Type": "Artifact" },
+                                { "Type": "Battle" },
+                                { "Type": "Creature" },
+                                { "Type": "Enchantment" },
+                                { "Type": "Land" },
+                                { "Type": "Planeswalker" }
+                              ]
+                            }
+                          ]
+                        },
+                        "as": "card"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "card" }, "to": { "Battlefield": {} } } }
+                  ]
+                }
+              },
+              { "WinGame": {} },
+              { "Rule": { "rule": "GraveyardCardsUntargetable", "duration": "UntilEndOfTurn" } },
+              { "Rule": { "rule": "GraveyardCardsUntargetable", "duration": "UntilEndOfTurn" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

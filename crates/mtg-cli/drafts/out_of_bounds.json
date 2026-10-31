@@ -1,0 +1,20 @@
+{
+  "oracle_id": "431b2e52-1290-47b1-920d-2c1817553d96",
+  "name": "Out of Bounds",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Out of Bounds",
+      "oracle_fingerprint": "6b7bc7c1d48799dbffce5d4d0ab264ec",
+      "abilities": [
+        { "Keyword": "Ravenous" },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [{ "Counter": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "oracle_id": "9d5917d5-4fb3-4f37-9278-e08c1f73aae5",
+  "name": "Forensic Gadgeteer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Forensic Gadgeteer",
+      "oracle_fingerprint": "187b0841d43426a6174d1eaec0dee846",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Type": "Artifact" }], "by": "You" } },
+            "effects": [{ "CreateToken": { "token": { "Named": "clue" } } }]
+          }
+        },
+        { "CostModifier": { "applies_to": ["Spell", "Spell"], "change": "Reduce", "mana": "{1}" } }
+      ]
+    }
+  ]
+}

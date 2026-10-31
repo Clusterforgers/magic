@@ -1,0 +1,61 @@
+{
+  "oracle_id": "4f9e07ae-6341-4b46-9f77-f17ab659d266",
+  "name": "Guardian Project",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Guardian Project",
+      "oracle_fingerprint": "45dd5871a87edcf1c61388267f1570fe",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "Not": "Token" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "All": [
+                      {
+                        "Not": {
+                          "Matches": {
+                            "subject": "Triggering",
+                            "selector": [
+                              { "Type": "Creature" },
+                              { "ControlledBy": "You" },
+                              { "SharesName": "Triggering" },
+                              { "Not": "Token" },
+                              { "Not": "This" }
+                            ]
+                          }
+                        }
+                      },
+                      {
+                        "Not": {
+                          "Matches": {
+                            "subject": "Triggering",
+                            "selector": [
+                              { "Type": "Creature" },
+                              { "In": "Graveyard" },
+                              { "SharesName": "Triggering" },
+                              { "Not": "This" }
+                            ]
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  "then": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

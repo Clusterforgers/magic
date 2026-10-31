@@ -1,0 +1,62 @@
+{
+  "oracle_id": "c5abd58f-3e00-447b-a978-64cb88ad501b",
+  "name": "Hellkite Courser",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hellkite Courser",
+      "oracle_fingerprint": "80c247df467968dc80993d4f6813c067",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "In": "Command" },
+                            { "OwnedBy": "You" },
+                            { "Type": "Creature" },
+                            { "HasKeyword": "Haste" }
+                          ]
+                        },
+                        "as": "commander"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "commander" }, "to": { "Battlefield": {} } } },
+                    {
+                      "Continuous": {
+                        "affected": { "Bound": "commander" },
+                        "mods": [{ "AddKeyword": "Haste" }],
+                        "duration": "Forever"
+                      }
+                    },
+                    {
+                      "DelayedTrigger": {
+                        "when": { "StepBegins": { "step": "End" } },
+                        "effects": [
+                          {
+                            "Move": {
+                              "what": { "Bound": "commander" },
+                              "to": { "Battlefield": {} }
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    { "AddMana": { "mana": { "Fixed": ["Colorless"] } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "oracle_id": "f36d1d8b-8303-44a9-ab56-531931641ea2",
+  "name": "Academy Manufactor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Academy Manufactor",
+      "oracle_fingerprint": "9afced428224ad509f4a46543129f790",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": {
+              "TokenCreation": {
+                "what": [{ "Subtype": "Clue" }, { "Subtype": "Food" }, { "Subtype": "Treasure" }]
+              }
+            },
+            "by": {
+              "Instead": [
+                { "CreateToken": { "token": { "Named": "clue" } } },
+                { "CreateToken": { "token": { "Named": "food" } } },
+                { "CreateToken": { "token": { "Named": "treasure" } } }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

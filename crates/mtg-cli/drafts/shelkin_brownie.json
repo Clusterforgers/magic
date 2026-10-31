@@ -1,0 +1,28 @@
+{
+  "oracle_id": "507ce455-bd02-49f9-bf64-4b2d21ffe0ea",
+  "name": "Shelkin Brownie",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shelkin Brownie",
+      "oracle_fingerprint": "d30768204a4c1afac22a9543cbbc938f",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "RemoveKeyword": "BattleCry" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

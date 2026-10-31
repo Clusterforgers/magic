@@ -1,0 +1,65 @@
+{
+  "oracle_id": "b11c250c-f191-4c52-ba02-a9176f163447",
+  "name": "Emiel the Blessed",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Emiel the Blessed",
+      "oracle_fingerprint": "d24df4605bbcb42f87bfdaac327b6ca0",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{3}",
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }, { "Not": "This" }]
+                }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              { "Move": { "what": { "Bound": "exiled" }, "to": { "Battlefield": {} } } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }, { "Not": "This" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{G/W}",
+                  "paid": [
+                    {
+                      "If": {
+                        "condition": {
+                          "Matches": {
+                            "subject": "Triggering",
+                            "selector": [{ "Subtype": "Unicorn" }]
+                          }
+                        },
+                        "then": [
+                          { "PutCounters": { "on": "Triggering", "counter": "+1/+1", "count": 2 } }
+                        ],
+                        "otherwise": [{ "PutCounters": { "on": "Triggering", "counter": "+1/+1" } }]
+                      }
+                    },
+                    { "PutCounters": { "on": "Triggering", "counter": "+1/+1" } }
+                  ]
+                }
+              },
+              { "TimeTravel": {} },
+              { "Untap": { "what": "This" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

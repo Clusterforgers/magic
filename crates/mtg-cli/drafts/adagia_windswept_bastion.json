@@ -1,0 +1,61 @@
+{
+  "oracle_id": "70d35dbd-1d91-4a2a-a643-6870d168f4f5",
+  "name": "Adagia, Windswept Bastion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Adagia, Windswept Bastion",
+      "oracle_fingerprint": "5c5b073aca231aec6be183708d6c102d",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["White"] } } }]
+          }
+        },
+        { "Keyword": "Station" },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{3}{W}" },
+              { "TapPermanents": { "filter": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+              { "Sacrifice": { "filter": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+              "Tap"
+            ],
+            "timing": "Sorcery",
+            "condition": {
+              "Compare": {
+                "left": { "Counters": { "on": "This", "counter": "charge" } },
+                "op": "Ge",
+                "right": 12
+              }
+            },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Enchantment" }] },
+                    { "ControlledBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "CopyOf": {
+                      "of": { "Target": 0 },
+                      "except": [{ "RemoveSupertype": "Legendary" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

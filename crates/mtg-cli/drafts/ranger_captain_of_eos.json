@@ -1,0 +1,51 @@
+{
+  "oracle_id": "cada3481-cc2b-4412-b9b5-0436af53aad2",
+  "name": "Ranger-Captain of Eos",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ranger-Captain of Eos",
+      "oracle_fingerprint": "66ba8325cf2b8390e9f07a7ed8bb6930",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Search": {
+                        "filter": [
+                          { "Type": "Creature" },
+                          { "Compare": { "stat": "ManaValue", "op": "Le", "to": 1 } }
+                        ],
+                        "reveal": true,
+                        "as": "card"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "card" }, "to": "Hand" } },
+                    { "Shuffle": {} }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Sacrifice": { "filter": [{ "Type": "Creature" }, { "Is": "This" }] } }],
+            "effects": [
+              {
+                "Rule": {
+                  "rule": { "CantCastSpells": { "who": "Opponents" } },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

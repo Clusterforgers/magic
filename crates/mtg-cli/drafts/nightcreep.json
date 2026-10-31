@@ -1,0 +1,33 @@
+{
+  "oracle_id": "8b4b677e-3b18-454c-b385-b3ffb65f916e",
+  "name": "Nightcreep",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nightcreep",
+      "oracle_fingerprint": "ce086b048f8993e71691863166798599",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }] },
+                  "mods": [{ "SetColors": ["Black"] }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Land" }] },
+                  "mods": [{ "AddSubtype": "Swamp" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

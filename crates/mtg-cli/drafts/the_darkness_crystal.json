@@ -1,0 +1,66 @@
+{
+  "oracle_id": "660f370a-b25b-4ea5-b765-7abf96899c1c",
+  "name": "The Darkness Crystal",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Darkness Crystal",
+      "oracle_fingerprint": "9eab0abeedcd887f5e98c675ad0e77d1",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["Spell", { "Color": "Black" }, { "ControlledBy": "You" }],
+            "change": "Reduce",
+            "mana": "{1}"
+          }
+        },
+        {
+          "Replacement": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "Not": "Token" },
+                  { "ControlledBy": "Opponents" }
+                ],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "by": {
+              "Instead": [{ "Exile": { "what": "Triggering" } }, { "GainLife": { "amount": 2 } }]
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{4}{B}{B}" },
+              { "TapPermanents": { "filter": [{ "Is": "This" }] } },
+              { "TapPermanents": { "filter": [{ "Is": "This" }] } },
+              { "TapPermanents": { "filter": [{ "Is": "This" }] } },
+              { "TapPermanents": { "filter": [{ "Is": "This" }] } },
+              { "TapPermanents": { "filter": [{ "Is": "This" }] } },
+              { "TapPermanents": { "filter": [{ "Is": "This" }] } },
+              { "TapPermanents": { "filter": [{ "Is": "This" }] } },
+              { "TapPermanents": { "filter": [{ "Is": "This" }] } },
+              { "TapPermanents": { "filter": [{ "Is": "This" }] } },
+              { "TapPermanents": { "filter": [{ "Is": "This" }] } },
+              { "TapPermanents": { "filter": [{ "Is": "This" }] } },
+              { "TapPermanents": { "filter": [{ "Is": "This" }] } },
+              { "TapPermanents": { "filter": [{ "Is": "This" }] } },
+              { "TapPermanents": { "filter": [{ "Is": "This" }] } },
+              { "TapPermanents": { "filter": [{ "Is": "This" }] } },
+              { "TapPermanents": { "filter": [{ "Is": "This" }] } }
+            ],
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": { "tapped": true } } } },
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1", "count": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

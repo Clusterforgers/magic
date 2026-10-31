@@ -1,0 +1,23 @@
+{
+  "oracle_id": "fa43d688-99de-4774-ac2d-2d01866eef58",
+  "name": "Overrule",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Overrule",
+      "oracle_fingerprint": "30d19596f7ab32f5599880fc4f25c99d",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [
+              { "Pay": { "who": { "ControllerOf": { "Target": 0 } }, "cost": "{X}" } },
+              { "Counter": { "what": { "Target": 0 } } },
+              { "GainLife": { "amount": "X" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

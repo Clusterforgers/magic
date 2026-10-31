@@ -1,0 +1,39 @@
+{
+  "oracle_id": "a20e2e1a-90d8-4073-96e9-efce86f0178e",
+  "name": "Astral Dragon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Astral Dragon",
+      "oracle_fingerprint": "4a793a28fde9f42ec253dc68e54bf639",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "Not": { "Type": "Creature" } }] } }
+            ],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "CopyOf": {
+                      "of": { "Target": 0 },
+                      "except": [
+                        { "SetPT": { "power": 3, "toughness": 3 } },
+                        { "AddSubtype": "Dragon" },
+                        { "AddKeyword": "Flying" }
+                      ]
+                    }
+                  },
+                  "count": 2
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "oracle_id": "4344abeb-47ab-4638-b50f-dd502f14c1af",
+  "name": "Skittering Horror",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Skittering Horror",
+      "oracle_fingerprint": "ff4b99e81dc08f328bfa788e415fefb9",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Type": "Creature" }], "by": "You" } },
+            "if": { "Compare": { "left": 1, "op": "Eq", "right": 1 } },
+            "effects": [{ "Sacrifice": { "filter": ["This"] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

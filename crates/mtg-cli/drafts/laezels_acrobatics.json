@@ -1,0 +1,27 @@
+{
+  "oracle_id": "3efe6ac8-f92e-4108-913b-077e41c0a841",
+  "name": "Lae'zel's Acrobatics",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lae'zel's Acrobatics",
+      "oracle_fingerprint": "07b6ca27794bdc176ce61e4133330be4",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Exile": {
+                  "what": {
+                    "Each": [{ "Type": "Creature" }, { "Not": "Token" }, { "ControlledBy": "You" }]
+                  },
+                  "as": "exiled"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

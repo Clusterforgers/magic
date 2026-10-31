@@ -1,0 +1,41 @@
+{
+  "oracle_id": "ac675899-25bb-4f06-9c8c-bf188024495f",
+  "name": "Firemane Commando",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Firemane Commando",
+      "oracle_fingerprint": "bfd6e6b1a505564f1ed68685cede5478",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                "at_least": 2
+              }
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }],
+                "at_least": 2
+              }
+            },
+            "if": {
+              "Not": {
+                "Matches": { "subject": "This", "selector": [{ "AttackingPlayer": "You" }] }
+              }
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

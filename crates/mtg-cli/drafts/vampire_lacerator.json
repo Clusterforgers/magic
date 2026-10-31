@@ -1,0 +1,33 @@
+{
+  "oracle_id": "dc261758-0982-4b7d-9986-042c03cc8366",
+  "name": "Vampire Lacerator",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vampire Lacerator",
+      "oracle_fingerprint": "b0492d5267c2f882940b86e97002b15c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Not": {
+                      "Any": [
+                        { "Compare": { "left": { "Life": "Opponents" }, "op": "Le", "right": 10 } }
+                      ]
+                    }
+                  },
+                  "then": [],
+                  "otherwise": [{ "LoseLife": { "amount": 1 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

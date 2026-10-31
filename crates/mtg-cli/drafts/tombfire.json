@@ -1,0 +1,31 @@
+{
+  "oracle_id": "37feb05b-1f69-4d0d-837c-592461a431e0",
+  "name": "Tombfire",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tombfire",
+      "oracle_fingerprint": "7d466b970eeacacdffd42148aec2d0ac",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Exile": {
+                  "what": {
+                    "Each": [
+                      { "HasKeyword": { "Flashback": [] } },
+                      { "In": "Graveyard" },
+                      { "OwnedBy": { "Target": 0 } }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "oracle_id": "7be47440-b627-411e-a28f-d5a92e5e2fb7",
+  "name": "Impostor Syndrome",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Impostor Syndrome",
+      "oracle_fingerprint": "a8fb8756e29a91d4b00927509461969e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [{ "Type": "Creature" }, { "ControlledBy": "You" }, { "Not": "Token" }],
+                "to": "EachPlayer"
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "CopyOf": { "of": "Triggering", "except": [{ "RemoveSupertype": "Legendary" }] }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

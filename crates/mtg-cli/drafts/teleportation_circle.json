@@ -1,0 +1,41 @@
+{
+  "oracle_id": "c786a0aa-d86f-42c3-a7ea-5cb6ab72b5ec",
+  "name": "Teleportation Circle",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Teleportation Circle",
+      "oracle_fingerprint": "ef317eab03b64127b9c2f3bc74d128f3",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Artifact" },
+                    { "Type": "Creature" },
+                    { "ControlledBy": "You" }
+                  ]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+                    { "Move": { "what": { "Bound": "exiled" }, "to": { "Battlefield": {} } } }
+                  ]
+                }
+              },
+              { "Rule": { "rule": { "DamageCantBePrevented": {} }, "duration": "Forever" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

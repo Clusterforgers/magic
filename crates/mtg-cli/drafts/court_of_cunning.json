@@ -1,0 +1,36 @@
+{
+  "oracle_id": "2ab88c99-aaa0-4a91-9225-0bbfba04b6bc",
+  "name": "Court of Cunning",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Court of Cunning",
+      "oracle_fingerprint": "e36119f60734380536d7f6e407ef5e4e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "BecomeMonarch": {} }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "If": {
+                  "condition": { "Monarch": "You" },
+                  "then": [{ "Mill": { "who": { "Target": 0 }, "count": 10 } }],
+                  "otherwise": [{ "Mill": { "who": { "Target": 0 }, "count": 2 } }]
+                }
+              },
+              { "TakeInitiative": {} },
+              { "AddPhase": { "phases": ["Beginning"] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

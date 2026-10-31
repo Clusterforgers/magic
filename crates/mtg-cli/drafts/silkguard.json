@@ -1,0 +1,24 @@
+{
+  "oracle_id": "6dbeeb49-55c6-4ceb-94dd-3e4110dff8c0",
+  "name": "Silkguard",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Silkguard",
+      "oracle_fingerprint": "e33d3cf779d0a4c60d60de673fab8cf9",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                "bounds": { "min": "X", "max": 1 }
+              }
+            ],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "oracle_id": "de1ca6ed-b275-4f62-ba05-f31b3659b352",
+  "name": "Windgrace's Judgment",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Windgrace's Judgment",
+      "oracle_fingerprint": "4f246465c629c0cf49b14f905ff551c1",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "PerPlayer": { "players": "Opponents", "what": [{ "Not": { "Type": "Land" } }] }
+                }
+              }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

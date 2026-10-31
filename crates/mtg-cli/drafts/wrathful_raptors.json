@@ -1,0 +1,24 @@
+{
+  "oracle_id": "1ba92b64-d821-4c24-aed6-fc90d0c63c10",
+  "name": "Wrathful Raptors",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wrathful Raptors",
+      "oracle_fingerprint": "7dbf47d27ef9ce117628cdf934ea3b3a",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": [], "to": "This" } },
+            "if": {
+              "Not": { "Matches": { "subject": "This", "selector": [{ "Subtype": "Dinosaur" }] } }
+            },
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": "Triggering" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

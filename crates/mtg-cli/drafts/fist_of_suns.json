@@ -1,0 +1,14 @@
+{
+  "oracle_id": "6fd5e591-fae8-4128-a4d3-a848c8a8ffda",
+  "name": "Fist of Suns",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fist of Suns",
+      "oracle_fingerprint": "5182c868c8c2eb866b05ff19499c3ddd",
+      "abilities": [
+        { "Rule": { "rule": { "MayCast": { "what": ["Spell", { "ControlledBy": "You" }] } } } }
+      ]
+    }
+  ]
+}

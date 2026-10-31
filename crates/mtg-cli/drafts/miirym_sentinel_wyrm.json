@@ -1,0 +1,32 @@
+{
+  "oracle_id": "880fcf86-e6a9-482c-b91d-750f293127b2",
+  "name": "Miirym, Sentinel Wyrm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Miirym, Sentinel Wyrm",
+      "oracle_fingerprint": "656dfaabb74995b8e464dd99868046ad",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": { "Ward": "{2}" } },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": { "what": ["This", "Other", "Token", "Spell"], "to": "Battlefield" }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "CopyOf": { "of": "Triggering", "except": [{ "RemoveSupertype": "Legendary" }] }
+                  }
+                }
+              },
+              { "Counter": { "what": "Triggering" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

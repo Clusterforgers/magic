@@ -1,0 +1,41 @@
+{
+  "oracle_id": "59c7496b-19a2-478b-b28f-6f153c2458ae",
+  "name": "Siren Stormtamer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Siren Stormtamer",
+      "oracle_fingerprint": "fd76194272242362c749f422635aa0d1",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{U}" }, "SacrificeSelf"],
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    {
+                      "AnyOf": [
+                        { "Type": "Creature" },
+                        { "Ability": "Triggered" },
+                        { "Type": "Artifact" }
+                      ]
+                    },
+                    {
+                      "AnyOf": [
+                        { "TargetsPlayer": "You" },
+                        { "Targeting": [{ "ControlledBy": "You" }, { "Type": "Creature" }] }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Counter": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

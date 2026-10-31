@@ -1,0 +1,47 @@
+{
+  "oracle_id": "88159872-d37d-4847-b048-e4a9af6437bd",
+  "name": "Barad-dûr",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Barad-dûr",
+      "oracle_fingerprint": "65a54f72a31148d6b4392d5e00dcbcd4",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": "Tapped",
+            "condition": {
+              "Not": {
+                "Compare": {
+                  "left": { "Count": [{ "Type": "Creature" }, { "Supertype": "Legendary" }] },
+                  "op": "Ge",
+                  "right": 1
+                }
+              }
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Black"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{X}{X}{B}" }, "Tap"],
+            "condition": {
+              "Compare": {
+                "left": { "Tallied": { "who": "EachPlayer", "what": "CreaturesDied" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "Amass": { "subtype": "Orc", "count": "X" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

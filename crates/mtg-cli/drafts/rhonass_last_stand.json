@@ -1,0 +1,39 @@
+{
+  "oracle_id": "01c729d7-9b80-479d-8d30-ae47c76c2c50",
+  "name": "Rhonas's Last Stand",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rhonas's Last Stand",
+      "oracle_fingerprint": "f51b955ef284b53a0c16b03f9689cb46",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Snake",
+                      "types": ["Creature"],
+                      "subtypes": ["Snake"],
+                      "power": 5,
+                      "toughness": 4
+                    }
+                  }
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Land" }, { "ControlledBy": "You" }] },
+                  "mods": ["DoesntUntap"],
+                  "duration": "NextUntapStep"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

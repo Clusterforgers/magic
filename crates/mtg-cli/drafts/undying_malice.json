@@ -1,0 +1,51 @@
+{
+  "oracle_id": "8b061702-1bc3-45aa-a758-446b25034801",
+  "name": "Undying Malice",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Undying Malice",
+      "oracle_fingerprint": "9b624c29e179644709ae5ddc6069fcf3",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "GrantAbility": {
+                        "Triggered": {
+                          "when": {
+                            "ZoneChange": {
+                              "what": ["This"],
+                              "from": "Battlefield",
+                              "to": "Graveyard"
+                            }
+                          },
+                          "effects": [
+                            {
+                              "Move": {
+                                "what": "Triggering",
+                                "to": {
+                                  "Battlefield": { "tapped": true, "counters": [["+1/+1", 1]] }
+                                }
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

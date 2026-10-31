@@ -1,0 +1,19 @@
+{
+  "oracle_id": "ea79d4ee-c7b5-4687-9e33-22f98e46e8ec",
+  "name": "Psionic Sliver",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Psionic Sliver",
+      "oracle_fingerprint": "bbc2c7757c90fe8b8c7c705360fefaf4",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": ["This", "Tapped"] },
+            "mods": [{ "AddKeyword": "Haste" }]
+          }
+        }
+      ]
+    }
+  ]
+}

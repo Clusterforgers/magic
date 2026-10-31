@@ -1,0 +1,36 @@
+{
+  "oracle_id": "0f41cefc-d6ff-4db7-ba35-502b7e081de1",
+  "name": "Venser, Shaper Savant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Venser, Shaper Savant",
+      "oracle_fingerprint": "09952734e0a23d8b1c3db2b2c569ec4a",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Instant" },
+                    { "Type": "Sorcery" },
+                    { "Type": "Artifact" },
+                    { "Type": "Enchantment" },
+                    { "Type": "Creature" },
+                    { "Type": "Planeswalker" },
+                    { "Type": "Land" },
+                    { "Type": "Battle" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

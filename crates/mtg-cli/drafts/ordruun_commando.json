@@ -1,0 +1,27 @@
+{
+  "oracle_id": "f44a8a72-2c51-429e-8447-7bd8155b6f72",
+  "name": "Ordruun Commando",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ordruun Commando",
+      "oracle_fingerprint": "f70c0e63af5d4e02084b0e5eb80780ec",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{W}",
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": "This" } },
+                  "by": { "PreventUpTo": 1 },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

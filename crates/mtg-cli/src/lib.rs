@@ -13,6 +13,7 @@ pub mod check_rules;
 pub mod compile;
 pub mod coverage;
 pub mod coverage_all;
+pub mod drafts;
 pub mod error;
 pub mod fetch;
 pub mod files;

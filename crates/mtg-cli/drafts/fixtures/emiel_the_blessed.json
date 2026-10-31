@@ -1,0 +1,142 @@
+{
+  "object": "card",
+  "id": "0f594562-7e9f-47e6-a033-fb70e3cf1e10",
+  "oracle_id": "b11c250c-f191-4c52-ba02-a9176f163447",
+  "multiverse_ids": [
+    571343
+  ],
+  "mtgo_id": 101504,
+  "tcgplayer_id": 277143,
+  "cardmarket_id": 665703,
+  "name": "Emiel the Blessed",
+  "lang": "en",
+  "released_at": "2022-07-08",
+  "uri": "https://api.scryfall.com/cards/0f594562-7e9f-47e6-a033-fb70e3cf1e10",
+  "scryfall_uri": "https://scryfall.com/card/2x2/10/emiel-the-blessed?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T05:52:17Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/0/f/0f594562-7e9f-47e6-a033-fb70e3cf1e10.jpg?1783921937",
+    "normal": "https://cards.scryfall.io/normal/front/0/f/0f594562-7e9f-47e6-a033-fb70e3cf1e10.jpg?1783921937",
+    "large": "https://cards.scryfall.io/large/front/0/f/0f594562-7e9f-47e6-a033-fb70e3cf1e10.jpg?1783921937",
+    "png": "https://cards.scryfall.io/png/front/0/f/0f594562-7e9f-47e6-a033-fb70e3cf1e10.png?1783921937",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/0/f/0f594562-7e9f-47e6-a033-fb70e3cf1e10.jpg?1783921937",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/0/f/0f594562-7e9f-47e6-a033-fb70e3cf1e10.jpg?1783921937",
+    "thumb": "https://cards.scryfall.io/thumb/front/0/f/0f594562-7e9f-47e6-a033-fb70e3cf1e10.webp?1783921937",
+    "grid": "https://cards.scryfall.io/grid/front/0/f/0f594562-7e9f-47e6-a033-fb70e3cf1e10.webp?1783921937",
+    "display": "https://cards.scryfall.io/display/front/0/f/0f594562-7e9f-47e6-a033-fb70e3cf1e10.webp?1783921937",
+    "art": "https://cards.scryfall.io/art/front/0/f/0f594562-7e9f-47e6-a033-fb70e3cf1e10.webp?1783921937",
+    "crop": "https://cards.scryfall.io/crop/front/0/f/0f594562-7e9f-47e6-a033-fb70e3cf1e10.webp?1783921937",
+    "jpeg": "https://cards.scryfall.io/normal/front/0/f/0f594562-7e9f-47e6-a033-fb70e3cf1e10.jpg?1783921937"
+  },
+  "mana_cost": "{2}{W}{W}",
+  "cmc": 4.0,
+  "type_line": "Legendary Creature — Unicorn",
+  "oracle_text": "{3}: Exile another target creature you control, then return it to the battlefield under its owner's control.\nWhenever another creature you control enters, you may pay {G/W}. If you do, put a +1/+1 counter on it. If it's a Unicorn, put two +1/+1 counters on it instead. ({G/W} can be paid with either {G} or {W}.)",
+  "power": "4",
+  "toughness": "4",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "G",
+    "W"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "5a645837-b050-449f-ac90-1e7ccbf45031",
+  "set": "2x2",
+  "set_name": "Double Masters 2022",
+  "set_type": "masters",
+  "set_uri": "https://api.scryfall.com/sets/5a645837-b050-449f-ac90-1e7ccbf45031",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3A2x2&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/2x2?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/0f594562-7e9f-47e6-a033-fb70e3cf1e10/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ab11c250c-f191-4c52-ba02-a9176f163447&unique=prints",
+  "collector_number": "10",
+  "digital": false,
+  "rarity": "mythic",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Antonio José Manzanedo",
+  "artist_ids": [
+    "74986d28-0001-4a78-827c-e490b325d0e3"
+  ],
+  "illustration_id": "87cb9f6a-9ea0-4f25-a0ab-fa9382e677f1",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 2748,
+  "preview": {
+    "source": "Wizards of the Coast",
+    "source_uri": "https://magic.wizards.com/en/articles/archive/feature/double-masters-2022-release-notes-2022-06-24",
+    "previewed_at": "2022-06-24"
+  },
+  "prices": {
+    "usd": "13.97",
+    "usd_foil": "19.41",
+    "usd_etched": null,
+    "eur": "10.98",
+    "eur_foil": "14.09",
+    "tix": "1.66"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=571343&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DEmiel%2Bthe%2BBlessed",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DEmiel%2Bthe%2BBlessed",
+    "edhrec": "https://edhrec.com/route/?cc=Emiel+the+Blessed"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F277143%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=665703&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/101504?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

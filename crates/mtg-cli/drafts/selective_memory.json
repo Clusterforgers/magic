@@ -1,0 +1,22 @@
+{
+  "oracle_id": "3cfb4977-5b6d-4220-9c54-70920b3087ed",
+  "name": "Selective Memory",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Selective Memory",
+      "oracle_fingerprint": "1c2aa5cb16f997dd66d5bfaeea1f3228",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Search": { "filter": [{ "Not": { "Type": "Land" } }], "as": "card" } },
+              { "Exile": { "what": { "Bound": "card" } } },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

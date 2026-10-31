@@ -1,0 +1,50 @@
+{
+  "oracle_id": "26486a42-4dc6-472b-9a9b-3c3ca78cc3b5",
+  "name": "Molten Echoes",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Molten Echoes",
+      "oracle_fingerprint": "b193cf17ee59b426d63e07df4e549d81",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "Choose": "CreatureType" }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "Not": "Token" },
+                  { "ControlledBy": "You" },
+                  { "Subtype": "ChosenSubtype" }
+                ],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "CopyOf": { "of": "Triggering", "except": [{ "AddKeyword": "Haste" }] }
+                  },
+                  "as": "copy"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [{ "Exile": { "what": { "Bound": "copy" } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

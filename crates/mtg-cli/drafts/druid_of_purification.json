@@ -1,0 +1,35 @@
+{
+  "oracle_id": "5bb32efd-9e58-4021-bbda-4ffccfa1d601",
+  "name": "Druid of Purification",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Druid of Purification",
+      "oracle_fingerprint": "b0142a8509b920365c36014ab3751380",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Vote": {
+                  "options": {
+                    "Of": {
+                      "Each": [
+                        { "In": "Battlefield" },
+                        { "Not": { "ControlledBy": "You" } },
+                        { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Enchantment" }] }
+                      ]
+                    }
+                  },
+                  "as": "chosen"
+                }
+              },
+              { "Destroy": { "what": { "Bound": "chosen" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

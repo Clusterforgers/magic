@@ -1,0 +1,21 @@
+{
+  "oracle_id": "6130f22d-7901-4f9f-b777-27bb0dacc063",
+  "name": "Debt to the Deathless",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Debt to the Deathless",
+      "oracle_fingerprint": "6cb42cdcdeb3759740ee459227eef973",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "LoseLife": { "who": "Opponents", "amount": { "Times": { "by": 2, "of": "X" } } } },
+              { "GainLife": { "amount": "LifeLostThisWay" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

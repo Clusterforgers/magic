@@ -1,0 +1,51 @@
+{
+  "oracle_id": "b3de29cb-7d7d-4566-b5bf-37e571bd5d78",
+  "name": "Enduring Courage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Enduring Courage",
+      "oracle_fingerprint": "a30818e5c601515aa7bb110aa048c447",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "ControlledBy": "You" },
+                  { "Not": { "Is": "This" } }
+                ],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Triggering",
+                  "mods": [
+                    { "ModifyPT": { "power": 2, "toughness": 0 } },
+                    { "AddKeyword": "Haste" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [{ "Move": { "what": "Triggering", "to": { "Battlefield": {} } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

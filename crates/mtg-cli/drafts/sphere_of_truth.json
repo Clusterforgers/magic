@@ -1,0 +1,20 @@
+{
+  "oracle_id": "e6325604-cdce-4872-af03-e436631004de",
+  "name": "Sphere of Truth",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sphere of Truth",
+      "oracle_fingerprint": "1e0eb4924dfbac3f4f685fdf83c9260b",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Damage": { "to": "You" } },
+            "by": { "PreventUpTo": 2 },
+            "condition": { "Matches": { "subject": "This", "selector": [{ "Color": "White" }] } }
+          }
+        }
+      ]
+    }
+  ]
+}

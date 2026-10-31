@@ -1,0 +1,12 @@
+{
+  "oracle_id": "2ac4aca3-d5d6-4027-9f09-8b5f20e2438b",
+  "name": "Wizened Snitches",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wizened Snitches",
+      "oracle_fingerprint": "03a1b2b8c57fcbdb7800a9fb01dd71fb",
+      "abilities": [{ "Keyword": "Flying" }, { "Rule": { "rule": { "RevealTop": "EachPlayer" } } }]
+    }
+  ]
+}

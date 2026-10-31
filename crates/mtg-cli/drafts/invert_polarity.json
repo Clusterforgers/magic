@@ -1,0 +1,14 @@
+{
+  "oracle_id": "69e12b1f-0fd9-43a9-b3db-fe08290442c6",
+  "name": "Invert Polarity",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Invert Polarity",
+      "oracle_fingerprint": "10fe2cbfc7525438788624dbf28a02d0",
+      "abilities": [
+        { "Spell": { "effects": [{ "FlipCoin": { "win": [{ "GainLife": { "amount": 0 } }] } }] } }
+      ]
+    }
+  ]
+}

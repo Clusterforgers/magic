@@ -1,0 +1,60 @@
+{
+  "oracle_id": "ed14be15-8f8d-4fe3-a147-f5da8ed873bf",
+  "name": "Conduit of Worlds",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Conduit of Worlds",
+      "oracle_fingerprint": "3165b131052f11ac3ebabe0030be00ef",
+      "abilities": [
+        { "Rule": { "rule": { "MayCast": { "what": [{ "Type": "Land" }] } } } },
+        {
+          "Activated": {
+            "cost": [
+              {
+                "TapPermanents": {
+                  "filter": [
+                    {
+                      "Targeting": [
+                        { "Type": "Creature" },
+                        { "In": "Graveyard" },
+                        { "Not": { "Type": "Land" } }
+                      ]
+                    }
+                  ]
+                }
+              },
+              "Tap"
+            ],
+            "timing": "Sorcery",
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Rule": {
+                        "rule": {
+                          "MayCast": {
+                            "what": [{ "Targeting": [{ "Is": "This" }] }, "Token"],
+                            "from": "Graveyard"
+                          }
+                        },
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "Rule": {
+                  "rule": { "CantCastSpells": { "who": "You" } },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

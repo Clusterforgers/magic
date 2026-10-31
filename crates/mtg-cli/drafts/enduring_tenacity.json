@@ -1,0 +1,27 @@
+{
+  "oracle_id": "98e698ae-1a69-469c-9cfb-0e3fedeb71d4",
+  "name": "Enduring Tenacity",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Enduring Tenacity",
+      "oracle_fingerprint": "24b2f62a1354ae80ea154d040ff40b23",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "LifeGained": { "who": "You" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [{ "LoseLife": { "who": { "Target": 0 }, "amount": "Triggering" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "if": { "Matches": { "subject": "This", "selector": [{ "Type": "Creature" }] } },
+            "effects": [{ "Move": { "what": "This", "to": { "Battlefield": {} } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

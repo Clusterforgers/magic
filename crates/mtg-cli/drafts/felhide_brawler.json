@@ -1,0 +1,34 @@
+{
+  "oracle_id": "2ddd33e1-b48e-42e2-a60a-f09f151d3c1d",
+  "name": "Felhide Brawler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Felhide Brawler",
+      "oracle_fingerprint": "aba39d71069a64ed6bea988654557ebc",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": ["CantBlock"],
+            "condition": {
+              "Not": {
+                "Compare": {
+                  "left": {
+                    "Count": [
+                      { "Subtype": "Minotaur" },
+                      { "ControlledBy": "You" },
+                      { "Not": { "Targeting": ["This"] } }
+                    ]
+                  },
+                  "op": "Ge",
+                  "right": 1
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

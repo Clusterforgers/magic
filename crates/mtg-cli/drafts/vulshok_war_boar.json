@@ -1,0 +1,56 @@
+{
+  "oracle_id": "4641e86f-5370-4b25-bd76-07bea856c032",
+  "name": "Vulshok War Boar",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vulshok War Boar",
+      "oracle_fingerprint": "b93b280f9cf0f3ea1d943b27d305dd64",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "Sacrifice": { "filter": ["DamagedThisTurn"] } }],
+                  "unpaid": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              },
+              {
+                "Pay": {
+                  "cost": [{ "Sacrifice": { "filter": ["DamagedThisTurn"] } }],
+                  "unpaid": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              },
+              {
+                "Pay": {
+                  "cost": [{ "Sacrifice": { "filter": ["DamagedThisTurn"] } }],
+                  "unpaid": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              },
+              {
+                "Pay": {
+                  "cost": [{ "Sacrifice": { "filter": ["DamagedThisTurn"] } }],
+                  "unpaid": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              },
+              {
+                "Pay": {
+                  "cost": [{ "Sacrifice": { "filter": ["DamagedThisTurn"] } }],
+                  "unpaid": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              },
+              {
+                "Pay": {
+                  "cost": [{ "Sacrifice": { "filter": ["DamagedThisTurn"] } }],
+                  "unpaid": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

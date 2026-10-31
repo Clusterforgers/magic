@@ -1,0 +1,22 @@
+{
+  "oracle_id": "7e6fd429-f925-4ff7-9c6e-34c2c9d15d04",
+  "name": "Relic Putrescence",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Relic Putrescence",
+      "oracle_fingerprint": "440084e5e03dd052bef65469593d464d",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Artifact" }] } },
+        {
+          "Triggered": {
+            "when": { "Tapped": { "what": [{ "Is": "Attached" }, { "Type": "Artifact" }] } },
+            "effects": [
+              { "PutCounters": { "on": { "ControllerOf": "Triggering" }, "counter": "poison" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

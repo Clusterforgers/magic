@@ -1,0 +1,36 @@
+{
+  "oracle_id": "7b8528b0-71eb-4c9e-bed9-aa2d2e84038f",
+  "name": "Kozilek, Butcher of Truth",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kozilek, Butcher of Truth",
+      "oracle_fingerprint": "c17372dcdaa6da3649610e406f3b63c0",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": ["This"], "by": "You" } },
+            "from": "Stack",
+            "effects": [{ "Draw": { "count": 4 } }]
+          }
+        },
+        { "Keyword": { "Annihilator": 4 } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Graveyard" } },
+            "from": "Graveyard",
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Each": [{ "In": "Graveyard" }, "This"] },
+                  "to": { "Library": { "place": "Shuffled" } }
+                }
+              },
+              { "LookAtTop": { "as": "graveyard" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

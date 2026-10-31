@@ -512,7 +512,7 @@ fn load_row(
 }
 
 /// Why a card cannot be a draft: a draft is a whole rules file, `full` with no `Manual` ability.
-fn unwhole(card: &Card) -> Option<String> {
+pub fn unwhole(card: &Card) -> Option<String> {
     if card.impl_status != ImplStatus::Full {
         return Some("a draft is a whole rules file: its status must be `full`".into());
     }

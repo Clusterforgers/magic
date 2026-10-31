@@ -1,0 +1,27 @@
+{
+  "oracle_id": "a8127c04-f67f-4780-86bf-bb24480ec51a",
+  "name": "Heat Stroke",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Heat Stroke",
+      "oracle_fingerprint": "8146b3456cb75532cde3f53d65304626",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "EndCombat" } },
+            "effects": [
+              {
+                "Destroy": {
+                  "what": {
+                    "Each": [{ "Type": "Creature" }, { "AnyOf": [{ "HasKeyword": "BattleCry" }] }]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

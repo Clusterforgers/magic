@@ -1,0 +1,22 @@
+{
+  "oracle_id": "f8bf3d91-cb50-48ce-88c6-cdcb37b64b57",
+  "name": "Kazuul, Tyrant of the Cliffs",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kazuul, Tyrant of the Cliffs",
+      "oracle_fingerprint": "ceb3e7a46b561e84de52b934a3553cb3",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AttacksPlayerOrPlaneswalker": { "what": [{ "Type": "Creature" }], "at": "You" }
+            },
+            "if": { "Monarch": "Triggering" },
+            "effects": [{ "Pay": { "who": "Triggering", "cost": "{3}" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

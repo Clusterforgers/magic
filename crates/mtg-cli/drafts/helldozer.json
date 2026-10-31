@@ -1,0 +1,36 @@
+{
+  "oracle_id": "d0b17b41-bf8e-4ffd-9301-8db745b01112",
+  "name": "Helldozer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Helldozer",
+      "oracle_fingerprint": "d80eed1d914a98a705d9e5ca97f303b9",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{B}{B}{B}" }, "Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Land" }] } }],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              {
+                "If": {
+                  "condition": {
+                    "Not": {
+                      "Matches": {
+                        "subject": { "Target": 0 },
+                        "selector": [{ "Subtype": "Basic" }]
+                      }
+                    }
+                  },
+                  "then": [{ "Untap": { "what": "This" } }]
+                }
+              },
+              { "Tap": { "what": "This" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

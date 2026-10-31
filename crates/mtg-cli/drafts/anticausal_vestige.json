@@ -1,0 +1,40 @@
+{
+  "oracle_id": "aceea999-90ab-472c-86a7-48af1542cbcf",
+  "name": "Anticausal Vestige",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Anticausal Vestige",
+      "oracle_fingerprint": "bc98996edee8800546ff46ab24b582cd",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChangeExcept": { "what": ["This"], "except": "Battlefield" } },
+            "effects": [
+              { "Draw": {} },
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": { "Each": [{ "ControlledBy": "You" }, { "In": "Hand" }] },
+                        "as": "card"
+                      }
+                    },
+                    {
+                      "Move": {
+                        "what": { "Bound": "card" },
+                        "to": { "Battlefield": { "tapped": true } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Ward": "{4}" } }
+      ]
+    }
+  ]
+}

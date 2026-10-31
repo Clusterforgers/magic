@@ -1,0 +1,48 @@
+{
+  "oracle_id": "b347be2d-9aa1-42a9-b652-8fb032832f09",
+  "name": "Halana and Alena, Partners",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Halana and Alena, Partners",
+      "oracle_fingerprint": "cf7296e739b0c4f518ed96451d29c292",
+      "abilities": [
+        { "Keyword": "Reach" },
+        { "Keyword": "FirstStrike" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "ControlledBy": "You" },
+                    { "Is": "This" },
+                    { "Not": "This" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": { "Target": 0 },
+                  "counter": "+1/+1",
+                  "count": { "Stat": { "of": "This", "stat": "Power" } }
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

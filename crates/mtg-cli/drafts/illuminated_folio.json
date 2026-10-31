@@ -1,0 +1,29 @@
+{
+  "oracle_id": "0440f85f-8128-4399-9a3d-51f39e196c96",
+  "name": "Illuminated Folio",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Illuminated Folio",
+      "oracle_fingerprint": "c78e2b50ae49c367c0ba6bc6a43fdac4",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap"],
+            "effects": [
+              {
+                "Choose": {
+                  "from": { "Each": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
+                  "count": { "min": 2, "max": 2 },
+                  "as": "cards"
+                }
+              },
+              { "Reveal": { "what": { "Bound": "cards" } } },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

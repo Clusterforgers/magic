@@ -1,0 +1,26 @@
+{
+  "oracle_id": "614feadd-b74f-4d9c-a0a3-3a63724956af",
+  "name": "Grim Wanderer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Grim Wanderer",
+      "oracle_fingerprint": "da4bbdbd72392bbd3de283a42afbe770",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Rule": {
+            "rule": { "MayCast": { "what": [{ "Is": "This" }] } },
+            "condition": {
+              "Compare": {
+                "left": { "Tallied": { "who": "EachPlayer", "what": "CreaturesDied" } },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

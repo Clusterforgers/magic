@@ -1,0 +1,43 @@
+{
+  "oracle_id": "0209dc74-ac49-4deb-907a-e9fa49d27a0f",
+  "name": "Surly Badgersaur",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Surly Badgersaur",
+      "oracle_fingerprint": "84a27e914c280687f10fc1f82cd24707",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Discarded": { "what": [{ "Type": "Creature" }], "by": "You" } },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Discarded": { "what": [{ "Type": "Land" }], "by": "You" } },
+            "effects": [{ "CreateToken": { "token": { "Named": "treasure" } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "Discarded": {
+                "what": [{ "Not": { "Type": "Creature" } }, { "Not": { "Type": "Land" } }],
+                "by": "You"
+              }
+            },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "Not": { "ControlledBy": "You" } }] },
+                "bounds": { "min": 0, "max": 1 },
+                "divide": 0
+              }
+            ],
+            "effects": [{ "Fight": { "what": "This", "with": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

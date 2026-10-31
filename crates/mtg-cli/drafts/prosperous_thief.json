@@ -1,0 +1,31 @@
+{
+  "oracle_id": "6d03971a-8365-449a-8fbe-07b5b9bb42dc",
+  "name": "Prosperous Thief",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Prosperous Thief",
+      "oracle_fingerprint": "8dd851dc3c420bb8b4a6b7fa6daabb31",
+      "abilities": [
+        { "Keyword": { "Ninjutsu": "{1}{U}" } },
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "DealsDamage": {
+                  "source": [
+                    { "Type": "Creature" },
+                    { "AnyOf": [{ "Subtype": "Ninja" }, { "Subtype": "Rogue" }] },
+                    { "ControlledBy": "You" }
+                  ],
+                  "to": "EachPlayer"
+                }
+              }
+            },
+            "effects": [{ "CreateToken": { "token": { "Named": "treasure" } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

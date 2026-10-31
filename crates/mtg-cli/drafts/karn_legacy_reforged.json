@@ -1,0 +1,49 @@
+{
+  "oracle_id": "bc8802db-8c94-4eb4-817f-5f4f5408b7a4",
+  "name": "Karn, Legacy Reforged",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Karn, Legacy Reforged",
+      "oracle_fingerprint": "fad1638f7a1ced4a4162adc3069f7d79",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "SetPT": {
+                  "power": {
+                    "Greatest": {
+                      "of": [{ "Is": "This" }, { "Is": "This" }, { "Is": "This" }],
+                      "stat": "ManaValue"
+                    }
+                  },
+                  "toughness": {
+                    "Greatest": {
+                      "of": [{ "Is": "This" }, { "Is": "This" }, { "Is": "This" }],
+                      "stat": "ManaValue"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["Colorless"] },
+                  "times": { "Count": [{ "Is": "This" }, { "Is": "This" }, { "Is": "This" }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

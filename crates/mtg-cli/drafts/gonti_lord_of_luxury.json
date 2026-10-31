@@ -1,0 +1,30 @@
+{
+  "oracle_id": "d5be0ff6-39d9-4f9f-a028-e62dc38463f2",
+  "name": "Gonti, Lord of Luxury",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gonti, Lord of Luxury",
+      "oracle_fingerprint": "d3b07c4e381e55805d328762dfd0732d",
+      "abilities": [
+        { "Keyword": "Deathtouch" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "LookAtTop": { "count": 4, "as": "top" } },
+              { "Choose": { "from": { "Bound": "top" }, "as": "exiled", "rest_as": "rest" } },
+              { "Exile": { "what": { "Bound": "exiled" }, "as": "face_down" } },
+              {
+                "Move": {
+                  "what": { "Bound": "rest" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

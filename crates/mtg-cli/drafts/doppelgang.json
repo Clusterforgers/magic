@@ -1,0 +1,21 @@
+{
+  "oracle_id": "d04c6375-25dd-4882-b8b3-a3b0d3081f32",
+  "name": "Doppelgang",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Doppelgang",
+      "oracle_fingerprint": "96adfa54856105be68285f5531c85e12",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [] }, "bounds": { "min": "X", "max": 1 } }],
+            "effects": [
+              { "CreateToken": { "token": { "CopyOf": { "of": { "Target": 0 } } }, "count": "X" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

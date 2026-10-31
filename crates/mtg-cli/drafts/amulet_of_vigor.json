@@ -1,0 +1,51 @@
+{
+  "oracle_id": "dba16032-66c1-4ccb-9d65-d41ac550d182",
+  "name": "Amulet of Vigor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Amulet of Vigor",
+      "oracle_fingerprint": "ff09b8e1cbe9185c0a35713f44331642",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "ControlledBy": "You" },
+                  { "Targeting": [] },
+                  { "Targeting": [] },
+                  { "Targeting": [] },
+                  { "Targeting": [] },
+                  { "Targeting": [] },
+                  { "Targeting": [] },
+                  { "Targeting": [] },
+                  { "Targeting": [] },
+                  { "Targeting": [] },
+                  { "Targeting": [] },
+                  { "Targeting": [] },
+                  { "Targeting": [] },
+                  { "Targeting": [] },
+                  { "Targeting": [] },
+                  { "Targeting": [] },
+                  { "Targeting": [] },
+                  { "Targeting": [] },
+                  { "Targeting": [] },
+                  { "Targeting": [] },
+                  { "Targeting": [] },
+                  { "Targeting": [] },
+                  { "Targeting": [] },
+                  { "Targeting": [] },
+                  { "Targeting": [] },
+                  { "Targeting": [] },
+                  { "Targeting": [] }
+                ]
+              }
+            },
+            "effects": [{ "Untap": { "what": "Triggering" } }]
+          }
+        }
+      ]
+    }
+  ]
+}
