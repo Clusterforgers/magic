@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button'
 import { usePlay } from '@/features/game/gameContext'
 import type { ObjectId, Target } from '@/protocol/generated'
 import { useSeatNamer } from '../../names'
+import { CardChoices } from '../CardChoices'
 import { uniqueNames } from '../combatText'
 import { markCards, useCardMarks } from '../marks'
 import { useOwnCardIds } from '../ownCards'
@@ -21,8 +22,9 @@ import { useObjects } from '../useCombatNames'
 
 /**
  * ChooseTargets: the legal objects on the table are marked and a click, Enter or Space on one chooses it (again, takes
- * it back); every legal target is also a button in the list under the sentence, because a player is not a card and a
- * permanent may sit in a group or a zone the table does not draw. The chosen targets are listed with a button each to
+ * it back); every legal target is also offered under the sentence: a player as a button, an object as its card
+ * picture (`CardChoices`), because a permanent may sit in a group, a graveyard, exile or the stack, where the table
+ * draws no card to press. The chosen targets are listed with a button each to
  * take them back, Undo takes back the last one, and Confirm sends them once there are enough. A spell can be taken
  * back with Cancel, since nothing is paid yet; a triggered ability cannot, so it has no Cancel and waits for a target.
  */
@@ -64,6 +66,18 @@ export const ChooseTargetsPrompt: PromptComponent<'ChooseTargets'> = ({ options 
     return words
   }, [offered, objectIds, byId, seatName, me])
   const labelOf = (target: Target): string => labels.get(targetKey(target)) ?? 'a target'
+  const players = useMemo(() => offered.filter((target) => 'Player' in target), [offered])
+  const cardLabels = useMemo(
+    () =>
+      new Map(
+        offered.flatMap((target) =>
+          'Object' in target
+            ? [[target.Object.id, labels.get(targetKey(target)) ?? 'a target'] as const]
+            : [],
+        ),
+      ),
+    [offered, labels],
+  )
 
   // The targets in the order they were chosen.
   const [chosen, setChosen] = useState<readonly Target[]>([])
@@ -124,13 +138,16 @@ export const ChooseTargetsPrompt: PromptComponent<'ChooseTargets'> = ({ options 
           {cancelWords}
         </Button>
       ) : null}
-      <div
-        role="group"
-        aria-label="Legal targets"
-        data-slot="legal-targets"
-        className="flex max-h-44 basis-full flex-wrap items-center gap-2 overflow-y-auto p-0.5"
-      >
-        {offered.map((target) => {
+      <CardChoices
+        cards={objectIds}
+        chosen={chosenIds}
+        closed={closed}
+        labels={cardLabels}
+        objects={byId}
+        onPress={onCard}
+        label="Legal targets"
+        className="max-h-[max(6rem,calc(var(--sheet-max,20rem)_-_12rem))]"
+        lead={players.map((target) => {
           const picked = has(target)
           return (
             <Button
@@ -145,7 +162,7 @@ export const ChooseTargetsPrompt: PromptComponent<'ChooseTargets'> = ({ options 
             </Button>
           )
         })}
-      </div>
+      />
       {chosen.length === 0 ? null : (
         <ul
           aria-label="Your targets"
