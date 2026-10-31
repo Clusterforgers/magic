@@ -113,7 +113,7 @@ case "$mode" in
 esac
 [[ "$mode" == all || "$mode" == web ]] && web_sel=full
 [[ -d web ]] || web_sel=none
-if ((gate)); then test_kind=gate-test; fi
+if ((gate)); then test_kind="gate-test"; fi
 
 # The content of the working tree names what was checked; a diff of two commits checks nothing.
 if [[ -z "$head_rev" ]] && { ((!list)) || [[ -s "$stamp_file" ]]; }; then

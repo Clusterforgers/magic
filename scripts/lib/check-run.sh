@@ -112,7 +112,7 @@ start_ready() {
   done
   queue=("${rest[@]}")
   if ((blocked && ${#running[@]} > 0)) && [[ -z "$tick_pid" ]]; then
-    sleep 3 &
+    sleep 1 &
     tick_pid=$!
   fi
 }
@@ -161,7 +161,7 @@ kill_units() {
 
 # failed_tests <log>: the names of the tests that failed in a libtest log.
 failed_tests() {
-  sed -n 's/^test \(.*\) \.\.\. FAILED$/\1/p' "$1"
+  sed -n 's/^test \(.*\) \.\.\. FAILED\( <[0-9.]*s>\)\{0,1\}$/\1/p' "$1"
 }
 
 # unit_failed <name> <exit code> <seconds>: report the failure, stop the others, end the check.

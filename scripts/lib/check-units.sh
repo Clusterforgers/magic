@@ -7,6 +7,7 @@
 declare -A unit_crate=() crate_left=()
 
 # One line, because the words of a unit are kept one per line.
+# shellcheck disable=SC2016 # the script runs in a child shell
 web_script='pnpm --silent typecheck && pnpm --silent lint && pnpm --silent format && if [ "$1" = full ]; then pnpm --silent test; else pnpm exec vitest run --changed "$2" --passWithNoTests; fi'
 
 # add_web_unit <web dir> <full|changed> <base>: the web checks, with every test or only those a diff against base touches.
