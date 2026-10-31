@@ -14,6 +14,7 @@ import { clauseLines } from '@/features/decks/unvalidated/model'
 import type { FaceTexts } from '@/features/decks/unvalidated/model'
 import { useCardTexts } from '@/features/decks/unvalidated/useCardTexts'
 import { SupportMark, supportEdge } from '@/features/decks/SupportMark'
+import { ToRead } from '@/features/decks/ToRead'
 import { BY_HAND, BY_HAND_TITLE, runsWhole } from '@/lib/byHand'
 import { cn } from '@/lib/utils'
 import type { CardsApi } from '@/net/cards'
@@ -254,6 +255,7 @@ export function PreconDialog({
           <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
             <PreconBadge precon={precon} />
             <p className="text-sm text-muted-foreground">{checkLine(precon)}</p>
+            <ToRead count={precon.summary.to_read} target={{ precon: precon.code }} className="text-sm" />
           </div>
           {blocked && detail.status !== 'loading' ? <Blocked view={view} /> : null}
           {detail.status === 'loading' ? (

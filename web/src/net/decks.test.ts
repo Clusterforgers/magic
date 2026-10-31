@@ -177,6 +177,20 @@ describe('the export address', () => {
   })
 })
 
+describe('answers that match the types', () => {
+  it.each([
+    ['a card with no draft', undefined],
+    ['a card with a pending draft', 'pending'],
+    ['a card with an approved draft', 'approved'],
+    ['a card with a draft found wrong', 'wrong'],
+  ] as const)('accepts a report with %s and a deck that runs on reads', async (_what, draft) => {
+    const report = reportOf([reportCard('Lightning Bolt', { count: 4, support: 'read', draft })])
+    expect(report.summary.state).toBe('read')
+    const { api } = serve(() => jsonResponse(200, report))
+    await expect(api.check(CHECK)).resolves.toEqual(report)
+  })
+})
+
 describe('answers that do not match the types', () => {
   const item = deckItem()
   const noCounts = { ...summary(), counts: { ...counts(), total: -1 } }
@@ -192,6 +206,14 @@ describe('answers that do not match the types', () => {
     [
       'a deck whose counts lack the read copies',
       { decks: [{ ...item, summary: { ...summary(), counts: { ...counts(), read: undefined } } }] },
+    ],
+    [
+      'a deck whose summary lacks the cards to read',
+      { decks: [{ ...item, summary: { ...summary(), to_read: undefined } }] },
+    ],
+    [
+      'a deck whose summary counts the cards to read as negative',
+      { decks: [{ ...item, summary: { ...summary(), to_read: -1 } }] },
     ],
     [
       'a deck whose summary zone is unknown',
@@ -228,6 +250,7 @@ describe('answers that do not match the types', () => {
     ['a card with a fractional count', badCard({ count: 1.5 })],
     ['a card in a support state the server never sends', badCard({ support: 'great' })],
     ['a card without its reasons', badCard({ reasons: undefined })],
+    ['a card whose draft is in a state the server never sends', badCard({ draft: 'great' })],
     ['a reason without a span', badCard({ reasons: [{ face: 0, text: 'why' }] })],
     [
       'a reason whose span is not numbers',

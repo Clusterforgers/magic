@@ -1,5 +1,6 @@
 import { ShieldCheckIcon } from 'lucide-react'
 import { CardPicture } from '@/features/cards/CardPicture'
+import { DraftNote } from '@/features/decks/DraftNote'
 import { SupportMark, supportEdge } from '@/features/decks/SupportMark'
 import { FixMarkButton } from '@/features/fixmarks/FixMarkButton'
 import { BY_HAND, BY_HAND_TITLE } from '@/lib/byHand'
@@ -25,7 +26,7 @@ function Entry({
   onPreview: HandListProps['onPreview']
   fixMarks?: FixMarksApi
 }) {
-  const { card, count, support, reasons } = entry
+  const { card, count, support, draft, reasons } = entry
   return (
     <li
       data-hand={card.oracle_id}
@@ -62,6 +63,7 @@ function Entry({
             ))}
           </ul>
         )}
+        <DraftNote draft={draft} />
       </div>
     </li>
   )

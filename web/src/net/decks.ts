@@ -23,6 +23,7 @@ import type {
   ImportSource,
   ListProblem,
   Reason,
+  ReadState,
   ReportCard,
   Summary,
   Support,
@@ -107,7 +108,14 @@ export interface DecksApi {
   exportUrl(id: string, format?: ExportFormat): string
 }
 
-const STATES: Record<DeckState, true> = { verified: true, manual_play: true, blocked: true, unchecked: true }
+const STATES: Record<DeckState, true> = {
+  verified: true,
+  read: true,
+  manual_play: true,
+  blocked: true,
+  unchecked: true,
+}
+const READ_STATES: Record<ReadState, true> = { pending: true, approved: true, wrong: true }
 const ZONES: Record<DeckZone, true> = { main: true, sideboard: true, commander: true, companion: true }
 const SOURCES: Record<ImportSource, true> = {
   text: true,
@@ -133,6 +141,9 @@ export const isState = (value: unknown): value is DeckState => isText(value) && 
 export const isZone = (value: unknown): value is DeckZone => isText(value) && Object.hasOwn(ZONES, value)
 const isSource = (value: unknown): value is ImportSource => isText(value) && Object.hasOwn(SOURCES, value)
 /** True for a support state of the wire. */
+/** True for the read state of a draft. */
+const isReadState = (value: unknown): value is ReadState => isText(value) && Object.hasOwn(READ_STATES, value)
+
 export const isSupport = (value: unknown): value is Support => isText(value) && Object.hasOwn(SUPPORTS, value)
 const isReason = (value: unknown): value is UnresolvedReason => isText(value) && Object.hasOwn(REASONS, value)
 const isNullableText = (value: unknown): value is string | null => value === null || isText(value)
@@ -148,7 +159,7 @@ function readCounts(value: unknown): Counts | null {
 /** Reads the summary of a check; null when a field is missing or of another kind. */
 export function readSummary(value: unknown): Summary | null {
   if (!isRecord(value) || !isText(value.format) || !isState(value.state)) return null
-  if (!isCount(value.issues) || !Array.isArray(value.zones)) return null
+  if (!isCount(value.issues) || !isCount(value.to_read) || !Array.isArray(value.zones)) return null
   const counts = readCounts(value.counts)
   if (counts === null) return null
   const zones: ZoneCounts[] = []
@@ -157,7 +168,14 @@ export function readSummary(value: unknown): Summary | null {
     if (!isRecord(entry) || !isZone(entry.zone) || zoneCounts === null) return null
     zones.push({ zone: entry.zone, counts: zoneCounts })
   }
-  return { format: value.format, state: value.state, counts, zones, issues: value.issues }
+  return {
+    format: value.format,
+    state: value.state,
+    counts,
+    zones,
+    issues: value.issues,
+    to_read: value.to_read,
+  }
 }
 
 function readListItem(item: unknown): DeckListItem | null {
@@ -220,6 +238,7 @@ const isReportCard = (value: unknown): value is ReportCard =>
   isZone(value.zone) &&
   isCount(value.count) &&
   isSupport(value.support) &&
+  (value.draft === undefined || isReadState(value.draft)) &&
   isListOf(value.reasons, isClause)
 
 const isIssueBody = (value: unknown): boolean =>

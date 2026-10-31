@@ -75,4 +75,34 @@ describe('the button of the not-validated cards', () => {
     expect(within(dialog).getByText('Odd needs a hand')).toBeInTheDocument()
     expect(within(dialog).queryByText('Bolt')).toBeNull()
   })
+
+  it('says on each card whether its draft waits for a read or was found wrong, and how many cards wait', async () => {
+    render(
+      <NotValidatedDialog
+        deck={deck({
+          cards: [
+            { ...card('Waiting', 'manual'), draft: 'pending' },
+            { ...card('Wrong', 'manual'), draft: 'wrong' },
+            card('Plain', 'manual'),
+            { ...card('Read', 'read'), draft: 'approved' },
+          ],
+          toRead: 1,
+          readTarget: { precon: 'c18-x' },
+        })}
+      />,
+    )
+    await userEvent.click(screen.getByRole('button', { name: 'Show the 3 cards played by hand' }))
+    const dialog = await screen.findByRole('dialog')
+    const noteOf = (name: string): Element | null =>
+      within(dialog).getByText(name).closest('li')?.querySelector('[data-slot="draft-note"]') ?? null
+    expect(noteOf('Waiting')).toHaveAttribute('data-draft', 'pending')
+    expect(noteOf('Wrong')).toHaveAttribute('data-draft', 'wrong')
+    expect(noteOf('Plain')).toBeNull()
+    expect(within(dialog).queryByText('Read')).toBeNull()
+    expect(dialog.querySelector('[data-slot="to-read"]')).toHaveAttribute(
+      'data-read-path',
+      '/read?precon=c18-x',
+    )
+    expect(dialog.querySelector('[data-slot="deck-to-read"]')).toHaveTextContent('1 card to read')
+  })
 })

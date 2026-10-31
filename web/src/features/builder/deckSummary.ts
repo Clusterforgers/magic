@@ -5,7 +5,7 @@
 import { KIND_LABEL, KIND_ORDER, kindOf } from '@/features/decks/preview/model'
 import type { CardKind, DeckPreviewData, PreviewCard } from '@/features/decks/preview/model'
 import { byHandCopies, cardsByHand, runsWhole } from '@/lib/byHand'
-import type { CardHit, Counts, Support } from '@/protocol/generated'
+import type { CardHit, Counts, ReadState, Support } from '@/protocol/generated'
 import type { Draft, Line } from './deckEdit'
 import { checkOf, reasonLines, SUPPORT_ORDER } from './report'
 import type { LineCheck, SortKey } from './report'
@@ -22,6 +22,7 @@ export function previewCardOf(line: Line, check: LineCheck): PreviewCard {
     manaCost: card.mana_cost,
     identity: card.color_identity,
     support: check.support,
+    draft: check.draft,
     reasons: check.support === 'verified' ? [] : reasonLines(check.reasons).map((reason) => reason.text),
   }
 }
@@ -84,6 +85,8 @@ export interface HandCard {
   /** Copies in the whole deck. */
   count: number
   support: Support
+  /** The read state of the draft that decides the card, once it has one. */
+  draft?: ReadState
   /** Why the game leaves the card to the table, as sentences; empty when the check has not seen the card yet. */
   reasons: readonly string[]
 }
@@ -100,6 +103,7 @@ export function handCards(draft: Draft, checks: ReadonlyMap<string, LineCheck>):
         card: line.card,
         count: line.count,
         support: check.support,
+        draft: check.draft,
         reasons: reasonLines(check.reasons).map((reason) => reason.text),
       })
     } else {

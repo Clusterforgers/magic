@@ -72,6 +72,31 @@ describe('the deck preview', () => {
     expect(screen.queryByRole('link', { name: 'Not validated cards' })).toBeNull()
   })
 
+  it('says a deck of verified cards and approved reads runs whole, with the copies on reads', () => {
+    const cards = [
+      card('Bolt', { count: 40 }),
+      card('Odd Dragon', { support: 'read', draft: 'approved', count: 2 }),
+    ]
+    render(<DeckPreview deck={{ ...DECK, commanders: [], cards, toRead: 0 }} />)
+    expect(screen.getByText('The whole deck runs, 2 cards on reads.')).toBeInTheDocument()
+    expect(document.querySelector('[data-slot="deck-to-read"]')).toBeNull()
+  })
+
+  it.each([
+    [{ deck: 'deck-1' }, '/read?deck=deck-1'],
+    [{ precon: 'c18-x' }, '/read?precon=c18-x'],
+  ] as const)('says how many cards wait for a read, with the address of %j', (readTarget, path) => {
+    render(<DeckPreview deck={{ ...DECK, toRead: 1, readTarget }} />)
+    const line = document.querySelector('[data-slot="deck-to-read"]')
+    expect(line).toHaveTextContent('1 card to read')
+    expect(line?.querySelector('[data-slot="to-read"]')).toHaveAttribute('data-read-path', path)
+  })
+
+  it('draws no count when the check holds no draft to read', () => {
+    render(<DeckPreview deck={{ ...DECK, toRead: 0 }} />)
+    expect(document.querySelector('[data-slot="deck-to-read"]')).toBeNull()
+  })
+
   it('groups the cards by type with counts, and marks the ones played by hand', () => {
     render(<DeckPreview deck={DECK} />)
     const groups = screen.getAllByRole('region').filter((region) => region.hasAttribute('data-group'))

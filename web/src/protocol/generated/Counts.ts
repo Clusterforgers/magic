@@ -13,7 +13,8 @@ total: number,
  */
 verified: number, 
 /**
- * Copies of `read` cards: drafts a player approved, which the game runs like `verified` ones.
+ * Copies of `read` cards: drafts a player approved, which the game runs like `verified` ones. A check stored
+ * before the Read tier has none.
  */
 read: number, 
 /**

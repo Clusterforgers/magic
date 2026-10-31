@@ -8,6 +8,7 @@ import type { DeckListItem } from '@/protocol/generated'
 import { DeckMarker } from './DeckMarker'
 import { ExportMenu } from './ExportMenu'
 import { cardsText, checkNote, formatLabel, hasUnvalidated, unvalidatedLink } from './format'
+import { ToRead } from './ToRead'
 
 interface DeckRowProps {
   deck: DeckListItem
@@ -73,6 +74,11 @@ export function DeckRow({ deck, api, now, onDelete }: DeckRowProps) {
           </time>
         </p>
         {note === null ? null : <p className="text-sm">{note}</p>}
+        {deck.summary.to_read === 0 ? null : (
+          <p className="text-sm">
+            <ToRead count={deck.summary.to_read} target={{ deck: deck.id }} />
+          </p>
+        )}
         {hasUnvalidated(deck.summary.counts) ? (
           <Link
             to="/decks/$deckId/unvalidated"

@@ -3,6 +3,7 @@ import type { KeyboardEvent } from 'react'
 import { IdentityPips } from '@/features/builder/IdentityPips'
 import { CardPicture } from '@/features/cards/CardPicture'
 import { DeckStateBadge } from '@/features/decks/DeckStateBadge'
+import { ToRead } from '@/features/decks/ToRead'
 import { cn } from '@/lib/utils'
 import { entryFacts, entrySupport } from './deckEntries'
 import type { DeckEntry } from './deckEntries'
@@ -109,6 +110,7 @@ export function DeckOption({
         <span className="flex flex-wrap items-center gap-x-2 gap-y-1">
           {entry.identity === null ? null : <IdentityPips identity={entry.identity} />}
           <DeckStateBadge state={support.state} label={support.label} />
+          <ToRead count={entry.toRead} className="text-xs" />
         </span>
       </span>
       {pending ? (

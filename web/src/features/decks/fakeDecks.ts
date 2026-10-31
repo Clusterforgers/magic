@@ -40,6 +40,7 @@ export const summary = (over: Partial<Summary> = {}): Summary => ({
   counts: counts(),
   zones: [{ zone: 'main', counts: counts() }],
   issues: 0,
+  to_read: 0,
   ...over,
 })
 
@@ -119,16 +120,19 @@ export function reportOf(
   const state: DeckState =
     legality.length > 0 || all.unplayable > 0
       ? 'blocked'
-      : all.verified < all.total
+      : all.verified + all.read < all.total
         ? 'manual_play'
-        : 'verified'
+        : all.read > 0
+          ? 'read'
+          : 'verified'
+  const toRead = new Set(cards.filter((card) => card.draft === 'pending').map((card) => card.oracle_id)).size
   return {
     deck_hash: 'a'.repeat(64),
     coverage_hash: 'b'.repeat(64),
     format,
     legality,
     cards: [...cards],
-    summary: { format, state, counts: all, zones, issues: legality.length },
+    summary: { format, state, counts: all, zones, issues: legality.length, to_read: toRead },
     ...over,
   }
 }
