@@ -139,7 +139,6 @@ Open card, compiler and wording items: `docs/cards-backlog.md`.
 
 - [ ] Target: every stored card Verified, or as near as the rules allow; after each round `compile` and `coverage` are re-run and the numbers go on the Status line
 - [~] (rt1e) (fail-soft) Fail-soft resolution: a `ResolveError` in an ability of a `read` card logs `AbilityLeftToTable` and the table resolves it by hand, with its line in the web feed; frees a live game from a bad draft (`mtg-engine` resolve, `mtg-protocol`, `web/` table; `docs/engine.md`; after rt1b)
->>>>>>> batch93b
 - [ ] (rt1g) The server loads the current drafts with their read state into the library, rebuilds it on `DraftRepo::version`, pins `reads` in the recipe so resume and replay build the same cards, and records its own `wrong` on `AbilityLeftToTable`; frees approved cards in games (`mtg-server` cards, registry; after rt1a, rt1b and rt1e)
 - [ ] (rt1h) `GET /api/reads`, `GET` and `PUT /api/reads/{oracle_id}` with the rate limit, the fix mark of a `wrong`, `stale_read`, account deletion, `CardDetail.draft` and the wire types; frees reading from any client (`mtg-server` reads.rs, `mtg-protocol` rest; after rt1c and rt1g)
 - [~] (rt1i) (deck-read) Deck check counts: `Summary.to_read`, `ReportCard.draft` and `DeckState::Read` ("Runs on reads") in the builder's check bar, the lobby's deck check, the precon badge and the not-validated list; frees "N cards to read" everywhere a deck is judged (`mtg-cards` deck, `web/` builder, lobby, precons; after rt1b)
