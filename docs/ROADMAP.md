@@ -47,7 +47,7 @@ Ready pieces, grouped by the code they touch. A group runs one piece at a time, 
 - Card data: Scryfall and MTGJSON import, deck-list parsers, the schema with card search and precons, and `mtg-cli` fetch, ingest, compile and coverage.
 - Engine core: zones, turns, priority, stack, combat with forecast and block preview, bots with a repeat guard, `mtg-testkit`, and crowded tables of thousands of permanents.
 - Protocol and server: generated wire bindings with a drift test, the game actor, a WebSocket per seat, persistence and resume, accounts, lobbies, open games and precons.
-- Game flow: auto-pass, response clocks, yields, stops, Full Control, idle windows, the timer bank and leak tests (`docs/arena-flow.md`).
+- Game flow: auto-pass, response clocks, yields, stops, Full Control, idle windows, the timer bank, seat presence (away marks with the time before the game acts) and leak tests (`docs/arena-flow.md`).
 - First-game smoke test: two accounts play real precons from the lobby through turn 9, and four accounts a Commander game through turn 6 (`web/e2e/precon-game.spec.ts`); four accounts play four Commander precons from the lobby through mulligans, casts from the command zone with their tax and commander damage to a winner (`web/e2e/commander-four.spec.ts`), in real browsers.
 - Web: the game UI with prompts for all eight decision kinds, manual payment that the engine always accepts (several mana, sources that cost mana) and the number prompt for X with its total cost, the N-seat table with log, stack and animations, lobby, account pages, the UI rebuild and clock-free e2e tests.
 - Popular-card edges: a delayed trigger reads the stats of its resolution's targets as they last were (Mana Drain), and no token is made for a player who loses in the same batch (CR 800.4a).
@@ -459,7 +459,6 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (v1f) A spectator's connection in the server: a socket that holds no seat, is sent `StateView::for_spectator` and the spectator's batches, and a rule for who may watch
 - [ ] Spectators in the web and a "waiting on" message for tables of three or more
 - [ ] (v91k) The house rule key `colour_identity` is spelled `color_identity` on the wire, in the stored rules and in `mtg-core` `house.rs`, with the stored games migrated
-- [~] (v92a) (presence) A seat that loses its connection shows as away to the other seats, with the time before the game answers for it; today they read only "Waiting for <name>" (`PlayerView` presence, seat pod)
 - [ ] (v92w) The priority prompt of a seat held at its by-hand window says "Apply the card's text by hand, then pass" (12 px or more), from the resolution of its own object with `ObjectView.manual` (`docs/server.md`, Stops and Full Control)
 - [ ] (v92l) Keyboard-only walk of a whole turn: focus order, the focus return after H and Escape across a resize, contrast of the by-hand and unplayable marks in both themes
 - [ ] (v92m) Duel walk by hand of a counterspell, a combat trick and a sacrifice, and of the timer bank as the other seat sees it (needs a seat that has earned an extension)

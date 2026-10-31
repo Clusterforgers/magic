@@ -145,4 +145,17 @@ seat: PlayerId,
 /**
  * Extensions the seat now holds.
  */
-bank: number, };
+bank: number, } | { "type": "Presence", 
+/**
+ * The seat whose connection changed.
+ */
+seat: PlayerId, 
+/**
+ * Whether a client is connected to it now.
+ */
+connected: boolean, 
+/**
+ * Milliseconds before the game answers for a seat that is away, counted from when this is sent; absent while it
+ * is connected or has no decision on a clock.
+ */
+deadline_ms?: number, };

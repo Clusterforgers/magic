@@ -9,7 +9,7 @@ import { useSeatNamer } from './names'
 import { DamageChips, TaxChips, useCommanderChips } from './CommanderChips'
 import { useEnchantChips } from './enchantChips'
 import { EnchantChips } from './EnchantChips'
-import { ACTIVE_EDGE, ACTIVE_TINT, CountChip, PriorityDot, SeatDot } from './PodParts'
+import { ACTIVE_EDGE, ACTIVE_TINT, AwayMark, CountChip, PriorityDot, SeatDot } from './PodParts'
 import { chipZones, podCounts, podState, priorityName, showsPriorityDot, tileName } from './podFigures'
 import { RevealedFigure } from './RevealedChip'
 import { revealedLabel, revealedOf } from './revealed'
@@ -46,6 +46,7 @@ export const SeatTile = memo(function SeatTile({ seat, focused, onFocusSeat }: S
   const enchants = useEnchantChips(seat)
   if (player === undefined) return null
   const eliminated = player.lost !== null
+  const away = !eliminated && !player.connected
   const counts = podCounts(player, exile)
   const shown = revealedOf(player).all
   return (
@@ -54,6 +55,7 @@ export const SeatTile = memo(function SeatTile({ seat, focused, onFocusSeat }: S
       type="button"
       data-variant="tile"
       data-tile-seat={seat}
+      data-away={away || undefined}
       data-state={podState(flags.active, flags.priority)}
       aria-current={focused || undefined}
       aria-label={tileName({
@@ -63,6 +65,7 @@ export const SeatTile = memo(function SeatTile({ seat, focused, onFocusSeat }: S
         active: flags.active,
         priority: flags.priority,
         eliminated,
+        away,
         focused,
         commander: [...chips.tax, ...chips.damage].map((chip) => chip.words),
         enchanted: enchants.map((chip) => chip.words),
@@ -83,6 +86,7 @@ export const SeatTile = memo(function SeatTile({ seat, focused, onFocusSeat }: S
           {showsPriorityDot(flags.active, flags.priority) ? (
             <PriorityDot label={priorityName(name, false)} />
           ) : null}
+          {away ? <AwayMark /> : null}
         </span>
         <LifeFx
           seat={seat}

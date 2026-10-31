@@ -397,6 +397,9 @@ pub struct PlayerView {
     /// Clock extensions the seat holds (public). The engine does not know them: the server fills them in, and a view
     /// made from the engine state alone says 0.
     pub bank: u8,
+    /// Whether a client is connected to the seat right now (public, like the lobby's `connected`). The engine does not
+    /// know it: the server fills it in, and a view made from the engine state alone says true. Never stored or hashed.
+    pub connected: bool,
 }
 
 /// Where the turn is.

@@ -61,6 +61,7 @@ const MESSAGE_TYPES: Record<ServerMessage['type'], true> = {
   Stops: true,
   FullControl: true,
   Bank: true,
+  Presence: true,
 }
 
 const ERROR_CODES: Record<ErrorCode, true> = {
@@ -181,7 +182,8 @@ function isPlayerView(value: unknown): value is PlayerView {
     isZone(value.library) &&
     isZone(value.graveyard) &&
     isZone(value.command) &&
-    isCount(value.bank)
+    isCount(value.bank) &&
+    typeof value.connected === 'boolean'
   )
 }
 
@@ -489,6 +491,17 @@ function build(type: ServerMessage['type'], v: Record<string, unknown>): Built {
       if (!isCount(v.seat)) return '"seat" must be a whole number'
       if (!isCount(v.bank)) return '"bank" must be a whole number'
       return { type, seat: v.seat, bank: v.bank }
+    case 'Presence':
+      if (!isCount(v.seat)) return '"seat" must be a whole number'
+      if (typeof v.connected !== 'boolean') return '"connected" must be true or false'
+      if (v.deadline_ms !== undefined && !isCount(v.deadline_ms))
+        return '"deadline_ms" must be a whole number when present'
+      return {
+        type,
+        seat: v.seat,
+        connected: v.connected,
+        ...(v.deadline_ms === undefined ? {} : { deadline_ms: v.deadline_ms }),
+      }
     default: {
       // Compile-time exhaustiveness: a new `ServerMessage` variant stops building here until it is handled.
       const unhandled: never = type

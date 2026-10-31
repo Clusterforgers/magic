@@ -15,6 +15,7 @@ use tokio::sync::{mpsc, oneshot};
 use crate::game_id::GameId;
 use crate::handle::{Command, GameHandle, GameStatus, JoinError};
 use crate::pace::Pace;
+use crate::presence::{self, Presence};
 use crate::preview::PreviewLimits;
 use crate::recorder::Recorder;
 use crate::running::{Halt, Rejection, Running, count};
@@ -206,6 +207,7 @@ fn launch<S: EventStore>(
         store,
         seats: Seats::new(setup.players.len(), config.seat_queue),
         previews: PreviewLimits::new(setup.players.len(), Instant::now()),
+        presence: Presence::new(setup.players.len()),
         yields: Yields::new(setup.players.len()),
         stops: Stops::with_mode(setup.players.len(), config.pace.mode()),
         pace: config.pace,
@@ -257,6 +259,8 @@ pub(crate) struct GameActor<S> {
     /// The deck of every seat while the game is in its lobby; `None` for a game made from a bare
     /// setup, whose seats need no choice.
     pub(crate) decks: Option<SeatDecks>,
+    /// Which seats the table was last told have a live client (see [`Presence`]).
+    pub(crate) presence: Presence,
 }
 
 impl<S: EventStore> GameActor<S> {
@@ -267,20 +271,24 @@ impl<S: EventStore> GameActor<S> {
         }
         loop {
             let command = match self.due() {
-                None if self.in_lobby() => tokio::select! {
+                None => tokio::select! {
                     biased;
                     command = inbox.recv() => command,
-                    // A client that hung up without a word closed its queue; the table hears of it as of a `Leave`.
+                    // A client that hung up without a word closed its queue: the lobby, or the table that plays, hears of it as of a
+                    // `Leave`.
                     () = self.seats.client_gone() => {
                         self.announce_departures();
                         continue;
                     }
                 },
-                None => inbox.recv().await,
                 // Biased: a command already waiting was sent before the clock ran out, so it goes first.
                 Some(due) => tokio::select! {
                     biased;
                     command = inbox.recv() => command,
+                    () = self.seats.client_gone() => {
+                        self.announce_departures();
+                        continue;
+                    }
                     () = tokio::time::sleep_until(due) => {
                         if self.expire().await.is_err() {
                             return;
@@ -371,6 +379,7 @@ impl<S: EventStore> GameActor<S> {
         };
         self.seats.send(seat, welcome);
         self.sync(seat);
+        self.tell_joiner(seat);
         if takeover {
             self.send_roster(seat);
         } else {
@@ -386,7 +395,11 @@ impl<S: EventStore> GameActor<S> {
     /// Queues a snapshot, the seat's pending decision and the result for a game that is running.
     fn sync(&mut self, seat: PlayerId) {
         if let Phase::Running(running) = &self.phase {
-            for message in running.sync_messages(seat) {
+            let connected = self.seats.connected();
+            for mut message in running.sync_messages(seat) {
+                if let ServerMessage::Snapshot { state, .. } = &mut message {
+                    presence::stamp(&mut state.table, &connected);
+                }
                 self.seats.send(seat, message);
             }
         }

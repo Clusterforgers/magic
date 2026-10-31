@@ -22,7 +22,8 @@ import { canHoldStop } from './stops'
 import { mergeLogNames, rememberDeparted } from './rememberNames'
 import { appendChat, appendLog, createPlayStore, mergeHistory } from './store'
 import type { PlayState, PlayStore } from './store'
-import { applyBatch, fromFirstBatch, fromSnapshot, indexById, withBank } from './view'
+import { applyBatch, fromFirstBatch, fromSnapshot, indexById, withBank, withPresence } from './view'
+import { createAwayClocks } from './awayClocks'
 
 /** The longest chat line the server accepts, in characters (`MAX_CHAT_CHARS` in `crates/mtg-server/src/actor.rs`). */
 export const MAX_CHAT_CHARS = 500
@@ -120,6 +121,8 @@ export function createSession(deps: SessionDeps): Session {
   let previewsKnown = true
   const socket = new GameSocket({ ...deps, onEvent })
   const timers = deps.timers ?? browserTimers
+  // The clocks of the seats that are away; a snapshot starts them afresh.
+  const awayClocks = createAwayClocks(timers, (away) => setState({ away }))
   // The one timer that keeps `clock` in step with the pending decision; cancelled whenever that decision goes.
   let clockTimer: number | null = null
   store.subscribe((state, previous) => {
@@ -246,6 +249,13 @@ export function createSession(deps: SessionDeps): Session {
           state.view === null ? {} : { view: withBank(state.view, message.seat, message.bank) },
         )
         return
+      case 'Presence':
+        // Who is away is the view's; the time before the game acts for them is the session's clock.
+        setState((state) =>
+          state.view === null ? {} : { view: withPresence(state.view, message.seat, message.connected) },
+        )
+        awayClocks.presence(message.seat, message.connected, message.deadline_ms)
+        return
       default: {
         // Compile-time exhaustiveness: a new `ServerMessage` variant stops building here until it is handled.
         const unhandled: never = message
@@ -261,6 +271,7 @@ export function createSession(deps: SessionDeps): Session {
     yieldedFor = null
     // The snapshot follows every refusal of what was sent before the resync it answers, so no action is still in doubt.
     manuals.settleAll({ ok: true })
+    awayClocks.clear()
     setState((state) => {
       const view = fromSnapshot(state.view, message.state)
       return {

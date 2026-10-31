@@ -109,6 +109,7 @@ mod pg_store;
 mod play;
 mod precon_api;
 mod precons;
+mod presence;
 mod preview;
 mod recipe;
 mod recorder;

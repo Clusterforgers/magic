@@ -160,3 +160,12 @@ export function withBank(view: StateView, seat: number, bank: number): StateView
     players: view.players.map((player) => (player.seat === seat ? { ...player, bank } : player)),
   }
 }
+
+/** The view with the presence of `seat` set; the server tells a client that came or went with no events. */
+export function withPresence(view: StateView, seat: number, connected: boolean): StateView {
+  if (view.players.every((player) => player.seat !== seat || player.connected === connected)) return view
+  return {
+    ...view,
+    players: view.players.map((player) => (player.seat === seat ? { ...player, connected } : player)),
+  }
+}

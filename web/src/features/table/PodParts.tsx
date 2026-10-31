@@ -4,6 +4,7 @@ import type { CSSProperties } from 'react'
 import { cn } from '@/lib/utils'
 import type { PlayerId } from '@/protocol/generated'
 import { seatHue, zoneLabel } from './podFigures'
+import { AWAY_MARK } from './presenceText'
 import type { ZoneKey } from './podFigures'
 
 /** The icon of each zone chip. */
@@ -45,6 +46,21 @@ export function LegalBadge({ className }: { className?: string }) {
       )}
     >
       <Play className="size-2 fill-current" />
+    </span>
+  )
+}
+
+/** The mark of a seat whose client is gone (`presenceText.isAway`), beside its name: a word, never colour alone. */
+export function AwayMark({ className }: { className?: string }) {
+  return (
+    <span
+      data-slot="away-mark"
+      className={cn(
+        'shrink-0 rounded border border-warning bg-warning/15 px-1 text-xs leading-4 font-semibold text-foreground',
+        className,
+      )}
+    >
+      {AWAY_MARK}
     </span>
   )
 }

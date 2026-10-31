@@ -291,6 +291,7 @@ export function buildFixture(options: FixtureOptions): Fixture {
     commander_lethal: 21,
     ...commanderDamage(seat, seats, cards, objects),
     bank: 0,
+    connected: true,
   }))
 
   const view: StateView = {

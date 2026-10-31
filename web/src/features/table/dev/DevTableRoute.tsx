@@ -70,6 +70,7 @@ export function DevTableRoute() {
     preview,
     stops,
     fc,
+    away,
     rules,
     cards,
     states,
@@ -99,6 +100,7 @@ export function DevTableRoute() {
       previewMs: preview,
       stops: stops === undefined ? undefined : parseStopSpec(stops),
       fullControl: fc === 'next' ? 'NextWindow' : fc === 'held' ? 'Held' : undefined,
+      away,
       real,
     })
   }, [
@@ -118,6 +120,7 @@ export function DevTableRoute() {
     preview,
     stops,
     fc,
+    away,
     real,
   ])
   const view = game.session.store.getState().view
