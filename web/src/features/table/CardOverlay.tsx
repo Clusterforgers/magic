@@ -18,6 +18,7 @@ import { isUnattached } from '@/play/hosts'
 import type { CardSize } from './cardSize'
 import { HandMarks } from './HandMarks'
 import { ByHandMark } from './manual/ByHand'
+import { ReadMark } from './manual/ReadMark'
 import { statBadge } from './overlay'
 import { usePrinted } from './printed'
 import type { CardNote } from './prompt/marks'
@@ -124,7 +125,8 @@ export function Overlay({
     (handNote === undefined ? 0 : 1)
   const footWidth = width * FOOT_SHARE
   const room = roomFor(turned ? (width * 5) / 7 : (width * 7) / 5, others * OTHER_MARK_PX)
-  const hasHead = head.length > 0 || sick || manual.length > 0 || note?.label !== undefined
+  const hasHead =
+    head.length > 0 || sick || manual.length > 0 || object.read === true || note?.label !== undefined
   return (
     <span data-slot="card-overlay" className="pointer-events-none absolute inset-0">
       {sick ? (
@@ -218,6 +220,12 @@ export function Overlay({
           className={cn('absolute flex max-h-[34%] gap-0.5 overflow-hidden', corner.head)}
         >
           <ByHandMark
+            object={object}
+            spot="corner"
+            compact={size === 'compact' || width * HEAD_SHARE < BY_HAND_WORD_PX}
+            text={text}
+          />
+          <ReadMark
             object={object}
             spot="corner"
             compact={size === 'compact' || width * HEAD_SHARE < BY_HAND_WORD_PX}

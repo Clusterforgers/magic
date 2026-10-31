@@ -35,6 +35,15 @@ describe('groupByDeck', () => {
     ])
   })
 
+  it('leaves out a card that runs on a read: it is not played by hand', () => {
+    const read = deck('r', 'Readers', [
+      reportCard('Zed', { support: 'manual' }),
+      reportCard('Reader', { support: 'read' }),
+      reportCard('Forest', { count: 30 }),
+    ])
+    expect(groupByDeck([read]).map((group) => names(group.cards))).toEqual([['Zed']])
+  })
+
   it('names a card once even when two zones hold it', () => {
     const both = deck('x', 'Both', [
       reportCard('Zed', { support: 'manual' }),

@@ -7,10 +7,12 @@ use std::path::{Path, PathBuf};
 use serde::Serialize;
 use serde::de::DeserializeOwned;
 
-use crate::assemble::{Assembled, assemble};
-use crate::card::{Card, TokenFile};
+use crate::ability::Ability;
+use crate::assemble::{Assembled, assemble_record};
+use crate::card::{Card, ImplStatus, TokenFile};
+use crate::draft::{Draft, DraftRules};
 use crate::pretty::pretty;
-use crate::support::{Caps, PrintedCard, SupportRecord, support};
+use crate::support::{Caps, PrintedCard, Support, SupportRecord, support};
 use crate::validate::{Problem, check_card, check_printed, check_token};
 
 /// A problem in a file: which file, where inside it, and what.
@@ -163,6 +165,8 @@ pub struct Library {
     cards: BTreeMap<String, Card>,
     tokens: BTreeMap<String, TokenFile>,
     files: BTreeMap<String, String>,
+    generated: BTreeSet<String>,
+    drafts: BTreeMap<String, Draft>,
 }
 
 impl Library {
@@ -398,44 +402,123 @@ impl Library {
                 continue;
             }
             let file = format!("card_rules/{}", row.oracle_id);
-            let card = match parse_value::<Card>(&file, &row.rules) {
-                Ok(card) => card,
-                Err(error) => {
-                    left_out.push(error);
-                    continue;
+            match load_row(&tokens, &file, &row.oracle_id, &row.rules) {
+                Ok(card) => {
+                    library.files.insert(card.oracle_id.clone(), file);
+                    library.generated.insert(card.oracle_id.clone());
+                    library.cards.insert(card.oracle_id.clone(), card);
                 }
-            };
-            let mut problems: Vec<LoadError> =
-                errors_of(&file, check_card(&card, &tokens)).collect();
-            if card.oracle_id != row.oracle_id {
-                problems.push(LoadError {
-                    file: file.clone(),
-                    path: "oracle_id".into(),
-                    message: format!(
-                        "the row is for {}, the rules for {}",
-                        row.oracle_id, card.oracle_id
-                    ),
-                });
-            }
-            if problems.is_empty() {
-                library.files.insert(card.oracle_id.clone(), file);
-                library.cards.insert(card.oracle_id.clone(), card);
-            } else {
-                left_out.extend(problems);
+                Err(errors) => left_out.extend(errors),
             }
         }
         (library, left_out)
     }
 
-    /// The support of an imported card: its rules file if there is one, nothing otherwise.
-    pub fn support(&self, printed: &PrintedCard, caps: &Caps) -> SupportRecord {
-        support(self.card(&printed.oracle_id), printed, caps)
+    /// This library with the current draft of each card added, with the state of its read (Read tier). A later row
+    /// for an oracle id replaces an earlier one. A row that does not parse, fails a check of the structure or is not
+    /// whole (a status other than `full`, or a `Manual` ability) is left out and reported.
+    pub fn with_drafts(&self, rows: &[DraftRules]) -> (Library, Vec<LoadError>) {
+        let mut library = self.clone();
+        let mut left_out = Vec::new();
+        let tokens: BTreeSet<String> = self.tokens.keys().cloned().collect();
+        for row in rows {
+            let file = format!("card_drafts/{}", row.oracle_id);
+            let card = match load_row(&tokens, &file, &row.oracle_id, &row.rules) {
+                Ok(card) => card,
+                Err(errors) => {
+                    left_out.extend(errors);
+                    continue;
+                }
+            };
+            if let Some(message) = unwhole(&card) {
+                left_out.push(LoadError {
+                    file,
+                    path: "impl_status".into(),
+                    message,
+                });
+                continue;
+            }
+            let draft = Draft {
+                card,
+                read_hash: row.read_hash.clone(),
+                read: row.read,
+            };
+            library.drafts.insert(row.oracle_id.clone(), draft);
+        }
+        (library, left_out)
     }
 
-    /// The definition of an imported card with the rules this library holds for it, if any.
-    pub fn assemble(&self, printed: &PrintedCard, caps: &Caps) -> Assembled {
-        assemble(printed, self.card(&printed.oracle_id), caps)
+    /// The current draft of a card by oracle id, whatever its read state and whether or not a rules file or a compiled
+    /// row outranks it: what the review and the deck check show.
+    pub fn draft(&self, oracle_id: &str) -> Option<&Draft> {
+        self.drafts.get(oracle_id)
     }
+
+    /// The rules that decide an imported card and their support record, by the precedence of the Read tier: a rules
+    /// file, then a `Verified` compiled row, then a draft in state `Read`, then a compiled row of any other state, then
+    /// nothing (a card with no rules text plays as printed).
+    fn decide(&self, printed: &PrintedCard, caps: &Caps) -> (Option<&Card>, SupportRecord) {
+        let id = printed.oracle_id.as_str();
+        let rules = self.card(id);
+        let record = support(rules, printed, caps);
+        let outranks = record.support == Support::Verified
+            || (rules.is_some() && !self.generated.contains(id));
+        if !outranks
+            && let Some(draft) = self.drafts.get(id)
+            && let Some(read) = draft.record(printed, caps)
+        {
+            return (Some(&draft.card), read);
+        }
+        (rules, record)
+    }
+
+    /// The support of an imported card by the precedence of the Read tier: a rules file, a `Verified` compiled row, an
+    /// approved draft, then any other compiled row; nothing if none of them is there.
+    pub fn support(&self, printed: &PrintedCard, caps: &Caps) -> SupportRecord {
+        self.decide(printed, caps).1
+    }
+
+    /// The definition of an imported card with the rules that decide it (see [`Library::support`]), if any.
+    pub fn assemble(&self, printed: &PrintedCard, caps: &Caps) -> Assembled {
+        let (rules, record) = self.decide(printed, caps);
+        assemble_record(printed, rules, record, caps)
+    }
+}
+
+/// Parses and checks one stored row (a compiled card or a draft): its structure, and that it holds the card it is stored for.
+fn load_row(
+    tokens: &BTreeSet<String>,
+    file: &str,
+    oracle_id: &str,
+    rules: &serde_json::Value,
+) -> Result<Card, Vec<LoadError>> {
+    let card = parse_value::<Card>(file, rules).map_err(|error| vec![error])?;
+    let mut problems: Vec<LoadError> = errors_of(file, check_card(&card, tokens)).collect();
+    if card.oracle_id != oracle_id {
+        problems.push(LoadError {
+            file: file.to_owned(),
+            path: "oracle_id".into(),
+            message: format!(
+                "the row is for {oracle_id}, the rules for {}",
+                card.oracle_id
+            ),
+        });
+    }
+    if problems.is_empty() {
+        Ok(card)
+    } else {
+        Err(problems)
+    }
+}
+
+/// Why a card cannot be a draft: a draft is a whole rules file, `full` with no `Manual` ability.
+fn unwhole(card: &Card) -> Option<String> {
+    if card.impl_status != ImplStatus::Full {
+        return Some("a draft is a whole rules file: its status must be `full`".into());
+    }
+    card.abilities()
+        .any(|(_, ability)| matches!(ability, Ability::Manual { .. }))
+        .then(|| "a draft is a whole rules file: it has a `Manual` ability".into())
 }
 
 fn collect(

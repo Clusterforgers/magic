@@ -1,0 +1,15 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "UPDATE card_drafts d SET retired = true\n             FROM unnest($1::uuid[], $2::text[]) AS k(oracle_id, read_hash)\n             WHERE d.oracle_id = k.oracle_id AND d.read_hash = k.read_hash AND NOT d.retired",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "UuidArray",
+        "TextArray"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "e080fad8b1a878f47c2de3cebcbfe173f1936f1d2543a23b9959af139b823360"
+}

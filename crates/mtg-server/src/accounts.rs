@@ -39,6 +39,21 @@ pub(crate) struct User {
     pub(crate) id: UserId,
     /// The username as it was registered.
     pub(crate) username: String,
+    /// Whether this is the admin account; read with the account, so a demotion shows on the next request.
+    pub(crate) is_admin: bool,
+}
+
+/// One account of the admin's list, without anything that opens it.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct Listed {
+    /// The account.
+    pub(crate) id: UserId,
+    /// The username as it was registered.
+    pub(crate) username: String,
+    /// When it was made, as `YYYY-MM-DDTHH:MM:SSZ` (UTC).
+    pub(crate) created_at: String,
+    /// Whether this is the admin account.
+    pub(crate) is_admin: bool,
 }
 
 /// An account together with the hash its password is checked against.
@@ -91,6 +106,7 @@ impl Accounts {
             Ok(_) => Ok(User {
                 id,
                 username: name.display.clone(),
+                is_admin: false,
             }),
             Err(sqlx::Error::Database(error)) if error.is_unique_violation() => {
                 Err(AccountError::Taken)
@@ -102,7 +118,7 @@ impl Accounts {
     /// The account whose lower-case username is `key`, with its password hash.
     pub(crate) async fn find(&self, key: &str) -> Result<Option<Stored>, AccountError> {
         let row = sqlx::query!(
-            "SELECT id, username, password_hash FROM users WHERE username_key = $1",
+            "SELECT id, username, is_admin, password_hash FROM users WHERE username_key = $1",
             key,
         )
         .fetch_optional(&self.pool)
@@ -111,9 +127,47 @@ impl Accounts {
             user: User {
                 id: UserId(row.id),
                 username: row.username,
+                is_admin: row.is_admin,
             },
             password_hash: row.password_hash,
         }))
+    }
+
+    /// Makes the account whose lower-case username is `name` the admin and every other account not, in one
+    /// statement, so at most one admin exists; with `None` nobody is. Returns how many admins there are now: 0
+    /// when `name` belongs to no account.
+    pub(crate) async fn set_admin(&self, name: Option<&str>) -> Result<i64, AccountError> {
+        let row = sqlx::query!(
+            r#"WITH updated AS (
+                   UPDATE users SET is_admin = (username_key = lower(coalesce($1::text, '')))
+                   RETURNING is_admin
+               )
+               SELECT count(*) FILTER (WHERE is_admin) AS "admins!" FROM updated"#,
+            name,
+        )
+        .fetch_one(&self.pool)
+        .await?;
+        Ok(row.admins)
+    }
+
+    /// Every account, oldest first.
+    pub(crate) async fn list_users(&self) -> Result<Vec<Listed>, AccountError> {
+        let rows = sqlx::query!(
+            r#"SELECT id, username, is_admin,
+                      to_char(created_at AT TIME ZONE 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS"Z"') AS "created_at!"
+               FROM users ORDER BY created_at, username_key"#,
+        )
+        .fetch_all(&self.pool)
+        .await?;
+        Ok(rows
+            .into_iter()
+            .map(|row| Listed {
+                id: UserId(row.id),
+                username: row.username,
+                created_at: row.created_at,
+                is_admin: row.is_admin,
+            })
+            .collect())
     }
 
     /// The Argon2id hash of `user`'s password; `None` for an account that is gone.
@@ -197,7 +251,7 @@ impl Accounts {
         digest: &TokenDigest,
     ) -> Result<Option<User>, AccountError> {
         let row = sqlx::query!(
-            "SELECT u.id, u.username
+            "SELECT u.id, u.username, u.is_admin
              FROM sessions s JOIN users u ON u.id = s.user_id
              WHERE s.token_digest = $1 AND s.expires_at > now()",
             &digest.as_bytes()[..],
@@ -207,6 +261,7 @@ impl Accounts {
         Ok(row.map(|row| User {
             id: UserId(row.id),
             username: row.username,
+            is_admin: row.is_admin,
         }))
     }
 
@@ -241,6 +296,7 @@ mod tests {
             user: User {
                 id: UserId::random(),
                 username: "ann".into(),
+                is_admin: false,
             },
             password_hash: "$argon2id$v=19$m=8,t=1,p=1$c2FsdHNhbHQ$aGFzaGhhc2g".into(),
         };

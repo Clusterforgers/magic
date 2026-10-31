@@ -38,6 +38,7 @@ export const PriorityPrompt: PromptComponent<'Priority'> = ({ options }) => {
   const name = useSeatNamer()
   const seat = usePlay((state) => state.seat)
   const view = usePlay((state) => state.view)
+  const byHand = usePlay((state) => state.byHand)
   const objectsById = usePlay((state) => state.objectsById)
   const mana = useMemo(() => manaByPermanent(options.mana_abilities), [options.mana_abilities])
   const abilities = useMemo(() => abilityPlays(options, objectsById, seat), [options, objectsById, seat])
@@ -106,7 +107,7 @@ export const PriorityPrompt: PromptComponent<'Priority'> = ({ options }) => {
   }
 
   return (
-    <PromptLayout text={priorityText(options, top, decision.player, name)}>
+    <PromptLayout text={priorityText(options, top, decision.player, name, byHand)}>
       {choosing !== undefined && choices !== undefined && choices.length > 1 ? (
         <ManaChoice card={choosing} options={choices} onPick={pick} onCancel={cancel} />
       ) : null}

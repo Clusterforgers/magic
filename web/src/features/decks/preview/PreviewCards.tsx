@@ -1,9 +1,9 @@
-import { HandIcon, ShieldHalfIcon } from 'lucide-react'
+import { BookOpenCheckIcon, HandIcon, ShieldHalfIcon } from 'lucide-react'
 import { useState } from 'react'
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@/components/ui/dialog'
 import { CardPicture, HoverPicture } from '@/features/cards/CardPicture'
 import { SupportMark } from '@/features/decks/SupportMark'
-import { BY_HAND, BY_HAND_TITLE, PARTLY_BY_HAND } from '@/lib/byHand'
+import { BY_HAND, BY_HAND_TITLE, ON_A_READ, PARTLY_BY_HAND, runsWhole } from '@/lib/byHand'
 import { cn } from '@/lib/utils'
 import type { Support } from '@/protocol/generated'
 import { copiesOf } from './model'
@@ -11,6 +11,7 @@ import type { CardGroup, PreviewCard } from './model'
 
 const PLAYED_BY_HAND: Readonly<Record<Support, string>> = {
   verified: 'runs whole',
+  read: ON_A_READ,
   partial: PARTLY_BY_HAND,
   manual: BY_HAND,
   stale: `${BY_HAND} until it is checked again`,
@@ -58,7 +59,7 @@ export function CardZoom({ card, onClose }: { card: PreviewCard | null; onClose:
 }
 
 function Tile({ card, onOpen }: { card: PreviewCard; onOpen: (card: PreviewCard) => void }) {
-  const hand = card.support !== 'verified'
+  const hand = !runsWhole(card.support)
   return (
     <li data-card={card.oracleId} data-support={card.support} className="min-w-0">
       <HoverPicture oracleId={card.oracleId} name={card.name} className="block">
@@ -80,6 +81,15 @@ function Tile({ card, onOpen }: { card: PreviewCard; onOpen: (card: PreviewCard)
               className="absolute -top-1.5 -right-1.5 grid min-w-6 place-items-center rounded-full border bg-popover px-1 text-xs font-semibold tabular-nums shadow-e1"
             >
               ×{card.count}
+            </span>
+          ) : null}
+          {card.support === 'read' ? (
+            <span
+              data-slot="support-badge"
+              aria-hidden="true"
+              className="absolute -bottom-1.5 -left-1.5 grid size-6 place-items-center rounded-full border border-support-read bg-popover text-support-read shadow-e1"
+            >
+              <BookOpenCheckIcon className="size-3.5" />
             </span>
           ) : null}
           {hand ? (

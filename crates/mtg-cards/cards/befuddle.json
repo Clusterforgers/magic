@@ -1,0 +1,28 @@
+{
+  "oracle_id": "664c1219-acfa-41da-b811-503a63fc8d84",
+  "name": "Befuddle",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Befuddle",
+      "oracle_fingerprint": "4e0ba55d9b68384259050a117717b678",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": -4, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

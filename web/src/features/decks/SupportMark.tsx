@@ -1,4 +1,11 @@
-import { BanIcon, ClockAlertIcon, HandIcon, ShieldCheckIcon, ShieldHalfIcon } from 'lucide-react'
+import {
+  BanIcon,
+  BookOpenCheckIcon,
+  ClockAlertIcon,
+  HandIcon,
+  ShieldCheckIcon,
+  ShieldHalfIcon,
+} from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import { Pill } from '@/components/Pill'
 import { cn } from '@/lib/utils'
@@ -18,6 +25,13 @@ const LOOK: Record<
     edge: 'border-support-verified',
     ring: 'ring-support-verified',
     decoration: 'decoration-support-verified',
+  },
+  read: {
+    Icon: BookOpenCheckIcon,
+    mark: 'border-support-read bg-support-read/12 text-support-read',
+    edge: 'border-support-read',
+    ring: 'ring-support-read',
+    decoration: 'decoration-support-read',
   },
   partial: {
     Icon: ShieldHalfIcon,
@@ -59,7 +73,7 @@ export const supportRing = (support: Support): string => LOOK[support].ring
 export const supportDecoration = (support: Support): string => LOOK[support].decoration
 
 /**
- * How far the game plays a card as a pill: an icon, the word (Verified, Partial, Manual, Stale, Unplayable) and an
+ * How far the game plays a card as a pill: an icon, the word (Verified, Read, Partial, Manual, Stale, Unplayable) and an
  * edge in the state's colour, so colour never carries the meaning alone.
  */
 export function SupportMark({ support, className }: { support: Support; className?: string }) {
