@@ -1,6 +1,6 @@
 /** The precon browser as plain data: a deck's check in words, the filters, the dates and the copyable list. Pure, so tables test it. */
 import { cardsText } from '@/features/decks/format'
-import { BY_HAND, byHandCopies, cardsByHand } from '@/lib/byHand'
+import { BY_HAND, byHandCopies, cardsByHand, runsWhole } from '@/lib/byHand'
 import { copyText } from '@/features/decks/unvalidated/model'
 import type { FaceTexts, FlaggedCard } from '@/features/decks/unvalidated/model'
 import type { DeckZone, PreconCardView, PreconListItem, PreconView } from '@/protocol/generated'
@@ -120,7 +120,7 @@ export const BOARD_LABEL: Readonly<Record<DeckZone, string>> = {
 
 /** A line of a precon as an entry of the list of unvalidated cards; null for a Verified card. */
 export function flaggedLine(card: PreconCardView, precon: PreconListItem): FlaggedCard | null {
-  if (card.support === 'verified') return null
+  if (runsWhole(card.support)) return null
   return {
     oracleId: card.card?.oracle_id ?? `name:${card.name}`,
     name: card.name,

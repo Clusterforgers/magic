@@ -47,7 +47,7 @@ export function DevUnvalidatedRoute() {
     () =>
       createAuthStore({
         api: { ...offlineAccounts, myGames: async () => [] },
-        initial: { status: 'signed-in', user: { id: 'dev-ada', username: 'Ada_L' } },
+        initial: { status: 'signed-in', user: { id: 'dev-ada', username: 'Ada_L', is_admin: false } },
       }),
     [],
   )

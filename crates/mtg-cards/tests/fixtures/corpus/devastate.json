@@ -1,0 +1,132 @@
+{
+  "object": "card",
+  "id": "bfe7c990-a34b-475e-a612-447c22f998d3",
+  "oracle_id": "90b3e2df-182d-4dad-9934-597a048fefc6",
+  "multiverse_ids": [
+    24631
+  ],
+  "mtgo_id": 14271,
+  "mtgo_foil_id": 14272,
+  "tcgplayer_id": 7292,
+  "cardmarket_id": 3981,
+  "name": "Devastate",
+  "lang": "en",
+  "released_at": "2000-06-05",
+  "uri": "https://api.scryfall.com/cards/bfe7c990-a34b-475e-a612-447c22f998d3",
+  "scryfall_uri": "https://scryfall.com/card/pcy/87/devastate?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T12:29:39Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/b/f/bfe7c990-a34b-475e-a612-447c22f998d3.jpg?1783945779",
+    "normal": "https://cards.scryfall.io/normal/front/b/f/bfe7c990-a34b-475e-a612-447c22f998d3.jpg?1783945779",
+    "large": "https://cards.scryfall.io/large/front/b/f/bfe7c990-a34b-475e-a612-447c22f998d3.jpg?1783945779",
+    "png": "https://cards.scryfall.io/png/front/b/f/bfe7c990-a34b-475e-a612-447c22f998d3.png?1783945779",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/b/f/bfe7c990-a34b-475e-a612-447c22f998d3.jpg?1783945779",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/b/f/bfe7c990-a34b-475e-a612-447c22f998d3.jpg?1783945779",
+    "thumb": "https://cards.scryfall.io/thumb/front/b/f/bfe7c990-a34b-475e-a612-447c22f998d3.webp?1783945779",
+    "grid": "https://cards.scryfall.io/grid/front/b/f/bfe7c990-a34b-475e-a612-447c22f998d3.webp?1783945779",
+    "display": "https://cards.scryfall.io/display/front/b/f/bfe7c990-a34b-475e-a612-447c22f998d3.webp?1783945779",
+    "art": "https://cards.scryfall.io/art/front/b/f/bfe7c990-a34b-475e-a612-447c22f998d3.webp?1783945779",
+    "crop": "https://cards.scryfall.io/crop/front/b/f/bfe7c990-a34b-475e-a612-447c22f998d3.webp?1783945779",
+    "jpeg": "https://cards.scryfall.io/normal/front/b/f/bfe7c990-a34b-475e-a612-447c22f998d3.jpg?1783945779"
+  },
+  "mana_cost": "{3}{R}{R}",
+  "cmc": 5.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Destroy target land. Devastate deals 1 damage to each creature and each player.",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "c233bd36-57c0-4aa2-ae6c-7aeabfb4e3ce",
+  "set": "pcy",
+  "set_name": "Prophecy",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/c233bd36-57c0-4aa2-ae6c-7aeabfb4e3ce",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Apcy&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/pcy?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/bfe7c990-a34b-475e-a612-447c22f998d3/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A90b3e2df-182d-4dad-9934-597a048fefc6&unique=prints",
+  "collector_number": "87",
+  "digital": false,
+  "rarity": "common",
+  "flavor_text": "\"You're willing to die for your homeland. I'm willing to kill for it.\"\n—Latulla, Keldon overseer",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Greg Staples",
+  "artist_ids": [
+    "93d65564-bf00-447b-8406-e2031f03b6b1"
+  ],
+  "illustration_id": "6f56cfd0-03a2-42b4-8f75-672cceae273a",
+  "border_color": "black",
+  "frame": "1997",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 26671,
+  "prices": {
+    "usd": "0.12",
+    "usd_foil": "5.00",
+    "usd_etched": null,
+    "eur": "0.09",
+    "eur_foil": "0.99",
+    "tix": "0.04"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=24631&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DDevastate",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DDevastate",
+    "edhrec": "https://edhrec.com/route/?cc=Devastate"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F7292%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=3981&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/14271?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

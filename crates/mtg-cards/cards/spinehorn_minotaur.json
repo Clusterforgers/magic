@@ -1,0 +1,26 @@
+{
+  "oracle_id": "db46b8f4-22bb-4042-abe8-dd83b2426142",
+  "name": "Spinehorn Minotaur",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spinehorn Minotaur",
+      "oracle_fingerprint": "0419aedcda88a9b1e874af2fc91a5952",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "DoubleStrike" }],
+            "condition": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "Drawn" } },
+                "op": "Ge",
+                "right": 2
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

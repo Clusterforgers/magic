@@ -16,6 +16,7 @@ use std::sync::{Mutex, MutexGuard, PoisonError};
 use std::time::{Duration, Instant};
 
 use crate::config::AttemptLimits;
+use crate::user_id::UserId;
 
 /// Most counters kept. Past this, a key that is not tracked yet goes unlimited until a sweep
 /// frees room, which takes a flood from tens of thousands of distinct addresses.
@@ -33,6 +34,8 @@ enum Key {
     LoginName(String),
     /// Registrations tried from one network.
     RegisterAddress(IpAddr),
+    /// Accounts one admin account made through the admin route.
+    AdminCreate(UserId),
     /// Join code lookups from one network that were started and did not (yet) find a game.
     CodeAddress(IpAddr),
     /// Requests for the lobby list from one network, answered or not.
@@ -46,7 +49,10 @@ fn window_of(limits: &AttemptLimits, key: &Key) -> Duration {
     match key {
         Key::CodeAddress(_) => limits.code_window,
         Key::ListAddress(_) | Key::PreconAddress(_) => limits.lobby_window,
-        Key::LoginAddress(_) | Key::LoginName(_) | Key::RegisterAddress(_) => limits.window,
+        Key::LoginAddress(_)
+        | Key::LoginName(_)
+        | Key::RegisterAddress(_)
+        | Key::AdminCreate(_) => limits.window,
     }
 }
 
@@ -236,6 +242,16 @@ impl Throttle {
         self.admit(now, &wanted).map(|(_, exhausted)| exhausted)
     }
 
+    /// Counts an account `admin` is about to make through the admin route, or says to wait. It has a budget of
+    /// its own per admin account: it never uses up the registrations of an address, and nothing hands it back.
+    pub(crate) fn begin_admin_create(&self, now: Instant, admin: UserId) -> Result<(), Blocked> {
+        let wanted = [(
+            Key::AdminCreate(admin),
+            self.limits.admin_creates_per_account,
+        )];
+        self.admit(now, &wanted).map(|_| ())
+    }
+
     /// Counts one attempt on every key in `wanted` if none is at its limit; returns the keys
     /// counted and whether any of them has now reached its limit. Nothing is counted when any key
     /// is full.
@@ -301,7 +317,7 @@ fn network(address: IpAddr) -> IpAddr {
 
 #[cfg(test)]
 mod tests {
-    //! Goal: each limit blocks exactly at its count and lifts exactly one window after the first attempt, blocked attempts cost nothing, a success hands its count back, addresses are grouped the way one client controls them, usernames and addresses do not share budgets, join code misses follow a window of their own, the lobby list follows another, the precon browser counts apart from it, and the table stays bounded.
+    //! Goal: each limit blocks exactly at its count and lifts exactly one window after the first attempt, blocked attempts cost nothing, a success hands its count back, addresses are grouped the way one client controls them, usernames and addresses do not share budgets, join code misses follow a window of their own, the lobby list follows another, the precon browser counts apart from it, an admin making accounts has a budget of its own, and the table stays bounded.
     use std::net::Ipv4Addr;
 
     use super::*;
@@ -319,6 +335,7 @@ mod tests {
             login_per_ip: 5,
             login_per_username: 3,
             register_per_ip: 2,
+            admin_creates_per_account: 4,
             code_window: CODE_WINDOW,
             code_misses_per_ip: 4,
             lobby_window: LOBBY_WINDOW,
@@ -550,6 +567,40 @@ mod tests {
         let t0 = Instant::now();
         assert!(throttle.begin_register(t0, ip(first)).is_ok());
         assert_eq!(throttle.begin_register(t0, ip(second)).is_err(), same);
+    }
+
+    #[test]
+    fn an_admin_has_a_budget_of_its_own_that_never_touches_the_registrations_of_an_address() {
+        let throttle = Throttle::new(limits());
+        let (ann, bob) = (UserId::random(), UserId::random());
+        let t0 = Instant::now();
+        for n in 0..4 {
+            assert!(throttle.begin_admin_create(t0 + secs(n), ann).is_ok());
+        }
+        let blocked = throttle.begin_admin_create(t0 + secs(10), ann);
+        assert_eq!(blocked.unwrap_err().retry_after, secs(50));
+        // Another admin, and the registrations of every address, are untouched.
+        assert!(throttle.begin_admin_create(t0, bob).is_ok());
+        for _ in 0..2 {
+            assert!(throttle.begin_register(t0, ip("10.0.0.1")).is_ok());
+        }
+        assert!(throttle.begin_register(t0, ip("10.0.0.1")).is_err());
+        // The window runs from the first try, and a refused try does not push it out.
+        assert!(throttle.begin_admin_create(t0 + secs(60), ann).is_ok());
+    }
+
+    #[test]
+    fn a_blocked_registration_costs_the_admin_budget_nothing() {
+        let throttle = Throttle::new(limits());
+        let ann = UserId::random();
+        let t0 = Instant::now();
+        for _ in 0..2 {
+            throttle.begin_register(t0, ip("10.0.0.1")).unwrap();
+        }
+        assert!(throttle.begin_register(t0, ip("10.0.0.1")).is_err());
+        for _ in 0..4 {
+            assert!(throttle.begin_admin_create(t0, ann).is_ok());
+        }
     }
 
     #[test]
