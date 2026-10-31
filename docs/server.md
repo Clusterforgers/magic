@@ -319,7 +319,7 @@ The default windows are both main phases on the seat's own turn, declare attacke
 
 - Stops and modes live in the actor per seat (`Stops`), never stored: a reconnect keeps them, a resumed game starts every seat in the default mode with no stop. Setting one takes no engine step, so nothing is saved and the pending decision keeps its id.
 - A one-turn stop goes once the game has left its step: a step entered and left in one go counts, one never entered does not. `NextWindow` returns to `Off` when the seat passes, itself or at its clock or dwell.
-- A by-hand window: once a spell or ability of the seat whose card has clauses left to the table (`CardDefinition.manual`) resolves, the seat holds a stop at every window until it passes, itself or at its normal clock (`Stops::resolved`, `Stops::by_hand`), so it can apply them; it is never told and reads only public facts.
+- A by-hand window: once a spell or ability of the seat whose card has clauses left to the table that a resolution calls for (`CardDefinition.manual`; a clause that is only activated or loyalty abilities is used later and owes nothing, `ManualClause::owed_at_resolution`) resolves, the seat holds a stop at every window until it passes, itself or at its normal clock (`Stops::resolved`, `Stops::by_hand`), so it can apply them; it is never told and reads only public facts.
 - Turning Full Control on ends a running yield and `Yield` is refused while it is on; turning it off at a priority decision that the windows then pass for passes at once, as a started yield does.
 
 ### Yields
