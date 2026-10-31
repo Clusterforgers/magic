@@ -158,7 +158,7 @@ Open card, compiler and wording items: `docs/cards-backlog.md`.
 
 ## Tooling
 
-- [ ] (ts1) A release takes about an hour from a finished batch (the full check about 40 minutes, then the image builds): build the images while the check runs, gate on the suites a change touches (`scripts/check.sh affected` plus a full run before a tag) and share the Rust test build across worktrees (`scripts/check.sh`, `scripts/release.sh`)
+- [ ] (ts1) Deep dive (Opus design first): a check and a release take an hour, the target is a few minutes for a normal change; measure where the time goes (the corpus binary of about 17,000 per-card tests takes 650 s, a protocol change selects the whole workspace, the image builds follow the check), then re-test only what a change can break (results cached by card fingerprint and crate hash, sharded corpus tests, a fast gate before the full run before a tag, images built while the check runs, one shared test build across worktrees) (`scripts/check.sh`, `scripts/release.sh`, `docs/testing`)
 - [ ] (dep) Cargo and web dependencies are current; the piece runs alone between rounds (`docs/agents.md`)
 - [ ] (t5a) The Postgres lock covers only the `sqlx::test` tests: the other tests of `mtg-server` and `mtg-cli` run outside it (one full check: 398 s under the lock, 1,087 s waiting for it)
 - [ ] (t5b) The `mtg-testkit` `it` binary needs fewer test-seconds: over 90% is `Engine::apply` (`priority_options` 36%, `triggers::detect` 24%, `layers::compute` 14%, whole-object clones), so the next cut is in the engine; opt-level 3 for `mtg-cards` and mimalloc save about 5% and slow every rebuild, so they are not adopted
