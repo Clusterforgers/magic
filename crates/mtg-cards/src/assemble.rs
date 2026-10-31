@@ -1977,4 +1977,19 @@ mod tests {
                 .contains("Draw a card.")
         );
     }
+
+    #[rstest]
+    #[case::a_siege(CardType::Battle, "Siege", 2)]
+    #[case::a_battle_that_is_no_siege(CardType::Battle, "Other", 0)]
+    #[case::a_siege_that_is_no_battle(CardType::Enchantment, "Siege", 0)]
+    fn a_siege_has_the_rules_of_its_subtype_and_no_other_card_does(
+        #[case] ty: CardType,
+        #[case] subtype: &str,
+        #[case] rules: usize,
+    ) {
+        let definition = CardDefinition::new("Test")
+            .with_type(ty)
+            .with_subtype(subtype);
+        assert_eq!(siege_rules(&definition).len(), rules);
+    }
 }

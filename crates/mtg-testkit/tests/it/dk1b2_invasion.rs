@@ -110,7 +110,7 @@ fn zones_of(driver: &Driver, name: &str) -> Vec<Zone> {
         .state()
         .objects()
         .filter(|object| object.card().name == name)
-        .map(|object| object.zone())
+        .map(mtg_engine::object::GameObject::zone)
         .collect()
 }
 
@@ -333,7 +333,7 @@ fn a_siege_whose_cast_is_declined_stays_in_exile(
     };
     let (driver, setup) = attack_the_siege(seats, "Serra Angel", None, &picks)?;
     assert_eq!(zones_of(&driver, INVASION), [Zone::Exile]);
-    assert!(zones_of(&driver, EPHARA).is_empty());
+    assert_eq!(zones_of(&driver, EPHARA).len(), 0, "the card was not cast");
     assert_replays(&driver, &setup)
 }
 
