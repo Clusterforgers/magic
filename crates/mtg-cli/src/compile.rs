@@ -14,6 +14,7 @@ use mtg_import::ids::OracleId;
 
 use crate::args::CompileArgs;
 use crate::audit::stored_cards;
+use crate::drafts::{self, DraftCounts};
 use crate::error::CliError;
 use crate::status::missing_table;
 
@@ -66,6 +67,8 @@ pub struct CompileReport {
     pub full: usize,
     /// Of the rows held for the cards looked at, those with clauses left to the table.
     pub partial: usize,
+    /// What became of the drafts the build embeds.
+    pub drafts: DraftCounts,
 }
 
 impl CompileReport {
@@ -98,6 +101,7 @@ impl CompileReport {
             list_invalid(&mut text, &self.hand_written_invalid);
         }
         list_invalid(&mut text, &self.invalid);
+        let _ = write!(text, "\n{}", self.drafts.render());
         text
     }
 }
@@ -349,7 +353,9 @@ pub async fn compile(db: &Database, args: &CompileArgs) -> Result<CompileReport,
     for batch in plan.put.chunks(BATCH) {
         repo.put(batch).await?;
     }
-    Ok(plan.report)
+    let mut report = plan.report;
+    report.drafts = drafts::store(db, hand_written, &mtg_engine::caps(), &cards).await?;
+    Ok(report)
 }
 
 #[cfg(test)]

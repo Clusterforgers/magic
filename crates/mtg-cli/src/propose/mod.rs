@@ -390,6 +390,9 @@ async fn w2a_promote_run(
         dry_run: false,
         partial: false,
         out: Some(out.to_path_buf()),
+        draft: false,
+        no_smoke: false,
+        drafts: None,
         files,
     };
     Ok(w2a_promote(db, cache, &args).await?.render())

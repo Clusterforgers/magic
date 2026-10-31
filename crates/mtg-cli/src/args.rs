@@ -386,6 +386,7 @@ pub struct ExportPairsArgs {
 
 /// Options of `promote`.
 #[derive(Debug, Args)]
+#[allow(clippy::struct_excessive_bools)]
 pub struct PromoteArgs {
     /// List what would be promoted and why the other files are skipped, and write nothing.
     #[arg(long)]
@@ -398,6 +399,19 @@ pub struct PromoteArgs {
     /// The `mtg-cards` crate directory, holding `cards/` and `tests/fixtures/corpus/` (default: `crates/mtg-cards`).
     #[arg(long, value_name = "DIR")]
     pub out: Option<PathBuf>,
+
+    /// Also write the proposals the checker marks `Unchecked` that are whole cards and pass the smoke gate as drafts
+    /// for players to read (`drafts/<slug>.json` and its record).
+    #[arg(long)]
+    pub draft: bool,
+
+    /// With `--draft`: do not play the drafts in the smoke gate (for tests).
+    #[arg(long, requires = "draft")]
+    pub no_smoke: bool,
+
+    /// With `--draft`: the drafts directory (default: `crates/mtg-cli/drafts`).
+    #[arg(long, value_name = "DIR", requires = "draft")]
+    pub drafts: Option<PathBuf>,
 
     /// The proposal files, each named `<slug>.json` after its card.
     #[arg(value_name = "FILE", required = true)]
