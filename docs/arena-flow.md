@@ -148,6 +148,7 @@ The client never paces steps: the fx layer must not wait for a cadence, and P3 d
 | Full Control: Ctrl, Ctrl+Shift | `NextWindow` (Ctrl) and `Held` (Ctrl+Shift), a toggle beside the ladder | done (P4, P5) |
 | No window unless a play; none in own upkeep or end step | default windows ask a seat that can act; elsewhere it is passed for at once | done (P2) |
 | No equivalent | dwell for a seat that cannot act at a combat or stack window | done (P3), ours |
+| No equivalent | a seat whose own card with clauses left to the table has resolved is asked at its next window until it passes, so it can apply them | done, ours |
 | Smart priority, auto-order triggers, per-ability yield | triggers exist and are ordered by the player only when the order can matter; smart stops, an order preference and the per-ability yield are missing | open (P10) |
 | Timers: rope, bank, delayed start, inactivity | response, block and think clocks, a bank of three extensions earned by three turns without a clock, a delay before the countdown, an optional active-seat clock; no inactivity timer | done (P9) |
 | Mulligans decided by both players at once | every seat is asked to keep or mulligan at once, each on its own think clock; the others read "deciding" or "keeping" | done |

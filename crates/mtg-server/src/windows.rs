@@ -9,7 +9,9 @@
 //! 2. A running yield passes (its own end conditions are in [`crate::yields`]); a stop of the seat at a window ends
 //!    it and the seat is asked, except in the step of the window the yield was asked at.
 //! 3. A stop of the seat at the window asks, whether the seat can act or not. `Own` stops are for the seat's own
-//!    turns, `Opponent` stops for the turn of any other seat.
+//!    turns, `Opponent` stops for the turn of any other seat. A seat whose own spell or ability with clauses left to
+//!    the table has resolved holds such a stop at every window until it passes ([`Stops::by_hand`]), so it has a
+//!    window to apply them; it reads only public facts.
 //! 4. The default windows (Arena's table) ask when the seat can act: the seat's own precombat and postcombat main
 //!    phase, the declare attackers and declare blockers steps of any turn, and any moment an object of another seat
 //!    is on the stack. Where the seat cannot act the table passes for it after a dwell ([`Verdict::Dwell`]), so the
@@ -141,7 +143,8 @@ pub(crate) fn verdict(
     let seat = decision.player;
     let window = Window::at(state, seat);
     let mode = stops.full_control(seat);
-    let stop = stops.holds(seat, window.side(), window.step);
+    // Clauses of the seat's own that just resolved and wait for the table hold it as a stop does.
+    let stop = stops.holds(seat, window.side(), window.step) || stops.by_hand(seat);
     // A seat in Full Control holds no yield; the yield is left alone for the rules below it.
     let yielding = mode == FullControlMode::Off && yields.passes(seat, state, stop);
     judge(window, options.can_act, stop, mode, yielding)

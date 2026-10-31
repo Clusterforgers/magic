@@ -147,6 +147,7 @@ impl<S: EventStore> GameActor<S> {
         };
         // The step's own events come first, so the passes that follow already meet the stops and the mode it left.
         stops.left(stops::place(&before), &events);
+        stops.resolved(&stops::by_hand_on_stack(&before), &events);
         if passed {
             stops.passed(origin);
         }

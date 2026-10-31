@@ -566,9 +566,11 @@ impl Running {
                 Verdict::Pass => {}
             }
             let at = stops::place(self.engine.state());
+            let on_stack = stops::by_hand_on_stack(self.engine.state());
             let passed = self.engine.apply(pace::pass())?;
             self.banks.watch(self.engine.state());
             stops.left(at, &passed);
+            stops.resolved(&on_stack, &passed);
             events.extend(passed);
         }
         // Cut short: the next priority decision is sent as it is, so a yield it belongs to ends here instead of
