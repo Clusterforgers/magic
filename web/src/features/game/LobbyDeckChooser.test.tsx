@@ -211,7 +211,7 @@ describe('the decks on offer', () => {
       },
     })
     await h.user.click(await screen.findByRole('option', { name: /Burn/ }))
-    const link = await screen.findByRole('link', { name: 'Not validated cards' })
+    const link = await screen.findByRole('link', { name: 'Show the 3 cards played by hand' })
     expect(link).toHaveAttribute('href', '/decks/burn/unvalidated')
     expect(
       await screen.findByRole('button', { name: '3 copies of Odd Card, played by hand' }),
