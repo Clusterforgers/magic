@@ -28,10 +28,16 @@ export function cardLabel(card: PreviewCard): string {
 export function CardZoom({ card, onClose }: { card: PreviewCard | null; onClose: () => void }) {
   return (
     <Dialog open={card !== null} onOpenChange={(open) => (open ? undefined : onClose())}>
-      <DialogContent className="max-w-sm justify-items-center" data-slot="card-zoom">
+      <DialogContent className="max-w-lg justify-items-center" data-slot="card-zoom">
         {card === null ? null : (
           <>
-            <CardPicture oracleId={card.oracleId} name={card.name} size="large" alt="" className="w-64" />
+            <CardPicture
+              oracleId={card.oracleId}
+              name={card.name}
+              size="large"
+              alt=""
+              className="w-[min(100%,25.5rem,calc((100dvh-15rem)*5/7))] min-w-40"
+            />
             <div className="grid w-full justify-items-center gap-2 text-center">
               <DialogTitle className="text-base">
                 {card.name}
