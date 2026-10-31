@@ -1,0 +1,36 @@
+{
+  "oracle_id": "850fe8ad-f6b8-4d01-a94b-2b69adc3d8f0",
+  "name": "Mystic Melting",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mystic Melting",
+      "oracle_fingerprint": "5cb24595e6cbbf29fb713bace68767a4",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Either": [
+                    { "Object": [{ "Type": "Artifact" }] },
+                    { "Object": [{ "Type": "Enchantment" }] }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "Upkeep" } },
+                  "effects": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

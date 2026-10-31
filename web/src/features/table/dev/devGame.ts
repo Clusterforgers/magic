@@ -229,6 +229,7 @@ export function fixtureGame(options: FixtureGameOptions): GameContextValue {
       view: state.view === null ? null : withPresence(state.view, away, false),
       away: { [away]: 12_000 },
     }))
+  if (name === 'priority-byhand') store.setState({ byHand: true })
   // A seat that is already yielding faces no priority decision, only the line that says it is passing.
   if (Object.hasOwn(DEV_YIELDS, name)) store.setState({ yielding: DEV_YIELDS[name] ?? null })
   // The dev table answers a preview after a moment, so the "checking outcome" state can be looked at too.

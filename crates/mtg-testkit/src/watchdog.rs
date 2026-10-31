@@ -1,7 +1,8 @@
-//! Stops a game that runs away: caps the answers of a game and of a turn and the permanents on the table, and names the seed, the turn, the last answers, the table and the decks when a cap is passed.
+//! Stops a game that runs away: caps the answers of a game and of a turn, the permanents on the table and, when asked, the time, and names the seed, the turn, the last answers, the table and the decks when a cap is passed.
 
 use std::collections::{BTreeMap, BTreeSet, VecDeque};
 use std::fmt::Write;
+use std::time::{Duration, Instant};
 
 use mtg_core::ids::PlayerId;
 use mtg_engine::decision::Answer;
@@ -38,6 +39,7 @@ pub struct Watchdog {
     recent: VecDeque<String>,
     decks: Vec<String>,
     table_cap: bool,
+    time_limit: Option<(Instant, Duration)>,
 }
 
 impl Watchdog {
@@ -65,6 +67,26 @@ impl Watchdog {
         }
     }
 
+    /// This watchdog also stops the game once it has run for `limit` of wall-clock time, counted from now; none never.
+    #[must_use]
+    pub fn with_time_limit(mut self, limit: Option<Duration>) -> Self {
+        self.time_limit = limit.map(|limit| (Instant::now(), limit));
+        self
+    }
+
+    /// What the game ran over when it has used up its time.
+    fn late(&self) -> Option<String> {
+        let (start, limit) = self.time_limit?;
+        let spent = start.elapsed();
+        (spent > limit).then(|| {
+            format!(
+                "{:.1} s of play, {:.1} s allowed",
+                spent.as_secs_f64(),
+                limit.as_secs_f64()
+            )
+        })
+    }
+
     /// A watchdog for a game a test scripts, whose table may hold as many permanents as the test puts there: only the
     /// answers are capped.
     pub fn scripted(seed: u64) -> Self {
@@ -76,6 +98,7 @@ impl Watchdog {
             recent: VecDeque::with_capacity(RECENT),
             decks: Vec::new(),
             table_cap: false,
+            time_limit: None,
         }
     }
 
@@ -84,6 +107,19 @@ impl Watchdog {
     /// # Panics
     /// When the game, the turn or the table passes its cap.
     pub fn answered(&mut self, state: &GameState, player: PlayerId, kind: &str, answer: &Answer) {
+        if let Some(report) = self.tally(state, player, kind, answer) {
+            panic!("{report}");
+        }
+    }
+
+    /// Like [`Self::answered`], but returns the report of a passed cap in place of panicking.
+    pub fn tally(
+        &mut self,
+        state: &GameState,
+        player: PlayerId,
+        kind: &str,
+        answer: &Answer,
+    ) -> Option<String> {
         let turn = state.turn().number();
         if turn != self.turn {
             self.turn = turn;
@@ -105,15 +141,13 @@ impl Watchdog {
         } else if self.table_cap && permanents > MAX_PERMANENTS {
             Some(format!("{permanents} permanents on the table"))
         } else {
-            None
+            self.late()
         };
-        if let Some(over) = over {
-            self.trip(state, &over);
-        }
+        over.map(|over| self.report(state, &over))
     }
 
-    /// The report of a passed cap, as the panic message.
-    fn trip(&self, state: &GameState, over: &str) -> ! {
+    /// The report of a passed cap.
+    fn report(&self, state: &GameState, over: &str) -> String {
         let mut report = format!(
             "watchdog: game of seed {} runs away in turn {}: {over}\nthe table: {}\nthe last {} answers:\n",
             self.seed,
@@ -128,7 +162,7 @@ impl Watchdog {
         for deck in &self.decks {
             let _ = writeln!(report, "{deck}");
         }
-        panic!("{report}");
+        report
     }
 }
 

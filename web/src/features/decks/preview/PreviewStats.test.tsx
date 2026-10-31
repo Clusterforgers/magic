@@ -14,6 +14,8 @@ describe('SupportBar', () => {
     expect(states()).toEqual(['verified', 'partial', 'manual'])
     rerender(<SupportBar counts={counts({ total: 10, verified: 7, manual: 1, stale: 1, unplayable: 1 })} />)
     expect(states()).toEqual(['verified', 'partial', 'manual', 'stale', 'unplayable'])
+    rerender(<SupportBar counts={counts({ total: 10, verified: 7, read: 3 })} />)
+    expect(states()).toEqual(['verified', 'read', 'partial', 'manual'])
   })
 
   it('draws a segment as wide as the share of each state and none for a state without copies', () => {
@@ -22,6 +24,22 @@ describe('SupportBar', () => {
       (el) => el.style.width,
     )
     expect(widths).toEqual(['80%', '20%'])
+  })
+
+  it('draws a read segment beside the verified one and names its count', () => {
+    const { container } = render(
+      <SupportBar counts={counts({ total: 10, verified: 6, read: 3, manual: 1 })} />,
+    )
+    const widths = [...container.querySelectorAll<HTMLElement>('[data-slot="support-bar"] > span')].map(
+      (el) => el.style.width,
+    )
+    expect(widths).toEqual(['60%', '30%', '10%'])
+    const list = screen.getByRole('list', { name: 'Cards by support' })
+    expect(
+      within(list)
+        .getAllByRole('listitem')
+        .map((item) => item.textContent),
+    ).toEqual(['Verified6', 'Read3', 'Partial0', 'Manual1'])
   })
 
   it('says the count beside each mark', () => {

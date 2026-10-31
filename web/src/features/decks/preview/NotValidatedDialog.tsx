@@ -3,13 +3,13 @@ import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@/components/ui/dialog'
 import { unvalidatedLink } from '@/features/decks/format'
 import { SupportMark } from '@/features/decks/SupportMark'
-import { BY_HAND, cardsByHand } from '@/lib/byHand'
+import { BY_HAND, cardsByHand, runsWhole } from '@/lib/byHand'
 import { copiesOf, supportCounts } from './model'
 import type { DeckPreviewData, PreviewCard } from './model'
 
 /** The cards of a deck the game does not run whole, commanders first. */
 export const notValidatedOf = (deck: DeckPreviewData): PreviewCard[] =>
-  [...deck.commanders, ...deck.cards].filter((card) => card.support !== 'verified')
+  [...deck.commanders, ...deck.cards].filter((card) => !runsWhole(card.support))
 
 /** The words of the link to a deck's not-validated cards, as the deck list says them: "Show the 7 cards played by hand". */
 export const notValidatedWords = (deck: DeckPreviewData): string =>

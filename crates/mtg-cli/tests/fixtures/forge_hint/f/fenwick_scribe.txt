@@ -1,0 +1,11 @@
+Name:Fenwick Scribe
+ManaCost:1 U
+Types:Creature Human Scribe
+PT:1/3
+K:Flying
+T:Mode$ ChangesZone | Origin$ Any | Destination$ Battlefield | ValidCard$ Card.Self | Execute$ TrigInk | TriggerDescription$ When CARDNAME enters, it inks twice.
+SVar:TrigInk:DB$ Ink | Amount$ 2
+SVar:AIPreference:InkHoldBack
+SVar:PlayMain1:TRUE
+DeckHas:Ability$Ink
+Oracle:Flying\nWhen Fenwick Scribe enters, it inks twice.

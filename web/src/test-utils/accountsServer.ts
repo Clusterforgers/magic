@@ -15,19 +15,31 @@ export interface AccountsScript {
   signedIn?: string
   /** What `GET /api/me/games` lists for the signed-in user. */
   games?: MyGame[]
-  /** `register` answers 403 `registration_closed`. */
+  /** `register` answers 403 `registration_closed`, and `GET /api/auth/options` says registering is closed. */
   closed?: boolean
+  /** The username (ignoring case) that is the admin: its answers carry `is_admin` and it may use `/api/admin/users`. */
+  admin?: string
   /** The server has no database: every account call is 503 `accounts_unavailable`. */
   unavailable?: boolean
   /** After this many failed logins the server answers 429 with `Retry-After` (900 seconds). */
   throttleAfter?: number
   /**
    * Replaces the answer of one endpoint (`me`, `register`, `login`, `logout`, `games`, `removeGame`, `password`,
-   * `account`).
+   * `account`, `options`, `listAccounts`, `createAccount`).
    */
   override?: Partial<
     Record<
-      'me' | 'register' | 'login' | 'logout' | 'games' | 'removeGame' | 'password' | 'account',
+      | 'me'
+      | 'register'
+      | 'login'
+      | 'logout'
+      | 'games'
+      | 'removeGame'
+      | 'password'
+      | 'account'
+      | 'options'
+      | 'listAccounts'
+      | 'createAccount',
       (call: FetchCall) => Response | Promise<Response>
     >
   >
@@ -40,6 +52,8 @@ export interface AccountsServer {
   calls: FetchCall[]
   /** The bodies of every register and login request, parsed, in order. */
   credentials: unknown[]
+  /** The bodies of every `POST /api/admin/users` request, parsed, in order. */
+  created: unknown[]
   /** The username signed in right now (what the cookie stands for), or null. */
   readonly signedIn: string | null
   /** The accounts that exist, by username as registered. */
@@ -85,10 +99,13 @@ export function startAccounts(script: AccountsScript = {}): AccountsServer {
   let games = script.games ?? []
   let failures = 0
   const credentials: unknown[] = []
+  const created: unknown[] = []
 
   const find = (name: string): string | undefined =>
     [...users.keys()].find((known) => known.toLowerCase() === name.toLowerCase())
-  const view = (name: string) => ({ id: idOf(name), username: name })
+  const isAdmin = (name: string): boolean =>
+    script.admin !== undefined && name.toLowerCase() === script.admin.toLowerCase()
+  const view = (name: string) => ({ id: idOf(name), username: name, is_admin: isAdmin(name) })
   const unavailable = () => authError(503, 'accounts_unavailable', 'this server has no accounts')
   const body = (call: FetchCall): unknown =>
     typeof call.init?.body === 'string' ? JSON.parse(call.init.body) : null
@@ -121,6 +138,40 @@ export function startAccounts(script: AccountsScript = {}): AccountsServer {
     }
     signedIn = known
     return jsonResponse(200, view(known))
+  }
+
+  // The admin routes answer in the server's order: 401, then 403, then the body.
+  function adminOnly(): Response | null {
+    if (signedIn === null) return authError(401, 'unauthenticated')
+    if (!isAdmin(signedIn)) return authError(403, 'forbidden', 'only the admin can do that')
+    return null
+  }
+
+  function listAccounts(): Response {
+    const refused = adminOnly()
+    if (refused !== null) return refused
+    const rows = [...users.keys()].map((name, n) => ({
+      id: idOf(name),
+      username: name,
+      created_at: `2026-10-${String(10 + n).padStart(2, '0')}T09:30:00Z`,
+      is_admin: isAdmin(name),
+    }))
+    return jsonResponse(200, { users: rows })
+  }
+
+  function createAccount(call: FetchCall): Response {
+    const refused = adminOnly()
+    if (refused !== null) return refused
+    const sent = body(call)
+    created.push(sent)
+    if (!isRecord(sent) || typeof sent.username !== 'string' || typeof sent.password !== 'string') {
+      return authError(400, 'invalid_request')
+    }
+    if (usernameProblem(sent.username) !== null) return authError(400, 'invalid_username')
+    if (passwordProblem(sent.password) !== null) return authError(400, 'invalid_password')
+    if (find(sent.username) !== undefined) return authError(409, 'username_taken')
+    users.set(sent.username, sent.password)
+    return jsonResponse(201, { id: idOf(sent.username), username: sent.username })
   }
 
   function logout(): Response {
@@ -196,6 +247,14 @@ export function startAccounts(script: AccountsScript = {}): AccountsServer {
           script.override?.me?.(call) ??
           (signedIn === null ? authError(401, 'unauthenticated') : jsonResponse(200, view(signedIn)))
         )
+      case '/api/auth/options':
+        return (
+          script.override?.options?.(call) ?? jsonResponse(200, { registration_open: script.closed !== true })
+        )
+      case '/api/admin/users':
+        return call.init?.method === 'POST'
+          ? (script.override?.createAccount?.(call) ?? createAccount(call))
+          : (script.override?.listAccounts?.(call) ?? listAccounts())
       case '/api/me/games':
         return (
           script.override?.games?.(call) ??
@@ -211,6 +270,7 @@ export function startAccounts(script: AccountsScript = {}): AccountsServer {
     fetch: fake.fetch,
     calls: fake.calls,
     credentials,
+    created,
     get signedIn() {
       return signedIn
     },
@@ -224,5 +284,7 @@ export function startAccounts(script: AccountsScript = {}): AccountsServer {
 /** One `fetch` for a page that talks to both servers: account paths go to `accounts`, the rest to `rest`. */
 export function joinFetch(accounts: Fetch, rest: Fetch): Fetch {
   return (url, init) =>
-    url.startsWith('/api/auth/') || url.startsWith('/api/me/') ? accounts(url, init) : rest(url, init)
+    url.startsWith('/api/auth/') || url.startsWith('/api/me/') || url.startsWith('/api/admin/')
+      ? accounts(url, init)
+      : rest(url, init)
 }

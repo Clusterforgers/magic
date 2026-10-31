@@ -6,6 +6,7 @@ use std::time::Duration;
 use thiserror::Error;
 
 use crate::actor::GameConfig;
+use crate::credentials::Username;
 use crate::dwell::Dwell;
 use crate::images::ImageConfig;
 use crate::pace::MAX_CLOCK_SECS;
@@ -69,6 +70,9 @@ pub enum ConfigError {
     /// `MTG_REGISTRATION` is neither `open` nor `closed`.
     #[error("MTG_REGISTRATION must be open or closed, got {0:?}")]
     BadRegistration(String),
+    /// `MTG_ADMIN_USERNAME` is not a valid username.
+    #[error("MTG_ADMIN_USERNAME must be a username of 3 to 32 letters, digits, _ or -, got {0:?}")]
+    BadAdminUsername(String),
     /// `MTG_COOKIE_SECURE` is not `1`, `0`, `true` or `false`.
     #[error("MTG_COOKIE_SECURE must be 1 or 0, got {0:?}")]
     BadCookieSecure(String),
@@ -107,6 +111,9 @@ pub struct AttemptLimits {
     pub login_per_username: u32,
     /// Registrations one address may try.
     pub register_per_ip: u32,
+    /// Accounts one admin may make through `POST /api/admin/users` inside `window`, so the route cannot be
+    /// used to burn CPU on password hashes. Counted apart from `register_per_ip`.
+    pub admin_creates_per_account: u32,
     /// Length of the window in which join code misses are counted.
     pub code_window: Duration,
     /// Join codes one address may miss inside `code_window` before it is turned away (a code that
@@ -129,6 +136,7 @@ impl Default for AttemptLimits {
             login_per_ip: 30,
             login_per_username: 10,
             register_per_ip: 10,
+            admin_creates_per_account: 20,
             code_window: Duration::from_mins(1),
             code_misses_per_ip: 5,
             lobby_window: Duration::from_mins(1),
@@ -143,6 +151,9 @@ impl Default for AttemptLimits {
 pub struct AuthConfig {
     /// Whether new accounts may be made (`MTG_REGISTRATION=open|closed`).
     pub registration: Registration,
+    /// The one account that is the admin and makes the others (`MTG_ADMIN_USERNAME`, trimmed). The server
+    /// sets the flag of that account and clears every other at start; `None`: nobody is admin.
+    pub admin: Option<String>,
     /// Whether the session cookie is marked `Secure` (`MTG_COOKIE_SECURE=1`); set it behind TLS.
     pub cookie_secure: bool,
     /// How long a session lasts after sign-in.
@@ -165,6 +176,7 @@ impl Default for AuthConfig {
     fn default() -> Self {
         AuthConfig {
             registration: Registration::Open,
+            admin: None,
             cookie_secure: false,
             session_lifetime: Duration::from_hours(24 * 30),
             hash_cost: HashCost::default(),
@@ -281,7 +293,7 @@ impl Default for ServerConfig {
 impl ServerConfig {
     /// Reads `MTG_BIND`, `MTG_ALLOWED_ORIGINS`, `MTG_MAX_GAMES`, `MTG_AUTO_PASS`, `MTG_RESPONSE_SECS`,
     /// `MTG_BLOCK_SECS`, `MTG_THINK_SECS`, `MTG_ACTIVE_SECS`, `MTG_EXTENSION_SECS`, `MTG_CLOCK_GRACE_SECS`,
-    /// `MTG_DWELL_MS`, `MTG_REGISTRATION`, `MTG_COOKIE_SECURE`, `MTG_TRUSTED_PROXIES`, `MTG_SEED`,
+    /// `MTG_DWELL_MS`, `MTG_REGISTRATION`, `MTG_ADMIN_USERNAME`, `MTG_COOKIE_SECURE`, `MTG_TRUSTED_PROXIES`, `MTG_SEED`,
     /// `MTG_IMAGE_CACHE` and `MTG_IMAGE_CACHE_MIB` from the process environment.
     pub fn from_env() -> Result<ServerConfig, ConfigError> {
         ServerConfig::from_lookup(|key| {
@@ -353,6 +365,13 @@ impl ServerConfig {
                 "closed" => Registration::Closed,
                 _ => return Err(ConfigError::BadRegistration(text)),
             };
+        }
+        if let Some(text) = get("MTG_ADMIN_USERNAME") {
+            let name = text.trim();
+            if Username::parse(name).is_err() {
+                return Err(ConfigError::BadAdminUsername(text));
+            }
+            config.auth.admin = Some(name.to_owned());
         }
         if let Some(text) = get("MTG_COOKIE_SECURE") {
             config.auth.cookie_secure = match text.trim().to_ascii_lowercase().as_str() {
@@ -588,6 +607,50 @@ mod tests {
             load(&[("MTG_REGISTRATION", text)]),
             Err(ConfigError::BadRegistration(text.to_owned()))
         );
+    }
+
+    #[rstest]
+    #[case("Chrisser", "Chrisser")]
+    #[case("  Chrisser\n", "Chrisser")]
+    #[case("abc", "abc")]
+    #[case("a_b-9", "a_b-9")]
+    #[case("0123456789012345678901234567890a", "0123456789012345678901234567890a")]
+    fn admin_usernames_are_trimmed_and_kept_as_written(#[case] text: &str, #[case] expected: &str) {
+        let config = load(&[("MTG_ADMIN_USERNAME", text)]).unwrap();
+        assert_eq!(config.auth.admin.as_deref(), Some(expected));
+    }
+
+    #[test]
+    fn nobody_is_admin_without_the_setting_or_with_a_blank_one() {
+        assert_eq!(load(&[]).unwrap().auth.admin, None);
+        for blank in ["", " ", "\t\n"] {
+            assert_eq!(
+                load(&[("MTG_ADMIN_USERNAME", blank)]).unwrap().auth.admin,
+                None
+            );
+        }
+    }
+
+    #[rstest]
+    #[case::too_short("ab")]
+    #[case::too_long("0123456789012345678901234567890ab")]
+    #[case::inner_space("chris ser")]
+    #[case::at_sign("chris@home")]
+    #[case::dot("chris.ser")]
+    #[case::unicode("chrïsser")]
+    #[case::quoted("\"Chrisser\"")]
+    fn bad_admin_usernames(#[case] text: &str) {
+        assert_eq!(
+            load(&[("MTG_ADMIN_USERNAME", text)]),
+            Err(ConfigError::BadAdminUsername(text.to_owned()))
+        );
+    }
+
+    #[test]
+    fn the_admin_error_names_the_variable_and_the_rule() {
+        let message = ConfigError::BadAdminUsername("x".into()).to_string();
+        assert!(message.contains("MTG_ADMIN_USERNAME"), "{message}");
+        assert!(message.contains("3 to 32"), "{message}");
     }
 
     #[rstest]

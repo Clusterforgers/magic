@@ -1,4 +1,4 @@
-// Goal: the header offers exactly what the sign-in state allows (nothing while unknown or without accounts, "Sign in" and "Register" for a guest, a menu named after the username with "Sign out" for an account, "My games" in the main navigation), signing out clears the account and the games list and leaves a page that needs one, and a sign-out the server did not get is reported, not faked.
+// Goal: the header offers exactly what the sign-in state allows (nothing while unknown or without accounts, "Sign in" and "Register" for a guest, no "Register" where the admin makes the accounts, a menu named after the username with "Sign out" for an account and "Accounts" for the admin only, "My games" in the main navigation), signing out clears the account and the games list and leaves a page that needs one, and a sign-out the server did not get is reported, not faked.
 import { screen, waitFor, within } from '@testing-library/react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { authError, listed } from '@/test-utils/accountsServer'
@@ -47,7 +47,9 @@ describe('while the server is being asked', () => {
     expect(nav()).toBeNull()
     expect(screen.queryByRole('link', { name: 'My games' })).toBeNull()
     expect(screen.getByRole('link', { name: 'Magic' })).toHaveAttribute('href', '/')
-    answer(new Response(JSON.stringify({ id: 'x', username: ADA.username }), { status: 200 }))
+    answer(
+      new Response(JSON.stringify({ id: 'x', username: ADA.username, is_admin: false }), { status: 200 }),
+    )
     expect(await screen.findByRole('navigation', { name: 'Account' })).toBeInTheDocument()
   })
 })
@@ -193,5 +195,45 @@ describe('a signed-in account', () => {
     expect(await signOutItem(app)).toHaveAttribute('aria-disabled', 'true')
     answer(new Response(null, { status: 204 }))
     await waitFor(() => expect(app.store.getState().status).toBe('signed-out'))
+  })
+})
+
+describe('the entry for the admin in the menu', () => {
+  const menuItems = async (app: App) => {
+    await app.user.click(trigger())
+    return (await screen.findAllByRole('menuitem')).map((item) => item.textContent)
+  }
+
+  it('offers Accounts first to the admin, who reaches the page with it', async () => {
+    const app = await open('/', { admin: ADA.username, signedIn: ADA.username })
+    expect(await menuItems(app)).toEqual(['Accounts', 'Account settings', 'Sign out'])
+    await app.user.click(screen.getByRole('menuitem', { name: 'Accounts' }))
+    expect(await screen.findByRole('heading', { level: 1, name: 'Accounts' })).toBeInTheDocument()
+    expect(app.router.state.location.pathname).toBe('/accounts')
+  })
+
+  it('offers nobody else the entry', async () => {
+    const app = await open('/', { admin: 'someone_else', signedIn: ADA.username })
+    expect(await menuItems(app)).toEqual(['Account settings', 'Sign out'])
+  })
+
+  it('goes home when the admin signs out of the Accounts page, like any page that needs an account', async () => {
+    const app = await open('/accounts', { admin: ADA.username, signedIn: ADA.username })
+    await screen.findByRole('heading', { level: 1, name: 'Accounts' })
+    await signOut(app)
+    await waitFor(() => expect(app.store.getState().status).toBe('signed-out'))
+    expect(app.router.state.location.pathname).toBe('/')
+  })
+})
+
+describe('a visitor where the admin makes the accounts', () => {
+  it('is offered "Sign in" and nothing to register', async () => {
+    const app = await open('/', { closed: true })
+    await waitFor(() => expect(app.store.getState().registration).toBe('closed'))
+    expect(
+      within(nav()!)
+        .getAllByRole('link')
+        .map((link) => link.textContent),
+    ).toEqual(['Sign in'])
   })
 })

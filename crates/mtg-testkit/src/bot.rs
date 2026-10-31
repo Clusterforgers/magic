@@ -35,6 +35,8 @@ pub struct RandomBot {
     symbol_choices: bool,
     taxed: Taxed,
     repeats: Repeats,
+    /// The card whose plays the bot prefers at priority ([`RandomBot::favouring`]).
+    favoured: Option<String>,
 }
 
 /// Where the bot is in declaring an attack that costs mana.
@@ -247,6 +249,23 @@ pub(crate) fn priority_actions(options: &PriorityOptions) -> Vec<PriorityAction>
     actions
 }
 
+/// The object a play of the priority decision is about, when it is a play of one card: casting, playing, suspending,
+/// foretelling or turning it face up, or activating one of its abilities.
+fn played_object(action: &PriorityAction) -> Option<ObjectId> {
+    match action {
+        PriorityAction::PlayLand(object)
+        | PriorityAction::PlayLandFace(object, _)
+        | PriorityAction::CastSpell(object)
+        | PriorityAction::Suspend(object)
+        | PriorityAction::Foretell(object)
+        | PriorityAction::TurnFaceUp(object)
+        | PriorityAction::CastPrepared(object) => Some(*object),
+        PriorityAction::ActivateMana(source) => Some(source.object),
+        PriorityAction::Activate(ability) => Some(ability.object),
+        _ => None,
+    }
+}
+
 /// Most times the bot activates one ability of one source in one step, however much each activation changes: an
 /// ability that is free (an `{X}` at X = 0, a mana ability that pays its cost back) is offered again and again, and a
 /// table of bots that each take it with chance n / (n + 1) passes a step only after a number of rounds that grows with
@@ -348,6 +367,7 @@ impl RandomBot {
             symbol_choices: false,
             taxed: Taxed::Idle,
             repeats: Repeats::default(),
+            favoured: None,
         }
     }
 
@@ -365,6 +385,15 @@ impl RandomBot {
     #[must_use]
     pub const fn with_symbol_choices(mut self) -> Self {
         self.symbol_choices = true;
+        self
+    }
+
+    /// Also prefers to play the card called `name` at priority: three times in four, when the table offers a play of it
+    /// (casting it, playing it as a land, activating one of its abilities), it takes one of those, else it chooses at
+    /// random as before.
+    #[must_use]
+    pub fn favouring(mut self, name: impl Into<String>) -> Self {
+        self.favoured = Some(name.into());
         self
     }
 
@@ -556,13 +585,39 @@ impl RandomBot {
         actions.swap_remove(self.rng.index(actions.len()))
     }
 
+    /// A play of the favoured card among `actions`, taken three times in four; none when no card is favoured or the
+    /// table offers no play of it, in which case the generator is not drawn from.
+    fn favoured_play(
+        &mut self,
+        actions: &[PriorityAction],
+        state: &GameState,
+    ) -> Option<PriorityAction> {
+        let name = self.favoured.as_deref()?;
+        let plays: Vec<&PriorityAction> = actions
+            .iter()
+            .filter(|action| {
+                played_object(action)
+                    .and_then(|object| state.object(object))
+                    .is_some_and(|object| object.card().name == name)
+            })
+            .collect();
+        if plays.is_empty() || self.rng.below(4) == 0 {
+            return None;
+        }
+        let at = self.rng.index(plays.len());
+        plays.get(at).map(|action| (*action).clone())
+    }
+
     /// [`Self::priority`] without the activations [`Repeats`] holds back in this step of `state`.
     fn guarded_priority(&mut self, options: &PriorityOptions, state: &GameState) -> PriorityAction {
         self.repeats.enter(state);
         let mut seen = None;
         let mut actions = priority_actions(options);
         actions.retain(|action| !self.repeats.holds_back(action, state, &mut seen));
-        let action = actions.swap_remove(self.rng.index(actions.len()));
+        let action = match self.favoured_play(&actions, state) {
+            Some(favoured) => favoured,
+            None => actions.swap_remove(self.rng.index(actions.len())),
+        };
         self.repeats.taken(&action, state, seen);
         action
     }
@@ -1108,6 +1163,63 @@ mod tests {
                 first.apply(answer_a).unwrap();
                 second.apply(answer_b).unwrap();
             }
+        }
+    }
+
+    #[test]
+    fn a_bot_favouring_a_card_takes_a_play_of_it_three_times_in_four() {
+        let engine = Scenario::new(2)
+            .at(2, 0, Step::Main1)
+            .hand(0, [forest(), forest(), bear(), giant()])
+            .battlefield(0, std::iter::repeat_n(ready(forest()), 3))
+            .build()
+            .unwrap();
+        let decision = engine.decision().cloned().unwrap();
+        let DecisionKind::Priority(options) = &decision.kind else {
+            panic!("priority expected: {decision:?}");
+        };
+        let offered = priority_actions(options).len();
+        assert!(offered >= 4, "pass, two lands, the bear: {offered}");
+        let takes_bear = |bot: &mut RandomBot| match bot.choose_in(&decision, engine.state()) {
+            Answer::Priority(PriorityAction::CastSpell(object)) => {
+                engine.state().object(object).unwrap().card().name == "Grizzly Bears"
+            }
+            _ => false,
+        };
+        let favoured = (0..400)
+            .filter(|&seed| takes_bear(&mut RandomBot::new(seed, 0).favouring("Grizzly Bears")))
+            .count();
+        // Three in four, and one in `offered` of the rest.
+        assert!((270..=360).contains(&favoured), "{favoured} of 400");
+        // A card the table offers no play of changes nothing, not even a draw of the generator.
+        for seed in 0..60 {
+            let plain = RandomBot::new(seed, 0).choose_in(&decision, engine.state());
+            let other = RandomBot::new(seed, 0)
+                .favouring("Black Lotus")
+                .choose_in(&decision, engine.state());
+            assert_eq!(plain, other, "seed {seed}");
+        }
+    }
+
+    #[test]
+    fn a_play_is_about_the_card_of_the_object_it_names() {
+        let object = ObjectId(5);
+        let source = mtg_engine::mana::ManaSource { object, ability: 0 };
+        let ability = mtg_engine::abilities::AbilityRef::printed(object, 1);
+        for (action, expected) in [
+            (PriorityAction::Pass, None),
+            (PriorityAction::PlayLand(object), Some(object)),
+            (PriorityAction::PlayLandFace(object, 1), Some(object)),
+            (PriorityAction::CastSpell(object), Some(object)),
+            (PriorityAction::ActivateMana(source), Some(object)),
+            (PriorityAction::Activate(ability), Some(object)),
+            (PriorityAction::Suspend(object), Some(object)),
+            (PriorityAction::Foretell(object), Some(object)),
+            (PriorityAction::TurnFaceUp(object), Some(object)),
+            (PriorityAction::CastPrepared(object), Some(object)),
+            (PriorityAction::BringCompanion, None),
+        ] {
+            assert_eq!(played_object(&action), expected, "{action:?}");
         }
     }
 }
