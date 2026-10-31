@@ -160,6 +160,11 @@ merged?: Array<MergedCardView>,
  */
 manual?: Array<ManualClause>, 
 /**
+ * Whether its card runs on a player's read (`CardDefinition.read` of the face in use, `docs/cards-dsl.md`, Read
+ * tier), for every seat that sees its face; left out while false.
+ */
+read?: boolean, 
+/**
  * The note a seat put on the object by hand, which every seat that sees the object reads; left out while there is
  * none.
  */

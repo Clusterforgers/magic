@@ -30,9 +30,9 @@ pub use message::{
 };
 pub use project::{spectator_viewer, zone_is_visible, zone_is_visible_in};
 pub use rest::{
-    AccountDeletion, AuthErrorCode, CardDetail, CardHit, CardSearchPage, Credentials, DeckBody,
-    DeckErrorCode, DeckList, DeckView, MyGame, MyGameSeat, MyGameStatus, MyGames, PasswordChange,
-    UserView,
+    AccountDeletion, AccountList, AccountOptions, AccountRow, AuthErrorCode, CardDetail, CardHit,
+    CardSearchPage, CreatedAccount, Credentials, DeckBody, DeckErrorCode, DeckList, DeckView,
+    MyGame, MyGameSeat, MyGameStatus, MyGames, PasswordChange, UserView,
 };
 pub use view::{
     ActivatedView, AttackerView, CombatView, CommanderDamageView, CommanderView, CompanionView,

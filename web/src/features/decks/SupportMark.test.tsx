@@ -5,7 +5,7 @@ import type { Support } from '@/protocol/generated'
 import { SUPPORT_LABEL } from './format'
 import { SupportGlyph, SupportMark, supportEdge, supportRing } from './SupportMark'
 
-const STATES: readonly Support[] = ['verified', 'partial', 'manual', 'stale', 'unplayable']
+const STATES: readonly Support[] = ['verified', 'read', 'partial', 'manual', 'stale', 'unplayable']
 
 function mark(support: Support): HTMLElement {
   const { container } = render(<SupportMark support={support} />)
@@ -28,7 +28,7 @@ describe('SupportMark', () => {
     },
   )
 
-  it('gives the five states five words, five icons and five edges', () => {
+  it('gives every state its own word, icon and edge', () => {
     const icons = STATES.map((support) => mark(support).querySelector('svg')?.getAttribute('class'))
     expect(icons.every((icon) => (icon ?? '').includes('lucide-'))).toBe(true)
     expect(new Set(icons).size).toBe(STATES.length)
@@ -51,7 +51,7 @@ describe('supportRing', () => {
     expect(supportRing(support)).toBe(`ring-support-${support}`)
   })
 
-  it('gives the five states five rings', () => {
+  it('gives every state its own ring', () => {
     expect(new Set(STATES.map(supportRing)).size).toBe(STATES.length)
   })
 })

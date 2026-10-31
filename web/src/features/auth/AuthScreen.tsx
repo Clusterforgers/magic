@@ -1,5 +1,5 @@
 import { Link, useRouter } from '@tanstack/react-router'
-import { LoaderCircleIcon, ServerOffIcon } from 'lucide-react'
+import { LoaderCircleIcon, LockKeyholeIcon, ServerOffIcon } from 'lucide-react'
 import { useEffect } from 'react'
 import { EmptyState } from '@/components/EmptyState'
 import { PageShell } from '@/components/PageShell'
@@ -17,10 +17,14 @@ interface AuthScreenProps {
   next: string | undefined
 }
 
-/** `/login` and `/register`: the form, or a note that this server has no accounts, or the way on when already signed in. */
+/**
+ * `/login` and `/register`: the form, or a note that this server has no accounts, or the way on when already signed in.
+ * Where the admin makes the accounts, `/register` says so in place of a form that could only fail.
+ */
 export function AuthScreen({ mode, next }: AuthScreenProps) {
   usePageTitle(mode === 'login' ? 'Sign in' : 'Create an account')
   const status = useAuth((state) => state.status)
+  const registrationClosed = useAuth((state) => state.registration === 'closed')
   const router = useRouter()
   // Checked again here: a router can hand over the raw address where a validator left a key out, and this is the one
   // place that navigates to it.
@@ -55,7 +59,28 @@ export function AuthScreen({ mode, next }: AuthScreenProps) {
           You are signed in. Taking you on…
         </p>
       ) : null}
-      {status === 'loading' || status === 'signed-out' ? <AuthForm mode={mode} next={safe} /> : null}
+      {status === 'loading' || status === 'signed-out' ? (
+        mode === 'register' && registrationClosed ? (
+          <EmptyState
+            as="h1"
+            icon={LockKeyholeIcon}
+            title="New accounts are made by the admin"
+            action={
+              <Link
+                to="/login"
+                search={safe === undefined ? {} : { next: safe }}
+                className={cn(buttonVariants({ size: 'lg' }))}
+              >
+                Sign in
+              </Link>
+            }
+          >
+            Ask them to add you. Once they have, sign in here with the username and password they give you.
+          </EmptyState>
+        ) : (
+          <AuthForm mode={mode} next={safe} />
+        )
+      ) : null}
     </PageShell>
   )
 }

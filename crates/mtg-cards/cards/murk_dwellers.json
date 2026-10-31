@@ -1,0 +1,27 @@
+{
+  "oracle_id": "00358a89-2058-448b-a2fd-389f639ba2da",
+  "name": "Murk Dwellers",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Murk Dwellers",
+      "oracle_fingerprint": "2731d5bef12e68565a751c2cca104b11",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Unblocked": { "what": ["This"] } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }],
+                  "duration": "UntilEndOfCombat"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

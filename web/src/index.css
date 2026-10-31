@@ -96,6 +96,7 @@
   --color-destructive: var(--destructive);
   --color-scrim: var(--scrim);
   --color-support-verified: var(--support-verified);
+  --color-support-read: var(--support-read);
   --color-support-partial: var(--support-partial);
   --color-support-manual: var(--support-manual);
   --color-card-back: var(--card-back);
@@ -158,6 +159,7 @@
   --destructive: oklch(0.5 0.2 27);
   --scrim: oklch(0.2 0.02 265 / 0.4);
   --support-verified: oklch(0.45 0.14 150);
+  --support-read: oklch(0.46 0.15 300);
   --support-partial: oklch(0.46 0.13 245);
   --support-manual: oklch(0.46 0.13 55);
   --card-back: oklch(0.42 0.05 260);
@@ -244,6 +246,7 @@
   --destructive: oklch(0.72 0.17 25);
   --scrim: oklch(0 0 0 / 0.6);
   --support-verified: oklch(0.74 0.15 150);
+  --support-read: oklch(0.78 0.12 300);
   --support-partial: oklch(0.76 0.1 245);
   --support-manual: oklch(0.8 0.15 70);
   --card-back: oklch(0.36 0.05 260);

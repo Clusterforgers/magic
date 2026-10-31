@@ -1,6 +1,7 @@
 //! Runs bot games to completion while checking every invariant, failing with the seed and log.
 
 use std::fmt;
+use std::time::Duration;
 
 use mtg_core::ids::PlayerId;
 use mtg_engine::decision::{Answer, DecisionKind, PriorityAction};
@@ -51,6 +52,10 @@ pub struct PlayOptions {
     /// At every priority decision, try each offered play this many times on a copy of the game ([`crate::offers`])
     /// and fail with [`FailureKind::Unanswered`] when one cannot be taken; 0 never.
     pub check_offers: u64,
+    /// End a game the [`Watchdog`] stops as [`FailureKind::Runaway`] with its report, in place of panicking with it.
+    pub runaway_fails: bool,
+    /// Stop the game as a runaway once it has run for this long (checked after each answer); none never.
+    pub time_limit: Option<Duration>,
 }
 
 impl Default for PlayOptions {
@@ -65,6 +70,8 @@ impl Default for PlayOptions {
             manual_every: 0,
             manual_anytime_every: 0,
             check_offers: 0,
+            runaway_fails: false,
+            time_limit: None,
         }
     }
 }
@@ -111,6 +118,9 @@ pub enum FailureKind {
     /// A priority window offered plays that end with nothing done whichever way they are answered.
     #[error("unanswered plays: {0}")]
     Unanswered(String),
+    /// The watchdog stopped a game that ran away ([`PlayOptions::runaway_fails`]); the text is its report.
+    #[error("{0}")]
+    Runaway(String),
 }
 
 /// A failed bot game, carrying everything needed to reproduce it.
@@ -152,6 +162,17 @@ pub fn play_game_with(
     seed: u64,
     options: PlayOptions,
 ) -> Result<GameOutcome, GameFailure> {
+    let bots = bots_for(setup.players.len(), seed, options);
+    play_game_with_bots(setup, seed, options, bots)
+}
+
+/// Like [`play_game_with`] with the bots given, one for each seat in table order, in place of the seeded ones.
+pub fn play_game_with_bots(
+    setup: GameSetup,
+    seed: u64,
+    options: PlayOptions,
+    mut bots: Vec<RandomBot>,
+) -> Result<GameOutcome, GameFailure> {
     let fail = |kind: FailureKind, events: &[Event]| GameFailure {
         seed,
         kind,
@@ -169,8 +190,7 @@ pub fn play_game_with(
     } else {
         None
     };
-    let mut bots = bots_for(setup.players.len(), seed, options);
-    let mut watchdog = Watchdog::for_game(seed, &setup);
+    let mut watchdog = Watchdog::for_game(seed, &setup).with_time_limit(options.time_limit);
     let mut engine = Engine::new(setup).map_err(|e| fail(e.into(), &[]))?;
     observe(&mut checker, &engine).map_err(|v| fail(v.into(), engine.events()))?;
 
@@ -235,12 +255,10 @@ pub fn play_game_with(
             windows.passed(decision.player);
         }
         answers += 1;
-        watchdog.answered(
-            engine.state(),
-            decision.player,
-            decision.kind.name(),
-            &given,
-        );
+        let state = engine.state();
+        if let Some(report) = watchdog.tally(state, decision.player, decision.kind.name(), &given) {
+            return Err(fail(runaway(options, report), engine.events()));
+        }
         observe(&mut checker, &engine).map_err(|v| fail(v.into(), engine.events()))?;
     }
     finish(&engine, checker.as_mut(), answers, auto_passes)
@@ -251,6 +269,13 @@ pub fn play_game_with(
             ..outcome
         })
         .map_err(|kind| fail(kind, engine.events()))
+}
+
+/// What a passed cap of the watchdog ends the game with: a failure when the options ask for one, else a panic with the
+/// report.
+fn runaway(options: PlayOptions, report: String) -> FailureKind {
+    assert!(options.runaway_fails, "{report}");
+    FailureKind::Runaway(report)
 }
 
 /// The windows of the table: every seat in Full Control, passed for by the table (`auto_pass`) or set by its bot.
@@ -284,7 +309,7 @@ fn crowded(state: &GameState, decision: &Decision) -> bool {
 }
 
 /// One seeded bot for each seat, set up as the options say.
-fn bots_for(seats: usize, seed: u64, options: PlayOptions) -> Vec<RandomBot> {
+pub fn bots_for(seats: usize, seed: u64, options: PlayOptions) -> Vec<RandomBot> {
     (0u64..)
         .take(seats)
         .map(|seat| {

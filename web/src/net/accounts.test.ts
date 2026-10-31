@@ -6,7 +6,8 @@ import { AccountError, AUTH_ERROR_CODES, createAccountsApi, isAuthErrorCode } fr
 import type { AccountsApi } from './accounts'
 
 const credentials = { username: 'ada_l', password: 'correct horse battery' }
-const user = { id: 'u-1', username: 'ada_l' }
+const user = { id: 'u-1', username: 'ada_l', is_admin: false }
+const row = { id: 'u-2', username: 'bo_new', created_at: '2026-10-31T09:30:00Z', is_admin: false }
 const finished = listed({
   status: 'finished',
   result: { Winner: 0 },
@@ -19,6 +20,23 @@ const calls: [string, (api: AccountsApi) => Promise<unknown>, number, unknown, s
   ['login', (api) => api.login(credentials), 200, user, 'POST', '/api/auth/login'],
   ['me', (api) => api.me(), 200, user, 'GET', '/api/auth/me'],
   ['myGames', (api) => api.myGames(), 200, { games: [finished] }, 'GET', '/api/me/games'],
+  [
+    'registrationOptions',
+    (api) => api.registrationOptions(),
+    200,
+    { registration_open: false },
+    'GET',
+    '/api/auth/options',
+  ],
+  ['listAccounts', (api) => api.listAccounts(), 200, { users: [row] }, 'GET', '/api/admin/users'],
+  [
+    'createAccount',
+    (api) => api.createAccount(credentials),
+    201,
+    { id: 'u-2', username: 'ada_l' },
+    'POST',
+    '/api/admin/users',
+  ],
 ]
 
 describe('requests', () => {
@@ -141,7 +159,9 @@ describe('answers', () => {
 
   const unreadableAccounts: [string, unknown][] = [
     ['an account without a username', { id: 'u-1' }],
-    ['an account whose id is a number', { id: 1, username: 'ada_l' }],
+    ['an account whose id is a number', { id: 1, username: 'ada_l', is_admin: false }],
+    ['an account without the admin flag', { id: 'u-1', username: 'ada_l' }],
+    ['an account whose admin flag is text', { id: 'u-1', username: 'ada_l', is_admin: 'yes' }],
     ['an array for an account', []],
     ['text for an account', 'ada_l'],
   ]
@@ -181,6 +201,48 @@ describe('answers', () => {
     })
   })
 
+  it('returns the admin flag, the registration option and the accounts as the server sent them', async () => {
+    const admin = { ...user, is_admin: true }
+    const asAdmin = fakeFetch(() => jsonResponse(200, admin))
+    await expect(createAccountsApi({ fetch: asAdmin.fetch }).me()).resolves.toEqual(admin)
+    const options = fakeFetch(() => jsonResponse(200, { registration_open: true }))
+    await expect(createAccountsApi({ fetch: options.fetch }).registrationOptions()).resolves.toEqual({
+      registration_open: true,
+    })
+    const rows = [{ ...row, username: 'ada_l', is_admin: true }, row]
+    const list = fakeFetch(() => jsonResponse(200, { users: rows }))
+    await expect(createAccountsApi({ fetch: list.fetch }).listAccounts()).resolves.toEqual(rows)
+    const made = fakeFetch(() => jsonResponse(201, { id: 'u-3', username: 'cy' }))
+    await expect(createAccountsApi({ fetch: made.fetch }).createAccount(credentials)).resolves.toEqual({
+      id: 'u-3',
+      username: 'cy',
+    })
+  })
+
+  it('sends the credentials of a new account as JSON, like the register call', async () => {
+    const fake = fakeFetch(() => jsonResponse(201, { id: 'u-3', username: 'cy' }))
+    await createAccountsApi({ fetch: fake.fetch }).createAccount(credentials)
+    expect(fake.calls[0]?.init?.headers).toEqual({ 'content-type': 'application/json' })
+    expect(JSON.parse(String(fake.calls[0]?.init?.body))).toEqual(credentials)
+  })
+
+  const unreadableOthers: [string, (api: AccountsApi) => Promise<unknown>, unknown][] = [
+    ['options without the flag', (api) => api.registrationOptions(), {}],
+    ['options whose flag is text', (api) => api.registrationOptions(), { registration_open: 'yes' }],
+    ['a list that is not a list', (api) => api.listAccounts(), { users: 'none' }],
+    ['no users key', (api) => api.listAccounts(), {}],
+    ['a row without a date', (api) => api.listAccounts(), { users: [{ ...row, created_at: undefined }] }],
+    ['a row whose admin flag is a number', (api) => api.listAccounts(), { users: [{ ...row, is_admin: 1 }] }],
+    ['a created account without an id', (api) => api.createAccount(credentials), { username: 'cy' }],
+  ]
+
+  it.each(unreadableOthers)('rejects %s as bad_response', async (_what, run, body) => {
+    const fake = fakeFetch(() => jsonResponse(200, body))
+    await expect(run(createAccountsApi({ fetch: fake.fetch }))).rejects.toMatchObject({
+      code: 'bad_response',
+    })
+  })
+
   it('rejects a body that is not JSON as bad_response', async () => {
     const fake = fakeFetch(() => new Response('<html>', { status: 200 }))
     await expect(createAccountsApi({ fetch: fake.fetch }).me()).rejects.toMatchObject({
@@ -197,6 +259,7 @@ describe('failures', () => {
     invalid_password: 400,
     username_taken: 409,
     registration_closed: 403,
+    forbidden: 403,
     invalid_credentials: 401,
     too_many_attempts: 429,
     unauthenticated: 401,
