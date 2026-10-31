@@ -1,0 +1,49 @@
+{
+  "oracle_id": "f7574379-d10e-4bbf-b0b1-13feee753d8b",
+  "name": "Grand Entryway // Elegant Rotunda",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Grand Entryway",
+      "oracle_fingerprint": "cc57d2437fa145c719f36937ba1445ef",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "DoorUnlocked": { "who": "You", "door": 0 } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Glimmer",
+                      "colors": ["White"],
+                      "types": ["Enchantment", "Creature"],
+                      "subtypes": ["Glimmer"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Elegant Rotunda",
+      "oracle_fingerprint": "6af20700288e60b77fd5122c2ec5771a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "DoorUnlocked": { "who": "You", "door": 1 } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 0, "max": 2 } }
+            ],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

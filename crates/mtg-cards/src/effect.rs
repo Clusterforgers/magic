@@ -671,6 +671,13 @@ pub enum Effect {
         #[serde(default, skip_serializing_if = "std::ops::Not::not")]
         undercity: bool,
     },
+    /// The player unlocks a locked door of a Room they control, which they choose (CR 709.5): "unlock a locked door of a
+    /// Room you control".
+    UnlockDoor {
+        /// Who unlocks it.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        who: Ref,
+    },
     /// The player becomes the monarch (CR 724).
     BecomeMonarch {
         /// Who becomes it.

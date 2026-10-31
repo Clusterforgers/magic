@@ -250,6 +250,7 @@ mod day_night;
 mod defining;
 mod died_under;
 mod dk1b_attached_writers;
+mod dk1c5_rooms;
 mod draws;
 mod each_pump;
 mod effect_writers;

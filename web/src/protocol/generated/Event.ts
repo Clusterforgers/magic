@@ -788,6 +788,18 @@ object: ObjectId,
 /**
  * Its controller, who turned it.
  */
+player: PlayerId, } } | { "DoorUnlocked": { 
+/**
+ * The Room.
+ */
+object: ObjectId, 
+/**
+ * The door, as an index into the card's faces.
+ */
+door: number, 
+/**
+ * Who unlocked it.
+ */
 player: PlayerId, } } | { "Mutated": { 
 /**
  * The merged permanent.

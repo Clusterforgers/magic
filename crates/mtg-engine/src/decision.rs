@@ -166,6 +166,11 @@ pub struct PriorityOptions {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     #[cfg_attr(feature = "ts", ts(as = "Option<Vec<ObjectId>>", optional))]
     pub turnable: Vec<ObjectId>,
+    /// The locked doors of Rooms the holder can unlock now (a special action at sorcery timing for the door's mana cost that
+    /// does not use the stack, CR 709.5e): the Room, the door and its name and cost.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<Vec<FaceOption>>", optional))]
+    pub unlockable: Vec<FaceOption>,
     /// Whether the holder can put their companion into their hand now: a special action (CR 702.139) for {3} at sorcery
     /// timing, once a game.
     #[serde(default, skip_serializing_if = "is_false")]
@@ -615,6 +620,8 @@ pub enum PriorityAction {
     CastPrepared(ObjectId),
     /// Put the companion into the hand (CR 702.139, a special action): pay {3}, once a game.
     BringCompanion,
+    /// Unlock this locked door of this Room (CR 709.5e, a special action): pay the door's mana cost.
+    UnlockDoor(ObjectId, u8),
     /// Do something by hand for a card the engine does not run: a zone move, counters, life, a token and the like. Legal at
     /// any priority, checked against the state (`manual.rs`).
     Manual(ManualAction),

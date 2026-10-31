@@ -210,6 +210,8 @@ const RUNS: &[&str] = &[
     "Effect.Venture",
     "Trigger.Ventured",
     "Trigger.CompletedDungeon",
+    "Trigger.DoorUnlocked",
+    "Effect.UnlockDoor",
     "Condition.CompletedDungeon",
     "Effect.TakeInitiative",
     "Trigger.TakesInitiative",

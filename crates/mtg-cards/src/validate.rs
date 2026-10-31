@@ -1422,8 +1422,16 @@ impl<'a> Walker<'a> {
         }
     }
 
-    fn trigger_pattern(&mut self, pattern: &TriggerPattern) {
+    /// The unlocker of a Room pattern, then what `w11a_pattern_used` records.
+    fn dk1c5_pattern(&mut self, pattern: &TriggerPattern) {
+        if let TriggerPattern::DoorUnlocked { who, .. } = pattern {
+            self.at("who", |w| w.reference(who, Kind::Player));
+        }
         self.w11a_pattern_used(pattern);
+    }
+
+    fn trigger_pattern(&mut self, pattern: &TriggerPattern) {
+        self.dk1c5_pattern(pattern);
         match pattern {
             TriggerPattern::ZoneChange { what, .. }
             | TriggerPattern::ZoneChangeExcept { what, .. }
@@ -1454,7 +1462,7 @@ impl<'a> Walker<'a> {
             TriggerPattern::StepBegins { whose, .. } => {
                 self.at("whose", |w| w.reference(whose, Kind::Player));
             }
-            TriggerPattern::DayNightChanges { .. } => {}
+            TriggerPattern::DayNightChanges { .. } | TriggerPattern::DoorUnlocked { .. } => {}
             TriggerPattern::DealsDamage { source, to, .. } => {
                 self.at("source", |w| w.selector(source));
                 if let Some(to) = to {
@@ -1577,6 +1585,7 @@ impl<'a> Walker<'a> {
                 | TriggerPattern::TakesInitiative { .. }
                 | TriggerPattern::Ventured { .. }
                 | TriggerPattern::CompletedDungeon { .. }
+                | TriggerPattern::DoorUnlocked { .. }
                 | TriggerPattern::DayNightChanges { .. }
                 | TriggerPattern::Proliferated { .. }
                 | TriggerPattern::CoinFlipWon { .. }
@@ -2292,6 +2301,7 @@ impl Walker<'_> {
             | Effect::BecomeMonarch { who }
             | Effect::TakeInitiative { who }
             | Effect::Venture { who, .. }
+            | Effect::UnlockDoor { who }
             | Effect::TimeTravel { who }
             | Effect::Learn { who }
             | Effect::Exploit { who } => {

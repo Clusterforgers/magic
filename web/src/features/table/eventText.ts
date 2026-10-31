@@ -743,6 +743,8 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
   }
   if ('TurnedFaceUp' in event)
     return line(`${n.seat(event.TurnedFaceUp.player)} turns ${n.card(event.TurnedFaceUp.object)} face up`)
+  if ('DoorUnlocked' in event)
+    return line(`${n.seat(event.DoorUnlocked.player)} unlocks a door of ${n.card(event.DoorUnlocked.object)}`)
   if ('CardParted' in event) {
     const { permanent, card, to } = event.CardParted
     return line(`${n.card(card)} goes to ${zoneWord(to, n)} apart from ${n.card(permanent)}`)

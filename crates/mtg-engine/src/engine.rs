@@ -475,6 +475,10 @@ impl Engine {
                 self.pending = Some(Pending::special(player, card, Special::TurnFaceUp));
                 Ok(())
             }
+            Outcome::BeginUnlock(card, door) => {
+                self.pending = Some(Pending::special(player, card, Special::Unlock(door)));
+                Ok(())
+            }
             Outcome::BeginPrepared(permanent) => {
                 let (event, copy) = prepared::copy_of(&self.state, player, permanent)
                     .ok_or_else(|| EngineError::InvalidEvent("no prepared spell to cast".into()))?;

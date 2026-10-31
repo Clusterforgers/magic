@@ -198,6 +198,8 @@ pub struct PermanentState {
     pub(crate) exerted: crate::w11a_exert::W11aExerted,
     /// The creature it is paired with (CR 702.95); `GameState::partner_of` says whether that pair still holds.
     pub(crate) paired: crate::soulbond::Pairing,
+    /// Which doors of a Room are unlocked (CR 709.5); nothing for any other permanent.
+    pub(crate) doors: crate::dk1c5_rooms::Doors,
 }
 
 impl PermanentState {
@@ -234,6 +236,7 @@ impl PermanentState {
             phased: PhasedState::default(),
             exerted: crate::w11a_exert::W11aExerted::default(),
             paired: crate::soulbond::Pairing::default(),
+            doors: crate::dk1c5_rooms::Doors::default(),
         }
     }
 
@@ -585,6 +588,13 @@ impl GameObject {
         }
         if let Some(shown) = self.face_down.and_then(FaceDown::characteristics) {
             return shown;
+        }
+        if let Some(room) = self
+            .permanent
+            .as_ref()
+            .and_then(|permanent| permanent.doors.card(&self.def))
+        {
+            return room;
         }
         match self.face() {
             Some(face) => self.def.face(face),

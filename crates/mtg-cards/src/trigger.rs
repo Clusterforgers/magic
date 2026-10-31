@@ -357,6 +357,22 @@ pub enum TriggerPattern {
         )]
         who: Ref,
     },
+    /// A player unlocks a door of a Room (CR 709.5): "when you unlock this door" (`door`, the face of the source, set as the
+    /// card is compiled) or "whenever you fully unlock a Room" (`fully`, its last locked door); `Triggering` is that player.
+    DoorUnlocked {
+        /// Who unlocks it.
+        #[serde(
+            default = "Ref::each_player",
+            skip_serializing_if = "Ref::is_each_player"
+        )]
+        who: Ref,
+        /// The door of the source Room, as an index into its faces.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        door: Option<u8>,
+        /// Only the unlock of the last locked door counts.
+        #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+        fully: bool,
+    },
     /// A player takes the initiative (CR 725); `Triggering` is that player.
     TakesInitiative {
         /// Who takes it.

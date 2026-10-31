@@ -1,0 +1,30 @@
+{
+  "oracle_id": "c9db5293-4866-46ec-9ae8-059d27bd50fc",
+  "name": "Entity Tracker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Entity Tracker",
+      "oracle_fingerprint": "c8ec1ee3844abe20777104fca5a9d0e7",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                {
+                  "ZoneChange": {
+                    "what": [{ "Type": "Enchantment" }, { "ControlledBy": "You" }],
+                    "to": "Battlefield"
+                  }
+                },
+                { "DoorUnlocked": { "who": "You", "fully": true } }
+              ]
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

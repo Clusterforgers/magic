@@ -38,6 +38,11 @@ foretellable?: Array<ObjectId>,
  */
 turnable?: Array<ObjectId>, 
 /**
+ * The locked doors of Rooms the holder can unlock now (a special action at sorcery timing for the door's mana cost that
+ * does not use the stack, CR 709.5e): the Room, the door and its name and cost.
+ */
+unlockable?: Array<FaceOption>, 
+/**
  * Whether the holder can put their companion into their hand now: a special action (CR 702.139) for {3} at sorcery
  * timing, once a game.
  */

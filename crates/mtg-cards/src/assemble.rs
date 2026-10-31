@@ -198,6 +198,7 @@ fn whole_card(
     };
     whole.layout = layout;
     whole.faces = faces;
+    crate::dk1c5_rooms::dk1c5_doors(&mut whole);
     whole
 }
 

@@ -66,6 +66,7 @@ mod monstrosity;
 mod move_counters;
 mod pair;
 // dk1b
+mod dk1c5_unlock;
 #[cfg(test)]
 mod move_attached;
 mod move_to;
@@ -179,6 +180,7 @@ fn dispatch(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::Amass { .. } => amass::run(cx, effect),
         Effect::Incubate { .. } => w7c_incubate::run(cx, effect),
         Effect::Venture { .. } => w11d_venture::run(cx, effect),
+        Effect::UnlockDoor { .. } => dk1c5_unlock::run(cx, effect),
         Effect::TakeInitiative { .. } => w15a_take_initiative::run(cx, effect),
         Effect::Monstrosity { .. } => monstrosity::run(cx, effect),
         Effect::Renown { .. } => c6_kw_renown::run(cx, effect),

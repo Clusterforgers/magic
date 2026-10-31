@@ -2440,6 +2440,7 @@ impl Writer<'_> {
                 let subject = self.player(who)?;
                 super::w6b_emblem::w6b_text(&subject, *who == Ref::You, abilities)?
             }
+            Effect::UnlockDoor { who } => super::dk1c5_rooms::dk1c5_unlock_text(who)?,
             Effect::Venture { who, undercity } => {
                 let into = if *undercity {
                     "Undercity"

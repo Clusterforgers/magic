@@ -73,6 +73,7 @@ mod damage;
 mod day_night;
 mod defining;
 mod dk1a_attached;
+mod dk1c5_rooms;
 mod dk1d_by_paying;
 mod draws;
 mod effects;
