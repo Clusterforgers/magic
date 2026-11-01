@@ -60,7 +60,11 @@ function readStops(): Stop[] {
   return raw.flatMap((item: unknown) => {
     if (typeof item !== 'object' || item === null) return []
     const { side, step } = item as Record<string, unknown>
-    if ((side !== 'Own' && side !== 'Opponent') || typeof step !== 'string' || !canHoldStop(step as Stop['step']))
+    if (
+      (side !== 'Own' && side !== 'Opponent') ||
+      typeof step !== 'string' ||
+      !canHoldStop(step as Stop['step'])
+    )
       return []
     return [{ side, step: step as Stop['step'], keep: true }]
   })
@@ -126,9 +130,11 @@ export function welcomeRequests(welcome: WelcomeFacts, prefs: FlowPrefs = flowPr
   const requests: ClientMessage[] = []
   const first = firstWelcome(welcome.game)
   if (first && welcome.stops.length === 0) {
-    for (const { side, step } of prefs.defaultStops) requests.push({ type: 'SetStop', side, step, on: true, keep: true })
+    for (const { side, step } of prefs.defaultStops)
+      requests.push({ type: 'SetStop', side, step, on: true, keep: true })
   }
-  if (prefs.endTurnByHand !== welcome.endTurnByHand) requests.push({ type: 'EndTurnByHand', on: prefs.endTurnByHand })
+  if (prefs.endTurnByHand !== welcome.endTurnByHand)
+    requests.push({ type: 'EndTurnByHand', on: prefs.endTurnByHand })
   return requests
 }
 

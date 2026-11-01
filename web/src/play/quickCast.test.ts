@@ -6,7 +6,13 @@ import { startSession } from '@/test-utils/harness'
 const CARD = 7
 
 function priority(id: number, castable: number[]) {
-  const options = { playable_lands: [], castable, mana_abilities: [], can_act: castable.length > 0, can_pass: true }
+  const options = {
+    playable_lands: [],
+    castable,
+    mana_abilities: [],
+    can_act: castable.length > 0,
+    can_pass: true,
+  }
   return { type: 'Decision', id, decision: { player: 0, kind: { Priority: options } } }
 }
 
@@ -53,7 +59,13 @@ describe('castWhenAsked', () => {
   })
 
   it.each([
-    ['NextWindow', [{ type: 'FullControl', mode: 'NextWindow' }, { type: 'FullControl', mode: 'Off' }]],
+    [
+      'NextWindow',
+      [
+        { type: 'FullControl', mode: 'NextWindow' },
+        { type: 'FullControl', mode: 'Off' },
+      ],
+    ],
     ['Held', [{ type: 'FullControl', mode: 'NextWindow' }]],
   ] as [FullControlMode, unknown[]][])('cancelling in mode %s sends %j', (mode, expected) => {
     const h = startSession()

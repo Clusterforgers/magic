@@ -501,7 +501,11 @@ export function createSession(deps: SessionDeps): Session {
       const { castWhenAsked: queued, fullControl } = getState()
       if (card === null) {
         // Give back only the window this asked for; a mode the player chose stays.
-        if (queued !== null && fullControl === 'NextWindow' && !socket.send({ type: 'FullControl', mode: 'Off' }))
+        if (
+          queued !== null &&
+          fullControl === 'NextWindow' &&
+          !socket.send({ type: 'FullControl', mode: 'Off' })
+        )
           return false
         setState({ castWhenAsked: null })
         return true

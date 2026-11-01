@@ -34,7 +34,9 @@ export function FlowMenuItems() {
       </DropdownMenuCheckboxItem>
       <DropdownMenuSeparator />
       <DropdownMenuGroup>
-        <DropdownMenuLabel data-slot="default-stops">{defaultStopsWords(prefs.defaultStops.length)}</DropdownMenuLabel>
+        <DropdownMenuLabel data-slot="default-stops">
+          {defaultStopsWords(prefs.defaultStops.length)}
+        </DropdownMenuLabel>
         <DropdownMenuItem
           data-slot="save-default-stops"
           disabled={pinned.length === 0}

@@ -40,7 +40,12 @@ describe('default stops', () => {
     expect(flowPrefs().defaultStops).toEqual([])
     window.localStorage.setItem(
       DEFAULT_STOPS_KEY,
-      JSON.stringify([{ side: 'Own', step: 'Cleanup' }, { side: 'Nobody', step: 'End' }, 7, pinned('Opponent', 'Draw')]),
+      JSON.stringify([
+        { side: 'Own', step: 'Cleanup' },
+        { side: 'Nobody', step: 'End' },
+        7,
+        pinned('Opponent', 'Draw'),
+      ]),
     )
     resetFlowPrefs()
     expect(flowPrefs().defaultStops).toEqual([pinned('Opponent', 'Draw')])
@@ -66,7 +71,8 @@ describe('welcome requests', () => {
   })
 
   it('remembers only the latest games', () => {
-    for (let n = 0; n <= APPLIED_LIMIT; n += 1) welcomeRequests({ game: `g${n}`, stops: [], endTurnByHand: false }, prefs)
+    for (let n = 0; n <= APPLIED_LIMIT; n += 1)
+      welcomeRequests({ game: `g${n}`, stops: [], endTurnByHand: false }, prefs)
     expect(welcomeRequests({ game: 'g0', stops: [], endTurnByHand: false }, prefs)).toEqual(setStops)
   })
 

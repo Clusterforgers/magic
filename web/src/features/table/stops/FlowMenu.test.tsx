@@ -19,15 +19,21 @@ beforeEach(() => {
 })
 
 describe('end my turn by hand', () => {
-  it.each([true, false])('held %s: checked as the server says and a click asks for the other', async (held) => {
-    const setEndTurnByHand = vi.fn((_on: boolean) => true)
-    const { user } = renderTable({ session: { setEndTurnByHand }, state: withState({ endTurnByHand: held }) })
-    await user.click(trigger())
-    const item = await screen.findByRole('menuitemcheckbox', { name: /End my turn by hand/ })
-    expect(item).toHaveAttribute('aria-checked', String(held))
-    await user.click(item)
-    expect(setEndTurnByHand).toHaveBeenCalledExactlyOnceWith(!held)
-  })
+  it.each([true, false])(
+    'held %s: checked as the server says and a click asks for the other',
+    async (held) => {
+      const setEndTurnByHand = vi.fn((_on: boolean) => true)
+      const { user } = renderTable({
+        session: { setEndTurnByHand },
+        state: withState({ endTurnByHand: held }),
+      })
+      await user.click(trigger())
+      const item = await screen.findByRole('menuitemcheckbox', { name: /End my turn by hand/ })
+      expect(item).toHaveAttribute('aria-checked', String(held))
+      await user.click(item)
+      expect(setEndTurnByHand).toHaveBeenCalledExactlyOnceWith(!held)
+    },
+  )
 })
 
 describe('default stops', () => {
