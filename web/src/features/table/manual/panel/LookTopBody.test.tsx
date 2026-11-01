@@ -5,6 +5,7 @@ import type { ManualAction } from '@/protocol/generated'
 import { buildFixture } from '../../dev/fixture'
 import { lookTopMoment } from '../../dev/lookTopScene'
 import { renderTable } from '@/test-utils/tableHarness'
+import { CardPreview } from '../../CardPreview'
 import { CommandsPanel } from './CommandsPanel'
 
 const WIDE = { width: 1600, height: 1000 }
@@ -16,7 +17,12 @@ function lookTable(looked = true) {
   const table = renderTable({
     fixture,
     options: { viewport: WIDE },
-    ui: <CommandsPanel />,
+    ui: (
+      <>
+        <CommandsPanel />
+        <CardPreview />
+      </>
+    ),
     session: { manual },
   })
   const view = fixture.view
@@ -55,6 +61,21 @@ describe('the look-at-the-top row with cards looked at', () => {
     expect(head?.querySelector('[data-control="up"]')).not.toBeNull()
     expect(head?.querySelector('[data-control="down"]')).not.toBeNull()
     expect(head?.querySelector('[data-control="top"]')).toBeNull()
+  })
+
+  it.each([0, 1, 2])('shows card %i of the look large at the side while it has focus', async (at) => {
+    const { user, panel, row, ids, nameOf } = lookTable()
+    await user.click(row)
+    const id = ids[at] ?? 0
+    await user.click(
+      within(within(panel).getByRole('listitem', { name: new RegExp(`^${nameOf(id)}, top`) })).getByRole(
+        'button',
+        { name: `Move ${nameOf(id)} down` },
+      ),
+    )
+    expect(within(screen.getByTestId('card-preview')).getAllByText(nameOf(id)).length).toBeGreaterThan(0)
+    await user.click(document.body)
+    expect(screen.queryByTestId('card-preview')).toBeNull()
   })
 
   it('sends one ArrangeTop of exactly the cards looked at as the seat arranged them', async () => {

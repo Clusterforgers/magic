@@ -51,7 +51,6 @@ Items that touch the running game come first; the play-session findings (pf) lea
 - [~] (pf2) (combat-multi) Attacking with several opponents offers the right defenders for every attacker (each opponent, their planeswalkers and battles), and an attacker can be clicked, then an opponent's seat or permanent, to attack it
 - [~] (pf3) (seat-look) A border separates the opponents' areas on the table, and a seat that left the game shrinks to a thin strip
 - [~] (pf4) (card-menu) The right-click menu of a card in a graveyard, exile or any edge zone stays inside the viewport
-- [~] (pf5) (play-ui) Look at the top shows the cards large enough to read, in the card-choice grid with the preview at the side
 - [~] (pf6) (reminders) Every keyword and mechanic has reminder text in the web (ninjutsu, discover, ward and the rest), shown on the card preview and on hover of a keyword, also for mechanics not in the game
 - [~] (pf7) (card-menu) The log shows events without a highlight that marks something as new
 - [~] (pf8) (seat-look) The mana a seat has is easy to read: untapped mana sources counted by colour next to the pool, for every seat
@@ -66,12 +65,9 @@ Items that touch the running game come first; the play-session findings (pf) lea
 - [ ] (pf17) Cards: It That Betrays puts the sacrificed permanents onto the battlefield under its controller's control
 - [ ] (pf18) Cards: Etali, Primal Storm lets its controller cast the nonland cards it exiles without paying their costs
 
-- [~] (v95a) (play-ui) Choosing a card for an effect: the card under the cursor or chosen is shown large at the side (the preview) so its text reads, and a choice among cards in a graveyard, exile, hand or on the battlefield shows the cards themselves, not only their names (`docs/web.md`, prompts)
 - [~] (v96a) (deck-ui) A precon deck can be marked as a favourite from the precon browser and the deck chooser, and then appears in the account's own deck list (stored per account; `docs/web.md`, `docs/server.md`)
-- [~] (v96b) (play-ui) The Reveal effect shows the revealed card clearly to every seat that may see it: large, with its picture, and named in the log with who revealed it (`docs/web.md`)
 - [~] (v96c) (deck-ui) The deck chooser can sort by the number of cards played by hand (fewest first) as well as by name, with the count on each row (`docs/web.md`)
 - [~] (v96d) (deck-ui) The deck chooser loads the picture of every visible deck when the list opens, not only after a click (`docs/web.md`)
-- [~] (v96e) (play-ui) Rolling a die looks good: an animated die that lands on the result, visible to every seat, with who rolled and the result in the log, and a still result when reduced motion is on (`docs/web.md`, `docs/ui-design.md`)
 - [ ] (ad1c) The Accounts page in the layout gate at the six sizes in both themes (a dev route that stands for it) and an e2e spec of the admin flow on the Postgres server: sign-in, make an account, the friend signs in, the closed sign-up page (`docs/web.md`)
 - [ ] (d1c) A copy of the nightly database dumps off queen (a Longhorn backup target or a scheduled copy to another machine), so losing queen does not lose the accounts and decks (`docs/deploy.md`)
 - [ ] (d1b) The release script's steps as a GitHub Actions workflow on a published release, so a release needs no dev machine (`docs/deploy.md`)

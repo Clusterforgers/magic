@@ -11,6 +11,8 @@ import type { Away } from '../lookText'
 import { usePrompt } from '../PromptContext'
 import { PromptCard } from '../PromptCard'
 import { PromptLayout } from '../PromptLayout'
+import { ChoiceAnchorContext } from '../choiceAnchor'
+import { useRestingPreview } from '../restingPreview'
 import { useObjects } from '../useCombatNames'
 import { useDefaultFocus, usePromptKeys } from '../usePromptKeys'
 
@@ -74,6 +76,9 @@ export function ScryCards({ options, kind }: { options: CardsOptions; kind: Away
   const first = useRef<HTMLButtonElement>(null)
   useDefaultFocus(first)
   const piles = useRef<HTMLDivElement>(null)
+  // The last card pressed (else the first) rests large at the side; the card under the pointer replaces it while hovered.
+  const [lastPressed, setLastPressed] = useState<ObjectId | null>(null)
+  const { restore } = useRestingPreview(lastPressed === null ? looked.slice(0, 1) : [lastPressed], piles)
   // A card that changes piles is a new element in the page, which drops focus; a press on the card brings it back.
   const refocus = useRef<ObjectId | null>(null)
   useEffect(() => {
@@ -85,6 +90,7 @@ export function ScryCards({ options, kind }: { options: CardsOptions; kind: Away
 
   const press = (id: ObjectId, keep = false): void => {
     refocus.current = keep ? null : id
+    setLastPressed(id)
     setAway((now) => {
       const next = new Set(now)
       if (!next.delete(id)) next.add(id)
@@ -140,18 +146,21 @@ export function ScryCards({ options, kind }: { options: CardsOptions; kind: Away
       >
         {lookPreview(split.top.map(nameOf), split.away.map(nameOf), kind)}
       </p>
-      <div
-        ref={piles}
-        data-slot="look-piles"
-        className="flex basis-full flex-wrap gap-2 overflow-y-auto max-h-[max(6rem,calc(var(--sheet-max,20rem)_-_10.5rem))]"
-      >
-        <Pile title={TOP_PILE} ids={split.top} slot="top">
-          {split.top.map(card)}
-        </Pile>
-        <Pile title={awayPile(kind)} ids={split.away} slot="away">
-          {split.away.map(card)}
-        </Pile>
-      </div>
+      <ChoiceAnchorContext value={piles}>
+        <div
+          ref={piles}
+          data-slot="look-piles"
+          onPointerOut={restore}
+          className="flex basis-full flex-wrap gap-2 overflow-y-auto max-h-[max(6rem,calc(var(--sheet-max,20rem)_-_10.5rem))]"
+        >
+          <Pile title={TOP_PILE} ids={split.top} slot="top">
+            {split.top.map(card)}
+          </Pile>
+          <Pile title={awayPile(kind)} ids={split.away} slot="away">
+            {split.away.map(card)}
+          </Pile>
+        </div>
+      </ChoiceAnchorContext>
     </PromptLayout>
   )
 }
