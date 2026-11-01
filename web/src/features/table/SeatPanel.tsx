@@ -15,6 +15,7 @@ import type { DefenderState } from './combat/defender'
 import { LifeForecast } from './combat/LifeForecast'
 import { LifeFx } from './fx/LifeFx'
 import { LiveManaPool } from './LiveManaPool'
+import { UntappedSources } from './UntappedSources'
 import { usePodRoom } from './podRoom'
 import { useSeatNamer } from './names'
 import { ACTIVE_EDGE, AwayMark, CountChip, PriorityDot, SeatDot, YOUR_TURN_EDGE } from './PodParts'
@@ -196,6 +197,7 @@ export const SeatPanel = memo(function SeatPanel({ seat, variant = 'panel' }: Se
             ) : null}
           </div>
         </div>
+        <UntappedSources seat={seat} />
         {words === '' ? null : <p className="sr-only">{words}</p>}
         <div data-slot="pod-status" className="flex flex-wrap items-center gap-x-2 gap-y-1 empty:hidden">
           {mana}
@@ -230,6 +232,7 @@ export const SeatPanel = memo(function SeatPanel({ seat, variant = 'panel' }: Se
             <div data-slot="mana-slot" className="min-h-5">
               {mana}
             </div>
+            <UntappedSources seat={seat} />
           </div>
           <div className="flex shrink-0 items-center gap-1.5">
             <LifeForecast seat={seat} />

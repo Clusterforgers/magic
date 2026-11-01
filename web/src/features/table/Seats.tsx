@@ -1,11 +1,17 @@
 import { memo, useMemo, useRef, useState } from 'react'
 import type { CSSProperties } from 'react'
+import { useShallow } from 'zustand/react/shallow'
+import { describeLoss } from '@/features/game/outcome'
+import { usePlay } from '@/features/game/gameContext'
 import { cn } from '@/lib/utils'
 import type { PlayerId } from '@/protocol/generated'
 import { Battlefield } from './Battlefield'
 import type { CardSize } from './cardSize'
 import { POD_COLUMN_PX } from './layout'
 import type { PodPlace, SeatPlan } from './layout'
+import { useSeatNamer } from './names'
+import { SeatDot } from './PodParts'
+import { playerOf } from './selectors'
 import { PodRoomContext } from './podRoom'
 import { SeatPanel } from './SeatPanel'
 import { SeatTile } from './SeatTile'
@@ -176,15 +182,56 @@ export function Opponents({ plan, size, pod, onFocusSeat }: OpponentsProps) {
       </div>
     )
   }
+  return <OpponentGrid plan={plan} size={size} />
+}
+
+/** The seat's result as a thin strip: its name and how it left the game. */
+function LeftStrip({ seat }: { seat: PlayerId }) {
+  const owner = useSeatNamer()(seat)
+  const lost = usePlay((state) => playerOf(state, seat)?.lost ?? null)
   return (
     <div
-      data-layout="grid"
-      data-columns={plan.columns}
-      className={cn('grid min-h-0 min-w-0 auto-rows-fr gap-2', COLUMNS[plan.columns])}
+      data-slot="left-strip"
+      data-seat-area={seat}
+      className="flex min-w-0 items-center gap-2 rounded-lg border-2 border-destructive/40 bg-muted/40 px-2 py-0.5 text-xs"
     >
-      {plan.boards.map((seat) => (
-        <SeatArea key={seat} seat={seat} size={size} facing="far" pod="line" />
+      <SeatDot seat={seat} />
+      <span className="truncate font-semibold">{owner}</span>
+      <span className="truncate text-destructive">{lost === null ? '' : describeLoss(lost)}</span>
+    </div>
+  )
+}
+
+/**
+ * The boards of several opponents, each in a bordered frame. A seat that left the game is a thin strip over the
+ * grid, so the seats still playing share its space.
+ */
+function OpponentGrid({ plan, size }: { plan: SeatPlan; size: CardSize }) {
+  const gone = usePlay(
+    useShallow((state) => plan.boards.filter((seat) => playerOf(state, seat)?.lost != null)),
+  )
+  const playing = plan.boards.filter((seat) => !gone.includes(seat))
+  const columns = Math.max(1, Math.min(plan.columns, playing.length)) as SeatPlan['columns']
+  return (
+    <div className="flex min-h-0 min-w-0 flex-col gap-2">
+      {gone.map((seat) => (
+        <LeftStrip key={seat} seat={seat} />
       ))}
+      <div
+        data-layout="grid"
+        data-columns={columns}
+        className={cn('grid min-h-0 min-w-0 flex-1 auto-rows-fr gap-2', COLUMNS[columns])}
+      >
+        {playing.map((seat) => (
+          <div
+            key={seat}
+            data-slot="seat-frame"
+            className="flex min-h-0 min-w-0 rounded-xl border-2 border-foreground/25 p-1"
+          >
+            <SeatArea seat={seat} size={size} facing="far" pod="line" />
+          </div>
+        ))}
+      </div>
     </div>
   )
 }

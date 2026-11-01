@@ -5,6 +5,7 @@ import { cn } from '@/lib/utils'
 import type { PlayerId } from '@/protocol/generated'
 import { LifeFx } from './fx/LifeFx'
 import { LiveManaPool } from './LiveManaPool'
+import { UntappedSources } from './UntappedSources'
 import { useSeatNamer } from './names'
 import { DamageChips, TaxChips, useCommanderChips } from './CommanderChips'
 import { useEnchantChips } from './enchantChips'
@@ -110,6 +111,7 @@ export const SeatTile = memo(function SeatTile({ seat, focused, onFocusSeat }: S
         <TaxChips chips={chips.tax} density="tile" />
         <EnchantChips chips={enchants} density="tile" />
         <LiveManaPool pool={player.mana} className="shrink-0 flex-nowrap text-xs" />
+        <UntappedSources seat={seat} className="shrink-0 flex-nowrap" />
         {eliminated ? (
           <b className="shrink-0 rounded bg-destructive/10 px-1 text-destructive">Eliminated</b>
         ) : null}

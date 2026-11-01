@@ -103,11 +103,8 @@ describe('the pods', () => {
   it('shows a seat lost to commander damage as such', () => {
     const fixture = must(DEV_TABLES['commander-return'])(FIXTURE)
     renderTable({ fixture, options: { viewport: { width: 1920, height: 1080 } } })
-    expect(pod(3)).toHaveTextContent('Eliminated: lost to commander damage')
-    expect(must(pod(3).querySelector('[data-slot="commander-damage"]'))).toHaveAttribute(
-      'data-level',
-      'lethal',
-    )
+    const strip = must(document.querySelector<HTMLElement>('[data-slot="left-strip"][data-seat-area="3"]'))
+    expect(strip).toHaveTextContent('lost to commander damage')
   })
 })
 
