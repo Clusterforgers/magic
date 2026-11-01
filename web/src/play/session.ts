@@ -321,7 +321,7 @@ export function createSession(deps: SessionDeps): Session {
       objectsById,
       seq: batch.from_seq + batch.events.length,
       byHand: owesByHand(state.byHand, batch.events, state.seat, state.objectsById, objectsById),
-      log: appendLog(state.log, batch.from_seq, batch.events, state.objectsById, objectsById),
+      log: appendLog(state.log, batch.from_seq, batch.events, state.objectsById, objectsById, batch.shown),
       logNames: rememberDeparted(state.logNames, state.objectsById, batch.gone),
       phase: state.result === null ? 'playing' : 'over',
       lobby: null,

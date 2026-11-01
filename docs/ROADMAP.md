@@ -48,7 +48,6 @@ One item is one piece of about 15 minutes and one line: the outcome, the cards i
 Items that touch the running game come first; the play-session findings (pf) lead, the web items before the engine and card items.
 
 - [~] (pf1) (commander-pair) Paired commanders work end to end: a deck with two partners (Partner, Partner with, Friends forever, Doctor's companion, a Background) imports, passes the deck check, starts with both in the command zone and casts each with its own tax
-- [~] (pf5) (play-ui) Look at the top shows the cards large enough to read, in the card-choice grid with the preview at the side
 - [~] (pf10) (flow-prefs) Pinned phase stops can be saved as the default, so a new game starts with them
 - [~] (pf11) (flow-prefs) A setting "End my turn by hand": with it on, the turn never passes to the next seat until the seat ends it
 - [~] (pf12) (flow-prefs) An instant or flash card in hand can be cast whenever its seat could get priority: clicking it during any step stops there instead of passing
@@ -58,9 +57,6 @@ Items that touch the running game come first; the play-session findings (pf) lea
 - [ ] (pf17) Cards: It That Betrays puts the sacrificed permanents onto the battlefield under its controller's control
 - [ ] (pf18) Cards: Etali, Primal Storm lets its controller cast the nonland cards it exiles without paying their costs
 
-- [~] (v95a) (play-ui) Choosing a card for an effect: the card under the cursor or chosen is shown large at the side (the preview) so its text reads, and a choice among cards in a graveyard, exile, hand or on the battlefield shows the cards themselves, not only their names (`docs/web.md`, prompts)
-- [~] (v96b) (play-ui) The Reveal effect shows the revealed card clearly to every seat that may see it: large, with its picture, and named in the log with who revealed it (`docs/web.md`)
-- [~] (v96e) (play-ui) Rolling a die looks good: an animated die that lands on the result, visible to every seat, with who rolled and the result in the log, and a still result when reduced motion is on (`docs/web.md`, `docs/ui-design.md`)
 - [ ] (ad1c) The Accounts page in the layout gate at the six sizes in both themes (a dev route that stands for it) and an e2e spec of the admin flow on the Postgres server: sign-in, make an account, the friend signs in, the closed sign-up page (`docs/web.md`)
 - [ ] (d1c) A copy of the nightly database dumps off queen (a Longhorn backup target or a scheduled copy to another machine), so losing queen does not lose the accounts and decks (`docs/deploy.md`)
 - [ ] (d1b) The release script's steps as a GitHub Actions workflow on a published release, so a release needs no dev machine (`docs/deploy.md`)

@@ -7,6 +7,11 @@ import { must } from '@/test-utils/batches'
 import { creaturesOf, fixtureOf, ownOf, renderDecision } from '@/test-utils/combatTable'
 import { possessive } from './targetText'
 
+/** What a screen reader calls a button: its label, else its text. */
+const nameOf = (button: HTMLElement): string => button.getAttribute('aria-label') ?? button.textContent ?? ''
+/** A button that cannot be pressed now: disabled, or a card whose choice is full. */
+const isClosed = (button: HTMLElement): boolean =>
+  button.matches(':disabled') || button.getAttribute('aria-disabled') === 'true'
 const objects = (ids: readonly ObjectId[]): Target[] => ids.map((id) => ({ Object: { id, counter: 0 } }))
 const players = (seats: number): Target[] => Array.from({ length: seats }, (_, seat) => ({ Player: seat }))
 
@@ -78,7 +83,25 @@ function mount(
   }
   const table = renderDecision({ ChooseTargets: options }, { seats: spec.seats })
   const group = (): HTMLElement => screen.getByRole('group', { name: 'Legal targets' })
-  const listed = (): HTMLElement[] => within(group()).getAllByRole('button')
+  /** The buttons of the legal targets in the order the engine gave them, each once: a player is a button, an object its card. */
+  const listed = (): HTMLElement[] => {
+    const buttons = within(group()).getAllByRole('button')
+    const players = buttons.filter((button) => !button.hasAttribute('data-candidate'))
+    const cards = new Map(
+      buttons
+        .filter((button) => button.hasAttribute('data-candidate'))
+        .map((button) => [Number(button.getAttribute('data-candidate')), button] as const),
+    )
+    const seen = new Set<string>()
+    let next = 0
+    return options.legal.flatMap((target) => {
+      const key = JSON.stringify(target)
+      if (seen.has(key)) return []
+      seen.add(key)
+      const button = 'Object' in target ? cards.get(target.Object.id) : players[next++]
+      return button === undefined ? [] : [button]
+    })
+  }
   const chosenList = (): HTMLElement | null => screen.queryByRole('list', { name: 'Your targets' })
   const chosen = (): HTMLElement[] => {
     const list = chosenList()
@@ -150,7 +173,7 @@ describe('choosing', () => {
       for (let i = 0; i < spec.max; i += 1) await choose(i)
       const rest = options.legal.slice(spec.max)
       for (const [offset, target] of rest.entries()) {
-        expect(listed()[spec.max + offset]).toBeDisabled()
+        expect(isClosed(must(listed()[spec.max + offset]))).toBe(true)
         if ('Object' in target && hasCard(target.Object.id)) {
           expect(marks().get(target.Object.id)).not.toBe('legal')
         }
@@ -162,7 +185,7 @@ describe('choosing', () => {
       }
       await user.click(must(listed()[0]))
       expect(listed()[0]).toHaveAttribute('aria-pressed', 'false')
-      for (let i = spec.max; i < listed().length; i += 1) expect(listed()[i]).toBeEnabled()
+      for (let i = spec.max; i < listed().length; i += 1) expect(isClosed(must(listed()[i]))).toBe(false)
     },
   )
 
@@ -283,7 +306,7 @@ describe('what a button says of its target', () => {
       max: 1,
     })
     const object = must(fixture.view.objects.find((o) => o.id === creature))
-    expect(listed().map((b) => b.textContent)).toEqual([
+    expect(listed().map(nameOf)).toEqual([
       'Alice (you)',
       'Cy',
       `${object.name} ${object.power}/${object.toughness} (Bo)`,
@@ -304,7 +327,7 @@ describe('what a button says of its target', () => {
       max: 1,
     })
     const stats = (o: ObjectView): string => (o.power === null ? '' : ` ${o.power}/${o.toughness}`)
-    expect(listed().map((b) => b.textContent)).toEqual([
+    expect(listed().map(nameOf)).toEqual([
       `${spell.name}${stats(spell)} (on the stack, Bo)`,
       `${card.name}${stats(card)} (in Bo's graveyard)`,
       `${exiled.name}${stats(exiled)} (in exile)`,
@@ -324,7 +347,7 @@ describe('what a button says of its target', () => {
     }
     const [name, ids] = must([...byName].find(([, list]) => list.length >= 3))
     const { listed } = mount({ seats: 2, legal: objects(ids.slice(0, 3)), min: 1, max: 1 })
-    const [first, second, third] = listed().map((b) => b.textContent ?? '')
+    const [first, second, third] = listed().map(nameOf)
     expect(first).toMatch(new RegExp(`^${name} 1`))
     expect(second).toMatch(new RegExp(`^${name} 2`))
     expect(third).toMatch(new RegExp(`^${name} 3`))

@@ -6,14 +6,23 @@ import type { ObjectId } from '@/protocol/generated'
 import { HIGHLIGHT } from '../cardSize'
 import { CardFace } from '../CardFace'
 import { usePreviewHandlers } from '../usePreviewHandlers'
+import { useChoiceAnchor } from './choiceAnchor'
 
 /** How a card of a prompt is drawn: whole (cost and type line, from 76 px wide) or compact (name and power only). */
 export type PromptCardSize = 'normal' | 'compact'
 
 /** The box of each size, 5:7 like a card; whole class names, so Tailwind can see them. */
-const BOX: Record<PromptCardSize, string> = {
+export const PROMPT_CARD_BOX: Record<PromptCardSize, string> = {
   normal: '[--card-w:4.75rem] [--card-h:6.65rem]',
   compact: '[--card-w:3.75rem] [--card-h:5.25rem]',
+}
+
+/** Up to this many cards on offer are drawn whole; a longer list is compact, so a row holds more cards. */
+export const NORMAL_UP_TO = 12
+
+/** The size for a list of `count` cards. */
+export function tileSizeFor(count: number): PromptCardSize {
+  return count <= NORMAL_UP_TO ? 'normal' : 'compact'
 }
 
 /** Props of `PromptCard`. */
@@ -52,9 +61,13 @@ export function PromptCard({
   ref,
 }: PromptCardProps) {
   const object = usePlay((state) => state.objectsById[id])
-  const handlers = usePreviewHandlers(id, () => {
-    if (!closed) onPress(id)
-  })
+  const handlers = usePreviewHandlers(
+    id,
+    () => {
+      if (!closed) onPress(id)
+    },
+    useChoiceAnchor(),
+  )
   return (
     <button
       ref={ref}
@@ -70,7 +83,7 @@ export function PromptCard({
       {...handlers}
       className={cn(
         'relative grid h-(--card-h) w-(--card-w) shrink-0 place-items-center rounded-md outline-offset-2 outline-primary focus-visible:outline-2',
-        BOX[size],
+        PROMPT_CARD_BOX[size],
         chosen
           ? HIGHLIGHT.selected
           : closed

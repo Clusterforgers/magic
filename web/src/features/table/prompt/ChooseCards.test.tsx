@@ -317,8 +317,13 @@ describe('a long list', () => {
     expect(chosen()).toEqual([first])
   })
 
-  it('draws a long list with the compact face and a short one with the whole face', () => {
-    expect(mount(long, 0, 3).card(0)).toHaveAttribute('data-size', 'compact')
+  it.each([
+    [3, 'normal'],
+    [12, 'normal'],
+    [13, 'compact'],
+    [20, 'compact'],
+  ])('draws %i cards on offer as %s tiles', (count, size) => {
+    expect(mount(permanents.slice(0, count), 0, 3).card(0)).toHaveAttribute('data-size', size)
   })
 })
 

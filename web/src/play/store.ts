@@ -18,7 +18,7 @@ import type {
 } from '@/protocol/generated'
 import type { AwayTimes } from './awayClocks'
 import { hostsBefore } from './hosts'
-import { namesToRemember } from './rememberNames'
+import { namesToRemember, revealedViews } from './rememberNames'
 import type { HostRef } from './hosts'
 import type { PreviewState } from './preview'
 
@@ -70,6 +70,8 @@ export interface LogEntry {
   hostBefore?: HostRef | null
   /** The names of the cards the entry tells that the view no longer holds once they moved (a look, a put-back, a reveal). */
   names?: Readonly<Record<ObjectId, string>>
+  /** For a reveal: the cards as every seat saw them when shown, which the view may hold no longer (`EventBatch.shown`). */
+  seen?: readonly ObjectView[]
 }
 
 /** One line of table chat. */
@@ -196,17 +198,20 @@ export function appendLog(
   events: readonly EventView[],
   before?: Readonly<Record<ObjectId, ObjectView>>,
   after?: Readonly<Record<ObjectId, ObjectView>>,
+  shown?: readonly ObjectView[],
 ): readonly LogEntry[] {
   if (events.length === 0) return log
   const hosts = before === undefined ? [] : hostsBefore(events, before)
   const added = events.map((event, index): LogEntry => {
     const hostBefore = hosts[index]
     const names = namesToRemember(event, before, after)
+    const seen = revealedViews(event, before, after, shown)
     return {
       seq: fromSeq + index,
       event,
       ...(hostBefore === undefined ? {} : { hostBefore }),
       ...(names === undefined ? {} : { names }),
+      ...(seen === undefined ? {} : { seen }),
     }
   })
   return [...log, ...added].slice(-LOG_LIMIT)

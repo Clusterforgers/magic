@@ -6,6 +6,7 @@ import { markCards, useCardMarks } from './marks'
 import { useOwnCardIds } from './ownCards'
 import { usePrompt } from './PromptContext'
 import { PromptLayout } from './PromptLayout'
+import { useRestingPreview } from './restingPreview'
 
 /** Props of `CountedChoice`. */
 export interface CountedChoiceProps {
@@ -56,6 +57,8 @@ export function CountedChoice({ offered, count, what, intro, answerWith }: Count
     selection.set(latest.current)
   }
   useCardMarks(marks, choose, { toggles: true })
+  // The cards are the hand's, already on the screen: the last one chosen rests large at the side.
+  useRestingPreview(chosen)
 
   const ready = chosen.length === need
   const confirm = (): void => {

@@ -1,13 +1,8 @@
 import { cn } from '@/lib/utils'
 import type { ObjectView } from '@/protocol/generated'
 import { CardFace } from '../CardFace'
+import { PROMPT_CARD_BOX } from './PromptCard'
 import type { PromptCardSize } from './PromptCard'
-
-/** The box of each size, 5:7 like a card; whole class names, so Tailwind can see them. */
-const BOX: Record<PromptCardSize, string> = {
-  normal: '[--card-w:4.75rem] [--card-h:6.65rem]',
-  compact: '[--card-w:3.75rem] [--card-h:5.25rem]',
-}
 
 /**
  * A card of a prompt drawn as a picture and nothing to press: the card face from the view, or a face-down stand-in
@@ -28,7 +23,7 @@ export function PromptPicture({
       data-slot="prompt-picture"
       className={cn(
         'relative grid h-(--card-h) w-(--card-w) shrink-0 place-items-center',
-        BOX[size],
+        PROMPT_CARD_BOX[size],
         className,
       )}
     >

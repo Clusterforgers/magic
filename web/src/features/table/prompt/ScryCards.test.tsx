@@ -186,3 +186,15 @@ describe('what is not a split', () => {
     expect(root.querySelector('[data-slot="look-piles"]')).toBeNull()
   })
 })
+
+describe('the preview of the cards looked at', () => {
+  it.each([1, 3, 5])('rests on the card last pressed among %i cards, else the first', async (count) => {
+    const cards = library.slice(0, count)
+    const { card, user } = mount(cards)
+    const shown = (): string | undefined => screen.queryByTestId('card-preview')?.textContent ?? undefined
+    expect(shown()).toContain(nameOf(cards[0] ?? 0))
+    const last = cards.at(-1) ?? 0
+    await user.click(card(last))
+    expect(shown()).toContain(nameOf(last))
+  })
+})
