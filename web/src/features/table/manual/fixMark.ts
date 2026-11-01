@@ -1,5 +1,6 @@
 /** The card menu's entry that marks a card as broken, to be played by hand: a fix mark made from the table. */
 import type { ManualGroup } from './offers'
+import { BY_HAND } from '@/lib/byHand'
 
 /** The key of the entry. */
 export const FIX_MARK_KEY = 'fix-mark'
@@ -24,6 +25,6 @@ export function fixMarkGroup(marked: boolean, loading = false): ManualGroup {
 /** What the menu tells after a press: the mark that now stands and what it means for the card. */
 export function fixMarkWords(name: string, marked: boolean): string {
   return marked
-    ? `${name} is marked as broken. It is flagged to be played by hand until the card is fixed.`
+    ? `${name} is marked as broken. It is flagged to be ${BY_HAND} until the card is fixed.`
     : `The broken mark on ${name} is removed.`
 }
