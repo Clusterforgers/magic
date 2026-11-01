@@ -619,28 +619,8 @@ pub(crate) fn events(
         ManualAction::CreateToken { token, count } => create_tokens(state, player, token, *count)?,
         ManualAction::Tap { object } => tap(state, *object, true)?,
         ManualAction::Untap { object } => tap(state, *object, false)?,
-        ManualAction::Draw { count } => {
-            if !(1..=MAX_CARDS).contains(count) {
-                return Err(ManualRefusal::OutOfRange("the number of cards"));
-            }
-            if cant_draw(state, player) {
-                return Err(ManualRefusal::Forbidden("drawing"));
-            }
-            draw(state, player, usize::try_from(*count).unwrap_or(0))
-        }
-        ManualAction::Discard { object } => {
-            let card = own(state, player, *object)?;
-            if card.zone() != Zone::Hand(player) {
-                return Err(ManualRefusal::WrongZone {
-                    object: *object,
-                    zone: card.zone(),
-                });
-            }
-            vec![Event::CardDiscarded {
-                player,
-                object: *object,
-            }]
-        }
+        ManualAction::Draw { count } => draws(state, player, *count)?,
+        ManualAction::Discard { object } => discard(state, player, *object)?,
         ManualAction::Attach { object, to } => attach(state, player, *object, *to)?,
         ManualAction::Unattach { object } => {
             let attachment = attachment(state, player, *object)?;
@@ -674,17 +654,11 @@ pub(crate) fn events(
             crate::manual_show::note(state, player, *object, text)?
         }
         ManualAction::Roll { kind } => crate::manual_roll::roll(state, player, *kind)?,
-        ManualAction::Search {} => crate::manual_library::search(state, player)?,
-        ManualAction::Tutor { object } => crate::manual_library::tutor(state, player, *object)?,
-        ManualAction::RemoveSickness { object } => {
-            crate::manual_control::remove_sickness(state, player, *object)?
-        }
-        ManualAction::Sacrifice { object } => {
-            crate::manual_control::sacrifice(state, player, *object)?
-        }
-        ManualAction::GiveControl { object, to } => {
-            crate::manual_control::give_control(state, player, *object, *to)?
-        }
+        ManualAction::Search {}
+        | ManualAction::Tutor { .. }
+        | ManualAction::RemoveSickness { .. }
+        | ManualAction::Sacrifice { .. }
+        | ManualAction::GiveControl { .. } => crate::manual_control::events(state, player, action)?,
     };
     let mut events = Vec::with_capacity(changes.len() + 1);
     events.push(Event::ManualAction {
@@ -693,6 +667,29 @@ pub(crate) fn events(
     });
     events.extend(changes);
     Ok(events)
+}
+
+/// The seat draws `count` cards, 1 to 10, unless a rule keeps it from drawing.
+fn draws(state: &GameState, player: PlayerId, count: u32) -> Result<Vec<Event>, ManualRefusal> {
+    if !(1..=MAX_CARDS).contains(&count) {
+        return Err(ManualRefusal::OutOfRange("the number of cards"));
+    }
+    if cant_draw(state, player) {
+        return Err(ManualRefusal::Forbidden("drawing"));
+    }
+    Ok(draw(state, player, usize::try_from(count).unwrap_or(0)))
+}
+
+/// The seat discards `id`, a card of its hand.
+fn discard(state: &GameState, player: PlayerId, id: ObjectId) -> Result<Vec<Event>, ManualRefusal> {
+    let card = own(state, player, id)?;
+    if card.zone() != Zone::Hand(player) {
+        return Err(ManualRefusal::WrongZone {
+            object: id,
+            zone: card.zone(),
+        });
+    }
+    Ok(vec![Event::CardDiscarded { player, object: id }])
 }
 
 /// Taps (`tap`) or untaps the permanent `id`, which must be untapped or tapped now.

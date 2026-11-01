@@ -67,8 +67,15 @@ fn id(driver: &Driver, name: &str) -> ObjectId {
 /// Takes the action as seat 0, settles the stack and checks that a rebuilt engine reaches the same state.
 fn take(driver: &mut Driver, action: ManualAction) {
     driver.manual(action).unwrap();
-    while !driver.state().zone(Zone::Stack).is_empty() {
-        driver.pass().unwrap();
+    loop {
+        if let Ok(options) = driver.trigger_options() {
+            let order: Vec<usize> = (0..options.triggers.len()).collect();
+            driver.order_triggers(&order).unwrap();
+        } else if driver.state().zone(Zone::Stack).is_empty() {
+            break;
+        } else {
+            driver.pass().unwrap();
+        }
     }
     let rebuilt = Engine::resume(
         driver.engine().setup().clone(),
@@ -141,9 +148,9 @@ fn a_card_looked_at_is_put_into_the_hand_and_the_library_shuffled(
     take(&mut driver, look);
     let card = id(&driver, name);
     take(&mut driver, ManualAction::Tutor { object: card });
-    assert_eq!(hand(&driver), ["Held", name]);
+    assert_eq!(hand(&driver), [name, "Held"]);
     assert_eq!(driver.state().zone(Zone::Library(pid(0))).len(), 3);
-    assert!(known_top(driver.state(), pid(0)).is_empty());
+    assert_eq!(known_top(driver.state(), pid(0)), Vec::<ObjectId>::new());
 }
 
 #[test]
@@ -171,7 +178,13 @@ fn a_search_shows_the_whole_library_to_the_seat_alone() {
 #[test]
 fn an_empty_library_is_not_searched() {
     let mut driver = Driver::from_scenario(Scenario::new(2).library(0, [forest()])).unwrap();
-    take(&mut driver, ManualAction::MoveTop { count: 1, to: ManualZone::Hand });
+    take(
+        &mut driver,
+        ManualAction::MoveTop {
+            count: 1,
+            to: ManualZone::Hand,
+        },
+    );
     assert_eq!(
         refusal(&mut driver, ManualAction::Search {}),
         ManualRefusal::NotEnough("cards in the library")
@@ -211,37 +224,28 @@ fn a_sacrifice_triggers_what_watches_dying_and_sacrifices(#[case] name: &str, #[
 }
 
 #[rstest]
-#[case::a_permanent_on_the_battlefield(None)]
-#[case::a_card_from_the_graveyard(Some(None))]
-#[case::a_card_from_exile(Some(Some(ManualZone::Exile)))]
-fn another_seat_gains_control_and_the_owner_stays(#[case] from: Option<Option<ManualZone>>) {
+#[case::a_permanent_on_the_battlefield("Fresh", None)]
+#[case::a_card_from_the_graveyard("Dead", None)]
+#[case::a_card_from_exile("Dead", Some(ManualZone::Exile))]
+fn another_seat_gains_control_and_the_owner_stays(
+    #[case] name: &str,
+    #[case] first: Option<ManualZone>,
+) {
     let mut driver = game();
-    let object = match from {
-        None => id(&driver, "Fresh"),
-        Some(first) => {
-            let dead = id(&driver, "Dead");
-            if let Some(to) = first {
-                take(&mut driver, ManualAction::Move { object: dead, to });
-            }
-            dead
-        }
-    };
+    let object = id(&driver, name);
+    if let Some(to) = first {
+        take(&mut driver, ManualAction::Move { object, to });
+    }
     take(
         &mut driver,
-        ManualAction::GiveControl {
-            object,
-            to: pid(1),
-        },
+        ManualAction::GiveControl { object, to: pid(1) },
     );
     let held = driver.state().object(object).unwrap();
     assert_eq!(held.zone(), Zone::Battlefield);
     assert_eq!(held.owner(), pid(0));
     assert_eq!(controller_of(driver.state(), object), Some(pid(1)));
     assert_eq!(
-        refusal(
-            &mut driver,
-            ManualAction::Sacrifice { object }
-        ),
+        refusal(&mut driver, ManualAction::Sacrifice { object }),
         ManualRefusal::NotYours
     );
 }

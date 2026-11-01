@@ -90,7 +90,7 @@ fn a_search_is_the_seats_alone(#[values(2, 3, 4)] seat_count: usize) {
     let own = StateView::for_player(table.driver.state(), PlayerId(0));
     assert_eq!(own.table.players[0].known_top.len(), 4);
     let spectator = StateView::for_spectator(table.driver.state());
-    assert!(spectator.table.players[0].known_top.is_empty());
+    assert_eq!(spectator.table.players[0].known_top, Vec::<ObjectId>::new());
     assert!(!names(&serde_json::to_value(&spectator).unwrap(), WANTED));
 }
 
@@ -118,16 +118,18 @@ fn a_tutored_card_is_withheld_from_the_others(#[values(2, 3, 4)] seat_count: usi
             other => panic!("the first event is the action, not {other:?}"),
         }
         assert!(
-            batch
-                .events
-                .iter()
-                .any(|event| matches!(event, EventView::Hidden(HiddenEvent::LibraryShuffled { .. }))
-                    || matches!(event, EventView::Public(Event::LibraryShuffled { .. }))),
+            batch.events.iter().any(|event| matches!(
+                event,
+                EventView::Hidden(HiddenEvent::LibraryShuffled { .. })
+            ) || matches!(
+                event,
+                EventView::Public(Event::LibraryShuffled { .. })
+            )),
             "{viewer:?} is told of the shuffle"
         );
     }
     let own = StateView::for_player(table.driver.state(), PlayerId(0));
-    assert!(own.table.players[0].known_top.is_empty());
+    assert_eq!(own.table.players[0].known_top, Vec::<ObjectId>::new());
     let spectator = StateView::for_spectator(table.driver.state());
     let shown = serde_json::to_value(&spectator).unwrap();
     assert!(!names(&shown, WANTED) && !names(&shown, OTHER));

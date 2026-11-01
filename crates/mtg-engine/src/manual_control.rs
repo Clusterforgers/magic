@@ -16,6 +16,23 @@ use crate::saga;
 use crate::state::GameState;
 use crate::zones::Zone;
 
+/// The events of a library search, a tutor, a summoning sickness removed, a sacrifice or a control given; nothing for
+/// any other action.
+pub(crate) fn events(
+    state: &GameState,
+    player: PlayerId,
+    action: &ManualAction,
+) -> Result<Vec<Event>, ManualRefusal> {
+    match action {
+        ManualAction::Search {} => crate::manual_library::search(state, player),
+        ManualAction::Tutor { object } => crate::manual_library::tutor(state, player, *object),
+        ManualAction::RemoveSickness { object } => remove_sickness(state, player, *object),
+        ManualAction::Sacrifice { object } => sacrifice(state, player, *object),
+        ManualAction::GiveControl { object, to } => give_control(state, player, *object, *to),
+        _ => Ok(Vec::new()),
+    }
+}
+
 /// The permanent `id` when the seat controls it.
 fn controlled(
     state: &GameState,
@@ -41,7 +58,7 @@ fn controlled(
 
 /// A permanent the seat controls that summoning sickness holds back stops being sick; the change is the action itself,
 /// folded by [`apply`].
-pub(crate) fn remove_sickness(
+fn remove_sickness(
     state: &GameState,
     player: PlayerId,
     id: ObjectId,
@@ -55,7 +72,7 @@ pub(crate) fn remove_sickness(
 
 /// The seat sacrifices a permanent it controls: it goes to its owner's graveyard as a sacrifice (CR 701.21), so what
 /// triggers on dying or on a sacrifice sees it.
-pub(crate) fn sacrifice(
+fn sacrifice(
     state: &GameState,
     player: PlayerId,
     id: ObjectId,
@@ -71,7 +88,7 @@ pub(crate) fn sacrifice(
 
 /// Seat `to` gains control of a permanent the seat controls, by an effect without end in the control layer, or a card
 /// the seat owns in its graveyard or in exile enters the battlefield under the control of `to`.
-pub(crate) fn give_control(
+fn give_control(
     state: &GameState,
     player: PlayerId,
     id: ObjectId,

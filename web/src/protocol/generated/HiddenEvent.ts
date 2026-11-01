@@ -181,4 +181,8 @@ bottom: number,
 /**
  * Cards put into the graveyard.
  */
-graveyard: number, } };
+graveyard: number, } } | { "ManualTutor": { 
+/**
+ * Who took it.
+ */
+player: PlayerId, } };

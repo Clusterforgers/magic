@@ -162,4 +162,24 @@ text: string, } } | { "Roll": {
 /**
  * A coin or a die.
  */
-kind: ManualRoll, } };
+kind: ManualRoll, } } | { "Search": Record<symbol, never> } | { "Tutor": { 
+/**
+ * The card.
+ */
+object: ObjectId, } } | { "RemoveSickness": { 
+/**
+ * The permanent.
+ */
+object: ObjectId, } } | { "Sacrifice": { 
+/**
+ * The permanent.
+ */
+object: ObjectId, } } | { "GiveControl": { 
+/**
+ * The permanent or card.
+ */
+object: ObjectId, 
+/**
+ * The seat that gains control.
+ */
+to: PlayerId, } };
