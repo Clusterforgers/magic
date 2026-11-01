@@ -8,6 +8,7 @@
 
 mod cards;
 mod decks;
+mod favourites;
 mod fix_marks;
 mod lobbies;
 mod precons;
@@ -25,10 +26,12 @@ pub use cards::{
 };
 pub use decks::{
     CardSuggestion, CheckRequest, DeckBody, DeckErrorCode, DeckLineBody, DeckLineView, DeckList,
-    DeckListItem, DeckView, IgnoredCards, ImportRequest, ImportResult, ImportSource, ListProblem,
-    MAX_DECK_CARDS, MAX_DECK_LINES, MAX_DECK_NAME_CHARS, MAX_DECK_NOTES_CHARS, MAX_DECKS_PER_USER,
-    MAX_IMPORT_CHARS, MAX_IMPORT_LINES, TableRules, UnresolvedLine, UnresolvedReason,
+    DeckListItem, DeckPicture, DeckView, IgnoredCards, ImportRequest, ImportResult, ImportSource,
+    ListProblem, MAX_DECK_CARDS, MAX_DECK_LINES, MAX_DECK_NAME_CHARS, MAX_DECK_NOTES_CHARS,
+    MAX_DECK_PICTURES, MAX_DECKS_PER_USER, MAX_IMPORT_CHARS, MAX_IMPORT_LINES, TableRules,
+    UnresolvedLine, UnresolvedReason,
 };
+pub use favourites::FavouritePrecons;
 pub use fix_marks::{FixMarkBody, FixMarkList, FixMarkView, MAX_FIX_NOTE_CHARS};
 pub use lobbies::{
     ChooseDeck, DeckBlockedBody, DeckChoiceErrorCode, GameInfo, GameSeat, JoinCodeRequest,

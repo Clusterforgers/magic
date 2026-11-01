@@ -7,6 +7,7 @@ use serde::{Deserialize, Serialize};
 use ts_rs::TS;
 
 use super::cards::CardHit;
+use super::decks::DeckPicture;
 
 /// The prefix that names a precon where a request names a deck: `precon:<code>` in the `deck` of a
 /// seat, a join or the creation of a game.
@@ -29,6 +30,9 @@ pub struct PreconListItem {
     pub release_date: Option<String>,
     /// The names of the cards in the command zone.
     pub commanders: Vec<String>,
+    /// The cards whose pictures stand for the deck in a list: its commanders (at most `MAX_DECK_PICTURES`), else
+    /// its first card; empty where the deck's cards are not in the card database.
+    pub pictures: Vec<DeckPicture>,
     /// Copies in the commander and main boards: the cards a game plays.
     pub card_count: u32,
     /// The format the deck check judged it in: `commander` for a deck with a commander, else

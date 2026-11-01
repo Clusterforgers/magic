@@ -60,10 +60,7 @@ Items that touch the running game come first; the play-session findings (pf) lea
 - [ ] (pf18) Cards: Etali, Primal Storm lets its controller cast the nonland cards it exiles without paying their costs
 
 - [~] (v95a) (play-ui) Choosing a card for an effect: the card under the cursor or chosen is shown large at the side (the preview) so its text reads, and a choice among cards in a graveyard, exile, hand or on the battlefield shows the cards themselves, not only their names (`docs/web.md`, prompts)
-- [~] (v96a) (deck-ui) A precon deck can be marked as a favourite from the precon browser and the deck chooser, and then appears in the account's own deck list (stored per account; `docs/web.md`, `docs/server.md`)
 - [~] (v96b) (play-ui) The Reveal effect shows the revealed card clearly to every seat that may see it: large, with its picture, and named in the log with who revealed it (`docs/web.md`)
-- [~] (v96c) (deck-ui) The deck chooser can sort by the number of cards played by hand (fewest first) as well as by name, with the count on each row (`docs/web.md`)
-- [~] (v96d) (deck-ui) The deck chooser loads the picture of every visible deck when the list opens, not only after a click (`docs/web.md`)
 - [~] (v96e) (play-ui) Rolling a die looks good: an animated die that lands on the result, visible to every seat, with who rolled and the result in the log, and a still result when reduced motion is on (`docs/web.md`, `docs/ui-design.md`)
 - [ ] (ad1c) The Accounts page in the layout gate at the six sizes in both themes (a dev route that stands for it) and an e2e spec of the admin flow on the Postgres server: sign-in, make an account, the friend signs in, the closed sign-up page (`docs/web.md`)
 - [ ] (d1c) A copy of the nightly database dumps off queen (a Longhorn backup target or a scheduled copy to another machine), so losing queen does not lose the accounts and decks (`docs/deploy.md`)

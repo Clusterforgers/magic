@@ -271,6 +271,19 @@ Blank values are no filter; an unknown parameter or a malformed value is 400 `in
 - A seat plays a precon by `deck: "precon:<code>"` in a create, a join or `PUT .../deck` ([Choosing a deck](#choosing-a-deck)), with the same snapshot, fingerprint and recipe as a stored deck: the library is the main board in deck order, the commanders are the commander board, and the table is told the precon's name, its format key and the manual copies of both boards. The refusals are those of any deck: 422 `deck_blocked` with the issues for a deck that is not `playable`, or that the game's format does not take (a Commander precon in a Normal game: `no_commander_zone`; a Normal precon in a Commander game: `commander_count`), 404 `unknown_deck` (400 at creation) for a code nobody has. One-click play is a create with the precon as seat 0's `deck`: one request, one lobby.
 - `POST /api/decks/check` with `deck: "precon:<code>"` needs no session and answers the precon's `DeckReport` in its own format, the one the list summarises. With a `game` or a `table` the report is the verdict at that table: the deck rules the table relaxed lift their issues and the engine's check of the table's format (`judge_cards_at_table`) judges what is left, so the verdict equals what a seat that chooses the precon there is told. An unknown and a malformed code are one 404 `not_found`, a `format` or `cards` beside the precon is 400 `invalid_request`, and a bad `game` or `table` is refused as for any deck. The request counts against the address's precon budget, an account's too (429 `rate_limited`); without a database the answer is 503 `cards_unavailable`. Any other body needs a session and without one is 401, a malformed body included.
 
+### Favourite precons
+
+`favourites.rs`. Every route needs an account (401 `unauthenticated`; 503 `cards_unavailable` without a database). A favourite is a pointer to the precon, never a copy, so it follows the precon's cards and check.
+
+| Endpoint | Behaviour |
+|---|---|
+| `GET /api/favourites/precons` | `FavouritePrecons {codes}`: the account's starred codes, newest star first. |
+| `PUT /api/favourites/precons/{code}` | Stars the precon; 204, also when it was starred already. An unknown and a malformed code are one 404 `not_found`. |
+| `DELETE /api/favourites/precons/{code}` | Takes the star back; 204, also when there was none. |
+
+- Stars and unstars count per account (`AttemptLimits::favourite_writes_per_user`); over it the answer is 429 `rate_limited`.
+- `PreconListItem.pictures` and `DeckListItem.pictures` (`DeckPicture`) name the cards that stand for a deck in a list: its commanders, else its first card.
+
 ### Fix marks
 
 `fix_marks.rs` and `mtg-db`'s `FixMarkRepo` (`card_fix_marks`). A player marks a card the game does not run whole, or any card that misbehaves, as important to fix; the owner reads the marks ranked. Every route needs a signed-in account: 503 `cards_unavailable` without a database, then 401 `unauthenticated`. Bodies are `application/json` of at most 4 KiB.

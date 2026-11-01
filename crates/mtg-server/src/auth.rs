@@ -18,7 +18,7 @@ use axum::extract::{ConnectInfo, Request, State};
 use axum::http::header::{RETRY_AFTER, SET_COOKIE};
 use axum::http::{HeaderMap, HeaderValue, StatusCode};
 use axum::response::{IntoResponse, Response};
-use mtg_protocol::rest::{AuthErrorCode, Credentials, UserView};
+use mtg_protocol::rest::{AuthErrorCode, Credentials, DeckErrorCode, UserView};
 use sqlx::PgPool;
 use tokio::sync::watch;
 use tokio::task::JoinHandle;
@@ -32,6 +32,7 @@ use crate::passwords::Passwords;
 use crate::secret::{SessionToken, TokenDigest};
 use crate::server::AppState;
 use crate::throttle::{Blocked, Throttle};
+use crate::user_id::UserId;
 
 mod admin;
 mod settings;
@@ -81,6 +82,22 @@ impl Auth {
                 }
             }
         }))
+    }
+
+    /// Counts a star or an unstar of a precon by `user` against `AttemptLimits::favourite_writes_per_user`, or
+    /// says to wait with 429 `rate_limited` and `Retry-After`.
+    pub(crate) fn admit_favourite_write(&self, user: UserId) -> Result<(), ApiError> {
+        self.throttle
+            .begin_favourite_write(Instant::now(), user)
+            .map_err(|blocked| {
+                let seconds = blocked.seconds();
+                ApiError::new(
+                    StatusCode::TOO_MANY_REQUESTS,
+                    DeckErrorCode::RateLimited.as_str(),
+                    format!("too many changes to favourites; try again in {seconds} seconds"),
+                )
+                .with_header(RETRY_AFTER, HeaderValue::from(seconds))
+            })
     }
 
     fn accounts(&self) -> Result<&Accounts, ApiError> {

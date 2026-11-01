@@ -8,15 +8,14 @@ import { useDecks } from '@/features/create/useDecks'
 import { useDeckList } from '@/features/decks/useDeckList'
 import type { GameFormat } from '@/lib/houseRules'
 import type { DecksApi } from '@/net/decks'
-import type { PreconsApi } from '@/net/precons'
 import type { SeatDeck } from '@/protocol/generated'
 import { entryOfBuiltIn, entryOfDeck, entryOfPrecon, fitsFormat, markedId } from './deckEntries'
-import type { DeckEntry } from './deckEntries'
+import type { DeckEntry, SortKey } from './deckEntries'
 import { DeckList } from './DeckList'
 import type { ListState } from './DeckList'
 import type { DeckChoice } from './useDeckChoice'
 import type { LobbyApi } from './useLobbyControls'
-import { usePreconChoices } from './usePreconChoices'
+import type { PreconChoices } from './usePreconChoices'
 
 /** What every source of decks takes from the chooser. */
 interface SourceProps {
@@ -26,7 +25,10 @@ interface SourceProps {
   selectedId: string | null
   /** This source's tab is the one shown: only that list selects a deck by itself. */
   active: boolean
-  pictures(id: string): DeckEntry['commanders']
+  pictures(id: string): DeckEntry['pictures']
+  /** The order of the rows, for every list. */
+  sort: SortKey
+  onSort(sort: SortKey): void
   onSelect(entry: DeckEntry): void
   /** Drops the selection, which a search or filter hid and no row stands in for. */
   onClear(): void
@@ -72,6 +74,8 @@ function List({
       pendingId={source.choice.pending?.id ?? null}
       colours={colours}
       pictures={source.pictures}
+      sort={source.sort}
+      onSort={source.onSort}
       onSelect={source.onSelect}
       onClear={source.onClear}
       onActivate={source.onActivate}
@@ -100,19 +104,42 @@ export function BuiltInSource({ api, ...source }: SourceProps & { api: Pick<Lobb
   return <List label="Built-in decks" state={list} entries={entries} retry={reload} {...source} />
 }
 
-/** The signed-in account's decks that the game's format takes. */
-export function OwnSource({ decks, ...source }: SourceProps & { decks: DecksApi }) {
+/** The precons as the chooser holds them, for the list of favourites and the Precons tab. */
+interface PreconList {
+  state: PreconChoices
+  reload(): void
+}
+
+/** The signed-in account's decks that the game's format takes, and the precons it starred. */
+export function OwnSource({
+  decks,
+  precons,
+  favourites,
+  ...source
+}: SourceProps & { decks: DecksApi; precons: PreconList; favourites: ReadonlySet<string> }) {
   const { state, reload } = useDeckList(decks)
   const commander = source.format === 'commander'
+  const starred = useMemo(
+    () =>
+      precons.state.status === 'ready'
+        ? precons.state.precons.filter((precon) => favourites.has(precon.code))
+        : [],
+    [precons.state, favourites],
+  )
   const entries = useMemo(
     () =>
       state.status === 'ready'
-        ? state.decks.filter((deck) => fitsFormat(deck, commander)).map(entryOfDeck)
+        ? [
+            ...state.decks.filter((deck) => fitsFormat(deck, commander)).map(entryOfDeck),
+            ...starred
+              .filter((precon) => fitsFormat(precon, commander))
+              .map((precon) => entryOfPrecon(precon, true)),
+          ]
         : [],
-    [state, commander],
+    [state, starred, commander],
   )
   if (state.status === 'unavailable') return null
-  const total = state.status === 'ready' ? state.decks.length : 0
+  const total = state.status === 'ready' ? state.decks.length + starred.length : 0
   const list: ListState =
     state.status === 'ready'
       ? { status: 'ready', entries }
@@ -153,11 +180,21 @@ export function OwnSource({ decks, ...source }: SourceProps & { decks: DecksApi 
         )
       }
       note={
-        hidden > 0 && entries.length > 0 ? (
-          <Note slot="decks-hidden">
-            {hidden} {hidden === 1 ? 'deck is' : 'decks are'} in other formats and not shown.
-          </Note>
-        ) : null
+        <>
+          {hidden > 0 && entries.length > 0 ? (
+            <Note slot="decks-hidden">
+              {hidden} {hidden === 1 ? 'deck is' : 'decks are'} in other formats and not shown.
+            </Note>
+          ) : null}
+          {favourites.size > 0 && precons.state.status === 'failed' ? (
+            <Note slot="favourites-failed">
+              Your favourite precons could not be loaded.{' '}
+              <button type="button" className="underline underline-offset-3" onClick={precons.reload}>
+                Try again
+              </button>
+            </Note>
+          ) : null}
+        </>
       }
       {...source}
     />
@@ -165,15 +202,20 @@ export function OwnSource({ decks, ...source }: SourceProps & { decks: DecksApi 
 }
 
 /** The precons that the game's format takes. */
-export function PreconSource({ precons, ...source }: SourceProps & { precons: Pick<PreconsApi, 'list'> }) {
-  const { state, reload } = usePreconChoices(precons)
+export function PreconSource({
+  precons: { state, reload },
+  favourites,
+  ...source
+}: SourceProps & { precons: PreconList; favourites: ReadonlySet<string> }) {
   const commander = source.format === 'commander'
   const entries = useMemo(
     () =>
       state.status === 'ready'
-        ? state.precons.filter((precon) => fitsFormat(precon, commander)).map(entryOfPrecon)
+        ? state.precons
+            .filter((precon) => fitsFormat(precon, commander))
+            .map((precon) => entryOfPrecon(precon, favourites.has(precon.code)))
         : [],
-    [state, commander],
+    [state, commander, favourites],
   )
   const list: ListState =
     state.status === 'ready'

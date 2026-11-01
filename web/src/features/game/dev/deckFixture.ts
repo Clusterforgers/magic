@@ -9,7 +9,7 @@ import {
   reportOf,
 } from '@/features/decks/fakeDecks'
 import type { Counts, DeckListItem, DeckView, PreconListItem, PreconView, Reason } from '@/protocol/generated'
-import type { CardHit, DeckState, Support } from '@/protocol/generated'
+import type { CardHit, DeckPicture, DeckState, Support } from '@/protocol/generated'
 
 type Colour = 'W' | 'U' | 'B' | 'R' | 'G'
 
@@ -125,6 +125,15 @@ function make(deck: FixtureDeck): Made {
   return { commanders, main }
 }
 
+/** The cards whose pictures stand for a deck in a list: its commanders, else its first card. */
+const picturesOf = (made: Made): DeckPicture[] =>
+  (made.commanders.length > 0 ? made.commanders : made.main.slice(0, 1).map((line) => line.card)).map(
+    (card) => ({
+      oracle_id: card.oracle_id,
+      name: card.name,
+    }),
+  )
+
 const tally = (made: Made): Counts => {
   const all: Counts = { total: 0, verified: 0, read: 0, partial: 0, manual: 0, stale: 0, unplayable: 0 }
   for (const line of [
@@ -157,6 +166,7 @@ export function fixtureListItem(deck: FixtureDeck): DeckListItem {
     verified: state === 'verified',
     summary: { format: deck.format, state, counts, zones: [{ zone: 'main', counts }], issues: 0, to_read: 0 },
     commanders: made.commanders,
+    pictures: picturesOf(made),
   })
 }
 
@@ -190,7 +200,8 @@ export function fixtureDeckView(deck: FixtureDeck): DeckView {
 
 /** A precon as the list of `GET /api/precons` shows it. */
 export function fixturePreconItem(deck: FixtureDeck & { set: string; state?: DeckState }): PreconListItem {
-  const counts = tally(make(deck))
+  const made = make(deck)
+  const counts = tally(made)
   const state = deck.state ?? stateOf(counts)
   return {
     code: deck.id,
@@ -199,6 +210,7 @@ export function fixturePreconItem(deck: FixtureDeck & { set: string; state?: Dec
     deck_type: deck.commanders.length > 0 ? 'Commander Deck' : 'Starter Deck',
     release_date: '2023-08-04',
     commanders: deck.commanders.map(([name]) => name),
+    pictures: picturesOf(made),
     card_count: deck.size ?? 100,
     format: deck.commanders.length > 0 ? 'commander' : 'freeform',
     state,

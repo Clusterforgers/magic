@@ -1,0 +1,21 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT to_regclass('favourite_precons') IS NOT NULL AS \"migrated!\"",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "migrated!",
+        "type_info": "Bool",
+        "origin": "Expression"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      null
+    ]
+  },
+  "hash": "1c098091b27ea6c729ccb0e84da66ecb47f7344db8603d82ac8ec73ea1712c7f"
+}
