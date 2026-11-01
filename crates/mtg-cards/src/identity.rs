@@ -15,9 +15,9 @@ use crate::ability::Ability;
 use crate::companion::DeckCondition;
 use crate::compile::{read_keyword, split_items};
 use crate::definition::{AbilityDef, CardDefinition};
-use crate::support::PrintedCard;
 use crate::keyword::Keyword;
 use crate::modify::GameRule;
+use crate::support::PrintedCard;
 
 /// The numbers a card says its deck can hold up to, in words.
 const NUMBER_WORDS: [&str; 10] = [

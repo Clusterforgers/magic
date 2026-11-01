@@ -8,56 +8,56 @@ use net::{PASSWORD, connect, lobby, register};
 use serde_json::{Value, json};
 use sqlx::PgPool;
 
-/// A pair of the corpus, written as Moxfield writes it (set and number), whether the importer makes
+/// A pair of the corpus with the set and number of each printing, whether the importer makes
 /// the second card a commander, and whether a deck of the pair and 98 Forests is legal.
 const PAIRS: [(&str, &str, &str, &str, bool, bool); 6] = [
     (
         "Thrasios, Triton Hero",
-        "C16",
+        "C16 46",
         "Silas Renn, Seeker Adept",
-        "C16",
+        "C16 43",
         true,
         true,
     ),
     (
         "Bebop, Skull & Crossbones",
-        "TMC",
+        "TMC 15",
         "Rocksteady, Mutant Marauder",
-        "TMC",
+        "TMC 33",
         true,
         true,
     ),
     (
         "Michelangelo, the Heart",
-        "TMC",
+        "TMC 5",
         "Leonardo, the Balance",
-        "TMC",
+        "TMC 1",
         true,
         true,
     ),
     (
         "Graham O'Brien",
-        "WHO",
+        "WHO 104",
         "The Thirteenth Doctor",
-        "WHO",
+        "WHO 4",
         true,
         true,
     ),
     // A Background is a commander beside its chooser, but neither has green for the Forests.
     (
         "Burakos, Party Leader",
-        "CLB",
+        "CLB 653",
         "Folk Hero",
-        "MSC",
+        "MSC 132",
         true,
         false,
     ),
     // Partner beside Partner with: no pair, so the second line stays in the deck.
     (
         "Thrasios, Triton Hero",
-        "C16",
+        "C16 46",
         "Bebop, Skull & Crossbones",
-        "TMC",
+        "TMC 15",
         false,
         false,
     ),
@@ -89,10 +89,17 @@ async fn a_paired_deck_imports_saves_and_starts_with_both_commanders(pool: PgPoo
     let bob = register(server.addr, "bob", PASSWORD).await;
     let bob_deck = store(&server, &bob, &led_by("Questing Beast")).await;
 
-    for (first, first_set, second, second_set, pairs, plays) in PAIRS {
+    for (first, first_printing, second, second_printing, pairs, plays) in PAIRS {
         // Moxfield writes the commanders first and marks none.
-        let moxfield =
-            format!("1 {first} ({first_set}) 1 *F*\n1 {second} ({second_set}) 2\n98 Forest (MDD) 301\n");
+        let written = |name: &str, printing: &str| {
+            let (set, number) = printing.split_once(' ').unwrap();
+            format!("1 {name} ({set}) {number}")
+        };
+        let moxfield = format!(
+            "{} *F*\n{}\n98 Forest (MDD) 301\n",
+            written(first, first_printing),
+            written(second, second_printing)
+        );
         let reply = ann
             .post(server.addr, "/api/decks/import", &import_body(&moxfield))
             .await;
@@ -105,7 +112,8 @@ async fn a_paired_deck_imports_saves_and_starts_with_both_commanders(pool: PgPoo
                 ("commander".to_owned(), first.to_owned()),
                 (second_zone.to_owned(), second.to_owned()),
             ],
-            "{first} and {second}"
+            "{first} and {second}: {}",
+            reply.text()
         );
         assert_eq!(read[2].0, "main");
 

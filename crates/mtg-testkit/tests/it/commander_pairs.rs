@@ -18,7 +18,14 @@ use mtg_testkit::cards::wastes;
 use rstest::rstest;
 
 /// A real card: name, mana cost, type line, Scryfall keywords, oracle text, power and toughness.
-type Real = (&'static str, &'static str, &'static str, &'static [&'static str], &'static str, Option<&'static str>);
+type Real = (
+    &'static str,
+    &'static str,
+    &'static str,
+    &'static [&'static str],
+    &'static str,
+    Option<&'static str>,
+);
 
 const TYMNA: Real = (
     "Tymna the Weaver",
@@ -80,7 +87,13 @@ const WILSON: Real = (
     "Wilson, Refined Grizzly",
     "{1}{G}",
     "Legendary Creature \u{2014} Bear Warrior",
-    &["Reach", "Vigilance", "Choose a background", "Trample", "Ward"],
+    &[
+        "Reach",
+        "Vigilance",
+        "Choose a background",
+        "Trample",
+        "Ward",
+    ],
     "This spell can't be countered.\nReach, vigilance, trample\nWard {2} (Whenever this creature becomes the target of a spell or ability an opponent controls, counter it unless that player pays {2}.)\nChoose a Background (You can have a Background as a second commander.)",
     Some("2"),
 );
@@ -183,9 +196,10 @@ fn check_accepts(pair: [&PrintedCard; 2]) -> bool {
     );
     let codes: Vec<IssueCode> = report.legality.iter().map(|issue| issue.code).collect();
     assert!(
-        codes
-            .iter()
-            .all(|code| matches!(code, IssueCode::CommanderPair | IssueCode::CommanderEligibility)),
+        codes.iter().all(|code| matches!(
+            code,
+            IssueCode::CommanderPair | IssueCode::CommanderEligibility
+        )),
         "{codes:?}"
     );
     codes.is_empty()
@@ -234,10 +248,21 @@ fn the_deck_check_and_the_game_judge_a_pair_alike(
                 .state()
                 .zone(Zone::Command(PlayerId(seat as u64)))
                 .iter()
-                .map(|id| engine.state().object(*id).unwrap().whole_card().name.as_str())
+                .map(|id| {
+                    engine
+                        .state()
+                        .object(*id)
+                        .unwrap()
+                        .whole_card()
+                        .name
+                        .as_str()
+                })
                 .collect();
             assert_eq!(names.len(), 2, "{names:?}");
-            assert!(names.contains(&first.0) && names.contains(&second.0), "{names:?}");
+            assert!(
+                names.contains(&first.0) && names.contains(&second.0),
+                "{names:?}"
+            );
         }
     }
 }
