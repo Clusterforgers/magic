@@ -51,7 +51,6 @@ Items that touch the running game come first; the play-session findings (pf) lea
 - [~] (pf2) (combat-multi) Attacking with several opponents offers the right defenders for every attacker (each opponent, their planeswalkers and battles), and an attacker can be clicked, then an opponent's seat or permanent, to attack it
 - [~] (pf3) (seat-look) A border separates the opponents' areas on the table, and a seat that left the game shrinks to a thin strip
 - [~] (pf5) (play-ui) Look at the top shows the cards large enough to read, in the card-choice grid with the preview at the side
-- [~] (pf6) (reminders) Every keyword and mechanic has reminder text in the web (ninjutsu, discover, ward and the rest), shown on the card preview and on hover of a keyword, also for mechanics not in the game
 - [~] (pf8) (seat-look) The mana a seat has is easy to read: untapped mana sources counted by colour next to the pool, for every seat
 - [~] (pf9) (seat-look) A planeswalker shows its current loyalty clearly on the battlefield, also after an ability changes it
 - [~] (pf10) (flow-prefs) Pinned phase stops can be saved as the default, so a new game starts with them

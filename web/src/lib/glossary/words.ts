@@ -1,0 +1,91 @@
+import type { Entry } from './types'
+
+const SET = "A set mechanic; the card's own text says exactly what it does."
+
+/** Mechanics whose rules are on the card itself: one shared line. */
+export const SET_MECHANICS: readonly Entry[] = [
+  [
+    "Empower Jace|Heal|Prepared|Incorporate|Convert|Assimilate|Behold|Face a dilemma|Recruit|Harness|Conjure|Draft from a spellbook|Waterbend|Airbend|Earthbend|Blight|Teamwork|Power-up|Storied|Follow the 3rd Rule|Intensity|Actualize|Strange new worlds|Covercast|Seek out|Battlefront|Kinfall|Landship|Legacy|Hero's Reward",
+    SET,
+  ],
+  [
+    'Paradigm',
+    'After this spell resolves, exile it. At the beginning of each of your first main phases, you may cast a copy of it without paying its mana cost.',
+  ],
+  ['Firebending', 'Whenever this creature attacks, add N {R}. This mana lasts until end of combat.'],
+]
+
+/** Ability words: they have no rules of their own and label what a card checks or does. */
+export const ABILITY_WORDS: readonly Entry[] = [
+  ['Landfall', 'Triggers whenever a land enters under your control.'],
+  ['Constellation', 'Triggers whenever an enchantment enters under your control.'],
+  ['Heroic', 'Triggers whenever you cast a spell that targets this creature.'],
+  ['Magecraft', 'Triggers whenever you cast or copy an instant or sorcery spell.'],
+  ['Raid', 'Checks whether you attacked this turn.'],
+  ['Revolt', 'Checks whether a permanent you controlled left the battlefield this turn.'],
+  ['Morbid', 'Checks whether a creature died this turn.'],
+  ['Delirium', 'Checks for four or more card types among cards in your graveyard.'],
+  ['Threshold', 'Checks for seven or more cards in your graveyard.'],
+  ['Hellbent', 'Checks whether you have no cards in hand.'],
+  ['Metalcraft', 'Checks whether you control three or more artifacts.'],
+  ['Domain', 'Counts the basic land types among lands you control.'],
+  ['Converge', 'Counts the colors of mana spent to cast the spell.'],
+  ['Chroma', 'Counts the mana symbols of a color among the permanents you control.'],
+  ['Coven', 'Checks whether you control three or more creatures with different powers.'],
+  ['Corrupted', 'Checks whether an opponent has three or more poison counters.'],
+  ['Descend', 'Checks for permanent cards put into your graveyard from anywhere this turn, or in it.'],
+  ['Fathomless descent', 'Counts the permanent cards in your graveyard.'],
+  [
+    'Void',
+    'Checks whether a nonland permanent left the battlefield this turn or a spell was warped this turn.',
+  ],
+  ['Enrage', 'Triggers whenever this creature is dealt damage.'],
+  ['Battalion', 'Triggers whenever this and at least two other creatures attack.'],
+  ['Bloodrush', 'Pay the cost and discard this card: target attacking creature gets the stated bonus.'],
+  ['Cohort', 'Tap this and another untapped Ally you control for the stated effect.'],
+  ['Eminence', 'Works from the command zone as well as the battlefield.'],
+  ['Fateful hour', 'Checks whether you have 5 or less life.'],
+  ['Ferocious', 'Checks whether you control a creature with power 4 or greater.'],
+  ['Formidable', 'Checks whether creatures you control have total power 8 or greater.'],
+  ['Grandeur', 'Discard another card with the same name: get the stated effect.'],
+  ['Imprint', 'Exile a card to this permanent; the card is then used by its effects.'],
+  ['Inspired', 'Triggers whenever this creature untaps.'],
+  ['Join forces', 'Each player may pay mana; the effect scales with the total paid.'],
+  [
+    'Kinship',
+    'At your upkeep, look at the top card of your library; if it shares a creature type, you may reveal it for the stated effect.',
+  ],
+  ['Lieutenant', 'Checks whether you control your commander.'],
+  ['Parley', 'Each player reveals the top card of their library; the effect counts nonland cards.'],
+  ['Radiance', 'The effect also applies to each permanent that shares a color with the target.'],
+  ['Rally', 'Triggers whenever this or another Ally enters under your control.'],
+  ['Spell mastery', 'Checks for two or more instant and/or sorcery cards in your graveyard.'],
+  ['Strive', 'This spell costs more for each target beyond the first.'],
+  ['Sweep', 'Return any number of lands of one basic type you control to hand for a stronger effect.'],
+  ['Tempting offer', 'You choose an effect and each opponent may accept it; you repeat for each who does.'],
+  ['Will of the council|Will of the Planeswalkers', 'Each player votes; the effect follows the votes.'],
+  ["Council's dilemma", 'Each player votes; the effect is repeated for each vote.'],
+  ['Adamant', 'Checks whether at least three mana of the same color was spent to cast the spell.'],
+  ['Addendum', 'Gives a bonus if you cast the spell during your main phase.'],
+  ['Underdog', 'Checks whether an opponent has more life than you or more creatures.'],
+  ['Undergrowth', 'Counts the creature cards in your graveyard.'],
+  ['Pack tactics', 'Checks whether you attacked with creatures with total power 6 or greater this combat.'],
+  ['Alliance', 'Triggers whenever another creature enters under your control.'],
+  ['Secret council', 'Each player secretly chooses a value; the choices are revealed together.'],
+  ['Celebration', 'Checks whether two or more nonland permanents entered under your control this turn.'],
+  ['Paradox', 'Triggers whenever you cast a spell from anywhere other than your hand.'],
+  ['Disappear', 'Triggers whenever a permanent you control leaves the battlefield without dying.'],
+  [
+    'Survival',
+    'At the beginning of your second main phase, if this creature is tapped, trigger the stated effect.',
+  ],
+  ['Flurry', 'Triggers whenever you cast your second spell each turn.'],
+  [
+    'Valiant',
+    'Triggers the first time each turn this creature becomes the target of a spell or ability you control.',
+  ],
+  ['Repartee', 'Triggers whenever you cast an instant or sorcery spell that targets a creature.'],
+  ['Opus', 'Triggers whenever you cast an instant or sorcery; bonus if five or more mana was spent.'],
+  ['Infusion', 'Checks whether you gained life this turn.'],
+  ['Vivid', 'Counts the colors among permanents you control.'],
+]

@@ -1,6 +1,7 @@
 import { memo, useLayoutEffect, useMemo, useRef } from 'react'
 import { useShallow } from 'zustand/react/shallow'
 import { usePlay } from '@/features/game/gameContext'
+import { KeywordText } from './Keyword'
 import { cn } from '@/lib/utils'
 import { foldLog } from './logFold'
 import type { FoldedLine } from './logFold'
@@ -32,7 +33,9 @@ const LogLine = memo(function LogLine({ line }: { line: FoldedLine }) {
           ))}
         </span>
       )}
-      <span>{text}</span>
+      <span>
+        <KeywordText text={text} />
+      </span>
       {spoken === '' ? null : <span className="sr-only">: {spoken}</span>}
     </li>
   )
