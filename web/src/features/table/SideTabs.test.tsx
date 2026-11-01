@@ -1,4 +1,4 @@
-// Goal: a seat's Commands (first and on show at the start), the log, the chat and the stack are tabs of one side area that is a column from L up (always open), a 44 px rail at M that opens a panel over the table, and a sheet from the top bar below that; each tab says how much is new (unread chat of other seats and log lines worth reading, spells on the stack), nothing counts while its tab is on show, and what was on show when the reader looked away has been read.
+// Goal: a seat's Commands (first and on show at the start), the log, the chat and the stack are tabs of one side area that is a column from L up (always open), a 44 px rail at M that opens a panel over the table, and a sheet from the top bar below that; the Chat and Stack tabs say how much is new (unread chat of other seats, spells on the stack) and the log marks nothing as new, nothing counts while its tab is on show, and what was on show when the reader looked away has been read.
 import { act, screen, waitFor, within } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import { appendChat, appendLog } from '@/play/store'
@@ -71,15 +71,13 @@ describe('a wide window: the column', () => {
     expect(tab('Chat')).toBeInTheDocument()
   })
 
-  it('counts the log lines worth reading on the Log tab once another tab is on show, and not the quiet ones', async () => {
+  it('marks no log line as new on the Log tab, whichever tab is on show', async () => {
     const table = renderTable({ seats: 2, options: { viewport: WIDE } })
     await table.user.click(tab(/^Chat/))
     logs(table, pass(0), pass(1), turn(6))
-    expect(tab('Log 1 unread')).toBeInTheDocument()
     logs(table, turn(7), pass(0))
-    expect(tab('Log 2 unread')).toBeInTheDocument()
-    await table.user.click(tab(/^Log/))
     expect(tab('Log')).toBeInTheDocument()
+    expect(document.querySelector('[data-slot="side-count"][data-tab="log"]')).toBeNull()
   })
 
   it('says how many spells are on the stack, and nothing for an empty one', () => {
@@ -173,14 +171,14 @@ describe.each([
     )
   })
 
-  it('says on the button how much wants a look: new lines, chat of others and the spells on the stack', () => {
+  it('says on the button how much wants a look: chat of others and the spells on the stack', () => {
     const table = renderTable({ seats: 4, options: { viewport } })
     // Three spells are on the stack at the start.
     expect(button()).toHaveAccessibleName('Commands, log, chat and stack, 3 new')
     said(table, 2, 'hello')
     logs(table, turn(6))
     act(() => undefined)
-    expect(button()).toHaveAccessibleName('Commands, log, chat and stack, 5 new')
+    expect(button()).toHaveAccessibleName('Commands, log, chat and stack, 4 new')
   })
 
   it('counts nothing for the tab on show while the sheet is open, and everything else', async () => {

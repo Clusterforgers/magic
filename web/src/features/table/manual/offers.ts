@@ -63,10 +63,12 @@ export interface ManualItem {
   ask?: Ask
   /** Opens the card in the Commands panel instead of acting. */
   panel?: true
+  /** Marks the card as broken (a fix mark) instead of sending an action. */
+  fixMark?: true
 }
 
 /** The groups of the menu, in order. */
-export type GroupId = 'move' | 'counters' | 'tap' | 'attach' | 'effect' | 'show' | 'panel'
+export type GroupId = 'fix' | 'move' | 'counters' | 'tap' | 'attach' | 'effect' | 'show' | 'panel'
 
 /** A titled run of entries, or a note that says why it has none. */
 export interface ManualGroup {

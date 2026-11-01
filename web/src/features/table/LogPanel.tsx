@@ -21,7 +21,6 @@ const LogLine = memo(function LogLine({ line }: { line: FoldedLine }) {
         kind === 'turn' &&
           'mt-2 border-t border-border pt-2 font-semibold first:mt-0 first:border-t-0 first:pt-0.5',
         kind === 'step' && 'pt-1.5 pb-0 text-xs font-medium tracking-wide uppercase',
-        manual === true && 'border-l-2 border-primary/50',
         minor && 'text-muted-foreground',
         passed.length > 0 && 'flex items-center gap-1.5',
       )}

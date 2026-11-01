@@ -1,10 +1,14 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
 import type { CSSProperties, KeyboardEvent, ReactNode } from 'react'
 import { createPortal } from 'react-dom'
+import { FixMarksApiContext } from '@/features/fixmarks/apiContext'
+import { describeMarkError } from '@/features/fixmarks/errors'
+import { useFixMarks } from '@/features/fixmarks/useFixMarks'
 import { usePlay } from '@/features/game/gameContext'
 import { cn } from '@/lib/utils'
 import type { ManualAction } from '@/protocol/generated'
 import { useSeatNamer } from '../names'
+import { fixMarkGroup, fixMarkWords } from './fixMark'
 import { ManualForm } from './ManualForm'
 import { ByHandList } from './ByHand'
 import { ByHandPanel } from './ByHandPanel'
@@ -98,6 +102,19 @@ function Panel({ target }: { target: MenuTarget }) {
   const input = useMenuInput(target.id)
   const menu = useMemo(() => (input === null ? null : manualMenu(input)), [input])
 
+  // The fix mark of the card (a card without a printed identity, such as a token, has none).
+  const marks = useFixMarks(useContext(FixMarksApiContext))
+  const [told, setTold] = useState<string | undefined>(undefined)
+  const oracleId = input?.object.identity?.oracle_id
+  const marked = oracleId !== undefined && marks.markOf(oracleId) !== undefined
+  const groups = useMemo(
+    () =>
+      menu === null || oracleId === undefined || marks.unavailable
+        ? (menu?.groups ?? [])
+        : [...menu.groups, fixMarkGroup(marked, marks.loading)],
+    [menu, oracleId, marks.unavailable, marks.loading, marked],
+  )
+
   // The card left the table (or the seat is gone) while the menu was open.
   const gone = input === null
   useEffect(() => {
@@ -130,7 +147,13 @@ function Panel({ target }: { target: MenuTarget }) {
   const use = (item: ManualItem): void => {
     setError(undefined)
     sender.clear()
-    if (item.panel === true) {
+    setTold(undefined)
+    marks.clearError()
+    if (item.fixMark === true) {
+      if (oracleId === undefined || marks.loading || marks.pending) return
+      marks.press({ oracleId, name: menu.title, marked: !marked, note: null })
+      setTold(fixMarkWords(menu.title, !marked))
+    } else if (item.panel === true) {
       // The panel takes this card; the menu has done its part.
       picks?.dispatch({ type: 'choose', card: target.id })
       close()
@@ -176,7 +199,7 @@ function Panel({ target }: { target: MenuTarget }) {
         aria-describedby={menu.notice === undefined ? undefined : 'manual-notice'}
         className="min-h-0 overflow-y-auto overscroll-contain px-1 pb-1"
       >
-        {menu.groups.map((group) => (
+        {groups.map((group) => (
           <Group key={group.id} group={group} notice={menu.notice} onUse={use} />
         ))}
       </div>
@@ -221,6 +244,15 @@ function Panel({ target }: { target: MenuTarget }) {
         {error === undefined && !failed ? null : (
           <p role="alert" data-slot="menu-feedback" className="text-xs text-destructive">
             {error ?? (sender.feedback === null ? '' : feedbackWords(sender.feedback))}
+          </p>
+        )}
+        {marks.error !== null ? (
+          <p role="alert" data-slot="menu-feedback" className="text-xs text-destructive">
+            {describeMarkError(marks.error)}
+          </p>
+        ) : told === undefined ? null : (
+          <p role="status" data-slot="fix-mark-feedback" className="text-xs text-muted-foreground">
+            {told}
           </p>
         )}
         {sender.feedback?.state === 'sending' ? (

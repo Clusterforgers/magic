@@ -31,7 +31,22 @@ export function useCloseOutside(panel: RefObject<HTMLElement | null>, store: Men
   }, [panel, store])
 }
 
-/** Places the popup at the point asked for, then moves it by what the browser shows so that it lies inside the window. */
+/** Where a popup of `size` goes so that it lies inside a window of `view`, `margin` from every edge. */
+export function clampToView(
+  at: { x: number; y: number },
+  size: { width: number; height: number },
+  view: { width: number; height: number },
+  margin = MARGIN,
+): { left: number; top: number } {
+  const fit = (point: number, extent: number, room: number): number =>
+    Math.max(margin, Math.min(point, room - extent - margin))
+  return { left: fit(at.x, size.width, view.width), top: fit(at.y, size.height, view.height) }
+}
+
+/**
+ * Places the popup at the point asked for, then moves it by what the browser shows so that it lies inside the window.
+ * It places again when the popup changes size (its content grows) and when the window is resized.
+ */
 export function usePlaced(panel: RefObject<HTMLElement | null>, target: MenuTarget, again?: unknown): void {
   useLayoutEffect(() => {
     const element = panel.current
@@ -40,12 +55,21 @@ export function usePlaced(panel: RefObject<HTMLElement | null>, target: MenuTarg
       element.style.setProperty('--mx', `${left}px`)
       element.style.setProperty('--my', `${top}px`)
     }
-    place(target.x, target.y)
-    const box = element.getBoundingClientRect()
-    if (box.width === 0) return
-    const left = Math.max(MARGIN, Math.min(target.x, window.innerWidth - box.width - MARGIN))
-    const top = Math.max(MARGIN, Math.min(target.y, window.innerHeight - box.height - MARGIN))
-    // A container that moves its fixed children (a dialog) shifts them by its own corner.
-    place(left + (target.x - box.left), top + (target.y - box.top))
+    const fit = (): void => {
+      place(target.x, target.y)
+      const box = element.getBoundingClientRect()
+      if (box.width === 0) return
+      const { left, top } = clampToView(target, box, { width: window.innerWidth, height: window.innerHeight })
+      // A container that moves its fixed children shifts them by its own corner.
+      place(left + (target.x - box.left), top + (target.y - box.top))
+    }
+    fit()
+    const watcher = typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(fit)
+    watcher?.observe(element)
+    window.addEventListener('resize', fit)
+    return () => {
+      watcher?.disconnect()
+      window.removeEventListener('resize', fit)
+    }
   }, [panel, target, again])
 }
