@@ -17,7 +17,7 @@ function rolled(event: Event) {
   const view = state.view
   if (view === null) throw new Error('no view')
   act(() => {
-    const batch = batchOf(view, { from_seq: state.seq, events: [{ Public: event }] })
+    const batch = batchOf(view, { from_seq: state.seq ?? 0, events: [{ Public: event }] })
     // A batch that changes nothing in the view is not told apart from a decision, so the turn moves on.
     batch.table.turn.number += 1
     applyBatchToStore(table.store, batch)
