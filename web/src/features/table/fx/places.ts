@@ -39,7 +39,7 @@ function boxOf(element: Element): Box | null {
 }
 
 /** The first of the elements that `selectors` find, in order, that is on screen. */
-function firstBox(root: ParentNode, selectors: readonly string[]): Box | null {
+export function firstBox(root: ParentNode, selectors: readonly string[]): Box | null {
   for (const selector of selectors) {
     for (const element of root.querySelectorAll(selector)) {
       const box = boxOf(element)

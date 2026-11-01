@@ -11,6 +11,7 @@ import { CombatProviders } from './combat/CombatProviders'
 import { ControlsDock, ControlsSlotProvider } from './ControlsDock'
 import { FxContext } from './fx/hooks'
 import { FxTravel } from './fx/FxTravel'
+import { FxStrikes } from './fx/FxStrikes'
 import { EFFECTS_BY_DEFAULT, useTableFx } from './fx/useTableFx'
 import { HandDock } from './HandDock'
 import { MomentsContext } from './moment/store'
@@ -133,6 +134,7 @@ const Table = memo(function Table() {
                     </SideProvider>
                   )}
                   <FxTravel />
+                  <FxStrikes />
                 </section>
               </ControlsSlotProvider>
               <CardPreview />
