@@ -1,5 +1,5 @@
 /** Finds the batches in the play store's changes and feeds what they cause to the decoration layer. */
-import type { PlayState, PlayStore } from '@/play/store'
+import type { LogEntry, PlayState, PlayStore } from '@/play/store'
 import type { EventView } from '@/protocol/generated'
 import { deriveAttaches, deriveEffects } from './derive'
 import type { Moment } from './derive'
@@ -12,6 +12,8 @@ export interface BatchStep {
   before: Moment
   after: Moment
   events: readonly EventView[]
+  /** The same events as log entries, with the cards a reveal showed (`LogEntry.seen`). */
+  entries: readonly LogEntry[]
 }
 
 /**
@@ -33,6 +35,7 @@ export function batchBetween(prev: PlayState, next: PlayState): BatchStep | null
     before: { view: prev.view, objectsById: prev.objectsById },
     after: { view: next.view, objectsById: next.objectsById },
     events: entries.map((entry) => entry.event),
+    entries,
   }
 }
 

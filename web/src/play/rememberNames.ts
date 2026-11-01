@@ -66,3 +66,24 @@ export function namesToRemember(
   }
   return Object.keys(named).length === 0 ? undefined : named
 }
+
+/**
+ * The cards a public `Revealed` event shows every seat, as they looked when shown: from the batch's `shown` (cards the
+ * viewer cannot see after it), else from the objects after the batch or before it. A look is not a reveal and gives
+ * nothing; undefined when the event is no reveal or no card of it is known.
+ */
+export function revealedViews(
+  event: EventView,
+  before: Objects | undefined,
+  after: Objects | undefined,
+  shown: readonly ObjectView[] | undefined,
+): readonly ObjectView[] | undefined {
+  if (!('Public' in event) || typeof event.Public === 'string' || !('Revealed' in event.Public))
+    return undefined
+  const held = new Map((shown ?? []).map((object) => [object.id, object] as const))
+  const views = event.Public.Revealed.cards.flatMap((id) => {
+    const view = held.get(id) ?? after?.[id] ?? before?.[id]
+    return view === undefined || view.name === '' ? [] : [view]
+  })
+  return views.length === 0 ? undefined : views
+}
