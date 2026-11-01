@@ -38,8 +38,8 @@ function direction(pairs: readonly (readonly [number, number])[]): Modified {
 /**
  * The badge a picture needs: the current power/toughness (or a planeswalker's loyalty) when it differs from the
  * printed one, marked up or down; a plain one when the printed value is a star or cannot be known, and always for a
- * token, whose picture cannot be compared with anything; none while it is asked for or when the picture shows the
- * right number.
+ * token, whose picture cannot be compared with anything; none while it is asked for or when a creature's picture shows the
+ * right number. A planeswalker's loyalty always shows, as the picture only has its starting loyalty.
  */
 export function statBadge(object: ObjectView, printed: Printed, loyalty: number | null): StatBadge | null {
   if (printed === 'loading') return null
@@ -68,5 +68,5 @@ export function statBadge(object: ObjectView, printed: Printed, loyalty: number 
   const was = numberOf(printed.loyalty)
   if (was === null) return { kind: 'loyalty', text, modified: null }
   const modified = direction([[loyalty, was]])
-  return modified === null ? null : { kind: 'loyalty', text, modified }
+  return { kind: 'loyalty', text, modified }
 }

@@ -62,7 +62,7 @@ describe('statBadge', () => {
       null,
       null,
     ],
-    ['loyalty as printed', walker, stats(null, null, '3'), 3, null],
+    ['loyalty as printed', walker, stats(null, null, '3'), 3, { kind: 'loyalty', text: '3', modified: null }],
     ['loyalty up', walker, stats(null, null, '3'), 5, { kind: 'loyalty', text: '5', modified: 'up' }],
     ['loyalty down', walker, stats(null, null, '3'), 1, { kind: 'loyalty', text: '1', modified: 'down' }],
     ['no stats', card({ power: null, toughness: null }), stats(null, null), null, null],
