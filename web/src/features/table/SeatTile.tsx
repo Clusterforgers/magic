@@ -16,6 +16,7 @@ import { RevealedFigure } from './RevealedChip'
 import { revealedLabel, revealedOf } from './revealed'
 import { exileOf, holdsPriority, isActiveSeat, playerOf } from './selectors'
 import { useKeepInView } from './useKeepInView'
+import { defenderOutline, useDefender } from './combat/defender'
 
 interface SeatTileProps {
   seat: PlayerId
@@ -45,6 +46,7 @@ export const SeatTile = memo(function SeatTile({ seat, focused, onFocusSeat }: S
   )
   const chips = useCommanderChips(seat)
   const enchants = useEnchantChips(seat)
+  const defender = useDefender(seat)
   if (player === undefined) return null
   const eliminated = player.lost !== null
   const away = !eliminated && !player.connected
@@ -59,25 +61,38 @@ export const SeatTile = memo(function SeatTile({ seat, focused, onFocusSeat }: S
       data-away={away || undefined}
       data-state={podState(flags.active, flags.priority)}
       aria-current={focused || undefined}
-      aria-label={tileName({
-        name,
-        life: player.life,
-        counts,
-        active: flags.active,
-        priority: flags.priority,
-        eliminated,
-        away,
-        focused,
-        commander: [...chips.tax, ...chips.damage].map((chip) => chip.words),
-        enchanted: enchants.map((chip) => chip.words),
-        revealed: shown.length === 0 ? undefined : revealedLabel(shown.length).toLowerCase(),
-      })}
-      onClick={() => onFocusSeat(seat)}
+      aria-label={
+        tileName({
+          name,
+          life: player.life,
+          counts,
+          active: flags.active,
+          priority: flags.priority,
+          eliminated,
+          away,
+          focused,
+          commander: [...chips.tax, ...chips.damage].map((chip) => chip.words),
+          enchanted: enchants.map((chip) => chip.words),
+          revealed: shown.length === 0 ? undefined : revealedLabel(shown.length).toLowerCase(),
+        }) +
+        (defender.state === 'chosen'
+          ? ', your attackers go here'
+          : defender.state === 'candidate'
+            ? ', may be attacked'
+            : '')
+      }
+      data-defender={defender.state}
+      onClick={() => {
+        // While an attack is aimed the tile is a defender too: the click attacks the seat and shows its board.
+        if (defender.state !== undefined) defender.pick()
+        onFocusSeat(seat)
+      }}
       className={cn(
         'relative grid h-full min-w-44 flex-1 grid-cols-[minmax(0,1fr)] content-center gap-0.5 overflow-hidden rounded-lg bg-card px-2 py-0.5 text-left text-xs ring-1 ring-foreground/10 outline-none hover:bg-muted focus-visible:ring-3 focus-visible:ring-primary',
         focused && 'ring-2 ring-primary',
         eliminated && 'border-l-4 border-destructive',
         flags.active && cn(ACTIVE_TINT, ACTIVE_EDGE),
+        defenderOutline(defender.state),
       )}
     >
       <span className="flex h-6 items-center justify-between gap-2">

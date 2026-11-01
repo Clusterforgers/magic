@@ -10,7 +10,7 @@ export function useObjects(ids: readonly ObjectId[]): readonly (ObjectView | und
   return usePlay(useShallow((state) => ids.map((id) => state.objectsById[id])))
 }
 
-/** How to call the defenders in `targets`: players by seat name, planeswalkers by card name. */
+/** How to call the defenders in `targets`: players by seat name, planeswalkers and battles by card name. */
 export function useTargetNames(targets: readonly AttackTarget[]): TargetNames {
   const seatName = useSeatNamer()
   const walkerIds = useMemo(
@@ -26,6 +26,9 @@ export function useTargetNames(targets: readonly AttackTarget[]): TargetNames {
       short,
       long(target) {
         if ('Player' in target) return short(target)
+        // A battle's controller is not who protects it, and the view does not say who does.
+        if (byId.get(target.Planeswalker)?.types.includes('Battle') === true)
+          return `${short(target)}, battle`
         const owner = byId.get(target.Planeswalker)?.controller
         return owner === undefined ? short(target) : `${short(target)}, ${seatName(owner)}'s planeswalker`
       },
