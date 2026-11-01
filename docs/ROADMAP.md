@@ -51,7 +51,6 @@ Items that touch the running game come first; the play-session findings (pf) lea
 - [ ] (pf2a) A battle is named with the seat that protects it in the attack prompt (a protector field in the view)
 - [ ] (v96f) A `/dev` scene plays a reveal and a die roll moment, so both are checked in screenshots at six sizes
 - [ ] (pf10a) The default stops and "End my turn by hand" are stored per account on the server, not per browser
-- [ ] (pf13a) The fuzz action script plays the new manual actions (search, tutor, sacrifice, remove summoning sickness, give control)
 - [ ] (pf19) Combat damage plays a short animation: each attacker or blocker strikes toward the player, planeswalker, battle or creature it damages
 - [ ] (pf15) Engine: Lifelink gains life for combat damage dealt to a player (a reported game did not)
 - [ ] (pf16) Cards: Fungal Fortitude returns its creature when a spell destroys it
