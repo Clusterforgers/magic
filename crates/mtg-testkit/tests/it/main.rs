@@ -104,6 +104,7 @@ mod commander_draw;
 mod commander_fuzz;
 mod commander_identity;
 mod commander_objects;
+mod commander_pairs;
 mod common;
 mod companion;
 mod companion_fuzz;

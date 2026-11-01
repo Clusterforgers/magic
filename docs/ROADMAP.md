@@ -34,7 +34,7 @@ One item is one piece of about 15 minutes and one line: the outcome, the cards i
 - Model-assisted reading: `check-rules`, `propose` (a local OpenAI-style server), `promote` (`--draft` writes the 355 first read-tier drafts, which `compile` stores in `card_drafts`), the repair of mechanical slips, writers for the accepted wordings, `coverage --all`, the gap ledger and `export-pairs` (`docs/cards-dsl.md`).
 - Protocol and server: generated bindings with a drift test, the game actor, a WebSocket per seat, persistence and resume, accounts (the admin makes, resets and removes them), lobbies, open games, precons, concurrent keep and mulligan, seat presence, the snapshot log (`docs/protocol.md`, `docs/server.md`).
 - Game flow: auto-pass, response clocks, yields, stops, Full Control, the timer bank, the by-hand window and leak tests (`docs/arena-flow.md`).
-- Commander: house rules, format rules, deck check, Partner, companion in the engine, tax, commander damage and any number of seats (`docs/server.md`).
+- Commander: house rules, format rules, deck check, Partner and every pair kind end to end (import, check and game judge a pair alike), companion in the engine, tax, commander damage and any number of seats (`docs/server.md`, `docs/deck-check.md`).
 - Manual play: the Commands panel, by-hand clauses with chips, manual actions at any time on any turn and fix marks (`docs/web.md`, `docs/protocol.md`).
 - Web table: lanes and card sizes, the seat corner, click combat, the mana strip, legible play (flights, spotlight, target arrows, marks), Equipment tucked at its host with its grants, hand reasons, fit at six sizes and a 12 px text floor (`docs/web.md`, `docs/ui-design.md`).
 - Lobby, decks and precons: invites, the deck builder with pictures and stats, import and export, the deck check, the not-validated list and the precon browser (`docs/web.md`).
@@ -47,7 +47,7 @@ One item is one piece of about 15 minutes and one line: the outcome, the cards i
 
 Items that touch the running game come first; the play-session findings (pf) lead, the web items before the engine and card items.
 
-- [~] (pf1) (commander-pair) Paired commanders work end to end: a deck with two partners (Partner, Partner with, Friends forever, Doctor's companion, a Background) imports, passes the deck check, starts with both in the command zone and casts each with its own tax
+- [ ] (pf1a) A card that says it can be your commander starts a game as one when the engine leaves its text to the table, as the deck check already accepts it
 - [~] (pf2) (combat-multi) Attacking with several opponents offers the right defenders for every attacker (each opponent, their planeswalkers and battles), and an attacker can be clicked, then an opponent's seat or permanent, to attack it
 - [~] (pf3) (seat-look) A border separates the opponents' areas on the table, and a seat that left the game shrinks to a thin strip
 - [~] (pf4) (card-menu) The right-click menu of a card in a graveyard, exile or any edge zone stays inside the viewport

@@ -115,11 +115,12 @@ pub(crate) fn assemble_record(
         definition.read = record.support == Support::Read;
         definition
     };
-    let definition = match (played_layout(printed, caps), printed.faces.len()) {
+    let mut definition = match (played_layout(printed, caps), printed.faces.len()) {
         (Some(layout), count) => whole_card(printed, layout, (0..count).map(face_of).collect()),
         (None, 0) => CardDefinition::new(printed.name.clone()),
         (None, _) => face_of(0),
     };
+    definition.pairing = crate::identity::pairing_keywords(printed);
     Assembled {
         definition,
         support: record,
@@ -1068,6 +1069,7 @@ fn printed_side(face: &PrintedFace) -> CardDefinition {
         read: false,
         faces: Vec::new(),
         identity: None,
+        pairing: Vec::new(),
     }
 }
 

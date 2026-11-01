@@ -69,6 +69,7 @@ fn base_specs() -> Vec<Spec> {
         ),
         Spec {
             keywords: &["Partner"],
+            text: "Partner",
             ..spec(
                 6,
                 "Tymna the Weaver",
@@ -78,6 +79,7 @@ fn base_specs() -> Vec<Spec> {
         },
         Spec {
             keywords: &["Partner"],
+            text: "Partner",
             ..spec(
                 7,
                 "Thrasios, Triton Hero",
@@ -117,6 +119,7 @@ fn base_specs() -> Vec<Spec> {
         },
         Spec {
             keywords: &["Choose a Background"],
+            text: "Choose a Background",
             ..spec(
                 15,
                 "Wilson, Dungeon Master",
@@ -164,15 +167,18 @@ fn pairing_specs() -> Vec<Spec> {
             "WG",
         ),
         Spec {
-            keywords: &["Friends forever"],
+            keywords: &["Partner"],
+            text: "Partner\u{2014}Friends forever",
             ..spec(20, "Friend One", "Legendary Creature \u{2014} Human", "G")
         },
         Spec {
-            keywords: &["Friends forever"],
+            keywords: &["Partner"],
+            text: "Partner\u{2014}Friends forever",
             ..spec(21, "Friend Two", "Legendary Creature \u{2014} Human", "U")
         },
         Spec {
             keywords: &["Doctor's companion"],
+            text: "Doctor's companion",
             ..spec(
                 22,
                 "Companion Example",

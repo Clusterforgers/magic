@@ -13,7 +13,9 @@ use serde_json::Value;
 
 use crate::ability::Ability;
 use crate::companion::DeckCondition;
+use crate::compile::{read_keyword, split_items};
 use crate::definition::{AbilityDef, CardDefinition};
+use crate::support::PrintedCard;
 use crate::keyword::Keyword;
 use crate::modify::GameRule;
 
@@ -162,18 +164,50 @@ impl CardDefinition {
         })
     }
 
-    /// The keyword abilities among the card's rules.
+    /// The keyword abilities among the card's rules, and its pairing keywords.
     fn keywords(&self) -> impl Iterator<Item = &Keyword> {
-        self.rules.iter().filter_map(|rule| match &**rule {
-            Ability::Keyword(keyword) => Some(keyword),
-            _ => None,
-        })
+        self.rules
+            .iter()
+            .filter_map(|rule| match &**rule {
+                Ability::Keyword(keyword) => Some(keyword),
+                _ => None,
+            })
+            .chain(&self.pairing)
     }
 
-    /// Whether the card's rules have the keyword.
+    /// Whether the card's rules or its pairing keywords have the keyword.
     fn has_keyword(&self, wanted: &Keyword) -> bool {
         self.keywords().any(|keyword| keyword == wanted)
     }
+}
+
+/// The keywords of a printed card that let it be a commander beside another (CR 702.124): Partner, Partner with, a
+/// partner group, Choose a Background and Doctor's companion, read from the keyword lines of its front face.
+pub fn pairing_keywords(printed: &PrintedCard) -> Vec<Keyword> {
+    let text = printed
+        .faces
+        .first()
+        .map_or("", |face| face.oracle_text.as_str());
+    let mut found = Vec::new();
+    for line in text.lines() {
+        let line = without_reminders(line);
+        let line = line.trim();
+        let chars: Vec<char> = line.chars().collect();
+        for range in split_items(line).unwrap_or_default() {
+            let item: String = chars[range].iter().collect();
+            found.extend(read_keyword(&item).filter(|keyword| {
+                matches!(
+                    keyword,
+                    Keyword::Partner
+                        | Keyword::PartnerWith(_)
+                        | Keyword::PartnerGroup(_)
+                        | Keyword::ChooseABackground
+                        | Keyword::DoctorsCompanion
+                )
+            }));
+        }
+    }
+    found
 }
 
 fn says_it_can(rule: &Ability) -> bool {
