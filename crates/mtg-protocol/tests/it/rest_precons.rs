@@ -130,6 +130,7 @@ fn the_json_keys_are_the_documented_ones() {
             "deck_type",
             "format",
             "name",
+            "pictures",
             "playable",
             "release_date",
             "set",
