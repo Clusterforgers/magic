@@ -47,7 +47,14 @@ describe('what a control row sends', () => {
       'Sacrifice Fresh Elf',
       { Sacrifice: { object: 7 } },
     ],
-    ['control given', SICK, 'give', 'Fresh Elf: control → Bo', 'Give Fresh Elf to Bo', { GiveControl: { object: 7, to: 1 } }],
+    [
+      'control given',
+      SICK,
+      'give',
+      'Fresh Elf: control → Bo',
+      'Give Fresh Elf to Bo',
+      { GiveControl: { object: 7, to: 1 } },
+    ],
     [
       'a card from the graveyard',
       DEAD,

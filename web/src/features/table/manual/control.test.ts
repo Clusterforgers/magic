@@ -41,7 +41,11 @@ describe('the Control group of the card menu', () => {
       card({ zone: 'Exile', permanent: null }),
       ['Onto the battlefield for Bo', 'Onto the battlefield for Cy'],
     ],
-    ['an instant in the graveyard', card({ zone: { Graveyard: 0 }, permanent: null, types: ['Instant'] }), []],
+    [
+      'an instant in the graveyard',
+      card({ zone: { Graveyard: 0 }, permanent: null, types: ['Instant'] }),
+      [],
+    ],
     ['a card in hand', card({ zone: { Hand: 0 }, permanent: null }), []],
     ['a creature of an opponent', card({ owner: 1, controller: 1 }), []],
   ])('%s', (_name, object, expected) => {

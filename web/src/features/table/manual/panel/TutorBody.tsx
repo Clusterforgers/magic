@@ -63,7 +63,13 @@ function SearchGrid({ id, input, searched, onClose }: GridProps) {
     }
   }
   return (
-    <div id={id} role="group" aria-label="Search your library" onKeyDown={onKeyDown} className="grid gap-2 px-2 pt-1 pb-2">
+    <div
+      id={id}
+      role="group"
+      aria-label="Search your library"
+      onKeyDown={onKeyDown}
+      className="grid gap-2 px-2 pt-1 pb-2"
+    >
       <p className="text-xs text-muted-foreground">
         {`Your library: ${cards.length} cards by name. Choose one for your hand.`}
       </p>
@@ -86,11 +92,20 @@ function SearchGrid({ id, input, searched, onClose }: GridProps) {
           </li>
         ))}
       </ul>
-      <p data-slot="command-preview" aria-live="polite" className={cn('text-sm', !ready && 'text-muted-foreground')}>
+      <p
+        data-slot="command-preview"
+        aria-live="polite"
+        className={cn('text-sm', !ready && 'text-muted-foreground')}
+      >
         {ready ? preview.preview : preview.problem}
       </p>
       <div className="flex flex-wrap gap-2">
-        <Button size="sm" data-slot="command-apply" aria-disabled={!ready || undefined} onClick={ready ? apply : undefined}>
+        <Button
+          size="sm"
+          data-slot="command-apply"
+          aria-disabled={!ready || undefined}
+          onClick={ready ? apply : undefined}
+        >
           {ready ? preview.apply : 'Apply'}
         </Button>
         <Button

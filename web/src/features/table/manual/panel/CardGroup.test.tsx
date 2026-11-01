@@ -234,7 +234,15 @@ describe('the commands of the card picked', () => {
     const rows = [...group().querySelectorAll('[data-card-command]')].map((row) =>
       row.getAttribute('data-command'),
     )
-    expect(rows).toEqual(['card:move', 'card:counters', 'card:tap', 'card:damage', 'card:pump', 'card:sacrifice', 'card:give'])
+    expect(rows).toEqual([
+      'card:move',
+      'card:counters',
+      'card:tap',
+      'card:damage',
+      'card:pump',
+      'card:sacrifice',
+      'card:give',
+    ])
     expect(commandRow(/^Tap/)).toHaveTextContent('Turn the permanent sideways.')
   })
 

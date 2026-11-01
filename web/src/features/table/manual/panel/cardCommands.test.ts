@@ -79,7 +79,12 @@ describe('which commands a picked card offers', () => {
       {},
       ['move', 'damage'],
     ],
-    ['a card the seat owns in exile', card({ zone: 'Exile', permanent: null }), {}, ['move', 'damage', 'give']],
+    [
+      'a card the seat owns in exile',
+      card({ zone: 'Exile', permanent: null }),
+      {},
+      ['move', 'damage', 'give'],
+    ],
     [
       'a card of an opponent in exile',
       card({ zone: 'Exile', permanent: null, owner: 1, controller: 1 }),

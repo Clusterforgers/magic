@@ -10,7 +10,14 @@ export function controlGroup(input: MenuInput): ManualGroup | null {
   const { object, seat, off } = input
   const others = input.players.filter((player) => player !== seat)
   const zone = object.zone
-  const kind = zone === 'Battlefield' ? 'battlefield' : zone === 'Exile' ? 'exile' : typeof zone === 'object' && 'Graveyard' in zone ? 'graveyard' : 'other'
+  const kind =
+    zone === 'Battlefield'
+      ? 'battlefield'
+      : zone === 'Exile'
+        ? 'exile'
+        : typeof zone === 'object' && 'Graveyard' in zone
+          ? 'graveyard'
+          : 'other'
   const nameOf = input.nameOf ?? ((player: number) => `Seat ${player + 1}`)
   const items: ManualItem[] = []
   const give = (label: (who: string) => string): void => {
@@ -32,7 +39,12 @@ export function controlGroup(input: MenuInput): ManualGroup | null {
         unavailable: off,
       })
     }
-    items.push({ key: 'sacrifice', label: 'Sacrifice', action: { Sacrifice: { object: object.id } }, unavailable: off })
+    items.push({
+      key: 'sacrifice',
+      label: 'Sacrifice',
+      action: { Sacrifice: { object: object.id } },
+      unavailable: off,
+    })
     give((who) => `Give control to ${who}`)
   }
   const spell = object.types.includes('Instant') || object.types.includes('Sorcery')

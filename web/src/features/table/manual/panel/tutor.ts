@@ -9,7 +9,10 @@ export interface Found {
 }
 
 /** The searched cards by name, so the library's order is not on show; cards of one name keep their order. */
-export function foundCards(searched: readonly ObjectId[], nameOf: (card: ObjectId) => string | undefined): Found[] {
+export function foundCards(
+  searched: readonly ObjectId[],
+  nameOf: (card: ObjectId) => string | undefined,
+): Found[] {
   return searched
     .map((id) => ({ id, name: nameOf(id) ?? 'A card' }))
     .sort((a, b) => a.name.localeCompare(b.name))
