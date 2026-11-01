@@ -11,6 +11,7 @@ import {
 import { useGame, usePlay } from '@/features/game/gameContext'
 import type { FullControlMode } from '@/protocol/generated'
 import { canSetStops } from '../selectors'
+import { FlowMenuItems } from './FlowMenu'
 import {
   FULL_CONTROL_DESCRIPTION,
   FULL_CONTROL_KEYS,
@@ -31,7 +32,8 @@ const CHOICES: { mode: FullControlMode; label: string; keys?: string }[] = [
  * Full Control: the button asks for it held (and turns it off again), its menu for any of the three modes, and Control
  * or Control with Shift do the same from the keyboard. It shows what the server holds, in words, so it changes when
  * the server says so and not when it is pressed; the server also turns it off by itself after the next window. It is
- * drawn only for a seat that is still in a running game, and cannot be used while the connection is down.
+ * drawn only for a seat that is still in a running game, and cannot be used while the connection is down. The menu ends
+ * with the pace settings (`FlowMenuItems`).
  */
 export function FullControlToggle() {
   const { session } = useGame()
@@ -102,6 +104,7 @@ export function FullControlToggle() {
               </DropdownMenuRadioItem>
             ))}
           </DropdownMenuRadioGroup>
+          <FlowMenuItems />
         </DropdownMenuContent>
       </DropdownMenu>
     </div>

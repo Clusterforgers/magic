@@ -181,6 +181,7 @@ impl Bot {
             | ServerMessage::Lobby { .. }
             | ServerMessage::Stops { .. }
             | ServerMessage::FullControl { .. }
+            | ServerMessage::EndTurnByHand { .. }
             | ServerMessage::Bank { .. }
             | ServerMessage::Presence { .. } => {}
             ServerMessage::GameOver { result } => return Progress::Over(result),

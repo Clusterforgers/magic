@@ -74,4 +74,8 @@ keep: boolean, } | { "type": "FullControl",
 /**
  * The new mode.
  */
-mode: FullControlMode, };
+mode: FullControlMode, } | { "type": "EndTurnByHand", 
+/**
+ * True to end the seat's turns by hand.
+ */
+on: boolean, };

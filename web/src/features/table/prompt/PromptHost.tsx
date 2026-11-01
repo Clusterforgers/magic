@@ -12,6 +12,7 @@ import type { PromptApi, Selection } from './PromptContext'
 import { UnsupportedPrompt } from './PromptLayout'
 import { clockKind } from './clockText'
 import { PROMPTS } from './registry'
+import { QuickCast } from './QuickCast'
 import { ResponseClock } from './ResponseClock'
 
 const NOTHING: ReadonlySet<ObjectId> = new Set()
@@ -97,10 +98,10 @@ function PromptScope({ pending }: { pending: PendingDecision }) {
 
 /**
  * Fills the decision line of the centre strip with the prompt for the decision this seat must answer, and draws
- * nothing when there is none. The prompt is keyed by decision id: a new decision remounts it with an empty selection.
+ * the quick cast of an instant in hand when there is none. The prompt is keyed by decision id: a new decision remounts it with an empty selection.
  */
 export function PromptHost() {
   const pending = usePlay(ownDecision)
-  if (pending === null) return null
+  if (pending === null) return <QuickCast />
   return <PromptScope key={pending.id} pending={pending} />
 }

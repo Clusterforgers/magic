@@ -10,6 +10,7 @@ import type {
   DecisionId,
   FullControlMode,
   ManualAction,
+  ObjectId,
   ServerMessage,
   Step,
   StopSide,
@@ -19,6 +20,7 @@ import { createManualLedger, isManualOf } from './manualLedger'
 import type { ManualReply } from './manualLedger'
 import { previewKey } from './preview'
 import { canHoldStop } from './stops'
+import { saveEndTurnByHand, welcomeRequests } from './flowPrefs'
 import { mergeLogNames, rememberDeparted } from './rememberNames'
 import { owesByHand } from './byHand'
 import { appendChat, appendLog, createPlayStore, mergeHistory } from './store'
@@ -70,6 +72,18 @@ export interface Session {
   setStop(side: StopSide, step: Step, on: boolean, keep: boolean): boolean
   /** Asks the server for a Full Control mode; the store's `fullControl` follows when it says so. False when the socket is not open. */
   setFullControl(mode: FullControlMode): boolean
+  /**
+   * Asks the server to hold this seat at its own end step until it ends the turn (`on`), or not, and stores the choice
+   * for every later game. The store's `endTurnByHand` follows when the server says so. False when the socket is not open.
+   */
+  setEndTurnByHand(on: boolean): boolean
+  /**
+   * Casts `card` (an instant or a flash card in hand) at this seat's next priority window: asks the server for that
+   * window (Full Control `NextWindow`, which asks whatever the seat holds) and casts the card when the decision comes,
+   * if it is castable then; otherwise the decision is shown as usual. Null forgets the card and gives the window back
+   * when this asked for it. False when the socket is not open.
+   */
+  castWhenAsked(card: ObjectId | null): boolean
   /**
    * Asks the server to pass priority for this seat until `until`, so it is not asked again until something happens
    * (see `ClientMessage::Yield`). The store's `yielding` follows when the server says so, not before, and the
@@ -206,7 +220,15 @@ export function createSession(deps: SessionDeps): Session {
           yielding: message.yielding,
           stops: message.stops,
           fullControl: message.full_control,
+          endTurnByHand: message.end_turn_by_hand,
+          castWhenAsked: null,
         })
+        for (const request of welcomeRequests({
+          game: message.game,
+          stops: message.stops,
+          endTurnByHand: message.end_turn_by_hand,
+        }))
+          socket.send(request)
         return
       case 'Yielding':
         onYielding(message)
@@ -217,6 +239,9 @@ export function createSession(deps: SessionDeps): Session {
         return
       case 'FullControl':
         setState({ fullControl: message.mode })
+        return
+      case 'EndTurnByHand':
+        setState({ endTurnByHand: message.on })
         return
       case 'Lobby':
         // The server sends the whole roster each time, so the newest one simply replaces the last.
@@ -242,7 +267,14 @@ export function createSession(deps: SessionDeps): Session {
         return
       case 'GameOver':
         socket.retire()
-        setState({ result: message.result, phase: 'over', pending: null, preview: null, yielding: null })
+        setState({
+          result: message.result,
+          phase: 'over',
+          pending: null,
+          preview: null,
+          yielding: null,
+          castWhenAsked: null,
+        })
         return
       case 'Bank':
         // A spent extension has no event to carry it; an earned one arrives in the table of the batch.
@@ -342,6 +374,22 @@ export function createSession(deps: SessionDeps): Session {
       },
       preview: null,
     })
+    const card = getState().castWhenAsked
+    const kind = message.decision.kind
+    if (card === null || !('Priority' in kind)) return
+    // The window the click asked for: the card is cast if it can be, and the decision stays on screen if not.
+    setState({ castWhenAsked: null })
+    if (kind.Priority.castable.includes(card)) answerPending({ Priority: { CastSpell: card } })
+  }
+
+  function answerPending(answer: Answer): boolean {
+    const { pending } = getState()
+    if (pending === null || !socket.send({ type: 'Answer', decision: pending.id, answer })) return false
+    lastAnswered = pending.id
+    sentCount += 1
+    answeredAt = sentCount
+    setState({ pending: null, preview: null })
+    return true
   }
 
   function onYielding(message: Of<'Yielding'>): void {
@@ -425,15 +473,7 @@ export function createSession(deps: SessionDeps): Session {
     disconnect: () => socket.disconnect(),
     ready: () => socket.send({ type: 'Ready' }),
     notReady: () => socket.send({ type: 'NotReady' }),
-    answer(answer) {
-      const { pending } = getState()
-      if (pending === null || !socket.send({ type: 'Answer', decision: pending.id, answer })) return false
-      lastAnswered = pending.id
-      sentCount += 1
-      answeredAt = sentCount
-      setState({ pending: null, preview: null })
-      return true
-    },
+    answer: answerPending,
     preview(decision, answer) {
       const { pending } = getState()
       if (!previewsKnown || pending === null || pending.id !== decision) return false
@@ -452,6 +492,24 @@ export function createSession(deps: SessionDeps): Session {
     setStop: (side, step, on, keep) =>
       canHoldStop(step) && socket.send({ type: 'SetStop', side, step, on, keep }),
     setFullControl: (mode) => socket.send({ type: 'FullControl', mode }),
+    setEndTurnByHand(on) {
+      if (!socket.send({ type: 'EndTurnByHand', on })) return false
+      saveEndTurnByHand(on)
+      return true
+    },
+    castWhenAsked(card) {
+      const { castWhenAsked: queued, fullControl } = getState()
+      if (card === null) {
+        // Give back only the window this asked for; a mode the player chose stays.
+        if (queued !== null && fullControl === 'NextWindow' && !socket.send({ type: 'FullControl', mode: 'Off' }))
+          return false
+        setState({ castWhenAsked: null })
+        return true
+      }
+      if (fullControl === 'Off' && !socket.send({ type: 'FullControl', mode: 'NextWindow' })) return false
+      setState({ castWhenAsked: card })
+      return true
+    },
     yieldUntil(until) {
       if (getState().fullControl !== 'Off' || !socket.send({ type: 'Yield', until })) return false
       const { pending } = getState()

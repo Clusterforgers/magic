@@ -134,6 +134,16 @@ export function fixtureSession(store: PlayStore, options: FixtureSessionOptions 
       store.setState((state) => ({ fullControl: mode, yielding: mode === 'Off' ? state.yielding : null }))
       return true
     },
+    // As the server answers: it holds the choice and says so.
+    setEndTurnByHand(on) {
+      store.setState({ endTurnByHand: on })
+      return true
+    },
+    // The dev table has no passing to interrupt: the card is only marked as queued.
+    castWhenAsked(card) {
+      store.setState({ castWhenAsked: card })
+      return true
+    },
     // As the server answers a yield (it refuses one under Full Control): it starts, and the priority decision on screen is passed.
     yieldUntil(until) {
       if (store.getState().fullControl !== 'Off') return false

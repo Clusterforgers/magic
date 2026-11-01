@@ -49,7 +49,11 @@ stops: Array<Stop>,
 /**
  * The Full Control mode the server holds for this seat (see [`ClientMessage::FullControl`]).
  */
-full_control: FullControlMode, } | { "type": "Lobby", 
+full_control: FullControlMode, 
+/**
+ * Whether the server holds this seat at its own end step (see [`ClientMessage::EndTurnByHand`]).
+ */
+end_turn_by_hand: boolean, } | { "type": "Lobby", 
 /**
  * Every seat in seat order.
  */
@@ -137,7 +141,11 @@ stops: Array<Stop>, } | { "type": "FullControl",
 /**
  * The mode now in force.
  */
-mode: FullControlMode, } | { "type": "Bank", 
+mode: FullControlMode, } | { "type": "EndTurnByHand", 
+/**
+ * The setting now in force.
+ */
+on: boolean, } | { "type": "Bank", 
 /**
  * The seat whose bank changed.
  */

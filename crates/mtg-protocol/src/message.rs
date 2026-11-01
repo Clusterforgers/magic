@@ -227,6 +227,15 @@ pub enum ClientMessage {
         /// The new mode.
         mode: FullControlMode,
     },
+    /// Sets whether this seat ends its own turns by hand; [`ServerMessage::EndTurnByHand`] says what the server holds.
+    ///
+    /// While it is on, the seat is asked at each priority decision of its own end step, whether it can act or not,
+    /// so passing for it never carries its turn into the next seat's; a yield the seat asks for still passes through.
+    /// Kept per seat in memory like the stops and answered like [`ClientMessage::FullControl`].
+    EndTurnByHand {
+        /// True to end the seat's turns by hand.
+        on: bool,
+    },
 }
 
 /// A message from the server to one client.
@@ -251,6 +260,9 @@ pub enum ServerMessage {
         stops: Vec<Stop>,
         /// The Full Control mode the server holds for this seat (see [`ClientMessage::FullControl`]).
         full_control: FullControlMode,
+        /// Whether the server holds this seat at its own end step (see [`ClientMessage::EndTurnByHand`]).
+        #[serde(default)]
+        end_turn_by_hand: bool,
     },
     /// Who is at the table before the game starts.
     ///
@@ -353,6 +365,13 @@ pub enum ServerMessage {
     FullControl {
         /// The mode now in force.
         mode: FullControlMode,
+    },
+    /// This seat's end-turn-by-hand setting changed (see [`ClientMessage::EndTurnByHand`]).
+    ///
+    /// Sent whenever it changes, whatever the cause, in the same place as [`ServerMessage::Stops`].
+    EndTurnByHand {
+        /// The setting now in force.
+        on: bool,
     },
     /// A seat's bank of clock extensions changed with no event to carry it: an extension was spent at the deadline.
     ///

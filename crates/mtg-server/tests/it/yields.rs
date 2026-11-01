@@ -195,6 +195,7 @@ fn shape(message: &ServerMessage) -> String {
         ServerMessage::Yielding { until: None } => "yield none".into(),
         ServerMessage::Stops { .. } => "stops".into(),
         ServerMessage::FullControl { .. } => "full control".into(),
+        ServerMessage::EndTurnByHand { .. } => "end turn by hand".into(),
         ServerMessage::Bank { .. } => "bank".into(),
         ServerMessage::Presence { .. } => "presence".into(),
     }

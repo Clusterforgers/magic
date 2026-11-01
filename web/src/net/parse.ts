@@ -60,6 +60,7 @@ const MESSAGE_TYPES: Record<ServerMessage['type'], true> = {
   Yielding: true,
   Stops: true,
   FullControl: true,
+  EndTurnByHand: true,
   Bank: true,
   Presence: true,
 }
@@ -393,6 +394,9 @@ function build(type: ServerMessage['type'], v: Record<string, unknown>): Built {
       if (!isStopList(v.stops))
         return '"stops" must be a list of stops (side, step, keep), each side and step once'
       if (!isFullControl(v.full_control)) return '"full_control" must be Off, NextWindow or Held'
+      // An older server leaves it out, which reads as off.
+      if (v.end_turn_by_hand !== undefined && !isFlag(v.end_turn_by_hand))
+        return '"end_turn_by_hand" must be true or false'
       return {
         type,
         protocol_version: v.protocol_version,
@@ -403,6 +407,7 @@ function build(type: ServerMessage['type'], v: Record<string, unknown>): Built {
         yielding: v.yielding,
         stops: v.stops,
         full_control: v.full_control,
+        end_turn_by_hand: v.end_turn_by_hand ?? false,
       }
     case 'Lobby':
       if (!isListOf(v.seats, isLobbySeat)) {
@@ -487,6 +492,9 @@ function build(type: ServerMessage['type'], v: Record<string, unknown>): Built {
     case 'FullControl':
       if (!isFullControl(v.mode)) return '"mode" must be Off, NextWindow or Held'
       return { type, mode: v.mode }
+    case 'EndTurnByHand':
+      if (!isFlag(v.on)) return '"on" must be true or false'
+      return { type, on: v.on }
     case 'Bank':
       if (!isCount(v.seat)) return '"seat" must be a whole number'
       if (!isCount(v.bank)) return '"bank" must be a whole number'

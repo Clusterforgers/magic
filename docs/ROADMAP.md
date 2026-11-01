@@ -33,7 +33,7 @@ One item is one piece of about 15 minutes and one line: the outcome, the cards i
 - Card language and compiler: the DSL, the reader framework, the renderer with goldens, the corpus ratchet, templates for every ability shape and stored `card_rules` (`docs/cards-dsl.md`).
 - Model-assisted reading: `check-rules`, `propose` (a local OpenAI-style server), `promote` (`--draft` writes the 355 first read-tier drafts, which `compile` stores in `card_drafts`), the repair of mechanical slips, writers for the accepted wordings, `coverage --all`, the gap ledger and `export-pairs` (`docs/cards-dsl.md`).
 - Protocol and server: generated bindings with a drift test, the game actor, a WebSocket per seat, persistence and resume, accounts (the admin makes, resets and removes them), lobbies, open games, precons, concurrent keep and mulligan, seat presence, the snapshot log (`docs/protocol.md`, `docs/server.md`).
-- Game flow: auto-pass, response clocks, yields, stops, Full Control, the timer bank, the by-hand window and leak tests (`docs/arena-flow.md`).
+- Game flow: auto-pass, response clocks, yields, stops, Full Control, the timer bank, the by-hand window, end turn by hand, default stops, quick cast of instants and leak tests (`docs/arena-flow.md`).
 - Commander: house rules, format rules, deck check, Partner, companion in the engine, tax, commander damage and any number of seats (`docs/server.md`).
 - Manual play: the Commands panel, by-hand clauses with chips, manual actions at any time on any turn and fix marks (`docs/web.md`, `docs/protocol.md`).
 - Web table: lanes and card sizes, the seat corner, click combat, the mana strip, legible play (flights, spotlight, target arrows, marks), Equipment tucked at its host with its grants, hand reasons, fit at six sizes and a 12 px text floor (`docs/web.md`, `docs/ui-design.md`).
@@ -56,9 +56,6 @@ Items that touch the running game come first; the play-session findings (pf) lea
 - [~] (pf7) (card-menu) The log shows events without a highlight that marks something as new
 - [~] (pf8) (seat-look) The mana a seat has is easy to read: untapped mana sources counted by colour next to the pool, for every seat
 - [~] (pf9) (seat-look) A planeswalker shows its current loyalty clearly on the battlefield, also after an ability changes it
-- [~] (pf10) (flow-prefs) Pinned phase stops can be saved as the default, so a new game starts with them
-- [~] (pf11) (flow-prefs) A setting "End my turn by hand": with it on, the turn never passes to the next seat until the seat ends it
-- [~] (pf12) (flow-prefs) An instant or flash card in hand can be cast whenever its seat could get priority: clicking it during any step stops there instead of passing
 - [~] (pf13) (manual-more) Manual actions: put a chosen card from the library into the hand, remove summoning sickness, sacrifice a permanent, give a permanent or card to another seat's control (It That Betrays), each in the Commands panel and the card menu
 - [~] (pf14) (card-menu) An in-game option on every card marks it as broken or to be played by hand (a fix mark from the table)
 - [ ] (pf15) Engine: Lifelink gains life for combat damage dealt to a player (a reported game did not)

@@ -18,6 +18,7 @@ export const welcome = {
   yielding: null,
   stops: [],
   full_control: 'Off',
+  end_turn_by_hand: false,
 }
 /** The `Join` the socket must open with. */
 export const join = { type: 'Join', protocol_version: PROTOCOL_VERSION, game: GAME, name: 'Ana' }

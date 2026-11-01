@@ -175,6 +175,7 @@ The design is in [arena-flow.md](arena-flow.md).
 - `SetStop { side, step, on, keep }` sets (`on` true) or clears (`on` false) the stop at a side and step. `keep` is the new stop's and is ignored when clearing. A seat holds one stop per side and step, so setting a held stop again replaces its `keep`.
 - Only a step where a player gets priority can hold a stop. `Untap` and `Cleanup` are refused, set or cleared alike, with `Error{BadMessage}`. The refusal changes nothing and needs no resync, unlike `StaleDecision` and `IllegalAnswer`: the shape is valid, so the socket stays open and counts no bad message.
 - `FullControl { mode }` (`Off`, `NextWindow`, `Held`) sets how much of the game the seat plays by hand: `NextWindow` until the seat has passed once, `Held` until it turns the mode off.
+- `EndTurnByHand { on }` (client and server) sets and reports whether the seat ends its own turns by hand; it lives and is told like the mode, and `Welcome.end_turn_by_hand` (absent reads as false) gives it at join.
 - `Stops { stops }` and `FullControl { mode }` report what the server holds whenever it changes, whatever the cause. They follow the events of the step that changed it and precede the `Decision` that follows, as `Yielding` does. `Welcome.stops` and `Welcome.full_control` give the values at join.
   - `Stops` is the whole list and replaces the client's: each side and step once, own side first, each side in turn order (`keep` never decides the order).
   - A request that changes nothing gets silence. One that only changes a held stop's `keep` is a change and is told as the whole list.
@@ -183,9 +184,12 @@ The design is in [arena-flow.md](arena-flow.md).
 - The server asks a seat at a priority decision only at its windows and passes for it elsewhere (the rules are in `windows.rs`, see `server.md`):
   - in `NextWindow` and `Held`, at every window;
   - at a stop, whether the seat can act or not;
+  - with end turn by hand on, at its own end step whether it can act or not; this never ends a yield, so the seat's own `EndOfTurn` yield still passes the turn;
   - at the default windows, only if it can act: the seat's own main phases, the declare attackers and declare blockers steps, and any moment an object of another seat is on the stack; a seat that cannot act is passed for there after the wait above, except in its own main phase with an empty stack, where it is passed for at once.
 - A one-turn stop goes once the game has left its step. `NextWindow` goes back to `Off` when the seat has passed.
-- The web checks both messages and the `Welcome` fields in `net/parse.ts` (a step only has to be a step; whether it may hold a stop is the server's rule) and keeps them in the store as `stops` and `fullControl`.
+- The web checks both messages and the `Welcome` fields in `net/parse.ts` (a step only has to be a step; whether it may hold a stop is the server's rule) and keeps them in the store as `stops`, `fullControl` and `endTurnByHand`.
+- The web keeps the pinned stops saved as default and the end-turn choice in `localStorage` (`play/flowPrefs.ts`). At `Welcome` it sends the default stops once per game, to a seat that holds none, and `EndTurnByHand` when the server holds the other choice.
+- Quick cast: with no decision of its own on screen, a click on an instant or flash card in hand sends `FullControl { NextWindow }` (unless a mode is on) and the client casts the card at the next `Priority` decision if it is in `castable`; otherwise the decision is shown. The request reaches only the seat, and `NextWindow` asks whatever the seat holds, so the table learns nothing (`pace_leak.rs`).
 
 ## Preview
 

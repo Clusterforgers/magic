@@ -116,6 +116,7 @@ fn welcome() -> ServerMessage {
         yielding: None,
         stops: Vec::new(),
         full_control: FullControlMode::Off,
+        end_turn_by_hand: false,
     }
 }
 
