@@ -7,6 +7,7 @@ import { CardsApiContext } from '@/features/table/cardsContext'
 import { setDetailFetcher } from '@/features/table/printed'
 import { TableOptionsContext } from '@/features/table/tableOptions'
 import { DevFxControls } from './DevFxControls'
+import { DevMoments } from './DevMoments'
 import { DevTurnChange } from './DevTurnChange'
 import { fixtureGame } from './devGame'
 import { FIXTURE_MARKER, buildFixture } from './fixture'
@@ -78,6 +79,7 @@ export function DevTableRoute() {
     states,
     equip,
     reveal,
+    moments,
     menu,
     panel,
   } = useSearch({
@@ -143,10 +145,10 @@ export function DevTableRoute() {
     () => ({
       mode,
       focus,
-      effects: fx === undefined && newturn !== true ? undefined : true,
+      effects: fx === undefined && newturn !== true && moments !== true ? undefined : true,
       effectsSlow: slow,
     }),
-    [mode, focus, fx, newturn, slow],
+    [mode, focus, fx, newturn, moments, slow],
   )
   return (
     <GameContext value={game}>
@@ -158,6 +160,7 @@ export function DevTableRoute() {
           <GameTable />
           <DevFxControls initial={fx} open={bar} />
           <DevTurnChange on={newturn === true} />
+          <DevMoments on={moments === true} />
         </CardsApiContext>
       </TableOptionsContext>
     </GameContext>
