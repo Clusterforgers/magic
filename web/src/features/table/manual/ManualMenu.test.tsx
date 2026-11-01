@@ -93,7 +93,7 @@ describe('opening the menu', () => {
     const groups = within(menu())
       .getAllByRole('group')
       .map((group) => group.getAttribute('data-group'))
-    expect(groups).toEqual(['move', 'counters', 'tap', 'effect', 'show', 'panel'])
+    expect(groups).toEqual(['move', 'counters', 'tap', 'effect', 'show', 'control', 'panel'])
     expect(within(menu()).getByRole('group', { name: 'Move to' })).toBeInTheDocument()
     expect(within(menu()).getByRole('group', { name: 'Counters' })).toBeInTheDocument()
   })

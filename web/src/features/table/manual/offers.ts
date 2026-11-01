@@ -12,6 +12,7 @@ import type {
   PlayerId,
   Zone,
 } from '@/protocol/generated'
+import { controlGroup } from './control'
 
 /** The zone of an object, without its owner. */
 export type ZoneKind =
@@ -66,7 +67,7 @@ export interface ManualItem {
 }
 
 /** The groups of the menu, in order. */
-export type GroupId = 'move' | 'counters' | 'tap' | 'attach' | 'effect' | 'show' | 'panel'
+export type GroupId = 'move' | 'counters' | 'tap' | 'attach' | 'effect' | 'show' | 'control' | 'panel'
 
 /** A titled run of entries, or a note that says why it has none. */
 export interface ManualGroup {
@@ -96,6 +97,8 @@ export interface MenuInput {
   players: readonly PlayerId[]
   /** Whether the format has a command zone to move a card to. */
   hasCommandZone: boolean
+  /** The name of a seat, for the entries that name one; seats are numbered without it. */
+  nameOf?: (seat: PlayerId) => string
   /** The name of the card's owner. */
   ownerName: string
 }
@@ -343,6 +346,7 @@ export function manualMenu(input: MenuInput): ManualMenu {
     attachGroup(input, off),
     effectGroup(input, off),
     showGroup(input, off),
+    controlGroup(input),
     panelGroup(off),
   ].filter((group): group is ManualGroup => group !== null)
   return { title: input.object.name, notice: off, clauses: input.object.manual ?? [], groups }

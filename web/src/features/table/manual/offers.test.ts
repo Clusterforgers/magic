@@ -174,9 +174,9 @@ describe('which groups and entries a card offers', () => {
     if (expected.attach?.length === 0) expect(groupIds(menu)).not.toContain('attach')
   })
 
-  it('lists the groups in the order move, counters, tap, attach, effects, show, panel', () => {
+  it('lists the groups in the order move, counters, tap, attach, effects, show, control, panel', () => {
     const menu = manualMenu(input({ ...card(), subtypes: ['Aura'] }))
-    expect(groupIds(menu)).toEqual(['move', 'counters', 'tap', 'attach', 'effect', 'show', 'panel'])
+    expect(groupIds(menu)).toEqual(['move', 'counters', 'tap', 'attach', 'effect', 'show', 'control', 'panel'])
   })
 
   it('has no entry for the seat’s life, counters, library or mana, nor for a token: the panel has them', () => {
