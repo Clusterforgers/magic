@@ -17,6 +17,7 @@ export type CommandId =
   | 'experience'
   | 'draw'
   | 'look'
+  | 'tutor'
   | 'mill'
   | 'exileTop'
   | 'bottomTop'
@@ -70,6 +71,8 @@ export interface PanelInput {
   counters: readonly (readonly [CounterKind, number])[]
   /** The top cards the seat looked at and has not put back yet, top first; none otherwise. */
   looked: readonly ObjectId[]
+  /** The whole library, top first, while the seat searches it by hand; none otherwise. */
+  searched?: readonly ObjectId[]
   /** The colours of the seat's commander identity in WUBRG order (empty: colourless); left out outside Commander. */
   identity?: readonly Color[]
   /** Why nothing can be done by hand (a seat that lost, a finished game); left out while the seat plays. */
@@ -146,6 +149,16 @@ export function panelGroups(input: PanelInput): PanelGroup[] {
       unavailable: noCards,
     },
     lookCommand(input, noCards),
+    {
+      id: 'tutor',
+      group: 'library',
+      label: 'Search for a card',
+      effect:
+        (input.searched?.length ?? 0) > 0
+          ? 'You are searching your library: choose a card, or shuffle without one.'
+          : 'Look through your library, put a card into your hand, then shuffle.',
+      unavailable: noCards,
+    },
     {
       id: 'mill',
       group: 'library',
@@ -318,6 +331,12 @@ export function previewOf(command: Command, draft: PanelDraft, input: PanelInput
         preview: `${input.name}: the top card of your library is shown to every seat`,
         apply: 'Reveal the top card',
         action: { Reveal: { what: { Top: {} } } },
+      }
+    case 'tutor':
+      return {
+        preview: `${input.name}: you look through all ${plural(input.library, 'card')} of your library; the other seats are told you searched`,
+        apply: 'Search your library',
+        action: { Search: {} },
       }
     case 'token':
       return tokenPreview(draft, amount)

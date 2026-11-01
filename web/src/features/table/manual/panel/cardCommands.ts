@@ -19,7 +19,17 @@ import type { Preview } from './commands'
 
 /** The commands of a card, in the order of its menu. */
 export type CardCommandId =
-  'move' | 'discard' | 'tap' | 'counters' | 'attach' | 'unattach' | 'damage' | 'pump'
+  | 'move'
+  | 'discard'
+  | 'tap'
+  | 'counters'
+  | 'attach'
+  | 'unattach'
+  | 'damage'
+  | 'pump'
+  | 'unsick'
+  | 'sacrifice'
+  | 'give'
 
 /** One command of the picked card. */
 export interface CardCommand {
@@ -31,8 +41,10 @@ export interface CardCommand {
   unavailable?: string
   /** The places a card can be moved to (`move`), as the menu lists them. */
   moves?: ManualItem[]
-  /** The action sent as it is (`discard`, `tap`, `unattach`). */
+  /** The action sent as it is (`discard`, `tap`, `unattach`, `unsick`, `sacrifice`). */
   action?: ManualAction
+  /** The seats that can be given control (`give`). */
+  seats?: readonly PlayerId[]
 }
 
 /** What a card's rows have chosen so far: the menu's form fields, a signed counter change and the move picked. */
@@ -43,6 +55,8 @@ export interface CardDraft extends Draft {
   dest: string
   /** `targetKey` of what damage is dealt to, or empty. */
   hitKey: string
+  /** The seat given control (`give`), as a string, or empty. */
+  giveTo: string
 }
 
 /** The start of every card row. */
@@ -56,6 +70,7 @@ export function startCardDraft(command: CardCommand, input: MenuInput): CardDraf
     toughness: 0,
     dest: command.moves?.find((move) => move.unavailable === undefined)?.key ?? command.moves?.[0]?.key ?? '',
     hitKey: '',
+    giveTo: command.seats?.length === 1 ? String(command.seats[0]) : '',
   }
 }
 
@@ -173,9 +188,58 @@ export function cardCommands(menu: ManualMenu): CardCommand[] {
   return commands
 }
 
-/** The commands of the object in `input`, in one step. */
+/** The commands of the object in `input`, in one step: its menu's, then who controls it and whether it may act. */
 export function commandsFor(input: MenuInput): CardCommand[] {
-  return cardCommands(manualMenu(input))
+  return [...cardCommands(manualMenu(input)), ...controlCommands(input)]
+}
+
+/**
+ * The control commands of a card: ending a creature's summoning sickness, a sacrifice and giving control of a
+ * permanent the seat controls, and putting a card it owns from its graveyard or exile onto the battlefield under
+ * another seat's control.
+ */
+export function controlCommands(input: MenuInput): CardCommand[] {
+  const { object, seat, off } = input
+  const others = input.players.filter((player) => player !== seat)
+  const noOne = others.length === 0 ? 'No other seat is in the game.' : undefined
+  const kind = zoneKind(object.zone)
+  const out: CardCommand[] = []
+  if (kind === 'battlefield' && object.controller === seat) {
+    if (object.permanent?.summoning_sick === true) {
+      out.push({
+        id: 'unsick',
+        label: 'Remove summoning sickness',
+        effect: 'It can attack and tap this turn.',
+        action: { RemoveSickness: { object: object.id } },
+        unavailable: off,
+      })
+    }
+    out.push({
+      id: 'sacrifice',
+      label: 'Sacrifice',
+      effect: 'Put it into its owner’s graveyard as a sacrifice.',
+      action: { Sacrifice: { object: object.id } },
+      unavailable: off,
+    })
+    out.push({
+      id: 'give',
+      label: 'Give control…',
+      effect: 'Another seat gains control of it.',
+      seats: others,
+      unavailable: off ?? noOne,
+    })
+  }
+  const spell = object.types.includes('Instant') || object.types.includes('Sorcery')
+  if ((kind === 'graveyard' || kind === 'exile') && object.owner === seat && !spell) {
+    out.push({
+      id: 'give',
+      label: 'Onto the battlefield for…',
+      effect: 'Put it onto the battlefield under another seat’s control.',
+      seats: others,
+      unavailable: off ?? noOne,
+    })
+  }
+  return out
 }
 
 /** The kinds a counters row offers: the ones on the card first, then the protocol's, then any other. */
@@ -275,6 +339,23 @@ export function previewOfCard(command: CardCommand, draft: CardDraft, context: C
         preview: `${name} deals ${draft.count} damage to ${to}`,
         apply: `Deal ${draft.count} damage`,
         action: built.action,
+      }
+    }
+    case 'unsick':
+      return sends(command, `${name}: no longer summoning sick this turn`, 'Remove summoning sickness')
+    case 'sacrifice':
+      return sends(command, `${name}: the battlefield → graveyard, sacrificed`, `Sacrifice ${name}`)
+    case 'give': {
+      const to = command.seats?.find((seat) => String(seat) === draft.giveTo)
+      if (to === undefined) return { problem: 'Choose the seat that gains control.' }
+      const who = context.nameOf(to)
+      const entering = zoneKind(object.zone) !== 'battlefield'
+      return {
+        preview: entering
+          ? `${name}: ${FROM_WORDS[zoneKind(object.zone)] ?? 'its zone'} → the battlefield under ${who}’s control`
+          : `${name}: control → ${who}`,
+        apply: `Give ${name} to ${who}`,
+        action: { GiveControl: { object: object.id, to } },
       }
     }
     case 'pump': {

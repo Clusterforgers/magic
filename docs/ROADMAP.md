@@ -51,7 +51,6 @@ Items that touch the running game come first; the play-session findings (pf) lea
 - [~] (pf10) (flow-prefs) Pinned phase stops can be saved as the default, so a new game starts with them
 - [~] (pf11) (flow-prefs) A setting "End my turn by hand": with it on, the turn never passes to the next seat until the seat ends it
 - [~] (pf12) (flow-prefs) An instant or flash card in hand can be cast whenever its seat could get priority: clicking it during any step stops there instead of passing
-- [~] (pf13) (manual-more) Manual actions: put a chosen card from the library into the hand, remove summoning sickness, sacrifice a permanent, give a permanent or card to another seat's control (It That Betrays), each in the Commands panel and the card menu
 - [ ] (pf15) Engine: Lifelink gains life for combat damage dealt to a player (a reported game did not)
 - [ ] (pf16) Cards: Fungal Fortitude returns its creature when a spell destroys it
 - [ ] (pf17) Cards: It That Betrays puts the sacrificed permanents onto the battlefield under its controller's control

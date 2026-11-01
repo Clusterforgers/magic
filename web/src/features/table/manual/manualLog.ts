@@ -1,7 +1,7 @@
 /** The log lines of manual actions: the sentence of an action and the events of its change that the sentence already tells. */
 import type { LogEntry } from '@/play/store'
 import type { Event, EventView, ManualAction, ObjectId, Zone } from '@/protocol/generated'
-import { describeHiddenManual, describeManual, joinWords } from '../eventText'
+import { describeHiddenManual, describeHiddenTutor, describeManual, joinWords } from '../eventText'
 import type { EventNames } from '../eventText'
 
 /** The events that carry out `action`, by variant name; `Move` also reads the zone it left from the first of them. */
@@ -27,7 +27,15 @@ const CHANGES: Record<ActionKind, readonly string[]> = {
   Reveal: ['Revealed'],
   Note: [],
   Roll: ['ManualRolled'],
+  Search: ['LibraryLooked'],
+  Tutor: ['ZoneChanged', 'LibraryShuffled'],
+  RemoveSickness: [],
+  Sacrifice: ['ZoneChanged'],
+  GiveControl: ['ZoneChanged', 'Entered', 'EffectCreated', 'CountersChanged'],
 }
+
+/** The hidden events that carry out a tutor the viewer cannot name. */
+const HIDDEN_TUTOR = ['ZoneChanged', 'LibraryShuffled']
 
 type ActionKind = ManualAction extends infer U ? (U extends unknown ? keyof U : never) : never
 
@@ -132,6 +140,14 @@ export function manualRun(log: readonly LogEntry[], at: number): ManualRun | nul
     const consumed = next !== undefined && nameOf(next.event) === 'ZoneChanged' ? 1 : 0
     return { consumed, from: leftFrom(log, at, consumed) }
   }
+  if (hidden !== null && typeof hidden === 'object' && 'ManualTutor' in hidden) {
+    let consumed = 0
+    for (const name of HIDDEN_TUTOR) {
+      const next = log[at + 1 + consumed]
+      if (next !== undefined && nameOf(next.event) === name) consumed += 1
+    }
+    return { consumed, from: undefined }
+  }
   return null
 }
 
@@ -214,6 +230,9 @@ export function manualText(
   }
   if ('Hidden' in event && typeof event.Hidden === 'object' && 'ManualMove' in event.Hidden) {
     return describeHiddenManual(event.Hidden.ManualMove.player, event.Hidden.ManualMove.to, names, from)
+  }
+  if ('Hidden' in event && typeof event.Hidden === 'object' && 'ManualTutor' in event.Hidden) {
+    return describeHiddenTutor(event.Hidden.ManualTutor.player, names)
   }
   return ''
 }

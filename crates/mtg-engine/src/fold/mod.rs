@@ -155,10 +155,18 @@ fn fold_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         // by hand records what the seat learned.
         Event::ManualAction { player, action } => {
             reset_passes(state);
-            if let crate::manual::ManualAction::LookTop { count } = **action {
-                sight::look_by_hand(state, *player, count);
+            match **action {
+                crate::manual::ManualAction::LookTop { count } => {
+                    sight::look_by_hand(state, *player, count);
+                }
+                crate::manual::ManualAction::Search {} => {
+                    let all = state.zone(Zone::Library(*player)).len();
+                    sight::look_by_hand(state, *player, u32::try_from(all).unwrap_or(u32::MAX));
+                }
+                _ => {}
             }
             crate::manual_show::apply(state, *player, action);
+            crate::manual_control::apply(state, action);
             Ok(())
         }
         Event::ManualRolled { .. } => {

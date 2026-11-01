@@ -1,6 +1,6 @@
 //! The manual actions on the seat's own library: looking at its top cards, putting the cards it looked at back in
-//! any order, on the bottom or into the graveyard, and shuffling it, each as the events a spell that does the same
-//! produces.
+//! any order, on the bottom or into the graveyard, shuffling it, and searching it for a card to put into the hand,
+//! each as the events a spell that does the same produces.
 
 use mtg_core::ids::{ObjectId, PlayerId};
 
@@ -83,4 +83,49 @@ pub(crate) fn shuffle(state: &GameState, player: PlayerId) -> Vec<Event> {
         player,
         order: shuffled(state, 0, state.zone(Zone::Library(player)).to_vec()),
     }]
+}
+
+/// The seat looks through its whole library, top first; the cards are known to it alone until they leave the library
+/// or it is shuffled.
+pub(crate) fn search(state: &GameState, player: PlayerId) -> Result<Vec<Event>, ManualRefusal> {
+    let library = state.zone(Zone::Library(player));
+    if library.is_empty() {
+        return Err(ManualRefusal::NotEnough("cards in the library"));
+    }
+    Ok(vec![Event::LibraryLooked(LibraryLooked {
+        player,
+        cards: top_cards(state, player, library.len()),
+    })])
+}
+
+/// The seat puts `object`, a card of its library it looked at, into its hand and shuffles the rest of the library, as
+/// a spell that searches for a card does.
+pub(crate) fn tutor(
+    state: &GameState,
+    player: PlayerId,
+    object: ObjectId,
+) -> Result<Vec<Event>, ManualRefusal> {
+    let library = Zone::Library(player);
+    state
+        .object(object)
+        .filter(|card| card.zone() == library && state.is_shown_to(player, object))
+        .ok_or(ManualRefusal::NotFound)?;
+    let rest: Vec<ObjectId> = state
+        .zone(library)
+        .iter()
+        .copied()
+        .filter(|card| *card != object)
+        .collect();
+    Ok(vec![
+        Event::ZoneChanged {
+            object,
+            from: library,
+            to: Zone::Hand(player),
+            cause: ZoneCause::Moved,
+        },
+        Event::LibraryShuffled {
+            player,
+            order: shuffled(state, 0, rest),
+        },
+    ])
 }
