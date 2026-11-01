@@ -6,6 +6,8 @@ import type { PreviewLegality } from '@/features/decks/preview/DeckPreview'
 import { NotValidatedDialog, notValidatedWords } from '@/features/decks/preview/NotValidatedDialog'
 import type { DeckPreviewData, PreviewCard } from '@/features/decks/preview/model'
 import type { GameFormat } from '@/lib/houseRules'
+import { FavouriteButton } from '@/features/precons/FavouriteButton'
+import type { Favourites } from '@/features/precons/useFavourites'
 import { deckFormat } from './deckWords'
 import type { DeckEntry } from './deckEntries'
 import type { DeckDetail } from './useDeckDetail'
@@ -26,6 +28,8 @@ interface DeckPaneProps {
   onUse(entry: DeckEntry): void
   onRetryDetail(): void
   onRetryVerdict(id: string): void
+  /** The account's favourite precons; absent for a guest. */
+  favourites?: Favourites
 }
 
 /** A stand-in for the deck while its cards load: the list's own facts, with the commanders it knows. */
@@ -85,6 +89,7 @@ export function DeckPane({
   onUse,
   onRetryDetail,
   onRetryVerdict,
+  favourites,
 }: DeckPaneProps) {
   if (entry === null) {
     return (
@@ -113,6 +118,14 @@ export function DeckPane({
         {chosen ? <CheckIcon aria-hidden="true" /> : null}
         {chosen ? 'This is your deck' : 'Use this deck'}
       </Button>
+      {entry.kind === 'precon' && favourites !== undefined ? (
+        <FavouriteButton
+          code={entry.id.slice('precon:'.length)}
+          name={entry.name}
+          favourites={favourites}
+          withLabel
+        />
+      ) : null}
       {verdict?.status === 'failed' ? (
         <span className="flex flex-wrap items-center gap-2 text-xs">
           <span data-slot="deck-check-failed" className="text-muted-foreground">

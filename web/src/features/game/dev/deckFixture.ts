@@ -127,10 +127,12 @@ function make(deck: FixtureDeck): Made {
 
 /** The cards whose pictures stand for a deck in a list: its commanders, else its first card. */
 const picturesOf = (made: Made): DeckPicture[] =>
-  (made.commanders.length > 0 ? made.commanders : made.main.slice(0, 1).map((line) => line.card)).map((card) => ({
-    oracle_id: card.oracle_id,
-    name: card.name,
-  }))
+  (made.commanders.length > 0 ? made.commanders : made.main.slice(0, 1).map((line) => line.card)).map(
+    (card) => ({
+      oracle_id: card.oracle_id,
+      name: card.name,
+    }),
+  )
 
 const tally = (made: Made): Counts => {
   const all: Counts = { total: 0, verified: 0, read: 0, partial: 0, manual: 0, stale: 0, unplayable: 0 }

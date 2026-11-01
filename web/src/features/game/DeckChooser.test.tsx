@@ -28,6 +28,8 @@ interface Scene {
   ready?: boolean
   current?: Parameters<typeof DeckChooser>[0]['current']
   chosenId?: string | null
+  /** The codes of the precons the account starred. */
+  starred?: string[]
 }
 
 async function open({
@@ -37,7 +39,13 @@ async function open({
   ready = false,
   current = null,
   chosenId = null,
+  starred = [],
 }: Scene = {}) {
+  const favourites = {
+    list: vi.fn().mockResolvedValue(starred),
+    star: vi.fn().mockResolvedValue(undefined),
+    unstar: vi.fn().mockResolvedValue(undefined),
+  }
   const choose = vi.fn()
   const choice: DeckChoice = { pending: null, chosenId, note: null, problem: null, choose }
   const auth = createAuthStore({
@@ -52,6 +60,7 @@ async function open({
         api={{ listDecks: async () => [] }}
         decks={lobbyDecks(switches)}
         precons={lobbyPrecons(switches)}
+        favouritesApi={favourites}
         game="g1"
         format={format}
         signedIn={signedIn}
@@ -62,7 +71,7 @@ async function open({
       />
     </AuthContext>,
   )
-  return { choose, user: userEvent.setup() }
+  return { choose, favourites, user: userEvent.setup() }
 }
 
 // The rows of the list: the support filter's own options are options too.
@@ -251,6 +260,52 @@ describe('selecting and choosing', () => {
     await user.click(link)
     const dialog = await screen.findByRole('dialog')
     expect(within(dialog).getByText('Cyclonic Rift')).toBeInTheDocument()
+  })
+})
+
+describe('sorting', () => {
+  const names = (): string[] => deckRows().map((row) => row.textContent?.slice(0, 12) ?? '')
+
+  it.each([
+    ['name', ['Arcane Wizar', 'Draconic Dom', 'Merciless Ra']],
+    ['hand', ['Draconic Dom', 'Merciless Ra', 'Arcane Wizar']],
+  ])('orders the precons by %s and says the count by hand on each row', async (sort, expected) => {
+    width(true)
+    const { user } = await open({ signedIn: false })
+    await screen.findByRole('option', { name: /Merciless Rage/ })
+    await user.selectOptions(screen.getByRole('combobox', { name: 'Sort by' }), sort)
+    expect(names()).toEqual(expected)
+    if (sort === 'hand')
+      expect(within(option(/Merciless Rage/)).getByText('1 played by hand')).toBeInTheDocument()
+  })
+})
+
+describe('favourite precons', () => {
+  it('lists a starred precon among the account decks', async () => {
+    width(true)
+    await open({ starred: ['c19-merciless-rage'] })
+    const row = await screen.findByRole('option', { name: /Merciless Rage/ })
+    expect(within(row).getByRole('img', { name: 'Favourite' })).toBeInTheDocument()
+    expect(screen.getByRole('option', { name: /Atraxa Superfriends/ })).toBeInTheDocument()
+  })
+
+  it('stars the selected precon from its preview', async () => {
+    width(true)
+    const { user, favourites } = await open()
+    await user.click(await screen.findByRole('tab', { name: 'Precons' }))
+    await user.click(await screen.findByRole('option', { name: /Draconic Domination/ }))
+    await user.click(
+      await screen.findByRole('button', { name: /Add Draconic Domination to your favourites/ }),
+    )
+    expect(favourites.star).toHaveBeenCalledWith('c18-draconic-domination')
+  })
+
+  it('offers no star to a guest', async () => {
+    width(true)
+    const { user } = await open({ signedIn: false })
+    await user.click(await screen.findByRole('option', { name: /Draconic Domination/ }))
+    await screen.findByRole('button', { name: 'Use this deck' })
+    expect(screen.queryByRole('button', { name: /favourites/ })).toBeNull()
   })
 })
 

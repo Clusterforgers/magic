@@ -57,6 +57,8 @@ interface CardImageProps {
   turned?: boolean
   /** Ask for it at once, as the preview does; lazy otherwise. */
   eager?: boolean
+  /** Told once when the picture has loaded or is missing, for a list that loads few pictures at a time. */
+  onSettle?(status: 'loaded' | 'failed'): void
 }
 
 /**
@@ -74,6 +76,7 @@ export function CardImage({
   className,
   turned = false,
   eager = false,
+  onSettle,
 }: CardImageProps) {
   const [seen, setSeen] = useState<{ src: string; status: ImageStatus } | null>(null)
   const keyOf = (url: string): string => (url === asked && missKey !== null ? missKey : url)
@@ -90,6 +93,7 @@ export function CardImage({
     else if (keyOf(src) !== src) missed.add(keyOf(src))
     else failedAt.set(src, Date.now())
     setSeen({ src, status: next })
+    if (next !== 'loading') onSettle?.(next)
   }
   return (
     <span

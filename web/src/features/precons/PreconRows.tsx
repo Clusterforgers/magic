@@ -5,6 +5,8 @@ import { useMediaQuery } from '@/hooks/useMediaQuery'
 import { cn } from '@/lib/utils'
 import type { PreconListItem } from '@/protocol/generated'
 import { PreconBadge } from './PreconBadge'
+import { FavouriteButton } from './FavouriteButton'
+import type { Favourites } from './useFavourites'
 import { commandersText, releaseText, statusOf } from './format'
 
 /** The window from which the precons are a table with columns; under it each is a stacked row. */
@@ -21,16 +23,28 @@ export interface RowsProps {
   playing: string | null
   /** Some game is being made: every Play is disabled while one is. */
   busy: boolean
+  /** The account's favourites; none for a guest, who has no star. */
+  favourites?: Favourites
 }
 
 const statusId = (precon: PreconListItem): string => `precon-status-${precon.code}`
 const cardsLabel = (precon: PreconListItem): string => `${precon.card_count} cards`
 
 /** The Details and Play buttons of a row. Play of a deck the game cannot take stays in place, disabled and explained. */
-function Actions({ precon, onDetails, onPlay, playing, busy }: RowsProps & { precon: PreconListItem }) {
+function Actions({
+  precon,
+  onDetails,
+  onPlay,
+  playing,
+  busy,
+  favourites,
+}: RowsProps & { precon: PreconListItem }) {
   const blocked = statusOf(precon) === 'blocked'
   return (
     <div className="flex items-center gap-2">
+      {favourites === undefined ? null : (
+        <FavouriteButton code={precon.code} name={precon.name} favourites={favourites} />
+      )}
       <Button
         type="button"
         variant="outline"

@@ -20,6 +20,12 @@ interface CardPictureProps {
   alt?: string
   /** Leaves the name off the skeleton, for a thumbnail too small to read it. */
   quiet?: boolean
+  /** Pulses the skeleton while the picture loads. */
+  pulse?: boolean
+  /** Asks for the picture at once instead of when it nears the view. */
+  eager?: boolean
+  /** Told once when the picture has loaded or is missing. */
+  onSettle?(status: 'loaded' | 'failed'): void
 }
 
 /** A card's picture by oracle id outside the table, over a plain skeleton that names it; none with Text only. */
@@ -31,6 +37,9 @@ export function CardPicture({
   className,
   alt,
   quiet = false,
+  pulse = false,
+  eager = false,
+  onSettle,
 }: CardPictureProps) {
   const choice = useImageChoice()
   if (choice === 'text') return null
@@ -38,14 +47,21 @@ export function CardPicture({
     <CardImage
       src={cardImageUrl({ kind: 'card', identity: { oracle_id: oracleId } }, face, size)}
       alt={alt ?? name}
+      onSettle={onSettle}
+      eager={eager}
       className={cn('block aspect-[5/7] shrink-0', className ?? 'w-40')}
     >
-      <span
-        aria-hidden="true"
-        className="grid size-full place-items-center rounded-[4.75%/3.393%] border bg-muted p-2 text-center text-xs text-muted-foreground"
-      >
-        {quiet ? null : name}
-      </span>
+      {(status) => (
+        <span
+          aria-hidden="true"
+          className={cn(
+            'grid size-full place-items-center rounded-[4.75%/3.393%] border bg-muted p-2 text-center text-xs text-muted-foreground',
+            pulse && status === 'loading' && 'animate-pulse',
+          )}
+        >
+          {quiet ? null : name}
+        </span>
+      )}
     </CardImage>
   )
 }

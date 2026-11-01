@@ -8,11 +8,16 @@ import { useDebouncedValue } from '@/hooks/useDebouncedValue'
 import { useMediaQuery } from '@/hooks/useMediaQuery'
 import type { GameFormat } from '@/lib/houseRules'
 import type { DecksApi } from '@/net/decks'
+import { favouritesApi as sharedFavourites } from '@/net/favourites'
+import type { FavouritesApi } from '@/net/favourites'
 import type { PreconsApi } from '@/net/precons'
+import { useFavourites } from '@/features/precons/useFavourites'
 import type { SeatDeck } from '@/protocol/generated'
 import type { DeckEntry } from './deckEntries'
 import { deckWords, issueWords, NO_ISSUES } from './deckWords'
 import { DeckPane } from './DeckPane'
+import { usePreconChoices } from './usePreconChoices'
+import { useDeckSort } from './deckSort'
 import { BuiltInSource, OwnSource, PreconSource } from './DeckSources'
 import type { DeckChoice } from './useDeckChoice'
 import { useDeckDetails } from './useDeckDetail'
@@ -48,6 +53,8 @@ export interface DeckChooserProps {
   choice: DeckChoice
   /** Told which deck is selected but not chosen, and whether this table cannot take it, for the Ready button's words. */
   onPreview?(previewing: { name: string; blocked: boolean } | null): void
+  /** The account's favourite precons come from here. */
+  favouritesApi?: FavouritesApi
 }
 
 type Kind = 'builtin' | 'own' | 'precons'
@@ -80,6 +87,7 @@ export function DeckChooser({
   busy,
   choice,
   onPreview,
+  favouritesApi = sharedFavourites,
 }: DeckChooserProps) {
   const { problem } = choice
   const kinds = deckKinds(format, signedIn)
@@ -88,6 +96,10 @@ export function DeckChooser({
   // A list is fetched when its tab is first opened, then kept.
   const [opened, setOpened] = useState<ReadonlySet<Kind>>(new Set([first]))
   const shown = kinds.some((entry) => entry.kind === tab) ? tab : first
+  const [sort, setSort] = useDeckSort()
+  const favourites = useFavourites(favouritesApi, signedIn)
+  // The precons are read once for the Precons tab and for the stars of the account's own list.
+  const preconState = usePreconChoices(precons, opened.has('precons') || favourites.codes.size > 0)
   const [selected, setSelected] = useState<DeckEntry | null>(null)
   const [sheet, setSheet] = useState(false)
   const wide = useMediaQuery(WIDE_QUERY, true)
@@ -115,6 +127,7 @@ export function DeckChooser({
       onUse={use}
       onRetryDetail={details.retry}
       onRetryVerdict={verdicts.retry}
+      favourites={signedIn ? favourites : undefined}
     />
   )
   const known = selected !== null && current != null && selected.name === current.name
@@ -132,6 +145,8 @@ export function DeckChooser({
     choice,
     selectedId: selected?.id ?? null,
     pictures: (id: string) => details.known(id)?.commanders ?? [],
+    sort,
+    onSort: setSort,
     onSelect: select,
     onClear: clear,
     onActivate: () => setSheet(!wide),
@@ -214,9 +229,20 @@ export function DeckChooser({
                 {!opened.has(entry.kind) ? null : entry.kind === 'builtin' ? (
                   <BuiltInSource api={api} active={shown === entry.kind} {...source} />
                 ) : entry.kind === 'own' ? (
-                  <OwnSource decks={decks} active={shown === entry.kind} {...source} />
+                  <OwnSource
+                    decks={decks}
+                    precons={preconState}
+                    favourites={favourites.codes}
+                    active={shown === entry.kind}
+                    {...source}
+                  />
                 ) : (
-                  <PreconSource precons={precons} active={shown === entry.kind} {...source} />
+                  <PreconSource
+                    precons={preconState}
+                    favourites={favourites.codes}
+                    active={shown === entry.kind}
+                    {...source}
+                  />
                 )}
               </TabsContent>
             ))}
@@ -249,6 +275,17 @@ export function DeckChooser({
       >
         {choice.note}
       </p>
+      {favourites.problem === null ? null : (
+        <Alert variant="destructive" data-slot="favourite-problem">
+          <CircleAlertIcon aria-hidden="true" />
+          <AlertDescription className="flex flex-wrap items-center gap-2 text-foreground">
+            <span className="[overflow-wrap:anywhere]">{favourites.problem}</span>
+            <Button type="button" variant="outline" size="sm" onClick={favourites.clearProblem}>
+              Dismiss
+            </Button>
+          </AlertDescription>
+        </Alert>
+      )}
       {problem === null ? null : (
         <Alert variant="destructive" data-slot="deck-problem" data-blocked={problem.blocked || undefined}>
           <CircleAlertIcon aria-hidden="true" />

@@ -56,6 +56,8 @@ interface Options extends PreconsScript {
   createGame?: Api['createGame']
   /** The card endpoint the clauses are quoted from; a server that knows Kozilek and Seer by default. */
   cards?: Pick<CardsApi, 'get'>
+  /** The codes of the precons the account starred. */
+  starred?: string[]
 }
 
 const KOZILEK_TEXT = 'When you cast this spell, draw two cards. Then discard two cards.'
@@ -67,7 +69,12 @@ const textOf = (name: string, text: string) =>
 const cardServer = () =>
   startCards({ details: [textOf('Kozilek', KOZILEK_TEXT), textOf('Seer', SEER_TEXT)] }).api
 
-async function open({ user, createGame, cards = cardServer(), ...script }: Options = {}) {
+async function open({ user, createGame, cards = cardServer(), starred = [], ...script }: Options = {}) {
+  const favourites = {
+    list: vi.fn().mockResolvedValue(starred),
+    star: vi.fn().mockResolvedValue(undefined),
+    unstar: vi.fn().mockResolvedValue(undefined),
+  }
   const server = startPrecons({ precons: LIST, ...script })
   const games = { createGame: vi.fn(createGame ?? (() => Promise.resolve(created))) }
   const auth = createAuthStore({
@@ -79,10 +86,10 @@ async function open({ user, createGame, cards = cardServer(), ...script }: Optio
   })
   const view = await renderInRouter(
     <AuthContext.Provider value={auth}>
-      <PreconsPage api={server.api} games={games} cards={cards} />
+      <PreconsPage api={server.api} games={games} cards={cards} favouritesApi={favourites} />
     </AuthContext.Provider>,
   )
-  return { ...view, server, games, user: userEvent.setup() }
+  return { ...view, server, games, favourites, user: userEvent.setup() }
 }
 
 const rows = () => screen.getAllByRole('row').slice(1)
@@ -147,6 +154,30 @@ describe('the list', () => {
       .closest('[data-slot="empty-state"]')
     await page.user.click(within(empty as HTMLElement).getByRole('button', { name: 'Clear filters' }))
     expect(rows()).toHaveLength(4)
+  })
+})
+
+describe('favourites', () => {
+  it.each([
+    ['stars an unstarred precon', [], 'Add Eldrazi Unbound to your favourites', 'star'],
+    [
+      'takes the star off a starred one',
+      ['m3c-eldrazi-unbound'],
+      'Remove Eldrazi Unbound from your favourites',
+      'unstar',
+    ],
+  ] as const)('%s', async (_what, starred, label, call) => {
+    const page = await open({ user: 'Ada_L', starred: [...starred] })
+    await listed()
+    await page.user.click(within(rowOf('Eldrazi Unbound')).getByRole('button', { name: label }))
+    expect(page.favourites[call]).toHaveBeenCalledWith('m3c-eldrazi-unbound')
+  })
+
+  it('offers no star to a guest and asks for no favourites', async () => {
+    const page = await open()
+    await listed()
+    expect(screen.queryByRole('button', { name: /favourites/ })).toBeNull()
+    expect(page.favourites.list).not.toHaveBeenCalled()
   })
 })
 

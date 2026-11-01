@@ -11,10 +11,12 @@ import {
   entrySupport,
   filterEntries,
   fitsFormat,
+  handWords,
   markedId,
   NO_FILTER,
+  sortEntries,
 } from './deckEntries'
-import type { DeckEntry } from './deckEntries'
+import type { DeckEntry, SortKey } from './deckEntries'
 
 const precon = (over: Partial<PreconListItem> = {}): PreconListItem => ({
   code: 'c18-x',
@@ -213,5 +215,52 @@ describe('the mark of the seat’s deck', () => {
         null,
       ),
     ).toBeNull()
+  })
+})
+
+describe('sorting', () => {
+  const row = (name: string, byHand: number, state: DeckEntry['state'] = 'manual_play'): DeckEntry => ({
+    ...entryOfBuiltIn({ id: name, name, size: 60 } as never),
+    id: name,
+    name,
+    byHand,
+    state,
+    counts: deckIn('verified').summary.counts,
+  })
+  const rows = [
+    row('Cedar', 5),
+    row('alder', 20),
+    row('Birch', 0, 'verified'),
+    row('Dune', 1, 'blocked'),
+    row('Ash', 5),
+  ]
+  const names = (sort: SortKey): string[] => sortEntries(rows, sort).map((entry) => entry.name)
+
+  it.each<[SortKey, string[]]>([
+    ['default', ['Cedar', 'alder', 'Birch', 'Dune', 'Ash']],
+    ['name', ['alder', 'Ash', 'Birch', 'Cedar', 'Dune']],
+    ['hand', ['Birch', 'Ash', 'Cedar', 'alder', 'Dune']],
+  ])('orders by %s', (sort, expected) => {
+    expect(names(sort)).toEqual(expected)
+  })
+
+  it('leaves the given list alone', () => {
+    sortEntries(rows, 'name')
+    expect(rows[0]?.name).toBe('Cedar')
+  })
+
+  it.each<[string, DeckEntry['state'], number, boolean, string | null]>([
+    ['a row the chip already counts', 'manual_play', 4, true, null],
+    ['a deck on reads with cards by hand', 'read', 3, false, '3 cards played by hand'],
+    ['a deck on reads with none, unsorted', 'read', 0, false, null],
+    ['a deck on reads with none, sorted by hand', 'read', 0, true, 'no cards played by hand'],
+  ])('writes the count for %s', (_what, state, byHand, always, words) => {
+    expect(handWords({ ...row('x', byHand, state) }, always)).toBe(words)
+  })
+
+  it('marks a starred precon and keeps a stored deck unstarred', () => {
+    expect(entryOfPrecon(precon(), true).favourite).toBe(true)
+    expect(entryOfPrecon(precon()).favourite).toBe(false)
+    expect(entryOfDeck(deckIn('verified')).favourite).toBe(false)
   })
 })
