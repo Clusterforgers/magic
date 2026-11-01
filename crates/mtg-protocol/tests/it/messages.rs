@@ -52,8 +52,8 @@ use serde::Serialize;
 use serde::de::DeserializeOwned;
 use serde_json::json;
 
-const CLIENT_VARIANTS: usize = 14;
-const SERVER_VARIANTS: usize = 14;
+const CLIENT_VARIANTS: usize = 15;
+const SERVER_VARIANTS: usize = 15;
 
 const YIELDS: [YieldUntil; 3] = [
     YieldUntil::Resolve,
@@ -105,6 +105,7 @@ fn client_index(message: &ClientMessage) -> usize {
         ClientMessage::SetStop { .. } => 11,
         ClientMessage::FullControl { .. } => 12,
         ClientMessage::Manual { .. } => 13,
+        ClientMessage::EndTurnByHand { .. } => 14,
     }
 }
 
@@ -125,6 +126,7 @@ fn server_index(message: &ServerMessage) -> usize {
         ServerMessage::FullControl { .. } => 11,
         ServerMessage::Bank { .. } => 12,
         ServerMessage::Presence { .. } => 13,
+        ServerMessage::EndTurnByHand { .. } => 14,
     }
 }
 
@@ -589,6 +591,7 @@ fn client_samples() -> Vec<ClientMessage> {
         }
     }
     out.extend(MODES.map(|mode| ClientMessage::FullControl { mode }));
+    out.extend([true, false].map(|on| ClientMessage::EndTurnByHand { on }));
     out.extend(
         manual_samples()
             .into_iter()
@@ -605,6 +608,21 @@ fn client_samples() -> Vec<ClientMessage> {
     out
 }
 
+/// A welcome states the stops, the Full Control mode and end turn by hand the seat holds, as every change of them does.
+fn mode_welcomes() -> [ServerMessage; 3] {
+    MODES.map(|full_control| ServerMessage::Welcome {
+        protocol_version: PROTOCOL_VERSION,
+        game: "table-1".into(),
+        player: PlayerId(0),
+        seats: 2,
+        auto_pass: true,
+        yielding: None,
+        stops: every_stop(),
+        full_control,
+        end_turn_by_hand: true,
+    })
+}
+
 fn server_samples() -> Vec<ServerMessage> {
     let (view, batch) = sample_view_and_batch();
     let mut out = vec![
@@ -617,6 +635,7 @@ fn server_samples() -> Vec<ServerMessage> {
             yielding: None,
             stops: Vec::new(),
             full_control: FullControlMode::Off,
+            end_turn_by_hand: true,
         },
         ServerMessage::Lobby {
             seats: lobby_seats(),
@@ -658,20 +677,11 @@ fn server_samples() -> Vec<ServerMessage> {
         yielding: Some(until),
         stops: Vec::new(),
         full_control: FullControlMode::Off,
+        end_turn_by_hand: false,
     }));
     out.extend(YIELDS.map(|until| ServerMessage::Yielding { until: Some(until) }));
     out.push(ServerMessage::Yielding { until: None });
-    // A welcome states the stops and the Full Control mode the seat holds, and so does every change of them.
-    out.extend(MODES.map(|full_control| ServerMessage::Welcome {
-        protocol_version: PROTOCOL_VERSION,
-        game: "table-1".into(),
-        player: PlayerId(0),
-        seats: 2,
-        auto_pass: true,
-        yielding: None,
-        stops: every_stop(),
-        full_control,
-    }));
+    out.extend(mode_welcomes());
     out.push(ServerMessage::Stops { stops: Vec::new() });
     out.push(ServerMessage::Stops {
         stops: every_stop(),
@@ -682,6 +692,7 @@ fn server_samples() -> Vec<ServerMessage> {
             .map(|stop| ServerMessage::Stops { stops: vec![stop] }),
     );
     out.extend(MODES.map(|mode| ServerMessage::FullControl { mode }));
+    out.extend([true, false].map(|on| ServerMessage::EndTurnByHand { on }));
     out.extend([0, 1, 3].map(|bank| ServerMessage::Bank {
         seat: PlayerId(1),
         bank,
@@ -855,6 +866,10 @@ fn every_event_view_variant_round_trips() {
     json!({"type": "FullControl", "mode": "Held"})
 )]
 #[case(
+    ClientMessage::EndTurnByHand { on: true },
+    json!({"type": "EndTurnByHand", "on": true})
+)]
+#[case(
     ClientMessage::Join { protocol_version: 1, game: "g".into(), name: "n".into() },
     json!({"type": "Join", "protocol_version": 1, "game": "g", "name": "n"})
 )]
@@ -881,11 +896,11 @@ fn client_wire_shape_is_flat_and_tagged(
 #[case(
     ServerMessage::Welcome {
         protocol_version: 1, game: "g".into(), player: PlayerId(2), seats: 4, auto_pass: true, yielding: None,
-        stops: vec![], full_control: FullControlMode::Off,
+        stops: vec![], full_control: FullControlMode::Off, end_turn_by_hand: false,
     },
     json!({
         "type": "Welcome", "protocol_version": 1, "game": "g", "player": 2, "seats": 4, "auto_pass": true,
-        "yielding": null, "stops": [], "full_control": "Off"
+        "yielding": null, "stops": [], "full_control": "Off", "end_turn_by_hand": false
     })
 )]
 #[case(
@@ -907,6 +922,7 @@ fn client_wire_shape_is_flat_and_tagged(
             Stop { side: StopSide::Opponent, step: Step::End, keep: false },
         ],
         full_control: FullControlMode::Held,
+        end_turn_by_hand: true,
     },
     json!({
         "type": "Welcome", "protocol_version": 1, "game": "g", "player": 0, "seats": 2, "auto_pass": false,
@@ -915,7 +931,7 @@ fn client_wire_shape_is_flat_and_tagged(
             {"side": "Own", "step": "Main1", "keep": true},
             {"side": "Opponent", "step": "End", "keep": false},
         ],
-        "full_control": "Held"
+        "full_control": "Held", "end_turn_by_hand": true
     })
 )]
 #[case(ServerMessage::Stops { stops: vec![] }, json!({"type": "Stops", "stops": []}))]
@@ -932,6 +948,10 @@ fn client_wire_shape_is_flat_and_tagged(
 #[case(
     ServerMessage::FullControl { mode: FullControlMode::NextWindow },
     json!({"type": "FullControl", "mode": "NextWindow"})
+)]
+#[case(
+    ServerMessage::EndTurnByHand { on: false },
+    json!({"type": "EndTurnByHand", "on": false})
 )]
 #[case(
     ServerMessage::Yielding { until: Some(YieldUntil::EndOfTurn) },

@@ -11,7 +11,8 @@
 //! 3. A stop of the seat at the window asks, whether the seat can act or not. `Own` stops are for the seat's own
 //!    turns, `Opponent` stops for the turn of any other seat. A seat whose own spell or ability with clauses left to
 //!    the table has resolved holds such a stop at every window until it passes ([`Stops::by_hand`]), so it has a
-//!    window to apply them; it reads only public facts.
+//!    window to apply them; it reads only public facts. A seat that ends its turns by hand holds one at its own end
+//!    step, which never ends a yield.
 //! 4. The default windows (Arena's table) ask when the seat can act: the seat's own precombat and postcombat main
 //!    phase, the declare attackers and declare blockers steps of any turn, and any moment an object of another seat
 //!    is on the stack. Where the seat cannot act the table passes for it after a dwell ([`Verdict::Dwell`]), so the
@@ -73,6 +74,12 @@ impl Window {
         self.others_object
             || matches!(self.step, Step::DeclareAttackers | Step::DeclareBlockers)
             || (self.own_turn && self.step.is_main())
+    }
+
+    /// Whether a seat that ends its turns by hand (`by_hand`) is held here: its own end step, the last step of its
+    /// turn where a player gets priority.
+    pub(crate) fn holds_turn_end(self, by_hand: bool) -> bool {
+        by_hand && self.own_turn && self.step == Step::End
     }
 
     /// Whether a seat that cannot act waits here ([`Verdict::Dwell`]) instead of being passed for at once: at every
@@ -147,7 +154,9 @@ pub(crate) fn verdict(
     let stop = stops.holds(seat, window.side(), window.step) || stops.by_hand(seat);
     // A seat in Full Control holds no yield; the yield is left alone for the rules below it.
     let yielding = mode == FullControlMode::Off && yields.passes(seat, state, stop);
-    judge(window, options.can_act, stop, mode, yielding)
+    // Ending the turn by hand holds the seat as a stop does, but never ends a yield: one it asked for ends the turn.
+    let hold = window.holds_turn_end(stops.end_turn_by_hand(seat));
+    judge(window, options.can_act, stop || hold, mode, yielding)
 }
 
 /// Whether the server passes for the holder of `decision` instead of asking it, at once or after a dwell.
@@ -352,6 +361,26 @@ mod tests {
         for (own_turn, side) in [(true, StopSide::Own), (false, StopSide::Opponent)] {
             let window = Stack::Empty.window(Step::End, own_turn);
             assert_eq!(window.side(), side);
+        }
+    }
+
+    #[test]
+    fn ending_the_turn_by_hand_holds_the_seat_at_its_own_end_step_only_whatever_the_stack() {
+        for stack in Stack::ALL {
+            for own_turn in [true, false] {
+                for by_hand in [true, false] {
+                    let held: Vec<Step> = Step::ALL
+                        .into_iter()
+                        .filter(|step| stack.window(*step, own_turn).holds_turn_end(by_hand))
+                        .collect();
+                    let expected = if by_hand && own_turn {
+                        vec![Step::End]
+                    } else {
+                        vec![]
+                    };
+                    assert_eq!(held, expected, "{stack:?} own {own_turn} by hand {by_hand}");
+                }
+            }
         }
     }
 

@@ -48,9 +48,6 @@ One item is one piece of about 15 minutes and one line: the outcome, the cards i
 Items that touch the running game come first; the play-session findings (pf) lead, the web items before the engine and card items.
 
 - [~] (pf1) (commander-pair) Paired commanders work end to end: a deck with two partners (Partner, Partner with, Friends forever, Doctor's companion, a Background) imports, passes the deck check, starts with both in the command zone and casts each with its own tax
-- [~] (pf10) (flow-prefs) Pinned phase stops can be saved as the default, so a new game starts with them
-- [~] (pf11) (flow-prefs) A setting "End my turn by hand": with it on, the turn never passes to the next seat until the seat ends it
-- [~] (pf12) (flow-prefs) An instant or flash card in hand can be cast whenever its seat could get priority: clicking it during any step stops there instead of passing
 - [ ] (pf15) Engine: Lifelink gains life for combat damage dealt to a player (a reported game did not)
 - [ ] (pf16) Cards: Fungal Fortitude returns its creature when a spell destroys it
 - [ ] (pf17) Cards: It That Betrays puts the sacrificed permanents onto the battlefield under its controller's control

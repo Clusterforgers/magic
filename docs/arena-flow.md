@@ -145,6 +145,8 @@ The client never paces steps: the fx layer must not wait for a cadence, and P3 d
 | Resolve All, press again to stop | `YieldUntil::Resolve` (menu item over a stack); "Stop passing" cancels | done |
 | Pass Turn held by the server | `EndOfTurn` and `MyTurn` record the turn they were asked in; `Active::ends_at` never reads `can_act` | done |
 | Stops, interrupt Pass Turn | `Stop { side, step, keep }`; a ladder of ten steps per side (first-strike damage joins while current or set); a stop ends a yield | done (P1, P2, P6) |
+| No equivalent | "End my turn by hand": the seat is asked at its own end step until it ends the turn; "Save pinned stops as default"; both kept per browser | done, ours |
+| Casting an instant needs a stop or Full Control | a click on an instant or flash card while passing asks `NextWindow` and casts it there; asked whatever the seat holds, so nothing leaks | done, ours |
 | Full Control: Ctrl, Ctrl+Shift | `NextWindow` (Ctrl) and `Held` (Ctrl+Shift), a toggle beside the ladder | done (P4, P5) |
 | No window unless a play; none in own upkeep or end step | default windows ask a seat that can act; elsewhere it is passed for at once | done (P2) |
 | No equivalent | dwell for a seat that cannot act at a combat or stack window | done (P3), ours |

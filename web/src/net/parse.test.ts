@@ -152,12 +152,22 @@ describe('parseFrame refuses what is not a message', () => {
   })
 })
 
+/** Fields an older server leaves out, which read as their default. */
+const MAY_BE_MISSING = new Set(['Welcome.end_turn_by_hand'])
+
 describe('parseFrame checks the fields of each message', () => {
   const missing = Object.entries(samples).flatMap(([type, sample]) =>
     Object.keys(sample)
-      .filter((key) => key !== 'type')
+      .filter((key) => key !== 'type' && !MAY_BE_MISSING.has(`${type}.${key}`))
       .map((key): [string, string] => [type, key]),
   )
+
+  it('reads a Welcome without "end_turn_by_hand" (an older server) as off, and refuses one that is not a flag', () => {
+    const frame = parseFrame(wire(put(samples.Welcome, ['end_turn_by_hand'], undefined)))
+    expect(frame.ok && frame.message).toMatchObject({ type: 'Welcome', end_turn_by_hand: false })
+    const bad = parseFrame(wire(put(samples.Welcome, ['end_turn_by_hand'], 'on')))
+    expect(bad).toMatchObject({ ok: false, error: { kind: 'bad_shape' } })
+  })
 
   it.each(missing)('%s without "%s" is a bad_shape that names the field', (type, key) => {
     const frame = parseFrame(wire(put(samples[type], [key], undefined)))

@@ -139,6 +139,16 @@ export interface PlayState {
    */
   fullControl: FullControlMode
   /**
+   * Whether the server holds this seat at its own end step until it ends the turn. The server's word: set by every
+   * Welcome and every `EndTurnByHand` message, never by the page.
+   */
+  endTurnByHand: boolean
+  /**
+   * The card in hand this seat clicked while the server passed for it (an instant or a flash card), or null: the
+   * session asked for its next window and casts the card there if it is castable then.
+   */
+  castWhenAsked: ObjectId | null
+  /**
    * The name of the card whose clauses this seat owes the table after a spell or ability of its own resolved
    * (`ObjectView.manual_owed`), so the server asks it at every priority window until it passes, or null: read from the
    * events as the server reads them (`byHand.ts`), since the server does not say so.
@@ -178,6 +188,8 @@ export function initialPlayState(): PlayState {
     yielding: null,
     stops: [],
     fullControl: 'Off',
+    endTurnByHand: false,
+    castWhenAsked: null,
     byHand: null,
     away: {},
   }

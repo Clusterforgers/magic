@@ -35,6 +35,7 @@ async fn welcome_names_the_game_the_seat_and_the_table_size() {
             yielding: None,
             stops: Vec::new(),
             full_control: FullControlMode::Held,
+            end_turn_by_hand: false,
         }
     );
     // The roster follows the welcome: only this seat is here and nobody is ready.

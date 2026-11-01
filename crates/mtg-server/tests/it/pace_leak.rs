@@ -1,4 +1,4 @@
-//! Goal: the table cannot tell a seat with a play from one without by what it is sent or when, at the windows the dwell hides. In two games with the same seed that differ by one card in a hidden hand, an instant the seat can cast against one it cannot afford, an attack that ends the game and a creature spell with the ability that triggers as it enters, the other seat (able to act or idle) is sent the same kinds of message, batches and views, each batch arriving 250 to 700 ms after the one before it on a paused clock, and nothing that depends on the hand (a yield, a stop, an error); with the dwell switched off the same comparison finds the difference, and so it does in a seat's own main phase with an empty stack, which the dwell leaves alone.
+//! Goal: the table cannot tell a seat with a play from one without by what it is sent or when, at the windows the dwell hides. In two games with the same seed that differ by one card in a hidden hand, an instant the seat can cast against one it cannot afford, an attack that ends the game and a creature spell with the ability that triggers as it enters, the other seat (able to act or idle) is sent the same kinds of message, batches and views, each batch arriving 250 to 700 ms after the one before it on a paused clock, and nothing that depends on the hand (a yield, a stop, an error); with the dwell switched off the same comparison finds the difference, and so it does in a seat's own main phase with an empty stack, which the dwell leaves alone. A seat that asks for its next window (a click on an instant while passing) is asked there whether it can act or not, and the table cannot tell that either.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::common;
@@ -19,7 +19,7 @@ use mtg_engine::combat::AttackTarget;
 use mtg_engine::decision::{PayChoice, PriorityAction};
 use mtg_engine::turn::Step;
 use mtg_engine::{Answer, Decision, DecisionKind, Event, GameSetup};
-use mtg_protocol::{ClientMessage, ServerMessage};
+use mtg_protocol::{ClientMessage, FullControlMode, ServerMessage};
 use mtg_server::{Dwell, EventStore, GameConfig, MemoryStore, Pace, spawn_game_with};
 use mtg_testkit::cards::{damage, free_creature, giant, instant};
 use mtg_testkit::trigger_cards::{aimed_at, creature_with, trigger as ability, when};
@@ -150,6 +150,18 @@ async fn play_with(
     brains: [fn(&Decision) -> Answer; 2],
     thinking: [[u64; 8]; 2],
 ) -> Run {
+    play_requesting(setup, holder, dwell, brains, thinking, &[]).await
+}
+
+/// [`play_with`] where the holder sends `requests` in the lobby, before the seats say they are ready.
+async fn play_requesting(
+    setup: GameSetup,
+    holder: usize,
+    dwell: Dwell,
+    brains: [fn(&Decision) -> Answer; 2],
+    thinking: [[u64; 8]; 2],
+    requests: &[ClientMessage],
+) -> Run {
     let since = Instant::now();
     let store = MemoryStore::new();
     let config = GameConfig {
@@ -175,6 +187,9 @@ async fn play_with(
             think,
             brains[n],
         ));
+    }
+    for request in requests {
+        handle.send(seat(holder), request.clone()).await.unwrap();
     }
     for n in 0..2 {
         handle.send(seat(n), ClientMessage::Ready).await.unwrap();
@@ -555,4 +570,48 @@ async fn a_seats_own_main_phase_with_an_empty_stack_is_not_hidden() {
             .any(|difference| difference.contains("batches differ")),
         "the hand shows in the pace of the own main phase: {found:?}"
     );
+}
+
+#[rstest]
+#[case::the_attacker_clicks_and_the_other_seat_can_act(0, true)]
+#[case::the_attacker_clicks_and_the_other_seat_is_idle(0, false)]
+#[case::the_defender_clicks_and_the_other_seat_can_act(1, true)]
+#[case::the_defender_clicks_and_the_other_seat_is_idle(1, false)]
+#[tokio::test(start_paused = true)]
+async fn a_click_on_an_instant_while_passing_asks_the_seat_whether_it_can_act_or_not_and_the_table_cannot_tell(
+    #[case] holder: usize,
+    #[case] other_can_act: bool,
+) {
+    // The web client asks for the next window (`NextWindow`) when an instant in hand is clicked with no decision open.
+    let click = [ClientMessage::FullControl {
+        mode: FullControlMode::NextWindow,
+    }];
+    let brains = [attacking, passive];
+    let game = |card| combat(holder, card, other_can_act);
+    let with_a_play = play_requesting(
+        game(Card::Castable),
+        holder,
+        Dwell::DEFAULT,
+        brains,
+        THINKING_MS,
+        &click,
+    )
+    .await;
+    let without = play_requesting(
+        game(Card::Unaffordable),
+        holder,
+        Dwell::DEFAULT,
+        brains,
+        THINKING_MS,
+        &click,
+    )
+    .await;
+
+    assert_eq!(differences(&with_a_play, &without), Vec::<String>::new());
+    assert_eq!(with_a_play.log, without.log);
+    // The click asks the holder at its next window in both games, a card it can cast or not; after that pass the
+    // default windows rule again.
+    assert_eq!(asked(&with_a_play), [true, true]);
+    assert_eq!(asked(&without), [false]);
+    assert!(ended(&with_a_play) && ended(&without));
 }
