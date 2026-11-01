@@ -3,6 +3,7 @@ import type { CSSProperties } from 'react'
 import { cn } from '@/lib/utils'
 import type { PlayerId } from '@/protocol/generated'
 import { Battlefield } from './Battlefield'
+import { useDefenderClick } from './combat/defender'
 import type { CardSize } from './cardSize'
 import { POD_COLUMN_PX } from './layout'
 import type { PodPlace, SeatPlan } from './layout'
@@ -52,11 +53,19 @@ export const SeatArea = memo(function SeatArea({ seat, size, facing, pod }: Seat
   const aside = pod === 'aside'
   // The creatures' card width of the board, which the pod's corner follows.
   const [card, setCard] = useState<number | null>(null)
+  // While an attack is aimed, a click on the board around the cards attacks the seat, as a click on its pod does.
+  const defender = useDefenderClick(seat)
   return (
     <div
       data-slot="seat-area"
       data-seat-area={seat}
-      className={cn('flex min-h-0 min-w-0 flex-1 gap-2', aside ? 'flex-row' : 'flex-col')}
+      data-defender-area={defender.state}
+      onClick={defender.onClick}
+      className={cn(
+        'flex min-h-0 min-w-0 flex-1 gap-2',
+        aside ? 'flex-row' : 'flex-col',
+        defender.state !== undefined && 'cursor-pointer',
+      )}
     >
       {pod === 'aside' ? <PodColumn seat={seat} card={card} /> : null}
       {/* A line pod is on the table's middle side of its board: over an opponent's, under yours, by your hand. */}

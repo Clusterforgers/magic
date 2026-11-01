@@ -1,10 +1,12 @@
 /**
- * Who the attack prompt sends creatures at, as the pods show it. The prompt publishes the seats that may be attacked and
- * the one chosen now; a pod subscribes to its own seat only, shows the choice and picks itself when it is clicked. The
+ * Who the attack prompt sends creatures at, as the seats show it. The prompt publishes the seats that may be attacked and
+ * the one chosen now; a pod, tile or board subscribes to its own seat only, shows the choice and picks itself when it
+ * is clicked. The
  * choice made last is kept after the prompt is gone, so the next attack starts from it. One store per table, provided
  * by `CombatProviders`.
  */
 import { createContext, useCallback, useContext, useLayoutEffect, useSyncExternalStore } from 'react'
+import type { MouseEvent } from 'react'
 import type { PlayerId } from '@/protocol/generated'
 
 /** What a pod says of itself while an attack is being declared. */
@@ -95,6 +97,31 @@ export function useDefender(seat: PlayerId): { state: DefenderState | undefined;
   const state = useSyncExternalStore(subscribe, () => store.stateOf(seat))
   const pick = useCallback(() => store.pick(seat), [store, seat])
   return { state, pick }
+}
+
+/** How a seat's tile or board reads while an attack is aimed: an outline for a seat that may be attacked, filled when chosen. */
+export function defenderOutline(state: DefenderState | undefined): string | undefined {
+  if (state === undefined) return undefined
+  return state === 'chosen'
+    ? 'cursor-pointer outline-2 outline-primary'
+    : 'cursor-pointer outline-1 outline-primary/40 hover:outline-2 hover:outline-primary'
+}
+
+/** A click on a seat's board that no card or control inside it took picks the seat as the defender. */
+export function useDefenderClick(seat: PlayerId): {
+  state: DefenderState | undefined
+  onClick: ((event: MouseEvent<HTMLElement>) => void) | undefined
+} {
+  const { state, pick } = useDefender(seat)
+  const onClick = useCallback(
+    (event: MouseEvent<HTMLElement>) => {
+      if (event.target instanceof Element && event.target.closest('button, a, [role="button"]') !== null)
+        return
+      pick()
+    },
+    [pick],
+  )
+  return { state, onClick: state === undefined ? undefined : onClick }
 }
 
 /**

@@ -36,7 +36,7 @@ One item is one piece of about 15 minutes and one line: the outcome, the cards i
 - Game flow: auto-pass, response clocks, yields, stops, Full Control, the timer bank, the by-hand window and leak tests (`docs/arena-flow.md`).
 - Commander: house rules, format rules, deck check, Partner, companion in the engine, tax, commander damage and any number of seats (`docs/server.md`).
 - Manual play: the Commands panel, by-hand clauses with chips, manual actions at any time on any turn and fix marks (`docs/web.md`, `docs/protocol.md`).
-- Web table: lanes and card sizes, the seat corner, click combat, the mana strip, legible play (flights, spotlight, target arrows, marks), Equipment tucked at its host with its grants, hand reasons, fit at six sizes and a 12 px text floor (`docs/web.md`, `docs/ui-design.md`).
+- Web table: lanes and card sizes, the seat corner, click combat (a creature, then any defender: pod, tile, board, planeswalker or battle; required attackers start in), the mana strip, legible play (flights, spotlight, target arrows, marks), Equipment tucked at its host with its grants, hand reasons, fit at six sizes and a 12 px text floor (`docs/web.md`, `docs/ui-design.md`).
 - Lobby, decks and precons: invites, the deck builder with pictures and stats, import and export, the deck check, the not-validated list and the precon browser (`docs/web.md`).
 - Card images: a server cache with a warm-up, and pictures in the table, builder and preview (`docs/server.md`, `docs/web.md`).
 - Testing: scenarios, invariants and fuzz decks, `scripts/check.sh` with the `gate` and `affected` modes, content stamps and side-by-side test binaries, and Playwright specs including the four-seat Commander game with precons or the owner's deck (`E2E_DECK=owner`).
@@ -48,7 +48,6 @@ One item is one piece of about 15 minutes and one line: the outcome, the cards i
 Items that touch the running game come first; the play-session findings (pf) lead, the web items before the engine and card items.
 
 - [~] (pf1) (commander-pair) Paired commanders work end to end: a deck with two partners (Partner, Partner with, Friends forever, Doctor's companion, a Background) imports, passes the deck check, starts with both in the command zone and casts each with its own tax
-- [~] (pf2) (combat-multi) Attacking with several opponents offers the right defenders for every attacker (each opponent, their planeswalkers and battles), and an attacker can be clicked, then an opponent's seat or permanent, to attack it
 - [~] (pf3) (seat-look) A border separates the opponents' areas on the table, and a seat that left the game shrinks to a thin strip
 - [~] (pf4) (card-menu) The right-click menu of a card in a graveyard, exile or any edge zone stays inside the viewport
 - [~] (pf5) (play-ui) Look at the top shows the cards large enough to read, in the card-choice grid with the preview at the side

@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { Check, Eraser, Swords, UsersRound, X } from 'lucide-react'
 import { NativeSelect, NativeSelectOption } from '@/components/ui/native-select'
 import type { AttackerOption, AttackTarget, ObjectId, PlayerId } from '@/protocol/generated'
@@ -10,7 +10,7 @@ import { usePreviewTarget } from '../../preview'
 import { attackSummary, distinctTargets, sameTarget, targetKey } from '../combatText'
 import { BarButton } from '../CombatBar'
 import { markCards, useCardMarks, useCardNotes } from '../marks'
-import type { CardNotes } from '../marks'
+import type { CardMarks, CardNotes } from '../marks'
 import { useOwnCardIds } from '../ownCards'
 import { usePrompt } from '../PromptContext'
 import { PromptLayout } from '../PromptLayout'
@@ -29,9 +29,10 @@ function aimedAt(option: AttackerOption, aim: AttackTarget | undefined): AttackT
 /**
  * DeclareAttackers: creatures that may attack are legal, the rest of the hand and battlefield dimmed. A click, Enter
  * or Space puts a creature in the attack or takes it out; its arrow to the defender says it attacks, no label is
- * written on the card. With several defenders the one chosen now (a click on a pod, or the list in the bar) is where
- * the next creature goes, and the last choice is where the next attack starts. Confirm sends the attack, No attack an
- * empty one.
+ * written on the card. With several defenders the creature clicked in last is held: a click on a defender (a seat's
+ * pod, tile or board, or the card of a planeswalker or battle) sends it there, and that defender is where the next
+ * creatures go, as is the one chosen in the list of the bar; the last choice is where the next attack starts. A
+ * creature a rule requires to attack starts in the attack. Confirm sends the attack, No attack an empty one.
  */
 export const DeclareAttackersPrompt: PromptComponent<'DeclareAttackers'> = ({ options }) => {
   const { id, answer, selection } = usePrompt()
@@ -47,6 +48,15 @@ export const DeclareAttackersPrompt: PromptComponent<'DeclareAttackers'> = ({ op
   }, [options.attackers])
   const legal = useMemo(() => [...offered.keys()], [offered])
   const defenders = useMemo(() => distinctTargets([...offered.values()]), [offered])
+  // The planeswalkers and battles on offer, whose cards a click attacks.
+  const walkers = useMemo(
+    () => defenders.flatMap((target): ObjectId[] => ('Planeswalker' in target ? [target.Planeswalker] : [])),
+    [defenders],
+  )
+  const required = useMemo(
+    () => (options.required ?? []).filter((object) => offered.has(object)),
+    [options.required, offered],
+  )
   const names = useTargetNames(defenders)
   const several = defenders.length > 1
 
@@ -55,6 +65,8 @@ export const DeclareAttackersPrompt: PromptComponent<'DeclareAttackers'> = ({ op
   const wanted = aimKey ?? defenderStore.remembered()
   const aim = defenders.find((target) => targetKey(target) === wanted) ?? defenders[0]
   const [targets, setTargets] = useState<ReadonlyMap<ObjectId, AttackTarget>>(new Map())
+  // The creature clicked into the attack last, which a click on a defender sends there.
+  const [held, setHeld] = useState<ObjectId | null>(null)
   const pickAim = useCallback(
     (key: string): void => {
       setAimKey(key)
@@ -62,12 +74,25 @@ export const DeclareAttackersPrompt: PromptComponent<'DeclareAttackers'> = ({ op
     },
     [defenderStore],
   )
+  // A click on a defender sends the held creature there when it may attack it, and aims the next creatures there.
+  const pickTarget = (target: AttackTarget): void => {
+    const option = held === null ? undefined : offered.get(held)
+    if (held !== null && option?.defenders.some((to) => sameTarget(to, target)) === true) {
+      setTargets((current) => new Map(current).set(held, target))
+    }
+    setHeld(null)
+    pickAim(targetKey(target))
+  }
+  const latestPick = useRef(pickTarget)
+  useLayoutEffect(() => {
+    latestPick.current = pickTarget
+  })
   const seats = useMemo(
     () =>
       several ? defenders.flatMap((target): PlayerId[] => ('Player' in target ? [target.Player] : [])) : [],
     [several, defenders],
   )
-  const pickSeat = useCallback((seat: PlayerId): void => pickAim(targetKey({ Player: seat })), [pickAim])
+  const pickSeat = useCallback((seat: PlayerId): void => latestPick.current({ Player: seat }), [])
   usePublishDefenders(seats, aim !== undefined && 'Player' in aim ? aim.Player : null, pickSeat)
 
   // The attack as declared so far: creatures in the order they were chosen, each with its defender.
@@ -103,11 +128,31 @@ export const DeclareAttackersPrompt: PromptComponent<'DeclareAttackers'> = ({ op
       ? undefined
       : `${shownCreature?.name ?? 'This creature'} cannot attack ${names.short(aim)}; it attacks ${names.short(instead)} instead.`
 
-  const marks = useMemo(() => markCards(own, legal, declaredIds), [own, legal, declaredIds])
+  const aimedWalker = aim !== undefined && 'Planeswalker' in aim ? aim.Planeswalker : undefined
+  const marks = useMemo<CardMarks>(() => {
+    const marked = new Map(markCards(own, legal, declaredIds))
+    // With several defenders a planeswalker or battle on offer is clicked to attack it; the one chosen reads pressed.
+    if (several) {
+      for (const walker of walkers) {
+        if (!offered.has(walker)) marked.set(walker, walker === aimedWalker ? 'selected' : 'legal')
+      }
+    }
+    return marked
+  }, [own, legal, declaredIds, several, walkers, offered, aimedWalker])
   const notes = useMemo<CardNotes>(
     () =>
-      new Map(declared.map(({ object, target }) => [object, { words: `attacking ${names.long(target)}` }])),
-    [declared, names],
+      new Map(
+        declared.map(({ object, target }) => [
+          object,
+          object === held
+            ? {
+                words: `attacking ${names.long(target)}; click a player, planeswalker or battle to send it there`,
+                cue: 'active' as const,
+              }
+            : { words: `attacking ${names.long(target)}` },
+        ]),
+      ),
+    [declared, names, held],
   )
 
   const aimAll = (ids: readonly ObjectId[], target: AttackTarget | undefined): void => {
@@ -122,12 +167,29 @@ export const DeclareAttackersPrompt: PromptComponent<'DeclareAttackers'> = ({ op
     })
   }
   const choose = (id: ObjectId): void => {
-    if (!offered.has(id)) return
-    if (!selection.has(id)) aimAll([id], aim)
+    if (!offered.has(id)) {
+      if (walkers.includes(id)) pickTarget({ Planeswalker: id })
+      return
+    }
+    if (selection.has(id)) {
+      if (held === id) setHeld(null)
+    } else {
+      aimAll([id], aim)
+      if (several) setHeld(id)
+    }
     selection.toggle(id)
   }
   useCardMarks(marks, choose, { toggles: true })
   useCardNotes(notes)
+
+  // The creatures a rule requires to attack start in the attack, once, at the defender chosen when they may.
+  const started = useRef(false)
+  useLayoutEffect(() => {
+    if (started.current || required.length === 0) return
+    started.current = true
+    aimAll(required, aim)
+    selection.set(required)
+  })
 
   const attackWithAll = (): void => {
     const fresh = legal.filter((id) => !selection.has(id))
@@ -135,6 +197,14 @@ export const DeclareAttackersPrompt: PromptComponent<'DeclareAttackers'> = ({ op
     selection.set([...selection.ids, ...fresh])
   }
   const allAt = (): void => aimAll(declaredIds, aim)
+  const clear = (): void => {
+    setHeld(null)
+    aimAll(required, aim)
+    selection.set(required)
+  }
+  // The required creatures left out of the attack, which the bar names.
+  const missing = useMemo(() => required.filter((object) => !selection.has(object)), [required, selection])
+  const missingCreatures = useObjects(missing)
   const elsewhere = aim !== undefined && declared.some(({ target }) => !sameTarget(target, aim))
   const confirm = (): void => {
     if (declared.length > 0)
@@ -143,19 +213,24 @@ export const DeclareAttackersPrompt: PromptComponent<'DeclareAttackers'> = ({ op
   // With nothing focused, Enter confirms the attack that is chosen; Space is left alone.
   usePrimaryKey({ space: () => undefined, enter: confirm }, declared.length > 0)
 
+  const heldTarget = declared.find((entry) => entry.object === held)?.target
+  const [heldCreature] = useObjects(held === null ? [] : [held])
   const text =
     legal.length === 0
       ? 'None of your creatures can attack. Choose No attack to go on.'
       : cannotAim !== undefined
         ? cannotAim
-        : declared.length > 0
-          ? `${attackSummary(
-              declared.map((entry) => entry.target),
-              names,
-            )}.`
-          : several && aim !== undefined
-            ? `Click creatures to attack ${names.short(aim)}, or click another player.`
-            : `Choose the creatures that attack${aim === undefined ? '' : ` ${names.short(aim)}`}, or choose No attack.`
+        : missing.length > 0
+          ? `${missingCreatures.map((object) => object?.name ?? 'A creature').join(', ')} must attack if able.`
+          : declared.length > 0
+            ? `${attackSummary(
+                declared.map((entry) => entry.target),
+                names,
+              )}.${several && heldTarget !== undefined ? ` Click a player, planeswalker or battle to send ${heldCreature?.name ?? 'it'} there.` : ''}`
+            : several && aim !== undefined
+              ? `Click a creature, then the player, planeswalker or battle it attacks (${names.short(aim)} until then).`
+              : `Choose the creatures that attack${aim === undefined ? '' : ` ${names.short(aim)}`}, or choose No attack.`
+  const cleared = selection.ids.size === required.length && missing.length === 0
 
   return (
     <PromptLayout compact text={text}>
@@ -211,8 +286,8 @@ export const DeclareAttackersPrompt: PromptComponent<'DeclareAttackers'> = ({ op
         icon={Eraser}
         label="Clear"
         word="Clear"
-        disabled={declared.length === 0}
-        onClick={selection.clear}
+        disabled={cleared}
+        onClick={clear}
       />
       <BarButton
         icon={Check}
@@ -222,13 +297,16 @@ export const DeclareAttackersPrompt: PromptComponent<'DeclareAttackers'> = ({ op
         disabled={declared.length === 0}
         onClick={confirm}
       />
-      <BarButton
-        variant="outline"
-        icon={X}
-        label="No attack"
-        word="No attack"
-        onClick={() => answer({ DeclareAttackers: [] })}
-      />
+      {/* A rule that requires an attacker leaves no empty attack to choose. */}
+      {required.length > 0 ? null : (
+        <BarButton
+          variant="outline"
+          icon={X}
+          label="No attack"
+          word="No attack"
+          onClick={() => answer({ DeclareAttackers: [] })}
+        />
+      )}
       {declared.length === 0 ? null : (
         <PreviewOutcome
           slot="attack-outcome"

@@ -54,7 +54,11 @@ describe('what is marked', () => {
     const options = optionsOf(spec)
     const { marks, fixture } = attack(options, spec.seats)
     const legal = new Set(options.attackers.map((a) => a.object))
-    expect(marks()).toEqual(new Map(ownOf(fixture).map((id) => [id, legal.has(id) ? 'legal' : 'dimmed'])))
+    // A planeswalker on offer is marked too, since a click on it attacks it.
+    const walkers = spec.walker === true ? [[walkerOf(spec.seats), 'legal'] as const] : []
+    expect(marks()).toEqual(
+      new Map([...ownOf(fixture).map((id) => [id, legal.has(id) ? 'legal' : 'dimmed'] as const), ...walkers]),
+    )
   })
 
   it('marks an attacker that has no defender as not available', () => {
@@ -255,7 +259,11 @@ describe('several defenders', () => {
       await table.user.selectOptions(screen.getByRole('combobox', { name: 'Attack at' }), last)
       await table.user.click(table.card(b))
       await table.user.click(table.card(c))
-      expect(table.text()).toBe(`3 attackers: 1 at Bo, 2 at ${last}.`)
+      expect(table.text()).toMatch(
+        new RegExp(
+          `^3 attackers: 1 at Bo, 2 at ${last}\\. Click a player, planeswalker or battle to send .+ there\\.$`,
+        ),
+      )
       await table.user.click(table.button('Confirm attack'))
       expect(table.answer.mock.calls).toEqual([
         [
@@ -294,7 +302,9 @@ describe('several defenders', () => {
 
   it('says what to do before anything is chosen', () => {
     const { text } = attack(optionsOf({ name: '', seats: 4, count: 3 }), 4)
-    expect(text()).toBe('Click creatures to attack Bo, or click another player.')
+    expect(text()).toBe(
+      'Click a creature, then the player, planeswalker or battle it attacks (Bo until then).',
+    )
   })
 
   it('offers a planeswalker by name and owner, and answers with it', async () => {
@@ -309,7 +319,7 @@ describe('several defenders', () => {
     await table.user.selectOptions(select, `walker:${walker}`)
     const [a] = options.attackers.map((x) => x.object) as [ObjectId]
     await table.user.click(table.card(a))
-    expect(table.card(a)).toHaveAccessibleName(/, attacking .*, Bo's planeswalker$/)
+    expect(table.card(a)).toHaveAccessibleName(/, attacking .*, Bo's planeswalker(;|$)/)
     await table.user.click(table.button('Confirm attack'))
     expect(table.answer.mock.calls).toEqual([[{ DeclareAttackers: [[a, { Planeswalker: walker }]] }]])
   })
@@ -328,7 +338,7 @@ describe('several defenders', () => {
     await table.user.click(table.card(a))
     await table.user.click(table.card(b))
     await table.user.unhover(table.card(b))
-    expect(table.text()).toBe('2 attackers: 1 at Bo, 1 at Cy.')
+    expect(table.text()).toMatch(/^2 attackers: 1 at Bo, 1 at Cy\./)
     await table.user.click(table.button('Confirm attack'))
     expect(table.answer.mock.calls).toEqual([
       [
@@ -348,7 +358,7 @@ describe('several defenders', () => {
     await table.user.selectOptions(screen.getByRole('combobox', { name: 'Attack at' }), 'player:2')
     const [a] = options.attackers.map((x) => x.object) as [ObjectId]
     await table.user.click(table.card(a))
-    expect(table.card(a)).toHaveAccessibleName(/, attacking Cy$/)
+    expect(table.card(a)).toHaveAccessibleName(/, attacking Cy(;|$)/)
   })
 })
 

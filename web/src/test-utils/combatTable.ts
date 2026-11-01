@@ -3,6 +3,7 @@ import { screen } from '@testing-library/react'
 import { vi } from 'vitest'
 import { buildFixture } from '@/features/table/dev/fixture'
 import type { Fixture } from '@/features/table/dev/fixture'
+import type { TableOptions } from '@/features/table/tableOptions'
 import type { Answer, AttackOptions, BlockOptions, DecisionKind, ObjectId } from '@/protocol/generated'
 import { must } from './batches'
 import { renderTable } from './tableHarness'
@@ -51,14 +52,21 @@ export function renderCombat(kind: CombatOptions, setup: DecisionSetup = {}) {
 export interface DecisionSetup {
   seats?: number
   id?: number
+  /** The table to show instead of the fixture of `seats` seats. */
+  fixture?: Fixture
+  /** Where the layout starts, such as focus mode. */
+  options?: TableOptions
 }
 
 /** Renders the table of `seats` seats facing any decision `kind` as decision `id`; every answer goes to a spy that accepts it. */
-export function renderDecision(kind: DecisionKind, { seats = 2, id = 7 }: DecisionSetup = {}) {
-  const fixture = fixtureOf(seats)
+export function renderDecision(
+  kind: DecisionKind,
+  { seats = 2, id = 7, fixture = fixtureOf(seats), options }: DecisionSetup = {},
+) {
   const answer = vi.fn((_answer: Answer) => true)
   const table = renderTable({
     fixture,
+    options,
     session: { answer },
     state: (state) => ({
       ...state,
