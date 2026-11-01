@@ -95,6 +95,7 @@ pub mod library;
 pub mod loyalty;
 pub mod mana;
 pub mod manual;
+mod manual_control;
 mod manual_effects;
 mod manual_library;
 mod manual_roll;

@@ -77,7 +77,7 @@ interface ThumbProps {
 }
 
 /** The card's small picture when the table has one for it; nothing otherwise. */
-function Thumb({ object }: ThumbProps) {
+export function Thumb({ object }: ThumbProps) {
   const source = object === undefined ? null : imageSourceOf(object)
   if (object === undefined || source === null) return null
   const face = faceOf(object)

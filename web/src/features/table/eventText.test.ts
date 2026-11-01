@@ -462,6 +462,10 @@ const HIDDEN: Record<VariantName<HiddenEvent>, [HiddenEvent, string]> = {
     { ManualArrange: { player: 1, top: 1, bottom: 1, graveyard: 0 } },
     'Bo puts back the top 2 cards of their library: 1 on top, 1 on the bottom (by hand)',
   ],
+  ManualTutor: [
+    { ManualTutor: { player: 1 } },
+    'Bo puts a card from their library into their hand and shuffles (by hand)',
+  ],
   StepDone: [{ StepDone: { position: [2] } }, 'A step of the resolution is done'],
   AbilityTriggered: [
     { AbilityTriggered: { source: { id: 6, counter: 0 }, ability: 1, controller: 0 } },

@@ -49,6 +49,11 @@ pub(crate) fn kind(action: &ManualAction) -> &'static str {
         ManualAction::Reveal { .. } => "reveal",
         ManualAction::Note { .. } => "note",
         ManualAction::Roll { .. } => "roll",
+        ManualAction::Search {} => "search",
+        ManualAction::Tutor { .. } => "tutor",
+        ManualAction::RemoveSickness { .. } => "remove sickness",
+        ManualAction::Sacrifice { .. } => "sacrifice",
+        ManualAction::GiveControl { .. } => "give control",
     }
 }
 

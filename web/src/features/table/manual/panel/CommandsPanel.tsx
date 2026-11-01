@@ -14,7 +14,7 @@ import { ownDecision } from '../../prompt/ownDecision'
 import { ResponseClock } from '../../prompt/ResponseClock'
 import { GAME_OVER, MANA_KINDS, OUT_OF_GAME } from '../offers'
 import { AmountField } from './AmountField'
-import { lookIsPending } from './arrange'
+import { pendingLook } from './arrange'
 import { CardGroup } from './CardGroup'
 import { FeedbackLine } from './FeedbackLine'
 import { useManualSender } from './feedback'
@@ -24,6 +24,7 @@ import { LifeCounter } from './LifeCounter'
 import { LookTopBody } from './LookTopBody'
 import { RollChoice } from './RollChoice'
 import { RowButton } from './RowButton'
+import { TutorBody } from './TutorBody'
 import { TokenChoice } from './TokenChoice'
 import { useRevealOnOpen } from './reveal'
 import type { Command, CommandId, PanelDraft, PanelGroup, PanelInput } from './commands'
@@ -38,14 +39,15 @@ const LASTING_WORDS = 'This cannot be undone: the library’s order is lost.'
 /** The Life row sits under the open life counter and adds what the counter's buttons lack: any amount, with a preview. */
 const MORE_LIFE = { label: 'More life options', effect: 'Any amount, with a preview of the change.' }
 
-/** The top cards the seat looked at and has not put back: its known top cards while its last look is still open. */
+/** The cards the seat looked at by hand and has not put back: its known top cards while its last look of `kind` is still open. */
 function lookedOf(
   known: readonly ObjectId[] | undefined,
-  log: Parameters<typeof lookIsPending>[0],
+  log: Parameters<typeof pendingLook>[0],
   seat: number,
+  kind: 'look' | 'search',
 ): readonly ObjectId[] {
   if (known === undefined || known.length === 0) return NO_CARDS
-  return lookIsPending(log, seat) ? known : NO_CARDS
+  return pendingLook(log, seat) === kind ? known : NO_CARDS
 }
 
 /** What the seat's commands are made from, or null for a viewer that is no seat of the game. */
@@ -61,7 +63,8 @@ function usePanelInput(): PanelInput | null {
         library: player.library.count,
         hand: player.hand.count,
         counters: player.counters ?? NO_COUNTERS,
-        looked: lookedOf(player.known_top, state.log, state.seat),
+        looked: lookedOf(player.known_top, state.log, state.seat, 'look'),
+        searched: lookedOf(player.known_top, state.log, state.seat, 'search'),
         off: state.result !== null ? GAME_OVER : player.lost !== null ? OUT_OF_GAME : undefined,
       }
     }),
@@ -195,6 +198,13 @@ function Row({ command, input, open, onToggle, onClose }: RowProps) {
           <LookTopBody
             id={form}
             command={command}
+            input={input}
+            onClose={close}
+            plain={<CommandForm id={form} command={command} input={input} onClose={close} />}
+          />
+        ) : command.id === 'tutor' ? (
+          <TutorBody
+            id={form}
             input={input}
             onClose={close}
             plain={<CommandForm id={form} command={command} input={input} onClose={close} />}

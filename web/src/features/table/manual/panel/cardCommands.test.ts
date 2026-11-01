@@ -36,29 +36,69 @@ const ids = (object: ObjectView, over: Partial<MenuInput> = {}): string[] =>
 
 describe('which commands a picked card offers', () => {
   it.each<[string, ObjectView, Partial<MenuInput>, string[]]>([
-    ['an untapped creature of the seat', card(), {}, ['move', 'counters', 'tap', 'damage', 'pump']],
-    ['a land', card({ types: ['Land'], subtypes: [] }), {}, ['move', 'counters', 'tap', 'damage']],
+    [
+      'an untapped creature of the seat',
+      card(),
+      {},
+      ['move', 'counters', 'tap', 'damage', 'pump', 'sacrifice', 'give'],
+    ],
+    [
+      'a summoning sick creature of the seat',
+      permanent({ summoning_sick: true }),
+      {},
+      ['move', 'counters', 'tap', 'damage', 'pump', 'unsick', 'sacrifice', 'give'],
+    ],
+    [
+      'a land',
+      card({ types: ['Land'], subtypes: [] }),
+      {},
+      ['move', 'counters', 'tap', 'damage', 'sacrifice', 'give'],
+    ],
     [
       'an unattached Aura',
       card({ subtypes: ['Aura'], types: ['Enchantment'] }),
       {},
-      ['move', 'counters', 'tap', 'attach', 'damage'],
+      ['move', 'counters', 'tap', 'attach', 'damage', 'sacrifice', 'give'],
     ],
     [
       'an attached Equipment',
       { ...EQUIPMENT, attached_to: 20 },
       {},
-      ['move', 'counters', 'tap', 'attach', 'unattach', 'damage'],
+      ['move', 'counters', 'tap', 'attach', 'unattach', 'damage', 'sacrifice', 'give'],
     ],
     ['a card in the seat hand', card({ zone: { Hand: SEAT }, permanent: null }), {}, ['move', 'discard']],
     [
       'a card in the seat graveyard',
       card({ zone: { Graveyard: SEAT }, permanent: null }),
       {},
+      ['move', 'damage', 'give'],
+    ],
+    [
+      'an instant in the seat graveyard',
+      card({ zone: { Graveyard: SEAT }, permanent: null, types: ['Instant'] }),
+      {},
       ['move', 'damage'],
     ],
+    ['a card the seat owns in exile', card({ zone: 'Exile', permanent: null }), {}, ['move', 'damage', 'give']],
+    [
+      'a card of an opponent in exile',
+      card({ zone: 'Exile', permanent: null, owner: 1, controller: 1 }),
+      {},
+      ['move'],
+    ],
     ['a creature of an opponent', card({ owner: 1, controller: 1 }), {}, ['move', 'counters', 'tap', 'pump']],
-    ['a token of the seat', card({ kind: 'Token' }), {}, ['move', 'counters', 'tap', 'damage', 'pump']],
+    [
+      'a creature the seat controls and an opponent owns',
+      card({ owner: 1 }),
+      {},
+      ['move', 'counters', 'tap', 'damage', 'pump', 'sacrifice', 'give'],
+    ],
+    [
+      'a token of the seat',
+      card({ kind: 'Token' }),
+      {},
+      ['move', 'counters', 'tap', 'damage', 'pump', 'sacrifice', 'give'],
+    ],
   ])('%s: %j', (_name, object, over, expected) => {
     expect(ids(object, over)).toEqual(expected)
   })

@@ -482,6 +482,31 @@ pub enum ManualAction {
         /// A coin or a die.
         kind: ManualRoll,
     },
+    /// The seat looks through its whole library; only it learns the cards, until the library is shuffled.
+    Search {},
+    /// The seat puts a card of its library that it looked at into its hand, then shuffles the library.
+    Tutor {
+        /// The card.
+        object: ObjectId,
+    },
+    /// A permanent the seat controls stops being summoning sick: it may attack and pay `{T}` costs this turn.
+    RemoveSickness {
+        /// The permanent.
+        object: ObjectId,
+    },
+    /// The seat sacrifices a permanent it controls.
+    Sacrifice {
+        /// The permanent.
+        object: ObjectId,
+    },
+    /// Another seat gains control of a permanent the seat controls, or a card the seat owns in its graveyard or in
+    /// exile is put onto the battlefield under that seat's control.
+    GiveControl {
+        /// The permanent or card.
+        object: ObjectId,
+        /// The seat that gains control.
+        to: PlayerId,
+    },
 }
 
 /// Why a manual action is refused.
@@ -537,6 +562,12 @@ pub enum ManualRefusal {
     /// The cards are not the top cards of the seat's library, or it has not looked at all of them.
     #[error("only the top cards of the library the seat looked at are put back")]
     NotLookedAt,
+    /// The card is not in the seat's library, or the seat has not looked at it.
+    #[error("only a card of the library the seat looked through is put into its hand")]
+    NotFound,
+    /// The seat named to gain control is the acting seat or not in the game.
+    #[error("control goes to another seat in the game")]
+    NotAnotherSeat,
 }
 
 /// Whether `player` may take `action` in `state`, or why not; the check `PriorityAction::Manual` answers to.
@@ -643,6 +674,17 @@ pub(crate) fn events(
             crate::manual_show::note(state, player, *object, text)?
         }
         ManualAction::Roll { kind } => crate::manual_roll::roll(state, player, *kind)?,
+        ManualAction::Search {} => crate::manual_library::search(state, player)?,
+        ManualAction::Tutor { object } => crate::manual_library::tutor(state, player, *object)?,
+        ManualAction::RemoveSickness { object } => {
+            crate::manual_control::remove_sickness(state, player, *object)?
+        }
+        ManualAction::Sacrifice { object } => {
+            crate::manual_control::sacrifice(state, player, *object)?
+        }
+        ManualAction::GiveControl { object, to } => {
+            crate::manual_control::give_control(state, player, *object, *to)?
+        }
     };
     let mut events = Vec::with_capacity(changes.len() + 1);
     events.push(Event::ManualAction {
