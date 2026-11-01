@@ -18,7 +18,7 @@ pub mod dk1c5_rooms;
 pub mod draft;
 pub mod effect;
 pub mod generated;
-mod identity;
+pub(crate) mod identity;
 pub mod keyword;
 pub mod load;
 pub mod mana;

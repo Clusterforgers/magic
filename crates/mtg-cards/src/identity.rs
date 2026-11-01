@@ -80,7 +80,11 @@ impl CardDefinition {
                         .subtypes
                         .iter()
                         .any(|s| matches!(s.0.as_str(), "Vehicle" | "Spacecraft")));
-            (legendary && body) || self.rules.iter().any(|rule| says_it_can(rule))
+            let by_hand = self
+                .each_face()
+                .flat_map(|face| face.manual.iter())
+                .any(|clause| text_says_commander(&clause.text));
+            (legendary && body) || self.rules.iter().any(|rule| says_it_can(rule)) || by_hand
         })
     }
 
@@ -208,6 +212,11 @@ pub fn pairing_keywords(printed: &PrintedCard) -> Vec<Keyword> {
         }
     }
     found
+}
+
+/// Whether rules text says the card can be a commander, the rule the deck check and game start share.
+pub fn text_says_commander(text: &str) -> bool {
+    text.to_lowercase().contains("can be your commander")
 }
 
 fn says_it_can(rule: &Ability) -> bool {
@@ -393,6 +402,9 @@ mod tests {
     #[case::legendary_planeswalker(legendary(&[CardType::Planeswalker]), false)]
     #[case::legendary_vehicle_with_power(legendary(&[CardType::Artifact]).with_subtype("Vehicle").with_power_toughness(3, 3), true)]
     #[case::legendary_vehicle_without_power(legendary(&[CardType::Artifact]).with_subtype("Vehicle"), false)]
+    #[case::by_hand_clause(CardDefinition::new("Walker").with_type(CardType::Planeswalker).with_manual("Walker can be your commander.", "by hand"), true)]
+    #[case::by_hand_other(CardDefinition::new("Walker").with_type(CardType::Planeswalker).with_manual("Draw a card.", "by hand"), false)]
+    #[case::by_hand_grist(CardDefinition::new("Grist").with_type(CardType::Planeswalker).with_manual("Grist, the Hunger Tide can be your commander.", "by hand"), true)]
     #[case::says_it_can(CardDefinition::new("Walker").with_type(CardType::Planeswalker).with_rules(rules(r#"{"Rule":{"rule":"CanBeCommander"}}"#)), true)]
     fn a_card_can_be_a_commander(#[case] card: CardDefinition, #[case] can: bool) {
         assert_eq!(card.can_be_commander(), can);

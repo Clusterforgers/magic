@@ -334,7 +334,8 @@ fn can_command(facts: &CardFacts) -> bool {
         .is_some_and(|face| face.power.is_some());
     let body = has_word(&words, "Creature")
         || (has_power && (has_word(&words, "Vehicle") || has_word(&words, "Spacecraft")));
-    (has_word(&words, "Legendary") && body) || rules_text(facts).contains("can be your commander")
+    (has_word(&words, "Legendary") && body)
+        || crate::identity::text_says_commander(&rules_text(facts))
 }
 
 fn is_background(facts: &CardFacts) -> bool {
