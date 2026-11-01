@@ -152,7 +152,7 @@ pub(crate) fn on(code: &str) -> String {
     format!("precon:{code}")
 }
 
-async fn start(pool: &PgPool) -> TestServer {
+pub(crate) async fn start(pool: &PgPool) -> TestServer {
     start_with(pool, bot_config()).await
 }
 
@@ -282,7 +282,7 @@ fn row<'a>(listing: &'a Value, game: &str) -> Option<&'a Value> {
 }
 
 /// The first snapshot a seat is sent after it joins a started game.
-async fn snapshot(socket: &mut WsClient, game: &str) -> StateView {
+pub(crate) async fn snapshot(socket: &mut WsClient, game: &str) -> StateView {
     socket.join(game).await;
     loop {
         match socket.message().await {

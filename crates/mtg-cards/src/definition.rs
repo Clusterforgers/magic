@@ -14,6 +14,7 @@ use serde::{Deserialize, Serialize};
 use crate::ability::Ability;
 use crate::compile::{ClauseKind, classify_clause};
 use crate::effect::is_false;
+use crate::keyword::Keyword;
 use crate::modify::Modification;
 use crate::value::Amount;
 
@@ -186,6 +187,11 @@ pub struct CardDefinition {
     /// Every face of a card with more than one, in Scryfall's order, each with its own rules; empty for a card with one face.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub faces: Vec<CardDefinition>,
+    /// The keywords that let the card be a commander beside another (Partner, Partner with, a partner group, Choose a
+    /// Background, Doctor's companion), read from its printed text whatever its support, since a deck rule needs no engine
+    /// support; never serialized, so fingerprints and stored rules do not see it.
+    #[serde(skip)]
+    pub pairing: Vec<Keyword>,
     /// Which printed card this is, on the card and on each of its faces; never serialized, so fingerprints and stored
     /// rules do not see it.
     #[serde(skip)]
@@ -214,6 +220,7 @@ impl CardDefinition {
             read: false,
             faces: Vec::new(),
             identity: None,
+            pairing: Vec::new(),
         }
     }
 

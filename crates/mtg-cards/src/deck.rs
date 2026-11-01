@@ -20,7 +20,7 @@ use crate::load::Library;
 use crate::support::{Caps, PrintedCard, Reason, Support, SupportRecord};
 
 pub use hashes::{coverage_hash, deck_hash};
-pub use legality::{Issue, IssueCode, SUPPORTED_FORMATS, is_supported_format};
+pub use legality::{Issue, IssueCode, SUPPORTED_FORMATS, can_pair, is_supported_format};
 pub use marker::{Marker, StoredCheck, marker};
 
 /// A part of a deck.

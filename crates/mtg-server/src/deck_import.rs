@@ -2,7 +2,7 @@
 //! to cards of the database, and writing a stored deck as text, Arena or MTGO text.
 
 use axum::http::StatusCode;
-use mtg_cards::deck::DeckZone;
+use mtg_cards::deck::{DeckZone, can_pair};
 use mtg_db::StoredDeck;
 use mtg_import::decklist::{
     DeckEntry, DeckFormat, ExportFormat, ParsedDeck, Section, detect, export_as, parse_as,
@@ -17,7 +17,7 @@ use mtg_protocol::rest::{
 
 use crate::api::ApiError;
 use crate::card_api::failed;
-use crate::cards::CardSource;
+use crate::cards::{CardSource, card_facts};
 use crate::deck_cards::{Line, Loaded, check_format};
 
 fn dialect(source: ImportSource) -> DeckFormat {
@@ -69,9 +69,10 @@ fn too_big(message: String) -> ApiError {
     )
 }
 
-/// The list of a request read into entries: the format it was read as, and the entries (with the
-/// maybeboard counted apart, since a stored deck has none).
-fn read(request: &ImportRequest) -> Result<(DeckFormat, ParsedDeck, u64), ApiError> {
+/// The list of a request read into entries: the format it was read as, the entries (with the
+/// maybeboard counted apart, since a stored deck has none), and whether its commander is the one the
+/// format implies rather than marks.
+fn read(request: &ImportRequest) -> Result<(DeckFormat, ParsedDeck, u64, bool), ApiError> {
     if request.text.chars().count() > MAX_IMPORT_CHARS {
         return Err(too_big(format!(
             "the list is at most {MAX_IMPORT_CHARS} characters"
@@ -92,9 +93,17 @@ fn read(request: &ImportRequest) -> Result<(DeckFormat, ParsedDeck, u64), ApiErr
         .source
         .map_or_else(|| detect(&request.text), dialect);
     let mut parsed = parse_as(format, &request.text);
+    let commanders = |deck: &ParsedDeck| {
+        deck.entries
+            .iter()
+            .filter(|entry| entry.section == Section::Commander)
+            .count()
+    };
+    let marked = commanders(&parsed);
     if wanted == "commander" {
         parsed = promote_implied_commander(format, parsed);
     }
+    let implied = commanders(&parsed) > marked;
     let maybe: u64 = parsed
         .entries
         .iter()
@@ -104,7 +113,24 @@ fn read(request: &ImportRequest) -> Result<(DeckFormat, ParsedDeck, u64), ApiErr
     parsed
         .entries
         .retain(|entry| entry.section != Section::Maybeboard);
-    Ok((format, parsed, maybe))
+    Ok((format, parsed, maybe, implied))
+}
+
+/// The second line of a list whose first line is an implied commander (Moxfield writes the
+/// commanders first and marks none) becomes a commander too when the two can lead a deck together.
+fn promote_partner(lines: &mut [Line], loaded: &Loaded) {
+    let [first, second, ..] = lines else {
+        return;
+    };
+    if first.zone != DeckZone::Commander || second.zone != DeckZone::Main || second.count != 1 {
+        return;
+    }
+    let facts = |line: &Line| loaded.card(&line.oracle_id).map(card_facts);
+    if let (Some(a), Some(b)) = (facts(first), facts(second))
+        && can_pair(&a, &b)
+    {
+        second.zone = DeckZone::Commander;
+    }
 }
 
 /// The printing a line names by set and collector number, when the database holds it and it is a
@@ -186,7 +212,7 @@ pub(crate) async fn import(
     cards: &CardSource,
     request: &ImportRequest,
 ) -> Result<ImportResult, ApiError> {
-    let (format, parsed, maybeboard) = read(request)?;
+    let (format, parsed, maybeboard, implied) = read(request)?;
     let index = cards.card_index().await.map_err(|error| failed(&error))?;
     let resolution = resolve_deck(&index, &parsed);
 
@@ -211,6 +237,9 @@ pub(crate) async fn import(
         });
     }
     let loaded = Loaded::load(cards, &lines).await?;
+    if implied {
+        promote_partner(&mut lines, &loaded);
+    }
     let mut views = Vec::with_capacity(lines.len());
     for line in &lines {
         if let Some(view) = loaded.view(line) {
@@ -358,7 +387,7 @@ mod tests {
     #[test]
     fn the_format_is_detected_unless_the_request_names_it() {
         let text = "Commander\n1 Atraxa, Praetors' Voice\n\nDeck\n1 Sol Ring\n";
-        let (format, parsed, maybe) = read(&request(text)).unwrap();
+        let (format, parsed, maybe, _) = read(&request(text)).unwrap();
         assert_eq!(format, DeckFormat::Arena);
         assert_eq!(parsed.entries.len(), 2);
         assert_eq!(maybe, 0);
@@ -366,7 +395,7 @@ mod tests {
             source: Some(ImportSource::Text),
             ..request(text)
         };
-        let (format, _, _) = read(&named).unwrap();
+        let (format, _, _, _) = read(&named).unwrap();
         assert_eq!(format, DeckFormat::PlainText);
     }
 
@@ -379,7 +408,8 @@ mod tests {
             format: Some("Commander".into()),
             ..request(text)
         };
-        let (format, promoted, _) = read(&commander).unwrap();
+        let (format, promoted, _, implied) = read(&commander).unwrap();
+        assert!(implied);
         assert_eq!(format, DeckFormat::Moxfield);
         assert_eq!(promoted.entries[0].section, Section::Commander);
         let modern = ImportRequest {
@@ -392,7 +422,7 @@ mod tests {
     #[test]
     fn the_maybeboard_is_counted_apart_and_is_no_entry() {
         let text = "Deck\n4 Shock\n\nMaybeboard\n2 Pyroblast\n1 Sol Ring\n";
-        let (_, parsed, maybe) = read(&request(text)).unwrap();
+        let (_, parsed, maybe, _) = read(&request(text)).unwrap();
         assert_eq!(maybe, 3);
         assert_eq!(parsed.entries.len(), 1);
         assert!(parsed.entries.iter().all(|e| e.section == Section::Main));

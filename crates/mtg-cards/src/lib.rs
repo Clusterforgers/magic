@@ -40,4 +40,5 @@ pub mod w11d_dungeon;
 pub use assemble::{Assembled, assemble};
 pub use definition::{AbilityDef, CardDefinition, CardIdentity, ManaAbility, ManualClause};
 pub use draft::{Draft, DraftRules, ReadState};
+pub use identity::pairing_keywords;
 pub use support::{Caps, PrintedCard, PrintedFace};
