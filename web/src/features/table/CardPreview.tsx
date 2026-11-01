@@ -5,6 +5,8 @@ import { Button } from '@/components/ui/button'
 import { BY_HAND_TITLE } from '@/lib/byHand'
 import { cn } from '@/lib/utils'
 import { abilityText, costText, keywordLine, powerToughness, statusWords, typeLine } from './cardModel'
+import { KeywordText } from './Keyword'
+import { reminderTerms } from './reminders'
 import { ManaPreviewLine } from './ManaStrip'
 import { PreviewCard } from './PreviewCard'
 import { useCreatureOutlook } from './combat/drawn'
@@ -96,6 +98,10 @@ function PreviewBody({ target }: { target: PreviewTarget }) {
   const keywords = keywordLine(object)
   const activated = activatedLines(object, note?.usable)
   const manual = clausesOf(object)
+  const reminders = reminderTerms(object, [
+    ...activated.map((line) => line.text),
+    ...manual.map((clause) => clause.text),
+  ])
   const status = statusWords(object, role)
   const hosted = hostLine(object, links.host)
   const paired = pairLine(links.partner)
@@ -152,7 +158,9 @@ function PreviewBody({ target }: { target: PreviewTarget }) {
         ) : (
           <ul aria-label="Abilities" className="grid gap-0.5">
             {object.abilities.map((ability, index) => (
-              <li key={index}>{abilityText(ability)}</li>
+              <li key={index}>
+                <KeywordText text={abilityText(ability)} />
+              </li>
             ))}
           </ul>
         )}
@@ -162,7 +170,9 @@ function PreviewBody({ target }: { target: PreviewTarget }) {
             <p className="font-medium">{BY_HAND_TITLE}:</p>
             <ul aria-label={BY_HAND_TITLE} className="grid gap-0.5">
               {manual.map((clause, index) => (
-                <li key={index}>{clause.text}</li>
+                <li key={index}>
+                  <KeywordText text={clause.text} />
+                </li>
               ))}
             </ul>
           </div>
@@ -171,8 +181,21 @@ function PreviewBody({ target }: { target: PreviewTarget }) {
           <ul aria-label="Activated abilities" data-slot="preview-activated" className="grid gap-0.5">
             {activated.map((line) => (
               <li key={line.key} data-now={line.now || undefined}>
-                {line.text}
+                <KeywordText text={line.text} />
                 {line.now ? <NowTag /> : null}
+              </li>
+            ))}
+          </ul>
+        )}
+        {reminders.length === 0 ? null : (
+          <ul
+            aria-label="Keyword reminders"
+            data-slot="preview-reminders"
+            className="grid gap-0.5 text-xs text-muted-foreground"
+          >
+            {reminders.map((term) => (
+              <li key={term.title}>
+                <span className="font-medium text-foreground">{term.title}</span>: {term.text}
               </li>
             ))}
           </ul>
