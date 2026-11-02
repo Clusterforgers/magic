@@ -92,3 +92,11 @@ export const POD_TIGHT_PX = 220
 export function podIsTight(height: number | null): boolean {
   return height !== null && height < POD_TIGHT_PX
 }
+
+/** A pod column shorter than this (px) cannot hold the least picture under the tight blocks: only the name row and life stay above the corner. */
+export const POD_CRAMPED_PX = 160
+
+/** Whether a column of `height` px is cramped; one that is not measured is not. */
+export function podIsCramped(height: number | null): boolean {
+  return height !== null && height < POD_CRAMPED_PX
+}
