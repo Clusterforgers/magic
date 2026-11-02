@@ -1,7 +1,15 @@
 // Goal: the Priority prompt passes through one primary button whose words say what passing does now, an "End turn" beside it and a small menu, each asking the session for the right yield exactly once per prompt; Space or Enter presses the primary button only when nothing else has the keyboard; and nothing says "pass priority" except the description a screen reader gets.
 import { act, screen, waitFor, within } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
-import type { Answer, FullControlMode, PriorityOptions, Step, YieldUntil } from '@/protocol/generated'
+import type { PlayState } from '@/play/store'
+import type {
+  Answer,
+  FullControlMode,
+  ObjectId,
+  PriorityOptions,
+  Step,
+  YieldUntil,
+} from '@/protocol/generated'
 import { clone, must } from '@/test-utils/batches'
 import { primaryButton } from '@/test-utils/passControls'
 import { renderTable } from '@/test-utils/tableHarness'
@@ -35,6 +43,18 @@ interface Situation {
   accepts?: boolean
   /** The Full Control mode the server holds. */
   fullControl?: FullControlMode
+  /** When set, the top of the stack is an ability of that name (empty: its source is hidden). */
+  ability?: string
+}
+
+/** `objects` with `top` turned into an ability named `name`, or unchanged when either is missing. */
+function asAbility(
+  objects: PlayState['objectsById'],
+  top: ObjectId | undefined,
+  name: string | undefined,
+): PlayState['objectsById'] {
+  if (top === undefined || name === undefined) return objects
+  return { ...objects, [top]: { ...must(objects[top]), kind: 'Ability', name } }
 }
 
 /** Seat 0 facing priority at `situation`, with spies for the session's answers and yields. */
@@ -45,12 +65,14 @@ function renderControls({
   given = options(),
   accepts = true,
   fullControl = 'Off',
+  ability,
 }: Situation = {}) {
   const answer = vi.fn((_answer: Answer) => true)
   const yieldUntil = vi.fn((_until: YieldUntil) => accepts)
   const cancelYield = vi.fn(() => true)
+  const autoYield = vi.fn((_object: number) => true)
   const table = renderTable({
-    session: { answer, yieldUntil, cancelYield },
+    session: { answer, yieldUntil, cancelYield, autoYield },
     ui: (
       <>
         <GameTable />
@@ -64,6 +86,7 @@ function renderControls({
       return {
         ...state,
         view,
+        objectsById: asAbility(state.objectsById, view.stack.cards?.at(-1), ability),
         fullControl,
         pending: { id: 4, decision: { player: 0, kind: { Priority: given } } },
       }
@@ -75,7 +98,7 @@ function renderControls({
   const trigger = (): HTMLElement => screen.getByRole('button', { name: 'More ways to pass' })
   const card = (id: number): HTMLElement =>
     must(table.container.querySelector<HTMLElement>(`button[data-object-id="${id}"]`))
-  return { ...table, answer, yieldUntil, cancelYield, primary, secondary, trigger, card }
+  return { ...table, answer, yieldUntil, cancelYield, autoYield, primary, secondary, trigger, card }
 }
 
 describe('the words on the buttons', () => {
@@ -319,6 +342,33 @@ describe('the menu', () => {
     expect(yieldUntil.mock.calls).toEqual([[until]])
     expect(answer).not.toHaveBeenCalled()
     await waitFor(() => expect(screen.queryByRole('menu')).toBeNull())
+  })
+
+  it.each([
+    [undefined, false],
+    ['', false],
+    ['Soul Warden', true],
+  ] as const)(
+    'over a top of the stack named %o offers to always yield to it: %s',
+    async (ability, offered) => {
+      const { trigger, user } = renderControls({ ability })
+      await user.click(trigger())
+      const shown = await items()
+      expect(shown.includes('Always yield to Soul Warden')).toBe(offered)
+      expect(shown.some((item) => item.startsWith('Always yield'))).toBe(offered)
+    },
+  )
+
+  it('"Always yield to" asks the session to yield to the ability on top, once, and answers nothing itself', async () => {
+    const { trigger, autoYield, answer, user, store } = renderControls({ ability: 'Soul Warden' })
+    const top = must(store.getState().view?.stack.cards?.at(-1))
+    await user.click(trigger())
+    const item = await screen.findByRole('menuitem', { name: 'Always yield to Soul Warden' })
+    expect(item).toHaveAttribute('aria-description', expect.stringContaining('rest of the game'))
+    await user.click(item)
+    expect(autoYield.mock.calls).toEqual([[top]])
+    expect(answer).not.toHaveBeenCalled()
+    expect(primaryButton()).toBeDisabled()
   })
 
   it('describes each item to a screen reader', async () => {

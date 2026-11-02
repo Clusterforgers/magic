@@ -118,6 +118,7 @@ fn welcome() -> ServerMessage {
         full_control: FullControlMode::Off,
         end_turn_by_hand: false,
         auto_choices: AutoChoices::default(),
+        auto_yields: Vec::new(),
     }
 }
 
