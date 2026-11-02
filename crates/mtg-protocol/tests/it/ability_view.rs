@@ -55,6 +55,25 @@ fn an_ability_on_the_stack_is_an_object_named_after_its_source_with_its_targets(
 }
 
 #[test]
+fn an_ability_on_the_stack_carries_its_rules_text_with_the_source_named() {
+    let mut driver = Driver::from_scenario(
+        Scenario::new(2).battlefield(0, [ready(pinger("Pinger", 1)), ready(mountain())]),
+    )
+    .unwrap();
+    driver.begin_activation("Pinger").unwrap();
+    let at = driver.target_player(1);
+    driver.choose_targets(&[at]).unwrap();
+    let ability = *driver.state().stack().last().unwrap();
+    let pinger_id = driver.id_of("Pinger").unwrap();
+    for viewer in SEATS {
+        let text = view_of(&driver, viewer, ability).rules_text.unwrap();
+        assert!(text.contains("Pinger") && !text.contains('~'), "{text}");
+        // A card keeps none.
+        assert!(view_of(&driver, viewer, pinger_id).rules_text.is_none());
+    }
+}
+
+#[test]
 fn a_spell_on_the_stack_shows_what_it_targets() {
     let mut driver = Driver::from_scenario(
         Scenario::new(2)

@@ -1,7 +1,7 @@
 //! Building a viewer's [`StateView`] from the full game state, and the visibility rule it rests on.
 
 use mtg_cards::ability::Ability;
-use mtg_cards::compile::protection_quality_word;
+use mtg_cards::compile::{protection_quality_word, render_ability};
 use mtg_cards::keyword::Keyword;
 use mtg_cards::value::CounterKind;
 use mtg_cards::{CardDefinition, CardIdentity};
@@ -287,6 +287,15 @@ fn identity_of(
     shown.identity.clone()
 }
 
+/// The words of the ability an object is on the stack, or nothing for a card, a hidden source or an unworded ability.
+fn stack_text(object: &GameObject, shown: &str) -> Option<String> {
+    if shown.is_empty() {
+        return None;
+    }
+    let text = render_ability(object.ability()?.rules())?;
+    Some(text.replace('~', shown))
+}
+
 /// The name the viewer reads on the object: the card's, except for an ability on the stack of a permanent that still lies
 /// face down and that the viewer may not look at, which is named after its source, and a face-down permanent has no name
 /// (CR 708.2a).
@@ -347,6 +356,7 @@ impl ObjectView {
         let name = shown_name(state, sight.viewer, object, &card.name);
         // An ability on the stack tells whether its source's card is owed when it resolves wherever it names the source,
         // so a client holds the seat across batches without the source in its view.
+        let rules_text = stack_text(object, &name);
         let manual_owed = (printed || !name.is_empty()) && card.manual_owed();
         // A face-down permanent's abilities are the 2/2's; the card behind it is read off `abilities`.
         let activated = if printed && !behind && sight.reads_rules_of(object) {
@@ -397,6 +407,7 @@ impl ObjectView {
             }),
             kind: object.kind(),
             source: object.ability().map(|ability| ability.source().id),
+            rules_text,
             targets: object.choices().targets.clone(),
             targets_legal: targets_legal(state, id),
             // Counters and attachments are public facts of a permanent, shown to every seat that sees the permanent.
@@ -453,6 +464,7 @@ impl ObjectView {
             permanent: None,
             kind: ObjectKind::Card,
             source: None,
+            rules_text: None,
             targets: Vec::new(),
             targets_legal: Vec::new(),
             counters: Vec::new(),

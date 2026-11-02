@@ -29,6 +29,8 @@ import { useCardMark } from './prompt/marks'
 import { noteName, revealedLine, revealedPlace } from './revealed'
 import { combatRoleIn } from './selectors'
 import { roomTitle } from './rooms'
+import { isStacked, shownObject, stackSummary } from './stackPreview'
+import { useStackEntries, useTargetNamer } from './useStackEntries'
 import { useLinks } from './useLinks'
 
 // Whole class names, so Tailwind can see them.
@@ -67,7 +69,13 @@ function PreviewBody({ target }: { target: PreviewTarget }) {
   const store = usePreviewStore()
   const name = useSeatNamer()
   const { id } = target
-  const object = usePlay((state) => state.objectsById[id])
+  const held = usePlay((state) => state.objectsById[id])
+  const sourceObject = usePlay((state) =>
+    held?.source === undefined ? undefined : state.objectsById[held.source],
+  )
+  const object = held === undefined ? undefined : shownObject(held, sourceObject)
+  const entry = useStackEntries().find((candidate) => candidate.id === id)
+  const targetNames = useTargetNamer()
   const role = usePlay((state) => combatRoleIn(state, id))
   const place = usePlay((state) => (state.view === null ? undefined : revealedPlace(state.view.players, id)))
   const outlook = useCreatureOutlook(id)
@@ -79,7 +87,7 @@ function PreviewBody({ target }: { target: PreviewTarget }) {
   const links = useLinks(object)
   const note = useCardMark(id).note
   const reason = note?.line
-  const gone = object === undefined
+  const gone = held === undefined
 
   useEffect(() => {
     // A pinned card that left the game would otherwise stay "shown" with nothing to draw.
@@ -91,7 +99,8 @@ function PreviewBody({ target }: { target: PreviewTarget }) {
     return () => document.removeEventListener('keydown', close)
   }, [gone, store])
 
-  if (object === undefined) return null
+  if (object === undefined || held === undefined) return null
+  const summary = isStacked(held) ? stackSummary(held, sourceObject, entry, name, targetNames) : null
   const fit = previewFit(target.anchor, { width: window.innerWidth, height: window.innerHeight })
   const { dock, beside } = fit
   const pt = powerToughness(object)
@@ -139,6 +148,23 @@ function PreviewBody({ target }: { target: PreviewTarget }) {
       </div>
       <div className={cn('grid content-start gap-1 text-sm', beside ? 'min-w-0 flex-1' : 'mt-3')}>
         <p className="font-semibold">{roomTitle(object.name, links.doors)}</p>
+        {summary === null ? null : (
+          <div data-slot="preview-stack" className="grid gap-0.5 rounded-md bg-muted px-2 py-1">
+            <p className="font-medium">{summary.heading}</p>
+            {summary.rules.map((line, index) => (
+              <p key={index} data-slot="preview-stack-rules" className="select-text">
+                <KeywordText text={line} />
+              </p>
+            ))}
+            {summary.targets.length === 0 ? null : (
+              <ul aria-label="Targets" data-slot="preview-stack-targets" className="grid gap-0.5">
+                {summary.targets.map((line, index) => (
+                  <li key={index}>→ {line}</li>
+                ))}
+              </ul>
+            )}
+          </div>
+        )}
         {reason === undefined ? null : (
           <p
             data-slot="preview-reason"
