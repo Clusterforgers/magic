@@ -14,6 +14,8 @@ import { createEffectArrows } from './effectArrows'
 import type { EffectArrows } from './effectArrows'
 import type { Arrows } from './arrows'
 import { FX_MS, isLifeEffect, NO_ENTRIES, NO_GHOSTS, rowKey } from './model'
+import { createStrikes } from './strikeLayer'
+import type { Strikes } from './strikeLayer'
 import { createTravel } from './travel'
 import type { Travel, TravelOptions } from './travel'
 import type { Effect, FxEntry, FxKind, Ghost } from './model'
@@ -55,8 +57,12 @@ export interface Fx {
   readonly arrows: Arrows
   /** The arrows from a resolving object to what it counters, exiles, bounces or destroys; they play in every mode but `off`. */
   readonly effectArrows: EffectArrows
+  /** The creatures that strike what they deal combat damage to; started by `watchBatches`, drawn by `FxStrikes`. */
+  readonly strikes: Strikes
   /** Starts the effects of a batch, each expiring on its own after its time. Nothing at all while the mode is `off`. */
   play(effects: readonly Effect[]): void
+  /** Starts `effects` after `ms` (when a strike lands); `clear` cancels the wait. */
+  playAfter(effects: readonly Effect[], ms: number): void
   /** Ends every effect now and cancels the timers. */
   clear(): void
 }
@@ -100,6 +106,7 @@ export function createFx(options: FxOptions = {}): Fx {
   const slow = options.slow ?? 1
   const store = createStore<FxState>(emptyState)
   const travel = createTravel({ ...options.travel, mode: modeNow, slow })
+  const strikes = createStrikes({ ...options.travel, mode: modeNow, slow })
   const waiting = new Set<number>()
   const arrows = createArrows({ timers, enabled: () => modeNow() !== 'off', slow })
   const effectArrows = createEffectArrows({
@@ -167,8 +174,22 @@ export function createFx(options: FxOptions = {}): Fx {
     }
   }
 
+  function playAfter(effects: readonly Effect[], ms: number): void {
+    if (effects.length === 0) return
+    if (ms <= 0) {
+      play(effects)
+      return
+    }
+    const timer = timers.setTimeout(() => {
+      waiting.delete(timer)
+      play(effects)
+    }, ms)
+    waiting.add(timer)
+  }
+
   function clear(): void {
     travel.clear()
+    strikes.clear()
     for (const timer of waiting) timers.clearTimeout(timer)
     waiting.clear()
     const { objects, seats, ghosts } = store.getState()
@@ -177,7 +198,7 @@ export function createFx(options: FxOptions = {}): Fx {
     effectArrows.clear()
   }
 
-  return { store, slow, travel, play, clear, arrows, effectArrows }
+  return { store, slow, travel, strikes, play, playAfter, clear, arrows, effectArrows }
 }
 
 /** The layer that cards outside a table share: it plays nothing. */

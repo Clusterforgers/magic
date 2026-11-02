@@ -19,6 +19,7 @@ import type {
 import type { DevFx } from '../devSearch'
 import { applyBatchToStore } from './applyBatch'
 import { equipMove } from './equip'
+import { STRIKE_MOVES } from './strikeScene'
 import { hiddenDraw, PLAY_MOVES } from './playScenes'
 
 /** The table a move changes, and the means to change it. */
@@ -231,6 +232,8 @@ const MOVES: Record<DevFx, (scene: Scene) => Event[]> = {
 
   // The viewer's Equipment goes to the next creature of the viewer, which draws the equip arrow.
   equip: equipMove,
+
+  ...STRIKE_MOVES,
 }
 
 /** The batch for `kind` from the table in `state`, or null when there is no table or the move has nothing to do. */
