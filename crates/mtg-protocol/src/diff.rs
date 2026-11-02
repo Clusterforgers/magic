@@ -95,6 +95,7 @@ mod tests {
             manual: Vec::new(),
             manual_owed: false,
             read: false,
+            partial: false,
             note: None,
             identity: None,
             activated: Vec::new(),

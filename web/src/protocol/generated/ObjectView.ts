@@ -180,6 +180,11 @@ manual_owed?: boolean,
  */
 read?: boolean, 
 /**
+ * Whether the engine runs part of its card and leaves the clauses in `manual` to the table (`Partial`), as against a
+ * card played wholly by hand; shown wherever `manual` is, left out while false.
+ */
+partial?: boolean, 
+/**
  * The note a seat put on the object by hand, which every seat that sees the object reads; left out while there is
  * none.
  */

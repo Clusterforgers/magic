@@ -245,3 +245,28 @@ describe('the touch and mouse path', () => {
     expect(screen.queryByRole('dialog')).toBeNull()
   })
 })
+
+describe('what the mark says of the card', () => {
+  it.each<[string, Partial<ObjectView>, string, string, string]>([
+    [
+      'a partial card',
+      { manual: ONE, partial: true },
+      'Partial',
+      'bg-support-partial',
+      'Partly played by hand',
+    ],
+    ['a card played wholly by hand', { manual: ONE }, 'By hand', 'bg-support-manual', 'Played by hand'],
+    [
+      'a card with partial false',
+      { manual: ONE, partial: false },
+      'By hand',
+      'bg-support-manual',
+      'Played by hand',
+    ],
+  ])('%s', (_name, over, word, colour, title) => {
+    renderHand({ object: card(over) })
+    expect(mark()).toHaveTextContent(new RegExp(`^${word}$`))
+    expect(mark()?.className).toContain(colour)
+    expect(mark()?.getAttribute('title')).toMatch(new RegExp(`^${title}:`))
+  })
+})
