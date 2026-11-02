@@ -94,6 +94,11 @@ kind?: ObjectKind,
  */
 source?: ObjectId, 
 /**
+ * The rules text of an ability on the stack in the card writer's words, with the source's name for `~`; left out for
+ * any other object, for an ability the writer cannot word and while the source is hidden from the viewer.
+ */
+rules_text?: string, 
+/**
  * What a spell or ability on the stack targets, one list for each target specification.
  */
 targets?: Array<Array<Target>>, 

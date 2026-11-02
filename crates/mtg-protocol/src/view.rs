@@ -199,6 +199,11 @@ pub struct ObjectView {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[ts(optional)]
     pub source: Option<ObjectId>,
+    /// The rules text of an ability on the stack in the card writer's words, with the source's name for `~`; left out for
+    /// any other object, for an ability the writer cannot word and while the source is hidden from the viewer.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[ts(optional)]
+    pub rules_text: Option<String>,
     /// What a spell or ability on the stack targets, one list for each target specification.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     #[ts(as = "Option<Vec<Vec<Target>>>", optional)]
