@@ -1,4 +1,4 @@
-// Goal: `?states=1` is read only as 1, true or "1", and the real table over the states fixture draws each state on the card that has it: attachments behind their host, a player's Curse, the copy, the other face, the merge, the face-down cards and the stack of equal tokens.
+// Goal: `?states=1` is read only as 1, true or "1", and the real table over the states fixture draws each state on the card that has it: attachments behind their host, a player's Curse, the copy, the other face, the merge, the face-down cards and the stacks of equal tokens.
 import { within } from '@testing-library/react'
 import { beforeEach, describe, expect, it } from 'vitest'
 import { fixtureGame } from './devGame'
@@ -92,5 +92,7 @@ describe('the table over the states fixture', () => {
       stack.getAttribute('data-stack'),
     )
     expect(stacks).toContain('3')
+    // The two 6/6 Soldiers with their keywords granted in opposite orders.
+    expect(stacks).toContain('2')
   })
 })

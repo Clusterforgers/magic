@@ -99,7 +99,7 @@ describe('the states fixture', () => {
     const state = fixtureState(fixture)
     const stacks = battlefieldStacks(state, fixture.view.viewer).plain.creatures
     const soldiers = stacks.filter((stack) => byId.get(stack.ids[0] ?? -1)?.name === 'Soldier')
-    expect(soldiers.map((stack) => stack.ids.length).sort()).toEqual([1, 1, 3])
+    expect(soldiers.map((stack) => stack.ids.length).sort()).toEqual([1, 1, 2, 3])
   })
 
   it('says whether each changed number rose or fell from the printed card', async () => {
