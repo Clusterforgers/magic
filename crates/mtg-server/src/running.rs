@@ -16,7 +16,7 @@ use tokio::time::Instant;
 
 use crate::bank::Banks;
 use crate::dwell::Waits;
-use crate::pace::{self, Pace};
+use crate::pace::{self, Pace, chosen_answer};
 use crate::stops::{self, Stops};
 use crate::windows::{self, Verdict};
 use crate::yields::Yields;
@@ -276,7 +276,7 @@ impl Running {
     /// What the table does with `decision` under `stops` and `yields`: with the dwell switched off, a pass after a
     /// dwell is a pass at once.
     fn verdict(&self, decision: &Decision, stops: &Stops, yields: &mut Yields) -> Verdict {
-        if self.sole_answer(decision, stops).is_some() {
+        if self.auto_answer(decision, stops).is_some() {
             return Verdict::Pass;
         }
         match windows::verdict(decision, stops, yields, self.engine.state()) {
@@ -285,14 +285,16 @@ impl Running {
         }
     }
 
-    /// The engine's answer to `decision` when the rules leave it one ([`mtg_engine::choose::sole_answer`]) and its seat
-    /// is out of Full Control, which asks every question.
-    fn sole_answer(&self, decision: &Decision, stops: &Stops) -> Option<Answer> {
+    /// The answer the table gives for `decision` when its seat is out of Full Control, which asks every question: the
+    /// engine's when the rules leave one ([`mtg_engine::choose::sole_answer`]), else the plain answer of a kind the seat
+    /// lets the server answer ([`AutoChoices`]).
+    fn auto_answer(&self, decision: &Decision, stops: &Stops) -> Option<Answer> {
         let off = stops.full_control(decision.player) == FullControlMode::Off;
-        let asked = off && !pace::is_priority(decision);
-        asked
-            .then(|| mtg_engine::choose::sole_answer(self.engine.state(), decision))
-            .flatten()
+        if !off || pace::is_priority(decision) {
+            return None;
+        }
+        mtg_engine::choose::sole_answer(self.engine.state(), decision)
+            .or_else(|| chosen_answer(decision, stops.auto_choices(decision.player)))
     }
 
     /// What the table does with the pending decision if it is `seat`'s, under `stops` and `yields`.
@@ -589,7 +591,7 @@ impl Running {
                 Verdict::Dwell => return Ok(Halt::Dwell),
                 Verdict::Pass => {}
             }
-            let answer = self.sole_answer(decision, stops).unwrap_or_else(pace::pass);
+            let answer = self.auto_answer(decision, stops).unwrap_or_else(pace::pass);
             let at = stops::place(self.engine.state());
             let on_stack = stops::by_hand_on_stack(self.engine.state());
             let passed = self.engine.apply(answer)?;

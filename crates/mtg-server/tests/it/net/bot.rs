@@ -191,6 +191,7 @@ impl WsBot {
             | ServerMessage::Stops { .. }
             | ServerMessage::FullControl { .. }
             | ServerMessage::EndTurnByHand { .. }
+            | ServerMessage::AutoChoices { .. }
             | ServerMessage::Bank { .. }
             | ServerMessage::Presence { .. } => {}
             ServerMessage::GameOver { result } => return Some(Stop::Over(result)),

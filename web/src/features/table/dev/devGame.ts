@@ -139,6 +139,10 @@ export function fixtureSession(store: PlayStore, options: FixtureSessionOptions 
       store.setState({ endTurnByHand: on })
       return true
     },
+    setAutoChoices(choices) {
+      store.setState({ autoChoices: choices })
+      return true
+    },
     // The dev table has no passing to interrupt: the card is only marked as queued.
     castWhenAsked(card) {
       store.setState({ castWhenAsked: card })

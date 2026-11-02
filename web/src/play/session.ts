@@ -7,6 +7,7 @@ import type { GameSocketOptions, SocketEvent } from '@/net/socket'
 import { browserTimers } from '@/net/timers'
 import type {
   Answer,
+  AutoChoices,
   DecisionId,
   FullControlMode,
   ManualAction,
@@ -77,6 +78,11 @@ export interface Session {
    * for every later game. The store's `endTurnByHand` follows when the server says so. False when the socket is not open.
    */
   setEndTurnByHand(on: boolean): boolean
+  /**
+   * Asks the server to answer this seat's trigger order and combat damage with the plain answer, as `choices` say; the
+   * store's `autoChoices` follows when the server says so. False when the socket is not open.
+   */
+  setAutoChoices(choices: AutoChoices): boolean
   /**
    * Casts `card` (an instant or a flash card in hand) at this seat's next priority window: asks the server for that
    * window (Full Control `NextWindow`, which asks whatever the seat holds) and casts the card when the decision comes,
@@ -221,6 +227,7 @@ export function createSession(deps: SessionDeps): Session {
           stops: message.stops,
           fullControl: message.full_control,
           endTurnByHand: message.end_turn_by_hand,
+          autoChoices: message.auto_choices,
           castWhenAsked: null,
         })
         for (const request of welcomeRequests({
@@ -242,6 +249,9 @@ export function createSession(deps: SessionDeps): Session {
         return
       case 'EndTurnByHand':
         setState({ endTurnByHand: message.on })
+        return
+      case 'AutoChoices':
+        setState({ autoChoices: message.choices })
         return
       case 'Lobby':
         // The server sends the whole roster each time, so the newest one simply replaces the last.
@@ -492,6 +502,7 @@ export function createSession(deps: SessionDeps): Session {
     setStop: (side, step, on, keep) =>
       canHoldStop(step) && socket.send({ type: 'SetStop', side, step, on, keep }),
     setFullControl: (mode) => socket.send({ type: 'FullControl', mode }),
+    setAutoChoices: (choices) => socket.send({ type: 'AutoChoices', choices }),
     setEndTurnByHand(on) {
       if (!socket.send({ type: 'EndTurnByHand', on })) return false
       saveEndTurnByHand(on)
