@@ -133,8 +133,9 @@ impl ManualScript {
 
     fn candidate(&mut self, state: &GameState, player: PlayerId) -> ManualAction {
         let nothing = ManualAction::Draw { count: 1 };
-        match self.rng.below(23) {
+        match self.rng.below(31) {
             20..=22 => self.shown(state, player),
+            23..=30 => self.control(state, player),
             0..=2 => {
                 let mine = Self::objects(state, player, Scope::Mine);
                 let to = self.zone();
@@ -224,6 +225,48 @@ impl ManualScript {
                         power,
                         toughness,
                     })
+            }
+        }
+    }
+
+    /// A candidate of the control actions: a search of the library (twice as likely, so tutors find cards the seat
+    /// saw), a tutor of a library card the seat saw, removing summoning sickness, a sacrifice and giving control.
+    fn control(&mut self, state: &GameState, player: PlayerId) -> ManualAction {
+        let nothing = ManualAction::Search {};
+        match self.rng.below(8) {
+            0 | 1 => nothing,
+            2 | 3 => {
+                let seen: Vec<ObjectId> = state
+                    .zone(Zone::Library(player))
+                    .iter()
+                    .copied()
+                    .filter(|card| state.is_shown_to(player, *card))
+                    .collect();
+                self.pick(&seen)
+                    .map_or(nothing, |object| ManualAction::Tutor { object })
+            }
+            4 => {
+                let table = Self::objects(state, player, Scope::Battlefield);
+                self.pick(&table)
+                    .map_or(nothing, |object| ManualAction::RemoveSickness { object })
+            }
+            5 => {
+                let table = Self::objects(state, player, Scope::Battlefield);
+                self.pick(&table)
+                    .map_or(nothing, |object| ManualAction::Sacrifice { object })
+            }
+            _ => {
+                let mine = Self::objects(state, player, Scope::Mine);
+                let others: Vec<PlayerId> = state
+                    .players()
+                    .iter()
+                    .filter(|p| p.is_in_game() && p.id() != player)
+                    .map(mtg_engine::player::Player::id)
+                    .collect();
+                match (self.pick(&mine), self.pick(&others)) {
+                    (Some(object), Some(to)) => ManualAction::GiveControl { object, to },
+                    _ => nothing,
+                }
             }
         }
     }
