@@ -109,6 +109,19 @@ describe('the duel board of an early Commander game', () => {
   )
 })
 
+describe('the prompt sheet of a split table', () => {
+  it.each([
+    [360, 740, true],
+    [390, 844, true],
+    [1400, 900, false],
+  ])('on %ix%i leaves a phone the tile strip and a row of the opponents (phone: %s)', (width, height, phone) => {
+    const regions = withSplit(regionSizes({ width, height }), { opponents: 250, own: 300 })
+    expect(regions.phone).toBe(phone)
+    const room = phone ? 250 - SHEET_KEEP_PX : 250
+    expect(regions.sheet).toBeCloseTo(Math.min(height * 0.4, regions.shared + room), 6)
+  })
+})
+
 describe('a four-seat table', () => {
   it.each([
     [1920, 1080, 'duel', 120, 90],
