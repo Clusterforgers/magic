@@ -63,6 +63,8 @@ mod tests {
             colors: Vec::new(),
             power: Some(power),
             toughness: Some(power),
+            printed_power: None,
+            printed_toughness: None,
             abilities: Vec::new(),
             keywords: Vec::new(),
             permanent: (zone == Zone::Battlefield).then_some(PermanentView {

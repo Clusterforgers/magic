@@ -73,6 +73,14 @@ power: number | null,
  */
 toughness: number | null, 
 /**
+ * The power a token was created with, so a client can tell it from a buffed or debuffed one; left out for any other object.
+ */
+printed_power?: number, 
+/**
+ * The toughness a token was created with; left out for any other object.
+ */
+printed_toughness?: number, 
+/**
  * Current abilities.
  */
 abilities: Array<AbilityDef>, 
