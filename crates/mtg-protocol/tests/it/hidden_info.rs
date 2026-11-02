@@ -75,6 +75,7 @@ const SCALAR_KEYS: &[&str] = &[
     "player",
     "owner",
     "controller",
+    "SetController",
     "seat",
     "active",
     "holder",
@@ -185,8 +186,11 @@ pub(crate) fn leaks(value: &Value, hidden: &BTreeMap<ObjectId, String>) -> Vec<S
                     || (map.contains_key("once") && map.contains_key("this_turn"))
                     || (map.contains_key("duration")
                         && (map.contains_key("timestamp") || map.contains_key("turn")));
+                // Control given by hand names the seat that gains it, a player id.
+                let gives_to_seat = key == "GiveControl";
                 map.iter()
                     .filter(|(k, _)| !(names_an_effect && *k == "id"))
+                    .filter(|(k, _)| !(gives_to_seat && *k == "to"))
                     .for_each(|(k, v)| walk(v, k, hidden, out));
             }
             Value::Null | Value::Bool(_) => {}
