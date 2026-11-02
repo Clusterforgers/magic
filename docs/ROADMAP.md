@@ -49,7 +49,6 @@ Items that touch the running game come first; the play-session findings (pf) lea
 
 - [ ] (pf15) Engine: Lifelink gains life for combat damage dealt to a player (a reported game did not)
 - [ ] (pf16) Cards: Fungal Fortitude returns its creature when a spell destroys it
-- [ ] (pf17) Cards: It That Betrays puts the sacrificed permanents onto the battlefield under its controller's control
 
 - [ ] (ad1c) The Accounts page in the layout gate at the six sizes in both themes (a dev route that stands for it) and an e2e spec of the admin flow on the Postgres server: sign-in, make an account, the friend signs in, the closed sign-up page (`docs/web.md`)
 - [ ] (d1c) A copy of the nightly database dumps off queen (a Longhorn backup target or a scheduled copy to another machine), so losing queen does not lose the accounts and decks (`docs/deploy.md`)

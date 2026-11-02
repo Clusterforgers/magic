@@ -902,6 +902,26 @@ impl<'a> Scope<'a> {
             .collect())
     }
 
+    /// The objects `Triggering` names that left the battlefield by the triggering event and are still where that put
+    /// them ("put that card onto the battlefield" after a sacrifice): the card that object became (CR 400.7), found by
+    /// the one zone change since the reference was taken. Empty for any other reference.
+    pub(crate) fn followed_cards(&self, reference: &Ref) -> Vec<&'a GameObject> {
+        let (Ref::Triggering, Some(cause)) = (reference, self.cause) else {
+            return Vec::new();
+        };
+        cause
+            .snapshots
+            .iter()
+            .filter(|shot| shot.zone == Zone::Battlefield)
+            .filter_map(|shot| {
+                self.state
+                    .object(shot.id)
+                    .filter(|now| now.counter() == shot.counter + 1)
+            })
+            .filter(|now| now.kind() != ObjectKind::Ability && now.zone() != Zone::Battlefield)
+            .collect()
+    }
+
     /// The objects a reference names that are still the objects it named, each once: one that has changed zones since
     /// is a new object (CR 400.7) and is passed over, so is a name that repeats.
     pub(crate) fn live_objects(

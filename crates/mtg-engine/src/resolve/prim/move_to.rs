@@ -46,6 +46,14 @@ fn movers<'a>(
             found.push(object);
         }
     }
+    // "That card" after a permanent left the battlefield is the card it became.
+    for card in cx.scope.followed_cards(what) {
+        if !found.iter().any(|seen| seen.id() == card.id())
+            && !matches!(card.zone(), Zone::Stack | Zone::PhasedOut)
+        {
+            found.push(card);
+        }
+    }
     Ok(found)
 }
 
