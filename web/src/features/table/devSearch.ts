@@ -80,6 +80,8 @@ export interface DevSearch {
   equip?: true
   /** `1` adds the revealed cards and notes scene (`dev/revealScene.ts`): the first opponent shows two hand cards and its top card, the viewer one hand card, and two permanents carry a note. */
   reveal?: true
+  /** `1` plays a reveal of three cards and a d20 roll once the table has loaded (`dev/momentScene.ts`), to look at the moments. */
+  moments?: true
   /** `real` identifies the cards by the card search of a running server, so the table draws real pictures. */
   cards?: 'real'
   /** Opens the manual menu of a card once the table has loaded: `1` a permanent of the viewer, `hand` a card in the viewer's hand, `opp` a permanent of an opponent. */
@@ -143,6 +145,7 @@ export function parseDevSearch(search: Record<string, unknown>): DevSearch {
     panel: panelOf(search.panel),
     rules: search.rules === true || search.rules === 1 || search.rules === '1' ? true : undefined,
     states: search.states === true || search.states === 1 || search.states === '1' ? true : undefined,
+    moments: search.moments === true || search.moments === 1 || search.moments === '1' ? true : undefined,
     reveal: search.reveal === true || search.reveal === 1 || search.reveal === '1' ? true : undefined,
     // The equip move needs the attachments scene, so it brings it.
     equip:

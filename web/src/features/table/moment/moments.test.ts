@@ -73,13 +73,15 @@ describe('withMoments', () => {
 
 describe('revealWidth', () => {
   it.each([
-    [1, { width: 1400, height: 900 }, 300],
-    [1, { width: 1400, height: 500 }, 178],
-    [8, { width: 1400, height: 900 }, 157],
-    [3, { width: 390, height: 700 }, 103],
-    [30, { width: 390, height: 700 }, 96],
-  ])('%i cards in %j are %i px wide', (count, window, expected) => {
-    expect(revealWidth(count, window)).toBe(expected)
+    [1, { width: 1400, height: 900 }, 300, false],
+    [3, { width: 1024, height: 768 }, 219, true],
+    [3, { width: 1024, height: 768 }, 274, false],
+    [1, { width: 1400, height: 500 }, 178, false],
+    [8, { width: 1400, height: 900 }, 157, false],
+    [3, { width: 390, height: 700 }, 103, false],
+    [30, { width: 390, height: 700 }, 96, false],
+  ])('%i cards in %j are %i px wide', (count, window, expected, crowded) => {
+    expect(revealWidth(count, window, crowded)).toBe(expected)
   })
 })
 

@@ -34,10 +34,18 @@ function Heading({ words, why, onDismiss }: { words: string; why: string | null;
 }
 
 /** Cards a player revealed, large, with their pictures, who revealed them and why. */
-function Reveal({ moment, onDismiss }: { moment: RevealMoment; onDismiss(): void }) {
+function Reveal({
+  moment,
+  crowded,
+  onDismiss,
+}: {
+  moment: RevealMoment
+  crowded: boolean
+  onDismiss(): void
+}) {
   const seat = useSeatNamer()
   const viewport = useViewport()
-  const width = revealWidth(moment.cards.length, viewport)
+  const width = revealWidth(moment.cards.length, viewport, crowded)
   const who = seat(moment.player)
   return (
     <section
@@ -104,7 +112,12 @@ export function TableMoments() {
     >
       {items.map((moment) =>
         moment.kind === 'reveal' ? (
-          <Reveal key={moment.key} moment={moment} onDismiss={() => moments.dismiss(moment.key)} />
+          <Reveal
+            key={moment.key}
+            moment={moment}
+            crowded={items.length > 1}
+            onDismiss={() => moments.dismiss(moment.key)}
+          />
         ) : (
           <Roll
             key={moment.key}
