@@ -1,4 +1,4 @@
-/** Goal: the PayMana prompt spends restricted mana of the pool by hand only on what its restriction allows, shows it with the words of its use, and sends it in the `restricted` field of one Manual answer; it taps creatures for convoke (as {1} or a colour they have) and artifacts for improvise through buttons that leave the offers once chosen, stop while no generic mana is owed and send the choices in the `convoke` and `improvise` fields. */
+/** Goal: the PayMana prompt spends restricted mana of the pool by hand only on what its restriction allows, shows it with the words of its use, and sends it in the `restricted` field of one Manual answer; it taps creatures for convoke (as {1} or a colour they have) and artifacts for improvise through buttons that leave the offers once chosen, stop while no generic mana is owed and send the choices in the `convoke` and `improvise` fields; it exiles graveyard cards for delve the same way, for generic mana only, and sends them in `delve`. */
 import { screen } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
 import type { Answer, PayOptions, Spend as PaySpend, SpendOn } from '@/protocol/generated'
@@ -130,5 +130,39 @@ describe('convoke and improvise in the payment prompt', () => {
     expect(answer).toHaveBeenCalledWith({
       PayMana: { Manual: { pool: [], taps: [], life: 0, improvise: [a, b] } },
     })
+  })
+})
+
+const yard = fixture.view.objects.filter((object) =>
+  must(fixture.view.players[0]).graveyard.cards.includes(object.id),
+)
+const unique = yard.filter((one) => yard.filter((other) => other.name === one.name).length === 1)
+
+describe('delve in the payment prompt', () => {
+  it('exiles graveyard cards for generic mana and sends them as delve', async () => {
+    const [a, b, c] = unique.map((object) => object.id)
+    const { answer, table } = renderPay({
+      cost: cost('{2}{G}'),
+      pool: { ...poolOf('G') },
+      delve: [must(a), must(b), must(c)],
+    })
+    await table.user.click(screen.getByRole('button', { name: `Exile ${nameOf(must(a))} to delve for {1}` }))
+    await table.user.click(screen.getByRole('button', { name: /^Spend green from your pool/ }))
+    expect(screen.getByRole('button', { name: 'Confirm payment' })).toBeDisabled()
+    await table.user.click(screen.getByRole('button', { name: `Exile ${nameOf(must(b))} to delve for {1}` }))
+    expect(screen.getByRole('button', { name: `Exile ${nameOf(must(c))} to delve for {1}` })).toHaveAttribute(
+      'aria-disabled',
+      'true',
+    )
+    await table.user.click(screen.getByRole('button', { name: 'Confirm payment' }))
+    expect(answer).toHaveBeenCalledWith({
+      PayMana: { Manual: { pool: ['Green'], taps: [], life: 0, delve: [a, b] } },
+    })
+  })
+
+  it('does not offer a card for a colour: with only {B} owed nothing is left to exile', () => {
+    const [a] = unique.map((object) => object.id)
+    renderPay({ cost: cost('{B}'), pool: poolOf(''), delve: [must(a)] })
+    expect(screen.getByRole('button', { name: /to delve for/ })).toHaveAttribute('aria-disabled', 'true')
   })
 })

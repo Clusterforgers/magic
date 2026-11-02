@@ -68,7 +68,6 @@ Items that touch the running game come first; the play-session findings (pf) lea
 The table and its prompts are live; the items below polish them.
 
 - [ ] (i2) Arena flow P10: smart stops, per-ability yields, an order-by-timestamp preference, damage auto-assign and the answer to a one-option decision (`docs/arena-flow.md`)
-- [ ] (w3h) The payment prompt exiles graveyard cards for delve
 - [ ] (w3l) `decisionName` (`turnText.ts`) names a decision kind the client does not know as Discard, so the waiting label and the clock words of a newer server's decision read wrong
 - [ ] Clock words in the web (`clockText.ts`) for every decision with a clock the web does not name yet
 - [ ] Attack and block prompts lock the creatures a rule requires, and a seat panel shows a revealed library top (`PlayerView.revealed_top`)

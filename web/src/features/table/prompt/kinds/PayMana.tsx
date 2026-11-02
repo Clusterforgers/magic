@@ -66,17 +66,18 @@ export const PayManaPrompt: PromptComponent<'PayMana'> = ({ options }) => {
       ),
     [pool.restricted, options.spend],
   )
-  const tapped = useMemo<Spend[]>(
+  const pieces = useMemo<Spend[]>(
     () => [
       ...(options.convoke ?? []).flatMap((one): Spend[] => [
         { kind: 'convoke', creature: one.creature, pays: null },
         ...one.colors.map((color): Spend => ({ kind: 'convoke', creature: one.creature, pays: color })),
       ]),
       ...(options.improvise ?? []).map((artifact): Spend => ({ kind: 'improvise', artifact })),
+      ...(options.delve ?? []).map((card): Spend => ({ kind: 'delve', card })),
     ],
-    [options.convoke, options.improvise],
+    [options.convoke, options.improvise, options.delve],
   )
-  const extras = useMemo(() => [...inPool, ...tapped], [inPool, tapped])
+  const extras = useMemo(() => [...inPool, ...pieces], [inPool, pieces])
   const reach = useMemo<Reach>(
     () => ({ sources: options.sources, maxLife: options.max_life, spend: options.spend, extras }),
     [options.sources, options.max_life, options.spend, extras],
@@ -85,11 +86,17 @@ export const PayManaPrompt: PromptComponent<'PayMana'> = ({ options }) => {
     () => [
       spell,
       ...byPermanent.keys(),
-      ...tapped.flatMap((one) =>
-        one.kind === 'convoke' ? [one.creature] : one.kind === 'improvise' ? [one.artifact] : [],
+      ...pieces.flatMap((one) =>
+        one.kind === 'convoke'
+          ? [one.creature]
+          : one.kind === 'improvise'
+            ? [one.artifact]
+            : one.kind === 'delve'
+              ? [one.card]
+              : [],
       ),
     ],
-    [spell, byPermanent, tapped],
+    [spell, byPermanent, pieces],
   )
   const names = usePlay(useShallow((state) => named.map((id) => state.objectsById[id]?.name)))
   const nameOf = (id: ObjectId): string =>
@@ -130,7 +137,7 @@ export const PayManaPrompt: PromptComponent<'PayMana'> = ({ options }) => {
         allowed(cost, pool, spends, spend, life, reach),
     ),
   }))
-  const offerRows = offersOf(tapped, spends, nameOf, (spend) =>
+  const offerRows = offersOf(pieces, spends, nameOf, (spend) =>
     allowed(cost, pool, spends, spend, life, reach),
   )
   const canSpend = (mana: ManaType): boolean =>
