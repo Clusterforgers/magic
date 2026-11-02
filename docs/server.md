@@ -332,7 +332,7 @@ At each priority decision the actor asks the seat, passes for it at once or pass
 
 ### Windows
 
-`windows::verdict` returns `Ask`, `Pass` or `Dwell` from the step, whose turn it is, the stack, the seat's stops, mode and yield, and `can_act`; auto-pass off is the `Held` mode. A seat that is passed for is never sent the decision, and a decision that is not a priority decision is always asked. The first matching rule wins:
+`windows::verdict` returns `Ask`, `Pass` or `Dwell` from the step, whose turn it is, the stack, the seat's stops, mode and yield, and `can_act`; auto-pass off is the `Held` mode. A seat that is passed for is never sent the decision, and a decision that is not a priority decision is asked unless the engine gives its one answer (below). The first matching rule wins:
 
 | # | Condition | Verdict |
 |---|---|---|
@@ -344,6 +344,8 @@ At each priority decision the actor asks the seat, passes for it at once or pass
 | 6 | Anything else | Pass at once, whatever the seat holds |
 
 The default windows are both main phases on the seat's own turn, declare attackers and declare blockers on any turn, and any step with an object of another seat on the stack. `Own` stops are for the seat's turns, `Opponent` stops for any other seat's.
+
+A question that leaves one legal answer and lists only options in sight of every seat (`mtg_engine::choose::sole_answer`: the targets a triggered ability must take, the only modes, number, option or replacement effect) is answered with it for a seat in `Off` mode, in the same run of passes (`Running::skip_idle`); in Full Control it is asked. A discard, a search, a payment and every other question whose one answer could come from a hidden zone is always asked.
 
 ### Stops and Full Control
 
