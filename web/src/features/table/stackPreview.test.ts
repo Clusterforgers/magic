@@ -62,7 +62,11 @@ describe('the summary of a stack entry', () => {
     ],
     [
       'a triggered ability',
-      object({ kind: 'Ability', source: 7, rules_text: 'Whenever another creature enters, you gain 1 life.' }),
+      object({
+        kind: 'Ability',
+        source: 7,
+        rules_text: 'Whenever another creature enters, you gain 1 life.',
+      }),
       source,
       undefined,
       'Triggered ability of Fireball, controlled by Bo',
