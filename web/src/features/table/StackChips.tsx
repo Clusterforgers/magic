@@ -1,8 +1,9 @@
-import { memo } from 'react'
+import { Zap } from 'lucide-react'
+import { memo, useContext, useLayoutEffect, useMemo, useRef, useState } from 'react'
+import type { RefObject } from 'react'
 import { useShallow } from 'zustand/react/shallow'
 import { usePlay } from '@/features/game/gameContext'
 import { cn } from '@/lib/utils'
-import type { ObjectId } from '@/protocol/generated'
 import { cardLabel, costPips } from './cardModel'
 import { SIZE } from './cardSize'
 import { FxMark } from './fx/FxMark'
@@ -15,6 +16,9 @@ import { ManaPips } from './ManaPips'
 import { useSeatNamer } from './names'
 import { SeatDot } from './PodParts'
 import { stackTopFirst } from './selectors'
+import { SideContext } from './sideContext'
+import { chipsThatFit, groupStack } from './stackGroups'
+import type { StackGroup } from './stackGroups'
 import { hasNoLegalTarget } from './stackTargets'
 import { targetsAria, targetsLine } from './stackText'
 import { useRoving } from './useRoving'
@@ -22,9 +26,11 @@ import { usePreviewHandlers } from './usePreviewHandlers'
 import { useStackEntries, useTargetNamer } from './useStackEntries'
 
 interface ChipProps {
-  id: ObjectId
+  group: StackGroup
   top: boolean
   tabbable: boolean
+  /** Past the room of the strip: kept in place to be measured, but neither seen, heard nor reached. */
+  hidden: boolean
   /** The item's targets as a short line ("Hill Giant, Bo"), "no legal target", or nothing for an item that aims at nothing. */
   aims: string
   /** What a screen reader hears after the label: ", targeting Hill Giant and Bo". */
@@ -33,22 +39,31 @@ interface ChipProps {
   empty: boolean
 }
 
-const Chip = memo(function Chip({ id, top, tabbable, aims, aria, empty }: ChipProps) {
+const Chip = memo(function Chip({ group, top, tabbable, hidden, aims, aria, empty }: ChipProps) {
+  const id = group.ids[0] ?? 0
+  const count = group.ids.length
   const object = usePlay((state) => state.objectsById[id])
   const name = useSeatNamer()
   const fx = useCardFx(id)
   const handlers = usePreviewHandlers(id)
   if (object === undefined) return null
+  const ability = object.kind === 'Ability'
+  // An ability has no cost or types to read out; its text says what it is.
+  const what = ability
+    ? `Ability of ${object.name}${object.rules_text === undefined ? '' : ` (${object.rules_text})`}, controlled`
+    : `${cardLabel(object, null)}, cast`
   return (
-    <li className="shrink-0">
+    <li className={cn('shrink-0', hidden && 'invisible')} aria-hidden={hidden || undefined}>
       <button
         type="button"
-        data-object-id={id}
-        data-stack-chip={id}
+        data-object-id={hidden ? undefined : id}
+        data-stack-chip={hidden ? undefined : id}
+        data-stack-members={hidden || count === 1 ? undefined : group.ids.join(' ')}
+        data-count={count > 1 ? count : undefined}
         data-no-target={empty || undefined}
-        aria-label={`${top ? 'Top of the stack: ' : ''}${cardLabel(object, null)}, cast by ${name(object.controller)}${aria}`}
-        tabIndex={tabbable ? 0 : -1}
-        {...handlers}
+        aria-label={`${top ? 'Top of the stack: ' : ''}${what} by ${name(object.controller)}${count > 1 ? `, ${count} times` : ''}${aria}`}
+        tabIndex={tabbable && !hidden ? 0 : -1}
+        {...(hidden ? {} : handlers)}
         className={cn(
           'relative flex h-8 items-center gap-1.5 rounded-lg border bg-background px-2 text-sm font-medium outline-offset-2 outline-primary focus-visible:outline-2',
           top ? 'max-w-72 border-primary' : 'max-w-48',
@@ -56,7 +71,17 @@ const Chip = memo(function Chip({ id, top, tabbable, aims, aria, empty }: ChipPr
         )}
       >
         {top ? <SeatDot seat={object.controller} /> : null}
+        {ability ? <Zap aria-hidden="true" className="size-3.5 shrink-0 text-muted-foreground" /> : null}
         <span className="truncate">{object.name}</span>
+        {count > 1 ? (
+          <span
+            data-slot="chip-count"
+            aria-hidden="true"
+            className="shrink-0 rounded-sm bg-muted px-1 text-xs font-semibold tabular-nums"
+          >
+            ×{count}
+          </span>
+        ) : null}
         <ByHandMark object={object} spot="chip" compact text="text-xs" />
         {object.mana_cost === null ? null : (
           <ManaPips pips={costPips(object.mana_cost)} sizeClass={SIZE.compact.pip} label="Mana cost" />
@@ -82,39 +107,75 @@ const Chip = memo(function Chip({ id, top, tabbable, aims, aria, empty }: ChipPr
 })
 
 /**
- * The spells on the stack as chips in the shared strip, the one that resolves first leading and ringed. One tab stop,
- * moved with the arrow keys; hover or focus previews the card. Nothing is drawn while the stack is empty. The Stack tab
- * of the side area has the same spells with their controllers and types. The top chip names what it aims at ("→ Hill
- * Giant") beside a dot in its controller's colour and is where the arrows to the targets start; a chip that is
- * hovered or focused draws its own arrows (`combat/stackArrows.ts`).
+ * How many children of `list` fit its width, measured after every layout and resize; all of them where there is no
+ * layout (a test).
+ */
+function useFitCount(list: RefObject<HTMLOListElement | null>, items: number): number {
+  const [fit, setFit] = useState(items)
+  useLayoutEffect(() => {
+    const element = list.current
+    if (element === null) return
+    const measure = (): void => {
+      const start = element.getBoundingClientRect().left
+      const rights = [...element.children].map((child) => child.getBoundingClientRect().right - start)
+      setFit(chipsThatFit(rights, element.clientWidth))
+    }
+    measure()
+    if (typeof ResizeObserver === 'undefined') return
+    const observer = new ResizeObserver(measure)
+    observer.observe(element)
+    return () => observer.disconnect()
+  }, [list, items])
+  return Math.min(fit, items)
+}
+
+/**
+ * The spells and abilities on the stack as chips in the shared strip, the one that resolves first leading and
+ * ringed. Items next to each other that are the same ability of one source (a board of triggers) fold into one chip
+ * with a count ("×6", `stackGroups.ts`). The chips that do not fit the strip give way to one "+N more" button, which
+ * opens the Stack tab, so the row never scrolls or runs out of the strip. One tab stop, moved with the arrow keys;
+ * hover or focus previews the card. Nothing is drawn while the stack is empty. The top chip names what it aims at
+ * ("→ Hill Giant") beside a dot in its controller's colour and is where the arrows to the targets start; a chip that
+ * is hovered or focused draws its own arrows (`combat/stackArrows.ts`).
  */
 export function StackChips() {
   const ids = usePlay(useShallow(stackTopFirst))
-  const roving = useRoving(ids)
+  const objectsById = usePlay((state) => state.objectsById)
+  const groups = useMemo(() => groupStack(ids, objectsById), [ids, objectsById])
+  const leaders = useMemo(() => groups.map((group) => group.ids[0] ?? 0), [groups])
   const entries = useStackEntries()
   const names = useTargetNamer()
-  const items = withGhosts(ids, useStackGhosts())
+  const items = withGhosts(leaders, useStackGhosts())
+  const list = useRef<HTMLOListElement>(null)
+  const fit = useFitCount(list, items.length)
+  const shown = new Set(items.slice(0, fit).filter((item) => typeof item === 'number'))
+  const roving = useRoving(leaders.filter((id) => shown.has(id)))
+  const side = useContext(SideContext)
   if (items.length === 0) return null
+  const folded = groups.filter((group) => !shown.has(group.ids[0] ?? 0)).flatMap((group) => group.ids)
   return (
     <div data-slot="stack-chips" className="flex min-w-0 shrink items-center gap-2">
       <span className="text-xs font-medium text-muted-foreground">Stack</span>
       <ol
+        ref={list}
         role="list"
         aria-label="Spells on the stack, top first"
         onFocus={roving.onFocus}
         onKeyDown={roving.onKeyDown}
-        className="flex min-w-0 items-center gap-1.5 overflow-x-auto p-1 [scrollbar-width:none]"
+        className="flex min-w-0 items-center gap-1.5 overflow-hidden p-1"
       >
-        {items.map((id) => {
-          if (typeof id !== 'number') return <StackGhostChip key={`ghost:${id.token}`} ghost={id} />
-          const index = ids.indexOf(id)
-          const entry = entries.find((candidate) => candidate.id === id)
+        {items.map((item, index) => {
+          if (typeof item !== 'number') return <StackGhostChip key={`ghost:${item.token}`} ghost={item} />
+          const group = groups.find((candidate) => candidate.ids[0] === item)
+          if (group === undefined) return null
+          const entry = entries.find((candidate) => candidate.id === item)
           return (
             <Chip
-              key={id}
-              id={id}
-              top={index === 0}
-              tabbable={id === roving.current}
+              key={group.key}
+              group={group}
+              top={item === leaders[0]}
+              tabbable={item === roving.current}
+              hidden={index >= fit}
               aims={entry === undefined ? '' : targetsLine(entry, names)}
               aria={entry === undefined ? '' : targetsAria(entry, names)}
               empty={entry !== undefined && hasNoLegalTarget(entry)}
@@ -122,6 +183,21 @@ export function StackChips() {
           )
         })}
       </ol>
+      {folded.length === 0 ? null : (
+        <button
+          type="button"
+          data-slot="stack-more"
+          // An arrow to an item that is folded away ends here.
+          data-stack-members={folded.join(' ')}
+          aria-label={`${folded.length} more on the stack: open the Stack tab`}
+          onClick={() => {
+            if (side !== null && !(side.open && side.tab === 'stack')) side.activate('stack')
+          }}
+          className="h-8 shrink-0 rounded-lg border border-dashed px-2 text-sm font-medium text-muted-foreground outline-offset-2 outline-primary hover:text-foreground focus-visible:outline-2"
+        >
+          +{folded.length} more
+        </button>
+      )}
     </div>
   )
 }

@@ -122,3 +122,48 @@ export function connect(from: Rect, to: Rect, options: ConnectOptions = {}): Sha
     },
   }
 }
+
+/** How far to move `box` so that it lies inside `bounds`, `margin` px from its edges where it is small enough to. */
+export function shiftInto(box: Rect, bounds: Rect, margin = 4): Point {
+  const along = (start: number, size: number, low: number, room: number): number => {
+    if (start < low + margin) return low + margin - start
+    const over = start + size - (low + room - margin)
+    return over > 0 ? -Math.min(over, start - (low + margin)) : 0
+  }
+  return {
+    x: along(box.x, box.width, bounds.x, bounds.width),
+    y: along(box.y, box.height, bounds.y, bounds.height),
+  }
+}
+
+/**
+ * How far to move `box` up or down, toward `toward` (a height), so that it lies clear of `obstacle`; 0 when they do
+ * not meet.
+ */
+export function clearOf(box: Rect, obstacle: Rect, toward: number, margin = 4): number {
+  const meets =
+    box.x < obstacle.x + obstacle.width &&
+    obstacle.x < box.x + box.width &&
+    box.y < obstacle.y + obstacle.height &&
+    obstacle.y < box.y + box.height
+  if (!meets) return 0
+  const middle = obstacle.y + obstacle.height / 2
+  return toward >= middle
+    ? obstacle.y + obstacle.height + margin - box.y
+    : obstacle.y - margin - (box.y + box.height)
+}
+
+/**
+ * Where the middle of a line's label stands: a little way back from the tip toward the middle of the curve, by the
+ * half height of a label along a line that comes in upright and by the half width of one along a level line, so that
+ * it lies beside what the line points at and clear of the arrowhead. Never past the middle of the curve.
+ */
+export function labelPoint(shape: Shape, half = { width: 70, height: 12 }): Point {
+  const dx = shape.mid.x - shape.end.x
+  const dy = shape.mid.y - shape.end.y
+  const length = Math.hypot(dx, dy)
+  if (length < 1) return shape.end
+  const across = Math.abs(dx) / length
+  const back = Math.min(length, 12 + half.height + (half.width - half.height) * across)
+  return { x: shape.end.x + (dx / length) * back, y: shape.end.y + (dy / length) * back }
+}

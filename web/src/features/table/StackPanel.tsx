@@ -1,4 +1,5 @@
-import { memo } from 'react'
+import { ChevronDown } from 'lucide-react'
+import { memo, useMemo, useState } from 'react'
 import { useShallow } from 'zustand/react/shallow'
 import { usePlay } from '@/features/game/gameContext'
 import { cn } from '@/lib/utils'
@@ -14,6 +15,8 @@ import { SeatDot } from './PodParts'
 import { objectWords } from './prompt/targetText'
 import { stackTopFirst } from './selectors'
 import { shownObject } from './stackPreview'
+import { groupStack } from './stackGroups'
+import type { StackGroup } from './stackGroups'
 import { hasNoLegalTarget } from './stackTargets'
 import type { StackEntry } from './stackTargets'
 import { NO_LEGAL_TARGET, targetsAria, targetsLine } from './stackText'
@@ -59,11 +62,14 @@ const StackItem = memo(function StackItem({
   top,
   tabbable,
   entry,
+  count = 1,
 }: {
   id: ObjectId
   top: boolean
   tabbable: boolean
   entry: StackEntry | undefined
+  /** How many items of the same make the group this one leads; 1 for an item alone. */
+  count?: number
 }) {
   const object = usePlay((state) => state.objectsById[id])
   const source = usePlay((state) =>
@@ -90,6 +96,14 @@ const StackItem = memo(function StackItem({
         <span className={cn('flex items-center gap-1.5 font-semibold', top && 'text-base')}>
           {top ? <SeatDot seat={object.controller} /> : null}
           {object.name}
+          {count > 1 ? (
+            <span
+              data-slot="row-count"
+              className="rounded-sm bg-muted px-1 text-xs font-semibold tabular-nums"
+            >
+              ×{count}
+            </span>
+          ) : null}
           <ByHandMark object={object} spot="chip" compact={false} text="text-xs" />
         </span>
         {object.mana_cost === null ? null : (
@@ -135,11 +149,83 @@ const StackItem = memo(function StackItem({
   )
 })
 
-/** The stack, the next spell to resolve first and large with its targets, or a plain note when it is empty. */
+/**
+ * A group of items of the same make (`stackGroups.ts`): its first item with the count, and a button that lists the
+ * others under it.
+ */
+function GroupItems({
+  group,
+  top,
+  current,
+  entries,
+  open,
+  onToggle,
+}: {
+  group: StackGroup
+  top: boolean
+  current: ObjectId | null
+  entries: readonly StackEntry[]
+  open: boolean
+  onToggle: () => void
+}) {
+  const [first, ...rest] = group.ids
+  if (first === undefined) return null
+  const item = (id: ObjectId, lead: boolean) => (
+    <StackItem
+      key={id}
+      id={id}
+      top={lead && top}
+      tabbable={id === current}
+      entry={entries.find((entry) => entry.id === id)}
+      count={lead ? group.ids.length : 1}
+    />
+  )
+  return (
+    <>
+      {item(first, true)}
+      {rest.length === 0 ? null : (
+        <li data-slot="stack-group" className="grid gap-1.5 @md:col-span-full">
+          <button
+            type="button"
+            aria-expanded={open}
+            onClick={onToggle}
+            className="flex w-fit items-center gap-1 rounded-md px-1.5 py-0.5 text-xs font-medium text-muted-foreground outline-offset-2 outline-primary hover:text-foreground focus-visible:outline-2"
+          >
+            <ChevronDown aria-hidden="true" className={cn('size-3.5', !open && '-rotate-90')} />
+            {open ? 'Hide' : 'Show'} {rest.length} more the same
+          </button>
+          {open ? (
+            <ol role="list" aria-label="The same, in order" className="grid gap-1.5 @md:grid-cols-2">
+              {rest.map((id) => item(id, false))}
+            </ol>
+          ) : null}
+        </li>
+      )}
+    </>
+  )
+}
+
+/**
+ * The stack, the next spell to resolve first and large with its targets, or a plain note when it is empty. Items of the
+ * same make next to each other fold into their first with a count and a button that lists the rest.
+ */
 export function StackPanel() {
   const ids = usePlay(useShallow(stackTopFirst))
-  const roving = useRoving(ids)
+  const objectsById = usePlay((state) => state.objectsById)
+  const groups = useMemo(() => groupStack(ids, objectsById), [ids, objectsById])
+  const [opened, setOpened] = useState<ReadonlySet<string>>(() => new Set())
+  const shown = useMemo(
+    () => groups.flatMap((group) => (opened.has(group.key) ? group.ids : group.ids.slice(0, 1))),
+    [groups, opened],
+  )
+  const roving = useRoving(shown)
   const entries = useStackEntries()
+  const toggle = (key: string): void =>
+    setOpened((was) => {
+      const next = new Set(was)
+      if (!next.delete(key)) next.add(key)
+      return next
+    })
   return (
     <section
       aria-label="Stack"
@@ -158,13 +244,15 @@ export function StackPanel() {
           onKeyDown={roving.onKeyDown}
           className="grid gap-1.5 @md:grid-cols-2 @3xl:grid-cols-3"
         >
-          {ids.map((id, index) => (
-            <StackItem
-              key={id}
-              id={id}
+          {groups.map((group, index) => (
+            <GroupItems
+              key={group.key}
+              group={group}
               top={index === 0}
-              tabbable={id === roving.current}
-              entry={entries.find((entry) => entry.id === id)}
+              current={roving.current}
+              entries={entries}
+              open={opened.has(group.key)}
+              onToggle={() => toggle(group.key)}
             />
           ))}
         </ol>

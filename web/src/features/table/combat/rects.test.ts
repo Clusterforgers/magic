@@ -1,11 +1,11 @@
-// Goal: anchors are found in the page by the data attributes cards and seats carry (a card by its face, a seat by its panel, else its tile, a card that is not drawn by its controller's), measured relative to the overlay, hidden ones skipped; lines get a curve only when both ends are on screen with room between them and identical drawings are made once; and the scheduler runs its work once per frame however often it is asked.
+// Goal: anchors are found in the page by the data attributes cards and seats carry (a card by its face, a seat by its panel, else its tile, a card that is not drawn by its controller's, a stack item by its chip or the chip that holds it), measured relative to the overlay, hidden ones skipped; lines get a curve only when both ends are on screen with room between them and identical drawings are made once; the attacks of a seat that attacks with a crowd fold by target into counted bundles from the box around them; and the scheduler runs its work once per frame however often it is asked.
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { must } from '@/test-utils/batches'
 import { fakeFrames } from '@/test-utils/frames'
 import type { Rect } from './geometry'
 import { anchorKey } from './plan'
 import type { Anchor, LineKind, LineSpec } from './plan'
-import { createScheduler, domRects, sameRects, selectorsOf, shapesOf } from './rects'
+import { bundled, createScheduler, domRects, sameRects, selectorsOf, shapesOf } from './rects'
 import type { RectMap } from './rects'
 
 const card = (id: number, seat?: number): Anchor =>
@@ -22,6 +22,11 @@ describe('selectorsOf', () => {
     ],
     ['a seat', seat(2), ['[data-seat="2"]', '[data-tile-seat="2"]']],
     ['seat 0', seat(0), ['[data-seat="0"]', '[data-tile-seat="0"]']],
+    [
+      'a stack item',
+      { kind: 'stack', id: 7 },
+      ['[data-stack-chip="7"]', '[data-stack-members~="7"]'],
+    ],
   ])('looks for %s', (_name, anchor, expected) => {
     expect(selectorsOf(anchor)).toEqual(expected)
   })
@@ -234,6 +239,39 @@ const spec = (
 const boxes = (entries: [Anchor, Rect][]): RectMap => new Map(entries.map(([a, r]) => [anchorKey(a), r]))
 const CARD: Rect = { x: 100, y: 0, width: 96, height: 134 }
 const PANEL: Rect = { x: 0, y: 400, width: 800, height: 200 }
+
+describe('bundled', () => {
+  /** `n` attacks of seat 1, cards 1 to n side by side 100 px apart, at seat 0, besides the extra lines. */
+  const crowd = (n: number, over: Partial<LineSpec> = {}): LineSpec[] =>
+    Array.from({ length: n }, (_, index) => spec(card(index + 1, 1), seat(0), 'attack', over))
+  const rects = boxes([
+    ...Array.from({ length: 6 }, (_, index): [Anchor, Rect] => [card(index + 1, 1), { ...CARD, x: 100 * index }]),
+    [seat(0), PANEL],
+    [seat(2), { ...PANEL, y: -400 }],
+  ])
+
+  const at2 = (lines: LineSpec[]): LineSpec[] => lines.map((line) => ({ ...line, to: seat(2) }))
+  const apart = (n: number): undefined[] => Array.from({ length: n }, () => undefined)
+
+  it.each<[string, LineSpec[], (number | undefined)[]]>([
+    ['five attacks read one by one', crowd(5), apart(5)],
+    ['six attacks at one target make one bundle', crowd(6), [6]],
+    ['a crowd at two targets makes a bundle for each', [...crowd(4), ...at2(crowd(3))], [4, 3]],
+    ['a lone attack of a crowd stays apart', [...crowd(5), ...at2(crowd(1))], [5, undefined]],
+    ['sent and unsent attacks count apart', [...crowd(4), ...crowd(4, { pending: true })], apart(8)],
+    ['blocks never bundle', crowd(6).map((line) => ({ ...line, kind: 'block' as const })), apart(6)],
+  ])('%s', (_case, lines, counts) => {
+    expect(bundled(lines, rects).map((entry) => entry.count)).toEqual(counts)
+  })
+
+  it('starts a bundle at the box around its attackers on screen and keys it by seat and target', () => {
+    const lines = crowd(6)
+    const [bundle] = bundled(lines, rects)
+    expect(bundle?.from).toEqual({ x: 0, y: 0, width: 596, height: 134 })
+    expect(bundle?.line.key).toBe('bundle:1>seat:0')
+    expect(shapesOf(lines, rects)).toEqual([expect.objectContaining({ count: 6 })])
+  })
+})
 
 describe('shapesOf', () => {
   it('draws a curve for a line whose two ends are on screen', () => {

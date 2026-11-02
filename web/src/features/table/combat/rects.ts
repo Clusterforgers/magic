@@ -25,7 +25,9 @@ export function selectorsOf(anchor: Anchor): string[] {
   const seat = (n: number): string[] => [`[data-seat="${n}"]`, `[data-tile-seat="${n}"]`]
   if (anchor.kind === 'seat') return seat(anchor.seat)
   if (anchor.kind === 'spot') return []
-  if (anchor.kind === 'stack') return [`[data-stack-chip="${anchor.id}"]`]
+  // An item folded into a group or past the strip's room is drawn by the chip that holds it.
+  if (anchor.kind === 'stack')
+    return [`[data-stack-chip="${anchor.id}"]`, `[data-stack-members~="${anchor.id}"]`]
   const card = `button[data-object-id="${anchor.id}"]`
   return anchor.seat === undefined ? [card] : [card, ...seat(anchor.seat)]
 }
@@ -124,17 +126,80 @@ const ATTACH_CURVE = { bow: 0.15, head: 10, gap: -20 }
 export interface DrawnLine {
   line: LineSpec
   shape: Shape
+  /** For a bundle of attacks: how many attackers it stands for. */
+  count?: number
+}
+
+/** A seat that attacks with more creatures than this has its attacks bundled by target; fewer read one by one. */
+export const BUNDLE_OVER = 5
+
+/** The smallest box around `boxes`. */
+function around(boxes: readonly Rect[]): Rect | undefined {
+  if (boxes.length === 0) return undefined
+  const left = Math.min(...boxes.map((box) => box.x))
+  const top = Math.min(...boxes.map((box) => box.y))
+  const right = Math.max(...boxes.map((box) => box.x + box.width))
+  const bottom = Math.max(...boxes.map((box) => box.y + box.height))
+  return { x: left, y: top, width: right - left, height: bottom - top }
+}
+
+/** The attacking seat of an attack, sent or still chosen apart, or null for any other line. */
+const attackerOf = (line: LineSpec): string | null =>
+  line.kind === 'attack' && line.from.kind === 'card' && line.from.seat !== undefined
+    ? `${line.pending ? 'pending-' : ''}bundle:${line.from.seat}`
+    : null
+
+/** What folds attacks into one bundle: the same seat, the same target, both sent or both still chosen. */
+const bundleOf = (line: LineSpec): string | null => {
+  const seat = attackerOf(line)
+  return seat === null ? null : `${seat}>${anchorKey(line.to)}`
 }
 
 /**
- * The lines whose two ends are on screen and have room between them. Lines that would be drawn on top of each other
- * (several attackers of a seat that is not drawn, all standing in as its tile) are drawn once.
+ * The lines with the attacks of a seat that attacks with more than `BUNDLE_OVER` creatures folded by target: two or
+ * more at one target make one line, from the box around the attackers on screen to the target, with their count, in
+ * the place of the first of them.
+ */
+export function bundled(
+  lines: readonly LineSpec[],
+  rects: RectMap,
+): { line: LineSpec; from: Rect | undefined; count?: number }[] {
+  const members = new Map<string, LineSpec[]>()
+  const seats = new Map<string, number>()
+  for (const line of lines) {
+    const key = bundleOf(line)
+    const seat = attackerOf(line)
+    if (key !== null) members.set(key, [...(members.get(key) ?? []), line])
+    if (seat !== null) seats.set(seat, (seats.get(seat) ?? 0) + 1)
+  }
+  const out: { line: LineSpec; from: Rect | undefined; count?: number }[] = []
+  for (const line of lines) {
+    const key = bundleOf(line)
+    const group = key === null ? undefined : members.get(key)
+    const crowd = (seats.get(attackerOf(line) ?? '') ?? 0) > BUNDLE_OVER
+    if (key === null || group === undefined || group.length < 2 || !crowd) {
+      out.push({ line, from: rects.get(anchorKey(line.from)) })
+      continue
+    }
+    if (group[0] !== line) continue
+    const boxes = group.flatMap((one) => {
+      const box = rects.get(anchorKey(one.from))
+      return box === undefined ? [] : [box]
+    })
+    out.push({ line: { ...line, key }, from: around(boxes), count: group.length })
+  }
+  return out
+}
+
+/**
+ * The lines whose two ends are on screen and have room between them, with the attacks of a crowd bundled
+ * (`bundled`). Lines that would be drawn on top of each other (several attackers of a seat that is not drawn, all
+ * standing in as its tile) are drawn once.
  */
 export function shapesOf(lines: readonly LineSpec[], rects: RectMap): DrawnLine[] {
   const seen = new Set<string>()
   const drawn: DrawnLine[] = []
-  for (const line of lines) {
-    const from = rects.get(anchorKey(line.from))
+  for (const { line, from, count } of bundled(lines, rects)) {
     const to = rects.get(anchorKey(line.to))
     if (from === undefined || to === undefined) continue
     const curve =
@@ -150,7 +215,7 @@ export function shapesOf(lines: readonly LineSpec[], rects: RectMap): DrawnLine[
     const same = `${shape.d}|${line.kind}|${line.pending}|${line.outcome ?? ''}`
     if (seen.has(same)) continue
     seen.add(same)
-    drawn.push({ line, shape })
+    drawn.push(count === undefined ? { line, shape } : { line, shape, count })
   }
   return drawn
 }
