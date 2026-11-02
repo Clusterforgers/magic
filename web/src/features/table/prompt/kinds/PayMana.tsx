@@ -4,7 +4,6 @@ import { Button } from '@/components/ui/button'
 import { usePlay } from '@/features/game/gameContext'
 import type { ManaOption, ManaType, ObjectId } from '@/protocol/generated'
 import { LIFE_PER_SYMBOL, manaWords } from '../../manaSymbols'
-import { ManaChoice } from '../ManaChoice'
 import { ManaSources } from '../ManaSources'
 import { markCards, useCardMarks } from '../marks'
 import { useOwnCardIds } from '../ownCards'
@@ -17,6 +16,7 @@ import {
   lifeChoices,
   lifeOf,
   MANA_TYPES,
+  optionKey,
   owed,
   toPayment,
   withoutSpend,
@@ -25,6 +25,7 @@ import type { LifeSymbols, Reach, Spend } from '../payment'
 import { PaymentSummary } from '../PaymentSummary'
 import type { RestrictedEntry } from '../PaymentSummary'
 import { offersOf } from '../offers'
+import { lastTapOf, swapOptions, withSwap } from '../paySwap'
 import { spendAllows, usesWords } from '../spendRules'
 import { manaByPermanent } from '../priorityText'
 import { usePrompt } from '../PromptContext'
@@ -103,6 +104,8 @@ export const PayManaPrompt: PromptComponent<'PayMana'> = ({ options }) => {
     names[named.indexOf(id)] ?? (id === spell ? 'the spell' : 'a permanent')
 
   const [{ spends, life, note }, setChosen] = useState(START)
+  // The chosen permanent whose colour switch is open.
+  const [switching, setSwitching] = useState<ObjectId | undefined>(undefined)
   const autoReasonId = useId()
   const [choosing] = selection.ids
   const fitting = (id: ObjectId, given: readonly Spend[] = spends): ManaOption[] =>
@@ -159,6 +162,7 @@ export const PayManaPrompt: PromptComponent<'PayMana'> = ({ options }) => {
   }
 
   const add = (spend: Spend): void => {
+    setSwitching(undefined)
     // Checked against the latest payment, so two quick clicks cannot add what no longer fits.
     setChosen((now) =>
       allowed(cost, pool, now.spends, spend, now.life, reach)
@@ -168,6 +172,7 @@ export const PayManaPrompt: PromptComponent<'PayMana'> = ({ options }) => {
     selection.clear()
   }
   const removeAt = (index: number): void => {
+    setSwitching(undefined)
     setChosen((now) => {
       const gone = now.spends[index]
       return gone === undefined
@@ -181,10 +186,12 @@ export const PayManaPrompt: PromptComponent<'PayMana'> = ({ options }) => {
     selection.clear()
   }
   const clear = (): void => {
+    setSwitching(undefined)
     setChosen({ spends: [], life: [], note: 'Cleared the payment.' })
     selection.clear()
   }
   const toggleLife = (index: number): void => {
+    setSwitching(undefined)
     setChosen((now) => {
       const paying = !now.life.includes(index)
       const next = paying ? [...now.life, index] : now.life.filter((other) => other !== index)
@@ -219,7 +226,10 @@ export const PayManaPrompt: PromptComponent<'PayMana'> = ({ options }) => {
     const [only] = here
     if (only === undefined) return
     if (here.length === 1) add({ kind: 'tap', option: only })
-    else selection.set([id])
+    else {
+      setSwitching(undefined)
+      selection.set([id])
+    }
   }
   useCardMarks(marks, act, { toggles: true })
 
@@ -230,6 +240,52 @@ export const PayManaPrompt: PromptComponent<'PayMana'> = ({ options }) => {
   const closeChooser = (): void => {
     selection.clear()
     if (chooser !== undefined) focusCard(chooser)
+  }
+
+  const swaps = useMemo(
+    () =>
+      new Map(
+        taken.flatMap((id): [ObjectId, ManaOption[]][] => {
+          const abilities = byPermanent.get(id) ?? []
+          if (abilities.length < 2) return []
+          const found = swapOptions(cost, pool, spends, lastTapOf(spends, id), abilities, life, reach)
+          return found.length > 0 ? [[id, found]] : []
+        }),
+      ),
+    [taken, byPermanent, cost, pool, spends, life, reach],
+  )
+  const switchOptions = switching === undefined ? undefined : swaps.get(switching)
+  const openSwitch =
+    chooser !== undefined
+      ? { card: chooser, options: choices, swap: false }
+      : switching !== undefined && switchOptions !== undefined
+        ? { card: switching, options: switchOptions, swap: true }
+        : undefined
+  const swap = (option: ManaOption): void => {
+    const id = option.source.object
+    setChosen((now) => {
+      const at = lastTapOf(now.spends, id)
+      const fits = swapOptions(cost, pool, now.spends, at, byPermanent.get(id) ?? [], now.life, reach).some(
+        (other) => optionKey(other) === optionKey(option),
+      )
+      return fits
+        ? {
+            ...now,
+            spends: withSwap(now.spends, at, option),
+            note: `Now ${spendWords({ kind: 'tap', option }, nameOf)}.`,
+          }
+        : now
+    })
+    setSwitching(undefined)
+    focusCard(id)
+  }
+  const openSwitchOn = (id: ObjectId): void => {
+    selection.clear()
+    setSwitching(id)
+  }
+  const closeSwitch = (): void => {
+    setSwitching(undefined)
+    if (switching !== undefined) focusCard(switching)
   }
 
   const hasLife = lifeSwitches.length > 0
@@ -268,7 +324,18 @@ export const PayManaPrompt: PromptComponent<'PayMana'> = ({ options }) => {
         onRemove={removeAt}
         onClear={clear}
         sources={
-          <ManaSources sources={byPermanent} nameOf={nameOf} legal={legal} taken={taken} onAct={act} />
+          <ManaSources
+            sources={byPermanent}
+            nameOf={nameOf}
+            legal={legal}
+            taken={taken}
+            onAct={act}
+            open={openSwitch}
+            onPick={openSwitch?.swap === true ? swap : pick}
+            onClose={openSwitch?.swap === true ? closeSwitch : closeChooser}
+            swappable={[...swaps.keys()]}
+            onSwitch={openSwitchOn}
+          />
         }
         life={
           hasLife
@@ -282,9 +349,6 @@ export const PayManaPrompt: PromptComponent<'PayMana'> = ({ options }) => {
             : undefined
         }
       />
-      {chooser !== undefined ? (
-        <ManaChoice card={chooser} options={choices} onPick={pick} onCancel={closeChooser} />
-      ) : null}
       <Button
         className="h-10 px-4"
         data-slot="pay-confirm"

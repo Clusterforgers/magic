@@ -1048,7 +1048,7 @@ describe('what the player is told', () => {
     await steps(['0'])
     expect(still()).toBe('Mana still owed: 2 generic')
     await steps(['1', '2'])
-    expect(still()).toBe('nothing, the cost is covered')
+    expect(still()).toBe('nothing, covered')
     expect(cost()).toBe('Mana cost: 2 generic, green')
   })
 

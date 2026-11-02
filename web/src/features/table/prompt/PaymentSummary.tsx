@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button'
 import type { ManaCost, ManaPool, ManaType, ObjectId } from '@/protocol/generated'
 import { costPips } from '../cardModel'
 import { madeCost } from '../manaMade'
+import { keptOf } from '../manaKept'
 import { LIFE_PER_SYMBOL } from '../manaSymbols'
 import { ManaDot } from '../ManaPool'
 import { ManaPips } from '../ManaPips'
@@ -13,14 +14,44 @@ import type { LifeChoice, Spend } from './payment'
 
 const PIP_SIZE = 'size-5 text-xs'
 
-/** One labelled line of the payment: a short label and its content. */
-export function Row({ label, children }: { label: string; children: ReactNode }) {
+/** One labelled line of the payment: a short label and its content; with `line` the content scrolls on one line. */
+export function Row({
+  label,
+  children,
+  line = false,
+}: {
+  label: string
+  children: ReactNode
+  line?: boolean
+}) {
   return (
     <div role="group" aria-label={label} className="flex flex-wrap items-center gap-x-3 gap-y-1">
       <span aria-hidden="true" className="w-24 shrink-0 text-xs text-muted-foreground">
         {label}
       </span>
-      <div className="flex min-w-0 flex-wrap items-center gap-1.5">{children}</div>
+      <div
+        data-line={line ? 'true' : undefined}
+        className={
+          line
+            ? // `flex-1` and the contained width keep the line beside its label at the width the sheet has; it scrolls.
+              'flex min-w-0 flex-1 flex-nowrap items-center gap-1.5 overflow-x-auto p-0.5 [contain:inline-size] [scrollbar-width:thin]'
+            : 'flex min-w-0 flex-wrap items-center gap-1.5'
+        }
+      >
+        {children}
+      </div>
+    </div>
+  )
+}
+
+/** A labelled half of a shared line: the label in words beside its content. */
+function Half({ label, children }: { label: string; children: ReactNode }) {
+  return (
+    <div role="group" aria-label={label} className="flex shrink-0 items-center gap-2">
+      <span aria-hidden="true" className="text-xs text-muted-foreground">
+        {label}
+      </span>
+      {children}
     </div>
   )
 }
@@ -189,6 +220,7 @@ export function PaymentSummary({
           held.map((type) => {
             const left = poolLeft(pool, spends, type)
             const usable = left > 0 && canSpend(type)
+            const kept = keptOf(pool, type)
             return (
               <Button
                 key={type}
@@ -198,7 +230,8 @@ export function PaymentSummary({
                 data-slot="pay-pool"
                 // Not `disabled`: a button that goes dead under the keyboard would drop its focus.
                 aria-disabled={!usable}
-                aria-label={`Spend ${manaName(type)} from your pool, ${left} left`}
+                aria-label={`Spend ${manaName(type)} from your pool, ${left} left${kept === null ? '' : `, ${kept.words}`}`}
+                title={kept?.words}
                 className="h-9 gap-1.5 px-2 aria-disabled:pointer-events-none aria-disabled:opacity-50"
                 onClick={() => {
                   if (usable) onSpendPool(type)
@@ -208,6 +241,15 @@ export function PaymentSummary({
                 <span aria-hidden="true" className="tabular-nums">
                   {left}
                 </span>
+                {kept === null ? null : (
+                  <span
+                    aria-hidden="true"
+                    data-mark="kept"
+                    className="rounded-sm bg-muted px-1 text-xs text-muted-foreground"
+                  >
+                    kept
+                  </span>
+                )}
               </Button>
             )
           })
@@ -325,24 +367,26 @@ export function PaymentSummary({
           </>
         )}
       </Row>
-      <Row label="Made so far">
-        {empty ? (
-          <Quiet>nothing yet</Quiet>
-        ) : (
-          <ManaPips
-            pips={costPips([...madeCost(spends.flatMap(madeOf)), ...genericMade(spends)])}
-            sizeClass={PIP_SIZE}
-            label="Mana made"
-          />
-        )}
-      </Row>
-      <Row label="Still owed">
-        {covered ? (
-          <Quiet>nothing, the cost is covered</Quiet>
-        ) : (
-          <ManaPips pips={costPips(owed)} sizeClass={PIP_SIZE} label="Mana still owed" />
-        )}
-      </Row>
+      <div data-slot="pay-made-owed" className="flex flex-wrap items-center gap-x-4 gap-y-1">
+        <Half label="Made so far">
+          {empty ? (
+            <Quiet>nothing yet</Quiet>
+          ) : (
+            <ManaPips
+              pips={costPips([...madeCost(spends.flatMap(madeOf)), ...genericMade(spends)])}
+              sizeClass={PIP_SIZE}
+              label="Mana made"
+            />
+          )}
+        </Half>
+        <Half label="Still owed">
+          {covered ? (
+            <Quiet>nothing, covered</Quiet>
+          ) : (
+            <ManaPips pips={costPips(owed)} sizeClass={PIP_SIZE} label="Mana still owed" />
+          )}
+        </Half>
+      </div>
     </div>
   )
 }

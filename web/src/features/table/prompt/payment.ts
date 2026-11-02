@@ -504,7 +504,7 @@ export function allowed(
 }
 
 /** What tells two abilities of one permanent apart for a payment: the mana they make and what they cost. */
-const optionKey = (option: ManaOption): string =>
+export const optionKey = (option: ManaOption): string =>
   `${madeBy(option).join()}|${JSON.stringify(option.cost ?? [])}|${String(option.sacrifice ?? false)}`
 
 /** The options of one permanent that may join the payment, one per kind of use (two abilities alike are one). */

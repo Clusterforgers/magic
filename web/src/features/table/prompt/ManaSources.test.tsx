@@ -1,4 +1,4 @@
-/** Goal: the payment prompt lists each mana source with the symbols of what a tap gives (Sol Ring two colourless, a Signet with its cost, a Treasure and a Command Tower of any colour, a bounce land both mana), equal sources share a chip with a count, a click adds or takes back like the card does, the colour of a source of several is picked in a small switch, and the running total says what the payment has made so far. */
+/** Goal: the payment prompt lists each mana source on one scrolling line with the symbols of what a tap gives (Sol Ring two colourless, a Signet with its cost, a Treasure and a Command Tower of any colour, a bounce land both mana) and its marks (restricted mana, life, energy, another permanent), equal sources share a chip with a count, a click adds or takes back like the card does, the colour of a source of several is picked in a switch beside its chip and a chosen one's colour changes there without taking it back, and the running total of what the payment has made sits on one line with what is still owed. */
 import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
@@ -11,8 +11,8 @@ import { source } from '@/test-utils/mana'
 import { fixtureGame } from '../dev/devGame'
 import { ManaSources, groupSources } from './ManaSources'
 
-function open() {
-  const game = fixtureGame({ seats: 2, prompt: 'pay-sources' })
+function open(name = 'pay-sources') {
+  const game = fixtureGame({ seats: 2, prompt: name })
   const answer = vi.spyOn(game.session, 'answer')
   render(
     <GameContext value={game}>
@@ -88,7 +88,7 @@ describe('the sources of ?prompt=pay-sources', () => {
     await user.click(within(prompt()).getByRole('button', { name: 'Add white mana' }))
     await user.click(chip('Tap Command Tower for'))
     // Only green is still owed, so the Tower adds it without asking.
-    expect(within(row('Still owed')).getByText('nothing, the cost is covered')).toBeInTheDocument()
+    expect(within(row('Still owed')).getByText('nothing, covered')).toBeInTheDocument()
     await user.click(within(prompt()).getByRole('button', { name: 'Confirm payment' }))
     const [sent] = answer.mock.calls[0] as [Answer]
     const payment =
@@ -96,6 +96,86 @@ describe('the sources of ?prompt=pay-sources', () => {
         ? sent.PayMana.Manual
         : null
     expect(payment?.taps).toHaveLength(3)
+  })
+})
+
+describe('the compact payment sheet', () => {
+  it('draws the sources on one scrolling line and what is made beside what is owed', () => {
+    open()
+    const line = must(row('Mana sources').querySelector<HTMLElement>('[data-line="true"]'))
+    expect(line.className).toContain('flex-nowrap')
+    expect(line.className).toContain('overflow-x-auto')
+    expect(line.querySelectorAll('[data-slot="pay-source"]')).toHaveLength(chips().length)
+    const shared = must(prompt().querySelector<HTMLElement>('[data-slot="pay-made-owed"]'))
+    expect(within(shared).getByRole('group', { name: 'Made so far' })).toBeInTheDocument()
+    expect(within(shared).getByRole('group', { name: 'Still owed' })).toBeInTheDocument()
+  })
+})
+
+describe('the colour switch on a chosen source', () => {
+  const switchOf = (name: string): HTMLElement =>
+    within(prompt()).getByRole('button', { name: `Switch the colour of ${name}` })
+  const paying = (): (string | null)[] =>
+    [...prompt().querySelectorAll('[data-slot="pay-chip"]')].map((el) => el.getAttribute('aria-label'))
+
+  it.each<[string, string, string]>([
+    ['green', 'Switch to green mana', 'Remove green from Command Tower'],
+    ['white', 'Switch to white mana', 'Remove white from Command Tower'],
+  ])('swaps a Command Tower from blue to %s in its place', async (_colour, button, expected) => {
+    const { user } = open()
+    await user.click(chip('Tap Command Tower for'))
+    await user.click(within(prompt()).getByRole('button', { name: 'Add blue mana' }))
+    await user.click(chip('Tap Azorius Chancery for'))
+    const [first, second] = paying()
+    expect(second).toBe('Remove white and blue from Azorius Chancery')
+    await user.click(switchOf('Command Tower'))
+    const group = within(prompt()).getByRole('group', { name: 'Mana from Command Tower' })
+    expect(within(group).queryByRole('button', { name: 'Switch to blue mana' })).toBeNull()
+    await user.click(within(group).getByRole('button', { name: button }))
+    expect(first).toBe('Remove blue from Command Tower')
+    expect(paying()).toEqual([expected, second])
+    expect(chip('Tap Command Tower for')).toHaveAttribute('aria-pressed', 'true')
+    expect(within(prompt()).queryByRole('group', { name: 'Mana from Command Tower' })).toBeNull()
+  })
+
+  it('closes on Escape and keeps the payment', async () => {
+    const { user } = open()
+    await user.click(chip('Tap Command Tower for'))
+    await user.click(within(prompt()).getByRole('button', { name: 'Add blue mana' }))
+    await user.click(switchOf('Command Tower'))
+    expect(within(prompt()).getAllByRole('button', { name: /^Switch to / })[0]).toHaveFocus()
+    await user.keyboard('{Escape}')
+    expect(within(prompt()).queryByRole('group', { name: 'Mana from Command Tower' })).toBeNull()
+    expect(paying()).toEqual(['Remove blue from Command Tower'])
+  })
+
+  it('has no switch for a source of one kind of mana', async () => {
+    const { user } = open()
+    await user.click(chip('Tap Sol Ring for'))
+    expect(within(prompt()).queryByRole('button', { name: 'Switch the colour of Sol Ring' })).toBeNull()
+  })
+})
+
+describe('the marks of ?prompt=pay-marks', () => {
+  it.each<[string, string[], string]>([
+    ['Ancient Ziggurat', ['only'], ', mana only for creature spells'],
+    ['Mana Confluence', ['life'], ', pays 1 life'],
+    ['Aether Hub', ['energy'], ', pays 1 energy for some mana'],
+    ['Springleaf Drum', ['tap'], ', taps 1 more permanent'],
+  ])('marks %s', (name, marks, words) => {
+    open('pay-marks')
+    const el = chip(`Tap ${name} for`)
+    expect([...el.querySelectorAll('[data-mark]')].map((mark) => mark.getAttribute('data-mark'))).toEqual(
+      marks,
+    )
+    expect(el.getAttribute('aria-label')).toContain(words)
+  })
+
+  it('marks the green that the pool keeps to the end of the turn', () => {
+    open('pay-marks')
+    expect(
+      within(row('Floating mana')).getByRole('button', { name: /^Spend green from your pool/ }),
+    ).toHaveAccessibleName(/kept: 1 until end of turn$/)
   })
 })
 
