@@ -297,6 +297,7 @@ fn order(messages: &[ServerMessage]) -> Vec<&'static str> {
             ServerMessage::FullControl { .. } => "full control",
             ServerMessage::EndTurnByHand { .. } => "end turn by hand",
             ServerMessage::AutoChoices { .. } => "auto choices",
+            ServerMessage::AutoYields { .. } => "auto yields",
             ServerMessage::Yielding { .. } => "yielding",
             ServerMessage::Error { .. } => "error",
             ServerMessage::GameOver { .. } => "game over",

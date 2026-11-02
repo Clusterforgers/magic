@@ -1,3 +1,4 @@
+import { X } from 'lucide-react'
 import {
   DropdownMenuCheckboxItem,
   DropdownMenuGroup,
@@ -12,8 +13,9 @@ import { defaultStopsWords } from './stopModel'
 /**
  * The pace settings at the foot of the Full Control menu: "End my turn by hand" (the server holds the seat at its own
  * end step until it ends the turn), the decisions the server answers for the seat outside Full Control (its triggers in
- * timestamp order, combat damage lethal in order), and the pinned stops saved as the default of every new game, with a
- * reset. The end-turn setting and the default stops are kept in this browser and applied when a game is joined.
+ * timestamp order, combat damage lethal in order), the abilities it always yields to (a click takes one back), and the
+ * pinned stops saved as the default of every new game, with a reset. The end-turn setting and the default stops are kept
+ * in this browser and applied when a game is joined.
  */
 export function FlowMenuItems() {
   const { session } = useGame()
@@ -21,6 +23,7 @@ export function FlowMenuItems() {
   const stops = usePlay((state) => state.stops)
   const byHand = usePlay((state) => state.endTurnByHand)
   const auto = usePlay((state) => state.autoChoices)
+  const yields = usePlay((state) => state.autoYields)
   const online = usePlay((state) => state.status === 'open')
   const pinned = stops.filter((stop) => stop.keep)
   return (
@@ -50,6 +53,27 @@ export function FlowMenuItems() {
       >
         Assign combat damage for me
       </DropdownMenuCheckboxItem>
+      {yields.length === 0 ? null : (
+        <>
+          <DropdownMenuSeparator />
+          <DropdownMenuGroup>
+            <DropdownMenuLabel data-slot="auto-yields">Always yielding to</DropdownMenuLabel>
+            {yields.map((ability) => (
+              <DropdownMenuItem
+                key={`${ability.name}\n${ability.text}`}
+                data-slot="clear-auto-yield"
+                disabled={!online}
+                title={ability.text === '' ? undefined : ability.text}
+                aria-label={`Stop yielding to ${ability.name}${ability.text === '' ? '' : `: ${ability.text}`}`}
+                onClick={() => session.clearAutoYield(ability)}
+              >
+                <span className="min-w-0 flex-1 truncate">{ability.name}</span>
+                <X aria-hidden="true" className="text-muted-foreground" />
+              </DropdownMenuItem>
+            ))}
+          </DropdownMenuGroup>
+        </>
+      )}
       <DropdownMenuSeparator />
       <DropdownMenuGroup>
         <DropdownMenuLabel data-slot="default-stops">

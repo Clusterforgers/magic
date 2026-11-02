@@ -183,6 +183,7 @@ impl Bot {
             | ServerMessage::FullControl { .. }
             | ServerMessage::EndTurnByHand { .. }
             | ServerMessage::AutoChoices { .. }
+            | ServerMessage::AutoYields { .. }
             | ServerMessage::Bank { .. }
             | ServerMessage::Presence { .. } => {}
             ServerMessage::GameOver { result } => return Progress::Over(result),

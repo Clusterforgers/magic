@@ -10,7 +10,8 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { useGame, usePlay } from '@/features/game/gameContext'
 import { cn } from '@/lib/utils'
-import type { YieldUntil } from '@/protocol/generated'
+import type { PlayState } from '@/play/store'
+import type { ObjectId, ObjectView, YieldUntil } from '@/protocol/generated'
 import { InControlsDock } from '../ControlsDock'
 import { useDockForm } from '../dockLayout'
 import { usePrompt } from './PromptContext'
@@ -24,14 +25,26 @@ import {
 } from './passWords'
 import { usePrimaryKey } from './usePrimaryKey'
 
+/** What "Always yield to" does, for a screen reader. */
+const ALWAYS_YIELD_DESCRIPTION =
+  'Lets this ability, and every later one with the same name and words, resolve without asking you for the rest of the game. Full Control still asks.'
+
+/** The ability on top of the stack when every player can read it, which the seat can always yield to; else undefined. */
+export function topYieldable(state: PlayState): ObjectView | undefined {
+  const id = state.view?.stack.cards?.at(-1)
+  const top = id === undefined ? undefined : state.objectsById[id]
+  return top?.kind === 'Ability' && top.name !== '' ? top : undefined
+}
+
 /** A key as a small cap on a button, drawn where the dock has the room (`full`) and always hidden from a screen reader. */
 const KEY_CAP = 'ml-1 inline-block rounded border px-1 text-xs leading-4 font-normal'
 
 /**
  * The ways to pass priority, for a Priority prompt: a primary button that says what passing does now ("Next: Combat",
  * "Resolve Lightning Bolt", "End turn", "Continue"), "End turn" beside it to pass until the turn ends, and a small menu
- * with "Resolve everything on the stack" and "Pass until my next turn". The yields are the server's: it passes for the
- * seat and says so, and the prompt goes with its first pass. With nothing holding the keyboard Space passes once and
+ * with "Resolve everything on the stack", "Always yield to <ability>" (over an ability every player can read) and "Pass
+ * until my next turn". The yields are the server's: it passes for the seat and says so, and the prompt goes with its
+ * first pass. With nothing holding the keyboard Space passes once and
  * Enter ends the turn (the "End turn" button), or passes once where there is no such button: under Full Control, which
  * the server does not let a yield run beside, and in the last window of the turn, where the primary button ends it.
  * On the table the buttons are drawn in the controls dock at the bottom right (`InControlsDock`), not in the prompt;
@@ -55,6 +68,11 @@ export function PassControls({ canPass }: { canPass: boolean }) {
     if (!free) return
     if (session.yieldUntil(until)) setAsked(true)
   }
+  const always = (id: ObjectId): void => {
+    if (!free) return
+    if (session.autoYield(id)) setAsked(true)
+  }
+  const topAbility = usePlay(topYieldable)
   const yieldKey = enterYields(situation, !canYield)
   const form = useDockForm()
   // The dock of a phone has no room for "End turn" beside the primary button, so the menu holds it.
@@ -113,6 +131,15 @@ export function PassControls({ canPass }: { canPass: boolean }) {
                 onClick={() => yieldTo('Resolve')}
               >
                 {YIELD_WORDS.Resolve.action}
+              </DropdownMenuItem>
+            ) : null}
+            {topAbility ? (
+              <DropdownMenuItem
+                data-yield="Always"
+                aria-description={ALWAYS_YIELD_DESCRIPTION}
+                onClick={() => always(topAbility.id)}
+              >
+                Always yield to {topAbility.name}
               </DropdownMenuItem>
             ) : null}
             <DropdownMenuItem
