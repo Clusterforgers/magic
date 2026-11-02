@@ -112,6 +112,7 @@ describe('statusChips', () => {
     ],
     ['a merged list of one is no merge', permanent({}, { merged: [{ id: 1, name: 'Hill Giant' }] }), []],
     ['a prepared permanent', permanent({ prepared: true }), ['Prepared:plain']],
+    ['a phased-out permanent', permanent({ phased_out: true }), ['Phased out:plain']],
     ['a level 2 Class', permanent({ level: 2 }), ['Level 2:plain']],
     ['level 0 is still a level', permanent({ level: 0 }), ['Level 0:plain']],
     [

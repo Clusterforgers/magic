@@ -69,6 +69,7 @@ fn phasing_out_and_in_is_public_and_the_views_follow(#[values(2, 3, 4)] seats: u
         for id in [bear, blade] {
             let object = view.objects.iter().find(|o| o.id == id).unwrap();
             assert_eq!(object.zone, Zone::PhasedOut);
+            assert!(object.permanent.as_ref().is_some_and(|p| p.phased_out));
             assert!(object.permanent.is_some());
         }
         let mut advanced = StateView::for_player(&before, *viewer);
@@ -92,6 +93,12 @@ fn phasing_out_and_in_is_public_and_the_views_follow(#[values(2, 3, 4)] seats: u
         );
         let view = StateView::for_player(&finally, *viewer);
         assert_eq!(view.table.phased_out, Vec::<ObjectId>::new());
+        assert!(
+            view.objects
+                .iter()
+                .filter_map(|o| o.permanent.as_ref())
+                .all(|p| !p.phased_out)
+        );
         let mut advanced = StateView::for_player(&after, *viewer);
         advanced.apply(batch);
         assert_eq!(advanced, view);

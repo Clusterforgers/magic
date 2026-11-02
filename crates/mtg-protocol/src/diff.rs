@@ -70,6 +70,7 @@ mod tests {
                 damage: 0,
                 summoning_sick: false,
                 prepared: false,
+                phased_out: false,
                 level: None,
                 doors: None,
             }),

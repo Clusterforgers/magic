@@ -37,6 +37,8 @@ pub struct ZoneView {
 }
 
 /// State that only exists while an object is on the battlefield.
+// Each flag is a separate public fact of the permanent.
+#[allow(clippy::struct_excessive_bools)]
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
 pub struct PermanentView {
     /// Whether the permanent is tapped.
@@ -54,6 +56,10 @@ pub struct PermanentView {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[ts(optional)]
     pub level: Option<u32>,
+    /// Whether the permanent is phased out (CR 702.26): drawn ghosted; left out while it is phased in.
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    #[ts(as = "Option<bool>", optional)]
+    pub phased_out: bool,
     /// Which doors of a Room are unlocked (CR 709.5), in the order of its faces; left out for any other permanent. A
     /// public fact of the permanent.
     #[serde(default, skip_serializing_if = "Option::is_none")]
