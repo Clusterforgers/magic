@@ -26,6 +26,10 @@ prepared?: boolean,
  */
 level?: number, 
 /**
+ * Whether the permanent is phased out (CR 702.26): drawn ghosted; left out while it is phased in.
+ */
+phased_out?: boolean, 
+/**
  * Which doors of a Room are unlocked (CR 709.5), in the order of its faces; left out for any other permanent. A
  * public fact of the permanent.
  */

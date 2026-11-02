@@ -103,6 +103,14 @@ describe('permanent state is drawn as words, not colour alone', () => {
     expect(button()).toHaveAccessibleName(expect.stringContaining('tapped'))
   })
 
+  it('draws a phased-out card ghosted and says "Phased out"', () => {
+    const { container } = renderCard({ object: permanent({ phased_out: true }) })
+    expect(button()).toHaveAttribute('data-phased-out', 'true')
+    expect(button()).toHaveClass('opacity-50')
+    expect(within(face(container)).getByText('Phased out')).toBeInTheDocument()
+    expect(button()).toHaveAccessibleName(expect.stringContaining('phased out'))
+  })
+
   it('leaves an untapped card upright with no tapped label', () => {
     const { container } = renderCard({ object: permanent({}) })
     expect(face(container)).not.toHaveAttribute('data-turned')

@@ -26,6 +26,11 @@ export type Groupable = Pick<
   | 'keywords'
   | 'permanent'
   | 'attached_to'
+  | 'attached_player'
+  | 'copy'
+  | 'face'
+  | 'face_down'
+  | 'merged'
 > & {
   /** The counters on it, by kind. */
   counters?: readonly (readonly [CounterKind, number])[]
@@ -89,6 +94,14 @@ function faceOf(permanent: Groupable): string {
     countersOf(permanent.counters),
     attachmentsOf(permanent.attachments),
     permanent.attached_to ?? null,
+    permanent.attached_player ?? null,
+    permanent.copy === undefined ? null : (permanent.copy.of ?? 0),
+    permanent.face ?? null,
+    permanent.face_down === true,
+    (permanent.merged ?? []).map((part) => part.id),
+    state?.prepared === true,
+    state?.level ?? null,
+    state?.phased_out === true,
   ])
 }
 
