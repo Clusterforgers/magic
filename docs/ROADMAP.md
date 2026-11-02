@@ -74,6 +74,7 @@ Items that touch the running game come first; the play-session findings (pf) lea
 The table and its prompts are live; the items below polish them.
 
 - [ ] (i2b) Arena flow P10: smart stops, a step where an object of the seat can answer becomes a window (`docs/arena-flow.md`)
+- [ ] (i2c1) A stack item in the stack panel offers "Always yield to" on its own menu, also while the seat is not asked, and per-ability yields are kept with the account like the auto choices (i2d)
 - [ ] (i2d) Auto choices are saved with the account and in the browser and applied at each `Welcome`, as the end-turn choice is (`UserPrefs`)
 - [ ] (a2g) A token lookup that finds several equal records prefers the one with the most printings (`token_pictures` returns the printing count) instead of the smallest oracle id
 - [ ] (a2e) The precon details dialog shows each card's picture through `CardPicture` and the hover picture, as the builder does
