@@ -57,6 +57,12 @@ Items that touch the running game come first; the play-session findings (pf) lea
 - [ ] (w2j) An attach line of a rebuilt log has no old host: `Snapshot` could carry the host each attach event of its window replaced (its name in `names`), so the line reads "moves from A to B" as it did live (`play/store.ts` `mergeHistory`, `hosts.ts`)
 - [ ] (fx1b) A cap on the fix marks of one account and a rate limit on the fix-mark routes
 - [ ] (f1b) Playtest polish of the table, builder and lobby against the UI wishes (fits the viewport, clear turn indicators, open-games list, card images at every size), with `/dev/*` screenshots at six sizes in both themes, so the first real games can start
+- [ ] (f1b1) A fanned land pile shows each covered land's whole name line, and a tapped land of a pile no longer lies over its neighbours' names and Tapped chips (`/dev/table?board=duel` opponent at 1366x768 and 1440x900, the viewer's lands of the four-seat table)
+- [ ] (f1b2) A text face's name breaks between words, never inside one ("Mountai n", "Lightnin g Bolt" in the hand at 1366x768 and below), ending in an ellipsis where it does not fit
+- [ ] (f1b3) A compact tapped land's Tapped chip is whole or an icon on a phone (`/dev/table?board=duel` at 390x844)
+- [ ] (f1b4) The builder's Mana value placeholder ("3, 2-4, 5+") and the lobby's sort select ("Default order") are whole at 1024x768
+- [ ] (f1b5) The lobby's deck detail of a built-in deck counts its cards and colours as the list does (it shows "0 cards" and a colourless symbol for Mono Green Stompers)
+- [ ] (f1b6) The viewer's one-line pod on the four-seat table keeps its zone chips row inside the pod at 1440x900
 - [ ] (pl2l) `join.spec.ts` "a guest follows an invite link" timed out once on the Join button in a full run and never in 50 solo runs: a recurrence needs a Playwright trace (`retain-on-failure`) to name the cause
 
 ## M4 Commander
