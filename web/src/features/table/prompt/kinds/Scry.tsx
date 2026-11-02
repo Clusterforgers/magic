@@ -88,7 +88,11 @@ function PileCard({
         <span className="sr-only"> {label}</span>
       </span>
       <span onPointerEnter={preview.onPointerEnter} onPointerLeave={preview.onPointerLeave}>
-        <PromptPicture object={object} size={size} />
+        <PromptPicture
+          object={object}
+          size={size}
+          className={size === 'compact' ? '[--card-w:4.5rem] [--card-h:6.25rem]' : undefined}
+        />
       </span>
       <span className="flex shrink-0 gap-1">
         <Button
@@ -282,7 +286,7 @@ export const ScryPrompt: PromptComponent<'Scry'> = ({ options }) => {
       <p
         data-slot="scry-preview"
         aria-hidden="true"
-        className="line-clamp-2 min-w-0 basis-full text-xs text-muted-foreground"
+        className="hidden min-w-0 basis-full text-xs text-muted-foreground sm:line-clamp-2 sm:block"
       >
         {scryPreview(piles.top.map(nameOf), piles.bottom.map(nameOf))}
       </p>
@@ -290,7 +294,7 @@ export const ScryPrompt: PromptComponent<'Scry'> = ({ options }) => {
         ref={root}
         data-slot="scry-piles"
         onKeyDown={onKeyDown}
-        className="flex basis-full flex-wrap gap-2 overflow-y-auto max-h-[max(6rem,calc(var(--sheet-max,20rem)_-_10.5rem))]"
+        className="flex basis-full flex-wrap gap-2 overflow-y-auto max-h-[max(6rem,calc(var(--sheet-max,20rem)_-_12rem))]"
       >
         {pile('top')}
         {pile('bottom')}

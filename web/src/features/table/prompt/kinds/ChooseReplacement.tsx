@@ -109,7 +109,7 @@ export const ChooseReplacementPrompt: PromptComponent<'ChooseReplacement'> = ({ 
       <ol
         aria-label="Replacement effects"
         data-slot="replacement-list"
-        className="grid max-h-[max(6rem,calc(var(--sheet-max,20rem)_-_7rem))] basis-full grid-cols-1 gap-2 overflow-y-auto p-0.5 sm:grid-cols-2"
+        className="grid max-h-[max(6rem,calc(var(--sheet-max,20rem)_-_7rem))] basis-full grid-cols-[repeat(auto-fit,minmax(min(100%,14rem),1fr))] gap-2 overflow-y-auto p-0.5"
       >
         {candidates.map((candidate, index) => (
           <ReplacementRow

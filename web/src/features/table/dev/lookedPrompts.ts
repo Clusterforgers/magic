@@ -129,6 +129,8 @@ export const LOOKED_MOMENTS: Record<string, LookedMoment> = {
   scry: libraryMoment,
   'scry-clock': libraryMoment,
   'scry-one': libraryMoment,
+  'scry-three': libraryMoment,
+  'scry-five': libraryMoment,
   'scry-order': libraryMoment,
   'scry-bottom': libraryMoment,
 }
@@ -140,6 +142,8 @@ export const LOOKED_PROMPTS: Record<string, LookedPrompt> = {
   'replacement-clock': clocked(replacement(3)),
   scry: scry(4),
   'scry-one': scry(1),
+  'scry-three': scry(3),
+  'scry-five': scry(5),
   'scry-clock': clocked(scry(4)),
   'scry-order': orderLooked(4, TOP_WORDS),
   'scry-bottom': orderLooked(3, BOTTOM_WORDS),

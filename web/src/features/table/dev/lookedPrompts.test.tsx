@@ -16,6 +16,8 @@ const PROMPTS = [
   ['replacement-clock', 'ChooseReplacement', 3],
   ['scry', 'Scry', 4],
   ['scry-one', 'Scry', 1],
+  ['scry-three', 'Scry', 3],
+  ['scry-five', 'Scry', 5],
   ['scry-clock', 'Scry', 4],
   ['scry-order', 'OrderCards', 4],
   ['scry-bottom', 'OrderCards', 3],

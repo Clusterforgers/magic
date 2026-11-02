@@ -27,6 +27,7 @@ import { LOOKED_MOMENTS, LOOKED_PROMPTS } from './lookedPrompts'
 import { lookTopMoment } from './lookTopScene'
 import { paySources, paySourcesTable } from './paySources'
 import { roomsTable, withRooms } from './roomsScene'
+import { companionTable, stackAbilityTable } from './previewScenes'
 
 /** Builds the decision the viewer of a fixture faces. */
 export type DevPrompt = (fixture: Fixture) => PendingDecision
@@ -159,7 +160,11 @@ const attack: DevPrompt = ({ view }) => {
   const defenders: AttackTarget[] = [
     ...othersAfter(view, viewer).map((seat): AttackTarget => ({ Player: seat })),
     ...view.objects
-      .filter((object) => object.types.includes('Planeswalker') && object.controller !== viewer)
+      .filter(
+        (object) =>
+          (object.types.includes('Planeswalker') || object.types.includes('Battle')) &&
+          object.controller !== viewer,
+      )
       .map((object): AttackTarget => ({ Planeswalker: object.id })),
   ]
   const options: AttackOptions = {
@@ -199,34 +204,54 @@ const tapped = (objects: readonly ObjectView[], ids: ReadonlySet<ObjectId>): Obj
   )
 
 /** The turn is the viewer's and nobody has attacked yet; one of the first opponent's permanents is a planeswalker. */
-const attackTable: DevTable = (fixture) => {
-  const { view } = fixture
-  const owner = othersAfter(view, view.viewer)[0] ?? view.viewer
-  const walker: ObjectView = {
-    id: Math.max(...view.objects.map((object) => object.id)) + 1,
-    owner,
-    controller: owner,
-    zone: 'Battlefield',
-    name: 'Jace, the Mind Sculptor',
-    mana_cost: [{ Generic: 2 }, { Colored: 'Blue' }, { Colored: 'Blue' }],
-    supertypes: ['Legendary'],
-    types: ['Planeswalker'],
-    subtypes: [],
-    colors: ['Blue'],
-    power: null,
-    toughness: null,
-    abilities: [],
-    permanent: { tapped: false, damage: 0, summoning_sick: false },
+const attackTable =
+  (battle: boolean): DevTable =>
+  (fixture) => {
+    const { view } = fixture
+    const owner = othersAfter(view, view.viewer)[0] ?? view.viewer
+    const walker: ObjectView = battle
+      ? {
+          id: Math.max(...view.objects.map((object) => object.id)) + 1,
+          owner,
+          controller: owner,
+          zone: 'Battlefield',
+          name: 'Invasion of Theros',
+          mana_cost: [{ Generic: 3 }, { Colored: 'Blue' }],
+          supertypes: [],
+          types: ['Battle'],
+          subtypes: ['Siege'],
+          colors: ['Blue'],
+          power: null,
+          toughness: null,
+          abilities: [],
+          permanent: { tapped: false, damage: 0, summoning_sick: false },
+          protector: othersAfter(view, owner)[0] ?? owner,
+        }
+      : {
+          id: Math.max(...view.objects.map((object) => object.id)) + 1,
+          owner,
+          controller: owner,
+          zone: 'Battlefield',
+          name: 'Jace, the Mind Sculptor',
+          mana_cost: [{ Generic: 2 }, { Colored: 'Blue' }, { Colored: 'Blue' }],
+          supertypes: ['Legendary'],
+          types: ['Planeswalker'],
+          subtypes: [],
+          colors: ['Blue'],
+          power: null,
+          toughness: null,
+          abilities: [],
+          permanent: { tapped: false, damage: 0, summoning_sick: false },
+        }
+    const cards = [...(view.battlefield.cards ?? []), walker.id]
+    return withView(fixture, {
+      objects: [...view.objects, walker],
+      battlefield: { count: cards.length, cards },
+      turn: { ...view.turn, active: view.viewer, step: 'DeclareAttackers' },
+      priority: null,
+      combat: { attackers: [], attackers_declared: false, blockers_declared: [] },
+    })
   }
-  const cards = [...(view.battlefield.cards ?? []), walker.id]
-  return withView(fixture, {
-    objects: [...view.objects, walker],
-    battlefield: { count: cards.length, cards },
-    turn: { ...view.turn, active: view.viewer, step: 'DeclareAttackers' },
-    priority: null,
-    combat: { attackers: [], attackers_declared: false, blockers_declared: [] },
-  })
-}
 
 /**
  * The active seat has attacked with six creatures and nobody has blocked: four at the viewer and, when there is a
@@ -415,7 +440,10 @@ export const DEV_PROMPTS: Record<string, DevPrompt> = {
   'priority-abilities': withAbilities(priority),
   // The same with Rooms of the viewer's whose locked doors it may unlock (`dev/roomsScene.ts`).
   'priority-rooms': withRooms(priority),
+  'priority-stack-ability': priority,
+  'priority-companion': priority,
   attack,
+  'attack-battle': attack,
   block,
   'block-clock': (fixture) => ({ ...block(fixture), deadlineMs: 45_000 }),
   mulligan: aboutHand((hand) => ({
@@ -477,7 +505,8 @@ const quietMoment =
 
 /** Prompts that need another moment of the game than the default fixture shows, by `?prompt=` name. */
 export const DEV_TABLES: Record<string, DevTable> = {
-  attack: attackTable,
+  attack: attackTable(false),
+  'attack-battle': attackTable(true),
   block: blockTable,
   'block-clock': blockTable,
   forecast: forecastScene,
@@ -494,6 +523,8 @@ export const DEV_TABLES: Record<string, DevTable> = {
   'priority-byhand': quietMoment('Main1', true),
   'priority-abilities': abilitiesTable,
   'priority-rooms': roomsTable,
+  'priority-stack-ability': stackAbilityTable,
+  'priority-companion': companionTable,
   yield: quietMoment('Upkeep', false, false),
   // Passing until the stack is empty is asked over a stack: the fixture's three spells, the active seat holding priority.
   'yield-resolve': (fixture) =>
