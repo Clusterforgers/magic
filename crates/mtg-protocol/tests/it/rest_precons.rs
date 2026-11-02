@@ -128,12 +128,12 @@ fn the_json_keys_are_the_documented_ones() {
         [
             "card_count",
             "code",
+            "color_identity",
             "commanders",
             "deck_type",
             "format",
             "name",
             "pictures",
-            "color_identity",
             "playable",
             "release_date",
             "set",
