@@ -1,7 +1,7 @@
 // Goal: the deck check as the builder draws it: lines are ordered by name or with the worst state first (equal states keep their name order), the issues-only filter keeps exactly the lines whose card is not verified, a line takes its check from the report by card whatever its zone and falls back to the card's own state for a card added since, reasons become plain sentences (naming the face only when a clause is on a face other than the first) and legality issues become plain sentences.
 import { describe, expect, it } from 'vitest'
 import { cardHit, legalityIssue, reportCard, reportOf } from '@/features/decks/fakeDecks'
-import type { Reason, Support } from '@/protocol/generated'
+import type { DeckZone, IssueCode, Reason, Support } from '@/protocol/generated'
 import type { Line } from './deckEdit'
 import {
   arrange,
@@ -9,6 +9,7 @@ import {
   checksOf,
   isIssue,
   legalityLines,
+  outsideLines,
   reasonLines,
   sentence,
   SUPPORT_ORDER,
@@ -147,5 +148,31 @@ describe('legalityLines', () => {
 
   it('has nothing for a legal deck', () => {
     expect(legalityLines([])).toEqual([])
+  })
+})
+
+describe('outsideLines', () => {
+  const issue = (code: IssueCode, zone: DeckZone | null, id: string | null, message: string) =>
+    legalityIssue(message, { code, zone, oracle_id: id })
+
+  it.each<[string, IssueCode, DeckZone, string | null, string[]]>([
+    ['a card outside the identity', 'color_identity', 'main', 'bolt', ['main:bolt']],
+    ['a companion whose condition fails', 'companion_condition', 'companion', 'lurrus', ['companion:lurrus']],
+    ['a banned card', 'banned', 'main', 'lotus', []],
+    ['a companion issue with no card', 'companion_condition', 'companion', null, []],
+  ])('marks %s', (_what, code, zone, id, keys) => {
+    expect([...outsideLines([issue(code, zone, id, 'a thing is wrong')]).keys()]).toEqual(keys)
+  })
+
+  it('gives the report sentence with a full stop', () => {
+    const found = outsideLines([
+      issue(
+        'companion_condition',
+        'companion',
+        'lurrus',
+        'Lurrus needs every permanent at mana value 2 or less',
+      ),
+    ])
+    expect(found.get('companion:lurrus')).toBe('Lurrus needs every permanent at mana value 2 or less.')
   })
 })

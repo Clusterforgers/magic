@@ -25,6 +25,7 @@ import { describeMulligan } from './turnText'
 import { useBoxHeight } from './useBoxHeight'
 import { SeatCorner } from './SeatCorner'
 import { RevealedChip } from './RevealedChip'
+import { CompanionChip } from './CompanionChip'
 import { ZoneButton } from './ZoneButton'
 
 interface SeatPanelProps {
@@ -190,6 +191,7 @@ export const SeatPanel = memo(function SeatPanel({ seat, variant = 'panel' }: Se
             <CountChip zone="hand" count={counts.hand} density="line" />
             <CountChip zone="library" count={counts.library} density="line" />
             <RevealedChip owner={owner} player={player} density="line" />
+            <CompanionChip owner={owner} player={player} />
             <ZoneButton zone="graveyard" owner={owner} ids={graveyard} density="line" />
             <ZoneButton zone="exile" owner={owner} ids={exile} density="line" />
             {counts.command > 0 ? (
@@ -247,6 +249,7 @@ export const SeatPanel = memo(function SeatPanel({ seat, variant = 'panel' }: Se
           <CountChip zone="hand" count={counts.hand} density="line" />
           <CountChip zone="library" count={counts.library} density="line" />
           <RevealedChip owner={owner} player={player} density="line" />
+          <CompanionChip owner={owner} player={player} />
           {/* One damage chip is the figure alone; with several each keeps the name of its commander. */}
           <DamageChips
             chips={chips.damage}
