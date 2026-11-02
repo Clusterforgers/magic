@@ -1,4 +1,4 @@
-// Goal: the table is exactly the window at the six sizes of the design (1920x1080, 1440x900, 1366x768, 1280x720, 1024x768 and a 390x844 phone): in a real two-seat game, at the opening hands and at the first priority window, and on the development table at 2, 4, 6 and 12 seats with 40 permanents a seat, the page never scrolls either way, every region of the grid stays inside the window, and your hand, the primary pass button (or Keep), and your life are in view and not covered, no battlefield card in view lies under the prompt sheet or the turn banner, the divider after the commanders stays inside the hand dock; the game-over screen of a real game fits the window too; with the attachments scene (`equip=1`, also on the duel board) the table fits as well, every grant mark is written in whole words of 11 px or more, and a pod column draws its corner as pictures inside it or as chips with no card.
+// Goal: the table is exactly the window at the six sizes of the design (1920x1080, 1440x900, 1366x768, 1280x720, 1024x768 and a 390x844 phone): in a real two-seat game, at the opening hands and at the first priority window, and on the development table at 2, 4, 6 and 12 seats with 40 permanents a seat, the page never scrolls either way, every region of the grid stays inside the window, and your hand, the primary pass button (or Keep), and your life are in view and not covered, no battlefield card in view lies under the prompt sheet or the turn banner, the divider after the commanders stays inside the hand dock; the game-over screen of a real game fits the window too; with the attachments scene (`equip=1`, also on the duel board) the table fits as well, every grant mark is written in whole words of 11 px or more, and a pod column draws its corner as pictures inside it or as chips with no card; on the crowded scene (`crowd=1`) the stack's chips and its "+N more" button stay inside the strip with every item counted once, and the three bundles of the big attack carry whole labels in the window and off the strip.
 import { expect, test } from '@playwright/test'
 import type { Page } from '@playwright/test'
 import { playToTheEnd, Run } from './driver'
@@ -377,6 +377,75 @@ test.describe('the development table with 40 permanents a seat', () => {
       await atEverySize(page, ['hand', 'life', 'primary'], onTable(`the attachments scene on ${name}`))
     })
   }
+
+  test('folds a crowded stack into counted chips inside the strip and bundles a big attack under whole labels, at every size', async ({
+    page,
+  }) => {
+    // The chips on show, the "+N more" button and the bundle labels, against the strip and the window, read in one step.
+    const read = () =>
+      page.evaluate(() => {
+        const sheet = document.querySelector('[data-slot="shared-sheet"]')?.getBoundingClientRect()
+        const shown = [...document.querySelectorAll('[data-slot="stack-chips"] li:not([aria-hidden])')]
+        const more = document.querySelector('[data-slot="stack-more"]')
+        const outside = (box: DOMRect): boolean =>
+          sheet === undefined ||
+          box.left < sheet.left - 0.5 ||
+          box.right > sheet.right + 0.5 ||
+          box.top < sheet.top - 0.5 ||
+          box.bottom > sheet.bottom + 0.5
+        const labels = [...document.querySelectorAll('[data-bundle-label]')].map((label) => {
+          const box = label.getBoundingClientRect()
+          return {
+            text: label.textContent ?? '',
+            font: parseFloat(getComputedStyle(label).fontSize),
+            out: box.left < 0 || box.top < 0 || box.right > innerWidth || box.bottom > innerHeight,
+            onStrip:
+              sheet !== undefined &&
+              box.left < sheet.right &&
+              sheet.left < box.right &&
+              box.top < sheet.bottom &&
+              sheet.top < box.bottom,
+          }
+        })
+        return {
+          shown: shown.length,
+          counts: shown.flatMap((chip) => chip.querySelector('[data-slot="chip-count"]')?.textContent ?? []),
+          outside: [...shown, ...(more === null ? [] : [more])].filter((chip) =>
+            outside(chip.getBoundingClientRect()),
+          ).length,
+          top: document.querySelector('[data-slot="stack-chips"] li:not([aria-hidden]) [data-stack-chip]') !== null,
+          more: more?.textContent ?? null,
+          labels,
+        }
+      })
+    await page.goto(`${DEV_WEB_URL}/dev/table?crowd=1&prompt=priority`)
+    await page.locator('[data-bundle-label]').first().waitFor()
+    await atEverySize(page, ['hand', 'life', 'primary'], onTable('the crowded scene'))
+    for (const size of SIZES) {
+      await page.setViewportSize({ width: size.width, height: size.height })
+      await page.waitForTimeout(300)
+      const seen = await read()
+      const label = `${size.width}x${size.height}`
+      expect(seen.top, `${label}: the top chip is on show`).toBe(true)
+      expect(seen.outside, `${label}: chips outside the strip`).toBe(0)
+      // Sixteen items: the folded chips and the "+N more" button account for every one.
+      const hidden = Number(seen.more?.match(/\d+/)?.[0] ?? 0)
+      const folded = seen.counts.reduce((sum, count) => sum + Number(count.slice(1)) - 1, 0)
+      expect(seen.shown + folded + hidden, `${label}: every item counted once`).toBe(16)
+      if (size.width >= 1366) expect(seen.counts, `${label}: the runs fold`).toEqual(['×2', '×4', '×6'])
+      // Twelve attackers at three seats: one bundle each, its label whole, in the window and off the strip.
+      expect(seen.labels.map((one) => one.text).toSorted(), `${label}: bundle labels`).toEqual([
+        '4 attackers → Cy',
+        '4 attackers → Dee',
+        '4 attackers → you',
+      ])
+      for (const one of seen.labels) {
+        expect(one.font, `${label}: ${one.text} under 12 px`).toBeGreaterThanOrEqual(12)
+        expect(one.out, `${label}: ${one.text} leaves the window`).toBe(false)
+        expect(one.onStrip, `${label}: ${one.text} lies on the strip`).toBe(false)
+      }
+    }
+  })
 
   // The Commands panel open at every size (the rail's panel and the sheet included) with its tallest row, the look-at-the-top list, and with a picked card: the hand, your life and the pass button stay in reach.
   for (const panel of ['top', 'card'] as const) {

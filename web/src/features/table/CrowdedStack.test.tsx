@@ -1,11 +1,13 @@
-// Goal: on the crowded dev table (`?crowd=1`: a board of triggers and twelve attackers at four seats) the strip folds each run of one source's same ability into one counted chip, keeps only the chips that fit and gives the rest one "+N more" button that holds their arrows, and the Stack tab folds the same runs into a row with a count and a button that lists the others.
+// Goal: the crowded dev table (`?crowd=1`, read from the address into the dev game: a board of triggers and twelve attackers at four seats) holds what it says, and on it the strip folds each run of one source's same ability into one counted chip, keeps only the chips that fit and gives the rest one "+N more" button that holds their arrows, and the Stack tab folds the same runs into a row with a count and a button that lists the others.
 import { screen, within } from '@testing-library/react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { must } from '@/test-utils/batches'
 import { renderTable } from '@/test-utils/tableHarness'
 import { CROWD_ATTACKERS, withCrowd } from './dev/crowdScene'
+import { fixtureGame } from './dev/devGame'
 import { buildFixture } from './dev/fixture'
 import { StackChips } from './StackChips'
+import { parseDevSearch } from './devSearch'
 import { StackPanel } from './StackPanel'
 
 const crowd = () => withCrowd(buildFixture({ seats: 4 }))
@@ -18,6 +20,21 @@ afterEach(() => {
 })
 
 describe('the crowded scene', () => {
+  it.each<[unknown, true | undefined]>([
+    ['1', true],
+    [1, true],
+    [true, true],
+    ['0', undefined],
+    [undefined, undefined],
+  ])('reads crowd=%s as %s', (value, parsed) => {
+    expect(parseDevSearch({ crowd: value }).crowd).toBe(parsed)
+  })
+
+  it('reaches the dev table: its game holds the crowded stack', () => {
+    const view = must(fixtureGame({ seats: 4, crowd: true }).session.store.getState().view)
+    expect(view.stack.cards).toHaveLength(16)
+  })
+
   it('puts thirteen abilities on the three spells and has twelve attackers at the three other seats', () => {
     const { view } = crowd()
     const stack = view.stack.cards ?? []
@@ -79,6 +96,8 @@ describe('the Stack tab of a crowded stack', () => {
     const { user } = renderTable({ fixture: crowd(), ui: <StackPanel /> })
     const panel = screen.getByRole('region', { name: 'Stack' })
     expect(counts(panel)).toEqual(['×2', '×4', '×6'])
+    // An ability reads its text where a spell reads its type line.
+    expect(panel).toHaveTextContent('Whenever another creature enters, you gain 1 life. · controlled by Bo')
     expect(within(panel).queryByRole('list', { name: 'The same, in order' })).toBeNull()
     await user.click(within(panel).getByRole('button', { name: 'Show 5 more the same' }))
     const listed = within(panel).getByRole('list', { name: 'The same, in order' })

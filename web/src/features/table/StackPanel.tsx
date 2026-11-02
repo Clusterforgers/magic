@@ -111,7 +111,10 @@ const StackItem = memo(function StackItem({
         )}
       </span>
       <span className="text-xs text-muted-foreground">
-        {typeLine(object)} · cast by {controller}
+        {/* An ability has no type line; its text says what it does. */}
+        {object.kind === 'Ability'
+          ? `${object.rules_text ?? 'Ability'} · controlled by ${controller}`
+          : `${typeLine(object)} · cast by ${controller}`}
         {top ? ' · resolves first' : ''}
       </span>
       {top || aims === '' ? null : (

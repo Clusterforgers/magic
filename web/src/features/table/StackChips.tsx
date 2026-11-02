@@ -106,26 +106,32 @@ const Chip = memo(function Chip({ group, top, tabbable, hidden, aims, aria, empt
   )
 })
 
+/** How many children of `element` fit its width, from their boxes on screen. */
+function fitOf(element: HTMLElement): number {
+  const start = element.getBoundingClientRect().left
+  const rights = [...element.children].map((child) => child.getBoundingClientRect().right - start)
+  return chipsThatFit(rights, element.clientWidth)
+}
+
 /**
  * How many children of `list` fit its width, measured after every layout and resize; all of them where there is no
  * layout (a test).
  */
 function useFitCount(list: RefObject<HTMLOListElement | null>, items: number): number {
   const [fit, setFit] = useState(items)
+  // A chip changes width with its count and marks, so every render measures again; the same answer redraws nothing.
   useLayoutEffect(() => {
     const element = list.current
-    if (element === null) return
-    const measure = (): void => {
-      const start = element.getBoundingClientRect().left
-      const rights = [...element.children].map((child) => child.getBoundingClientRect().right - start)
-      setFit(chipsThatFit(rights, element.clientWidth))
-    }
-    measure()
-    if (typeof ResizeObserver === 'undefined') return
-    const observer = new ResizeObserver(measure)
+    if (element !== null) setFit(fitOf(element))
+  })
+  const shown = items > 0
+  useLayoutEffect(() => {
+    const element = list.current
+    if (!shown || element === null || typeof ResizeObserver === 'undefined') return
+    const observer = new ResizeObserver(() => setFit(fitOf(element)))
     observer.observe(element)
     return () => observer.disconnect()
-  }, [list, items])
+  }, [list, shown])
   return Math.min(fit, items)
 }
 
