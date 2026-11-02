@@ -119,7 +119,9 @@ export const paySourcesTable = (fixture: Fixture): Fixture => {
       toughness: null,
       abilities: [],
       permanent: { ...FRESH },
-      activated: [{ cost: source.cost, effect: source.effect, mana: true, ways: source.options(id).map(wayOf) }],
+      activated: [
+        { cost: source.cost, effect: source.effect, mana: true, ways: source.options(id).map(wayOf) },
+      ],
     }
   })
   const own = new Set(ownBattlefield(view).map((object) => object.id))
