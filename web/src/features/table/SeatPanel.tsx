@@ -7,7 +7,7 @@ import { usePlay } from '@/features/game/gameContext'
 import { cn } from '@/lib/utils'
 import type { PlayerId } from '@/protocol/generated'
 import { DamageChips, TaxChips, useCommanderChips } from './CommanderChips'
-import { cornerHeight, podIsTight } from './cornerFit'
+import { cornerHeight, podIsCramped, podIsTight } from './cornerFit'
 import { useEnchantChips } from './enchantChips'
 import { EnchantChips } from './EnchantChips'
 import { useDefender } from './combat/defender'
@@ -215,6 +215,9 @@ export const SeatPanel = memo(function SeatPanel({ seat, variant = 'panel' }: Se
   // A short column folds the hand and library chips into the name row and the other chips into the pool's row, so the
   // corner keeps the room for its pictures.
   const tight = podIsTight(room.height)
+  // A column too short for the least picture under even the tight blocks keeps only the name row and life above the
+  // corner; the pool, the untapped sources and the other chips lie under it, where the column scrolls to them.
+  const cramped = podIsCramped(room.height)
   // In the name row the chips drop their background, which is the room the name needs beside them.
   const handDensity = tight ? 'tile' : 'line'
   const handChips = (
@@ -264,19 +267,28 @@ export const SeatPanel = memo(function SeatPanel({ seat, variant = 'panel' }: Se
             ) : (
               name
             )}
-            {/* Room for the pool is kept under the name, so nothing moves when mana floats. */}
-            <div
-              data-slot="mana-slot"
-              className={cn('min-h-5', tight && 'flex flex-wrap items-center gap-1')}
-            >
-              {mana}
-              {tight ? extraChips : null}
-            </div>
-            <UntappedSources seat={seat} />
+            {cramped ? null : (
+              <>
+                {/* Room for the pool is kept under the name, so nothing moves when mana floats. */}
+                <div
+                  data-slot="mana-slot"
+                  className={cn('min-h-5', tight && 'flex flex-wrap items-center gap-1')}
+                >
+                  {mana}
+                  {tight ? extraChips : null}
+                </div>
+                <UntappedSources seat={seat} />
+              </>
+            )}
           </div>
           <div className="ml-auto flex shrink-0 items-center gap-1.5">
             <LifeForecast seat={seat} />
-            <Life seat={seat} life={player.life} as="p" className="text-life" />
+            <Life
+              seat={seat}
+              life={player.life}
+              as="p"
+              className={cramped ? 'text-3xl font-semibold tabular-nums' : 'text-life'}
+            />
           </div>
         </header>
         {words === '' ? null : <p className="sr-only">{words}</p>}
@@ -301,6 +313,13 @@ export const SeatPanel = memo(function SeatPanel({ seat, variant = 'panel' }: Se
         height={cornerHeight(room.height, aboveHeight)}
         card={room.card}
       />
+      {cramped ? (
+        <div data-slot="pod-more" className="flex flex-wrap items-center gap-1 empty:hidden">
+          {mana}
+          <UntappedSources seat={seat} />
+          {extraChips}
+        </div>
+      ) : null}
     </section>
   )
 })

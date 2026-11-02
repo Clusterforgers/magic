@@ -78,10 +78,19 @@ export function useDoorFaces(object: ObjectView | undefined): readonly string[] 
   return entry === 'loading' || entry === 'unavailable' ? undefined : entry.map((face) => face.name)
 }
 
-/** The names of the faces of a Room as far as they are known now, without asking for them. */
+/** A number that changes whenever a printed face arrives, so a reader of `knownDoorFaces` redraws. */
+export function usePrintedVersion(): number {
+  return useSyncExternalStore(subscribe, snapshot, snapshot)
+}
+
+/** The names of the faces of a Room as far as they are known now; asks for them once when not yet requested. */
 export function knownDoorFaces(object: ObjectView): readonly string[] | undefined {
   const id = object.identity?.oracle_id
-  const entry = id === undefined ? undefined : known.get(id)
+  let entry = id === undefined ? undefined : known.get(id)
+  if (id !== undefined && entry === undefined) {
+    ask(id)
+    entry = 'loading'
+  }
   return entry === undefined || entry === 'loading' || entry === 'unavailable'
     ? undefined
     : entry.map((face) => face.name)
