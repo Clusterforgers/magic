@@ -113,6 +113,7 @@ pub mod rng;
 pub mod rules;
 pub mod setup;
 pub mod sight;
+pub mod smart_stops;
 pub mod snapshot;
 pub mod spend;
 pub mod stack;

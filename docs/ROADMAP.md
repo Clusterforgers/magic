@@ -33,7 +33,7 @@ One item is one piece of about 15 minutes and one line: the outcome, the cards i
 - Card language and compiler: the DSL, the reader framework, the renderer with goldens, the corpus ratchet, templates for every ability shape and stored `card_rules` (`docs/cards-dsl.md`).
 - Model-assisted reading: `check-rules`, `propose` (a local OpenAI-style server), `promote` (`--draft` writes the 355 first read-tier drafts, which `compile` stores in `card_drafts`), the repair of mechanical slips, writers for the accepted wordings, `coverage --all`, the gap ledger and `export-pairs` (`docs/cards-dsl.md`).
 - Protocol and server: generated bindings with a drift test, the game actor, a WebSocket per seat, persistence and resume, accounts (the admin makes, resets and removes them), lobbies, open games, precons, concurrent keep and mulligan, seat presence, the snapshot log (`docs/protocol.md`, `docs/server.md`).
-- Game flow: auto-pass, response clocks, yields, stops, Full Control, the timer bank, the by-hand window, the answer to a one-option question, auto choices (trigger order, damage) and leak tests (`docs/arena-flow.md`).
+- Game flow: auto-pass, response clocks, yields, stops, Full Control, the timer bank, the by-hand window, the answer to a one-option question, auto choices (trigger order, damage), smart stops and leak tests (`docs/arena-flow.md`).
 - Commander: house rules, format rules, deck check, every partner pair kind end to end, companion in the engine, tax, commander damage and any number of seats (`docs/server.md`).
 - Manual play: the Commands panel, by-hand clauses with chips, manual actions at any time on any turn and fix marks (`docs/web.md`, `docs/protocol.md`).
 - Web table: lanes and card sizes, the seat corner, click combat, the mana strip, legible play (flights, spotlight, target arrows, marks, combat strikes), Equipment tucked at its host with its grants, hand reasons, fit at six sizes and a 12 px text floor (`docs/web.md`, `docs/ui-design.md`).
@@ -73,7 +73,6 @@ Items that touch the running game come first; the play-session findings (pf) lea
 
 The table and its prompts are live; the items below polish them.
 
-- [ ] (i2b) Arena flow P10: smart stops, a step where an object of the seat can answer becomes a window (`docs/arena-flow.md`)
 - [ ] (i2c) Arena flow P10: per-ability yield (`AutoYield`), a trigger or ability the seat yields to resolves unasked for the game (`docs/arena-flow.md`)
 - [ ] (i2d) Auto choices are saved with the account and in the browser and applied at each `Welcome`, as the end-turn choice is (`UserPrefs`)
 - [ ] (a2g) A token lookup that finds several equal records prefers the one with the most printings (`token_pictures` returns the printing count) instead of the smallest oracle id

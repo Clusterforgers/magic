@@ -630,13 +630,12 @@ fn mode_welcomes() -> [ServerMessage; 3] {
 }
 
 /// Every combination of the auto choices.
-fn auto_choices() -> [AutoChoices; 4] {
-    [(false, false), (true, false), (false, true), (true, true)].map(
-        |(order_triggers, assign_damage)| AutoChoices {
-            order_triggers,
-            assign_damage,
-        },
-    )
+fn auto_choices() -> [AutoChoices; 8] {
+    std::array::from_fn(|bits| AutoChoices {
+        order_triggers: bits & 1 != 0,
+        assign_damage: bits & 2 != 0,
+        smart_stops: bits & 4 != 0,
+    })
 }
 
 fn server_samples() -> Vec<ServerMessage> {
@@ -889,8 +888,8 @@ fn every_event_view_variant_round_trips() {
     json!({"type": "EndTurnByHand", "on": true})
 )]
 #[case(
-    ClientMessage::AutoChoices { choices: AutoChoices { order_triggers: false, assign_damage: true } },
-    json!({"type": "AutoChoices", "choices": {"order_triggers": false, "assign_damage": true}})
+    ClientMessage::AutoChoices { choices: AutoChoices { order_triggers: false, assign_damage: true, smart_stops: true } },
+    json!({"type": "AutoChoices", "choices": {"order_triggers": false, "assign_damage": true, "smart_stops": true}})
 )]
 #[case(
     ClientMessage::Join { protocol_version: 1, game: "g".into(), name: "n".into() },
@@ -920,12 +919,12 @@ fn client_wire_shape_is_flat_and_tagged(
     ServerMessage::Welcome {
         protocol_version: 1, game: "g".into(), player: PlayerId(2), seats: 4, auto_pass: true, yielding: None,
         stops: vec![], full_control: FullControlMode::Off, end_turn_by_hand: false,
-        auto_choices: AutoChoices { order_triggers: true, assign_damage: false },
+        auto_choices: AutoChoices { order_triggers: true, assign_damage: false, smart_stops: false },
     },
     json!({
         "type": "Welcome", "protocol_version": 1, "game": "g", "player": 2, "seats": 4, "auto_pass": true,
         "yielding": null, "stops": [], "full_control": "Off", "end_turn_by_hand": false,
-        "auto_choices": {"order_triggers": true, "assign_damage": false}
+        "auto_choices": {"order_triggers": true, "assign_damage": false, "smart_stops": false}
     })
 )]
 #[case(
@@ -958,7 +957,7 @@ fn client_wire_shape_is_flat_and_tagged(
             {"side": "Opponent", "step": "End", "keep": false},
         ],
         "full_control": "Held", "end_turn_by_hand": true,
-        "auto_choices": {"order_triggers": false, "assign_damage": false}
+        "auto_choices": {"order_triggers": false, "assign_damage": false, "smart_stops": false}
     })
 )]
 #[case(ServerMessage::Stops { stops: vec![] }, json!({"type": "Stops", "stops": []}))]
@@ -981,8 +980,8 @@ fn client_wire_shape_is_flat_and_tagged(
     json!({"type": "EndTurnByHand", "on": false})
 )]
 #[case(
-    ServerMessage::AutoChoices { choices: AutoChoices { order_triggers: true, assign_damage: true } },
-    json!({"type": "AutoChoices", "choices": {"order_triggers": true, "assign_damage": true}})
+    ServerMessage::AutoChoices { choices: AutoChoices { order_triggers: true, assign_damage: true, smart_stops: false } },
+    json!({"type": "AutoChoices", "choices": {"order_triggers": true, "assign_damage": true, "smart_stops": false}})
 )]
 #[case(
     ServerMessage::Yielding { until: Some(YieldUntil::EndOfTurn) },
@@ -1403,6 +1402,22 @@ fn stops_sort_own_side_first_and_each_side_in_turn_order_whether_they_last_or_no
 #[test]
 fn full_control_starts_off() {
     assert_eq!(FullControlMode::default(), FullControlMode::Off);
+}
+
+#[rstest]
+#[case::without_smart_stops(r#"{"order_triggers": true, "assign_damage": false}"#, false)]
+#[case::with_smart_stops(
+    r#"{"order_triggers": true, "assign_damage": false, "smart_stops": true}"#,
+    true
+)]
+fn smart_stops_start_off_and_a_client_that_leaves_them_out_keeps_them_off(
+    #[case] text: &str,
+    #[case] smart_stops: bool,
+) {
+    assert!(!AutoChoices::default().smart_stops);
+    let choices: AutoChoices = serde_json::from_str(text).unwrap();
+    assert_eq!(choices.smart_stops, smart_stops);
+    assert!(choices.order_triggers);
 }
 
 /// What a cost took, with every field set.

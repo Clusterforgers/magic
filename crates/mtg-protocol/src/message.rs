@@ -125,15 +125,19 @@ pub enum FullControlMode {
     Held,
 }
 
-/// The decisions a seat lets the server answer for it with the plain answer (see [`ClientMessage::AutoChoices`]).
+/// The decisions a seat lets the server answer for it with the plain answer, and its smart stops (see
+/// [`ClientMessage::AutoChoices`]).
 ///
-/// Full Control overrides both: a seat in Full Control is asked every question.
+/// Full Control overrides them: a seat in Full Control is asked every question at every step.
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Hash, Serialize, Deserialize, TS)]
 pub struct AutoChoices {
     /// Its triggers go on the stack in the order they triggered, by timestamp.
     pub order_triggers: bool,
     /// Combat damage goes lethal to each blocker in order, the rest to the last one or past them with trample.
     pub assign_damage: bool,
+    /// A step where a permanent of the seat has an ability its timing lets it use becomes a window for it.
+    #[serde(default)]
+    pub smart_stops: bool,
 }
 
 /// A message from a client to the server.

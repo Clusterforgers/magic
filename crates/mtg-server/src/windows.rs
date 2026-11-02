@@ -19,7 +19,10 @@
 //!    pace does not show that it holds nothing, at every default window but one: the seat's own main phase with an
 //!    empty stack, where what a seat holds shows anyway (a land or a spell is played in plain sight) and it is passed
 //!    for at once.
-//! 5. Everywhere else (upkeep, draw, beginning of combat, the damage steps, end of combat, an end step, another
+//! 5. Smart stops ([`smart`]), when the seat turned them on and does not yield: a step that is no default window
+//!    where a permanent of the seat has an ability its timing lets it use is a window. The seat is asked when it can
+//!    use such an ability and passed for after a dwell otherwise.
+//! 6. Everywhere else (upkeep, draw, beginning of combat, the damage steps, end of combat, an end step, another
 //!    seat's main phase with an empty stack) the seat is passed for at once, whatever it holds, and so is a seat that
 //!    yields: a yield is the seat's own choice to hurry.
 
@@ -156,7 +159,9 @@ pub(crate) fn verdict(
     let yielding = mode == FullControlMode::Off && yields.passes(seat, state, stop);
     // Ending the turn by hand holds the seat as a stop does, but never ends a yield: one it asked for ends the turn.
     let hold = window.holds_turn_end(stops.end_turn_by_hand(seat));
-    judge(window, options.can_act, stop || hold, mode, yielding)
+    let judged = judge(window, options.can_act, stop || hold, mode, yielding);
+    let smart = stops.auto_choices(seat).smart_stops && !yielding;
+    smart::widen(judged, window, smart, state, seat, options)
 }
 
 /// Whether the server passes for the holder of `decision` instead of asking it, at once or after a dwell.
@@ -169,6 +174,8 @@ pub(crate) fn passes_for(
 ) -> bool {
     verdict(decision, stops, yields, state) != Verdict::Ask
 }
+
+mod smart;
 
 #[cfg(test)]
 mod boards;

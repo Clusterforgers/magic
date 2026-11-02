@@ -384,12 +384,25 @@ function isDecision(value: unknown): value is Decision {
 // A string is the name of the offending field, so the caller can say what was wrong.
 type Built = ServerMessage | string
 
-/** The settings of a server that predates them: every decision is asked. */
-const NO_AUTO_CHOICES: AutoChoices = { order_triggers: false, assign_damage: false }
+/** The settings of a server that predates them: every decision is asked and no smart stop is made. */
+const NO_AUTO_CHOICES: AutoChoices = { order_triggers: false, assign_damage: false, smart_stops: false }
 
-/** Whether `value` is an `AutoChoices`: two flags. */
-function isAutoChoices(value: unknown): value is AutoChoices {
-  return isRecord(value) && isFlag(value.order_triggers) && isFlag(value.assign_damage)
+/** An `AutoChoices` as an older server sends it, without `smart_stops`. */
+type SentAutoChoices = Omit<AutoChoices, 'smart_stops'> & { smart_stops?: boolean }
+
+/** Whether `value` is an `AutoChoices`: two flags, and `smart_stops`, which an older server leaves out. */
+function isAutoChoices(value: unknown): value is SentAutoChoices {
+  return (
+    isRecord(value) &&
+    isFlag(value.order_triggers) &&
+    isFlag(value.assign_damage) &&
+    (value.smart_stops === undefined || isFlag(value.smart_stops))
+  )
+}
+
+/** The choices with `smart_stops` read as off where an older server leaves it out. */
+function autoChoices(value: SentAutoChoices): AutoChoices {
+  return { ...value, smart_stops: value.smart_stops ?? false }
 }
 
 function build(type: ServerMessage['type'], v: Record<string, unknown>): Built {
@@ -420,7 +433,7 @@ function build(type: ServerMessage['type'], v: Record<string, unknown>): Built {
         stops: v.stops,
         full_control: v.full_control,
         end_turn_by_hand: v.end_turn_by_hand ?? false,
-        auto_choices: v.auto_choices ?? NO_AUTO_CHOICES,
+        auto_choices: v.auto_choices === undefined ? NO_AUTO_CHOICES : autoChoices(v.auto_choices),
       }
     case 'Lobby':
       if (!isListOf(v.seats, isLobbySeat)) {
@@ -511,7 +524,7 @@ function build(type: ServerMessage['type'], v: Record<string, unknown>): Built {
     case 'AutoChoices':
       if (!isAutoChoices(v.choices))
         return '"choices" must hold order_triggers and assign_damage, each true or false'
-      return { type, choices: v.choices }
+      return { type, choices: autoChoices(v.choices) }
     case 'Bank':
       if (!isCount(v.seat)) return '"seat" must be a whole number'
       if (!isCount(v.bank)) return '"bank" must be a whole number'

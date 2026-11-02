@@ -86,7 +86,10 @@ const samples: Record<string, Record<string, unknown>> = {
     ],
   },
   FullControl: { type: 'FullControl', mode: 'NextWindow' },
-  AutoChoices: { type: 'AutoChoices', choices: { order_triggers: true, assign_damage: false } },
+  AutoChoices: {
+    type: 'AutoChoices',
+    choices: { order_triggers: true, assign_damage: false, smart_stops: false },
+  },
   Bank: { type: 'Bank', seat: 1, bank: 2 },
   Presence: { type: 'Presence', seat: 1, connected: false },
 }
@@ -170,6 +173,20 @@ describe('parseFrame checks the fields of each message', () => {
     expect(bad).toMatchObject({ ok: false, error: { kind: 'bad_shape' } })
   })
 
+  it.each([
+    ['Welcome', ['auto_choices']],
+    ['AutoChoices', ['choices']],
+  ] as const)(
+    'reads a %s without "smart_stops" (an older server) as off, and refuses one that is not a flag',
+    (type, at) => {
+      const older = { order_triggers: true, assign_damage: false }
+      const frame = parseFrame(wire(put(samples[type], [...at], older)))
+      expect(frame.ok && frame.message).toMatchObject({ [at[0]]: { ...older, smart_stops: false } })
+      const bad = parseFrame(wire(put(samples[type], [...at], { ...older, smart_stops: 'on' })))
+      expect(bad).toMatchObject({ ok: false, error: { kind: 'bad_shape' } })
+    },
+  )
+
   it.each([[{ order_triggers: 'on', assign_damage: false }], [{ order_triggers: true }], [null]])(
     'refuses a Welcome whose "auto_choices" is %o',
     (choices) => {
@@ -184,7 +201,7 @@ describe('parseFrame checks the fields of each message', () => {
     const frame = parseFrame(wire(put(samples.Welcome, ['auto_choices'], undefined)))
     expect(frame.ok && frame.message).toMatchObject({
       type: 'Welcome',
-      auto_choices: { order_triggers: false, assign_damage: false },
+      auto_choices: { order_triggers: false, assign_damage: false, smart_stops: false },
     })
   })
 

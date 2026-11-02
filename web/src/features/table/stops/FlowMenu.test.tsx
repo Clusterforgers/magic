@@ -37,20 +37,20 @@ describe('end my turn by hand', () => {
 })
 
 describe('auto choices', () => {
-  const none: AutoChoices = { order_triggers: false, assign_damage: false }
+  const none: AutoChoices = { order_triggers: false, assign_damage: false, smart_stops: false }
+  const all: AutoChoices = { order_triggers: true, assign_damage: true, smart_stops: true }
+  const flag = {
+    'Order my triggers by timestamp': 'order_triggers',
+    'Assign combat damage for me': 'assign_damage',
+    'Stop where my permanents can act': 'smart_stops',
+  } as const
   it.each([
     ['Order my triggers by timestamp', none, { ...none, order_triggers: true }],
     ['Assign combat damage for me', none, { ...none, assign_damage: true }],
-    [
-      'Order my triggers by timestamp',
-      { order_triggers: true, assign_damage: true },
-      { order_triggers: false, assign_damage: true },
-    ],
-    [
-      'Assign combat damage for me',
-      { order_triggers: true, assign_damage: true },
-      { order_triggers: true, assign_damage: false },
-    ],
+    ['Stop where my permanents can act', none, { ...none, smart_stops: true }],
+    ['Order my triggers by timestamp', all, { ...all, order_triggers: false }],
+    ['Assign combat damage for me', all, { ...all, assign_damage: false }],
+    ['Stop where my permanents can act', all, { ...all, smart_stops: false }],
   ] as const)('%s from %o asks for %o', async (name, held, asked) => {
     const setAutoChoices = vi.fn((_choices: AutoChoices) => true)
     const { user } = renderTable({
@@ -59,7 +59,7 @@ describe('auto choices', () => {
     })
     await user.click(trigger())
     const item = await screen.findByRole('menuitemcheckbox', { name })
-    const on = name.startsWith('Order') ? held.order_triggers : held.assign_damage
+    const on = held[flag[name]]
     expect(item).toHaveAttribute('aria-checked', String(on))
     await user.click(item)
     expect(setAutoChoices).toHaveBeenCalledExactlyOnceWith(asked)
