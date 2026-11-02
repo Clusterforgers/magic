@@ -161,3 +161,31 @@ fn a_sacrificed_token_is_not_taken(#[values(2, 3, 4)] seats: usize) -> Result<()
     assert!(driver.id_of("Soldier").is_err(), "the token is gone");
     Ok(())
 }
+
+/// An enchantment for `{B}` that returns any creature put into a graveyard from the battlefield to its owner's hand.
+fn returner() -> Arc<CardDefinition> {
+    let rules = r#"{"Triggered":{"when":{"ZoneChange":{"what":[{"Type":"Creature"}],"from":"Battlefield","to":"Graveyard"}},"effects":[{"Move":{"what":"Triggering","to":"Hand"}}]}}"#;
+    Arc::new(
+        CardDefinition::new("Returner")
+            .with_type(CardType::Enchantment)
+            .with_mana_cost(cost(0, &[Color::Black]))
+            .with_rules(serde_json::from_str::<Ability>(rules).unwrap()),
+    )
+}
+
+#[rstest]
+fn a_leaves_the_battlefield_returner_gets_the_card_back(
+    #[values(2, 3, 4)] seats: usize,
+) -> Result<(), ScriptError> {
+    let table = Scenario::new(seats)
+        .at(1, 0, Step::Main1)
+        .hand(0, [edict("Edict")])
+        .battlefield(0, [ready(returner()), ready(swamp()), ready(swamp())])
+        .battlefield(1, [ready(free_creature("Ogre", 3, 3))]);
+    let mut driver = Driver::from_scenario(table)?;
+    driver.cast_at("Edict", &[driver.target_player(1)])?;
+    settle(&mut driver)?;
+    assert_eq!(driver.state().zone(Zone::Hand(pid(1))).len(), 1);
+    assert_eq!(permanents(&driver, 1), 0);
+    Ok(())
+}
