@@ -187,7 +187,11 @@ export const SeatPanel = memo(function SeatPanel({ seat, variant = 'panel' }: Se
               />
             </div>
           </div>
-          <div role="group" aria-label={`${owner}'s zones`} className="flex shrink-0 items-center gap-1">
+          <div
+            role="group"
+            aria-label={`${owner}'s zones`}
+            className="flex max-w-full min-w-0 flex-wrap items-center gap-1"
+          >
             <CountChip zone="hand" count={counts.hand} density="line" />
             <CountChip zone="library" count={counts.library} density="line" />
             <RevealedChip owner={owner} player={player} density="line" />

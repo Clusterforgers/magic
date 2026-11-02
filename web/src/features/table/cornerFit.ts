@@ -86,7 +86,7 @@ export function cornerHeight(column: number | null, above: number | null): numbe
 }
 
 /** A pod column shorter than this (px) cannot hold the pod's full blocks and the least picture: the pod folds its chips into the name and pool rows. */
-export const POD_TIGHT_PX = 180
+export const POD_TIGHT_PX = 220
 
 /** Whether a column of `height` px is tight; one that is not measured is not. */
 export function podIsTight(height: number | null): boolean {

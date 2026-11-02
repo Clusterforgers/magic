@@ -103,6 +103,13 @@ describe('permanent state is drawn as words, not colour alone', () => {
     expect(button()).toHaveAccessibleName(expect.stringContaining('tapped'))
   })
 
+  it('shows the Tapped chip of a compact card as an icon whose word is for screen readers only', () => {
+    const { container } = renderCard({ object: permanent({ tapped: true }), props: { size: 'compact' } })
+    const chip = container.querySelector('[data-slot="card-status"]')
+    expect(chip?.querySelector('svg')).not.toBeNull()
+    expect(within(face(container)).getByText('Tapped')).toHaveClass('sr-only')
+  })
+
   it('draws a phased-out card ghosted and says "Phased out"', () => {
     const { container } = renderCard({ object: permanent({ phased_out: true }) })
     expect(button()).toHaveAttribute('data-phased-out', 'true')
