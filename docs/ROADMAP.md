@@ -61,7 +61,6 @@ Items that touch the running game come first; the play-session findings (pf) lea
 - [ ] (w2j) An attach line of a rebuilt log has no old host: `Snapshot` could carry the host each attach event of its window replaced (its name in `names`), so the line reads "moves from A to B" as it did live (`play/store.ts` `mergeHistory`, `hosts.ts`)
 - [ ] (fx1b) A cap on the fix marks of one account and a rate limit on the fix-mark routes
 - [ ] (f1b) Playtest polish of the table, builder and lobby against the UI wishes (fits the viewport, clear turn indicators, open-games list, card images at every size), with `/dev/*` screenshots at six sizes in both themes, so the first real games can start
-- [ ] (k3e) A legal special action the web cannot take (suspend, foretell, turn a face-down permanent up, cast a prepared copy) leaves its seat asked at every default window with nothing marked: mark the card and offer the action in `abilityPlays`
 - [ ] (pl2l) `join.spec.ts` "a guest follows an invite link" timed out once on the Join button in a full run and never in 50 solo runs: a recurrence needs a Playwright trace (`retain-on-failure`) to name the cause
 
 ## M4 Commander
