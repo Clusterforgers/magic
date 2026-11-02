@@ -144,7 +144,7 @@ export function payText({
   if (chosen === 0) {
     // The game offers an automatic payment whenever the cost can be paid at all, unless that takes the last life.
     if (!canAdd || (!auto && !may)) {
-      return `You cannot pay ${costWords(cost)} for ${spell} with the mana you have.${cancel ? ' Cancel to go back.' : ''}`
+      return `You cannot pay ${costWords(cost)} for ${spell} with the mana you have.${cancel ? ' Undo to go back.' : ''}`
     }
     const automatic = auto ? ', or pay automatically' : ''
     return `${lead}Pay ${costWords(cost)} for ${spell}. Choose a land or other mana source to use its mana${lifeChoice}${automatic}.`

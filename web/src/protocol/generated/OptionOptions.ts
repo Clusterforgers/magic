@@ -17,4 +17,8 @@ options: Array<ChoiceOption>,
 /**
  * What is chosen, in the words of the card ("Choose a color."); empty when the engine gave none.
  */
-text?: string, };
+text?: string, 
+/**
+ * Whether the cast or activation being announced may still be backed out of with `Answer::Undo`.
+ */
+can_cancel?: boolean, };

@@ -196,9 +196,10 @@ pub(crate) fn is_priority(decision: &Decision) -> bool {
 
 /// What the table answers for a seat whose clock ran out: a pass, only the blockers or attackers a rule requires, no
 /// target (a spell is taken back and a triggered ability removed, as the rules do when a target cannot be chosen), the
-/// triggers in the order they triggered, No to a question, the first option, for modes the cast taken back when the
-/// options allow it and the first mode otherwise, the same for a number, the optional costs, a division and a payment
-/// (the lowest number, no cost, an even division and the engine's own payment otherwise), the first cards of the list
+/// triggers in the order they triggered, No to a question, for an option and for modes the cast taken back when the
+/// options allow it and the first option or mode otherwise, the same for a number, the optional costs, a division and
+/// a payment (the lowest number, no cost, an even division and the engine's own payment otherwise), the first cards of
+/// the list
 /// for a choice of cards, of the hand for a discard or a bottoming, the order given for an order of cards, keeping the
 /// hand and lethal damage to each blocker in turn.
 ///
@@ -224,7 +225,8 @@ pub(crate) fn fallback(decision: &Decision) -> Option<Answer> {
         // The first effect on offer, which the rules let the player choose; the effects that are left apply after it.
         DecisionKind::ChooseReplacement(options) => (!options.candidates.is_empty())
             .then_some(Answer::ChooseReplacement(ReplacementChoice(0))),
-        // A list with nothing in it has no answer to give; the engine does not ask one.
+        // A cast is taken back when the options allow it; a list with nothing in it has no answer to give.
+        DecisionKind::ChooseOption(options) if options.can_cancel => Some(Answer::Undo),
         DecisionKind::ChooseOption(options) => {
             (!options.options.is_empty()).then_some(Answer::ChooseOption(OptionChoice(0)))
         }
@@ -719,8 +721,9 @@ mod tests {
         })
     }
 
-    fn options(count: usize) -> DecisionKind {
+    fn options(count: usize, can_cancel: bool) -> DecisionKind {
         DecisionKind::ChooseOption(OptionOptions {
+            can_cancel,
             source: ObjectId(1),
             options: (0..count)
                 .map(|n| ChoiceOption::Label(format!("Option {n}")))
@@ -863,7 +866,7 @@ mod tests {
     #[case::the_active_player_ordering_triggers(ACTIVE, order(2), None)]
     #[case::answering_a_question(OTHER, question(), Some(10))]
     #[case::answering_a_payment_that_cannot_be_made(OTHER, unaffordable(), Some(10))]
-    #[case::choosing_an_option(OTHER, options(3), Some(10))]
+    #[case::choosing_an_option(OTHER, options(3, false), Some(10))]
     #[case::choosing_the_modes_of_a_spell(OTHER, modes(3, 1, 1, false, true), Some(10))]
     #[case::choosing_the_modes_of_a_trigger(OTHER, modes(3, 1, 1, false, false), Some(10))]
     #[case::choosing_x(OTHER, number(0, Some(3), true), Some(10))]
@@ -875,7 +878,7 @@ mod tests {
     #[case::the_active_player_dividing_an_amount(ACTIVE, division(3, 2, true), None)]
     #[case::the_active_player_answering_a_question(ACTIVE, question(), None)]
     #[case::the_active_player_answering_a_payment_that_cannot_be_made(ACTIVE, unaffordable(), None)]
-    #[case::the_active_player_choosing_an_option(ACTIVE, options(3), None)]
+    #[case::the_active_player_choosing_an_option(ACTIVE, options(3, false), None)]
     #[case::the_active_player_choosing_modes(ACTIVE, modes(3, 1, 1, false, true), None)]
     #[case::choosing_a_card(OTHER, cards(3, 1, 1), Some(10))]
     #[case::choosing_up_to_some_cards(OTHER, cards(5, 0, 3), Some(10))]
@@ -984,7 +987,7 @@ mod tests {
             question(),
             unaffordable(),
             replacements(2),
-            options(2),
+            options(2, false),
             modes(2, 1, 1, false, true),
             number(0, Some(1), true),
             costs(1, true),
@@ -1040,9 +1043,13 @@ mod tests {
         Some(Answer::ChooseReplacement(ReplacementChoice(0)))
     )]
     #[case::no_replacement_effect_to_choose(replacements(0), None)]
-    #[case::the_first_of_the_options(options(4), Some(Answer::ChooseOption(OptionChoice(0))))]
-    #[case::the_only_option(options(1), Some(Answer::ChooseOption(OptionChoice(0))))]
-    #[case::no_option_to_choose(options(0), None)]
+    #[case::the_first_of_the_options(
+        options(4, false),
+        Some(Answer::ChooseOption(OptionChoice(0)))
+    )]
+    #[case::a_way_to_cast_is_taken_back(options(2, true), Some(Answer::Undo))]
+    #[case::the_only_option(options(1, false), Some(Answer::ChooseOption(OptionChoice(0))))]
+    #[case::no_option_to_choose(options(0, false), None)]
     #[case::a_spell_is_taken_back_instead_of_choosing_modes(
         modes(3, 1, 1, false, true),
         Some(Answer::ChooseMode(ModeChoice::Cancel))
@@ -1162,8 +1169,8 @@ mod tests {
             question(),
             unaffordable(),
             replacements(2),
-            options(1),
-            options(11),
+            options(1, false),
+            options(11, false),
             modes(1, 1, 1, false, true),
             modes(5, 2, 3, true, false),
             number(0, None, false),
@@ -1379,7 +1386,7 @@ mod tests {
             (order(2), Class::Response),
             (replacements(2), Class::Response),
             (question(), Class::Response),
-            (options(3), Class::Response),
+            (options(3, false), Class::Response),
             (modes(3, 1, 1, false, true), Class::Response),
             (number(0, Some(3), true), Class::Response),
             (division(3, 2, true), Class::Response),

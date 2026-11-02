@@ -196,7 +196,7 @@ export function PaymentSummary({
     const chips = root.current?.querySelectorAll<HTMLElement>('[data-slot="pay-chip"]') ?? []
     // With nothing left to remove, the keyboard goes to the first control that adds, else to the actions.
     const fallback = root.current?.parentElement?.querySelector<HTMLElement>(
-      '[data-slot="pay-pool"], [data-slot="pay-auto"], [data-slot="pay-rest"], [data-slot="pay-cancel"]',
+      '[data-slot="pay-pool"], [data-slot="pay-auto"], [data-slot="pay-rest"], [data-slot="undo"]',
     )
     ;(chips[Math.min(at, chips.length - 1)] ?? fallback)?.focus()
   }, [spends])

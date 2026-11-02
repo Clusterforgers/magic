@@ -1,4 +1,4 @@
-/** The other questions of a spell the dev table can show: `?prompt=divide`, `divide-three`, `costs`, `costs-gift` and `unknown-kind`. */
+/** The other questions of a spell the dev table can show: `?prompt=divide`, `divide-three`, `costs`, `costs-gift`, `x`, `way`, `sacrifice-cost` and `unknown-kind`. */
 import type { PendingDecision } from '@/play/store'
 import type { DecisionKind, ObjectId, OptionalCost, Target } from '@/protocol/generated'
 import { SEAT_BASE } from '../prompt/costsText'
@@ -80,6 +80,44 @@ const costsGift: DevPrompt = (fixture) => {
   })
 }
 
+/** The viewer's spell asks for its X, up to 5, and can be taken back. */
+const x: DevPrompt = (fixture) =>
+  decision(fixture, {
+    ChooseNumber: {
+      source: ownSpell(fixture.view)?.id ?? 0,
+      min: 0,
+      max: 5,
+      text: 'Choose a value for X.',
+      can_cancel: true,
+    },
+  })
+
+/** The viewer's spell asks which of two ways to cast it, and can be taken back. */
+const way: DevPrompt = (fixture) =>
+  decision(fixture, {
+    ChooseOption: {
+      source: ownSpell(fixture.view)?.id ?? 0,
+      options: [{ Label: 'Mana cost {1}{R}' }, { Label: 'Overload {4}{R}{R}' }],
+      text: 'Choose how to cast it.',
+      can_cancel: true,
+    },
+  })
+
+/** An ability of the viewer's first creature asks for a creature to sacrifice as its cost, and can be taken back. */
+const sacrificeCost: DevPrompt = (fixture) => {
+  const own = creaturesOf(fixture.view, fixture.view.viewer)
+  return decision(fixture, {
+    ChooseCards: {
+      source: own[0]?.id ?? 0,
+      from: own.slice(0, 3).map((creature) => creature.id),
+      min: 1,
+      max: 1,
+      text: 'Sacrifice a creature.',
+      can_cancel: true,
+    },
+  })
+}
+
 /** A decision of a kind this client does not know, as a newer server could send: the generic prompt answers it. */
 const unknownKind: DevPrompt = (fixture) =>
   decision(fixture, { Frobnicate: { source: ownSpell(fixture.view)?.id ?? 0 } } as unknown as DecisionKind)
@@ -90,5 +128,8 @@ export const ANNOUNCE_PROMPTS: Record<string, DevPrompt> = {
   'divide-three': divideThree,
   costs,
   'costs-gift': costsGift,
+  x,
+  way,
+  'sacrifice-cost': sacrificeCost,
   'unknown-kind': unknownKind,
 }

@@ -76,6 +76,21 @@ pub enum DecisionKind {
 }
 
 impl DecisionKind {
+    /// Whether this question of an announcement may be answered with `Answer::Undo`.
+    pub const fn can_undo(&self) -> bool {
+        match self {
+            DecisionKind::PayMana(options) => options.can_cancel,
+            DecisionKind::ChooseTargets(options) => options.can_cancel,
+            DecisionKind::ChooseMode(options) => options.can_cancel,
+            DecisionKind::ChooseNumber(options) => options.can_cancel,
+            DecisionKind::DivideAmount(options) => options.can_cancel,
+            DecisionKind::ChooseCards(options) => options.can_cancel,
+            DecisionKind::ChooseOption(options) => options.can_cancel,
+            DecisionKind::ChooseCosts(options) => options.can_cancel,
+            _ => false,
+        }
+    }
+
     /// Short name used in error messages.
     pub const fn name(&self) -> &'static str {
         match self {
@@ -695,6 +710,9 @@ pub enum Answer {
     OrderTriggers(TriggersChoice),
     /// The replacement effect applied first.
     ChooseReplacement(ReplacementChoice),
+    /// Back out of the spell or ability being announced at a step that allows it (`DecisionKind::can_undo`): nothing
+    /// is paid or moved until the payment, so the card stays where it was and no mana is spent (CR 601.2, 727.1).
+    Undo,
 }
 
 impl Answer {
@@ -721,6 +739,7 @@ impl Answer {
             Answer::ChooseCosts(_) => "choose-costs",
             Answer::OrderTriggers(_) => "order-triggers",
             Answer::ChooseReplacement(_) => "choose-replacement",
+            Answer::Undo => "undo",
         }
     }
 }

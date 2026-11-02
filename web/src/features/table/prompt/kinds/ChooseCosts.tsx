@@ -19,6 +19,7 @@ import { KeyHint } from '../KeyHint'
 import { usePrompt } from '../PromptContext'
 import { PromptLayout } from '../PromptLayout'
 import type { PromptComponent } from '../types'
+import { UndoButton } from '../UndoButton'
 import { useObjects } from '../useCombatNames'
 import { useDefaultFocus, usePromptKeys } from '../usePromptKeys'
 
@@ -47,7 +48,7 @@ function CostLabel({ label }: { label: string }) {
  * toggle that shows the cost as the card prints it and a check when it is taken. The line under them adds up what the
  * choice costs extra, and Confirm costs sends the chosen set, none included. The engine accepts one gift: a second is
  * refused with the reason in words until the first is taken back. The number keys toggle the first ten. A cast can be
- * taken back with Cancel. Focus starts on Confirm, so a press made without looking pays nothing extra, the answer the
+ * taken back with Undo or Escape. Focus starts on Confirm, so a press made without looking pays nothing extra, the answer the
  * response clock gives where the cast cannot be taken back.
  */
 export const ChooseCostsPrompt: PromptComponent<'ChooseCosts'> = ({ options }) => {
@@ -81,7 +82,6 @@ export const ChooseCostsPrompt: PromptComponent<'ChooseCosts'> = ({ options }) =
 
   const extra = extraCost(optional.filter((cost) => chosen.includes(cost.index)).map((cost) => cost.label))
   const none = extra.mana.length === 0 && extra.others.length === 0
-  const cancelWords = source?.zone === 'Battlefield' ? 'Cancel the ability' : 'Cancel the spell'
 
   return (
     <PromptLayout
@@ -101,9 +101,7 @@ export const ChooseCostsPrompt: PromptComponent<'ChooseCosts'> = ({ options }) =
         Confirm costs
       </Button>
       {options.can_cancel === true ? (
-        <Button variant="outline" className="h-10 px-4" onClick={() => answer({ ChooseCosts: 'Cancel' })}>
-          {cancelWords}
-        </Button>
+        <UndoButton zone={source?.zone} onUndo={() => void answer({ ChooseCosts: 'Cancel' })} />
       ) : null}
       <p data-slot="costs-total" className="flex items-center gap-1.5 text-sm">
         {none ? (

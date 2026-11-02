@@ -22,6 +22,7 @@ import { useOwnCardIds } from '../ownCards'
 import { usePrompt } from '../PromptContext'
 import { PromptLayout } from '../PromptLayout'
 import type { PromptComponent } from '../types'
+import { UndoButton } from '../UndoButton'
 import { useObjects } from '../useCombatNames'
 import { useDefaultFocus } from '../usePromptKeys'
 import { ScryCards } from './ScryCards'
@@ -34,7 +35,8 @@ const NONE: readonly ObjectId[] = []
  * cards of the table that are on offer are marked the way targets are. With room for one a press on another card
  * changes the choice, with room for several a full choice closes the rest, and Confirm waits until the number is
  * legal. A long list (a search) gets a filter box. The choice goes in the order it was made. The server's answer at
- * the deadline is the first `min` cards of the list, so focus starts on the first card.
+ * the deadline is the first `min` cards of the list, so focus starts on the first card. Cards picked for the cost of
+ * a spell or ability being announced can be backed out of with Undo or Escape, which pays nothing.
  */
 const PickCards: PromptComponent<'ChooseCards'> = ({ options }) => {
   const { answer, selection } = usePrompt()
@@ -104,6 +106,9 @@ const PickCards: PromptComponent<'ChooseCards'> = ({ options }) => {
       >
         Confirm
       </Button>
+      {options.can_cancel === true ? (
+        <UndoButton zone={source?.zone} className="h-9 px-4" onUndo={() => void answer('Undo')} />
+      ) : null}
       <p
         data-slot="cards-count"
         aria-hidden="true"

@@ -115,7 +115,7 @@ describe('a payment decision from the server', () => {
   it('offers no Cancel when the decision does not allow it', () => {
     const { send, container } = mount()
     send(decision(31, pay('{2}', { can_cancel: false })))
-    expect(container.querySelector('[data-slot="pay-cancel"]')).toBeNull()
+    expect(container.querySelector('[data-slot="undo"]')).toBeNull()
     expect(screen.getByRole('button', { name: 'Pay automatically' })).toBeInTheDocument()
   })
 

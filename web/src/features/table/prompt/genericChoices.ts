@@ -26,7 +26,7 @@ export interface GenericWords {
   object(id: ObjectId): string
   seat(seat: PlayerId): string
   viewer: PlayerId | null
-  /** "Cancel the spell" or "Cancel the ability", by what asks. */
+  /** "Undo the spell" or "Undo the ability", by what asks (`undoWords`). */
   cancel: string
 }
 
@@ -208,7 +208,7 @@ export function genericChoices(kind: DecisionKind, words: GenericWords): Generic
         ...(!single && first.length > 0
           ? [pick('first-cards', `Choose the first ${cards(first.length)}`, { ChooseCards: first })]
           : []),
-        ...(cancel === true && max > min ? [back(words, { ChooseCards: [] })] : []),
+        ...(cancel === true ? [back(words, 'Undo')] : []),
       ],
       unlisted: offer.unlisted,
     }
@@ -226,9 +226,11 @@ export function genericChoices(kind: DecisionKind, words: GenericWords): Generic
     )
   }
   if ('ChooseOption' in kind) {
-    return each(kind.ChooseOption.options, (option, at) =>
+    const offer = each(kind.ChooseOption.options, (option, at) =>
       pick(`option-${at}`, optionLabel(option, words.seat, words.viewer), { ChooseOption: at }),
     )
+    if (kind.ChooseOption.can_cancel !== true) return offer
+    return { ...offer, choices: [...offer.choices, back(words, 'Undo')] }
   }
   if ('ChooseCosts' in kind) {
     const { optional, can_cancel: cancel } = kind.ChooseCosts

@@ -91,6 +91,7 @@ impl Pass<'_> {
                 return Ok(Applied::Ask(Decision {
                     player: controller,
                     kind: DecisionKind::ChooseOption(OptionOptions {
+                        can_cancel: false,
                         source: object,
                         options: vec![
                             ChoiceOption::Label(COUNTER.to_owned()),

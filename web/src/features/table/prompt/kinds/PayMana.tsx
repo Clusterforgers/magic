@@ -31,6 +31,7 @@ import { manaByPermanent } from '../priorityText'
 import { usePrompt } from '../PromptContext'
 import { PromptLayout } from '../PromptLayout'
 import type { PromptComponent } from '../types'
+import { UndoButton } from '../UndoButton'
 
 const focusCard = (id: ObjectId): void =>
   document.querySelector<HTMLElement>(`button[data-object-id="${id}"]`)?.focus()
@@ -52,8 +53,8 @@ export const AUTO_REASON = 'The game finds no way to pay this cost with what you
  * back. Mana that would be wasted is not offered, so a payment is complete when nothing is owed. A Phyrexian symbol
  * has a switch that pays 2 life for it instead of mana (within the life total and what the options allow). Confirm
  * sends the chosen payment; with nothing chosen yet "Pay automatically" lets the game choose, and after some picks
- * "Pay the rest for me" keeps them and lets the game pay what is owed; Cancel (only when the options allow it)
- * gives up on the cast.
+ * "Pay the rest for me" keeps them and lets the game pay what is owed; Undo or Escape (only when the options allow
+ * it) gives up on the cast, and the permanents picked stay untapped since nothing is paid until Confirm.
  */
 export const PayManaPrompt: PromptComponent<'PayMana'> = ({ options }) => {
   const { answer, selection } = usePrompt()
@@ -102,6 +103,7 @@ export const PayManaPrompt: PromptComponent<'PayMana'> = ({ options }) => {
   const names = usePlay(useShallow((state) => named.map((id) => state.objectsById[id]?.name)))
   const nameOf = (id: ObjectId): string =>
     names[named.indexOf(id)] ?? (id === spell ? 'the spell' : 'a permanent')
+  const spellZone = usePlay((state) => state.objectsById[spell]?.zone)
 
   const [{ spends, life, note }, setChosen] = useState(START)
   // The chosen permanent whose colour switch is open.
@@ -385,14 +387,7 @@ export const PayManaPrompt: PromptComponent<'PayMana'> = ({ options }) => {
         </Button>
       ) : null}
       {options.can_cancel ? (
-        <Button
-          className="h-10 px-4"
-          variant="outline"
-          data-slot="pay-cancel"
-          onClick={() => answer({ PayMana: 'Cancel' })}
-        >
-          Cancel casting
-        </Button>
+        <UndoButton zone={spellZone} onUndo={() => void answer({ PayMana: 'Cancel' })} />
       ) : null}
     </PromptLayout>
   )

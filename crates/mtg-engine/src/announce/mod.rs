@@ -676,6 +676,9 @@ mod procedure;
 mod through_engine;
 
 #[cfg(test)]
+mod undo;
+
+#[cfg(test)]
 mod kicks;
 
 #[cfg(test)]

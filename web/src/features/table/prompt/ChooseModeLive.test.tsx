@@ -64,7 +64,7 @@ describe('a mode decision from the server', () => {
   it('sends Cancel for a spell that is taken back', async () => {
     const { h, send, user } = mount()
     send(modes(62))
-    await user.click(screen.getByRole('button', { name: 'Cancel the spell' }))
+    await user.click(screen.getByRole('button', { name: 'Undo the spell' }))
     expect(h.sentOf('Answer')).toEqual([{ type: 'Answer', decision: 62, answer: { ChooseMode: 'Cancel' } }])
   })
 

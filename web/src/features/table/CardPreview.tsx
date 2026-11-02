@@ -93,7 +93,10 @@ function PreviewBody({ target }: { target: PreviewTarget }) {
     // A pinned card that left the game would otherwise stay "shown" with nothing to draw.
     if (gone) store.dismiss()
     const close = (event: KeyboardEvent): void => {
-      if (event.key === 'Escape') store.dismiss()
+      if (event.key !== 'Escape') return
+      // The press closes the preview and nothing else: a prompt's Undo waits for the next one.
+      event.preventDefault()
+      store.dismiss()
     }
     document.addEventListener('keydown', close)
     return () => document.removeEventListener('keydown', close)

@@ -165,7 +165,10 @@ export function CardRow({
     if (event.key !== 'Escape' || !(event.target instanceof Element)) return
     const focused = objectIdOf(event.target)
     const entry = focused === null ? undefined : entryOf.get(focused)
-    if (focused !== null && entry?.open === true && !entry.held) toggle(focused)
+    if (focused === null || entry?.open !== true || entry.held) return
+    // The press closes the stack and nothing else: a prompt's Undo does not take it too.
+    event.preventDefault()
+    toggle(focused)
   }
   if (ids.length === 0 && ghosts.length === 0) return null
   const shown = behind.size === 0 ? ids : ids.filter((id) => !behind.has(id))

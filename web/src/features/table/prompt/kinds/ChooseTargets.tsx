@@ -18,6 +18,7 @@ import {
   targetsSentence,
 } from '../targetText'
 import type { PromptComponent } from '../types'
+import { UndoButton } from '../UndoButton'
 import { useObjects } from '../useCombatNames'
 
 /**
@@ -25,8 +26,9 @@ import { useObjects } from '../useCombatNames'
  * it back); every legal target is also offered under the sentence: a player as a button, an object as its card
  * picture (`CardChoices`), because a permanent may sit in a group, a graveyard, exile or the stack, where the table
  * draws no card to press. The chosen targets are listed with a button each to
- * take them back, Undo takes back the last one, and Confirm sends them once there are enough. A spell can be taken
- * back with Cancel, since nothing is paid yet; a triggered ability cannot, so it has no Cancel and waits for a target.
+ * take them back, Undo takes back the last one, and Confirm sends them once there are enough. A spell or an ability
+ * can be backed out of with its Undo button or Escape, since nothing is paid yet; a triggered ability cannot, so it has
+ * none and waits for a target.
  */
 export const ChooseTargetsPrompt: PromptComponent<'ChooseTargets'> = ({ options }) => {
   const { answer } = usePrompt()
@@ -114,7 +116,6 @@ export const ChooseTargetsPrompt: PromptComponent<'ChooseTargets'> = ({ options 
     max,
     chosen: chosen.length,
   })
-  const cancelWords = source?.zone === 'Battlefield' ? 'Cancel the ability' : 'Cancel the spell'
 
   return (
     <PromptLayout text={text}>
@@ -134,9 +135,7 @@ export const ChooseTargetsPrompt: PromptComponent<'ChooseTargets'> = ({ options 
         Undo
       </Button>
       {options.can_cancel ? (
-        <Button variant="outline" className="h-10 px-4" onClick={() => answer({ ChooseTargets: 'Cancel' })}>
-          {cancelWords}
-        </Button>
+        <UndoButton zone={source?.zone} onUndo={() => void answer({ ChooseTargets: 'Cancel' })} />
       ) : null}
       <CardChoices
         cards={objectIds}

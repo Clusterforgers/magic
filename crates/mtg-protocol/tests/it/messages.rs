@@ -420,6 +420,7 @@ fn pipeline_decision_kinds() -> Vec<DecisionKind> {
         }),
         DecisionKind::YesNo(YesNoOptions::new(b, "Pay {1}?")),
         DecisionKind::ChooseOption(OptionOptions {
+            can_cancel: false,
             source: b,
             options: vec![
                 ChoiceOption::Player(PlayerId(1)),
@@ -1621,6 +1622,7 @@ fn the_question_of_a_yes_no_or_option_decision_is_left_out_while_empty_and_a_mod
     );
     assert_eq!(
         shape(DecisionKind::ChooseOption(OptionOptions {
+            can_cancel: false,
             source,
             options: vec![ChoiceOption::Color(Color::Red)],
             text: String::new(),

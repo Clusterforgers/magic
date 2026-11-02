@@ -63,6 +63,7 @@ pub(super) fn run(
                         source: card,
                         options,
                         text: "Choose which face to cast.".to_owned(),
+                        can_cancel: granted.is_none(),
                     }),
                 }));
             }

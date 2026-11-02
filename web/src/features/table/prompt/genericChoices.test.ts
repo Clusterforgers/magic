@@ -8,7 +8,7 @@ const words: GenericWords = {
   object: (id: ObjectId) => `Card ${id}`,
   seat: (seat) => `Seat ${seat}`,
   viewer: 0,
-  cancel: 'Cancel the spell',
+  cancel: 'Undo the spell',
 }
 const object = (id: number): Target => ({ Object: { id, counter: 0 } })
 const labels = (kind: DecisionKind): string[] =>
@@ -90,13 +90,13 @@ describe('the labels of each kind', () => {
       targets({ min: 0, max: 2 }),
       ['Seat 0 (you)', 'Card 7', 'Choose no target'],
     ],
-    ['two targets required', targets({ min: 2, max: 2, can_cancel: true }), ['Cancel the spell']],
+    ['two targets required', targets({ min: 2, max: 2, can_cancel: true }), ['Undo the spell']],
     [
       'a triggered ability that cannot be backed out of',
       targets({ triggered: true }),
       ['Seat 0 (you)', 'Card 7', 'Remove the ability'],
     ],
-    ['a cast that can', targets({ can_cancel: true }), ['Seat 0 (you)', 'Card 7', 'Cancel the spell']],
+    ['a cast that can', targets({ can_cancel: true }), ['Seat 0 (you)', 'Card 7', 'Undo the spell']],
     [
       'one mode of two',
       {
@@ -123,7 +123,7 @@ describe('the labels of each kind', () => {
           can_cancel: true,
         },
       },
-      ['Choose the first 2 modes', 'Cancel the spell'],
+      ['Choose the first 2 modes', 'Undo the spell'],
     ],
     [
       'up to two modes',
@@ -147,7 +147,7 @@ describe('the labels of each kind', () => {
     [
       'a number with no top',
       { ChooseNumber: { source: 1, min: 3, max: null, can_cancel: true } },
-      [...Array.from({ length: MOST_ANSWERS }, (_, at) => String(3 + at)), 'Cancel the spell'],
+      [...Array.from({ length: MOST_ANSWERS }, (_, at) => String(3 + at)), 'Undo the spell'],
     ],
     [
       'a division that cannot give each one',
@@ -157,7 +157,7 @@ describe('the labels of each kind', () => {
     [
       'a division with no one to give to',
       { DivideAmount: { source: 1, total: 3, among: [], can_cancel: true } },
-      ['Cancel the spell'],
+      ['Undo the spell'],
     ],
     [
       'cards, none allowed',
@@ -172,7 +172,7 @@ describe('the labels of each kind', () => {
     [
       'cards that can be backed out of',
       { ChooseCards: { source: 1, from: [4, 5, 6], min: 2, max: 3, can_cancel: true } },
-      ['Choose the first 2 cards', 'Cancel the spell'],
+      ['Choose the first 2 cards', 'Undo the spell'],
     ],
     ['no card on offer', { ChooseCards: { source: 1, from: [], min: 1, max: 1 } }, []],
     [
@@ -197,7 +197,7 @@ describe('the labels of each kind', () => {
           can_cancel: true,
         },
       },
-      ['Pay no optional cost', 'Kicker {R}', 'Gift to player 2', 'Cancel the spell'],
+      ['Pay no optional cost', 'Kicker {R}', 'Gift to player 2', 'Undo the spell'],
     ],
     ['no replacement effect', { ChooseReplacement: { candidates: [] } }, []],
   ])('%s', (_what, kind, expected) => {

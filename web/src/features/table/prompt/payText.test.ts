@@ -61,12 +61,12 @@ describe('payText', () => {
     [
       'before anything is chosen, with no automatic payment, which means the cost cannot be paid',
       input({ auto: false }),
-      'You cannot pay 2 generic, 1 white and 1 green for Selesnya Evangel with the mana you have. Cancel to go back.',
+      'You cannot pay 2 generic, 1 white and 1 green for Selesnya Evangel with the mana you have. Undo to go back.',
     ],
     [
       'before anything is chosen, with nothing that can be added',
       input({ canAdd: false }),
-      'You cannot pay 2 generic, 1 white and 1 green for Selesnya Evangel with the mana you have. Cancel to go back.',
+      'You cannot pay 2 generic, 1 white and 1 green for Selesnya Evangel with the mana you have. Undo to go back.',
     ],
     [
       'with something chosen',
@@ -133,7 +133,7 @@ describe('payText with a cost that life can pay', () => {
     [
       'says it cannot be paid when neither mana nor life can',
       probe({ auto: false, canAdd: false, life: life(0, false) }),
-      'You cannot pay 1 generic and 1 blue or 2 life for Gitaxian Probe with the mana you have. Cancel to go back.',
+      'You cannot pay 1 generic and 1 blue or 2 life for Gitaxian Probe with the mana you have. Undo to go back.',
     ],
     [
       'says what is left after life is chosen',

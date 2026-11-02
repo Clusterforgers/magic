@@ -41,9 +41,8 @@ pub fn sole_answer(state: &GameState, decision: &Decision) -> Option<Answer> {
                 && !options.except.contains(&options.min);
             only.then_some(Answer::ChooseNumber(NumberChoice::Number(options.min)))
         }
-        DecisionKind::ChooseOption(options) => {
-            (options.options.len() == 1).then_some(Answer::ChooseOption(OptionChoice(0)))
-        }
+        DecisionKind::ChooseOption(options) => (options.options.len() == 1 && !options.can_cancel)
+            .then_some(Answer::ChooseOption(OptionChoice(0))),
         DecisionKind::ChooseReplacement(options) => (options.candidates.len() == 1)
             .then_some(Answer::ChooseReplacement(ReplacementChoice(0))),
         _ => None,
@@ -173,6 +172,7 @@ mod tests {
 
     fn choose(count: usize) -> DecisionKind {
         DecisionKind::ChooseOption(OptionOptions {
+            can_cancel: false,
             source: ObjectId(99),
             options: (0..count)
                 .map(|at| ChoiceOption::Label(at.to_string()))

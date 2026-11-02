@@ -198,6 +198,8 @@ pub(crate) fn handle(
         (DecisionKind::ChooseReplacement(options), Answer::ChooseReplacement(choice)) => {
             choose::replacement_answer(player, options, choice)
         }
+        (kind, Answer::Undo) if pending.is_some() && kind.can_undo() => Ok(Outcome::CancelCast),
+        (_, Answer::Undo) => Err(IllegalAnswer::NotOffered("undo").into()),
         (kind, answer) => Err(IllegalAnswer::WrongKind {
             expected: kind.name(),
             got: answer.name(),

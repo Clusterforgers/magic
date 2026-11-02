@@ -19,6 +19,7 @@ import {
 import { usePrompt } from '../PromptContext'
 import { PromptLayout } from '../PromptLayout'
 import type { PromptComponent } from '../types'
+import { UndoButton } from '../UndoButton'
 import { useObjects } from '../useCombatNames'
 import { useDefaultFocus } from '../usePromptKeys'
 
@@ -27,7 +28,7 @@ import { useDefaultFocus } from '../usePromptKeys'
  * arrow keys step it, Enter confirms), the minus and plus buttons and the slider step over numbers `except` names,
  * and focus starts in the field on the smallest allowed number, the answer the response clock gives. For an X of a
  * mana cost the total cost for the chosen X is shown. Confirm is off, with the reason, for a number not allowed;
- * Cancel backs out of the cast when the options allow it.
+ * Undo or Escape, even from the field, backs out of the cast when the options allow it.
  */
 export const ChooseNumberPrompt: PromptComponent<'ChooseNumber'> = ({ options }) => {
   const { answer } = usePrompt()
@@ -138,14 +139,7 @@ export const ChooseNumberPrompt: PromptComponent<'ChooseNumber'> = ({ options })
           {problem === undefined ? `Choose ${value}` : 'Choose'}
         </Button>
         {options.can_cancel === true ? (
-          <Button
-            type="button"
-            variant="outline"
-            className="h-10 px-4"
-            onClick={() => answer({ ChooseNumber: 'Cancel' })}
-          >
-            Cancel
-          </Button>
+          <UndoButton zone={source?.zone} onUndo={() => void answer({ ChooseNumber: 'Cancel' })} />
         ) : null}
         {problem === undefined ? null : (
           <p id={problemId} data-slot="number-problem" className="text-muted-foreground basis-full text-sm">

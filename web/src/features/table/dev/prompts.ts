@@ -432,7 +432,7 @@ const payLowLife: DevPrompt = (fixture) => {
   return { id, decision: { ...decision, kind: { PayMana: low } } }
 }
 
-/** The same payment when the cast may not be backed out of: no Cancel button, and the sentence does not mention it. */
+/** The same payment when the cast may not be backed out of: no Undo button, and the sentence does not mention it. */
 const payLocked: DevPrompt = (fixture) => {
   const { id, decision } = pay(fixture)
   if (!('PayMana' in decision.kind)) return { id, decision }

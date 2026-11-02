@@ -825,7 +825,7 @@ describe('Pay automatically, Cancel and Confirm', () => {
 
   it('has no Cancel when the options do not allow backing out, and says so in the sentence', () => {
     const { text } = renderPay(payOptions('{U}{U}', [[0, 'G']], { auto_available: false, can_cancel: false }))
-    expect(screen.queryByRole('button', { name: 'Cancel casting' })).toBeNull()
+    expect(screen.queryByRole('button', { name: 'Undo the spell' })).toBeNull()
     expect(text()).toBe('You cannot pay 2 blue for Selesnya Evangel with the mana you have.')
   })
 
@@ -835,7 +835,7 @@ describe('Pay automatically, Cancel and Confirm', () => {
     ['for a free spell', payOptions('', [])],
   ])('Cancel answers Cancel %s', async (_what, given) => {
     const { answer, user } = renderPay(given)
-    await user.click(screen.getByRole('button', { name: 'Cancel casting' }))
+    await user.click(screen.getByRole('button', { name: 'Undo the spell' }))
     expect(answer.mock.calls).toEqual([[{ PayMana: 'Cancel' }]])
   })
 
@@ -847,7 +847,7 @@ describe('Pay automatically, Cancel and Confirm', () => {
       ]),
     )
     await steps(['0'])
-    await user.click(screen.getByRole('button', { name: 'Cancel casting' }))
+    await user.click(screen.getByRole('button', { name: 'Undo the spell' }))
     expect(answer.mock.calls).toEqual([[{ PayMana: 'Cancel' }]])
   })
 
@@ -867,7 +867,7 @@ describe('Pay automatically, Cancel and Confirm', () => {
   it.each([
     ['Pay automatically', [], { PayMana: 'Auto' }],
     ['Pay the rest for me', ['0'], { PayMana: { Complete: payment([], [[0, 0]]) } }],
-    ['Cancel casting', [], { PayMana: 'Cancel' }],
+    ['Undo the spell', [], { PayMana: 'Cancel' }],
     [
       'Confirm payment',
       ['0', '1'],
@@ -1092,7 +1092,7 @@ describe('what the player is told', () => {
     await user.click(land(0))
     expect(chips()).toEqual([])
     expect(text()).toBe(
-      'You cannot pay 2 blue for Selesnya Evangel with the mana you have. Cancel to go back.',
+      'You cannot pay 2 blue for Selesnya Evangel with the mana you have. Undo to go back.',
     )
   })
 
@@ -1108,7 +1108,7 @@ describe('what the player is told', () => {
     )
     expect(confirm()).toBeDisabled()
     expect(text()).toBe(
-      'You cannot pay 2 blue for Selesnya Evangel with the mana you have. Cancel to go back.',
+      'You cannot pay 2 blue for Selesnya Evangel with the mana you have. Undo to go back.',
     )
   })
 

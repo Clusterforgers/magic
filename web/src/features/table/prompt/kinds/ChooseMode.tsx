@@ -13,15 +13,16 @@ import { KeyHint } from '../KeyHint'
 import { usePrompt } from '../PromptContext'
 import { PromptLayout } from '../PromptLayout'
 import type { PromptComponent } from '../types'
+import { UndoButton } from '../UndoButton'
 import { useObjects } from '../useCombatNames'
 import { useDefaultFocus, usePromptKeys } from '../usePromptKeys'
 
 /**
  * ChooseMode: the modes of a modal spell or ability. A choice of exactly one answers at once from a button or from
  * its number key; a choice of several toggles modes (again, a mode that may repeat is added again) and Confirm modes
- * sends them in the order they happen, which is the order on the card. A cast can be backed out of with Cancel, and
- * a triggered ability that must choose has none. Focus starts on the answer the response clock gives: Cancel where
- * there is one, else the first mode.
+ * sends them in the order they happen, which is the order on the card. A cast can be backed out of with its Undo button or
+ * Escape, and a triggered ability that must choose has none. Focus starts on the answer the response clock gives: Undo
+ * where there is one, else the first mode.
  */
 export const ChooseModePrompt: PromptComponent<'ChooseMode'> = ({ options }) => {
   const { answer } = usePrompt()
@@ -58,7 +59,6 @@ export const ChooseModePrompt: PromptComponent<'ChooseMode'> = ({ options }) => 
     repeat,
     chosen: chosen.length,
   })
-  const cancelWords = source?.zone === 'Battlefield' ? 'Cancel the ability' : 'Cancel the spell'
   const times = (index: number): number => chosen.filter((mode) => mode === index).length
 
   return (
@@ -90,14 +90,12 @@ export const ChooseModePrompt: PromptComponent<'ChooseMode'> = ({ options }) => 
         </Button>
       )}
       {canCancel ? (
-        <Button
+        <UndoButton
           ref={cancel}
-          variant="outline"
+          zone={source?.zone}
           className="h-9 px-4"
-          onClick={() => void answer({ ChooseMode: 'Cancel' })}
-        >
-          {cancelWords}
-        </Button>
+          onUndo={() => void answer({ ChooseMode: 'Cancel' })}
+        />
       ) : null}
       <div
         role="group"

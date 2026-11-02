@@ -168,6 +168,7 @@ impl<'a> Questions<'a> {
             None => Err(Stop::Ask(Box::new(Decision {
                 player,
                 kind: DecisionKind::ChooseOption(OptionOptions {
+                    can_cancel: false,
                     source: self.source,
                     options,
                     text,

@@ -1655,6 +1655,7 @@ impl Pass<'_> {
             None => Ok(Asked::Ask(Decision {
                 player,
                 kind: DecisionKind::ChooseOption(OptionOptions {
+                    can_cancel: false,
                     source: chosen.object.id,
                     options,
                     text: format!("Choose the damage {maker} prevents first."),
@@ -2768,6 +2769,7 @@ impl Pass<'_> {
                     return Ok(Asked::Ask(Decision {
                         player: controller,
                         kind: DecisionKind::ChooseOption(OptionOptions {
+                            can_cancel: false,
                             source,
                             options,
                             text,

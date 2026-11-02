@@ -33,7 +33,7 @@ One item is one piece of about 15 minutes and one line: the outcome, the cards i
 - Card language and compiler: the DSL, the reader framework, the renderer with goldens, the corpus ratchet, templates for every ability shape and stored `card_rules` (`docs/cards-dsl.md`).
 - Model-assisted reading: `check-rules`, `propose` (a local OpenAI-style server), `promote` (`--draft` writes the 355 first read-tier drafts, which `compile` stores in `card_drafts`), the repair of mechanical slips, writers for the accepted wordings, `coverage --all`, the gap ledger and `export-pairs` (`docs/cards-dsl.md`).
 - Protocol and server: generated bindings with a drift test, the game actor, a WebSocket per seat, persistence and resume, accounts (the admin makes, resets and removes them), lobbies, open games, precons, concurrent keep and mulligan, seat presence, the snapshot log (`docs/protocol.md`, `docs/server.md`).
-- Game flow: auto-pass, response clocks, yields, stops, Full Control, the timer bank, the by-hand window, the answer to a one-option question, auto choices (trigger order, damage) and leak tests (`docs/arena-flow.md`).
+- Game flow: auto-pass, response clocks, yields, stops, Full Control, the timer bank, the by-hand window, the answer to a one-option question, auto choices (trigger order, damage), Undo of a cast or activation at every step and leak tests (`docs/arena-flow.md`).
 - Commander: house rules, format rules, deck check, every partner pair kind end to end, companion in the engine, tax, commander damage and any number of seats (`docs/server.md`).
 - Manual play: the Commands panel, by-hand clauses with chips, manual actions at any time on any turn and fix marks (`docs/web.md`, `docs/protocol.md`).
 - Web table: lanes and card sizes, the seat corner, click combat, the mana strip, legible play (flights, spotlight, target arrows, marks, combat strikes), Equipment tucked at its host with its grants, hand reasons, fit at six sizes and a 12 px text floor (`docs/web.md`, `docs/ui-design.md`).
@@ -47,7 +47,6 @@ One item is one piece of about 15 minutes and one line: the outcome, the cards i
 
 Items that touch the running game come first; the play-session findings (pf) lead, the web items before the engine and card items.
 
-- [ ] (pf21) A spell or ability can be backed out of at every step before it is on the stack (targets, modes, X, costs, payment): an Undo in each prompt returns the card or ability and any mana spent, as Arena does
 - [ ] (pf22) A manual action gives a permanent an ability until end of turn or for good (a keyword such as deathtouch or flying, or a line of text), from the card menu and the Commands panel, shown on the card and in both logs
 - [ ] (pf23) An optional payment the seat cannot make is declined without asking (Dawn of Hope "Pay {2}?" with less than 2 mana available), counting every source the rules allow, so the table never waits on a question with one real answer
 - [ ] (pf24) Permanents that look the same stack on the table: two 6/6 Soldier tokens with vigilance drawn alike are one stack of 2 (find which field keeps them apart in `group.ts` `faceOf`, e.g. a granted ability's source or the summoning-sick flag)

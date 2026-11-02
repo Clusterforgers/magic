@@ -58,6 +58,7 @@ pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
                     source: ctx.source,
                     options,
                     text: "Choose how to cast it.".to_owned(),
+                    can_cancel: ctx.can_cancel(),
                 })));
             }
         },
