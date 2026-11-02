@@ -76,7 +76,6 @@ The table and its prompts are live; the items below polish them.
 - [ ] (a2f) The real database holds every precon printing (`fetch scryfall --printings`), so the table draws each card in its precon art instead of the card's default picture
 - [ ] (k1b) The one-line pods of three and four seats draw each commander (both of a partner pair), the graveyard and the exile as small pictures beside their chips, and pass the layout gate
 - [ ] (k1g) The layout gate and the fit spec also sweep 360, 768, 1400 and 1600x1000 (only the six design sizes today)
-- [ ] (k1h) A tall prompt sheet on a phone (`commander-return` at 360x740, a 182 px overhang) keeps the opponents' tile strip and board in view: the sheet's height is held to what leaves them room
 - [ ] (k2a) `/dev/builder?deck=...` shows the commander slot (the fixture check knows commander pairs) and screenshots at 1400 and 390 settle the slot's height and the identity switch
 - [ ] (k2c) Playwright: build a Commander deck with a Partner pair, see a refused commander with its reason and the identity filter
 - [ ] (ts5) A token's printed power and toughness reach the view (with `a2d`), so a buffed or debuffed token is tinted green or red as a card is; today a token's real numbers show plain

@@ -193,6 +193,8 @@ export const HAND_GROW_VAR = '--hand-grow'
 export const OWN_SHARE = 1.15
 /** The tallest a long prompt grows, in percent of the window height. */
 export const SHEET_MAX_VH = 40
+/** What a phone's prompt sheet leaves of the opponents' area: the tile strip and a row of their board, in px. */
+export const SHEET_KEEP_PX = 120
 /** The side column takes this share of the window width between its bounds; M gets a rail of `RAIL_PX`. */
 export const SIDE_SHARE = 0.22
 export const SIDE_MIN_PX = 280
@@ -225,14 +227,20 @@ export interface Regions {
   opponents: number
   own: number
   /**
-   * The most a prompt sheet grows to: 40 % of the height, up over the opponents' board and no further than the top
-   * bar. Never down over your board (the cards a prompt asks you to click are yours), the hand dock or the controls.
+   * The most a prompt sheet grows to: 40 % of the height, up over the opponents' board (on a phone leaving
+   * `SHEET_KEEP_PX` of it) and no further than the top bar. Never down over your board (the cards a prompt asks you to click are yours), the hand dock or the controls.
    */
   sheet: number
 }
 
 const finite = (value: number): number => (Number.isFinite(value) ? Math.max(0, value) : 0)
 const clampTo = (value: number, min: number, max: number): number => Math.min(max, Math.max(min, value))
+
+/** The most a prompt sheet grows to in a window of this height, over a strip and an opponents' area of these heights. */
+export function sheetMost(height: number, shared: number, opponents: number, phone: boolean): number {
+  const room = phone ? Math.max(0, opponents - SHEET_KEEP_PX) : opponents
+  return Math.min((height * SHEET_MAX_VH) / 100, shared + room)
+}
 
 /** The px a `HeightClamp` gives in a window of this height. */
 export function clampedHeight(range: HeightClamp, height: number): number {
@@ -267,7 +275,7 @@ export function regionSizes(viewport: Viewport): Regions {
     hand,
     opponents,
     own,
-    sheet: Math.min((height * SHEET_MAX_VH) / 100, shared + opponents),
+    sheet: sheetMost(height, shared, opponents, phone),
   }
 }
 

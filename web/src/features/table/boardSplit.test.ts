@@ -9,11 +9,12 @@ import {
   splitBoards,
   splitRegions,
   THEIR_SCALE,
+  withSplit,
 } from './boardSplit'
 import { buildFixture } from './dev/fixture'
 import { laneHeight } from './laneFit'
 import type { LaneCounts } from './laneFit'
-import { planTable } from './layout'
+import { planTable, regionSizes, SHEET_KEEP_PX } from './layout'
 import { battlefieldStacks, layoutSeat } from './rowStacks'
 
 const counts = (lands: number, creatures: number, other: number): LaneCounts => ({ lands, creatures, other })
