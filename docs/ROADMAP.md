@@ -53,6 +53,7 @@ Items that touch the running game come first; the play-session findings (pf) lea
 - [ ] (pf10a) The default stops and "End my turn by hand" are stored per account on the server, not per browser
 - [ ] (pf13a) The fuzz action script plays the new manual actions (search, tutor, sacrifice, remove summoning sickness, give control)
 - [ ] (pf19) Combat damage plays a short animation: each attacker or blocker strikes toward the player, planeswalker, battle or creature it damages
+- [ ] (pf20) Hovering or highlighting a stack entry always names what it resolves (the spell or ability and its targets) and shows the card large
 - [ ] (pf15) Engine: Lifelink gains life for combat damage dealt to a player (a reported game did not)
 - [ ] (pf16) Cards: Fungal Fortitude returns its creature when a spell destroys it
 - [ ] (pf17) Cards: It That Betrays puts the sacrificed permanents onto the battlefield under its controller's control
