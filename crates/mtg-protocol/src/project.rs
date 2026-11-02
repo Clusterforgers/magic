@@ -346,6 +346,7 @@ impl ObjectView {
             // Haste excuses it, so the view says whether sickness holds it back, not only when it arrived.
             summoning_sick: summoning_sick(state, id),
             prepared: p.prepared(),
+            exerted: !p.exerted().is_empty(),
             level: subtypes
                 .iter()
                 .any(|subtype| subtype.0 == "Class")

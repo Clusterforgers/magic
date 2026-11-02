@@ -37,6 +37,8 @@ pub struct ZoneView {
 }
 
 /// State that only exists while an object is on the battlefield.
+// The flags are independent public facts of one permanent, each shown to the table as is.
+#[allow(clippy::struct_excessive_bools)]
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
 pub struct PermanentView {
     /// Whether the permanent is tapped.
@@ -50,6 +52,10 @@ pub struct PermanentView {
     #[serde(default, skip_serializing_if = "std::ops::Not::not")]
     #[ts(as = "Option<bool>", optional)]
     pub prepared: bool,
+    /// Whether a player exerted the permanent and it still holds back its untap (CR 701.43). Left out while it is not.
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    #[ts(as = "Option<bool>", optional)]
+    pub exerted: bool,
     /// The level of a Class (CR 716.2); left out for any other permanent.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[ts(optional)]
