@@ -72,7 +72,6 @@ The table and its prompts are live; the items below polish them.
 - [ ] (a2g) A token lookup that finds several equal records prefers the one with the most printings (`token_pictures` returns the printing count) instead of the smallest oracle id
 - [ ] (a2e) The precon details dialog shows each card's picture through `CardPicture` and the hover picture, as the builder does
 - [ ] (a2f) The real database holds every precon printing (`fetch scryfall --printings`), so the table draws each card in its precon art instead of the card's default picture
-- [ ] (k1b) The one-line pods of three and four seats draw each commander (both of a partner pair), the graveyard and the exile as small pictures beside their chips, and pass the layout gate
 - [ ] (k1g) The layout gate and the fit spec also sweep 360, 768, 1400 and 1600x1000 (only the six design sizes today)
 - [ ] (ts5) A token's printed power and toughness reach the view (with `a2d`), so a buffed or debuffed token is tinted green or red as a card is; today a token's real numbers show plain
 - [ ] (ts6) `/dev/table?states=1` screenshots at the six sizes in both themes settle the marks on compact faces (under 76 px, where an attachment mark is an icon) and on tapped pictures
