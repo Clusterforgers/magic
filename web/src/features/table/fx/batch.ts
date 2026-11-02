@@ -5,7 +5,7 @@ import { deriveAttaches, deriveEffects } from './derive'
 import type { Moment } from './derive'
 import { markArrows, markEffects, withStackGhosts } from './marks'
 import { deriveMoves } from './moves'
-import { impactsOf, planStrikes, splitImpacts } from './strikes'
+import { impactsOf, planStrikes, holdDeaths, splitImpacts } from './strikes'
 import type { Fx } from './store'
 
 /** One applied batch: the game before it and after it, and its events. */
@@ -61,7 +61,8 @@ export function watchBatches(store: PlayStore, fx: Fx): () => void {
       step.after.objectsById[id] ?? step.before.objectsById[id]
     // A struck target flashes as the strike lands on it, not as the batch arrives.
     if (fx.strikes.launch(plans, look)) {
-      const { now, later } = splitImpacts(effects, impactsOf(plans, fx.slow))
+      const held = holdDeaths(effects, plans, fx.slow)
+      const { now, later } = splitImpacts(held, impactsOf(plans, fx.slow))
       fx.play(now)
       for (const [ms, landing] of later) fx.playAfter(landing, ms)
     } else fx.play(effects)

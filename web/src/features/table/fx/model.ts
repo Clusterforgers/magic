@@ -95,6 +95,8 @@ export interface DiedEffect {
   snapshot: ObjectView
   before: ObjectId | null
   damage: number
+  /** Milliseconds the ghost stands still before its death plays: a combat strike still lands on it or returns to it. */
+  hold?: number
 }
 
 /** One transient visual effect that a batch of events caused. */
@@ -121,6 +123,8 @@ export interface Ghost {
   readonly object: ObjectView
   readonly before: ObjectId | null
   readonly damage: number
+  /** Milliseconds before its death plays (already stretched by the slow-down). */
+  readonly hold: number
 }
 
 /** No entries; one value, so a card with nothing playing keeps the same snapshot. */

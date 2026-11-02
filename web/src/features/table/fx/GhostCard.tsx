@@ -1,3 +1,4 @@
+import type { CSSProperties } from 'react'
 import { cn } from '@/lib/utils'
 import { SIZE } from '../cardSize'
 import type { CardSize } from '../cardSize'
@@ -7,7 +8,7 @@ import type { Ghost } from './model'
 
 /**
  * A permanent that has just died, drawn where it stood while its effect plays: the stylesheet cracks it, greys it
- * out and closes the gap it leaves. It is `aria-hidden`, has no `data-object-id` and nothing focusable, so it is
+ * out and closes the gap it leaves, once a strike still landing on it (its `hold`) has landed. It is `aria-hidden`, has no `data-object-id` and nothing focusable, so it is
  * never a second copy of the card for a screen reader, the keyboard or a script that looks cards up. The real card
  * is already in the graveyard, which is where the game put it.
  */
@@ -18,6 +19,7 @@ export function GhostCard({ ghost, size, fit = false }: { ghost: Ghost; size: Ca
       aria-hidden="true"
       data-ghost={object.id}
       data-fx="died"
+      style={ghost.hold > 0 ? ({ '--fx-hold': `${ghost.hold}ms` } as CSSProperties) : undefined}
       className={cn(
         'flex w-(--ghost-w) shrink-0 overflow-hidden [--ghost-w:var(--card-w)]',
         fit ? null : SIZE[size].vars,

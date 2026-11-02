@@ -29,16 +29,22 @@ export interface StrikePlan {
 }
 
 /** How long a strike takes there and back, in ms (times the slow-down). */
-export const STRIKE_MS = 420
+export const STRIKE_MS = 1500
 
 /** The share of a strike at which it lands on its target. */
-export const STRIKE_HIT = 0.45
+export const STRIKE_HIT = 0.5
 
 /** The most strikes one batch plays. */
 export const MAX_STRIKES = 40
 
 /** The gap a strike stops short of its target's edge, in px. */
 export const STRIKE_GAP_PX = 6
+
+/** How far a strike draws back before it lunges, in px. */
+export const STRIKE_WINDUP_PX = 16
+
+/** How far a strike bounces back off its target, in px. */
+export const STRIKE_RECOIL_PX = 18
 
 const DAMAGE_STEPS: readonly Step[] = ['FirstStrikeDamage', 'CombatDamage']
 
@@ -159,6 +165,23 @@ export function splitImpacts(
   return { now, later }
 }
 
+/**
+ * The batch's deaths held until combat is done with them: a struck creature dies once the last strike on it lands, and
+ * a creature that strikes and dies once it is back where it stood, so its ghost is there to return to.
+ */
+export function holdDeaths(effects: readonly Effect[], plans: readonly StrikePlan[], slow = 1): Effect[] {
+  const { objects } = impactsOf(plans, slow)
+  const holds = new Map(objects)
+  for (const plan of plans) {
+    const back = (plan.wave + 1) * STRIKE_MS * slow
+    holds.set(plan.source, Math.max(holds.get(plan.source) ?? 0, back))
+  }
+  return effects.map((effect) => {
+    const hold = effect.kind === 'died' ? holds.get(effect.object) : undefined
+    return hold === undefined ? effect : { ...effect, hold }
+  })
+}
+
 const centerOf = (box: Box): { x: number; y: number } => ({
   x: box.x + box.width / 2,
   y: box.y + box.height / 2,
@@ -172,9 +195,9 @@ const reachOf = (box: Box, dx: number, dy: number): number => {
 }
 
 /**
- * The keyframes of a strike for a picture laid over `from`: a short wind-up away from the target, a lunge until its
- * edge meets the target's (halfway when the two strike each other), and back to where it stood. The picture's origin is
- * its top left corner, placed at `from`.
+ * The keyframes of a strike for a picture laid over `from`: it lifts and draws back, lunges until its edge meets the
+ * target's (halfway when the two strike each other), recoils a little and glides back to where it stood. The picture's
+ * origin is its top left corner, placed at `from`; every scale is about the picture's centre.
  */
 export function strikeKeyframes(from: Box, to: Box, mutual = false): Keyframe[] {
   const a = centerOf(from)
@@ -184,12 +207,17 @@ export function strikeKeyframes(from: Box, to: Box, mutual = false): Keyframe[] 
   const dy = distance === 0 ? 0 : (b.y - a.y) / distance
   const gap = Math.max(0, distance - reachOf(from, dx, dy) - reachOf(to, dx, dy) - STRIKE_GAP_PX)
   const travel = mutual ? gap / 2 : gap
-  const at = (step: number, scale: number): string =>
-    `translate(${Math.round(from.x + dx * step)}px, ${Math.round(from.y + dy * step)}px) scale(${scale})`
+  const recoil = Math.min(STRIKE_RECOIL_PX, travel)
+  const at = (step: number, scale: number): string => {
+    const x = from.x + dx * step - (from.width * (scale - 1)) / 2
+    const y = from.y + dy * step - (from.height * (scale - 1)) / 2
+    return `translate(${Number(x.toFixed(1))}px, ${Number(y.toFixed(1))}px) scale(${scale})`
+  }
   return [
-    { offset: 0, transform: at(0, 1), easing: 'ease-out' },
-    { offset: 0.2, transform: at(-10, 1.04), easing: 'cubic-bezier(0.5, 0, 1, 0.6)' },
-    { offset: STRIKE_HIT, transform: at(travel, 1.08), easing: 'cubic-bezier(0.2, 0, 0, 1)' },
+    { offset: 0, transform: at(0, 1), easing: 'cubic-bezier(0.45, 0, 0.55, 1)' },
+    { offset: 0.22, transform: at(-STRIKE_WINDUP_PX, 1.1), easing: 'cubic-bezier(0.4, 0, 0.9, 0.5)' },
+    { offset: STRIKE_HIT, transform: at(travel, 1.12), easing: 'cubic-bezier(0.2, 0.7, 0.4, 1)' },
+    { offset: 0.6, transform: at(travel - recoil, 1.1), easing: 'cubic-bezier(0.45, 0, 0.55, 1)' },
     { offset: 1, transform: at(0, 1) },
   ]
 }

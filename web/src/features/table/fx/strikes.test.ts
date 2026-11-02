@@ -16,11 +16,14 @@ import type { Moment } from './derive'
 import type { Effect } from './model'
 import {
   impactDelay,
+  holdDeaths,
   impactsOf,
   planStrikes,
   splitImpacts,
   STRIKE_GAP_PX,
   STRIKE_HIT,
+  STRIKE_RECOIL_PX,
+  STRIKE_WINDUP_PX,
   STRIKE_MS,
   strikeKeyframes,
 } from './strikes'
@@ -216,10 +219,14 @@ describe('impacts', () => {
   })
 })
 
-/** The x and y a keyframe's transform moves to. */
+/** Where the centre of a 100 x 140 picture stands under a keyframe's transform, rounded to whole pixels. */
 const moveOf = (frame: Keyframe): [number, number] => {
-  const match = /translate\((-?\d+)px, (-?\d+)px\)/.exec(String(frame.transform))
-  return [Number(match?.[1]), Number(match?.[2])]
+  const match = /translate\((-?[\d.]+)px, (-?[\d.]+)px\) scale\(([\d.]+)\)/.exec(String(frame.transform))
+  const scale = Number(match?.[3])
+  return [
+    Math.round(Number(match?.[1]) + (100 * scale) / 2),
+    Math.round(Number(match?.[2]) + (140 * scale) / 2),
+  ]
 }
 
 describe('strikeKeyframes', () => {
@@ -231,16 +238,21 @@ describe('strikeKeyframes', () => {
     ['meets a striker that strikes back halfway', true, (300 - 140 - STRIKE_GAP_PX) / 2],
   ])('%s', (_name, mutual, travel) => {
     const frames = strikeKeyframes(from, to, mutual)
-    expect(frames.map((frame) => frame.offset)).toEqual([0, 0.2, STRIKE_HIT, 1])
-    expect(moveOf(frames[0] ?? {})).toEqual([0, 300])
-    expect(moveOf(frames[1] ?? {})).toEqual([0, 310])
-    expect(moveOf(frames[2] ?? {})).toEqual([0, Math.round(300 - travel)])
-    expect(moveOf(frames.at(-1) ?? {})).toEqual([0, 300])
+    expect(frames.map((frame) => frame.offset)).toEqual([0, 0.22, STRIKE_HIT, 0.6, 1])
+    expect(moveOf(frames[0] ?? {})).toEqual([50, 370])
+    expect(moveOf(frames[1] ?? {})).toEqual([50, 370 + STRIKE_WINDUP_PX])
+    expect(moveOf(frames[2] ?? {})).toEqual([50, Math.round(370 - travel)])
+    expect(moveOf(frames[3] ?? {})).toEqual([
+      50,
+      Math.round(370 - travel + Math.min(STRIKE_RECOIL_PX, travel)),
+    ])
+    expect(moveOf(frames.at(-1) ?? {})).toEqual([50, 370])
   })
 
   it('never passes through a target it already touches', () => {
     const frames = strikeKeyframes(from, { ...from, y: 250 })
-    expect(moveOf(frames[2] ?? {})).toEqual([0, 300])
+    expect(moveOf(frames[2] ?? {})).toEqual([50, 370])
+    expect(moveOf(frames[3] ?? {})).toEqual([50, 370])
   })
 
   it('turns a tapped box back upright about its centre', () => {
@@ -251,5 +263,28 @@ describe('strikeKeyframes', () => {
       height: 140,
     })
     expect(uprightBox(from)).toBe(from)
+  })
+})
+
+describe('holdDeaths', () => {
+  const plans = [
+    plan(MY_GIANT, [{ target: { object: FOE_BEAR }, amount: 2 }]),
+    plan(MY_BEAR, [{ target: { player: FOE }, amount: 1 }], 1),
+  ]
+  const died = (object: number): Effect =>
+    ({ kind: 'died', object, seat: FOE, row: 'creatures', snapshot: {}, before: null, damage: 2 }) as Effect
+
+  it.each<[string, number, number | undefined]>([
+    ['a struck creature dies as the strike lands on it', FOE_BEAR, impactDelay(0, 2)],
+    ['a striker that dies does once it is back, a wave later', MY_BEAR, 2 * STRIKE_MS * 2],
+    ['a creature combat does not touch dies at once', 999, undefined],
+  ])('%s', (_name, object, hold) => {
+    const [effect] = holdDeaths([died(object)], plans, 2)
+    expect(effect !== undefined && 'hold' in effect ? effect.hold : undefined).toBe(hold)
+  })
+
+  it('leaves every other effect as it was', () => {
+    const hurt: Effect = { kind: 'damaged', object: FOE_BEAR, amount: 2 }
+    expect(holdDeaths([hurt], plans)).toEqual([hurt])
   })
 })

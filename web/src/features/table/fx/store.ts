@@ -18,7 +18,7 @@ import { createStrikes } from './strikeLayer'
 import type { Strikes } from './strikeLayer'
 import { createTravel } from './travel'
 import type { Travel, TravelOptions } from './travel'
-import type { Effect, FxEntry, FxKind, Ghost } from './model'
+import type { Effect, FxEntry, Ghost } from './model'
 
 /** `off` plays nothing, `reduced` only the highlights that need no motion, `full` everything. */
 export type FxMode = 'off' | 'reduced' | 'full'
@@ -146,11 +146,13 @@ export function createFx(options: FxOptions = {}): Fx {
     const objects = new Map(state.objects)
     const seats = new Map(state.seats)
     const ghosts = new Map(state.ghosts)
-    const started = new Map<FxKind, Set<number>>()
+    // Grouped by how long they last: their kind, and how long a held death waits first.
+    const started = new Map<number, Set<number>>()
     for (const effect of shown) {
       last += 1
       const token = last
-      started.set(effect.kind, (started.get(effect.kind) ?? new Set<number>()).add(token))
+      const ms = FX_MS[effect.kind] * slow + (effect.kind === 'died' ? (effect.hold ?? 0) : 0)
+      started.set(ms, (started.get(ms) ?? new Set<number>()).add(token))
       if (effect.kind === 'died') {
         const key = rowKey(effect.seat, effect.row)
         const ghost: Ghost = {
@@ -158,11 +160,12 @@ export function createFx(options: FxOptions = {}): Fx {
           object: effect.snapshot,
           before: effect.before,
           damage: effect.damage,
+          hold: effect.hold ?? 0,
         }
         ghosts.set(key, [...(ghosts.get(key) ?? NO_GHOSTS), ghost])
       } else if ('ghost' in effect && effect.ghost !== undefined) {
         const { snapshot, before } = effect.ghost
-        const ghost: Ghost = { token, object: snapshot, before, damage: 0 }
+        const ghost: Ghost = { token, object: snapshot, before, damage: 0, hold: 0 }
         ghosts.set(STACK_GHOSTS, [...(ghosts.get(STACK_GHOSTS) ?? NO_GHOSTS), ghost])
         const entry: FxEntry = { kind: effect.kind, token, amount: 0, own: false }
         objects.set(effect.object, put(objects.get(effect.object), entry))
@@ -180,11 +183,11 @@ export function createFx(options: FxOptions = {}): Fx {
       }
     }
     store.setState({ objects, seats, ghosts })
-    for (const [kind, tokens] of started) {
+    for (const [ms, tokens] of started) {
       const timer = timers.setTimeout(() => {
         waiting.delete(timer)
         expire(tokens)
-      }, FX_MS[kind] * slow)
+      }, ms)
       waiting.add(timer)
     }
   }
