@@ -22,6 +22,9 @@ export function listOf(items: readonly string[]): string {
   return items.length === 1 ? last : `${items.slice(0, -1).join(', ')} and ${last}`
 }
 
+/** Said after numbers the engine worked out with the first option of a choice. */
+export const CHOICE_WORDS = 'depending on a choice of effects'
+
 /** "1 damage", "4 damage". */
 const damageOf = (amount: number): string => `${amount} damage`
 
@@ -62,6 +65,7 @@ export function forecastSentences(forecast: CombatForecast, names: ForecastNames
       `${attacker} is blocked by ${blockers}${fates.length === 0 ? '' : `: ${fates.join(', ')}`}.`,
     )
   }
+  if (forecast.depends_on_choice === true) sentences.push('These numbers change with a choice of effects.')
   return sentences
 }
 
@@ -83,13 +87,17 @@ export function forecastSummary(forecast: CombatForecast, names: ForecastNames):
       (player) =>
         `${capital(names.player(player.player))} would take ${damageOf(player.damage)}${player.lethal ? ', which is lethal' : ''}`,
     )
-  return `${[deaths, ...(hurt.length === 0 ? ['No player would take damage'] : hurt)].join('. ')}.`
+  const sentence = [deaths, ...(hurt.length === 0 ? ['No player would take damage'] : hurt)].join('. ')
+  return forecast.depends_on_choice === true ? `${sentence}, ${CHOICE_WORDS}.` : `${sentence}.`
 }
 
 /** What a creature's outlook says: "would take 3 damage and die", "would take 1 damage", "would die". */
 export function outlookText(outlook: CreatureOutlook): string {
-  if (outlook.damage === 0) return 'would die'
-  return `would take ${damageOf(outlook.damage)}${outlook.dies ? ' and die' : ''}`
+  const text =
+    outlook.damage === 0
+      ? 'would die'
+      : `would take ${damageOf(outlook.damage)}${outlook.dies ? ' and die' : ''}`
+  return outlook.choice ? `${text}, ${CHOICE_WORDS}` : text
 }
 
 /** What a card's spoken name gains from its outlook: ", would take 3 damage and die". Nothing without one. */
@@ -98,7 +106,8 @@ export function outlookWords(outlook: CreatureOutlook | null): string {
 }
 
 /** A seat's life under the forecast in words, for its panel: "Life would go from 20 to 16, which is lethal". */
-export function lifeWords(player: PlayerForecast): string {
+export function lifeWords(player: PlayerForecast, choice = false): string {
   if (player.damage === 0 && player.life_after === player.life) return 'Takes no combat damage'
-  return `Life would go from ${player.life} to ${player.life_after}${player.lethal ? ', which is lethal' : ''}`
+  const words = `Life would go from ${player.life} to ${player.life_after}${player.lethal ? ', which is lethal' : ''}`
+  return choice ? `${words}, ${CHOICE_WORDS}` : words
 }

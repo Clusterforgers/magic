@@ -68,7 +68,7 @@ Items that touch the running game come first; the play-session findings (pf) lea
 The table and its prompts are live; the items below polish them.
 
 - [ ] (i2) Arena flow P10: smart stops, per-ability yields, an order-by-timestamp preference, damage auto-assign and the answer to a one-option decision (`docs/arena-flow.md`)
-- [ ] The forecast and block preview mark numbers that depend on a choice (`CombatForecast.depends_on_choice`)
+- [ ] (fc1) A narrow seat tile keeps its name readable beside a life forecast chip (the "≈-6" chip leaves "Al" almost nothing at three seats)
 - [ ] (a2c) The support mark on the table tells Partial from Manual: `ObjectView` needs the card's support state (a view field), since manual clauses alone do not say which
 - [ ] (a2g) A token lookup that finds several equal records prefers the one with the most printings (`token_pictures` returns the printing count) instead of the smallest oracle id
 - [ ] (a2e) The precon details dialog shows each card's picture through `CardPicture` and the hover picture, as the builder does

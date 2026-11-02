@@ -24,7 +24,7 @@ export interface DrawnForecastStore {
 }
 
 const sameOutlook = (a: CreatureOutlook, b: CreatureOutlook): boolean =>
-  a.damage === b.damage && a.dies === b.dies
+  a.damage === b.damage && a.dies === b.dies && a.choice === b.choice
 
 const samePlayer = (a: PlayerForecast, b: PlayerForecast): boolean =>
   a.damage === b.damage && a.life === b.life && a.life_after === b.life_after && a.lethal === b.lethal

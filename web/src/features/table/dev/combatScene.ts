@@ -135,3 +135,12 @@ export function withBlockForecast(fixture: Fixture): Fixture {
   const lethal = withLife(staged, view.viewer, Math.max(1, damage - 1))
   return { ...fixture, view: { ...lethal, combat_forecast: devForecast(lethal) } }
 }
+
+/** The forecast scene with numbers that depend on a choice of effects (`?prompt=forecast-choice`). */
+export function forecastChoiceScene(fixture: Fixture): Fixture {
+  const scene = forecastScene(fixture)
+  const forecast = scene.view.combat_forecast
+  return forecast === null || forecast === undefined
+    ? scene
+    : { ...scene, view: { ...scene.view, combat_forecast: { ...forecast, depends_on_choice: true } } }
+}

@@ -277,3 +277,12 @@ describe('lifeWords', () => {
     expect(lifeWords(player)).toBe(expected)
   })
 })
+
+describe('words for numbers that depend on a choice', () => {
+  it('adds the words to the outlook and the life line', () => {
+    expect(outlookWords({ damage: 3, dies: true, choice: true })).toBe(
+      ', would take 3 damage and die, depending on a choice of effects',
+    )
+    expect(lifeWords(hit(4, 20), true)).toBe('Life would go from 20 to 16, depending on a choice of effects')
+  })
+})
