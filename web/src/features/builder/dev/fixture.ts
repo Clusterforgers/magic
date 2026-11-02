@@ -29,7 +29,15 @@ import type { CheckScript } from '../fakeCheck'
 export const BUILDER_FIXTURE_MARKER = 'dev-builder-fixture-3c9e'
 
 /** The decks `/dev/builder?deck=` can show. */
-export const DEV_DECKS = ['mixed', 'manual', 'verified', 'changed', 'unchecked', 'partners', 'refused'] as const
+export const DEV_DECKS = [
+  'mixed',
+  'manual',
+  'verified',
+  'changed',
+  'unchecked',
+  'partners',
+  'refused',
+] as const
 
 /** One of the decks `/dev/builder` shows. */
 export type DevDeck = (typeof DEV_DECKS)[number]
@@ -334,7 +342,12 @@ const SEARCH_ONLY: Entry[] = [
 const PARTNERS: Entry[] = (
   [
     ['Tymna the Weaver', '{1}{W}{B}', ['W', 'B'], 'Lifelink\nPartner'],
-    ['Thrasios, Triton Hero', '{G}{U}', ['U', 'G'], '{4}: Scry 1, then reveal the top card of your library.\nPartner'],
+    [
+      'Thrasios, Triton Hero',
+      '{G}{U}',
+      ['U', 'G'],
+      '{4}: Scry 1, then reveal the top card of your library.\nPartner',
+    ],
   ] as [string, string, CardColor[], string][]
 ).map(([name, cost, identity, text]) => ({
   name,
