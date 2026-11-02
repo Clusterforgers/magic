@@ -69,11 +69,9 @@ const scry =
     decision: {
       player: view.viewer,
       kind: {
-        ChooseCards: {
+        Scry: {
           source: askerOf(view),
-          from: lookedIds(view).slice(0, count),
-          min: 0,
-          max: count,
+          cards: lookedIds(view).slice(0, count),
           text: SCRY_WORDS,
         },
       },

@@ -170,6 +170,13 @@ const ROWS: Row[] = [
     0,
     { OrderCards: [other, mine] },
   ],
+  [
+    'Scry',
+    { Scry: { source: mine, cards: [other, mine] } },
+    ['Keep every card on top'],
+    0,
+    { Scry: { top: [other, mine], bottom: [] } },
+  ],
   ['YesNo', { YesNo: { source: mine, text: 'Draw a card?' } }, ['Yes', 'No'], 0, { YesNo: true }],
   [
     'ChooseOption',

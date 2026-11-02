@@ -122,7 +122,7 @@ fn a_rebuilt_engine_asks_what_the_original_asks_about_libraries(
             );
             if matches!(
                 decision.kind,
-                DecisionKind::ChooseCards(_) | DecisionKind::OrderCards(_)
+                DecisionKind::ChooseCards(_) | DecisionKind::OrderCards(_) | DecisionKind::Scry(_)
             ) {
                 asked += 1;
             }

@@ -625,6 +625,11 @@ const ANSWERS: Record<string, (turn: Turn) => Promise<string>> = {
     return 'keeps the order of the cards'
   },
 
+  async Scry({ player }) {
+    await button(player.page, 'Confirm').click()
+    return 'keeps every card of the scry on top'
+  },
+
   async OrderTriggers({ player }) {
     await button(player.page, 'Confirm order').click()
     return 'keeps the order of the triggers'

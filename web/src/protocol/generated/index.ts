@@ -219,6 +219,8 @@ export type { Rule } from "./Rule";
 export type { RuleEffect } from "./RuleEffect";
 export type { RulingView } from "./RulingView";
 export type { Scried } from "./Scried";
+export type { ScryChoice } from "./ScryChoice";
+export type { ScryOptions } from "./ScryOptions";
 export type { SeatDeck } from "./SeatDeck";
 export type { Selector } from "./Selector";
 export type { ServerMessage } from "./ServerMessage";

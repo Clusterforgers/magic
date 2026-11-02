@@ -1,4 +1,4 @@
-//! Goal: Opt, Brainstorm and the other library effects play whole at tables of two, three and four seats, as their cards say: a scry shows the top cards and asks which go to the bottom (none, some or all, from a library of any length, and not at all for a count of nothing or an empty library) and the order of the cards on each side; Brainstorm draws three and takes two from the hand back on top in the order its player chooses; a shuffle comes from the game's random stream, the same for the same seed; a reveal, a look and a move to the bottom work in the order of the card, Eternal Witness returns a card from the graveyard only when its controller says yes, the controller of the spell chooses the order of the cards it puts into a library, answers to an order of cards are checked by name, an engine rebuilt from the log asks the same question at each decision, and the log replays to the state it was played to.
+//! Goal: Opt, Brainstorm and the other library effects play whole at tables of two, three and four seats, as their cards say: a scry shows the top cards and asks one question that splits them (none, some or all to the bottom, from a library of any length, and not at all for a count of nothing or an empty library) and orders both piles; Brainstorm draws three and takes two from the hand back on top in the order its player chooses; a shuffle comes from the game's random stream, the same for the same seed; a reveal, a look and a move to the bottom work in the order of the card, Eternal Witness returns a card from the graveyard only when its controller says yes, the controller of the spell chooses the order of the cards it puts into a library, answers to an order of cards are checked by name, an engine rebuilt from the log asks the same question at each decision, and the log replays to the state it was played to.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::common;
@@ -8,7 +8,7 @@ use std::sync::Arc;
 use common::{name_of, names, pid};
 use mtg_cards::CardDefinition;
 use mtg_core::ids::ObjectId;
-use mtg_engine::choose::{CardsChoice, Choice, OrderChoice, Target, YesNoChoice};
+use mtg_engine::choose::{CardsChoice, Choice, OrderChoice, ScryChoice, Target, YesNoChoice};
 use mtg_engine::decision::{Answer, DecisionKind, PayChoice, PriorityAction};
 use mtg_engine::error::IllegalAnswer;
 use mtg_engine::events::ResolutionOutcome;
@@ -153,21 +153,27 @@ fn opt_scries_one_card_and_then_draws(
 
     // The controller sees the top card and decides; nobody else is asked.
     let decision = driver.decision()?.clone();
-    let DecisionKind::ChooseCards(options) = &decision.kind else {
-        panic!("the scry asks which cards go to the bottom");
+    let DecisionKind::Scry(options) = &decision.kind else {
+        panic!("the scry is one decision");
     };
     assert_eq!(decision.player, pid(0));
-    assert_eq!(from_names(&driver, &options.from), [LIBRARY[0]]);
-    assert_eq!((options.min, options.max), (0, 1));
+    assert_eq!(from_names(&driver, &options.cards), [LIBRARY[0]]);
     assert_eq!(options.text, SCRY);
-    let top = options.from[0];
+    let top = options.cards[0];
     let begun = driver.engine().events().len();
-    let down = if bottom { vec![top] } else { Vec::new() };
-    driver.answer(cards(&down))?;
+    let (stay, down) = if bottom {
+        (Vec::new(), vec![top])
+    } else {
+        (vec![top], Vec::new())
+    };
+    driver.answer(Answer::Scry(ScryChoice {
+        top: stay,
+        bottom: down,
+    }))?;
     passes_until_asked(&mut driver)?;
 
     let played = &driver.engine().events()[begun..];
-    assert_eq!(story(played), ["chose", "scried", "drawn", "resolved"]);
+    assert_eq!(story(played), ["scried", "drawn", "resolved"]);
     let (kept, sent) = if bottom {
         (Vec::new(), vec![top])
     } else {
@@ -228,51 +234,37 @@ fn a_scry_puts_any_number_on_the_bottom_and_orders_what_is_left_on_each_side(
     let others: Vec<Vec<ObjectId>> = (1..seats).map(|seat| held(&driver, seat)).collect();
     resolve(&mut driver, "Scry")?;
 
-    let (mut asked, mut texts) = (0, Vec::new());
-    while let DecisionKind::ChooseCards(_) | DecisionKind::OrderCards(_) = &driver.decision()?.kind
-    {
-        let decision = driver.decision()?.clone();
-        assert_eq!(decision.player, pid(0), "the scrying player alone is asked");
-        asked += 1;
-        let answer = match decision.kind {
-            DecisionKind::ChooseCards(options) => {
-                assert_eq!(
-                    from_names(&driver, &options.from),
-                    deck[..looked],
-                    "the cards looked at, top first"
-                );
-                assert_eq!(
-                    (options.min, options.max),
-                    (0, u32::try_from(looked).unwrap())
-                );
-                texts.push(options.text.clone());
-                cards(&down.iter().map(|at| options.from[*at]).collect::<Vec<_>>())
-            }
-            DecisionKind::OrderCards(options) => {
-                texts.push(options.text.clone());
-                let mut offered = options.cards;
-                if backwards {
-                    offered.reverse();
-                }
-                order(&offered)
-            }
-            other => panic!("unexpected {}", other.name()),
-        };
-        driver.answer(answer)?;
-        passes_until_asked(&mut driver)?;
-        assert!(asked < 5, "a scry asks at most three questions");
+    // One decision asks the split and both orders; the scrying player alone is asked.
+    let decision = driver.decision()?.clone();
+    assert_eq!(decision.player, pid(0), "the scrying player alone is asked");
+    let DecisionKind::Scry(options) = decision.kind else {
+        panic!("a scry is one decision");
+    };
+    assert_eq!(
+        from_names(&driver, &options.cards),
+        deck[..looked],
+        "the cards looked at, top first"
+    );
+    let mut stay_ids: Vec<ObjectId> = (0..looked)
+        .filter(|at| !down.contains(at))
+        .map(|at| options.cards[at])
+        .collect();
+    let mut sent_ids: Vec<ObjectId> = down.iter().map(|at| options.cards[*at]).collect();
+    if backwards {
+        stay_ids.reverse();
+        sent_ids.reverse();
     }
+    let texts = vec![options.text.clone()];
+    driver.answer(Answer::Scry(ScryChoice {
+        top: stay_ids,
+        bottom: sent_ids,
+    }))?;
+    passes_until_asked(&mut driver)?;
 
     let kept: Vec<usize> = (0..looked).filter(|at| !down.contains(at)).collect();
     let mut stay: Vec<&str> = kept.iter().map(|at| deck[*at]).collect();
     let mut sent: Vec<&str> = down.iter().map(|at| deck[*at]).collect();
-    let mut expected_texts = vec![SCRY];
-    if stay.len() > 1 {
-        expected_texts.push(ON_TOP);
-    }
-    if sent.len() > 1 {
-        expected_texts.push(ON_THE_BOTTOM);
-    }
+    let expected_texts = vec![SCRY];
     if backwards {
         stay.reverse();
         sent.reverse();
@@ -639,13 +631,18 @@ fn refused(driver: &mut Driver, answer: Answer, expected: IllegalAnswer) {
 }
 
 #[test]
-fn an_answer_to_an_order_of_cards_that_is_not_every_card_offered_once_is_refused_by_name()
+fn an_answer_to_a_scry_that_is_not_every_card_offered_once_is_refused_by_name()
 -> Result<(), ScriptError> {
     let mut driver = Driver::from_scenario(table(3, scryer("Scry", 0, 3), &[], &LIBRARY))?;
     resolve(&mut driver, "Scry")?;
-    driver.answer(cards(&[]))?;
-    let DecisionKind::OrderCards(options) = driver.decision()?.kind.clone() else {
-        panic!("the three cards that stay are ordered");
+    let DecisionKind::Scry(options) = driver.decision()?.kind.clone() else {
+        panic!("the three cards are scried");
+    };
+    let split = |top: &[ObjectId], bottom: &[ObjectId]| {
+        Answer::Scry(ScryChoice {
+            top: top.to_vec(),
+            bottom: bottom.to_vec(),
+        })
     };
     let [a, b, c] = options.cards[..] else {
         panic!("three cards are offered");
@@ -653,17 +650,22 @@ fn an_answer_to_an_order_of_cards_that_is_not_every_card_offered_once_is_refused
     let foreign = driver.state().zone(Zone::Library(pid(0)))[0];
     refused(
         &mut driver,
-        order(&[a, b, foreign]),
+        split(&[a, b], &[foreign]),
         IllegalAnswer::NotOffered("card"),
     );
     refused(
         &mut driver,
-        order(&[a, a, b]),
+        split(&[a, a], &[b]),
         IllegalAnswer::Duplicate("card"),
     );
     refused(
         &mut driver,
-        order(&[a, b]),
+        split(&[a], &[a, b, c]),
+        IllegalAnswer::Duplicate("card"),
+    );
+    refused(
+        &mut driver,
+        split(&[a], &[b]),
         IllegalAnswer::WrongCount {
             expected: 3,
             got: 2,
@@ -671,7 +673,7 @@ fn an_answer_to_an_order_of_cards_that_is_not_every_card_offered_once_is_refused
     );
     refused(
         &mut driver,
-        order(&[]),
+        split(&[], &[]),
         IllegalAnswer::WrongCount {
             expected: 3,
             got: 0,
@@ -681,44 +683,26 @@ fn an_answer_to_an_order_of_cards_that_is_not_every_card_offered_once_is_refused
         &mut driver,
         cards(&[a, b, c]),
         IllegalAnswer::WrongKind {
-            expected: "order-cards",
+            expected: "scry",
             got: "choose-cards",
         },
     );
-    driver.answer(order(&[c, a, b]))?;
+    refused(
+        &mut driver,
+        order(&[a, b, c]),
+        IllegalAnswer::WrongKind {
+            expected: "scry",
+            got: "order-cards",
+        },
+    );
+    driver.answer(split(&[c, a], &[b]))?;
     passes_until_asked(&mut driver)?;
-    let expected: Vec<&str> = [LIBRARY[2], LIBRARY[0], LIBRARY[1]]
+    let expected: Vec<&str> = [LIBRARY[2], LIBRARY[0]]
         .into_iter()
         .chain(LIBRARY[3..].iter().copied())
+        .chain([LIBRARY[1]])
         .collect();
     assert_eq!(library(&driver, 0), expected);
-    Ok(())
-}
-
-#[test]
-fn an_answer_to_the_choice_of_cards_for_the_bottom_is_checked_like_any_choice_of_cards()
--> Result<(), ScriptError> {
-    let mut driver = Driver::from_scenario(table(2, scryer("Scry", 0, 2), &[], &LIBRARY))?;
-    resolve(&mut driver, "Scry")?;
-    let DecisionKind::ChooseCards(options) = driver.decision()?.kind.clone() else {
-        panic!("the cards for the bottom are chosen");
-    };
-    let third = driver.state().zone(Zone::Library(pid(0)))[3];
-    refused(
-        &mut driver,
-        cards(&[third]),
-        IllegalAnswer::NotOffered("card"),
-    );
-    refused(
-        &mut driver,
-        cards(&[options.from[0], options.from[0]]),
-        IllegalAnswer::Duplicate("card"),
-    );
-    refused(
-        &mut driver,
-        cards(&[options.from[0], options.from[1], third]),
-        IllegalAnswer::NotOffered("card"),
-    );
     Ok(())
 }
 
@@ -777,6 +761,16 @@ fn answer_for(decision: &Decision, spell: &str, backwards: bool) -> Answer {
             }
             order(&offered)
         }
+        DecisionKind::Scry(options) => {
+            let mut offered = options.cards.clone();
+            if backwards {
+                offered.reverse();
+            }
+            Answer::Scry(ScryChoice {
+                top: offered,
+                bottom: Vec::new(),
+            })
+        }
         other => panic!("the script for {spell} does not expect {}", other.name()),
     }
 }
@@ -826,7 +820,7 @@ fn an_engine_rebuilt_from_the_log_asks_the_same_question_at_every_decision()
             }
             library_questions += usize::from(matches!(
                 decision.kind,
-                DecisionKind::ChooseCards(_) | DecisionKind::OrderCards(_)
+                DecisionKind::ChooseCards(_) | DecisionKind::OrderCards(_) | DecisionKind::Scry(_)
             ));
             // Both engines take the same answer to the same events.
             let answer = answer_for(&decision, spell, true);

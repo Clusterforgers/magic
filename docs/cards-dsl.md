@@ -339,6 +339,7 @@ State is the fold of events; the engine is a pure function from state to `Progre
 | `DivideAmount` | controller | announcement | Fire // Ice |
 | `ChooseCards` | any seat | resolution; state-based actions (the legend rule); cost payment | Rampant Growth, Cultivate, Flooded Strand, Brainstorm, Jace 0, Faithless Looting, Archon (sacrifice and discard, by the target player), Sneak Attack |
 | `OrderCards` | any seat | resolution | Opt, Brainstorm, Jace 0, cascade (bottom) |
+| `Scry` | any seat | resolution | Opt, Consider, Preordain |
 | `YesNo` | any seat | resolution ("may", pay or not) | Eternal Witness, Jace +2, Rhystic Study (both players), Delver |
 | `ChooseOption` | any seat | resolution, replacement step | Hero of Bladehold in multiplayer (which defender), Treasure (colour), Mending Hands with the combat damage of two attackers (which damage the shield stops first) |
 | `ChooseCosts` | controller | announcement (optional costs; alternative costs are separate `castable` entries) | Burst Lightning, Gatekeeper of Malakir, Mulldrifter, Faithless Looting |

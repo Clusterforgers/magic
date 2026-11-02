@@ -7,7 +7,7 @@ use mtg_core::ids::ObjectId;
 use mtg_core::mana::{ManaCost, ManaType, PHYREXIAN_LIFE, Resolution};
 use mtg_engine::choose::{
     CardsChoice, CardsOptions, CostsChoice, CostsOptions, DivideChoice, DivideOptions, ModeChoice,
-    NumberChoice, NumberOptions, OptionChoice, OrderChoice, ReplacementChoice, Target,
+    NumberChoice, NumberOptions, OptionChoice, OrderChoice, ReplacementChoice, ScryChoice, Target,
     TargetChoice, TriggersChoice, YesNoChoice, YesNoOptions,
 };
 use mtg_engine::combat::AttackTarget;
@@ -553,6 +553,13 @@ impl RandomBot {
                 Answer::OrderCards(OrderChoice(
                     self.subset(&options.cards, options.cards.len()),
                 ))
+            }
+            DecisionKind::Scry(options) => {
+                // A random order of every card, cut at a random place into the top pile and the bottom pile.
+                let mut cards = self.subset(&options.cards, options.cards.len());
+                let at = self.rng.index(cards.len() + 1);
+                let bottom = cards.split_off(at);
+                Answer::Scry(ScryChoice { top: cards, bottom })
             }
             DecisionKind::YesNo(options) => self.yes_no(options),
             DecisionKind::ChooseOption(options) => {

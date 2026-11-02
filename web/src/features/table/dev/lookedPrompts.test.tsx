@@ -14,9 +14,9 @@ const PROMPTS = [
   ['replacement', 'ChooseReplacement', 3],
   ['replacement-two', 'ChooseReplacement', 2],
   ['replacement-clock', 'ChooseReplacement', 3],
-  ['scry', 'ChooseCards', 4],
-  ['scry-one', 'ChooseCards', 1],
-  ['scry-clock', 'ChooseCards', 4],
+  ['scry', 'Scry', 4],
+  ['scry-one', 'Scry', 1],
+  ['scry-clock', 'Scry', 4],
   ['scry-order', 'OrderCards', 4],
   ['scry-bottom', 'OrderCards', 3],
   ['put-back', 'OrderCards', 2],
@@ -35,9 +35,11 @@ describe.each(PROMPTS)('?prompt=%s', (prompt, name, count) => {
         ? kind.ChooseReplacement.candidates.map((c) => c.source)
         : 'ChooseCards' in kind
           ? kind.ChooseCards.from
-          : 'OrderCards' in kind
-            ? kind.OrderCards.cards
-            : []
+          : 'Scry' in kind
+            ? kind.Scry.cards
+            : 'OrderCards' in kind
+              ? kind.OrderCards.cards
+              : []
     expect(cards).toHaveLength(count)
     for (const card of cards) expect(ids.has(card)).toBe(true)
     expect(parseMessage({ type: 'Decision', id, decision }).ok).toBe(true)

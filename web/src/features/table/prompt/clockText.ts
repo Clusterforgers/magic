@@ -52,6 +52,7 @@ const AT_ZERO: Partial<Record<ClockKind, { countdown: string; announced: string 
   },
   ChooseCardsNone: { countdown: 'Choosing no cards for you', announced: 'chooses no cards for you' },
   OrderCards: { countdown: 'Keeping the order for you', announced: 'keeps the order for you' },
+  Scry: { countdown: 'Keeping every card on top for you', announced: 'keeps every card on top for you' },
   ChooseNumber: {
     countdown: 'Choosing the smallest number for you',
     announced: 'chooses the smallest number for you',

@@ -15,6 +15,7 @@ import type { OrderOptions } from "./OrderOptions";
 import type { PayOptions } from "./PayOptions";
 import type { PriorityOptions } from "./PriorityOptions";
 import type { ReplacementOptions } from "./ReplacementOptions";
+import type { ScryOptions } from "./ScryOptions";
 import type { TargetOptions } from "./TargetOptions";
 import type { TriggersOptions } from "./TriggersOptions";
 import type { YesNoOptions } from "./YesNoOptions";
@@ -22,4 +23,4 @@ import type { YesNoOptions } from "./YesNoOptions";
 /**
  * The kind of decision, each variant carrying its exhaustive options.
  */
-export type DecisionKind = { "Mulligan": MulliganOptions } | { "BottomCards": BottomOptions } | { "Priority": PriorityOptions } | { "PayMana": PayOptions } | { "DeclareAttackers": AttackOptions } | { "DeclareBlockers": BlockOptions } | { "AssignDamage": DamageOptions } | { "Discard": DiscardOptions } | { "ChooseTargets": TargetOptions } | { "ChooseMode": ModeOptions } | { "ChooseNumber": NumberOptions } | { "DivideAmount": DivideOptions } | { "ChooseCards": CardsOptions } | { "OrderCards": OrderOptions } | { "YesNo": YesNoOptions } | { "ChooseOption": OptionOptions } | { "ChooseCosts": CostsOptions } | { "OrderTriggers": TriggersOptions } | { "ChooseReplacement": ReplacementOptions };
+export type DecisionKind = { "Mulligan": MulliganOptions } | { "BottomCards": BottomOptions } | { "Priority": PriorityOptions } | { "PayMana": PayOptions } | { "DeclareAttackers": AttackOptions } | { "DeclareBlockers": BlockOptions } | { "AssignDamage": DamageOptions } | { "Discard": DiscardOptions } | { "ChooseTargets": TargetOptions } | { "ChooseMode": ModeOptions } | { "ChooseNumber": NumberOptions } | { "DivideAmount": DivideOptions } | { "ChooseCards": CardsOptions } | { "OrderCards": OrderOptions } | { "Scry": ScryOptions } | { "YesNo": YesNoOptions } | { "ChooseOption": OptionOptions } | { "ChooseCosts": CostsOptions } | { "OrderTriggers": TriggersOptions } | { "ChooseReplacement": ReplacementOptions };

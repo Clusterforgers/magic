@@ -11,11 +11,10 @@ use crate::resolve::{Cx, ResolveError, Run};
 use crate::wording;
 
 /// Each player the effect names who is still in the game scries the count, in turn order: they look at that many
-/// cards from the top of their library (all of a shorter one), choose which go to the bottom (any number, none or
-/// all), then put the cards that stay on top back in any order and the cards for the bottom in any order. Each
-/// player is asked first which cards go to the bottom, always, since seeing the cards is the point; an order of
-/// fewer than two cards is no question. A scry of nothing, or of an empty library, does not happen (CR 701.22b). All
-/// the scries are decided before the library of anyone changes; each is one `Scried`.
+/// cards from the top of their library (all of a shorter one) and answer one decision that splits them into the cards
+/// that stay on top and those for the bottom (any number, none or all) and orders both piles. Each player is asked,
+/// always, since seeing the cards is the point. A scry of nothing, or of an empty library, does not happen
+/// (CR 701.22b). All the scries are decided before the library of anyone changes; each is one `Scried`.
 pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     let Effect::Scry { who, count } = effect else {
         return Err(wrong_effect("Scry"));
@@ -40,46 +39,25 @@ fn scries(cx: &Cx<'_>, players: &[PlayerId], wanted: usize) -> Result<Vec<Event>
         if looked.is_empty() {
             continue;
         }
-        let chosen = questions.cards(
-            *player,
-            looked.clone(),
-            (0, looked.len()),
-            wording::SCRY.to_owned(),
-        )?;
-        let (down, stay): (Vec<_>, Vec<_>) = looked.into_iter().partition(|c| chosen.contains(c));
-        let top = in_any_order(&mut questions, *player, stay, false)?;
-        let bottom = in_any_order(&mut questions, *player, down, true)?;
+        let chosen = questions.scry(*player, looked, wording::SCRY.to_owned())?;
         events.push(Event::Scried(Scried {
             player: *player,
-            top,
-            bottom,
+            top: chosen.top,
+            bottom: chosen.bottom,
         }));
     }
     questions.end()?;
     Ok(events)
 }
 
-/// The cards in the order their owner puts them in; fewer than two have no order to choose.
-fn in_any_order(
-    questions: &mut Questions<'_>,
-    player: PlayerId,
-    cards: Vec<mtg_core::ids::ObjectId>,
-    bottom: bool,
-) -> Result<Vec<mtg_core::ids::ObjectId>, Stop> {
-    if cards.len() < 2 {
-        return Ok(cards);
-    }
-    questions.order(player, cards, wording::library_order(bottom))
-}
-
 #[cfg(test)]
 mod tests {
-    //! Goal: a scry looks at the top cards (all of a short library, none of an empty one or for a count of nothing), always asks which go to the bottom, asks the order of the cards that stay on top and of those for the bottom only when there are two or more, logs one `Scried` per player with both lists from the top down, decides every player's scry before any library changes, and refuses an answer it did not ask for.
+    //! Goal: a scry looks at the top cards (all of a short library, none of an empty one or for a count of nothing), asks one decision per player that splits the cards into a top pile and a bottom pile and orders both, logs one `Scried` per player with both piles in the order answered, decides every player's scry before any library changes, and refuses an answer it did not ask for.
     use mtg_core::ids::{ObjectId, PlayerId};
     use rstest::rstest;
 
     use super::*;
-    use crate::choose::{CardsOptions, Choice, OrderOptions};
+    use crate::choose::{Choice, ScryChoice, ScryOptions};
     use crate::decision::{Decision, DecisionKind};
     use crate::fixtures::{creature, setup, state};
     use crate::resolve::{Next, Resolving, Scope};
@@ -145,29 +123,25 @@ mod tests {
             .collect()
     }
 
-    fn cards(ids: &[ObjectId]) -> Choice {
-        Choice::Cards(ids.to_vec())
-    }
-
-    fn order(ids: &[ObjectId]) -> Choice {
-        Choice::Order(ids.to_vec())
+    fn piles(top: &[ObjectId], bottom: &[ObjectId]) -> Choice {
+        Choice::Scry(ScryChoice {
+            top: top.to_vec(),
+            bottom: bottom.to_vec(),
+        })
     }
 
     #[test]
-    fn the_first_question_is_which_cards_go_to_the_bottom_with_the_cards_looked_at_top_first() {
+    fn the_question_is_one_scry_with_the_cards_looked_at_top_first() {
         let game = game();
         let decision = asked(run_with(&game, Vec::new(), r#"{"Scry":{"count":3}}"#).unwrap());
         assert_eq!(
             decision,
             Decision {
                 player: ME,
-                kind: DecisionKind::ChooseCards(CardsOptions {
+                kind: DecisionKind::Scry(ScryOptions {
                     source: game.zone(Zone::Battlefield)[0],
-                    from: top(&game, ME, 3),
-                    min: 0,
-                    max: 3,
+                    cards: top(&game, ME, 3),
                     text: "Put any number of the cards on the bottom of your library.".into(),
-                    can_cancel: false,
                 })
             }
         );
@@ -177,86 +151,43 @@ mod tests {
     fn one_card_is_still_asked_since_the_player_sees_it() {
         let game = game();
         let decision = asked(run_with(&game, Vec::new(), r#"{"Scry":{}}"#).unwrap());
-        let DecisionKind::ChooseCards(options) = decision.kind else {
-            panic!("cards are chosen");
+        let DecisionKind::Scry(options) = decision.kind else {
+            panic!("a scry is asked");
         };
-        assert_eq!(
-            (options.from, options.min, options.max),
-            (top(&game, ME, 1), 0, 1)
-        );
+        assert_eq!(options.cards, top(&game, ME, 1));
     }
 
+    /// For a scry of `count` cards (numbered from the top), the answered split: which stay on top and which go down,
+    /// each in the order given; both piles come back as answered in one `Scried`.
     #[rstest]
-    #[case::none_to_the_bottom(&[], &[0, 1, 2], &[], true, false)]
-    #[case::one_to_the_bottom(&[1], &[0, 2], &[1], true, false)]
-    #[case::two_to_the_bottom(&[0, 2], &[1], &[0, 2], false, true)]
-    #[case::all_to_the_bottom(&[0, 1, 2], &[], &[0, 1, 2], false, true)]
-    fn the_cards_that_stay_and_those_that_go_are_ordered_only_when_there_are_two_or_more(
-        #[case] bottom_picks: &[usize],
+    #[case::one_stays(1, &[0], &[])]
+    #[case::one_goes(1, &[], &[0])]
+    #[case::two_swapped_on_top(2, &[1, 0], &[])]
+    #[case::two_split(2, &[1], &[0])]
+    #[case::three_all_on_top_reordered(3, &[2, 0, 1], &[])]
+    #[case::three_all_to_the_bottom_reordered(3, &[], &[1, 2, 0])]
+    #[case::three_mixed_reordered(3, &[2, 0], &[1])]
+    #[case::four_mixed_both_reordered(4, &[3, 1], &[2, 0])]
+    #[case::five_all_on_top_reversed(5, &[4, 3, 2, 1, 0], &[])]
+    #[case::five_all_to_the_bottom(5, &[], &[0, 1, 2, 3, 4])]
+    #[case::five_mixed(5, &[4, 0, 2], &[3, 1])]
+    fn one_answer_splits_the_cards_and_keeps_the_order_of_both_piles(
+        #[case] count: usize,
         #[case] stay: &[usize],
         #[case] down: &[usize],
-        #[case] asks_top: bool,
-        #[case] asks_bottom: bool,
     ) {
         let game = game();
-        let looked = top(&game, ME, 3);
+        let looked = top(&game, ME, count);
         let pick = |ix: &[usize]| ix.iter().map(|i| looked[*i]).collect::<Vec<_>>();
-        let json = r#"{"Scry":{"count":3}}"#;
-        let mut journal = vec![(ME, cards(&pick(bottom_picks)))];
-        let mut expected_top = pick(stay);
-        let mut expected_bottom = pick(down);
-        let next = run_with(&game, journal.clone(), json).unwrap();
-        if asks_top {
-            let decision = asked(next);
-            let DecisionKind::OrderCards(OrderOptions {
-                cards: offered,
-                text,
-                ..
-            }) = decision.kind
-            else {
-                panic!("the cards that stay are ordered");
-            };
-            assert_eq!(
-                (decision.player, offered.clone()),
-                (ME, expected_top.clone())
-            );
-            assert_eq!(text, "Put the cards on top of your library in any order.");
-            expected_top.reverse();
-            journal.push((ME, order(&expected_top)));
-        } else {
-            // Nothing to order on top, or one card: the next thing is the bottom order or the end.
-            assert_eq!(
-                matches!(next, Run::Ask(_)),
-                asks_bottom,
-                "the next question is the order of the bottom cards"
-            );
-        }
-        let next = run_with(&game, journal.clone(), json).unwrap();
-        if asks_bottom {
-            let decision = asked(next);
-            let DecisionKind::OrderCards(OrderOptions {
-                cards: offered,
-                text,
-                ..
-            }) = decision.kind
-            else {
-                panic!("the cards for the bottom are ordered");
-            };
-            assert_eq!(offered, expected_bottom);
-            assert_eq!(
-                text,
-                "Put the cards on the bottom of your library in any order."
-            );
-            expected_bottom.reverse();
-            journal.push((ME, order(&expected_bottom)));
-        }
-        let done = scried(run_with(&game, journal, json).unwrap());
+        let json = format!(r#"{{"Scry":{{"count":{count}}}}}"#);
+        let journal = vec![(ME, piles(&pick(stay), &pick(down)))];
+        let done = scried(run_with(&game, journal, &json).unwrap());
         assert_eq!(
             done,
             [Scried {
                 player: ME,
-                top: expected_top,
-                bottom: expected_bottom
+                top: pick(stay),
+                bottom: pick(down)
             }]
         );
     }
@@ -265,10 +196,10 @@ mod tests {
     fn a_short_library_is_looked_at_whole_and_an_empty_one_or_a_count_of_nothing_does_not_happen() {
         let game = game();
         let decision = asked(run_with(&game, Vec::new(), r#"{"Scry":{"count":9}}"#).unwrap());
-        let DecisionKind::ChooseCards(options) = decision.kind else {
-            panic!("cards are chosen");
+        let DecisionKind::Scry(options) = decision.kind else {
+            panic!("a scry is asked");
         };
-        assert_eq!(options.from, top(&game, ME, 5));
+        assert_eq!(options.cards, top(&game, ME, 5));
         assert_eq!(
             scried(run_with(&game, Vec::new(), r#"{"Scry":{"count":0}}"#).unwrap()),
             []
@@ -297,17 +228,13 @@ mod tests {
         let theirs = top(&game, FOE, 2);
         let first = asked(run_with(&game, Vec::new(), json).unwrap());
         assert_eq!(first.player, ME);
-        // Seat 0 puts one on the bottom; seat 1 is asked next.
-        let journal = vec![(ME, cards(&mine[..1]))];
+        let journal = vec![(ME, piles(&mine[1..], &mine[..1]))];
         let second = asked(run_with(&game, journal.clone(), json).unwrap());
-        assert_eq!(second.player, FOE);
-        let journal = [journal, vec![(FOE, cards(&[]))]].concat();
-        let third = asked(run_with(&game, journal.clone(), json).unwrap());
-        let DecisionKind::OrderCards(options) = third.kind else {
-            panic!("the cards that stay are ordered");
+        let DecisionKind::Scry(options) = second.kind else {
+            panic!("a scry is asked");
         };
-        assert_eq!((third.player, options.cards), (FOE, theirs.clone()));
-        let journal = [journal, vec![(FOE, order(&[theirs[1], theirs[0]]))]].concat();
+        assert_eq!((second.player, options.cards), (FOE, theirs.clone()));
+        let journal = [journal, vec![(FOE, piles(&[theirs[1], theirs[0]], &[]))]].concat();
         let done = scried(run_with(&game, journal, json).unwrap());
         assert_eq!(
             done,
@@ -331,15 +258,13 @@ mod tests {
         let game = game();
         let looked = top(&game, ME, 2);
         for journal in [
-            vec![(ME, cards(&[ObjectId(999)]))],
-            vec![(FOE, cards(&[]))],
+            vec![(ME, piles(&[ObjectId(999)], &[]))],
+            vec![(FOE, piles(&looked, &[]))],
             vec![(ME, Choice::YesNo(true))],
-            vec![(ME, cards(&[])), (ME, order(&[looked[0]]))],
-            vec![
-                (ME, cards(&[])),
-                (ME, order(&[looked[1], looked[0]])),
-                (ME, cards(&[])),
-            ],
+            vec![(ME, Choice::Order(looked.clone()))],
+            vec![(ME, piles(&looked[..1], &[]))],
+            vec![(ME, piles(&looked, &looked[..1]))],
+            vec![(ME, piles(&looked, &[])), (ME, piles(&looked, &[]))],
         ] {
             let refused = run_with(&game, journal.clone(), r#"{"Scry":{"count":2}}"#);
             assert!(
