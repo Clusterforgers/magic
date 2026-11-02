@@ -59,7 +59,7 @@ describe('usePrefsSync', () => {
     expect(window.localStorage.getItem(DEFAULT_STOPS_KEY)).toBeNull()
 
     rerender({ on: false })
-    expect(flowPrefs()).toEqual({ defaultStops: [], endTurnByHand: false })
+    expect(flowPrefs()).toEqual({ defaultStops: [], endTurnByHand: false, autoChoices: none.auto_choices })
   })
 
   it('saves a changed auto choice to the server and keeps it out of storage', async () => {

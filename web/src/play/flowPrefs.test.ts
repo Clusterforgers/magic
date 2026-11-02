@@ -101,8 +101,8 @@ describe('welcome requests', () => {
   })
 
   it.each([
-    [OFF, BOTH, [{ type: 'AutoChoices', choices: BOTH }]],
-    [BOTH, OFF, [{ type: 'AutoChoices', choices: OFF }]],
+    [OFF, BOTH, [{ type: 'AutoChoices', choices: OFF }]],
+    [BOTH, OFF, [{ type: 'AutoChoices', choices: BOTH }]],
     [BOTH, BOTH, []],
     [OFF, OFF, []],
     [
