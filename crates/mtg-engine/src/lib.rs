@@ -97,6 +97,7 @@ pub mod mana;
 pub mod manual;
 mod manual_control;
 mod manual_effects;
+pub mod manual_grant;
 mod manual_library;
 mod manual_roll;
 mod manual_show;

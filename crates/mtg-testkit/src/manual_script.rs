@@ -13,6 +13,7 @@ use mtg_engine::manual::{
     CommonToken, CustomToken, ManualAction, ManualReveal, ManualRoll, ManualToken, ManualZone,
     check as legal,
 };
+use mtg_engine::manual_grant::{ManualGrant, ManualKeyword};
 use mtg_engine::rng::GameRng;
 use mtg_engine::zones::Zone;
 
@@ -233,8 +234,23 @@ impl ManualScript {
     /// saw), a tutor of a library card the seat saw, removing summoning sickness, a sacrifice and giving control.
     fn control(&mut self, state: &GameState, player: PlayerId) -> ManualAction {
         let nothing = ManualAction::Search {};
-        match self.rng.below(8) {
+        match self.rng.below(10) {
             0 | 1 => nothing,
+            8 => {
+                let table = Self::objects(state, player, Scope::Battlefield);
+                let grant = if self.rng.below(2) == 0 {
+                    ManualGrant::Keyword(ManualKeyword::Deathtouch)
+                } else {
+                    ManualGrant::Text("Follows the table".to_owned())
+                };
+                let until_end_of_turn = self.rng.below(2) == 0;
+                self.pick(&table)
+                    .map_or(nothing, |object| ManualAction::GrantAbility {
+                        object,
+                        grant,
+                        until_end_of_turn,
+                    })
+            }
             2 | 3 => {
                 let seen: Vec<ObjectId> = state
                     .zone(Zone::Library(player))

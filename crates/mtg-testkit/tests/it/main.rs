@@ -307,6 +307,7 @@ mod manual_anytime;
 mod manual_cards;
 mod manual_control;
 mod manual_fuzz;
+mod manual_grant;
 mod manual_library;
 mod manual_roll;
 mod manual_show;

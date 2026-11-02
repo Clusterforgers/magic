@@ -292,6 +292,7 @@ impl Held {
             | Modification::SetTypes(_)
             | Modification::AddSubtype(_)
             | Modification::SetCreatureTypes(_)
+            | Modification::GrantText(_)
             | Modification::AddAllCreatureTypes
             | Modification::SetColors(_)
             | Modification::SetPowerToughness { .. }

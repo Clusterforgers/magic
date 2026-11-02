@@ -462,6 +462,7 @@ impl ObjectView {
             read: printed && card.read,
             partial: printed && card.partial,
             note: mtg_engine::sight::note_of(state, id).map(str::to_owned),
+            granted_text: mtg_engine::manual_grant::granted_text(state, id),
             identity: identity_of(state, object, card).filter(|_| printed),
             activated,
         })
@@ -510,6 +511,7 @@ impl ObjectView {
             read: false,
             partial: false,
             note: None,
+            granted_text: Vec::new(),
             identity: None,
             activated: Vec::new(),
         }

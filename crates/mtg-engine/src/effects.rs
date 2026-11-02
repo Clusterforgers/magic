@@ -105,6 +105,8 @@ pub enum Modification {
     AddAllCreatureTypes,
     /// Replaces the colors (layer 5).
     SetColors(ColorSet),
+    /// A line of text the table follows by hand (layer 6): it changes nothing the engine runs and `granted_text` lists it.
+    GrantText(String),
     /// Adds a keyword ability (layer 6); `keywords_of` reads it and `characteristics` leaves it alone.
     AddKeyword(#[cfg_attr(feature = "ts", ts(type = "unknown"))] Keyword),
     /// Removes a keyword ability (layer 6), printed or granted before it; `keywords_of` reads it.
@@ -205,6 +207,7 @@ impl Modification {
             Modification::SetColors(_) => Layer::Color,
             Modification::AddKeyword(_)
             | Modification::RemoveKeyword(_)
+            | Modification::GrantText(_)
             | Modification::GrantAbility(_)
             | Modification::LoseAbilities => Layer::Ability,
             Modification::SetPowerToughness { .. } => Layer::PtSet,
@@ -285,6 +288,7 @@ impl Modification {
             Modification::SetController(_)
             | Modification::AddKeyword(_)
             | Modification::RemoveKeyword(_)
+            | Modification::GrantText(_)
             | Modification::GrantAbility(_)
             | Modification::CantAttack
             | Modification::CantAttackYou { .. }

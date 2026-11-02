@@ -499,6 +499,15 @@ pub enum ManualAction {
         /// The permanent.
         object: ObjectId,
     },
+    /// Give a permanent a keyword the engine applies or a line of text, until end of turn or for good.
+    GrantAbility {
+        /// The permanent, whoever controls it.
+        object: ObjectId,
+        /// What it gets.
+        grant: crate::manual_grant::ManualGrant,
+        /// Whether it ends with the turn; otherwise it lasts as long as the permanent stays.
+        until_end_of_turn: bool,
+    },
     /// Another seat gains control of a permanent the seat controls, or a card the seat owns in its graveyard or in
     /// exile is put onto the battlefield under that seat's control.
     GiveControl {
@@ -654,6 +663,11 @@ pub(crate) fn events(
             crate::manual_show::note(state, player, *object, text)?
         }
         ManualAction::Roll { kind } => crate::manual_roll::roll(state, player, *kind)?,
+        ManualAction::GrantAbility {
+            object,
+            grant,
+            until_end_of_turn,
+        } => crate::manual_grant::grant(state, player, *object, grant, *until_end_of_turn)?,
         ManualAction::Search {}
         | ManualAction::Tutor { .. }
         | ManualAction::RemoveSickness { .. }
@@ -723,7 +737,7 @@ pub(crate) fn own(
 }
 
 /// The permanent `id`, whoever controls it.
-fn permanent(state: &GameState, id: ObjectId) -> Result<&GameObject, ManualRefusal> {
+pub(crate) fn permanent(state: &GameState, id: ObjectId) -> Result<&GameObject, ManualRefusal> {
     let object = state
         .object(id)
         .filter(|object| object.kind() != ObjectKind::Ability)

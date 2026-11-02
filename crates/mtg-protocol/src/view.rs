@@ -344,6 +344,11 @@ pub struct ObjectView {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[ts(optional)]
     pub note: Option<String>,
+    /// The lines of text a seat gave the object by hand (`ManualAction::GrantAbility`) that still hold, which every seat
+    /// that sees the object reads; left out while there are none.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[ts(as = "Option<Vec<String>>", optional)]
+    pub granted_text: Vec<String>,
     /// Which printed card the object shows, for a client to find its image and rules text: the card of the face in use or
     /// of the copy effect. Left out for a token, an ability, a card the game has no record of, and a face-down object to a
     /// seat that may not look at it.

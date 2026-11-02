@@ -2,6 +2,7 @@
 import type { CounterKind } from "./CounterKind";
 import type { DamageTarget } from "./DamageTarget";
 import type { ManaType } from "./ManaType";
+import type { ManualGrant } from "./ManualGrant";
 import type { ManualReveal } from "./ManualReveal";
 import type { ManualRoll } from "./ManualRoll";
 import type { ManualToken } from "./ManualToken";
@@ -174,7 +175,19 @@ object: ObjectId, } } | { "Sacrifice": {
 /**
  * The permanent.
  */
-object: ObjectId, } } | { "GiveControl": { 
+object: ObjectId, } } | { "GrantAbility": { 
+/**
+ * The permanent, whoever controls it.
+ */
+object: ObjectId, 
+/**
+ * What it gets.
+ */
+grant: ManualGrant, 
+/**
+ * Whether it ends with the turn; otherwise it lasts as long as the permanent stays.
+ */
+until_end_of_turn: boolean, } } | { "GiveControl": { 
 /**
  * The permanent or card.
  */

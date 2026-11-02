@@ -61,6 +61,7 @@ pub(crate) fn writes(modification: &Modification) -> Traits {
         | Modification::SwitchPowerToughness => Traits::POWER.or(Traits::TOUGHNESS),
         // An ability that is given adds effects (the pass finds them as they come) and changes none that exist.
         Modification::GrantAbility(_)
+        | Modification::GrantText(_)
         | Modification::CantAttack
         | Modification::CantAttackYou { .. }
         | Modification::CantBlock
