@@ -7,7 +7,7 @@ import { usePlay } from '@/features/game/gameContext'
 import { cn } from '@/lib/utils'
 import type { PlayerId } from '@/protocol/generated'
 import { DamageChips, TaxChips, useCommanderChips } from './CommanderChips'
-import { cornerHeight } from './cornerFit'
+import { cornerHeight, podIsTight } from './cornerFit'
 import { useEnchantChips } from './enchantChips'
 import { EnchantChips } from './EnchantChips'
 import { useDefender } from './combat/defender'
@@ -212,10 +212,37 @@ export const SeatPanel = memo(function SeatPanel({ seat, variant = 'panel' }: Se
     )
   }
 
+  // A short column folds the hand and library chips into the name row and the other chips into the pool's row, so the
+  // corner keeps the room for its pictures.
+  const tight = podIsTight(room.height)
+  // In the name row the chips drop their background, which is the room the name needs beside them.
+  const handDensity = tight ? 'tile' : 'line'
+  const handChips = (
+    <>
+      <CountChip zone="hand" count={counts.hand} density={handDensity} />
+      <CountChip zone="library" count={counts.library} density={handDensity} />
+    </>
+  )
+  const extraChips = (
+    <>
+      <RevealedChip owner={owner} player={player} density="line" />
+      <CompanionChip owner={owner} player={player} />
+      {/* One damage chip is the figure alone; with several each keeps the name of its commander. */}
+      <DamageChips
+        chips={chips.damage}
+        density="line"
+        compact={chips.damage.length === 1}
+        className="max-w-full"
+      />
+      <TaxChips chips={taxLoose} density="line" className="max-w-full" />
+      <EnchantChips chips={enchants} density="line" />
+    </>
+  )
   return (
     <section
       {...marks}
       data-variant="panel"
+      data-tight={tight || undefined}
       className={cn(
         // One track that may shrink (`minmax(0, 1fr)`): a chip that is longer than the pod is cut inside it instead of
         // widening the pod and pushing the life figure out of the column.
@@ -229,10 +256,18 @@ export const SeatPanel = memo(function SeatPanel({ seat, variant = 'panel' }: Se
       <div ref={above} data-slot="pod-top" className="grid grid-cols-[minmax(0,1fr)] content-start gap-2">
         <header className="flex items-center justify-between gap-2">
           <div className="grid min-w-0 gap-0.5">
-            {name}
+            {tight ? (
+              <div data-slot="pod-name-row" className="flex min-w-0 items-center gap-1">
+                {name}
+                {handChips}
+              </div>
+            ) : (
+              name
+            )}
             {/* Room for the pool is kept under the name, so nothing moves when mana floats. */}
-            <div data-slot="mana-slot" className="min-h-5">
+            <div data-slot="mana-slot" className={cn('min-h-5', tight && 'flex flex-wrap items-center gap-1')}>
               {mana}
+              {tight ? extraChips : null}
             </div>
             <UntappedSources seat={seat} />
           </div>
@@ -245,21 +280,12 @@ export const SeatPanel = memo(function SeatPanel({ seat, variant = 'panel' }: Se
         <div data-slot="pod-status" className="grid content-start gap-1 empty:hidden">
           {notes}
         </div>
-        <div data-slot="pod-counts" className="flex flex-wrap gap-1">
-          <CountChip zone="hand" count={counts.hand} density="line" />
-          <CountChip zone="library" count={counts.library} density="line" />
-          <RevealedChip owner={owner} player={player} density="line" />
-          <CompanionChip owner={owner} player={player} />
-          {/* One damage chip is the figure alone; with several each keeps the name of its commander. */}
-          <DamageChips
-            chips={chips.damage}
-            density="line"
-            compact={chips.damage.length === 1}
-            className="max-w-full"
-          />
-          <TaxChips chips={taxLoose} density="line" className="max-w-full" />
-          <EnchantChips chips={enchants} density="line" />
-        </div>
+        {tight ? null : (
+          <div data-slot="pod-counts" className="flex flex-wrap gap-1">
+            {handChips}
+            {extraChips}
+          </div>
+        )}
       </div>
       <SeatCorner
         owner={owner}

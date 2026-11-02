@@ -84,3 +84,11 @@ export function cornerHeight(column: number | null, above: number | null): numbe
   if (column === null || above === null) return null
   return Math.max(0, column - 2 * POD_PAD_PX - above - POD_GAP_PX)
 }
+
+/** A pod column shorter than this (px) cannot hold the pod's full blocks and the least picture: the pod folds its chips into the name and pool rows. */
+export const POD_TIGHT_PX = 180
+
+/** Whether a column of `height` px is tight; one that is not measured is not. */
+export function podIsTight(height: number | null): boolean {
+  return height !== null && height < POD_TIGHT_PX
+}
