@@ -221,6 +221,14 @@ pub struct ObjectView {
     pub power: Option<i32>,
     /// Current toughness, if it has one.
     pub toughness: Option<i32>,
+    /// The power a token was created with, so a client can tell it from a buffed or debuffed one; left out for any other object.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[ts(as = "Option<i32>", optional)]
+    pub printed_power: Option<i32>,
+    /// The toughness a token was created with; left out for any other object.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[ts(as = "Option<i32>", optional)]
+    pub printed_toughness: Option<i32>,
     /// Current abilities.
     pub abilities: Vec<AbilityDef>,
     /// Names of the keywords it has now, such as `Flying` and `First strike`, in the order of its rules; left out while it has none.

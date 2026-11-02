@@ -42,11 +42,32 @@ describe('statBadge', () => {
     ['still asking', creature(4, 4), 'loading', null, null],
     ['a card with no record', creature(4, 4), 'none', null, null],
     [
-      'a token shows its real numbers plainly',
+      'a token with no created numbers shows its real ones plainly',
       card({ kind: 'Token', power: 2, toughness: 2 }),
       'none',
       null,
       { kind: 'pt', text: '2/2', modified: null },
+    ],
+    [
+      'a token as created',
+      card({ kind: 'Token', power: 1, toughness: 1, printed_power: 1, printed_toughness: 1 }),
+      'none',
+      null,
+      { kind: 'pt', text: '1/1', modified: null },
+    ],
+    [
+      'a buffed token',
+      card({ kind: 'Token', power: 3, toughness: 3, printed_power: 1, printed_toughness: 1 }),
+      'none',
+      null,
+      { kind: 'pt', text: '3/3', modified: 'up' },
+    ],
+    [
+      'a debuffed token',
+      card({ kind: 'Token', power: 0, toughness: 1, printed_power: 1, printed_toughness: 1 }),
+      'none',
+      null,
+      { kind: 'pt', text: '0/1', modified: 'down' },
     ],
     [
       'a face-down creature shows its 2/2 plainly, whatever the card behind it is',

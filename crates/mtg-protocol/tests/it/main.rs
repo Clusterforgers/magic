@@ -96,6 +96,7 @@ mod split_second_view;
 mod sync;
 mod table_hidden;
 mod target_legality_view;
+mod token_printed_view;
 mod transcript;
 mod transform_view;
 mod vote_hidden;

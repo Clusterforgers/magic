@@ -383,6 +383,7 @@ impl ObjectView {
         };
         // An ability on the stack is named after its source and has nothing else of the source's printed side.
         let printed = object.kind() != ObjectKind::Ability;
+        let is_token = object.kind() == ObjectKind::Token && !behind;
         let name = shown_name(state, sight.viewer, object, &card.name);
         // An ability on the stack tells whether its source's card is owed when it resolves wherever it names the source,
         // so a client holds the seat across batches without the source in its view.
@@ -412,6 +413,8 @@ impl ObjectView {
             colors: chars.colors.iter().collect(),
             power: chars.power,
             toughness: chars.toughness,
+            printed_power: card.power.filter(|_| is_token),
+            printed_toughness: card.toughness.filter(|_| is_token),
             abilities: if behind {
                 card.abilities.clone()
             } else {
@@ -478,6 +481,8 @@ impl ObjectView {
             colors: Vec::new(),
             power: None,
             toughness: None,
+            printed_power: None,
+            printed_toughness: None,
             abilities: Vec::new(),
             keywords: Vec::new(),
             permanent: None,
