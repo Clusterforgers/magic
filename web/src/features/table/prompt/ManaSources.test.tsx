@@ -114,7 +114,7 @@ describe('the compact payment sheet', () => {
 
 describe('the colour switch on a chosen source', () => {
   const switchOf = (name: string): HTMLElement =>
-    within(prompt()).getByRole('button', { name: `Switch the colour of ${name}` })
+    within(prompt()).getByRole('button', { name: `Switch the color of ${name}` })
   const paying = (): (string | null)[] =>
     [...prompt().querySelectorAll('[data-slot="pay-chip"]')].map((el) => el.getAttribute('aria-label'))
 
@@ -152,7 +152,7 @@ describe('the colour switch on a chosen source', () => {
   it('has no switch for a source of one kind of mana', async () => {
     const { user } = open()
     await user.click(chip('Tap Sol Ring for'))
-    expect(within(prompt()).queryByRole('button', { name: 'Switch the colour of Sol Ring' })).toBeNull()
+    expect(within(prompt()).queryByRole('button', { name: 'Switch the color of Sol Ring' })).toBeNull()
   })
 })
 

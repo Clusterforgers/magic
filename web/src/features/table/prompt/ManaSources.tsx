@@ -151,8 +151,8 @@ export function ManaSources({
                   variant="outline"
                   size="sm"
                   data-slot="pay-switch"
-                  aria-label={`Switch the colour of ${group.name}`}
-                  title={`Switch the colour of ${group.name}`}
+                  aria-label={`Switch the color of ${group.name}`}
+                  title={`Switch the color of ${group.name}`}
                   className="-ml-px h-8 rounded-l-none px-1.5"
                   onClick={() => onSwitch?.(swapped)}
                 >
