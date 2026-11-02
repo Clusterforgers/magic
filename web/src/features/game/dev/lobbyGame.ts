@@ -38,9 +38,36 @@ const SEAT_DECKS: readonly SeatDeck[] = [
 
 /** The built-in decks the chooser lists. */
 const DEMO_DECKS: DeckInfo[] = [
-  { id: 'mono-green', name: 'Mono Green Stompers', color: 'Green', size: 60, cards: [] },
-  { id: 'mono-red', name: 'Mono Red Giants', color: 'Red', size: 60, cards: [] },
-  { id: 'mono-white', name: 'Mono White Weenies', color: 'White', size: 60, cards: [] },
+  {
+    id: 'mono-green',
+    name: 'Mono Green Stompers',
+    color: 'Green',
+    size: 60,
+    cards: [
+      { name: 'Forest', count: 24 },
+      { name: 'Grizzly Bears', count: 36 },
+    ],
+  },
+  {
+    id: 'mono-red',
+    name: 'Mono Red Giants',
+    color: 'Red',
+    size: 60,
+    cards: [
+      { name: 'Mountain', count: 24 },
+      { name: 'Hill Giant', count: 36 },
+    ],
+  },
+  {
+    id: 'mono-white',
+    name: 'Mono White Weenies',
+    color: 'White',
+    size: 60,
+    cards: [
+      { name: 'Plains', count: 24 },
+      { name: 'Savannah Lions', count: 36 },
+    ],
+  },
 ]
 
 const counts = (over: Partial<Counts>): Counts => ({
