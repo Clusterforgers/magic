@@ -71,6 +71,7 @@ mod tests {
                 summoning_sick: false,
                 prepared: false,
                 phased_out: false,
+                exerted: false,
                 level: None,
                 doors: None,
             }),

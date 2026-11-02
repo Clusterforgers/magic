@@ -842,6 +842,10 @@ describe('events with more than one shape', () => {
 
   it.each([
     [
+      ruleEffect({ MustAttackPlayers: [[{ id: 1, counter: 0 }, 0]] }, 'UntilEndOfTurn'),
+      'Grizzly Bears must attack Ana if able until end of turn',
+    ],
+    [
       ruleEffect({ MustAttack: [{ id: 1, counter: 0 }] }, 'UntilEndOfTurn'),
       'Grizzly Bears must attack if able until end of turn',
     ],

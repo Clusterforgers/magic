@@ -1,5 +1,5 @@
 import { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react'
-import { Check, Eraser, Swords, UsersRound, X } from 'lucide-react'
+import { Check, Eraser, Swords, UsersRound, X, Zap } from 'lucide-react'
 import { NativeSelect, NativeSelectOption } from '@/components/ui/native-select'
 import type { AttackerOption, AttackTarget, ObjectId, PlayerId } from '@/protocol/generated'
 import { useDefenderStore, usePublishDefenders } from '../../combat/defender'
@@ -205,10 +205,29 @@ export const DeclareAttackersPrompt: PromptComponent<'DeclareAttackers'> = ({ op
   // The required creatures left out of the attack, which the bar names.
   const missing = useMemo(() => required.filter((object) => !selection.has(object)), [required, selection])
   const missingCreatures = useObjects(missing)
+  // The declared attackers that may be exerted, each with a toggle in the bar; an exert of a creature taken out of the attack is dropped.
+  const [exertedSet, setExerted] = useState<ReadonlySet<ObjectId>>(new Set())
+  const exertable = useMemo(
+    () => declaredIds.filter((object) => offered.get(object)?.exert === true),
+    [declaredIds, offered],
+  )
+  const exertableCreatures = useObjects(exertable)
+  const exerting = exertable.filter((object) => exertedSet.has(object))
+  const toggleExert = (object: ObjectId): void =>
+    setExerted((current) => {
+      const next = new Set(current)
+      if (!next.delete(object)) next.add(object)
+      return next
+    })
   const elsewhere = aim !== undefined && declared.some(({ target }) => !sameTarget(target, aim))
   const confirm = (): void => {
-    if (declared.length > 0)
-      answer({ DeclareAttackers: declared.map(({ object, target }) => [object, target]) })
+    if (declared.length === 0) return
+    const attackers = declared.map(({ object, target }): [ObjectId, AttackTarget] => [object, target])
+    answer(
+      exerting.length > 0
+        ? { DeclareExerting: { attackers, exert: exerting } }
+        : { DeclareAttackers: attackers },
+    )
   }
   // With nothing focused, Enter confirms the attack that is chosen; Space is left alone.
   usePrimaryKey({ space: () => undefined, enter: confirm }, declared.length > 0)
@@ -289,6 +308,21 @@ export const DeclareAttackersPrompt: PromptComponent<'DeclareAttackers'> = ({ op
         disabled={cleared}
         onClick={clear}
       />
+      {exertable.map((object, index) => {
+        const name = exertableCreatures[index]?.name ?? 'creature'
+        const on = exertedSet.has(object)
+        return (
+          <BarButton
+            key={object}
+            variant={on ? 'secondary' : 'outline'}
+            icon={Zap}
+            label={`Exert ${name}`}
+            word={on ? 'Exerting' : 'Exert'}
+            aria-pressed={on}
+            onClick={() => toggleExert(object)}
+          />
+        )
+      })}
       <BarButton
         icon={Check}
         label="Confirm attack"

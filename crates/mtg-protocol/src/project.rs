@@ -347,6 +347,7 @@ impl ObjectView {
             summoning_sick: summoning_sick(state, id),
             prepared: p.prepared(),
             phased_out: object.zone() == Zone::PhasedOut,
+            exerted: !p.exerted().is_empty(),
             level: subtypes
                 .iter()
                 .any(|subtype| subtype.0 == "Class")

@@ -432,3 +432,36 @@ describe('a limit on the declaration', () => {
     ).toBeInTheDocument()
   })
 })
+
+describe('exerting an attacker', () => {
+  const [a, b] = creaturesOf(fixtureOf(2), 0) as [ObjectId, ObjectId]
+  const options: AttackOptions = {
+    attackers: [
+      { object: a, defenders: [{ Player: 1 }], exert: true },
+      { object: b, defenders: [{ Player: 1 }] },
+    ],
+  }
+
+  it('offers a toggle only for an attacker in the attack that may be exerted', async () => {
+    const { card, user } = attack(options)
+    expect(screen.queryByRole('button', { name: /^Exert / })).toBeNull()
+    await user.click(card(b))
+    expect(screen.queryByRole('button', { name: /^Exert / })).toBeNull()
+    await user.click(card(a))
+    expect(screen.getAllByRole('button', { name: /^Exert / })).toHaveLength(1)
+  })
+
+  it.each([
+    ['without the toggle', false],
+    ['with the toggle', true],
+  ])('answers %s', async (_, exert) => {
+    const { card, user, button, answer } = attack(options)
+    await user.click(card(a))
+    if (exert) await user.click(screen.getByRole('button', { name: /^Exert / }))
+    await user.click(button('Confirm attack'))
+    const attackers = [[a, { Player: 1 }]]
+    expect(answer.mock.calls).toEqual([
+      [exert ? { DeclareExerting: { attackers, exert: [a] } } : { DeclareAttackers: attackers }],
+    ])
+  })
+})

@@ -367,6 +367,7 @@ export function statusChips(object: ObjectView, role: CombatRole | null): Status
   if (object.copy !== undefined) add('identity', 'Copy')
   if (mergedCount(object) > 1) add('identity', `Merged ×${mergedCount(object)}`)
   if (state?.phased_out === true) add('identity', 'Phased out')
+  if (state?.exerted === true) add('identity', 'Exerted')
   if (state?.prepared === true) add('identity', 'Prepared')
   if (state?.level !== undefined) add('identity', `Level ${state.level}`)
   return chips
@@ -398,6 +399,7 @@ export function statusWords(object: ObjectView, role: CombatRole | null, links: 
     words.push(`merged from ${(object.merged ?? []).map((part) => part.name).join(', ')}`)
   }
   if (state?.phased_out === true) words.push('phased out')
+  if (state?.exerted === true) words.push('exerted')
   if (state?.prepared === true) words.push('prepared')
   if (state?.level !== undefined) words.push(`level ${state.level}`)
   if (isUnattached(object)) words.push('unattached')

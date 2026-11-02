@@ -22,6 +22,10 @@ summoning_sick: boolean,
  */
 prepared?: boolean, 
 /**
+ * Whether a player exerted the permanent and it still holds back its untap (CR 701.43). Left out while it is not.
+ */
+exerted?: boolean, 
+/**
  * The level of a Class (CR 716.2); left out for any other permanent.
  */
 level?: number, 

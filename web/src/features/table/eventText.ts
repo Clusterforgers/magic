@@ -212,6 +212,10 @@ function describeRule(effect: RuleEffect, n: EventNames): string {
   let what: string
   if (rule === 'GraveyardCardsUntargetable') what = "Cards in graveyards can't be targeted"
   else if ('MustAttack' in rule) what = `${named(rule.MustAttack)} must attack if able`
+  else if ('MustAttackPlayers' in rule)
+    what = rule.MustAttackPlayers.map(
+      ([object, player]) => `${n.card(object.id)} must attack ${n.seat(player)} if able`,
+    ).join(', ')
   else if ('MustBlock' in rule) what = `${named(rule.MustBlock)} must block if able`
   else if ('CantBeCountered' in rule) what = `${named(rule.CantBeCountered)} can't be countered`
   else if ('CantGainLife' in rule) what = `${seats(rule.CantGainLife)} can't gain life`
