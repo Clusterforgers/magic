@@ -19,7 +19,10 @@ const source = find((object) => object.zone === 'Battlefield' && object.controll
 const nameOf = (id: ObjectId): string => must(fixture.view.objects.find((object) => object.id === id)).name
 
 const preview = (): HTMLElement | null => screen.queryByTestId('card-preview')
-const shown = (): string => within(must(preview())).getAllByText(/./)[0]?.textContent ?? ''
+const shown = (): string => {
+  const first = within(must(preview())).getAllByText(/./)[0]
+  return (first?.closest('[data-name]') ?? first)?.textContent ?? ''
+}
 
 describe('the size of a tile', () => {
   it.each([

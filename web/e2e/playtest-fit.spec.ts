@@ -30,6 +30,37 @@ test.describe('the duel table', () => {
     await page.waitForSelector('[data-slot="mana-strip"]')
   })
 
+  test('a name breaks between words, and a land of a pile shows its whole name line', async ({ page }) => {
+    for (const size of SIZES) {
+      await atSize(page, size)
+      const broken = await page.evaluate(() =>
+        Array.from(document.querySelectorAll<HTMLElement>('[data-name] .truncate')).flatMap((word) => {
+          const line = parseFloat(getComputedStyle(word).lineHeight)
+          return word.getBoundingClientRect().height > line * 1.5 ? [word.textContent ?? ''] : []
+        }),
+      )
+      expect(broken, label(size)).toEqual([])
+      const covered = await page.evaluate(() =>
+        Array.from(document.querySelectorAll<HTMLElement>('ul[style*="grid-template-rows"] > li')).flatMap(
+          (item, at, all) => {
+            const next = all[at + 1]
+            const name = item.querySelector<HTMLElement>('[data-name]')
+            if (
+              next === undefined ||
+              name === null ||
+              next.getBoundingClientRect().left !== item.getBoundingClientRect().left
+            )
+              return []
+            return name.getBoundingClientRect().bottom > next.getBoundingClientRect().top + 0.5
+              ? [name.textContent ?? '']
+              : []
+          },
+        ),
+      )
+      expect(covered, label(size)).toEqual([])
+    }
+  })
+
   test('a type line ends above the mana symbols of its card', async ({ page }) => {
     for (const size of SIZES) {
       await atSize(page, size)
