@@ -40,6 +40,8 @@ export interface EventNames {
   permanent?(id: ObjectId): boolean
   /** The card an ability on the stack comes from, when the log knows the object is an ability. */
   ability?(id: ObjectId): ObjectId | undefined
+  /** The name of a door (0 or 1) of a Room, when the viewer knows it. */
+  door?(id: ObjectId, door: number): string | undefined
 }
 
 /** One log line. Minor lines (priority passes, mana, untaps) are drawn quietly. */
@@ -805,8 +807,10 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
   }
   if ('TurnedFaceUp' in event)
     return line(`${n.seat(event.TurnedFaceUp.player)} turns ${n.card(event.TurnedFaceUp.object)} face up`)
-  if ('DoorUnlocked' in event)
-    return line(`${n.seat(event.DoorUnlocked.player)} unlocks a door of ${n.card(event.DoorUnlocked.object)}`)
+  if ('DoorUnlocked' in event) {
+    const { player, object, door } = event.DoorUnlocked
+    return line(`${n.seat(player)} unlocks ${n.door?.(object, door) ?? `a door of ${n.card(object)}`}`)
+  }
   if ('CardParted' in event) {
     const { permanent, card, to } = event.CardParted
     return line(`${n.card(card)} goes to ${zoneWord(to, n)} apart from ${n.card(permanent)}`)

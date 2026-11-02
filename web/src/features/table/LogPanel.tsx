@@ -6,6 +6,8 @@ import { cn } from '@/lib/utils'
 import { foldLog } from './logFold'
 import type { FoldedLine } from './logFold'
 import { useSeatNamer } from './names'
+import { knownDoorFaces } from './printed'
+import { doorNameOf } from './rooms'
 import { SeatDot } from './PodParts'
 
 /** The card types of a permanent card: what a spell of another type is not. */
@@ -69,6 +71,10 @@ export function LogPanel() {
           card: (id) => objects[id]?.name || logNames[id] || 'a card',
           ability: (id) => objects[id]?.source,
           permanent: (id) => objects[id]?.types.some((type) => PERMANENT_TYPES.includes(type)) ?? false,
+          door: (id, at) => {
+            const room = objects[id]
+            return doorNameOf(room, at, room === undefined ? undefined : knownDoorFaces(room))
+          },
           clauses: (id) => objects[id]?.manual?.map((clause) => clause.text) ?? [],
         },
         { seats, players },

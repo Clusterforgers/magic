@@ -63,6 +63,16 @@ export function doorsOf(object: ObjectView, faces?: readonly string[]): Doors | 
   return state === undefined ? undefined : doorsNamed(object.name, state, faces?.[0], faces?.[1])
 }
 
+/** The name of door `at` of a Room permanent, or undefined when nothing names it yet. */
+export function doorNameOf(
+  object: ObjectView | undefined,
+  at: number,
+  faces?: readonly string[],
+): string | undefined {
+  const name = object === undefined ? undefined : doorsOf(object, faces)?.[at]?.name
+  return PLACE.some((place) => place === name) ? undefined : name
+}
+
 /** One door in words: "Grand Entryway unlocked". */
 export const doorWord = (door: Door): string => `${door.name} ${door.unlocked ? 'unlocked' : 'locked'}`
 
