@@ -17,6 +17,7 @@ import {
   manaLetter,
   powerToughness,
   rowOf,
+  linkWords,
   statusLabels,
   statusWords,
   typeLine,
@@ -218,6 +219,15 @@ describe('cardLabel', () => {
     expect(label).toBe(
       'Serra Angel, cost 1 generic, green, Creature — Bear, power 2, toughness 2, flying, first strike',
     )
+  })
+})
+
+describe('battle links', () => {
+  it.each([
+    ['Bo', ['battle protected by Bo']],
+    [undefined, []],
+  ] as [string | undefined, string[]][])('words a protector %s', (protector, expected) => {
+    expect(linkWords({ protector })).toEqual(expected)
   })
 })
 

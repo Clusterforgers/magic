@@ -8,6 +8,7 @@ mod attachment_view;
 mod batch_diff;
 mod batch_size;
 mod batch_visibility;
+mod battle_protector_view;
 mod bindings;
 mod c6_kw_renown_exploit_hidden;
 mod card_grants_games_hidden;

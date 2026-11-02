@@ -85,6 +85,7 @@ mod tests {
             loyalty_abilities: Vec::new(),
             attached_to: None,
             attached_player: None,
+            protector: None,
             paired_with: None,
             attachments: Vec::new(),
             gives: None,

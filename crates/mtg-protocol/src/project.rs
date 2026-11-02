@@ -245,6 +245,13 @@ fn copy_view(state: &GameState, sight: &Sight<'_>, object: &GameObject) -> Optio
         })
 }
 
+/// The player who protects `object`, a battle on the battlefield with a protector.
+fn protector_of(state: &GameState, object: &GameObject) -> Option<PlayerId> {
+    object
+        .permanent()
+        .and_then(|_| mtg_engine::battle::protector(state, object.id()))
+}
+
 /// The counters on a permanent by kind, in the order of the kind; none for an object that is no permanent.
 fn counters_view(object: &GameObject) -> Vec<(CounterKind, u32)> {
     object
@@ -408,6 +415,7 @@ impl ObjectView {
                 .collect(),
             attached_to: state.host_of(id),
             attached_player: state.player_host_of(id),
+            protector: protector_of(state, object),
             paired_with: state.partner_of(id),
             attachments: if object.permanent().is_some() {
                 attachments()
@@ -459,6 +467,7 @@ impl ObjectView {
             loyalty_abilities: Vec::new(),
             attached_to: None,
             attached_player: None,
+            protector: None,
             // Who is paired with whom is told by the public `Paired` event, so a face-down permanent shows it too.
             paired_with: state.partner_of(object.id()),
             attachments: Vec::new(),

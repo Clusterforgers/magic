@@ -48,7 +48,6 @@ One item is one piece of about 15 minutes and one line: the outcome, the cards i
 Items that touch the running game come first; the play-session findings (pf) lead, the web items before the engine and card items.
 
 - [ ] (pf1a) A card that says it can be your commander starts a game as one when the engine leaves its text to the table, as the deck check already accepts it
-- [ ] (pf2a) A battle is named with the seat that protects it in the attack prompt (a protector field in the view)
 - [ ] (v96f) A `/dev` scene plays a reveal and a die roll moment, so both are checked in screenshots at six sizes
 - [ ] (pf10a) The default stops and "End my turn by hand" are stored per account on the server, not per browser
 - [ ] (pf13a) The fuzz action script plays the new manual actions (search, tutor, sacrifice, remove summoning sickness, give control)
