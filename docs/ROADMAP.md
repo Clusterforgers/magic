@@ -68,14 +68,12 @@ Items that touch the running game come first; the play-session findings (pf) lea
 The table and its prompts are live; the items below polish them.
 
 - [ ] (i2a) Arena flow P10: smart stops, per-ability yields, an order-by-timestamp preference and damage auto-assign (`docs/arena-flow.md`)
-- [ ] (fc1) A narrow seat tile keeps its name readable beside a life forecast chip (the "≈-6" chip leaves "Al" almost nothing at three seats)
 - [ ] (a2c) The support mark on the table tells Partial from Manual: `ObjectView` needs the card's support state (a view field), since manual clauses alone do not say which
 - [ ] (a2g) A token lookup that finds several equal records prefers the one with the most printings (`token_pictures` returns the printing count) instead of the smallest oracle id
 - [ ] (a2e) The precon details dialog shows each card's picture through `CardPicture` and the hover picture, as the builder does
 - [ ] (a2f) The real database holds every precon printing (`fetch scryfall --printings`), so the table draws each card in its precon art instead of the card's default picture
 - [ ] (k1b) The one-line pods of three and four seats draw each commander (both of a partner pair), the graveyard and the exile as small pictures beside their chips, and pass the layout gate
 - [ ] (k1g) The layout gate and the fit spec also sweep 360, 768, 1400 and 1600x1000 (only the six design sizes today)
-- [ ] (k1h1) The answer buttons of a prompt sheet stay in view on a phone while its body scrolls (`commander-return` at 360x740 hides "Leave in graveyard" below the fold)
 - [ ] (ts5) A token's printed power and toughness reach the view (with `a2d`), so a buffed or debuffed token is tinted green or red as a card is; today a token's real numbers show plain
 - [ ] (ts6) `/dev/table?states=1` screenshots at the six sizes in both themes settle the marks on compact faces (under 76 px, where an attachment mark is an icon) and on tapped pictures
 - [ ] (pl1e1) At 1280x720 and below the duel opponent's pod column (119 px) draws its corner as pictures too: the blocks above the corner give up the 64 px they take

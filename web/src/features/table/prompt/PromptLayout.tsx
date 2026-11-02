@@ -61,7 +61,11 @@ export function PromptLayout({ text, children, compact = false }: PromptLayoutPr
       {title}
       <LiveText>{text}</LiveText>
       {children === undefined ? null : (
-        <div data-slot="prompt-actions" className="flex flex-wrap items-center gap-2 empty:hidden">
+        <div
+          data-slot="prompt-actions"
+          // Sticky to the sheet's bottom edge: the answers stay in view while the sheet's body scrolls.
+          className="sticky bottom-0 z-10 flex flex-wrap items-center gap-2 bg-muted py-1 empty:hidden"
+        >
           {children}
         </div>
       )}

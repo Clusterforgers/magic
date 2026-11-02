@@ -95,4 +95,9 @@ describe('the return choice', () => {
     expect(screen.getByRole('button', { name: 'Yes' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'No' })).toHaveFocus()
   })
+
+  it('keeps the answer row sticky at the sheet bottom, so the buttons stay in view while the sheet scrolls', () => {
+    const { container } = mount(RETURN, partner(RETURN), 'Put it into the command zone?')
+    expect(container.querySelector('[data-slot="prompt-actions"]')).toHaveClass('sticky', 'bottom-0')
+  })
 })

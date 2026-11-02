@@ -99,7 +99,7 @@ export const SeatTile = memo(function SeatTile({ seat, focused, onFocusSeat }: S
       <span className="flex h-6 items-center justify-between gap-2">
         <span className="flex min-w-0 items-center gap-1.5">
           <SeatDot seat={seat} />
-          <span className="truncate text-sm font-semibold">{name}</span>
+          <span className="min-w-10 truncate text-sm font-semibold">{name}</span>
           {showsPriorityDot(flags.active, flags.priority) ? (
             <PriorityDot label={priorityName(name, false)} />
           ) : null}
