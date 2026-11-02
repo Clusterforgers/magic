@@ -107,7 +107,7 @@ export function SharedStrip({
             )}
             <OpeningStatus />
             {/* Their own full-width rows are for a strip that is one flex line; here they sit beside the prompt when there is room. */}
-            <div className="min-w-0 empty:hidden">
+            <div className="min-w-0 border-s border-border ps-4 empty:hidden">
               <CombatLegend />
             </div>
             <div className="hidden min-w-0 has-data-[slot=nothing-to-do]:block has-data-[slot=rewound]:block">

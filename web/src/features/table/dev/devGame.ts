@@ -177,7 +177,7 @@ export interface FixtureGameOptions extends FixtureOptions {
   /** Oracle ids by name (`?cards=real`): the cards get identities and the showcase joins the viewer's battlefield. */
   real?: RealIds
   prompt?: string
-  turn?: 'you'
+  turn?: 'you' | 'left'
   /** The step the turn is in, whatever the fixture or the prompt's moment has; theirs when left out. */
   step?: Step
   /** House rules that differ from the format's own, from the start; none when left out. */
@@ -208,6 +208,15 @@ const DEV_TABLE_RULES: HouseRules = {
   free_mulligans: 1,
 }
 
+/** The table with its active player gone (CR 800.4): the seat is out of the game and the turn goes on without it. */
+function withActiveLeft(moment: Fixture): Fixture {
+  const gone = moment.view.turn.active
+  const players = moment.view.players.map((player) =>
+    player.seat === gone ? { ...player, lost: 'Conceded' as const } : player,
+  )
+  return { ...moment, view: { ...moment.view, players, turn: { ...moment.view.turn, active_left: true } } }
+}
+
 /** A game context holding a fresh fixture table. */
 export function fixtureGame(options: FixtureGameOptions): GameContextValue {
   const sized = options.states === true ? { ...options, permanents: STATES_BASE_PERMANENTS } : options
@@ -227,8 +236,9 @@ export function fixtureGame(options: FixtureGameOptions): GameContextValue {
     options.step === undefined
       ? moment
       : { ...moment, view: { ...moment.view, turn: { ...moment.view.turn, step: options.step } } }
-  const fixture =
+  const ruled =
     options.rules === true ? { ...stepped, view: { ...stepped.view, house_rules: DEV_TABLE_RULES } } : stepped
+  const fixture = options.turn === 'left' ? withActiveLeft(ruled) : ruled
   const shown = prompt !== undefined ? prompt(fixture) : options.holding === true ? undefined : null
   store.setState(fixtureState(fixture, shown))
   if (options.stops !== undefined) store.setState({ stops: options.stops })

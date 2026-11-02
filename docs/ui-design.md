@@ -102,7 +102,7 @@ Whose turn it is stays on screen as a token: Legends of Runeterra's attack token
 
 | Cue | When | Shows | Reduced motion |
 |---|---|---|---|
-| Turn badge | always, in the top bar | the phase's icon and name, then "Your turn · 5 · Precombat main" (accent fill) or "Bo's turn · 5 · Declare blockers" (tint, accent edge); [Phase themes](#phase-themes) | unchanged |
+| Turn badge | always, in the top bar | the phase's icon and name, then "Your turn · 5 · Precombat main" (accent fill) or "Bo's turn · 5 · Declare blockers" (tint, accent edge), or "Bo left · 5 · Declare blockers" while the turn goes on without its player (`TurnView.active_left`, tint, no seat lit); [Phase themes](#phase-themes) | unchanged |
 | Turn banner | turn number or active seat changes | a band over the middle of the top bar, "Your turn" or "Bo's turn" and the turn; 250 ms in, 600 held, 150 out; `pointer-events: none` | fade only, held 1.5 s |
 | Active seat | during its turn | a 3 px edge inside the pod or tile (turn-you-edge or turn-them), with a faint tint on a tile; a dot after the name of a priority holder who is not active, named "Bo has priority"; your pod adds `your-turn-cue`, pulsing twice (5.6 s) and then resting; in Focus mode the strip leads with the active seat and the large board follows it, a 150 ms cross-fade | static ring, no fade |
 | Ticker | every batch | one line: the newest non-minor log line, plus "Skipped Upkeep, Draw" when steps passed with no window for you; three lines, 3 s each | static |

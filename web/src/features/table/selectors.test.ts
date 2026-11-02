@@ -13,12 +13,15 @@ import {
   combatRoleIn,
   defaultFocusOf,
   exileOf,
+  isActiveSeat,
   isBattlefieldEmpty,
+  isYourTurn,
   NO_IDS,
   playerOf,
   seatCountOf,
   splitBattlefield,
   stackTopFirst,
+  turnLeft,
 } from './selectors'
 import type { PlayState } from '@/play/store'
 import { indexById } from '@/play/view'
@@ -217,5 +220,26 @@ describe('seatCountOf and defaultFocusOf', () => {
     expect(defaultFocusOf(withView(own))).toBe(2)
     expect(defaultFocusOf({ ...state, view: null })).toBeNull()
     expect(defaultFocusOf({ ...state, seat: null })).toBeNull()
+  })
+})
+
+describe('a turn whose active player left', () => {
+  const left = (active: number, activeLeft: boolean): PlayState => {
+    const view = clone(must(state.view))
+    view.turn = { ...view.turn, active, active_left: activeLeft }
+    return { ...state, view }
+  }
+
+  it.each([0, 1, 2, 3])('has no active seat and no own turn when seat %i left', (active) => {
+    const gone = left(active, true)
+    expect(turnLeft(gone)).toBe(true)
+    expect([0, 1, 2, 3].some((seat) => isActiveSeat(gone, seat))).toBe(false)
+    expect(isYourTurn(gone)).toBe(false)
+  })
+
+  it('keeps the active seat while its player is still in the game', () => {
+    const live = left(2, false)
+    expect(turnLeft(live)).toBe(false)
+    expect(isActiveSeat(live, 2)).toBe(true)
   })
 })

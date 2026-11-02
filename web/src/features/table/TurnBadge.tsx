@@ -3,7 +3,7 @@ import { Pill } from '@/components/Pill'
 import { usePlay } from '@/features/game/gameContext'
 import { cn } from '@/lib/utils'
 import { useSeatNamer } from './names'
-import { isYourTurn } from './selectors'
+import { isYourTurn, turnLeft } from './selectors'
 import { PhaseTag } from './turn/PhaseTag'
 import { usePhase } from './turn/usePhase'
 import { badgeText } from './turnText'
@@ -29,6 +29,7 @@ export function TurnBadge() {
       turn: state.view?.turn.number ?? 0,
       active: state.view?.turn.active ?? 0,
       step: state.view?.turn.step ?? 'Untap',
+      left: turnLeft(state),
     })),
   )
   const seat = usePlay((state) => state.seat)
@@ -37,7 +38,12 @@ export function TurnBadge() {
   return (
     <div data-slot="turn-badge" className="flex h-7 min-w-0 items-center">
       {phase === null ? null : <PhaseTag phase={phase} yours={yours} />}
-      <h2 data-slot="banner" data-your-turn={yours || undefined} className="min-w-0">
+      <h2
+        data-slot="banner"
+        data-your-turn={yours || undefined}
+        data-left={input.left || undefined}
+        className="min-w-0"
+      >
         <Pill
           data-themed={phase === null ? undefined : ''}
           className={cn(

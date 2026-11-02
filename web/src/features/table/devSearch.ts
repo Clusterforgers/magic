@@ -52,7 +52,7 @@ export interface DevSearch {
   /** The decision to face, by name in `dev/prompts.ts` (such as `priority`); none when missing or unknown. */
   prompt?: string
   /** `you` makes it the viewer's own turn, which lights the "your turn" cue; the opponent after the viewer otherwise. */
-  turn?: 'you'
+  turn?: 'you' | 'left'
   /** `1` opens the Effects bar, which is folded behind one button otherwise (`dev/DevFxControls.tsx`). */
   bar?: true
   /** A move to play on the table once it has loaded, so its effect can be looked at; also on buttons in the page. */
@@ -123,7 +123,7 @@ export function parseDevSearch(search: Record<string, unknown>): DevSearch {
     mode,
     focus: focus === undefined || focus < 0 ? undefined : focus,
     prompt: typeof search.prompt === 'string' ? search.prompt : undefined,
-    turn: search.turn === 'you' ? 'you' : undefined,
+    turn: search.turn === 'you' || search.turn === 'left' ? search.turn : undefined,
     fx: isDevFx(search.fx) ? search.fx : undefined,
     bar: search.bar === true || search.bar === 1 || search.bar === '1' ? true : undefined,
     newturn: search.newturn === true || search.newturn === 1 || search.newturn === '1' ? true : undefined,

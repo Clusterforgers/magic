@@ -172,10 +172,15 @@ export function deriveFeed(
   const now = after.view.turn
 
   const changed = was.number !== now.number || was.active !== now.active
-  const yours = now.active === viewer
+  const left = now.active_left === true
+  const yours = now.active === viewer && !left
   const banner: BannerCue | null =
     changed && stage === 'Turns' && result === null
-      ? { yours, who: yours ? 'Your turn' : `${names(now.active)}'s turn`, turn: now.number }
+      ? {
+          yours,
+          who: yours ? 'Your turn' : left ? `${names(now.active)} left` : `${names(now.active)}'s turn`,
+          turn: now.number,
+        }
       : null
 
   const runs = runsIn(events, viewer, was.active)
