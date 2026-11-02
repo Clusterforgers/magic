@@ -345,7 +345,7 @@ At each priority decision the actor asks the seat, passes for it at once or pass
 
 The default windows are both main phases on the seat's own turn, declare attackers and declare blockers on any turn, and any step with an object of another seat on the stack. `Own` stops are for the seat's turns, `Opponent` stops for any other seat's.
 
-A question that leaves one legal answer and lists only options in sight of every seat (`mtg_engine::choose::sole_answer`: the targets a triggered ability must take, the only modes, number, option or replacement effect) is answered with it for a seat in `Off` mode, in the same run of passes (`Running::skip_idle`); in Full Control it is asked. A discard, a search, a payment and every other question whose one answer could come from a hidden zone is always asked.
+A question that leaves one legal answer and lists only options in sight of every seat (`mtg_engine::choose::sole_answer`: the targets a triggered ability must take, the only modes, number, option or replacement effect) is answered with it for a seat in `Off` mode, in the same run of passes (`Running::skip_idle`); in Full Control it is asked. A payment the seat cannot make (`YesNoOptions::only_no`, counted from its floating mana, untapped mana abilities with their life, energy, sacrifice and tap costs, and its life, counters and permanents) is declined the same way, so an opponent learns only what the battlefield already shows. A discard, a search, a reveal or an exile from the hand, in a cost or a mana source (`YesNoOptions::unseen`), and every other question whose one answer could come from a hidden zone is always asked.
 
 ### Stops and Full Control
 

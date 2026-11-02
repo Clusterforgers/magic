@@ -47,6 +47,7 @@ impl Pass<'_> {
                 player: controller,
                 kind: DecisionKind::YesNo(YesNoOptions {
                     only_no: !possible,
+                    unseen: true,
                     ..YesNoOptions::new(source, "Reveal a card from your hand?".to_owned())
                 }),
             })),

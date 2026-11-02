@@ -16,7 +16,7 @@ use crate::decision::{Decision, DecisionKind};
 use crate::events::Event;
 use crate::help::Offered;
 use crate::mana::{can_afford, reserve_energy};
-use crate::parts::{Part, Payer};
+use crate::parts::{Kind, Part, Payer};
 use crate::price::{Leaves, Price};
 use crate::priority::mana_options;
 use crate::resolve::{Cx, Next, ResolveError, Run};
@@ -235,9 +235,26 @@ fn question(cx: &Cx<'_>, player: PlayerId, price: &Price) -> Decision {
         player,
         kind: DecisionKind::YesNo(YesNoOptions {
             only_no: !can_pay(cx, player, &w6c_pay_x::at(price, 0)),
+            unseen: needs_hand(cx, player, price),
             ..YesNoOptions::new(cx.scope.source.id, wording::pay(&said(price)))
         }),
     }
+}
+
+/// Whether what a player can pay depends on a card in their hand: a discard, a reveal or an exile from the hand, in the
+/// cost or in a mana source they would tap.
+fn needs_hand(cx: &Cx<'_>, player: PlayerId, price: &Price) -> bool {
+    fn hand(part: &Part) -> bool {
+        match part {
+            Part::Pick(pick) => matches!(pick.kind, Kind::Discard | Kind::ExileHand | Kind::Reveal),
+            Part::X(inner) => hand(inner),
+            _ => false,
+        }
+    }
+    price.parts.iter().any(hand)
+        || mana_options(cx.state(), player)
+            .iter()
+            .any(|option| option.takes.iter().any(|take| take.exile))
 }
 
 /// What the cost asks, part by part: "Pay {1}", "Pay 2 life", "Discard a card".
@@ -655,6 +672,25 @@ mod tests {
         assert_eq!(options.source, *source);
         assert_eq!(options.text, "Pay {2}?");
         assert_eq!(options.only_no, only_no);
+    }
+
+    #[rstest]
+    #[case::mana(r#""{2}""#, false)]
+    #[case::life(r#"[{"PayLife":2}]"#, false)]
+    #[case::discard(r#"[{"Discard":{"count":1}}]"#, true)]
+    fn a_payment_that_needs_a_card_from_the_hand_is_marked_unseen(
+        #[case] cost: &str,
+        #[case] unseen: bool,
+    ) {
+        let game = means(NOTHING);
+        let Ok(Run::Ask(Decision {
+            kind: DecisionKind::YesNo(options),
+            ..
+        })) = run_with(&game, &[], &pay(r#""You""#, cost))
+        else {
+            panic!("the player is asked");
+        };
+        assert_eq!(options.unseen, unseen);
     }
 
     #[test]

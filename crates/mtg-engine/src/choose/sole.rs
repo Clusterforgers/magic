@@ -2,9 +2,11 @@
 //!
 //! The table gives it for a seat out of Full Control (`docs/arena-flow.md`, P10). Only decisions whose options every
 //! player can see qualify, so answering at once never shows what a hidden zone holds: a question whose single answer
-//! could come from a hand or a library (a discard, a search, a payment the player cannot make) is always asked.
+//! could come from a hand or a library (a discard, a search, a payment that needs a card from the hand) is always asked.
 
-use super::{ModeChoice, NumberChoice, OptionChoice, ReplacementChoice, Target, TargetChoice};
+use super::{
+    ModeChoice, NumberChoice, OptionChoice, ReplacementChoice, Target, TargetChoice, YesNoChoice,
+};
 use crate::decision::{Answer, Decision, DecisionKind};
 use crate::state::GameState;
 use crate::zones::Zone;
@@ -46,6 +48,10 @@ pub fn sole_answer(state: &GameState, decision: &Decision) -> Option<Answer> {
         }
         DecisionKind::ChooseReplacement(options) => (options.candidates.len() == 1)
             .then_some(Answer::ChooseReplacement(ReplacementChoice(0))),
+        // A payment the player cannot make has one answer, unless a hidden card decides it (`YesNoOptions::unseen`).
+        DecisionKind::YesNo(options) => {
+            (options.only_no && !options.unseen).then_some(Answer::YesNo(YesNoChoice(false)))
+        }
         _ => None,
     }
 }
@@ -66,7 +72,7 @@ fn in_sight(state: &GameState, target: Target) -> bool {
 
 #[cfg(test)]
 mod tests {
-    //! Goal: a decision is answered alone exactly when the rules leave one answer and its options are in sight: targets only when the needed count equals the legal ones, none can be backed out of and none lies in a hidden zone; modes, numbers, options and replacement effects only with one way to answer; every other kind is always asked.
+    //! Goal: a decision is answered alone exactly when the rules leave one answer and its options are in sight: targets only when the needed count equals the legal ones, none can be backed out of and none lies in a hidden zone; modes, numbers, options and replacement effects only with one way to answer; a payment that cannot be made is declined unless a hidden card decides it; every other kind is always asked.
     use rstest::rstest;
 
     use super::*;
@@ -108,6 +114,14 @@ mod tests {
             wording: String::new(),
             triggered: !can_cancel,
             apart: Vec::new(),
+        })
+    }
+
+    fn yes_no(only_no: bool, unseen: bool) -> DecisionKind {
+        DecisionKind::YesNo(YesNoOptions {
+            only_no,
+            unseen,
+            ..YesNoOptions::new(ObjectId(99), "Pay {2}?")
         })
     }
 
@@ -210,7 +224,9 @@ mod tests {
     #[case::two_options(choose(2), None)]
     #[case::one_replacement(replacements(1), Some(Answer::ChooseReplacement(ReplacementChoice(0))))]
     #[case::two_replacements(replacements(2), None)]
-    #[case::yes_no(DecisionKind::YesNo(YesNoOptions { source: ObjectId(99), text: String::new(), only_no: true }), None)]
+    #[case::unpayable(yes_no(true, false), Some(Answer::YesNo(YesNoChoice(false))))]
+    #[case::payable(yes_no(false, false), None)]
+    #[case::unpayable_by_a_hidden_card(yes_no(true, true), None)]
     fn one_way_to_answer_is_given_alone(
         #[case] kind: DecisionKind,
         #[case] expected: Option<Answer>,
