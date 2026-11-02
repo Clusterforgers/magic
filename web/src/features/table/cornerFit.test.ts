@@ -5,7 +5,9 @@ import {
   CORNER_MIN_PX,
   CORNER_ROOM_PX,
   PARTNER_HEAD_PX,
+  POD_TIGHT_PX,
   cornerHeight,
+  podIsTight,
   pictureHeight,
   pictureWidth,
   planCorner,
@@ -147,5 +149,13 @@ describe('planning the corner', () => {
         last = width
       }
     }
+  })
+})
+
+describe('podIsTight', () => {
+  it('folds the chips into the name and pool rows only in a measured column under the limit', () => {
+    expect(podIsTight(null)).toBe(false)
+    expect(podIsTight(POD_TIGHT_PX - 1)).toBe(true)
+    expect(podIsTight(POD_TIGHT_PX)).toBe(false)
   })
 })
