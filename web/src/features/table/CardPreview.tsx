@@ -89,18 +89,19 @@ function PreviewBody({ target }: { target: PreviewTarget }) {
   const reason = note?.line
   const gone = held === undefined
 
+  const { pinned } = target
   useEffect(() => {
     // A pinned card that left the game would otherwise stay "shown" with nothing to draw.
     if (gone) store.dismiss()
     const close = (event: KeyboardEvent): void => {
       if (event.key !== 'Escape') return
-      // The press closes the preview and nothing else: a prompt's Undo waits for the next one.
-      event.preventDefault()
+      // A pinned preview takes the press for itself: a prompt's Undo waits for the next one.
+      if (pinned) event.preventDefault()
       store.dismiss()
     }
     document.addEventListener('keydown', close)
     return () => document.removeEventListener('keydown', close)
-  }, [gone, store])
+  }, [gone, store, pinned])
 
   if (object === undefined || held === undefined) return null
   const summary = isStacked(held) ? stackSummary(held, sourceObject, entry, name, targetNames) : null

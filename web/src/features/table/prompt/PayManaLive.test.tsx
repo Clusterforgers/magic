@@ -50,7 +50,7 @@ function mount() {
     must(table.container.querySelector<HTMLElement>(`button[data-object-id="${id}"]`))
   const send = (message: ServerMessage): void => act(() => h.deliver(message))
   const marked = (): number => table.container.querySelectorAll('[data-highlight]').length
-  const button = (name: string): HTMLElement => screen.getByRole('button', { name })
+  const button = (name: string | RegExp): HTMLElement => screen.getByRole('button', { name })
   return { h, ...table, card, send, marked, button }
 }
 
@@ -90,7 +90,7 @@ describe('a payment decision from the server', () => {
 
   it.each([
     ['Pay automatically', { PayMana: 'Auto' }],
-    ['Cancel casting', { PayMana: 'Cancel' }],
+    [/^Undo the (spell|ability)$/, { PayMana: 'Cancel' }],
   ])('%s sends the answer once, even on a double click', async (name, expected) => {
     const { h, send, user, button } = mount()
     send(decision(22, pay('{2}')))

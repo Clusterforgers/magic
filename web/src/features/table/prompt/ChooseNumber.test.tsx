@@ -118,7 +118,7 @@ describe('answers', () => {
     [false, 0],
   ])('offers Undo only when the options allow it (%s)', async (canCancel, buttons) => {
     const { user, answer } = mount({ can_cancel: canCancel })
-    const cancel = screen.queryAllByRole('button', { name: 'Undo the spell' })
+    const cancel = screen.queryAllByRole('button', { name: /^Undo the (spell|ability)$/ })
     expect(cancel).toHaveLength(buttons)
     if (canCancel) {
       await user.click(must(cancel[0]))

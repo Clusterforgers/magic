@@ -89,6 +89,15 @@ fn table_answer(
     }
 }
 
+/// Backs out of the announcement under way when the question asked of it allows it (`DecisionKind::can_undo`).
+fn undo(announcing: bool, kind: &DecisionKind) -> Result<Outcome, EngineError> {
+    if announcing && kind.can_undo() {
+        Ok(Outcome::CancelCast)
+    } else {
+        Err(IllegalAnswer::NotOffered("undo").into())
+    }
+}
+
 /// Checks `answer` against `decision`; the result is only built from legal options.
 ///
 /// `pending` is the cast or activation in progress, whose announcements its payment puts on the spell or ability;
@@ -198,8 +207,7 @@ pub(crate) fn handle(
         (DecisionKind::ChooseReplacement(options), Answer::ChooseReplacement(choice)) => {
             choose::replacement_answer(player, options, choice)
         }
-        (kind, Answer::Undo) if pending.is_some() && kind.can_undo() => Ok(Outcome::CancelCast),
-        (_, Answer::Undo) => Err(IllegalAnswer::NotOffered("undo").into()),
+        (kind, Answer::Undo) => undo(pending.is_some(), kind),
         (kind, answer) => Err(IllegalAnswer::WrongKind {
             expected: kind.name(),
             got: answer.name(),

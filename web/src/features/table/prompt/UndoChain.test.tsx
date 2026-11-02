@@ -43,7 +43,7 @@ describe('Undo in the prompts of an announcement', () => {
 
   it.each(CHAIN)('%s: no Undo when the cast may not be backed out of', (name) => {
     const { answer } = renderDecision(kindOf(name, false))
-    expect(screen.queryByRole('button', { name: /^Undo the / })).toBeNull()
+    expect(screen.queryByRole('button', { name: /^Undo the (spell|ability)$/ })).toBeNull()
     fireEvent.keyDown(document.body, { key: 'Escape' })
     expect(answer).not.toHaveBeenCalled()
   })
