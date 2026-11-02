@@ -25,6 +25,16 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
             count,
             bind,
         },
+        Effect::RepeatEach {
+            over: Ref::Bound(over),
+            bind: each,
+            effects: casts,
+        },
+    ] = effects.as_slice()
+    else {
+        return;
+    };
+    let [
         Effect::CastFromZone {
             who: Ref::You,
             what: Ref::Bound(cast),
@@ -35,11 +45,16 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
             bind: None,
             otherwise,
         },
-    ] = effects.as_slice()
+    ] = casts.as_slice()
     else {
         return;
     };
-    if !targets.is_empty() || !count.is_one() || bind != cast || !otherwise.is_empty() {
+    if !targets.is_empty()
+        || !count.is_one()
+        || bind != over
+        || each != cast
+        || !otherwise.is_empty()
+    {
         return;
     }
     if let Some(event) = pattern_text(when) {
