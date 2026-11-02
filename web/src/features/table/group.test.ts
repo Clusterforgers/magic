@@ -142,7 +142,12 @@ describe('what merges and what stays apart', () => {
     ['face down or up', none, () => ({ face_down: true }), false],
     ['a merge', none, () => ({ merged: [{ id: 5, name: 'X' }] }), false],
     ['prepared or not', none, () => ({ permanent: state({ prepared: true }) }), false],
-    ['another level', () => ({ permanent: state({ level: 1 }) }), () => ({ permanent: state({ level: 2 }) }), false],
+    [
+      'another level',
+      () => ({ permanent: state({ level: 1 }) }),
+      () => ({ permanent: state({ level: 2 }) }),
+      false,
+    ],
     ['phased out or in', none, () => ({ permanent: state({ phased_out: true }) }), false],
     ['the player an Aura enchants', () => ({ attached_player: 0 }), () => ({ attached_player: 1 }), false],
     ['an attachment or none', none, () => ({ attachments: [90] }), false],
