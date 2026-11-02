@@ -3,6 +3,7 @@ import { createStore } from 'zustand/vanilla'
 import type { StoreApi } from 'zustand/vanilla'
 import type { ConnectionStatus } from '@/net/socket'
 import type {
+  AutoChoices,
   Decision,
   DecisionId,
   EventView,
@@ -144,6 +145,11 @@ export interface PlayState {
    */
   endTurnByHand: boolean
   /**
+   * The decisions the server answers for this seat (triggers in the order they triggered, combat damage lethal in
+   * order). The server's word: set by every Welcome and every `AutoChoices` message, never by the page.
+   */
+  autoChoices: AutoChoices
+  /**
    * The card in hand this seat clicked while the server passed for it (an instant or a flash card), or null: the
    * session asked for its next window and casts the card there if it is castable then.
    */
@@ -189,6 +195,7 @@ export function initialPlayState(): PlayState {
     stops: [],
     fullControl: 'Off',
     endTurnByHand: false,
+    autoChoices: { order_triggers: false, assign_damage: false },
     castWhenAsked: null,
     byHand: null,
     away: {},

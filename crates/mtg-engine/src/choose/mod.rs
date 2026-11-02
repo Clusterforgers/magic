@@ -5,6 +5,7 @@
 //! the announcement (modes, X, optional costs, targets, division) are asked by `announce`.
 
 mod ask;
+mod auto;
 mod cards;
 mod costs;
 mod divide;
@@ -26,6 +27,7 @@ use serde::{Deserialize, Serialize};
 use crate::object::ObjectRef;
 use crate::snapshot::Snapshot;
 
+pub use auto::{damage_in_order, triggers_in_order};
 pub use cards::{CardsChoice, CardsOptions};
 pub use costs::{CostsChoice, CostsOptions, OptionalCost};
 pub use divide::{DivideChoice, DivideOptions};

@@ -125,6 +125,17 @@ pub enum FullControlMode {
     Held,
 }
 
+/// The decisions a seat lets the server answer for it with the plain answer (see [`ClientMessage::AutoChoices`]).
+///
+/// Full Control overrides both: a seat in Full Control is asked every question.
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Hash, Serialize, Deserialize, TS)]
+pub struct AutoChoices {
+    /// Its triggers go on the stack in the order they triggered, by timestamp.
+    pub order_triggers: bool,
+    /// Combat damage goes lethal to each blocker in order, the rest to the last one or past them with trample.
+    pub assign_damage: bool,
+}
+
 /// A message from a client to the server.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
 #[serde(tag = "type")]
@@ -236,6 +247,14 @@ pub enum ClientMessage {
         /// True to end the seat's turns by hand.
         on: bool,
     },
+    /// Sets which decisions the server answers for this seat; [`ServerMessage::AutoChoices`] says what it holds.
+    ///
+    /// Applies from the next decision on, never while the seat is in Full Control. Kept per seat in memory like the
+    /// stops and answered like [`ClientMessage::FullControl`].
+    AutoChoices {
+        /// The new settings.
+        choices: AutoChoices,
+    },
 }
 
 /// A message from the server to one client.
@@ -263,6 +282,9 @@ pub enum ServerMessage {
         /// Whether the server holds this seat at its own end step (see [`ClientMessage::EndTurnByHand`]).
         #[serde(default)]
         end_turn_by_hand: bool,
+        /// The decisions the server answers for this seat (see [`ClientMessage::AutoChoices`]).
+        #[serde(default)]
+        auto_choices: AutoChoices,
     },
     /// Who is at the table before the game starts.
     ///
@@ -372,6 +394,13 @@ pub enum ServerMessage {
     EndTurnByHand {
         /// The setting now in force.
         on: bool,
+    },
+    /// The decisions the server answers for this seat changed (see [`ClientMessage::AutoChoices`]).
+    ///
+    /// Sent whenever they change, in the same place as [`ServerMessage::Stops`].
+    AutoChoices {
+        /// The settings now in force.
+        choices: AutoChoices,
     },
     /// A seat's bank of clock extensions changed with no event to carry it: an extension was spent at the deadline.
     ///

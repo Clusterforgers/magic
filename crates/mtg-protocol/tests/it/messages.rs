@@ -41,8 +41,8 @@ use mtg_engine::turn::Step;
 use mtg_engine::zones::Zone;
 use mtg_engine::{Answer, Decision, Engine, Event};
 use mtg_protocol::{
-    ClientMessage, DecisionId, ErrorCode, EventBatch, EventView, FullControlMode, HiddenEvent,
-    LobbySeat, PROTOCOL_VERSION, ServerMessage, StateView, Stop, StopSide, YieldUntil,
+    AutoChoices, ClientMessage, DecisionId, ErrorCode, EventBatch, EventView, FullControlMode,
+    HiddenEvent, LobbySeat, PROTOCOL_VERSION, ServerMessage, StateView, Stop, StopSide, YieldUntil,
     project_events,
 };
 use mtg_testkit::fuzz_setup;
@@ -52,8 +52,8 @@ use serde::Serialize;
 use serde::de::DeserializeOwned;
 use serde_json::json;
 
-const CLIENT_VARIANTS: usize = 15;
-const SERVER_VARIANTS: usize = 15;
+const CLIENT_VARIANTS: usize = 16;
+const SERVER_VARIANTS: usize = 16;
 
 const YIELDS: [YieldUntil; 3] = [
     YieldUntil::Resolve,
@@ -106,6 +106,7 @@ fn client_index(message: &ClientMessage) -> usize {
         ClientMessage::FullControl { .. } => 12,
         ClientMessage::Manual { .. } => 13,
         ClientMessage::EndTurnByHand { .. } => 14,
+        ClientMessage::AutoChoices { .. } => 15,
     }
 }
 
@@ -127,6 +128,7 @@ fn server_index(message: &ServerMessage) -> usize {
         ServerMessage::Bank { .. } => 12,
         ServerMessage::Presence { .. } => 13,
         ServerMessage::EndTurnByHand { .. } => 14,
+        ServerMessage::AutoChoices { .. } => 15,
     }
 }
 
@@ -594,6 +596,7 @@ fn client_samples() -> Vec<ClientMessage> {
     }
     out.extend(MODES.map(|mode| ClientMessage::FullControl { mode }));
     out.extend([true, false].map(|on| ClientMessage::EndTurnByHand { on }));
+    out.extend(auto_choices().map(|choices| ClientMessage::AutoChoices { choices }));
     out.extend(
         manual_samples()
             .into_iter()
@@ -622,7 +625,18 @@ fn mode_welcomes() -> [ServerMessage; 3] {
         stops: every_stop(),
         full_control,
         end_turn_by_hand: true,
+        auto_choices: AutoChoices::default(),
     })
+}
+
+/// Every combination of the auto choices.
+fn auto_choices() -> [AutoChoices; 4] {
+    [(false, false), (true, false), (false, true), (true, true)].map(
+        |(order_triggers, assign_damage)| AutoChoices {
+            order_triggers,
+            assign_damage,
+        },
+    )
 }
 
 fn server_samples() -> Vec<ServerMessage> {
@@ -638,6 +652,7 @@ fn server_samples() -> Vec<ServerMessage> {
             stops: Vec::new(),
             full_control: FullControlMode::Off,
             end_turn_by_hand: true,
+            auto_choices: AutoChoices::default(),
         },
         ServerMessage::Lobby {
             seats: lobby_seats(),
@@ -680,6 +695,7 @@ fn server_samples() -> Vec<ServerMessage> {
         stops: Vec::new(),
         full_control: FullControlMode::Off,
         end_turn_by_hand: false,
+        auto_choices: AutoChoices::default(),
     }));
     out.extend(YIELDS.map(|until| ServerMessage::Yielding { until: Some(until) }));
     out.push(ServerMessage::Yielding { until: None });
@@ -695,6 +711,7 @@ fn server_samples() -> Vec<ServerMessage> {
     );
     out.extend(MODES.map(|mode| ServerMessage::FullControl { mode }));
     out.extend([true, false].map(|on| ServerMessage::EndTurnByHand { on }));
+    out.extend(auto_choices().map(|choices| ServerMessage::AutoChoices { choices }));
     out.extend([0, 1, 3].map(|bank| ServerMessage::Bank {
         seat: PlayerId(1),
         bank,
@@ -872,6 +889,10 @@ fn every_event_view_variant_round_trips() {
     json!({"type": "EndTurnByHand", "on": true})
 )]
 #[case(
+    ClientMessage::AutoChoices { choices: AutoChoices { order_triggers: false, assign_damage: true } },
+    json!({"type": "AutoChoices", "choices": {"order_triggers": false, "assign_damage": true}})
+)]
+#[case(
     ClientMessage::Join { protocol_version: 1, game: "g".into(), name: "n".into() },
     json!({"type": "Join", "protocol_version": 1, "game": "g", "name": "n"})
 )]
@@ -899,10 +920,12 @@ fn client_wire_shape_is_flat_and_tagged(
     ServerMessage::Welcome {
         protocol_version: 1, game: "g".into(), player: PlayerId(2), seats: 4, auto_pass: true, yielding: None,
         stops: vec![], full_control: FullControlMode::Off, end_turn_by_hand: false,
+        auto_choices: AutoChoices { order_triggers: true, assign_damage: false },
     },
     json!({
         "type": "Welcome", "protocol_version": 1, "game": "g", "player": 2, "seats": 4, "auto_pass": true,
-        "yielding": null, "stops": [], "full_control": "Off", "end_turn_by_hand": false
+        "yielding": null, "stops": [], "full_control": "Off", "end_turn_by_hand": false,
+        "auto_choices": {"order_triggers": true, "assign_damage": false}
     })
 )]
 #[case(
@@ -925,6 +948,7 @@ fn client_wire_shape_is_flat_and_tagged(
         ],
         full_control: FullControlMode::Held,
         end_turn_by_hand: true,
+        auto_choices: AutoChoices::default(),
     },
     json!({
         "type": "Welcome", "protocol_version": 1, "game": "g", "player": 0, "seats": 2, "auto_pass": false,
@@ -933,7 +957,8 @@ fn client_wire_shape_is_flat_and_tagged(
             {"side": "Own", "step": "Main1", "keep": true},
             {"side": "Opponent", "step": "End", "keep": false},
         ],
-        "full_control": "Held", "end_turn_by_hand": true
+        "full_control": "Held", "end_turn_by_hand": true,
+        "auto_choices": {"order_triggers": false, "assign_damage": false}
     })
 )]
 #[case(ServerMessage::Stops { stops: vec![] }, json!({"type": "Stops", "stops": []}))]
@@ -954,6 +979,10 @@ fn client_wire_shape_is_flat_and_tagged(
 #[case(
     ServerMessage::EndTurnByHand { on: false },
     json!({"type": "EndTurnByHand", "on": false})
+)]
+#[case(
+    ServerMessage::AutoChoices { choices: AutoChoices { order_triggers: true, assign_damage: true } },
+    json!({"type": "AutoChoices", "choices": {"order_triggers": true, "assign_damage": true}})
 )]
 #[case(
     ServerMessage::Yielding { until: Some(YieldUntil::EndOfTurn) },

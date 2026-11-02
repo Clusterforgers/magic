@@ -377,6 +377,7 @@ impl<S: EventStore> GameActor<S> {
             stops: self.stops.stops(seat),
             full_control: self.stops.full_control(seat),
             end_turn_by_hand: self.stops.end_turn_by_hand(seat),
+            auto_choices: self.stops.auto_choices(seat),
         };
         self.seats.send(seat, welcome);
         self.sync(seat);
@@ -439,6 +440,9 @@ impl<S: EventStore> GameActor<S> {
             ClientMessage::FullControl { mode } => return self.set_full_control(seat, mode).await,
             ClientMessage::EndTurnByHand { on } => {
                 return self.set_end_turn_by_hand(seat, on).await;
+            }
+            ClientMessage::AutoChoices { choices } => {
+                return self.set_auto_choices(seat, choices).await;
             }
             ClientMessage::Resync => match self.phase {
                 Phase::Running(_) => self.sync(seat),
