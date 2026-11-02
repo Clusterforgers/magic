@@ -192,10 +192,10 @@ export const SeatPanel = memo(function SeatPanel({ seat, variant = 'panel' }: Se
             <CountChip zone="library" count={counts.library} density="line" />
             <RevealedChip owner={owner} player={player} density="line" />
             <CompanionChip owner={owner} player={player} />
-            <ZoneButton zone="graveyard" owner={owner} ids={graveyard} density="line" />
-            <ZoneButton zone="exile" owner={owner} ids={exile} density="line" />
+            <ZoneButton zone="graveyard" owner={owner} ids={graveyard} density="line" thumbs />
+            <ZoneButton zone="exile" owner={owner} ids={exile} density="line" thumbs />
             {counts.command > 0 ? (
-              <ZoneButton zone="command" owner={owner} ids={commanders} density="line" />
+              <ZoneButton zone="command" owner={owner} ids={commanders} density="line" thumbs />
             ) : null}
           </div>
         </div>
