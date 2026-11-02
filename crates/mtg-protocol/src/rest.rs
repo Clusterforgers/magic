@@ -12,6 +12,7 @@ mod favourites;
 mod fix_marks;
 mod lobbies;
 mod precons;
+mod prefs;
 
 use std::fmt;
 
@@ -41,6 +42,7 @@ pub use precons::{
     PRECON_DECK_PREFIX, PreconBoard, PreconCardView, PreconErrorCode, PreconList, PreconListItem,
     PreconView,
 };
+pub use prefs::{MAX_DEFAULT_STOPS, UserPrefs};
 
 /// Fewest characters in a username.
 pub const USERNAME_MIN_CHARS: usize = 3;

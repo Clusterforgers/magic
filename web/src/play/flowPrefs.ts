@@ -1,6 +1,7 @@
 /**
- * The viewer's pace preferences, kept in `localStorage` and shared by every game: the pinned stops a new game starts
- * with, and whether the seat ends its own turns by hand. A session applies them at `Welcome` (`welcomeRequests`).
+ * The viewer's pace preferences, shared by every game: the pinned stops a new game starts with, and whether the seat
+ * ends its own turns by hand. A signed-in account keeps them on the server (`attachAccount`); a guest keeps them in
+ * `localStorage`. A session applies them at `Welcome` (`welcomeRequests`).
  */
 import { useSyncExternalStore } from 'react'
 import type { ClientMessage, Stop } from '@/protocol/generated'
@@ -25,6 +26,8 @@ export interface FlowPrefs {
 
 const listeners = new Set<() => void>()
 let current: FlowPrefs | null = null
+/** Where the preferences are saved while an account is signed in; none keeps them in `localStorage`. */
+let account: ((prefs: FlowPrefs) => void) | null = null
 
 // Storage can throw on access (blocked site data) or be missing; the preferences then live for the page only.
 function readItem(key: string): string | null {
@@ -81,28 +84,64 @@ function change(next: FlowPrefs): void {
   for (const listener of listeners) listener()
 }
 
+/** The preferences this browser's storage holds. */
+function readLocal(): FlowPrefs {
+  return { defaultStops: readStops(), endTurnByHand: readItem(END_TURN_KEY) === 'on' }
+}
+
+/** Keeps `next` where the viewer's preferences live now and shows it. */
+function store(next: FlowPrefs): void {
+  if (account === null) {
+    writeItem(DEFAULT_STOPS_KEY, JSON.stringify(next.defaultStops))
+    writeItem(END_TURN_KEY, next.endTurnByHand ? 'on' : null)
+  } else account(next)
+  change(next)
+}
+
+/** Whether `prefs` are what a new account has. */
+function isDefault(prefs: FlowPrefs): boolean {
+  return prefs.defaultStops.length === 0 && !prefs.endTurnByHand
+}
+
+/**
+ * Moves the preferences to the signed-in account: `server` replaces them, and `save` gets every later change. An
+ * account that holds none yet takes the ones this browser kept.
+ */
+export function attachAccount(server: FlowPrefs, save: (prefs: FlowPrefs) => void): void {
+  const local = readLocal()
+  account = save
+  if (isDefault(server) && !isDefault(local)) {
+    save(local)
+    change(local)
+  } else change(server)
+}
+
+/** Returns the preferences to this browser's storage, as for a guest. */
+export function detachAccount(): void {
+  account = null
+  change(readLocal())
+}
+
 /** Saves the lasting stops of `stops` as the default of every new game; one-turn stops are left out. */
 export function saveDefaultStops(stops: readonly Stop[]): void {
   const pinned = stops.filter((stop) => stop.keep).map(({ side, step }) => ({ side, step, keep: true }))
-  writeItem(DEFAULT_STOPS_KEY, JSON.stringify(pinned))
-  change({ ...flowPrefs(), defaultStops: pinned })
+  store({ ...flowPrefs(), defaultStops: pinned })
 }
 
 /** Forgets the default stops: a new game starts with none. */
 export function resetDefaultStops(): void {
-  writeItem(DEFAULT_STOPS_KEY, null)
-  change({ ...flowPrefs(), defaultStops: [] })
+  store({ ...flowPrefs(), defaultStops: [] })
 }
 
 /** Stores whether the seat ends its own turns by hand. */
 export function saveEndTurnByHand(on: boolean): void {
-  writeItem(END_TURN_KEY, on ? 'on' : null)
-  change({ ...flowPrefs(), endTurnByHand: on })
+  store({ ...flowPrefs(), endTurnByHand: on })
 }
 
 /** Forgets the cached preferences, so the next read goes to storage again (tests). */
 export function resetFlowPrefs(): void {
   current = null
+  account = null
 }
 
 /** Whether the default stops were already given to `game`; the first call for a game also notes that they now are. */

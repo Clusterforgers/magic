@@ -10,6 +10,7 @@ import { TooltipProvider } from '@/components/ui/tooltip'
 import { AccountNav, AuthNotice } from '@/features/auth/AccountNav'
 import { useAuth } from '@/features/auth/context'
 import { cn } from '@/lib/utils'
+import { usePrefsSync } from '@/play/usePrefsSync'
 
 // A tab of the main navigation: quiet until it is the current page, which gets a bar under it as well as strong text.
 const TAB =
@@ -18,6 +19,7 @@ const TAB =
 /** The brand, the main navigation, the theme and the account. */
 function ShellHeader() {
   const signedIn = useAuth((state) => state.status === 'signed-in')
+  usePrefsSync(signedIn)
   return (
     <header className="border-b bg-surface">
       <div className="flex flex-wrap items-center gap-x-1 px-4 sm:px-6">
