@@ -84,6 +84,12 @@ pub fn enchanting(mut permanent: PresetPermanent, seat: usize) -> PresetPermanen
     permanent
 }
 
+/// `permanent` protected by the player `seat` (a battle).
+pub fn protected_by(mut permanent: PresetPermanent, seat: usize) -> PresetPermanent {
+    permanent.protector = Some(seat);
+    permanent
+}
+
 /// Builds a game state directly instead of playing to it.
 #[derive(Debug, Clone)]
 pub struct Scenario {

@@ -3,6 +3,7 @@ import { useShallow } from 'zustand/react/shallow'
 import { usePlay } from '@/features/game/gameContext'
 import type { AttackTarget, ObjectId, ObjectView } from '@/protocol/generated'
 import { useSeatNamer } from '../names'
+import { battleName } from './combatText'
 import type { TargetNames } from './combatText'
 
 /** The objects behind `ids`, in order (undefined for one the view does not hold); the array changes only when one does. */
@@ -26,9 +27,9 @@ export function useTargetNames(targets: readonly AttackTarget[]): TargetNames {
       short,
       long(target) {
         if ('Player' in target) return short(target)
-        // A battle's controller is not who protects it, and the view does not say who does.
-        if (byId.get(target.Planeswalker)?.types.includes('Battle') === true)
-          return `${short(target)}, battle`
+        const battle = byId.get(target.Planeswalker)
+        if (battle?.types.includes('Battle') === true)
+          return battleName(short(target), battle.protector, seatName)
         const owner = byId.get(target.Planeswalker)?.controller
         return owner === undefined ? short(target) : `${short(target)}, ${seatName(owner)}'s planeswalker`
       },

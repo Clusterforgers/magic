@@ -126,6 +126,10 @@ attached_to?: ObjectId,
  */
 attached_player?: PlayerId, 
 /**
+ * The player who protects this one, when it is a battle on the battlefield with a protector; public, like its defense.
+ */
+protector?: PlayerId, 
+/**
  * The creature this one is paired with (soulbond), when both are on the battlefield; public, like an attachment.
  */
 paired_with?: ObjectId, 

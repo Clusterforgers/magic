@@ -16,7 +16,7 @@ use crate::companions::CompanionStage;
 use crate::error::SetupError;
 use crate::format::{ExtraZone, FormatRules, RuleSet};
 use crate::layers::LayersCache;
-use crate::object::{Designations, GameObject, ObjectRef, PermanentState};
+use crate::object::{Chosen, Designations, GameObject, ObjectRef, PermanentState};
 use crate::player::{MulliganStatus, Player};
 use crate::rules::RulesCache;
 use crate::state::{GameState, Possible, Stage, Tallies};
@@ -42,6 +42,8 @@ pub struct PresetPermanent {
     pub attached_player: Option<usize>,
     /// The creature it starts paired with (soulbond), as (seat, place in that seat's `battlefield`); that creature names it back.
     pub paired_with: Option<(usize, usize)>,
+    /// The seat that protects it (a battle), as if its controller had chosen that player as it entered.
+    pub protector: Option<usize>,
 }
 
 impl PresetPermanent {
@@ -56,6 +58,7 @@ impl PresetPermanent {
             attached_to: None,
             attached_player: None,
             paired_with: None,
+            protector: None,
         }
     }
 }
@@ -310,7 +313,9 @@ fn preset_state(
         // The permanents of a starting position share one time; a game begins with them in play.
         timestamp: 0,
         observed: (!preset.summoning_sick).then_some(owner),
-        chosen: None,
+        chosen: preset
+            .protector
+            .map(|seat| Chosen::Player(PlayerId::from_index(seat))),
         paid: Vec::new(),
         way: None,
         x: None,

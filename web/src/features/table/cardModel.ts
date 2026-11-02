@@ -274,6 +274,8 @@ export function counterWords(object: ObjectView): string[] {
 export interface Links {
   /** What an Aura or Equipment is attached to: a permanent, or the player a Curse enchants. */
   host?: string | undefined
+  /** The player who protects it (a battle), by seat name. */
+  protector?: string | undefined
   /** The permanents attached to it, by name. */
   attached?: readonly string[] | undefined
   /** What each of them gives it, in the order they tuck: the marks of its foot stack. */
@@ -290,11 +292,17 @@ export interface Links {
   doors?: Doors | undefined
 }
 
+/** How a battle names its protector: "battle protected by Bo". */
+export function battleWords(protector: string): string {
+  return `battle protected by ${protector}`
+}
+
 /** "attached to Grizzly Bears" for an Aura or Equipment; "Pacifism and Bonesplitter attached" for its host. */
-export function linkWords({ host, attached = [], spoken = [], partner, doors }: Links): string[] {
+export function linkWords({ host, attached = [], spoken = [], partner, doors, protector }: Links): string[] {
   const words: string[] = []
   if (doors !== undefined) words.push(doorWords(doors))
   if (partner !== undefined) words.push(`paired with ${partner}`)
+  if (protector !== undefined) words.push(battleWords(protector))
   if (host !== undefined) words.push(`attached to ${host}`)
   if (spoken.length > 0) words.push(...spoken)
   else if (attached.length > 0) words.push(`${attached.join(' and ')} attached`)

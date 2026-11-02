@@ -231,6 +231,10 @@ pub struct ObjectView {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[ts(optional)]
     pub attached_player: Option<PlayerId>,
+    /// The player who protects this one, when it is a battle on the battlefield with a protector; public, like its defense.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[ts(optional)]
+    pub protector: Option<PlayerId>,
     /// The creature this one is paired with (soulbond), when both are on the battlefield; public, like an attachment.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[ts(optional)]

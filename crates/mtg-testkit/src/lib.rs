@@ -249,7 +249,8 @@ pub use saga_cards::{
     TRANSFORMING_SAGA_CARDS, saga_fuzz_setup, transforming_saga, transforming_saga_fuzz_setup,
 };
 pub use scenario::{
-    Scenario, ScenarioError, attached_to, damaged, enchanting, ready, sick, tapped, with_counters,
+    Scenario, ScenarioError, attached_to, damaged, enchanting, protected_by, ready, sick, tapped,
+    with_counters,
 };
 pub use script_error::ScriptError;
 pub use small_cards::small_fuzz_setup;

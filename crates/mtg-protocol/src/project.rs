@@ -245,6 +245,13 @@ fn copy_view(state: &GameState, sight: &Sight<'_>, object: &GameObject) -> Optio
         })
 }
 
+/// The player who protects `object`, a battle on the battlefield with a protector.
+fn protector_of(state: &GameState, object: &GameObject) -> Option<PlayerId> {
+    object
+        .permanent()
+        .and_then(|_| mtg_engine::battle::protector(state, object.id()))
+}
+
 /// The counters on a permanent by kind, in the order of the kind; none for an object that is no permanent.
 fn counters_view(object: &GameObject) -> Vec<(CounterKind, u32)> {
     object
@@ -326,6 +333,27 @@ impl ObjectView {
 
     /// [`ObjectView::of`] with the attachments of `id` given by `attachments`, which is asked only for a permanent: a whole
     /// view works them out once for every object (`GameState::attachment_index`).
+    /// The permanent facts of an object on the battlefield.
+    fn permanent_view(
+        state: &GameState,
+        id: ObjectId,
+        object: &GameObject,
+        subtypes: &[Subtype],
+    ) -> Option<PermanentView> {
+        object.permanent().map(|p| PermanentView {
+            tapped: p.tapped(),
+            damage: p.damage(),
+            // Haste excuses it, so the view says whether sickness holds it back, not only when it arrived.
+            summoning_sick: summoning_sick(state, id),
+            prepared: p.prepared(),
+            level: subtypes
+                .iter()
+                .any(|subtype| subtype.0 == "Class")
+                .then(|| p.level()),
+            doors: state.dk1c5_doors(id),
+        })
+    }
+
     fn with_attachments(
         state: &GameState,
         sight: &Sight<'_>,
@@ -392,19 +420,7 @@ impl ObjectView {
             } else {
                 keyword_names(state, id)
             },
-            permanent: object.permanent().map(|p| PermanentView {
-                tapped: p.tapped(),
-                damage: p.damage(),
-                // Haste excuses it, so the view says whether sickness holds it back, not only when it arrived.
-                summoning_sick: summoning_sick(state, id),
-                prepared: p.prepared(),
-                level: chars
-                    .subtypes
-                    .iter()
-                    .any(|subtype| subtype.0 == "Class")
-                    .then(|| p.level()),
-                doors: state.dk1c5_doors(id),
-            }),
+            permanent: Self::permanent_view(state, id, object, &chars.subtypes),
             kind: object.kind(),
             source: object.ability().map(|ability| ability.source().id),
             rules_text,
@@ -419,6 +435,7 @@ impl ObjectView {
                 .collect(),
             attached_to: state.host_of(id),
             attached_player: state.player_host_of(id),
+            protector: protector_of(state, object),
             paired_with: state.partner_of(id),
             attachments: if object.permanent().is_some() {
                 attachments()
@@ -471,6 +488,7 @@ impl ObjectView {
             loyalty_abilities: Vec::new(),
             attached_to: None,
             attached_player: None,
+            protector: None,
             // Who is paired with whom is told by the public `Paired` event, so a face-down permanent shows it too.
             paired_with: state.partner_of(object.id()),
             attachments: Vec::new(),

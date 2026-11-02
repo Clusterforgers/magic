@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest'
 import type { AttackerOption, AttackTarget } from '@/protocol/generated'
 import {
   attackSummary,
+  battleName,
   blockersByAttacker,
   blockSummary,
   countOf,
@@ -31,6 +32,17 @@ describe('attackSummary', () => {
     ['the same planeswalker twice', [{ Planeswalker: 9 }, { Planeswalker: 9 }], '2 attackers at Jace9'],
   ] as [string, AttackTarget[], string][])('says %s', (_name, targets, expected) => {
     expect(attackSummary(targets, names)).toBe(expected)
+  })
+})
+
+describe('battleName', () => {
+  const seatName = (seat: number): string => ['Ana', 'Bo', 'Cy', 'Dee'][seat] ?? '?'
+  it.each([
+    ['protected by seat 1', 1, 'Invasion of Theros, battle protected by Bo'],
+    ['protected by seat 3', 3, 'Invasion of Theros, battle protected by Dee'],
+    ['with no protector in the view', undefined, 'Invasion of Theros, battle'],
+  ] as [string, number | undefined, string][])('names a battle %s', (_name, protector, expected) => {
+    expect(battleName('Invasion of Theros', protector, seatName)).toBe(expected)
   })
 })
 
