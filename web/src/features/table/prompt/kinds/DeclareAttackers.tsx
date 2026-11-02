@@ -32,7 +32,7 @@ function aimedAt(option: AttackerOption, aim: AttackTarget | undefined): AttackT
  * written on the card. With several defenders the creature clicked in last is held: a click on a defender (a seat's
  * pod, tile or board, or the card of a planeswalker or battle) sends it there, and that defender is where the next
  * creatures go, as is the one chosen in the list of the bar; the last choice is where the next attack starts. A
- * creature a rule requires to attack starts in the attack. Confirm sends the attack, No attack an empty one.
+ * creature a rule requires to attack starts in the attack, reads "Must attack" and cannot be taken out. Confirm sends the attack, No attack an empty one.
  */
 export const DeclareAttackersPrompt: PromptComponent<'DeclareAttackers'> = ({ options }) => {
   const { id, answer, selection } = usePrompt()
@@ -149,10 +149,12 @@ export const DeclareAttackersPrompt: PromptComponent<'DeclareAttackers'> = ({ op
                 words: `attacking ${names.long(target)}; click a player, planeswalker or battle to send it there`,
                 cue: 'active' as const,
               }
-            : { words: `attacking ${names.long(target)}` },
+            : required.includes(object)
+              ? { label: 'Must attack', words: `must attack ${names.long(target)} if able` }
+              : { words: `attacking ${names.long(target)}` },
         ]),
       ),
-    [declared, names, held],
+    [declared, names, held, required],
   )
 
   const aimAll = (ids: readonly ObjectId[], target: AttackTarget | undefined): void => {
@@ -171,6 +173,8 @@ export const DeclareAttackersPrompt: PromptComponent<'DeclareAttackers'> = ({ op
       if (walkers.includes(id)) pickTarget({ Planeswalker: id })
       return
     }
+    // A creature a rule requires to attack stays in the attack.
+    if (required.includes(id)) return
     if (selection.has(id)) {
       if (held === id) setHeld(null)
     } else {

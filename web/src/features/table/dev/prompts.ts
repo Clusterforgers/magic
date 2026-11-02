@@ -187,6 +187,31 @@ const block: DevPrompt = ({ view }) => {
   return { id: 1, decision: { player: viewer, kind: { DeclareBlockers: options } } }
 }
 
+/** The attack with the first creature that may attack required to (goaded). */
+const attackRequired: DevPrompt = (context) => {
+  const made = attack(context)
+  const kind = made.decision.kind
+  if ('DeclareAttackers' in kind) {
+    const [first] = kind.DeclareAttackers.attackers
+    if (first !== undefined) kind.DeclareAttackers.required = [first.object]
+  }
+  return made
+}
+
+/** The block with the first two creatures required to block (the first can block one attacker only). */
+const blockRequired: DevPrompt = (context) => {
+  const made = block(context)
+  const kind = made.decision.kind
+  if ('DeclareBlockers' in kind) {
+    const options = kind.DeclareBlockers
+    const [first, second] = options.blockers
+    const [only] = first?.can_block ?? []
+    if (first !== undefined && only !== undefined) first.can_block = [only]
+    options.required = [first, second].flatMap((blocker) => (blocker === undefined ? [] : [blocker.object]))
+  }
+  return made
+}
+
 /** A table for the moment a decision belongs to; the default fixture is in the middle of an attack. */
 export type DevTable = (fixture: Fixture) => Fixture
 
@@ -445,6 +470,8 @@ export const DEV_PROMPTS: Record<string, DevPrompt> = {
   attack,
   'attack-battle': attack,
   block,
+  'block-required': blockRequired,
+  'attack-required': attackRequired,
   'block-clock': (fixture) => ({ ...block(fixture), deadlineMs: 45_000 }),
   mulligan: aboutHand((hand) => ({
     Mulligan: {
@@ -508,6 +535,8 @@ export const DEV_TABLES: Record<string, DevTable> = {
   attack: attackTable(false),
   'attack-battle': attackTable(true),
   block: blockTable,
+  'block-required': blockTable,
+  'attack-required': attackTable(false),
   'block-clock': blockTable,
   forecast: forecastScene,
   'pay-hybrid': hybridTable,

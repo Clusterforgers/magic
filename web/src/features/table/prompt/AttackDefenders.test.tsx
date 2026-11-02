@@ -214,7 +214,7 @@ describe('a creature a rule requires to attack', () => {
     expect(t.answer.mock.calls).toEqual([[{ DeclareAttackers: [[a, { Player: 2 }]] }]])
   })
 
-  it('stays after Clear, and says so when it is taken out', async () => {
+  it('stays after Clear, is marked Must attack and cannot be taken out', async () => {
     const { a, b, t } = goaded(4)
     await t.user.click(t.card(b))
     await t.user.click(t.button('Clear'))
@@ -222,6 +222,8 @@ describe('a creature a rule requires to attack', () => {
     expect(t.marks().get(b)).toBe('legal')
     expect(t.button('Clear')).toBeDisabled()
     await t.user.click(t.card(a))
-    expect(t.text()).toMatch(/ must attack if able\.$/)
+    expect(t.marks().get(a)).toBe('selected')
+    expect(t.card(a)).toHaveTextContent('Must attack')
+    expect(t.text()).not.toMatch(/must attack if able/)
   })
 })
