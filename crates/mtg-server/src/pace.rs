@@ -11,7 +11,7 @@ use std::time::Duration;
 use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_engine::choose::{
     CardsChoice, CardsOptions, CostsChoice, DivideChoice, DivideOptions, ModeChoice, ModeOptions,
-    NumberChoice, OptionChoice, OrderChoice, ReplacementChoice, Target, TargetChoice,
+    NumberChoice, OptionChoice, OrderChoice, ReplacementChoice, ScryChoice, Target, TargetChoice,
     TriggersChoice, YesNoChoice,
 };
 use mtg_engine::decision::{DamageOptions, MulliganChoice, PayChoice, PayOptions, PriorityAction};
@@ -98,7 +98,8 @@ impl Class {
             | DecisionKind::DivideAmount(_)
             | DecisionKind::ChooseCosts(_)
             | DecisionKind::ChooseCards(_)
-            | DecisionKind::OrderCards(_) => Class::Response,
+            | DecisionKind::OrderCards(_)
+            | DecisionKind::Scry(_) => Class::Response,
             DecisionKind::DeclareBlockers(_) => Class::Blocks,
             DecisionKind::PayMana(_)
             | DecisionKind::AssignDamage(_)
@@ -250,6 +251,10 @@ pub(crate) fn fallback(decision: &Decision) -> Option<Answer> {
         DecisionKind::OrderCards(options) => {
             Some(Answer::OrderCards(OrderChoice(options.cards.clone())))
         }
+        DecisionKind::Scry(options) => Some(Answer::Scry(ScryChoice {
+            top: options.cards.clone(),
+            bottom: Vec::new(),
+        })),
         DecisionKind::Mulligan(_) => Some(Answer::Mulligan(MulliganChoice::Keep)),
         DecisionKind::BottomCards(options) => Some(Answer::BottomCards(first_of_hand(
             &options.hand,

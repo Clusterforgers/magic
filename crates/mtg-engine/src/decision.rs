@@ -10,8 +10,8 @@ use crate::abilities::AbilityRef;
 use crate::choose::{
     CardsChoice, CardsOptions, CostsChoice, CostsOptions, DivideChoice, DivideOptions, ModeChoice,
     ModeOptions, NumberChoice, NumberOptions, OptionChoice, OptionOptions, OrderChoice,
-    OrderOptions, ReplacementChoice, ReplacementOptions, TargetChoice, TargetOptions,
-    TriggersChoice, TriggersOptions, YesNoChoice, YesNoOptions,
+    OrderOptions, ReplacementChoice, ReplacementOptions, ScryChoice, ScryOptions, TargetChoice,
+    TargetOptions, TriggersChoice, TriggersOptions, YesNoChoice, YesNoOptions,
 };
 use crate::combat::{AttackTarget, DamageTarget};
 use crate::help::{Help, Offered};
@@ -61,6 +61,8 @@ pub enum DecisionKind {
     ChooseCards(CardsOptions),
     /// Put cards in an order; any seat may be asked.
     OrderCards(OrderOptions),
+    /// Split the cards looked at into a top pile and a bottom pile and order both; any seat may be asked.
+    Scry(ScryOptions),
     /// Answer a "may" or a "pay or not"; any seat may be asked.
     YesNo(YesNoOptions),
     /// Choose one of a short list (a colour, a player, a name); any seat may be asked.
@@ -91,6 +93,7 @@ impl DecisionKind {
             DecisionKind::DivideAmount(_) => "divide-amount",
             DecisionKind::ChooseCards(_) => "choose-cards",
             DecisionKind::OrderCards(_) => "order-cards",
+            DecisionKind::Scry(_) => "scry",
             DecisionKind::YesNo(_) => "yes-no",
             DecisionKind::ChooseOption(_) => "choose-option",
             DecisionKind::ChooseCosts(_) => "choose-costs",
@@ -680,6 +683,8 @@ pub enum Answer {
     ChooseCards(CardsChoice),
     /// The cards in the order chosen.
     OrderCards(OrderChoice),
+    /// The cards split into a top pile and a bottom pile, each in order.
+    Scry(ScryChoice),
     /// Yes or no.
     YesNo(YesNoChoice),
     /// The option chosen.
@@ -710,6 +715,7 @@ impl Answer {
             Answer::DivideAmount(_) => "divide-amount",
             Answer::ChooseCards(_) => "choose-cards",
             Answer::OrderCards(_) => "order-cards",
+            Answer::Scry(_) => "scry",
             Answer::YesNo(_) => "yes-no",
             Answer::ChooseOption(_) => "choose-option",
             Answer::ChooseCosts(_) => "choose-costs",

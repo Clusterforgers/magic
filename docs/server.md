@@ -398,6 +398,7 @@ The default windows are both main phases on the seat's own turn, declare attacke
 | `DivideAmount` | response | `Cancel` when `can_cancel`, else an even division (one at least to each target, the first getting the rest; none when the amount is smaller than the number of targets). |
 | `ChooseCards` | response | The first `min` cards of `from` in the order offered (none for a `min` of 0, all of them when fewer are offered; never more than the most). |
 | `OrderCards` | response | The cards in the order given. |
+| `Scry` | response | The top pile and the bottom pile as given. |
 
 "Response", "blocks" and "think" clocks hurry a seat that is not the active player; the active player's decisions run on "active" (none by default) with the same answers; the opening decisions run on "think" for every seat.
 

@@ -4,7 +4,8 @@ use mtg_core::color::Color;
 use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_engine::choose::{
     CardsChoice, CostsChoice, DivideChoice, ModeChoice, NumberChoice, OptionChoice, OrderChoice,
-    ReplacementChoice, Target, TargetChoice, TriggersChoice, TriggersOptions, YesNoChoice,
+    ReplacementChoice, ScryChoice, Target, TargetChoice, TriggersChoice, TriggersOptions,
+    YesNoChoice,
 };
 use mtg_engine::combat::AttackTarget;
 use mtg_engine::decision::{
@@ -718,6 +719,10 @@ impl Driver {
                 o.from.iter().copied().take(o.min as usize).collect(),
             )),
             DecisionKind::OrderCards(o) => Answer::OrderCards(OrderChoice(o.cards.clone())),
+            DecisionKind::Scry(o) => Answer::Scry(ScryChoice {
+                top: o.cards.clone(),
+                bottom: Vec::new(),
+            }),
             DecisionKind::YesNo(_) => Answer::YesNo(YesNoChoice(false)),
             DecisionKind::ChooseOption(_) => Answer::ChooseOption(OptionChoice(0)),
             DecisionKind::ChooseCosts(o) if o.can_cancel => {

@@ -44,6 +44,7 @@ export const DECISION_LABEL: Record<DecisionName, string> = {
   DivideAmount: 'Divide the amount',
   ChooseCards: 'Choose cards',
   OrderCards: 'Put cards in order',
+  Scry: 'Scry',
   YesNo: 'Yes or no',
   ChooseOption: 'Choose an option',
   ChooseCosts: 'Choose costs',
@@ -66,6 +67,7 @@ export function decisionName(kind: DecisionKind): DecisionName {
   if ('DivideAmount' in kind) return 'DivideAmount'
   if ('ChooseCards' in kind) return 'ChooseCards'
   if ('OrderCards' in kind) return 'OrderCards'
+  if ('Scry' in kind) return 'Scry'
   if ('YesNo' in kind) return 'YesNo'
   if ('ChooseOption' in kind) return 'ChooseOption'
   if ('ChooseCosts' in kind) return 'ChooseCosts'

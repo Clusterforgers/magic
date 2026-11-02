@@ -7,6 +7,7 @@
 use mtg_core::ids::{ObjectId, PlayerId};
 
 use super::order::{self, OrderOptions};
+use super::scry::{self, ScryChoice, ScryOptions};
 use super::{CardsOptions, Choice, ChoiceOption, OptionOptions, YesNoOptions, cards};
 use crate::decision::{Decision, DecisionKind};
 use crate::resolve::{Cx, ResolveError, Run};
@@ -112,6 +113,32 @@ impl<'a> Questions<'a> {
                 Ok(chosen.clone())
             }
             Some(other) => Err(Self::unfit(other, player, "order of cards")),
+        }
+    }
+
+    /// How `player` splits `cards` (top first) into the cards that stay on top and those for the bottom, each in order.
+    pub(crate) fn scry(
+        &mut self,
+        player: PlayerId,
+        cards: Vec<ObjectId>,
+        text: String,
+    ) -> Result<ScryChoice, Stop> {
+        let options = ScryOptions {
+            source: self.source,
+            cards,
+            text,
+        };
+        match self.answers.next() {
+            None => Err(Stop::Ask(Box::new(Decision {
+                player,
+                kind: DecisionKind::Scry(options),
+            }))),
+            Some((who, Choice::Scry(chosen)))
+                if *who == player && scry::check(&options, chosen).is_ok() =>
+            {
+                Ok(chosen.clone())
+            }
+            Some(other) => Err(Self::unfit(other, player, "scry")),
         }
     }
 

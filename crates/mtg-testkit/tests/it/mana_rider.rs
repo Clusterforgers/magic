@@ -117,6 +117,10 @@ fn play_out(driver: &mut Driver) -> Result<Vec<Event>, ScriptError> {
             DecisionKind::OrderCards(options) => {
                 Answer::OrderCards(mtg_engine::choose::OrderChoice(options.cards.clone()))
             }
+            DecisionKind::Scry(options) => Answer::Scry(mtg_engine::choose::ScryChoice {
+                top: options.cards.clone(),
+                bottom: Vec::new(),
+            }),
             other => panic!("unexpected {}", other.name()),
         };
         events.extend(driver.answer(answer)?);
