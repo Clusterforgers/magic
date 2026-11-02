@@ -3,7 +3,7 @@ import { useShallow } from 'zustand/react/shallow'
 import { usePlay } from '@/features/game/gameContext'
 import { cn } from '@/lib/utils'
 import type { Step } from '@/protocol/generated'
-import { isYourTurn } from '../selectors'
+import { isYourTurn, turnLeft } from '../selectors'
 import { ladderSteps } from '../stops/stopModel'
 import { STEP_LABEL } from '../turnText'
 import { phaseRuns, pipStates } from './ladder'
@@ -42,6 +42,7 @@ export function StepLadder() {
   )
   const stops = usePlay((state) => state.stops)
   const yours = usePlay(isYourTurn)
+  const left = usePlay(turnLeft)
   const [dashed, setDashed] = useState<readonly Step[]>([])
   useTurnFeed((feed) => {
     // A new turn starts its ladder over; inside a turn the steps skipped so far stay dashed together.
@@ -70,6 +71,7 @@ export function StepLadder() {
       aria-hidden="true"
       data-slot="step-ladder"
       data-side={yours ? 'you' : 'them'}
+      data-left={left || undefined}
       className="hidden shrink-0 items-center gap-2 lg:flex"
     >
       {runs.map((run, index) => {

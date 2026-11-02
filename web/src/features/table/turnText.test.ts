@@ -76,6 +76,34 @@ describe('bannerText', () => {
   })
 })
 
+describe('a turn whose active player left', () => {
+  const left = (active: number, step: Step): BannerInput => ({
+    stage: 'Turns',
+    turn: 5,
+    active,
+    step,
+    left: true,
+  })
+
+  it.each(STEPS)('names the seat that left in the badge and the banner, with the %s step', (step) => {
+    expect(badgeText(left(1, step), 0, name)).toBe(`Bo left · 5 · ${STEP_LABEL[step]}`)
+    expect(bannerText(left(1, step), name)).toBe(`Turn 5 · Bo left · ${STEP_LABEL[step]}`)
+  })
+
+  it.each([0, 1, 2])('never says "Your turn" to seat %i, not even the one that left', (viewer) => {
+    expect(badgeText(left(viewer, 'Main1'), viewer, name)).not.toContain('Your turn')
+  })
+
+  it('waits for nobody to declare attackers', () => {
+    const state = fixtureState(buildFixture({ seats: 3, active: 1 }), null)
+    state.view = clone(must(state.view))
+    state.view.turn = { ...state.view.turn, step: 'DeclareAttackers', active_left: true }
+    state.view.priority = null
+    state.view.combat.attackers_declared = false
+    expect(waitingOn(state)).toEqual({ kind: 'idle', label: 'Waiting for the game' })
+  })
+})
+
 describe('badgeText', () => {
   const turn = (active: number, step: Step): BannerInput => ({ stage: 'Turns', turn: 5, active, step })
 

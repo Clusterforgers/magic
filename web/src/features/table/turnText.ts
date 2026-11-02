@@ -84,6 +84,13 @@ export interface BannerInput {
   turn: number
   active: PlayerId
   step: Step
+  /** The turn goes on without its active player, who has left the game. */
+  left?: boolean
+}
+
+/** "Alice left": the words for the seat a turn belongs to after it left the game. */
+function leftWords(seat: PlayerId, name: Names): string {
+  return `${name(seat)} left`
 }
 
 /** "Turn 5 · Alice · Declare attackers", or what the game is doing before and after its turns. */
@@ -96,7 +103,7 @@ export function bannerText(input: BannerInput, name: Names): string {
     case 'Finished':
       return 'The game is over'
     case 'Turns':
-      return `Turn ${input.turn} · ${name(input.active)} · ${STEP_LABEL[input.step]}`
+      return `Turn ${input.turn} · ${input.left === true ? leftWords(input.active, name) : name(input.active)} · ${STEP_LABEL[input.step]}`
   }
 }
 
@@ -106,6 +113,8 @@ export function bannerText(input: BannerInput, name: Names): string {
  */
 export function badgeText(input: BannerInput, viewer: PlayerId | null, name: Names): string {
   if (input.stage !== 'Turns') return bannerText(input, name)
+  if (input.left === true)
+    return `${leftWords(input.active, name)} · ${input.turn} · ${STEP_LABEL[input.step]}`
   const who = input.active === viewer ? 'Your turn' : `${name(input.active)}'s turn`
   return `${who} · ${input.turn} · ${STEP_LABEL[input.step]}`
 }
@@ -186,7 +195,11 @@ export function waitingOn(state: PlayState): Waiting {
     return others(deciding.map((player) => player.seat).filter((who) => who !== seat))
   }
   if (view.priority !== null) return others(view.priority.holder === seat ? [] : [view.priority.holder])
-  if (view.turn.step === 'DeclareAttackers' && !view.combat.attackers_declared) {
+  if (
+    view.turn.step === 'DeclareAttackers' &&
+    !view.combat.attackers_declared &&
+    view.turn.active_left !== true
+  ) {
     return others(view.turn.active === seat ? [] : [view.turn.active])
   }
   return { kind: 'idle', label: 'Waiting for the game' }

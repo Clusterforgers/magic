@@ -47,7 +47,7 @@ function useRealIds(
 /**
  * `/dev/table?seats=2|4|12&mode=grid|focus&focus=<seat>&prompt=priority&turn=you&fx=damage&bar=1&slow=5&preview=3000`: the
  * real table over a fixture game, for looking at it. `prompt` names a decision from `dev/prompts.ts` for the viewer to
- * face; answering it clears it. `turn=you` makes it the viewer's own turn and `step=main2` (any step's name) puts the
+ * face; answering it clears it. `turn=you` makes it the viewer's own turn, `turn=left` has the active seat leave the game, and `step=main2` (any step's name) puts the
  * turn in that step, to look at the theme of its phase. `fx` plays one of the moves of `dev/fxScenarios.ts` once the
  * page has loaded (the Effects bar plays them again; it is folded behind one button, and `bar=1` opens it) and `slow`
  * stretches the table effects, so one can be looked at before it is gone; `newturn=1` passes the turn to the other side

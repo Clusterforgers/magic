@@ -24,7 +24,7 @@ import { createMarksStore, MarksContext } from './prompt/marks'
 import { promptInStrip } from './prompt/ownDecision'
 import { createPreviewStore, PreviewContext } from './preview'
 import { Opponents, SeatArea } from './Seats'
-import { defaultFocusOf, seatCountOf } from './selectors'
+import { defaultFocusOf, seatCountOf, turnLeft } from './selectors'
 import { SharedStrip } from './SharedStrip'
 import { SideProvider } from './sideState'
 import { SidePanelMount, SideSheet, SideTabs } from './SideTabs'
@@ -50,7 +50,7 @@ const Table = memo(function Table() {
     useShallow((state) => ({ seat: state.seat, seatCount: seatCountOf(state), ready: state.view !== null })),
   )
   const followed = usePlay(defaultFocusOf)
-  const active = usePlay((state) => state.view?.turn.active ?? null)
+  const active = usePlay((state) => (turnLeft(state) ? null : (state.view?.turn.active ?? null)))
   const lowered = usePlay(promptInStrip)
   const [mode, setMode] = useState<TableMode | undefined>(options.mode)
   const [chosen, setChosen] = useState<PlayerId | null>(options.focus ?? null)

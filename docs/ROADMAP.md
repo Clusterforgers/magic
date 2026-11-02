@@ -105,7 +105,6 @@ The table and its prompts are live; the items below polish them.
 - [ ] (db1b) The builder's cards played by hand quote the words of the card each reason covers (the spans of `useCardTexts`), as the not-validated page does
 - [ ] (db1c) At 1440 px and wider the stats and the cards played by hand sit in a rail beside the deck (the builder takes a page width beyond `wide`) instead of two closed disclosures
 - [ ] (pm1a) A server test drives a clocked game and shows that a manual action keeps the deadline of a changed decision of the same seat (`carried_clock`), and that a manual action sent while a replacement question holds a batch is applied once it is answered (`flush_deferred`).
-- [ ] The turn indicator and step bar show a turn without an active player (`TurnView.active_left`), with `/dev/table` screenshots at six sizes in both themes
 - [ ] (ma7q) The Tokens row's custom creature also takes colours and types (artifact, enchantment, subtypes), which `CreateToken` already carries, and a token can copy a card on the table
 
 - [ ] (ma6b) Playwright: the by-hand mark opens the clause list by a press and the `h` key opens it on the focused card, for a Partial card on a two-seat table at desktop and phone size, and the cast and entering lines are in both logs
