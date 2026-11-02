@@ -13,6 +13,7 @@ pub mod fix_marks;
 pub mod import;
 pub mod model;
 pub mod precons;
+pub mod prefs;
 pub mod reads;
 mod rows;
 pub mod runs;
@@ -37,5 +38,6 @@ pub use precons::{
     DeckBoard, PreconDeckDetail, PreconDeckId, PreconDeckSummary, PreconEntry, PreconRepo,
     PreconVersion,
 };
+pub use prefs::{PrefsRepo, StoredPrefs};
 pub use reads::{AccountRead, DraftRead, ReadRepo, ReadState, StoredRead, Verdict};
 pub use runs::{ImportRun, ImportRuns, ImportSource, RunId, RunStatus, STALE_AFTER};

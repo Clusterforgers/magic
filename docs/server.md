@@ -284,6 +284,17 @@ Blank values are no filter; an unknown parameter or a malformed value is 400 `in
 - Stars and unstars count per account (`AttemptLimits::favourite_writes_per_user`); over it the answer is 429 `rate_limited`.
 - `PreconListItem.pictures` and `DeckListItem.pictures` (`DeckPicture`) name the cards that stand for a deck in a list: its commanders, else its first card.
 
+### Account preferences
+
+`prefs.rs` and `mtg-db`'s `PrefsRepo` (`user_prefs`, one row per account). The default stops and "End my turn by hand" follow the account to every browser. Needs an account (401 `unauthenticated`; 503 `cards_unavailable` without a database). Bodies are `application/json` of at most 8 KiB.
+
+| Endpoint | Behaviour |
+|---|---|
+| `GET /api/me/prefs` | `UserPrefs {default_stops, end_turn_by_hand}`; no stops and false for an account that saved none. |
+| `PUT /api/me/prefs` | Replaces them and answers them as stored: stops sorted, each side and step once, all lasting and at steps that grant priority, at most `MAX_DEFAULT_STOPS`; otherwise 400 `invalid_request`. |
+
+- Deleting the account deletes its row.
+
 ### Fix marks
 
 `fix_marks.rs` and `mtg-db`'s `FixMarkRepo` (`card_fix_marks`). A player marks a card the game does not run whole, or any card that misbehaves, as important to fix; the owner reads the marks ranked. Every route needs a signed-in account: 503 `cards_unavailable` without a database, then 401 `unauthenticated`. Bodies are `application/json` of at most 4 KiB.

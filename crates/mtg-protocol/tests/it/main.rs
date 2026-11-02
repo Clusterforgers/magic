@@ -78,6 +78,7 @@ mod rest_favourites;
 mod rest_fix_marks;
 mod rest_lobbies;
 mod rest_precons;
+mod rest_prefs;
 mod rewound_view;
 mod room_view;
 mod saga_transform_view;

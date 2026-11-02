@@ -7,7 +7,7 @@
 use std::fmt;
 use std::time::Duration;
 
-use mtg_db::{DeckRepo, FavouritePreconRepo, FixMarkRepo};
+use mtg_db::{DeckRepo, FavouritePreconRepo, FixMarkRepo, PrefsRepo};
 use sqlx::PgPool;
 use thiserror::Error;
 
@@ -273,6 +273,9 @@ impl Accounts {
             .await
             .map_err(|error| AccountError::Unavailable(error.to_string()))?;
         FavouritePreconRepo::delete_all_of(&mut tx, user.uuid())
+            .await
+            .map_err(|error| AccountError::Unavailable(error.to_string()))?;
+        PrefsRepo::delete_all_of(&mut tx, user.uuid())
             .await
             .map_err(|error| AccountError::Unavailable(error.to_string()))?;
         sqlx::query!("DELETE FROM users WHERE id = $1", user.uuid())

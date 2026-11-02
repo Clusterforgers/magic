@@ -259,6 +259,7 @@ export type { Unplayable } from "./Unplayable";
 export type { UnplayableCard } from "./UnplayableCard";
 export type { UnresolvedLine } from "./UnresolvedLine";
 export type { UnresolvedReason } from "./UnresolvedReason";
+export type { UserPrefs } from "./UserPrefs";
 export type { UserView } from "./UserView";
 export type { Visibility } from "./Visibility";
 export type { VisibilityBody } from "./VisibilityBody";
