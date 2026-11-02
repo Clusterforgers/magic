@@ -35,8 +35,14 @@ fn movers<'a>(
     let state = cx.state();
     let mut found: Vec<&GameObject> = Vec::new();
     for named in cx.scope.objects(what)? {
+        // An ability that moves "this card" after it left the battlefield finds the card in the graveyard or exile it
+        // went to, one zone change on (CR 400.7).
+        let followed = matches!(what, Ref::This);
         let object = state.object(named.id).filter(|object| {
-            object.counter() == named.counter
+            (object.counter() == named.counter
+                || (followed
+                    && object.counter() == named.counter + 1
+                    && matches!(object.zone(), Zone::Graveyard(_) | Zone::Exile)))
                 && object.kind() != ObjectKind::Ability
                 && !matches!(object.zone(), Zone::Stack | Zone::PhasedOut)
         });

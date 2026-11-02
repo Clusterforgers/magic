@@ -189,7 +189,7 @@ pub fn triggered(r: &mut Reader<'_>) -> Option<Ability> {
     } else if in_graveyard
         || triggers::cycled_itself(&when)
         || triggers::graveyard_itself(&when)
-        || effects::returns_itself(&effects)
+        || (effects::returns_itself(&effects) && !r.others_died)
     {
         ZoneKind::Graveyard
     } else {

@@ -17,7 +17,6 @@
                 "to": "Graveyard"
               }
             },
-            "from": "Graveyard",
             "effects": [
               { "Move": { "what": "This", "to": "Hand" } },
               {
