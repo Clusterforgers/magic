@@ -82,8 +82,6 @@ The table and its prompts are live; the items below polish them.
 - [ ] (pl1e1) At 1280x720 and below the duel opponent's pod column (119 px) draws its corner as pictures too: the blocks above the corner give up the 64 px they take
 - [ ] (pl1d) A permanent that dies as the last of its lane keeps its ghost while the effect plays (an empty lane has no place in the fit)
 - [ ] (pl2d) Playwright: attack and block by clicks in a real two-seat game and at four seats (the click flows are tested on the dev table only)
-- [ ] (pl3b) The payment sheet takes the mana sources and the made total in its compact form: one scroll line of source chips, made and owed on one row, no extra height at 390 px
-- [ ] (pl3c) The colour switch sits on the source chip and swaps the colour of a chosen source without taking it back; chips mark restricted mana (`only`), life, energy and taken permanents, and the pool marks the mana that outlasts the step (`kept`)
 - [ ] (ui1i) `/dev/table?fx=` screenshots of every moment at the six sizes in both themes settle the look, and `fit.spec.ts` holds the table at rest with three targeting items on the stack
 - [ ] (st1a) The Stasis family (Stasis Field, Stasis Cell, Stunning Strike) is measured in a scratch database after `compile`: each becomes Verified or names the clause the checker still lacks, with its Scryfall record in the corpus
 - [ ] (st1b) "Its activated abilities can't be activated" (Arrest, Stasis Cocoon) is a restriction the compiler reads and the activation rules enforce (`Modification` and the activation check)

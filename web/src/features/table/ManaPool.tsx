@@ -1,9 +1,10 @@
-import { Lock, Sparkles } from 'lucide-react'
+import { Hourglass, Lock, Sparkles } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import type { ManaPool as ManaPoolValue, ManaType } from '@/protocol/generated'
 import { manaLetter } from './cardModel'
 import type { PipTone } from './cardModel'
 import { PIP } from './cardSize'
+import { keptOf } from './manaKept'
 import { limits, manaRiders, riderKey, riderWords } from './manaRider'
 
 // The order of `ManaPool.counts` on the wire.
@@ -78,17 +79,28 @@ export function ManaPool({
       aria-label="Mana pool"
       className={cn('flex flex-wrap items-center gap-x-2 gap-y-1 text-sm', className)}
     >
-      {held.map(({ type, count }) => (
-        <span key={type} data-mana={type} className="inline-flex items-center gap-0.5">
-          <ManaDot type={type} />
-          <span className="font-semibold tabular-nums" aria-hidden="true">
-            ×{count}
+      {held.map(({ type, count }) => {
+        const kept = keptOf(pool, type)
+        return (
+          <span
+            key={type}
+            data-mana={type}
+            data-kept={kept === null ? undefined : 'true'}
+            title={kept?.words}
+            className="inline-flex items-center gap-0.5"
+          >
+            <ManaDot type={type} />
+            <span className="font-semibold tabular-nums" aria-hidden="true">
+              ×{count}
+            </span>
+            {kept === null ? null : <Hourglass aria-hidden="true" className="size-3 text-muted-foreground" />}
+            <span className="sr-only">
+              {count} {type.toLowerCase()}
+              {kept === null ? '' : `, ${kept.words}`}
+            </span>
           </span>
-          <span className="sr-only">
-            {count} {type.toLowerCase()}
-          </span>
-        </span>
-      ))}
+        )
+      })}
       {riders.map(({ type, count, riders: carried }) => {
         const said = carried
           .map((rider) => words?.get(riderKey(rider)) ?? riderWords(rider, undefined))

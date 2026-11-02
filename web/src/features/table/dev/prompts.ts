@@ -25,7 +25,7 @@ import { EFFECT_MOMENTS, EFFECT_PROMPTS } from './effectPrompts'
 import type { Fixture } from './fixture'
 import { LOOKED_MOMENTS, LOOKED_PROMPTS } from './lookedPrompts'
 import { lookTopMoment } from './lookTopScene'
-import { paySources, paySourcesTable } from './paySources'
+import { payMarks, payMarksTable, paySources, paySourcesTable } from './paySources'
 import { roomsTable, withRooms } from './roomsScene'
 import { companionTable, stackAbilityTable } from './previewScenes'
 
@@ -506,6 +506,7 @@ export const DEV_PROMPTS: Record<string, DevPrompt> = {
   'pay-hybrid': payHybrid,
   'pay-low-life': payLowLife,
   'pay-sources': paySources,
+  'pay-marks': payMarks,
   'commander-return': commanderReturn,
   ...EFFECT_PROMPTS,
   ...LOOKED_PROMPTS,
@@ -544,6 +545,7 @@ export const DEV_TABLES: Record<string, DevTable> = {
   'pay-hybrid': hybridTable,
   'pay-low-life': hybridTable,
   'pay-sources': paySourcesTable,
+  'pay-marks': payMarksTable,
   mulligan: openingTable('Deciding'),
   'mulligan-free': openingTable('Deciding'),
   bottom: openingTable({ Bottoming: 2 }),
