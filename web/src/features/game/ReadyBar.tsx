@@ -18,7 +18,8 @@ export function ReadyBar({ onToggle, children, ...facts }: ReadyBarProps) {
   return (
     <div
       data-slot="ready-bar"
-      className="sticky bottom-0 z-10 -mx-4 grid gap-2 border-t bg-background px-4 py-3 sm:-mx-6 sm:px-6 min-[1000px]:static min-[1000px]:mx-0 min-[1000px]:rounded-xl min-[1000px]:border min-[1000px]:bg-card min-[1000px]:px-4"
+      // The page's gutter bleed stays below 1000 px: `sm:` sorts after an arbitrary `min-[1000px]:` and would win.
+      className="grid gap-2 px-4 py-3 max-[999px]:sticky max-[999px]:bottom-0 max-[999px]:z-10 max-[999px]:-mx-4 max-[999px]:border-t max-[999px]:bg-background max-[999px]:sm:-mx-6 max-[999px]:sm:px-6 min-[1000px]:rounded-xl min-[1000px]:border min-[1000px]:bg-card"
     >
       <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
         <Button
