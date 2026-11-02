@@ -265,7 +265,10 @@ export const SeatPanel = memo(function SeatPanel({ seat, variant = 'panel' }: Se
               name
             )}
             {/* Room for the pool is kept under the name, so nothing moves when mana floats. */}
-            <div data-slot="mana-slot" className={cn('min-h-5', tight && 'flex flex-wrap items-center gap-1')}>
+            <div
+              data-slot="mana-slot"
+              className={cn('min-h-5', tight && 'flex flex-wrap items-center gap-1')}
+            >
               {mana}
               {tight ? extraChips : null}
             </div>
