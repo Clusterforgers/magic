@@ -457,7 +457,7 @@ fn a_bigger_x_does_not_read_with_another_limit_or_token(
 /// those cards without paying their mana costs."
 fn etali(who: &str, count: u32, free: bool) -> String {
     format!(
-        r#"{{"Triggered":{{"when":{{"Attacks":{{"what":["This"]}}}},"effects":[{{"ExileTop":{{"who":"{who}","count":{count},"as":"exiled"}}}},{{"CastFromZone":{{"what":{{"Bound":"exiled"}},"free":{free}}}}}]}}}}"#
+        r#"{{"Triggered":{{"when":{{"Attacks":{{"what":["This"]}}}},"effects":[{{"ExileTop":{{"who":"{who}","count":{count},"as":"exiled"}}}},{{"RepeatEach":{{"over":{{"Bound":"exiled"}},"as":"card","effects":[{{"CastFromZone":{{"what":{{"Bound":"card"}},"free":{free}}}}}]}}}}]}}}}"#
     )
 }
 

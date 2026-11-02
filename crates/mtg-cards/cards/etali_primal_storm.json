@@ -12,7 +12,13 @@
             "when": { "Attacks": { "what": ["This"] } },
             "effects": [
               { "ExileTop": { "who": "EachPlayer", "as": "exiled" } },
-              { "CastFromZone": { "what": { "Bound": "exiled" }, "free": true } }
+              {
+                "RepeatEach": {
+                  "over": { "Bound": "exiled" },
+                  "as": "card",
+                  "effects": [{ "CastFromZone": { "what": { "Bound": "card" }, "free": true } }]
+                }
+              }
             ]
           }
         }
