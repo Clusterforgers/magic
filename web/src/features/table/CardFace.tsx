@@ -1,3 +1,4 @@
+import { Fragment } from 'react'
 import { CARD_CORNER } from '@/features/cards/CardImage'
 import { useImageChoice } from '@/features/cards/imageSetting'
 import { imageSizeFor, imageSourceOf, showsBack } from '@/features/cards/images'
@@ -59,6 +60,18 @@ interface CardFaceProps {
 function nameLinesOf(turned: boolean, full: boolean, size: CardSize): string {
   if (turned) return size === 'compact' ? 'line-clamp-1' : 'line-clamp-2'
   return full ? 'line-clamp-2' : 'line-clamp-3'
+}
+
+// A name breaks between words, never inside one: a word wider than the face ends in an ellipsis.
+function Words({ text }: { text: string }) {
+  const words = text.split(/\s+/).filter((word) => word !== '')
+  if (words.length < 2) return <span className="block truncate">{text}</span>
+  return words.map((word, at) => (
+    <Fragment key={at}>
+      {at === 0 ? null : ' '}
+      <span className="inline-block max-w-full truncate align-top">{word}</span>
+    </Fragment>
+  ))
 }
 
 // A token's frame keeps its colour on the border and takes the back's fill.
@@ -223,8 +236,8 @@ export function TextFace({
       )}
     >
       <span className={cn(classes.name, parts.name, 'leading-tight font-semibold')}>
-        <span className={cn('block break-words hyphens-auto', nameLines)}>
-          {roomTitle(object.name, links?.doors)}
+        <span data-name className={cn('block', nameLines)}>
+          <Words text={roomTitle(object.name, links?.doors)} />
         </span>
       </span>
       {(full || (cost && !turned)) && object.mana_cost !== null ? (
