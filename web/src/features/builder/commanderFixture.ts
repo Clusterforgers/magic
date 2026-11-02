@@ -57,10 +57,10 @@ const issue = (code: Issue['code'], message: string, over: Partial<Issue> = {}):
   ...over,
 })
 
-/** The commander rules of `docs/deck-check.md` over the cards above: who may lead, who pairs, what lies outside. */
-export function commanderLegality(request: CheckRequest): Issue[] {
+/** The commander rules of `docs/deck-check.md` over the cards above and `extra` ones (a name and an identity are enough): who may lead, who pairs, what lies outside. */
+export function commanderLegality(request: CheckRequest, extra: readonly CardHit[] = []): Issue[] {
   const lines = request.cards ?? []
-  const known = new Map(COMMANDER_POOL.map((card) => [card.oracle_id, card]))
+  const known = new Map([...extra, ...COMMANDER_POOL].map((card) => [card.oracle_id, card]))
   const commanders = lines.filter((line) => line.zone === 'commander').map((line) => line.oracle_id)
   const issues: Issue[] = []
   if (commanders.length > 2) {

@@ -87,6 +87,14 @@ describe('the fixture decks', () => {
     expect(view.verified).toBe(state === 'verified')
   })
 
+  it('has commander rules in the check: a Partner pair leads, a commander that cannot lead is refused', () => {
+    const codes = (deck: 'partners' | 'refused') =>
+      fixtureView(deck).report.legality.map((issue) => issue.code)
+    expect(codes('partners')).toEqual(['deck_size', 'color_identity', 'color_identity'])
+    expect(codes('refused')).toEqual(['deck_size', 'commander_eligibility', 'commander_pair'])
+    expect(fixtureView('mixed').report.legality.map((issue) => issue.code)).not.toContain('commander_pair')
+  })
+
   it('holds a legal deck of exactly 100 cards in the verified and manual decks', () => {
     for (const deck of ['verified', 'manual'] as const) {
       const view = fixtureView(deck)
