@@ -115,7 +115,7 @@ describe('the prompt sheet of a split table', () => {
     [390, 844, true],
     [1400, 900, false],
   ])('on %ix%i leaves a phone the tile strip and a row of the opponents (phone: %s)', (width, height, phone) => {
-    const regions = withSplit(regionSizes({ width, height }), { opponents: 250, own: 300 })
+    const regions = withSplit(regionSizes({ width, height }), { opponents: 250, own: 300, ownCard: 100, theirCard: 80 })
     expect(regions.phone).toBe(phone)
     const room = phone ? 250 - SHEET_KEEP_PX : 250
     expect(regions.sheet).toBeCloseTo(Math.min(height * 0.4, regions.shared + room), 6)
