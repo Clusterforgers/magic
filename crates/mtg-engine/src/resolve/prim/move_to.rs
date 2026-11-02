@@ -35,9 +35,9 @@ fn movers<'a>(
     let state = cx.state();
     let mut found: Vec<&GameObject> = Vec::new();
     for named in cx.scope.objects(what)? {
-        // An ability that moves "this card" after it left the battlefield finds the card in the graveyard or exile it
+        // A triggered ability that moves "this card" after it left the battlefield finds the card in the graveyard or exile it
         // went to, one zone change on (CR 400.7).
-        let followed = matches!(what, Ref::This);
+        let followed = matches!(what, Ref::This) && cx.scope.cause.is_some();
         let object = state.object(named.id).filter(|object| {
             (object.counter() == named.counter
                 || (followed
