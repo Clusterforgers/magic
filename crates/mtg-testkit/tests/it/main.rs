@@ -254,6 +254,7 @@ mod impulse;
 mod impulse_fuzz;
 mod instead_fuzz;
 mod instead_search;
+mod it_that_betrays;
 mod keyword_counters;
 mod keyword_lines_fuzz;
 mod keywords_attack;
