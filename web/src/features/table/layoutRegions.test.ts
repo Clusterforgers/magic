@@ -117,6 +117,11 @@ describe('regionSizes', () => {
         // A long prompt grows to 40 % of the height, up over the opponents and no further than the top bar.
         expect(regions.sheet, where).toBeLessThanOrEqual(height * 0.4 + 1e-9)
         expect(regions.sheet, where).toBeLessThanOrEqual(regions.shared + regions.opponents + 1e-9)
+        if (regions.phone) {
+          expect(regions.sheet, where).toBeLessThanOrEqual(
+            regions.shared + Math.max(0, regions.opponents - 120) + 1e-9,
+          )
+        }
       }
     }
   })
@@ -124,7 +129,8 @@ describe('regionSizes', () => {
   it.each([
     ['1920x1080', 432],
     ['1280x720', 288],
-    ['390x844', 337.6],
+    // A phone's sheet leaves the tile strip and a row of the opponents' board (`SHEET_KEEP_PX`).
+    ['390x844', 59.08 + (844 - 44 - 59.08 - 118.16) / 2.15 - 120],
     // A window so low that the strip and the opponents are less than 40 %: the sheet takes them and no more.
     ['844x390', 56 + (390 - 32 - 56 - 96) / 2.15],
   ])('lets the sheet of a %s window grow %f px up over the opponents', (name, most) => {

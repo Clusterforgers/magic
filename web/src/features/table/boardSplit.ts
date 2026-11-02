@@ -1,7 +1,7 @@
 /** Pure height split between the opponents' boards and yours, weighted by the lanes each must hold. */
 import { LANE_LIMITS, highestRung, ladderOf, laneHeight } from './laneFit'
 import type { LaneCounts, LaneLimits } from './laneFit'
-import { OWN_SHARE, POD_COLUMN_PX, SHEET_MAX_VH, ZONE_GAP_PX } from './layout'
+import { OWN_SHARE, POD_COLUMN_PX, ZONE_GAP_PX, sheetMost } from './layout'
 import type { Regions, SeatPlan } from './layout'
 import type { PlayState } from '@/play/store'
 import type { PlayerId } from '@/protocol/generated'
@@ -164,6 +164,6 @@ export function withSplit(regions: Regions, split: BoardSplit): Regions {
     ...regions,
     opponents: split.opponents,
     own: split.own,
-    sheet: Math.min((regions.main.height * SHEET_MAX_VH) / 100, regions.shared + split.opponents),
+    sheet: sheetMost(regions.main.height, regions.shared, split.opponents, regions.phone),
   }
 }
