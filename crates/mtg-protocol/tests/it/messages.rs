@@ -454,11 +454,13 @@ fn pipeline_decision_kinds() -> Vec<DecisionKind> {
                     source: a,
                     ability: 0,
                     shield: None,
+                    text: String::new(),
                 },
                 ReplacementCandidate {
                     source: b,
                     ability: 0,
                     shield: Some(mtg_core::ids::EffectId(3)),
+                    text: "~ enters tapped.".into(),
                 },
             ],
             text: "Create 2 token(s).".into(),

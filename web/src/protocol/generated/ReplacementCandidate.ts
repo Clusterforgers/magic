@@ -17,4 +17,8 @@ ability: number,
 /**
  * The shield, when the effect is one that a spell or ability made (the source is the object that made it).
  */
-shield?: EffectId, };
+shield?: EffectId, 
+/**
+ * The words of this effect alone ("~ enters tapped."), `~` read as the source name; empty when none are known.
+ */
+text?: string, };

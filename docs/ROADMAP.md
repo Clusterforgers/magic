@@ -68,7 +68,6 @@ Items that touch the running game come first; the play-session findings (pf) lea
 The table and its prompts are live; the items below polish them.
 
 - [ ] (i2) Arena flow P10: smart stops, per-ability yields, an order-by-timestamp preference, damage auto-assign and the answer to a one-option decision (`docs/arena-flow.md`)
-- [ ] (w3k) A replacement candidate carries the words of its own effect, so the ChooseReplacement prompt shows the one ability that applies instead of the whole card text (`ReplacementCandidate`)
 - [ ] (w3j) A scry is one screen: the engine asks the split and the order of both piles in one decision, so the player orders the top pile where the cards are split instead of in the two `OrderCards` that follow
 - [ ] (w3f) The payment prompt spends restricted mana by hand, read against `PayOptions.spend`
 - [ ] (w3g) The payment prompt taps creatures for convoke and artifacts for improvise

@@ -1,7 +1,13 @@
 /** Goal: the replacement prompt's sentence uses the engine's event words or a plain one, effects of one card are told apart by ability or as a lasting effect and still-equal names are numbered, and the keys are spelled for 0 to 12 effects. */
 import { describe, expect, it } from 'vitest'
 import type { ReplacementCandidate } from '@/protocol/generated'
-import { replacementKeys, replacementLabels, replacementOrigin, replacementSentence } from './replacementText'
+import {
+  replacementKeys,
+  replacementLabels,
+  replacementOrigin,
+  replacementSentence,
+  replacementWording,
+} from './replacementText'
 
 const effect = (source: number, ability = 0, shield?: number): ReplacementCandidate =>
   shield === undefined ? { source, ability } : { source, ability, shield }
@@ -52,6 +58,27 @@ describe('replacementOrigin', () => {
   it('says a spell or ability made a lasting effect and nothing for a card', () => {
     expect(replacementOrigin(effect(1, 0, 3))).toBe('A lasting effect made by a spell or ability')
     expect(replacementOrigin(effect(1))).toBeNull()
+  })
+})
+
+describe('replacementWording', () => {
+  it.each([
+    [
+      'its own words first',
+      { source: 1, ability: 0, text: '~ enters tapped.' },
+      'Card text.',
+      '~ enters tapped.',
+    ],
+    ['the card text when it has none', { source: 1, ability: 0 }, 'Card text.', 'Card text.'],
+    [
+      'the origin of a lasting effect',
+      { source: 1, ability: 0, shield: 2 },
+      null,
+      'A lasting effect made by a spell or ability',
+    ],
+    ['nothing for a bare card', { source: 1, ability: 0, text: '  ' }, null, null],
+  ])('reads %s', (_name, candidate, oracle, expected) => {
+    expect(replacementWording(candidate, oracle)).toBe(expected)
   })
 })
 
