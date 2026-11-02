@@ -1,4 +1,4 @@
-// Goal: the table is exactly the window at the six sizes of the design (1920x1080, 1440x900, 1366x768, 1280x720, 1024x768 and a 390x844 phone): in a real two-seat game, at the opening hands and at the first priority window, and on the development table at 2, 4, 6 and 12 seats with 40 permanents a seat, the page never scrolls either way, every region of the grid stays inside the window, and your hand, the primary pass button (or Keep), and your life are in view and not covered, no battlefield card in view lies under the prompt sheet or the turn banner, the divider after the commanders stays inside the hand dock; the game-over screen of a real game fits the window too; with the attachments scene (`equip=1`, also on the duel board) the table fits as well, every grant mark is written in whole words of 11 px or more, and a pod column draws its corner as pictures inside it or as chips with no card.
+// Goal: the table is exactly the window at the six sizes of the design (1920x1080, 1440x900, 1366x768, 1280x720, 1024x768 and a 390x844 phone): in a real two-seat game, at the opening hands and at the first priority window, and on the development table at 2, 4, 6 and 12 seats with 40 permanents a seat, the page never scrolls either way, every region of the grid stays inside the window, and your hand, the primary pass button (or Keep), and your life are in view and not covered, no battlefield card in view lies under the prompt sheet or the turn banner, the divider after the commanders stays inside the hand dock, three targeting items on the stack at rest fit too; the game-over screen of a real game fits the window too; with the attachments scene (`equip=1`, also on the duel board) the table fits as well, every grant mark is written in whole words of 11 px or more, and a pod column draws its corner as pictures inside it or as chips with no card.
 import { expect, test } from '@playwright/test'
 import type { Page } from '@playwright/test'
 import { playToTheEnd, Run } from './driver'
@@ -293,6 +293,13 @@ test.describe('the development table with 40 permanents a seat', () => {
       expect(seen.own, `${width}x${height}: your creatures`).toBeGreaterThanOrEqual(own)
       expect(seen.theirs, `${width}x${height}: the opponent's creatures`).toBeGreaterThanOrEqual(theirs)
     }
+  })
+
+  test('fits at every size with three targeting items on the stack at rest', async ({ page }) => {
+    await page.goto(`${DEV_WEB_URL}/dev/table?board=duel&prompt=priority&turn=you`)
+    await page.locator(THINGS.primary).waitFor()
+    await expect(page.locator('[data-stack-chip]')).toHaveCount(3)
+    await atEverySize(page, ['hand', 'life', 'primary'], onTable('three stack items'))
   })
 
   test('draws each seat’s corner as pictures of 44 px or more, and the opponent’s pod column does not scroll at 1920x1080, 1440x900 and 1366x768', async ({

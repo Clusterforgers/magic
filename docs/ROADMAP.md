@@ -80,11 +80,11 @@ The table and its prompts are live; the items below polish them.
 - [ ] (a2e) The precon details dialog shows each card's picture through `CardPicture` and the hover picture, as the builder does
 - [ ] (a2f) The real database holds every precon printing (`fetch scryfall --printings`), so the table draws each card in its precon art instead of the card's default picture
 - [ ] (k1g) The layout gate and the fit spec also sweep 360, 768, 1400 and 1600x1000 (only the six design sizes today)
-- [ ] (ts6) `/dev/table?states=1` screenshots at the six sizes in both themes settle the marks on compact faces (under 76 px, where an attachment mark is an icon) and on tapped pictures
+- [ ] (ts6a) Compact faces (under 76 px) cut long names mid-word ("Bonesplitte r") and clip the foot marks at 1280x720 and 1024x768 on `/dev/table?states=1`: the face needs one-line names and a mark row that fits (`CardFace.tsx`)
 - [ ] (pl1e1) At 1280x720 and below the duel opponent's pod column (119 px) draws its corner as pictures too: the blocks above the corner give up the 64 px they take
 - [ ] (pl1d) A permanent that dies as the last of its lane keeps its ghost while the effect plays (an empty lane has no place in the fit)
 - [ ] (pl2d) Playwright: attack and block by clicks in a real two-seat game and at four seats (the click flows are tested on the dev table only)
-- [ ] (ui1i) `/dev/table?fx=` screenshots of every moment at the six sizes in both themes settle the look, and `fit.spec.ts` holds the table at rest with three targeting items on the stack
+- [ ] (ui1i1) The dev Effects button sits over the step strip at 1280 and 1024 wide; strike and cast moments were read only at 1280 and 390, the other moments at the six sizes remain to read
 - [ ] (st1a) The Stasis family (Stasis Field, Stasis Cell, Stunning Strike) is measured in a scratch database after `compile`: each becomes Verified or names the clause the checker still lacks, with its Scryfall record in the corpus
 - [ ] (st1b) "Its activated abilities can't be activated" (Arrest, Stasis Cocoon) is a restriction the compiler reads and the activation rules enforce (`Modification` and the activation check)
 - [ ] (eq1j) `gives` of an Aura on a player names the rules it gives outside keywords ("Enchanted player can't cast spells", skipped draws), which the layers do not record for players (`gives.rs`, `layers.rs` `PlayerHeld`)
