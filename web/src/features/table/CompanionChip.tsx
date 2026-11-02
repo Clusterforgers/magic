@@ -59,7 +59,7 @@ export function CompanionChip({ owner, player }: { owner: string; player: Player
       data-slot="companion"
       data-stage={companion.stage}
       tabIndex={0}
-      className={cn(CHIP, 'max-w-full bg-muted px-1.5 text-muted-foreground')}
+      className={cn(CHIP, 'max-w-32 bg-muted px-1.5 text-muted-foreground')}
     >
       <Users aria-hidden="true" className="size-4 shrink-0" />
       <span aria-hidden="true" className="truncate">
