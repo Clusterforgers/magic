@@ -42,7 +42,7 @@ fn every_seat_sees_who_protects_a_battle(
 #[test]
 fn the_field_is_left_out_of_the_json_while_there_is_no_protector() {
     let driver =
-        Driver::from_scenario(Scenario::new(2).battlefield(0, [ready(card("Plains").unwrap())]))
+        Driver::from_scenario(Scenario::new(2).battlefield(0, [ready(card("Forest").unwrap())]))
             .unwrap();
     let json = serde_json::to_value(view(&driver, 0)).unwrap();
     assert!(
