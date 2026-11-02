@@ -8,6 +8,7 @@ use serde::{Deserialize, Serialize};
 use crate::effects::{ContinuousEffect, Duration, Modification, Selector};
 use crate::events::Event;
 use crate::manual::{MAX_NOTE_CHARS, ManualRefusal};
+use crate::object::GameObject;
 use crate::state::GameState;
 
 /// A keyword the table can give by hand: one the engine applies with no parameter.
@@ -47,6 +48,46 @@ pub enum ManualKeyword {
 }
 
 impl ManualKeyword {
+    /// Every keyword the table can give.
+    pub const ALL: [ManualKeyword; 15] = [
+        ManualKeyword::Flying,
+        ManualKeyword::Reach,
+        ManualKeyword::FirstStrike,
+        ManualKeyword::DoubleStrike,
+        ManualKeyword::Deathtouch,
+        ManualKeyword::Trample,
+        ManualKeyword::Lifelink,
+        ManualKeyword::Vigilance,
+        ManualKeyword::Haste,
+        ManualKeyword::Menace,
+        ManualKeyword::Defender,
+        ManualKeyword::Indestructible,
+        ManualKeyword::Hexproof,
+        ManualKeyword::Shroud,
+        ManualKeyword::Flash,
+    ];
+
+    /// The keyword in words, as a card shows it.
+    pub const fn label(self) -> &'static str {
+        match self {
+            ManualKeyword::Flying => "Flying",
+            ManualKeyword::Reach => "Reach",
+            ManualKeyword::FirstStrike => "First strike",
+            ManualKeyword::DoubleStrike => "Double strike",
+            ManualKeyword::Deathtouch => "Deathtouch",
+            ManualKeyword::Trample => "Trample",
+            ManualKeyword::Lifelink => "Lifelink",
+            ManualKeyword::Vigilance => "Vigilance",
+            ManualKeyword::Haste => "Haste",
+            ManualKeyword::Menace => "Menace",
+            ManualKeyword::Defender => "Defender",
+            ManualKeyword::Indestructible => "Indestructible",
+            ManualKeyword::Hexproof => "Hexproof",
+            ManualKeyword::Shroud => "Shroud",
+            ManualKeyword::Flash => "Flash",
+        }
+    }
+
     /// The keyword the engine runs.
     pub fn keyword(self) -> Keyword {
         match self {
@@ -119,18 +160,25 @@ pub(crate) fn grant(
     }])
 }
 
-/// The lines of text given to `object` by hand that still hold, oldest first.
-pub fn granted_text(state: &GameState, object: ObjectId) -> Vec<String> {
-    let Some(held) = state.object(object).map(|object| object.reference()) else {
+/// What was given to `object` by hand and still holds, oldest first: a keyword in words ("First strike") or a line of
+/// text. An effect of a spell or ability names its source and is not listed.
+pub fn granted_by_hand(state: &GameState, object: ObjectId) -> Vec<String> {
+    let Some(held) = state.object(object).map(GameObject::reference) else {
         return Vec::new();
     };
     state
         .effects()
         .iter()
-        .filter_map(|effect| match (&effect.modification, &effect.selector) {
-            (Modification::GrantText(text), Selector::Objects(named)) if named.contains(&held) => {
-                Some(text.clone())
-            }
+        .filter(|effect| effect.source.is_none())
+        .filter(
+            |effect| matches!(&effect.selector, Selector::Objects(named) if named.contains(&held)),
+        )
+        .filter_map(|effect| match &effect.modification {
+            Modification::GrantText(text) => Some(text.clone()),
+            Modification::AddKeyword(keyword) => ManualKeyword::ALL
+                .iter()
+                .find(|known| known.keyword() == *keyword)
+                .map(|known| known.label().to_owned()),
             _ => None,
         })
         .collect()

@@ -9,7 +9,7 @@ use mtg_engine::decision::DecisionKind;
 use mtg_engine::error::IllegalAnswer;
 use mtg_engine::keywords::has_keyword;
 use mtg_engine::manual::{ManualAction, ManualRefusal};
-use mtg_engine::manual_grant::{ManualGrant, ManualKeyword, granted_text};
+use mtg_engine::manual_grant::{ManualGrant, ManualKeyword, granted_by_hand};
 use mtg_engine::turn::Step;
 use mtg_engine::{Engine, EngineError};
 use mtg_testkit::{Driver, ScriptError};
@@ -73,9 +73,15 @@ fn a_granted_keyword_is_held_until_its_end(
         until_end_of_turn,
     );
     assert!(has(&driver, "A", keyword));
+    let id = driver.id_of("A")?;
+    assert_eq!(granted_by_hand(driver.state(), id), [keyword.label()]);
     assert!(!has(&driver, "B", keyword));
     next_turn(&mut driver)?;
     assert_eq!(has(&driver, "A", keyword), !until_end_of_turn);
+    assert_eq!(
+        granted_by_hand(driver.state(), id).len(),
+        usize::from(!until_end_of_turn)
+    );
     Ok(())
 }
 
@@ -152,21 +158,21 @@ fn text_is_listed_while_it_holds(#[case] until_end_of_turn: bool) -> Result<(), 
         false,
     );
     assert_eq!(
-        granted_text(driver.state(), a),
+        granted_by_hand(driver.state(), a),
         ["Cannot be countered", "Gets +1/+1 for each Elf"]
     );
-    assert!(granted_text(driver.state(), driver.id_of("B")?).is_empty());
+    assert_eq!(granted_by_hand(driver.state(), driver.id_of("B")?).len(), 0);
     next_turn(&mut driver)?;
     assert_eq!(
-        granted_text(driver.state(), a).len(),
+        granted_by_hand(driver.state(), a).len(),
         if until_end_of_turn { 1 } else { 2 }
     );
     Ok(())
 }
 
-fn refusal(driver: &mut Driver, action: ManualAction) -> ManualRefusal {
+fn refusal(driver: &mut Driver, action: &ManualAction) -> ManualRefusal {
     let hash = driver.state().state_hash();
-    let error = driver.manual_by(pid(0), &action).unwrap_err();
+    let error = driver.manual_by(pid(0), action).unwrap_err();
     assert_eq!(driver.state().state_hash(), hash);
     let ScriptError::Engine(EngineError::Illegal(IllegalAnswer::Manual(refusal))) = error else {
         panic!("not a manual refusal: {error:?}");
@@ -187,7 +193,7 @@ fn a_bad_text_is_refused(#[case] text: &str) -> Result<(), ScriptError> {
         until_end_of_turn: false,
     };
     assert!(matches!(
-        refusal(&mut driver, action),
+        refusal(&mut driver, &action),
         ManualRefusal::OutOfRange(_)
     ));
     Ok(())
@@ -202,7 +208,7 @@ fn a_missing_object_is_refused() -> Result<(), ScriptError> {
         until_end_of_turn: true,
     };
     assert!(matches!(
-        refusal(&mut driver, action),
+        refusal(&mut driver, &action),
         ManualRefusal::Unknown(_)
     ));
     Ok(())

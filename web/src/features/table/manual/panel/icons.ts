@@ -16,6 +16,7 @@ import {
   Link2OffIcon,
   LinkIcon,
   RotateCwIcon,
+  ShieldPlusIcon,
   ScanEyeIcon,
   SearchIcon,
   ShuffleIcon,
@@ -62,4 +63,5 @@ export const CARD_COMMAND_ICONS: Record<CardCommandId, LucideIcon> = {
   unsick: HourglassIcon,
   sacrifice: FlameIcon,
   give: HandshakeIcon,
+  grant: ShieldPlusIcon,
 }

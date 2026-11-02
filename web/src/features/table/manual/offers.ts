@@ -6,6 +6,7 @@ import type {
   ManaType,
   ManualAction,
   ManualClause,
+  ManualKeyword,
   ManualZone,
   ObjectId,
   ObjectView,
@@ -49,8 +50,34 @@ export const LIMITS = {
   note: 80,
 } as const
 
+/** The keywords the table can give by hand, as the protocol names them, with their words. */
+export const GRANT_KEYWORDS: readonly (readonly [ManualKeyword, string])[] = [
+  ['Flying', 'Flying'],
+  ['Reach', 'Reach'],
+  ['FirstStrike', 'First strike'],
+  ['DoubleStrike', 'Double strike'],
+  ['Deathtouch', 'Deathtouch'],
+  ['Trample', 'Trample'],
+  ['Lifelink', 'Lifelink'],
+  ['Vigilance', 'Vigilance'],
+  ['Haste', 'Haste'],
+  ['Menace', 'Menace'],
+  ['Defender', 'Defender'],
+  ['Indestructible', 'Indestructible'],
+  ['Hexproof', 'Hexproof'],
+  ['Shroud', 'Shroud'],
+  ['Flash', 'Flash'],
+]
+
+/** The words of a keyword given by hand. */
+export const keywordWords = (keyword: ManualKeyword): string =>
+  GRANT_KEYWORDS.find(([name]) => name === keyword)?.[1] ?? keyword
+
+/** The ability field of a grant that is a line of text instead of a keyword. */
+export const GRANT_TEXT = 'Text'
+
 /** The forms that ask for what an action still needs. */
-export type Ask = 'addCounters' | 'removeCounters' | 'attach' | 'damage' | 'pump' | 'note'
+export type Ask = 'addCounters' | 'removeCounters' | 'attach' | 'damage' | 'pump' | 'note' | 'grant'
 
 /** One entry of the menu: an action sent as it is (`action`) or the form that completes it (`ask`). */
 export interface ManualItem {
@@ -302,6 +329,9 @@ function effectGroup(input: MenuInput, off: string | undefined): ManualGroup | n
   if (zoneKind(object.zone) === 'battlefield' && object.types.includes('Creature')) {
     items.push({ key: 'pump', label: 'Pump…', hint: 'until end of turn', ask: 'pump', unavailable: off })
   }
+  if (zoneKind(object.zone) === 'battlefield') {
+    items.push({ key: 'grant', label: 'Give ability…', ask: 'grant', unavailable: off })
+  }
   return items.length === 0 ? null : { id: 'effect', label: 'Effects', items }
 }
 
@@ -439,8 +469,12 @@ export interface Draft {
   toughness: number
   /** What damage is dealt to. */
   hit: DamageTarget | null
-  /** The text of a note. */
+  /** The text of a note, or of a granted ability that is a line of text. */
   text: string
+  /** The ability a grant gives: a `ManualKeyword` or `GRANT_TEXT`. */
+  ability: string
+  /** Whether a grant lasts for good instead of until end of turn. */
+  forGood: boolean
 }
 
 /** The start of every form. */
@@ -453,6 +487,8 @@ export const EMPTY_DRAFT: Draft = {
   toughness: 1,
   hit: null,
   text: '',
+  ability: 'Flying',
+  forGood: false,
 }
 
 /** The kind a draft names, or null while it names none the protocol takes. */
@@ -522,6 +558,20 @@ export function buildAction(ask: Ask, input: BuildInput): Built {
       }
       if (power === 0 && toughness === 0) return problem('Change power or toughness.')
       return { action: { Pump: { object: object.id, power, toughness } } }
+    }
+    case 'grant': {
+      const until_end_of_turn = !draft.forGood
+      const keyword = GRANT_KEYWORDS.find(([name]) => name === draft.ability)?.[0]
+      if (keyword !== undefined) {
+        return {
+          action: { GrantAbility: { object: object.id, grant: { Keyword: keyword }, until_end_of_turn } },
+        }
+      }
+      const text = draft.text.trim()
+      if (text === '') return problem('Write the ability.')
+      if (text.length > LIMITS.note) return problem(`Write at most ${LIMITS.note} characters.`)
+      if (/\p{Cc}/u.test(text)) return problem('Write the ability on one line.')
+      return { action: { GrantAbility: { object: object.id, grant: { Text: text }, until_end_of_turn } } }
     }
     case 'note': {
       const text = draft.text.trim()

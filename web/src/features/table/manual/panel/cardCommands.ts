@@ -8,6 +8,7 @@ import {
   draftKind,
   EMPTY_DRAFT,
   heldOf,
+  keywordWords,
   KNOWN_COUNTERS,
   LIMITS,
   manualMenu,
@@ -16,6 +17,8 @@ import {
 } from '../offers'
 import type { Draft, ManualGroup, ManualItem, ManualMenu, MenuInput } from '../offers'
 import type { Preview } from './commands'
+
+type GrantAction = Extract<ManualAction, { GrantAbility: unknown }>
 
 /** The commands of a card, in the order of its menu. */
 export type CardCommandId =
@@ -27,6 +30,7 @@ export type CardCommandId =
   | 'unattach'
   | 'damage'
   | 'pump'
+  | 'grant'
   | 'unsick'
   | 'sacrifice'
   | 'give'
@@ -183,6 +187,15 @@ export function cardCommands(menu: ManualMenu): CardCommand[] {
       label: 'Pump',
       effect: 'Give the creature power and toughness until end of turn.',
       unavailable: pump.unavailable,
+    })
+  }
+  const grant = find(effects, 'grant')
+  if (grant !== undefined) {
+    commands.push({
+      id: 'grant',
+      label: 'Give ability',
+      effect: 'Give the permanent a keyword or a line of text, until end of turn or for good.',
+      unavailable: grant.unavailable,
     })
   }
   return commands
@@ -356,6 +369,18 @@ export function previewOfCard(command: CardCommand, draft: CardDraft, context: C
           : `${name}: control → ${who}`,
         apply: `Give ${name} to ${who}`,
         action: { GiveControl: { object: object.id, to } },
+      }
+    }
+    case 'grant': {
+      const built = buildAction('grant', { ...input, draft })
+      if ('problem' in built) return { problem: built.problem }
+      const { grant, until_end_of_turn } = (built.action as GrantAction).GrantAbility
+      const what = 'Keyword' in grant ? keywordWords(grant.Keyword) : `“${grant.Text}”`
+      const lasts = until_end_of_turn ? 'until end of turn' : 'for good'
+      return {
+        preview: `${name}: gains ${what} ${lasts}`,
+        apply: `Give ${what}`,
+        action: built.action,
       }
     }
     case 'pump': {
