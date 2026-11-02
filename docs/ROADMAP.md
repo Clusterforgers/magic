@@ -47,6 +47,11 @@ One item is one piece of about 15 minutes and one line: the outcome, the cards i
 
 Items that touch the running game come first; the play-session findings (pf) lead, the web items before the engine and card items.
 
+- [ ] (pf21) A spell or ability can be backed out of at every step before it is on the stack (targets, modes, X, costs, payment): an Undo in each prompt returns the card or ability and any mana spent, as Arena does
+- [ ] (pf22) A manual action gives a permanent an ability until end of turn or for good (a keyword such as deathtouch or flying, or a line of text), from the card menu and the Commands panel, shown on the card and in both logs
+- [ ] (pf23) An optional payment the seat cannot make is declined without asking (Dawn of Hope "Pay {2}?" with less than 2 mana available), counting every source the rules allow, so the table never waits on a question with one real answer
+- [ ] (pf24) Permanents that look the same stack on the table: two 6/6 Soldier tokens with vigilance drawn alike are one stack of 2 (find which field keeps them apart in `group.ts` `faceOf`, e.g. a granted ability's source or the summoning-sick flag)
+- [ ] (pf25) A crowded stack and a big combat stay readable: many stack items (a board of triggers) fold into groups with a count and a list, and many attackers or blockers keep their lines and labels legible, at every size
 
 - [ ] (ad1c) The Accounts page in the layout gate at the six sizes in both themes (a dev route that stands for it) and an e2e spec of the admin flow on the Postgres server: sign-in, make an account, the friend signs in, the closed sign-up page (`docs/web.md`)
 - [ ] (d1c) A copy of the nightly database dumps off queen (a Longhorn backup target or a scheduled copy to another machine), so losing queen does not lose the accounts and decks (`docs/deploy.md`)
