@@ -147,12 +147,20 @@ describe('the answer a prompt would send for the choices it has made', () => {
 })
 
 describe('creatureOutlook', () => {
-  it.each<[string, CombatForecast | null, ObjectId, { damage: number; dies: boolean } | null]>([
+  it.each<
+    [string, CombatForecast | null, ObjectId, { damage: number; dies: boolean; choice?: boolean } | null]
+  >([
     ['damage that kills', FORECAST, 1, { damage: 4, dies: true }],
     ['damage that is survived', FORECAST, 2, { damage: 2, dies: false }],
     ['a creature nothing happens to', FORECAST, 3, null],
     ['a death without damage (no toughness)', FORECAST, 4, { damage: 0, dies: true }],
     ['a creature the forecast does not list', FORECAST, 99, null],
+    [
+      'damage that depends on a choice',
+      { ...FORECAST, depends_on_choice: true },
+      2,
+      { damage: 2, dies: false, choice: true },
+    ],
     ['no forecast', null, 1, null],
   ])('says %s', (_name, forecast, id, expected) => {
     expect(creatureOutlook(forecast, id)).toEqual(expected)

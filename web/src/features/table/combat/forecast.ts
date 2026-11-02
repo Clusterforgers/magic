@@ -16,6 +16,8 @@ export interface CreatureOutlook {
   damage: number
   /** Whether that is enough to destroy it. */
   dies: boolean
+  /** The numbers depend on a choice among replacement effects, so they show the first option. */
+  choice?: boolean
 }
 
 /** The answer that makes these blocks (blocker to attacker, in the order they were made); null when there are none. */
@@ -71,5 +73,9 @@ export function creatureOutlook(forecast: CombatForecast | null, id: ObjectId): 
   const entry = forecast?.creatures.find((creature) => creature.object === id)
   return entry === undefined || (entry.damage === 0 && !entry.dies)
     ? null
-    : { damage: entry.damage, dies: entry.dies }
+    : {
+        damage: entry.damage,
+        dies: entry.dies,
+        ...(forecast?.depends_on_choice === true ? { choice: true } : {}),
+      }
 }

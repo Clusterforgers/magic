@@ -34,6 +34,10 @@ describe('ForecastMarks', () => {
     expect(damage?.textContent ?? null).toBe(expected.damage)
   })
 
+  it('puts a ≈ before the damage when it depends on a choice', () => {
+    expect(mark({ damage: 3, dies: false, choice: true }).damage).toHaveTextContent('≈-3')
+  })
+
   it('names the death in words beside the skull on a card with room', () => {
     expect(mark({ damage: 3, dies: true }).doomed).toHaveTextContent('Dies')
   })

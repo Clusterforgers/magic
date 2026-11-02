@@ -17,7 +17,7 @@ import type {
   Step,
   YieldUntil,
 } from '@/protocol/generated'
-import { forecastScene, withBlockForecast } from './combatScene'
+import { forecastChoiceScene, forecastScene, withBlockForecast } from './combatScene'
 import { abilitiesTable, withAbilities } from './abilityScene'
 import { assignDamage } from './damagePrompt'
 import { ANNOUNCE_PROMPTS } from './announcePrompts'
@@ -430,6 +430,7 @@ export const DEV_PROMPTS: Record<string, DevPrompt> = {
   'priority-clock': (fixture) => ({ ...priority(fixture), deadlineMs: 10_000 }),
   // The viewer holds priority in a declare-blockers step whose blocks are made: the forecast is all there is to read.
   forecast: priority,
+  'forecast-choice': priority,
   // The controls of the Priority prompt at other moments (`DEV_TABLES`): the viewer's turn, its last window, a quiet one.
   'priority-main': priority,
   'priority-end': priority,
@@ -510,6 +511,7 @@ export const DEV_TABLES: Record<string, DevTable> = {
   block: blockTable,
   'block-clock': blockTable,
   forecast: forecastScene,
+  'forecast-choice': forecastChoiceScene,
   'pay-hybrid': hybridTable,
   'pay-low-life': hybridTable,
   'pay-sources': paySourcesTable,
