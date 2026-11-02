@@ -78,6 +78,7 @@ The table and its prompts are live; the items below polish them.
 - [ ] (k1h) A tall prompt sheet on a phone (`commander-return` at 360x740, a 182 px overhang) keeps the opponents' tile strip and board in view: the sheet's height is held to what leaves them room
 - [ ] (ts5) A token's printed power and toughness reach the view (with `a2d`), so a buffed or debuffed token is tinted green or red as a card is; today a token's real numbers show plain
 - [ ] (ts6) `/dev/table?states=1` screenshots at the six sizes in both themes settle the marks on compact faces (under 76 px, where an attachment mark is an icon) and on tapped pictures
+- [ ] (pl1e1) At 1280x720 and below the duel opponent's pod column (119 px) draws its corner as pictures too: the blocks above the corner give up the 64 px they take
 - [ ] (pl1d) A permanent that dies as the last of its lane keeps its ghost while the effect plays (an empty lane has no place in the fit)
 - [ ] (pl2d) Playwright: attack and block by clicks in a real two-seat game and at four seats (the click flows are tested on the dev table only)
 - [ ] (pl3a) `ObjectView` carries what a mana ability gives as data (mana, count, cost, sacrifice), so the corner strip and the preview stop reading the words of `activated` (an ability with a count by a condition, a chosen colour or an extra cost shows nothing today)
