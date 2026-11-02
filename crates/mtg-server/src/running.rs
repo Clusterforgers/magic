@@ -9,8 +9,8 @@ use mtg_engine::manual::ManualAction;
 use mtg_engine::state::Stage;
 use mtg_engine::{Answer, Checkpoint, Decision, Engine, EngineError, Event, GameState, replay};
 use mtg_protocol::{
-    DecisionId, ErrorCode, LogWindow, ProtocolError, SNAPSHOT_LOG, ServerMessage, StateView,
-    TableView, project_window,
+    DecisionId, ErrorCode, FullControlMode, LogWindow, ProtocolError, SNAPSHOT_LOG, ServerMessage,
+    StateView, TableView, project_window,
 };
 use tokio::time::Instant;
 
@@ -276,10 +276,23 @@ impl Running {
     /// What the table does with `decision` under `stops` and `yields`: with the dwell switched off, a pass after a
     /// dwell is a pass at once.
     fn verdict(&self, decision: &Decision, stops: &Stops, yields: &mut Yields) -> Verdict {
+        if self.sole_answer(decision, stops).is_some() {
+            return Verdict::Pass;
+        }
         match windows::verdict(decision, stops, yields, self.engine.state()) {
             Verdict::Dwell if self.pace.dwell.is_off() => Verdict::Pass,
             other => other,
         }
+    }
+
+    /// The engine's answer to `decision` when the rules leave it one ([`mtg_engine::choose::sole_answer`]) and its seat
+    /// is out of Full Control, which asks every question.
+    fn sole_answer(&self, decision: &Decision, stops: &Stops) -> Option<Answer> {
+        let off = stops.full_control(decision.player) == FullControlMode::Off;
+        let asked = off && !pace::is_priority(decision);
+        asked
+            .then(|| mtg_engine::choose::sole_answer(self.engine.state(), decision))
+            .flatten()
     }
 
     /// What the table does with the pending decision if it is `seat`'s, under `stops` and `yields`.
@@ -541,7 +554,8 @@ impl Running {
 
     /// Passes for every seat the windows pass for at once ([`windows::verdict`]: not in Full Control, not at a window
     /// of its own, or yielding, or at a window that is not one of the default table) until some decision needs a
-    /// player or the pass has to wait.
+    /// player or the pass has to wait, and gives the engine's answer to a question that leaves one for a seat out of
+    /// Full Control.
     ///
     /// The passes go through the engine like any answer; their events are added to `events`, so the
     /// whole stretch is saved and shown as one batch. A seat that is asked, or is asked anything else, stops the
@@ -575,9 +589,10 @@ impl Running {
                 Verdict::Dwell => return Ok(Halt::Dwell),
                 Verdict::Pass => {}
             }
+            let answer = self.sole_answer(decision, stops).unwrap_or_else(pace::pass);
             let at = stops::place(self.engine.state());
             let on_stack = stops::by_hand_on_stack(self.engine.state());
-            let passed = self.engine.apply(pace::pass())?;
+            let passed = self.engine.apply(answer)?;
             self.banks.watch(self.engine.state());
             stops.left(at, &passed);
             stops.resolved(&on_stack, &passed);

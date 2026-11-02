@@ -1,4 +1,4 @@
-//! Goal: a seat that is not the active player has the response clock on the decisions the effects of spells and abilities ask it (the targets of a trigger or a spell, the order of its triggers) and the active player has none; at the deadline the server answers through the normal path with the safe answer (no target, which removes a trigger and takes a spell back; the triggers in the order they triggered), a late answer is stale, and an answer in time stops the clock.
+//! Goal: a seat that is not the active player has the response clock on the decisions the effects of spells and abilities ask it (the targets of a trigger or a spell, the order of its triggers) and the active player has none; at the deadline the server answers through the normal path with the safe answer (no target, which removes a trigger and takes a spell back; the triggers in the order they triggered), a late answer is stale, and an answer in time stops the clock; a trigger with one legal target takes it unasked unless its seat is in Full Control.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::common;
@@ -18,6 +18,7 @@ use mtg_server::{Dwell, EventStore, GameConfig, GameHandle, GameStatus, Pace, sp
 use mtg_testkit::cards::{burn, damage, free_creature, gain_life, mountain};
 use mtg_testkit::trigger_cards::{aimed_at, creature_with, trigger, watcher, when};
 use mtg_testkit::{Scenario, ready};
+use rstest::rstest;
 
 const RESPONSE: Duration = Duration::from_secs(10);
 
@@ -47,13 +48,23 @@ fn creatures() -> Targetable {
     Targetable::Object(Selector(vec![Pred::Type(CardType::Creature)]))
 }
 
-/// Seat 0 holds a Bolt and a Mountain and burns the Victim of seat 1, which has these `watchers` as well.
+/// Seat 0 holds a Bolt and a Mountain beside a Bystander and burns the Victim of seat 1, which has these `watchers`
+/// as well; the Bystander leaves a trigger aimed at a creature two legal targets, so it is asked.
 fn burn_table(watchers: Vec<std::sync::Arc<mtg_cards::CardDefinition>>) -> GameSetup {
+    table(watchers, true)
+}
+
+/// [`burn_table`], with or without seat 0's Bystander.
+fn table(watchers: Vec<std::sync::Arc<mtg_cards::CardDefinition>>, bystander: bool) -> GameSetup {
     let mut permanents = vec![ready(free_creature("Victim", 1, 1))];
     permanents.extend(watchers.into_iter().map(ready));
+    let mut own = vec![ready(mountain())];
+    if bystander {
+        own.push(ready(free_creature("Bystander", 1, 1)));
+    }
     Scenario::new(2)
         .hand(0, [burn("Bolt", 3)])
-        .battlefield(0, [ready(mountain())])
+        .battlefield(0, own)
         .battlefield(1, permanents)
         .setup()
         .unwrap()
@@ -346,7 +357,13 @@ async fn the_active_player_is_not_hurried_to_choose_the_targets_of_its_trigger()
     let setup = Scenario::new(2)
         .hand(0, [burn("Bolt", 3)])
         .battlefield(0, [ready(mountain()), ready(seer("Seer"))])
-        .battlefield(1, [ready(free_creature("Victim", 1, 1))])
+        .battlefield(
+            1,
+            [
+                ready(free_creature("Victim", 1, 1)),
+                ready(free_creature("Bystander", 1, 1)),
+            ],
+        )
         .setup()
         .unwrap();
     let victim = object_named(&setup, "Victim");
@@ -430,4 +447,65 @@ async fn the_targets_of_a_spell_cast_by_a_seat_that_is_not_active_run_on_the_clo
     .await;
     handle.status().await.unwrap();
     assert!(is_stale(&clients[1].drain()));
+}
+
+/// Seat 1's decisions until its trigger asks for its target, each priority on the way passed: whether it was asked.
+async fn asked_for_the_target(handle: &GameHandle, clients: &mut [Client]) -> bool {
+    loop {
+        let (id, decision, _) = decision_of(&mut clients[1]).await;
+        match decision.kind {
+            DecisionKind::Priority(_) => {
+                let pass = Answer::Priority(PriorityAction::Pass);
+                reply(handle, &clients[1], id, pass).await;
+            }
+            DecisionKind::ChooseTargets(options) => return options.triggered,
+            _ => return false,
+        }
+    }
+}
+
+#[rstest]
+#[case::auto_pass(FullControlMode::Off, false)]
+#[case::full_control_held(FullControlMode::Held, true)]
+#[tokio::test(start_paused = true)]
+async fn a_trigger_with_one_legal_target_takes_it_unasked_unless_in_full_control(
+    #[case] mode: FullControlMode,
+    #[case] asked: bool,
+) {
+    let setup = table(vec![seer("Seer")], false);
+    let victim = object_named(&setup, "Victim");
+    let the_seer = object_named(&setup, "Seer");
+    let (handle, store) = spawn(setup);
+    let mut clients = Vec::new();
+    for n in 0..2 {
+        clients.push(Client::join(&handle, n).await);
+    }
+    clients[1]
+        .say(&handle, ClientMessage::FullControl { mode })
+        .await;
+    for client in &clients {
+        client.say(&handle, ClientMessage::Ready).await;
+    }
+    burn_the_victim(&handle, &mut clients, victim).await;
+    if asked {
+        assert!(asked_for_the_target(&handle, &mut clients).await);
+        return;
+    }
+    quiet(&handle).await;
+    let sent = clients[1].drain();
+    assert!(
+        !sent.iter().any(|m| matches!(
+            m,
+            ServerMessage::Decision { decision, .. }
+                if matches!(decision.kind, DecisionKind::ChooseTargets(_))
+        )),
+        "the seat is not asked: {sent:?}"
+    );
+    let logged = store.inner().load(game_id(1)).await.unwrap();
+    let aimed = logged.iter().any(|e| {
+        matches!(e, Event::AbilityPutOnStack(put)
+            if put.controller == seat(1)
+                && matches!(put.choices.targets.as_slice(), [targets] if matches!(targets.as_slice(), [Target::Object(r)] if r.id == the_seer)))
+    });
+    assert!(aimed, "the trigger went on the stack aimed at the Seer");
 }
