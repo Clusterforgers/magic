@@ -4,17 +4,26 @@ import { decisionName } from '../turnText'
 import type { DecisionName } from '../turnText'
 
 /** What a clock counts down for: a decision kind, or a kind whose answer at zero depends on its options. */
-export type ClockKind = DecisionName | 'ChooseModeCancel' | 'ChooseCardsNone' | 'ChooseNumberCancel'
+export type ClockKind =
+  | DecisionName
+  | 'Unknown'
+  | 'ChooseModeCancel'
+  | 'ChooseCardsNone'
+  | 'ChooseNumberCancel'
+  | 'PayManaCancel'
+  | 'ChooseCostsCancel'
 
 /**
  * The clock kind of a decision: a choice of modes that can be backed out of is told apart, since the server takes the
- * cast back for it, and so is a choice of cards that may be none, since the server then chooses none, and a number
- * that can be backed out of.
+ * cast back for it, and so is a choice of cards that may be none, since the server then chooses none, and a number,
+ * a payment and a choice of costs that can be backed out of.
  */
 export function clockKind(kind: DecisionKind): ClockKind {
   if ('ChooseMode' in kind && kind.ChooseMode.can_cancel) return 'ChooseModeCancel'
   if ('ChooseCards' in kind && kind.ChooseCards.min === 0) return 'ChooseCardsNone'
   if ('ChooseNumber' in kind && kind.ChooseNumber.can_cancel === true) return 'ChooseNumberCancel'
+  if ('PayMana' in kind && kind.PayMana.can_cancel === true) return 'PayManaCancel'
+  if ('ChooseCosts' in kind && kind.ChooseCosts.can_cancel) return 'ChooseCostsCancel'
   return decisionName(kind)
 }
 
@@ -58,6 +67,17 @@ const AT_ZERO: Partial<Record<ClockKind, { countdown: string; announced: string 
     announced: 'chooses the smallest number for you',
   },
   ChooseNumberCancel: { countdown: 'Cancelling for you', announced: 'cancels for you' },
+  PayMana: {
+    countdown: "Paying with the game's choice of sources",
+    announced: 'pays with its own choice of sources for you',
+  },
+  PayManaCancel: { countdown: 'Cancelling for you', announced: 'cancels for you' },
+  AssignDamage: {
+    countdown: 'Assigning lethal damage in order',
+    announced: 'assigns lethal damage in order for you',
+  },
+  ChooseCosts: { countdown: 'Choosing no optional cost', announced: 'chooses no optional cost for you' },
+  ChooseCostsCancel: { countdown: 'Cancelling for you', announced: 'cancels for you' },
 }
 
 /** The countdown in plain words: "Passing for you in 7 s". */

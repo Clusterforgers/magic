@@ -1,7 +1,7 @@
 // Goal: the turn banner, priority line, mulligan progress and the read-only "what is the game waiting for" line say the right thing in every stage, step and decision kind.
 import { describe, expect, it } from 'vitest'
 import type { PlayState } from '@/play/store'
-import type { MulliganStatus, Stage, Step } from '@/protocol/generated'
+import type { DecisionKind, MulliganStatus, Stage, Step } from '@/protocol/generated'
 import { clone, must } from '@/test-utils/batches'
 import { KINDS } from '@/test-utils/decisions'
 import { fixtureState } from './dev/devGame'
@@ -139,6 +139,9 @@ describe('decisionName', () => {
     expect(decisionName(KINDS[kind])).toBe(kind)
     expect(DECISION_LABEL[kind]).not.toBe('')
   })
+  it('names a kind it does not know neutrally, not as Discard', () => {
+    expect(decisionName({ Foretell: {} } as unknown as DecisionKind)).toBe('Unknown')
+  })
 })
 
 describe('waitingOn', () => {
@@ -147,6 +150,12 @@ describe('waitingOn', () => {
     const waiting = waitingOn(state)
     expect(waiting).toEqual({ kind: 'you', label: DECISION_LABEL[kind] })
     expect(waitingText(waiting, name)).toBe(`Your decision: ${DECISION_LABEL[kind]}`)
+  })
+
+  it('labels a decision kind it does not know as a plain decision', () => {
+    const kind = { Foretell: {} } as unknown as DecisionKind
+    const state: PlayState = { ...base, pending: { id: 3, decision: { player: 0, kind } } }
+    expect(waitingOn(state)).toEqual({ kind: 'you', label: 'A decision' })
   })
 
   it('waits for the priority holder when it is somebody else', () => {

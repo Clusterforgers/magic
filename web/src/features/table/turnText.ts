@@ -52,8 +52,8 @@ export const DECISION_LABEL: Record<DecisionName, string> = {
   ChooseReplacement: 'Choose which effect applies first',
 }
 
-/** The name of a decision kind; a new kind stops compiling here until it is named. */
-export function decisionName(kind: DecisionKind): DecisionName {
+/** The name of a decision kind; a new kind stops compiling here until it is named. A kind a newer server sends is `Unknown`. */
+export function decisionName(kind: DecisionKind): DecisionName | 'Unknown' {
   if ('Mulligan' in kind) return 'Mulligan'
   if ('BottomCards' in kind) return 'BottomCards'
   if ('Priority' in kind) return 'Priority'
@@ -73,8 +73,9 @@ export function decisionName(kind: DecisionKind): DecisionName {
   if ('ChooseCosts' in kind) return 'ChooseCosts'
   if ('OrderTriggers' in kind) return 'OrderTriggers'
   if ('ChooseReplacement' in kind) return 'ChooseReplacement'
-  void (kind satisfies { Discard: unknown })
-  return 'Discard'
+  if ('Discard' in kind) return 'Discard'
+  void (kind satisfies never)
+  return 'Unknown'
 }
 
 /** The inputs of the turn banner. */
@@ -161,10 +162,15 @@ export function describeOpening(status: MulliganStatus, mulligans: number): stri
 export type Waiting =
   { kind: 'you'; label: string } | { kind: 'others'; seats: PlayerId[] } | { kind: 'idle'; label: string }
 
+/** The label of a decision name; an unknown kind reads as a plain decision. */
+function decisionLabel(name: DecisionName | 'Unknown'): string {
+  return name === 'Unknown' ? 'A decision' : DECISION_LABEL[name]
+}
+
 /** What the game waits for now, read from the pending decision and the table. */
 export function waitingOn(state: PlayState): Waiting {
   const { pending, view, seat } = state
-  if (pending !== null) return { kind: 'you', label: DECISION_LABEL[decisionName(pending.decision.kind)] }
+  if (pending !== null) return { kind: 'you', label: decisionLabel(decisionName(pending.decision.kind)) }
   if (view === null) return { kind: 'idle', label: 'Waiting for the game' }
   if (view.stage === 'Finished' || view.result !== null) return { kind: 'idle', label: 'The game is over' }
   const others = (seats: PlayerId[]): Waiting =>

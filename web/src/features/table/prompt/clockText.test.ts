@@ -35,9 +35,23 @@ describe('clockText', () => {
     expect(clockText(kind, seconds)).toBe(text)
   })
 
-  it('does not claim a consequence it cannot name', () => {
-    expect(clockText('PayMana', 5)).toBe('The game goes on without you in 5 s')
+  it.each([
+    ['PayMana', 5, "Paying with the game's choice of sources in 5 s"],
+    ['PayManaCancel', 5, 'Cancelling for you in 5 s'],
+    ['AssignDamage', 5, 'Assigning lethal damage in order in 5 s'],
+    ['ChooseCosts', 5, 'Choosing no optional cost in 5 s'],
+    ['ChooseCostsCancel', 5, 'Cancelling for you in 5 s'],
+  ] as const)('%s with %i s left reads "%s"', (kind, seconds, text) => {
+    expect(clockText(kind, seconds)).toBe(text)
   })
+
+  it.each(Object.keys(KINDS) as (keyof typeof KINDS)[])(
+    '%s has words of its own, not the fallback',
+    (name) => {
+      expect(clockText(clockKind(KINDS[name]), 5)).not.toContain('goes on without you')
+      expect(clockAnnouncement(clockKind(KINDS[name]), 5)).not.toContain('goes on without you')
+    },
+  )
 })
 
 describe('clockAnnouncement', () => {
@@ -68,7 +82,11 @@ describe('clockAnnouncement', () => {
       5,
       'You have 5 seconds to answer; after that the game discards the first cards of your hand for you.',
     ],
-    ['PayMana', 5, 'You have 5 seconds to answer; after that the game goes on without you.'],
+    [
+      'PayMana',
+      5,
+      'You have 5 seconds to answer; after that the game pays with its own choice of sources for you.',
+    ],
   ] as const)('%s with %i s reads "%s"', (kind, seconds, text) => {
     expect(clockAnnouncement(kind, seconds)).toBe(text)
   })
