@@ -3,7 +3,7 @@ import { createContext, useContext } from 'react'
 import { useStore } from 'zustand'
 import type { ObjectId, PlayerId } from '@/protocol/generated'
 import type { RowKind } from '../cardModel'
-import { NO_ENTRIES, NO_GHOSTS, rowKey } from './model'
+import { NO_ENTRIES, NO_GHOSTS, rowKey, STACK_GHOSTS } from './model'
 import type { FxEntry, Ghost } from './model'
 import { NO_FX } from './store'
 import type { Fx } from './store'
@@ -24,6 +24,11 @@ export function useCardFx(id: ObjectId): readonly FxEntry[] {
 /** What plays on one seat's life total now. */
 export function useSeatFx(seat: PlayerId): readonly FxEntry[] {
   return useStore(useFx().store, (state) => state.seats.get(seat) ?? NO_ENTRIES)
+}
+
+/** The ghosts of abilities that have just left the shared stack strip. */
+export function useStackGhosts(): readonly Ghost[] {
+  return useStore(useFx().store, (state) => state.ghosts.get(STACK_GHOSTS) ?? NO_GHOSTS)
 }
 
 /** The ghosts standing in one row of a seat's battlefield now. */

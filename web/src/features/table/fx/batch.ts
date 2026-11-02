@@ -3,7 +3,7 @@ import type { LogEntry, PlayState, PlayStore } from '@/play/store'
 import type { EventView, ObjectId, ObjectView } from '@/protocol/generated'
 import { deriveAttaches, deriveEffects } from './derive'
 import type { Moment } from './derive'
-import { markArrows, markEffects } from './marks'
+import { markArrows, markEffects, withStackGhosts } from './marks'
 import { deriveMoves } from './moves'
 import { impactsOf, planStrikes, splitImpacts } from './strikes'
 import type { Fx } from './store'
@@ -52,7 +52,10 @@ export function watchBatches(store: PlayStore, fx: Fx): () => void {
     fx.travel.launch(moves, step.after.view.viewer)
     // Measured now: the resolving object and what it affects may be gone from the table once React draws the batch.
     fx.effectArrows.play(markArrows(marks))
-    const effects = [...deriveEffects(step.before, step.after, step.events), ...markEffects(marks)]
+    const effects = [
+      ...deriveEffects(step.before, step.after, step.events),
+      ...withStackGhosts(markEffects(marks), step.before, step.after),
+    ]
     const plans = planStrikes(step.before, step.after, step.events)
     const look = (id: ObjectId): ObjectView | undefined =>
       step.after.objectsById[id] ?? step.before.objectsById[id]

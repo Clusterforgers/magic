@@ -6,6 +6,7 @@
  */
 import { createStore } from 'zustand/vanilla'
 import type { StoreApi } from 'zustand/vanilla'
+import type { ObjectId } from '@/protocol/generated'
 import type { Timers } from '@/net/timers'
 import type { MarkArrow } from './marks'
 import { MOVE_MS } from './moves'
@@ -34,6 +35,8 @@ export interface EffectArrowsOptions {
   slow: number
   /** What to look for objects in; the document by default. */
   root?: ParentNode | undefined
+  /** Where the spotlight of a spell cast in this batch stands, when `object` is that spell; the start of its arrow. */
+  spotlightBox?: ((object: ObjectId) => Box | null) | undefined
 }
 
 /** The effect arrows of one table. */
@@ -46,7 +49,13 @@ export interface EffectArrows {
 }
 
 /** An arrow layer with nothing playing. */
-export function createEffectArrows({ timers, enabled, slow, root }: EffectArrowsOptions): EffectArrows {
+export function createEffectArrows({
+  timers,
+  enabled,
+  slow,
+  root,
+  spotlightBox,
+}: EffectArrowsOptions): EffectArrows {
   const store = createStore<readonly EffectArrow[]>(() => NO_EFFECT_ARROWS)
   const waiting = new Set<number>()
   let last = 0
@@ -58,10 +67,10 @@ export function createEffectArrows({ timers, enabled, slow, root }: EffectArrows
       const started: EffectArrow[] = []
       for (const { by, object, kind } of arrows) {
         const to = measureObject(page, object)
-        // An object cast in this very batch had no chip before it: there is nothing to start the arrow at.
-        const from = measureObject(page, by)
-        if (to !== null && from !== null)
-          started.push({ token: (last += 1), kind, from: from.box, to: to.box })
+        // An object cast in this very batch had no chip before it: its spotlight stands in for it.
+        const from = measureObject(page, by)?.box ?? spotlightBox?.(by)
+        if (to !== null && from !== undefined && from !== null)
+          started.push({ token: (last += 1), kind, from, to: to.box })
       }
       if (started.length === 0) return
       const tokens = new Set(started.map((arrow) => arrow.token))
