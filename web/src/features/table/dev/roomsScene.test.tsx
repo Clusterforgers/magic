@@ -114,7 +114,7 @@ describe('?prompt=priority-rooms', () => {
     const doors = [...preview.querySelectorAll('[data-slot="preview-doors"] > li')]
     expect(doors.map((door) => door.querySelector('p')?.textContent)).toEqual([
       'Bottomless Pool unlocked',
-      'Locker Room locked',
+      'Locker Room lockedCan unlock now',
     ])
     await act(async () => {
       await Promise.resolve()
