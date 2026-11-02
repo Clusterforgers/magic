@@ -5,12 +5,14 @@ use mtg_cards::ability::{Ability, LoyaltyCost};
 use mtg_cards::compile::{render_ability, render_cost};
 use mtg_cards::cost::{Cost, CostItem};
 use mtg_core::ids::ObjectId;
-use mtg_core::mana::ManaType;
+use mtg_core::mana::{ManaCost, ManaType};
 use mtg_engine::abilities::AbilitySource;
 use mtg_engine::ability_reader::{abilities_of, keyword_adding};
+use mtg_engine::mana::ManaOption;
+use mtg_engine::mana_ways;
 use mtg_engine::state::GameState;
 
-use crate::view::ActivatedView;
+use crate::view::{ActivatedView, ManaWayView};
 
 /// Words that end the phrase of a target in an effect ("target creature" in "Destroy target creature.").
 const PHRASE_ENDS: [&str; 26] = [
@@ -49,7 +51,7 @@ const PHRASE_STARTS: [&str; 11] = [
 
 /// The activated abilities of `id` in oracle wording: the plain tap-for-mana abilities of `mana` first, then every
 /// activated and loyalty ability `abilities_of` lists, with the address `PriorityOptions.abilities` uses. `name` stands
-/// for the card's own name (`~`) in the words.
+/// for the card's own name (`~`) in the words. A mana ability carries the ways its controller can use it now.
 pub fn activated_views(
     state: &GameState,
     id: ObjectId,
@@ -61,6 +63,8 @@ pub fn activated_views(
         .map(|AbilityDef::Mana(ability)| plain_mana(ability.produces))
         .collect();
     let mut place = 0;
+    // What the mana abilities in its rules make now, worked out at the first one.
+    let mut made = None;
     for (address, rules) in abilities_of(state, id) {
         let loyalty = match &*rules {
             Ability::Loyalty { cost, .. } => Some(*cost),
@@ -90,13 +94,35 @@ pub fn activated_views(
             mana: false,
             keyword: None,
             unworded: true,
+            ways: Vec::new(),
         });
         view.ability = Some(address);
         view.mana = rules.is_mana_ability();
         view.keyword = keyword;
+        if view.mana {
+            let made = made.get_or_insert_with(|| mana_ways(state, id));
+            view.ways = made
+                .iter()
+                .find(|(at, _)| *at == address)
+                .map(|(_, options)| options.iter().map(way_of).collect())
+                .unwrap_or_default();
+        }
         views.push(view);
     }
     views
+}
+
+/// One way to use a mana ability as the payment offers it.
+fn way_of(option: &ManaOption) -> ManaWayView {
+    let count = usize::try_from(option.count).unwrap_or(0);
+    let mut mana = vec![option.produces; count];
+    mana.extend_from_slice(&option.also);
+    ManaWayView {
+        mana,
+        cost: option.cost.clone(),
+        sacrifice: option.sacrifice,
+        tapless: option.tapless,
+    }
 }
 
 /// The keyword line that adds an ability: the keyword's name and the mana of the ability's cost (`Cycling {2}`).
@@ -131,6 +157,12 @@ fn plain_mana(produces: ManaType) -> ActivatedView {
         mana: true,
         keyword: None,
         unworded: false,
+        ways: vec![ManaWayView {
+            mana: vec![produces],
+            cost: ManaCost::default(),
+            sacrifice: false,
+            tapless: false,
+        }],
     }
 }
 
@@ -147,6 +179,7 @@ fn worded(rules: &Ability, name: &str, loyalty: Option<LoyaltyCost>) -> Option<A
         mana: false,
         keyword: None,
         unworded: false,
+        ways: Vec::new(),
     })
 }
 

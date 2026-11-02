@@ -84,7 +84,6 @@ The table and its prompts are live; the items below polish them.
 - [ ] (pl1e) The opponent's pod column draws its corner as pictures at 1366x768 and below too: the hand and library chips join the name row, so the column leaves the 62 px a 44 px picture needs (it keeps its chips and scrolls there today)
 - [ ] (pl1d) A permanent that dies as the last of its lane keeps its ghost while the effect plays (an empty lane has no place in the fit)
 - [ ] (pl2d) Playwright: attack and block by clicks in a real two-seat game and at four seats (the click flows are tested on the dev table only)
-- [ ] (pl3a) `ObjectView` carries what a mana ability gives as data (mana, count, cost, sacrifice), so the corner strip and the preview stop reading the words of `activated` (an ability with a count by a condition, a chosen colour or an extra cost shows nothing today)
 - [ ] (pl3b) The payment sheet takes the mana sources and the made total in its compact form: one scroll line of source chips, made and owed on one row, no extra height at 390 px
 - [ ] (pl3c) The colour switch sits on the source chip and swaps the colour of a chosen source without taking it back; chips mark restricted mana (`only`), life, energy and taken permanents, and the pool marks the mana that outlasts the step (`kept`)
 - [ ] (ui1i) `/dev/table?fx=` screenshots of every moment at the six sizes in both themes settle the look, and `fit.spec.ts` holds the table at rest with three targeting items on the stack

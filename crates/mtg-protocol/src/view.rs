@@ -10,7 +10,7 @@ use mtg_core::card::{CardType, Subtype, Supertype};
 use mtg_core::color::Color;
 use mtg_core::house::HouseRules;
 use mtg_core::ids::{ObjectId, PlayerId};
-use mtg_core::mana::ManaCost;
+use mtg_core::mana::{ManaCost, ManaType};
 use mtg_engine::abilities::AbilityRef;
 use mtg_engine::choose::Target;
 use mtg_engine::combat::AttackTarget;
@@ -163,6 +163,35 @@ pub struct ActivatedView {
     #[serde(default, skip_serializing_if = "is_false")]
     #[ts(as = "Option<bool>", optional)]
     pub unworded: bool,
+    /// What a mana ability adds, one way for each way its controller can use it now (the number counted now, the
+    /// chosen colour); left out for any other ability and while it cannot be used now.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[ts(as = "Option<Vec<ManaWayView>>", optional)]
+    pub ways: Vec<ManaWayView>,
+}
+
+/// One way to use a mana ability: the mana it adds and what the use takes besides the tap.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
+pub struct ManaWayView {
+    /// The mana one use adds, in order (Sol Ring: two colorless).
+    pub mana: Vec<ManaType>,
+    /// Mana the use costs (a Signet's `{1}`); left out for none.
+    #[serde(default, skip_serializing_if = "no_symbols")]
+    #[ts(as = "Option<ManaCost>", optional)]
+    pub cost: ManaCost,
+    /// Whether the use sacrifices its source (a Treasure); left out while false.
+    #[serde(default, skip_serializing_if = "is_false")]
+    #[ts(as = "Option<bool>", optional)]
+    pub sacrifice: bool,
+    /// Whether the use leaves its source untapped (a Devotee); left out while false.
+    #[serde(default, skip_serializing_if = "is_false")]
+    #[ts(as = "Option<bool>", optional)]
+    pub tapless: bool,
+}
+
+/// Whether a cost has no symbols, so serialization can leave it out.
+fn no_symbols(cost: &ManaCost) -> bool {
+    cost.symbols().is_empty()
 }
 
 /// A card the viewer may identify, with its current (layer-derived) characteristics.
