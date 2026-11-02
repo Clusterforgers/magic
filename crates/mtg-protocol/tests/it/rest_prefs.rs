@@ -17,6 +17,6 @@ fn prefs_survive_a_json_round_trip() {
         serde_json::from_value::<UserPrefs>(serde_json::to_value(&prefs).unwrap()).unwrap(),
         prefs
     );
-    assert!(UserPrefs::default().default_stops.is_empty());
+    assert_eq!(UserPrefs::default().default_stops.len(), 0);
     assert!(!UserPrefs::default().end_turn_by_hand);
 }

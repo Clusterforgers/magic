@@ -62,9 +62,11 @@ export function createPrefsApi(options: PrefsOptions = {}): PrefsApi {
     } catch {
       throw new PrefsError('Could not reach the server.', 0)
     }
-    if (!response.ok) throw new PrefsError(`The server answered with HTTP ${response.status}.`, response.status)
+    if (!response.ok)
+      throw new PrefsError(`The server answered with HTTP ${response.status}.`, response.status)
     const prefs = readPrefs(body)
-    if (prefs === null) throw new PrefsError('The server sent an answer this page cannot read.', response.status)
+    if (prefs === null)
+      throw new PrefsError('The server sent an answer this page cannot read.', response.status)
     return prefs
   }
 

@@ -27,9 +27,12 @@ export function usePrefsSync(enabled: boolean, api: PrefsApi = prefsApi): void {
     api.load().then(
       (loaded) => {
         if (stale) return
-        attachAccount({ defaultStops: loaded.default_stops, endTurnByHand: loaded.end_turn_by_hand }, (prefs) => {
-          if (!stale) save(prefs)
-        })
+        attachAccount(
+          { defaultStops: loaded.default_stops, endTurnByHand: loaded.end_turn_by_hand },
+          (prefs) => {
+            if (!stale) save(prefs)
+          },
+        )
       },
       () => {
         // Without the server's copy this browser's preferences stay in use.
