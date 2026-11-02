@@ -8,6 +8,7 @@ import { browserTimers } from '@/net/timers'
 import type {
   Answer,
   AutoChoices,
+  AutoYield,
   DecisionId,
   FullControlMode,
   ManualAction,
@@ -21,7 +22,7 @@ import { createManualLedger, isManualOf } from './manualLedger'
 import type { ManualReply } from './manualLedger'
 import { previewKey } from './preview'
 import { canHoldStop } from './stops'
-import { saveEndTurnByHand, welcomeRequests } from './flowPrefs'
+import { saveAutoChoices, saveEndTurnByHand, welcomeRequests } from './flowPrefs'
 import { mergeLogNames, rememberDeparted } from './rememberNames'
 import { owesByHand } from './byHand'
 import { appendChat, appendLog, createPlayStore, mergeHistory } from './store'
@@ -83,6 +84,13 @@ export interface Session {
    * store's `autoChoices` follows when the server says so. False when the socket is not open.
    */
   setAutoChoices(choices: AutoChoices): boolean
+  /**
+   * Asks the server to let the ability `object` is on the stack, and every later one like it, resolve unasked for the rest
+   * of the game; the store's `autoYields` follows when the server says so. False when the socket is not open.
+   */
+  autoYield(object: ObjectId): boolean
+  /** Takes back the yield to `ability`; the store follows when the server says so. False when the socket is not open. */
+  clearAutoYield(ability: AutoYield): boolean
   /**
    * Casts `card` (an instant or a flash card in hand) at this seat's next priority window: asks the server for that
    * window (Full Control `NextWindow`, which asks whatever the seat holds) and casts the card when the decision comes,
@@ -228,12 +236,14 @@ export function createSession(deps: SessionDeps): Session {
           fullControl: message.full_control,
           endTurnByHand: message.end_turn_by_hand,
           autoChoices: message.auto_choices,
+          autoYields: message.auto_yields,
           castWhenAsked: null,
         })
         for (const request of welcomeRequests({
           game: message.game,
           stops: message.stops,
           endTurnByHand: message.end_turn_by_hand,
+          autoChoices: message.auto_choices,
         }))
           socket.send(request)
         return
@@ -252,6 +262,9 @@ export function createSession(deps: SessionDeps): Session {
         return
       case 'AutoChoices':
         setState({ autoChoices: message.choices })
+        return
+      case 'AutoYields':
+        setState({ autoYields: message.yields })
         return
       case 'Lobby':
         // The server sends the whole roster each time, so the newest one simply replaces the last.
@@ -502,7 +515,13 @@ export function createSession(deps: SessionDeps): Session {
     setStop: (side, step, on, keep) =>
       canHoldStop(step) && socket.send({ type: 'SetStop', side, step, on, keep }),
     setFullControl: (mode) => socket.send({ type: 'FullControl', mode }),
-    setAutoChoices: (choices) => socket.send({ type: 'AutoChoices', choices }),
+    setAutoChoices(choices) {
+      if (!socket.send({ type: 'AutoChoices', choices })) return false
+      saveAutoChoices(choices)
+      return true
+    },
+    autoYield: (object) => socket.send({ type: 'AutoYield', object }),
+    clearAutoYield: (ability) => socket.send({ type: 'ClearAutoYield', ability }),
     setEndTurnByHand(on) {
       if (!socket.send({ type: 'EndTurnByHand', on })) return false
       saveEndTurnByHand(on)

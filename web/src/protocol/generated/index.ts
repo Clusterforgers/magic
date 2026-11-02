@@ -19,6 +19,7 @@ export type { AttackerOption } from "./AttackerOption";
 export type { AttackerView } from "./AttackerView";
 export type { AuthErrorCode } from "./AuthErrorCode";
 export type { AutoChoices } from "./AutoChoices";
+export type { AutoYield } from "./AutoYield";
 export type { BecameCopy } from "./BecameCopy";
 export type { BlockOptions } from "./BlockOptions";
 export type { BlockerOption } from "./BlockerOption";

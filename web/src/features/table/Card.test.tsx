@@ -38,7 +38,7 @@ describe('card face', () => {
   it('shows the name, mana cost, type line and power and toughness', () => {
     const { container } = renderCard({ object: card({ name: 'Hill Giant', colors: ['Red'] }) })
     const text = face(container)
-    expect(within(text).getByText('Hill Giant')).toBeInTheDocument()
+    expect(text.querySelector('[data-name]')).toHaveTextContent('Hill Giant')
     expect(within(text).getByRole('img', { name: 'Mana cost: 1 generic, green' })).toBeInTheDocument()
     expect(within(text).getByText('Creature — Bear')).toBeInTheDocument()
     expect(within(text).getByText('2/2')).toBeInTheDocument()
@@ -101,6 +101,13 @@ describe('permanent state is drawn as words, not colour alone', () => {
     expect(within(face(container)).getByText('Tapped')).toBeInTheDocument()
     expect(button()).toHaveAttribute('data-tapped', 'true')
     expect(button()).toHaveAccessibleName(expect.stringContaining('tapped'))
+  })
+
+  it('shows the Tapped chip of a compact card as an icon whose word is for screen readers only', () => {
+    const { container } = renderCard({ object: permanent({ tapped: true }), props: { size: 'compact' } })
+    const chip = container.querySelector('[data-slot="card-status"]')
+    expect(chip?.querySelector('svg')).not.toBeNull()
+    expect(within(face(container)).getByText('Tapped')).toHaveClass('sr-only')
   })
 
   it('draws a phased-out card ghosted and says "Phased out"', () => {
@@ -186,7 +193,7 @@ describe('compact cards', () => {
   it('keep the name, power and toughness and state but drop the cost and type line', () => {
     const { container } = renderCard({ object: permanent({ tapped: true }), props: { size: 'compact' } })
     const text = face(container)
-    expect(within(text).getByText('Grizzly Bears')).toBeInTheDocument()
+    expect(text.querySelector('[data-name]')).toHaveTextContent('Grizzly Bears')
     expect(within(text).getByText('2/2')).toBeInTheDocument()
     expect(within(text).getByText('Tapped')).toBeInTheDocument()
     expect(within(text).queryByRole('img')).toBeNull()

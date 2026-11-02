@@ -2,6 +2,7 @@
 import { screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { afterEach, describe, expect, it, vi } from 'vitest'
+import type { DeckInfo } from '@/net/api'
 import { AuthContext } from '@/features/auth/context'
 import { createAuthStore, offlineAccounts } from '@/features/auth/store'
 import { renderInRouter } from '@/test-utils/router'
@@ -30,6 +31,8 @@ interface Scene {
   chosenId?: string | null
   /** The codes of the precons the account starred. */
   starred?: string[]
+  /** The built-in decks the server lists. */
+  builtIn?: DeckInfo[]
 }
 
 async function open({
@@ -40,6 +43,7 @@ async function open({
   current = null,
   chosenId = null,
   starred = [],
+  builtIn = [],
 }: Scene = {}) {
   const favourites = {
     list: vi.fn().mockResolvedValue(starred),
@@ -57,7 +61,7 @@ async function open({
   await renderInRouter(
     <AuthContext value={auth}>
       <DeckChooser
-        api={{ listDecks: async () => [] }}
+        api={{ listDecks: async () => builtIn }}
         decks={lobbyDecks(switches)}
         precons={lobbyPrecons(switches)}
         favouritesApi={favourites}
@@ -250,6 +254,27 @@ describe('selecting and choosing', () => {
     const { user } = await open({ format: 'normal', signedIn: false })
     await user.click(await screen.findByRole('tab', { name: 'Precons' }))
     expect(await screen.findByRole('option', { name: /Mono White Starter/ })).toBeInTheDocument()
+  })
+
+  it('counts a built-in deck\x27s cards and colour in the detail as the list does', async () => {
+    width(true)
+    const deck: DeckInfo = {
+      id: 'mono-green',
+      name: 'Mono Green Stompers',
+      color: 'Green',
+      size: 60,
+      cards: [
+        { name: 'Forest', count: 24 },
+        { name: 'Grizzly Bears', count: 36 },
+      ],
+    }
+    const { user } = await open({ format: 'normal', signedIn: false, builtIn: [deck] })
+    const row = await screen.findByRole('option', { name: /^Mono Green Stompers/ })
+    expect(row).toHaveTextContent('60 cards')
+    await user.click(row)
+    const detail = pane()
+    expect(within(detail).getByText('60 cards')).toBeInTheDocument()
+    expect(within(detail).getByLabelText('Color identity: Green')).toBeInTheDocument()
   })
 
   it('previews a precon with its cards and a way to read the cards played by hand', async () => {

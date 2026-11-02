@@ -90,6 +90,10 @@ const samples: Record<string, Record<string, unknown>> = {
     type: 'AutoChoices',
     choices: { order_triggers: true, assign_damage: false, smart_stops: false },
   },
+  AutoYields: {
+    type: 'AutoYields',
+    yields: [{ name: 'Soul Warden', text: 'Whenever another creature enters, you gain 1 life.' }],
+  },
   Bank: { type: 'Bank', seat: 1, bank: 2 },
   Presence: { type: 'Presence', seat: 1, connected: false },
 }
@@ -157,7 +161,7 @@ describe('parseFrame refuses what is not a message', () => {
 })
 
 /** Fields an older server leaves out, which read as their default. */
-const MAY_BE_MISSING = new Set(['Welcome.end_turn_by_hand', 'Welcome.auto_choices'])
+const MAY_BE_MISSING = new Set(['Welcome.end_turn_by_hand', 'Welcome.auto_choices', 'Welcome.auto_yields'])
 
 describe('parseFrame checks the fields of each message', () => {
   const missing = Object.entries(samples).flatMap(([type, sample]) =>
@@ -202,6 +206,23 @@ describe('parseFrame checks the fields of each message', () => {
     expect(frame.ok && frame.message).toMatchObject({
       type: 'Welcome',
       auto_choices: { order_triggers: false, assign_damage: false, smart_stops: false },
+    })
+  })
+
+  it('reads a Welcome without "auto_yields" (an older server) as no ability yielded to', () => {
+    const frame = parseFrame(wire(put(samples.Welcome, ['auto_yields'], undefined)))
+    expect(frame.ok && frame.message).toMatchObject({ type: 'Welcome', auto_yields: [] })
+  })
+
+  it.each([
+    ['Welcome', 'auto_yields', [{ name: 'Soul Warden' }]],
+    ['Welcome', 'auto_yields', 'Soul Warden'],
+    ['AutoYields', 'yields', [{ name: 'Soul Warden', text: 3 }]],
+    ['AutoYields', 'yields', null],
+  ])('refuses a %s whose "%s" is %o', (type, key, value) => {
+    expect(parseFrame(wire(put(samples[type], [key], value)))).toMatchObject({
+      ok: false,
+      error: { kind: 'bad_shape' },
     })
   })
 

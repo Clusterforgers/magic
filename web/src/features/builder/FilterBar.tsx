@@ -88,7 +88,7 @@ export function FilterBar({ filters, onChange, commanderIdentity = null }: Filte
           <CommanderIdentitySwitch identity={commanderIdentity} filters={filters} onChange={onChange} />
         )}
       </div>
-      <div className="grid grid-cols-2 gap-2 sm:grid-cols-[3fr_2fr_3fr]">
+      <div className="grid grid-cols-2 gap-2 sm:grid-cols-[3fr_minmax(6.5rem,2fr)_3fr]">
         <div className="col-span-2 grid gap-1 sm:col-span-1">
           <Label htmlFor={`${id}-type`}>Type</Label>
           <Input

@@ -5,6 +5,7 @@ mod activated_view;
 mod active_left_fuzz;
 mod active_left_view;
 mod attachment_view;
+mod auto_yield_key;
 mod batch_diff;
 mod batch_size;
 mod batch_visibility;

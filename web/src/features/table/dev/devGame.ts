@@ -139,6 +139,26 @@ export function fixtureSession(store: PlayStore, options: FixtureSessionOptions 
       store.setState({ endTurnByHand: on })
       return true
     },
+    // As the server answers a yield to an ability: it keys it by the name and words on the stack and says the whole list.
+    autoYield(object) {
+      const shown = store.getState().objectsById[object]
+      if (shown?.kind !== 'Ability' || shown.name === '') return false
+      const key = { name: shown.name, text: shown.rules_text ?? '' }
+      store.setState((state) => ({
+        autoYields: state.autoYields.some((held) => held.name === key.name && held.text === key.text)
+          ? state.autoYields
+          : [...state.autoYields, key],
+      }))
+      return true
+    },
+    clearAutoYield(ability) {
+      store.setState((state) => ({
+        autoYields: state.autoYields.filter(
+          (held) => held.name !== ability.name || held.text !== ability.text,
+        ),
+      }))
+      return true
+    },
     setAutoChoices(choices) {
       store.setState({ autoChoices: choices })
       return true

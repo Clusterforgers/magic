@@ -21,6 +21,9 @@ fn prefs(on: bool) -> StoredPrefs {
     StoredPrefs {
         default_stops: json!([{"side": "Own", "step": "Upkeep", "keep": true}]),
         end_turn_by_hand: on,
+        auto_order_triggers: on,
+        auto_assign_damage: !on,
+        auto_smart_stops: on,
     }
 }
 
@@ -41,6 +44,7 @@ async fn the_database_refuses_stops_that_are_no_array(pool: PgPool) {
     let bad = StoredPrefs {
         default_stops: json!({"side": "Own"}),
         end_turn_by_hand: false,
+        ..StoredPrefs::default()
     };
     assert!(repo.put(user(1), &bad).await.is_err());
 }

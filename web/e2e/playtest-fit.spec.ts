@@ -1,4 +1,4 @@
-// Goal: the overlaps the playtest screenshots showed stay fixed at the sizes of the design: a card's type line ends above the mana symbols at its foot, the crown and tax of a commander in the hand lie clear of its power and toughness, the lobby's Ready bar stays inside the deck column, and a phone's turn badge shows whose turn it is uncut.
+// Goal: the overlaps the playtest screenshots showed stay fixed at the sizes of the design: a card's type line ends above the mana symbols at its foot, the crown and tax of a commander in the hand lie clear of its power and toughness, a compact tapped land shows its Tapped chip whole on a phone, a pod of the four-seat table keeps its zone chips inside it, the lobby's Ready bar stays inside the deck column, and a phone's turn badge shows whose turn it is uncut.
 import { expect, test } from '@playwright/test'
 import type { Page } from '@playwright/test'
 import { DEV_WEB_URL } from './ports'
@@ -28,6 +28,37 @@ test.describe('the duel table', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto(`${DEV_WEB_URL}/dev/table?board=duel`)
     await page.waitForSelector('[data-slot="mana-strip"]')
+  })
+
+  test('a name breaks between words, and a land of a pile shows its whole name line', async ({ page }) => {
+    for (const size of SIZES) {
+      await atSize(page, size)
+      const broken = await page.evaluate(() =>
+        Array.from(document.querySelectorAll<HTMLElement>('[data-name] .truncate')).flatMap((word) => {
+          const line = parseFloat(getComputedStyle(word).lineHeight)
+          return word.getBoundingClientRect().height > line * 1.5 ? [word.textContent ?? ''] : []
+        }),
+      )
+      expect(broken, label(size)).toEqual([])
+      const covered = await page.evaluate(() =>
+        Array.from(document.querySelectorAll<HTMLElement>('ul[style*="grid-template-rows"] > li')).flatMap(
+          (item, at, all) => {
+            const next = all[at + 1]
+            const name = item.querySelector<HTMLElement>('[data-name]')
+            if (
+              next === undefined ||
+              name === null ||
+              next.getBoundingClientRect().left !== item.getBoundingClientRect().left
+            )
+              return []
+            return name.getBoundingClientRect().bottom > next.getBoundingClientRect().top + 0.5
+              ? [name.textContent ?? '']
+              : []
+          },
+        ),
+      )
+      expect(covered, label(size)).toEqual([])
+    }
   })
 
   test('a type line ends above the mana symbols of its card', async ({ page }) => {
@@ -104,5 +135,49 @@ test('the Ready bar stays inside the deck column of the lobby', async ({ page })
     expect(sides, label(size)).not.toBeNull()
     expect(sides?.left ?? -1, label(size)).toBeGreaterThanOrEqual(-0.5)
     expect(sides?.right ?? -1, label(size)).toBeGreaterThanOrEqual(-0.5)
+  }
+})
+
+test('a compact tapped land on a phone shows its Tapped chip whole', async ({ page }) => {
+  await page.goto(`${DEV_WEB_URL}/dev/table?board=duel`)
+  await page.waitForSelector('[data-slot="mana-strip"]')
+  await atSize(page, { width: 390, height: 844 })
+  const cut = await page.evaluate(() => {
+    const chips = [
+      ...document.querySelectorAll<HTMLElement>(
+        '[data-slot="card-face"][data-turned] [data-slot="card-status"]',
+      ),
+    ]
+    return chips.filter((chip) => {
+      const art = chip.closest<HTMLElement>('[data-slot="card-art"]')
+      if (art === null) return false
+      const mine = chip.getBoundingClientRect()
+      const room = art.getBoundingClientRect()
+      return mine.bottom > room.bottom + 0.5 || mine.right > room.right + 0.5
+    }).length
+  })
+  expect(cut).toBe(0)
+})
+
+test('a seat pod keeps its zone chips inside the pod on the four-seat table', async ({ page }) => {
+  await page.goto(`${DEV_WEB_URL}/dev/table?seats=4`)
+  await page.waitForSelector('[data-seat][data-you]')
+  for (const size of [
+    { width: 1440, height: 900 },
+    { width: 1920, height: 1080 },
+  ]) {
+    await atSize(page, size)
+    const outside = await page.evaluate(() =>
+      [...document.querySelectorAll<HTMLElement>('[data-seat]')].flatMap((pod) => {
+        const box = pod.getBoundingClientRect()
+        return [...pod.querySelectorAll<HTMLElement>('[data-zone]')]
+          .filter((zone) => {
+            const at = zone.getBoundingClientRect()
+            return at.width > 0 && (at.bottom > box.bottom + 0.5 || at.right > box.right + 0.5)
+          })
+          .map(() => pod.getAttribute('data-seat'))
+      }),
+    )
+    expect(outside, label(size)).toEqual([])
   }
 })

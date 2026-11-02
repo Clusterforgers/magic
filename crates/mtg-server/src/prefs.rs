@@ -6,6 +6,7 @@ use axum::Json;
 use axum::extract::{Request, State};
 use axum::http::{HeaderMap, StatusCode};
 use mtg_db::{PrefsRepo, StoredPrefs};
+use mtg_protocol::AutoChoices;
 use mtg_protocol::rest::{DeckErrorCode, MAX_DEFAULT_STOPS, UserPrefs};
 use sqlx::types::uuid::Uuid;
 
@@ -79,6 +80,11 @@ pub(crate) async fn get(
     Ok(Json(UserPrefs {
         default_stops,
         end_turn_by_hand: stored.end_turn_by_hand,
+        auto_choices: AutoChoices {
+            order_triggers: stored.auto_order_triggers,
+            assign_damage: stored.auto_assign_damage,
+            smart_stops: stored.auto_smart_stops,
+        },
     }))
 }
 
@@ -98,6 +104,9 @@ pub(crate) async fn put(
         default_stops: serde_json::to_value(&prefs.default_stops)
             .map_err(|_| ApiError::unavailable())?,
         end_turn_by_hand: prefs.end_turn_by_hand,
+        auto_order_triggers: prefs.auto_choices.order_triggers,
+        auto_assign_damage: prefs.auto_choices.assign_damage,
+        auto_smart_stops: prefs.auto_choices.smart_stops,
     };
     s.repo
         .put(s.user, &stored)
@@ -122,6 +131,7 @@ mod tests {
         UserPrefs {
             default_stops: stops,
             end_turn_by_hand: false,
+            auto_choices: AutoChoices::default(),
         }
     }
 

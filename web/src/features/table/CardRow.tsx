@@ -207,8 +207,9 @@ export function CardRow({
           const itemClass = cn(
             'flex',
             spaced && 'relative hover:z-10 focus-within:z-10 [&:not(:first-child)]:ml-(--card-gap)',
-            // No raise on hover: a raised card would cover the head of the next one under the pointer.
-            fanned && 'relative has-focus-visible:z-10',
+            // No raise on hover: a raised card would cover the head of the next one under the pointer. The lane's ground under each card keeps a translucent text face from showing the one below.
+            fanned &&
+              'relative isolate rounded-md bg-lane has-focus-visible:z-10 [&>button]:place-items-start [&_[data-name]]:line-clamp-1',
             // Every box of a lane with a tuck is as tall, so the cards of a line stand on one foot.
             lifted !== undefined && 'relative isolate',
           )

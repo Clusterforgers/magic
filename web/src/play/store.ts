@@ -4,6 +4,7 @@ import type { StoreApi } from 'zustand/vanilla'
 import type { ConnectionStatus } from '@/net/socket'
 import type {
   AutoChoices,
+  AutoYield,
   Decision,
   DecisionId,
   EventView,
@@ -150,6 +151,11 @@ export interface PlayState {
    */
   autoChoices: AutoChoices
   /**
+   * The abilities this seat lets resolve unasked for the rest of the game, keyed by their source's name and words. The
+   * server's word: set by every Welcome and every `AutoYields` message, never by the page.
+   */
+  autoYields: AutoYield[]
+  /**
    * The card in hand this seat clicked while the server passed for it (an instant or a flash card), or null: the
    * session asked for its next window and casts the card there if it is castable then.
    */
@@ -196,6 +202,7 @@ export function initialPlayState(): PlayState {
     fullControl: 'Off',
     endTurnByHand: false,
     autoChoices: { order_triggers: false, assign_damage: false, smart_stops: false },
+    autoYields: [],
     castWhenAsked: null,
     byHand: null,
     away: {},

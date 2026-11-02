@@ -9,6 +9,7 @@ import type {
   AttackerForecast,
   AttackerView,
   AutoChoices,
+  AutoYield,
   CombatForecast,
   CreatureForecast,
   Decision,
@@ -63,6 +64,7 @@ const MESSAGE_TYPES: Record<ServerMessage['type'], true> = {
   FullControl: true,
   EndTurnByHand: true,
   AutoChoices: true,
+  AutoYields: true,
   Bank: true,
   Presence: true,
 }
@@ -405,6 +407,11 @@ function autoChoices(value: SentAutoChoices): AutoChoices {
   return { ...value, smart_stops: value.smart_stops ?? false }
 }
 
+/** Whether `value` is an `AutoYield`: the source's name and the ability's words. */
+function isAutoYield(value: unknown): value is AutoYield {
+  return isRecord(value) && isText(value.name) && isText(value.text)
+}
+
 function build(type: ServerMessage['type'], v: Record<string, unknown>): Built {
   switch (type) {
     case 'Welcome':
@@ -422,6 +429,8 @@ function build(type: ServerMessage['type'], v: Record<string, unknown>): Built {
         return '"end_turn_by_hand" must be true or false'
       if (v.auto_choices !== undefined && !isAutoChoices(v.auto_choices))
         return '"auto_choices" must hold order_triggers and assign_damage, each true or false'
+      if (v.auto_yields !== undefined && !isListOf(v.auto_yields, isAutoYield))
+        return '"auto_yields" must be a list of abilities (name, text)'
       return {
         type,
         protocol_version: v.protocol_version,
@@ -434,6 +443,7 @@ function build(type: ServerMessage['type'], v: Record<string, unknown>): Built {
         full_control: v.full_control,
         end_turn_by_hand: v.end_turn_by_hand ?? false,
         auto_choices: v.auto_choices === undefined ? NO_AUTO_CHOICES : autoChoices(v.auto_choices),
+        auto_yields: v.auto_yields ?? [],
       }
     case 'Lobby':
       if (!isListOf(v.seats, isLobbySeat)) {
@@ -525,6 +535,9 @@ function build(type: ServerMessage['type'], v: Record<string, unknown>): Built {
       if (!isAutoChoices(v.choices))
         return '"choices" must hold order_triggers and assign_damage, each true or false'
       return { type, choices: autoChoices(v.choices) }
+    case 'AutoYields':
+      if (!isListOf(v.yields, isAutoYield)) return '"yields" must be a list of abilities (name, text)'
+      return { type, yields: v.yields }
     case 'Bank':
       if (!isCount(v.seat)) return '"seat" must be a whole number'
       if (!isCount(v.bank)) return '"bank" must be a whole number'
