@@ -21,7 +21,7 @@ import { createManualLedger, isManualOf } from './manualLedger'
 import type { ManualReply } from './manualLedger'
 import { previewKey } from './preview'
 import { canHoldStop } from './stops'
-import { saveEndTurnByHand, welcomeRequests } from './flowPrefs'
+import { saveAutoChoices, saveEndTurnByHand, welcomeRequests } from './flowPrefs'
 import { mergeLogNames, rememberDeparted } from './rememberNames'
 import { owesByHand } from './byHand'
 import { appendChat, appendLog, createPlayStore, mergeHistory } from './store'
@@ -234,6 +234,7 @@ export function createSession(deps: SessionDeps): Session {
           game: message.game,
           stops: message.stops,
           endTurnByHand: message.end_turn_by_hand,
+          autoChoices: message.auto_choices,
         }))
           socket.send(request)
         return
@@ -502,7 +503,11 @@ export function createSession(deps: SessionDeps): Session {
     setStop: (side, step, on, keep) =>
       canHoldStop(step) && socket.send({ type: 'SetStop', side, step, on, keep }),
     setFullControl: (mode) => socket.send({ type: 'FullControl', mode }),
-    setAutoChoices: (choices) => socket.send({ type: 'AutoChoices', choices }),
+    setAutoChoices(choices) {
+      if (!socket.send({ type: 'AutoChoices', choices })) return false
+      saveAutoChoices(choices)
+      return true
+    },
     setEndTurnByHand(on) {
       if (!socket.send({ type: 'EndTurnByHand', on })) return false
       saveEndTurnByHand(on)

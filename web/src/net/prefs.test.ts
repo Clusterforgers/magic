@@ -9,7 +9,11 @@ function serve(answer: (call: FetchCall) => Response | Promise<Response>) {
   return { api: createPrefsApi({ fetch: fake.fetch }), calls: fake.calls }
 }
 
-const stored = { default_stops: [{ side: 'Own', step: 'Upkeep', keep: true }], end_turn_by_hand: true }
+const stored = {
+  default_stops: [{ side: 'Own', step: 'Upkeep', keep: true }],
+  end_turn_by_hand: true,
+  auto_choices: { order_triggers: true, assign_damage: false },
+}
 
 describe('createPrefsApi', () => {
   it('loads with the cookie and saves with a PUT of the preferences', async () => {
@@ -27,7 +31,15 @@ describe('createPrefsApi', () => {
   it.each([
     ['not an object', 'x'],
     ['no flag', { default_stops: [] }],
-    ['stops of another kind', { default_stops: [1], end_turn_by_hand: false }],
+    [
+      'stops of another kind',
+      { default_stops: [1], end_turn_by_hand: false, auto_choices: stored.auto_choices },
+    ],
+    ['auto choices missing', { default_stops: [], end_turn_by_hand: false }],
+    [
+      'auto choices of another kind',
+      { default_stops: [], end_turn_by_hand: false, auto_choices: { order_triggers: 1 } },
+    ],
   ])('refuses an answer that is %s', async (_, body) => {
     const { api } = serve(() => jsonResponse(200, body))
     await expect(api.load()).rejects.toBeInstanceOf(PrefsError)

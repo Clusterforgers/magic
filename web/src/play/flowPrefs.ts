@@ -1,16 +1,18 @@
 /**
  * The viewer's pace preferences, shared by every game: the pinned stops a new game starts with, and whether the seat
- * ends its own turns by hand. A signed-in account keeps them on the server (`attachAccount`); a guest keeps them in
+ * ends its own turns by hand, and the decisions the server answers for it. A signed-in account keeps them on the server (`attachAccount`); a guest keeps them in
  * `localStorage`. A session applies them at `Welcome` (`welcomeRequests`).
  */
 import { useSyncExternalStore } from 'react'
-import type { ClientMessage, Stop } from '@/protocol/generated'
+import type { AutoChoices, ClientMessage, Stop } from '@/protocol/generated'
 import { canHoldStop } from './stops'
 
 /** The `localStorage` key of the default stops. */
 export const DEFAULT_STOPS_KEY = 'mtg.defaultStops'
 /** The `localStorage` key of the end-turn-by-hand choice. */
 export const END_TURN_KEY = 'mtg.endTurnByHand'
+/** The `localStorage` key of the auto choices. */
+export const AUTO_CHOICES_KEY = 'mtg.autoChoices'
 /** The `localStorage` key of the games the default stops were given to. */
 export const APPLIED_KEY = 'mtg.defaultStopsApplied'
 /** How many games `APPLIED_KEY` remembers. */
@@ -22,6 +24,8 @@ export interface FlowPrefs {
   defaultStops: readonly Stop[]
   /** Whether the seat ends its own turns by hand. */
   endTurnByHand: boolean
+  /** The decisions the server answers for the seat. */
+  autoChoices: AutoChoices
 }
 
 const listeners = new Set<() => void>()
@@ -73,9 +77,16 @@ function readStops(): Stop[] {
   })
 }
 
+/** The stored auto choices: each flag is on only when stored as true. */
+function readAuto(): AutoChoices {
+  const raw = parseJson(readItem(AUTO_CHOICES_KEY))
+  const flags = typeof raw === 'object' && raw !== null ? (raw as Record<string, unknown>) : {}
+  return { order_triggers: flags.order_triggers === true, assign_damage: flags.assign_damage === true }
+}
+
 /** The preferences now: the stored ones, none by default. */
 export function flowPrefs(): FlowPrefs {
-  current ??= { defaultStops: readStops(), endTurnByHand: readItem(END_TURN_KEY) === 'on' }
+  current ??= readLocal()
   return current
 }
 
@@ -86,7 +97,11 @@ function change(next: FlowPrefs): void {
 
 /** The preferences this browser's storage holds. */
 function readLocal(): FlowPrefs {
-  return { defaultStops: readStops(), endTurnByHand: readItem(END_TURN_KEY) === 'on' }
+  return {
+    defaultStops: readStops(),
+    endTurnByHand: readItem(END_TURN_KEY) === 'on',
+    autoChoices: readAuto(),
+  }
 }
 
 /** Keeps `next` where the viewer's preferences live now and shows it. */
@@ -94,13 +109,19 @@ function store(next: FlowPrefs): void {
   if (account === null) {
     writeItem(DEFAULT_STOPS_KEY, JSON.stringify(next.defaultStops))
     writeItem(END_TURN_KEY, next.endTurnByHand ? 'on' : null)
+    writeItem(AUTO_CHOICES_KEY, hasAuto(next.autoChoices) ? JSON.stringify(next.autoChoices) : null)
   } else account(next)
   change(next)
 }
 
+/** Whether any decision is left to the server. */
+function hasAuto(auto: AutoChoices): boolean {
+  return auto.order_triggers || auto.assign_damage
+}
+
 /** Whether `prefs` are what a new account has. */
 function isDefault(prefs: FlowPrefs): boolean {
-  return prefs.defaultStops.length === 0 && !prefs.endTurnByHand
+  return prefs.defaultStops.length === 0 && !prefs.endTurnByHand && !hasAuto(prefs.autoChoices)
 }
 
 /**
@@ -138,6 +159,11 @@ export function saveEndTurnByHand(on: boolean): void {
   store({ ...flowPrefs(), endTurnByHand: on })
 }
 
+/** Stores the decisions the server answers for the seat. */
+export function saveAutoChoices(choices: AutoChoices): void {
+  store({ ...flowPrefs(), autoChoices: choices })
+}
+
 /** Forgets the cached preferences, so the next read goes to storage again (tests). */
 export function resetFlowPrefs(): void {
   current = null
@@ -158,12 +184,13 @@ export interface WelcomeFacts {
   game: string
   stops: readonly Stop[]
   endTurnByHand: boolean
+  autoChoices: AutoChoices
 }
 
 /**
  * The requests that bring the server in line with the preferences at a `Welcome`: the default stops once per game,
  * the first time this browser joins it and only while the seat holds none, and the end-turn-by-hand choice whenever
- * the server holds the other one.
+ * the server holds the other one, and the auto choices likewise.
  */
 export function welcomeRequests(welcome: WelcomeFacts, prefs: FlowPrefs = flowPrefs()): ClientMessage[] {
   const requests: ClientMessage[] = []
@@ -174,6 +201,12 @@ export function welcomeRequests(welcome: WelcomeFacts, prefs: FlowPrefs = flowPr
   }
   if (prefs.endTurnByHand !== welcome.endTurnByHand)
     requests.push({ type: 'EndTurnByHand', on: prefs.endTurnByHand })
+  const { order_triggers, assign_damage } = prefs.autoChoices
+  if (
+    order_triggers !== welcome.autoChoices.order_triggers ||
+    assign_damage !== welcome.autoChoices.assign_damage
+  )
+    requests.push({ type: 'AutoChoices', choices: prefs.autoChoices })
   return requests
 }
 

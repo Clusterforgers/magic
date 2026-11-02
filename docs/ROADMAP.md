@@ -73,7 +73,6 @@ The table and its prompts are live; the items below polish them.
 
 - [ ] (i2b) Arena flow P10: smart stops, a step where an object of the seat can answer becomes a window (`docs/arena-flow.md`)
 - [ ] (i2c) Arena flow P10: per-ability yield (`AutoYield`), a trigger or ability the seat yields to resolves unasked for the game (`docs/arena-flow.md`)
-- [ ] (i2d) Auto choices are saved with the account and in the browser and applied at each `Welcome`, as the end-turn choice is (`UserPrefs`)
 - [ ] (a2g) A token lookup that finds several equal records prefers the one with the most printings (`token_pictures` returns the printing count) instead of the smallest oracle id
 - [ ] (a2e) The precon details dialog shows each card's picture through `CardPicture` and the hover picture, as the builder does
 - [ ] (a2f) The real database holds every precon printing (`fetch scryfall --printings`), so the table draws each card in its precon art instead of the card's default picture
