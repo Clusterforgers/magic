@@ -272,6 +272,7 @@ describe('lifeWords', () => {
     ['damage', hit(4, 20), 'Life would go from 20 to 16'],
     ['lethal damage', hit(7, 5, true), 'Life would go from 5 to -2, which is lethal'],
     ['none', hit(0, 20), 'Takes no combat damage'],
+    ['a gain without damage', { ...hit(0, 20), life_after: 23 }, 'Life would go from 20 to 23'],
   ])('for %s', (_name, player, expected) => {
     expect(lifeWords(player)).toBe(expected)
   })

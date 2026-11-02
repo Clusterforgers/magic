@@ -99,6 +99,6 @@ export function outlookWords(outlook: CreatureOutlook | null): string {
 
 /** A seat's life under the forecast in words, for its panel: "Life would go from 20 to 16, which is lethal". */
 export function lifeWords(player: PlayerForecast): string {
-  if (player.damage === 0) return 'Takes no combat damage'
+  if (player.damage === 0 && player.life_after === player.life) return 'Takes no combat damage'
   return `Life would go from ${player.life} to ${player.life_after}${player.lethal ? ', which is lethal' : ''}`
 }

@@ -17,6 +17,7 @@ import { revealedLabel, revealedOf } from './revealed'
 import { exileOf, holdsPriority, isActiveSeat, playerOf } from './selectors'
 import { useKeepInView } from './useKeepInView'
 import { defenderOutline, useDefender } from './combat/defender'
+import { LifeForecast } from './combat/LifeForecast'
 
 interface SeatTileProps {
   seat: PlayerId
@@ -104,15 +105,18 @@ export const SeatTile = memo(function SeatTile({ seat, focused, onFocusSeat }: S
           ) : null}
           {away ? <AwayMark /> : null}
         </span>
-        <LifeFx
-          seat={seat}
-          className={cn(
-            'text-xl leading-6 font-semibold tabular-nums',
-            player.life <= 5 && 'text-destructive',
-          )}
-        >
-          {player.life}
-        </LifeFx>
+        <span className="flex shrink-0 items-center gap-1">
+          <LifeForecast seat={seat} />
+          <LifeFx
+            seat={seat}
+            className={cn(
+              'text-xl leading-6 font-semibold tabular-nums',
+              player.life <= 5 && 'text-destructive',
+            )}
+          >
+            {player.life}
+          </LifeFx>
+        </span>
       </span>
       {/* What does not fit the tile is cut, the last figure first; the spoken name has it all. */}
       <span className="flex h-5 items-center gap-x-1.5 overflow-hidden whitespace-nowrap text-muted-foreground">

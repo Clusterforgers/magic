@@ -113,6 +113,23 @@
   --line: var(--primary);
 }
 
+/* A pending block takes the colour of the preview's outcome for its pair. */
+.combat-group[data-pending][data-outcome='attacker-dies'] {
+  --line: var(--combat-attacker-dies);
+}
+
+.combat-group[data-pending][data-outcome='blocker-dies'] {
+  --line: var(--combat-blocker-dies);
+}
+
+.combat-group[data-pending][data-outcome='both-die'] {
+  --line: var(--combat-both-die);
+}
+
+.combat-group[data-pending][data-outcome='both-survive'] {
+  --line: var(--combat-both-survive);
+}
+
 .combat-group[data-pending][data-kind='attack'] .combat-halo {
   stroke-width: 6;
 }

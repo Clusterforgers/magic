@@ -28,7 +28,7 @@ export function legendEntries(lines: readonly LineSpec[]): LegendEntry[] {
     entries.push({ id: 'block', label: 'Block', kind: 'block', pending: false })
   }
   for (const outcome of OUTCOMES) {
-    if (declared.some((line) => line.outcome === outcome)) {
+    if (lines.some((line) => line.outcome === outcome)) {
       entries.push({ id: outcome, label: OUTCOME_WORDS[outcome], kind: 'block', pending: false, outcome })
     }
   }

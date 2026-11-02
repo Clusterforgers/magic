@@ -79,14 +79,13 @@ export function planLines({ combat, forecast, pending, controllerOf }: PlanInput
         to: target(attacker.target),
       })
       for (const blocker of attacker.blockers) {
-        const outcome = forecast === null ? undefined : blockOutcome(forecast, attacker.object, blocker)
         blocks.push({
           key: `block:${blocker}`,
           kind: 'block',
           pending: false,
           from: card(blocker),
           to: card(attacker.object),
-          ...(outcome === undefined ? {} : { outcome }),
+          ...outcomeField(forecast, attacker.object, blocker),
         })
       }
     }
@@ -105,6 +104,7 @@ export function planLines({ combat, forecast, pending, controllerOf }: PlanInput
       pending: true,
       from: card(blocker),
       to: card(attacker),
+      ...outcomeField(forecast, attacker, blocker),
     })),
   ]
   return [...attacks, ...blocks, ...chosen]
@@ -119,4 +119,14 @@ export function anchorsOf(lines: readonly LineSpec[]): Anchor[] {
     }
   }
   return [...found.values()]
+}
+
+/** The `outcome` field of a block line, empty when the forecast does not list the pair. */
+function outcomeField(
+  forecast: CombatForecast | null,
+  attacker: ObjectId,
+  blocker: ObjectId,
+): { outcome?: Outcome } {
+  const outcome = forecast === null ? undefined : blockOutcome(forecast, attacker, blocker)
+  return outcome === undefined ? {} : { outcome }
 }
