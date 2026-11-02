@@ -211,6 +211,7 @@ export function fixturePreconItem(deck: FixtureDeck & { set: string; state?: Dec
     release_date: '2023-08-04',
     commanders: deck.commanders.map(([name]) => name),
     pictures: picturesOf(made),
+    color_identity: made.commanders.flatMap((card) => card.color_identity),
     card_count: deck.size ?? 100,
     format: deck.commanders.length > 0 ? 'commander' : 'freeform',
     state,

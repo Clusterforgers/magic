@@ -102,18 +102,19 @@ export function entryOfDeck(deck: DeckListItem): DeckEntry {
   }
 }
 
-/** A precon as a row; its list item names the commanders but carries neither their pictures nor their colours. */
+/** A precon as a row; the commanders' pictures and identity come with the list item. */
 export function entryOfPrecon(precon: PreconListItem, favourite = false): DeckEntry {
+  const commanded = precon.commanders.length > 0
   return {
     id: `precon:${precon.code}`,
     kind: 'precon',
     name: precon.name,
     format: precon.format,
     cards: precon.card_count,
-    commanders: [],
+    commanders: commanded ? precon.pictures.map(pictureOf) : [],
     commanderNames: precon.commanders,
     pictures: precon.pictures.map(pictureOf),
-    identity: null,
+    identity: commanded ? identityOf([precon.color_identity]) : null,
     counts: precon.summary.counts,
     byHand: byHandCopies(precon.summary.counts),
     favourite,

@@ -12,21 +12,31 @@ import { CHIP } from './PodParts'
 
 const STAGE_MARK = { Hidden: '?', Revealed: 'out', Brought: 'hand' } as const
 
+// Oracle ids found so far by lower-cased name, so hovering the chip again asks nothing.
+const FOUND = new Map<string, string>()
+
 /** The oracle id of the card called `name`, found once through the card search; null while unknown. */
 function useOracleId(name: string): string | null {
   const api = useContext(CardsApiContext)
+  const key = name.toLowerCase()
   const [found, setFound] = useState<{ name: string; id: string } | null>(null)
   useEffect(() => {
+    if (FOUND.has(key)) return
     const controller = new AbortController()
     api.search({ text: name, perPage: 5 }, controller.signal).then(
       (page) => {
         const hit = page.cards.find((card) => card.name.toLowerCase() === name.toLowerCase())
-        if (hit !== undefined) setFound({ name, id: hit.oracle_id })
+        if (hit !== undefined) {
+          FOUND.set(key, hit.oracle_id)
+          setFound({ name, id: hit.oracle_id })
+        }
       },
       () => undefined,
     )
     return () => controller.abort()
-  }, [api, name])
+  }, [api, name, key])
+  const cached = FOUND.get(key)
+  if (cached !== undefined) return cached
   return found !== null && found.name === name ? found.id : null
 }
 

@@ -26,6 +26,7 @@ const precon = (over: Partial<PreconListItem> = {}): PreconListItem => ({
   release_date: null,
   commanders: ['The Ur-Dragon'],
   pictures: [],
+  color_identity: [],
   card_count: 100,
   format: 'commander',
   state: 'verified',
@@ -56,9 +57,15 @@ describe('entries', () => {
     expect(entryOfDeck(deckIn('verified', { format: 'modern' })).identity).toBeNull()
   })
 
-  it('reads a precon by its code, with set first in the facts and no pictures or colours', () => {
-    const entry = entryOfPrecon(precon())
-    expect(entry).toMatchObject({ id: 'precon:c18-x', kind: 'precon', identity: null, commanders: [] })
+  it('reads a precon by its code, with set first in the facts; its commanders and identity come with the list item', () => {
+    const dragon = { oracle_id: 'o1', name: 'The Ur-Dragon' }
+    const entry = entryOfPrecon(precon({ pictures: [dragon], color_identity: ['W', 'U', 'G'] }))
+    expect(entry).toMatchObject({
+      id: 'precon:c18-x',
+      kind: 'precon',
+      identity: ['W', 'U', 'G'],
+      commanders: [{ oracleId: 'o1', name: 'The Ur-Dragon' }],
+    })
     expect(entry.commanderNames).toEqual(['The Ur-Dragon'])
     expect(entryFacts(entry)).toBe('C18 · Commander · 100 cards')
   })
@@ -262,5 +269,15 @@ describe('sorting', () => {
     expect(entryOfPrecon(precon(), true).favourite).toBe(true)
     expect(entryOfPrecon(precon()).favourite).toBe(false)
     expect(entryOfDeck(deckIn('verified')).favourite).toBe(false)
+  })
+})
+
+describe('a precon without a commander', () => {
+  it('has no commanders and no identity, though its first card is its picture', () => {
+    const entry = entryOfPrecon(
+      precon({ commanders: [], format: 'freeform', pictures: [{ oracle_id: 'o2', name: 'Forest' }] }),
+    )
+    expect(entry).toMatchObject({ identity: null, commanders: [] })
+    expect(entry.pictures).toHaveLength(1)
   })
 })

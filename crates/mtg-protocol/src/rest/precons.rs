@@ -6,7 +6,7 @@ use mtg_cards::support::{Reason, Support};
 use serde::{Deserialize, Serialize};
 use ts_rs::TS;
 
-use super::cards::CardHit;
+use super::cards::{CardColor, CardHit};
 use super::decks::DeckPicture;
 
 /// The prefix that names a precon where a request names a deck: `precon:<code>` in the `deck` of a
@@ -33,6 +33,8 @@ pub struct PreconListItem {
     /// The cards whose pictures stand for the deck in a list: its commanders (at most `MAX_DECK_PICTURES`), else
     /// its first card; empty where the deck's cards are not in the card database.
     pub pictures: Vec<DeckPicture>,
+    /// The commanders' colour identity together in WUBRG order; empty for a deck without commanders.
+    pub color_identity: Vec<CardColor>,
     /// Copies in the commander and main boards: the cards a game plays.
     pub card_count: u32,
     /// The format the deck check judged it in: `commander` for a deck with a commander, else

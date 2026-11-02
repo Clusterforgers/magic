@@ -83,7 +83,6 @@ The table and its prompts are live; the items below polish them.
 - [ ] (k1g) The layout gate and the fit spec also sweep 360, 768, 1400 and 1600x1000 (only the six design sizes today)
 - [ ] (k1h) A tall prompt sheet on a phone (`commander-return` at 360x740, a 182 px overhang) keeps the opponents' tile strip and board in view: the sheet's height is held to what leaves them room
 - [ ] (k2a) `/dev/builder?deck=...` shows the commander slot (the fixture check knows commander pairs) and screenshots at 1400 and 390 settle the slot's height and the identity switch
-- [ ] (k2b) The lobby's deck chooser and the precon rows show each Commander deck's commanders as a picture and a name, as the deck list does
 - [ ] (k2c) Playwright: build a Commander deck with a Partner pair, see a refused commander with its reason and the identity filter
 - [ ] (ts3) `groupPermanents` keeps apart permanents that differ in copy (and of what), shown face, face down, merge, prepared, level and the player an Aura enchants, so a copy never hides inside a stack of its original's tokens
 - [ ] (ts4) A phased-out permanent is drawn ghosted with a "Phased out" mark: `PermanentView` needs a `phased_out` field
@@ -110,7 +109,6 @@ The table and its prompts are live; the items below polish them.
 - [ ] (dk1c5c) Rooms: lock a door (Marina Vendrell, Keys to the House), a token copy of a half (Blu) and the copiable door state (CR 707.2)
 - [ ] (dk1c5d) Rooms on the web: the log line names the door unlocked ("Alice unlocks Grand Entryway"), and the preview of a Room marks a door the viewer can unlock now (`PriorityOptions.unlockable`, `CardPreview`)
 - [ ] (dk1d2a) Orzhov Charm: the reader of "Return target creature you control and all Auras you control attached to it to their owner's hand." (the Auras then the creature) and "Destroy target creature and you lose life equal to its toughness.", so the compiler makes the card without its rules file
-- [ ] (lb1a) The precon list item carries the commanders' cards (picture, colour identity), so a precon row in the lobby chooser shows its commanders and the chooser filters precons by colour identity
 - [ ] (pn1a) Many-seat tests of the actor for response clocks, timer banks and hidden information per viewer at 13 to 64 seats (the actor tests cover 2 to 4)
 - [ ] (pn1b) `fit.spec.ts` and `/dev/table` screenshots at 16, 24 and 40 seats in both themes, and the e2e create flow typing a count above 12
 - [ ] (pn1c) The seat field builds a row per seat as it is typed: guard a count that would freeze the page (the server's ceiling is the 256 KiB create body, about 2,500 seats)

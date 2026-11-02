@@ -16,6 +16,7 @@ use mtg_cards::deck::{
 };
 use mtg_cards::load::Library;
 use mtg_cards::{Caps, CardDefinition};
+use mtg_core::color::ColorSet;
 use mtg_core::house::HouseRules;
 use mtg_db::{
     DbError, DeckBoard, IndexVersion, PreconDeckDetail, PreconDeckId, PreconVersion, RulesVersion,
@@ -24,6 +25,7 @@ use mtg_protocol::rest::{DeckPicture, MAX_DECK_PICTURES, PreconListItem};
 use thiserror::Error;
 use tokio::sync::Mutex;
 
+use crate::card_api::card_colors;
 use crate::cards::{CardSource, CatalogError, Rules, card_facts, identified, printed_card};
 use crate::deck_cards::Line;
 use crate::deck_choice::{commander_ids, format_issues, library_ids};
@@ -121,6 +123,13 @@ impl Judged {
             })
             .collect();
         let pictures = pictures_of(deck);
+        let identity: ColorSet = deck
+            .entries
+            .iter()
+            .filter(|entry| entry.board == DeckBoard::Commander)
+            .filter_map(|entry| entry.card.as_ref())
+            .flat_map(|card| card.color_identity.iter())
+            .collect();
         let card_count = deck
             .entries
             .iter()
@@ -136,6 +145,7 @@ impl Judged {
             release_date: summary.release_date.map(|date| date.to_string()),
             commanders,
             pictures,
+            color_identity: card_colors(identity),
             card_count,
             format: self.format.to_owned(),
             state,

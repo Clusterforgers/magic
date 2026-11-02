@@ -5,6 +5,7 @@
 use crate::common::generated;
 use mtg_cards::deck::{Counts, DeckState, DeckZone, Issue, IssueCode, Summary, ZoneCounts};
 use mtg_cards::support::{Reason, Support};
+use mtg_protocol::rest::CardColor;
 use mtg_protocol::rest::{
     DeckPicture, PRECON_DECK_PREFIX, PreconBoard, PreconCardView, PreconErrorCode, PreconList,
     PreconListItem, PreconView,
@@ -47,6 +48,7 @@ fn item(code: &str, state: DeckState) -> PreconListItem {
             oracle_id: "4457ed35-7c10-48c8-9776-456485fdf070".to_owned(),
             name: "Estrid, the Masked".to_owned(),
         }],
+        color_identity: vec![CardColor::W],
         card_count: 100,
         format: "commander".to_owned(),
         state,
@@ -131,6 +133,7 @@ fn the_json_keys_are_the_documented_ones() {
             "format",
             "name",
             "pictures",
+            "color_identity",
             "playable",
             "release_date",
             "set",
@@ -201,6 +204,7 @@ fn the_bindings_carry_the_precon_types() {
         "set: string",
         "commanders: Array<string>",
         "pictures: Array<DeckPicture>",
+        "color_identity: Array<CardColor>",
         "card_count: number",
         "state: DeckState",
         "playable: boolean",
