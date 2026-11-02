@@ -86,7 +86,11 @@ function Thumbs({ zone, ids }: { zone: ListedZone; ids: readonly ObjectId[] }) {
   const shown = zone === 'command' ? ids.slice(0, THUMB_CARDS) : ids.slice(-1)
   if (shown.length === 0) return null
   return (
-    <span aria-hidden="true" data-slot="zone-thumbs" className="pointer-events-none flex shrink-0 items-center">
+    <span
+      aria-hidden="true"
+      data-slot="zone-thumbs"
+      className="pointer-events-none flex shrink-0 items-center"
+    >
       {shown.map((id, at) => (
         <span
           key={id}
@@ -106,7 +110,14 @@ function Thumbs({ zone, ids }: { zone: ListedZone; ids: readonly ObjectId[] }) {
  * exile with a card the viewer can play or use now (flashback, an ability) wears the ring of a legal card and a play
  * mark, and says how many in its name; the command zone does not, its commanders are cast from the hand dock.
  */
-export function ZoneButton({ zone, owner, ids, density = 'panel', className, thumbs = false }: ZoneButtonProps) {
+export function ZoneButton({
+  zone,
+  owner,
+  ids,
+  density = 'panel',
+  className,
+  thumbs = false,
+}: ZoneButtonProps) {
   const [open, setOpen] = useState(false)
   const Icon = ZONE_ICON[zone]
   const legal = useLegalCount(zone === 'command' ? NONE : ids)
