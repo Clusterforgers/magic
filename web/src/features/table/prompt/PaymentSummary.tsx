@@ -43,6 +43,30 @@ export interface LifeSummary {
   onToggle(index: number): void
 }
 
+/** One restricted mana of the pool: what it is, what it may pay for and whether it can join the payment now. */
+export interface RestrictedEntry {
+  /** Its place in `ManaPool.restricted`. */
+  index: number
+  mana: ManaType
+  /** What it may be spent on, in words. */
+  words: string
+  usable: boolean
+}
+
+/** What keeps two chips of a payment apart. */
+function chipKey(spend: Spend): string {
+  if (spend.kind === 'pool') return `pool-${spend.mana}`
+  if (spend.kind === 'restricted') return `restricted-${spend.index}`
+  return `tap-${spend.option.source.object}`
+}
+
+/** What a chip is named after. */
+function chipName(spend: Spend, nameOf: (id: ObjectId) => string): string {
+  if (spend.kind === 'pool') return 'Pool'
+  if (spend.kind === 'restricted') return 'Restricted'
+  return nameOf(spend.option.source.object)
+}
+
 /** Props of `PaymentSummary`. */
 export interface PaymentSummaryProps {
   cost: ManaCost
@@ -57,6 +81,9 @@ export interface PaymentSummaryProps {
   /** True when one more of this floating mana would go toward the cost. */
   canSpend(mana: ManaType): boolean
   onSpendPool(mana: ManaType): void
+  /** The restricted mana of the pool, each button spending one; present when the pool holds any. */
+  restricted?: readonly RestrictedEntry[]
+  onSpendRestricted?(index: number): void
   /** Takes the piece at this place in the payment back; Undo takes the last. */
   onRemove(index: number): void
   onClear(): void
@@ -80,6 +107,8 @@ export function PaymentSummary({
   nameOf,
   canSpend,
   onSpendPool,
+  restricted = [],
+  onSpendRestricted,
   onRemove,
   onClear,
   life,
@@ -142,12 +171,34 @@ export function PaymentSummary({
           })
         )}
       </Row>
+      {restricted.length === 0 ? null : (
+        <Row label="Restricted mana">
+          {restricted.map((entry) => (
+            <Button
+              key={entry.index}
+              type="button"
+              variant="outline"
+              size="sm"
+              data-slot="pay-restricted"
+              aria-disabled={!entry.usable}
+              aria-label={`Spend restricted ${manaName(entry.mana)} from your pool, ${entry.words}`}
+              className="h-9 gap-1.5 px-2 aria-disabled:pointer-events-none aria-disabled:opacity-50"
+              onClick={() => {
+                if (entry.usable) onSpendRestricted?.(entry.index)
+              }}
+            >
+              <ManaDot type={entry.mana} />
+              <span aria-hidden="true">{entry.words}</span>
+            </Button>
+          ))}
+        </Row>
+      )}
       {life === undefined ? null : <LifeRow life={life} cost={cost} />}
       {sources}
       <Row label="Paying with">
         {empty ? <Quiet>nothing yet</Quiet> : null}
         {spends.map((spend, index) => {
-          const base = spend.kind === 'pool' ? `pool-${spend.mana}` : `tap-${spend.option.source.object}`
+          const base = chipKey(spend)
           const nth = seen.get(base) ?? 0
           seen.set(base, nth + 1)
           return (
@@ -167,9 +218,7 @@ export function PaymentSummary({
               {madeOf(spend).map((mana, at) => (
                 <ManaDot key={`${mana}-${at}`} type={mana} />
               ))}
-              <span aria-hidden="true">
-                {spend.kind === 'pool' ? 'Pool' : nameOf(spend.option.source.object)}
-              </span>
+              <span aria-hidden="true">{chipName(spend, nameOf)}</span>
               <span aria-hidden="true" className="text-muted-foreground">
                 ×
               </span>

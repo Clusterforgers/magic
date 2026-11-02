@@ -5,14 +5,34 @@
  * exactly the life paid and exactly the mana chosen: every unit of a kind met, the rest generic, nothing left over.
  * A plain cost has one resolution, which is the cost itself.
  */
-import type { ManaCost, ManaOption, ManaPool, ManaSymbol, ManaType, Payment } from '@/protocol/generated'
+import type {
+  ManaCost,
+  ManaOption,
+  ManaPool,
+  ManaSymbol,
+  ManaType,
+  Payment,
+  Restricted,
+  Spend as PaySpend,
+} from '@/protocol/generated'
 import { canPayLife, costValue, isPlain, LIFE_PER_SYMBOL, symbolText, waysOf } from '../manaSymbols'
+import { spendAllows } from './spendRules'
 
 /** The kinds of mana in the order of `ManaPool.counts`. */
 export const MANA_TYPES: readonly ManaType[] = ['White', 'Blue', 'Black', 'Red', 'Green', 'Colorless']
 
-/** One piece of the running payment: floating mana, or a permanent's mana ability. */
-export type Spend = { kind: 'pool'; mana: ManaType } | { kind: 'tap'; option: ManaOption }
+/** One piece of the running payment: floating mana, restricted mana of the pool (`index` in `ManaPool.restricted`), or a permanent's mana ability. */
+export type Spend =
+  | { kind: 'pool'; mana: ManaType }
+  | { kind: 'restricted'; index: number; restricted: Restricted }
+  | { kind: 'tap'; option: ManaOption }
+
+/** What a piece of the payment uses up, so it joins the payment once: a permanent, or one restricted mana of the pool. */
+export function usedBy(spend: Spend): string | undefined {
+  if (spend.kind === 'tap') return `o:${spend.option.source.object}`
+  if (spend.kind === 'restricted') return `r:${spend.index}`
+  return undefined
+}
 
 /** The symbols of a cost (by place in it) that the payment pays with life instead of mana. */
 export type LifeSymbols = readonly number[]
@@ -29,7 +49,8 @@ export function madeBy(option: ManaOption): ManaType[] {
 
 /** The mana a piece of the payment makes. */
 export function madeOf(spend: Spend): ManaType[] {
-  return spend.kind === 'pool' ? [spend.mana] : madeBy(spend.option)
+  if (spend.kind === 'pool') return [spend.mana]
+  return spend.kind === 'restricted' ? [spend.restricted.mana] : madeBy(spend.option)
 }
 
 /** True when using the source costs mana (a Signet's `{1}`, a filter land's `{W/U}`), paid from mana made before it. */
@@ -155,7 +176,7 @@ export function netMana(spends: readonly Spend[]): Counts[] {
   const costly = spends.flatMap((spend) =>
     spend.kind === 'tap' && costsMana(spend.option) ? [spend.option] : [],
   )
-  const plain = spends.filter((spend) => spend.kind === 'pool' || !costsMana(spend.option))
+  const plain = spends.filter((spend) => spend.kind !== 'tap' || !costsMana(spend.option))
   const seen = new Set<string>()
   const found = new Map<string, Counts>()
   const walk = (now: Counts, rest: readonly ManaOption[]): void => {
@@ -282,15 +303,19 @@ function exact(cost: ManaCost, spends: readonly Spend[], life: LifeSymbols): boo
 /** The most payments `completable` looks at before it gives the benefit of the doubt. */
 const SEARCH_BUDGET = 4_000
 
-/** True when the source may be used by hand: its mana has no restriction, which the prompt does not read yet. */
-export function usableByHand(option: ManaOption): boolean {
-  return (option.only?.length ?? 0) === 0
+/** True when the source may be used by hand: its mana has no restriction, or the restriction allows `spend`. */
+export function usableByHand(option: ManaOption, spend?: PaySpend): boolean {
+  return spendAllows(spend, option.only)
 }
 
 /** What is left to finish a payment with: every source of the decision and the most life it may take. */
 export interface Reach {
   sources: readonly ManaOption[]
   maxLife: number
+  /** What the payment is for, which decides what restricted mana may pay it. */
+  spend?: PaySpend
+  /** The restricted mana of the pool that may pay it, each with its place in `ManaPool.restricted`. */
+  restricted?: readonly Spend[]
 }
 
 /** `life` and every larger set of Phyrexian symbols paid with life within `maxLife`, the smallest first. */
@@ -318,8 +343,9 @@ export function completable(
 ): boolean {
   // The sources that cost mana come last, so the ones that fund them are tried before them.
   const options = reach.sources
-    .filter(usableByHand)
+    .filter((option) => usableByHand(option, reach.spend))
     .sort((a, b) => Number(costsMana(a)) - Number(costsMana(b)))
+  const extras = reach.restricted ?? []
   let budget = SEARCH_BUDGET
   const walk = (paid: LifeSymbols, now: readonly Spend[], from: number, mana: number): boolean => {
     budget -= 1
@@ -327,6 +353,7 @@ export function completable(
     if (covers(cost, now, paid)) return true
     const used = new Set(now.flatMap((spend) => (spend.kind === 'tap' ? [spend.option.source.object] : [])))
     const sinks = options.some((option) => costsMana(option) && !used.has(option.source.object))
+    const taken = new Set(now.flatMap((spend) => usedBy(spend) ?? []))
     if (!sinks && candidates(cost, now, paid).length === 0) return false
     for (let kind = mana; kind < MANA_TYPES.length; kind += 1) {
       const type = MANA_TYPES[kind]
@@ -338,6 +365,11 @@ export function completable(
       const option = options[at]
       if (option === undefined || used.has(option.source.object) || !canFund(now, option)) continue
       if (walk(paid, [...now, { kind: 'tap', option }], at + 1, MANA_TYPES.length)) return true
+    }
+    for (const extra of extras) {
+      const key = usedBy(extra)
+      if (key === undefined || taken.has(key)) continue
+      if (walk(paid, [...now, extra], 0, MANA_TYPES.length)) return true
     }
     return false
   }
@@ -364,8 +396,10 @@ export function lifeOf(life: LifeSymbols): number {
 
 /** The payment as the wire takes it: the floating mana to spend, the abilities to tap and the life to pay. */
 export function toPayment(spends: readonly Spend[], life: LifeSymbols = []): Payment {
+  const restricted = spends.flatMap((spend) => (spend.kind === 'restricted' ? [spend.restricted] : []))
   return {
     pool: spends.flatMap((spend) => (spend.kind === 'pool' ? [spend.mana] : [])),
+    ...(restricted.length > 0 ? { restricted } : {}),
     taps: spends.flatMap((spend) => (spend.kind === 'tap' ? [spend.option.source] : [])),
     life: lifeOf(life),
   }
@@ -396,10 +430,11 @@ export function allowed(
   reach?: Reach,
 ): boolean {
   if (spend.kind === 'pool' && poolLeft(pool, spends, spend.mana) <= 0) return false
+  const key = usedBy(spend)
+  if (key !== undefined && spends.some((other) => usedBy(other) === key)) return false
+  if (spend.kind === 'restricted' && !spendAllows(reach?.spend, spend.restricted.only)) return false
   if (spend.kind === 'tap') {
-    const object = spend.option.source.object
-    if (!usableByHand(spend.option)) return false
-    if (spends.some((other) => other.kind === 'tap' && other.option.source.object === object)) return false
+    if (!usableByHand(spend.option, reach?.spend)) return false
     if (!canFund(spends, spend.option)) return false
   }
   const next = [...spends, spend]

@@ -24,9 +24,9 @@ export function spendWords(spend: Spend, nameOf: (id: ObjectId) => string): stri
   const [first] = made
   const alike = first !== undefined && made.every((mana) => mana === first)
   const what = alike && made.length > 1 ? `${made.length} ${manaName(first)}` : andList(made.map(manaName))
-  return spend.kind === 'pool'
-    ? `${what} from your pool`
-    : `${what} from ${nameOf(spend.option.source.object)}`
+  if (spend.kind === 'pool') return `${what} from your pool`
+  if (spend.kind === 'restricted') return `restricted ${what} from your pool`
+  return `${what} from ${nameOf(spend.option.source.object)}`
 }
 
 /** "a", "a and b", "a, b and c". */

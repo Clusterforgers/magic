@@ -23,6 +23,8 @@ import {
 } from '../payment'
 import type { LifeSymbols, Reach, Spend } from '../payment'
 import { PaymentSummary } from '../PaymentSummary'
+import type { RestrictedEntry } from '../PaymentSummary'
+import { spendAllows, usesWords } from '../spendRules'
 import { manaByPermanent } from '../priorityText'
 import { usePrompt } from '../PromptContext'
 import { PromptLayout } from '../PromptLayout'
@@ -56,9 +58,16 @@ export const PayManaPrompt: PromptComponent<'PayMana'> = ({ options }) => {
   const { spell, cost, pool } = options
   const own = useOwnCardIds()
   const byPermanent = useMemo(() => manaByPermanent(options.sources), [options.sources])
+  const inPool = useMemo<Spend[]>(
+    () =>
+      (pool.restricted ?? []).flatMap((restricted, index) =>
+        spendAllows(options.spend, restricted.only) ? [{ kind: 'restricted', index, restricted }] : [],
+      ),
+    [pool.restricted, options.spend],
+  )
   const reach = useMemo<Reach>(
-    () => ({ sources: options.sources, maxLife: options.max_life }),
-    [options.sources, options.max_life],
+    () => ({ sources: options.sources, maxLife: options.max_life, spend: options.spend, restricted: inPool }),
+    [options.sources, options.max_life, options.spend, inPool],
   )
   const named = useMemo(() => [spell, ...byPermanent.keys()], [spell, byPermanent])
   const names = usePlay(useShallow((state) => named.map((id) => state.objectsById[id]?.name)))
@@ -89,13 +98,25 @@ export const PayManaPrompt: PromptComponent<'PayMana'> = ({ options }) => {
     [own, legal, taken, chooser],
   )
 
+  const heldRestricted: RestrictedEntry[] = (pool.restricted ?? []).map((restricted, index) => ({
+    index,
+    mana: restricted.mana,
+    words: `only for ${usesWords(restricted.only)}`,
+    usable: inPool.some(
+      (spend) =>
+        spend.kind === 'restricted' &&
+        spend.index === index &&
+        allowed(cost, pool, spends, spend, life, reach),
+    ),
+  }))
   const canSpend = (mana: ManaType): boolean =>
     allowed(cost, pool, spends, { kind: 'pool', mana }, life, reach)
   const owedNow = owed(cost, spends, life)
   const covered = covers(cost, spends, life)
   const lifeSwitches = lifeChoices(cost, spends, life, options.max_life)
   const lifeCanPay = lifeSwitches.some((choice) => !choice.paid && choice.available)
-  const canAdd = legal.length > 0 || MANA_TYPES.some(canSpend) || lifeCanPay
+  const canAdd =
+    legal.length > 0 || MANA_TYPES.some(canSpend) || heldRestricted.some((one) => one.usable) || lifeCanPay
   const paidLife = lifeOf(life)
   const wordsOf = (index: number): string => {
     const symbol = cost[index]
@@ -202,6 +223,11 @@ export const PayManaPrompt: PromptComponent<'PayMana'> = ({ options }) => {
         nameOf={nameOf}
         canSpend={canSpend}
         onSpendPool={(mana) => add({ kind: 'pool', mana })}
+        restricted={heldRestricted}
+        onSpendRestricted={(index) => {
+          const spend = inPool.find((one) => one.kind === 'restricted' && one.index === index)
+          if (spend !== undefined) add(spend)
+        }}
         onRemove={removeAt}
         onClear={clear}
         sources={
