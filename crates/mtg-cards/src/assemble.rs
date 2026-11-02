@@ -113,6 +113,7 @@ pub(crate) fn assemble_record(
         }
         definition.manual = manual_clauses(&record, attach, index, printed);
         definition.read = record.support == Support::Read;
+        definition.partial = attach && !definition.manual.is_empty();
         definition
     };
     let mut definition = match (played_layout(printed, caps), printed.faces.len()) {
@@ -208,6 +209,7 @@ fn whole_card(
             whole.color_indicator = (union != from_cost).then_some(union);
             whole.manual = faces.iter().flat_map(|face| face.manual.clone()).collect();
             whole.read = faces.iter().any(|face| face.read);
+            whole.partial = faces.iter().any(|face| face.partial);
             // The card as a whole is what a fused split spell is (CR 702.102c), so it carries that spell's rules.
             whole.rules.extend(fused_spell(&faces).map(Arc::new));
             whole
@@ -1067,6 +1069,7 @@ fn printed_side(face: &PrintedFace) -> CardDefinition {
         layout: Layout::Normal,
         manual: Vec::new(),
         read: false,
+        partial: false,
         faces: Vec::new(),
         identity: None,
         pairing: Vec::new(),
@@ -1974,6 +1977,11 @@ mod tests {
         );
         let ran = usize::from(status == ImplStatus::Partial);
         assert_eq!(assembled.definition.abilities.len(), ran);
+        assert_eq!(
+            assembled.definition.partial,
+            status == ImplStatus::Partial,
+            "only a card the engine runs in part is partial"
+        );
     }
 
     #[rstest]

@@ -68,7 +68,6 @@ Items that touch the running game come first; the play-session findings (pf) lea
 The table and its prompts are live; the items below polish them.
 
 - [ ] (i2a) Arena flow P10: smart stops, per-ability yields, an order-by-timestamp preference and damage auto-assign (`docs/arena-flow.md`)
-- [ ] (a2c) The support mark on the table tells Partial from Manual: `ObjectView` needs the card's support state (a view field), since manual clauses alone do not say which
 - [ ] (a2g) A token lookup that finds several equal records prefers the one with the most printings (`token_pictures` returns the printing count) instead of the smallest oracle id
 - [ ] (a2e) The precon details dialog shows each card's picture through `CardPicture` and the hover picture, as the builder does
 - [ ] (a2f) The real database holds every precon printing (`fetch scryfall --printings`), so the table draws each card in its precon art instead of the card's default picture

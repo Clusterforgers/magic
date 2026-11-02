@@ -1,4 +1,4 @@
-//! Goal: an object tells every seat that sees its card whether a clause left to the table is owed when it resolves, exactly as `ManualClause::owed_at_resolution` decides for each clause shape; the flag is left out while false, an ability on the stack tells it as its source does, and a card no seat may look at carries none.
+//! Goal: an object tells every seat that sees its card whether a clause left to the table is owed when it resolves, exactly as `ManualClause::owed_at_resolution` decides for each clause shape, and whether the card is partial; the flag is left out while false, an ability on the stack tells it as its source does, and a card no seat may look at carries none.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use std::sync::Arc;
@@ -221,5 +221,37 @@ fn an_ability_on_the_stack_is_flagged_as_its_source_is(
         );
         let source = object(&driver, viewer, source).unwrap();
         assert_eq!(source.manual_owed, owed, "{viewer:?} reads the permanent");
+    }
+}
+
+#[rstest]
+#[case::partial(true)]
+#[case::manual(false)]
+fn every_seat_that_sees_the_card_reads_whether_it_is_partial(
+    #[values(2, 3, 4)] seats: usize,
+    #[case] partial: bool,
+) {
+    let mut def = Arc::unwrap_or_clone(by_hand(free_creature("Marked", 1, 1), OWED));
+    def.partial = partial;
+    let mut driver = table(seats, vec![Arc::new(def)]);
+    let id = in_hand(&driver, "Marked");
+    assert_eq!(object(&driver, seat(0), id).unwrap().partial, partial);
+    for viewer in viewers(seats)
+        .into_iter()
+        .filter(|viewer| *viewer != seat(0))
+    {
+        let text = serde_json::to_string(&StateView::for_player(driver.state(), viewer)).unwrap();
+        assert!(!text.contains("\"partial\""), "{viewer:?} is told nothing");
+    }
+    driver.cast("Marked").unwrap();
+    for viewer in viewers(seats) {
+        let shown = object(&driver, viewer, id).unwrap();
+        assert_eq!(shown.partial, partial, "{viewer:?}");
+        let json = serde_json::to_value(&shown).unwrap();
+        assert_eq!(
+            json.get("partial").is_some(),
+            partial,
+            "left out while false"
+        );
     }
 }

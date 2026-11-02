@@ -196,6 +196,8 @@ fn no_symbols(cost: &ManaCost) -> bool {
 
 /// A card the viewer may identify, with its current (layer-derived) characteristics.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
+// Each flag is one independent wire field, left out of the JSON while false.
+#[allow(clippy::struct_excessive_bools)]
 pub struct ObjectView {
     /// The object's id.
     pub id: ObjectId,
@@ -324,6 +326,11 @@ pub struct ObjectView {
     #[serde(default, skip_serializing_if = "is_false")]
     #[ts(as = "Option<bool>", optional)]
     pub read: bool,
+    /// Whether the engine runs part of its card and leaves the clauses in `manual` to the table (`Partial`), as against a
+    /// card played wholly by hand; shown wherever `manual` is, left out while false.
+    #[serde(default, skip_serializing_if = "is_false")]
+    #[ts(as = "Option<bool>", optional)]
+    pub partial: bool,
     /// The note a seat put on the object by hand, which every seat that sees the object reads; left out while there is
     /// none.
     #[serde(default, skip_serializing_if = "Option::is_none")]

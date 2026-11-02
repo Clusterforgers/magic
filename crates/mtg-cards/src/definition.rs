@@ -184,6 +184,10 @@ pub struct CardDefinition {
     /// player (`docs/cards-dsl.md`, Read tier). The table shows it; a resolution that fails is then left to the table.
     #[serde(default, skip_serializing_if = "is_false")]
     pub read: bool,
+    /// Whether the engine runs part of this face's rules and leaves the rest to the table (`Partial`), as against a card
+    /// played wholly by hand (`Manual`, whose `manual` is its whole text).
+    #[serde(default, skip_serializing_if = "is_false")]
+    pub partial: bool,
     /// Every face of a card with more than one, in Scryfall's order, each with its own rules; empty for a card with one face.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub faces: Vec<CardDefinition>,
@@ -218,6 +222,7 @@ impl CardDefinition {
             layout: Layout::Normal,
             manual: Vec::new(),
             read: false,
+            partial: false,
             faces: Vec::new(),
             identity: None,
             pairing: Vec::new(),
