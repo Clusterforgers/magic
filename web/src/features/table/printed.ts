@@ -78,6 +78,15 @@ export function useDoorFaces(object: ObjectView | undefined): readonly string[] 
   return entry === 'loading' || entry === 'unavailable' ? undefined : entry.map((face) => face.name)
 }
 
+/** The names of the faces of a Room as far as they are known now, without asking for them. */
+export function knownDoorFaces(object: ObjectView): readonly string[] | undefined {
+  const id = object.identity?.oracle_id
+  const entry = id === undefined ? undefined : known.get(id)
+  return entry === undefined || entry === 'loading' || entry === 'unavailable'
+    ? undefined
+    : entry.map((face) => face.name)
+}
+
 /** The name of the front face of a card a permanent shows as its back face; undefined for any other, and while unknown. */
 export function useFrontFaceName(object: ObjectView | undefined): string | undefined {
   useSyncExternalStore(subscribe, snapshot, snapshot)

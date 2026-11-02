@@ -579,6 +579,17 @@ describe('describeEvent', () => {
   })
 })
 
+describe('a door unlocked', () => {
+  const event: Event = { DoorUnlocked: { object: 3, door: 1, player: 1 } }
+  const door = (name: string | undefined): EventNames => ({ ...names, door: () => name })
+  it.each<[string, EventNames, string]>([
+    ['names the door when known', door('Elegant Rotunda'), 'Bo unlocks Elegant Rotunda'],
+    ['falls back to the Room', door(undefined), 'Bo unlocks a door of Forest'],
+  ])('%s', (_case, given, text) => {
+    expect(describeEvent({ Public: event }, given).text).toBe(text)
+  })
+})
+
 describe('minor lines', () => {
   const QUIET: Event[] = [
     { PriorityGranted: { player: 0 } },

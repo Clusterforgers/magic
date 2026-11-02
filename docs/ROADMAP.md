@@ -91,7 +91,6 @@ The table and its prompts are live; the items below polish them.
 - [ ] (dk1b2b) Battles in the protocol and web: an attack target that names a battle (`AttackTarget::Planeswalker` does today), battle labels, defense counters and the protector on the Siege, and a hidden-information test of the Invasion search
 - [ ] (dk1c4a) The soulbond cards the compiler still leaves out: Donna Noble (a damage trigger), Joint Assault ("if it's paired"), Doom Weaver, Imperious Mindbreaker, Breathkeeper Seraph, Mirage Phalanx (quoted grants with their own amount), Flowering Lumberknot, Tarelily, Azra Matchthrower
 - [ ] (dk1c5c) Rooms: lock a door (Marina Vendrell, Keys to the House), a token copy of a half (Blu) and the copiable door state (CR 707.2)
-- [ ] (dk1c5d) Rooms on the web: the log line names the door unlocked ("Alice unlocks Grand Entryway"), and the preview of a Room marks a door the viewer can unlock now (`PriorityOptions.unlockable`, `CardPreview`)
 - [ ] (dk1d2a) Orzhov Charm: the reader of "Return target creature you control and all Auras you control attached to it to their owner's hand." (the Auras then the creature) and "Destroy target creature and you lose life equal to its toughness.", so the compiler makes the card without its rules file
 - [ ] (pn1a) Many-seat tests of the actor for response clocks, timer banks and hidden information per viewer at 13 to 64 seats (the actor tests cover 2 to 4)
 - [ ] (pn1b) `fit.spec.ts` and `/dev/table` screenshots at 16, 24 and 40 seats in both themes, and the e2e create flow typing a count above 12

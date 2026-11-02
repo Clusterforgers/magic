@@ -144,6 +144,7 @@ function PreviewBody({ target }: { target: PreviewTarget }) {
           size={beside ? 'medium' : 'large'}
           width={fit.picture}
           revealed={place !== undefined}
+          usable={note?.usable}
         />
       </div>
       <div className={cn('grid content-start gap-1 text-sm', beside ? 'min-w-0 flex-1' : 'mt-3')}>
