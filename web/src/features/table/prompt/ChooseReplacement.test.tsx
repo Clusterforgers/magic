@@ -92,6 +92,14 @@ describe('the words', () => {
     ])
   })
 
+  it('shows the words of each effect alone, not the whole card, and reads them over the card database', () => {
+    const own = ['If a token would be created, twice that many are created instead.', 'Prevent that damage.']
+    const { rows } = mount(effects(2).map((effect, index) => ({ ...effect, text: own[index] ?? '' })))
+    expect(rows().map((row) => row.querySelector('[data-slot="replacement-wording"]')?.textContent)).toEqual(
+      own,
+    )
+  })
+
   it('writes the rules text of the source card when the card database has it', async () => {
     const text = 'If a token would be created, twice that many are created instead.'
     setOracleFetcher(() => Promise.resolve({ faces: [{ oracle_text: text }] } as CardDetail))

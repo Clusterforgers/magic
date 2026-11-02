@@ -387,6 +387,7 @@ mod repeat_each;
 mod replacement;
 mod replacement_budget;
 mod replacement_fuzz;
+mod replacement_words;
 mod replicate;
 mod required_costs;
 mod restricted_fuzz;
