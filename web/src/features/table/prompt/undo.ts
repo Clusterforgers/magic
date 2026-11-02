@@ -10,7 +10,10 @@ export function undoWords(zone: Zone | undefined): string {
 
 /** Whether Escape pressed with `target` focused belongs to something else: a field, menu or dialog outside the prompt. */
 export function escapeTaken(target: EventTarget | null): boolean {
-  return isTyping(target) && !(target instanceof Element && target.closest('[data-slot="prompt-actions"]') !== null)
+  return (
+    isTyping(target) &&
+    !(target instanceof Element && target.closest('[data-slot="prompt-actions"]') !== null)
+  )
 }
 
 /**
@@ -26,7 +29,8 @@ export function useUndoKey(onUndo: () => void, enabled = true): void {
   useEffect(() => {
     if (!enabled) return
     const onKeyDown = (event: KeyboardEvent): void => {
-      if (event.key !== 'Escape' || event.repeat || event.defaultPrevented || escapeTaken(event.target)) return
+      if (event.key !== 'Escape' || event.repeat || event.defaultPrevented || escapeTaken(event.target))
+        return
       event.preventDefault()
       latest.current()
     }

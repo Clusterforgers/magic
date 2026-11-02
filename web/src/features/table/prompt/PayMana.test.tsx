@@ -1091,9 +1091,7 @@ describe('what the player is told', () => {
     expect(land(0)).toHaveAttribute('data-highlight', 'dimmed')
     await user.click(land(0))
     expect(chips()).toEqual([])
-    expect(text()).toBe(
-      'You cannot pay 2 blue for Selesnya Evangel with the mana you have. Undo to go back.',
-    )
+    expect(text()).toBe('You cannot pay 2 blue for Selesnya Evangel with the mana you have. Undo to go back.')
   })
 
   it('says what is still owed when floating mana starts a payment the sources finish', async () => {
@@ -1107,9 +1105,7 @@ describe('what the player is told', () => {
       payOptions('{U}{U}', [[0, 'G']], { auto_available: false, pool: poolOf('') }),
     )
     expect(confirm()).toBeDisabled()
-    expect(text()).toBe(
-      'You cannot pay 2 blue for Selesnya Evangel with the mana you have. Undo to go back.',
-    )
+    expect(text()).toBe('You cannot pay 2 blue for Selesnya Evangel with the mana you have. Undo to go back.')
   })
 
   it('names the spell and says a free one costs nothing', () => {

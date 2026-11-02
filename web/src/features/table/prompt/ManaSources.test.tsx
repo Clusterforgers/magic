@@ -92,7 +92,10 @@ describe('the sources of ?prompt=pay-sources', () => {
     await user.click(within(prompt()).getByRole('button', { name: 'Confirm payment' }))
     const [sent] = answer.mock.calls[0] as [Answer]
     const payment =
-      typeof sent === 'object' && 'PayMana' in sent && typeof sent.PayMana === 'object' && 'Manual' in sent.PayMana
+      typeof sent === 'object' &&
+      'PayMana' in sent &&
+      typeof sent.PayMana === 'object' &&
+      'Manual' in sent.PayMana
         ? sent.PayMana.Manual
         : null
     expect(payment?.taps).toHaveLength(3)
