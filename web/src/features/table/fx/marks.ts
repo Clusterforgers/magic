@@ -5,6 +5,7 @@
 import type { ObjectId } from '@/protocol/generated'
 import { MARK_FX } from './model'
 import type { MarkEffect, MarkFx } from './model'
+import type { Moment } from './derive'
 import type { MarkKind, MoveMark } from './moves'
 
 /** The most marks one batch shows; a board wipe stays readable and cheap. */
@@ -53,6 +54,23 @@ export function markEffects(marks: readonly MoveMark[]): MarkEffect[] {
     effects.push({ kind: mark.kind, object: mark.object })
   }
   return effects.slice(0, MAX_MARKS)
+}
+
+const ENDS = new Set<MarkKind>(['resolved', 'countered', 'fizzled'])
+
+/**
+ * `effects` with a ghost on each end mark of an ability that was on the stack before the batch and is gone after it,
+ * since its chip leaves in the same batch; the ghost stands before the chip that followed it.
+ */
+export function withStackGhosts(effects: readonly MarkEffect[], before: Moment, after: Moment): MarkEffect[] {
+  const below = [...(before.view.stack.cards ?? [])].reverse()
+  const now = new Set(after.view.stack.cards ?? [])
+  return effects.map((effect) => {
+    const snapshot = before.objectsById[effect.object]
+    if (!ENDS.has(effect.kind) || snapshot?.kind !== 'Ability' || now.has(effect.object)) return effect
+    const next = below.slice(below.indexOf(effect.object) + 1).find((id) => now.has(id)) ?? null
+    return { ...effect, ghost: { snapshot, before: next } }
+  })
 }
 
 /** What a resolving object does to another: it counters, exiles, bounces or destroys it. */

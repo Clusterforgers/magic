@@ -7,6 +7,8 @@ import { createStore } from 'zustand/vanilla'
 import type { StoreApi } from 'zustand/vanilla'
 import type { Timers } from '@/net/timers'
 import type { AttachChange } from './derive'
+import { measureObject } from './places'
+import type { Box } from './places'
 
 /** How long an arrow stays drawn, in milliseconds (times the dev slow-down); `combat.css` draws it in within this. */
 export const ARROW_MS = 1000
@@ -18,6 +20,8 @@ export const MAX_ARROWS = 4
 export interface AttachArrow {
   readonly token: number
   readonly change: AttachChange
+  /** Where an attachment that had no host lay before the batch was drawn; null when it had one or was not on screen. */
+  readonly lay: Box | null
 }
 
 /** No arrows; one value, so a table with nothing playing keeps the same snapshot. */
@@ -29,6 +33,8 @@ export interface ArrowsOptions {
   /** Whether the layer plays at all now; the arrow plays in `reduced` too. */
   enabled: () => boolean
   slow: number
+  /** What to measure objects in; the document by default. */
+  root?: ParentNode | undefined
 }
 
 /** The arrows of one table. */
@@ -41,7 +47,7 @@ export interface Arrows {
 }
 
 /** An arrow layer with nothing playing. */
-export function createArrows({ timers, enabled, slow }: ArrowsOptions): Arrows {
+export function createArrows({ timers, enabled, slow, root }: ArrowsOptions): Arrows {
   const store = createStore<readonly AttachArrow[]>(() => NO_ARROWS)
   const waiting = new Set<number>()
   let last = 0
@@ -52,7 +58,11 @@ export function createArrows({ timers, enabled, slow }: ArrowsOptions): Arrows {
       const started = changes
         .filter((change) => change.to !== null)
         .slice(0, MAX_ARROWS)
-        .map((change): AttachArrow => ({ token: (last += 1), change }))
+        .map((change): AttachArrow => ({
+          token: (last += 1),
+          change,
+          lay: change.from === null ? (measureObject(root ?? document, change.object)?.box ?? null) : null,
+        }))
       if (started.length === 0) return
       const tokens = new Set(started.map((arrow) => arrow.token))
       store.setState([...store.getState(), ...started], true)

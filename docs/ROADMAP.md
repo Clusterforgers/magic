@@ -96,8 +96,6 @@ The table and its prompts are live; the items below polish them.
 - [ ] (pl3b) The payment sheet takes the mana sources and the made total in its compact form: one scroll line of source chips, made and owed on one row, no extra height at 390 px
 - [ ] (pl3c) The colour switch sits on the source chip and swaps the colour of a chosen source without taking it back; chips mark restricted mana (`only`), life, energy and taken permanents, and the pool marks the mana that outlasts the step (`kept`)
 - [ ] (ui1i) `/dev/table?fx=` screenshots of every moment at the six sizes in both themes settle the look, and `fit.spec.ts` holds the table at rest with three targeting items on the stack
-- [ ] (ui1e2) An ability's end (`resolved`, `countered`, `fizzled`) shows on its stack chip before it leaves, and the arrow of a counter cast in the same batch starts at its spotlight (`fx/marks.ts`, `fx/effectArrows.ts`, `StackChips.tsx`)
-- [ ] (eq1g) An Equipment that had no host draws its equip arrow from where it lay, measured before the batch is drawn (`fx/FxTravel.tsx`, `combat/attachLines.ts`)
 - [ ] (st1a) The Stasis family (Stasis Field, Stasis Cell, Stunning Strike) is measured in a scratch database after `compile`: each becomes Verified or names the clause the checker still lacks, with its Scryfall record in the corpus
 - [ ] (st1b) "Its activated abilities can't be activated" (Arrest, Stasis Cocoon) is a restriction the compiler reads and the activation rules enforce (`Modification` and the activation check)
 - [ ] (eq1j) `gives` of an Aura on a player names the rules it gives outside keywords ("Enchanted player can't cast spells", skipped draws), which the layers do not record for players (`gives.rs`, `layers.rs` `PlayerHeld`)

@@ -16,10 +16,14 @@ const anchorOf = (end: HostEnd): Anchor =>
  * A new host that is a player ends at that player's pod or tile.
  */
 export function attachLines(arrows: readonly AttachArrow[]): LineSpec[] {
-  return arrows.flatMap(({ token, change }): LineSpec[] => {
+  return arrows.flatMap(({ token, change, lay }): LineSpec[] => {
     if (change.to === null) return []
     const from: Anchor =
-      change.from === null ? { kind: 'card', id: change.object, seat: change.seat } : anchorOf(change.from)
+      change.from !== null
+        ? anchorOf(change.from)
+        : lay === null
+          ? { kind: 'card', id: change.object, seat: change.seat }
+          : { kind: 'spot', id: `${token}:lay`, box: lay }
     return [{ key: `attach:${token}`, kind: 'attach', pending: false, from, to: anchorOf(change.to) }]
   })
 }

@@ -13,7 +13,7 @@ import { createArrows } from './arrows'
 import { createEffectArrows } from './effectArrows'
 import type { EffectArrows } from './effectArrows'
 import type { Arrows } from './arrows'
-import { FX_MS, isLifeEffect, NO_ENTRIES, NO_GHOSTS, rowKey } from './model'
+import { FX_MS, isLifeEffect, NO_ENTRIES, NO_GHOSTS, rowKey, STACK_GHOSTS } from './model'
 import { createStrikes } from './strikeLayer'
 import type { Strikes } from './strikeLayer'
 import { createTravel } from './travel'
@@ -108,12 +108,21 @@ export function createFx(options: FxOptions = {}): Fx {
   const travel = createTravel({ ...options.travel, mode: modeNow, slow })
   const strikes = createStrikes({ ...options.travel, mode: modeNow, slow })
   const waiting = new Set<number>()
-  const arrows = createArrows({ timers, enabled: () => modeNow() !== 'off', slow })
+  const arrows = createArrows({
+    timers,
+    enabled: () => modeNow() !== 'off',
+    slow,
+    root: options.travel?.root,
+  })
   const effectArrows = createEffectArrows({
     timers,
     enabled: () => modeNow() !== 'off',
     slow,
     root: options.travel?.root,
+    spotlightBox: (object) => {
+      const stood = travel.store.getState().spotlight
+      return stood !== null && stood.object === object ? stood.box : null
+    },
   })
   let last = 0
 
@@ -151,6 +160,12 @@ export function createFx(options: FxOptions = {}): Fx {
           damage: effect.damage,
         }
         ghosts.set(key, [...(ghosts.get(key) ?? NO_GHOSTS), ghost])
+      } else if ('ghost' in effect && effect.ghost !== undefined) {
+        const { snapshot, before } = effect.ghost
+        const ghost: Ghost = { token, object: snapshot, before, damage: 0 }
+        ghosts.set(STACK_GHOSTS, [...(ghosts.get(STACK_GHOSTS) ?? NO_GHOSTS), ghost])
+        const entry: FxEntry = { kind: effect.kind, token, amount: 0, own: false }
+        objects.set(effect.object, put(objects.get(effect.object), entry))
       } else if (isLifeEffect(effect)) {
         const entry: FxEntry = { kind: effect.kind, token, amount: effect.amount, own: false }
         seats.set(effect.seat, put(seats.get(effect.seat), entry))
