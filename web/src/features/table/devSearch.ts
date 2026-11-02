@@ -24,6 +24,7 @@ export const DEV_FX = [
   'land',
   'draw',
   'equip',
+  'strike',
 ] as const
 
 /** The moves of `DEV_FX` that are moments of play (a cast and what follows), drawn by the travel layer. */
