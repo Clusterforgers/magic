@@ -2,7 +2,7 @@ import { CARD_CORNER } from '@/features/cards/CardImage'
 import { useImageChoice } from '@/features/cards/imageSetting'
 import { imageSizeFor, imageSourceOf, showsBack } from '@/features/cards/images'
 import type { ImageSize } from '@/features/cards/images'
-import { Link as LinkIcon, Unlink } from 'lucide-react'
+import { Link as LinkIcon, RotateCw, Unlink } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import type { ObjectView } from '@/protocol/generated'
 import {
@@ -240,25 +240,32 @@ export function TextFace({
         data-slot="card-art"
         className={cn(
           'mx-1 my-0.5 flex min-h-0 flex-1 flex-wrap content-start gap-0.5 overflow-hidden rounded-sm p-0.5',
+          turned && size === 'compact' && 'my-px p-px',
           dark ? 'bg-black/25' : 'bg-foreground/5',
         )}
       >
         <ByHandMark object={object} spot="chip" compact={size === 'compact'} text={classes.text} />
         <ReadMark object={object} spot="chip" compact={size === 'compact'} text={classes.text} />
-        {chips.map(({ label, tone }) => (
-          <span
-            key={label}
-            data-slot="card-status"
-            data-tone={tone}
-            className={cn(
-              'h-fit rounded-sm px-1 leading-snug font-medium text-background',
-              tone === 'danger' ? 'bg-destructive' : 'bg-foreground',
-              classes.text,
-            )}
-          >
-            {label}
-          </span>
-        ))}
+        {chips.map(({ label, tone }) => {
+          const compactIcon = size === 'compact' && label === 'Tapped'
+          return (
+            <span
+              key={label}
+              data-slot="card-status"
+              data-tone={tone}
+              className={cn(
+                'h-fit rounded-sm px-1 leading-snug font-medium text-background',
+                tone === 'danger' ? 'bg-destructive' : 'bg-foreground',
+                classes.text,
+                // A compact tapped land is too narrow for the word: an icon, the word kept for screen readers.
+                compactIcon && 'inline-flex items-center px-0.5 py-px leading-none',
+              )}
+            >
+              {compactIcon ? <RotateCw aria-hidden="true" className="size-2.5 shrink-0" /> : null}
+              <span className={cn(compactIcon && 'sr-only')}>{label}</span>
+            </span>
+          )
+        })}
         {counters.map((label) => (
           <span
             key={`counter-${label}`}

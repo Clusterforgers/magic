@@ -327,7 +327,7 @@ describe('the one-line pod', () => {
     const row = must(panel('Cy').firstElementChild)
     expect(row).toHaveClass('flex-wrap')
     expect(must(row.firstElementChild)).toHaveClass('min-w-24', 'flex-1')
-    expect(within(panel('Cy')).getByRole('group', { name: "Cy's zones" })).toHaveClass('shrink-0')
+    expect(within(panel('Cy')).getByRole('group', { name: "Cy's zones" })).toHaveClass('flex-wrap')
   })
 
   it('puts the mana pool and the notes in a row of their own under it, only while there is one', () => {
