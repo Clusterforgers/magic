@@ -134,7 +134,7 @@ describe('convoke and improvise in the payment prompt', () => {
 })
 
 const yard = fixture.view.objects.filter((object) =>
-  must(fixture.view.players[0]).graveyard.cards.includes(object.id),
+  (must(fixture.view.players[0]).graveyard.cards ?? []).includes(object.id),
 )
 const unique = yard.filter((one) => yard.filter((other) => other.name === one.name).length === 1)
 
