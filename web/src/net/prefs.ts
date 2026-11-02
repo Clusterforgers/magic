@@ -3,7 +3,7 @@
  * the signed-in account and replace them. The answer is the generated `UserPrefs`, checked at runtime; a failure
  * rejects with `PrefsError`. Every request carries the session cookie (`credentials: 'include'`).
  */
-import type { Stop, UserPrefs } from '@/protocol/generated'
+import type { AutoChoices, Stop, UserPrefs } from '@/protocol/generated'
 import type { Fetch } from './api'
 import { isFlag, isListOf, isRecord } from './check'
 
@@ -43,9 +43,23 @@ function isStop(value: unknown): value is Stop {
   )
 }
 
+function isAutoChoices(value: unknown): value is AutoChoices {
+  return isRecord(value) && isFlag(value.order_triggers) && isFlag(value.assign_damage)
+}
+
 function readPrefs(body: unknown): UserPrefs | null {
-  if (!isRecord(body) || !isListOf(body.default_stops, isStop) || !isFlag(body.end_turn_by_hand)) return null
-  return { default_stops: body.default_stops, end_turn_by_hand: body.end_turn_by_hand }
+  if (
+    !isRecord(body) ||
+    !isListOf(body.default_stops, isStop) ||
+    !isFlag(body.end_turn_by_hand) ||
+    !isAutoChoices(body.auto_choices)
+  )
+    return null
+  return {
+    default_stops: body.default_stops,
+    end_turn_by_hand: body.end_turn_by_hand,
+    auto_choices: body.auto_choices,
+  }
 }
 
 /** Builds the client; call it once, or use the shared `prefsApi`. */

@@ -286,11 +286,11 @@ Blank values are no filter; an unknown parameter or a malformed value is 400 `in
 
 ### Account preferences
 
-`prefs.rs` and `mtg-db`'s `PrefsRepo` (`user_prefs`, one row per account). The default stops and "End my turn by hand" follow the account to every browser. Needs an account (401 `unauthenticated`; 503 `cards_unavailable` without a database). Bodies are `application/json` of at most 8 KiB.
+`prefs.rs` and `mtg-db`'s `PrefsRepo` (`user_prefs`, one row per account). The default stops, "End my turn by hand" and the auto choices follow the account to every browser. Needs an account (401 `unauthenticated`; 503 `cards_unavailable` without a database). Bodies are `application/json` of at most 8 KiB.
 
 | Endpoint | Behaviour |
 |---|---|
-| `GET /api/me/prefs` | `UserPrefs {default_stops, end_turn_by_hand}`; no stops and false for an account that saved none. |
+| `GET /api/me/prefs` | `UserPrefs {default_stops, end_turn_by_hand, auto_choices}`; no stops and everything off for an account that saved none (a body without `auto_choices` reads as off). |
 | `PUT /api/me/prefs` | Replaces them and answers them as stored: stops sorted, each side and step once, all lasting and at steps that grant priority, at most `MAX_DEFAULT_STOPS`; otherwise 400 `invalid_request`. |
 
 - Deleting the account deletes its row.

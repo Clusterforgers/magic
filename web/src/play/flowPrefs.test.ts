@@ -1,4 +1,4 @@
-// Goal: the saved pace preferences (default stops, end turn by hand) survive in storage, keep only pinned stops, and reach the server at Welcome: the default stops once per game and only to a seat with none, the end-turn choice whenever the server holds the other one.
+// Goal: the saved pace preferences (default stops, end turn by hand, auto choices) survive in storage, keep only pinned stops, and reach the server at Welcome: the default stops once per game and only to a seat with none, the end-turn choice whenever the server holds the other one.
 import { beforeEach, describe, expect, it } from 'vitest'
 import type { Stop, StopSide } from '@/protocol/generated'
 import { startSession } from '@/test-utils/harness'
@@ -16,6 +16,8 @@ import { STOP_STEPS } from './stops'
 
 const SIDES: StopSide[] = ['Own', 'Opponent']
 const pinned = (side: StopSide, step: Stop['step']): Stop => ({ side, step, keep: true })
+const OFF = { order_triggers: false, assign_damage: false }
+const BOTH = { order_triggers: true, assign_damage: true }
 
 beforeEach(() => {
   window.localStorage.clear()
@@ -54,26 +56,36 @@ describe('default stops', () => {
 
 describe('welcome requests', () => {
   const stops = [pinned('Own', 'Main1'), pinned('Opponent', 'End')]
-  const prefs = { defaultStops: stops, endTurnByHand: false }
+  const prefs = { defaultStops: stops, endTurnByHand: false, autoChoices: OFF }
   const setStops = stops.map(({ side, step }) => ({ type: 'SetStop', side, step, on: true, keep: true }))
 
   it.each([
     ['a new game and a seat with no stops', [], setStops],
     ['a seat that already holds stops', [pinned('Own', 'Draw')], []],
   ] as const)('gives the default stops to %s', (_, held, expected) => {
-    expect(welcomeRequests({ game: 'g1', stops: held, endTurnByHand: false }, prefs)).toEqual(expected)
+    expect(
+      welcomeRequests({ game: 'g1', stops: held, endTurnByHand: false, autoChoices: OFF }, prefs),
+    ).toEqual(expected)
   })
 
   it('gives them once per game, also after a reconnect to a seat that cleared them', () => {
-    expect(welcomeRequests({ game: 'g1', stops: [], endTurnByHand: false }, prefs)).toEqual(setStops)
-    expect(welcomeRequests({ game: 'g1', stops: [], endTurnByHand: false }, prefs)).toEqual([])
-    expect(welcomeRequests({ game: 'g2', stops: [], endTurnByHand: false }, prefs)).toEqual(setStops)
+    expect(welcomeRequests({ game: 'g1', stops: [], endTurnByHand: false, autoChoices: OFF }, prefs)).toEqual(
+      setStops,
+    )
+    expect(welcomeRequests({ game: 'g1', stops: [], endTurnByHand: false, autoChoices: OFF }, prefs)).toEqual(
+      [],
+    )
+    expect(welcomeRequests({ game: 'g2', stops: [], endTurnByHand: false, autoChoices: OFF }, prefs)).toEqual(
+      setStops,
+    )
   })
 
   it('remembers only the latest games', () => {
     for (let n = 0; n <= APPLIED_LIMIT; n += 1)
-      welcomeRequests({ game: `g${n}`, stops: [], endTurnByHand: false }, prefs)
-    expect(welcomeRequests({ game: 'g0', stops: [], endTurnByHand: false }, prefs)).toEqual(setStops)
+      welcomeRequests({ game: `g${n}`, stops: [], endTurnByHand: false, autoChoices: OFF }, prefs)
+    expect(welcomeRequests({ game: 'g0', stops: [], endTurnByHand: false, autoChoices: OFF }, prefs)).toEqual(
+      setStops,
+    )
   })
 
   it.each([
@@ -82,8 +94,27 @@ describe('welcome requests', () => {
     [true, true, []],
     [false, false, []],
   ])('with end turn by hand saved %s and held %s sends %j', (saved, held, expected) => {
-    const none = { defaultStops: [], endTurnByHand: saved }
-    expect(welcomeRequests({ game: 'g1', stops: [], endTurnByHand: held }, none)).toEqual(expected)
+    const none = { defaultStops: [], endTurnByHand: saved, autoChoices: OFF }
+    expect(welcomeRequests({ game: 'g1', stops: [], endTurnByHand: held, autoChoices: OFF }, none)).toEqual(
+      expected,
+    )
+  })
+
+  it.each([
+    [OFF, BOTH, [{ type: 'AutoChoices', choices: BOTH }]],
+    [BOTH, OFF, [{ type: 'AutoChoices', choices: OFF }]],
+    [BOTH, BOTH, []],
+    [OFF, OFF, []],
+    [
+      { order_triggers: true, assign_damage: false },
+      { order_triggers: true, assign_damage: true },
+      [{ type: 'AutoChoices', choices: { order_triggers: true, assign_damage: false } }],
+    ],
+  ])('with auto choices saved %j and held %j sends %j', (saved, held, expected) => {
+    const prefs = { defaultStops: [], endTurnByHand: false, autoChoices: saved }
+    expect(
+      welcomeRequests({ game: 'g1', stops: [], endTurnByHand: false, autoChoices: held }, prefs),
+    ).toEqual(expected)
   })
 })
 
@@ -97,6 +128,15 @@ describe('in a session', () => {
     expect(h.state().endTurnByHand).toBe(false)
     h.deliver({ type: 'EndTurnByHand', on: true })
     expect(h.state().endTurnByHand).toBe(true)
+  })
+
+  it('setAutoChoices sends the choices and saves them for later games', () => {
+    const h = startSession()
+    h.join()
+    expect(h.session.setAutoChoices(BOTH)).toBe(true)
+    expect(h.sentOf('AutoChoices')).toEqual([{ type: 'AutoChoices', choices: BOTH }])
+    resetFlowPrefs()
+    expect(flowPrefs().autoChoices).toEqual(BOTH)
   })
 
   it('setEndTurnByHand sends the choice and saves it for later games', () => {
