@@ -8,6 +8,7 @@ import type {
   Issue,
   PreconBoard,
   PreconCardView,
+  CardColor,
   PreconErrorCode,
   PreconList,
   PreconListItem,
@@ -71,6 +72,14 @@ export interface PreconsApi {
 
 const isNullableText = (value: unknown): value is string | null => value === null || isText(value)
 
+const COLOURS: readonly unknown[] = ['W', 'U', 'B', 'R', 'G']
+
+/** Reads colour letters; a missing list is none, a foreign letter is null. */
+function readColours(value: unknown): CardColor[] | null {
+  if (value === undefined) return []
+  return isListOf(value, (letter): letter is CardColor => COLOURS.includes(letter)) ? value : null
+}
+
 /** Reads one entry of the list; null when a field is missing or of another kind. */
 export function readPreconItem(item: unknown): PreconListItem | null {
   if (!isRecord(item) || !isText(item.code) || !isText(item.name) || !isText(item.set)) return null
@@ -80,6 +89,8 @@ export function readPreconItem(item: unknown): PreconListItem | null {
   const summary = readSummary(item.summary)
   const pictures = readPictures(item.pictures)
   if (summary === null || pictures === null) return null
+  const identity = readColours(item.color_identity)
+  if (identity === null) return null
   return {
     code: item.code,
     name: item.name,
@@ -88,6 +99,7 @@ export function readPreconItem(item: unknown): PreconListItem | null {
     release_date: item.release_date,
     commanders: item.commanders,
     pictures,
+    color_identity: identity,
     card_count: item.card_count,
     format: item.format,
     state: item.state,

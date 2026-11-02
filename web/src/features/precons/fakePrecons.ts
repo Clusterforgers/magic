@@ -26,6 +26,7 @@ export const preconItem = (over: Partial<PreconListItem> = {}): PreconListItem =
   release_date: '2018-08-10',
   commanders: ['Estrid, the Masked'],
   pictures: [],
+  color_identity: [],
   card_count: 100,
   format: 'commander',
   state: 'verified',
