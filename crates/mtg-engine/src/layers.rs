@@ -240,6 +240,13 @@ impl Held {
 
     /// Makes the change `modification` says, as the effect `origin` with the timestamp `stamp` gives it.
     fn change(&mut self, modification: &Modification, origin: Grant, stamp: u64) {
+        // An ability that is a keyword gives the keyword, whichever way the effect words it.
+        if let Modification::GrantAbility(granted) = modification
+            && let Ability::Keyword(keyword) = &**granted
+        {
+            self.change(&Modification::AddKeyword(keyword.clone()), origin, stamp);
+            return;
+        }
         modification.apply(&mut self.chars);
         match modification {
             Modification::SetController(player) => self.controller = *player,

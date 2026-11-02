@@ -47,7 +47,6 @@ One item is one piece of about 15 minutes and one line: the outcome, the cards i
 
 Items that touch the running game come first; the play-session findings (pf) lead, the web items before the engine and card items.
 
-- [ ] (pf15) Engine: Lifelink gains life for combat damage dealt to a player (a reported game did not)
 - [ ] (pf16) Cards: Fungal Fortitude returns its creature when a spell destroys it
 - [ ] (pf17) Cards: It That Betrays puts the sacrificed permanents onto the battlefield under its controller's control
 - [ ] (pf18) Cards: Etali, Primal Storm lets its controller cast the nonland cards it exiles without paying their costs

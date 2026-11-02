@@ -276,6 +276,7 @@ mod library_effects;
 mod library_fuzz;
 mod lieutenants;
 mod lifecycle_keywords_fuzz;
+mod lifelink_combat;
 mod living_weapon;
 mod lords;
 mod loyalty_fuzz;
