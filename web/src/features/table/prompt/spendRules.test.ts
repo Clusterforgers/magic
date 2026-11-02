@@ -125,7 +125,7 @@ describe('paying with restricted mana', () => {
   })
 
   it('finishes a payment from the restricted mana of the pool', () => {
-    const reach: Reach = { ...reachFor(spell()), restricted: [spendOf(0, creature)] }
+    const reach: Reach = { ...reachFor(spell()), extras: [spendOf(0, creature)] }
     expect(allowed(cost('{G}'), pool, [], { kind: 'pool', mana: 'Green' }, [], reach)).toBe(false)
     expect(allowed(cost('{G}'), pool, [], spendOf(0, creature), [], reach)).toBe(true)
   })

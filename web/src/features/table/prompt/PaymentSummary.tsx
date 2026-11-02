@@ -8,7 +8,7 @@ import { LIFE_PER_SYMBOL } from '../manaSymbols'
 import { ManaDot } from '../ManaPool'
 import { ManaPips } from '../ManaPips'
 import { manaName, spendWords } from './payText'
-import { MANA_TYPES, madeOf, poolLeft } from './payment'
+import { genericOf, MANA_TYPES, madeOf, poolLeft } from './payment'
 import type { LifeChoice, Spend } from './payment'
 
 const PIP_SIZE = 'size-5 text-xs'
@@ -53,10 +53,44 @@ export interface RestrictedEntry {
   usable: boolean
 }
 
+/** What a permanent or card gives to the payment, in the order of the buttons: its name, then one button for each way. */
+export interface Offer {
+  key: string
+  name: string
+  choices: readonly OfferChoice[]
+}
+
+/** One way to pay with an offer. */
+export interface OfferChoice {
+  /** The text of the button when the offer has several ways. */
+  label: string
+  /** The name of the button for a screen reader. */
+  aria: string
+  /** The colour it pays, when it pays one. */
+  mana?: ManaType
+  spend: Spend
+  usable: boolean
+}
+
+/** A labelled line of offers: "Convoke", "Improvise". */
+export interface OfferRow {
+  label: string
+  offers: readonly Offer[]
+}
+
+/** The generic mana that improvise, delve and convoke for {1} pay, as one symbol. */
+function genericMade(spends: readonly Spend[]): ManaCost {
+  const total = spends.reduce((sum, spend) => sum + genericOf(spend), 0)
+  return total > 0 ? [{ Generic: total }] : []
+}
+
 /** What keeps two chips of a payment apart. */
 function chipKey(spend: Spend): string {
   if (spend.kind === 'pool') return `pool-${spend.mana}`
   if (spend.kind === 'restricted') return `restricted-${spend.index}`
+  if (spend.kind === 'convoke') return `convoke-${spend.creature}`
+  if (spend.kind === 'improvise') return `improvise-${spend.artifact}`
+  if (spend.kind === 'delve') return `delve-${spend.card}`
   return `tap-${spend.option.source.object}`
 }
 
@@ -64,6 +98,9 @@ function chipKey(spend: Spend): string {
 function chipName(spend: Spend, nameOf: (id: ObjectId) => string): string {
   if (spend.kind === 'pool') return 'Pool'
   if (spend.kind === 'restricted') return 'Restricted'
+  if (spend.kind === 'convoke') return `${nameOf(spend.creature)} (convoke)`
+  if (spend.kind === 'improvise') return `${nameOf(spend.artifact)} (improvise)`
+  if (spend.kind === 'delve') return `${nameOf(spend.card)} (delve)`
   return nameOf(spend.option.source.object)
 }
 
@@ -84,6 +121,9 @@ export interface PaymentSummaryProps {
   /** The restricted mana of the pool, each button spending one; present when the pool holds any. */
   restricted?: readonly RestrictedEntry[]
   onSpendRestricted?(index: number): void
+  /** Permanents and cards that pay without making mana, one line for each way (convoke, improvise, delve). */
+  offerRows?: readonly OfferRow[]
+  onOffer?(spend: Spend): void
   /** Takes the piece at this place in the payment back; Undo takes the last. */
   onRemove(index: number): void
   onClear(): void
@@ -109,6 +149,8 @@ export function PaymentSummary({
   onSpendPool,
   restricted = [],
   onSpendRestricted,
+  offerRows = [],
+  onOffer,
   onRemove,
   onClear,
   life,
@@ -193,6 +235,35 @@ export function PaymentSummary({
           ))}
         </Row>
       )}
+      {offerRows.map((row) => (
+        <Row key={row.label} label={row.label}>
+          {row.offers.map((offer) => (
+            <span key={offer.key} className="flex items-center gap-1">
+              {offer.choices.length === 1 ? null : (
+                <span className="text-xs text-muted-foreground">{offer.name}</span>
+              )}
+              {offer.choices.map((choice) => (
+                <Button
+                  key={choice.aria}
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  data-slot="pay-offer"
+                  aria-disabled={!choice.usable}
+                  aria-label={choice.aria}
+                  className="h-9 gap-1.5 px-2 aria-disabled:pointer-events-none aria-disabled:opacity-50"
+                  onClick={() => {
+                    if (choice.usable) onOffer?.(choice.spend)
+                  }}
+                >
+                  {choice.mana === undefined ? null : <ManaDot type={choice.mana} />}
+                  <span aria-hidden="true">{offer.choices.length === 1 ? offer.name : choice.label}</span>
+                </Button>
+              ))}
+            </span>
+          ))}
+        </Row>
+      ))}
       {life === undefined ? null : <LifeRow life={life} cost={cost} />}
       {sources}
       <Row label="Paying with">
@@ -218,6 +289,7 @@ export function PaymentSummary({
               {madeOf(spend).map((mana, at) => (
                 <ManaDot key={`${mana}-${at}`} type={mana} />
               ))}
+              {genericOf(spend) > 0 ? <span aria-hidden="true">{genericOf(spend)}</span> : null}
               <span aria-hidden="true">{chipName(spend, nameOf)}</span>
               <span aria-hidden="true" className="text-muted-foreground">
                 ×
@@ -258,7 +330,7 @@ export function PaymentSummary({
           <Quiet>nothing yet</Quiet>
         ) : (
           <ManaPips
-            pips={costPips(madeCost(spends.flatMap(madeOf)))}
+            pips={costPips([...madeCost(spends.flatMap(madeOf)), ...genericMade(spends)])}
             sizeClass={PIP_SIZE}
             label="Mana made"
           />

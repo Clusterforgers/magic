@@ -20,6 +20,11 @@ export function manaName(mana: ManaType): string {
 
 /** What a piece of the payment is, in words: "green from Forest", "red from your pool". */
 export function spendWords(spend: Spend, nameOf: (id: ObjectId) => string): string {
+  if (spend.kind === 'convoke') {
+    return `${spend.pays === null ? '1 generic' : `1 ${manaName(spend.pays)}`} by tapping ${nameOf(spend.creature)} to convoke`
+  }
+  if (spend.kind === 'improvise') return `1 generic by tapping ${nameOf(spend.artifact)} to improvise`
+  if (spend.kind === 'delve') return `1 generic by exiling ${nameOf(spend.card)} to delve`
   const made = madeOf(spend)
   const [first] = made
   const alike = first !== undefined && made.every((mana) => mana === first)
