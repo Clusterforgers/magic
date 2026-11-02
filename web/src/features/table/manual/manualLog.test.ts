@@ -160,6 +160,16 @@ describe('the sentence of each manual action', () => {
       { Note: { object: 2, text: '  has haste ' } },
       'Bo puts a note on Grizzly Bears: “has haste” (by hand)',
     ],
+    [
+      'a keyword until end of turn',
+      { GrantAbility: { object: 2, grant: { Keyword: 'FirstStrike' }, until_end_of_turn: true } },
+      'Bo gives Grizzly Bears First strike until end of turn (by hand)',
+    ],
+    [
+      'a line of text for good',
+      { GrantAbility: { object: 2, grant: { Text: ' has haste ' }, until_end_of_turn: false } },
+      'Bo gives Grizzly Bears “has haste” for good (by hand)',
+    ],
     ['a note cleared', { Note: { object: 2, text: ' ' } }, 'Bo clears the note on Grizzly Bears (by hand)'],
     ['a search', { Search: {} }, 'Bo searches their library (by hand)'],
     [

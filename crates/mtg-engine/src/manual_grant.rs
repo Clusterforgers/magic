@@ -1,0 +1,185 @@
+//! The manual action that gives a permanent an ability, a keyword the engine applies or a line of text for the table,
+//! until end of turn or for good, as a continuous effect in the ability layer.
+
+use mtg_cards::keyword::Keyword;
+use mtg_core::ids::{EffectId, ObjectId, PlayerId};
+use serde::{Deserialize, Serialize};
+
+use crate::effects::{ContinuousEffect, Duration, Modification, Selector};
+use crate::events::Event;
+use crate::manual::{MAX_NOTE_CHARS, ManualRefusal};
+use crate::object::GameObject;
+use crate::state::GameState;
+
+/// A keyword the table can give by hand: one the engine applies with no parameter.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
+pub enum ManualKeyword {
+    /// Flying.
+    Flying,
+    /// Reach.
+    Reach,
+    /// First strike.
+    FirstStrike,
+    /// Double strike.
+    DoubleStrike,
+    /// Deathtouch.
+    Deathtouch,
+    /// Trample.
+    Trample,
+    /// Lifelink.
+    Lifelink,
+    /// Vigilance.
+    Vigilance,
+    /// Haste.
+    Haste,
+    /// Menace.
+    Menace,
+    /// Defender.
+    Defender,
+    /// Indestructible.
+    Indestructible,
+    /// Hexproof.
+    Hexproof,
+    /// Shroud.
+    Shroud,
+    /// Flash.
+    Flash,
+}
+
+impl ManualKeyword {
+    /// Every keyword the table can give.
+    pub const ALL: [ManualKeyword; 15] = [
+        ManualKeyword::Flying,
+        ManualKeyword::Reach,
+        ManualKeyword::FirstStrike,
+        ManualKeyword::DoubleStrike,
+        ManualKeyword::Deathtouch,
+        ManualKeyword::Trample,
+        ManualKeyword::Lifelink,
+        ManualKeyword::Vigilance,
+        ManualKeyword::Haste,
+        ManualKeyword::Menace,
+        ManualKeyword::Defender,
+        ManualKeyword::Indestructible,
+        ManualKeyword::Hexproof,
+        ManualKeyword::Shroud,
+        ManualKeyword::Flash,
+    ];
+
+    /// The keyword in words, as a card shows it.
+    pub const fn label(self) -> &'static str {
+        match self {
+            ManualKeyword::Flying => "Flying",
+            ManualKeyword::Reach => "Reach",
+            ManualKeyword::FirstStrike => "First strike",
+            ManualKeyword::DoubleStrike => "Double strike",
+            ManualKeyword::Deathtouch => "Deathtouch",
+            ManualKeyword::Trample => "Trample",
+            ManualKeyword::Lifelink => "Lifelink",
+            ManualKeyword::Vigilance => "Vigilance",
+            ManualKeyword::Haste => "Haste",
+            ManualKeyword::Menace => "Menace",
+            ManualKeyword::Defender => "Defender",
+            ManualKeyword::Indestructible => "Indestructible",
+            ManualKeyword::Hexproof => "Hexproof",
+            ManualKeyword::Shroud => "Shroud",
+            ManualKeyword::Flash => "Flash",
+        }
+    }
+
+    /// The keyword the engine runs.
+    pub fn keyword(self) -> Keyword {
+        match self {
+            ManualKeyword::Flying => Keyword::Flying,
+            ManualKeyword::Reach => Keyword::Reach,
+            ManualKeyword::FirstStrike => Keyword::FirstStrike,
+            ManualKeyword::DoubleStrike => Keyword::DoubleStrike,
+            ManualKeyword::Deathtouch => Keyword::Deathtouch,
+            ManualKeyword::Trample => Keyword::Trample,
+            ManualKeyword::Lifelink => Keyword::Lifelink,
+            ManualKeyword::Vigilance => Keyword::Vigilance,
+            ManualKeyword::Haste => Keyword::Haste,
+            ManualKeyword::Menace => Keyword::Menace,
+            ManualKeyword::Defender => Keyword::Defender,
+            ManualKeyword::Indestructible => Keyword::Indestructible,
+            ManualKeyword::Hexproof => Keyword::Hexproof,
+            ManualKeyword::Shroud => Keyword::Shroud,
+            ManualKeyword::Flash => Keyword::Flash,
+        }
+    }
+}
+
+/// What a seat gives a permanent by hand.
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
+pub enum ManualGrant {
+    /// A keyword the engine applies.
+    Keyword(ManualKeyword),
+    /// A line of text the table follows by hand, up to 80 characters on one line.
+    Text(String),
+}
+
+/// The event of the permanent `object` getting `grant`, as an effect the seat controls that ends with the turn or never.
+pub(crate) fn grant(
+    state: &GameState,
+    player: PlayerId,
+    object: ObjectId,
+    grant: &ManualGrant,
+    until_end_of_turn: bool,
+) -> Result<Vec<Event>, ManualRefusal> {
+    let permanent = crate::manual::permanent(state, object)?;
+    let modification = match grant {
+        ManualGrant::Keyword(keyword) => Modification::AddKeyword(keyword.keyword()),
+        ManualGrant::Text(text) => {
+            let text = text.trim();
+            if text.is_empty()
+                || text.chars().count() > MAX_NOTE_CHARS
+                || text.chars().any(char::is_control)
+            {
+                return Err(ManualRefusal::OutOfRange("the text of the ability"));
+            }
+            Modification::GrantText(text.to_owned())
+        }
+    };
+    let duration = if until_end_of_turn {
+        Duration::UntilEndOfTurn
+    } else {
+        Duration::Forever
+    };
+    let effect = ContinuousEffect::new(
+        EffectId(state.next_effect),
+        Selector::Objects(vec![permanent.reference()]),
+        modification,
+        duration,
+        state.next_timestamp,
+    )
+    .begun(player, state.turn().number());
+    Ok(vec![Event::EffectCreated {
+        effect: effect.into(),
+    }])
+}
+
+/// What was given to `object` by hand and still holds, oldest first: a keyword in words ("First strike") or a line of
+/// text. An effect of a spell or ability names its source and is not listed.
+pub fn granted_by_hand(state: &GameState, object: ObjectId) -> Vec<String> {
+    let Some(held) = state.object(object).map(GameObject::reference) else {
+        return Vec::new();
+    };
+    state
+        .effects()
+        .iter()
+        .filter(|effect| effect.source.is_none())
+        .filter(
+            |effect| matches!(&effect.selector, Selector::Objects(named) if named.contains(&held)),
+        )
+        .filter_map(|effect| match &effect.modification {
+            Modification::GrantText(text) => Some(text.clone()),
+            Modification::AddKeyword(keyword) => ManualKeyword::ALL
+                .iter()
+                .find(|known| known.keyword() == *keyword)
+                .map(|known| known.label().to_owned()),
+            _ => None,
+        })
+        .collect()
+}

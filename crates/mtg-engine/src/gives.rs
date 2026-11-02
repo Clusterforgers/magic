@@ -109,7 +109,7 @@ impl Gives {
             Modification::CantBeTurnedFaceUp => GivenRule::CantBeTurnedFaceUp,
             Modification::LoseAbilities => GivenRule::LoseAbilities,
             Modification::RemoveKeyword(_) => GivenRule::LoseKeyword,
-            Modification::GrantAbility(_) => GivenRule::GainAbility,
+            Modification::GrantAbility(_) | Modification::GrantText(_) => GivenRule::GainAbility,
             Modification::SetController(_) => GivenRule::SetController,
             Modification::SwitchPowerToughness => GivenRule::SwitchPowerToughness,
             Modification::AddType(_)

@@ -160,6 +160,8 @@ export type { ManaType } from "./ManaType";
 export type { ManaWayView } from "./ManaWayView";
 export type { ManualAction } from "./ManualAction";
 export type { ManualClause } from "./ManualClause";
+export type { ManualGrant } from "./ManualGrant";
+export type { ManualKeyword } from "./ManualKeyword";
 export type { ManualReveal } from "./ManualReveal";
 export type { ManualRoll } from "./ManualRoll";
 export type { ManualToken } from "./ManualToken";
