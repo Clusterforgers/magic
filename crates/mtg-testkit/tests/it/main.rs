@@ -541,6 +541,7 @@ mod zones_fuzz;
 mod dk1c_triggers;
 // dk1b
 mod dk1b_attach;
+mod enchanted_dies;
 // dk1a
 mod dk1a_dog_umbra;
 mod dk1a_rune_of_sustenance;
