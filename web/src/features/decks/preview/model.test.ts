@@ -246,6 +246,7 @@ describe('adapters', () => {
         release_date: null,
         commanders: ['The Ur-Dragon'],
         pictures: [],
+        color_identity: [],
         card_count: 3,
         format: 'commander',
         state: 'verified',
