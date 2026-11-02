@@ -10,6 +10,7 @@ import { useCardFx, useStackGhosts } from './fx/hooks'
 import { withGhosts } from './fx/ghosts'
 import { StackGhostChip } from './StackGhostChip'
 import { isMarkFx } from './fx/model'
+import { ByHandMark } from './manual/ByHand'
 import { ManaPips } from './ManaPips'
 import { useSeatNamer } from './names'
 import { SeatDot } from './PodParts'
@@ -56,6 +57,7 @@ const Chip = memo(function Chip({ id, top, tabbable, aims, aria, empty }: ChipPr
       >
         {top ? <SeatDot seat={object.controller} /> : null}
         <span className="truncate">{object.name}</span>
+        <ByHandMark object={object} spot="chip" compact text="text-xs" />
         {object.mana_cost === null ? null : (
           <ManaPips pips={costPips(object.mana_cost)} sizeClass={SIZE.compact.pip} label="Mana cost" />
         )}

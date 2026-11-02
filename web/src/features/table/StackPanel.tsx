@@ -7,6 +7,7 @@ import { CardFace } from './CardFace'
 import { targetName } from './eventText'
 import { cardLabel, costPips, typeLine } from './cardModel'
 import { SIZE } from './cardSize'
+import { ByHandMark } from './manual/ByHand'
 import { ManaPips } from './ManaPips'
 import { useSeatNamer } from './names'
 import { SeatDot } from './PodParts'
@@ -89,6 +90,7 @@ const StackItem = memo(function StackItem({
         <span className={cn('flex items-center gap-1.5 font-semibold', top && 'text-base')}>
           {top ? <SeatDot seat={object.controller} /> : null}
           {object.name}
+          <ByHandMark object={object} spot="chip" compact={false} text="text-xs" />
         </span>
         {object.mana_cost === null ? null : (
           <ManaPips pips={costPips(object.mana_cost)} sizeClass={SIZE.normal.pip} label="Mana cost" />
