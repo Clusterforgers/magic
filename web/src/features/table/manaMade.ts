@@ -1,8 +1,17 @@
 /**
  * What a source of mana gives, as one shape for the payment prompt (a `ManaOption`) and for a card on the table (the
- * words of its activated ability): the mana of each way a use can go, what a use costs and whether it sacrifices.
+ * ways of its mana abilities in `ObjectView.activated`): the mana of each way a use can go, what a use costs and whether
+ * it sacrifices.
  */
-import type { ManaCost, ManaOption, ManaSymbol, ManaType, ObjectView, PlayerId } from '@/protocol/generated'
+import type {
+  ManaCost,
+  ManaOption,
+  ManaSymbol,
+  ManaType,
+  ManaWayView,
+  ObjectView,
+  PlayerId,
+} from '@/protocol/generated'
 
 /** The five colours as a pool counts them. */
 export const COLOURS: readonly ManaType[] = ['White', 'Blue', 'Black', 'Red', 'Green']
@@ -64,13 +73,23 @@ function coversColours(ways: readonly Way[]): boolean {
 
 /** What the options of one permanent give; a source with an option for each colour gives one mana of any colour. */
 export function givesOfOptions(options: readonly ManaOption[]): Gives {
-  const ways = distinct(
+  return givesOfWays(
     options.map((option) => ({
       made: madeByOption(option),
       cost: option.cost ?? [],
       sacrifice: option.sacrifice === true,
     })),
   )
+}
+
+/** One way of a mana ability as the view sends it (`ActivatedView.ways`). */
+export function wayOfView(way: ManaWayView): Way {
+  return { made: way.mana, cost: way.cost ?? [], sacrifice: way.sacrifice === true }
+}
+
+/** What the ways of one ability give; a way for each colour gives one mana of any colour. */
+function givesOfWays(all: readonly Way[]): Gives {
+  const ways = distinct(all)
   const any = ways.length > 1 && coversColours(ways)
   const [first] = ways
   return {
@@ -81,52 +100,6 @@ export function givesOfOptions(options: readonly ManaOption[]): Gives {
   }
 }
 
-const SYMBOLS: Record<string, ManaType> = {
-  W: 'White',
-  U: 'Blue',
-  B: 'Black',
-  R: 'Red',
-  G: 'Green',
-  C: 'Colorless',
-}
-
-/** The mana of the `{W}{U}` symbols in a piece of wording; empty when there is none or something else is in it. */
-function symbolsIn(text: string): ManaType[] {
-  const rest = text.replace(/\{([WUBRGC])\}/g, '').replace(/[\s,]|\bor\b/g, '')
-  if (rest !== '') return []
-  return [...text.matchAll(/\{([WUBRGC])\}/g)].flatMap((found) => {
-    const mana = SYMBOLS[found[1] ?? '']
-    return mana === undefined ? [] : [mana]
-  })
-}
-
-/** The ways an effect adds mana, read off `Add {C}{C}.`, `Add {W} or {U}.` or `Add one mana of any color.`; null when it does neither. */
-function addedBy(effect: string): { any: boolean; ways: ManaType[][] } | null {
-  const sentence = effect.split(/\.\s/)[0]?.replace(/\.$/, '') ?? ''
-  const added = /^Add (.+)$/.exec(sentence)?.[1]
-  if (added === undefined || /instead/i.test(effect)) return null
-  if (/^(one|a) mana of any (one )?colou?r$/i.test(added)) return { any: true, ways: [] }
-  const ways = added.split(/\s+or\s+|,\s*/).map(symbolsIn)
-  return ways.length === 0 || ways.some((way) => way.length === 0) ? null : { any: false, ways }
-}
-
-/** The mana symbols of an ability's cost in words (`{1}, {T}, Sacrifice Treasure`): what it pays besides the tap; null for any other cost item. */
-function costOf(cost: string): { mana: ManaCost; sacrifice: boolean; taps: boolean } | null {
-  const mana: ManaSymbol[] = []
-  let sacrifice = false
-  let taps = false
-  for (const item of cost.split(/,\s*/)) {
-    const generic = /^\{(\d+)\}$/.exec(item)?.[1]
-    const colour = /^\{([WUBRGC])\}$/.exec(item)?.[1]
-    if (item === '{T}') taps = true
-    else if (/^Sacrifice /.test(item)) sacrifice = true
-    else if (generic !== undefined) mana.push({ Generic: Number(generic) })
-    else if (colour !== undefined && SYMBOLS[colour] !== undefined) mana.push(SYMBOL_OF[SYMBOLS[colour]])
-    else return null
-  }
-  return { mana, sacrifice, taps }
-}
-
 /** A mana ability of an object as the strip and the preview read it. */
 export interface Ability {
   gives: Gives
@@ -134,19 +107,17 @@ export interface Ability {
   taps: boolean
 }
 
-/** The mana abilities of an object whose words the client can read, from `activated` or else the printed ones. */
+/**
+ * The mana abilities of an object that its controller can use now, from the ways of `activated` or else the printed
+ * ones.
+ */
 export function manaAbilitiesOf(object: ObjectView): Ability[] {
   const listed = object.activated
   if (listed !== undefined) {
     return listed.flatMap((entry): Ability[] => {
-      if (entry.mana !== true) return []
-      const cost = costOf(entry.cost)
-      const added = addedBy(entry.effect)
-      if (cost === null || added === null) return []
-      const ways = added.ways.map((made) => ({ made, cost: cost.mana, sacrifice: cost.sacrifice }))
-      return [
-        { taps: cost.taps, gives: { any: added.any, ways, cost: cost.mana, sacrifice: cost.sacrifice } },
-      ]
+      const [first] = entry.ways ?? []
+      if (entry.mana !== true || first === undefined) return []
+      return [{ taps: first.tapless !== true, gives: givesOfWays((entry.ways ?? []).map(wayOfView)) }]
     })
   }
   return object.abilities.flatMap((ability): Ability[] =>

@@ -1,6 +1,15 @@
 /** The payment of the dev table with every kind of mana source, for `?prompt=pay-sources`: a Sol Ring, a Signet, a Treasure, a Command Tower, a bounce land and the fixture's basic lands. */
 import type { PendingDecision } from '@/play/store'
-import type { ManaCost, ManaOption, ManaType, ObjectId, ObjectView, PayOptions } from '@/protocol/generated'
+import type {
+  ManaCost,
+  ManaOption,
+  ManaType,
+  ManaWayView,
+  ObjectId,
+  ObjectView,
+  PayOptions,
+} from '@/protocol/generated'
+import { madeByOption } from '../manaMade'
 import type { Fixture } from './fixture'
 
 const COLOURS: readonly ManaType[] = ['White', 'Blue', 'Black', 'Red', 'Green']
@@ -19,6 +28,13 @@ interface Source {
 const one = (object: ObjectId, ability: number, produces: ManaType): ManaOption => ({
   source: { object, ability },
   produces,
+})
+
+/** The way of the view's mana ability (`ActivatedView.ways`) that stands for an option. */
+const wayOf = (option: ManaOption): ManaWayView => ({
+  mana: madeByOption(option),
+  ...(option.cost === undefined ? {} : { cost: option.cost }),
+  ...(option.sacrifice === true ? { sacrifice: true } : {}),
 })
 
 /** One option for each colour, as a source of any colour offers them. */
@@ -103,7 +119,9 @@ export const paySourcesTable = (fixture: Fixture): Fixture => {
       toughness: null,
       abilities: [],
       permanent: { ...FRESH },
-      activated: [{ cost: source.cost, effect: source.effect, mana: true }],
+      activated: [
+        { cost: source.cost, effect: source.effect, mana: true, ways: source.options(id).map(wayOf) },
+      ],
     }
   })
   const own = new Set(ownBattlefield(view).map((object) => object.id))

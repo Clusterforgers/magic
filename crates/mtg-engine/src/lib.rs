@@ -137,6 +137,7 @@ pub use engine::{Checkpoint, Engine, replay};
 pub use error::{EngineError, PreviewError};
 pub use events::Event;
 pub use fold::apply_event;
+pub use mana_ability::mana_ways;
 pub use setup::{GameSetup, PlayerSetup, PresetPermanent, Start};
 pub use snapshot::{Snapshot, snapshot};
 pub use state::{GameResult, GameState};

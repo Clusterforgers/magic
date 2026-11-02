@@ -1,6 +1,6 @@
-/** Goal: what a source gives is read the same from a payment option (Sol Ring, a basic land, a source of any colour, a bounce land, a Signet, a Treasure, a choice of two colours) and from the words of an activated ability, and a card shows a tap's mana only while the seat may tap it. */
+/** Goal: what a source gives is read the same from a payment option (Sol Ring, a basic land, a source of any colour, a bounce land, a Signet, a Treasure, a choice of two colours) and from the ways the view sends for a mana ability (a count by a condition, a chosen colour, an extra cost, an untapped use), and a card shows a tap's mana only while the seat may tap it. */
 import { describe, expect, it } from 'vitest'
-import type { ManaOption, ManaType, ObjectView } from '@/protocol/generated'
+import type { ActivatedView, ManaOption, ManaType, ManaWayView, ObjectView } from '@/protocol/generated'
 import { must } from '@/test-utils/batches'
 import { cost, manaOfLetter } from '@/test-utils/mana'
 import { manaLetter } from './cardModel'
@@ -78,44 +78,57 @@ const land = must(
     (object) => object.zone === 'Battlefield' && object.controller === 0 && object.types.includes('Land'),
   ),
 )
-const tapAbility = (cost: string, effect: string) => ({ cost, effect, mana: true })
+/** A mana ability with its ways in short: `WU +1 sac free` adds {W}{U}, costs {1}, sacrifices and does not tap. */
+const manaAbility = (...ways: string[]): ActivatedView => ({
+  cost: '',
+  effect: '',
+  mana: true,
+  ways: ways.map((short): ManaWayView => {
+    const [made = '', ...flags] = short.split(' ')
+    const generic = flags.find((flag) => flag.startsWith('+'))
+    return {
+      mana: [...made].map(manaOfLetter),
+      ...(generic === undefined ? {} : { cost: [{ Generic: Number(generic.slice(1)) }] }),
+      ...(flags.includes('sac') ? { sacrifice: true } : {}),
+      ...(flags.includes('free') ? { tapless: true } : {}),
+    }
+  }),
+})
 const permanent = (change: Partial<ObjectView>): ObjectView => ({
   ...land,
   permanent: { tapped: false, damage: 0, summoning_sick: false },
   ...change,
 })
 
-describe('manaAbilitiesOf reads the words of an activated ability', () => {
-  it.each([
-    ['{T}', 'Add {G}.', 'G', false],
-    ['{T}', 'Add {C}{C}.', 'CC', false],
-    ['{T}', 'Add {W} or {U}.', 'W/U', false],
-    ['{T}', 'Add {W}{U}.', 'WU', false],
-    ['{1}, {T}', 'Add {W}{B}.', 'WB', false],
-    ['{T}', 'Add one mana of any color.', 'any', false],
-    ['{T}, Sacrifice this artifact', 'Add one mana of any color.', 'any', true],
-  ])('%s: %s', (costWords, effect, shown, sacrifice) => {
-    const [ability] = manaAbilitiesOf(permanent({ activated: [tapAbility(costWords, effect)] }))
+describe('manaAbilitiesOf reads the ways of an activated mana ability', () => {
+  it.each<[string, string[], string, boolean, boolean]>([
+    ['one mana', ['G'], 'G', false, true],
+    ['two at once', ['CC'], 'CC', false, true],
+    ['a count by a condition', ['GGGGG'], 'GGGGG', false, true],
+    ['a choice of two', ['W', 'U'], 'W/U', false, true],
+    ['a chosen colour', ['R'], 'R', false, true],
+    ['a Signet', ['WB +1'], 'WB', false, true],
+    ['any colour', ['W', 'U', 'B', 'R', 'G'], 'any', false, true],
+    ['a Treasure', ['W sac', 'U sac', 'B sac', 'R sac', 'G sac'], 'any', true, true],
+    ['a use that does not tap', ['G +1 free'], 'G', false, false],
+  ])('%s', (_name, ways, shown, sacrifice, taps) => {
+    const [ability] = manaAbilitiesOf(permanent({ activated: [manaAbility(...ways)] }))
     const gives = must(ability).gives
     expect(gives.any ? 'any' : gives.ways.map((way) => letters(way.made)).join('/')).toBe(shown)
     expect(gives.sacrifice).toBe(sacrifice)
-    expect(must(ability).taps).toBe(costWords.includes('{T}'))
+    expect(must(ability).taps).toBe(taps)
   })
 
-  it.each([
-    ['a cost it cannot read', '{T}, Pay 1 life', 'Add {G}.'],
-    [
-      'an effect that does more than add mana at once',
-      '{T}',
-      'Add {G}. If you control four creatures, add {G}{G} instead.',
-    ],
-    ['an effect that is no mana', '{T}', 'Draw a card.'],
-  ])('leaves out %s', (_name, costWords, effect) => {
-    expect(manaAbilitiesOf(permanent({ activated: [tapAbility(costWords, effect)] }))).toEqual([])
+  it('carries the mana a use costs', () => {
+    const [ability] = manaAbilitiesOf(permanent({ activated: [manaAbility('WB +1')] }))
+    expect(must(ability).gives.cost).toEqual([{ Generic: 1 }])
   })
 
-  it('leaves out an ability that is not a mana ability', () => {
-    expect(manaAbilitiesOf(permanent({ activated: [{ cost: '{T}', effect: 'Add {G}.' }] }))).toEqual([])
+  it.each<[string, ActivatedView]>([
+    ['a mana ability that cannot be used now', manaAbility()],
+    ['an ability that is not a mana ability', { cost: '{T}', effect: 'Add {G}.' }],
+  ])('leaves out %s', (_name, entry) => {
+    expect(manaAbilitiesOf(permanent({ activated: [entry] }))).toEqual([])
   })
 
   it('falls back to the printed abilities while the view lists no activated ones', () => {
@@ -125,7 +138,7 @@ describe('manaAbilitiesOf reads the words of an activated ability', () => {
 })
 
 describe('givesNow shows a tap only while the seat may tap it', () => {
-  const ring = { activated: [tapAbility('{T}', 'Add {C}{C}.')] }
+  const ring = { activated: [manaAbility('CC')] }
   const tapped = { tapped: true, damage: 0, summoning_sick: false }
   const sick = { tapped: false, damage: 0, summoning_sick: true }
   it.each<[string, Partial<ObjectView>, number | null, boolean]>([
@@ -138,12 +151,7 @@ describe('givesNow shows a tap only while the seat may tap it', () => {
     ['a creature that came this turn', { ...ring, types: ['Creature'], permanent: sick }, 0, false],
     ['a land that came this turn', { ...ring, permanent: sick }, 0, true],
     ['a land with no mana ability', { activated: [], abilities: [] }, 0, false],
-    [
-      'an ability that does not tap',
-      { activated: [tapAbility('Sacrifice this artifact', 'Add {C}.')] },
-      0,
-      false,
-    ],
+    ['an ability that does not tap', { activated: [manaAbility('C sac free')] }, 0, false],
   ])('%s', (_name, change, seat, shown) => {
     expect(givesNow(permanent({ controller: 0, ...change }), seat) !== null).toBe(shown)
   })
@@ -152,11 +160,7 @@ describe('givesNow shows a tap only while the seat may tap it', () => {
     const gives = must(
       givesNow(
         permanent({
-          activated: [
-            tapAbility('{T}', 'Add {G}.'),
-            tapAbility('{T}', 'Add {G}.'),
-            tapAbility('{T}', 'Add {W}.'),
-          ],
+          activated: [manaAbility('G'), manaAbility('G'), manaAbility('W')],
         }),
         0,
       ),
