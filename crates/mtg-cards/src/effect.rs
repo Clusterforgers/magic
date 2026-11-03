@@ -1188,8 +1188,21 @@ pub enum Effect {
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         unpaid: Vec<Effect>,
     },
+    /// Fixes the amount as it is when this step runs and keeps it under the name, so `Amount::Bound` reads the same number
+    /// in the steps after it however the game changes ("X is the number of cards in your hand", "that many").
+    Let {
+        /// The name the number is kept under.
+        #[serde(rename = "as")]
+        bind: String,
+        /// The amount worked out when the step runs.
+        amount: Amount,
+    },
     /// The controller chooses modes when the spell or ability is put on the stack (CR 700.2).
     Modal {
+        /// Who chooses the modes when it is not the controller ("an opponent chooses one"). Several players: the first of
+        /// them in turn order from the controller who is still in the game. None in the game: the controller chooses.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        who: Ref,
         /// How many modes are chosen.
         #[serde(default, skip_serializing_if = "Bounds::is_one")]
         choose: Bounds,

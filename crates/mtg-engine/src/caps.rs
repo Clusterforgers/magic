@@ -352,6 +352,8 @@ const RUNS: &[&str] = &[
     "Effect.Modal.OnceEver",
     "Effect.Modal.AllIf",
     "Effect.Vote",
+    "Effect.Let",
+    "Effect.Modal.Who",
     "Effect.Planechase",
     "Effect.VillainousChoice",
     "Effect.Either",
@@ -822,6 +824,8 @@ mod tests {
     #[case::modes_not_chosen_twice_ever("Effect.Modal.OnceEver", true)]
     #[case::every_mode_under_a_condition("Effect.Modal.AllIf", true)]
     #[case::voting("Effect.Vote", true)]
+    #[case::a_kept_number("Effect.Let", true)]
+    #[case::modes_chosen_by_another_player("Effect.Modal.Who", true)]
     #[case::c10_vp_planechase("Effect.Planechase", true)]
     #[case::adding_mana("Effect.AddMana", true)]
     #[case::tapping_permanents("Effect.Tap", true)]

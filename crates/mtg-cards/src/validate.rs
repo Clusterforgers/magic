@@ -180,6 +180,8 @@ struct Scope {
     /// `Dealer` names something: a triggered ability, or a replacement of damage.
     dealer: bool,
     names: Vec<BTreeMap<String, Kind>>,
+    /// The names a `Let` fixed, which `Amount::Bound` may read.
+    numbers: BTreeSet<String>,
 }
 
 impl Scope {
@@ -199,6 +201,7 @@ impl Scope {
             in_trigger,
             dealer: in_trigger,
             names: vec![BTreeMap::new()],
+            numbers: BTreeSet::new(),
         }
     }
 
@@ -712,6 +715,11 @@ impl<'a> Walker<'a> {
                 self.hand_or_life_lost(amount);
             }
             Amount::Kicks | Amount::Promised | Amount::Devoured => self.paid_amount(amount),
+            Amount::Bound(name) => {
+                if !self.scope.numbers.contains(name) {
+                    self.problem(format!("`{name}` is not a number kept by an earlier `Let`"));
+                }
+            }
             Amount::PermanentsGraved => self.uses("Amount", "PermanentsGraved"),
             Amount::Tallied { who, what } => self.tallied(who, *what),
             Amount::Triggering => self.c11e_triggering(),
@@ -793,6 +801,7 @@ impl<'a> Walker<'a> {
             | Amount::Kicks
             | Amount::Promised
             | Amount::Devoured
+            | Amount::Bound(_)
             | Amount::PermanentsGraved
             | Amount::Tallied { .. }
             | Amount::Triggering
@@ -2476,6 +2485,11 @@ impl Walker<'_> {
                     w.bind(name, Kind::Object);
                 }
             }
+            Effect::Let { bind, amount } => {
+                w.at("amount", |w| w.amount(amount));
+                w.at("as", |w| w.bind(bind, Kind::Either));
+                w.scope.numbers.insert(bind.clone());
+            }
             Effect::Choose {
                 who,
                 from,
@@ -2848,6 +2862,7 @@ impl Walker<'_> {
             }
             Effect::Modal {
                 choose,
+                who,
                 modes,
                 repeat,
                 at_random,
@@ -2856,6 +2871,13 @@ impl Walker<'_> {
                 all_if,
             } => {
                 w.modal(choose, modes, *repeat, only_effect);
+                if !who.is_you() {
+                    w.uses("Effect", "Modal.Who");
+                    w.at("who", |w| w.reference(who, Kind::Player));
+                    if *at_random {
+                        w.problem("a pick at random is made by no player");
+                    }
+                }
                 w.modal_flags(choose, *repeat, *at_random, (*once_each_turn, *once_ever));
                 if let Some(condition) = all_if {
                     w.uses("Effect", "Modal.AllIf");
@@ -4197,6 +4219,8 @@ mod tests {
     #[case::bushido_is_a_macro(r#"{"Keyword":{"Macro":{"name":"bushido","amount":2}}}"#, &["Ability.Triggered", "Effect.Continuous", "Keyword.Macro", "Mod.ModifyPT", "Trigger.AnyOf", "Trigger.BecomesBlocked", "Trigger.Blocks"])]
     #[case::modular_is_a_macro(r#"{"Keyword":{"Macro":{"name":"modular","amount":2}}}"#, &["Ability.Replacement", "Ability.Triggered", "Effect.May", "Effect.PutCounters", "Keyword.Macro", "ReplaceBy.WithCounters", "ReplaceWhen.Enters", "Trigger.ZoneChange"])]
     #[case::mobilize_is_a_macro(r#"{"Keyword":{"Macro":{"name":"mobilize","amount":2}}}"#, &["Ability.Triggered", "Effect.CreateToken", "Effect.DelayedTrigger", "Effect.Sacrifice", "Keyword.Macro", "Trigger.Attacks", "Trigger.StepBegins"])]
+    #[case::a_modal_chosen_by_an_opponent(r#"{"Spell":{"effects":[{"Modal":{"who":"Opponents","modes":[{"effects":[{"Draw":{}}]},{"effects":[{"GainLife":{"amount":1}}]}]}}]}}"#, &["Ability.Spell", "Effect.Draw", "Effect.GainLife", "Effect.Modal", "Effect.Modal.Who"])]
+    #[case::a_kept_number(r#"{"Spell":{"effects":[{"Let":{"as":"n","amount":2}},{"GainLife":{"amount":{"Bound":"n"}}}]}}"#, &["Ability.Spell", "Effect.GainLife", "Effect.Let"])]
     #[case::storm_is_a_keyword(r#"{"Keyword":"Storm"}"#, &["Keyword.Storm"])]
     #[case::a_copy_with_the_exceptions_the_values_keep(r#"{"Spell":{"effects":[{"CreateToken":{"token":{"CopyOf":{"of":"This","except":[{"AddKeyword":"Haste"},{"AddSubtype":"Zombie"},{"SetColors":["Blue"]},{"SetPT":{"power":1,"toughness":1}}]}}}}]}}"#, &["Ability.Spell", "Effect.CreateToken", "Effect.CreateToken.Copy", "Keyword.Haste", "Mod.AddKeyword", "Mod.AddSubtype", "Mod.SetColors", "Mod.SetPT"])]
     #[case::a_copy_with_an_exception_that_waits(r#"{"Spell":{"effects":[{"CreateToken":{"token":{"CopyOf":{"of":"This","except":["SwitchPT"]}}}}]}}"#, &["Ability.Spell", "Copy.Except.SwitchPT", "Effect.CreateToken", "Effect.CreateToken.Copy", "Mod.SwitchPT"])]
@@ -4927,6 +4951,18 @@ mod tests {
     #[case::attaching_to_a_player(
         r#"{"Spell":{"effects":[{"Attach":{"what":"This","to":"You"}}]}}"#,
         "abilities[0].Spell.effects[0].Attach.to: expected an object but this is a player"
+    )]
+    #[case::a_number_read_before_it_is_kept(
+        r#"{"Spell":{"effects":[{"GainLife":{"amount":{"Bound":"n"}}}]}}"#,
+        "`n` is not a number kept by an earlier `Let`"
+    )]
+    #[case::a_number_kept_twice(
+        r#"{"Spell":{"effects":[{"Let":{"as":"n","amount":1}},{"Let":{"as":"n","amount":2}}]}}"#,
+        "`n` is already bound"
+    )]
+    #[case::a_pick_at_random_by_a_player(
+        r#"{"Spell":{"effects":[{"Modal":{"who":"Opponents","at_random":true,"choose":{"min":1,"max":1},"modes":[{"effects":[{"Draw":{}}]},{"effects":[{"GainLife":{"amount":1}}]}]}}]}}"#,
+        "a pick at random is made by no player"
     )]
     #[case::unknown_token(
         r#"{"Spell":{"effects":[{"CreateToken":{"token":{"Named":"blood"}}}]}}"#,

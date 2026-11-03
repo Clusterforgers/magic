@@ -81,6 +81,15 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
                     resolving.bindings.remove(cleared);
                     continue;
                 }
+                if let Some(kept) = name.strip_prefix(crate::resolve::LET) {
+                    let (value, kept) = kept
+                        .split_once(':')
+                        .and_then(|(value, kept)| Some((value.parse::<i64>().ok()?, kept)))
+                        .ok_or_else(|| invalid(format!("`{name}` names no kept number")))?;
+                    resolving.lets.retain(|(old, _)| old != kept);
+                    resolving.lets.push((kept.to_owned(), value));
+                    continue;
+                }
                 if let Some(x) = name.strip_prefix(crate::resolve::W6C_PAID_X) {
                     let x = x
                         .parse()

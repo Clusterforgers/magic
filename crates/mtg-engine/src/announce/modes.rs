@@ -7,8 +7,12 @@
 //! asked; one that chooses a mode not yet chosen this turn, or ever, leaves out the modes its tally holds.
 
 use super::{Ctx, Next, What, Work, optional};
-use crate::choose::{Modal, modal_of, mode_options};
-use crate::decision::DecisionKind;
+use mtg_core::ids::PlayerId;
+
+use crate::choose::{Modal, ModeOptions, modal_of, mode_options};
+use crate::decision::{Decision, DecisionKind};
+use crate::object::{GameObject, ObjectRef};
+use crate::resolve::Scope;
 use crate::rng::GameRng;
 
 pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
@@ -32,7 +36,7 @@ pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
             ctx.source,
             ctx.player,
             &modal,
-            ctx.can_cancel(),
+            ctx.can_cancel() && decider(ctx, &modal) == ctx.player,
             ctx.cause(),
         ) else {
             return Some(Next::Drop);
@@ -42,11 +46,42 @@ pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
         }
         // Nothing to choose between when no mode may be chosen.
         if options.max > 0 {
-            return Some(ctx.ask(DecisionKind::ChooseMode(options)));
+            return Some(ask(ctx, &modal, options));
         }
     }
     work.done.modes = true;
     None
+}
+
+/// The question for the modes, put to the player the modal names, and to the controller when that is no one in the game
+/// (the table never waits on a seat that has left).
+fn ask(ctx: &Ctx<'_>, modal: &Modal<'_>, options: ModeOptions) -> Next {
+    Next::Ask(Decision {
+        player: decider(ctx, modal),
+        kind: DecisionKind::ChooseMode(options),
+    })
+}
+
+/// Who chooses the modes: the first player `who` names, in turn order from the controller, who is still in the game.
+fn decider(ctx: &Ctx<'_>, modal: &Modal<'_>) -> PlayerId {
+    if modal.who.is_you() {
+        return ctx.player;
+    }
+    let origin = ctx.state.object(ctx.source).map_or(
+        ObjectRef {
+            id: ctx.source,
+            counter: 0,
+        },
+        GameObject::reference,
+    );
+    let named = Scope::announcing(ctx.state, ctx.player, origin)
+        .players(modal.who)
+        .unwrap_or_default();
+    ctx.state
+        .turn_order_from(ctx.player)
+        .into_iter()
+        .find(|seat| named.contains(seat))
+        .unwrap_or(ctx.player)
 }
 
 /// The modes this ability chose earlier in the turn, or in any turn for one that chooses a mode not yet chosen; none

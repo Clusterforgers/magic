@@ -1397,6 +1397,7 @@ impl<'a> Scope<'a> {
             Amount::DieResult(which) => self.c11e_die_result(*which),
             Amount::Promised => i64::from(self.payments(OptionalKind::Gift) > 0),
             Amount::Devoured => self.w7e_devoured(),
+            Amount::Bound(name) => self.kept_number(name),
             Amount::CastWith(way) => i64::from(self.cast_way() == Some(*way)),
             Amount::ColorsSpent => i64::try_from(colors_among(&self.mana_spent())).unwrap_or(0),
             Amount::PermanentsGraved => i64::from(self.state.graved_this_turn()),
@@ -1441,6 +1442,23 @@ impl<'a> Scope<'a> {
                 })
                 .and_then(GameObject::announced_x)
         })
+    }
+
+    /// The number a `Let` of the resolving spell or ability fixed under the name, read only by the scope of that spell or
+    /// ability; zero before it ran.
+    fn kept_number(&self, name: &str) -> i64 {
+        let kept = self.state.resolving.as_ref().and_then(|resolving| {
+            let object = self.state.object(resolving.object)?;
+            if !std::ptr::eq(self.choices, object.choices()) {
+                return None;
+            }
+            resolving
+                .lets
+                .iter()
+                .find(|(kept, _)| kept == name)
+                .map(|(_, value)| *value)
+        });
+        kept.unwrap_or(0)
     }
 
     /// The X a payment of the resolving spell or ability announced ("you may pay {X}{R}. If you do"), read only by the
