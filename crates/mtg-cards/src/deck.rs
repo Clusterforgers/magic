@@ -120,6 +120,10 @@ pub struct Counts {
     /// before the Read tier has none.
     #[serde(default)]
     pub read: u32,
+    /// Copies of `forge` cards: trusted translations of Forge scripts, which the game runs like `read` ones. A check
+    /// stored before this tier has none.
+    #[serde(default)]
+    pub forge: u32,
     /// Copies of `partial` cards.
     pub partial: u32,
     /// Copies of `manual` cards.
@@ -136,6 +140,7 @@ impl Counts {
         let slot = match support {
             Support::Verified => &mut self.verified,
             Support::Read => &mut self.read,
+            Support::Forge => &mut self.forge,
             Support::Partial => &mut self.partial,
             Support::Manual => &mut self.manual,
             Support::Stale => &mut self.stale,
@@ -162,8 +167,8 @@ pub struct ZoneCounts {
 pub enum DeckState {
     /// Legal, and every card of every zone is `verified`.
     Verified,
-    /// Legal, and every card of every zone is `verified` or `read`, at least one `read`: the game runs all of it, part
-    /// of it on the reads of players.
+    /// Legal, and every card of every zone is `verified`, `read` or `forge`, at least one of the last two: the game
+    /// runs all of it, part of it on the reads of players or translated from Forge.
     Read,
     /// Legal, with some cards that are neither `verified` nor `read`; the table resolves them by hand.
     ManualPlay,
@@ -187,12 +192,15 @@ impl DeckState {
 
     /// The state of a deck from whether it has legality issues and its copies by support state.
     fn of(has_issues: bool, counts: &Counts) -> DeckState {
-        let runs_whole = counts.verified.saturating_add(counts.read);
+        let runs_whole = counts
+            .verified
+            .saturating_add(counts.read)
+            .saturating_add(counts.forge);
         if has_issues || counts.unplayable > 0 {
             DeckState::Blocked
         } else if runs_whole < counts.total {
             DeckState::ManualPlay
-        } else if counts.read > 0 {
+        } else if counts.read > 0 || counts.forge > 0 {
             DeckState::Read
         } else {
             DeckState::Verified

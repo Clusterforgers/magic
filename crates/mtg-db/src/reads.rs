@@ -369,7 +369,11 @@ mod tests {
     #[case(3, 3, ReadState::Wrong)]
     fn one_wrong_wins(#[case] wrong: u32, #[case] correct: u32, #[case] state: ReadState) {
         assert_eq!(ReadState::of_counts(wrong, correct, false), state);
-        let trusted = if wrong > 0 { state } else { ReadState::Approved };
+        let trusted = if wrong > 0 {
+            state
+        } else {
+            ReadState::Approved
+        };
         assert_eq!(ReadState::of_counts(wrong, correct, true), trusted);
     }
 

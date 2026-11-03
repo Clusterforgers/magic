@@ -442,6 +442,7 @@ impl Library {
                 card,
                 read_hash: row.read_hash.clone(),
                 read: row.read,
+                forge: row.forge,
             };
             library.drafts.insert(row.oracle_id.clone(), draft);
         }
@@ -470,7 +471,7 @@ impl Library {
         if self.outranks_drafts(id, rules, &support(rules, printed, caps)) {
             return None;
         }
-        read_support(&draft.card, printed, caps)?;
+        read_support(&draft.card, printed, caps, Support::Read)?;
         Some(draft.state_for(printed))
     }
 

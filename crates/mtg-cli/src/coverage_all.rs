@@ -195,6 +195,7 @@ const fn state_name(state: Support) -> &'static str {
     match state {
         Support::Verified => "verified",
         Support::Read => "read",
+        Support::Forge => "forge",
         Support::Partial => "partial",
         Support::Manual => "manual",
         Support::Stale => "stale",

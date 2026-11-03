@@ -432,6 +432,12 @@ pub struct PromoteArgs {
     #[arg(long, value_name = "DIR", requires = "draft")]
     pub drafts: Option<PathBuf>,
 
+    /// With `--draft`: who wrote the proposals, `sweep` or `forge`, unless a proposal's `meta/<slug>.json` names its
+    /// source. A Forge proposal whose meta says `oracle_matches: true` is also drafted when the checker judges it
+    /// `Mismatch`.
+    #[arg(long, value_name = "SOURCE", requires = "draft", value_parser = ["sweep", "forge"])]
+    pub source: Option<String>,
+
     /// The proposal files, each named `<slug>.json` after its card.
     #[arg(value_name = "FILE", required = true)]
     pub files: Vec<PathBuf>,

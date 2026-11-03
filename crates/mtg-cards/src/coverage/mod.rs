@@ -117,7 +117,7 @@ impl CardResult {
 pub enum Bucket {
     /// `Verified`.
     Verified,
-    /// `Read`: a draft a player read and found correct.
+    /// `Read`: a draft a player read and found correct, or a trusted translation of a Forge script (`Forge`).
     Read,
     /// A card whose draft waits for its first read; it plays by hand (`Partial` or `Manual`) until then.
     Waiting,
@@ -144,7 +144,7 @@ impl Bucket {
     pub const fn of(state: Support) -> Bucket {
         match state {
             Support::Verified => Bucket::Verified,
-            Support::Read => Bucket::Read,
+            Support::Read | Support::Forge => Bucket::Read,
             Support::Partial => Bucket::Partial,
             Support::Manual => Bucket::Manual,
             Support::Stale | Support::Unplayable => Bucket::Other,
@@ -472,7 +472,7 @@ fn blockers_of(
 ) -> BTreeSet<Blocker> {
     let rules = |what: &str| BTreeSet::from([Blocker::Rules(what.to_owned())]);
     match state {
-        Support::Verified | Support::Read => return BTreeSet::new(),
+        Support::Verified | Support::Read | Support::Forge => return BTreeSet::new(),
         Support::Stale => return rules("stale"),
         Support::Unplayable => return rules("unplayable"),
         Support::Partial | Support::Manual => {}
