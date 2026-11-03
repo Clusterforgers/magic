@@ -226,6 +226,24 @@ pub struct GameRecipe {
     /// without them or stored before they existed; such a recipe builds without a check.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub fingerprints: Vec<DeckFingerprint>,
+    /// The `read_hash` of the draft each card plays on, by oracle id: the cards that run on a read (a player's or
+    /// Forge's) when the game started. Resume and replay build exactly these cards whatever the verdicts are now;
+    /// left out of the stored form while empty, which is also how a recipe stored before the read tier reads.
+    #[serde(default, skip_serializing_if = "BTreeMap::is_empty")]
+    pub reads: BTreeMap<String, String>,
+}
+
+/// The pinned reads of several decks as one map; where two decks pin the same card the first wins.
+pub(crate) fn merged_reads<'a>(
+    decks: impl IntoIterator<Item = &'a BTreeMap<String, String>>,
+) -> BTreeMap<String, String> {
+    let mut merged = BTreeMap::new();
+    for reads in decks {
+        for (card, hash) in reads {
+            merged.entry(card.clone()).or_insert_with(|| hash.clone());
+        }
+    }
+    merged
 }
 
 /// Why a recipe does not describe a playable game.
@@ -301,6 +319,7 @@ impl GameRecipe {
             seed,
             decks: decks.into_iter().collect(),
             fingerprints: Vec::new(),
+            reads: BTreeMap::new(),
         }
     }
 

@@ -12,11 +12,16 @@ use std::sync::Arc;
 use mtg_cards::assemble::Assembled;
 use mtg_cards::deck::{CardFacts, Legality};
 use mtg_cards::load::{GeneratedRules, Library};
-use mtg_cards::support::SupportRecord;
-use mtg_cards::{Caps, CardDefinition, CardIdentity, PrintedCard, PrintedFace, builtin};
+use mtg_cards::support::{Support, SupportRecord};
+use mtg_cards::{
+    Caps, CardDefinition, CardIdentity, DraftRules, PrintedCard, PrintedFace, ReadState, builtin,
+};
 use mtg_core::mana::ManaType;
 use mtg_db::codec::legality_keyword;
-use mtg_db::{Card, Database, DbError, IndexVersion, RulesVersion, StoredFace};
+use mtg_db::{
+    Card, Database, DbError, DraftKey, DraftRead, DraftsVersion, IndexVersion, RulesVersion,
+    SOURCE_FORGE, StoredDraft, StoredFace,
+};
 use mtg_import::ids::OracleId;
 use mtg_import::resolve::CardIndex;
 use sqlx::PgPool;
@@ -148,17 +153,39 @@ fn canonical(id: &str) -> String {
     Uuid::parse_str(id).map_or_else(|_| id.to_owned(), |uuid| uuid.to_string())
 }
 
+/// The draft `oracle_id` plays on in `library` when its `support` is a read (`Read` or `Forge`).
+pub(crate) fn pin_of(
+    library: &Library,
+    oracle_id: &str,
+    support: Support,
+) -> Option<(String, String)> {
+    matches!(support, Support::Read | Support::Forge)
+        .then(|| library.draft(oracle_id))
+        .flatten()
+        .map(|draft| (oracle_id.to_owned(), draft.read_hash.clone()))
+}
+
 /// The rules and capabilities one request reads cards with, and the version of the stored rules
 /// they include: every card of a request is judged under the same rules.
 #[derive(Debug, Clone)]
 pub(crate) struct Rules {
     library: Arc<Library>,
     caps: Caps,
-    version: RulesVersion,
+    version: StoredVersion,
 }
 
+/// Which stored rules a library was built from: the compiled rows and the drafts with their verdicts.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct StoredVersion {
+    rules: RulesVersion,
+    drafts: DraftsVersion,
+}
+
+/// The `read_hash` of the draft each card plays on, by oracle id (`GameRecipe::reads`).
+pub(crate) type Reads = BTreeMap<String, String>;
+
 impl Rules {
-    /// The hand-written and the compiled rules.
+    /// The hand-written and the compiled rules, and the drafts that run on a read.
     pub(crate) fn library(&self) -> &Library {
         &self.library
     }
@@ -168,8 +195,9 @@ impl Rules {
         &self.caps
     }
 
-    /// Which stored rules these are: another version means a row was added, written again or removed.
-    pub(crate) fn version(&self) -> &RulesVersion {
+    /// Which stored rules these are: another version means a row was added, written again or removed, or a draft
+    /// or a verdict changed.
+    pub(crate) fn version(&self) -> &StoredVersion {
         &self.version
     }
 
@@ -192,10 +220,42 @@ pub struct CardSource {
     images: Option<Images>,
 }
 
-/// The library of the hand-written rules and the rows of `card_rules`, built when the rows change.
+/// The library of the hand-written rules and the rows of `card_rules`, built when the rows change, and the same with
+/// the drafts that run on a read, built again when a draft or a verdict changes.
 #[derive(Debug, Default)]
 struct StoredRules {
-    built: Mutex<Option<(RulesVersion, Arc<Library>)>>,
+    built: Mutex<Option<Built>>,
+}
+
+/// What [`StoredRules`] holds.
+#[derive(Debug)]
+struct Built {
+    rules: RulesVersion,
+    drafts: DraftsVersion,
+    /// The hand-written and the compiled rules, without drafts: what a game that pinned no read builds with.
+    base: Arc<Library>,
+    /// `base` with the current drafts and their read state.
+    full: Arc<Library>,
+}
+
+/// A stored draft with its read state as a library takes it. A `forge` draft whose Oracle text matched is trusted.
+fn draft_rules(draft: StoredDraft, read: mtg_db::ReadState, forge: bool) -> DraftRules {
+    DraftRules {
+        oracle_id: draft.oracle_id.as_str().to_owned(),
+        read_hash: draft.read_hash,
+        rules: draft.rules,
+        read: match read {
+            mtg_db::ReadState::Pending => ReadState::Pending,
+            mtg_db::ReadState::Approved => ReadState::Approved,
+            mtg_db::ReadState::Wrong => ReadState::Wrong,
+        },
+        forge,
+    }
+}
+
+/// Whether a stored draft is a trusted translation of a Forge script.
+fn is_trusted_forge(draft: &StoredDraft) -> bool {
+    draft.source == SOURCE_FORGE && draft.oracle_matches
 }
 
 /// The index that ties the names and printings of a pasted list to cards, built from the stored
@@ -268,20 +328,63 @@ impl CardSource {
     /// The rules files and the compiled rules the database holds now: the library is built again
     /// when a row of `card_rules` was added, written again or removed, and a file wins over a row
     /// for the same card. A row this build cannot read is left out and logged.
-    async fn library(&self) -> Result<(Arc<Library>, RulesVersion), CatalogError> {
+    async fn library(&self) -> Result<(Arc<Library>, StoredVersion), CatalogError> {
+        let (_, full, version) = self.layers().await?;
+        Ok((full, version))
+    }
+
+    /// The library without drafts, what a game builds with that pinned no read.
+    async fn base_library(&self) -> Result<Arc<Library>, CatalogError> {
+        Ok(self.layers().await?.0)
+    }
+
+    /// The library without drafts, the same with the current drafts and their read state, and the version of both.
+    /// The rows of `card_rules` rebuild both; a draft or a verdict that changed rebuilds only the second.
+    async fn layers(&self) -> Result<(Arc<Library>, Arc<Library>, StoredVersion), CatalogError> {
         let repo = self.db.card_rules();
         let database = |error: DbError| CatalogError::Database(error.to_string());
-        let version = repo.version().await.map_err(database)?;
+        let rules = repo.version().await.map_err(database)?;
+        let drafts = self.draft_version().await;
         let mut built = self.stored.built.lock().await;
-        if let Some((held, library)) = built.as_ref()
-            && *held == version
-        {
-            return Ok((library.clone(), version));
+        let held = built.take().filter(|held| held.rules == rules);
+        let base = match &held {
+            Some(held) => held.base.clone(),
+            None => Arc::new(self.compiled_library(&repo).await?),
+        };
+        let full = match held {
+            Some(held) if held.drafts == drafts => held.full,
+            _ => Arc::new(self.with_current_drafts(&base).await),
+        };
+        *built = Some(Built {
+            rules: rules.clone(),
+            drafts: drafts.clone(),
+            base: base.clone(),
+            full: full.clone(),
+        });
+        Ok((base, full, StoredVersion { rules, drafts }))
+    }
+
+    /// The version of the drafts and verdicts; a database that cannot say (the tables are missing) has none, and
+    /// the library then holds no drafts.
+    async fn draft_version(&self) -> DraftsVersion {
+        match self.db.drafts().version().await {
+            Ok(version) => version,
+            Err(error) => {
+                tracing::warn!(%error, "the drafts could not be versioned");
+                DraftsVersion::default()
+            }
         }
+    }
+
+    /// The hand-written rules with the compiled rows.
+    async fn compiled_library(
+        &self,
+        repo: &mtg_db::CardRulesRepo,
+    ) -> Result<Library, CatalogError> {
         let rows: Vec<GeneratedRules> = repo
             .all()
             .await
-            .map_err(database)?
+            .map_err(|error| CatalogError::Database(error.to_string()))?
             .into_iter()
             .map(|row| GeneratedRules {
                 oracle_id: row.oracle_id.as_str().to_owned(),
@@ -292,9 +395,91 @@ impl CardSource {
         for error in &left_out {
             tracing::warn!(%error, "compiled rules left out");
         }
-        let library = Arc::new(library);
-        *built = Some((version.clone(), library.clone()));
-        Ok((library, version))
+        Ok(library)
+    }
+
+    /// `base` with the current drafts and the state of their reads; without drafts if they cannot be read.
+    async fn with_current_drafts(&self, base: &Library) -> Library {
+        match self.current_drafts().await {
+            Ok(rows) => {
+                let (library, left_out) = base.with_drafts(&rows);
+                for error in &left_out {
+                    tracing::warn!(%error, "draft left out");
+                }
+                library
+            }
+            Err(error) => {
+                tracing::warn!(%error, "the drafts could not be read");
+                base.clone()
+            }
+        }
+    }
+
+    /// The current draft of every card with the state its verdicts give it.
+    async fn current_drafts(&self) -> Result<Vec<DraftRules>, DbError> {
+        let drafts = self.db.drafts().current().await?;
+        let states: BTreeMap<String, DraftRead> = self
+            .db
+            .reads()
+            .state()
+            .await?
+            .into_iter()
+            .map(|read| (read.oracle_id.as_str().to_owned(), read))
+            .collect();
+        Ok(drafts
+            .into_iter()
+            .map(|draft| {
+                let read = states
+                    .get(draft.oracle_id.as_str())
+                    .filter(|read| read.read_hash == draft.read_hash);
+                let state = read.map_or(mtg_db::ReadState::Pending, |read| read.state);
+                let forge = read.is_some_and(|read| read.forge);
+                draft_rules(draft, state, forge)
+            })
+            .collect())
+    }
+
+    /// The library a game that pinned `reads` builds with: the hand-written and compiled rules and exactly those
+    /// drafts, each as read and found correct whatever the verdicts are now.
+    async fn pinned_library(&self, reads: &Reads) -> Result<Arc<Library>, CatalogError> {
+        let base = self.base_library().await?;
+        let keys: Vec<DraftKey> = reads
+            .iter()
+            .map(|(card, hash)| DraftKey {
+                oracle_id: OracleId(canonical(card)),
+                read_hash: hash.clone(),
+            })
+            .collect();
+        let stored = self
+            .db
+            .drafts()
+            .get(&keys)
+            .await
+            .map_err(|error| CatalogError::Database(error.to_string()))?;
+        let found: Vec<&str> = stored
+            .iter()
+            .map(|draft| draft.oracle_id.as_str())
+            .collect();
+        let missing: Vec<String> = reads
+            .keys()
+            .filter(|card| !found.contains(&canonical(card).as_str()))
+            .cloned()
+            .collect();
+        if !missing.is_empty() {
+            return Err(CatalogError::NotFound { ids: missing });
+        }
+        let rows: Vec<DraftRules> = stored
+            .into_iter()
+            .map(|draft| {
+                let forge = is_trusted_forge(&draft);
+                draft_rules(draft, mtg_db::ReadState::Approved, forge)
+            })
+            .collect();
+        let (library, left_out) = base.with_drafts(&rows);
+        for error in &left_out {
+            tracing::warn!(%error, "pinned draft left out");
+        }
+        Ok(Arc::new(library))
     }
 
     /// The rules and capabilities to read cards with, as of now.
@@ -342,6 +527,23 @@ impl CardSource {
         &self,
         ids: &[String],
     ) -> Result<BTreeMap<String, Assembled>, CatalogError> {
+        Ok(self.assemble_pinned(ids).await?.0)
+    }
+
+    /// [`CardSource::assemble`] with the draft each card that runs on a read plays on, from the same library.
+    pub(crate) async fn assemble_pinned(
+        &self,
+        ids: &[String],
+    ) -> Result<(BTreeMap<String, Assembled>, Reads), CatalogError> {
+        let (rules, _) = self.library().await?;
+        self.assemble_in(&rules, ids).await
+    }
+
+    async fn assemble_in(
+        &self,
+        rules: &Library,
+        ids: &[String],
+    ) -> Result<(BTreeMap<String, Assembled>, Reads), CatalogError> {
         let mut wanted: Vec<&String> = Vec::new();
         for id in ids {
             if !wanted.contains(&id) {
@@ -349,9 +551,8 @@ impl CardSource {
             }
         }
         if wanted.is_empty() {
-            return Ok(BTreeMap::new());
+            return Ok((BTreeMap::new(), Reads::new()));
         }
-        let (rules, _) = self.library().await?;
         let asked: Vec<OracleId> = wanted.iter().map(|id| OracleId(canonical(id))).collect();
         let found = self
             .db
@@ -370,17 +571,23 @@ impl CardSource {
             })
             .collect();
         let mut assembled = BTreeMap::new();
+        let mut reads = Reads::new();
         let mut missing = Vec::new();
         for id in wanted {
             match by_id.get(&canonical(id)) {
                 Some(card) => {
+                    if let Some((card_id, hash)) =
+                        pin_of(rules, &canonical(id), card.support.support)
+                    {
+                        reads.insert(card_id, hash);
+                    }
                     assembled.insert(id.clone(), card.clone());
                 }
                 None => missing.push(id.clone()),
             }
         }
         if missing.is_empty() {
-            Ok(assembled)
+            Ok((assembled, reads))
         } else {
             Err(CatalogError::NotFound { ids: missing })
         }
@@ -388,31 +595,60 @@ impl CardSource {
 
     /// The definitions of the distinct cards of `ids`, by id.
     pub async fn catalog(&self, ids: &[String]) -> Result<Catalog, CatalogError> {
-        let assembled = self.assemble(ids).await?;
-        Ok(Catalog::new(assembled.into_iter().map(|(id, card)| {
-            let definition = identified(card.definition, &id);
-            (id, Arc::new(definition))
-        })))
+        Ok(self.catalog_pinned(ids).await?.0)
+    }
+
+    /// [`CardSource::catalog`] with the draft each card that runs on a read plays on.
+    pub(crate) async fn catalog_pinned(
+        &self,
+        ids: &[String],
+    ) -> Result<(Catalog, Reads), CatalogError> {
+        let (assembled, reads) = self.assemble_pinned(ids).await?;
+        Ok((catalog_of(assembled), reads))
     }
 
     /// The cards of a deck of oracle ids in deck order, copies sharing one definition.
     pub async fn deck(&self, ids: &[String]) -> Result<Vec<Arc<CardDefinition>>, CatalogError> {
-        let catalog = self.catalog(ids).await?;
-        Ok(ids
-            .iter()
-            .filter_map(|id| catalog.get(id).cloned())
-            .collect())
+        Ok(self.deck_pinned(ids).await?.0)
     }
 
-    /// The definitions a recipe needs. A recipe with no deck of oracle ids needs none and does not
-    /// touch the database, so games with demo decks resume on a server whose database has no cards.
+    /// [`CardSource::deck`] with the draft each card that runs on a read plays on.
+    pub(crate) async fn deck_pinned(
+        &self,
+        ids: &[String],
+    ) -> Result<(Vec<Arc<CardDefinition>>, Reads), CatalogError> {
+        let (catalog, reads) = self.catalog_pinned(ids).await?;
+        let cards = ids
+            .iter()
+            .filter_map(|id| catalog.get(id).cloned())
+            .collect();
+        Ok((cards, reads))
+    }
+
+    /// The definitions a recipe needs, built as the game was created: a recipe that pinned reads gets exactly those
+    /// drafts as approved, one that pinned none gets no draft. A recipe with no deck of oracle ids needs none and
+    /// does not touch the database, so games with demo decks resume on a server whose database has no cards.
     pub async fn catalog_for(&self, recipe: &GameRecipe) -> Result<Catalog, CatalogError> {
         let ids = recipe.oracle_ids();
         if ids.is_empty() {
             return Ok(Catalog::default());
         }
-        self.catalog(&ids).await
+        let rules = if recipe.reads.is_empty() {
+            self.base_library().await?
+        } else {
+            self.pinned_library(&recipe.reads).await?
+        };
+        let (assembled, _) = self.assemble_in(&rules, &ids).await?;
+        Ok(catalog_of(assembled))
     }
+}
+
+/// The definitions of assembled cards, each named as the card it is.
+fn catalog_of(assembled: BTreeMap<String, Assembled>) -> Catalog {
+    Catalog::new(assembled.into_iter().map(|(id, card)| {
+        let definition = identified(card.definition, &id);
+        (id, Arc::new(definition))
+    }))
 }
 
 #[cfg(test)]

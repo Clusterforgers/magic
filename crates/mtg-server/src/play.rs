@@ -211,11 +211,33 @@ impl<S: EventStore> GameActor<S> {
             project_events(before, events, &viewers, from_seq)?
         };
         self.store.append(self.id, from_seq, events).await?;
+        self.record_failed_reads(before, events).await;
         for batch in &mut batches {
             presence::stamp(&mut batch.table, &viewers);
         }
         self.presence.told(&viewers);
         Ok(viewers.into_iter().zip(batches).collect())
+    }
+
+    /// Records the server's `wrong` verdict for each ability the game left to the table in `events`, on the card whose
+    /// rules it was (`before` still holds the source), so the card is played by hand from the next game.
+    async fn record_failed_reads(&self, before: &GameState, events: &[Event]) {
+        let Some(recorder) = &self.recorder else {
+            return;
+        };
+        for event in events {
+            let Event::AbilityLeftToTable(left) = event else {
+                continue;
+            };
+            let identity = before
+                .object(left.source.id)
+                .and_then(|object| object.card().identity.as_ref());
+            if let Some(identity) = identity {
+                recorder
+                    .left_to_table(&identity.oracle_id, &left.text)
+                    .await;
+            }
+        }
     }
 
     /// Sends saved events to their seats, then each notice of a change (yields, then stops and Full Control), then

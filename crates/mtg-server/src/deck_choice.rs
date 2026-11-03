@@ -22,7 +22,7 @@ use std::sync::Arc;
 
 use crate::api::ApiError;
 use crate::card_api::failed;
-use crate::cards::CardSource;
+use crate::cards::{CardSource, Reads};
 use crate::deck_cards::{Line, Loaded};
 use crate::decks::lines_of;
 use crate::demo;
@@ -157,7 +157,12 @@ async fn precon(app: &AppState, code: &str) -> Result<ChosenDeck, Refused> {
         judged.leaders,
         note,
     )
-    .map(|chosen| chosen.with_own_issues(own_issues).with_printings(printings))
+    .map(|chosen| {
+        chosen
+            .with_own_issues(own_issues)
+            .with_printings(printings)
+            .with_reads(judged.reads.clone())
+    })
     .map_err(|error| {
         tracing::error!(%error, "a precon could not be fingerprinted");
         Refused::Failed(ApiError::new(
@@ -195,6 +200,7 @@ async fn stored(app: &AppState, headers: &HeaderMap, id: &str) -> Result<ChosenD
         library,
         commanders,
         companion,
+        reads,
     } = assemble(source, &lines).await?;
     let note = SeatDeck {
         name: deck.name.clone(),
@@ -209,8 +215,9 @@ async fn stored(app: &AppState, headers: &HeaderMap, id: &str) -> Result<ChosenD
             "the deck could not be read",
         ))
     };
-    let chosen =
-        ChosenDeck::led(ids, library, commander_ids, commanders, note).map_err(unreadable)?;
+    let chosen = ChosenDeck::led(ids, library, commander_ids, commanders, note)
+        .map_err(unreadable)?
+        .with_reads(reads);
     let printings = printings_of(&lines, companion.is_some());
     let chosen = match companion {
         Some((id, card)) => chosen.with_companion(id, card).map_err(unreadable)?,
@@ -227,6 +234,8 @@ struct Assembled {
     commanders: Vec<Arc<CardDefinition>>,
     /// The companion's oracle id and card, when the deck names one the game runs.
     companion: Option<(String, Arc<CardDefinition>)>,
+    /// The draft each card that runs on a read plays on.
+    reads: Reads,
 }
 
 /// The definitions of the main deck, the commanders and the companion of `lines`, read in one query.
@@ -242,7 +251,7 @@ async fn assemble(source: &CardSource, lines: &[Line]) -> Result<Assembled, ApiE
         .chain(&companion)
         .cloned()
         .collect();
-    let mut library = source.deck(&all).await?;
+    let (mut library, reads) = source.deck_pinned(&all).await?;
     let mut rest = library.split_off(ids.len());
     let card = if companion.is_some() {
         rest.pop()
@@ -255,6 +264,7 @@ async fn assemble(source: &CardSource, lines: &[Line]) -> Result<Assembled, ApiE
         companion: companion
             .zip(card)
             .filter(|(_, card)| card.companion_condition().is_some()),
+        reads,
     })
 }
 

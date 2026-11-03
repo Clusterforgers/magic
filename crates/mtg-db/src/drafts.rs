@@ -68,7 +68,7 @@ impl StoredDraft {
 /// What the current drafts and the verdicts looked like when [`DraftRepo::version`] read them: two equal
 /// versions mean no draft became current or retired and no verdict was added or removed in between, so a
 /// library built from them is current.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, Default, PartialEq, Eq)]
 pub struct DraftsVersion {
     current: String,
     reads: i64,

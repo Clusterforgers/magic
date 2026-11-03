@@ -309,6 +309,9 @@ impl<S: EventStore> GameActor<S> {
             .as_ref()
             .filter(|decks| decks.changed())
             .and_then(SeatDecks::recipe);
+        if let (Some(recorder), Some(recipe)) = (&mut self.recorder, &recipe) {
+            recorder.set_reads(recipe.reads.clone());
+        }
         if let Some(recorder) = &self.recorder
             && let Err(error) = recorder.start_with(recipe.as_ref(), manual_play).await
         {
