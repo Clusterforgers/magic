@@ -56,14 +56,15 @@ fn parts_of(pays: &[&mtg_cards::cost::CostItem]) -> Vec<Part> {
 }
 
 /// The parts of a cost that take other permanents of the payer, each with the permanents it may take now: the ones that
-/// cannot attack come first when tapping, the order of the battlefield otherwise.
+/// cannot attack come first when tapping, the order of the battlefield otherwise. The flag says the count is the X of the
+/// mana added (left at 0 here).
 fn takes_of(
     state: &GameState,
     player: PlayerId,
     source: ObjectId,
     barred: &[ObjectId],
     picks: &[&mtg_cards::cost::CostItem],
-) -> Vec<Take> {
+) -> Vec<(Take, bool)> {
     let owner = Payer {
         state,
         player,
@@ -72,8 +73,18 @@ fn takes_of(
     };
     picks
         .iter()
-        .filter_map(|item| match Part::read(item).ok().flatten()? {
-            Part::Pick(pick) => {
+        .filter_map(|item| {
+            let part = Part::read(item).ok().flatten()?;
+            let counted = part.is_counted();
+            let pick = match part {
+                Part::Pick(pick) => pick,
+                Part::X(inner) => match *inner {
+                    Part::Pick(pick) => pick,
+                    _ => return None,
+                },
+                _ => return None,
+            };
+            {
                 let sacrifice = pick.kind == Kind::Sacrifice;
                 let exile = pick.kind == Kind::ExileHand;
                 let mut from = pick.candidates(&owner);
@@ -90,14 +101,30 @@ fn takes_of(
                 } else {
                     from.sort_by_key(|id| !keywords::summoning_sick(state, *id));
                 }
-                Some(Take {
+                let take = Take {
                     sacrifice,
                     exile,
                     count: u32::try_from(pick.count).unwrap_or(u32::MAX),
                     from,
-                })
+                };
+                Some((take, counted))
             }
-            _ => None,
+        })
+        .collect()
+}
+
+/// `takes` with the count of each counted one set to `x`, the X of the mana the way adds.
+fn counted_to(takes: &[Take], counted: &[bool], x: usize) -> Vec<Take> {
+    takes
+        .iter()
+        .zip(counted)
+        .map(|(take, counted)| Take {
+            count: if *counted {
+                u32::try_from(x).unwrap_or(u32::MAX)
+            } else {
+                take.count
+            },
+            ..take.clone()
         })
         .collect()
 }
@@ -173,7 +200,10 @@ fn rule_mana(state: &GameState, player: PlayerId, id: ObjectId, printed: usize) 
         } else {
             Vec::new()
         };
-        let takes = takes_of(state, player, id, &barred, &shape.picks);
+        let (takes, counted_takes): (Vec<Take>, Vec<bool>) =
+            takes_of(state, player, id, &barred, &shape.picks)
+                .into_iter()
+                .unzip();
         if takes
             .iter()
             .any(|take| take.from.len() < take.count as usize)
@@ -182,7 +212,17 @@ fn rule_mana(state: &GameState, player: PlayerId, id: ObjectId, printed: usize) 
         }
         let (life, energy) = paid_by(&pays);
         // A cost that removes X counters pays any number up to what the source holds; each is a way of its own.
-        let x_most = pays.iter().filter_map(|part| part.most(&owner)).min();
+        let x_most = pays
+            .iter()
+            .filter_map(|part| part.most(&owner))
+            .chain(
+                takes
+                    .iter()
+                    .zip(&counted_takes)
+                    .filter(|(_, counted)| **counted)
+                    .map(|(take, _)| u32::try_from(take.from.len()).unwrap_or(u32::MAX)),
+            )
+            .min();
         let times = counting
             .amount(shape.times)
             .ok()
@@ -337,7 +377,7 @@ fn rule_mana(state: &GameState, player: PlayerId, id: ObjectId, printed: usize) 
                         0
                     },
                     cost: shape.mana.clone(),
-                    takes: takes.clone(),
+                    takes: counted_to(&takes, &counted_takes, made.len()),
                     repeat,
                 })
             })
@@ -473,7 +513,7 @@ pub(crate) fn activation(
             .iter()
             .filter_map(|item| Part::read(item).ok().flatten());
         for (part, objects) in picks.zip(taken) {
-            events.extend(part.events(state, player, id, objects));
+            events.extend(part.at(x).events(state, player, id, objects));
         }
     }
     if shape.as_ref().is_none_or(|shape| shape.tap) {
