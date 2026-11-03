@@ -12,6 +12,9 @@ mod prim;
 mod share;
 mod tree;
 mod value;
+mod value_fill;
+#[cfg(test)]
+mod value_fill_tests;
 #[cfg(test)]
 mod value_general;
 
