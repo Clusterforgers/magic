@@ -2802,6 +2802,14 @@ impl Walker<'_> {
                 w.effect_list("effects", effects, false);
                 w.scope.in_trigger = saved;
             }
+            Effect::Reflexive { targets, effects } => {
+                // The trigger has targets of its own and sees the names this resolution has bound.
+                let mut inner = Scope::new(targets, true);
+                inner.names.clone_from(&w.scope.names);
+                let saved = std::mem::replace(&mut w.scope, inner);
+                w.body_checks(targets, effects, false);
+                w.scope = saved;
+            }
             Effect::If {
                 condition,
                 then,
@@ -4815,6 +4823,14 @@ mod tests {
     #[case::target_unused(
         r#"{"Spell":{"targets":[{"what":"Player"}],"effects":[{"Draw":{}}]}}"#,
         "faces[0].abilities[0].Spell.targets[0]: target 0 is never used"
+    )]
+    #[case::reflexive_target_out_of_range(
+        r#"{"Spell":{"effects":[{"Reflexive":{"effects":[{"LoseLife":{"who":{"Target":0},"amount":1}}]}}]}}"#,
+        "Reflexive.effects[0].LoseLife.who: target 0 does not exist"
+    )]
+    #[case::reflexive_target_unused(
+        r#"{"Spell":{"effects":[{"Reflexive":{"targets":[{"what":"Player"}],"effects":[{"Draw":{}}]}}]}}"#,
+        "Reflexive.targets[0]: target 0 is never used"
     )]
     #[case::unbound(
         r#"{"Spell":{"effects":[{"Move":{"what":{"Bound":"ghost"},"to":"Hand"}}]}}"#,

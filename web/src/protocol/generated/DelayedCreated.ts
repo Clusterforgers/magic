@@ -42,6 +42,10 @@ once: boolean,
  */
 this_turn: boolean, 
 /**
+ * The targets it chooses as it goes on the stack (a reflexive trigger).
+ */
+targets?: unknown, 
+/**
  * What it does.
  */
 effects: unknown, 

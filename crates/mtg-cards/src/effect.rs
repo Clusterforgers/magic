@@ -1143,6 +1143,16 @@ pub enum Effect {
         /// What it does.
         effects: Vec<Effect>,
     },
+    /// A reflexive triggered ability ("when you do", CR 603.12): when the step before it was carried out, a trigger with
+    /// its own `targets` goes on the stack the next time a player would receive priority and runs `effects`; with no
+    /// legal target it is removed.
+    Reflexive {
+        /// The targets, chosen as the trigger goes on the stack.
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        targets: Vec<TargetSpec>,
+        /// What it does.
+        effects: Vec<Effect>,
+    },
     /// Does `then` if the condition holds, `otherwise` if not.
     If {
         /// The test.

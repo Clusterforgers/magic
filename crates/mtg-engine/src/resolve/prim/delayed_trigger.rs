@@ -4,23 +4,23 @@ use mtg_cards::effect::Effect;
 use mtg_cards::value::Amount;
 
 use super::wrong_effect;
+use crate::choose::Target;
 use crate::events::Event;
+use crate::object::ObjectRef;
 use crate::resolve::{Cx, ResolveError, Run, spell_ability};
-use crate::snapshot::snapshot;
+use crate::snapshot::{Snapshot, snapshot};
 use crate::triggers::{DelayedCreated, DelayedId};
 
-/// Sets the delayed trigger up with the names this resolution has bound so far, as they are now; it triggers on the
-/// next event its pattern describes (`docs/cards-dsl.md`, Triggers).
-pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
-    let Effect::DelayedTrigger {
-        when,
-        once,
-        this_turn,
-        effects,
-    } = effect
-    else {
-        return Err(wrong_effect("DelayedTrigger"));
-    };
+/// What a trigger set up by a resolution remembers of it.
+pub(super) struct Origin {
+    pub(super) source: ObjectRef,
+    pub(super) snapshot: Snapshot,
+    pub(super) ability: usize,
+    pub(super) bindings: Vec<(String, Vec<Target>)>,
+}
+
+/// The source as it is (else as the resolution knows it), the ability whose resolution this is and the names bound so far.
+pub(super) fn origin(cx: &Cx<'_>) -> Result<Origin, ResolveError> {
     let state = cx.state();
     let source = cx.scope.source;
     let gone = || ResolveError::Invalid("the source of a delayed trigger is gone".into());
@@ -49,6 +49,33 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         .iter()
         .map(|(name, targets)| (name.clone(), targets.clone()))
         .collect();
+    Ok(Origin {
+        source,
+        snapshot,
+        ability,
+        bindings,
+    })
+}
+
+/// Sets the delayed trigger up with the names this resolution has bound so far, as they are now; it triggers on the
+/// next event its pattern describes (`docs/cards-dsl.md`, Triggers).
+pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
+    let Effect::DelayedTrigger {
+        when,
+        once,
+        this_turn,
+        effects,
+    } = effect
+    else {
+        return Err(wrong_effect("DelayedTrigger"));
+    };
+    let Origin {
+        source,
+        snapshot,
+        ability,
+        bindings,
+    } = origin(cx)?;
+    let state = cx.state();
     Ok(Run::events(vec![Event::DelayedTriggerCreated(Box::new(
         DelayedCreated {
             id: DelayedId(state.next_delayed),
@@ -60,6 +87,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
             once: *once,
             this_turn: *this_turn,
             effects: fixed_target_stats(cx, effects)?,
+            targets: Vec::new(),
             bindings,
         },
     ))]))
