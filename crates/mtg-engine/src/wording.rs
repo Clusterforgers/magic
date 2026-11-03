@@ -929,6 +929,9 @@ pub(crate) const ENCHANT: &str = "Choose what the Aura enchants.";
 /// What a scry asks about the cards looked at.
 pub(crate) const SCRY: &str = "Put any number of the cards on the bottom of your library.";
 
+/// The question about cards that may begin the game on the battlefield.
+pub(crate) const OPENING_HAND: &str = "Choose the cards to begin the game on the battlefield.";
+
 /// What a surveil asks about the cards looked at.
 pub(crate) const SURVEIL: &str = "Put any number of the cards into your graveyard.";
 

@@ -110,6 +110,13 @@ pub enum Event {
         /// Cards in the order placed (the last is the bottom).
         cards: Vec<ObjectId>,
     },
+    /// Cards that begin the game on the battlefield were put there from the opening hand (CR 103.6).
+    OpeningCardsPlayed {
+        /// Whose cards.
+        player: PlayerId,
+        /// The cards, from the hand.
+        cards: Vec<ObjectId>,
+    },
     /// All players kept; the game proper begins.
     MulliganPhaseEnded,
     /// A new turn began.
@@ -1110,6 +1117,7 @@ impl Event {
             Event::LibraryRefilled { order: cards, .. }
             | Event::HandDealt { cards, .. }
             | Event::CardsBottomed { cards, .. }
+            | Event::OpeningCardsPlayed { cards, .. }
             | Event::LibraryBottomed { cards, .. } => cards.clone(),
             Event::Scried(scried) => scried.top.iter().chain(&scried.bottom).copied().collect(),
             Event::Surveilled(surveilled) => surveilled

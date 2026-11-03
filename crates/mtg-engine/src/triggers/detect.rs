@@ -1862,7 +1862,7 @@ fn object_triggers(
             };
             // An ability that triggers only once each turn does so once, whatever else is said of it.
             if limit.is_none() && zone == ZoneKind::Battlefield {
-                for _ in 0..repeats(state, happened, controller) {
+                for _ in 0..repeats(state, happened, controller, source) {
                     found.push(trigger.clone());
                 }
             }
@@ -1947,10 +1947,22 @@ fn elsewhere(state: &GameState, happened: &Happened, found: &mut Vec<Triggered>,
 
 /// How many additional times a triggered ability of a permanent `controller` controls triggers on `happened`: once for
 /// each rule in force that says so and whose event this is.
-fn repeats(state: &GameState, happened: &Happened, controller: PlayerId) -> usize {
+fn repeats(
+    state: &GameState,
+    happened: &Happened,
+    controller: PlayerId,
+    watcher: ObjectRef,
+) -> usize {
     triggers_again(state)
         .iter()
         .filter(|again| again.controller == controller)
+        .filter(|again| {
+            again.from.as_ref().is_none_or(|from| {
+                Scope::announcing(state, again.controller, again.source)
+                    .selects(from, watcher)
+                    .unwrap_or(false)
+            })
+        })
         .filter(|again| {
             let scope = Scope::announcing(state, again.controller, again.source);
             matching(&again.cause, happened, &scope).is_some()

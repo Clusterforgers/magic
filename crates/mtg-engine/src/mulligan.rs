@@ -1,5 +1,6 @@
 //! Opening procedure: first player, shuffles, opening hands and the London mulligan (CR 103).
 
+use mtg_cards::ability::Ability;
 use mtg_core::card::CardType;
 use mtg_core::ids::{ObjectId, PlayerId};
 
@@ -146,6 +147,47 @@ pub(crate) fn scry_answer(
     })]))
 }
 
+/// The cards in the hand of `player` that may begin the game on the battlefield (CR 103.6).
+pub(crate) fn opening_cards(state: &GameState, player: PlayerId) -> Vec<ObjectId> {
+    state
+        .zone(Zone::Hand(player))
+        .iter()
+        .copied()
+        .filter(|id| {
+            crate::ability_reader::abilities_of(state, *id)
+                .iter()
+                .any(|(_, ability)| matches!(**ability, Ability::OpeningHand))
+        })
+        .collect()
+}
+
+/// The answer to a `ChooseCards` of the opening: the opening-hand question of a seat that is `Opening`, else the scry.
+pub(crate) fn opening_choice(
+    state: &GameState,
+    player: PlayerId,
+    options: &CardsOptions,
+    choice: &CardsChoice,
+) -> Result<Outcome, EngineError> {
+    if status(state, player) == Some(MulliganStatus::Opening) {
+        opening_answer(player, options, choice)
+    } else {
+        scry_answer(player, options, choice)
+    }
+}
+
+/// The answer to the opening-hand question: the chosen cards are put onto the battlefield.
+pub(crate) fn opening_answer(
+    player: PlayerId,
+    options: &CardsOptions,
+    choice: &CardsChoice,
+) -> Result<Outcome, EngineError> {
+    check_cards(options, &choice.0)?;
+    Ok(Outcome::Events(vec![Event::OpeningCardsPlayed {
+        player,
+        cards: choice.0.clone(),
+    }]))
+}
+
 /// The question the opening asks `player` now, if any: the cards to bottom, the scry, or keep or mulligan.
 pub(crate) fn seat_decision(state: &GameState, player: PlayerId) -> Option<Decision> {
     let kind = match status(state, player)? {
@@ -154,6 +196,17 @@ pub(crate) fn seat_decision(state: &GameState, player: PlayerId) -> Option<Decis
             count,
         }),
         MulliganStatus::Scrying => return scry_decision(state, player),
+        MulliganStatus::Opening => {
+            let from = opening_cards(state, player);
+            DecisionKind::ChooseCards(CardsOptions {
+                source: *from.first()?,
+                max: u32::try_from(from.len()).unwrap_or(u32::MAX),
+                from,
+                min: 0,
+                text: wording::OPENING_HAND.to_owned(),
+                can_cancel: false,
+            })
+        }
         MulliganStatus::Deciding => {
             let taken = state.player(player).map_or(0, Player::mulligans);
             DecisionKind::Mulligan(state.ruleset().mulligan_options(

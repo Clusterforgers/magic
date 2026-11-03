@@ -339,6 +339,7 @@ mod ninjutsu;
 mod object_nth;
 mod observed_stasis;
 mod offered_helpers;
+mod opening_hand;
 mod optional_triggers;
 mod owner_left;
 mod paid_reads;

@@ -255,6 +255,20 @@ pub(super) fn rule(ctx: &Ctx, rule: &GameRule) -> String {
             format!("{} has no maximum hand size", phrase::who(ctx, who))
         }
         GameRule::SkipDrawStep(who) => format!("{} skips the draw step", phrase::who(ctx, who)),
+        GameRule::MaxHandSize { who, size } => format!(
+            "{} has a maximum hand size of {}",
+            phrase::who(ctx, who),
+            phrase::amount(ctx, size)
+        ),
+        GameRule::NoLegendRule(who) => format!(
+            "the legend rule does not apply to {}",
+            phrase::who(ctx, who)
+        ),
+        GameRule::UntapDuring { what, whose } => format!(
+            "untap {} during the untap step of {}",
+            phrase::selectors(ctx, what),
+            phrase::who(ctx, whose)
+        ),
         GameRule::MayCast(permission) => {
             let from = permission.from.map_or_else(String::new, |zone| {
                 format!(" from {}", phrase::zone_text(zone))

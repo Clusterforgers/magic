@@ -155,7 +155,7 @@ pub(crate) fn handle(
         (DecisionKind::ChooseCards(options), Answer::ChooseCards(choice))
             if state.stage() == Stage::Mulligan =>
         {
-            crate::mulligan::scry_answer(player, options, &choice)
+            crate::mulligan::opening_choice(state, player, options, &choice)
         }
         // Nothing resolving and nothing announced: the question is the legend rule of the state-based actions.
         (DecisionKind::ChooseCards(options), Answer::ChooseCards(choice))

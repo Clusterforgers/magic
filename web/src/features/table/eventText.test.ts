@@ -37,6 +37,10 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
   MulliganDeclared: [{ MulliganDeclared: { player: 1 } }, 'Bo decides to mulligan'],
   MulliganTaken: [{ MulliganTaken: { player: 1, library_order: [] } }, 'Bo takes a mulligan'],
   MulliganKept: [{ MulliganKept: { player: 0 } }, 'Ana keeps their hand'],
+  OpeningCardsPlayed: [
+    { OpeningCardsPlayed: { player: 0, cards: [] } },
+    'Ana begins the game with no cards on the battlefield',
+  ],
   CardsBottomed: [
     { CardsBottomed: { player: 0, cards: [1, 2] } },
     'Ana puts 2 cards on the bottom of their library',

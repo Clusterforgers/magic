@@ -15,7 +15,7 @@ use crate::flow::Progress;
 use crate::object::{GameObject, PermanentState};
 use crate::player::Player;
 use crate::priority::{all_passed, priority_options};
-use crate::rules::{cant_draw, no_max_hand_size, skips_draw_step};
+use crate::rules::{cant_draw, max_hand_size, no_max_hand_size, skips_draw_step, untap_during};
 use crate::stack::resolve_top;
 use crate::state::{GameResult, GameState};
 use crate::turn::{ExtraTurn, Step};
@@ -65,6 +65,7 @@ fn begin_step(state: &GameState, step: Step) -> Progress {
                     _ => None,
                 })
                 .collect();
+            let during = active.map_or_else(Vec::new, |active| untap_during(state, active));
             events.extend(
                 state
                     .zone(Zone::Battlefield)
@@ -73,7 +74,7 @@ fn begin_step(state: &GameState, step: Step) -> Progress {
                     .filter(|id| {
                         active.is_some()
                             && !going.contains(*id)
-                            && controller_of(state, **id) == active
+                            && (controller_of(state, **id) == active || during.contains(*id))
                             && !crate::characteristics::doesnt_untap(state, **id)
                             && state
                                 .object(**id)
@@ -293,7 +294,8 @@ fn cleanup(state: &GameState) -> Progress {
         let most = state
             .ruleset()
             .max_hand_size()
-            .filter(|_| !no_max_hand_size(state, active));
+            .filter(|_| !no_max_hand_size(state, active))
+            .map(|base| max_hand_size(state, active, base));
         if let Some(most) = most.filter(|most| hand.len() > *most) {
             return Progress::Decide(Decision {
                 player: active,

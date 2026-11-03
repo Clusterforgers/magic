@@ -83,6 +83,7 @@ fn fold_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         | Event::MulliganTaken { .. }
         | Event::MulliganKept { .. }
         | Event::CardsBottomed { .. }
+        | Event::OpeningCardsPlayed { .. }
         | Event::MulliganPhaseEnded => opening::apply(state, event),
         Event::LandPlayed { .. }
         | Event::SpellCast { .. }
