@@ -23,6 +23,7 @@ pub(super) fn label(ability: &Ability) -> String {
         Ability::AdditionalCost { .. } => "additional cost".to_owned(),
         Ability::FreeCast { .. } => "alternative cost".to_owned(),
         Ability::CastOnly { .. } => "casting restriction".to_owned(),
+        Ability::OpeningHand => "opening-hand ability".to_owned(),
         Ability::Keyword(keyword) => format!("keyword {}", parts::keyword(&ctx, keyword)),
         Ability::Manual { .. } => "played by hand".to_owned(),
     }
@@ -250,6 +251,10 @@ fn costs(ability: &Ability, depth: u8, out: &mut Vec<Step>) {
             ));
             gate(&ctx, "if", condition.as_ref(), depth, out);
         }
+        Ability::OpeningHand => out.push(Step::new(
+            depth,
+            "may begin the game on the battlefield if in the opening hand".to_owned(),
+        )),
         Ability::CastOnly { condition } => {
             out.push(Step::new(
                 depth,

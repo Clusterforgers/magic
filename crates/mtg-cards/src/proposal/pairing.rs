@@ -70,6 +70,7 @@ fn kinds_of(ability: &Ability) -> &'static [ClauseKind] {
         | Ability::AdditionalCost { .. }
         | Ability::FreeCast { .. }
         | Ability::CastOnly { .. }
+        | Ability::OpeningHand
         | Ability::CostModifier { .. } => &[ClauseKind::Static],
         Ability::Loyalty { .. } => &[ClauseKind::Loyalty],
         Ability::Activated { .. } => &[ClauseKind::Activated],

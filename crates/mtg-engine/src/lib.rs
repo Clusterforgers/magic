@@ -110,6 +110,8 @@ pub mod priority;
 pub mod replace;
 pub mod resolve;
 pub mod rng;
+#[cfg(test)]
+mod rule_options;
 pub mod rules;
 pub mod setup;
 pub mod sight;

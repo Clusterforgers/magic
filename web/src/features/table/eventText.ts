@@ -703,6 +703,13 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
   }
   if ('MulliganDeclared' in event) return line(`${n.seat(event.MulliganDeclared.player)} decides to mulligan`)
   if ('MulliganTaken' in event) return line(`${n.seat(event.MulliganTaken.player)} takes a mulligan`)
+  if ('OpeningCardsPlayed' in event) {
+    const { player, cards: begun } = event.OpeningCardsPlayed
+    const names = begun.map((id) => n.card(id)).join(', ')
+    return line(
+      `${n.seat(player)} begins the game with ${names === '' ? 'no cards' : names} on the battlefield`,
+    )
+  }
   if ('MulliganKept' in event) return line(`${n.seat(event.MulliganKept.player)} keeps their hand`)
   if ('CardsBottomed' in event) {
     const { player, cards: bottomed } = event.CardsBottomed

@@ -97,6 +97,14 @@ player: PlayerId,
 /**
  * Cards in the order placed (the last is the bottom).
  */
+cards: Array<ObjectId>, } } | { "OpeningCardsPlayed": { 
+/**
+ * Whose cards.
+ */
+player: PlayerId, 
+/**
+ * The cards, from the hand.
+ */
 cards: Array<ObjectId>, } } | "MulliganPhaseEnded" | { "TurnBegan": { 
 /**
  * Turn number.

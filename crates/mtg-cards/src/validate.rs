@@ -3062,6 +3062,7 @@ impl Walker<'_> {
                 w.w14c_free_cast(condition.as_ref(), cost.as_ref());
             }
             Ability::CastOnly { condition } => w.w17c_cast_only(condition),
+            Ability::OpeningHand => {}
             Ability::Keyword(keyword) => w.keyword_ability(keyword),
             Ability::Manual { reason, span } => {
                 if reason.trim().is_empty() {
@@ -3162,11 +3163,36 @@ impl Walker<'_> {
             | GameRule::CantCastSpells { .. }
             | GameRule::ToughnessAssignsDamage(_)
             | GameRule::CountersRemain => self.w17b_rule(&tag, rule),
-            GameRule::TriggerAgain { cause } => {
+            GameRule::TriggerAgain { .. }
+            | GameRule::NoLegendRule(_)
+            | GameRule::MaxHandSize { .. }
+            | GameRule::UntapDuring { .. } => self.rule_option(&tag, rule),
+        }
+    }
+
+    /// The rules that set an option of the game: who they apply to, what they select and the size they set.
+    fn rule_option(&mut self, tag: &str, rule: &GameRule) {
+        match rule {
+            GameRule::TriggerAgain { cause, source } => {
                 let saved = std::mem::replace(&mut self.scope, Scope::new(&[], false));
-                self.at(tag, |w| w.at("cause", |w| w.trigger_pattern(cause)));
+                self.at(tag, |w| {
+                    w.at("cause", |w| w.trigger_pattern(cause));
+                    if let Some(source) = source {
+                        w.at("source", |w| w.selector(source));
+                    }
+                });
                 self.scope = saved;
             }
+            GameRule::NoLegendRule(who) => self.at(tag, |w| w.reference(who, Kind::Player)),
+            GameRule::MaxHandSize { who, size } => self.at(tag, |w| {
+                w.at("who", |w| w.reference(who, Kind::Player));
+                w.at("size", |w| w.amount(size));
+            }),
+            GameRule::UntapDuring { what, whose } => self.at(tag, |w| {
+                w.at("what", |w| w.selector(what));
+                w.at("whose", |w| w.reference(whose, Kind::Player));
+            }),
+            _ => {}
         }
     }
 

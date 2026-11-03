@@ -286,6 +286,7 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         | Event::FirstPlayerChosen { .. }
         | Event::MulliganPhaseBegan
         | Event::MulliganDeclared { .. }
+        | Event::OpeningCardsPlayed { .. }
         | Event::MulliganKept { .. }
         | Event::MulliganPhaseEnded
         | Event::TurnBegan { .. }

@@ -139,6 +139,8 @@ export function describeMulligan(status: MulliganStatus, mulligans: number): str
       return `Deciding whether to keep${taken}`
     case 'Mulliganing':
       return `Mulligan taken, waiting for the table${taken}`
+    case 'Opening':
+      return `Choosing cards to begin on the battlefield${taken}`
     case 'Scrying':
       return `Looking at the top card of their library${taken}`
     case 'Kept':
@@ -160,6 +162,8 @@ export function describeOpening(status: MulliganStatus, mulligans: number): stri
       return `deciding${taken}`
     case 'Mulliganing':
       return `taking a mulligan${taken}`
+    case 'Opening':
+      return `choosing cards to begin on the battlefield${taken}`
     case 'Scrying':
       return `scrying${taken}`
     case 'Kept':
@@ -190,6 +194,7 @@ export function waitingOn(state: PlayState): Waiting {
         player.lost === null &&
         (player.mulligan === 'Deciding' ||
           player.mulligan === 'Scrying' ||
+          player.mulligan === 'Opening' ||
           typeof player.mulligan !== 'string'),
     )
     return others(deciding.map((player) => player.seat).filter((who) => who !== seat))

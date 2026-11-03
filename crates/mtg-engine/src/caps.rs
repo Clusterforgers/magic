@@ -266,6 +266,9 @@ const RUNS: &[&str] = &[
     "Rule.SkipExtraTurns",
     "Rule.RevealTop",
     "Rule.NoMaxHandSize",
+    "Rule.MaxHandSize",
+    "Rule.NoLegendRule",
+    "Rule.UntapDuring",
     "Rule.SkipDrawStep",
     "Rule.LookAtTopAnyTime",
     "Rule.AdditionalLandPlays",
@@ -727,6 +730,9 @@ mod tests {
     #[case::no_searching("Rule.CantSearch", true)]
     #[case::a_revealed_top("Rule.RevealTop", true)]
     #[case::no_maximum_hand_size("Rule.NoMaxHandSize", true)]
+    #[case::a_set_maximum_hand_size("Rule.MaxHandSize", true)]
+    #[case::no_legend_rule("Rule.NoLegendRule", true)]
+    #[case::untapping_in_other_steps("Rule.UntapDuring", true)]
     #[case::no_draw_step("Rule.SkipDrawStep", true)]
     #[case::triggers_again("Rule.TriggerAgain", true)]
     #[case::damage_that_cant_be_prevented("Rule.DamageCantBePrevented", true)]
