@@ -14,7 +14,7 @@ Open card, compiler and wording items by code area; the rules of `docs/ROADMAP.m
 - [ ] (gn1j) Writer composition: a frame writes with parts that write alone, for the combinations gn1a names (after gn1a); frees about 27 ledger cards (Sylvan Library, Vanquisher's Banner, Emry, Lurker of the Loch); `compile/read/render`
 - [ ] (gn1k) Activated-ability modifiers: `CostModifier.applies_to` an ability kind with `change: Instead(cost)`, activate as though haste, loyalty twice; frees about 10 ledger cards (Thousand-Year Elixir, Fluctuator, Forge Anew); `ability.rs`, engine announcement
 - [ ] (gn1l) Copy exceptions: `BecomeCopy.except` keeps the source's ability and sets name and supertype, types added on a return (with o2fb); frees about 5 ledger cards (Thespian's Stage, Enduring Vitality, Sarkhan, Soul Aflame); `effect.rs`, `become_copy.rs`
-- [~] (gn1m) (gn1-costs) Cost parts `PutCounters`, `UntapPermanents`, `Exert`, `RemoveCountersAmong` and counted sacrifices (with g6d); frees about 7 ledger cards (Devoted Druid, Arena of Glory, Tekuthal); `cost.rs`, engine `price.rs`
+- [ ] (gn1o) Mana abilities whose cost puts counters on the source, exerts it or untaps permanents run as mana abilities (after gn1e); frees Devoted Druid and Arena of Glory; `assemble.rs` `pays_with_activation`
 - [ ] (gn1n) `Effect::ChangeTargets { what, to }` on the copy retarget path; frees about 4 ledger cards (Misdirection, Redirect Lightning, Bolt Bend); `effect.rs`, `prim/retarget.rs`
 
 ## Forge coverage

@@ -10,7 +10,7 @@
 use std::borrow::Cow;
 
 use mtg_cards::ability::Ability;
-use mtg_core::ids::ObjectId;
+use mtg_core::ids::{ObjectId, PlayerId};
 
 use super::{Ctx, Needs, Next, What, Work, x};
 use crate::choose::{CardsOptions, Choices};
@@ -20,12 +20,19 @@ use crate::price::Price;
 use crate::state::GameState;
 
 /// The price of the cost of an activated ability, when it has parts beyond `{T}`, mana and the loss of the source.
-pub(super) fn read(what: &What, rules: Option<&Ability>) -> Option<Box<Price>> {
+pub(super) fn read(
+    state: &GameState,
+    player: PlayerId,
+    what: &What,
+    rules: Option<&Ability>,
+) -> Option<Box<Price>> {
     match (what, rules?) {
-        (What::Ability(_), Ability::Activated { cost, .. }) => Price::announced(cost)
-            .ok()
-            .filter(|price| !price.parts.is_empty())
-            .map(Box::new),
+        (What::Ability(ability), Ability::Activated { cost, .. }) => {
+            Price::announced_in(cost, state, player, ability.object)
+                .ok()
+                .filter(|price| !price.parts.is_empty())
+                .map(Box::new)
+        }
         _ => None,
     }
 }

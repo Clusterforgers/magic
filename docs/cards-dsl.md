@@ -170,6 +170,7 @@ CostItem    = Mana(ManaCostX) | Tap | Untap | PayLife(Amount) | SacrificeSelf | 
             | Sacrifice{filter,count} | Discard{count,filter?} | PayEnergy(Amount) | RemoveCounters{counter,count}
             | TapPermanents{filter,count} | TapPower{filter,power} | ExileFromGraveyard{filter,count} | ExileFromHand{filter,count}
             | RevealFromHand{filter,count} | ReturnToHand{filter,count} | OneOf([Cost])
+            | PutCounters{counter,count} | UntapPermanents{filter,count} | Exert | RemoveCountersAmong{counter?,count,from}
 Modification= ModifyPT{power,toughness} SetPT{..} SwitchPT AddType SetTypes RemoveSupertype AddSubtype SetCreatureTypes SetLandTypes AddAllCreatureTypes SetColors
             | AddKeyword AddProtectionFromChosenColor AddProtectionFromChosenCardType RemoveKeyword SetController(Ref) CantAttack CantAttackYou(Attacked) CantBlock
             | CantBeTurnedFaceUp CantBeBlocked CantBeBlockedBy(Selector)

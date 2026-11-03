@@ -120,6 +120,24 @@ const RUNS: &[&str] = &[
     "Cost.RemoveCounters",
     "Cost.ExileFromGraveyard",
     "Cost.TapPermanents",
+    "Cost.UntapPermanents",
+    "Cost.PutCounters",
+    "Cost.Exert",
+    "Cost.RemoveCountersAmong",
+    "Cost.PayLife.Counted.Activated",
+    "Cost.PayEnergy.Counted.Activated",
+    "Cost.Mill.Counted.Activated",
+    "Cost.RemoveCounters.Counted.Activated",
+    "Cost.Sacrifice.Counted.Activated",
+    "Cost.Discard.Counted.Activated",
+    "Cost.ExileFromGraveyard.Counted.Activated",
+    "Cost.ExileFromHand.Counted.Activated",
+    "Cost.RevealFromHand.Counted.Activated",
+    "Cost.TapPermanents.Counted.Activated",
+    "Cost.ReturnToHand.Counted.Activated",
+    "Cost.PutCounters.Counted.Activated",
+    "Cost.UntapPermanents.Counted.Activated",
+    "Cost.RemoveCountersAmong.Counted.Activated",
     "Cost.ReturnToHand",
     "Cost.ExileFromHand",
     "Cost.RevealFromHand",
@@ -887,6 +905,12 @@ mod tests {
     #[case::paying_a_counted_amount_of_energy("Cost.PayEnergy.Counted", false)]
     #[case::removing_counters_as_a_cost("Cost.RemoveCounters", true)]
     #[case::tapping_permanents_as_a_cost("Cost.TapPermanents", true)]
+    #[case::gn1m_putting_counters_as_a_cost("Cost.PutCounters", true)]
+    #[case::gn1m_exerting_as_a_cost("Cost.Exert", true)]
+    #[case::gn1m_untapping_as_a_cost("Cost.UntapPermanents", true)]
+    #[case::gn1m_removing_counters_among_as_a_cost("Cost.RemoveCountersAmong", true)]
+    #[case::gn1m_a_counted_sacrifice_of_an_ability("Cost.Sacrifice.Counted.Activated", true)]
+    #[case::gn1m_a_counted_sacrifice_elsewhere("Cost.Sacrifice.Counted", false)]
     #[case::exiling_from_a_graveyard_as_a_cost("Cost.ExileFromGraveyard", true)]
     #[case::returning_to_a_hand_as_a_cost("Cost.ReturnToHand", true)]
     #[case::dealing_damage_triggers("Trigger.DealsDamage", true)]

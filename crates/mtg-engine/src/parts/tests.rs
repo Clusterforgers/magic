@@ -168,6 +168,7 @@ fn an_amount_that_is_not_a_fixed_number_is_named(#[case] json: &str, #[case] nam
 )]
 #[case::w2f_a_creature_with_any_counter(r#"{"RemoveCounters":{"from":[{"Type":"Creature"}]}}"#, &[], &["Source"])]
 #[case::w2f_no_artifact_with_any_counter(r#"{"RemoveCounters":{"from":[{"Type":"Artifact"}]}}"#, &[], &[])]
+#[case::the_tapped_creature_to_untap(r#"{"UntapPermanents":{"filter":[{"Type":"Creature"}]}}"#, &[], &["Ogre"])]
 #[case::a_land_to_return(r#"{"ReturnToHand":{"filter":[{"Type":"Artifact"}]}}"#, &[], &["Relic"])]
 fn a_pick_offers_what_the_player_may_take(
     #[case] json: &str,
@@ -223,6 +224,32 @@ fn a_pick_offers_what_the_player_may_take(
 #[case::w2f_two_permanents_with_any_counter(r#"{"RemoveCounters":{"count":2,"from":[]}}"#, false)]
 #[case::three_cards_to_discard(r#"{"Discard":{"count":3}}"#, false)]
 #[case::two_cards_to_discard(r#"{"Discard":{"count":2}}"#, true)]
+#[case::counters_put_on_the_source(r#"{"PutCounters":{"counter":"charge","count":2}}"#, true)]
+#[case::exerting_the_source(r#""Exert""#, true)]
+#[case::untapping_the_one_tapped_creature(
+    r#"{"UntapPermanents":{"filter":[{"Type":"Creature"}]}}"#,
+    true
+)]
+#[case::untapping_two_tapped_creatures(
+    r#"{"UntapPermanents":{"filter":[{"Type":"Creature"}],"count":2}}"#,
+    false
+)]
+#[case::untapping_a_tapped_artifact(
+    r#"{"UntapPermanents":{"filter":[{"Type":"Artifact"}]}}"#,
+    false
+)]
+#[case::three_counters_among_the_creatures(
+    r#"{"RemoveCountersAmong":{"counter":"charge","count":3,"from":[{"Type":"Creature"}]}}"#,
+    true
+)]
+#[case::four_counters_among_the_creatures(
+    r#"{"RemoveCountersAmong":{"counter":"charge","count":4,"from":[{"Type":"Creature"}]}}"#,
+    false
+)]
+#[case::counters_among_the_artifacts(
+    r#"{"RemoveCountersAmong":{"count":1,"from":[{"Type":"Artifact"}]}}"#,
+    false
+)]
 fn a_part_is_payable_with_what_it_needs(#[case] json: &str, #[case] payable: bool) {
     let game = game();
     assert_eq!(

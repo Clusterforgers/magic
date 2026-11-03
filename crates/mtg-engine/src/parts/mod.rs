@@ -4,6 +4,7 @@
 //! A cost is read into [`Part`]s as the ability is announced. The picks are asked then, with `ChooseCards`
 //! (`announce/parts.rs`), and every part is paid with its events as the ability goes on the stack (`cast.rs`).
 
+mod among;
 mod bounce;
 mod c11c_counter_picks;
 mod counters;
@@ -15,7 +16,9 @@ mod life;
 pub(crate) mod mill;
 mod reveal;
 mod sacrifice;
+mod source;
 mod tap;
+mod untap;
 
 pub(crate) use counters::after_removal;
 
@@ -46,6 +49,8 @@ pub(crate) enum Kind {
     Tap,
     /// Any number of untapped permanents the payer controls are tapped, with total power at least `Pick.count`.
     TapPower,
+    /// A tapped permanent the payer controls is untapped.
+    Untap,
     /// A permanent the payer controls returns to its owner's hand.
     Return,
     /// A permanent the payer controls loses a counter of the kind its filter names.
@@ -75,6 +80,24 @@ pub(crate) enum Part {
         /// How many.
         count: u32,
     },
+    /// Counters put on the source.
+    PutCounters {
+        /// The kind of counter.
+        counter: CounterKind,
+        /// How many.
+        count: u32,
+    },
+    /// The source is exerted (CR 701.43).
+    Exert,
+    /// Counters removed in all from among the permanents the payer controls that match.
+    Among {
+        /// The kind of counter; any kind when absent.
+        counter: Option<CounterKind>,
+        /// The permanents the counters come from.
+        filter: Selector,
+        /// How many counters in all.
+        count: u32,
+    },
     /// Energy counters paid (CR 107.14).
     Energy(u32),
     /// Cards milled from the top of the payer's library (CR 701.17).
@@ -92,6 +115,9 @@ const fn counted(item: &CostItem) -> &'static str {
         CostItem::PayEnergy(_) => "Cost.PayEnergy.Counted",
         CostItem::Mill(_) => "Cost.Mill.Counted",
         CostItem::RemoveCounters { .. } => "Cost.RemoveCounters.Counted",
+        CostItem::PutCounters { .. } => "Cost.PutCounters.Counted",
+        CostItem::UntapPermanents { .. } => "Cost.UntapPermanents.Counted",
+        CostItem::RemoveCountersAmong { .. } => "Cost.RemoveCountersAmong.Counted",
         CostItem::Sacrifice { .. } => "Cost.Sacrifice.Counted",
         CostItem::Discard { .. } => "Cost.Discard.Counted",
         CostItem::ExileFromGraveyard { .. } => "Cost.ExileFromGraveyard.Counted",
@@ -173,6 +199,31 @@ impl Part {
                     x,
                 )
             }
+            CostItem::PutCounters { counter, count } => {
+                let (number, x) = amount(count, item)?;
+                (
+                    Part::PutCounters {
+                        counter: counter.clone(),
+                        count: number,
+                    },
+                    x,
+                )
+            }
+            CostItem::Exert => (Part::Exert, false),
+            CostItem::RemoveCountersAmong {
+                counter,
+                count,
+                from,
+            } => {
+                let (number, x) = amount(count, item)?;
+                let part = Part::Among {
+                    counter: counter.clone(),
+                    filter: from.clone(),
+                    count: number,
+                };
+                (part, x)
+            }
+            CostItem::UntapPermanents { filter, count } => pick(Kind::Untap, filter, count, item)?,
             CostItem::Sacrifice { filter, count } => pick(Kind::Sacrifice, filter, count, item)?,
             CostItem::Discard { count, filter } => pick(
                 Kind::Discard,
@@ -213,6 +264,18 @@ impl Part {
                     counter: counter.clone(),
                     count: x,
                 },
+                Part::PutCounters { counter, .. } => Part::PutCounters {
+                    counter: counter.clone(),
+                    count: x,
+                },
+                Part::Among {
+                    counter, filter, ..
+                } => Part::Among {
+                    counter: counter.clone(),
+                    filter: filter.clone(),
+                    count: x,
+                },
+                Part::Exert => Part::Exert,
                 Part::Pick(pick) => Part::Pick(Pick {
                     count: usize::try_from(x).unwrap_or(usize::MAX),
                     ..pick.clone()
@@ -242,8 +305,12 @@ impl Part {
             Part::Energy(_) => energy::most(payer),
             Part::Mill(_) => mill::most(payer),
             Part::Counters { counter, .. } => counters::most(payer, counter),
+            Part::PutCounters { .. } => u32::MAX,
+            Part::Among {
+                counter, filter, ..
+            } => among::most(payer, filter, counter.as_ref()),
             Part::Pick(pick) => u32::try_from(pick.candidates(payer).len()).unwrap_or(u32::MAX),
-            Part::X(_) => return None,
+            Part::Exert | Part::X(_) => return None,
         };
         Some(number)
     }
@@ -255,6 +322,9 @@ impl Part {
             Part::Energy(_) => "Cost.PayEnergy",
             Part::Mill(_) => "Cost.Mill",
             Part::Counters { .. } => "Cost.RemoveCounters",
+            Part::PutCounters { .. } => "Cost.PutCounters",
+            Part::Exert => "Cost.Exert",
+            Part::Among { .. } => "Cost.RemoveCountersAmong",
             Part::X(inner) => inner.name(),
             Part::Pick(pick) => match pick.kind {
                 Kind::Sacrifice => "Cost.Sacrifice",
@@ -265,6 +335,7 @@ impl Part {
                 Kind::Tap => "Cost.TapPermanents",
                 Kind::TapPower => "Cost.TapPower",
                 Kind::Return => "Cost.ReturnToHand",
+                Kind::Untap => "Cost.UntapPermanents",
                 Kind::Counter => "Cost.RemoveCounters",
             },
         }
@@ -285,6 +356,17 @@ impl Part {
             Part::Counters { counter, count } => {
                 let plural = if *count == 1 { "" } else { "s" };
                 format!("Remove {count} {} counter{plural}", counter.name())
+            }
+            Part::PutCounters { counter, count } => {
+                let plural = if *count == 1 { "" } else { "s" };
+                format!(
+                    "Put {count} {} counter{plural} on this permanent",
+                    counter.name()
+                )
+            }
+            Part::Exert => "Exert this permanent".to_owned(),
+            Part::Among { count, .. } => {
+                format!("Remove {count} counters from among your permanents")
             }
             Part::Pick(pick) => pick.text().trim_end_matches('.').to_owned(),
             Part::X(inner) => match &**inner {
@@ -315,6 +397,12 @@ impl Part {
             Part::Counters { counter, count } => {
                 counters::payable(payer, counter, *count).then(Vec::new)
             }
+            Part::PutCounters { .. } | Part::Exert => source::payable(payer).then(Vec::new),
+            Part::Among {
+                counter,
+                filter,
+                count,
+            } => among::payable(payer, filter, counter.as_ref(), *count).then(Vec::new),
             Part::Pick(pick) if pick.kind == Kind::TapPower => {
                 let power = u32::try_from(pick.count).unwrap_or(u32::MAX);
                 tap::enough(payer.state, pick.candidates(payer), power, spare)
@@ -352,6 +440,13 @@ impl Part {
             Part::Energy(amount) => energy::events(player, *amount),
             Part::Mill(amount) => mill::events(state, player, *amount),
             Part::Counters { counter, count } => counters::events(state, source, counter, *count),
+            Part::PutCounters { counter, count } => source::put(state, source, counter, *count),
+            Part::Exert => source::exert(player, source),
+            Part::Among {
+                counter,
+                filter,
+                count,
+            } => among::events(state, (player, source), filter, counter.as_ref(), *count),
             Part::Pick(pick) => picked
                 .iter()
                 .filter_map(|object| pick.event(state, player, *object, kinds))
@@ -459,6 +554,7 @@ impl Pick {
             Kind::Reveal => reveal::candidates(payer, &self.filter),
             Kind::Tap | Kind::TapPower => tap::candidates(payer, &self.filter),
             Kind::Return => bounce::candidates(payer, &self.filter),
+            Kind::Untap => untap::candidates(payer, &self.filter),
             Kind::Counter => c11c_counter_picks::c11c_candidates(payer, &self.filter),
         }
     }
@@ -518,6 +614,7 @@ impl Pick {
             Kind::Tap => tap::text(&self.filter, self.count),
             Kind::TapPower => tap::power_text(&self.filter, self.count),
             Kind::Return => bounce::text(&self.filter, self.count),
+            Kind::Untap => untap::text(&self.filter, self.count),
             Kind::Counter => c11c_counter_picks::c11c_text(&self.filter, self.count),
         }
     }
@@ -538,6 +635,7 @@ impl Pick {
             Kind::Reveal => Some(reveal::event(player, object)),
             Kind::Tap | Kind::TapPower => Some(tap::event(object)),
             Kind::Return => bounce::event(state, object),
+            Kind::Untap => Some(untap::event(object)),
             Kind::Counter => c11c_counter_picks::c11c_event(state, &self.filter, object, kinds),
         }
     }
