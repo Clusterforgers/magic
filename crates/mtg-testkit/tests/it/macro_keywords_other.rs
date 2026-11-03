@@ -276,7 +276,7 @@ fn recruit_loots_and_makes_a_soldier_for_a_nonland_discard(
     play(&mut driver, &["Scout"], &[], &|_, _| None, Step::EndCombat)?;
     assert_eq!(permanents(&driver, 0), 1 + soldiers);
     assert_eq!(driver.state().zone(Zone::Graveyard(pid(0))).len(), 1);
-    assert!(driver.state().zone(Zone::Hand(pid(0))).is_empty());
+    assert_eq!(driver.state().zone(Zone::Hand(pid(0))).len(), 0);
     if soldiers == 1 {
         assert_eq!(size(&driver, "Human Soldier"), (1, 1));
     }
