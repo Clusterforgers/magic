@@ -14,6 +14,7 @@ use serde::{Deserialize, Serialize};
 use crate::ability::Ability;
 use crate::compile::{ClauseKind, classify_clause};
 use crate::effect::is_false;
+use crate::keyword::Keyword;
 use crate::modify::Modification;
 use crate::value::Amount;
 
@@ -183,9 +184,18 @@ pub struct CardDefinition {
     /// player (`docs/cards-dsl.md`, Read tier). The table shows it; a resolution that fails is then left to the table.
     #[serde(default, skip_serializing_if = "is_false")]
     pub read: bool,
+    /// Whether the engine runs part of this face's rules and leaves the rest to the table (`Partial`), as against a card
+    /// played wholly by hand (`Manual`, whose `manual` is its whole text).
+    #[serde(default, skip_serializing_if = "is_false")]
+    pub partial: bool,
     /// Every face of a card with more than one, in Scryfall's order, each with its own rules; empty for a card with one face.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub faces: Vec<CardDefinition>,
+    /// The keywords that let the card be a commander beside another (Partner, Partner with, a partner group, Choose a
+    /// Background, Doctor's companion), read from its printed text whatever its support, since a deck rule needs no engine
+    /// support; never serialized, so fingerprints and stored rules do not see it.
+    #[serde(skip)]
+    pub pairing: Vec<Keyword>,
     /// Which printed card this is, on the card and on each of its faces; never serialized, so fingerprints and stored
     /// rules do not see it.
     #[serde(skip)]
@@ -212,8 +222,10 @@ impl CardDefinition {
             layout: Layout::Normal,
             manual: Vec::new(),
             read: false,
+            partial: false,
             faces: Vec::new(),
             identity: None,
+            pairing: Vec::new(),
         }
     }
 

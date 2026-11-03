@@ -5,7 +5,9 @@ use crate::common;
 
 use common::{Client, game_id, poke, roomy, roster, seat, silent, table_setup};
 use mtg_engine::{GameSetup, replay};
-use mtg_protocol::{ClientMessage, ErrorCode, FullControlMode, PROTOCOL_VERSION, ServerMessage};
+use mtg_protocol::{
+    AutoChoices, ClientMessage, ErrorCode, FullControlMode, PROTOCOL_VERSION, ServerMessage,
+};
 use mtg_server::{
     EventStore, GameHandle, JoinError, MAX_CHAT_CHARS, MemoryStore, StartError, spawn_game,
     spawn_game_with,
@@ -35,6 +37,8 @@ async fn welcome_names_the_game_the_seat_and_the_table_size() {
             yielding: None,
             stops: Vec::new(),
             full_control: FullControlMode::Held,
+            end_turn_by_hand: false,
+            auto_choices: AutoChoices::default(),
         }
     );
     // The roster follows the welcome: only this seat is here and nobody is ready.

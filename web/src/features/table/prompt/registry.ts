@@ -14,6 +14,7 @@ import { DiscardPrompt } from './kinds/Discard'
 import { DivideAmountPrompt } from './kinds/DivideAmount'
 import { MulliganPrompt } from './kinds/Mulligan'
 import { OrderCardsPrompt } from './kinds/OrderCards'
+import { ScryPrompt } from './kinds/Scry'
 import { OrderTriggersPrompt } from './kinds/OrderTriggers'
 import { PayManaPrompt } from './kinds/PayMana'
 import { PriorityPrompt } from './kinds/Priority'
@@ -39,6 +40,7 @@ export const PROMPTS: { [K in DecisionName]: PromptComponent<K> } = {
   DivideAmount: DivideAmountPrompt,
   ChooseCards: ChooseCardsPrompt,
   OrderCards: OrderCardsPrompt,
+  Scry: ScryPrompt,
   YesNo: YesNoPrompt,
   ChooseOption: ChooseOptionPrompt,
   ChooseCosts: ChooseCostsPrompt,

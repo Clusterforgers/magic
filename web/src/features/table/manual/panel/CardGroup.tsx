@@ -371,6 +371,21 @@ function CardFields({ command, draft, set, context }: FieldsProps) {
           />
         </>
       )
+    case 'give':
+      return (
+        <NativeSelect
+          aria-label="Seat that gains control"
+          value={draft.giveTo}
+          onChange={(event) => set({ giveTo: event.currentTarget.value })}
+        >
+          <NativeSelectOption value="">Choose a seat…</NativeSelectOption>
+          {(command.seats ?? []).map((seat) => (
+            <NativeSelectOption key={seat} value={String(seat)}>
+              {context.nameOf(seat)}
+            </NativeSelectOption>
+          ))}
+        </NativeSelect>
+      )
     default:
       return null
   }

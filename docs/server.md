@@ -253,7 +253,7 @@ Blank values are no filter; an unknown parameter or a malformed value is 400 `in
 - A save is refused with 400 `invalid_deck` for a name outside 1 to 100 characters or with control characters, notes over 10 000 characters, a format outside `SUPPORTED_FORMATS` (`commander`, `freeform` and the constructed formats), more than 250 lines or 250 cards, a count outside 1 to 999, an id that is no id, or a printing that is not the card's; with 400 `unknown_cards` for oracle ids that are no deck cards of the database. An account stores at most 100 decks (409 `deck_limit`); the count and the insert run under an advisory lock of the owner, so racing saves cannot pass it.
 - A check for a table (`game` or `table`) is the deck's own report with its legality replaced by the table's verdict (`judge_at_table`, `DeckReport::set_legality`): the issues the table's deck rules lift are gone, and a deck nothing else is held against is judged by the engine's `validate_seat` in the table's format under its house rules (`format_issues`), the same verdict a seat choosing the deck there gets; `summary.issues` and `summary.state` follow. A game is found by its id alone, like `GET /api/games/{id}`; an unknown or malformed id is 404 `not_found`, naming both `game` and `table` or a format other than `normal` and `commander` is 400 `invalid_request`, and a rule out of range is 400 with the rule in `field`. `GET /api/decks/{id}` and the marker do not depend on a table.
 - Saving runs the check (`mtg_cards::deck::deck_report` with the server's rules and `Caps`) and stores `{deck_hash, coverage_hash, checked_at, summary}` in `decks.last_check`. The marker is never stored: every read derives it from that check and the report of the moment (`mtg_cards::deck::marker`, [deck-check.md](deck-check.md)). `verified` is true only when the stored check is clean, both hashes equal the ones computed now and the report of the moment is clean. An edit, other rules for a card of the deck or another `Caps` make the deck `unchecked` with `changed`; a ban or a card the engine no longer plays makes it `blocked` or `manual_play`; a check that was not clean never verifies. Reading writes nothing, so a deck whose cards the engine learned to play is marked by saving it again.
-- Import reads a pasted list in any format `mtg-import` reads (`source`: `text`, `arena`, `mtgo`, `mtgo_dek`, `moxfield`, `archidekt`; detected when absent; `format: commander` makes Moxfield's first line the commander), at most 100 000 characters and 1 000 lines. The answer holds the `cards` it resolved (a printing when the set and number name one of the resolved card, or when a line with no set matched the flavor or digital name of exactly one printing), the `unresolved` lines (`unknown_card` or `ambiguous_name`, with suggestions that are never applied), the `problems` (lines that are no entries) and the `ignored` parts (the maybeboard, Moxfield's stickers). Lines are tied through the stored card index (`CardRepo::card_index`, [data-sources.md](data-sources.md#name-resolution)): a set and number name a printing before the name is read, the flavor name or digital name of a printing finds its card and that printing, and `A // B` finds the meld piece `A` (`cards.melds_into`). `CardSource` keeps the index and builds it again when `CardRepo::index_version` changes, so an ingest shows in the next import; with no printings stored, plain names resolve as before.
+- Import reads a pasted list in any format `mtg-import` reads (`source`: `text`, `arena`, `mtgo`, `mtgo_dek`, `moxfield`, `archidekt`; detected when absent; `format: commander` makes Moxfield's first line the commander, and the second line too when it can pair with it), at most 100 000 characters and 1 000 lines. The answer holds the `cards` it resolved (a printing when the set and number name one of the resolved card, or when a line with no set matched the flavor or digital name of exactly one printing), the `unresolved` lines (`unknown_card` or `ambiguous_name`, with suggestions that are never applied), the `problems` (lines that are no entries) and the `ignored` parts (the maybeboard, Moxfield's stickers). Lines are tied through the stored card index (`CardRepo::card_index`, [data-sources.md](data-sources.md#name-resolution)): a set and number name a printing before the name is read, the flavor name or digital name of a printing finds its card and that printing, and `A // B` finds the meld piece `A` (`cards.melds_into`). `CardSource` keeps the index and builds it again when `CardRepo::index_version` changes, so an ingest shows in the next import; with no printings stored, plain names resolve as before.
 - Export writes split cards as the format does (`A /// B` for Arena, `A/B` for MTGO) and other multi-faced cards by their front face; printings are written where the format has them. A deck the format cannot hold, MTGO text with a commander and nothing else, answers 422 `export_failed`.
 
 ### Precons
@@ -270,6 +270,30 @@ Blank values are no filter; an unknown parameter or a malformed value is 400 `in
 - The judgments of all precons are kept in an index (`CardSource::precon_index`): `PreconRepo::all` reads the decks and their cards in three queries, each card is assembled once, and the index is built again when `PreconRepo::version` (a digest of every deck and entry), `CardRepo::index_version` (cards and printings) or `CardRulesRepo::version` (the compiled rules) changes. The rules files and `Caps` are fixed per `CardSource`, and a source given other ones starts with no index. The first request after a change waits for the build; one precon is read and judged again per request.
 - A seat plays a precon by `deck: "precon:<code>"` in a create, a join or `PUT .../deck` ([Choosing a deck](#choosing-a-deck)), with the same snapshot, fingerprint and recipe as a stored deck: the library is the main board in deck order, the commanders are the commander board, and the table is told the precon's name, its format key and the manual copies of both boards. The refusals are those of any deck: 422 `deck_blocked` with the issues for a deck that is not `playable`, or that the game's format does not take (a Commander precon in a Normal game: `no_commander_zone`; a Normal precon in a Commander game: `commander_count`), 404 `unknown_deck` (400 at creation) for a code nobody has. One-click play is a create with the precon as seat 0's `deck`: one request, one lobby.
 - `POST /api/decks/check` with `deck: "precon:<code>"` needs no session and answers the precon's `DeckReport` in its own format, the one the list summarises. With a `game` or a `table` the report is the verdict at that table: the deck rules the table relaxed lift their issues and the engine's check of the table's format (`judge_cards_at_table`) judges what is left, so the verdict equals what a seat that chooses the precon there is told. An unknown and a malformed code are one 404 `not_found`, a `format` or `cards` beside the precon is 400 `invalid_request`, and a bad `game` or `table` is refused as for any deck. The request counts against the address's precon budget, an account's too (429 `rate_limited`); without a database the answer is 503 `cards_unavailable`. Any other body needs a session and without one is 401, a malformed body included.
+
+### Favourite precons
+
+`favourites.rs`. Every route needs an account (401 `unauthenticated`; 503 `cards_unavailable` without a database). A favourite is a pointer to the precon, never a copy, so it follows the precon's cards and check.
+
+| Endpoint | Behaviour |
+|---|---|
+| `GET /api/favourites/precons` | `FavouritePrecons {codes}`: the account's starred codes, newest star first. |
+| `PUT /api/favourites/precons/{code}` | Stars the precon; 204, also when it was starred already. An unknown and a malformed code are one 404 `not_found`. |
+| `DELETE /api/favourites/precons/{code}` | Takes the star back; 204, also when there was none. |
+
+- Stars and unstars count per account (`AttemptLimits::favourite_writes_per_user`); over it the answer is 429 `rate_limited`.
+- `PreconListItem.pictures` and `DeckListItem.pictures` (`DeckPicture`) name the cards that stand for a deck in a list: its commanders, else its first card.
+
+### Account preferences
+
+`prefs.rs` and `mtg-db`'s `PrefsRepo` (`user_prefs`, one row per account). The default stops and "End my turn by hand" follow the account to every browser. Needs an account (401 `unauthenticated`; 503 `cards_unavailable` without a database). Bodies are `application/json` of at most 8 KiB.
+
+| Endpoint | Behaviour |
+|---|---|
+| `GET /api/me/prefs` | `UserPrefs {default_stops, end_turn_by_hand}`; no stops and false for an account that saved none. |
+| `PUT /api/me/prefs` | Replaces them and answers them as stored: stops sorted, each side and step once, all lasting and at steps that grant priority, at most `MAX_DEFAULT_STOPS`; otherwise 400 `invalid_request`. |
+
+- Deleting the account deletes its row.
 
 ### Fix marks
 
@@ -308,7 +332,7 @@ At each priority decision the actor asks the seat, passes for it at once or pass
 
 ### Windows
 
-`windows::verdict` returns `Ask`, `Pass` or `Dwell` from the step, whose turn it is, the stack, the seat's stops, mode and yield, and `can_act`; auto-pass off is the `Held` mode. A seat that is passed for is never sent the decision, and a decision that is not a priority decision is always asked. The first matching rule wins:
+`windows::verdict` returns `Ask`, `Pass` or `Dwell` from the step, whose turn it is, the stack, the seat's stops, mode and yield, and `can_act`; auto-pass off is the `Held` mode. A seat that is passed for is never sent the decision, and a decision that is not a priority decision is asked unless the engine gives its one answer (below). The first matching rule wins:
 
 | # | Condition | Verdict |
 |---|---|---|
@@ -320,6 +344,8 @@ At each priority decision the actor asks the seat, passes for it at once or pass
 | 6 | Anything else | Pass at once, whatever the seat holds |
 
 The default windows are both main phases on the seat's own turn, declare attackers and declare blockers on any turn, and any step with an object of another seat on the stack. `Own` stops are for the seat's turns, `Opponent` stops for any other seat's.
+
+A question that leaves one legal answer and lists only options in sight of every seat (`mtg_engine::choose::sole_answer`: the targets a triggered ability must take, the only modes, number, option or replacement effect) is answered with it for a seat in `Off` mode, in the same run of passes (`Running::skip_idle`); in Full Control it is asked. A discard, a search, a payment and every other question whose one answer could come from a hidden zone is always asked.
 
 ### Stops and Full Control
 
@@ -374,6 +400,7 @@ The default windows are both main phases on the seat's own turn, declare attacke
 | `DivideAmount` | response | `Cancel` when `can_cancel`, else an even division (one at least to each target, the first getting the rest; none when the amount is smaller than the number of targets). |
 | `ChooseCards` | response | The first `min` cards of `from` in the order offered (none for a `min` of 0, all of them when fewer are offered; never more than the most). |
 | `OrderCards` | response | The cards in the order given. |
+| `Scry` | response | The top pile and the bottom pile as given. |
 
 "Response", "blocks" and "think" clocks hurry a seat that is not the active player; the active player's decisions run on "active" (none by default) with the same answers; the opening decisions run on "think" for every seat.
 

@@ -5,9 +5,10 @@
 use crate::common::generated;
 use mtg_cards::deck::{Counts, DeckState, DeckZone, Issue, IssueCode, Summary, ZoneCounts};
 use mtg_cards::support::{Reason, Support};
+use mtg_protocol::rest::CardColor;
 use mtg_protocol::rest::{
-    PRECON_DECK_PREFIX, PreconBoard, PreconCardView, PreconErrorCode, PreconList, PreconListItem,
-    PreconView,
+    DeckPicture, PRECON_DECK_PREFIX, PreconBoard, PreconCardView, PreconErrorCode, PreconList,
+    PreconListItem, PreconView,
 };
 use rstest::rstest;
 use serde_json::json;
@@ -43,6 +44,11 @@ fn item(code: &str, state: DeckState) -> PreconListItem {
         deck_type: Some("Commander Deck".to_owned()),
         release_date: Some("2018-08-10".to_owned()),
         commanders: vec!["Estrid, the Masked".to_owned()],
+        pictures: vec![DeckPicture {
+            oracle_id: "4457ed35-7c10-48c8-9776-456485fdf070".to_owned(),
+            name: "Estrid, the Masked".to_owned(),
+        }],
+        color_identity: vec![CardColor::W],
         card_count: 100,
         format: "commander".to_owned(),
         state,
@@ -122,10 +128,12 @@ fn the_json_keys_are_the_documented_ones() {
         [
             "card_count",
             "code",
+            "color_identity",
             "commanders",
             "deck_type",
             "format",
             "name",
+            "pictures",
             "playable",
             "release_date",
             "set",
@@ -195,6 +203,8 @@ fn the_bindings_carry_the_precon_types() {
         "code: string",
         "set: string",
         "commanders: Array<string>",
+        "pictures: Array<DeckPicture>",
+        "color_identity: Array<CardColor>",
         "card_count: number",
         "state: DeckState",
         "playable: boolean",

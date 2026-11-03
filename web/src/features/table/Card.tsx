@@ -113,6 +113,7 @@ export const Card = memo(function Card({
       data-picked={picked || undefined}
       data-size={size}
       data-tapped={tapped || undefined}
+      data-phased-out={object.permanent?.phased_out === true ? true : undefined}
       data-attached={attached || undefined}
       data-hosting={object.attachments === undefined ? undefined : object.attachments.length}
       data-doomed={outlook?.dies || undefined}
@@ -135,6 +136,7 @@ export const Card = memo(function Card({
         fit ? null : SIZE[size].vars,
         highlight === undefined ? null : HIGHLIGHT[highlight],
         picked ? PICKED : null,
+        object.permanent?.phased_out === true ? 'opacity-50 saturate-50' : null,
         // A card that says why it is dimmed is read whole while it says so.
         note?.hint === undefined
           ? null

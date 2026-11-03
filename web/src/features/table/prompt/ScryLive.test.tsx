@@ -1,4 +1,4 @@
-/** Goal: over a real session, a scry arrives as the three decisions the engine asks (the cards for the bottom, then the order of the cards on top, then the order of the cards for the bottom), each draws its own prompt and sends one Answer of the shape the engine expects that echoes the decision id, a replacement choice sends its index, and each prompt goes with its decision. */
+/** Goal: over a real session, a scry arrives as one decision (the cards looked at), draws one prompt and sends one Answer with the top pile and the bottom pile, each in order, that echoes the decision id, a replacement choice sends its index, and each prompt goes with its decision. */
 import { act, screen } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import type { DecisionKind, ObjectId, ServerMessage } from '@/protocol/generated'
@@ -30,62 +30,40 @@ function mount() {
   const send = (message: ServerMessage): void => act(() => h.deliver(message))
   const prompt = (name: string): HTMLElement | null =>
     table.container.querySelector(`[data-decision="${name}"]`)
-  const card = (id: ObjectId): HTMLElement =>
-    table.container.querySelector<HTMLElement>(`button[data-candidate="${id}"]`) as HTMLElement
-  return { h, ...table, send, prompt, card }
+  return { h, ...table, send, prompt }
 }
 
 describe('a scry of four cards', () => {
-  it('asks the bottom, the order of the top and the order of the bottom, and answers each once', async () => {
+  it('asks one decision for the split and both orders, and answers it once', async () => {
     const [a, b, c, d] = library as [ObjectId, ObjectId, ObjectId, ObjectId]
-    const { h, send, user, prompt, card } = mount()
+    const { h, send, user, prompt } = mount()
+    const press = (id: ObjectId, move: string) =>
+      user.click(
+        document.querySelector<HTMLElement>(`button[data-card="${id}"][data-move="${move}"]`) as HTMLElement,
+      )
 
-    send(decision(41, { ChooseCards: { source, from: [a, b, c, d], min: 0, max: 4, text: SCRY } }))
-    expect(prompt('ChooseCards')?.querySelector('[data-slot="look-piles"]')).not.toBeNull()
-    await user.click(card(b))
-    await user.click(card(d))
+    send(decision(41, { Scry: { source, cards: [a, b, c, d], text: SCRY } }))
+    expect(prompt('Scry')?.querySelector('[data-slot="scry-piles"]')).not.toBeNull()
+    await press(b, 'cross')
+    await press(d, 'cross')
+    await press(d, 'up')
+    await press(c, 'up')
     await user.dblClick(screen.getByRole('button', { name: 'Confirm' }))
-    expect(h.sentOf('Answer')).toEqual([{ type: 'Answer', decision: 41, answer: { ChooseCards: [b, d] } }])
-    expect(prompt('ChooseCards')).toBeNull()
-
-    send(
-      decision(42, {
-        OrderCards: { source, cards: [a, c], text: 'Put the cards on top of your library in any order.' },
-      }),
-    )
-    expect(prompt('OrderCards')).not.toBeNull()
-    await user.click(
-      document.querySelector<HTMLElement>(`button[data-card="${c}"][data-move="up"]`) as HTMLElement,
-    )
-    await user.click(screen.getByRole('button', { name: 'Confirm order' }))
-
-    send(
-      decision(43, {
-        OrderCards: {
-          source,
-          cards: [b, d],
-          text: 'Put the cards on the bottom of your library in any order.',
-        },
-      }),
-    )
-    expect(document.querySelector('[data-slot="order-pile"]')).toHaveTextContent(
-      'Going on the bottom of your library',
-    )
-    await user.click(screen.getByRole('button', { name: 'Confirm order' }))
-
     expect(h.sentOf('Answer')).toEqual([
-      { type: 'Answer', decision: 41, answer: { ChooseCards: [b, d] } },
-      { type: 'Answer', decision: 42, answer: { OrderCards: [c, a] } },
-      { type: 'Answer', decision: 43, answer: { OrderCards: [b, d] } },
+      { type: 'Answer', decision: 41, answer: { Scry: { top: [c, a], bottom: [d, b] } } },
     ])
+    expect(prompt('Scry')).toBeNull()
     expect(h.state().pending).toBeNull()
   })
 
-  it('answers none when every card stays on top', async () => {
+  it('answers every card on top when nothing is moved', async () => {
     const { h, send, user } = mount()
-    send(decision(44, { ChooseCards: { source, from: library.slice(0, 3), min: 0, max: 3, text: SCRY } }))
+    const cards = library.slice(0, 3)
+    send(decision(44, { Scry: { source, cards, text: SCRY } }))
     await user.click(screen.getByRole('button', { name: 'Confirm' }))
-    expect(h.sentOf('Answer')).toEqual([{ type: 'Answer', decision: 44, answer: { ChooseCards: [] } }])
+    expect(h.sentOf('Answer')).toEqual([
+      { type: 'Answer', decision: 44, answer: { Scry: { top: cards, bottom: [] } } },
+    ])
   })
 })
 

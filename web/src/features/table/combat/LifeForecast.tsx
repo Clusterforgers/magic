@@ -20,12 +20,15 @@ export function lifeTrend(outlook: Pick<PlayerForecast, 'life' | 'life_after'>):
 }
 
 /** The tooltip of the chip: its sentence and then what each attacker would do, one line each. */
-function useTip(outlook: PlayerForecast): string {
+function useTip(outlook: PlayerForecast, choice: boolean): string {
   const forecast = useBlockPreview()
   const names = useForecastNames(forecast)
   return useMemo(
-    () => [lifeWords(outlook), ...(forecast === null ? [] : forecastSentences(forecast, names))].join('\n'),
-    [outlook, forecast, names],
+    () =>
+      [lifeWords(outlook, choice), ...(forecast === null ? [] : forecastSentences(forecast, names))].join(
+        '\n',
+      ),
+    [outlook, choice, forecast, names],
   )
 }
 
@@ -42,7 +45,8 @@ export function LifeForecast({ seat }: { seat: PlayerId }) {
 }
 
 function Chip({ outlook }: { outlook: PlayerForecast }) {
-  const tip = useTip(outlook)
+  const choice = useBlockPreview()?.depends_on_choice === true
+  const tip = useTip(outlook, choice)
   const trend = lifeTrend(outlook)
   return (
     <span
@@ -50,7 +54,8 @@ function Chip({ outlook }: { outlook: PlayerForecast }) {
       data-lethal={outlook.lethal || undefined}
       data-trend={trend}
       role="img"
-      aria-label={lifeWords(outlook)}
+      data-choice={choice || undefined}
+      aria-label={lifeWords(outlook, choice)}
       title={tip}
       className={cn(
         'inline-flex h-5 shrink-0 items-center gap-0.5 rounded-full px-1.5 text-xs leading-none font-semibold tabular-nums',
@@ -64,7 +69,10 @@ function Chip({ outlook }: { outlook: PlayerForecast }) {
       )}
     >
       {outlook.lethal ? <Skull aria-hidden="true" className="size-3" /> : null}
-      <span aria-hidden="true">{lifeDelta(outlook)}</span>
+      <span aria-hidden="true">
+        {choice ? '≈' : ''}
+        {lifeDelta(outlook)}
+      </span>
     </span>
   )
 }

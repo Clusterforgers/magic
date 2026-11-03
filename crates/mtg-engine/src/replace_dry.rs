@@ -125,6 +125,7 @@ mod tests {
                 source: ObjectId(at as u64),
                 ability: 0,
                 shield: None,
+                text: String::new(),
             })
             .collect();
         Decision {

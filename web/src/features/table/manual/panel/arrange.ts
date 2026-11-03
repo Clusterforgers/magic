@@ -119,8 +119,11 @@ export function previewWords(
   return `${heading}: ${said.join('; ')}.`
 }
 
-/** What the log says of the cards the seat's own manual actions looked at and put back, newest last: true while the last of them is a look. */
-export function lookIsPending(log: readonly LogEntry[], seat: PlayerId): boolean {
+/** The seat's open look by hand: at the top cards (`look`), through the whole library (`search`), or none. */
+export type PendingLook = 'look' | 'search' | null
+
+/** What the log says of the cards the seat's own manual actions looked at and put back, newest last: the last of them while it is a look or a search. */
+export function pendingLook(log: readonly LogEntry[], seat: PlayerId): PendingLook {
   for (let at = log.length - 1; at >= 0; at -= 1) {
     const entry = log[at]
     if (entry === undefined || !('Public' in entry.event)) continue
@@ -128,8 +131,14 @@ export function lookIsPending(log: readonly LogEntry[], seat: PlayerId): boolean
     if (typeof event === 'string' || !('ManualAction' in event) || event.ManualAction.player !== seat)
       continue
     const { action } = event.ManualAction
-    if ('LookTop' in action) return true
-    if ('ArrangeTop' in action || 'Shuffle' in action) return false
+    if ('LookTop' in action) return 'look'
+    if ('Search' in action) return 'search'
+    if ('ArrangeTop' in action || 'Shuffle' in action || 'Tutor' in action) return null
   }
-  return false
+  return null
+}
+
+/** Whether the seat's last look by hand is at its top cards and not yet put back. */
+export function lookIsPending(log: readonly LogEntry[], seat: PlayerId): boolean {
+  return pendingLook(log, seat) === 'look'
 }

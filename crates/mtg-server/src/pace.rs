@@ -11,12 +11,12 @@ use std::time::Duration;
 use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_engine::choose::{
     CardsChoice, CardsOptions, CostsChoice, DivideChoice, DivideOptions, ModeChoice, ModeOptions,
-    NumberChoice, OptionChoice, OrderChoice, ReplacementChoice, Target, TargetChoice,
-    TriggersChoice, YesNoChoice,
+    NumberChoice, OptionChoice, OrderChoice, ReplacementChoice, ScryChoice, Target, TargetChoice,
+    YesNoChoice, damage_in_order, triggers_in_order,
 };
-use mtg_engine::decision::{DamageOptions, MulliganChoice, PayChoice, PayOptions, PriorityAction};
+use mtg_engine::decision::{MulliganChoice, PayChoice, PayOptions, PriorityAction};
 use mtg_engine::{Answer, Decision, DecisionKind};
-use mtg_protocol::{ErrorCode, FullControlMode, ServerMessage, YieldUntil};
+use mtg_protocol::{AutoChoices, ErrorCode, FullControlMode, ServerMessage, YieldUntil};
 use tokio::time::Instant;
 
 use crate::actor::{Fatal, GameActor, Phase, not_started};
@@ -98,7 +98,8 @@ impl Class {
             | DecisionKind::DivideAmount(_)
             | DecisionKind::ChooseCosts(_)
             | DecisionKind::ChooseCards(_)
-            | DecisionKind::OrderCards(_) => Class::Response,
+            | DecisionKind::OrderCards(_)
+            | DecisionKind::Scry(_) => Class::Response,
             DecisionKind::DeclareBlockers(_) => Class::Blocks,
             DecisionKind::PayMana(_)
             | DecisionKind::AssignDamage(_)
@@ -216,9 +217,9 @@ pub(crate) fn fallback(decision: &Decision) -> Option<Answer> {
                 TargetChoice::Remove
             }))
         }
-        DecisionKind::OrderTriggers(options) => Some(Answer::OrderTriggers(TriggersChoice(
-            (0..options.triggers.len()).collect(),
-        ))),
+        DecisionKind::OrderTriggers(options) => {
+            Some(Answer::OrderTriggers(triggers_in_order(options)))
+        }
         DecisionKind::YesNo(_) => Some(Answer::YesNo(YesNoChoice(false))),
         // The first effect on offer, which the rules let the player choose; the effects that are left apply after it.
         DecisionKind::ChooseReplacement(options) => (!options.candidates.is_empty())
@@ -250,6 +251,10 @@ pub(crate) fn fallback(decision: &Decision) -> Option<Answer> {
         DecisionKind::OrderCards(options) => {
             Some(Answer::OrderCards(OrderChoice(options.cards.clone())))
         }
+        DecisionKind::Scry(options) => Some(Answer::Scry(ScryChoice {
+            top: options.cards.clone(),
+            bottom: Vec::new(),
+        })),
         DecisionKind::Mulligan(_) => Some(Answer::Mulligan(MulliganChoice::Keep)),
         DecisionKind::BottomCards(options) => Some(Answer::BottomCards(first_of_hand(
             &options.hand,
@@ -259,7 +264,7 @@ pub(crate) fn fallback(decision: &Decision) -> Option<Answer> {
         DecisionKind::DeclareAttackers(options) => {
             Some(Answer::DeclareAttackers(options.required_attack()))
         }
-        DecisionKind::AssignDamage(options) => in_order(options).map(Answer::AssignDamage),
+        DecisionKind::AssignDamage(options) => damage_in_order(options).map(Answer::AssignDamage),
         DecisionKind::Discard(options) => {
             Some(Answer::Discard(first_of_hand(&options.hand, options.count)))
         }
@@ -279,29 +284,6 @@ fn pay_fallback(options: &PayOptions) -> Option<PayChoice> {
     } else {
         options.auto_available.then_some(PayChoice::Auto)
     }
-}
-
-/// Lethal damage to each blocker in the order offered, the rest to the last one, or to the player attacked when
-/// trampling. `None` when there is no blocker to take the damage.
-fn in_order(options: &DamageOptions) -> Option<Vec<(ObjectId, u32)>> {
-    let mut left = options.power;
-    let mut shares: Vec<(ObjectId, u32)> = options
-        .blockers
-        .iter()
-        .enumerate()
-        .map(|(at, blocker)| {
-            let share = options
-                .lethal
-                .get(at)
-                .map_or(left, |lethal| left.min(*lethal));
-            left -= share;
-            (*blocker, share)
-        })
-        .collect();
-    if options.excess.is_none() {
-        shares.last_mut()?.1 += left;
-    }
-    Some(shares)
 }
 
 /// The first `min` cards of the list in the order it was offered, all of them when fewer are offered. `min <= max`, so
@@ -361,6 +343,20 @@ fn first_modes(options: &ModeOptions) -> Option<ModeChoice> {
         chosen.resize(wanted, first.index);
     }
     Some(ModeChoice::Modes(chosen))
+}
+
+/// The plain answer to `decision` when `choices` let the server give it: triggers in the order they triggered and
+/// combat damage lethal in order. Both read only what every player sees, so answering at once shows nothing hidden.
+pub(crate) fn chosen_answer(decision: &Decision, choices: AutoChoices) -> Option<Answer> {
+    match &decision.kind {
+        DecisionKind::OrderTriggers(options) if choices.order_triggers => {
+            Some(Answer::OrderTriggers(triggers_in_order(options)))
+        }
+        DecisionKind::AssignDamage(options) if choices.assign_damage => {
+            damage_in_order(options).map(Answer::AssignDamage)
+        }
+        _ => None,
+    }
 }
 
 /// Whether `answer` takes a triggered ability off the stack without a target. Only the clock gives it ([`fallback`]):
@@ -527,12 +523,14 @@ mod tests {
     //! Goal: the pace rules give the clock, the safe default and the priority test exactly to the decisions they are meant for, whatever the settings, and a seat starts in the mode its auto-pass default names.
     use super::*;
     use mtg_core::ids::ObjectId;
+    use mtg_engine::choose::TriggersChoice;
     use mtg_engine::choose::{
         CardsOptions, ChoiceOption, CostsOptions, ModeOption, NumberOptions, OptionOptions,
         OptionalCost, OrderOptions, ReplacementCandidate, ReplacementOptions, TargetOptions,
         TriggerEntry, TriggersOptions, YesNoOptions,
     };
     use mtg_engine::combat::{AttackTarget, DamageTarget};
+    use mtg_engine::decision::DamageOptions;
     use mtg_engine::decision::{
         AttackOptions, AttackerOption, BlockOptions, BottomOptions, DiscardOptions,
         MulliganOptions, PriorityOptions,
@@ -702,6 +700,7 @@ mod tests {
                     source: ObjectId(n as u64 + 1),
                     ability: 0,
                     shield: None,
+                    text: String::new(),
                 })
                 .collect(),
             text: "Create 2 token(s).".into(),
@@ -1131,6 +1130,30 @@ mod tests {
     #[case::discard_the_first_two_cards(discard(9, 2), Some(Answer::Discard(ids(&[100, 97]))))]
     fn safe_defaults(#[case] kind: DecisionKind, #[case] expected: Option<Answer>) {
         assert_eq!(fallback(&decision(OTHER, kind)), expected);
+    }
+
+    /// The settings with `order_triggers` and `assign_damage` as given.
+    fn choices(order_triggers: bool, assign_damage: bool) -> AutoChoices {
+        AutoChoices {
+            order_triggers,
+            assign_damage,
+        }
+    }
+
+    #[rstest]
+    #[case::triggers_in_order_when_chosen(order(3), choices(true, false), Some(Answer::OrderTriggers(TriggersChoice(vec![0, 1, 2]))))]
+    #[case::triggers_asked_without_the_choice(order(3), choices(false, true), None)]
+    #[case::damage_lethal_in_order_when_chosen(damage(5, &[2, 2], false), choices(false, true), Some(assigned(&[2, 3])))]
+    #[case::trample_past_the_blockers_when_chosen(damage(6, &[2, 1], true), choices(false, true), Some(assigned(&[2, 1])))]
+    #[case::damage_asked_without_the_choice(damage(5, &[2, 2], false), choices(true, false), None)]
+    #[case::no_blocker_is_asked(damage(4, &[], false), choices(true, true), None)]
+    #[case::other_kinds_are_asked(discard(8, 1), choices(true, true), None)]
+    fn chosen_answers(
+        #[case] kind: DecisionKind,
+        #[case] choices: AutoChoices,
+        #[case] expected: Option<Answer>,
+    ) {
+        assert_eq!(chosen_answer(&decision(OTHER, kind), choices), expected);
     }
 
     #[test]

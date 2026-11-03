@@ -1,12 +1,12 @@
-import { CheckIcon, LayersIcon, LoaderCircleIcon } from 'lucide-react'
+import { CheckIcon, LoaderCircleIcon, StarIcon } from 'lucide-react'
 import type { KeyboardEvent } from 'react'
 import { IdentityPips } from '@/features/builder/IdentityPips'
-import { CardPicture } from '@/features/cards/CardPicture'
 import { DeckStateBadge } from '@/features/decks/DeckStateBadge'
 import { ToRead } from '@/features/decks/ToRead'
 import { cn } from '@/lib/utils'
-import { entryFacts, entrySupport } from './deckEntries'
+import { entryFacts, entrySupport, handWords } from './deckEntries'
 import type { DeckEntry } from './deckEntries'
+import { DeckPictures } from './DeckPictures'
 
 interface DeckOptionProps {
   entry: DeckEntry
@@ -18,42 +18,14 @@ interface DeckOptionProps {
   pending: boolean
   /** The roving tab stop: the selected row, or the first while none is. */
   tabStop: boolean
-  /** Commanders the list had no picture of, from a view that was read. */
-  fallback: DeckEntry['commanders']
+  /** Cards the list had no picture of, from a view that was read. */
+  fallback: DeckEntry['pictures']
+  /** The list is ordered by cards played by hand, so every row says how many it has. */
+  showHand: boolean
   onSelect(entry: DeckEntry): void
   onChoose(entry: DeckEntry): void
   /** An arrow, Home or End key: the next row to select. */
   onMove(key: string): void
-}
-
-/** The pictures of a row's commanders, one or two overlapped; a tile with the set or an icon where there is none. */
-function Pictures({ entry, commanders }: { entry: DeckEntry; commanders: DeckEntry['commanders'] }) {
-  if (commanders.length === 0) {
-    return (
-      <span
-        aria-hidden="true"
-        data-slot="deck-tile"
-        className="grid aspect-[5/7] w-11 shrink-0 place-items-center rounded-[4.75%/3.393%] border bg-muted text-center text-label font-semibold tracking-wide text-muted-foreground"
-      >
-        {entry.set === null ? <LayersIcon className="size-5" /> : entry.set.toUpperCase()}
-      </span>
-    )
-  }
-  return (
-    <span aria-hidden="true" data-slot="deck-pictures" className="flex shrink-0 -space-x-4">
-      {commanders.slice(0, 2).map((card) => (
-        <CardPicture
-          key={card.oracleId}
-          oracleId={card.oracleId}
-          name={card.name}
-          size="small"
-          alt=""
-          quiet
-          className="w-11 shadow-e1"
-        />
-      ))}
-    </span>
-  )
 }
 
 /**
@@ -67,12 +39,13 @@ export function DeckOption({
   pending,
   tabStop,
   fallback,
+  showHand,
   onSelect,
   onChoose,
   onMove,
 }: DeckOptionProps) {
   const support = entrySupport(entry)
-  const commanders = entry.commanders.length > 0 ? entry.commanders : fallback
+  const hand = handWords(entry, showHand)
   const press = (event: KeyboardEvent<HTMLLIElement>): void => {
     if (event.key === 'Enter') {
       event.preventDefault()
@@ -98,10 +71,20 @@ export function DeckOption({
         selected && 'border-primary bg-primary/8 hover:bg-primary/12',
       )}
     >
-      <Pictures entry={entry} commanders={commanders} />
+      <DeckPictures entry={entry} fallback={fallback} />
       <span className="grid min-w-0 flex-1 gap-1">
-        <span className="line-clamp-2 text-sm leading-tight font-medium [overflow-wrap:anywhere]">
-          {entry.name}
+        <span className="flex min-w-0 items-start gap-1">
+          <span className="line-clamp-2 text-sm leading-tight font-medium [overflow-wrap:anywhere]">
+            {entry.name}
+          </span>
+          {entry.favourite ? (
+            <StarIcon
+              role="img"
+              aria-label="Favourite"
+              data-slot="deck-favourite"
+              className="mt-px size-3.5 shrink-0 fill-current text-warning"
+            />
+          ) : null}
         </span>
         <span className="truncate text-xs text-muted-foreground">
           {entryFacts(entry)}
@@ -111,6 +94,11 @@ export function DeckOption({
           {entry.identity === null ? null : <IdentityPips identity={entry.identity} />}
           <DeckStateBadge state={support.state} label={support.label} />
           <ToRead count={entry.toRead} className="text-xs" />
+          {hand === null ? null : (
+            <span data-slot="deck-by-hand" className="text-xs text-muted-foreground">
+              {hand}
+            </span>
+          )}
         </span>
       </span>
       {pending ? (

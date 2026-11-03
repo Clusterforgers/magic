@@ -1,4 +1,4 @@
-/** The decisions of spells and abilities the dev table can show: `?prompt=targets`, `targets-two`, `targets-trigger`, `order`, `yesno`, `option`, `option-players`, `mode`, `mode-two`, `mode-trigger`, `cards`, `cards-battlefield`, `cards-many`, `order-cards` and their clocks. */
+/** The decisions of spells and abilities the dev table can show: `?prompt=targets`, `targets-two`, `targets-trigger`, `order`, `yesno`, `option`, `option-players`, `mode`, `mode-two`, `mode-trigger`, `cards`, `cards-graveyard`, `cards-exile`, `targets-zones`, `cards-battlefield`, `cards-many`, `order-cards` and their clocks. */
 import type { PendingDecision } from '@/play/store'
 import type {
   ChoiceOption,
@@ -266,6 +266,71 @@ const cardsBattlefield: DevPrompt = ({ view }) => ({
   },
 })
 
+/** The cards of a seat's graveyard, or of the exile, in the order of the view. */
+const inZone = (view: StateView, zone: 'Exile' | 'Graveyard'): ObjectId[] =>
+  view.objects
+    .filter((o) =>
+      zone === 'Exile' ? o.zone === 'Exile' : typeof o.zone === 'object' && 'Graveyard' in o.zone,
+    )
+    .map((o) => o.id)
+
+/** An opponent's ability makes the viewer pick two cards of the graveyards, which the table draws as chips only. */
+const cardsGraveyard: DevPrompt = ({ view }) => ({
+  id: 1,
+  decision: {
+    player: view.viewer,
+    kind: {
+      ChooseCards: {
+        source: foeOf(view),
+        from: inZone(view, 'Graveyard'),
+        min: 1,
+        max: 2,
+        text: 'Return up to two cards from graveyards to their owners hands.',
+      },
+    },
+  },
+})
+
+/** The viewer's spell asks for one card in exile, which the table draws as a chip only. */
+const cardsExile: DevPrompt = ({ view }) => ({
+  id: 1,
+  decision: {
+    player: view.viewer,
+    kind: {
+      ChooseCards: {
+        source: ownSpell(view)?.id ?? askerOf(view),
+        from: inZone(view, 'Exile'),
+        min: 1,
+        max: 1,
+        text: 'Choose a card in exile.',
+      },
+    },
+  },
+})
+
+/** The viewer's spell aims at a player or a card in a graveyard, in exile or on the stack. */
+const targetsZones: DevPrompt = ({ view }) => {
+  const spell = ownSpell(view)
+  const aimed = [...inZone(view, 'Graveyard'), ...inZone(view, 'Exile')].slice(0, 6)
+  return {
+    id: 1,
+    decision: {
+      player: view.viewer,
+      kind: {
+        ChooseTargets: {
+          source: spell?.id ?? 0,
+          spec: 0,
+          legal: [...opponents(view).map((seat): Target => ({ Player: seat })), ...aimed.map(object)],
+          min: 1,
+          max: 2,
+          can_cancel: true,
+          wording: 'target player or card in a graveyard or exile',
+        },
+      },
+    },
+  }
+}
+
 /** The search the viewer makes: up to two of the forty cards of their library. */
 const cardsMany: DevPrompt = ({ view }) => ({
   id: 1,
@@ -354,6 +419,9 @@ export const EFFECT_PROMPTS: Record<string, DevPrompt> = {
   'mode-clock': (fixture) => ({ ...mode(fixture), deadlineMs: 10_000 }),
   cards,
   'cards-clock': (fixture) => ({ ...cards(fixture), deadlineMs: 10_000 }),
+  'cards-graveyard': cardsGraveyard,
+  'cards-exile': cardsExile,
+  'targets-zones': targetsZones,
   'cards-battlefield': cardsBattlefield,
   'cards-battlefield-clock': (fixture) => ({ ...cardsBattlefield(fixture), deadlineMs: 10_000 }),
   'cards-many': cardsMany,

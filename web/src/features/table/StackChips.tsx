@@ -6,8 +6,11 @@ import type { ObjectId } from '@/protocol/generated'
 import { cardLabel, costPips } from './cardModel'
 import { SIZE } from './cardSize'
 import { FxMark } from './fx/FxMark'
-import { useCardFx } from './fx/hooks'
+import { useCardFx, useStackGhosts } from './fx/hooks'
+import { withGhosts } from './fx/ghosts'
+import { StackGhostChip } from './StackGhostChip'
 import { isMarkFx } from './fx/model'
+import { ByHandMark } from './manual/ByHand'
 import { ManaPips } from './ManaPips'
 import { useSeatNamer } from './names'
 import { SeatDot } from './PodParts'
@@ -54,6 +57,7 @@ const Chip = memo(function Chip({ id, top, tabbable, aims, aria, empty }: ChipPr
       >
         {top ? <SeatDot seat={object.controller} /> : null}
         <span className="truncate">{object.name}</span>
+        <ByHandMark object={object} spot="chip" compact text="text-xs" />
         {object.mana_cost === null ? null : (
           <ManaPips pips={costPips(object.mana_cost)} sizeClass={SIZE.compact.pip} label="Mana cost" />
         )}
@@ -89,7 +93,8 @@ export function StackChips() {
   const roving = useRoving(ids)
   const entries = useStackEntries()
   const names = useTargetNamer()
-  if (ids.length === 0) return null
+  const items = withGhosts(ids, useStackGhosts())
+  if (items.length === 0) return null
   return (
     <div data-slot="stack-chips" className="flex min-w-0 shrink items-center gap-2">
       <span className="text-xs font-medium text-muted-foreground">Stack</span>
@@ -100,7 +105,9 @@ export function StackChips() {
         onKeyDown={roving.onKeyDown}
         className="flex min-w-0 items-center gap-1.5 overflow-x-auto p-1 [scrollbar-width:none]"
       >
-        {ids.map((id, index) => {
+        {items.map((id) => {
+          if (typeof id !== 'number') return <StackGhostChip key={`ghost:${id.token}`} ghost={id} />
+          const index = ids.indexOf(id)
           const entry = entries.find((candidate) => candidate.id === id)
           return (
             <Chip

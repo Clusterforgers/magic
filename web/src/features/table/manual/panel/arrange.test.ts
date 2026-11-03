@@ -1,4 +1,4 @@
-// Goal: the arrangement of the cards looked at starts with every card on top in order, sends a card to the end of another list, moves a card within its list and never past either end, reads as a surveil, a scry or a reorder the way the engine does, builds an `ArrangeTop` of exactly the cards looked at, words its button and its preview, and treats a look as open until the seat's next put-back or shuffle.
+// Goal: the arrangement of the cards looked at starts with every card on top in order, sends a card to the end of another list, moves a card within its list and never past either end, reads as a surveil, a scry or a reorder the way the engine does, builds an `ArrangeTop` of exactly the cards looked at, words its button and its preview, treats a look as open until the seat's next put-back or shuffle, and a search of the library until its tutor, shuffle or next look.
 import { describe, expect, it } from 'vitest'
 import type { LogEntry } from '@/play/store'
 import type { ManualAction } from '@/protocol/generated'
@@ -10,12 +10,13 @@ import {
   isUnchanged,
   kindOf,
   lookIsPending,
+  pendingLook,
   moveWithin,
   previewWords,
   sendTo,
   startArrangement,
 } from './arrange'
-import type { Arrangement } from './arrange'
+import type { Arrangement, PendingLook } from './arrange'
 
 const LOOKED = [10, 11, 12]
 const NAMES: Record<number, string> = { 10: 'Elves', 11: 'Island', 12: 'Sol Ring' }
@@ -147,5 +148,17 @@ describe('a look that waits', () => {
     ['another seat looked', [entry({ LookTop: { count: 3 } }, 1)], false],
   ])('%s: %s', (_name, log, pending) => {
     expect(lookIsPending(log, 0)).toBe(pending)
+  })
+
+  const tutor: ManualAction = { Tutor: { object: 10 } }
+  it.each<[string, LogEntry[], PendingLook]>([
+    ['a search', [entry({ Search: {} })], 'search'],
+    ['a look then a search', [entry({ LookTop: { count: 3 } }), entry({ Search: {} })], 'search'],
+    ['a search then a tutor', [entry({ Search: {} }), entry(tutor)], null],
+    ['a search then a shuffle', [entry({ Search: {} }), entry({ Shuffle: {} })], null],
+    ['a search then a look', [entry({ Search: {} }), entry({ LookTop: { count: 1 } })], 'look'],
+    ['another seat searched', [entry({ Search: {} }, 1)], null],
+  ])('%s: %s', (_name, log, pending) => {
+    expect(pendingLook(log, 0)).toBe(pending)
   })
 })

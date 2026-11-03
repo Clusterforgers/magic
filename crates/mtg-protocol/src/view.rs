@@ -10,7 +10,7 @@ use mtg_core::card::{CardType, Subtype, Supertype};
 use mtg_core::color::Color;
 use mtg_core::house::HouseRules;
 use mtg_core::ids::{ObjectId, PlayerId};
-use mtg_core::mana::ManaCost;
+use mtg_core::mana::{ManaCost, ManaType};
 use mtg_engine::abilities::AbilityRef;
 use mtg_engine::choose::Target;
 use mtg_engine::combat::AttackTarget;
@@ -37,6 +37,8 @@ pub struct ZoneView {
 }
 
 /// State that only exists while an object is on the battlefield.
+// Each flag is a separate public fact of the permanent.
+#[allow(clippy::struct_excessive_bools)]
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
 pub struct PermanentView {
     /// Whether the permanent is tapped.
@@ -50,10 +52,18 @@ pub struct PermanentView {
     #[serde(default, skip_serializing_if = "std::ops::Not::not")]
     #[ts(as = "Option<bool>", optional)]
     pub prepared: bool,
+    /// Whether a player exerted the permanent and it still holds back its untap (CR 701.43). Left out while it is not.
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    #[ts(as = "Option<bool>", optional)]
+    pub exerted: bool,
     /// The level of a Class (CR 716.2); left out for any other permanent.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[ts(optional)]
     pub level: Option<u32>,
+    /// Whether the permanent is phased out (CR 702.26): drawn ghosted; left out while it is phased in.
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    #[ts(as = "Option<bool>", optional)]
+    pub phased_out: bool,
     /// Which doors of a Room are unlocked (CR 709.5), in the order of its faces; left out for any other permanent. A
     /// public fact of the permanent.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -153,10 +163,41 @@ pub struct ActivatedView {
     #[serde(default, skip_serializing_if = "is_false")]
     #[ts(as = "Option<bool>", optional)]
     pub unworded: bool,
+    /// What a mana ability adds, one way for each way its controller can use it now (the number counted now, the
+    /// chosen colour); left out for any other ability and while it cannot be used now.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[ts(as = "Option<Vec<ManaWayView>>", optional)]
+    pub ways: Vec<ManaWayView>,
+}
+
+/// One way to use a mana ability: the mana it adds and what the use takes besides the tap.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
+pub struct ManaWayView {
+    /// The mana one use adds, in order (Sol Ring: two colorless).
+    pub mana: Vec<ManaType>,
+    /// Mana the use costs (a Signet's `{1}`); left out for none.
+    #[serde(default, skip_serializing_if = "no_symbols")]
+    #[ts(as = "Option<ManaCost>", optional)]
+    pub cost: ManaCost,
+    /// Whether the use sacrifices its source (a Treasure); left out while false.
+    #[serde(default, skip_serializing_if = "is_false")]
+    #[ts(as = "Option<bool>", optional)]
+    pub sacrifice: bool,
+    /// Whether the use leaves its source untapped (a Devotee); left out while false.
+    #[serde(default, skip_serializing_if = "is_false")]
+    #[ts(as = "Option<bool>", optional)]
+    pub tapless: bool,
+}
+
+/// Whether a cost has no symbols, so serialization can leave it out.
+fn no_symbols(cost: &ManaCost) -> bool {
+    cost.symbols().is_empty()
 }
 
 /// A card the viewer may identify, with its current (layer-derived) characteristics.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
+// Each flag is one independent wire field, left out of the JSON while false.
+#[allow(clippy::struct_excessive_bools)]
 pub struct ObjectView {
     /// The object's id.
     pub id: ObjectId,
@@ -182,6 +223,14 @@ pub struct ObjectView {
     pub power: Option<i32>,
     /// Current toughness, if it has one.
     pub toughness: Option<i32>,
+    /// The power a token was created with, so a client can tell it from a buffed or debuffed one; left out for any other object.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[ts(as = "Option<i32>", optional)]
+    pub printed_power: Option<i32>,
+    /// The toughness a token was created with; left out for any other object.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[ts(as = "Option<i32>", optional)]
+    pub printed_toughness: Option<i32>,
     /// Current abilities.
     pub abilities: Vec<AbilityDef>,
     /// Names of the keywords it has now, such as `Flying` and `First strike`, in the order of its rules; left out while it has none.
@@ -199,6 +248,11 @@ pub struct ObjectView {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[ts(optional)]
     pub source: Option<ObjectId>,
+    /// The rules text of an ability on the stack in the card writer's words, with the source's name for `~`; left out for
+    /// any other object, for an ability the writer cannot word and while the source is hidden from the viewer.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[ts(optional)]
+    pub rules_text: Option<String>,
     /// What a spell or ability on the stack targets, one list for each target specification.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     #[ts(as = "Option<Vec<Vec<Target>>>", optional)]
@@ -226,6 +280,10 @@ pub struct ObjectView {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[ts(optional)]
     pub attached_player: Option<PlayerId>,
+    /// The player who protects this one, when it is a battle on the battlefield with a protector; public, like its defense.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[ts(optional)]
+    pub protector: Option<PlayerId>,
     /// The creature this one is paired with (soulbond), when both are on the battlefield; public, like an attachment.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[ts(optional)]
@@ -276,6 +334,11 @@ pub struct ObjectView {
     #[serde(default, skip_serializing_if = "is_false")]
     #[ts(as = "Option<bool>", optional)]
     pub read: bool,
+    /// Whether the engine runs part of its card and leaves the clauses in `manual` to the table (`Partial`), as against a
+    /// card played wholly by hand; shown wherever `manual` is, left out while false.
+    #[serde(default, skip_serializing_if = "is_false")]
+    #[ts(as = "Option<bool>", optional)]
+    pub partial: bool,
     /// The note a seat put on the object by hand, which every seat that sees the object reads; left out while there is
     /// none.
     #[serde(default, skip_serializing_if = "Option::is_none")]

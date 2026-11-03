@@ -212,8 +212,8 @@ describe('a table of 12 seats with 40 permanents each, decorations on', () => {
     )
     expect(battlefieldRows()).toEqual(["Eli's creatures"])
     expect(probe.rows.get("Eli's creatures")).toBe(1)
-    // At twelve seats the pods are one line each, which show no card: nothing is drawn for the victim in the yard.
-    expect([...probe.faces.keys()]).toEqual([])
+    // At twelve seats the pods are one line each; the victim's pod draws it once, as the top of its yard.
+    expect([...probe.faces]).toEqual([[victim.id, 1]])
   })
 
   it('still redraws only what an unrelated batch changes while a decoration plays', () => {

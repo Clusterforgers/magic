@@ -1,4 +1,4 @@
-//! Legality: whether a deck follows the rules of its format, reported as a list of issues apart from
+//! Legality: whether a dec follows the rules of its format, reported as a list of issues apart from
 //! how far the game plays the cards. The rules are the ones of `docs/deck-check.md`: Commander, the
 //! 60-card constructed formats and freeform.
 
@@ -9,6 +9,8 @@ use mtg_core::house::HouseRules;
 use serde::{Deserialize, Serialize};
 
 use super::{CardFacts, DeckZone, Legality, name_of};
+use crate::assemble::assemble;
+use crate::support::Caps;
 
 /// Cards in a Commander deck, its commanders included.
 const COMMANDER_SIZE: u32 = 100;
@@ -259,14 +261,6 @@ fn rules_text(facts: &CardFacts) -> String {
         .join("\n")
 }
 
-fn has_keyword(facts: &CardFacts, keyword: &str) -> bool {
-    facts
-        .printed
-        .keywords
-        .iter()
-        .any(|k| k.eq_ignore_ascii_case(keyword))
-}
-
 fn is_basic_land(facts: &CardFacts) -> bool {
     let words = type_words(facts);
     has_word(&words, "Basic") && has_word(&words, "Land")
@@ -340,46 +334,19 @@ fn can_command(facts: &CardFacts) -> bool {
         .is_some_and(|face| face.power.is_some());
     let body = has_word(&words, "Creature")
         || (has_power && (has_word(&words, "Vehicle") || has_word(&words, "Spacecraft")));
-    (has_word(&words, "Legendary") && body) || rules_text(facts).contains("can be your commander")
+    (has_word(&words, "Legendary") && body)
+        || crate::identity::text_says_commander(&rules_text(facts))
 }
 
 fn is_background(facts: &CardFacts) -> bool {
     has_word(&type_words(facts), "Background")
 }
 
-fn is_time_lord_doctor(facts: &CardFacts) -> bool {
-    let words = type_words(facts);
-    has_word(&words, "Time") && has_word(&words, "Lord") && has_word(&words, "Doctor")
-}
-
-fn front_name(facts: &CardFacts) -> String {
-    facts
-        .printed
-        .faces
-        .first()
-        .map_or_else(|| facts.printed.name.clone(), |face| face.name.clone())
-}
-
-/// `a` says "Partner with" and names `b`.
-fn partners_with(a: &CardFacts, b: &CardFacts) -> bool {
-    has_keyword(a, "Partner with")
-        && rules_text(a).contains(&format!("partner with {}", front_name(b).to_lowercase()))
-}
-
-/// Whether two cards can be commanders together: partners, a named partner, friends forever, a
-/// "Choose a Background" creature and a Background, or a Doctor's companion and a Time Lord Doctor.
-fn can_pair(a: &CardFacts, b: &CardFacts) -> bool {
-    let both = |keyword: &str| has_keyword(a, keyword) && has_keyword(b, keyword);
-    let one_way = |x: &CardFacts, y: &CardFacts| {
-        (has_keyword(x, "Choose a Background") && is_background(y))
-            || (has_keyword(x, "Doctor's companion") && is_time_lord_doctor(y))
-    };
-    both("Partner")
-        || both("Friends forever")
-        || partners_with(a, b)
-        || partners_with(b, a)
-        || one_way(a, b)
-        || one_way(b, a)
+/// Whether two cards can be commanders together: the rule the game checks when it starts
+/// ([`crate::CardDefinition::partners_with`]), over their printed sides, so the check and the game never disagree.
+pub fn can_pair(a: &CardFacts, b: &CardFacts) -> bool {
+    let printed = |facts: &CardFacts| assemble(&facts.printed, None, &Caps::none()).definition;
+    printed(a).partners_with(&printed(b))
 }
 
 /// The legality of a card in `format`; a format the card has no entry for counts as not legal.

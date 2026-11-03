@@ -461,12 +461,18 @@
   /* A death: the ghost shakes, goes grey and closes the gap it leaves; a crack is drawn across it. */
   li[data-ghost][data-fx~='died'] {
     animation: fx-ghost calc(var(--fx-died-ms) * var(--fx-slow, 1)) ease-in forwards;
+    animation-delay: var(--fx-hold, 0ms);
   }
 
   li[data-ghost] .fx-crack path {
     stroke-dasharray: 1;
     stroke-dashoffset: 1;
     animation: fx-crack calc(var(--fx-died-ms) * var(--fx-slow, 1) * 0.35) ease-out forwards;
+    animation-delay: var(--fx-hold, 0ms);
+  }
+
+  li[data-ghost] > span > .fx-float {
+    animation-delay: var(--fx-hold, 0ms);
   }
 }
 

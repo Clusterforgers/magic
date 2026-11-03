@@ -48,7 +48,7 @@ pub(crate) fn entering(state: &GameState, id: ObjectId) -> Option<Event> {
 }
 
 /// The player who protects the battle `id`: the player its controller chose as it entered (CR 310.8), if any.
-pub(crate) fn protector(state: &GameState, id: ObjectId) -> Option<PlayerId> {
+pub fn protector(state: &GameState, id: ObjectId) -> Option<PlayerId> {
     match state.object(id)?.permanent()?.chosen()? {
         Chosen::Player(player) => Some(*player),
         _ => None,

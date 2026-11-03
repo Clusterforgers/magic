@@ -17,7 +17,7 @@ use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_engine::events::ResolutionOutcome;
 use mtg_engine::turn::Step;
 use mtg_engine::{Event, GameState};
-use mtg_protocol::{ErrorCode, FullControlMode, ServerMessage, Stop, StopSide};
+use mtg_protocol::{AutoChoices, ErrorCode, FullControlMode, ServerMessage, Stop, StopSide};
 use thiserror::Error;
 
 use crate::actor::{Fatal, GameActor, Phase};
@@ -52,6 +52,10 @@ struct Held {
     /// Whether a spell or ability of the seat with clauses left to the table resolved and the seat has not passed
     /// priority since: it is asked at its next priority window, as at a stop, to apply them.
     by_hand: bool,
+    /// Whether the seat ends its own turns by hand: it is asked at each priority decision of its own end step.
+    end_turn_by_hand: bool,
+    /// The decisions the server answers for the seat with their plain answer.
+    auto_choices: AutoChoices,
 }
 
 /// The stops and the Full Control mode of every seat of one game.
@@ -137,6 +141,35 @@ impl Stops {
             .get(seat.index())
             .map(|held| held.full_control)
             .unwrap_or_default()
+    }
+
+    /// Whether `seat` ends its own turns by hand ([`mtg_protocol::ClientMessage::EndTurnByHand`]).
+    pub(crate) fn end_turn_by_hand(&self, seat: PlayerId) -> bool {
+        self.seats
+            .get(seat.index())
+            .is_some_and(|held| held.end_turn_by_hand)
+    }
+
+    /// Sets whether `seat` ends its own turns by hand.
+    pub(crate) fn set_end_turn_by_hand(&mut self, seat: PlayerId, on: bool) {
+        if let Some(held) = self.seats.get_mut(seat.index()) {
+            held.end_turn_by_hand = on;
+        }
+    }
+
+    /// The decisions the server answers for `seat` ([`mtg_protocol::ClientMessage::AutoChoices`]).
+    pub(crate) fn auto_choices(&self, seat: PlayerId) -> AutoChoices {
+        self.seats
+            .get(seat.index())
+            .map(|held| held.auto_choices)
+            .unwrap_or_default()
+    }
+
+    /// Sets the decisions the server answers for `seat`.
+    pub(crate) fn set_auto_choices(&mut self, seat: PlayerId, choices: AutoChoices) {
+        if let Some(held) = self.seats.get_mut(seat.index()) {
+            held.auto_choices = choices;
+        }
     }
 
     /// Gives `seat` the stop `stop`; one it already holds at that side and step only has its `keep` replaced.
@@ -276,6 +309,14 @@ impl Stops {
             if old.full_control(seat) != mode {
                 told.push((seat, ServerMessage::FullControl { mode }));
             }
+            let on = self.end_turn_by_hand(seat);
+            if old.end_turn_by_hand(seat) != on {
+                told.push((seat, ServerMessage::EndTurnByHand { on }));
+            }
+            let choices = self.auto_choices(seat);
+            if old.auto_choices(seat) != choices {
+                told.push((seat, ServerMessage::AutoChoices { choices }));
+            }
         }
         told
     }
@@ -333,6 +374,36 @@ impl<S: EventStore> GameActor<S> {
         }
         self.commit_stops(stops);
         Ok(())
+    }
+
+    /// Sets whether `seat` ends its own turns by hand and tells it if that changed; answered like [`Self::set_stop`].
+    pub(crate) async fn set_end_turn_by_hand(
+        &mut self,
+        seat: PlayerId,
+        on: bool,
+    ) -> Result<(), Fatal> {
+        if let Some(rejection) = self.out_of_game(seat) {
+            self.refuse(seat, rejection);
+            return Ok(());
+        }
+        let mut stops = self.stops.clone();
+        stops.set_end_turn_by_hand(seat, on);
+        self.take_stops(seat, stops).await
+    }
+
+    /// Sets the decisions the server answers for `seat` and tells it if they changed; answered like [`Self::set_stop`].
+    pub(crate) async fn set_auto_choices(
+        &mut self,
+        seat: PlayerId,
+        choices: AutoChoices,
+    ) -> Result<(), Fatal> {
+        if let Some(rejection) = self.out_of_game(seat) {
+            self.refuse(seat, rejection);
+            return Ok(());
+        }
+        let mut stops = self.stops.clone();
+        stops.set_auto_choices(seat, choices);
+        self.take_stops(seat, stops).await
     }
 
     /// Puts `seat` in Full Control mode `mode` and tells it if the mode changed.

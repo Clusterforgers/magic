@@ -216,6 +216,9 @@ export function genericChoices(kind: DecisionKind, words: GenericWords): Generic
   if ('OrderCards' in kind) {
     return some(pick('keep', 'Keep the order', { OrderCards: kind.OrderCards.cards }))
   }
+  if ('Scry' in kind) {
+    return some(pick('keep', 'Keep every card on top', { Scry: { top: kind.Scry.cards, bottom: [] } }))
+  }
   if ('YesNo' in kind) {
     return some(
       ...(kind.YesNo.only_no === true ? [] : [pick('yes', 'Yes', { YesNo: true })]),

@@ -1,6 +1,13 @@
 // Goal: which cards the Priority offer lets the viewer activate an ability of, and how each play is worded: only the viewer's own permanents and cards of its own hand, graveyard, exile and command zone, never an opponent's card or a mana ability, none for a spectator, and the plays of a card in the order land or spell, ability, mana; and the notes that carry the abilities to the card's name and preview, laid over the hand's reasons.
 import { describe, expect, it } from 'vitest'
-import type { AbilityRef, ActivatedView, ObjectView, PriorityOptions, Zone } from '@/protocol/generated'
+import type {
+  AbilityRef,
+  ActivatedView,
+  ObjectView,
+  PriorityAction,
+  PriorityOptions,
+  Zone,
+} from '@/protocol/generated'
 import { card } from '@/test-utils/cards'
 import type { CardNote, CardNotes } from './marks'
 import {
@@ -329,5 +336,30 @@ describe('the notes laid over the hand reasons', () => {
   ]
   it.each(cases)('%s', (_name, hand, activation, expected) => {
     expect(mergeNotes(hand, activation)).toEqual(expected)
+  })
+})
+
+describe('special actions are offered as plays', () => {
+  const cases: [string, Partial<PriorityOptions>, Zone, PriorityAction][] = [
+    ['suspend', { suspendable: [10] }, { Hand: ME }, { Suspend: 10 }],
+    ['foretell', { foretellable: [10] }, { Hand: ME }, { Foretell: 10 }],
+    ['turn face up', { turnable: [10] }, 'Battlefield', { TurnFaceUp: 10 }],
+    [
+      'cast prepared',
+      { faces: [{ card: 10, face: 1, name: 'Spell', land: false }] },
+      'Battlefield',
+      { CastPrepared: 10 },
+    ],
+  ]
+  it.each(cases)('%s', (_name, over, zone, action) => {
+    const found = abilityPlays(options([], over), table(placed(10, zone, ME)), ME)
+    expect(found.get(10)?.map((play) => play.action)).toEqual([action])
+    expect(activationNotes(found).get(10)?.usable).toHaveLength(1)
+  })
+
+  it('leaves out an opponent card and a spectator seat', () => {
+    const over = { turnable: [10] }
+    expect(abilityPlays(options([], over), table(placed(10, 'Battlefield', THEM)), ME).size).toBe(0)
+    expect(abilityPlays(options([], over), table(placed(10, 'Battlefield', ME)), null).size).toBe(0)
   })
 })

@@ -349,7 +349,8 @@ export function TextFace({
         </span>
       ) : null}
       {pt === null && loyalty === null ? (
-        <span className="h-1" />
+        // The mana strip lies over the bottom left of the face, so the type line moves up clear of it.
+        <span data-slot="card-foot" className="h-1 shrink-0 group-has-[[data-slot=mana-strip]]/card:h-5" />
       ) : (
         <span
           data-slot={pt === null ? 'card-loyalty' : undefined}

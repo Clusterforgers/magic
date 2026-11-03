@@ -107,7 +107,12 @@ export function turnsRunning(state: PlayState): boolean {
 
 /** Whether `seat` has the turn of a running game. Every seat sees the same, so a cue made from it leaks nothing. */
 export function isActiveSeat(state: PlayState, seat: PlayerId): boolean {
-  return turnsRunning(state) && state.view?.turn.active === seat
+  return turnsRunning(state) && !turnLeft(state) && state.view?.turn.active === seat
+}
+
+/** Whether the turn goes on without an active player, whose seat has left the game (CR 800.4); no seat is then the active one. */
+export function turnLeft(state: PlayState): boolean {
+  return turnsRunning(state) && state.view?.turn.active_left === true
 }
 
 /** Whether `seat` holds priority; public, like the turn. */

@@ -25,8 +25,8 @@ pub use events::{
     project_events, project_log, project_window,
 };
 pub use message::{
-    ClientMessage, DecisionId, ErrorCode, FullControlMode, LobbySeat, PROTOCOL_VERSION, SeatDeck,
-    ServerMessage, Stop, StopSide, YieldUntil, manual_play,
+    AutoChoices, ClientMessage, DecisionId, ErrorCode, FullControlMode, LobbySeat,
+    PROTOCOL_VERSION, SeatDeck, ServerMessage, Stop, StopSide, YieldUntil, manual_play,
 };
 pub use project::{spectator_viewer, zone_is_visible, zone_is_visible_in};
 pub use rest::{
@@ -36,6 +36,6 @@ pub use rest::{
 };
 pub use view::{
     ActivatedView, AttackerView, CombatView, CommanderDamageView, CommanderView, CompanionView,
-    CopyView, GivesView, MergedCardView, ObjectView, PermanentView, PlayerView, PriorityView,
-    StateView, TableView, TurnView, ZoneView,
+    CopyView, GivesView, ManaWayView, MergedCardView, ObjectView, PermanentView, PlayerView,
+    PriorityView, StateView, TableView, TurnView, ZoneView,
 };

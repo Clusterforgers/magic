@@ -6,6 +6,7 @@ import { withGhosts } from './ghosts'
 
 const ghost = (token: number, before: number | null): Ghost => ({
   token,
+  hold: 0,
   object: card({ id: 900 + token }),
   before,
   damage: 0,

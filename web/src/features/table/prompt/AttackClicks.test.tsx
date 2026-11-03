@@ -1,4 +1,4 @@
-/** Goal: attacking is done by clicking alone: a click on a creature puts it in the attack and a second click takes it out, no label is written on a card, with several seats the defender is chosen by clicking a pod (the first one at the start, the last choice after) and shows chosen, a creature that cannot attack the chosen defender says so on hover and focus, and the answers sent have the exact shape the server reads. */
+/** Goal: attacking is done by clicking alone: a click on a creature puts it in the attack and a second click takes it out, no label is written on a card, with several seats a click on a pod sends the creature clicked before it there and aims the next ones there (the first seat at the start, the last choice after) and shows chosen, a creature that cannot attack the chosen defender says so on hover and focus, and the answers sent have the exact shape the server reads. */
 import { act, screen } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import type { AttackerOption, AttackTarget, ObjectId } from '@/protocol/generated'
@@ -109,7 +109,7 @@ describe('the keyboard', () => {
 
 describe('the defender of several seats', () => {
   it.each([3, 4])(
-    'at %i seats starts at the first seat and a click on a pod aims the next creatures there',
+    'at %i seats starts at the first seat, a click on a pod sends the creature clicked before it and aims the next there',
     async (seats) => {
       const options = attackers(seats, seatsOf(seats))
       const [a, b, c] = options.map((option) => option.object) as [ObjectId, ObjectId, ObjectId]
@@ -123,15 +123,16 @@ describe('the defender of several seats', () => {
       expect(pod(t, last)).toHaveAttribute('data-defender', 'chosen')
       expect(pod(t, 1)).toHaveAttribute('data-defender', 'candidate')
       await t.user.click(t.card(b))
+      await t.user.click(pod(t, 1))
       await t.user.click(t.card(c))
       await t.user.click(t.button('Confirm attack'))
       expect(t.answer.mock.calls).toEqual([
         [
           {
             DeclareAttackers: [
-              [a, { Player: 1 }],
-              [b, { Player: last }],
-              [c, { Player: last }],
+              [a, { Player: last }],
+              [b, { Player: 1 }],
+              [c, { Player: 1 }],
             ],
           },
         ],

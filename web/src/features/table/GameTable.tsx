@@ -11,8 +11,12 @@ import { CombatProviders } from './combat/CombatProviders'
 import { ControlsDock, ControlsSlotProvider } from './ControlsDock'
 import { FxContext } from './fx/hooks'
 import { FxTravel } from './fx/FxTravel'
+import { FxStrikes } from './fx/FxStrikes'
 import { EFFECTS_BY_DEFAULT, useTableFx } from './fx/useTableFx'
 import { HandDock } from './HandDock'
+import { MomentsContext } from './moment/store'
+import { TableMoments } from './moment/TableMoments'
+import { useTableMoments } from './moment/useTableMoments'
 import { ManualMenuProvider } from './manual/ManualMenu'
 import { handGrowMost, openingGrowMost, planTable, POD_COLUMN_PX, sidePanelRows, ZONE_GAP_PX } from './layout'
 import type { TableMode } from './layout'
@@ -20,7 +24,7 @@ import { createMarksStore, MarksContext } from './prompt/marks'
 import { promptInStrip } from './prompt/ownDecision'
 import { createPreviewStore, PreviewContext } from './preview'
 import { Opponents, SeatArea } from './Seats'
-import { defaultFocusOf, seatCountOf } from './selectors'
+import { defaultFocusOf, seatCountOf, turnLeft } from './selectors'
 import { SharedStrip } from './SharedStrip'
 import { SideProvider } from './sideState'
 import { SidePanelMount, SideSheet, SideTabs } from './SideTabs'
@@ -46,7 +50,7 @@ const Table = memo(function Table() {
     useShallow((state) => ({ seat: state.seat, seatCount: seatCountOf(state), ready: state.view !== null })),
   )
   const followed = usePlay(defaultFocusOf)
-  const active = usePlay((state) => state.view?.turn.active ?? null)
+  const active = usePlay((state) => (turnLeft(state) ? null : (state.view?.turn.active ?? null)))
   const lowered = usePlay(promptInStrip)
   const [mode, setMode] = useState<TableMode | undefined>(options.mode)
   const [chosen, setChosen] = useState<PlayerId | null>(options.focus ?? null)
@@ -62,71 +66,83 @@ const Table = memo(function Table() {
   const regions = useBoardSplit(table.regions, plan, overhang)
   const size: CardSize = plan.compact ? 'compact' : 'normal'
   const fx = useTableFx(options.effects ?? EFFECTS_BY_DEFAULT, options.effectsSlow)
+  const moments = useTableMoments(options.effects ?? EFFECTS_BY_DEFAULT)
 
   return (
     <FxContext value={fx}>
-      <PreviewContext value={previews}>
-        <MarksContext value={marks}>
-          <ManualMenuProvider>
-            <ControlsSlotProvider form={table.dock}>
-              <section
-                aria-label="Game table"
-                data-mode={plan.mode}
-                className="relative h-dvh w-full overflow-hidden bg-table"
-                style={fx.slow === 1 ? undefined : ({ '--fx-slow': fx.slow } as CSSProperties)}
-              >
-                <h1 className="sr-only">Game table</h1>
-                {!ready || seat === null ? (
-                  <p className="p-6 text-sm text-muted-foreground">Waiting for the table…</p>
-                ) : (
-                  <SideProvider kind={regions.side}>
-                    <TableGrid
-                      regions={regions}
-                      stopsRow={table.stopsRow}
-                      bar={
-                        <TopBar
-                          mode={plan.mode}
-                          onMode={setMode}
-                          pinnedFocus={chosen !== null}
-                          onFollow={() => setChosen(null)}
-                          stopsInMenu={false}
-                          compact={regions.landscape}
-                        />
-                      }
-                      opponents={
-                        <Opponents plan={plan} size={size} pod={table.opponentPod} onFocusSeat={setChosen} />
-                      }
-                      shared={
-                        <SharedStrip
-                          sheetMax={regions.sheet}
-                          onOverhang={onOverhang}
-                          inset={table.pod === 'aside' ? POD_COLUMN_PX + ZONE_GAP_PX : 0}
-                        />
-                      }
-                      own={<SeatArea seat={plan.viewer} size={size} facing="near" pod={table.pod} />}
-                      hand={
-                        <HandDock
-                          seat={plan.viewer}
-                          growMost={handGrowMost(regions)}
-                          openingMost={openingGrowMost(regions)}
-                        />
-                      }
-                      controls={<ControlsDock stopsRow={table.stopsRow} />}
-                      side={<SideTabs />}
-                      sidePanel={<SidePanelMount rows={sidePanelRows(regions, lowered)} lowered={lowered} />}
-                      // Inside the grid's own stacking context, so the lines run under the shared strip and above the boards.
-                      overlay={<CombatOverlay />}
-                    />
-                    <SideSheet />
-                  </SideProvider>
-                )}
-                <FxTravel />
-              </section>
-            </ControlsSlotProvider>
-            <CardPreview />
-          </ManualMenuProvider>
-        </MarksContext>
-      </PreviewContext>
+      <MomentsContext value={moments}>
+        <PreviewContext value={previews}>
+          <MarksContext value={marks}>
+            <ManualMenuProvider>
+              <ControlsSlotProvider form={table.dock}>
+                <section
+                  aria-label="Game table"
+                  data-mode={plan.mode}
+                  className="relative h-dvh w-full overflow-hidden bg-table"
+                  style={fx.slow === 1 ? undefined : ({ '--fx-slow': fx.slow } as CSSProperties)}
+                >
+                  <h1 className="sr-only">Game table</h1>
+                  {!ready || seat === null ? (
+                    <p className="p-6 text-sm text-muted-foreground">Waiting for the table…</p>
+                  ) : (
+                    <SideProvider kind={regions.side}>
+                      <TableGrid
+                        regions={regions}
+                        stopsRow={table.stopsRow}
+                        bar={
+                          <TopBar
+                            mode={plan.mode}
+                            onMode={setMode}
+                            pinnedFocus={chosen !== null}
+                            onFollow={() => setChosen(null)}
+                            stopsInMenu={false}
+                            compact={regions.landscape}
+                          />
+                        }
+                        opponents={
+                          <Opponents
+                            plan={plan}
+                            size={size}
+                            pod={table.opponentPod}
+                            onFocusSeat={setChosen}
+                          />
+                        }
+                        shared={
+                          <SharedStrip
+                            sheetMax={regions.sheet}
+                            onOverhang={onOverhang}
+                            inset={table.pod === 'aside' ? POD_COLUMN_PX + ZONE_GAP_PX : 0}
+                          />
+                        }
+                        own={<SeatArea seat={plan.viewer} size={size} facing="near" pod={table.pod} />}
+                        hand={
+                          <HandDock
+                            seat={plan.viewer}
+                            growMost={handGrowMost(regions)}
+                            openingMost={openingGrowMost(regions)}
+                          />
+                        }
+                        controls={<ControlsDock stopsRow={table.stopsRow} />}
+                        side={<SideTabs />}
+                        sidePanel={
+                          <SidePanelMount rows={sidePanelRows(regions, lowered)} lowered={lowered} />
+                        }
+                        // Inside the grid's own stacking context, so the lines run under the shared strip and above the boards.
+                        overlay={<CombatOverlay />}
+                      />
+                      <SideSheet />
+                    </SideProvider>
+                  )}
+                  <FxTravel />
+                  <FxStrikes />
+                </section>
+              </ControlsSlotProvider>
+              <CardPreview />
+              <TableMoments />
+            </ManualMenuProvider>
+          </MarksContext>
+        </PreviewContext>
+      </MomentsContext>
     </FxContext>
   )
 })

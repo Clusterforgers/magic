@@ -28,7 +28,7 @@ use crate::config::ServerConfig;
 use crate::images::{self, Images};
 use crate::records::RecordError;
 use crate::registry::{Registry, ResumeReport};
-use crate::{api, decks, fix_marks, lobbies, my_games, precon_api, ws};
+use crate::{api, decks, favourites, fix_marks, lobbies, my_games, precon_api, prefs, ws};
 
 struct Inner {
     config: ServerConfig,
@@ -308,6 +308,11 @@ pub(crate) fn router(state: AppState) -> Router {
                 .delete(decks::remove),
         )
         .route("/api/decks/{id}/export", get(decks::export))
+        .route("/api/favourites/precons", get(favourites::list))
+        .route(
+            "/api/favourites/precons/{code}",
+            put(favourites::put).delete(favourites::remove),
+        )
         .route("/api/fix-marks", get(fix_marks::list))
         .route(
             "/api/fix-marks/{oracle_id}",
@@ -335,6 +340,7 @@ pub(crate) fn router(state: AppState) -> Router {
         .route("/api/join", post(lobbies::join_by_code))
         .route("/api/lobbies", get(lobbies::list))
         .merge(account_routes())
+        .route("/api/me/prefs", get(prefs::get).put(prefs::put))
         .route("/api/me/games", get(my_games::list))
         .route("/api/me/games/{id}", delete(my_games::remove))
         .route("/ws/{game}/{token}", get(ws::upgrade))

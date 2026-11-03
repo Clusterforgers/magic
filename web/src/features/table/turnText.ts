@@ -44,6 +44,7 @@ export const DECISION_LABEL: Record<DecisionName, string> = {
   DivideAmount: 'Divide the amount',
   ChooseCards: 'Choose cards',
   OrderCards: 'Put cards in order',
+  Scry: 'Scry',
   YesNo: 'Yes or no',
   ChooseOption: 'Choose an option',
   ChooseCosts: 'Choose costs',
@@ -51,8 +52,8 @@ export const DECISION_LABEL: Record<DecisionName, string> = {
   ChooseReplacement: 'Choose which effect applies first',
 }
 
-/** The name of a decision kind; a new kind stops compiling here until it is named. */
-export function decisionName(kind: DecisionKind): DecisionName {
+/** The name of a decision kind; a new kind stops compiling here until it is named. A kind a newer server sends is `Unknown`. */
+export function decisionName(kind: DecisionKind): DecisionName | 'Unknown' {
   if ('Mulligan' in kind) return 'Mulligan'
   if ('BottomCards' in kind) return 'BottomCards'
   if ('Priority' in kind) return 'Priority'
@@ -66,13 +67,15 @@ export function decisionName(kind: DecisionKind): DecisionName {
   if ('DivideAmount' in kind) return 'DivideAmount'
   if ('ChooseCards' in kind) return 'ChooseCards'
   if ('OrderCards' in kind) return 'OrderCards'
+  if ('Scry' in kind) return 'Scry'
   if ('YesNo' in kind) return 'YesNo'
   if ('ChooseOption' in kind) return 'ChooseOption'
   if ('ChooseCosts' in kind) return 'ChooseCosts'
   if ('OrderTriggers' in kind) return 'OrderTriggers'
   if ('ChooseReplacement' in kind) return 'ChooseReplacement'
-  void (kind satisfies { Discard: unknown })
-  return 'Discard'
+  if ('Discard' in kind) return 'Discard'
+  void (kind satisfies never)
+  return 'Unknown'
 }
 
 /** The inputs of the turn banner. */
@@ -81,6 +84,13 @@ export interface BannerInput {
   turn: number
   active: PlayerId
   step: Step
+  /** The turn goes on without its active player, who has left the game. */
+  left?: boolean
+}
+
+/** "Alice left": the words for the seat a turn belongs to after it left the game. */
+function leftWords(seat: PlayerId, name: Names): string {
+  return `${name(seat)} left`
 }
 
 /** "Turn 5 · Alice · Declare attackers", or what the game is doing before and after its turns. */
@@ -93,7 +103,7 @@ export function bannerText(input: BannerInput, name: Names): string {
     case 'Finished':
       return 'The game is over'
     case 'Turns':
-      return `Turn ${input.turn} · ${name(input.active)} · ${STEP_LABEL[input.step]}`
+      return `Turn ${input.turn} · ${input.left === true ? leftWords(input.active, name) : name(input.active)} · ${STEP_LABEL[input.step]}`
   }
 }
 
@@ -103,6 +113,8 @@ export function bannerText(input: BannerInput, name: Names): string {
  */
 export function badgeText(input: BannerInput, viewer: PlayerId | null, name: Names): string {
   if (input.stage !== 'Turns') return bannerText(input, name)
+  if (input.left === true)
+    return `${leftWords(input.active, name)} · ${input.turn} · ${STEP_LABEL[input.step]}`
   const who = input.active === viewer ? 'Your turn' : `${name(input.active)}'s turn`
   return `${who} · ${input.turn} · ${STEP_LABEL[input.step]}`
 }
@@ -159,10 +171,15 @@ export function describeOpening(status: MulliganStatus, mulligans: number): stri
 export type Waiting =
   { kind: 'you'; label: string } | { kind: 'others'; seats: PlayerId[] } | { kind: 'idle'; label: string }
 
+/** The label of a decision name; an unknown kind reads as a plain decision. */
+function decisionLabel(name: DecisionName | 'Unknown'): string {
+  return name === 'Unknown' ? 'A decision' : DECISION_LABEL[name]
+}
+
 /** What the game waits for now, read from the pending decision and the table. */
 export function waitingOn(state: PlayState): Waiting {
   const { pending, view, seat } = state
-  if (pending !== null) return { kind: 'you', label: DECISION_LABEL[decisionName(pending.decision.kind)] }
+  if (pending !== null) return { kind: 'you', label: decisionLabel(decisionName(pending.decision.kind)) }
   if (view === null) return { kind: 'idle', label: 'Waiting for the game' }
   if (view.stage === 'Finished' || view.result !== null) return { kind: 'idle', label: 'The game is over' }
   const others = (seats: PlayerId[]): Waiting =>
@@ -178,7 +195,11 @@ export function waitingOn(state: PlayState): Waiting {
     return others(deciding.map((player) => player.seat).filter((who) => who !== seat))
   }
   if (view.priority !== null) return others(view.priority.holder === seat ? [] : [view.priority.holder])
-  if (view.turn.step === 'DeclareAttackers' && !view.combat.attackers_declared) {
+  if (
+    view.turn.step === 'DeclareAttackers' &&
+    !view.combat.attackers_declared &&
+    view.turn.active_left !== true
+  ) {
     return others(view.turn.active === seat ? [] : [view.turn.active])
   }
   return { kind: 'idle', label: 'Waiting for the game' }

@@ -8,6 +8,7 @@
 import type {
   AttackerForecast,
   AttackerView,
+  AutoChoices,
   CombatForecast,
   CreatureForecast,
   Decision,
@@ -60,6 +61,8 @@ const MESSAGE_TYPES: Record<ServerMessage['type'], true> = {
   Yielding: true,
   Stops: true,
   FullControl: true,
+  EndTurnByHand: true,
+  AutoChoices: true,
   Bank: true,
   Presence: true,
 }
@@ -381,6 +384,14 @@ function isDecision(value: unknown): value is Decision {
 // A string is the name of the offending field, so the caller can say what was wrong.
 type Built = ServerMessage | string
 
+/** The settings of a server that predates them: every decision is asked. */
+const NO_AUTO_CHOICES: AutoChoices = { order_triggers: false, assign_damage: false }
+
+/** Whether `value` is an `AutoChoices`: two flags. */
+function isAutoChoices(value: unknown): value is AutoChoices {
+  return isRecord(value) && isFlag(value.order_triggers) && isFlag(value.assign_damage)
+}
+
 function build(type: ServerMessage['type'], v: Record<string, unknown>): Built {
   switch (type) {
     case 'Welcome':
@@ -393,6 +404,11 @@ function build(type: ServerMessage['type'], v: Record<string, unknown>): Built {
       if (!isStopList(v.stops))
         return '"stops" must be a list of stops (side, step, keep), each side and step once'
       if (!isFullControl(v.full_control)) return '"full_control" must be Off, NextWindow or Held'
+      // An older server leaves it out, which reads as off.
+      if (v.end_turn_by_hand !== undefined && !isFlag(v.end_turn_by_hand))
+        return '"end_turn_by_hand" must be true or false'
+      if (v.auto_choices !== undefined && !isAutoChoices(v.auto_choices))
+        return '"auto_choices" must hold order_triggers and assign_damage, each true or false'
       return {
         type,
         protocol_version: v.protocol_version,
@@ -403,6 +419,8 @@ function build(type: ServerMessage['type'], v: Record<string, unknown>): Built {
         yielding: v.yielding,
         stops: v.stops,
         full_control: v.full_control,
+        end_turn_by_hand: v.end_turn_by_hand ?? false,
+        auto_choices: v.auto_choices ?? NO_AUTO_CHOICES,
       }
     case 'Lobby':
       if (!isListOf(v.seats, isLobbySeat)) {
@@ -487,6 +505,13 @@ function build(type: ServerMessage['type'], v: Record<string, unknown>): Built {
     case 'FullControl':
       if (!isFullControl(v.mode)) return '"mode" must be Off, NextWindow or Held'
       return { type, mode: v.mode }
+    case 'EndTurnByHand':
+      if (!isFlag(v.on)) return '"on" must be true or false'
+      return { type, on: v.on }
+    case 'AutoChoices':
+      if (!isAutoChoices(v.choices))
+        return '"choices" must hold order_triggers and assign_damage, each true or false'
+      return { type, choices: v.choices }
     case 'Bank':
       if (!isCount(v.seat)) return '"seat" must be a whole number'
       if (!isCount(v.bank)) return '"bank" must be a whole number'

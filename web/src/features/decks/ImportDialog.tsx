@@ -203,7 +203,7 @@ export function ImportDialog({ api, onSaved, onClosed }: ImportDialogProps) {
               value={format}
               disabled={pending}
               onChange={setFormat}
-              hint="The rules the deck is checked against. For a Moxfield list, Commander reads the first line as the commander."
+              hint="The rules the deck is checked against. For a Moxfield list, Commander reads the first line as the commander, and the second as well when it is its partner."
             />
             <div className="flex flex-wrap justify-end gap-2">
               <Button type="button" variant="outline" onClick={() => setOpen(false)}>

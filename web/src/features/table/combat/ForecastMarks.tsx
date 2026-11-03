@@ -24,7 +24,7 @@ const CRACKS = [
  * `relative` card button and follows the card as seen, turned or not.
  */
 export function ForecastMarks({ outlook, tapped, compact }: ForecastMarksProps) {
-  const { damage, dies } = outlook
+  const { damage, dies, choice } = outlook
   return (
     <span
       data-slot="forecast"
@@ -73,7 +73,7 @@ export function ForecastMarks({ outlook, tapped, compact }: ForecastMarksProps) 
             data-slot="forecast-damage"
             className="rounded bg-(--combat-damage) px-1 py-px text-xs leading-none font-bold text-white tabular-nums ring-1 ring-white/70"
           >
-            -{damage}
+            {choice ? '≈' : ''}-{damage}
           </span>
         ) : null}
       </span>

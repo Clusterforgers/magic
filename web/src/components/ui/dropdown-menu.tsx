@@ -115,8 +115,30 @@ function DropdownMenuRadioItem({
   )
 }
 
+function DropdownMenuCheckboxItem({
+  className,
+  children,
+  ...props
+}: MenuPrimitive.CheckboxItem.Props) {
+  return (
+    <MenuPrimitive.CheckboxItem
+      data-slot="dropdown-menu-checkbox-item"
+      className={cn(ITEM, className)}
+      {...props}
+    >
+      {children}
+      <span className="pointer-events-none ml-auto flex size-4 items-center justify-center">
+        <MenuPrimitive.CheckboxItemIndicator>
+          <CheckIcon className="size-4" aria-hidden="true" />
+        </MenuPrimitive.CheckboxItemIndicator>
+      </span>
+    </MenuPrimitive.CheckboxItem>
+  )
+}
+
 export {
   DropdownMenu,
+  DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuGroup,
   DropdownMenuItem,

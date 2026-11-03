@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // Screenshots a page with headless Firefox driven over WebDriver BiDi. Firefox's own `--screenshot` fires at `load`,
 // before a SPA has rendered, so it gives a blank page; this waits for a condition first.
-// Usage: node scripts/ui-shot.mjs <url> <out-prefix> [--widths 1400,390] [--height 900] [--wait "<js condition>"] [--full] [--click "<css>"]
+// Usage: node scripts/ui-shot.mjs <url> <out-prefix> [--widths 1400,390] [--height 900] [--wait "<js condition>"] [--full] [--click "<css>"] [--theme light|dark]
 // Writes <out-prefix>-<width>.png per width and prints whether the page overflows horizontally.
 import { spawn, execSync } from 'node:child_process'
 import { mkdtempSync, rmSync, writeFileSync } from 'node:fs'
@@ -12,15 +12,15 @@ const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 
 function options(argv) {
   const [url, prefix, ...rest] = argv
-  const flags = { widths: '1400,390', height: '900', wait: 'document.body && document.body.innerText.length > 0', full: false, click: '' }
+  const flags = { widths: '1400,390', height: '900', wait: 'document.body && document.body.innerText.length > 0', full: false, click: '', theme: '' }
   for (let at = 0; at < rest.length; at += 1) {
     const name = rest[at].replace(/^--/, '')
     if (name === 'full') flags.full = true
     else if (name in flags) flags[name] = rest[(at += 1)] ?? ''
     else throw new Error(`unknown option ${rest[at]}`)
   }
-  if (!url || !prefix) throw new Error('usage: ui-shot.mjs <url> <out-prefix> [--widths 1400,390] [--height 900] [--wait <js>] [--full] [--click <css>]')
-  return { url, prefix, widths: flags.widths.split(',').map(Number), height: Number(flags.height), wait: flags.wait, full: flags.full, click: flags.click }
+  if (!url || !prefix) throw new Error('usage: ui-shot.mjs <url> <out-prefix> [--widths 1400,390] [--height 900] [--wait <js>] [--full] [--click <css>] [--theme light|dark]')
+  return { url, prefix, widths: flags.widths.split(',').map(Number), height: Number(flags.height), wait: flags.wait, full: flags.full, click: flags.click, theme: flags.theme }
 }
 
 function firefoxPath() {
@@ -43,8 +43,10 @@ async function connect(port) {
   throw new Error('could not connect to Firefox over WebDriver BiDi')
 }
 
-async function launch(port) {
+async function launch(port, theme) {
   const profile = mkdtempSync(join(tmpdir(), 'ui-shot-'))
+  // The page follows the system scheme while no choice is stored, so Firefox's scheme override picks the theme.
+  if (theme) writeFileSync(join(profile, 'user.js'), `user_pref("layout.css.prefers-color-scheme.content-override", ${theme === 'dark' ? 0 : 1});\n`)
   const child = spawn(firefoxPath(), ['--headless', '--no-remote', '--profile', profile, `--remote-debugging-port=${port}`, 'about:blank'], { stdio: 'ignore' })
   const socket = await connect(port)
   let nextId = 1
@@ -100,7 +102,7 @@ async function launch(port) {
 }
 
 const config = options(process.argv.slice(2))
-const browser = await launch(9333 + (process.pid % 500))
+const browser = await launch(9333 + (process.pid % 500), config.theme)
 try {
   await browser.viewport(config.widths[0], config.height)
   await browser.open(config.url)

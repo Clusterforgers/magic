@@ -5,6 +5,8 @@ import { Button } from '@/components/ui/button'
 import { BY_HAND_TITLE } from '@/lib/byHand'
 import { cn } from '@/lib/utils'
 import { abilityText, costText, keywordLine, powerToughness, statusWords, typeLine } from './cardModel'
+import { KeywordText } from './Keyword'
+import { reminderTerms } from './reminders'
 import { ManaPreviewLine } from './ManaStrip'
 import { PreviewCard } from './PreviewCard'
 import { useCreatureOutlook } from './combat/drawn'
@@ -27,6 +29,8 @@ import { useCardMark } from './prompt/marks'
 import { noteName, revealedLine, revealedPlace } from './revealed'
 import { combatRoleIn } from './selectors'
 import { roomTitle } from './rooms'
+import { isStacked, shownObject, stackSummary } from './stackPreview'
+import { useStackEntries, useTargetNamer } from './useStackEntries'
 import { useLinks } from './useLinks'
 
 // Whole class names, so Tailwind can see them.
@@ -65,7 +69,13 @@ function PreviewBody({ target }: { target: PreviewTarget }) {
   const store = usePreviewStore()
   const name = useSeatNamer()
   const { id } = target
-  const object = usePlay((state) => state.objectsById[id])
+  const held = usePlay((state) => state.objectsById[id])
+  const sourceObject = usePlay((state) =>
+    held?.source === undefined ? undefined : state.objectsById[held.source],
+  )
+  const object = held === undefined ? undefined : shownObject(held, sourceObject)
+  const entry = useStackEntries().find((candidate) => candidate.id === id)
+  const targetNames = useTargetNamer()
   const role = usePlay((state) => combatRoleIn(state, id))
   const place = usePlay((state) => (state.view === null ? undefined : revealedPlace(state.view.players, id)))
   const outlook = useCreatureOutlook(id)
@@ -77,7 +87,7 @@ function PreviewBody({ target }: { target: PreviewTarget }) {
   const links = useLinks(object)
   const note = useCardMark(id).note
   const reason = note?.line
-  const gone = object === undefined
+  const gone = held === undefined
 
   useEffect(() => {
     // A pinned card that left the game would otherwise stay "shown" with nothing to draw.
@@ -89,13 +99,18 @@ function PreviewBody({ target }: { target: PreviewTarget }) {
     return () => document.removeEventListener('keydown', close)
   }, [gone, store])
 
-  if (object === undefined) return null
+  if (object === undefined || held === undefined) return null
+  const summary = isStacked(held) ? stackSummary(held, sourceObject, entry, name, targetNames) : null
   const fit = previewFit(target.anchor, { width: window.innerWidth, height: window.innerHeight })
   const { dock, beside } = fit
   const pt = powerToughness(object)
   const keywords = keywordLine(object)
   const activated = activatedLines(object, note?.usable)
   const manual = clausesOf(object)
+  const reminders = reminderTerms(object, [
+    ...activated.map((line) => line.text),
+    ...manual.map((clause) => clause.text),
+  ])
   const status = statusWords(object, role)
   const hosted = hostLine(object, links.host)
   const paired = pairLine(links.partner)
@@ -129,10 +144,28 @@ function PreviewBody({ target }: { target: PreviewTarget }) {
           size={beside ? 'medium' : 'large'}
           width={fit.picture}
           revealed={place !== undefined}
+          usable={note?.usable}
         />
       </div>
       <div className={cn('grid content-start gap-1 text-sm', beside ? 'min-w-0 flex-1' : 'mt-3')}>
         <p className="font-semibold">{roomTitle(object.name, links.doors)}</p>
+        {summary === null ? null : (
+          <div data-slot="preview-stack" className="grid gap-0.5 rounded-md bg-muted px-2 py-1">
+            <p className="font-medium">{summary.heading}</p>
+            {summary.rules.map((line, index) => (
+              <p key={index} data-slot="preview-stack-rules" className="select-text">
+                <KeywordText text={line} />
+              </p>
+            ))}
+            {summary.targets.length === 0 ? null : (
+              <ul aria-label="Targets" data-slot="preview-stack-targets" className="grid gap-0.5">
+                {summary.targets.map((line, index) => (
+                  <li key={index}>→ {line}</li>
+                ))}
+              </ul>
+            )}
+          </div>
+        )}
         {reason === undefined ? null : (
           <p
             data-slot="preview-reason"
@@ -152,7 +185,9 @@ function PreviewBody({ target }: { target: PreviewTarget }) {
         ) : (
           <ul aria-label="Abilities" className="grid gap-0.5">
             {object.abilities.map((ability, index) => (
-              <li key={index}>{abilityText(ability)}</li>
+              <li key={index}>
+                <KeywordText text={abilityText(ability)} />
+              </li>
             ))}
           </ul>
         )}
@@ -162,7 +197,9 @@ function PreviewBody({ target }: { target: PreviewTarget }) {
             <p className="font-medium">{BY_HAND_TITLE}:</p>
             <ul aria-label={BY_HAND_TITLE} className="grid gap-0.5">
               {manual.map((clause, index) => (
-                <li key={index}>{clause.text}</li>
+                <li key={index}>
+                  <KeywordText text={clause.text} />
+                </li>
               ))}
             </ul>
           </div>
@@ -171,8 +208,21 @@ function PreviewBody({ target }: { target: PreviewTarget }) {
           <ul aria-label="Activated abilities" data-slot="preview-activated" className="grid gap-0.5">
             {activated.map((line) => (
               <li key={line.key} data-now={line.now || undefined}>
-                {line.text}
+                <KeywordText text={line.text} />
                 {line.now ? <NowTag /> : null}
+              </li>
+            ))}
+          </ul>
+        )}
+        {reminders.length === 0 ? null : (
+          <ul
+            aria-label="Keyword reminders"
+            data-slot="preview-reminders"
+            className="grid gap-0.5 text-xs text-muted-foreground"
+          >
+            {reminders.map((term) => (
+              <li key={term.title}>
+                <span className="font-medium text-foreground">{term.title}</span>: {term.text}
               </li>
             ))}
           </ul>

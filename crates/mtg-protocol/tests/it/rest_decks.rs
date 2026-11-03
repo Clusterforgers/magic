@@ -13,7 +13,7 @@ use mtg_cards::draft::ReadState;
 use mtg_cards::support::Support;
 use mtg_protocol::rest::{
     CardColor, CardHit, CardImages, CardSuggestion, CheckRequest, DeckBody, DeckErrorCode,
-    DeckLineBody, DeckList, DeckListItem, ImportRequest, ImportSource, MAX_DECK_CARDS,
+    DeckLineBody, DeckList, DeckListItem, DeckPicture, ImportRequest, ImportSource, MAX_DECK_CARDS,
     MAX_DECK_LINES, MAX_DECK_NAME_CHARS, MAX_DECK_NOTES_CHARS, MAX_DECKS_PER_USER,
     MAX_IMPORT_CHARS, MAX_IMPORT_LINES, PRECON_DECK_PREFIX, UnresolvedLine, UnresolvedReason,
 };
@@ -271,6 +271,10 @@ fn an_unresolved_line_and_a_list_item_have_the_documented_wire_shape() {
         checked_at: Some("2026-10-19T12:00:00Z".into()),
         summary: summary(),
         commanders: vec![commander()],
+        pictures: vec![DeckPicture {
+            oracle_id: ID.into(),
+            name: "Atraxa, Praetors' Voice".into(),
+        }],
     };
     let value = serde_json::to_value(DeckList {
         decks: vec![item.clone()],
@@ -280,6 +284,7 @@ fn an_unresolved_line_and_a_list_item_have_the_documented_wire_shape() {
     assert_eq!(value["decks"][0]["verified"], false);
     assert_eq!(value["decks"][0]["changed"], true);
     assert_eq!(value["decks"][0]["summary"]["state"], "manual_play");
+    assert_eq!(value["decks"][0]["pictures"][0]["oracle_id"], ID);
     assert_eq!(
         value["decks"][0]["commanders"][0]["name"],
         "Atraxa, Praetors' Voice"

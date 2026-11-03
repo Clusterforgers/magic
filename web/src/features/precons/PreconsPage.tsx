@@ -13,6 +13,9 @@ import { api as sharedApi } from '@/net/api'
 import type { Api } from '@/net/api'
 import { cardsApi } from '@/net/cards'
 import type { CardsApi } from '@/net/cards'
+import { useAuth } from '@/features/auth/context'
+import { favouritesApi } from '@/net/favourites'
+import type { FavouritesApi } from '@/net/favourites'
 import { preconsApi } from '@/net/precons'
 import type { PreconsApi } from '@/net/precons'
 import type { PreconListItem } from '@/protocol/generated'
@@ -22,6 +25,7 @@ import type { Filters } from './format'
 import { PreconDialog } from './PreconDialog'
 import { PreconFilters } from './PreconFilters'
 import { PreconRows } from './PreconRows'
+import { useFavourites } from './useFavourites'
 import { usePlayPrecon } from './usePlayPrecon'
 import { usePreconDetail } from './usePreconDetail'
 import { usePrecons } from './usePrecons'
@@ -34,6 +38,8 @@ export interface PreconsPageProps {
   cards?: Pick<CardsApi, 'get'>
   /** The call that makes a game; the shared client by default. */
   games?: Pick<Api, 'createGame'>
+  /** The account's favourite precons; defaults to the server's. */
+  favouritesApi?: FavouritesApi
 }
 
 /** A precon whose details are open. */
@@ -61,11 +67,18 @@ function RowsSkeleton() {
  * button that makes a game with it and opens the lobby. The page fits the window under the header; only the list
  * scrolls. A signed-in visitor plays in one click; a guest gives a name first.
  */
-export function PreconsPage({ api = preconsApi, games = sharedApi, cards = cardsApi }: PreconsPageProps) {
+export function PreconsPage({
+  api = preconsApi,
+  games = sharedApi,
+  cards = cardsApi,
+  favouritesApi: favouritesSource = favouritesApi,
+}: PreconsPageProps) {
   usePageTitle('Precons')
   useFitWindow()
   const list = usePrecons(api)
   const play = usePlayPrecon(games)
+  const signedIn = useAuth((state) => state.status === 'signed-in')
+  const favourites = useFavourites(favouritesSource, signedIn)
   const [filters, setFilters] = useState<Filters>(NO_FILTERS)
   const [details, setDetails] = useState<Details | null>(null)
   const detail = usePreconDetail(api, details?.precon.code ?? null)
@@ -124,6 +137,7 @@ export function PreconsPage({ api = preconsApi, games = sharedApi, cards = cards
           onPlay={(precon, opener) => play.start(precon, opener)}
           playing={play.playing}
           busy={play.busy}
+          favourites={signedIn ? favourites : undefined}
         />
       </div>
     )
@@ -159,6 +173,18 @@ export function PreconsPage({ api = preconsApi, games = sharedApi, cards = cards
           </div>
         </Alert>
       ) : null}
+
+      {favourites.problem === null ? null : (
+        <Alert variant="destructive" data-slot="favourite-problem">
+          <CircleAlertIcon aria-hidden="true" />
+          <AlertDescription>{favourites.problem}</AlertDescription>
+          <div className="col-start-2 mt-2">
+            <Button type="button" variant="outline" size="sm" onClick={favourites.clearProblem}>
+              Dismiss
+            </Button>
+          </div>
+        </Alert>
+      )}
 
       {failure === null ? null : (
         <Alert variant="destructive" data-slot="play-failure">

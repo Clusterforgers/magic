@@ -13,7 +13,7 @@ import { BUILDER_FIXTURE_MARKER, fixtureCards, fixtureCheck, fixtureDetails, fix
 
 /**
  * `/dev/builder?deck=mixed`: the real builder over a fixture deck, a card server and a check endpoint in memory, for
- * looking at it. The decks are `mixed` (a card of each support state and illegal lines), `manual`, `verified`,
+ * looking at it. The decks are `mixed` (a card of each support state and illegal lines), `manual`, `verified`, `partners`, `refused`,
  * `changed` and `unchecked`. A card's name opens its preview, the live check answers after a short wait so
  * "Checking…" can be seen, and Save works as if a server answered it: the saved deck is the one checked.
  */

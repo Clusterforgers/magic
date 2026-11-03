@@ -123,7 +123,8 @@ export function abilityPlays(
 ): Activations {
   const abilities = options.abilities ?? []
   const doors = options.unlockable ?? []
-  if (seat === null || abilities.length + doors.length === 0) return NONE
+  const special = specialActions(options)
+  if (seat === null || abilities.length + doors.length + special.length === 0) return NONE
   const found = new Map<ObjectId, Play[]>()
   const add = (id: ObjectId, play: Play): void => {
     const list = found.get(id)
@@ -152,7 +153,27 @@ export function abilityPlays(
       add(option.card, unlockPlay(option))
     }
   }
+  for (const [id, verb, action] of special) {
+    const object = objectsById[id]
+    if (object === undefined || !usable(object, seat)) continue
+    const words = `${verb} ${object.name}`
+    add(id, { key: `${verb.toLowerCase().replace(/ /g, '-')}-${id}`, label: words, words, action })
+  }
   return found
+}
+
+type Special = [ObjectId, string, PriorityAction]
+
+/** The special actions of the offer as card, verb and the action it answers with. */
+function specialActions(options: PriorityOptions): Special[] {
+  return [
+    ...(options.suspendable ?? []).map((id): Special => [id, 'Suspend', { Suspend: id }]),
+    ...(options.foretellable ?? []).map((id): Special => [id, 'Foretell', { Foretell: id }]),
+    ...(options.turnable ?? []).map((id): Special => [id, 'Turn face up', { TurnFaceUp: id }]),
+    ...(options.faces ?? [])
+      .filter((face) => face.face === 1 && !face.land)
+      .map((face): Special => [face.card, 'Cast prepared', { CastPrepared: face.card }]),
+  ]
 }
 
 /**

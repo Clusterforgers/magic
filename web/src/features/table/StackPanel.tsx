@@ -7,11 +7,13 @@ import { CardFace } from './CardFace'
 import { targetName } from './eventText'
 import { cardLabel, costPips, typeLine } from './cardModel'
 import { SIZE } from './cardSize'
+import { ByHandMark } from './manual/ByHand'
 import { ManaPips } from './ManaPips'
 import { useSeatNamer } from './names'
 import { SeatDot } from './PodParts'
 import { objectWords } from './prompt/targetText'
 import { stackTopFirst } from './selectors'
+import { shownObject } from './stackPreview'
 import { hasNoLegalTarget } from './stackTargets'
 import type { StackEntry } from './stackTargets'
 import { NO_LEGAL_TARGET, targetsAria, targetsLine } from './stackText'
@@ -64,6 +66,9 @@ const StackItem = memo(function StackItem({
   entry: StackEntry | undefined
 }) {
   const object = usePlay((state) => state.objectsById[id])
+  const source = usePlay((state) =>
+    object?.source === undefined ? undefined : state.objectsById[object.source],
+  )
   const name = useSeatNamer()
   const targetNames = useTargetNamer()
   const handlers = usePreviewHandlers(id)
@@ -85,6 +90,7 @@ const StackItem = memo(function StackItem({
         <span className={cn('flex items-center gap-1.5 font-semibold', top && 'text-base')}>
           {top ? <SeatDot seat={object.controller} /> : null}
           {object.name}
+          <ByHandMark object={object} spot="chip" compact={false} text="text-xs" />
         </span>
         {object.mana_cost === null ? null : (
           <ManaPips pips={costPips(object.mana_cost)} sizeClass={SIZE.normal.pip} label="Mana cost" />
@@ -114,7 +120,7 @@ const StackItem = memo(function StackItem({
         aria-hidden="true"
         className="relative grid h-(--card-h) w-(--card-w) shrink-0 place-items-center justify-self-center rounded-lg ring-1 ring-border-strong [--card-h:9.8rem] [--card-w:7rem]"
       >
-        <CardFace object={object} role={null} size="large" fit />
+        <CardFace object={shownObject(object, source)} role={null} size="large" fit />
       </span>
       <div className="grid min-w-0 content-start gap-2">
         {button}

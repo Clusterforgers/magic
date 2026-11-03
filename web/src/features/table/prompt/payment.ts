@@ -5,14 +5,62 @@
  * exactly the life paid and exactly the mana chosen: every unit of a kind met, the rest generic, nothing left over.
  * A plain cost has one resolution, which is the cost itself.
  */
-import type { ManaCost, ManaOption, ManaPool, ManaSymbol, ManaType, Payment } from '@/protocol/generated'
+import type {
+  Color,
+  ManaCost,
+  ManaOption,
+  ManaPool,
+  ManaSymbol,
+  ManaType,
+  ObjectId,
+  Payment,
+  Restricted,
+  Spend as PaySpend,
+} from '@/protocol/generated'
 import { canPayLife, costValue, isPlain, LIFE_PER_SYMBOL, symbolText, waysOf } from '../manaSymbols'
+import { spendAllows } from './spendRules'
 
 /** The kinds of mana in the order of `ManaPool.counts`. */
 export const MANA_TYPES: readonly ManaType[] = ['White', 'Blue', 'Black', 'Red', 'Green', 'Colorless']
 
-/** One piece of the running payment: floating mana, or a permanent's mana ability. */
-export type Spend = { kind: 'pool'; mana: ManaType } | { kind: 'tap'; option: ManaOption }
+/** One piece of the running payment: floating mana, restricted mana of the pool (`index` in `ManaPool.restricted`), or a permanent's mana ability. */
+export type Spend =
+  | { kind: 'pool'; mana: ManaType }
+  | { kind: 'restricted'; index: number; restricted: Restricted }
+  | { kind: 'tap'; option: ManaOption }
+  | { kind: 'convoke'; creature: ObjectId; pays: Color | null }
+  | { kind: 'improvise'; artifact: ObjectId }
+  | { kind: 'delve'; card: ObjectId }
+
+/** What a piece of the payment uses up, so it joins the payment once: a permanent, a card of the graveyard or one restricted mana of the pool. */
+export function usedBy(spend: Spend): string | undefined {
+  switch (spend.kind) {
+    case 'tap':
+      return `o:${spend.option.source.object}`
+    case 'convoke':
+      return `o:${spend.creature}`
+    case 'improvise':
+      return `o:${spend.artifact}`
+    case 'delve':
+      return `d:${spend.card}`
+    case 'restricted':
+      return `r:${spend.index}`
+    case 'pool':
+      return undefined
+  }
+}
+
+/** Where the generic-only payments (improvise, delve, a creature convoked for {1}) count in a tally of mana. */
+const GENERIC = MANA_TYPES.length
+
+/** How much generic mana a piece of the payment pays and nothing else: one for improvise, delve and convoke for {1}. */
+export function genericOf(spend: Spend): number {
+  return spend.kind === 'improvise' ||
+    spend.kind === 'delve' ||
+    (spend.kind === 'convoke' && spend.pays === null)
+    ? 1
+    : 0
+}
 
 /** The symbols of a cost (by place in it) that the payment pays with life instead of mana. */
 export type LifeSymbols = readonly number[]
@@ -29,7 +77,18 @@ export function madeBy(option: ManaOption): ManaType[] {
 
 /** The mana a piece of the payment makes. */
 export function madeOf(spend: Spend): ManaType[] {
-  return spend.kind === 'pool' ? [spend.mana] : madeBy(spend.option)
+  switch (spend.kind) {
+    case 'pool':
+      return [spend.mana]
+    case 'restricted':
+      return [spend.restricted.mana]
+    case 'tap':
+      return madeBy(spend.option)
+    case 'convoke':
+      return spend.pays === null ? [] : [spend.pays]
+    default:
+      return []
+  }
 }
 
 /** True when using the source costs mana (a Signet's `{1}`, a filter land's `{W/U}`), paid from mana made before it. */
@@ -39,8 +98,9 @@ export function costsMana(option: ManaOption): boolean {
 
 /** How many of each kind of mana the payment makes, in `MANA_TYPES` order, before any source's own cost is paid. */
 export function tally(spends: readonly Spend[]): Counts {
-  const counts = MANA_TYPES.map(() => 0)
+  const counts = [...MANA_TYPES.map(() => 0), 0]
   for (const mana of spends.flatMap(madeOf)) counts[kindAt(mana)] = (counts[kindAt(mana)] ?? 0) + 1
+  counts[GENERIC] = spends.reduce((sum, spend) => sum + genericOf(spend), 0)
   return counts
 }
 
@@ -131,7 +191,8 @@ function takeWays(free: Counts, ask: Ask): Counts[] {
       found.push(now)
       return
     }
-    if (at >= now.length) return
+    // The generic-only payments stay where they are: a source's own cost is paid from mana, not from them.
+    if (at >= GENERIC) return
     for (let take = Math.min(need, now[at] ?? 0); take >= 0; take -= 1) {
       walk(
         at + 1,
@@ -155,7 +216,7 @@ export function netMana(spends: readonly Spend[]): Counts[] {
   const costly = spends.flatMap((spend) =>
     spend.kind === 'tap' && costsMana(spend.option) ? [spend.option] : [],
   )
-  const plain = spends.filter((spend) => spend.kind === 'pool' || !costsMana(spend.option))
+  const plain = spends.filter((spend) => spend.kind !== 'tap' || !costsMana(spend.option))
   const seen = new Set<string>()
   const found = new Map<string, Counts>()
   const walk = (now: Counts, rest: readonly ManaOption[]): void => {
@@ -198,7 +259,7 @@ interface Placement {
 /** Puts the payment's mana against the units: each kind meets its own, and what is left over goes to generic. */
 function place(cost: ManaCost, units: readonly Unit[], have: Counts): Placement {
   const owed: Unit[] = []
-  let leftover = 0
+  let leftover = have[GENERIC] ?? 0
   // A plain symbol meets mana first, so a hybrid one stays open as long as it can.
   const plainFirst = (unit: Unit): number => {
     const symbol = cost[unit.origin]
@@ -282,15 +343,19 @@ function exact(cost: ManaCost, spends: readonly Spend[], life: LifeSymbols): boo
 /** The most payments `completable` looks at before it gives the benefit of the doubt. */
 const SEARCH_BUDGET = 4_000
 
-/** True when the source may be used by hand: its mana has no restriction, which the prompt does not read yet. */
-export function usableByHand(option: ManaOption): boolean {
-  return (option.only?.length ?? 0) === 0
+/** True when the source may be used by hand: its mana has no restriction, or the restriction allows `spend`. */
+export function usableByHand(option: ManaOption, spend?: PaySpend): boolean {
+  return spendAllows(spend, option.only)
 }
 
 /** What is left to finish a payment with: every source of the decision and the most life it may take. */
 export interface Reach {
   sources: readonly ManaOption[]
   maxLife: number
+  /** What the payment is for, which decides what restricted mana may pay it. */
+  spend?: PaySpend
+  /** Every other piece that may join: the restricted mana of the pool that may pay it, creatures to convoke, artifacts to improvise, cards to delve. */
+  extras?: readonly Spend[]
 }
 
 /** `life` and every larger set of Phyrexian symbols paid with life within `maxLife`, the smallest first. */
@@ -318,15 +383,17 @@ export function completable(
 ): boolean {
   // The sources that cost mana come last, so the ones that fund them are tried before them.
   const options = reach.sources
-    .filter(usableByHand)
+    .filter((option) => usableByHand(option, reach.spend))
     .sort((a, b) => Number(costsMana(a)) - Number(costsMana(b)))
+  const extras = reach.extras ?? []
   let budget = SEARCH_BUDGET
-  const walk = (paid: LifeSymbols, now: readonly Spend[], from: number, mana: number): boolean => {
+  const walk = (paid: LifeSymbols, now: readonly Spend[], from: number, mana: number, next = 0): boolean => {
     budget -= 1
     if (budget < 0) return true
     if (covers(cost, now, paid)) return true
-    const used = new Set(now.flatMap((spend) => (spend.kind === 'tap' ? [spend.option.source.object] : [])))
-    const sinks = options.some((option) => costsMana(option) && !used.has(option.source.object))
+    const taken = new Set(now.flatMap((spend) => usedBy(spend) ?? []))
+    const used = (option: ManaOption): boolean => taken.has(`o:${option.source.object}`)
+    const sinks = options.some((option) => costsMana(option) && !used(option))
     if (!sinks && candidates(cost, now, paid).length === 0) return false
     for (let kind = mana; kind < MANA_TYPES.length; kind += 1) {
       const type = MANA_TYPES[kind]
@@ -336,8 +403,25 @@ export function completable(
     }
     for (let at = from; at < options.length; at += 1) {
       const option = options[at]
-      if (option === undefined || used.has(option.source.object) || !canFund(now, option)) continue
+      if (option === undefined || used(option) || !canFund(now, option)) continue
       if (walk(paid, [...now, { kind: 'tap', option }], at + 1, MANA_TYPES.length)) return true
+    }
+    // Cards that pay alike (delve, improvise) are tried as the first one left, so their order never multiplies the search.
+    const alike = new Set<string>()
+    for (let at = next; at < extras.length; at += 1) {
+      const extra = extras[at]
+      const key = extra === undefined ? undefined : usedBy(extra)
+      if (extra === undefined || key === undefined || taken.has(key)) continue
+      const twin = extra.kind === 'delve' || extra.kind === 'improvise' ? extra.kind : undefined
+      if (twin !== undefined) {
+        if (alike.has(twin)) continue
+        alike.add(twin)
+      }
+      if (
+        walk(paid, [...now, extra], options.length, MANA_TYPES.length, twin === undefined ? at + 1 : next)
+      ) {
+        return true
+      }
     }
     return false
   }
@@ -364,8 +448,18 @@ export function lifeOf(life: LifeSymbols): number {
 
 /** The payment as the wire takes it: the floating mana to spend, the abilities to tap and the life to pay. */
 export function toPayment(spends: readonly Spend[], life: LifeSymbols = []): Payment {
+  const restricted = spends.flatMap((spend) => (spend.kind === 'restricted' ? [spend.restricted] : []))
+  const convoke = spends.flatMap((spend) =>
+    spend.kind === 'convoke' ? [{ creature: spend.creature, pays: spend.pays }] : [],
+  )
+  const improvise = spends.flatMap((spend) => (spend.kind === 'improvise' ? [spend.artifact] : []))
+  const delve = spends.flatMap((spend) => (spend.kind === 'delve' ? [spend.card] : []))
   return {
     pool: spends.flatMap((spend) => (spend.kind === 'pool' ? [spend.mana] : [])),
+    ...(restricted.length > 0 ? { restricted } : {}),
+    ...(convoke.length > 0 ? { convoke } : {}),
+    ...(improvise.length > 0 ? { improvise } : {}),
+    ...(delve.length > 0 ? { delve } : {}),
     taps: spends.flatMap((spend) => (spend.kind === 'tap' ? [spend.option.source] : [])),
     life: lifeOf(life),
   }
@@ -396,10 +490,11 @@ export function allowed(
   reach?: Reach,
 ): boolean {
   if (spend.kind === 'pool' && poolLeft(pool, spends, spend.mana) <= 0) return false
+  const key = usedBy(spend)
+  if (key !== undefined && spends.some((other) => usedBy(other) === key)) return false
+  if (spend.kind === 'restricted' && !spendAllows(reach?.spend, spend.restricted.only)) return false
   if (spend.kind === 'tap') {
-    const object = spend.option.source.object
-    if (!usableByHand(spend.option)) return false
-    if (spends.some((other) => other.kind === 'tap' && other.option.source.object === object)) return false
+    if (!usableByHand(spend.option, reach?.spend)) return false
     if (!canFund(spends, spend.option)) return false
   }
   const next = [...spends, spend]
@@ -409,7 +504,7 @@ export function allowed(
 }
 
 /** What tells two abilities of one permanent apart for a payment: the mana they make and what they cost. */
-const optionKey = (option: ManaOption): string =>
+export const optionKey = (option: ManaOption): string =>
   `${madeBy(option).join()}|${JSON.stringify(option.cost ?? [])}|${String(option.sacrifice ?? false)}`
 
 /** The options of one permanent that may join the payment, one per kind of use (two abilities alike are one). */

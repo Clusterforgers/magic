@@ -5,6 +5,7 @@
 //! the announcement (modes, X, optional costs, targets, division) are asked by `announce`.
 
 mod ask;
+mod auto;
 mod cards;
 mod costs;
 mod divide;
@@ -13,6 +14,8 @@ mod number;
 mod option;
 mod order;
 mod replacement;
+mod scry;
+mod sole;
 mod targets;
 mod triggers;
 mod yes_no;
@@ -24,6 +27,7 @@ use serde::{Deserialize, Serialize};
 use crate::object::ObjectRef;
 use crate::snapshot::Snapshot;
 
+pub use auto::{damage_in_order, triggers_in_order};
 pub use cards::{CardsChoice, CardsOptions};
 pub use costs::{CostsChoice, CostsOptions, OptionalCost};
 pub use divide::{DivideChoice, DivideOptions};
@@ -32,6 +36,8 @@ pub use number::{NumberChoice, NumberOptions};
 pub use option::{ChoiceOption, OptionChoice, OptionOptions};
 pub use order::{OrderChoice, OrderOptions};
 pub use replacement::{ReplacementCandidate, ReplacementChoice, ReplacementOptions};
+pub use scry::{ScryChoice, ScryOptions};
+pub use sole::sole_answer;
 pub use targets::{TargetChoice, TargetOptions, is_legal, legal_targets};
 pub use triggers::{TriggerEntry, TriggersChoice, TriggersOptions};
 pub use yes_no::{YesNoChoice, YesNoOptions};
@@ -57,6 +63,7 @@ pub(crate) use number::answer as number_answer;
 pub(crate) use option::answer as option_answer;
 pub(crate) use order::answer as order_answer;
 pub(crate) use replacement::answer as replacement_answer;
+pub(crate) use scry::answer as scry_answer;
 pub(crate) use targets::answer as targets_answer;
 pub(crate) use triggers::answer as triggers_answer;
 pub(crate) use yes_no::answer as yes_no_answer;
@@ -267,6 +274,8 @@ pub enum Choice {
     Cards(Vec<ObjectId>),
     /// Cards put in an order, first to last (`OrderCards`).
     Order(Vec<ObjectId>),
+    /// Cards split into a top pile and a bottom pile, each in order (`Scry`).
+    Scry(ScryChoice),
     /// Yes or no (`YesNo`).
     YesNo(bool),
     /// One of the offered options, by index (`ChooseOption`).
@@ -281,15 +290,16 @@ pub enum Choice {
 
 impl Choice {
     /// The objects the choice names, for deciding who may see it.
-    pub fn objects(&self) -> &[ObjectId] {
+    pub fn objects(&self) -> Vec<ObjectId> {
         match self {
-            Choice::Cards(cards) | Choice::Order(cards) => cards,
+            Choice::Cards(cards) | Choice::Order(cards) => cards.clone(),
+            Choice::Scry(piles) => piles.top.iter().chain(&piles.bottom).copied().collect(),
             Choice::Number(_)
             | Choice::YesNo(_)
             | Choice::Option(_)
             | Choice::Vote(_)
             | Choice::Replacement(_)
-            | Choice::Targets(_) => &[],
+            | Choice::Targets(_) => Vec::new(),
         }
     }
 }

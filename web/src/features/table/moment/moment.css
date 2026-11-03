@@ -1,0 +1,45 @@
+/*
+ * The moments over the table (`TableMoments.tsx`): a panel comes in, a die tumbles and lands. Motion plays only where
+ * it is welcome; under reduced motion a panel is there and a die shows its result, nothing moves.
+ */
+@keyframes moment-in {
+  from {
+    opacity: 0;
+    transform: translateY(-0.5rem) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* The die drops in, turns twice and a half, overshoots a little and settles upright (a multiple of 360 degrees). */
+@keyframes moment-die-roll {
+  0% {
+    opacity: 0;
+    transform: translateY(-2rem) rotate(0deg) scale(0.6);
+  }
+  15% {
+    opacity: 1;
+  }
+  70% {
+    transform: translateY(0) rotate(630deg) scale(1.1);
+  }
+  86% {
+    transform: rotate(710deg) scale(0.96);
+  }
+  100% {
+    transform: rotate(720deg) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  [data-slot='moment'] {
+    animation: moment-in 200ms ease-out both;
+  }
+
+  [data-slot='die']:not([data-landed]) .die-body,
+  [data-slot='die']:not([data-landed]) .die-number {
+    animation: moment-die-roll 900ms cubic-bezier(0.2, 0.8, 0.3, 1) both;
+  }
+}

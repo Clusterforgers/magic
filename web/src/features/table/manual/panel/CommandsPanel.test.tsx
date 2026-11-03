@@ -150,6 +150,7 @@ describe('a row', () => {
     'experience',
     'draw',
     'look',
+    'tutor',
     'mill',
     'exileTop',
     'bottomTop',

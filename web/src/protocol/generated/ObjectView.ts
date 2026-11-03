@@ -73,6 +73,14 @@ power: number | null,
  */
 toughness: number | null, 
 /**
+ * The power a token was created with, so a client can tell it from a buffed or debuffed one; left out for any other object.
+ */
+printed_power?: number, 
+/**
+ * The toughness a token was created with; left out for any other object.
+ */
+printed_toughness?: number, 
+/**
  * Current abilities.
  */
 abilities: Array<AbilityDef>, 
@@ -93,6 +101,11 @@ kind?: ObjectKind,
  * The object an ability on the stack comes from.
  */
 source?: ObjectId, 
+/**
+ * The rules text of an ability on the stack in the card writer's words, with the source's name for `~`; left out for
+ * any other object, for an ability the writer cannot word and while the source is hidden from the viewer.
+ */
+rules_text?: string, 
 /**
  * What a spell or ability on the stack targets, one list for each target specification.
  */
@@ -120,6 +133,10 @@ attached_to?: ObjectId,
  * The player this one is attached to, when it is an Aura on the battlefield that enchants a player.
  */
 attached_player?: PlayerId, 
+/**
+ * The player who protects this one, when it is a battle on the battlefield with a protector; public, like its defense.
+ */
+protector?: PlayerId, 
 /**
  * The creature this one is paired with (soulbond), when both are on the battlefield; public, like an attachment.
  */
@@ -170,6 +187,11 @@ manual_owed?: boolean,
  * tier), for every seat that sees its face; left out while false.
  */
 read?: boolean, 
+/**
+ * Whether the engine runs part of its card and leaves the clauses in `manual` to the table (`Partial`), as against a
+ * card played wholly by hand; shown wherever `manual` is, left out while false.
+ */
+partial?: boolean, 
 /**
  * The note a seat put on the object by hand, which every seat that sees the object reads; left out while there is
  * none.

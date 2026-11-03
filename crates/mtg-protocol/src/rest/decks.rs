@@ -97,6 +97,18 @@ pub struct DeckView {
     pub report: DeckReport,
 }
 
+/// The most cards whose pictures stand for a deck in a list.
+pub const MAX_DECK_PICTURES: usize = 2;
+
+/// A card whose picture stands for a deck in a list: the oracle id the image endpoints take, and the name.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
+pub struct DeckPicture {
+    /// The card's oracle id.
+    pub oracle_id: String,
+    /// The card's name.
+    pub name: String,
+}
+
 /// A deck in the list of `GET /api/decks`.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize, TS)]
 pub struct DeckListItem {
@@ -122,6 +134,9 @@ pub struct DeckListItem {
     pub summary: Summary,
     /// The cards of the command zone, one per commander, for the list's pictures; empty for a deck without any.
     pub commanders: Vec<CardHit>,
+    /// The cards whose pictures stand for the deck in a list: its commanders (at most `MAX_DECK_PICTURES`), else
+    /// its first card; empty for a deck without cards.
+    pub pictures: Vec<DeckPicture>,
 }
 
 /// The answer of `GET /api/decks`: the account's decks, the most recently saved first.

@@ -7,6 +7,7 @@ import { CardsApiContext } from '@/features/table/cardsContext'
 import { setDetailFetcher } from '@/features/table/printed'
 import { TableOptionsContext } from '@/features/table/tableOptions'
 import { DevFxControls } from './DevFxControls'
+import { DevMoments } from './DevMoments'
 import { DevTurnChange } from './DevTurnChange'
 import { fixtureGame } from './devGame'
 import { FIXTURE_MARKER, buildFixture } from './fixture'
@@ -46,7 +47,7 @@ function useRealIds(
 /**
  * `/dev/table?seats=2|4|12&mode=grid|focus&focus=<seat>&prompt=priority&turn=you&fx=damage&bar=1&slow=5&preview=3000`: the
  * real table over a fixture game, for looking at it. `prompt` names a decision from `dev/prompts.ts` for the viewer to
- * face; answering it clears it. `turn=you` makes it the viewer's own turn and `step=main2` (any step's name) puts the
+ * face; answering it clears it. `turn=you` makes it the viewer's own turn, `turn=left` has the active seat leave the game, and `step=main2` (any step's name) puts the
  * turn in that step, to look at the theme of its phase. `fx` plays one of the moves of `dev/fxScenarios.ts` once the
  * page has loaded (the Effects bar plays them again; it is folded behind one button, and `bar=1` opens it) and `slow`
  * stretches the table effects, so one can be looked at before it is gone; `newturn=1` passes the turn to the other side
@@ -78,6 +79,7 @@ export function DevTableRoute() {
     states,
     equip,
     reveal,
+    moments,
     menu,
     panel,
   } = useSearch({
@@ -143,10 +145,10 @@ export function DevTableRoute() {
     () => ({
       mode,
       focus,
-      effects: fx === undefined && newturn !== true ? undefined : true,
+      effects: fx === undefined && newturn !== true && moments !== true ? undefined : true,
       effectsSlow: slow,
     }),
-    [mode, focus, fx, newturn, slow],
+    [mode, focus, fx, newturn, moments, slow],
   )
   return (
     <GameContext value={game}>
@@ -158,6 +160,7 @@ export function DevTableRoute() {
           <GameTable />
           <DevFxControls initial={fx} open={bar} />
           <DevTurnChange on={newturn === true} />
+          <DevMoments on={moments === true} />
         </CardsApiContext>
       </TableOptionsContext>
     </GameContext>

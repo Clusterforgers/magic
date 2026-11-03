@@ -4,6 +4,7 @@ import type { PreconsApi } from '@/net/precons'
 import type { PreconListItem } from '@/protocol/generated'
 
 /** The precons the chooser offers, as the lobby sees them. */
+// Also read by the sources that list the precons.
 export type PreconChoices =
   | { status: 'loading' }
   | { status: 'ready'; precons: PreconListItem[] }
@@ -22,8 +23,11 @@ export function preconListWords(error: unknown): string {
   return 'The precons could not be loaded. Check the connection, then try again.'
 }
 
-/** Loads `GET /api/precons` once, and again when `reload` is called. */
-export function usePreconChoices(api: Pick<PreconsApi, 'list'>): {
+/** Loads `GET /api/precons` once `enabled` (the Precons tab opened, or a favourite needs it), and again when `reload` is called. */
+export function usePreconChoices(
+  api: Pick<PreconsApi, 'list'>,
+  enabled = true,
+): {
   state: PreconChoices
   reload: () => void
 } {
@@ -33,6 +37,7 @@ export function usePreconChoices(api: Pick<PreconsApi, 'list'>): {
   const reload = useCallback(() => setRound((n) => n + 1), [])
 
   useEffect(() => {
+    if (!enabled) return
     let stale = false
     api.list().then(
       (list) => {
@@ -45,7 +50,7 @@ export function usePreconChoices(api: Pick<PreconsApi, 'list'>): {
     return () => {
       stale = true
     }
-  }, [api, round])
+  }, [api, round, enabled])
 
   return {
     state: settled !== null && settled.round === round ? settled.state : { status: 'loading' },

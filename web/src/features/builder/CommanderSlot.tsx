@@ -63,12 +63,12 @@ function Tile({
           title={card.name}
           data-slot="card-name"
           onClick={(event) => onPreview(event.currentTarget)}
-          className="min-h-6 min-w-0 truncate rounded-sm text-left text-sm font-semibold underline-offset-4 hover:underline pointer-coarse:min-h-11"
+          className="min-h-6 min-w-0 line-clamp-2 rounded-sm text-left text-sm font-semibold underline-offset-4 hover:underline pointer-coarse:min-h-11"
         >
           {card.name}
           {count > 1 ? <span className="font-normal text-muted-foreground"> ×{count}</span> : null}
         </button>
-        <span className="truncate text-xs text-muted-foreground">{card.type_line}</span>
+        <span className="line-clamp-2 text-xs text-muted-foreground">{card.type_line}</span>
         <IdentityPips identity={card.color_identity} />
         {issue ? <SupportMark support={check.support} className="justify-self-start" /> : null}
       </div>

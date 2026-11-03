@@ -3,6 +3,7 @@ import { createStore } from 'zustand/vanilla'
 import type { StoreApi } from 'zustand/vanilla'
 import type { ConnectionStatus } from '@/net/socket'
 import type {
+  AutoChoices,
   Decision,
   DecisionId,
   EventView,
@@ -18,7 +19,7 @@ import type {
 } from '@/protocol/generated'
 import type { AwayTimes } from './awayClocks'
 import { hostsBefore } from './hosts'
-import { namesToRemember } from './rememberNames'
+import { namesToRemember, revealedViews } from './rememberNames'
 import type { HostRef } from './hosts'
 import type { PreviewState } from './preview'
 
@@ -70,6 +71,8 @@ export interface LogEntry {
   hostBefore?: HostRef | null
   /** The names of the cards the entry tells that the view no longer holds once they moved (a look, a put-back, a reveal). */
   names?: Readonly<Record<ObjectId, string>>
+  /** For a reveal: the cards as every seat saw them when shown, which the view may hold no longer (`EventBatch.shown`). */
+  seen?: readonly ObjectView[]
 }
 
 /** One line of table chat. */
@@ -137,6 +140,21 @@ export interface PlayState {
    */
   fullControl: FullControlMode
   /**
+   * Whether the server holds this seat at its own end step until it ends the turn. The server's word: set by every
+   * Welcome and every `EndTurnByHand` message, never by the page.
+   */
+  endTurnByHand: boolean
+  /**
+   * The decisions the server answers for this seat (triggers in the order they triggered, combat damage lethal in
+   * order). The server's word: set by every Welcome and every `AutoChoices` message, never by the page.
+   */
+  autoChoices: AutoChoices
+  /**
+   * The card in hand this seat clicked while the server passed for it (an instant or a flash card), or null: the
+   * session asked for its next window and casts the card there if it is castable then.
+   */
+  castWhenAsked: ObjectId | null
+  /**
    * The name of the card whose clauses this seat owes the table after a spell or ability of its own resolved
    * (`ObjectView.manual_owed`), so the server asks it at every priority window until it passes, or null: read from the
    * events as the server reads them (`byHand.ts`), since the server does not say so.
@@ -176,6 +194,9 @@ export function initialPlayState(): PlayState {
     yielding: null,
     stops: [],
     fullControl: 'Off',
+    endTurnByHand: false,
+    autoChoices: { order_triggers: false, assign_damage: false },
+    castWhenAsked: null,
     byHand: null,
     away: {},
   }
@@ -196,17 +217,20 @@ export function appendLog(
   events: readonly EventView[],
   before?: Readonly<Record<ObjectId, ObjectView>>,
   after?: Readonly<Record<ObjectId, ObjectView>>,
+  shown?: readonly ObjectView[],
 ): readonly LogEntry[] {
   if (events.length === 0) return log
   const hosts = before === undefined ? [] : hostsBefore(events, before)
   const added = events.map((event, index): LogEntry => {
     const hostBefore = hosts[index]
     const names = namesToRemember(event, before, after)
+    const seen = revealedViews(event, before, after, shown)
     return {
       seq: fromSeq + index,
       event,
       ...(hostBefore === undefined ? {} : { hostBefore }),
       ...(names === undefined ? {} : { names }),
+      ...(seen === undefined ? {} : { seen }),
     }
   })
   return [...log, ...added].slice(-LOG_LIMIT)

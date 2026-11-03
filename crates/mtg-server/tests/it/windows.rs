@@ -1,4 +1,4 @@
-//! Goal: a seat is asked for priority at the default windows (its own main phases, the declaring steps, an object of another seat on the stack) only if it can act and at its stops whatever it holds; a one-turn stop goes once its step has passed (a lasting one never) and the seat is told after the events and before the next decision; a stop ends a yield; Full Control asks at every window, `NextWindow` ends with the seat's pass (its own or the clock's), a yield is refused in Full Control, and turning Full Control on ends one; auto-pass off is `Held`; a failed save keeps stops and modes; every delivered window of a seat that is not the active player has the same clock; and bot games equal the reference game under the same rule.
+//! Goal: a seat is asked for priority at the default windows (its own main phases, the declaring steps, an object of another seat on the stack) only if it can act and at its stops whatever it holds; a one-turn stop goes once its step has passed (a lasting one never) and the seat is told after the events and before the next decision; a stop ends a yield; Full Control asks at every window, `NextWindow` ends with the seat's pass (its own or the clock's), a yield is refused in Full Control, and turning Full Control on ends one; auto-pass off is `Held`; a failed save keeps stops and modes; every delivered window of a seat that is not the active player has the same clock; a seat that ends its turn by hand is asked at its own end step and nowhere else, while its own yield goes through; and bot games equal the reference game under the same rule.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::common;
@@ -222,12 +222,14 @@ impl Table {
                 full_control,
                 stops,
                 yielding,
+                end_turn_by_hand,
                 ..
             } => Welcomed {
                 auto_pass,
                 full_control,
                 stops,
                 yielding,
+                end_turn_by_hand,
             },
             other => panic!("expected a welcome, got {other:?}"),
         };
@@ -244,6 +246,7 @@ struct Welcomed {
     full_control: FullControlMode,
     stops: Vec<Stop>,
     yielding: Option<YieldUntil>,
+    end_turn_by_hand: bool,
 }
 
 impl Welcomed {
@@ -292,6 +295,8 @@ fn order(messages: &[ServerMessage]) -> Vec<&'static str> {
             ServerMessage::Decision { .. } => "decision",
             ServerMessage::Stops { .. } => "stops",
             ServerMessage::FullControl { .. } => "full control",
+            ServerMessage::EndTurnByHand { .. } => "end turn by hand",
+            ServerMessage::AutoChoices { .. } => "auto choices",
             ServerMessage::Yielding { .. } => "yielding",
             ServerMessage::Error { .. } => "error",
             ServerMessage::GameOver { .. } => "game over",
@@ -1133,4 +1138,92 @@ async fn bot_games_equal_the_reference_with_every_seat_in_full_control(
     #[values(1, 2)] seed: u64,
 ) {
     bots_play_the_reference_game(players, seed, false, false).await;
+}
+
+// ---------------------------------------------------------------------------------------------------------------
+// End turn by hand
+
+/// A quiet table of `seats`, seat 0 in the upkeep of turn 1.
+fn quiet_table(seats: usize) -> GameSetup {
+    let mut scenario = Scenario::new(seats);
+    for seat in 0..seats {
+        scenario = scenario.library(seat, vec![giant(); 30]);
+    }
+    scenario.at(1, 0, Step::Upkeep).setup().unwrap()
+}
+
+fn end_turn_by_hand(on: bool) -> ClientMessage {
+    ClientMessage::EndTurnByHand { on }
+}
+
+#[rstest]
+#[tokio::test]
+async fn ending_the_turn_by_hand_asks_the_seat_at_its_own_end_step_and_nowhere_else(
+    #[values(2, 3, 4)] seats: usize,
+    #[values(true, false)] on: bool,
+) {
+    let mut table = Table::join(quiet_table(seats), windowed(), seats).await;
+    table.send(ME, end_turn_by_hand(on)).await;
+    let told: Vec<bool> = table
+        .take(ME)
+        .iter()
+        .filter_map(|m| match m {
+            ServerMessage::EndTurnByHand { on } => Some(*on),
+            _ => None,
+        })
+        .collect();
+    let expected_told = if on { vec![true] } else { vec![] };
+    assert_eq!(told, expected_told, "a change is told, none is silent");
+    table.start().await;
+
+    // Each seat takes a turn; seat 1 can never act, so only its setting can ask it.
+    let last = u32::try_from(seats).unwrap() + 1;
+    let (asks, stopped) = table.run_to_turn(last).await;
+    let mine: Vec<(u32, Step)> = asks
+        .iter()
+        .filter(|ask| ask.seat == ME)
+        .map(|ask| (ask.turn, ask.step))
+        .collect();
+    let expected = if on { vec![(2, Step::End)] } else { vec![] };
+    assert_eq!(mine, expected, "{seats} seats");
+    assert!(stopped.is_some(), "the game goes on");
+}
+
+#[rstest]
+#[case::a_pass_leaves_it_at_the_end_step(false, &[Step::Main1, Step::End])]
+#[case::the_end_turn_yield_passes_the_turn(true, &[Step::Main1])]
+#[tokio::test]
+async fn ending_the_turn_by_hand_holds_the_seat_until_it_ends_the_turn_and_its_own_yield_goes_through(
+    #[case] yields: bool,
+    #[case] steps: &[Step],
+) {
+    let mut table = Table::join(quiet_table(2), windowed(), 2).await;
+    table.send(ME, end_turn_by_hand(true)).await;
+    table.send(ME, set(own(Step::Main1, false))).await;
+    table.start().await;
+    let mut asked = Vec::new();
+    while let Some(window) = table.window().await {
+        if window.ask.turn > 2 {
+            break;
+        }
+        if window.ask.seat == ME {
+            asked.push(window.ask.step);
+            if yields && window.ask.step == Step::Main1 {
+                let until = YieldUntil::EndOfTurn;
+                table.send(ME, ClientMessage::Yield { until }).await;
+                continue;
+            }
+        }
+        table.pass(&window).await;
+    }
+    assert_eq!(asked, steps);
+}
+
+#[tokio::test]
+async fn ending_the_turn_by_hand_survives_a_reconnect_and_goes_when_the_seat_turns_it_off() {
+    let mut table = Table::join(quiet_table(2), windowed(), 2).await;
+    table.send(ME, end_turn_by_hand(true)).await;
+    assert!(table.welcome(ME).await.end_turn_by_hand);
+    table.send(ME, end_turn_by_hand(false)).await;
+    assert!(!table.welcome(ME).await.end_turn_by_hand);
 }

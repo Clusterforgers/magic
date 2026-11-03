@@ -26,6 +26,8 @@ const precon = (name: string, set: string, commanders: string[]): PreconListItem
     deck_type: commanders.length > 0 ? 'Commander Deck' : 'Starter Deck',
     release_date: '2020-01-01',
     commanders,
+    pictures: [],
+    color_identity: [],
     card_count: 100,
     format: commanders.length > 0 ? 'commander' : 'freeform',
     state: 'verified',

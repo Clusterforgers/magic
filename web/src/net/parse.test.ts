@@ -86,6 +86,7 @@ const samples: Record<string, Record<string, unknown>> = {
     ],
   },
   FullControl: { type: 'FullControl', mode: 'NextWindow' },
+  AutoChoices: { type: 'AutoChoices', choices: { order_triggers: true, assign_damage: false } },
   Bank: { type: 'Bank', seat: 1, bank: 2 },
   Presence: { type: 'Presence', seat: 1, connected: false },
 }
@@ -152,12 +153,40 @@ describe('parseFrame refuses what is not a message', () => {
   })
 })
 
+/** Fields an older server leaves out, which read as their default. */
+const MAY_BE_MISSING = new Set(['Welcome.end_turn_by_hand', 'Welcome.auto_choices'])
+
 describe('parseFrame checks the fields of each message', () => {
   const missing = Object.entries(samples).flatMap(([type, sample]) =>
     Object.keys(sample)
-      .filter((key) => key !== 'type')
+      .filter((key) => key !== 'type' && !MAY_BE_MISSING.has(`${type}.${key}`))
       .map((key): [string, string] => [type, key]),
   )
+
+  it('reads a Welcome without "end_turn_by_hand" (an older server) as off, and refuses one that is not a flag', () => {
+    const frame = parseFrame(wire(put(samples.Welcome, ['end_turn_by_hand'], undefined)))
+    expect(frame.ok && frame.message).toMatchObject({ type: 'Welcome', end_turn_by_hand: false })
+    const bad = parseFrame(wire(put(samples.Welcome, ['end_turn_by_hand'], 'on')))
+    expect(bad).toMatchObject({ ok: false, error: { kind: 'bad_shape' } })
+  })
+
+  it.each([[{ order_triggers: 'on', assign_damage: false }], [{ order_triggers: true }], [null]])(
+    'refuses a Welcome whose "auto_choices" is %o',
+    (choices) => {
+      expect(parseFrame(wire(put(samples.Welcome, ['auto_choices'], choices)))).toMatchObject({
+        ok: false,
+        error: { kind: 'bad_shape' },
+      })
+    },
+  )
+
+  it('reads a Welcome without "auto_choices" (an older server) as every decision asked', () => {
+    const frame = parseFrame(wire(put(samples.Welcome, ['auto_choices'], undefined)))
+    expect(frame.ok && frame.message).toMatchObject({
+      type: 'Welcome',
+      auto_choices: { order_triggers: false, assign_damage: false },
+    })
+  })
 
   it.each(missing)('%s without "%s" is a bad_shape that names the field', (type, key) => {
     const frame = parseFrame(wire(put(samples[type], [key], undefined)))

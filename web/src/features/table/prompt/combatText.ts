@@ -1,5 +1,6 @@
 /** The combat prompts in plain words: who is attacked, how many attack where, who blocks what. */
-import type { AttackerOption, AttackTarget, ObjectId } from '@/protocol/generated'
+import type { AttackerOption, AttackTarget, ObjectId, PlayerId } from '@/protocol/generated'
+import { battleWords } from '../cardModel'
 
 /** How a defender is called: a short name for cards and sums, a longer one where it must be told apart. */
 export interface TargetNames {
@@ -92,4 +93,13 @@ const COUNT_WORDS = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seve
 /** What an attacker that needs several blockers asks for: "two or more blockers". */
 export function blockersNeeded(count: number): string {
   return `${COUNT_WORDS[count] ?? String(count)} or more blockers`
+}
+
+/** A battle in the attack prompt: "Invasion of Theros, battle protected by Bo", or "..., battle" while the view names no protector. */
+export function battleName(
+  name: string,
+  protector: PlayerId | undefined,
+  seatName: (seat: PlayerId) => string,
+): string {
+  return protector === undefined ? `${name}, battle` : `${name}, ${battleWords(seatName(protector))}`
 }

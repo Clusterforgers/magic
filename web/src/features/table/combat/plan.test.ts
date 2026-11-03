@@ -230,6 +230,21 @@ describe('planLines for choices not sent yet', () => {
     expect(lines.every((line) => line.pending && line.outcome === undefined)).toBe(true)
   })
 
+  it.each<[boolean, boolean, Outcome]>([
+    [true, false, 'attacker-dies'],
+    [false, true, 'blocker-dies'],
+    [true, true, 'both-die'],
+    [false, false, 'both-survive'],
+  ])('colours a pending block by the preview (attacker dies %s, blocker dies %s)', (a, b, expected) => {
+    const lines = plan(null, forecastOf(fate(1, a), fate(2, b)), blocks([2, 1]))
+    expect(lines.map((line) => line.outcome)).toEqual([expected])
+  })
+
+  it('leaves a pending block plain when the preview does not list its pair', () => {
+    const lines = plan(null, forecastOf(fate(1, true)), blocks([2, 1]))
+    expect(lines.map((line) => line.outcome)).toEqual([undefined])
+  })
+
   it('puts them after the declared combat, on top of it', () => {
     const lines = plan(
       combat([attacker(1, P0, [2])]),

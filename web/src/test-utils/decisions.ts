@@ -40,6 +40,7 @@ export const KINDS: Record<DecisionName, DecisionKind> = {
   DivideAmount: { DivideAmount: { source: 1, total: 2, among: [] } },
   ChooseCards: { ChooseCards: { source: 1, from: [], min: 1, max: 1 } },
   OrderCards: { OrderCards: { source: 1, cards: [] } },
+  Scry: { Scry: { source: 1, cards: [] } },
   YesNo: { YesNo: { source: 1 } },
   ChooseOption: { ChooseOption: { source: 1, options: [] } },
   ChooseCosts: { ChooseCosts: { source: 1, optional: [] } },

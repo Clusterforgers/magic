@@ -66,5 +66,6 @@ export function isManualOf(event: EventView, seat: PlayerId): boolean {
   const hidden = event.Hidden
   if (typeof hidden === 'string') return false
   if ('ManualMove' in hidden) return hidden.ManualMove.player === seat
+  if ('ManualTutor' in hidden) return hidden.ManualTutor.player === seat
   return 'ManualArrange' in hidden && hidden.ManualArrange.player === seat
 }

@@ -3,6 +3,7 @@ import { useShallow } from 'zustand/react/shallow'
 import { usePlay } from '@/features/game/gameContext'
 import type { AttackTarget, ObjectId, ObjectView } from '@/protocol/generated'
 import { useSeatNamer } from '../names'
+import { battleName } from './combatText'
 import type { TargetNames } from './combatText'
 
 /** The objects behind `ids`, in order (undefined for one the view does not hold); the array changes only when one does. */
@@ -10,7 +11,7 @@ export function useObjects(ids: readonly ObjectId[]): readonly (ObjectView | und
   return usePlay(useShallow((state) => ids.map((id) => state.objectsById[id])))
 }
 
-/** How to call the defenders in `targets`: players by seat name, planeswalkers by card name. */
+/** How to call the defenders in `targets`: players by seat name, planeswalkers and battles by card name. */
 export function useTargetNames(targets: readonly AttackTarget[]): TargetNames {
   const seatName = useSeatNamer()
   const walkerIds = useMemo(
@@ -26,6 +27,9 @@ export function useTargetNames(targets: readonly AttackTarget[]): TargetNames {
       short,
       long(target) {
         if ('Player' in target) return short(target)
+        const battle = byId.get(target.Planeswalker)
+        if (battle?.types.includes('Battle') === true)
+          return battleName(short(target), battle.protector, seatName)
         const owner = byId.get(target.Planeswalker)?.controller
         return owner === undefined ? short(target) : `${short(target)}, ${seatName(owner)}'s planeswalker`
       },

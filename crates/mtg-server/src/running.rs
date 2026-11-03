@@ -9,14 +9,14 @@ use mtg_engine::manual::ManualAction;
 use mtg_engine::state::Stage;
 use mtg_engine::{Answer, Checkpoint, Decision, Engine, EngineError, Event, GameState, replay};
 use mtg_protocol::{
-    DecisionId, ErrorCode, LogWindow, ProtocolError, SNAPSHOT_LOG, ServerMessage, StateView,
-    TableView, project_window,
+    DecisionId, ErrorCode, FullControlMode, LogWindow, ProtocolError, SNAPSHOT_LOG, ServerMessage,
+    StateView, TableView, project_window,
 };
 use tokio::time::Instant;
 
 use crate::bank::Banks;
 use crate::dwell::Waits;
-use crate::pace::{self, Pace};
+use crate::pace::{self, Pace, chosen_answer};
 use crate::stops::{self, Stops};
 use crate::windows::{self, Verdict};
 use crate::yields::Yields;
@@ -276,10 +276,25 @@ impl Running {
     /// What the table does with `decision` under `stops` and `yields`: with the dwell switched off, a pass after a
     /// dwell is a pass at once.
     fn verdict(&self, decision: &Decision, stops: &Stops, yields: &mut Yields) -> Verdict {
+        if self.auto_answer(decision, stops).is_some() {
+            return Verdict::Pass;
+        }
         match windows::verdict(decision, stops, yields, self.engine.state()) {
             Verdict::Dwell if self.pace.dwell.is_off() => Verdict::Pass,
             other => other,
         }
+    }
+
+    /// The answer the table gives for `decision` when its seat is out of Full Control, which asks every question: the
+    /// engine's when the rules leave one ([`mtg_engine::choose::sole_answer`]), else the plain answer of a kind the seat
+    /// lets the server answer ([`AutoChoices`]).
+    fn auto_answer(&self, decision: &Decision, stops: &Stops) -> Option<Answer> {
+        let off = stops.full_control(decision.player) == FullControlMode::Off;
+        if !off || pace::is_priority(decision) {
+            return None;
+        }
+        mtg_engine::choose::sole_answer(self.engine.state(), decision)
+            .or_else(|| chosen_answer(decision, stops.auto_choices(decision.player)))
     }
 
     /// What the table does with the pending decision if it is `seat`'s, under `stops` and `yields`.
@@ -541,7 +556,8 @@ impl Running {
 
     /// Passes for every seat the windows pass for at once ([`windows::verdict`]: not in Full Control, not at a window
     /// of its own, or yielding, or at a window that is not one of the default table) until some decision needs a
-    /// player or the pass has to wait.
+    /// player or the pass has to wait, and gives the engine's answer to a question that leaves one for a seat out of
+    /// Full Control.
     ///
     /// The passes go through the engine like any answer; their events are added to `events`, so the
     /// whole stretch is saved and shown as one batch. A seat that is asked, or is asked anything else, stops the
@@ -575,9 +591,10 @@ impl Running {
                 Verdict::Dwell => return Ok(Halt::Dwell),
                 Verdict::Pass => {}
             }
+            let answer = self.auto_answer(decision, stops).unwrap_or_else(pace::pass);
             let at = stops::place(self.engine.state());
             let on_stack = stops::by_hand_on_stack(self.engine.state());
-            let passed = self.engine.apply(pace::pass())?;
+            let passed = self.engine.apply(answer)?;
             self.banks.watch(self.engine.state());
             stops.left(at, &passed);
             stops.resolved(&on_stack, &passed);

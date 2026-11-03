@@ -11,10 +11,12 @@ import {
   entrySupport,
   filterEntries,
   fitsFormat,
+  handWords,
   markedId,
   NO_FILTER,
+  sortEntries,
 } from './deckEntries'
-import type { DeckEntry } from './deckEntries'
+import type { DeckEntry, SortKey } from './deckEntries'
 
 const precon = (over: Partial<PreconListItem> = {}): PreconListItem => ({
   code: 'c18-x',
@@ -23,6 +25,8 @@ const precon = (over: Partial<PreconListItem> = {}): PreconListItem => ({
   deck_type: 'Commander Deck',
   release_date: null,
   commanders: ['The Ur-Dragon'],
+  pictures: [],
+  color_identity: [],
   card_count: 100,
   format: 'commander',
   state: 'verified',
@@ -53,9 +57,15 @@ describe('entries', () => {
     expect(entryOfDeck(deckIn('verified', { format: 'modern' })).identity).toBeNull()
   })
 
-  it('reads a precon by its code, with set first in the facts and no pictures or colours', () => {
-    const entry = entryOfPrecon(precon())
-    expect(entry).toMatchObject({ id: 'precon:c18-x', kind: 'precon', identity: null, commanders: [] })
+  it('reads a precon by its code, with set first in the facts; its commanders and identity come with the list item', () => {
+    const dragon = { oracle_id: 'o1', name: 'The Ur-Dragon' }
+    const entry = entryOfPrecon(precon({ pictures: [dragon], color_identity: ['W', 'U', 'G'] }))
+    expect(entry).toMatchObject({
+      id: 'precon:c18-x',
+      kind: 'precon',
+      identity: ['W', 'U', 'G'],
+      commanders: [{ oracleId: 'o1', name: 'The Ur-Dragon' }],
+    })
     expect(entry.commanderNames).toEqual(['The Ur-Dragon'])
     expect(entryFacts(entry)).toBe('C18 · Commander · 100 cards')
   })
@@ -212,5 +222,62 @@ describe('the mark of the seat’s deck', () => {
         null,
       ),
     ).toBeNull()
+  })
+})
+
+describe('sorting', () => {
+  const row = (name: string, byHand: number, state: DeckEntry['state'] = 'manual_play'): DeckEntry => ({
+    ...entryOfBuiltIn({ id: name, name, size: 60 } as never),
+    id: name,
+    name,
+    byHand,
+    state,
+    counts: deckIn('verified').summary.counts,
+  })
+  const rows = [
+    row('Cedar', 5),
+    row('alder', 20),
+    row('Birch', 0, 'verified'),
+    row('Dune', 1, 'blocked'),
+    row('Ash', 5),
+  ]
+  const names = (sort: SortKey): string[] => sortEntries(rows, sort).map((entry) => entry.name)
+
+  it.each<[SortKey, string[]]>([
+    ['default', ['Cedar', 'alder', 'Birch', 'Dune', 'Ash']],
+    ['name', ['alder', 'Ash', 'Birch', 'Cedar', 'Dune']],
+    ['hand', ['Birch', 'Ash', 'Cedar', 'alder', 'Dune']],
+  ])('orders by %s', (sort, expected) => {
+    expect(names(sort)).toEqual(expected)
+  })
+
+  it('leaves the given list alone', () => {
+    sortEntries(rows, 'name')
+    expect(rows[0]?.name).toBe('Cedar')
+  })
+
+  it.each<[string, DeckEntry['state'], number, boolean, string | null]>([
+    ['a row the chip already counts', 'manual_play', 4, true, null],
+    ['a deck on reads with cards by hand', 'read', 3, false, '3 cards played by hand'],
+    ['a deck on reads with none, unsorted', 'read', 0, false, null],
+    ['a deck on reads with none, sorted by hand', 'read', 0, true, 'no cards played by hand'],
+  ])('writes the count for %s', (_what, state, byHand, always, words) => {
+    expect(handWords({ ...row('x', byHand, state) }, always)).toBe(words)
+  })
+
+  it('marks a starred precon and keeps a stored deck unstarred', () => {
+    expect(entryOfPrecon(precon(), true).favourite).toBe(true)
+    expect(entryOfPrecon(precon()).favourite).toBe(false)
+    expect(entryOfDeck(deckIn('verified')).favourite).toBe(false)
+  })
+})
+
+describe('a precon without a commander', () => {
+  it('has no commanders and no identity, though its first card is its picture', () => {
+    const entry = entryOfPrecon(
+      precon({ commanders: [], format: 'freeform', pictures: [{ oracle_id: 'o2', name: 'Forest' }] }),
+    )
+    expect(entry).toMatchObject({ identity: null, commanders: [] })
+    expect(entry.pictures).toHaveLength(1)
   })
 })

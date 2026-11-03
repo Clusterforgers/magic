@@ -38,7 +38,7 @@ function CommanderIdentitySwitch({
       aria-pressed={on}
       aria-label={`Within the commander’s colors: ${identityWords(identity)}`}
       data-slot="commander-identity"
-      className={cn('ml-auto', on && 'ring-2 ring-ring ring-offset-2 ring-offset-surface')}
+      className={cn('basis-full justify-start', on && 'ring-2 ring-ring ring-offset-2 ring-offset-surface')}
       onClick={() => onChange({ ...filters, identity: on ? [] : letters })}
     >
       Commander’s colors

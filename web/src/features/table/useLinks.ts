@@ -46,8 +46,10 @@ export function useLinks(object: ObjectView | undefined): Links {
   const partner = usePlay((state) =>
     object?.paired_with === undefined ? undefined : partnerName(state.objectsById[object.paired_with]),
   )
+  const protectorSeat = object?.protector
+  const protector = protectorSeat === undefined ? undefined : namer(protectorSeat)
   return useMemo(
-    () => ({ host, attaches, spoken, copyOf, frontFace, partner, doors }),
-    [host, attaches, spoken, copyOf, frontFace, partner, doors],
+    () => ({ host, attaches, spoken, copyOf, frontFace, partner, doors, protector }),
+    [host, attaches, spoken, copyOf, frontFace, partner, doors, protector],
   )
 }

@@ -40,6 +40,8 @@ export interface EventNames {
   permanent?(id: ObjectId): boolean
   /** The card an ability on the stack comes from, when the log knows the object is an ability. */
   ability?(id: ObjectId): ObjectId | undefined
+  /** The name of a door (0 or 1) of a Room, when the viewer knows it. */
+  door?(id: ObjectId, door: number): string | undefined
 }
 
 /** One log line. Minor lines (priority passes, mana, untaps) are drawn quietly. */
@@ -212,6 +214,10 @@ function describeRule(effect: RuleEffect, n: EventNames): string {
   let what: string
   if (rule === 'GraveyardCardsUntargetable') what = "Cards in graveyards can't be targeted"
   else if ('MustAttack' in rule) what = `${named(rule.MustAttack)} must attack if able`
+  else if ('MustAttackPlayers' in rule)
+    what = rule.MustAttackPlayers.map(
+      ([object, player]) => `${n.card(object.id)} must attack ${n.seat(player)} if able`,
+    ).join(', ')
   else if ('MustBlock' in rule) what = `${named(rule.MustBlock)} must block if able`
   else if ('CantBeCountered' in rule) what = `${named(rule.CantBeCountered)} can't be countered`
   else if ('CantGainLife' in rule) what = `${seats(rule.CantGainLife)} can't gain life`
@@ -418,9 +424,37 @@ export function describeManual(
       ? `${who} clears the note on ${n.card(object)} (by hand)`
       : `${who} puts a note on ${n.card(object)}: “${text.trim()}” (by hand)`
   }
-  const { object, power, toughness } = action.Pump
-  const signed = (value: number): string => (value < 0 ? `${value}` : `+${value}`)
-  return `${who} gives ${n.card(object)} ${signed(power)}/${signed(toughness)} until end of turn (by hand)`
+  if ('Pump' in action) {
+    const { object, power, toughness } = action.Pump
+    const signed = (value: number): string => (value < 0 ? `${value}` : `+${value}`)
+    return `${who} gives ${n.card(object)} ${signed(power)}/${signed(toughness)} until end of turn (by hand)`
+  }
+  return describeControl(who, action, n, from)
+}
+
+/** The search of a library, a tutor, a sacrifice, a summoning sickness removed and a control given, by hand. */
+function describeControl(who: string, action: ManualAction, n: EventNames, from?: Zone): string {
+  if ('Search' in action) return `${who} searches their library (by hand)`
+  if ('Tutor' in action) {
+    return `${who} puts ${n.card(action.Tutor.object)} from their library into their hand and shuffles (by hand)`
+  }
+  if ('RemoveSickness' in action) {
+    return `${who} removes summoning sickness from ${n.card(action.RemoveSickness.object)} (by hand)`
+  }
+  if ('Sacrifice' in action) return `${who} sacrifices ${n.card(action.Sacrifice.object)} (by hand)`
+  if ('GiveControl' in action) {
+    const { object, to } = action.GiveControl
+    if (from === undefined || from === 'Battlefield') {
+      return `${who} gives control of ${n.card(object)} to ${n.seat(to)} (by hand)`
+    }
+    return `${who} puts ${n.card(object)} from ${leftWord(from)} onto the battlefield under ${n.seat(to)}’s control (by hand)`
+  }
+  return `${who} acts by hand`
+}
+
+/** A card put into a hand from its owner's library by hand, which the viewer cannot name. */
+export function describeHiddenTutor(player: PlayerId, n: EventNames): string {
+  return `${n.seat(player)} puts a card from their library into their hand and shuffles (by hand)`
 }
 
 /** A card moved by hand that the viewer cannot name, in the words of `describeManual`; `from` is the zone it left. */
@@ -773,8 +807,10 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
   }
   if ('TurnedFaceUp' in event)
     return line(`${n.seat(event.TurnedFaceUp.player)} turns ${n.card(event.TurnedFaceUp.object)} face up`)
-  if ('DoorUnlocked' in event)
-    return line(`${n.seat(event.DoorUnlocked.player)} unlocks a door of ${n.card(event.DoorUnlocked.object)}`)
+  if ('DoorUnlocked' in event) {
+    const { player, object, door } = event.DoorUnlocked
+    return line(`${n.seat(player)} unlocks ${n.door?.(object, door) ?? `a door of ${n.card(object)}`}`)
+  }
   if ('CardParted' in event) {
     const { permanent, card, to } = event.CardParted
     return line(`${n.card(card)} goes to ${zoneWord(to, n)} apart from ${n.card(permanent)}`)
@@ -994,6 +1030,7 @@ function describeHidden(event: HiddenEvent, n: EventNames): LogLine {
     const { player, top, bottom, graveyard } = event.ManualArrange
     return line(describeArrange(player, top, bottom, graveyard, n))
   }
+  if ('ManualTutor' in event) return line(describeHiddenTutor(event.ManualTutor.player, n))
   if ('AnnouncementRewound' in event) {
     return quiet(`${n.seat(event.AnnouncementRewound.player)} could not finish a play`)
   }

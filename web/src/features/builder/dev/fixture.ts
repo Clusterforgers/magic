@@ -9,6 +9,7 @@ import {
 } from '@/features/decks/fakeDecks'
 import { formatLabel } from '@/features/decks/format'
 import type {
+  CardColor,
   CardDetail,
   CardHit,
   CheckRequest,
@@ -21,13 +22,22 @@ import type {
   ReportCard,
   Support,
 } from '@/protocol/generated'
+import { commanderLegality } from '../commanderFixture'
 import type { CheckScript } from '../fakeCheck'
 
 /** The text the dev page prints, so a production bundle can be searched for any trace of the fixture. */
 export const BUILDER_FIXTURE_MARKER = 'dev-builder-fixture-3c9e'
 
 /** The decks `/dev/builder?deck=` can show. */
-export const DEV_DECKS = ['mixed', 'manual', 'verified', 'changed', 'unchecked'] as const
+export const DEV_DECKS = [
+  'mixed',
+  'manual',
+  'verified',
+  'changed',
+  'unchecked',
+  'partners',
+  'refused',
+] as const
 
 /** One of the decks `/dev/builder` shows. */
 export type DevDeck = (typeof DEV_DECKS)[number]
@@ -57,6 +67,8 @@ interface Entry {
   /** The type line and cost of the card as a search hit shows them (the faces joined with `//`). */
   type?: string
   cost?: string
+  /** The colour identity when it is not red. */
+  identity?: CardColor[]
   faces?: FaceText[]
   clauses?: Clause[]
 }
@@ -326,13 +338,36 @@ const SEARCH_ONLY: Entry[] = [
   },
 ]
 
-const ALL: Entry[] = [...CLEAN, ...BY_HAND, ...BLOCKING, ...ILLEGAL, ...SEARCH_ONLY]
+// The pair of the `partners` deck: two cards that say Partner, in white and black and in blue and green.
+const PARTNERS: Entry[] = (
+  [
+    ['Tymna the Weaver', '{1}{W}{B}', ['W', 'B'], 'Lifelink\nPartner'],
+    [
+      'Thrasios, Triton Hero',
+      '{G}{U}',
+      ['U', 'G'],
+      '{4}: Scry 1, then reveal the top card of your library.\nPartner',
+    ],
+  ] as [string, string, CardColor[], string][]
+).map(([name, cost, identity, text]) => ({
+  name,
+  zone: 'commander' as const,
+  count: 1,
+  support: 'verified' as const,
+  type: 'Legendary Creature — Human',
+  cost,
+  identity,
+  faces: [{ name, cost, type: 'Legendary Creature — Human', text, stats: ['1', '1'] as [string, string] }],
+}))
+
+const ALL: Entry[] = [...CLEAN, ...PARTNERS, ...BY_HAND, ...BLOCKING, ...ILLEGAL, ...SEARCH_ONLY]
 
 const hitOf = (entry: Entry): CardHit =>
   cardHit(entry.name, {
     support: entry.support,
     type_line: entry.type ?? 'Basic Land — Mountain',
     mana_cost: entry.cost ?? '',
+    ...(entry.identity === undefined ? {} : { colors: entry.identity, color_identity: entry.identity }),
   })
 
 // A position counts Unicode scalar values, as the server's spans do.
@@ -440,7 +475,7 @@ export function fixtureLegality(request: CheckRequest): Issue[] {
       }),
     )
   }
-  return issues
+  return [...issues, ...commanderLegality(request, fixtureCards())]
 }
 
 /** What the check endpoint of `/dev/builder` knows: the fixture cards, their clauses, its rules, and a pause to watch. */
@@ -461,7 +496,7 @@ export function fixtureCheck(): CheckScript {
 /**
  * A Commander deck for `/dev/builder`. `mixed` holds a card of each support state, a card the game cannot host and
  * illegal lines (4 copies of a singleton card, a banned card, the wrong size); `manual` is legal with cards played by
- * hand; `verified` has only verified cards; `changed` and `unchecked` are the mixed cards with no valid check.
+ * hand; `verified` has only verified cards; `partners` leads with a Partner pair and `refused` has a commander that cannot lead; `changed` and `unchecked` are the mixed cards with no valid check.
  */
 export function fixtureView(deck: DevDeck): DeckView {
   const entries =
@@ -469,7 +504,11 @@ export function fixtureView(deck: DevDeck): DeckView {
       ? CLEAN
       : deck === 'manual'
         ? [...CLEAN, ...BY_HAND]
-        : [...CLEAN, ...BY_HAND, ...BLOCKING, ...ILLEGAL]
+        : deck === 'partners'
+          ? [...CLEAN.filter((e) => e.zone !== 'commander'), ...PARTNERS]
+          : deck === 'refused'
+            ? CLEAN.map((e) => (e.name === 'Goblin Guide' ? { ...e, zone: 'commander' as const } : e))
+            : [...CLEAN, ...BY_HAND, ...BLOCKING, ...ILLEGAL]
   const legal = deck === 'verified' || deck === 'manual'
   const lands = legal
     ? 99 - entries.filter((e) => (e.zone ?? 'main') === 'main').reduce((n, e) => n + e.count, 0)
@@ -506,6 +545,8 @@ export function fixtureView(deck: DevDeck): DeckView {
     verified: report.summary.state,
     changed: 'unchecked',
     unchecked: 'unchecked',
+    partners: report.summary.state,
+    refused: report.summary.state,
   }
   const state = stateOf[deck]
   return deckView({

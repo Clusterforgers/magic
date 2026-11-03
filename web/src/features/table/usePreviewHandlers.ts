@@ -15,25 +15,32 @@ export interface PreviewHandlers {
 /**
  * Hover (mouse only) and keyboard focus show the card's preview, leaving hides it, a click pins it. A click the caller
  * handles (`onClick`: the card plays, taps or is chosen) pins nothing: it is an act and not a request to look, and a
- * pinned preview covers a part of the table (the prompt among it) until it is closed.
+ * pinned preview covers a part of the table (the prompt among it) until it is closed. `dockFrom` names the element
+ * the preview docks away from when it is not the card itself (the grid a prompt's cards sit in, so the panel keeps its
+ * side as the pointer crosses the cards).
  */
-export function usePreviewHandlers(id: ObjectId, onClick?: (card: HTMLElement) => void): PreviewHandlers {
+export function usePreviewHandlers(
+  id: ObjectId,
+  onClick?: (card: HTMLElement) => void,
+  dockFrom?: (card: HTMLElement) => Element,
+): PreviewHandlers {
   const preview = usePreviewStore()
   // An element that leaves the screen while hovered gets no pointer-leave.
   useEffect(() => () => preview.hide(id), [preview, id])
+  const anchor = (card: HTMLElement) => anchorOf(dockFrom === undefined ? card : dockFrom(card))
   return {
     onClick(event) {
       if (onClick !== undefined) {
         onClick(event.currentTarget)
         return
       }
-      preview.pin(id, anchorOf(event.currentTarget))
+      preview.pin(id, anchor(event.currentTarget))
     },
     onPointerEnter(event) {
-      if (event.pointerType === 'mouse') preview.show(id, anchorOf(event.currentTarget))
+      if (event.pointerType === 'mouse') preview.show(id, anchor(event.currentTarget))
     },
     onPointerLeave: () => preview.hide(id),
-    onFocus: (event) => preview.show(id, anchorOf(event.currentTarget)),
+    onFocus: (event) => preview.show(id, anchor(event.currentTarget)),
     onBlur: () => preview.hide(id),
   }
 }

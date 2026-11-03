@@ -161,6 +161,23 @@ describe('the sentence of each manual action', () => {
       'Bo puts a note on Grizzly Bears: “has haste” (by hand)',
     ],
     ['a note cleared', { Note: { object: 2, text: ' ' } }, 'Bo clears the note on Grizzly Bears (by hand)'],
+    ['a search', { Search: {} }, 'Bo searches their library (by hand)'],
+    [
+      'a tutor',
+      { Tutor: { object: 1 } },
+      'Bo puts Sol Ring from their library into their hand and shuffles (by hand)',
+    ],
+    [
+      'a sickness removed',
+      { RemoveSickness: { object: 2 } },
+      'Bo removes summoning sickness from Grizzly Bears (by hand)',
+    ],
+    ['a sacrifice', { Sacrifice: { object: 2 } }, 'Bo sacrifices Grizzly Bears (by hand)'],
+    [
+      'control given',
+      { GiveControl: { object: 2, to: 0 } },
+      'Bo gives control of Grizzly Bears to Ana (by hand)',
+    ],
   ]
   it.each(sentences)('%s', (_name, what, text) => {
     const line = describeEvent(action(what), names)
@@ -482,6 +499,26 @@ describe('a viewer who cannot see the card', () => {
       hid({ ZoneChanged: { from: { Hand: 1 }, to: { Library: 1 }, cause: 'Moved' } }),
     ]
     expect(fold(events)).toEqual(['Bo moves a card from the hand to the top of the library (by hand)'])
+  })
+
+  it('reads a tutor from its hidden twin and folds the move and the shuffle', () => {
+    const events = [
+      hid({ ManualTutor: { player: 1 } }),
+      hid({ ZoneChanged: { from: { Library: 1 }, to: { Hand: 1 }, cause: 'Moved' } }),
+      hid({ LibraryShuffled: { player: 1 } }),
+    ]
+    expect(fold(events)).toEqual(['Bo puts a card from their library into their hand and shuffles (by hand)'])
+  })
+
+  it('names the zone a card left to enter under another seat', () => {
+    const events = [
+      action({ GiveControl: { object: 2, to: 0 } }),
+      pub({ ZoneChanged: { object: 2, from: { Graveyard: 1 }, to: 'Battlefield', cause: 'Moved' } }),
+      pub({ Entered: { object: 2, tapped: false, controller: 0 } }),
+    ]
+    expect(fold(events)).toEqual([
+      'Bo puts Grizzly Bears from the graveyard onto the battlefield under Ana’s control (by hand)',
+    ])
   })
 
   it('reads a hidden move with no change after it on its own', () => {

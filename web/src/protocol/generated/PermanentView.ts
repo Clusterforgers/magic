@@ -22,9 +22,17 @@ summoning_sick: boolean,
  */
 prepared?: boolean, 
 /**
+ * Whether a player exerted the permanent and it still holds back its untap (CR 701.43). Left out while it is not.
+ */
+exerted?: boolean, 
+/**
  * The level of a Class (CR 716.2); left out for any other permanent.
  */
 level?: number, 
+/**
+ * Whether the permanent is phased out (CR 702.26): drawn ghosted; left out while it is phased in.
+ */
+phased_out?: boolean, 
 /**
  * Which doors of a Room are unlocked (CR 709.5), in the order of its faces; left out for any other permanent. A
  * public fact of the permanent.

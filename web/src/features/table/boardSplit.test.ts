@@ -9,11 +9,12 @@ import {
   splitBoards,
   splitRegions,
   THEIR_SCALE,
+  withSplit,
 } from './boardSplit'
 import { buildFixture } from './dev/fixture'
 import { laneHeight } from './laneFit'
 import type { LaneCounts } from './laneFit'
-import { planTable } from './layout'
+import { planTable, regionSizes, SHEET_KEEP_PX } from './layout'
 import { battlefieldStacks, layoutSeat } from './rowStacks'
 
 const counts = (lands: number, creatures: number, other: number): LaneCounts => ({ lands, creatures, other })
@@ -104,6 +105,27 @@ describe('the duel board of an early Commander game', () => {
       expect([own.scrolls, ...theirs.map((fit) => fit.scrolls)]).toEqual([false, false])
       expect(own.cardWidth).toBeGreaterThanOrEqual(ownMin)
       expect(Math.min(...theirs.map((fit) => fit.cardWidth))).toBeGreaterThanOrEqual(theirMin)
+    },
+  )
+})
+
+describe('the prompt sheet of a split table', () => {
+  it.each([
+    [360, 740, true],
+    [390, 844, true],
+    [1400, 900, false],
+  ])(
+    'on %ix%i leaves a phone the tile strip and a row of the opponents (phone: %s)',
+    (width, height, phone) => {
+      const regions = withSplit(regionSizes({ width, height }), {
+        opponents: 250,
+        own: 300,
+        ownCard: 100,
+        theirCard: 80,
+      })
+      expect(regions.phone).toBe(phone)
+      const room = phone ? 250 - SHEET_KEEP_PX : 250
+      expect(regions.sheet).toBeCloseTo(Math.min(height * 0.4, regions.shared + room), 6)
     },
   )
 })

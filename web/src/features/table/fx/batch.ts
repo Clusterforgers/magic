@@ -1,10 +1,11 @@
 /** Finds the batches in the play store's changes and feeds what they cause to the decoration layer. */
-import type { PlayState, PlayStore } from '@/play/store'
-import type { EventView } from '@/protocol/generated'
+import type { LogEntry, PlayState, PlayStore } from '@/play/store'
+import type { EventView, ObjectId, ObjectView } from '@/protocol/generated'
 import { deriveAttaches, deriveEffects } from './derive'
 import type { Moment } from './derive'
-import { markArrows, markEffects } from './marks'
+import { markArrows, markEffects, withStackGhosts } from './marks'
 import { deriveMoves } from './moves'
+import { impactsOf, planStrikes, holdDeaths, splitImpacts } from './strikes'
 import type { Fx } from './store'
 
 /** One applied batch: the game before it and after it, and its events. */
@@ -12,6 +13,8 @@ export interface BatchStep {
   before: Moment
   after: Moment
   events: readonly EventView[]
+  /** The same events as log entries, with the cards a reveal showed (`LogEntry.seen`). */
+  entries: readonly LogEntry[]
 }
 
 /**
@@ -33,6 +36,7 @@ export function batchBetween(prev: PlayState, next: PlayState): BatchStep | null
     before: { view: prev.view, objectsById: prev.objectsById },
     after: { view: next.view, objectsById: next.objectsById },
     events: entries.map((entry) => entry.event),
+    entries,
   }
 }
 
@@ -48,7 +52,20 @@ export function watchBatches(store: PlayStore, fx: Fx): () => void {
     fx.travel.launch(moves, step.after.view.viewer)
     // Measured now: the resolving object and what it affects may be gone from the table once React draws the batch.
     fx.effectArrows.play(markArrows(marks))
-    fx.play([...deriveEffects(step.before, step.after, step.events), ...markEffects(marks)])
+    const effects = [
+      ...deriveEffects(step.before, step.after, step.events),
+      ...withStackGhosts(markEffects(marks), step.before, step.after),
+    ]
+    const plans = planStrikes(step.before, step.after, step.events)
+    const look = (id: ObjectId): ObjectView | undefined =>
+      step.after.objectsById[id] ?? step.before.objectsById[id]
+    // A struck target flashes as the strike lands on it, not as the batch arrives.
+    if (fx.strikes.launch(plans, look)) {
+      const held = holdDeaths(effects, plans, fx.slow)
+      const { now, later } = splitImpacts(held, impactsOf(plans, fx.slow))
+      fx.play(now)
+      for (const [ms, landing] of later) fx.playAfter(landing, ms)
+    } else fx.play(effects)
     fx.arrows.play(deriveAttaches(step.before, step.after))
   })
 }

@@ -106,3 +106,22 @@ describe('on the table', () => {
     expect(screen.getByRole('list', { name: 'Stack, top first' })).toBeInTheDocument()
   })
 })
+
+describe('the by-hand mark', () => {
+  const withManual = (state: PlayState): PlayState => {
+    const spell = state.objectsById[state.view?.stack.cards?.[0] ?? -1]
+    if (spell === undefined) return state
+    const manual = [{ text: 'Flip a coin.', reason: 'a random choice' }]
+    return { ...state, objectsById: { ...state.objectsById, [spell.id]: { ...spell, manual } } }
+  }
+
+  it('marks a spell with clauses left to the table, and only that one', () => {
+    renderTable({ seats: 4, ui: <StackChips />, state: withManual })
+    const items = within(chips()).getAllByRole('listitem')
+    expect(items.map((item) => item.querySelector('[data-slot="card-support"]') !== null)).toEqual([
+      false,
+      false,
+      true,
+    ])
+  })
+})

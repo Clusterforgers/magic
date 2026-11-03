@@ -1,7 +1,7 @@
 /** How a card says which of its clauses the game leaves to the table: the list of them and the mark on the face. */
 import { Hand } from 'lucide-react'
 import type { MouseEvent } from 'react'
-import { BY_HAND_TITLE } from '@/lib/byHand'
+import { BY_HAND_TITLE, PARTLY_BY_HAND } from '@/lib/byHand'
 import { cn } from '@/lib/utils'
 import type { ManualClause, ObjectView } from '@/protocol/generated'
 import { clausesOf, showClauses } from './clauses'
@@ -49,6 +49,8 @@ export function ByHandMark({ object, spot, compact, text }: ByHandMarkProps) {
   const store = useMenuStore()
   const clauses = clausesOf(object)
   if (clauses.length === 0) return null
+  const partial = object.partial === true
+  const partlyTitle = `${PARTLY_BY_HAND.charAt(0).toUpperCase()}${PARTLY_BY_HAND.slice(1)}`
   const open = (event: MouseEvent<HTMLElement>): void => {
     if (store === null) return
     // The press is the mark's, not the card's: it neither pins the preview nor answers a prompt.
@@ -61,13 +63,14 @@ export function ByHandMark({ object, spot, compact, text }: ByHandMarkProps) {
     <span
       data-slot="card-support"
       data-spot={spot}
-      title={`${BY_HAND_TITLE}: ${clauses.map((clause) => `${clause.text} (${clause.reason})`).join('; ')}`}
+      title={`${partial ? partlyTitle : BY_HAND_TITLE}: ${clauses.map((clause) => `${clause.text} (${clause.reason})`).join('; ')}`}
       aria-hidden="true"
       onClick={store === null ? undefined : open}
       // A finger on the mark is not the long press of the card's menu.
       onPointerDown={store === null ? undefined : (event) => event.stopPropagation()}
       className={cn(
-        'inline-flex items-center justify-center gap-1 rounded-full bg-support-manual font-semibold whitespace-nowrap text-background shadow-sm',
+        'inline-flex items-center justify-center gap-1 rounded-full font-semibold whitespace-nowrap text-background shadow-sm',
+        partial ? 'bg-support-partial' : 'bg-support-manual',
         // A text face is the fallback of a picture: its smallest size has no room for the full 24 px.
         spot === 'chip' && compact ? 'h-5 min-w-5' : 'h-6 min-w-6',
         spot === 'corner' ? 'pointer-events-auto border border-background px-1' : 'px-2',
@@ -76,7 +79,7 @@ export function ByHandMark({ object, spot, compact, text }: ByHandMarkProps) {
       )}
     >
       <Hand aria-hidden="true" className="size-3 shrink-0" />
-      {compact ? null : <span>By hand</span>}
+      {compact ? null : <span>{partial ? 'Partial' : 'By hand'}</span>}
     </span>
   )
 }

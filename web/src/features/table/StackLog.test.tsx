@@ -319,3 +319,22 @@ describe('chat panel', () => {
     expect(chat()).toHaveTextContent('You: thanks all')
   })
 })
+
+describe('stack panel by-hand mark', () => {
+  it('marks a spell with clauses left to the table, with the words, and only that one', () => {
+    renderTable({
+      seats: 4,
+      ui: <StackPanel />,
+      state: (state) => {
+        const spell = state.objectsById[state.view?.stack.cards?.[0] ?? -1]
+        if (spell === undefined) return state
+        const manual = [{ text: 'Flip a coin.', reason: 'a random choice' }]
+        return { ...state, objectsById: { ...state.objectsById, [spell.id]: { ...spell, manual } } }
+      },
+    })
+    const items = within(screen.getByRole('list', { name: 'Stack, top first' })).getAllByRole('listitem')
+    const marks = items.map((item) => item.querySelector('[data-slot="card-support"]'))
+    expect(marks.map((mark) => mark !== null)).toEqual([false, false, true])
+    expect(marks[2]).toHaveTextContent('By hand')
+  })
+})

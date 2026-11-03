@@ -5,6 +5,7 @@ import { cn } from '@/lib/utils'
 import type { PlayerId } from '@/protocol/generated'
 import { LifeFx } from './fx/LifeFx'
 import { LiveManaPool } from './LiveManaPool'
+import { UntappedSources } from './UntappedSources'
 import { useSeatNamer } from './names'
 import { DamageChips, TaxChips, useCommanderChips } from './CommanderChips'
 import { useEnchantChips } from './enchantChips'
@@ -15,6 +16,8 @@ import { RevealedFigure } from './RevealedChip'
 import { revealedLabel, revealedOf } from './revealed'
 import { exileOf, holdsPriority, isActiveSeat, playerOf } from './selectors'
 import { useKeepInView } from './useKeepInView'
+import { defenderOutline, useDefender } from './combat/defender'
+import { LifeForecast } from './combat/LifeForecast'
 
 interface SeatTileProps {
   seat: PlayerId
@@ -44,6 +47,7 @@ export const SeatTile = memo(function SeatTile({ seat, focused, onFocusSeat }: S
   )
   const chips = useCommanderChips(seat)
   const enchants = useEnchantChips(seat)
+  const defender = useDefender(seat)
   if (player === undefined) return null
   const eliminated = player.lost !== null
   const away = !eliminated && !player.connected
@@ -58,45 +62,61 @@ export const SeatTile = memo(function SeatTile({ seat, focused, onFocusSeat }: S
       data-away={away || undefined}
       data-state={podState(flags.active, flags.priority)}
       aria-current={focused || undefined}
-      aria-label={tileName({
-        name,
-        life: player.life,
-        counts,
-        active: flags.active,
-        priority: flags.priority,
-        eliminated,
-        away,
-        focused,
-        commander: [...chips.tax, ...chips.damage].map((chip) => chip.words),
-        enchanted: enchants.map((chip) => chip.words),
-        revealed: shown.length === 0 ? undefined : revealedLabel(shown.length).toLowerCase(),
-      })}
-      onClick={() => onFocusSeat(seat)}
+      aria-label={
+        tileName({
+          name,
+          life: player.life,
+          counts,
+          active: flags.active,
+          priority: flags.priority,
+          eliminated,
+          away,
+          focused,
+          commander: [...chips.tax, ...chips.damage].map((chip) => chip.words),
+          enchanted: enchants.map((chip) => chip.words),
+          revealed: shown.length === 0 ? undefined : revealedLabel(shown.length).toLowerCase(),
+        }) +
+        (defender.state === 'chosen'
+          ? ', your attackers go here'
+          : defender.state === 'candidate'
+            ? ', may be attacked'
+            : '')
+      }
+      data-defender={defender.state}
+      onClick={() => {
+        // While an attack is aimed the tile is a defender too: the click attacks the seat and shows its board.
+        if (defender.state !== undefined) defender.pick()
+        onFocusSeat(seat)
+      }}
       className={cn(
         'relative grid h-full min-w-44 flex-1 grid-cols-[minmax(0,1fr)] content-center gap-0.5 overflow-hidden rounded-lg bg-card px-2 py-0.5 text-left text-xs ring-1 ring-foreground/10 outline-none hover:bg-muted focus-visible:ring-3 focus-visible:ring-primary',
         focused && 'ring-2 ring-primary',
         eliminated && 'border-l-4 border-destructive',
         flags.active && cn(ACTIVE_TINT, ACTIVE_EDGE),
+        defenderOutline(defender.state),
       )}
     >
       <span className="flex h-6 items-center justify-between gap-2">
         <span className="flex min-w-0 items-center gap-1.5">
           <SeatDot seat={seat} />
-          <span className="truncate text-sm font-semibold">{name}</span>
+          <span className="min-w-10 truncate text-sm font-semibold">{name}</span>
           {showsPriorityDot(flags.active, flags.priority) ? (
             <PriorityDot label={priorityName(name, false)} />
           ) : null}
           {away ? <AwayMark /> : null}
         </span>
-        <LifeFx
-          seat={seat}
-          className={cn(
-            'text-xl leading-6 font-semibold tabular-nums',
-            player.life <= 5 && 'text-destructive',
-          )}
-        >
-          {player.life}
-        </LifeFx>
+        <span className="flex shrink-0 items-center gap-1">
+          <LifeForecast seat={seat} />
+          <LifeFx
+            seat={seat}
+            className={cn(
+              'text-xl leading-6 font-semibold tabular-nums',
+              player.life <= 5 && 'text-destructive',
+            )}
+          >
+            {player.life}
+          </LifeFx>
+        </span>
       </span>
       {/* What does not fit the tile is cut, the last figure first; the spoken name has it all. */}
       <span className="flex h-5 items-center gap-x-1.5 overflow-hidden whitespace-nowrap text-muted-foreground">
@@ -110,6 +130,7 @@ export const SeatTile = memo(function SeatTile({ seat, focused, onFocusSeat }: S
         <TaxChips chips={chips.tax} density="tile" />
         <EnchantChips chips={enchants} density="tile" />
         <LiveManaPool pool={player.mana} className="shrink-0 flex-nowrap text-xs" />
+        <UntappedSources seat={seat} className="shrink-0 flex-nowrap" />
         {eliminated ? (
           <b className="shrink-0 rounded bg-destructive/10 px-1 text-destructive">Eliminated</b>
         ) : null}

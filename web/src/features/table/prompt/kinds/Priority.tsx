@@ -6,6 +6,7 @@ import { useSeatNamer } from '../../names'
 import type { MenuTarget } from '../../manual/menuStore'
 import { ManaChoice } from '../ManaChoice'
 import { handNotes } from '../../handReason'
+import { BringCompanion } from '../BringCompanion'
 import { AbilityChooser } from '../AbilityChooser'
 import { abilityPlays, activationNotes, mergeNotes, playsOf } from '../activations'
 import type { Play } from '../activations'
@@ -119,6 +120,7 @@ export const PriorityPrompt: PromptComponent<'Priority'> = ({ options }) => {
           onClose={() => setAsking(null)}
         />
       )}
+      <BringCompanion offered={options.companion === true} />
       <PassControls canPass={options.can_pass} />
     </PromptLayout>
   )

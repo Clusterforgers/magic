@@ -77,7 +77,7 @@ pub struct CreatureForecast {
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[cfg_attr(feature = "ts", derive(ts_rs::TS))]
 pub struct PlayerForecast {
-    /// The player under attack.
+    /// The player under attack, or one who gains life from the damage (lifelink).
     pub player: PlayerId,
     /// Combat damage they are expected to take (0 when every attacker aimed at them is blocked).
     pub damage: u32,
@@ -97,7 +97,7 @@ pub struct CombatForecast {
     pub attackers: Vec<AttackerForecast>,
     /// Every creature in combat, by id, with its expected damage and fate.
     pub creatures: Vec<CreatureForecast>,
-    /// Every player an attacker is aimed at, by seat.
+    /// Every player an attacker is aimed at and every player who gains life from the damage, by seat.
     pub players: Vec<PlayerForecast>,
     /// The numbers take the first option of each question the replacement effects would ask a player (the order they
     /// apply in, the damage a shield stops first), and another answer would change them.
@@ -190,6 +190,17 @@ fn forecast_of(state: &GameState, run: &Run) -> CombatForecast {
             DamageTarget::Player(player) => {
                 attacked.insert(player);
             }
+        }
+    }
+
+    // The controller of a lifelinking attacker is not attacked but gains life; its seat shows the gain too.
+    for player in run.after.players() {
+        let id = player.id();
+        if state
+            .player(id)
+            .is_some_and(|now| player.life() > now.life())
+        {
+            attacked.insert(id);
         }
     }
 

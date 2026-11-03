@@ -11,9 +11,11 @@ use crate::cards::CardRepo;
 use crate::decks::DeckRepo;
 use crate::drafts::DraftRepo;
 use crate::error::DbError;
+use crate::favourites::FavouritePreconRepo;
 use crate::fix_marks::FixMarkRepo;
 use crate::import::Importer;
 use crate::precons::PreconRepo;
+use crate::prefs::PrefsRepo;
 use crate::reads::ReadRepo;
 use crate::runs::ImportRuns;
 
@@ -72,6 +74,16 @@ impl Database {
     /// Decks stored by accounts.
     pub fn decks(&self) -> DeckRepo {
         DeckRepo::new(self.pool.clone())
+    }
+
+    /// Precons accounts starred.
+    pub fn favourite_precons(&self) -> FavouritePreconRepo {
+        FavouritePreconRepo::new(self.pool.clone())
+    }
+
+    /// Pace preferences of accounts.
+    pub fn prefs(&self) -> PrefsRepo {
+        PrefsRepo::new(self.pool.clone())
     }
 
     /// Cards accounts marked as important to fix.

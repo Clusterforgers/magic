@@ -1,10 +1,13 @@
 import { memo, useLayoutEffect, useMemo, useRef } from 'react'
 import { useShallow } from 'zustand/react/shallow'
 import { usePlay } from '@/features/game/gameContext'
+import { KeywordText } from './Keyword'
 import { cn } from '@/lib/utils'
 import { foldLog } from './logFold'
 import type { FoldedLine } from './logFold'
 import { useSeatNamer } from './names'
+import { knownDoorFaces } from './printed'
+import { doorNameOf } from './rooms'
 import { SeatDot } from './PodParts'
 
 /** The card types of a permanent card: what a spell of another type is not. */
@@ -21,7 +24,6 @@ const LogLine = memo(function LogLine({ line }: { line: FoldedLine }) {
         kind === 'turn' &&
           'mt-2 border-t border-border pt-2 font-semibold first:mt-0 first:border-t-0 first:pt-0.5',
         kind === 'step' && 'pt-1.5 pb-0 text-xs font-medium tracking-wide uppercase',
-        manual === true && 'border-l-2 border-primary/50',
         minor && 'text-muted-foreground',
         passed.length > 0 && 'flex items-center gap-1.5',
       )}
@@ -33,7 +35,9 @@ const LogLine = memo(function LogLine({ line }: { line: FoldedLine }) {
           ))}
         </span>
       )}
-      <span>{text}</span>
+      <span>
+        <KeywordText text={text} />
+      </span>
       {spoken === '' ? null : <span className="sr-only">: {spoken}</span>}
     </li>
   )
@@ -67,6 +71,10 @@ export function LogPanel() {
           card: (id) => objects[id]?.name || logNames[id] || 'a card',
           ability: (id) => objects[id]?.source,
           permanent: (id) => objects[id]?.types.some((type) => PERMANENT_TYPES.includes(type)) ?? false,
+          door: (id, at) => {
+            const room = objects[id]
+            return doorNameOf(room, at, room === undefined ? undefined : knownDoorFaces(room))
+          },
           clauses: (id) => objects[id]?.manual?.map((clause) => clause.text) ?? [],
         },
         { seats, players },

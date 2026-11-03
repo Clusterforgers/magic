@@ -90,13 +90,13 @@ describe('the seam of the block preview', () => {
     expect(t.doomed().sort((a, b) => a - b)).toEqual([t.blocker, t.attacker].sort((a, b) => a - b))
     expect(t.life(0)).toHaveAccessibleName('Takes no combat damage')
     expect(screen.getByRole('list', { name: 'Combat forecast' })).toBeInTheDocument()
-    // The block lines stay what they are: dashed, with no colour of their own.
+    // A pending block line stays dashed and takes the colour of the preview's outcome for its pair.
     expect(
       t
         .lines()
         .filter((line) => line.pending)
         .map((line) => line.outcome),
-    ).toEqual([null])
+    ).toEqual(['both-die'])
 
     act(() => override.set({ on: false, forecast: null }))
     expect(t.doomed()).toEqual([])

@@ -17,6 +17,7 @@ import {
   manaLetter,
   powerToughness,
   rowOf,
+  linkWords,
   statusLabels,
   statusWords,
   typeLine,
@@ -185,6 +186,7 @@ describe('statusLabels and statusWords', () => {
   it.each([
     [{ tapped: true }, null, ['Tapped'], ['tapped']],
     [{ summoning_sick: true }, null, ['Sick'], ['summoning sick']],
+    [{ exerted: true }, null, ['Exerted'], ['exerted']],
     [{ damage: 1 }, null, ['1 dmg'], ['1 damage']],
     [{}, 'attacking', ['Attacking'], ['attacking']],
     [{}, 'blocked', ['Blocked'], ['attacking, blocked']],
@@ -218,6 +220,15 @@ describe('cardLabel', () => {
     expect(label).toBe(
       'Serra Angel, cost 1 generic, green, Creature — Bear, power 2, toughness 2, flying, first strike',
     )
+  })
+})
+
+describe('battle links', () => {
+  it.each([
+    ['Bo', ['battle protected by Bo']],
+    [undefined, []],
+  ] as [string | undefined, string[]][])('words a protector %s', (protector, expected) => {
+    expect(linkWords({ protector })).toEqual(expected)
   })
 })
 

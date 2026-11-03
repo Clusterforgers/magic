@@ -25,6 +25,7 @@ use std::collections::{BTreeMap, BTreeSet};
 use std::sync::Arc;
 
 use mtg_cards::ability::Ability;
+use mtg_cards::compile::render_ability;
 use mtg_cards::definition::Layout;
 use mtg_cards::modify::Modification;
 use mtg_cards::refs::{Ref, Selector, ZoneKind};
@@ -1430,6 +1431,50 @@ impl Pass<'_> {
         }
     }
 
+    /// The words of one candidate's own effect, `~` read as its source's name; empty when no wording is known.
+    fn words(&self, candidate: &Candidate) -> String {
+        let written = |found: Option<&Source>| {
+            found
+                .and_then(|s| render_ability(&s.ability))
+                .map(|text| self.named(&text, candidate.object.id))
+                .unwrap_or_default()
+        };
+        let fixed = match candidate.origin {
+            Origin::Ability(address) | Origin::Dredge(address) => {
+                return written(
+                    self.sources
+                        .iter()
+                        .find(|s| s.address == address && !s.copied),
+                );
+            }
+            Origin::Copied(index) => {
+                return written(
+                    self.sources
+                        .iter()
+                        .find(|s| s.copied && s.address.ability == index),
+                );
+            }
+            Origin::Shield(_) => "Prevent the damage, or save the permanent, instead.",
+            Origin::Protection => "Protection prevents the damage.",
+            Origin::Flashback => "If cast for its flashback cost, exile ~ instead.",
+            Origin::Buyback => "If its buyback cost was paid, put ~ into its owner's hand instead.",
+            Origin::Rebound => "If cast from your hand, exile ~ with rebound instead.",
+            Origin::Adventure => "Exile ~ instead of putting it into the graveyard.",
+            Origin::Commander(_) => {
+                "If ~ would be put into a hand or library, its owner may put it into the command zone instead."
+            }
+        };
+        self.named(fixed, candidate.object.id)
+    }
+
+    /// `text` with `~` read as the name of `object`.
+    fn named(&self, text: &str, object: ObjectId) -> String {
+        match self.state.object(object) {
+            Some(o) => text.replace('~', &o.card().name),
+            None => text.to_owned(),
+        }
+    }
+
     /// The next answer of the journal, if there is one.
     fn answer(&mut self) -> Option<&(PlayerId, Choice)> {
         self.answers.next()
@@ -1502,6 +1547,7 @@ impl Pass<'_> {
                                             source: c.object.id,
                                             ability: c.origin.ability_index(),
                                             shield: c.origin.shield(),
+                                            text: self.words(c),
                                         })
                                         .collect(),
                                     text: self.describe(&self.slots[at].item),

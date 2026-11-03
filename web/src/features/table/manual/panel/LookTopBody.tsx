@@ -8,6 +8,7 @@ import { useGame } from '@/features/game/gameContext'
 import type { ObjectId, ObjectView } from '@/protocol/generated'
 import { uniqueNames } from '../../prompt/combatText'
 import { useObjects } from '../../prompt/useCombatNames'
+import { usePreviewHandlers } from '../../usePreviewHandlers'
 import {
   applyWords,
   arrangeAction,
@@ -77,7 +78,7 @@ interface ThumbProps {
 }
 
 /** The card's small picture when the table has one for it; nothing otherwise. */
-function Thumb({ object }: ThumbProps) {
+export function Thumb({ object }: ThumbProps) {
   const source = object === undefined ? null : imageSourceOf(object)
   if (object === undefined || source === null) return null
   const face = faceOf(object)
@@ -87,7 +88,7 @@ function Thumb({ object }: ThumbProps) {
       fallback={cardImageFallbackUrl(source, face, 'small')}
       missKey={missKeyOf(source, face, 'small')}
       alt=""
-      className="aspect-[5/7] w-9 shrink-0"
+      className="aspect-[5/7] w-14 shrink-0"
     >
       <span className="block size-full rounded-sm border border-border bg-muted" />
     </CardImage>
@@ -248,10 +249,14 @@ interface LineProps {
 /** One card: its picture and name, the place it goes to and the moves up and down in its list. */
 function CardLine({ card, name, object, place, at, total, onSend, onMove }: LineProps) {
   const label = DESTINATIONS.find((option) => option.id === place)?.label ?? ''
+  // The card under the pointer or focus is large at the side (the table preview) so its text reads; a click pins nothing.
+  const handlers = usePreviewHandlers(card, () => undefined)
   return (
     <li
       aria-label={`${name}, ${label.toLowerCase()}, ${at + 1} of ${total}`}
       data-card={card}
+      data-slot="look-card"
+      {...handlers}
       className="grid gap-1 rounded-md border border-border p-1"
     >
       {/* The moves sit on the name's line, so the three places keep one line in a 280 px column. */}

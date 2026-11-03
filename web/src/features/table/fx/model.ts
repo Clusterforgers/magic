@@ -64,6 +64,8 @@ export interface EnterEffect {
 export interface MarkEffect {
   kind: MarkFx
   object: ObjectId
+  /** An ability leaving the stack with this mark: how its chip looked and the chip it stood before, so the mark shows on a ghost of it. */
+  ghost?: { readonly snapshot: ObjectView; readonly before: ObjectId | null }
 }
 
 /** Damage was marked on a permanent that is still on the battlefield. */
@@ -93,6 +95,8 @@ export interface DiedEffect {
   snapshot: ObjectView
   before: ObjectId | null
   damage: number
+  /** Milliseconds the ghost stands still before its death plays: a combat strike still lands on it or returns to it. */
+  hold?: number
 }
 
 /** One transient visual effect that a batch of events caused. */
@@ -119,6 +123,8 @@ export interface Ghost {
   readonly object: ObjectView
   readonly before: ObjectId | null
   readonly damage: number
+  /** Milliseconds before its death plays (already stretched by the slow-down). */
+  readonly hold: number
 }
 
 /** No entries; one value, so a card with nothing playing keeps the same snapshot. */
@@ -147,3 +153,6 @@ export function fxSide(entries: readonly FxEntry[]): 'own' | 'other' | undefined
 export function rowKey(seat: PlayerId, row: RowKind): string {
   return `${seat}:${row}`
 }
+
+/** The key of the ghosts of the shared stack strip in `FxState.ghosts`. */
+export const STACK_GHOSTS = 'stack'

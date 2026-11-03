@@ -9,11 +9,12 @@ export function applyBatchToStore(store: PlayStore, batch: EventBatch): boolean 
   const state = store.getState()
   if (state.view === null || state.seq !== batch.from_seq) return false
   const view = applyBatch(state.view, batch)
+  const objectsById = view.objects === state.view.objects ? state.objectsById : indexById(view.objects)
   store.setState({
     view,
-    objectsById: view.objects === state.view.objects ? state.objectsById : indexById(view.objects),
+    objectsById,
     seq: batch.from_seq + batch.events.length,
-    log: appendLog(state.log, batch.from_seq, batch.events, state.objectsById),
+    log: appendLog(state.log, batch.from_seq, batch.events, state.objectsById, objectsById, batch.shown),
   })
   return true
 }

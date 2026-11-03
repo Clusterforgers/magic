@@ -180,11 +180,11 @@ describe('ending an effect', () => {
     expect(state().objects.size).toBe(0)
   })
 
-  it('starts one timer per kind in a batch, not one per effect', () => {
+  it('starts one timer per duration in a batch, not one per effect', () => {
     const { fx, timers } = setup()
     fx.play([hurt(1), hurt(2), hurt(3), lean(4), lean(5), dies(6)])
     expect(timers.pending().sort((a, b) => a - b)).toEqual(
-      [FX_MS.attacked, FX_MS.damaged, FX_MS.died].sort((a, b) => a - b),
+      [...new Set([FX_MS.attacked, FX_MS.damaged, FX_MS.died])].sort((a, b) => a - b),
     )
   })
 })
@@ -349,5 +349,13 @@ describe('limits and clearing', () => {
     expect([...state().objects.keys()]).toEqual([2])
     timers.advance(FX_MS.attacked)
     expect(state().objects.size).toBe(0)
+  })
+})
+
+describe('a held death', () => {
+  it('keeps its ghost through the hold and then for its own length', () => {
+    const { fx, timers } = setup()
+    fx.play([{ ...dies(6), hold: 700 }])
+    expect(timers.pending()).toEqual([700 + FX_MS.died])
   })
 })

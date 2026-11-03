@@ -24,6 +24,10 @@ pub struct ReplacementCandidate {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[cfg_attr(feature = "ts", ts(as = "Option<EffectId>", optional))]
     pub shield: Option<EffectId>,
+    /// The words of this effect alone ("~ enters tapped."), `~` read as the source name; empty when none are known.
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<String>", optional))]
+    pub text: String,
 }
 
 /// The effects the affected player orders.

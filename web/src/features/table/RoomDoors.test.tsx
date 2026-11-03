@@ -213,6 +213,23 @@ describe('the preview of a Room', () => {
     expect(screen.getByText(/create a 1\/1 white Glimmer/)).toBeInTheDocument()
   })
 
+  it.each<[string, string[], string[]]>([
+    ['no offer', [], []],
+    ['the first door', ['unlock-910-0'], [ENTRYWAY]],
+    ['both doors', ['unlock-910-0', 'unlock-910-1'], [ENTRYWAY, ROTUNDA]],
+    ['another Room’s door', ['unlock-911-0'], []],
+  ])('marks the doors the viewer can unlock now: %s', async (_case, usable, marked) => {
+    const { container } = renderTable({
+      ui: <PreviewCard object={room([false, false])} role={null} size="large" api={api()} usable={usable} />,
+    })
+    await arrived()
+    const items = [...container.querySelectorAll('[data-slot="preview-doors"] > li')]
+    const found = items
+      .filter((item) => item.querySelector('[data-slot="preview-unlock-now"]') !== null)
+      .map((item) => item.querySelector('span')?.textContent?.replace(/ locked$/, ''))
+    expect(found).toEqual(marked)
+  })
+
   it('offers no face to turn over', async () => {
     await drawn([true, false])
     expect(screen.queryByRole('button', { name: /^Show / })).toBeNull()

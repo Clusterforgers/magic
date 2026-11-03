@@ -12,8 +12,8 @@ import { PromptPicture } from '../PromptPicture'
 import {
   replacementKeys,
   replacementLabels,
-  replacementOrigin,
   replacementSentence,
+  replacementWording,
 } from '../replacementText'
 import type { PromptComponent } from '../types'
 import { useObjects } from '../useCombatNames'
@@ -32,7 +32,7 @@ interface RowProps {
 function ReplacementRow({ index, candidate, object, label, onChoose, buttonRef }: RowProps) {
   const preview = usePreviewHandlers(candidate.source, () => onChoose(index))
   const oracle = useOracleText(object)
-  const wording = oracle ?? replacementOrigin(candidate)
+  const wording = replacementWording(candidate, oracle)
   const key = numberKey(index)
   return (
     <li className="min-w-0">
@@ -69,8 +69,8 @@ function ReplacementRow({ index, candidate, object, label, onChoose, buttonRef }
 
 /**
  * ChooseReplacement: several replacement effects apply to one event and the player picks which applies first (CR 616.1).
- * Each effect is a row with its source card's picture, name and rules text (the effect's own wording is the card's,
- * read from the card database; a lasting effect says a spell or ability made it). A click, Enter or the number key
+ * Each effect is a row with its source card's picture, name and the words of its own ability (the engine's;
+ * the card's rules text from the card database when it has none; a lasting effect says a spell or ability made it). A click, Enter or the number key
  * 1 to 9 (0 for the tenth) answers at once with the effect's index; focus starts on the first, the effect the
  * response clock takes. Hover and focus preview the card. The engine asks only when two or more apply.
  */
@@ -109,7 +109,7 @@ export const ChooseReplacementPrompt: PromptComponent<'ChooseReplacement'> = ({ 
       <ol
         aria-label="Replacement effects"
         data-slot="replacement-list"
-        className="grid max-h-[max(6rem,calc(var(--sheet-max,20rem)_-_7rem))] basis-full grid-cols-1 gap-2 overflow-y-auto p-0.5 sm:grid-cols-2"
+        className="grid max-h-[max(6rem,calc(var(--sheet-max,20rem)_-_7rem))] basis-full grid-cols-[repeat(auto-fit,minmax(min(100%,14rem),1fr))] gap-2 overflow-y-auto p-0.5"
       >
         {candidates.map((candidate, index) => (
           <ReplacementRow

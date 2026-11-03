@@ -3,7 +3,7 @@ import { screen, within } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import { must } from '@/test-utils/batches'
 import { renderForecastTable } from '@/test-utils/forecastTable'
-import { forecastScene } from '../dev/combatScene'
+import { forecastChoiceScene, forecastScene } from '../dev/combatScene'
 import { buildFixture } from '../dev/fixture'
 
 const COUNTS = [2, 3, 4, 8, 12]
@@ -80,5 +80,23 @@ describe('the other dev prompts', () => {
     expect(t.doomed()).toEqual([])
     expect(t.damage().size).toBe(0)
     expect(screen.queryByRole('list', { name: 'Combat forecast' })).toBeNull()
+  })
+})
+
+describe('?prompt=forecast-choice', () => {
+  it('marks the chips, the badges and the sentences as depending on a choice', () => {
+    const t = renderForecastTable({
+      seats: 3,
+      prompt: 'forecast',
+      scene: () => forecastChoiceScene(buildFixture({ seats: 3 })),
+    })
+    const view = must(t.store.getState().view)
+    const defender = must(must(view.combat.attackers[0]).target)
+    const chip = must(t.life('Player' in defender ? defender.Player : -1))
+    expect(chip).toHaveAttribute('data-choice', 'true')
+    expect(chip.getAttribute('aria-label')).toMatch(/depending on a choice of effects$/)
+    expect(chip).toHaveTextContent('≈-')
+    expect([...t.damage().values()].every((text) => text.startsWith('≈'))).toBe(true)
+    expect(screen.getByRole('list', { name: 'Combat forecast' })).toHaveTextContent('change with a choice')
   })
 })

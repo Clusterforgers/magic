@@ -33,10 +33,10 @@ One item is one piece of about 15 minutes and one line: the outcome, the cards i
 - Card language and compiler: the DSL, the reader framework, the renderer with goldens, the corpus ratchet, templates for every ability shape and stored `card_rules` (`docs/cards-dsl.md`).
 - Model-assisted reading: `check-rules`, `propose` (a local OpenAI-style server), `promote` (`--draft` writes the 355 first read-tier drafts, which `compile` stores in `card_drafts`), the repair of mechanical slips, writers for the accepted wordings, `coverage --all`, the gap ledger and `export-pairs` (`docs/cards-dsl.md`).
 - Protocol and server: generated bindings with a drift test, the game actor, a WebSocket per seat, persistence and resume, accounts (the admin makes, resets and removes them), lobbies, open games, precons, concurrent keep and mulligan, seat presence, the snapshot log (`docs/protocol.md`, `docs/server.md`).
-- Game flow: auto-pass, response clocks, yields, stops, Full Control, the timer bank, the by-hand window and leak tests (`docs/arena-flow.md`).
-- Commander: house rules, format rules, deck check, Partner, companion in the engine, tax, commander damage and any number of seats (`docs/server.md`).
+- Game flow: auto-pass, response clocks, yields, stops, Full Control, the timer bank, the by-hand window, the answer to a one-option question, auto choices (trigger order, damage) and leak tests (`docs/arena-flow.md`).
+- Commander: house rules, format rules, deck check, every partner pair kind end to end, companion in the engine, tax, commander damage and any number of seats (`docs/server.md`).
 - Manual play: the Commands panel, by-hand clauses with chips, manual actions at any time on any turn and fix marks (`docs/web.md`, `docs/protocol.md`).
-- Web table: lanes and card sizes, the seat corner, click combat, the mana strip, legible play (flights, spotlight, target arrows, marks), Equipment tucked at its host with its grants, hand reasons, fit at six sizes and a 12 px text floor (`docs/web.md`, `docs/ui-design.md`).
+- Web table: lanes and card sizes, the seat corner, click combat, the mana strip, legible play (flights, spotlight, target arrows, marks, combat strikes), Equipment tucked at its host with its grants, hand reasons, fit at six sizes and a 12 px text floor (`docs/web.md`, `docs/ui-design.md`).
 - Lobby, decks and precons: invites, the deck builder with pictures and stats, import and export, the deck check, the not-validated list and the precon browser (`docs/web.md`).
 - Card images: a server cache with a warm-up, and pictures in the table, builder and preview (`docs/server.md`, `docs/web.md`).
 - Testing: scenarios, invariants and fuzz decks, `scripts/check.sh` with the `gate` and `affected` modes, content stamps and side-by-side test binaries, and Playwright specs including the four-seat Commander game with precons or the owner's deck (`E2E_DECK=owner`).
@@ -45,14 +45,14 @@ One item is one piece of about 15 minutes and one line: the outcome, the cards i
 
 ## Live game
 
-Items that touch the running game come first.
+Items that touch the running game come first; the play-session findings (pf) lead, the web items before the engine and card items.
 
-- [~] (v95a) (play-ui) Choosing a card for an effect: the card under the cursor or chosen is shown large at the side (the preview) so its text reads, and a choice among cards in a graveyard, exile, hand or on the battlefield shows the cards themselves, not only their names (`docs/web.md`, prompts)
-- [~] (v96a) (deck-ui) A precon deck can be marked as a favourite from the precon browser and the deck chooser, and then appears in the account's own deck list (stored per account; `docs/web.md`, `docs/server.md`)
-- [~] (v96b) (play-ui) The Reveal effect shows the revealed card clearly to every seat that may see it: large, with its picture, and named in the log with who revealed it (`docs/web.md`)
-- [~] (v96c) (deck-ui) The deck chooser can sort by the number of cards played by hand (fewest first) as well as by name, with the count on each row (`docs/web.md`)
-- [~] (v96d) (deck-ui) The deck chooser loads the picture of every visible deck when the list opens, not only after a click (`docs/web.md`)
-- [~] (v96e) (play-ui) Rolling a die looks good: an animated die that lands on the result, visible to every seat, with who rolled and the result in the log, and a still result when reduced motion is on (`docs/web.md`, `docs/ui-design.md`)
+- [ ] (pf21) A spell or ability can be backed out of at every step before it is on the stack (targets, modes, X, costs, payment): an Undo in each prompt returns the card or ability and any mana spent, as Arena does
+- [ ] (pf22) A manual action gives a permanent an ability until end of turn or for good (a keyword such as deathtouch or flying, or a line of text), from the card menu and the Commands panel, shown on the card and in both logs
+- [ ] (pf23) An optional payment the seat cannot make is declined without asking (Dawn of Hope "Pay {2}?" with less than 2 mana available), counting every source the rules allow, so the table never waits on a question with one real answer
+- [ ] (pf24) Permanents that look the same stack on the table: two 6/6 Soldier tokens with vigilance drawn alike are one stack of 2 (find which field keeps them apart in `group.ts` `faceOf`, e.g. a granted ability's source or the summoning-sick flag)
+- [ ] (pf25) A crowded stack and a big combat stay readable: many stack items (a board of triggers) fold into groups with a count and a list, and many attackers or blockers keep their lines and labels legible, at every size
+
 - [ ] (ad1c) The Accounts page in the layout gate at the six sizes in both themes (a dev route that stands for it) and an e2e spec of the admin flow on the Postgres server: sign-in, make an account, the friend signs in, the closed sign-up page (`docs/web.md`)
 - [ ] (d1c) A copy of the nightly database dumps off queen (a Longhorn backup target or a scheduled copy to another machine), so losing queen does not lose the accounts and decks (`docs/deploy.md`)
 - [ ] (d1b) The release script's steps as a GitHub Actions workflow on a published release, so a release needs no dev machine (`docs/deploy.md`)
@@ -62,7 +62,12 @@ Items that touch the running game come first.
 - [ ] (w2j) An attach line of a rebuilt log has no old host: `Snapshot` could carry the host each attach event of its window replaced (its name in `names`), so the line reads "moves from A to B" as it did live (`play/store.ts` `mergeHistory`, `hosts.ts`)
 - [ ] (fx1b) A cap on the fix marks of one account and a rate limit on the fix-mark routes
 - [ ] (f1b) Playtest polish of the table, builder and lobby against the UI wishes (fits the viewport, clear turn indicators, open-games list, card images at every size), with `/dev/*` screenshots at six sizes in both themes, so the first real games can start
-- [ ] (k3e) A legal special action the web cannot take (suspend, foretell, turn a face-down permanent up, cast a prepared copy) leaves its seat asked at every default window with nothing marked: mark the card and offer the action in `abilityPlays`
+- [ ] (f1b1) A fanned land pile shows each covered land's whole name line, and a tapped land of a pile no longer lies over its neighbours' names and Tapped chips (`/dev/table?board=duel` opponent at 1366x768 and 1440x900, the viewer's lands of the four-seat table)
+- [ ] (f1b2) A text face's name breaks between words, never inside one ("Mountai n", "Lightnin g Bolt" in the hand at 1366x768 and below), ending in an ellipsis where it does not fit
+- [ ] (f1b3) A compact tapped land's Tapped chip is whole or an icon on a phone (`/dev/table?board=duel` at 390x844)
+- [ ] (f1b4) The builder's Mana value placeholder ("3, 2-4, 5+") and the lobby's sort select ("Default order") are whole at 1024x768
+- [ ] (f1b5) The lobby's deck detail of a built-in deck counts its cards and colours as the list does (it shows "0 cards" and a colourless symbol for Mono Green Stompers)
+- [ ] (f1b6) The viewer's one-line pod on the four-seat table keeps its zone chips row inside the pod at 1440x900
 - [ ] (pl2l) `join.spec.ts` "a guest follows an invite link" timed out once on the Join button in a full run and never in 50 solo runs: a recurrence needs a Playwright trace (`retain-on-failure`) to name the cause
 
 ## M4 Commander
@@ -73,43 +78,18 @@ Items that touch the running game come first.
 
 The table and its prompts are live; the items below polish them.
 
-- [ ] The companion in the web: a seat-panel slot from `PlayerView.companion`, `BringCompanion` in the priority menu and the deck builder's companion issue
-- [ ] (i2) Arena flow P10: smart stops, per-ability yields, an order-by-timestamp preference, damage auto-assign and the answer to a one-option decision (`docs/arena-flow.md`)
-- [ ] (w3k) A replacement candidate carries the words of its own effect, so the ChooseReplacement prompt shows the one ability that applies instead of the whole card text (`ReplacementCandidate`)
-- [ ] (w3j) A scry is one screen: the engine asks the split and the order of both piles in one decision, so the player orders the top pile where the cards are split instead of in the two `OrderCards` that follow
-- [ ] (w3f) The payment prompt spends restricted mana by hand, read against `PayOptions.spend`
-- [ ] (w3g) The payment prompt taps creatures for convoke and artifacts for improvise
-- [ ] (w3h) The payment prompt exiles graveyard cards for delve
-- [ ] (w3l) `decisionName` (`turnText.ts`) names a decision kind the client does not know as Discard, so the waiting label and the clock words of a newer server's decision read wrong
-- [ ] Clock words in the web (`clockText.ts`) for every decision with a clock the web does not name yet
-- [ ] Attack and block prompts lock the creatures a rule requires, and a seat panel shows a revealed library top (`PlayerView.revealed_top`)
-- [ ] The forecast and block preview mark numbers that depend on a choice (`CombatForecast.depends_on_choice`)
-- [ ] (a2c) The support mark on the table tells Partial from Manual: `ObjectView` needs the card's support state (a view field), since manual clauses alone do not say which
+- [ ] (i2b) Arena flow P10: smart stops, a step where an object of the seat can answer becomes a window (`docs/arena-flow.md`)
+- [ ] (i2c) Arena flow P10: per-ability yield (`AutoYield`), a trigger or ability the seat yields to resolves unasked for the game (`docs/arena-flow.md`)
+- [ ] (i2d) Auto choices are saved with the account and in the browser and applied at each `Welcome`, as the end-turn choice is (`UserPrefs`)
 - [ ] (a2g) A token lookup that finds several equal records prefers the one with the most printings (`token_pictures` returns the printing count) instead of the smallest oracle id
 - [ ] (a2e) The precon details dialog shows each card's picture through `CardPicture` and the hover picture, as the builder does
 - [ ] (a2f) The real database holds every precon printing (`fetch scryfall --printings`), so the table draws each card in its precon art instead of the card's default picture
-- [ ] (k1b) The one-line pods of three and four seats draw each commander (both of a partner pair), the graveyard and the exile as small pictures beside their chips, and pass the layout gate
 - [ ] (k1g) The layout gate and the fit spec also sweep 360, 768, 1400 and 1600x1000 (only the six design sizes today)
-- [ ] (k1h) A tall prompt sheet on a phone (`commander-return` at 360x740, a 182 px overhang) keeps the opponents' tile strip and board in view: the sheet's height is held to what leaves them room
-- [ ] (k2a) `/dev/builder?deck=...` shows the commander slot (the fixture check knows commander pairs) and screenshots at 1400 and 390 settle the slot's height and the identity switch
-- [ ] (k2b) The lobby's deck chooser and the precon rows show each Commander deck's commanders as a picture and a name, as the deck list does
-- [ ] (k2c) Playwright: build a Commander deck with a Partner pair, see a refused commander with its reason and the identity filter
-- [ ] (ts3) `groupPermanents` keeps apart permanents that differ in copy (and of what), shown face, face down, merge, prepared, level and the player an Aura enchants, so a copy never hides inside a stack of its original's tokens
-- [ ] (ts4) A phased-out permanent is drawn ghosted with a "Phased out" mark: `PermanentView` needs a `phased_out` field
-- [ ] (ts5) A token's printed power and toughness reach the view (with `a2d`), so a buffed or debuffed token is tinted green or red as a card is; today a token's real numbers show plain
 - [ ] (ts6) `/dev/table?states=1` screenshots at the six sizes in both themes settle the marks on compact faces (under 76 px, where an attachment mark is an icon) and on tapped pictures
-- [ ] (pl1e) The opponent's pod column draws its corner as pictures at 1366x768 and below too: the hand and library chips join the name row, so the column leaves the 62 px a 44 px picture needs (it keeps its chips and scrolls there today)
+- [ ] (pl1e1) At 1280x720 and below the duel opponent's pod column (119 px) draws its corner as pictures too: the blocks above the corner give up the 64 px they take
 - [ ] (pl1d) A permanent that dies as the last of its lane keeps its ghost while the effect plays (an empty lane has no place in the fit)
-- [ ] (pl2a) The forecast lists the life an attacker's controller gains (lifelink of an attacker) so its pod shows the "+N" chip too (`PlayerForecast` covers attacked seats only)
-- [ ] (pl2b) The tiles of focus mode and of the phone's strip show the life chip and take the defender click (only the pod does today)
-- [ ] (pl2c) A pending block's arrow takes the colour of the preview's outcome for its pair, as a declared block does
 - [ ] (pl2d) Playwright: attack and block by clicks in a real two-seat game and at four seats (the click flows are tested on the dev table only)
-- [ ] (pl3a) `ObjectView` carries what a mana ability gives as data (mana, count, cost, sacrifice), so the corner strip and the preview stop reading the words of `activated` (an ability with a count by a condition, a chosen colour or an extra cost shows nothing today)
-- [ ] (pl3b) The payment sheet takes the mana sources and the made total in its compact form: one scroll line of source chips, made and owed on one row, no extra height at 390 px
-- [ ] (pl3c) The colour switch sits on the source chip and swaps the colour of a chosen source without taking it back; chips mark restricted mana (`only`), life, energy and taken permanents, and the pool marks the mana that outlasts the step (`kept`)
 - [ ] (ui1i) `/dev/table?fx=` screenshots of every moment at the six sizes in both themes settle the look, and `fit.spec.ts` holds the table at rest with three targeting items on the stack
-- [ ] (ui1e2) An ability's end (`resolved`, `countered`, `fizzled`) shows on its stack chip before it leaves, and the arrow of a counter cast in the same batch starts at its spotlight (`fx/marks.ts`, `fx/effectArrows.ts`, `StackChips.tsx`)
-- [ ] (eq1g) An Equipment that had no host draws its equip arrow from where it lay, measured before the batch is drawn (`fx/FxTravel.tsx`, `combat/attachLines.ts`)
 - [ ] (st1a) The Stasis family (Stasis Field, Stasis Cell, Stunning Strike) is measured in a scratch database after `compile`: each becomes Verified or names the clause the checker still lacks, with its Scryfall record in the corpus
 - [ ] (st1b) "Its activated abilities can't be activated" (Arrest, Stasis Cocoon) is a restriction the compiler reads and the activation rules enforce (`Modification` and the activation check)
 - [ ] (eq1j) `gives` of an Aura on a player names the rules it gives outside keywords ("Enchanted player can't cast spells", skipped draws), which the layers do not record for players (`gives.rs`, `layers.rs` `PlayerHeld`)
@@ -117,9 +97,8 @@ The table and its prompts are live; the items below polish them.
 - [ ] (dk1b2b) Battles in the protocol and web: an attack target that names a battle (`AttackTarget::Planeswalker` does today), battle labels, defense counters and the protector on the Siege, and a hidden-information test of the Invasion search
 - [ ] (dk1c4a) The soulbond cards the compiler still leaves out: Donna Noble (a damage trigger), Joint Assault ("if it's paired"), Doom Weaver, Imperious Mindbreaker, Breathkeeper Seraph, Mirage Phalanx (quoted grants with their own amount), Flowering Lumberknot, Tarelily, Azra Matchthrower
 - [ ] (dk1c5c) Rooms: lock a door (Marina Vendrell, Keys to the House), a token copy of a half (Blu) and the copiable door state (CR 707.2)
-- [ ] (dk1c5d) Rooms on the web: the log line names the door unlocked ("Alice unlocks Grand Entryway"), and the preview of a Room marks a door the viewer can unlock now (`PriorityOptions.unlockable`, `CardPreview`)
+- [ ] (dk1c5e) The log names an unlocked door without waiting for another part of the table to load the Room's printed faces (it says "unlocks a door of <Room>" until then)
 - [ ] (dk1d2a) Orzhov Charm: the reader of "Return target creature you control and all Auras you control attached to it to their owner's hand." (the Auras then the creature) and "Destroy target creature and you lose life equal to its toughness.", so the compiler makes the card without its rules file
-- [ ] (lb1a) The precon list item carries the commanders' cards (picture, colour identity), so a precon row in the lobby chooser shows its commanders and the chooser filters precons by colour identity
 - [ ] (pn1a) Many-seat tests of the actor for response clocks, timer banks and hidden information per viewer at 13 to 64 seats (the actor tests cover 2 to 4)
 - [ ] (pn1b) `fit.spec.ts` and `/dev/table` screenshots at 16, 24 and 40 seats in both themes, and the e2e create flow typing a count above 12
 - [ ] (pn1c) The seat field builds a row per seat as it is typed: guard a count that would freeze the page (the server's ceiling is the 256 KiB create body, about 2,500 seats)
@@ -128,15 +107,11 @@ The table and its prompts are live; the items below polish them.
 - [ ] (db1b) The builder's cards played by hand quote the words of the card each reason covers (the spans of `useCardTexts`), as the not-validated page does
 - [ ] (db1c) At 1440 px and wider the stats and the cards played by hand sit in a rail beside the deck (the builder takes a page width beyond `wide`) instead of two closed disclosures
 - [ ] (pm1a) A server test drives a clocked game and shows that a manual action keeps the deadline of a changed decision of the same seat (`carried_clock`), and that a manual action sent while a replacement question holds a batch is applied once it is answered (`flush_deferred`).
-- [ ] The turn indicator and step bar show a turn without an active player (`TurnView.active_left`), with `/dev/table` screenshots at six sizes in both themes
 - [ ] (ma7q) The Tokens row's custom creature also takes colours and types (artifact, enchantment, subtypes), which `CreateToken` already carries, and a token can copy a card on the table
 
-- [ ] (ma6a) A card on the stack (`StackPanel`, `StackChips`) carries the by-hand mark, as a permanent does
 - [ ] (ma6b) Playwright: the by-hand mark opens the clause list by a press and the `h` key opens it on the focused card, for a Partial card on a two-seat table at desktop and phone size, and the cast and entering lines are in both logs
 - [ ] (U5b) One step ladder: the ladder that shows the turn also sets the stops (click a step), as in Arena, and the second row of step buttons goes
 - [ ] Playwright games with corpus decks that ask every decision kind
-- [ ] (c5h) The table's event text has a line for the rule `MustAttackPlayers` (Encore) instead of the generic trigger line
-- [ ] (c5i) The attack prompt offers the exert of a creature that may be exerted (`AttackerOption.exert`, `Answer::DeclareExerting`) and the table marks an exerted permanent
 
 ## Cards
 
@@ -159,7 +134,8 @@ Open card, compiler and wording items: `docs/cards-backlog.md`.
 - [ ] (fg3a) `promote`: when a translated card is promoted, take the compiler's reading for the abilities it reads and the translator's for the rest, so `every_ability_the_compiler_reads_is_in_the_hand_written_file` holds (`w2a_promote`)
 - [ ] (fg3b) `translate-forge`: the largest remaining gaps by cards held back: `key:Effect.ReplacementEffects`, `key:ChangeZone.ChangeType`, `replacement:DamageDone`, `effect:ChooseCard`, `effect:RepeatEach`, `static-affected:Defined+Affected`, `effect:ImmediateTrigger`, `effect:PeekAndReveal`, `key:Effect.Triggers`, `effect:RollDice` (`translate-gaps.tsv`); nodes the language lacks are in `engine-needs.tsv`
 - [ ] (fg3c) `translate-forge`: the whole translations the checker reads back as other text (`Mismatch`): separate wording differences from wrong translations and fix the mappers
-- [ ] (rt1g) The server loads the current drafts with their read state into the library, rebuilds it on `DraftRepo::version`, pins `reads` in the recipe so resume and replay build the same cards, and records its own `wrong` on `AbilityLeftToTable`; frees approved cards in games (`mtg-server` cards, registry; after rt1a, rt1b and rt1e)
+- [~] (ft1) (forge-trust) The tier "from Forge": a whole translation of a Forge script that the checker cannot prove (Unchecked, or Mismatch where Forge's Oracle text equals ours) is stored as a draft with source `forge`, loaded by the server with its read state (rt1g) and run automatically, shown with a "from Forge" mark wherever support is shown; fail-soft resolution and any "reads wrong" verdict switch the card back to by hand; Verified keeps its strict meaning (`docs/cards-dsl.md`, Read tier)
+- [~] (rt1g) (forge-trust) The server loads the current drafts with their read state into the library, rebuilds it on `DraftRepo::version`, pins `reads` in the recipe so resume and replay build the same cards, and records its own `wrong` on `AbilityLeftToTable`; frees approved cards in games (`mtg-server` cards, registry; after rt1a, rt1b and rt1e)
 - [ ] (rt1h) `GET /api/reads`, `GET` and `PUT /api/reads/{oracle_id}` with the rate limit, the fix mark of a `wrong`, `stale_read`, account deletion, `CardDetail.draft` and the wire types; frees reading from any client (`mtg-server` reads.rs, `mtg-protocol` rest; after rt1c and rt1g)
 - [ ] (rt1j) The review screen: `/read?deck=` and `?precon=`, `ReadDialog` from the table's card preview, keys C and W, the required note, the 2 s delay, `stale_read`, a dev route and the layout gate at six sizes (`web/src/features/reads`; `docs/web.md`, Reading cards; after rt1h and rt1i)
 - [ ] (rt1o) `ToRead` becomes a `Link` to the review screen (`/read?deck=` or `?precon=`, from `data-read-path`) in the builder check bar, decks list, lobby rows and preview, precon rows and details and the not-validated list; frees the ways in (`web/src/features/decks/ToRead.tsx`; after rt1j)

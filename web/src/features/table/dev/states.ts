@@ -103,6 +103,8 @@ const soldier = (over: Partial<ObjectView> = {}): Partial<ObjectView> => ({
   subtypes: ['Soldier'],
   power: 1,
   toughness: 1,
+  printed_power: 1,
+  printed_toughness: 1,
   ...over,
 })
 

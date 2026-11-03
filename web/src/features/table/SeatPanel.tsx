@@ -7,7 +7,7 @@ import { usePlay } from '@/features/game/gameContext'
 import { cn } from '@/lib/utils'
 import type { PlayerId } from '@/protocol/generated'
 import { DamageChips, TaxChips, useCommanderChips } from './CommanderChips'
-import { cornerHeight } from './cornerFit'
+import { cornerHeight, podIsTight } from './cornerFit'
 import { useEnchantChips } from './enchantChips'
 import { EnchantChips } from './EnchantChips'
 import { useDefender } from './combat/defender'
@@ -15,6 +15,7 @@ import type { DefenderState } from './combat/defender'
 import { LifeForecast } from './combat/LifeForecast'
 import { LifeFx } from './fx/LifeFx'
 import { LiveManaPool } from './LiveManaPool'
+import { UntappedSources } from './UntappedSources'
 import { usePodRoom } from './podRoom'
 import { useSeatNamer } from './names'
 import { ACTIVE_EDGE, AwayMark, CountChip, PriorityDot, SeatDot, YOUR_TURN_EDGE } from './PodParts'
@@ -24,6 +25,7 @@ import { describeMulligan } from './turnText'
 import { useBoxHeight } from './useBoxHeight'
 import { SeatCorner } from './SeatCorner'
 import { RevealedChip } from './RevealedChip'
+import { CompanionChip } from './CompanionChip'
 import { ZoneButton } from './ZoneButton'
 
 interface SeatPanelProps {
@@ -189,13 +191,15 @@ export const SeatPanel = memo(function SeatPanel({ seat, variant = 'panel' }: Se
             <CountChip zone="hand" count={counts.hand} density="line" />
             <CountChip zone="library" count={counts.library} density="line" />
             <RevealedChip owner={owner} player={player} density="line" />
-            <ZoneButton zone="graveyard" owner={owner} ids={graveyard} density="line" />
-            <ZoneButton zone="exile" owner={owner} ids={exile} density="line" />
+            <CompanionChip owner={owner} player={player} />
+            <ZoneButton zone="graveyard" owner={owner} ids={graveyard} density="line" thumbs />
+            <ZoneButton zone="exile" owner={owner} ids={exile} density="line" thumbs />
             {counts.command > 0 ? (
-              <ZoneButton zone="command" owner={owner} ids={commanders} density="line" />
+              <ZoneButton zone="command" owner={owner} ids={commanders} density="line" thumbs />
             ) : null}
           </div>
         </div>
+        <UntappedSources seat={seat} />
         {words === '' ? null : <p className="sr-only">{words}</p>}
         <div data-slot="pod-status" className="flex flex-wrap items-center gap-x-2 gap-y-1 empty:hidden">
           {mana}
@@ -208,10 +212,37 @@ export const SeatPanel = memo(function SeatPanel({ seat, variant = 'panel' }: Se
     )
   }
 
+  // A short column folds the hand and library chips into the name row and the other chips into the pool's row, so the
+  // corner keeps the room for its pictures.
+  const tight = podIsTight(room.height)
+  // In the name row the chips drop their background, which is the room the name needs beside them.
+  const handDensity = tight ? 'tile' : 'line'
+  const handChips = (
+    <>
+      <CountChip zone="hand" count={counts.hand} density={handDensity} />
+      <CountChip zone="library" count={counts.library} density={handDensity} />
+    </>
+  )
+  const extraChips = (
+    <>
+      <RevealedChip owner={owner} player={player} density="line" />
+      <CompanionChip owner={owner} player={player} />
+      {/* One damage chip is the figure alone; with several each keeps the name of its commander. */}
+      <DamageChips
+        chips={chips.damage}
+        density="line"
+        compact={chips.damage.length === 1}
+        className="max-w-full"
+      />
+      <TaxChips chips={taxLoose} density="line" className="max-w-full" />
+      <EnchantChips chips={enchants} density="line" />
+    </>
+  )
   return (
     <section
       {...marks}
       data-variant="panel"
+      data-tight={tight || undefined}
       className={cn(
         // One track that may shrink (`minmax(0, 1fr)`): a chip that is longer than the pod is cut inside it instead of
         // widening the pod and pushing the life figure out of the column.
@@ -223,15 +254,27 @@ export const SeatPanel = memo(function SeatPanel({ seat, variant = 'panel' }: Se
     >
       {/* Everything above the corner: its height does not depend on how the corner is drawn, so the corner can be sized by it. */}
       <div ref={above} data-slot="pod-top" className="grid grid-cols-[minmax(0,1fr)] content-start gap-2">
-        <header className="flex items-center justify-between gap-2">
-          <div className="grid min-w-0 gap-0.5">
-            {name}
+        <header className="flex flex-wrap items-center justify-between gap-x-2 gap-y-0.5">
+          <div className="grid min-w-24 flex-1 gap-0.5">
+            {tight ? (
+              <div data-slot="pod-name-row" className="flex min-w-0 items-center gap-1">
+                {name}
+                {handChips}
+              </div>
+            ) : (
+              name
+            )}
             {/* Room for the pool is kept under the name, so nothing moves when mana floats. */}
-            <div data-slot="mana-slot" className="min-h-5">
+            <div
+              data-slot="mana-slot"
+              className={cn('min-h-5', tight && 'flex flex-wrap items-center gap-1')}
+            >
               {mana}
+              {tight ? extraChips : null}
             </div>
+            <UntappedSources seat={seat} />
           </div>
-          <div className="flex shrink-0 items-center gap-1.5">
+          <div className="ml-auto flex shrink-0 items-center gap-1.5">
             <LifeForecast seat={seat} />
             <Life seat={seat} life={player.life} as="p" className="text-life" />
           </div>
@@ -240,20 +283,12 @@ export const SeatPanel = memo(function SeatPanel({ seat, variant = 'panel' }: Se
         <div data-slot="pod-status" className="grid content-start gap-1 empty:hidden">
           {notes}
         </div>
-        <div data-slot="pod-counts" className="flex flex-wrap gap-1">
-          <CountChip zone="hand" count={counts.hand} density="line" />
-          <CountChip zone="library" count={counts.library} density="line" />
-          <RevealedChip owner={owner} player={player} density="line" />
-          {/* One damage chip is the figure alone; with several each keeps the name of its commander. */}
-          <DamageChips
-            chips={chips.damage}
-            density="line"
-            compact={chips.damage.length === 1}
-            className="max-w-full"
-          />
-          <TaxChips chips={taxLoose} density="line" className="max-w-full" />
-          <EnchantChips chips={enchants} density="line" />
-        </div>
+        {tight ? null : (
+          <div data-slot="pod-counts" className="flex flex-wrap gap-1">
+            {handChips}
+            {extraChips}
+          </div>
+        )}
       </div>
       <SeatCorner
         owner={owner}

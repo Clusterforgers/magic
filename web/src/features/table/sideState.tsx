@@ -6,12 +6,11 @@ import type { SideKind } from './layout'
 import { usePickStore } from './manual/panel/pick'
 import { SideContext } from './sideContext'
 import type { SideState } from './sideContext'
-import { unreadChat, unreadLog } from './sideCounts'
+import { unreadChat } from './sideCounts'
 import type { SideTab } from './sideCounts'
 
-/** Where the reader had got to in the log and the chat. */
+/** Where the reader had got to in the chat. */
 interface Seen {
-  log: number
   chat: ChatLine | null
 }
 
@@ -29,8 +28,8 @@ export function SideProvider({ kind, children }: { kind: SideKind; children: Rea
   const [panel, setPanel] = useState(false)
   const [mount, setMount] = useState<HTMLElement | null>(null)
   const [seen, setSeen] = useState<Seen>(() => {
-    const { log, chat } = session.store.getState()
-    return { log: log.at(-1)?.seq ?? 0, chat: chat.at(-1) ?? null }
+    const { chat } = session.store.getState()
+    return { chat: chat.at(-1) ?? null }
   })
   const open = kind === 'column' || panel
   // A card is waited for: a panel that covers the table steps aside, and returns with the card chosen or the wait over.
@@ -45,7 +44,6 @@ export function SideProvider({ kind, children }: { kind: SideKind; children: Rea
       }),
     [picks, kind],
   )
-  const log = usePlay((state) => unreadLog(state.log, seen.log))
   const chat = usePlay((state) => unreadChat(state.chat, seen.chat, state.seat))
   const stack = usePlay((state) => state.view?.stack.count ?? 0)
 
@@ -53,9 +51,8 @@ export function SideProvider({ kind, children }: { kind: SideKind; children: Rea
   useEffect(() => {
     if (!open || tab === 'stack' || tab === 'commands') return
     return () => {
-      const { log: lines, chat: said } = session.store.getState()
+      const { chat: said } = session.store.getState()
       setSeen((was) => ({
-        log: tab === 'log' ? (lines.at(-1)?.seq ?? was.log) : was.log,
         chat: tab === 'chat' ? (said.at(-1) ?? was.chat) : was.chat,
       }))
     }
@@ -77,11 +74,11 @@ export function SideProvider({ kind, children }: { kind: SideKind; children: Rea
   const counts = useMemo<Record<SideTab, number>>(
     () => ({
       commands: 0,
-      log: open && tab === 'log' ? 0 : log,
+      log: 0,
       chat: open && tab === 'chat' ? 0 : chat,
       stack,
     }),
-    [open, tab, log, chat, stack],
+    [open, tab, chat, stack],
   )
   const value = useMemo<SideState>(
     () => ({
@@ -89,7 +86,7 @@ export function SideProvider({ kind, children }: { kind: SideKind; children: Rea
       tab,
       open,
       counts,
-      attention: counts.log + counts.chat + counts.stack,
+      attention: counts.chat + counts.stack,
       activate,
       setOpen: setPanel,
       mount,

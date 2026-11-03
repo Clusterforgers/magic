@@ -16,14 +16,16 @@ use mtg_cards::deck::{
 };
 use mtg_cards::load::Library;
 use mtg_cards::{Caps, CardDefinition};
+use mtg_core::color::ColorSet;
 use mtg_core::house::HouseRules;
 use mtg_db::{
     DbError, DeckBoard, IndexVersion, PreconDeckDetail, PreconDeckId, PreconVersion, RulesVersion,
 };
-use mtg_protocol::rest::PreconListItem;
+use mtg_protocol::rest::{DeckPicture, MAX_DECK_PICTURES, PreconListItem};
 use thiserror::Error;
 use tokio::sync::Mutex;
 
+use crate::card_api::card_colors;
 use crate::cards::{CardSource, CatalogError, Rules, card_facts, identified, printed_card};
 use crate::deck_cards::Line;
 use crate::deck_choice::{commander_ids, format_issues, library_ids};
@@ -83,6 +85,28 @@ pub(crate) struct Judged {
     pub(crate) leaders: Vec<Arc<CardDefinition>>,
 }
 
+/// The cards whose pictures stand for a deck in a list: its commanders, else its first card of the main board.
+fn pictures_of(deck: &PreconDeckDetail) -> Vec<DeckPicture> {
+    let cards = |board: DeckBoard| {
+        deck.entries
+            .iter()
+            .filter(move |entry| entry.board == board)
+            .filter_map(|entry| entry.card.as_ref())
+            .map(|card| DeckPicture {
+                oracle_id: card.oracle_id.to_string(),
+                name: card.name.clone(),
+            })
+    };
+    let leaders: Vec<DeckPicture> = cards(DeckBoard::Commander)
+        .take(MAX_DECK_PICTURES)
+        .collect();
+    if leaders.is_empty() {
+        cards(DeckBoard::Main).take(1).collect()
+    } else {
+        leaders
+    }
+}
+
 impl Judged {
     /// The precon as the list shows it, under `code`.
     pub(crate) fn item(&self, deck: &PreconDeckDetail, code: &str) -> PreconListItem {
@@ -98,6 +122,14 @@ impl Judged {
                     .map_or_else(|| entry.card_name.clone(), |card| card.name.clone())
             })
             .collect();
+        let pictures = pictures_of(deck);
+        let identity: ColorSet = deck
+            .entries
+            .iter()
+            .filter(|entry| entry.board == DeckBoard::Commander)
+            .filter_map(|entry| entry.card.as_ref())
+            .flat_map(|card| card.color_identity.iter())
+            .collect();
         let card_count = deck
             .entries
             .iter()
@@ -112,6 +144,8 @@ impl Judged {
             deck_type: summary.deck_type.clone(),
             release_date: summary.release_date.map(|date| date.to_string()),
             commanders,
+            pictures,
+            color_identity: card_colors(identity),
             card_count,
             format: self.format.to_owned(),
             state,

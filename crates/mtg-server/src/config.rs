@@ -127,6 +127,8 @@ pub struct AttemptLimits {
     /// Requests for the precon list or one precon that one address may make inside `lobby_window`
     /// before it is turned away; every request counts.
     pub precon_requests_per_ip: u32,
+    /// Stars and unstars of precons one account may make inside `window`; both count.
+    pub favourite_writes_per_user: u32,
 }
 
 impl Default for AttemptLimits {
@@ -142,6 +144,7 @@ impl Default for AttemptLimits {
             lobby_window: Duration::from_mins(1),
             lobby_requests_per_ip: 30,
             precon_requests_per_ip: 60,
+            favourite_writes_per_user: 200,
         }
     }
 }

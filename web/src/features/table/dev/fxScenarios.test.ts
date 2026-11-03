@@ -1,4 +1,4 @@
-// Goal: every dev move (attack, block, damage, death, life, enter, the moments of play: cast, activate, resolve, counter, land, draw, and equip) builds a batch that follows on from the table, folds into a consistent table and derives the effects or moves its name promises at any table size, and can be played again and again, each time on other cards, without ever breaking the table or running out.
+// Goal: every dev move (attack, block, damage, death, life, enter, the moments of play: cast, activate, resolve, counter, land, draw, equip, and a strike) builds a batch that follows on from the table, folds into a consistent table and derives the effects or moves its name promises at any table size, and can be played again and again, each time on other cards, without ever breaking the table or running out.
 import { describe, expect, it } from 'vitest'
 import { createPlayStore } from '@/play/store'
 import type { PlayStore } from '@/play/store'
@@ -16,6 +16,8 @@ import { fixtureState } from './devGame'
 import { withEquip } from './equip'
 import { buildFixture } from './fixture'
 import { devBatch, playDevFx } from './fxScenarios'
+import { planStrikes } from '../fx/strikes'
+import type { StrikeTarget } from '../fx/strikes'
 
 function table(seats = 2): PlayStore {
   const store = createPlayStore()
@@ -314,5 +316,27 @@ describe('at other table sizes', () => {
     own.setState(fixtureState(buildFixture({ seats: 4, active: 0 })))
     effectsOf(own, 'life')
     expect(must(own.getState().view).players[1]?.life).toBe(40 - 2 - 5)
+  })
+})
+
+describe('strike', () => {
+  it('strikes a player, a planeswalker and a creature that strikes back', () => {
+    const store = table()
+    const before = store.getState()
+    expect(playDevFx(store, 'strike')).toBe(true)
+    const step = must(batchBetween(before, store.getState()), 'a batch the effects layer sees')
+    const plans = planStrikes(step.before, step.after, step.events)
+    const kindOf = (target: StrikeTarget): string => {
+      if ('player' in target) return 'player'
+      const struck = must(step.after.objectsById[target.object])
+      return struck.types.includes('Planeswalker') ? 'planeswalker' : 'creature'
+    }
+    expect(plans.map((plan) => plan.hits.map((hit) => kindOf(hit.target)).join())).toEqual([
+      'player',
+      'planeswalker',
+      'creature',
+      'creature',
+    ])
+    expect(plans.filter((plan) => plan.mutual)).toHaveLength(2)
   })
 })

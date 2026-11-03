@@ -48,6 +48,8 @@ const SCALAR_KEYS: &[&str] = &[
     "commander_lethal",
     "power",
     "toughness",
+    "printed_power",
+    "printed_toughness",
     "set",
     "amount",
     // The faces of a die rolled by hand and the number that came up.
@@ -75,6 +77,7 @@ const SCALAR_KEYS: &[&str] = &[
     "player",
     "owner",
     "controller",
+    "SetController",
     "seat",
     "active",
     "holder",
@@ -185,8 +188,11 @@ pub(crate) fn leaks(value: &Value, hidden: &BTreeMap<ObjectId, String>) -> Vec<S
                     || (map.contains_key("once") && map.contains_key("this_turn"))
                     || (map.contains_key("duration")
                         && (map.contains_key("timestamp") || map.contains_key("turn")));
+                // Control given by hand names the seat that gains it, a player id.
+                let gives_to_seat = key == "GiveControl";
                 map.iter()
                     .filter(|(k, _)| !(names_an_effect && *k == "id"))
+                    .filter(|(k, _)| !(gives_to_seat && *k == "to"))
                     .for_each(|(k, v)| walk(v, k, hidden, out));
             }
             Value::Null | Value::Bool(_) => {}
@@ -749,6 +755,10 @@ fn offered_to(decision: Option<&Decision>, viewer: PlayerId) -> Vec<ObjectId> {
             player,
             kind: DecisionKind::OrderCards(options),
         }) if *player == viewer => options.cards.clone(),
+        Some(Decision {
+            player,
+            kind: DecisionKind::Scry(options),
+        }) if *player == viewer => options.cards.clone(),
         _ => Vec::new(),
     }
 }
@@ -1066,8 +1076,14 @@ pub(crate) fn assert_clean(batch: &EventBatch, hidden: &BTreeMap<ObjectId, Strin
 #[rstest]
 fn the_seat_that_scries_sees_the_cards_and_no_other_seat_does(#[values(2, 3, 4)] seats: usize) {
     let scenario = library_table(seats, mtg_testkit::corpus::card("Opt").unwrap(), &[]);
-    let keep = |_: &Decision| {
-        mtg_engine::decision::Answer::ChooseCards(mtg_engine::choose::CardsChoice(Vec::new()))
+    let keep = |decision: &Decision| match &decision.kind {
+        DecisionKind::Scry(options) => {
+            mtg_engine::decision::Answer::Scry(mtg_engine::choose::ScryChoice {
+                top: options.cards.clone(),
+                bottom: Vec::new(),
+            })
+        }
+        other => panic!("unexpected {}", other.name()),
     };
     let (after, events, batches) = play_spell(scenario, seats, "Opt", keep);
     let scried = events
@@ -1832,6 +1848,32 @@ fn the_seat_that_looked_at_libraries_lists_the_cards_while_it_orders_them_and_th
         );
     }
     let hidden = named_hidden(&driver, &looked);
+    for batch in &batches[1..] {
+        assert_clean(batch, &hidden);
+    }
+}
+
+#[rstest]
+fn the_seat_that_scries_lists_the_cards_while_it_decides_and_no_other_seat_does(
+    #[values(2, 3, 4)] seats: usize,
+    #[values(1, 3)] count: i32,
+) {
+    let scenario = library_table(seats, mtg_testkit::cards::scryer("Scry", 0, count), &[]);
+    let (driver, batches) = cast_until_asked(scenario, seats, "Scry");
+    let decision = driver.decision().unwrap().clone();
+    assert_eq!(decision.player, PlayerId::from_index(0));
+    let DecisionKind::Scry(options) = decision.kind else {
+        panic!("the cards are scried");
+    };
+    assert_eq!(options.cards.len(), usize::try_from(count).unwrap());
+    for seat in 0..seats {
+        assert_eq!(
+            listed(&driver, seat, &options.cards),
+            vec![seat == 0; options.cards.len()],
+            "seat {seat}: only the scrying seat is shown the cards"
+        );
+    }
+    let hidden = named_hidden(&driver, &options.cards);
     for batch in &batches[1..] {
         assert_clean(batch, &hidden);
     }

@@ -1,10 +1,9 @@
-import { memo, useState } from 'react'
+import { useState } from 'react'
 import type { CSSProperties } from 'react'
 import { usePlay } from '@/features/game/gameContext'
 import { cn } from '@/lib/utils'
 import type { ObjectId } from '@/protocol/generated'
-import { CardFace } from './CardFace'
-import { CardWidthContext } from './ImageFace'
+import { TopFace } from './TopFace'
 import { LEGAL_RING, LegalBadge, ZONE_ICON } from './PodParts'
 import { emptyLabel, zoneLabel, zoneOpenLabel, zoneTitle } from './podFigures'
 import { useLegalCount } from './prompt/marks'
@@ -55,17 +54,6 @@ function EmptyZone({ zone, width, height }: Omit<ZonePictureProps, 'owner' | 'id
     </button>
   )
 }
-
-/** The face of a zone's top card. It reads its own object and is memoised, so a batch redraws it only when that card changes. */
-const TopFace = memo(function TopFace({ id, width }: { id: number; width: number }) {
-  const object = usePlay((state) => state.objectsById[id])
-  if (object === undefined) return null
-  return (
-    <CardWidthContext.Provider value={width}>
-      <CardFace object={object} role={null} size="compact" fit imageSize="small" upright />
-    </CardWidthContext.Provider>
-  )
-})
 
 /** A zone with cards: the picture of the top one with the zone's icon and the count in its corner. */
 function FilledZone({ zone, owner, ids, width, height }: ZonePictureProps) {

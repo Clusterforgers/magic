@@ -5,6 +5,7 @@ import { clone, must } from '@/test-utils/batches'
 import { renderTable } from '@/test-utils/tableHarness'
 import { buildFixture } from './dev/fixture'
 import { SeatTile } from './SeatTile'
+import { CombatProviders } from './combat/CombatProviders'
 import type { PlayState } from '@/play/store'
 import type { StateView } from '@/protocol/generated'
 
@@ -27,7 +28,11 @@ function show(
 ) {
   const table = renderTable({
     fixture: buildFixture({ seats: 5, permanents: 6 }),
-    ui: <SeatTile seat={seat} focused={focused} onFocusSeat={onFocusSeat} />,
+    ui: (
+      <CombatProviders>
+        <SeatTile seat={seat} focused={focused} onFocusSeat={onFocusSeat} />
+      </CombatProviders>
+    ),
     state: edited(edit),
   })
   return { ...table, onFocusSeat }
@@ -145,5 +150,28 @@ describe('the tile', () => {
     expect(onFocusSeat).toHaveBeenCalledTimes(2)
     expect(within(document.body).getAllByRole('button')).toHaveLength(1)
     expect(screen.getByRole('button')).toBe(tile(4))
+  })
+
+  it.each([
+    ['damage', 3, 20, 17, '-3'],
+    ['a lifelink gain', 0, 20, 23, '+3'],
+  ])(
+    'shows the life chip of a seat with %s under a combat forecast',
+    (_name, damage, life, life_after, text) => {
+      show(2, false, vi.fn(), (view) => {
+        view.combat_forecast = {
+          attackers: [],
+          creatures: [],
+          players: [{ player: 2, damage, life, life_after, lethal: false }],
+        }
+      })
+      const chip = within(tile(2)).getByRole('img', { name: `Life would go from ${life} to ${life_after}` })
+      expect(chip).toHaveTextContent(text)
+    },
+  )
+
+  it('shows no life chip for a seat the forecast does not list', () => {
+    show(2)
+    expect(tile(2).querySelector('[data-slot="life-forecast"]')).toBeNull()
   })
 })

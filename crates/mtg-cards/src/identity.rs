@@ -13,9 +13,11 @@ use serde_json::Value;
 
 use crate::ability::Ability;
 use crate::companion::DeckCondition;
+use crate::compile::{read_keyword, split_items};
 use crate::definition::{AbilityDef, CardDefinition};
 use crate::keyword::Keyword;
 use crate::modify::GameRule;
+use crate::support::PrintedCard;
 
 /// The numbers a card says its deck can hold up to, in words.
 const NUMBER_WORDS: [&str; 10] = [
@@ -78,7 +80,11 @@ impl CardDefinition {
                         .subtypes
                         .iter()
                         .any(|s| matches!(s.0.as_str(), "Vehicle" | "Spacecraft")));
-            (legendary && body) || self.rules.iter().any(|rule| says_it_can(rule))
+            let by_hand = self
+                .each_face()
+                .flat_map(|face| face.manual.iter())
+                .any(|clause| text_says_commander(&clause.text));
+            (legendary && body) || self.rules.iter().any(|rule| says_it_can(rule)) || by_hand
         })
     }
 
@@ -162,18 +168,55 @@ impl CardDefinition {
         })
     }
 
-    /// The keyword abilities among the card's rules.
+    /// The keyword abilities among the card's rules, and its pairing keywords.
     fn keywords(&self) -> impl Iterator<Item = &Keyword> {
-        self.rules.iter().filter_map(|rule| match &**rule {
-            Ability::Keyword(keyword) => Some(keyword),
-            _ => None,
-        })
+        self.rules
+            .iter()
+            .filter_map(|rule| match &**rule {
+                Ability::Keyword(keyword) => Some(keyword),
+                _ => None,
+            })
+            .chain(&self.pairing)
     }
 
-    /// Whether the card's rules have the keyword.
+    /// Whether the card's rules or its pairing keywords have the keyword.
     fn has_keyword(&self, wanted: &Keyword) -> bool {
         self.keywords().any(|keyword| keyword == wanted)
     }
+}
+
+/// The keywords of a printed card that let it be a commander beside another (CR 702.124): Partner, Partner with, a
+/// partner group, Choose a Background and Doctor's companion, read from the keyword lines of its front face.
+pub fn pairing_keywords(printed: &PrintedCard) -> Vec<Keyword> {
+    let text = printed
+        .faces
+        .first()
+        .map_or("", |face| face.oracle_text.as_str());
+    let mut found = Vec::new();
+    for line in text.lines() {
+        let line = without_reminders(line);
+        let line = line.trim();
+        let chars: Vec<char> = line.chars().collect();
+        for range in split_items(line).unwrap_or_default() {
+            let item: String = chars[range].iter().collect();
+            found.extend(read_keyword(&item).filter(|keyword| {
+                matches!(
+                    keyword,
+                    Keyword::Partner
+                        | Keyword::PartnerWith(_)
+                        | Keyword::PartnerGroup(_)
+                        | Keyword::ChooseABackground
+                        | Keyword::DoctorsCompanion
+                )
+            }));
+        }
+    }
+    found
+}
+
+/// Whether rules text says the card can be a commander, the rule the deck check and game start share.
+pub fn text_says_commander(text: &str) -> bool {
+    text.to_lowercase().contains("can be your commander")
 }
 
 fn says_it_can(rule: &Ability) -> bool {
@@ -359,6 +402,9 @@ mod tests {
     #[case::legendary_planeswalker(legendary(&[CardType::Planeswalker]), false)]
     #[case::legendary_vehicle_with_power(legendary(&[CardType::Artifact]).with_subtype("Vehicle").with_power_toughness(3, 3), true)]
     #[case::legendary_vehicle_without_power(legendary(&[CardType::Artifact]).with_subtype("Vehicle"), false)]
+    #[case::by_hand_clause(CardDefinition::new("Walker").with_type(CardType::Planeswalker).with_manual("Walker can be your commander.", "by hand"), true)]
+    #[case::by_hand_other(CardDefinition::new("Walker").with_type(CardType::Planeswalker).with_manual("Draw a card.", "by hand"), false)]
+    #[case::by_hand_grist(CardDefinition::new("Grist").with_type(CardType::Planeswalker).with_manual("Grist, the Hunger Tide can be your commander.", "by hand"), true)]
     #[case::says_it_can(CardDefinition::new("Walker").with_type(CardType::Planeswalker).with_rules(rules(r#"{"Rule":{"rule":"CanBeCommander"}}"#)), true)]
     fn a_card_can_be_a_commander(#[case] card: CardDefinition, #[case] can: bool) {
         assert_eq!(card.can_be_commander(), can);

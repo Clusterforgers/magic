@@ -339,6 +339,7 @@ State is the fold of events; the engine is a pure function from state to `Progre
 | `DivideAmount` | controller | announcement | Fire // Ice |
 | `ChooseCards` | any seat | resolution; state-based actions (the legend rule); cost payment | Rampant Growth, Cultivate, Flooded Strand, Brainstorm, Jace 0, Faithless Looting, Archon (sacrifice and discard, by the target player), Sneak Attack |
 | `OrderCards` | any seat | resolution | Opt, Brainstorm, Jace 0, cascade (bottom) |
+| `Scry` | any seat | resolution | Opt, Consider, Preordain |
 | `YesNo` | any seat | resolution ("may", pay or not) | Eternal Witness, Jace +2, Rhystic Study (both players), Delver |
 | `ChooseOption` | any seat | resolution, replacement step | Hero of Bladehold in multiplayer (which defender), Treasure (colour), Mending Hands with the combat damage of two attackers (which damage the shield stops first) |
 | `ChooseCosts` | controller | announcement (optional costs; alternative costs are separate `castable` entries) | Burst Lightning, Gatekeeper of Malakir, Mulldrifter, Faithless Looting |
@@ -1110,6 +1111,50 @@ Near-duplicate families, each a candidate for one parametric node:
 | A general node is added beside the variants it could replace; the reader writes it only for wordings they cannot express | No `Verified` card changes, and the corpus ratchet stays green |
 | A family migrates later in one piece: the old variants lower into the new node, the writer keeps their wordings, and `reproduced.txt` is unchanged | A rename is a data change the tests check, not a behaviour change |
 | A new keyword that is a template of existing nodes is a macro, not an engine file | Keywords stay one enum; behaviour stays in the primitives |
+
+## Forge coverage
+
+The goal is an engine that runs every card Forge describes. The matrix sets each construct of the 34,132 Forge scripts against this DSL and the engine; the scripts are trusted for correctness, and the translator (`mtg-cli translate-forge`) maps what the nodes can express.
+
+| Family | HAVE | PARAM | GENERAL-NEW | ENGINE-NEW | ONE-OFF |
+|---|---|---|---|---|---|
+| Effect APIs | 91 | 38 | 48 | 18 | 12 |
+| Trigger modes | 50 | 26 | 51 | 12 | 0 |
+| Static modes | 27 | 1 | 45 | 0 | 8 |
+| Replacement events | 10 | 2 | 19 | 3 | 0 |
+| Cost parts | 19 | 17 | 27 | 0 | 1 |
+| Keywords | 154 | 14 | 63 | 9 | 13 |
+| Layouts and card types | 52 | 0 | 2 | 13 | 2 |
+| `Count$` families | 3 | 145 | 81 | 5 | 4 |
+| Conditions | 1 | 53 | 0 | 0 | 2 |
+| `Defined$` families | 0 | 230 | 0 | 0 | 0 |
+| `Valid` atoms | 0 | 1110 | 0 | 0 | 0 |
+| Selector and duration patterns | 0 | 0 | 21 | 1 | 0 |
+| Total | 407 | 1636 | 357 | 61 | 42 |
+
+HAVE is a node of the same meaning, PARAM an expression over existing nodes, GENERAL-NEW one new node or option, ENGINE-NEW a mechanic the engine lacks, ONE-OFF a unique rule. `Defined$`, `Valid` and the rest of `Count$` are PARAM unless a pattern names a missing atom.
+
+A script runs when no construct of it is new: 27,931 scripts (81.8%) today, 30,467 (89.3%) after `fe1a` to `fe1j`, 31,447 (92.1%) after all of `fe1`, 32,809 (96.1%) with the `gn1` nodes; the rest is `fe2`. These are structural counts: of the 2,778 scripts the matrix marks blocked and the translator index holds, 251 are checker-Verified today (9%, some through a shape that avoids the construct), and a read sample of no-blocker scripts finds a missing shape in about one of ten. A PARAM construct still needs its translator mapper.
+
+| Node or mechanic | Item | Scripts using it | Freed alone |
+|---|---|---|---|
+| `Pred` atoms: `WasCast`, `CastWith`, `TopOfLibrary`, `BlockedBy`, `TargetedBy`, `GreatestAmong` | `fe1a` | 686 | 451 |
+| `Amount::When` and amount fill | `fe1b` | 482 | 415 |
+| Source memory: `Effect::Remember`, `Ref::Remembered` | `fe1c` | 425 | 267 |
+| `Effect::ChooseValue` | `fe1d` | 339 | 257 |
+| `Amount::Tally` | `gn1c` | 311 | 235 |
+| `Effect::Conjure`, spellbooks, intensity | `fe1j` | 257 | 147 |
+| `TriggerPattern::Did` | `fe1f` | 246 | 178 |
+| `Duration::Perpetual` | `fe1h` | 239 | 158 |
+| `Effect::Reflexive` | `fe1e` | 239 | 184 |
+| `Modal.who`, `Effect::Let` | `fe1p` | 214 | 121 |
+| Zone statics | `gn1i` | 211 | 45 |
+| `LoseGame`, `SetLife`, `ExchangeLife`, `RepeatWhile`, `SeparatePiles` | `fe1n` | 203 | 132 |
+| Keyword macros, combat triggers | `fe1g` | 193 | 172 |
+| Keyword macro assembler | `gn1g` | 188 | 175 |
+| `GameRule::Cant`, `SkipStep`, `SkipTurn` | `fe1l` | 186 | 138 |
+
+Regeneration, with the Forge clone read as data: `orch/forge-matrix/run.sh` under the `mtg-cli` cache writes `matrix.tsv` (family, construct, scripts, class, node, note), `script-blockers.tsv` and `groups.tsv`; `classes.txt` and `classes2.txt` hold the decisions, and `crosscheck.pl` joins the result with the translator index.
 
 ## Tasks
 

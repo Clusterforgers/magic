@@ -295,7 +295,7 @@ test.describe('the development table with 40 permanents a seat', () => {
     }
   })
 
-  test('draws each seat’s corner as pictures of 44 px or more, and the opponent’s pod column does not scroll at 1440x900 and 1920x1080', async ({
+  test('draws each seat’s corner as pictures of 44 px or more, and the opponent’s pod column does not scroll at 1920x1080, 1440x900 and 1366x768', async ({
     page,
   }) => {
     await page.goto(`${DEV_WEB_URL}/dev/table?board=duel&prompt=priority&turn=you`)
@@ -332,6 +332,7 @@ test.describe('the development table with 40 permanents a seat', () => {
     for (const [width, height] of [
       [1920, 1080],
       [1440, 900],
+      [1366, 768],
     ] as const) {
       await page.setViewportSize({ width, height })
       await expect

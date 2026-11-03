@@ -17,7 +17,7 @@ import type {
   Step,
   YieldUntil,
 } from '@/protocol/generated'
-import { forecastScene, withBlockForecast } from './combatScene'
+import { forecastChoiceScene, forecastScene, withBlockForecast } from './combatScene'
 import { abilitiesTable, withAbilities } from './abilityScene'
 import { assignDamage } from './damagePrompt'
 import { ANNOUNCE_PROMPTS } from './announcePrompts'
@@ -25,8 +25,9 @@ import { EFFECT_MOMENTS, EFFECT_PROMPTS } from './effectPrompts'
 import type { Fixture } from './fixture'
 import { LOOKED_MOMENTS, LOOKED_PROMPTS } from './lookedPrompts'
 import { lookTopMoment } from './lookTopScene'
-import { paySources, paySourcesTable } from './paySources'
+import { payMarks, payMarksTable, paySources, paySourcesTable } from './paySources'
 import { roomsTable, withRooms } from './roomsScene'
+import { companionTable, stackAbilityTable } from './previewScenes'
 
 /** Builds the decision the viewer of a fixture faces. */
 export type DevPrompt = (fixture: Fixture) => PendingDecision
@@ -159,7 +160,11 @@ const attack: DevPrompt = ({ view }) => {
   const defenders: AttackTarget[] = [
     ...othersAfter(view, viewer).map((seat): AttackTarget => ({ Player: seat })),
     ...view.objects
-      .filter((object) => object.types.includes('Planeswalker') && object.controller !== viewer)
+      .filter(
+        (object) =>
+          (object.types.includes('Planeswalker') || object.types.includes('Battle')) &&
+          object.controller !== viewer,
+      )
       .map((object): AttackTarget => ({ Planeswalker: object.id })),
   ]
   const options: AttackOptions = {
@@ -182,6 +187,31 @@ const block: DevPrompt = ({ view }) => {
   return { id: 1, decision: { player: viewer, kind: { DeclareBlockers: options } } }
 }
 
+/** The attack with the first creature that may attack required to (goaded). */
+const attackRequired: DevPrompt = (context) => {
+  const made = attack(context)
+  const kind = made.decision.kind
+  if ('DeclareAttackers' in kind) {
+    const [first] = kind.DeclareAttackers.attackers
+    if (first !== undefined) kind.DeclareAttackers.required = [first.object]
+  }
+  return made
+}
+
+/** The block with the first two creatures required to block (the first can block one attacker only). */
+const blockRequired: DevPrompt = (context) => {
+  const made = block(context)
+  const kind = made.decision.kind
+  if ('DeclareBlockers' in kind) {
+    const options = kind.DeclareBlockers
+    const [first, second] = options.blockers
+    const [only] = first?.can_block ?? []
+    if (first !== undefined && only !== undefined) first.can_block = [only]
+    options.required = [first, second].flatMap((blocker) => (blocker === undefined ? [] : [blocker.object]))
+  }
+  return made
+}
+
 /** A table for the moment a decision belongs to; the default fixture is in the middle of an attack. */
 export type DevTable = (fixture: Fixture) => Fixture
 
@@ -199,34 +229,54 @@ const tapped = (objects: readonly ObjectView[], ids: ReadonlySet<ObjectId>): Obj
   )
 
 /** The turn is the viewer's and nobody has attacked yet; one of the first opponent's permanents is a planeswalker. */
-const attackTable: DevTable = (fixture) => {
-  const { view } = fixture
-  const owner = othersAfter(view, view.viewer)[0] ?? view.viewer
-  const walker: ObjectView = {
-    id: Math.max(...view.objects.map((object) => object.id)) + 1,
-    owner,
-    controller: owner,
-    zone: 'Battlefield',
-    name: 'Jace, the Mind Sculptor',
-    mana_cost: [{ Generic: 2 }, { Colored: 'Blue' }, { Colored: 'Blue' }],
-    supertypes: ['Legendary'],
-    types: ['Planeswalker'],
-    subtypes: [],
-    colors: ['Blue'],
-    power: null,
-    toughness: null,
-    abilities: [],
-    permanent: { tapped: false, damage: 0, summoning_sick: false },
+const attackTable =
+  (battle: boolean): DevTable =>
+  (fixture) => {
+    const { view } = fixture
+    const owner = othersAfter(view, view.viewer)[0] ?? view.viewer
+    const walker: ObjectView = battle
+      ? {
+          id: Math.max(...view.objects.map((object) => object.id)) + 1,
+          owner,
+          controller: owner,
+          zone: 'Battlefield',
+          name: 'Invasion of Theros',
+          mana_cost: [{ Generic: 3 }, { Colored: 'Blue' }],
+          supertypes: [],
+          types: ['Battle'],
+          subtypes: ['Siege'],
+          colors: ['Blue'],
+          power: null,
+          toughness: null,
+          abilities: [],
+          permanent: { tapped: false, damage: 0, summoning_sick: false },
+          protector: othersAfter(view, owner)[0] ?? owner,
+        }
+      : {
+          id: Math.max(...view.objects.map((object) => object.id)) + 1,
+          owner,
+          controller: owner,
+          zone: 'Battlefield',
+          name: 'Jace, the Mind Sculptor',
+          mana_cost: [{ Generic: 2 }, { Colored: 'Blue' }, { Colored: 'Blue' }],
+          supertypes: ['Legendary'],
+          types: ['Planeswalker'],
+          subtypes: [],
+          colors: ['Blue'],
+          power: null,
+          toughness: null,
+          abilities: [],
+          permanent: { tapped: false, damage: 0, summoning_sick: false },
+        }
+    const cards = [...(view.battlefield.cards ?? []), walker.id]
+    return withView(fixture, {
+      objects: [...view.objects, walker],
+      battlefield: { count: cards.length, cards },
+      turn: { ...view.turn, active: view.viewer, step: 'DeclareAttackers' },
+      priority: null,
+      combat: { attackers: [], attackers_declared: false, blockers_declared: [] },
+    })
   }
-  const cards = [...(view.battlefield.cards ?? []), walker.id]
-  return withView(fixture, {
-    objects: [...view.objects, walker],
-    battlefield: { count: cards.length, cards },
-    turn: { ...view.turn, active: view.viewer, step: 'DeclareAttackers' },
-    priority: null,
-    combat: { attackers: [], attackers_declared: false, blockers_declared: [] },
-  })
-}
 
 /**
  * The active seat has attacked with six creatures and nobody has blocked: four at the viewer and, when there is a
@@ -405,6 +455,7 @@ export const DEV_PROMPTS: Record<string, DevPrompt> = {
   'priority-clock': (fixture) => ({ ...priority(fixture), deadlineMs: 10_000 }),
   // The viewer holds priority in a declare-blockers step whose blocks are made: the forecast is all there is to read.
   forecast: priority,
+  'forecast-choice': priority,
   // The controls of the Priority prompt at other moments (`DEV_TABLES`): the viewer's turn, its last window, a quiet one.
   'priority-main': priority,
   'priority-end': priority,
@@ -415,8 +466,13 @@ export const DEV_PROMPTS: Record<string, DevPrompt> = {
   'priority-abilities': withAbilities(priority),
   // The same with Rooms of the viewer's whose locked doors it may unlock (`dev/roomsScene.ts`).
   'priority-rooms': withRooms(priority),
+  'priority-stack-ability': priority,
+  'priority-companion': priority,
   attack,
+  'attack-battle': attack,
   block,
+  'block-required': blockRequired,
+  'attack-required': attackRequired,
   'block-clock': (fixture) => ({ ...block(fixture), deadlineMs: 45_000 }),
   mulligan: aboutHand((hand) => ({
     Mulligan: {
@@ -450,6 +506,7 @@ export const DEV_PROMPTS: Record<string, DevPrompt> = {
   'pay-hybrid': payHybrid,
   'pay-low-life': payLowLife,
   'pay-sources': paySources,
+  'pay-marks': payMarks,
   'commander-return': commanderReturn,
   ...EFFECT_PROMPTS,
   ...LOOKED_PROMPTS,
@@ -477,13 +534,18 @@ const quietMoment =
 
 /** Prompts that need another moment of the game than the default fixture shows, by `?prompt=` name. */
 export const DEV_TABLES: Record<string, DevTable> = {
-  attack: attackTable,
+  attack: attackTable(false),
+  'attack-battle': attackTable(true),
   block: blockTable,
+  'block-required': blockTable,
+  'attack-required': attackTable(false),
   'block-clock': blockTable,
   forecast: forecastScene,
+  'forecast-choice': forecastChoiceScene,
   'pay-hybrid': hybridTable,
   'pay-low-life': hybridTable,
   'pay-sources': paySourcesTable,
+  'pay-marks': payMarksTable,
   mulligan: openingTable('Deciding'),
   'mulligan-free': openingTable('Deciding'),
   bottom: openingTable({ Bottoming: 2 }),
@@ -494,6 +556,8 @@ export const DEV_TABLES: Record<string, DevTable> = {
   'priority-byhand': quietMoment('Main1', true),
   'priority-abilities': abilitiesTable,
   'priority-rooms': roomsTable,
+  'priority-stack-ability': stackAbilityTable,
+  'priority-companion': companionTable,
   yield: quietMoment('Upkeep', false, false),
   // Passing until the stack is empty is asked over a stack: the fixture's three spells, the active seat holding priority.
   'yield-resolve': (fixture) =>

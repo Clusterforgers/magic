@@ -32,6 +32,7 @@ export function useMenuInput(id: ObjectId): MenuInput | null {
             players,
             hasCommandZone,
             ownerName: nameOf(object.owner),
+            nameOf,
           },
     [seat, object, players, hasCommandZone, off, nameOf],
   )

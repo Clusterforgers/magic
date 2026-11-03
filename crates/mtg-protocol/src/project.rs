@@ -1,7 +1,7 @@
 //! Building a viewer's [`StateView`] from the full game state, and the visibility rule it rests on.
 
 use mtg_cards::ability::Ability;
-use mtg_cards::compile::protection_quality_word;
+use mtg_cards::compile::{protection_quality_word, render_ability};
 use mtg_cards::keyword::Keyword;
 use mtg_cards::value::CounterKind;
 use mtg_cards::{CardDefinition, CardIdentity};
@@ -245,6 +245,13 @@ fn copy_view(state: &GameState, sight: &Sight<'_>, object: &GameObject) -> Optio
         })
 }
 
+/// The player who protects `object`, a battle on the battlefield with a protector.
+fn protector_of(state: &GameState, object: &GameObject) -> Option<PlayerId> {
+    object
+        .permanent()
+        .and_then(|_| mtg_engine::battle::protector(state, object.id()))
+}
+
 /// The counters on a permanent by kind, in the order of the kind; none for an object that is no permanent.
 fn counters_view(object: &GameObject) -> Vec<(CounterKind, u32)> {
     object
@@ -287,6 +294,15 @@ fn identity_of(
     shown.identity.clone()
 }
 
+/// The words of the ability an object is on the stack, or nothing for a card, a hidden source or an unworded ability.
+fn stack_text(object: &GameObject, shown: &str) -> Option<String> {
+    if shown.is_empty() {
+        return None;
+    }
+    let text = render_ability(object.ability()?.rules())?;
+    Some(text.replace('~', shown))
+}
+
 /// The name the viewer reads on the object: the card's, except for an ability on the stack of a permanent that still lies
 /// face down and that the viewer may not look at, which is named after its source, and a face-down permanent has no name
 /// (CR 708.2a).
@@ -317,6 +333,29 @@ impl ObjectView {
 
     /// [`ObjectView::of`] with the attachments of `id` given by `attachments`, which is asked only for a permanent: a whole
     /// view works them out once for every object (`GameState::attachment_index`).
+    /// The permanent facts of an object on the battlefield.
+    fn permanent_view(
+        state: &GameState,
+        id: ObjectId,
+        object: &GameObject,
+        subtypes: &[Subtype],
+    ) -> Option<PermanentView> {
+        object.permanent().map(|p| PermanentView {
+            tapped: p.tapped(),
+            damage: p.damage(),
+            // Haste excuses it, so the view says whether sickness holds it back, not only when it arrived.
+            summoning_sick: summoning_sick(state, id),
+            prepared: p.prepared(),
+            phased_out: object.zone() == Zone::PhasedOut,
+            exerted: !p.exerted().is_empty(),
+            level: subtypes
+                .iter()
+                .any(|subtype| subtype.0 == "Class")
+                .then(|| p.level()),
+            doors: state.dk1c5_doors(id),
+        })
+    }
+
     fn with_attachments(
         state: &GameState,
         sight: &Sight<'_>,
@@ -344,9 +383,11 @@ impl ObjectView {
         };
         // An ability on the stack is named after its source and has nothing else of the source's printed side.
         let printed = object.kind() != ObjectKind::Ability;
+        let is_token = object.kind() == ObjectKind::Token && !behind;
         let name = shown_name(state, sight.viewer, object, &card.name);
         // An ability on the stack tells whether its source's card is owed when it resolves wherever it names the source,
         // so a client holds the seat across batches without the source in its view.
+        let rules_text = stack_text(object, &name);
         let manual_owed = (printed || !name.is_empty()) && card.manual_owed();
         // A face-down permanent's abilities are the 2/2's; the card behind it is read off `abilities`.
         let activated = if printed && !behind && sight.reads_rules_of(object) {
@@ -372,6 +413,8 @@ impl ObjectView {
             colors: chars.colors.iter().collect(),
             power: chars.power,
             toughness: chars.toughness,
+            printed_power: card.power.filter(|_| is_token),
+            printed_toughness: card.toughness.filter(|_| is_token),
             abilities: if behind {
                 card.abilities.clone()
             } else {
@@ -382,21 +425,10 @@ impl ObjectView {
             } else {
                 keyword_names(state, id)
             },
-            permanent: object.permanent().map(|p| PermanentView {
-                tapped: p.tapped(),
-                damage: p.damage(),
-                // Haste excuses it, so the view says whether sickness holds it back, not only when it arrived.
-                summoning_sick: summoning_sick(state, id),
-                prepared: p.prepared(),
-                level: chars
-                    .subtypes
-                    .iter()
-                    .any(|subtype| subtype.0 == "Class")
-                    .then(|| p.level()),
-                doors: state.dk1c5_doors(id),
-            }),
+            permanent: Self::permanent_view(state, id, object, &chars.subtypes),
             kind: object.kind(),
             source: object.ability().map(|ability| ability.source().id),
+            rules_text,
             targets: object.choices().targets.clone(),
             targets_legal: targets_legal(state, id),
             // Counters and attachments are public facts of a permanent, shown to every seat that sees the permanent.
@@ -408,6 +440,7 @@ impl ObjectView {
                 .collect(),
             attached_to: state.host_of(id),
             attached_player: state.player_host_of(id),
+            protector: protector_of(state, object),
             paired_with: state.partner_of(id),
             attachments: if object.permanent().is_some() {
                 attachments()
@@ -427,6 +460,7 @@ impl ObjectView {
             },
             manual_owed,
             read: printed && card.read,
+            partial: printed && card.partial,
             note: mtg_engine::sight::note_of(state, id).map(str::to_owned),
             identity: identity_of(state, object, card).filter(|_| printed),
             activated,
@@ -448,17 +482,21 @@ impl ObjectView {
             colors: Vec::new(),
             power: None,
             toughness: None,
+            printed_power: None,
+            printed_toughness: None,
             abilities: Vec::new(),
             keywords: Vec::new(),
             permanent: None,
             kind: ObjectKind::Card,
             source: None,
+            rules_text: None,
             targets: Vec::new(),
             targets_legal: Vec::new(),
             counters: Vec::new(),
             loyalty_abilities: Vec::new(),
             attached_to: None,
             attached_player: None,
+            protector: None,
             // Who is paired with whom is told by the public `Paired` event, so a face-down permanent shows it too.
             paired_with: state.partner_of(object.id()),
             attachments: Vec::new(),
@@ -470,6 +508,7 @@ impl ObjectView {
             manual: Vec::new(),
             manual_owed: false,
             read: false,
+            partial: false,
             note: None,
             identity: None,
             activated: Vec::new(),

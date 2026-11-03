@@ -168,3 +168,24 @@ describe('the command zone in a pod', () => {
     expect(screen.getByRole('list', { name: "Alice's commanders in the command zone" })).toBeInTheDocument()
   })
 })
+
+describe('the pictures of a one-line pod', () => {
+  it.each([3, 4])(
+    'draw the top card of each filled zone and each commander beside the chips at %i seats',
+    (seats) => {
+      renderTable({
+        fixture: buildFixture({ seats, permanents: 4 }),
+        options: { viewport: { width: 1920, height: 1080 } },
+      })
+      const root = rootOf(1, 'line')
+      const command = must(root.querySelector('[data-zone="command"]'))
+      const faces = command.querySelectorAll('[data-thumb]').length
+      expect(faces).toBeGreaterThan(0)
+      expect(faces).toBeLessThanOrEqual(2)
+      for (const zone of ['graveyard', 'exile'] as const) {
+        const chip = must(root.querySelector<HTMLButtonElement>(`[data-zone="${zone}"]`))
+        expect(chip.querySelectorAll('[data-thumb]').length, zone).toBe(chip.disabled ? 0 : 1)
+      }
+    },
+  )
+})

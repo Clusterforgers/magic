@@ -462,6 +462,10 @@ const HIDDEN: Record<VariantName<HiddenEvent>, [HiddenEvent, string]> = {
     { ManualArrange: { player: 1, top: 1, bottom: 1, graveyard: 0 } },
     'Bo puts back the top 2 cards of their library: 1 on top, 1 on the bottom (by hand)',
   ],
+  ManualTutor: [
+    { ManualTutor: { player: 1 } },
+    'Bo puts a card from their library into their hand and shuffles (by hand)',
+  ],
   StepDone: [{ StepDone: { position: [2] } }, 'A step of the resolution is done'],
   AbilityTriggered: [
     { AbilityTriggered: { source: { id: 6, counter: 0 }, ability: 1, controller: 0 } },
@@ -572,6 +576,17 @@ describe('describeEvent', () => {
 
   it('falls back to "Seat n" for a seat with no name', () => {
     expect(say({ PriorityPassed: { player: 7 } })).toBe('Seat 8 passes priority')
+  })
+})
+
+describe('a door unlocked', () => {
+  const event: Event = { DoorUnlocked: { object: 3, door: 1, player: 1 } }
+  const door = (name: string | undefined): EventNames => ({ ...names, door: () => name })
+  it.each<[string, EventNames, string]>([
+    ['names the door when known', door('Elegant Rotunda'), 'Bo unlocks Elegant Rotunda'],
+    ['falls back to the Room', door(undefined), 'Bo unlocks a door of Forest'],
+  ])('%s', (_case, given, text) => {
+    expect(describeEvent({ Public: event }, given).text).toBe(text)
   })
 })
 
@@ -837,6 +852,10 @@ describe('events with more than one shape', () => {
   })
 
   it.each([
+    [
+      ruleEffect({ MustAttackPlayers: [[{ id: 1, counter: 0 }, 0]] }, 'UntilEndOfTurn'),
+      'Grizzly Bears must attack Ana if able until end of turn',
+    ],
     [
       ruleEffect({ MustAttack: [{ id: 1, counter: 0 }] }, 'UntilEndOfTurn'),
       'Grizzly Bears must attack if able until end of turn',

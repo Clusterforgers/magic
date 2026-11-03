@@ -47,3 +47,12 @@ export function replacementLabels(
 export function replacementOrigin(candidate: ReplacementCandidate): string | null {
   return candidate.shield === undefined ? null : 'A lasting effect made by a spell or ability'
 }
+
+/**
+ * The words under an effect: its own ability as the engine wrote it; else the card's rules text; else, for a lasting
+ * effect, where it comes from; null when there are none.
+ */
+export function replacementWording(candidate: ReplacementCandidate, oracle: string | null): string | null {
+  const own = candidate.text?.trim() ?? ''
+  return own !== '' ? own : (oracle ?? replacementOrigin(candidate))
+}

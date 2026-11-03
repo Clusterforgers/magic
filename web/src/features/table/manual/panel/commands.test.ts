@@ -37,7 +37,7 @@ describe('panelGroups', () => {
   it('lists You, Library and Make in order with their commands', () => {
     expect(panelGroups(INPUT).map((group) => [group.label, group.commands.map((c) => c.id)])).toEqual([
       ['You', ['life', 'poison', 'energy', 'experience']],
-      ['Library', ['draw', 'look', 'mill', 'exileTop', 'bottomTop', 'shuffle', 'revealTop']],
+      ['Library', ['draw', 'look', 'tutor', 'mill', 'exileTop', 'bottomTop', 'shuffle', 'revealTop']],
       ['Make', ['token', 'mana', 'roll']],
     ])
   })

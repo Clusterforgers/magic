@@ -170,9 +170,8 @@ pub(crate) fn handle(
             }
             Ok(outcome)
         }
-        (DecisionKind::OrderCards(options), Answer::OrderCards(choice)) => {
-            choose::order_answer(player, options, choice)
-        }
+        (DecisionKind::OrderCards(o), Answer::OrderCards(c)) => choose::order_answer(player, o, c),
+        (DecisionKind::Scry(o), Answer::Scry(c)) => choose::scry_answer(player, o, c),
         // Nothing resolving and nothing announced: the question is the owner's choice for a commander in a graveyard or
         // exile (CR 903.9a), or whether a mutating creature spell goes over the creature it merges with or under it
         // (CR 702.140b).

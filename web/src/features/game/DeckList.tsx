@@ -7,8 +7,8 @@ import { NativeSelect, NativeSelectOption } from '@/components/ui/native-select'
 import { Skeleton } from '@/components/ui/skeleton'
 import { DISC } from '@/features/builder/discs'
 import { cn } from '@/lib/utils'
-import { filterEntries, isFiltered, NO_FILTER } from './deckEntries'
-import type { DeckEntry, DeckFilter, SupportFilter } from './deckEntries'
+import { filterEntries, isFiltered, isSortKey, NO_FILTER, SORT_CHOICES, sortEntries } from './deckEntries'
+import type { DeckEntry, DeckFilter, SortKey, SupportFilter } from './deckEntries'
 import { DeckOption } from './DeckOption'
 
 /** The decks of one list as the chooser sees them. */
@@ -44,8 +44,11 @@ interface DeckListProps {
   pendingId: string | null
   /** Whether the list is asked to offer colours: some deck of it knows its identity. */
   colours: boolean
-  /** Commanders a view that was read knows for a deck whose row has no picture. */
-  pictures(id: string): DeckEntry['commanders']
+  /** Cards a view that was read knows for a deck whose row has no picture. */
+  pictures(id: string): DeckEntry['pictures']
+  /** The order of the rows, and the way to change it (the chooser keeps it for every list). */
+  sort: SortKey
+  onSort(sort: SortKey): void
   onSelect(entry: DeckEntry): void
   /** Drops the selection, which the search or the filters hid while no row is left to stand in for it. */
   onClear?(): void
@@ -85,6 +88,8 @@ export function DeckList({
   pendingId,
   colours,
   pictures,
+  sort,
+  onSort,
   onSelect,
   onClear,
   onActivate,
@@ -96,7 +101,10 @@ export function DeckList({
   const searchId = useId()
   const list = useRef<HTMLUListElement>(null)
   const entries = state.status === 'ready' ? state.entries : null
-  const shown = useMemo(() => (entries === null ? [] : filterEntries(entries, filter)), [entries, filter])
+  const shown = useMemo(
+    () => (entries === null ? [] : sortEntries(filterEntries(entries, filter), sort)),
+    [entries, filter, sort],
+  )
 
   // A selection the search or a filter hides moves to the first row shown, or goes, so the preview and "Use this deck"
   // never stay on a deck the list no longer shows.
@@ -189,6 +197,21 @@ export function DeckList({
             </div>
           ) : null}
           <NativeSelect
+            aria-label="Sort by"
+            size="sm"
+            value={sort}
+            className="min-w-0 flex-1"
+            onChange={(event) => {
+              if (isSortKey(event.target.value)) onSort(event.target.value)
+            }}
+          >
+            {SORT_CHOICES.map((choice) => (
+              <NativeSelectOption key={choice.value} value={choice.value}>
+                {choice.label}
+              </NativeSelectOption>
+            ))}
+          </NativeSelect>
+          <NativeSelect
             aria-label="Support"
             size="sm"
             value={filter.support}
@@ -238,6 +261,7 @@ export function DeckList({
             pending={entry.id === pendingId}
             tabStop={entry.id === anchor}
             fallback={pictures(entry.id)}
+            showHand={sort === 'hand'}
             onSelect={(picked) => {
               onSelect(picked)
               onActivate?.(picked)

@@ -8,10 +8,12 @@ pub mod database;
 pub mod decks;
 pub mod drafts;
 pub mod error;
+pub mod favourites;
 pub mod fix_marks;
 pub mod import;
 pub mod model;
 pub mod precons;
+pub mod prefs;
 pub mod reads;
 mod rows;
 pub mod runs;
@@ -25,6 +27,7 @@ pub use database::{Database, RowCounts};
 pub use decks::{CreateDeckError, DeckDraft, DeckId, DeckLine, DeckRepo, DeckZone, StoredDeck};
 pub use drafts::{DraftKey, DraftRepo, DraftsVersion, NewDraft, StoredDraft};
 pub use error::DbError;
+pub use favourites::{FavouritePreconRepo, MAX_CODE_CHARS, is_code};
 pub use fix_marks::{FixMark, FixMarkRepo, MAX_NOTE_CHARS, RankedMark};
 pub use import::{
     CheckReport, ImportError, Importer, PrintingImportReport, check_cards, check_precons,
@@ -35,5 +38,6 @@ pub use precons::{
     DeckBoard, PreconDeckDetail, PreconDeckId, PreconDeckSummary, PreconEntry, PreconRepo,
     PreconVersion,
 };
+pub use prefs::{PrefsRepo, StoredPrefs};
 pub use reads::{AccountRead, DraftRead, ReadRepo, ReadState, StoredRead, Verdict};
 pub use runs::{ImportRun, ImportRuns, ImportSource, RunId, RunStatus, STALE_AFTER};

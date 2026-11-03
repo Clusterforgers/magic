@@ -353,6 +353,19 @@ fn rule_mana(state: &GameState, player: PlayerId, id: ObjectId, printed: usize) 
     found
 }
 
+/// The mana abilities in the rules of `id` that its controller can use now, by address, each with an option for every
+/// way to use it as the payment offers it: the mana counted now, the chosen colour, the mana it costs.
+pub fn mana_ways(state: &GameState, id: ObjectId) -> Vec<(AbilityRef, Vec<ManaOption>)> {
+    let (Some(object), Some(chars)) = (state.object(id), characteristics(state, id)) else {
+        return Vec::new();
+    };
+    let player = controller_of_object(state, object);
+    rule_mana(state, player, id, chars.abilities.len())
+        .into_iter()
+        .map(|mana| (mana.address, mana.options))
+        .collect()
+}
+
 /// The mana abilities `player` can activate now: the printed ones of an untapped permanent they control and the
 /// ones in its rules whose cost can be paid. A creature that came under their control this turn cannot tap (CR 302.6).
 pub(crate) fn options(state: &GameState, player: PlayerId) -> Vec<ManaOption> {

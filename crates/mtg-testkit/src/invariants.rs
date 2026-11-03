@@ -362,10 +362,10 @@ fn check_attachments_settled(state: &GameState) -> Result<(), Violation> {
 }
 
 /// At a decision point no player controls two legendary permanents with one name (CR 704.5j), unless the engine is asking that
-/// player which to keep: then the question names exactly those permanents and asks for one.
+/// player which to keep: then the question names exactly those permanents and asks for one. State-based actions wait while an announcement is under way.
 fn check_legends(engine: &Engine) -> Result<(), Violation> {
     let state = engine.state();
-    if state.stage() != Stage::Turns || state.resolving().is_some() {
+    if state.stage() != Stage::Turns || state.resolving().is_some() || engine.announcing() {
         return Ok(());
     }
     let mut groups: BTreeMap<(PlayerId, String), Vec<ObjectId>> = BTreeMap::new();

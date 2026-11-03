@@ -129,3 +129,9 @@ export function stopsButtonName(count: number, fullControl: FullControlMode): st
   const held = fullControl === 'Off' ? '' : `, Full Control ${FULL_CONTROL_STATE[fullControl]}`
   return `Stops, ${stopCount(count)}${held}`
 }
+
+/** What the pace settings say about the saved default stops: "Default: 3 pinned stops" or "No default stops". */
+export function defaultStopsWords(count: number): string {
+  if (count === 0) return 'No default stops'
+  return `Default: ${count} pinned ${count === 1 ? 'stop' : 'stops'}`
+}

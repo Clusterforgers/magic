@@ -126,7 +126,7 @@ Figures come from the oracle-cards file (38,753 cards).
 
 ## Commander promotion and detection
 
-- Commander imports call `decklist::promote_implied_commander(format, deck)`, which only moves Moxfield's first line (a single copy, with no commander marked).
+- Commander imports call `decklist::promote_implied_commander(format, deck)`, which only moves Moxfield's first line (a single copy, with no commander marked); the server then also moves the second line when the two cards can be commanders together (`deck::can_pair`).
   - Moxfield's text does not say how many lines are commanders: for a partner pair or a Background it moves the first and leaves the second in Main, so the deck-builder UI has to fix it. The tests pin both outcomes.
   - Signature spells are deck cards and stay in Main.
   - A Moxfield list with no foil or etched card and no sideboard or stickers reads as plain text and is not promoted, so the endpoint should let the user name the site.

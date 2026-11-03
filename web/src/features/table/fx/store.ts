@@ -13,10 +13,12 @@ import { createArrows } from './arrows'
 import { createEffectArrows } from './effectArrows'
 import type { EffectArrows } from './effectArrows'
 import type { Arrows } from './arrows'
-import { FX_MS, isLifeEffect, NO_ENTRIES, NO_GHOSTS, rowKey } from './model'
+import { FX_MS, isLifeEffect, NO_ENTRIES, NO_GHOSTS, rowKey, STACK_GHOSTS } from './model'
+import { createStrikes } from './strikeLayer'
+import type { Strikes } from './strikeLayer'
 import { createTravel } from './travel'
 import type { Travel, TravelOptions } from './travel'
-import type { Effect, FxEntry, FxKind, Ghost } from './model'
+import type { Effect, FxEntry, Ghost } from './model'
 
 /** `off` plays nothing, `reduced` only the highlights that need no motion, `full` everything. */
 export type FxMode = 'off' | 'reduced' | 'full'
@@ -55,8 +57,12 @@ export interface Fx {
   readonly arrows: Arrows
   /** The arrows from a resolving object to what it counters, exiles, bounces or destroys; they play in every mode but `off`. */
   readonly effectArrows: EffectArrows
+  /** The creatures that strike what they deal combat damage to; started by `watchBatches`, drawn by `FxStrikes`. */
+  readonly strikes: Strikes
   /** Starts the effects of a batch, each expiring on its own after its time. Nothing at all while the mode is `off`. */
   play(effects: readonly Effect[]): void
+  /** Starts `effects` after `ms` (when a strike lands); `clear` cancels the wait. */
+  playAfter(effects: readonly Effect[], ms: number): void
   /** Ends every effect now and cancels the timers. */
   clear(): void
 }
@@ -100,13 +106,23 @@ export function createFx(options: FxOptions = {}): Fx {
   const slow = options.slow ?? 1
   const store = createStore<FxState>(emptyState)
   const travel = createTravel({ ...options.travel, mode: modeNow, slow })
+  const strikes = createStrikes({ ...options.travel, mode: modeNow, slow })
   const waiting = new Set<number>()
-  const arrows = createArrows({ timers, enabled: () => modeNow() !== 'off', slow })
+  const arrows = createArrows({
+    timers,
+    enabled: () => modeNow() !== 'off',
+    slow,
+    root: options.travel?.root,
+  })
   const effectArrows = createEffectArrows({
     timers,
     enabled: () => modeNow() !== 'off',
     slow,
     root: options.travel?.root,
+    spotlightBox: (object) => {
+      const stood = travel.store.getState().spotlight
+      return stood !== null && stood.object === object ? stood.box : null
+    },
   })
   let last = 0
 
@@ -130,11 +146,13 @@ export function createFx(options: FxOptions = {}): Fx {
     const objects = new Map(state.objects)
     const seats = new Map(state.seats)
     const ghosts = new Map(state.ghosts)
-    const started = new Map<FxKind, Set<number>>()
+    // Grouped by how long they last: their kind, and how long a held death waits first.
+    const started = new Map<number, Set<number>>()
     for (const effect of shown) {
       last += 1
       const token = last
-      started.set(effect.kind, (started.get(effect.kind) ?? new Set<number>()).add(token))
+      const ms = FX_MS[effect.kind] * slow + (effect.kind === 'died' ? (effect.hold ?? 0) : 0)
+      started.set(ms, (started.get(ms) ?? new Set<number>()).add(token))
       if (effect.kind === 'died') {
         const key = rowKey(effect.seat, effect.row)
         const ghost: Ghost = {
@@ -142,8 +160,15 @@ export function createFx(options: FxOptions = {}): Fx {
           object: effect.snapshot,
           before: effect.before,
           damage: effect.damage,
+          hold: effect.hold ?? 0,
         }
         ghosts.set(key, [...(ghosts.get(key) ?? NO_GHOSTS), ghost])
+      } else if ('ghost' in effect && effect.ghost !== undefined) {
+        const { snapshot, before } = effect.ghost
+        const ghost: Ghost = { token, object: snapshot, before, damage: 0, hold: 0 }
+        ghosts.set(STACK_GHOSTS, [...(ghosts.get(STACK_GHOSTS) ?? NO_GHOSTS), ghost])
+        const entry: FxEntry = { kind: effect.kind, token, amount: 0, own: false }
+        objects.set(effect.object, put(objects.get(effect.object), entry))
       } else if (isLifeEffect(effect)) {
         const entry: FxEntry = { kind: effect.kind, token, amount: effect.amount, own: false }
         seats.set(effect.seat, put(seats.get(effect.seat), entry))
@@ -158,17 +183,31 @@ export function createFx(options: FxOptions = {}): Fx {
       }
     }
     store.setState({ objects, seats, ghosts })
-    for (const [kind, tokens] of started) {
+    for (const [ms, tokens] of started) {
       const timer = timers.setTimeout(() => {
         waiting.delete(timer)
         expire(tokens)
-      }, FX_MS[kind] * slow)
+      }, ms)
       waiting.add(timer)
     }
   }
 
+  function playAfter(effects: readonly Effect[], ms: number): void {
+    if (effects.length === 0) return
+    if (ms <= 0) {
+      play(effects)
+      return
+    }
+    const timer = timers.setTimeout(() => {
+      waiting.delete(timer)
+      play(effects)
+    }, ms)
+    waiting.add(timer)
+  }
+
   function clear(): void {
     travel.clear()
+    strikes.clear()
     for (const timer of waiting) timers.clearTimeout(timer)
     waiting.clear()
     const { objects, seats, ghosts } = store.getState()
@@ -177,7 +216,7 @@ export function createFx(options: FxOptions = {}): Fx {
     effectArrows.clear()
   }
 
-  return { store, slow, travel, play, clear, arrows, effectArrows }
+  return { store, slow, travel, strikes, play, playAfter, clear, arrows, effectArrows }
 }
 
 /** The layer that cards outside a table share: it plays nothing. */

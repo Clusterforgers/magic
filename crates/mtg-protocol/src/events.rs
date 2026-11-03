@@ -177,6 +177,11 @@ pub enum HiddenEvent {
         /// Cards put into the graveyard.
         graveyard: u32,
     },
+    /// A player put by hand a card of their library into their hand, which card withheld.
+    ManualTutor {
+        /// Who took it.
+        player: PlayerId,
+    },
 }
 
 /// One log event as a viewer sees it; the list stays aligned one-to-one with the log.
@@ -396,8 +401,8 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
 }
 
 /// The hidden form of a manual action: a card moved between places the viewer cannot see into is not named, as the
-/// `ZoneChanged` that follows is not, and the cards a seat puts back on its library are its own to know; no other
-/// action names a card the viewer cannot see.
+/// `ZoneChanged` that follows is not, and the cards a seat puts back on its library or takes from it into its hand are
+/// its own to know; no other action names a card the viewer cannot see.
 fn redact_manual(
     before: &GameState,
     player: PlayerId,
@@ -416,6 +421,9 @@ fn redact_manual(
             bottom: count(bottom.len()),
             graveyard: count(graveyard.len()),
         });
+    }
+    if let ManualAction::Tutor { .. } = action {
+        return (player != viewer).then_some(HiddenEvent::ManualTutor { player });
     }
     let ManualAction::Move { object, to } = action else {
         return None;

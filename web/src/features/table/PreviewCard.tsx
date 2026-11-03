@@ -23,6 +23,7 @@ import { SIZE } from './cardSize'
 import type { CardSize } from './cardSize'
 import { useDoors } from './useDoors'
 import { doorWord } from './rooms'
+import { unlockKey } from './prompt/activations'
 
 interface PreviewCardProps {
   object: ObjectView
@@ -34,6 +35,8 @@ interface PreviewCardProps {
   revealed?: boolean
   /** The cards API that gives the oracle text; the one of the table's context (the server's) by default. */
   api?: CardsApi
+  /** The plays the prompt offers on the card (`CardNote.usable`): a door of a Room among them is marked. */
+  usable?: readonly string[]
 }
 
 /** The faces of a card as printed, or none while they are asked for or cannot be read. */
@@ -49,7 +52,15 @@ function usePrintedFaces(object: ObjectView, api: CardsApi): readonly CardFaceVi
  * hold it, whereas a `large` one is fetched from the CDN behind every other picture of a filling table and leaves the
  * text face, an empty frame, up until it comes.
  */
-export function PreviewCard({ object, role, size, width, revealed = false, api: given }: PreviewCardProps) {
+export function PreviewCard({
+  object,
+  role,
+  size,
+  width,
+  revealed = false,
+  api: given,
+  usable = [],
+}: PreviewCardProps) {
   const inherited = useContext(CardsApiContext)
   const api = given ?? inherited
   const choice = useImageChoice()
@@ -112,6 +123,14 @@ export function PreviewCard({ object, role, size, width, revealed = false, api: 
                   <Lock aria-hidden="true" className="size-3.5 shrink-0" />
                 )}
                 <span>{doorWord(door)}</span>
+                {usable.includes(unlockKey({ card: object.id, face: at, name: door.name, land: false })) ? (
+                  <span
+                    data-slot="preview-unlock-now"
+                    className="ml-1 rounded-md bg-muted px-2 py-0.5 text-xs font-medium"
+                  >
+                    Can unlock now
+                  </span>
+                ) : null}
               </p>
               {(faces[at]?.oracle_text ?? '') === '' ? null : (
                 <p data-slot="preview-oracle" className="whitespace-pre-line select-text">

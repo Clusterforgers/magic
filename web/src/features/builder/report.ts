@@ -2,7 +2,7 @@
  * The deck check as the builder draws it (docs/deck-check.md, "Highlighting"): what the report says of each line, the
  * order issues come in, and the words of a reason or a legality issue. Pure, so tables test it.
  */
-import type { DeckReport, Issue, Reason, ReadState, Support } from '@/protocol/generated'
+import type { DeckReport, Issue, IssueCode, Reason, ReadState, Support } from '@/protocol/generated'
 import type { Line } from './deckEdit'
 
 /** The support states from the worst to the best: what stops a deck, what is done by hand, what is nearly there, what runs on a read. */
@@ -121,14 +121,17 @@ export interface LegalityLine {
   text: string
 }
 
+const LINE_CODES: readonly IssueCode[] = ['color_identity', 'companion_condition']
+
 /**
- * The cards the report finds outside the commanders' colour identity, by `lineKey`, each with the report's sentence
- * ("Lightning Bolt has R in its color identity, outside the commander's (WUBG)").
+ * The cards the report marks on their own line, by `lineKey`, each with the report's sentence: a card outside the
+ * commanders' colour identity ("Lightning Bolt has R in its color identity, outside the commander's (WUBG)") and a
+ * companion whose condition the deck does not meet.
  */
 export function outsideLines(issues: readonly Issue[]): ReadonlyMap<string, string> {
   const found = new Map<string, string>()
   for (const issue of issues) {
-    if (issue.code === 'color_identity' && issue.zone !== null && issue.oracle_id !== null)
+    if (LINE_CODES.includes(issue.code) && issue.zone !== null && issue.oracle_id !== null)
       found.set(`${issue.zone}:${issue.oracle_id}`, sentence(issue.message))
   }
   return found

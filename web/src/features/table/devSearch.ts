@@ -24,6 +24,7 @@ export const DEV_FX = [
   'land',
   'draw',
   'equip',
+  'strike',
 ] as const
 
 /** The moves of `DEV_FX` that are moments of play (a cast and what follows), drawn by the travel layer. */
@@ -51,7 +52,7 @@ export interface DevSearch {
   /** The decision to face, by name in `dev/prompts.ts` (such as `priority`); none when missing or unknown. */
   prompt?: string
   /** `you` makes it the viewer's own turn, which lights the "your turn" cue; the opponent after the viewer otherwise. */
-  turn?: 'you'
+  turn?: 'you' | 'left'
   /** `1` opens the Effects bar, which is folded behind one button otherwise (`dev/DevFxControls.tsx`). */
   bar?: true
   /** A move to play on the table once it has loaded, so its effect can be looked at; also on buttons in the page. */
@@ -80,6 +81,8 @@ export interface DevSearch {
   equip?: true
   /** `1` adds the revealed cards and notes scene (`dev/revealScene.ts`): the first opponent shows two hand cards and its top card, the viewer one hand card, and two permanents carry a note. */
   reveal?: true
+  /** `1` plays a reveal of three cards and a d20 roll once the table has loaded (`dev/momentScene.ts`), to look at the moments. */
+  moments?: true
   /** `real` identifies the cards by the card search of a running server, so the table draws real pictures. */
   cards?: 'real'
   /** Opens the manual menu of a card once the table has loaded: `1` a permanent of the viewer, `hand` a card in the viewer's hand, `opp` a permanent of an opponent. */
@@ -120,7 +123,7 @@ export function parseDevSearch(search: Record<string, unknown>): DevSearch {
     mode,
     focus: focus === undefined || focus < 0 ? undefined : focus,
     prompt: typeof search.prompt === 'string' ? search.prompt : undefined,
-    turn: search.turn === 'you' ? 'you' : undefined,
+    turn: search.turn === 'you' || search.turn === 'left' ? search.turn : undefined,
     fx: isDevFx(search.fx) ? search.fx : undefined,
     bar: search.bar === true || search.bar === 1 || search.bar === '1' ? true : undefined,
     newturn: search.newturn === true || search.newturn === 1 || search.newturn === '1' ? true : undefined,
@@ -143,6 +146,7 @@ export function parseDevSearch(search: Record<string, unknown>): DevSearch {
     panel: panelOf(search.panel),
     rules: search.rules === true || search.rules === 1 || search.rules === '1' ? true : undefined,
     states: search.states === true || search.states === 1 || search.states === '1' ? true : undefined,
+    moments: search.moments === true || search.moments === 1 || search.moments === '1' ? true : undefined,
     reveal: search.reveal === true || search.reveal === 1 || search.reveal === '1' ? true : undefined,
     // The equip move needs the attachments scene, so it brings it.
     equip:

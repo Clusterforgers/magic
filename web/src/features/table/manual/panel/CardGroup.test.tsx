@@ -234,14 +234,22 @@ describe('the commands of the card picked', () => {
     const rows = [...group().querySelectorAll('[data-card-command]')].map((row) =>
       row.getAttribute('data-command'),
     )
-    expect(rows).toEqual(['card:move', 'card:counters', 'card:tap', 'card:damage', 'card:pump'])
+    expect(rows).toEqual([
+      'card:move',
+      'card:counters',
+      'card:tap',
+      'card:damage',
+      'card:pump',
+      'card:sacrifice',
+      'card:give',
+    ])
     expect(commandRow(/^Tap/)).toHaveTextContent('Turn the permanent sideways.')
   })
 
   it('gives each command row its icon and a chevron that turns down while it is open', async () => {
     const { user } = await pick()
     const rows = [...group().querySelectorAll<HTMLElement>('[data-card-command]')]
-    expect(rows).toHaveLength(5)
+    expect(rows).toHaveLength(7)
     for (const row of rows) {
       expect(row.querySelector('[data-slot="row-icon"]')).not.toBeNull()
       expect(row.querySelector('[data-slot="row-chevron"]')).not.toHaveClass('rotate-90')

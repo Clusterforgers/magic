@@ -250,6 +250,7 @@ pub fn offered_cards(state: &GameState) -> Option<(PlayerId, Vec<ObjectId>)> {
         Ok(Progress::Ask(Decision { player, kind })) => match kind {
             DecisionKind::ChooseCards(options) => Some((player, options.from)),
             DecisionKind::OrderCards(options) => Some((player, options.cards)),
+            DecisionKind::Scry(options) => Some((player, options.cards)),
             _ => None,
         },
         _ => None,
