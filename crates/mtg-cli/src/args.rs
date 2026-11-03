@@ -56,6 +56,8 @@ pub enum Command {
     Reads(ReadsArgs),
     /// Cross-check the rules of the stored precon cards against Forge's card scripts, read from a local checkout: the verbs Forge names that the rules lack, and the unread tail grouped by Forge API and key.
     ForgeCheck(ForgeCheckArgs),
+    /// Translate the Forge card scripts of a read-only checkout into proposals in the format `propose` writes, with mappers and no model; `check-rules` then judges them.
+    TranslateForge(TranslateForgeArgs),
     /// Ask a model for the rules of cards and keep the proposals the checker accepts (needs `ANTHROPIC_API_KEY` and costs money; --dry-run sends nothing).
     Propose(ProposeArgs),
     /// Copy the proposals the checker accepts as `Verified` into the corpus: the rules file in `cards/` and the card's Scryfall record from the cache as its fixture.
@@ -154,6 +156,32 @@ pub struct ForgeCheckArgs {
 
     /// Write the whole report, with a line for every card, to this file; the summary is printed.
     #[arg(long, value_name = "FILE")]
+    pub out: Option<PathBuf>,
+}
+
+/// Options of `translate-forge`.
+#[derive(Debug, Args)]
+pub struct TranslateForgeArgs {
+    /// A local checkout of Forge, or its `forge-gui/res/cardsfolder` directory: the scripts are read from it at run time
+    /// and nothing of them is stored in the repository.
+    #[arg(value_name = "DIR")]
+    pub dir: PathBuf,
+
+    /// Only the cards with these names (any case; the name of a face also selects its card).
+    #[arg(long, value_name = "NAME", num_args = 1.., value_parser = clap::builder::NonEmptyStringValueParser::new())]
+    pub cards: Vec<String>,
+
+    /// Only the cards the database stores (needs a database): a script of a card Scryfall does not list, such as a playtest card, is left out.
+    #[arg(long)]
+    pub stored: bool,
+
+    /// Only the cards of the stored precons (needs a database; implies `--stored`): the funnel, the ranking and the `today` column
+    /// are those of the precon cards, and `precon-today.tsv` lists the state of every precon card.
+    #[arg(long)]
+    pub precons: bool,
+
+    /// Where the proposals go (default: `proposals/forge` in the cache directory): `<slug>.json`, `meta/<slug>.json` and `translate-gaps.tsv`.
+    #[arg(long, value_name = "DIR")]
     pub out: Option<PathBuf>,
 }
 

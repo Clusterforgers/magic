@@ -99,6 +99,10 @@ Forge column: script under `forge-gui/res/cardsfolder`; XMage: class under `Mage
 
 Order: the Forge reader and map serve the cross-check, the grouping and the examples; the prompt examples come second, and a conversion only for API families where the report shows the compiler has no reading.
 
+## Translator
+
+`mtg-cli translate-forge <checkout>` (`crates/mtg-cli/src/translate`) reads the scripts at run time from an owner-provided checkout and writes proposals with mappers and no model. Nothing of Forge is copied or stored in the repository (the test scripts are invented in Forge's format); the proposals it writes are data derived from Forge's scripts, used by the owner and friends only, and the project does not redistribute them. The checker judges them against the printed text like any proposal (`cards-dsl.md`, Model-assisted reading).
+
 ## Cross-check report
 
 `mtg-cli forge-check --forge <checkout> [--deck CODE_OR_NAME] [--top N] [--keys N] [--out FILE]` sets every stored precon card against the Forge script of its name (`crates/mtg-cli/src/forge`). The scripts are read at run time from the checkout; the repository holds card names, Forge's API, mode and key names, and counts.
