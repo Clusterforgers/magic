@@ -1346,9 +1346,9 @@ mod tests {
         r#"{"Activated":{"cost":"{1}","limit":"OncePerTurn","effects":[{"AddMana":{"mana":{"OneOf":["Red","White"]}}}]}}"#,
         Some((ManaProduced::OneOf(&[ManaType::Red, ManaType::White]), false, false, 0))
     )]
-    #[case::a_limit_alone_has_no_cost_to_pay_for_it(
+    #[case::a_mana_cost_alone_is_paid_from_the_pool_each_use(
         r#"{"Activated":{"cost":"{1}","effects":[{"AddMana":{"mana":{"Fixed":["Red"]}}}]}}"#,
-        None
+        Some((ManaProduced::Fixed { mana: ManaType::Red, count: 1 }, false, false, 0))
     )]
     #[case::the_plain_ability_has_the_shape_too(
         r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"Fixed":["Green"]}}}]}}"#,
