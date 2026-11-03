@@ -74,7 +74,7 @@ fn before_was_done(cx: &Cx<'_>) -> bool {
         return false;
     }
     // The steps directly inside a `May` report on their own: one that did nothing leaves nothing to follow up.
-    let inside = format!("{name}.");
+    let inside = format!("{name}.0.");
     !bindings.iter().any(|(bound, who)| {
         who.is_empty()
             && bound

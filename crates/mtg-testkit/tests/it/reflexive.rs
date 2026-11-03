@@ -46,6 +46,9 @@ const DRAIN: &str = r#"[{"LoseLife":{"who":{"Target":0},"amount":3}}]"#;
 const GAIN: &str = r#"[{"GainLife":{"amount":1}}]"#;
 const MAY_GAIN: &str = r#"[{"May":{"effects":[{"GainLife":{"amount":1}}]}}]"#;
 const SACRIFICE: &str = r#"[{"Sacrifice":{"filter":[{"Type":"Creature"}]}}]"#;
+const MAY_PAY: &str = r#"[{"May":{"effects":[{"Pay":{"cost":"{1}"}}]}}]"#;
+const DISCARD: &str = r#"[{"Discard":{}}]"#;
+const PAY: &str = r#"[{"Pay":{"cost":"{1}"}}]"#;
 const CREATURE: &str = r#"[{"what":{"Object":[{"Type":"Creature"}]}}]"#;
 const DAMAGE: &str = r#"[{"DealDamage":{"to":{"Target":0},"amount":2}}]"#;
 
@@ -61,7 +64,7 @@ fn play(driver: &mut Driver, yes: bool) -> Result<Vec<Event>, ScriptError> {
         }
         let decision = driver.decision()?.clone();
         let answer = match &decision.kind {
-            DecisionKind::YesNo(_) => Answer::YesNo(YesNoChoice(yes)),
+            DecisionKind::YesNo(o) => Answer::YesNo(YesNoChoice(yes && !o.only_no)),
             DecisionKind::ChooseTargets(o) => Answer::ChooseTargets(TargetChoice::Targets(
                 o.legal.iter().copied().take(1).collect(),
             )),
@@ -86,6 +89,9 @@ fn count(events: &[Event], wanted: fn(&Event) -> bool) -> usize {
 #[case::may_declined(MAY_GAIN, OPPONENT, DRAIN, false, true, 20, false)]
 #[case::sacrificed(SACRIFICE, OPPONENT, DRAIN, true, true, 17, true)]
 #[case::nothing_to_sacrifice(SACRIFICE, OPPONENT, DRAIN, true, false, 20, false)]
+#[case::nothing_to_discard(DISCARD, OPPONENT, DRAIN, true, false, 20, false)]
+#[case::an_unpayable_cost_after_a_may(MAY_PAY, OPPONENT, DRAIN, true, false, 20, false)]
+#[case::an_unpaid_cost(PAY, OPPONENT, DRAIN, true, false, 20, false)]
 fn the_reflexive_trigger_follows_the_step_before_it(
     #[case] first: &str,
     #[case] specs: &str,
