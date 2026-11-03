@@ -3,6 +3,7 @@
 use mtg_core::color::Color;
 use serde::{Deserialize, Serialize};
 
+use crate::did::Action;
 use crate::effect::{Effect, is_false};
 use crate::modify::Modification;
 use crate::refs::{Ref, Selector, ZoneKind};
@@ -579,6 +580,21 @@ pub enum TriggerPattern {
     State {
         /// The state.
         condition: Condition,
+    },
+    /// A player or object takes an action (`Action`): the one node for the keyword actions and the rest of the events
+    /// that have no pattern of their own. `Triggering` is the player and the object, when the action has them.
+    Did {
+        /// What was done.
+        action: Action,
+        /// Who did it.
+        #[serde(
+            default = "Ref::each_player",
+            skip_serializing_if = "Ref::is_each_player"
+        )]
+        who: Ref,
+        /// The object it was done to or by; anything when empty.
+        #[serde(default, skip_serializing_if = "Selector::is_empty")]
+        what: Selector,
     },
     /// Any of the patterns ("enters or attacks"); one event triggers the ability once.
     AnyOf(Vec<TriggerPattern>),

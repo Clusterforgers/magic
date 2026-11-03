@@ -14,6 +14,7 @@ pub mod cost;
 pub mod coverage;
 pub mod deck;
 pub mod definition;
+pub mod did;
 pub mod dk1c5_rooms;
 pub mod draft;
 pub mod effect;

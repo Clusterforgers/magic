@@ -9,11 +9,14 @@ use std::collections::BTreeSet;
 use std::sync::Arc;
 
 use mtg_cards::ability::{Ability, Limit};
+use mtg_cards::did::Action;
 use mtg_cards::mana_trigger::mana_trigger;
 use mtg_cards::refs::{Ref, Selector, ZoneKind};
 use mtg_cards::trigger::TriggerPattern;
 use mtg_cards::value::{CounterKind, DayNight};
 use mtg_core::ids::{ObjectId, PlayerId};
+
+mod did;
 
 use super::{DelayedId, Triggered, x_read};
 use crate::abilities::{AbilityRef, AbilitySource, Cause};
@@ -235,6 +238,12 @@ enum Happened {
     Adapted { object: ObjectId, player: PlayerId },
     /// A player bolstered.
     Bolstered { player: PlayerId },
+    /// A player or object took an action (`TriggerPattern::Did`).
+    Did {
+        action: Action,
+        player: Option<PlayerId>,
+        object: Option<ObjectId>,
+    },
     /// Everything of one kind of state (before or after) that happened in the batch, for the patterns of events that
     /// happen together.
     Batch(Vec<Happened>),
@@ -250,7 +259,7 @@ impl Happened {
                 ..
             } | Happened::Exploited { .. }
                 | Happened::PhasedOut { .. }
-        )
+        ) || matches!(self, Happened::Did { action, .. } if action.looks_back())
     }
 
     /// How much it was: the damage dealt, the life gained or lost, the counters put or removed, the X of a monstrosity or a
@@ -446,6 +455,7 @@ fn happenings(pre: &GameState, events: &[Event], post: &GameState) -> Vec<Happen
     // Permanents tapped in this batch whose mana has not been added yet: tapping for mana is the tap that adds it.
     let mut tapped = Vec::new();
     for (at, event) in events.iter().enumerate() {
+        let start = found.len();
         let look = Look::at(pre, post, events, at);
         let later = look.later;
         if let Some(moved) = moved(pre, event, post) {
@@ -540,7 +550,10 @@ fn happenings(pre: &GameState, events: &[Event], post: &GameState) -> Vec<Happen
             }),
             other => about_players_and_permanents(other, look, &mut tapped, &mut found),
         }
+        let fresh = did::did_happened(pre, post, event, &found[start..]);
+        found.extend(fresh);
     }
+    found.extend(did::controller_changes(pre, post, events));
     found
 }
 
@@ -1371,6 +1384,9 @@ fn matching_player_action(
             (by(who, player) && *from < *n && *n <= *to)
                 .then(|| counted(state, vec![Target::Player(*player)], 0))
         }
+        (TriggerPattern::Did { .. }, Happened::Did { .. }) => {
+            did::matching_did(pattern, happened, scope)
+        }
         _ => None,
     }
 }
@@ -2010,7 +2026,12 @@ pub(crate) fn needs_before(events: &[Event]) -> bool {
         Event::CreatureDied { .. }
         | Event::CardDiscarded { .. }
         | Event::DayNightChanged { .. }
-        | Event::PermanentPhasedOut { .. } => true,
+        | Event::PermanentPhasedOut { .. }
+        | Event::PlayerLost { .. }
+        | Event::EffectCreated { .. }
+        | Event::EffectExpired { .. }
+        | Event::Attached { .. }
+        | Event::Unattached { .. } => true,
         Event::ZoneChanged { from, .. } => *from == Zone::Battlefield,
         Event::ResolutionEnded { outcome, .. } => *outcome != ResolutionOutcome::Resolved,
         _ => false,
