@@ -434,6 +434,43 @@ impl<'a> Walker<'a> {
         }
     }
 
+    /// The atoms over how a spell was cast, library position, combat, targeting, a greatest characteristic and suspend.
+    fn fe1a_pred(&mut self, pred: &Pred) {
+        match pred {
+            Pred::WasCast { by, from } => {
+                self.uses("Pred", "WasCast");
+                if let Some(by) = by {
+                    self.at("by", |w| w.reference(by, Kind::Player));
+                }
+                if from.is_some_and(|zone| zone == ZoneKind::Battlefield) {
+                    self.problem(
+                        "`WasCast` names the zone a spell was cast from, never the battlefield",
+                    );
+                }
+            }
+            Pred::CastWith(_) => self.uses("Pred", "CastWith"),
+            Pred::TopOfLibrary => self.uses("Pred", "TopOfLibrary"),
+            Pred::BottomOfLibrary => self.uses("Pred", "BottomOfLibrary"),
+            Pred::BlockedBy(who) => {
+                self.uses("Pred", "BlockedBy");
+                self.reference(who, Kind::Object);
+            }
+            Pred::Blocks(who) => {
+                self.uses("Pred", "Blocks");
+                self.reference(who, Kind::Object);
+            }
+            Pred::TargetedBy(who) => {
+                self.uses("Pred", "TargetedBy");
+                self.reference(who, Kind::Object);
+            }
+            Pred::GreatestAmong { group, .. } => {
+                self.uses("Pred", "GreatestAmong");
+                self.at("group", |w| w.selector(group));
+            }
+            _ => self.uses("Pred", "Suspended"),
+        }
+    }
+
     /// The predicate atoms of the open selector language, each a `Pred.<Name>` primitive the engine must run.
     fn w21a_pred(&mut self, pred: &Pred) {
         match pred {
@@ -483,6 +520,15 @@ impl<'a> Walker<'a> {
             Pred::Modified | Pred::FaceDown | Pred::TargetsPlayer(_) | Pred::GravedThisTurn => {
                 self.w21a_pred(pred);
             }
+            Pred::WasCast { .. }
+            | Pred::CastWith(_)
+            | Pred::TopOfLibrary
+            | Pred::BottomOfLibrary
+            | Pred::BlockedBy(_)
+            | Pred::Blocks(_)
+            | Pred::TargetedBy(_)
+            | Pred::GreatestAmong { .. }
+            | Pred::Suspended => self.fe1a_pred(pred),
             Pred::Not(inner) => self.pred(inner),
             Pred::AnyOf(preds) => {
                 if preds.is_empty() {

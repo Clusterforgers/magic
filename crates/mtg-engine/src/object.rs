@@ -404,6 +404,9 @@ pub struct GameObject {
     pub(crate) cast_from_hand: bool,
     /// The spell was cast from a graveyard (aftermath reads it); a zone change clears it.
     pub(crate) cast_from_graveyard: bool,
+    /// The kind of zone the spell was cast from and the player who cast it; it stays with the permanent the spell becomes and
+    /// a zone change from anywhere else clears it.
+    pub(crate) cast: Option<(mtg_cards::refs::ZoneKind, PlayerId)>,
     pub(crate) kind: ObjectKind,
     pub(crate) choices: Choices,
     pub(crate) ability: Option<Box<AbilityObject>>,
@@ -431,6 +434,7 @@ impl GameObject {
             monarch_wait: None,
             cast_from_hand: false,
             cast_from_graveyard: false,
+            cast: None,
             kind: ObjectKind::Card,
             choices: Choices::default(),
             ability: None,
@@ -466,6 +470,7 @@ impl GameObject {
             monarch_wait: None,
             cast_from_hand: false,
             cast_from_graveyard: false,
+            cast: None,
             kind: ObjectKind::Ability,
             choices,
             ability: Some(Box::new(ability)),
@@ -648,6 +653,20 @@ impl GameObject {
         self.cast_from_hand
     }
 
+    /// Forgets how the spell was cast; the permanent a spell becomes keeps who cast it and from where.
+    pub(crate) fn forget_cast(&mut self, from: crate::zones::Zone, to: crate::zones::Zone) {
+        self.cast_from_hand = false;
+        self.cast_from_graveyard = false;
+        if !(from == crate::zones::Zone::Stack && to == crate::zones::Zone::Battlefield) {
+            self.cast = None;
+        }
+    }
+
+    /// The kind of zone the spell was cast from and who cast it; kept by the permanent it becomes.
+    pub const fn cast_record(&self) -> Option<(mtg_cards::refs::ZoneKind, PlayerId)> {
+        self.cast
+    }
+
     /// Whether the spell was cast from a graveyard.
     pub const fn cast_from_graveyard(&self) -> bool {
         self.cast_from_graveyard
@@ -748,6 +767,7 @@ impl PartialEq for GameObject {
             && self.monarch_wait == other.monarch_wait
             && self.cast_from_hand == other.cast_from_hand
             && self.cast_from_graveyard == other.cast_from_graveyard
+            && self.cast == other.cast
             && self.counter == other.counter
             && self.kind == other.kind
             && self.choices == other.choices
@@ -785,6 +805,9 @@ impl Hash for GameObject {
         }
         if self.cast_from_graveyard {
             "graveyard".hash(state);
+        }
+        if let Some(cast) = self.cast {
+            cast.hash(state);
         }
         self.counter.hash(state);
         self.kind.hash(state);

@@ -567,6 +567,15 @@ const RUNS: &[&str] = &[
     "Pred.FaceDown",
     "Pred.TargetsPlayer",
     "Pred.GravedThisTurn",
+    "Pred.WasCast",
+    "Pred.CastWith",
+    "Pred.TopOfLibrary",
+    "Pred.BottomOfLibrary",
+    "Pred.BlockedBy",
+    "Pred.Blocks",
+    "Pred.TargetedBy",
+    "Pred.GreatestAmong",
+    "Pred.Suspended",
 ];
 
 /// The capabilities of this engine.

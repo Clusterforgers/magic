@@ -22,6 +22,7 @@ use thiserror::Error;
 use super::W7D_LEGAL;
 use super::share::{OUTSIDE_A_DIVISION, Share};
 
+mod fe1a_atoms;
 mod soulbond;
 mod w21a_atoms;
 mod w6d_shares;
@@ -35,7 +36,6 @@ use crate::announce::{kicked_with, payments};
 use crate::characteristics::{Characteristics, characteristics, controller_of, seen_as};
 use crate::choose::legal_from;
 use crate::choose::{Choices, Target};
-use crate::combat::AttackTarget;
 use crate::keywords::{self, OptionalKind, gift};
 use crate::layers::{Held, View, outside};
 use crate::object::{Chosen, FaceDown, GameObject, ObjectKind, ObjectRef, PermanentState};
@@ -1192,24 +1192,6 @@ impl<'a> Scope<'a> {
                 .iter()
                 .any(|card| card.id == reference.id),
             Pred::Targeting(inner) => self.targets_match(inner, reference, seen)?,
-            Pred::Attacking => state
-                .combat()
-                .attackers()
-                .iter()
-                .any(|a| a.object() == reference.id),
-            Pred::AttackingPlayer(who) => {
-                let attacked = self.players(who)?;
-                state.combat().attackers().iter().any(|a| {
-                    a.object() == reference.id
-                        && matches!(a.target(), AttackTarget::Player(player) if attacked.contains(&player))
-                })
-            }
-            Pred::Blocking => state
-                .combat()
-                .attackers()
-                .iter()
-                .any(|a| a.blockers().contains(&reference.id)),
-            Pred::Unblocked => state.combat().is_unblocked(state, reference.id),
             Pred::ControlledBy(who) => self.players(who)?.contains(&seen.controller),
             Pred::OwnedBy(who) => self.players(who)?.contains(&seen.owner),
             Pred::In(kind) => zone_kind(seen.zone) == *kind,
@@ -1239,6 +1221,19 @@ impl<'a> Scope<'a> {
             Pred::Modified | Pred::FaceDown | Pred::TargetsPlayer(_) | Pred::GravedThisTurn => {
                 self.w21a_pred(pred, reference, seen)?
             }
+            Pred::Attacking
+            | Pred::AttackingPlayer(_)
+            | Pred::Blocking
+            | Pred::Unblocked
+            | Pred::WasCast { .. }
+            | Pred::CastWith(_)
+            | Pred::TopOfLibrary
+            | Pred::BottomOfLibrary
+            | Pred::BlockedBy(_)
+            | Pred::Blocks(_)
+            | Pred::TargetedBy(_)
+            | Pred::GreatestAmong { .. }
+            | Pred::Suspended => self.fe1a_pred(pred, reference, seen)?,
             Pred::Not(inner) => !self.pred(inner, reference, seen)?,
             Pred::AnyOf(any) => self.w6d_any_of(any, reference, seen)?,
         })
