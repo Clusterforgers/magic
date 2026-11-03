@@ -213,10 +213,19 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         | Pred::HasAnyCounter
         | Pred::Named(_)
         | Pred::FaceDown
-        | Pred::GravedThisTurn => Traits::NONE,
+        | Pred::GravedThisTurn
+        | Pred::CastWith(_)
+        | Pred::TopOfLibrary
+        | Pred::BottomOfLibrary
+        | Pred::Suspended => Traits::NONE,
+        Pred::WasCast { by, .. } => by.as_ref().map_or(Traits::NONE, reads_of_ref),
+        Pred::GreatestAmong { stat, group } => reads_of_stat(*stat).or(reads_of_selector(group)),
         Pred::Modified => Traits::CONTROL,
         Pred::Goaded => Traits::GOADED,
         Pred::Is(who)
+        | Pred::BlockedBy(who)
+        | Pred::Blocks(who)
+        | Pred::TargetedBy(who)
         | Pred::TargetsPlayer(who)
         | Pred::OwnedBy(who)
         | Pred::AttackingPlayer(who)

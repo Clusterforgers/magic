@@ -5,6 +5,8 @@ mod combat;
 mod crew_record;
 #[cfg(test)]
 mod entered;
+#[cfg(test)]
+mod fe1a_atoms;
 mod opening;
 mod resolution;
 #[cfg(test)]
