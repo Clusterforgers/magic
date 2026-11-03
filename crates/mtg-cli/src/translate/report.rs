@@ -138,6 +138,31 @@ impl Funnel {
         text
     }
 
+    /// The gaps that need a node the language or the engine lacks, as TSV: `construct`, `blocked`, `freed`, `missing`,
+    /// `examples`.
+    pub fn engine_needs(&self) -> String {
+        let mut text = String::from("construct\tblocked\tfreed\tmissing\texamples\n");
+        for (name, row) in self.ranked() {
+            let Some(need) = super::needs::need(name) else {
+                continue;
+            };
+            let examples: Vec<&str> = row
+                .blocked
+                .iter()
+                .take(EXAMPLES)
+                .map(String::as_str)
+                .collect();
+            let _ = writeln!(
+                text,
+                "{name}\t{}\t{}\t{need}\t{}",
+                row.blocked.len(),
+                row.freed,
+                examples.join("; ")
+            );
+        }
+        text
+    }
+
     /// The summary a run prints.
     pub fn render(&self, out: &Path) -> String {
         let mut text = format!(

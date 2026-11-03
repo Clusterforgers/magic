@@ -17,6 +17,7 @@ pub mod effects_obj;
 pub mod effects_zone;
 pub mod keyword;
 pub mod mayplay;
+pub mod needs;
 pub mod oracle;
 pub mod replacements;
 pub mod report;
@@ -82,7 +83,7 @@ pub async fn translate_forge(
             continue;
         }
         let today = match &stored {
-            Some(stored) if card.translated() > 0 || args.precons => stored.today(&stem),
+            Some(stored) => stored.today(&stem),
             _ => String::new(),
         };
         let weight = match (&stored, &popularity) {
@@ -94,6 +95,7 @@ pub async fn translate_forge(
         let oracle_matches = stored.as_ref().and_then(|stored| {
             let printed = stored.printed_oracle(&stem)?;
             Some(oracle::matches(
+                &card.name,
                 card.oracle.iter().map(String::as_str),
                 printed,
             ))
@@ -121,6 +123,7 @@ pub async fn translate_forge(
     }
     let ledger = out_dir.join("translate-gaps.tsv");
     write_file(&ledger, &funnel.ledger())?;
+    write_file(&out_dir.join("engine-needs.tsv"), &funnel.engine_needs())?;
     write_file(&out_dir.join("translate-index.tsv"), &index)?;
     write_file(&out_dir.join("translate-cards.tsv"), &cards)?;
     if let Some(lines) = stored.as_ref().and_then(Stored::precon_lines) {

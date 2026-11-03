@@ -255,6 +255,25 @@ fn gaps(text: &str) -> Vec<String> {
             {"Continuous": {"affected": {"Bound": "exiled"},
                 "mods": [{"ModifyPT": {"power": 1, "toughness": 1}}], "duration": "UntilEndOfTurn"}}]}})
 )]
+#[case::batch_damage(
+    "Name:Test Pack\nTypes:Creature Wizard\nT:Mode$ DamageDoneOnce | ValidSource$ Creature.YouCtrl | ValidTarget$ Player | CombatDamage$ True | Execute$ Draw1\nSVar:Draw1:DB$ Draw | NumCards$ 1\n",
+    json!({"Triggered": {"when": {"Batch": {"DealsDamage": {"source": [{"Type": "Creature"}, {"ControlledBy": "You"}],
+        "to": "EachPlayer", "combat": true}}}, "effects": [{"Draw": {}}]}})
+)]
+#[case::may_play_from_graveyard(
+    "Name:Test Grave\nTypes:Enchantment\nS:Mode$ Continuous | MayPlay$ True | Affected$ Creature.YouOwn | AffectedZone$ Graveyard | MayPlayLimit$ 1 | Description$ You may cast creature spells from your graveyard.\n",
+    json!({"Rule": {"rule": {"MayCast": {"what": [{"Type": "Creature"}], "from": "Graveyard", "once": true}}}})
+)]
+#[case::impulse_draw(
+    "Name:Test Impulse\nTypes:Sorcery\nA:SP$ Dig | DigNum$ 2 | ChangeNum$ All | DestinationZone$ Exile | RememberChanged$ True | SubAbility$ Play\nSVar:Play:DB$ Effect | StaticAbilities$ MP | RememberObjects$ Remembered | Duration$ UntilTheEndOfYourNextTurn\nSVar:MP:Mode$ Continuous | Affected$ Card.IsRemembered | AffectedZone$ Exile | MayPlay$ True | Description$ You may play those cards.\n",
+    json!({"Spell": {"effects": [{"ExileTop": {"count": 2, "as": "exiled"}},
+        {"Rule": {"rule": {"MayCast": {"from": "Exile", "only": {"Bound": "exiled"}, "play": true}},
+            "duration": "UntilEndOfYourNextTurn"}}]}})
+)]
+#[case::nth_spell(
+    "Name:Test Echo\nTypes:Creature Wizard\nT:Mode$ SpellCast | ValidActivatingPlayer$ You | ActivatorThisTurnCast$ EQ2 | Execute$ Draw1\nSVar:Draw1:DB$ Draw | NumCards$ 1\n",
+    json!({"Triggered": {"when": {"Nth": {"event": {"SpellCast": {"by": "You"}}, "nth": 2}}, "effects": [{"Draw": {}}]}})
+)]
 #[case::shock_land(
     "Name:Test Fountain\nTypes:Land\nR:Event$ Moved | ValidCard$ Card.Self | Destination$ Battlefield | ReplaceWith$ DBTap | ReplacementResult$ Updated\nSVar:DBTap:DB$ Tap | Defined$ Self | ETB$ True | UnlessCost$ PayLife<2> | UnlessPayer$ You\n",
     json!({"Replacement": {"when": {"Enters": {"what": ["This"]}}, "by": {"PayLifeOrTapped": 2}}})
