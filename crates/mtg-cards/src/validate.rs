@@ -66,7 +66,10 @@ fn is_fixed(item: &CostItem) -> bool {
         CostItem::PayLife(amount) | CostItem::PayEnergy(amount) | CostItem::Mill(amount) => {
             fixed(amount)
         }
-        CostItem::RemoveCounters { count, .. }
+        CostItem::RemoveCountersAmong { count, .. }
+        | CostItem::PutCounters { count, .. }
+        | CostItem::UntapPermanents { count, .. }
+        | CostItem::RemoveCounters { count, .. }
         | CostItem::Sacrifice { count, .. }
         | CostItem::Discard { count, .. }
         | CostItem::TapPermanents { count, .. }
@@ -84,7 +87,10 @@ fn amount_is_x(item: &CostItem) -> bool {
         CostItem::PayLife(amount) | CostItem::PayEnergy(amount) | CostItem::Mill(amount) => {
             *amount == Amount::X
         }
-        CostItem::RemoveCounters { count, .. }
+        CostItem::RemoveCountersAmong { count, .. }
+        | CostItem::PutCounters { count, .. }
+        | CostItem::UntapPermanents { count, .. }
+        | CostItem::RemoveCounters { count, .. }
         | CostItem::Sacrifice { count, .. }
         | CostItem::Discard { count, .. }
         | CostItem::TapPermanents { count, .. }
@@ -839,13 +845,19 @@ impl<'a> Walker<'a> {
                     | CostItem::Mill(amount) => {
                         w.amount(amount);
                     }
-                    CostItem::RemoveCounters { count, .. } => {
+                    CostItem::RemoveCounters { count, .. }
+                    | CostItem::PutCounters { count, .. } => {
+                        w.at("count", |w| w.amount(count));
+                    }
+                    CostItem::RemoveCountersAmong { count, from, .. } => {
+                        w.at("from", |w| w.selector(from));
                         w.at("count", |w| w.amount(count));
                     }
                     CostItem::Sacrifice { filter, count }
                     | CostItem::TapPermanents { filter, count }
                     | CostItem::ExileFromGraveyard { filter, count }
                     | CostItem::ExileFromHand { filter, count }
+                    | CostItem::UntapPermanents { filter, count }
                     | CostItem::RevealFromHand { filter, count }
                     | CostItem::ReturnToHand { filter, count } => {
                         w.at("filter", |w| w.selector(filter));
@@ -869,6 +881,7 @@ impl<'a> Walker<'a> {
                     }
                     CostItem::Mana(_)
                     | CostItem::Tap
+                    | CostItem::Exert
                     | CostItem::Untap
                     | CostItem::SacrificeSelf
                     | CostItem::ExileSelf
@@ -928,6 +941,8 @@ impl<'a> Walker<'a> {
                     | CostItem::ExileSelf
                     | CostItem::DiscardSelf
                     | CostItem::RemoveCounters { .. }
+                    | CostItem::PutCounters { .. }
+                    | CostItem::Exert
             )
         });
         if by_the_source {

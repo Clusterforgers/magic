@@ -2,12 +2,14 @@
 //! of an ability's cost (`parts`) the engine pays, and the mana sources that may pay it.
 
 use mtg_cards::cost::{Cost, CostItem};
+use mtg_cards::value::Amount;
 use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_core::mana::ManaCost;
 
 use crate::mana::{ManaOption, reserve_energy};
 use crate::parts::{Part, Payer};
 use crate::priority::mana_options;
+use crate::resolve::Scope;
 use crate::state::GameState;
 
 /// What paying a cost does to its source besides tapping it.
@@ -58,6 +60,10 @@ const fn unpaid(item: &CostItem) -> &'static str {
         CostItem::PayEnergy(_) => "Cost.PayEnergy",
         CostItem::Mill(_) => "Cost.Mill",
         CostItem::RemoveCounters { .. } => "Cost.RemoveCounters",
+        CostItem::PutCounters { .. } => "Cost.PutCounters",
+        CostItem::UntapPermanents { .. } => "Cost.UntapPermanents",
+        CostItem::Exert => "Cost.Exert",
+        CostItem::RemoveCountersAmong { .. } => "Cost.RemoveCountersAmong",
         CostItem::TapPermanents { .. } => "Cost.TapPermanents",
         CostItem::TapPower { .. } => "Cost.TapPower",
         CostItem::ExileFromGraveyard { .. } => "Cost.ExileFromGraveyard",
@@ -85,6 +91,34 @@ impl Price {
             return Err("Cost.Changed");
         }
         Ok(price)
+    }
+
+    /// [`Self::announced`] for the cost of an ability `player` activates from `source`: a part that counts something other
+    /// than a fixed number or X ("Sacrifice a creature for each opponent") counts it as the ability is announced.
+    pub(crate) fn announced_in(
+        cost: &Cost,
+        state: &GameState,
+        player: PlayerId,
+        source: ObjectId,
+    ) -> Result<Price, &'static str> {
+        let mut settled = cost.clone();
+        if let Some(object) = state.object(source) {
+            let scope = Scope::announcing(state, player, object.reference());
+            for item in &mut settled.0 {
+                let Some(amount) = item.amount_mut() else {
+                    continue;
+                };
+                if matches!(amount, Amount::Fixed(_) | Amount::X) {
+                    continue;
+                }
+                if let Ok(number) = scope.amount(amount)
+                    && let Ok(number) = i32::try_from(number)
+                {
+                    *amount = Amount::Fixed(number);
+                }
+            }
+        }
+        Price::announced(&settled)
     }
 
     /// The price of the cost of an ability as it is announced, with the `{X}` it holds counted for the announcement

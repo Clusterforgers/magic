@@ -384,15 +384,15 @@ cost tapXType => Cost.TapPermanents Cost.TapPower
 cost SubCounter => Cost.RemoveCounters
 cost PayEnergy => Cost.PayEnergy
 cost Return => Cost.ReturnToHand
-cost AddCounter => -
+cost AddCounter => Cost.PutCounters
 cost Draw => Effect.May Effect.Pay
-cost untapYouCtrl => -
+cost untapYouCtrl => Cost.UntapPermanents
 cost Mill => -
 cost Reveal => -
 cost GainLife => -
 cost Unattach => -
-cost Exert => -
-cost RemoveAnyCounter => -
+cost Exert => Cost.Exert
+cost RemoveAnyCounter => Cost.RemoveCountersAmong
 
 # --- Rarer names ---
 effect TimeTravel => Effect.TimeTravel

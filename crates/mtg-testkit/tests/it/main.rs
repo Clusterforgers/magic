@@ -226,6 +226,7 @@ mod fuzz_games;
 mod gap_fuzz;
 mod gift;
 mod gift_fuzz;
+mod gn1m_costs;
 mod goad;
 mod graft;
 mod granted_help;

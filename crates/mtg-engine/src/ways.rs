@@ -104,10 +104,13 @@ fn cast_cost_x(cost: &mtg_cards::cost::Cost, counted: bool) -> Option<(ManaCost,
         || price.moves_source()
         || !price.changes.is_empty()
         || (price.mana.is_none() && price.parts.is_empty())
-        || price
-            .parts
-            .iter()
-            .any(|part| (part.is_counted() && !counted) || matches!(part, Part::Counters { .. }));
+        || price.parts.iter().any(|part| {
+            (part.is_counted() && !counted)
+                || matches!(
+                    part,
+                    Part::Counters { .. } | Part::PutCounters { .. } | Part::Exert
+                )
+        });
     (!unpaid).then(|| (price.mana.unwrap_or(ManaCost::ZERO), price.parts, price.x))
 }
 
