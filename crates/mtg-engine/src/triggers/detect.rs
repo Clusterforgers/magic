@@ -457,15 +457,12 @@ fn happenings(pre: &GameState, events: &[Event], post: &GameState) -> Vec<Happen
     for (at, event) in events.iter().enumerate() {
         let start = found.len();
         let look = Look::at(pre, post, events, at);
-        let later = look.later;
-        if let Some(moved) = moved(pre, event, post) {
-            found.push(moved);
-        }
+        found.extend(moved(pre, event, post));
         found.extend(dk1c5_happened(pre, post, look.earlier, event));
         match event {
             Event::TokenCreated(token) => found.push(Happened::Created {
                 object: token.object,
-                nth: ordinal(post, later, token.controller, Tally::Tokens),
+                nth: ordinal(post, look.later, token.controller, Tally::Tokens),
             }),
             Event::AttackersDeclared { attackers, .. } => {
                 found.extend(attackers.iter().map(|(attacker, _)| Happened::Attacked {
@@ -511,14 +508,14 @@ fn happenings(pre: &GameState, events: &[Event], post: &GameState) -> Vec<Happen
                 object,
                 choices,
             } => {
-                let nth = ordinal(post, later, *player, Tally::Cast);
+                let nth = ordinal(post, look.later, *player, Tally::Cast);
                 found.push(Happened::Cast {
                     player: *player,
                     spell: *object,
                     nth,
-                    before: cast_before(post, later),
+                    before: cast_before(post, look.later),
                 });
-                found.extend(w9a_expended(post, later, *player, choices));
+                found.extend(w9a_expended(post, look.later, *player, choices));
                 found.extend(w11c_crime(post, *player, choices));
                 found.extend(targeted(look, choices, (*object, *player)));
             }

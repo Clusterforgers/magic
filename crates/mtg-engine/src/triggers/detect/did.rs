@@ -94,6 +94,13 @@ pub(super) fn did_happened(
         Event::Learned { player } => found.push(did(Action::Learned, Some(*player), None)),
         _ => {}
     }
+    found.extend(from_found(fresh, &of));
+    found
+}
+
+/// The actions the batch already found about an event: moves by their cause, keyword actions, tokens and doors.
+fn from_found(fresh: &[Happened], of: &dyn Fn(Action, ObjectId) -> Happened) -> Vec<Happened> {
+    let mut found = Vec::new();
     for happened in fresh {
         match happened {
             Happened::Moved {
