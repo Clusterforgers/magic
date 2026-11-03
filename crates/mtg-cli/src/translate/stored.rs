@@ -47,7 +47,11 @@ impl Stored {
                     .cards
                     .iter()
                     .map(|card| {
-                        let blocker = card.blockers.iter().next().map(|b| b.label());
+                        let blocker = card
+                            .blockers
+                            .iter()
+                            .next()
+                            .map(mtg_cards::coverage::Blocker::label);
                         (
                             slug(&card.name),
                             (card.bucket().name().to_owned(), blocker.unwrap_or_default()),

@@ -32,8 +32,8 @@ fn property(ctx: &Ctx, prop: &str) -> Tr<Vec<Value>> {
         "YouDontCtrl" => return one(json!({"Not": {"ControlledBy": "You"}})),
         "YouOwn" => return one(json!({"OwnedBy": "You"})),
         "OppOwn" => return one(json!({"OwnedBy": "Opponents"})),
-        "Other" => return one(json!("Other")),
-        "Self" => return one(json!("This")),
+        "Other" | "StrictlyOther" => return one(json!("Other")),
+        "Self" | "StrictlySelf" => return one(json!("This")),
         "tapped" | "Tapped" => return one(json!("Tapped")),
         "untapped" | "Untapped" => return one(json!("Untapped")),
         "attacking" => return one(json!("Attacking")),
@@ -42,7 +42,19 @@ fn property(ctx: &Ctx, prop: &str) -> Tr<Vec<Value>> {
         "nonToken" => return one(json!({"Not": "Token"})),
         "Colorless" => return one(json!("Colorless")),
         "MultiColor" => return one(json!({"Compare": {"stat": "Colors", "op": "Ge", "to": 2}})),
-        "EnchantedBy" | "EquippedBy" => return one(json!({"Is": "Attached"})),
+        "EnchantedBy" | "EquippedBy" | "AttachedBy" => return one(json!({"Is": "Attached"})),
+        "IsCommander" => return one(json!("Commander")),
+        "modified" => return one(json!("Modified")),
+        "IsGoaded" | "Goaded" => return one(json!("Goaded")),
+        "HasCounters" => return one(json!("HasAnyCounter")),
+        "hasXCost" => return one(json!("XInCost")),
+        "ExiledWithSource" => return one(json!({"ExiledWith": "This"})),
+        "enchanted" => return one(json!({"HasAttached": [{"Subtype": "Aura"}]})),
+        "equipped" => return one(json!({"HasAttached": [{"Subtype": "Equipment"}]})),
+        "Historic" => {
+            return one(json!({"AnyOf": [
+                {"Supertype": "Legendary"}, {"Type": "Artifact"}, {"Subtype": "Saga"}]}));
+        }
         "inZoneGraveyard" => return one(json!({"In": "Graveyard"})),
         "inZoneHand" => return one(json!({"In": "Hand"})),
         "inZoneExile" => return one(json!({"In": "Exile"})),
@@ -69,6 +81,11 @@ fn property(ctx: &Ctx, prop: &str) -> Tr<Vec<Value>> {
         .and_then(super::amount::counter_kind)
     {
         return one(json!({"HasCounter": kind}));
+    }
+    if let Some(rest) = prop.strip_prefix("non")
+        && ctx.world.subtypes.contains(&capitalize(rest))
+    {
+        return one(json!({"Not": {"Subtype": capitalize(rest)}}));
     }
     if prop.chars().next().is_some_and(char::is_uppercase) && ctx.world.subtypes.contains(prop) {
         return one(json!({"Subtype": prop}));
@@ -124,10 +141,13 @@ fn numeric_property(prop: &str) -> Option<Vec<Value>> {
     .iter()
     .find_map(|(word, stat)| prop.strip_prefix(word).map(|rest| (*stat, rest)))?;
     let op = cmp(rest.get(..2)?)?;
-    let number: i32 = rest.get(2..)?.parse().ok()?;
-    Some(vec![
-        json!({"Compare": {"stat": stat, "op": op, "to": number}}),
-    ])
+    let bound = rest.get(2..)?;
+    let to = if bound == "X" {
+        json!("X")
+    } else {
+        json!(bound.parse::<i32>().ok()?)
+    };
+    Some(vec![json!({"Compare": {"stat": stat, "op": op, "to": to}})])
 }
 
 /// The predicates of the base word of an alternative (`Creature`, `Permanent`, `Elf`).

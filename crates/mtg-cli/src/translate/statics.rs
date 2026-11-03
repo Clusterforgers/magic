@@ -80,7 +80,11 @@ fn affected_valid(ctx: &Ctx, word: &str) -> Tr<Value> {
 }
 
 /// The keys a continuous static line reads.
-const CONTINUOUS: [&str; 14] = [
+const CONTINUOUS: [&str; 18] = [
+    "AddSVar",
+    "AddAbility",
+    "AddTrigger",
+    "AddType",
     "Affected",
     "AffectedDefined",
     "AddPower",
@@ -97,7 +101,7 @@ const CONTINUOUS: [&str; 14] = [
     "SetColor",
 ];
 
-fn continuous(ctx: &Ctx, p: &Params) -> Tr<Value> {
+fn continuous(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     keys(p, "Continuous", &CONTINUOUS)?;
     let affected = affected(ctx, p)?;
     let mut mods = Vec::new();
@@ -132,8 +136,16 @@ fn continuous(ctx: &Ctx, p: &Params) -> Tr<Value> {
         Some("You") => mods.push(json!({"SetController": "You"})),
         Some(other) => return unmapped(format!("key:Static.Continuous.GainControl={other}")),
     }
-    if p.has("AddType") || p.has("SetColor") {
-        return unmapped("key:Static.Continuous.type-or-color");
+    if p.has("SetColor") {
+        return unmapped("key:Static.Continuous.SetColor");
+    }
+    if let Some(types) = p.get("AddType") {
+        mods.extend(added_types(ctx, types)?);
+    }
+    for (key, trigger) in [("AddAbility", false), ("AddTrigger", true)] {
+        if let Some(names) = p.get(key) {
+            mods.extend(granted(ctx, names, trigger)?);
+        }
     }
     if mods.is_empty() {
         return unmapped("static:Continuous-nothing");
@@ -155,6 +167,39 @@ fn continuous(ctx: &Ctx, p: &Params) -> Tr<Value> {
         ability["defining"] = json!(true);
     }
     Ok(json!({ "Static": ability }))
+}
+
+/// `AddType$ Artifact & Zombie`: the card types and subtypes a static line adds.
+fn added_types(ctx: &Ctx, text: &str) -> Tr<Vec<Value>> {
+    text.split('&')
+        .map(str::trim)
+        .map(|word| {
+            if super::ctx::CARD_TYPES.contains(&word) {
+                Ok(json!({"AddType": word}))
+            } else if ctx.world.subtypes.contains(word) {
+                Ok(json!({"AddSubtype": word}))
+            } else {
+                unmapped(format!("key:Static.Continuous.AddType={word}"))
+            }
+        })
+        .collect()
+}
+
+/// `AddAbility$` and `AddTrigger$`: the named parts, translated, as abilities the affected objects gain.
+fn granted(ctx: &mut Ctx, names: &str, trigger: bool) -> Tr<Vec<Value>> {
+    let mut mods = Vec::new();
+    for name in names.split('&').map(str::trim) {
+        let Some(text) = ctx.svar(name) else {
+            return unmapped("key:Static.Continuous.AddAbility-not-a-part");
+        };
+        let abilities = if trigger {
+            vec![super::triggers::triggered(ctx, text)?]
+        } else {
+            super::ability::ability_line(ctx, text)?
+        };
+        mods.extend(abilities.into_iter().map(|a| json!({"GrantAbility": a})));
+    }
+    Ok(mods)
 }
 
 /// `CantAttack`, `CantBlock` of the cards named by `ValidCard$`.

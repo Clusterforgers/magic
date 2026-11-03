@@ -86,6 +86,8 @@ fn line(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         "Charm" => one(charm(ctx, p)),
         "DelayedTrigger" => one(delayed(ctx, p)),
         "Dig" => effects_zone::dig(ctx, p),
+        "DigUntil" => effects_zone::dig_until(ctx, p),
+        "Attach" => effects_obj::attach(ctx, p),
         "CopyPermanent" => tokens::copy_permanent(ctx, p),
         "Destroy" | "DestroyAll" | "Counter" | "Pump" | "PumpAll" | "PutCounter"
         | "RemoveCounter" | "Tap" | "Untap" | "TapAll" | "UntapAll" | "Sacrifice"

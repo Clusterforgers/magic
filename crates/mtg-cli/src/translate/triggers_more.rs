@@ -10,8 +10,8 @@ use crate::forge::script::Params;
 /// The pattern of a mode this module reads; `None` for any other mode.
 pub fn pattern(ctx: &Ctx, p: &Params, mode: &str) -> Option<Tr<Value>> {
     Some(match mode {
-        "DamageDoneOnce" => damage(ctx, p, "DamageDoneOnce").map(batch),
-        "ChangesZoneAll" => zone_changes(ctx, p).map(batch),
+        "DamageDoneOnce" => damage(ctx, p, "DamageDoneOnce").map(|inner| batch(&inner)),
+        "ChangesZoneAll" => zone_changes(ctx, p).map(|inner| batch(&inner)),
         "LifeLost" => life_lost(p),
         "TapsForMana" => taps_for_mana(ctx, p),
         "BecomesTarget" => becomes_target(ctx, p),
@@ -22,7 +22,7 @@ pub fn pattern(ctx: &Ctx, p: &Params, mode: &str) -> Option<Tr<Value>> {
 }
 
 /// One or more events together trigger the ability once.
-fn batch(inner: Value) -> Value {
+fn batch(inner: &Value) -> Value {
     json!({ "Batch": inner })
 }
 

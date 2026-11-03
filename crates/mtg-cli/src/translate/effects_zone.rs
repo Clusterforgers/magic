@@ -244,6 +244,81 @@ pub fn dig(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     Ok(effects)
 }
 
+/// `DigUntil`: reveal cards until some match, the match goes to one place and the revealed cards to another.
+pub fn dig_until(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
+    only(
+        p,
+        "DigUntil",
+        &[
+            "Valid",
+            "Amount",
+            "FoundDestination",
+            "RevealedDestination",
+            "RevealedLibraryPosition",
+            "RevealRandomOrder",
+            "Shuffle",
+            "Defined",
+            "ValidTgts",
+            "Tapped",
+            "GainControl",
+            "RememberFound",
+            "ValidDescription",
+        ],
+    )?;
+    let who = subject(ctx, p, "You", None)?;
+    let found = ctx.fresh("found");
+    let revealed = ctx.fresh("revealed");
+    let mut find = json!({
+        "who": who,
+        "filter": selector_any(ctx, p.get("Valid").unwrap_or("Card"))?,
+        "as": found,
+        "revealed_as": revealed,
+    });
+    if let Some(n) = p.get("Amount").filter(|n| *n != "1") {
+        find["count"] = amount(ctx, n)?;
+    }
+    let tapped = p.get("Tapped") == Some("True");
+    let found_to = match p.get("FoundDestination") {
+        Some("Exile") => Goes::Exile,
+        Some("Hand") => Goes::To(json!("Hand")),
+        Some("Graveyard") => Goes::To(json!("Graveyard")),
+        Some("Battlefield") if p.get("GainControl") == Some("True") => {
+            Goes::To(json!({"Battlefield": {"tapped": tapped, "under": "You"}}))
+        }
+        Some("Battlefield") => Goes::To(json!({"Battlefield": {"tapped": tapped}})),
+        other => return unmapped(format!("key:DigUntil.FoundDestination={other:?}")),
+    };
+    if p.get("RememberFound") == Some("True") {
+        ctx.remembered = Some(json!({ "Bound": found }));
+    }
+    let order = if p.get("RevealRandomOrder") == Some("True") {
+        "Random"
+    } else {
+        "Chosen"
+    };
+    let rest_to = match (
+        p.get("RevealedDestination"),
+        p.get("RevealedLibraryPosition"),
+    ) {
+        (Some("Library"), Some("-1")) => {
+            Goes::To(json!({"Library": {"place": "Bottom", "order": order}}))
+        }
+        (Some("Library"), Some("0")) => Goes::To(json!({"Library": {"place": "Top"}})),
+        (Some("Graveyard"), _) => Goes::To(json!("Graveyard")),
+        (Some("Exile"), _) => Goes::Exile,
+        (other, _) => return unmapped(format!("key:DigUntil.RevealedDestination={other:?}")),
+    };
+    let mut effects = vec![
+        json!({ "RevealUntil": find }),
+        moves(&json!({"Bound": found}), found_to),
+        moves(&json!({"Bound": revealed}), rest_to),
+    ];
+    if p.get("Shuffle") == Some("True") {
+        effects.push(json!({"Shuffle": {}}));
+    }
+    Ok(effects)
+}
+
 fn change_zone_all(ctx: &mut Ctx, p: &Params, origin: &str, destination: &str) -> Tr<Vec<Value>> {
     only(
         p,

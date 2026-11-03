@@ -274,6 +274,23 @@ fn gaps(text: &str) -> Vec<String> {
     "Name:Test Echo\nTypes:Creature Wizard\nT:Mode$ SpellCast | ValidActivatingPlayer$ You | ActivatorThisTurnCast$ EQ2 | Execute$ Draw1\nSVar:Draw1:DB$ Draw | NumCards$ 1\n",
     json!({"Triggered": {"when": {"Nth": {"event": {"SpellCast": {"by": "You"}}, "nth": 2}}, "effects": [{"Draw": {}}]}})
 )]
+#[case::dig_until(
+    "Name:Test Delve\nTypes:Sorcery\nA:SP$ DigUntil | Valid$ Creature | FoundDestination$ Hand | RevealedDestination$ Library | RevealedLibraryPosition$ -1 | RevealRandomOrder$ True\n",
+    json!({"Spell": {"effects": [
+        {"RevealUntil": {"filter": [{"Type": "Creature"}], "as": "found", "revealed_as": "revealed2"}},
+        {"Move": {"what": {"Bound": "found"}, "to": "Hand"}},
+        {"Move": {"what": {"Bound": "revealed2"}, "to": {"Library": {"place": "Bottom", "order": "Random"}}}}]}})
+)]
+#[case::kicked_counters(
+    "Name:Test Drake\nTypes:Creature Wizard\nK:etbCounter:P1P1:2:CheckSVar$ WasKicked:If CARDNAME was kicked, it enters with two +1/+1 counters on it.\n",
+    json!({"Replacement": {"when": {"Enters": {"what": ["This"]}},
+        "by": {"WithCounters": {"counter": "+1/+1", "count": 2}}, "condition": "Kicked"}})
+)]
+#[case::grants_a_trigger(
+    "Name:Test Banner\nTypes:Enchantment\nS:Mode$ Continuous | Affected$ Creature.YouCtrl | AddTrigger$ Spark | Description$ x\nSVar:Spark:Mode$ Attacks | ValidCard$ Card.Self | Execute$ Draw1\nSVar:Draw1:DB$ Draw | NumCards$ 1\n",
+    json!({"Static": {"affected": {"Each": [{"Type": "Creature"}, {"ControlledBy": "You"}]},
+        "mods": [{"GrantAbility": {"Triggered": {"when": {"Attacks": {"what": ["This"]}}, "effects": [{"Draw": {}}]}}}]}})
+)]
 #[case::shock_land(
     "Name:Test Fountain\nTypes:Land\nR:Event$ Moved | ValidCard$ Card.Self | Destination$ Battlefield | ReplaceWith$ DBTap | ReplacementResult$ Updated\nSVar:DBTap:DB$ Tap | Defined$ Self | ETB$ True | UnlessCost$ PayLife<2> | UnlessPayer$ You\n",
     json!({"Replacement": {"when": {"Enters": {"what": ["This"]}}, "by": {"PayLifeOrTapped": 2}}})

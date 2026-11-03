@@ -426,6 +426,8 @@ fn gain_control(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             "TargetMin",
             "TargetMax",
             "NewController",
+            "Untap",
+            "AddKWs",
         ],
     )?;
     if p.has("NewController") {
@@ -437,9 +439,37 @@ fn gain_control(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         Some(other) => return unmapped(format!("key:GainControl.LoseControl={other}")),
     };
     let affected = objects(subject(ctx, p, "", None)?)?;
-    Ok(vec![json!({"Continuous": {
+    let mut effects = vec![json!({"Continuous": {
         "affected": affected,
         "mods": [{"SetController": "You"}],
         "duration": duration,
-    }})])
+    }})];
+    if p.get("Untap") == Some("True") {
+        effects.push(json!({"Untap": {"what": affected}}));
+    }
+    if let Some(keywords) = p.get("AddKWs") {
+        let mods: Vec<Value> = keyword_list(ctx, keywords)?
+            .into_iter()
+            .map(|keyword| json!({ "AddKeyword": keyword }))
+            .collect();
+        effects.push(json!({"Continuous": {
+            "affected": affected, "mods": mods, "duration": duration,
+        }}));
+    }
+    Ok(effects)
+}
+
+/// `Attach`: the attachment (`Defined$`, the card itself by default) is attached to the target.
+pub fn attach(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
+    only(
+        p,
+        "Attach",
+        &["ValidTgts", "Defined", "TargetMin", "TargetMax"],
+    )?;
+    if !p.has("ValidTgts") {
+        return unmapped("key:Attach.no-ValidTgts");
+    }
+    let what = defined(ctx, p.get("Defined").unwrap_or("Self"))?;
+    let to = subject(ctx, p, "", None)?;
+    Ok(vec![json!({"Attach": {"what": what, "to": to}})])
 }

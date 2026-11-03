@@ -242,11 +242,17 @@ fn chapter(ctx: &mut Ctx, number: usize, name: &str) -> Tr<Value> {
 pub fn keyword_ability(ctx: &mut Ctx, body: &str) -> Tr<Value> {
     ctx.reset();
     let fields: Vec<&str> = body.split(':').collect();
+    let mut condition = None;
     let by = match fields.as_slice() {
-        ["etbCounter", kind, count] => {
+        ["etbCounter", kind, count, rest @ ..]
+            if rest.is_empty() || rest[0] == "CheckSVar$ WasKicked" =>
+        {
             let Some(kind) = counter_kind(kind) else {
                 return unmapped("keyword:etbCounter-kind");
             };
+            if !rest.is_empty() {
+                condition = Some(json!("Kicked"));
+            }
             json!({"WithCounters": {"counter": kind, "count": amount(ctx, count)?}})
         }
         ["ETBReplacement", "Other", name] => choice(ctx, name)?,
@@ -255,7 +261,11 @@ pub fn keyword_ability(ctx: &mut Ctx, body: &str) -> Tr<Value> {
         }
         _ => return Ok(json!({"Keyword": keyword_value(ctx, body)?})),
     };
-    Ok(json!({"Replacement": {"when": {"Enters": {"what": ["This"]}}, "by": by}}))
+    let mut replacement = json!({"when": {"Enters": {"what": ["This"]}}, "by": by});
+    if let Some(condition) = condition {
+        replacement["condition"] = condition;
+    }
+    Ok(json!({ "Replacement": replacement }))
 }
 
 /// What the part named by an `ETBReplacement` makes the permanent's controller choose as it enters.

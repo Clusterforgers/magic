@@ -23,7 +23,7 @@ const READ: [&str; 11] = [
 
 /// The `MayCast` rule of a static line. `only` names the objects it covers (what an `Effect` object remembers); without
 /// it the cards `Affected$` selects are covered.
-pub fn may_cast(ctx: &Ctx, p: &Params, only: Option<Value>) -> Tr<Value> {
+pub fn may_cast(ctx: &Ctx, p: &Params, only: Option<&Value>) -> Tr<Value> {
     for (key, _) in p.iter() {
         if !READ.contains(&key) && !is_hint(key) {
             return unmapped(format!("key:Static.MayPlay.{key}"));
@@ -40,7 +40,7 @@ pub fn may_cast(ctx: &Ctx, p: &Params, only: Option<Value>) -> Tr<Value> {
     let mut permission = json!({ "from": from });
     match (&only, p.get("Affected").unwrap_or("Card")) {
         (Some(objects), "Card.IsRemembered" | "Card.IsRemembered+YouOwn") => {
-            permission["only"] = objects.clone();
+            permission["only"] = (*objects).clone();
         }
         (Some(_), _) => return unmapped("valid:MayPlay-Affected-with-remembered"),
         (None, valid) => {

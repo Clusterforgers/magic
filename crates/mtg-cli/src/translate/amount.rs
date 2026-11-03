@@ -107,8 +107,20 @@ fn event_amount(ctx: &Ctx, expression: &str) -> Tr<Option<Value>> {
                 other => unmapped(format!("amount:TriggerCount${other}")),
             };
         }
-        "PlayerCountOpponents" if what == "Amount" => {
-            return Ok(Some(json!({"Players": "Opponents"})));
+        "PlayerCountOpponents" | "PlayerCountPlayers" => {
+            let who = if head == "PlayerCountPlayers" {
+                "EachPlayer"
+            } else {
+                "Opponents"
+            };
+            let key = match what {
+                "Amount" => "Players",
+                "HighestLifeTotal" => "HighestLife",
+                "LowestLifeTotal" => "LowestLife",
+                "LowestCardsInHand" => "LowestHand",
+                other => return unmapped(format!("amount:{head}${other}")),
+            };
+            return Ok(Some(json!({ key: who })));
         }
         "TriggeredCard" => json!("Triggering"),
         "Sacrificed" => json!("Paid"),
