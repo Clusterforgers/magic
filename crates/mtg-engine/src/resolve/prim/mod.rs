@@ -276,17 +276,22 @@ mod tests {
     ]"#;
 
     fn tag(effect: &Effect) -> String {
-        serde_json::to_value(effect)
-            .unwrap()
-            .as_object()
-            .and_then(|map| map.keys().next().cloned())
-            .unwrap()
+        let value = serde_json::to_value(effect).unwrap();
+        value.as_str().map_or_else(
+            || {
+                value
+                    .as_object()
+                    .and_then(|map| map.keys().next().cloned())
+                    .unwrap()
+            },
+            str::to_owned,
+        )
     }
 
     #[test]
     fn the_capabilities_name_exactly_the_effects_that_run() {
         let effects: Vec<Effect> = serde_json::from_str(EFFECTS).unwrap();
-        assert_eq!(effects.len(), 92, "one sample for each variant of Effect");
+        assert_eq!(effects.len(), 93, "one sample for each variant of Effect");
         let game = state(
             vec![vec![], vec![]],
             vec![vec![creature("Bear", 2, 2)], vec![]],
