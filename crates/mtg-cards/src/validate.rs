@@ -254,6 +254,8 @@ struct Walker<'a> {
     has_additional_cost: bool,
     /// Whether the cost being walked takes objects the effects can name (`Ref::Paid`): a part that picks, or a required additional cost that does.
     pays_objects: bool,
+    /// The cost under the walk is that of an activated ability, whose counted amounts the engine counts as it is announced.
+    activated_cost: bool,
     /// Whether a required additional cost of the card counts the X the caster announces, which the effects read.
     counts_x: bool,
     x_free: bool,
@@ -292,6 +294,7 @@ impl<'a> Walker<'a> {
             kickers: Vec::new(),
             has_additional_cost: false,
             pays_objects: false,
+            activated_cost: false,
             counts_x: false,
             x_free: false,
             x_now: false,
@@ -837,7 +840,8 @@ impl<'a> Walker<'a> {
                     w.uses("Cost", &tag_of(item));
                 }
                 if !is_fixed(item) {
-                    w.uses("Cost", &format!("{}.Counted", tag_of(item)));
+                    let activated = if w.activated_cost { ".Activated" } else { "" };
+                    w.uses("Cost", &format!("{}.Counted{activated}", tag_of(item)));
                 }
                 match item {
                     CostItem::PayLife(amount)
@@ -2898,8 +2902,10 @@ impl Walker<'_> {
         // The X a part of the cost counts is the one the ability announces.
         self.x_free = cost.has_x();
         self.x_now = self.x_free;
+        self.activated_cost = true;
         self.at("cost", |w| w.cost(cost));
         self.at("from", |w| w.activated_zone(cost, from));
+        self.activated_cost = false;
         if let Some(condition) = condition {
             // It is judged as the ability is activated, before any target is chosen.
             self.scope = Scope::new(&[], false);
@@ -4037,7 +4043,7 @@ mod tests {
     #[case::an_x_in_the_effects_of_a_loyalty_ability_that_removes_x(r#"{"Loyalty":{"cost":"MinusX","effects":[{"Draw":{"count":"X"}}]}}"#, &["Ability.Loyalty", "Cost.Loyalty.X", "Effect.Draw"])]
     #[case::an_x_in_the_ability_a_token_carries(r#"{"Spell":{"effects":[{"CreateToken":{"token":{"Custom":{"name":"Gem","types":["Artifact"],"abilities":[{"Activated":{"cost":["Tap"],"effects":[{"Draw":{"count":"X"}}]}}]}}}}]}}"#, &["Ability.Activated", "Ability.Spell", "Amount.X.Elsewhere", "Cost.Tap", "Effect.CreateToken", "Effect.Draw"])]
     #[case::c6_eg_counted_life_in_an_effect(r#"{"Triggered":{"when":{"LifeGained":{"who":"You"}},"effects":[{"Pay":{"cost":[{"PayLife":"Triggering"}],"paid":[{"Draw":{"count":"Triggering"}}]}}]}}"#, &["Ability.Triggered", "Amount.Triggering", "Cost.PayLife", "Effect.Draw", "Effect.Pay", "Effect.Pay.Counted", "Trigger.LifeGained"])]
-    #[case::c6_eg_counted_life_in_a_cost(r#"{"Activated":{"cost":[{"PayLife":{"Life":"You"}}],"effects":[{"Draw":{}}]}}"#, &["Ability.Activated", "Cost.PayLife", "Cost.PayLife.Counted", "Effect.Draw"])]
+    #[case::c6_eg_counted_life_in_a_cost(r#"{"Activated":{"cost":[{"PayLife":{"Life":"You"}}],"effects":[{"Draw":{}}]}}"#, &["Ability.Activated", "Cost.PayLife", "Cost.PayLife.Counted.Activated", "Effect.Draw"])]
     #[case::a_payment_of_x_in_an_effect(r#"{"Triggered":{"when":{"StepBegins":{"step":"Upkeep","whose":"You"}},"effects":[{"Pay":{"cost":"{X}"}}]}}"#, &["Ability.Triggered", "Cost.Mana", "Effect.Pay", "Effect.Pay.X", "Trigger.StepBegins"])]
     #[case::w6c_the_x_a_payment_announces(r#"{"Triggered":{"when":{"Attacks":{"what":["This"]}},"targets":[{"what":"AnyTarget"}],"effects":[{"Pay":{"cost":"{X}{R}","paid":[{"DealDamage":{"to":{"Target":0},"amount":"X"}}]}}]}}"#, &["Ability.Triggered", "Cost.Mana", "Effect.DealDamage", "Effect.Pay", "Effect.Pay.X", "Trigger.Attacks"])]
     #[case::w6c_a_part_that_counts_x_in_a_payment(r#"{"Triggered":{"when":{"StepBegins":{"step":"Upkeep","whose":"You"}},"effects":[{"Pay":{"cost":[{"PayLife":"X"}]}}]}}"#, &["Ability.Triggered", "Amount.X.Elsewhere", "Cost.PayLife", "Effect.Pay", "Effect.Pay.X.Parts", "Trigger.StepBegins"])]
