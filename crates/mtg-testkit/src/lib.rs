@@ -4,6 +4,7 @@
 //! check engine invariants with [`InvariantChecker`], and fuzz whole games with [`play_game`].
 
 pub mod action_cards;
+pub mod alt_cast_cards;
 pub mod alternative_cards;
 pub mod announce_cards;
 pub mod attach_cards;
@@ -136,6 +137,7 @@ pub mod x_cost_cards;
 pub mod zone_cards;
 
 pub use action_cards::actions_fuzz_setup;
+pub use alt_cast_cards::alt_cast_fuzz_setup;
 pub use alternative_cards::alternative_fuzz_setup;
 pub use announce_cards::split_fuzz_setup;
 pub use attach_cards::attach_fuzz_setup;

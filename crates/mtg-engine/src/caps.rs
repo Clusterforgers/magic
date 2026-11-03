@@ -361,6 +361,7 @@ const RUNS: &[&str] = &[
     "Keyword.Entwine",
     "Ability.AdditionalCost",
     "Ability.FreeCast",
+    "Ability.AltCast",
     "Ability.CastOnly",
     "Condition.AdditionalCostPaid",
     "Keyword.Flashback",
@@ -954,6 +955,7 @@ mod tests {
     #[case::mayhem("Keyword.Mayhem", true)]
     #[case::disturb("Keyword.Disturb", true)]
     #[case::a_conditional_free_cast("Ability.FreeCast", true)]
+    #[case::an_alternative_cost_of_the_table("Ability.AltCast", true)]
     #[case::ninjutsu("Keyword.Ninjutsu", true)]
     #[case::joining_an_attack("Effect.JoinAttack", true)]
     #[case::echo("Keyword.Echo", true)]

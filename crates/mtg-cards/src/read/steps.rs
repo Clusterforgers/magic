@@ -21,7 +21,7 @@ pub(super) fn label(ability: &Ability) -> String {
         Ability::Replacement { .. } => "replacement effect".to_owned(),
         Ability::CostModifier { .. } => "cost change".to_owned(),
         Ability::AdditionalCost { .. } => "additional cost".to_owned(),
-        Ability::FreeCast { .. } => "alternative cost".to_owned(),
+        Ability::FreeCast { .. } | Ability::AltCast { .. } => "alternative cost".to_owned(),
         Ability::CastOnly { .. } => "casting restriction".to_owned(),
         Ability::Keyword(keyword) => format!("keyword {}", parts::keyword(&ctx, keyword)),
         Ability::Manual { .. } => "played by hand".to_owned(),
@@ -250,6 +250,26 @@ fn costs(ability: &Ability, depth: u8, out: &mut Vec<Step>) {
             ));
             gate(&ctx, "if", condition.as_ref(), depth, out);
         }
+        Ability::AltCast {
+            cost,
+            condition,
+            from,
+            ..
+        } => {
+            let by = cost.as_ref().map_or_else(String::new, |cost| {
+                format!(" by paying {}", parts::cost(&ctx, cost))
+            });
+            let place = if from.is_hand() {
+                String::new()
+            } else {
+                format!(" from {from:?}")
+            };
+            out.push(Step::new(
+                depth,
+                format!("may be cast{place} in place of its mana cost{by}"),
+            ));
+            gate(&ctx, "if", condition.as_ref(), depth, out);
+        }
         Ability::CastOnly { condition } => {
             out.push(Step::new(
                 depth,
@@ -329,6 +349,7 @@ mod tests {
             r#"{"CostModifier":{"applies_to":[{"Type":"Creature"}],"change":"Reduce","mana":"{1}"}}"#,
             r#"{"AdditionalCost":{"cost":[{"PayLife":2}],"required":true}}"#,
             r#"{"FreeCast":{}}"#,
+            r#"{"AltCast":{"way":"Surge","cost":[{"Mana":"{1}{R}"}]}}"#,
             r#"{"CastOnly":{"condition":"YourTurn"}}"#,
         ] {
             let parsed: Ability = serde_json::from_str(json).unwrap();

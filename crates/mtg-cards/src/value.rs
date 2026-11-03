@@ -105,6 +105,14 @@ pub enum CastWay {
     FaceDown,
     /// Mutate (CR 702.140): a creature spell cast from a hand for its mutate cost that targets a non-Human creature with the same owner and merges with it as it resolves.
     Mutate,
+    /// Warp (the alternative cost table): a card cast from a hand for its warp cost, which its abilities read as "if its warp cost was paid".
+    Warp,
+    /// Surge: a spell cast from a hand for its surge cost after the caster cast another spell this turn.
+    Surge,
+    /// Web-slinging: a spell cast from a hand for its web-slinging cost, which returns a tapped creature the caster controls.
+    WebSlinging,
+    /// Impending: a permanent spell cast from a hand for its impending cost; it enters with time counters and is no creature while it has one.
+    Impending,
     /// Without paying its mana cost, by a permission or an effect (CR 118.9).
     Free,
     /// Emerge (CR 702.119): from a hand for its emerge cost and the sacrifice of a creature, reduced by that creature's mana value.
@@ -836,6 +844,10 @@ mod tests {
     #[case::harmonize(CastWay::Harmonize, true)]
     #[case::mutate(CastWay::Mutate, true)]
     #[case::face_down(CastWay::FaceDown, true)]
+    #[case::warp(CastWay::Warp, true)]
+    #[case::surge(CastWay::Surge, true)]
+    #[case::web_slinging(CastWay::WebSlinging, true)]
+    #[case::impending(CastWay::Impending, true)]
     #[case::free(CastWay::Free, true)]
     #[case::jump_start(CastWay::JumpStart, false)]
     #[case::retrace(CastWay::Retrace, false)]
