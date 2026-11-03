@@ -468,6 +468,8 @@ impl Registry {
             ),
         }
         .map_err(RecipeError::from)?;
+        let mut decks = decks;
+        crate::seat_deck::unify_reads(decks.iter_mut().flatten()).map_err(RecipeError::from)?;
         let held: Vec<&ChosenDeck> = decks
             .iter()
             .map(|deck| deck.as_ref().unwrap_or(&stand_in))

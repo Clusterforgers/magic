@@ -1,0 +1,29 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT retired FROM card_drafts WHERE oracle_id = $1 AND read_hash = $2",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "retired",
+        "type_info": "Bool",
+        "origin": {
+          "Table": {
+            "table": "card_drafts",
+            "name": "retired"
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Uuid",
+        "Text"
+      ]
+    },
+    "nullable": [
+      false
+    ]
+  },
+  "hash": "12c357f688b44f3495b6c4d669d8787fe63883b748bace9d1e42ac4fe63c717c"
+}

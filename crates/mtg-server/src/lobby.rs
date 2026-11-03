@@ -275,6 +275,30 @@ impl<S: EventStore> GameActor<S> {
         )
     }
 
+    /// Puts every seat on one definition per card before the game starts, so the one recipe, the fingerprints and a
+    /// resume agree; false only when a deck cannot be fingerprinted.
+    fn unify_decks(&mut self) -> bool {
+        let Some(decks) = self.decks.as_mut() else {
+            return true;
+        };
+        match decks.unify() {
+            Ok(changed) => {
+                for (seat, deck) in changed {
+                    if let Some(player) = self.setup.players.get_mut(seat) {
+                        player.library = deck.cards().to_vec();
+                        player.commanders = deck.commanders().to_vec();
+                        player.companion = deck.companion().cloned();
+                    }
+                }
+                true
+            }
+            Err(error) => {
+                tracing::error!(game = %self.id, %error, "the seats could not be put on one set of card definitions");
+                false
+            }
+        }
+    }
+
     /// Starts fetching the pictures of the cards the seats play, in the background.
     fn warm_images(&self) {
         let Some(recorder) = &self.recorder else {
@@ -292,6 +316,11 @@ impl<S: EventStore> GameActor<S> {
     ///
     /// If anything fails the lobby stays as it was, so a repeated `Ready` retries.
     async fn start(&mut self, trigger: PlayerId) -> Result<(), Fatal> {
+        if !self.unify_decks() {
+            let reason = "the game could not be started";
+            self.refuse(trigger, Rejection::new(ErrorCode::Internal, reason));
+            return Ok(());
+        }
         let (Ok(engine), Ok(before)) = (
             Engine::new(self.setup.clone()),
             GameState::from_setup(&self.setup),

@@ -1,4 +1,4 @@
-//! Goal: the server loads the current drafts with their read state into the library of a game: a trusted Forge draft (source `forge`, Oracle text matched) is played automatically as `forge`, a draft a player approved as `read`, any other draft and any draft with a `wrong` verdict by hand; a game pins the drafts it plays in its recipe, so a verdict never changes a game that runs, its resume builds the same cards, and a pinned draft that is gone fails the game; the next game after a `wrong` verdict is played by hand; an ability the game leaves to the table records the server's own `wrong`; and a fix mark on a card that runs on a read records the account's `wrong`.
+//! Goal: the server loads the current drafts with their read state into the library of a game: a trusted Forge draft (source `forge`, Oracle text matched) is played automatically as `forge`, a draft a player approved as `read`, any other draft and any draft with a `wrong` verdict by hand; a game pins the drafts it plays in its recipe, so a verdict never changes a game that runs, its resume builds the same cards, and a pinned draft that is gone fails the game; seats that chose under different draft states play one definition per card, so the game resumes; a draft load that failed is not kept as current; the next game after a `wrong` verdict is played by hand; an ability the game leaves to the table records the server's own `wrong`; and a fix mark on a card that runs on a read records the account's `wrong`.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::common;
@@ -17,6 +17,7 @@ use mtg_server::{
     CardSource, DeckRef, GameId, GameRecipe, GameRecords, RecordStatus, Registry, ServerConfig,
     migrate, printed_card,
 };
+use net::lobby;
 use net::{PASSWORD, TestServer, bot_config, register};
 use serde_json::{Value, json};
 use sqlx::PgPool;
@@ -450,4 +451,144 @@ async fn a_fix_mark_on_a_card_played_by_hand_records_no_verdict(pool: PgPool) {
         .await
         .unwrap();
     assert_eq!(verdicts, 0);
+}
+
+// ---- seats that chose under different draft states ----
+
+/// What happens to the draft of [`CARD`] between the two seats' choices.
+#[derive(Clone, Copy, Debug)]
+enum Between {
+    /// The first seat chose while the draft was unread (by hand); a player approves it before the second seat chooses.
+    Approved,
+    /// The first seat chose on an approved draft (pinned); a player finds it wrong before the second seat chooses.
+    FoundWrong,
+}
+
+/// A modern deck of Forests and four copies of [`CARD`].
+fn explorers() -> Value {
+    let line = |name: &str, count: u32| json!({"zone": "main", "oracle_id": id_of(name), "printing_id": null, "count": count});
+    json!({"name": "Explorers", "format": "freeform", "notes": "",
+           "cards": [line("Forest", 56), line(CARD, 4)]})
+}
+
+async fn lobby_server(pool: &PgPool) -> TestServer {
+    TestServer::start_with_cards(pool.clone(), bot_config(), source(pool)).await
+}
+
+async fn store(server: &TestServer, who: &net::Browser) -> String {
+    let reply = who
+        .post(server.addr, "/api/decks", &explorers().to_string())
+        .await;
+    assert_eq!(reply.status, 201, "{}", reply.text());
+    reply.json()["id"].as_str().unwrap().to_owned()
+}
+
+/// Two accounts each play a stored deck holding the card, choosing before and after `between` happens to its draft.
+/// The game starts, its recipe builds, and a restarted server resumes it with the very state it had.
+async fn seats_choose_under_different_drafts(pool: PgPool, between: Between) {
+    let db = seeded(&pool).await;
+    let key = draft(&db, SOURCE_SWEEP, false, false).await;
+    if matches!(between, Between::FoundWrong) {
+        verdict(&db, &key, Verdict::Correct, Some(1)).await;
+    }
+    let mut server = lobby_server(&pool).await;
+    let ann = register(server.addr, "ann", PASSWORD).await;
+    let bo = register(server.addr, "bob", PASSWORD).await;
+    let ann_deck = store(&server, &ann).await;
+    let bo_deck = store(&server, &bo).await;
+    let body = json!({"format": "normal", "visibility": "public", "held": 1,
+                      "seats": [{"name": "ann", "deck": "mono-green"}, {"deck": "mono-red"}]});
+    let game = ann.create_game(server.addr, &body).await.0;
+    let chosen = ann
+        .put(
+            server.addr,
+            &format!("/api/games/{game}/seats/0/deck"),
+            &json!({ "deck": ann_deck }).to_string(),
+        )
+        .await;
+    assert_eq!(chosen.status, 200, "{}", chosen.text());
+
+    match between {
+        Between::Approved => verdict(&db, &key, Verdict::Correct, Some(1)).await,
+        Between::FoundWrong => verdict(&db, &key, Verdict::Wrong, Some(2)).await,
+    }
+    let joined = bo
+        .post(
+            server.addr,
+            &format!("/api/games/{game}/join"),
+            &json!({ "deck": bo_deck }).to_string(),
+        )
+        .await;
+    assert_eq!(joined.status, 200, "{}", joined.text());
+
+    lobby::start(&server.registry, &game, 2).await;
+    let id: GameId = game.parse().unwrap();
+    let record = GameRecords::new(pool.clone())
+        .get(id)
+        .await
+        .unwrap()
+        .unwrap();
+    assert_eq!(
+        record.recipe["reads"],
+        json!({ id_of(CARD): key.read_hash }),
+        "one draft for the card in the whole game ({between:?})"
+    );
+    // Every seat's fingerprint matches the one definition per card.
+    let recipe: GameRecipe = serde_json::from_value(record.recipe.clone()).unwrap();
+    let catalog = source(&pool).catalog_for(&recipe).await.unwrap();
+    recipe.build_with(&catalog).unwrap();
+
+    let handle = server.registry.handle(id).unwrap();
+    let before = handle.status().await.unwrap();
+    server.shutdown();
+    server.finished().await.unwrap();
+    drop(handle);
+    drop(server);
+
+    let restarted = lobby_server(&pool).await;
+    let handle = restarted.registry.handle(id).expect("the game came back");
+    let after = handle.status().await.unwrap();
+    assert_eq!(after.state_hash, before.state_hash, "{between:?}");
+    let record = GameRecords::new(pool).get(id).await.unwrap().unwrap();
+    assert_eq!(record.status, RecordStatus::Running, "{between:?}");
+}
+
+#[sqlx::test(migrations = false)]
+async fn a_card_approved_between_two_seats_choices_is_one_definition_for_both_and_the_game_resumes(
+    pool: PgPool,
+) {
+    seats_choose_under_different_drafts(pool, Between::Approved).await;
+}
+
+#[sqlx::test(migrations = false)]
+async fn a_card_found_wrong_between_two_seats_choices_is_one_definition_for_both_and_the_game_resumes(
+    pool: PgPool,
+) {
+    seats_choose_under_different_drafts(pool, Between::FoundWrong).await;
+}
+
+#[sqlx::test(migrations = false)]
+async fn a_draft_load_that_failed_is_not_kept_as_current(pool: PgPool) {
+    let db = seeded(&pool).await;
+    let key = draft(&db, SOURCE_SWEEP, false, false).await;
+    verdict(&db, &key, Verdict::Correct, Some(1)).await;
+    let source = source(&pool);
+    assert_eq!(support(&source).await, Support::Read);
+
+    // The version still reads while the drafts cannot: the library of that moment has no draft.
+    let broken = [
+        "ALTER TABLE card_drafts RENAME COLUMN rules TO rules_away",
+        "ALTER TABLE card_drafts RENAME COLUMN rules_away TO rules",
+    ];
+    sqlx::query(broken[0]).execute(&pool).await.unwrap();
+    verdict(&db, &key, Verdict::Correct, Some(5)).await;
+    assert_eq!(support(&source).await, Support::Manual);
+
+    // Nothing else changes, and the next read of the drafts succeeds: the card is a read again.
+    sqlx::query(broken[1]).execute(&pool).await.unwrap();
+    assert_eq!(
+        support(&source).await,
+        Support::Read,
+        "not cached as current"
+    );
 }
