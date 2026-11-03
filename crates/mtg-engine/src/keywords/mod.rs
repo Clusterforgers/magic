@@ -21,7 +21,9 @@ mod c6_kw_renown;
 mod c9_emerge_emerge;
 mod c9_emerge_harmonize;
 mod cascade;
+mod bargain;
 mod casualty;
+mod conspire;
 mod changeling;
 mod choose_a_background;
 pub(crate) mod cipher;
@@ -502,6 +504,8 @@ fn rules_of_later(keyword: &Keyword) -> &'static dyn KeywordRules {
         Keyword::Backup { .. } => &backup::Backup,
         Keyword::Devour { .. } => &devour::Devour,
         Keyword::Casualty(_) => &casualty::Casualty,
+        Keyword::Bargain => &bargain::Bargain,
+        Keyword::Conspire => &conspire::Conspire,
         Keyword::Demonstrate => &demonstrate::Demonstrate,
         Keyword::Hideaway(_) => &hideaway::Hideaway,
         Keyword::Gift(_) => &gift::Gift,
@@ -882,6 +886,8 @@ mod tests {
                 of: Selector::default(),
             },
             Keyword::Casualty(2),
+            Keyword::Bargain,
+            Keyword::Conspire,
             Keyword::Offspring(cost()),
             Keyword::Demonstrate,
             Keyword::Hideaway(4),
@@ -1015,6 +1021,8 @@ mod tests {
         "Keyword.Backup",
         "Keyword.Devour",
         "Keyword.Casualty",
+        "Keyword.Bargain",
+        "Keyword.Conspire",
         "Keyword.Offspring",
         "Keyword.Demonstrate",
         "Keyword.Hideaway",
@@ -1220,6 +1228,8 @@ mod tests {
     #[case::backup(Keyword::Backup { count: 1, abilities: vec![] }, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::devour(Keyword::Devour { counters: 2, of: Selector::default() }, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::casualty(Keyword::Casualty(2), Hooks { abilities: 1, ..Hooks::none() })]
+    #[case::bargain(Keyword::Bargain, Hooks::none())]
+    #[case::conspire(Keyword::Conspire, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::demonstrate(Keyword::Demonstrate, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::hideaway(Keyword::Hideaway(4), Hooks { abilities: 1, ..Hooks::none() })]
     #[case::gift(Keyword::Gift(GiftKind::Card), Hooks { abilities: 1, ..Hooks::none() })]
@@ -1265,6 +1275,8 @@ mod tests {
                 ("Entwine", false, OptionalKind::Entwine),
                 ("Squad", true, OptionalKind::Kicker),
                 ("Casualty", false, OptionalKind::Additional),
+                ("Bargain", false, OptionalKind::Additional),
+                ("Conspire", false, OptionalKind::Additional),
                 ("Offspring", false, OptionalKind::Additional),
                 ("Gift a card", false, OptionalKind::Gift),
                 ("Replicate", true, OptionalKind::Kicker),

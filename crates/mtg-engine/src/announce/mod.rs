@@ -719,6 +719,9 @@ mod through_engine;
 mod kicks;
 
 #[cfg(test)]
+mod cost_keywords;
+
+#[cfg(test)]
 mod mode_costs;
 
 #[cfg(test)]

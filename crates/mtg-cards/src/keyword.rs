@@ -270,6 +270,10 @@ pub enum Keyword {
     },
     /// Casualty N (CR 702.153): as an additional cost to cast the spell, its caster may sacrifice a creature with power N or greater; when they cast it, if they did, they copy it.
     Casualty(u32),
+    /// Bargain (CR 702.166): as an additional cost to cast the spell, its caster may sacrifice an artifact, enchantment or token.
+    Bargain,
+    /// Conspire (CR 702.78): as an additional cost to cast the spell, its caster may tap two untapped creatures they control that share a color with it; when they cast it, if they did, they copy it.
+    Conspire,
     /// Offspring with its cost (CR 702.175): the caster may pay it in addition as they cast the spell; when the creature enters, if they did, they create a 1/1 token copy of it.
     Offspring(Cost),
     /// Demonstrate (CR 702.144): when the spell is cast, its caster may copy it and, if they do, choose an opponent who also copies it.
@@ -482,6 +486,8 @@ impl Keyword {
         "Backup",
         "Devour",
         "Casualty",
+        "Bargain",
+        "Conspire",
         "Offspring",
         "Demonstrate",
         "Hideaway",
@@ -638,6 +644,8 @@ impl Keyword {
             Keyword::Backup { .. } => "Backup",
             Keyword::Devour { .. } => "Devour",
             Keyword::Casualty(_) => "Casualty",
+            Keyword::Bargain => "Bargain",
+            Keyword::Conspire => "Conspire",
             Keyword::Offspring(_) => "Offspring",
             Keyword::Demonstrate => "Demonstrate",
             Keyword::Hideaway(_) => "Hideaway",
@@ -687,7 +695,11 @@ impl Keyword {
     pub const fn has_additional_cost(&self) -> bool {
         matches!(
             self,
-            Keyword::Casualty(_) | Keyword::Offspring(_) | Keyword::Gift(_)
+            Keyword::Casualty(_)
+                | Keyword::Bargain
+                | Keyword::Conspire
+                | Keyword::Offspring(_)
+                | Keyword::Gift(_)
         )
     }
 
@@ -839,6 +851,8 @@ mod tests {
                 of: Selector::default(),
             },
             Keyword::Casualty(2),
+            Keyword::Bargain,
+            Keyword::Conspire,
             Keyword::Offspring(Cost::default()),
             Keyword::Demonstrate,
             Keyword::Hideaway(4),

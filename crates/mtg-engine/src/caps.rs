@@ -472,6 +472,8 @@ const RUNS: &[&str] = &[
     "Keyword.Backup",
     "Keyword.Devour",
     "Keyword.Casualty",
+    "Keyword.Bargain",
+    "Keyword.Conspire",
     "Keyword.Offspring",
     "Keyword.Demonstrate",
     "Keyword.Hideaway",
@@ -973,6 +975,8 @@ mod tests {
     #[case::backup("Keyword.Backup", true)]
     #[case::devour("Keyword.Devour", true)]
     #[case::casualty("Keyword.Casualty", true)]
+    #[case::bargain("Keyword.Bargain", true)]
+    #[case::conspire("Keyword.Conspire", true)]
     #[case::demonstrate("Keyword.Demonstrate", true)]
     #[case::hideaway("Keyword.Hideaway", true)]
     #[case::gift("Keyword.Gift", true)]
