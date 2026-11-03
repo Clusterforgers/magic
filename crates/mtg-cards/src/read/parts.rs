@@ -160,9 +160,14 @@ pub(super) fn trigger(ctx: &Ctx, when: &TriggerPattern) -> String {
             format!("{} attacks alone", phrase::selector(ctx, what))
         }
         TriggerPattern::Blocks { what } => format!("{} blocks", phrase::selector(ctx, what)),
-        TriggerPattern::BecomesBlocked { what } => {
+        TriggerPattern::BecomesBlocked { what, by } if by.0.is_empty() => {
             format!("{} becomes blocked", phrase::selector(ctx, what))
         }
+        TriggerPattern::BecomesBlocked { what, by } => format!(
+            "{} becomes blocked by {}",
+            phrase::selector(ctx, what),
+            phrase::selector(ctx, by)
+        ),
         TriggerPattern::SpellCast { what, by } => {
             let spell = phrase::selector(ctx, what);
             let spell = if what.0.is_empty() {

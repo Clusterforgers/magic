@@ -34,6 +34,39 @@ pub const KEYWORDS: &[Entry] = &[
             {"CreateToken":{"token":{"Custom":{"name":"Warrior","colors":["Red"],"types":["Creature"],"subtypes":["Warrior"],"power":1,"toughness":1}},"count":$N,"tapped":true,"attacking":true,"as":"warriors"}},
             {"DelayedTrigger":{"when":{"StepBegins":{"step":"End"}},"effects":[{"Sacrifice":{"filter":[{"Is":{"Bound":"warriors"}}],"count":$N}}]}}]}}]"#,
     },
+    Entry {
+        name: "flanking",
+        template: r#"[{"Triggered":{"when":{"BecomesBlocked":{"what":["This"],"by":[{"Not":{"HasKeyword":{"Macro":{"name":"flanking","amount":0}}}}]}},"effects":[{"Continuous":{"affected":"Dealer","mods":[{"ModifyPT":{"power":-1,"toughness":-1}}],"duration":"UntilEndOfTurn"}}]}}]"#,
+    },
+    Entry {
+        name: "firebending",
+        template: r#"[{"Triggered":{"when":{"Attacks":{"what":["This"]}},"effects":[{"AddMana":{"mana":{"Fixed":["Red"]},"times":$N,"lasts":"Combat"}}]}}]"#,
+    },
+    Entry {
+        name: "soulshift",
+        template: r#"[{"Triggered":{"when":{"ZoneChange":{"what":["This"],"from":"Battlefield","to":"Graveyard"}},"targets":[{"what":{"Object":[{"Subtype":"Spirit"},{"In":"Graveyard"},{"OwnedBy":"You"},{"Compare":{"stat":"ManaValue","op":"Le","to":$N}}]}}],
+             "effects":[{"May":{"effects":[{"Move":{"what":{"Target":0},"to":"Hand"}}]}}]}}]"#,
+    },
+    Entry {
+        name: "bloodthirst",
+        template: r#"[{"Replacement":{"when":{"Enters":{"what":["This"]}},"by":{"WithCounters":{"counter":"+1/+1","count":$N}},
+             "condition":{"Compare":{"left":{"Tallied":{"who":"Opponents","what":"DamageTaken"}},"op":"Ge","right":1}}}}]"#,
+    },
+    Entry {
+        name: "training",
+        template: r#"[{"Triggered":{"when":{"Attacks":{"what":["This"]}},
+             "if":{"Compare":{"left":{"Count":["Attacking",{"Compare":{"stat":"Power","op":"Gt","to":{"Stat":{"of":"This","stat":"Power"}}}}]},"op":"Ge","right":1}},
+             "effects":[{"PutCounters":{"on":"This","counter":"+1/+1","count":1}}]}}]"#,
+    },
+    Entry {
+        name: "ingest",
+        template: r#"[{"Triggered":{"when":{"DealsDamage":{"source":["This"],"to":"EachPlayer","combat":true}},"effects":[{"ExileTop":{"who":"Triggering","as":"ingested"}}]}}]"#,
+    },
+    Entry {
+        name: "unleash",
+        template: r#"[{"Replacement":{"when":{"Enters":{"what":["This"]}},"by":{"MayWithCounters":{"counter":"+1/+1","count":1}}}},
+            {"Static":{"affected":"This","mods":["CantBlock"],"condition":{"Compare":{"left":{"Counters":{"on":"This","counter":"+1/+1"}},"op":"Ge","right":1}}}}]"#,
+    },
 ];
 
 /// The keyword actions that expand into effects: populate, endure and earthbend.
@@ -63,6 +96,11 @@ fn find(table: &'static [Entry], name: &str) -> Option<&'static Entry> {
     table
         .iter()
         .find(|entry| entry.name.eq_ignore_ascii_case(name))
+}
+
+/// Whether the keyword prints a number after its name ("Bushido 2"); one that does not ("Flanking") has the amount 0.
+pub fn takes_number(name: &str) -> bool {
+    find(KEYWORDS, name).is_some_and(|entry| entry.template.contains("$N"))
 }
 
 /// Whether a keyword macro of that name exists.
@@ -131,6 +169,9 @@ mod tests {
     #[case::bushido_three("Bushido", 3)]
     #[case::modular("modular", 2)]
     #[case::mobilize("mobilize", 4)]
+    #[case::firebending("firebending", 2)]
+    #[case::soulshift("soulshift", 3)]
+    #[case::bloodthirst("bloodthirst", 2)]
     fn a_keyword_carries_its_number(#[case] name: &str, #[case] amount: u32) {
         let json = serde_json::to_string(&keyword_abilities(name, amount).unwrap()).unwrap();
         assert!(json.contains(&amount.to_string()), "{json}");
@@ -150,7 +191,7 @@ mod tests {
     }
 
     #[rstest]
-    #[case::unknown("flanking")]
+    #[case::unknown("rampage")]
     #[case::empty("")]
     fn an_unknown_name_expands_to_nothing(#[case] name: &str) {
         assert!(

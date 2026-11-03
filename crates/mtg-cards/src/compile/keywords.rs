@@ -213,6 +213,8 @@ const KEYWORDS: &[(&str, Params)] = &[
     ("devour", Params::Counted),
     ("frenzy", Params::Number),
     ("mobilize", Params::Number),
+    ("firebending", Params::Number),
+    ("ingest", Params::None),
     ("saddle", Params::Number),
     ("saddled", Params::None),
     ("station", Params::None),
@@ -447,13 +449,23 @@ pub fn read(item: &str) -> Option<Keyword> {
             ]),
             cost,
         }),
-        name if crate::macros::is_keyword(name) => positive(rest).map(|amount| Keyword::Macro {
-            name: name.to_owned(),
-            amount,
-        }),
+        name if crate::macros::is_keyword(name) => macro_keyword(name, rest),
         name if rest.is_empty() => plain(name),
         _ => None,
     }
+}
+
+/// A keyword of the macro table: its number, or nothing after the name for one that prints none.
+fn macro_keyword(name: &str, rest: &str) -> Option<Keyword> {
+    let amount = if crate::macros::takes_number(name) {
+        positive(rest)?
+    } else {
+        rest.is_empty().then_some(0)?
+    };
+    Some(Keyword::Macro {
+        name: name.to_owned(),
+        amount,
+    })
 }
 
 /// `Devour 2`, `Devour artifact 1`, `Devour Food 3`: the counters for each permanent and what may be sacrificed.
@@ -949,6 +961,13 @@ mod tests {
     #[case::bushido_capitals("bushido 3", "bushido", 3)]
     #[case::modular("Modular 2", "modular", 2)]
     #[case::mobilize("Mobilize 4", "mobilize", 4)]
+    #[case::firebending("Firebending 2", "firebending", 2)]
+    #[case::soulshift("Soulshift 3", "soulshift", 3)]
+    #[case::bloodthirst("Bloodthirst 1", "bloodthirst", 1)]
+    #[case::flanking("Flanking", "flanking", 0)]
+    #[case::training("training", "training", 0)]
+    #[case::unleash("Unleash", "unleash", 0)]
+    #[case::ingest("Ingest", "ingest", 0)]
     fn a_keyword_of_the_macro_table_reads_with_its_number(
         #[case] item: &str,
         #[case] name: &str,
@@ -968,6 +987,8 @@ mod tests {
     #[case::no_number("Bushido")]
     #[case::zero("Modular 0")]
     #[case::a_cost("Mobilize {2}")]
+    #[case::soulshift_without("Soulshift")]
+    #[case::a_number_on_flanking("Flanking 1")]
     fn a_macro_keyword_without_a_number_reads_as_no_keyword(#[case] item: &str) {
         assert_eq!(read(item), None);
     }

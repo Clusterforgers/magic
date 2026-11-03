@@ -28,16 +28,22 @@ pub fn keyword_action(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         });
         return macros::action_effects("earthbend", amount, &Ref::Target(0));
     }
-    if r.source() {
+    // "~ endures 2.", "target creature endures 2.", "it endures 2."
+    r.attempt(|r| {
+        let (on, many) = super::effects::subject(r)?;
+        (!many && matches!(on, Ref::This | Ref::Target(_) | Ref::Triggering)).then_some(())?;
         r.word("endures").then_some(())?;
         let amount = r.number().filter(|n| *n > 0)?;
-        return macros::action_effects("endure", amount, &Ref::This);
-    }
-    None
+        macros::action_effects("endure", amount, &on)
+    })
 }
 
-/// The words of the table entry the effects begin with, and how many effects they are.
-pub fn text(effects: &[Effect]) -> Option<(String, usize)> {
+/// The words of the table entry the effects begin with, and how many effects they are; `say` words the object an
+/// endure works on when it is not the card itself.
+pub fn text(
+    effects: &[Effect],
+    mut say: impl FnMut(&Ref) -> Option<String>,
+) -> Option<(String, usize)> {
     let found = |name: &str, on: &Ref| {
         (1..=MOST).find_map(|amount| {
             let steps = macros::action_effects(name, amount, on)?;
@@ -47,7 +53,12 @@ pub fn text(effects: &[Effect]) -> Option<(String, usize)> {
     if let Some((amount, len)) = found("earthbend", &Ref::Target(0)) {
         return Some((format!("earthbend {amount}"), len));
     }
-    found("endure", &Ref::This).map(|(amount, len)| (format!("~ endures {amount}"), len))
+    [Ref::This, Ref::Target(0), Ref::Triggering]
+        .iter()
+        .find_map(|on| {
+            let (amount, len) = found("endure", on)?;
+            Some((format!("{} endures {amount}", say(on)?), len))
+        })
 }
 
 #[cfg(test)]
@@ -69,13 +80,13 @@ mod tests {
             Ref::Target(0)
         };
         let steps = macros::action_effects(name, amount, &on).unwrap();
-        let (words, len) = text(&steps).unwrap();
+        let (words, len) = text(&steps, |_| Some("target creature".to_owned())).unwrap();
         assert_eq!(len, steps.len());
         assert!(words.ends_with(&amount.to_string()), "{words}");
     }
 
     #[test]
     fn effects_of_no_action_have_no_words() {
-        assert!(text(&[Effect::Proliferate { who: Ref::You }]).is_none());
+        assert!(text(&[Effect::Proliferate { who: Ref::You }], |_| None).is_none());
     }
 }

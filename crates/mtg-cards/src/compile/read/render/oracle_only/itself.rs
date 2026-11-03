@@ -38,7 +38,7 @@ fn about_itself(pattern: &TriggerPattern) -> bool {
     match pattern {
         TriggerPattern::Tapped { what }
         | TriggerPattern::Blocks { what }
-        | TriggerPattern::BecomesBlocked { what }
+        | TriggerPattern::BecomesBlocked { what, .. }
         | TriggerPattern::TappedForMana { what, .. } => what.0 == [Pred::This],
         TriggerPattern::AnyOf(events) => events.iter().all(about_itself),
         _ => false,

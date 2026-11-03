@@ -458,6 +458,10 @@ impl<'a> Walker<'a> {
             | Pred::SameCard(r) => {
                 self.reference(r, Kind::Object);
             }
+            // Asking for a macro keyword does not give the abilities it expands to (Flanking asks for Flanking).
+            Pred::HasKeyword(keyword @ Keyword::Macro { .. }) => {
+                self.uses("Keyword", &tag_of(keyword));
+            }
             Pred::HasKeyword(keyword) => self.keyword(keyword),
             Pred::Named(name) => self
                 .names
@@ -1158,7 +1162,9 @@ impl<'a> Walker<'a> {
     /// A keyword macro: a name in the table, a number of at least 1, and the abilities it expands to.
     fn keyword_macro(&mut self, name: &str, amount: u32) {
         match crate::macros::keyword_abilities(name, amount) {
-            _ if amount == 0 => self.problem(format!("{name} needs a number of at least 1")),
+            _ if amount == 0 && crate::macros::takes_number(name) => {
+                self.problem(format!("{name} needs a number of at least 1"));
+            }
             None => self.problem(format!("`{name}` is not a keyword macro")),
             Some(abilities) => {
                 for ability in &abilities {
@@ -1444,6 +1450,12 @@ impl<'a> Walker<'a> {
         self.w11a_pattern_used(pattern);
     }
 
+    /// A creature that becomes blocked, and the blockers that count.
+    fn becomes_blocked(&mut self, what: &Selector, by: &Selector) {
+        self.at("what", |w| w.selector(what));
+        self.at("by", |w| w.selector(by));
+    }
+
     fn trigger_pattern(&mut self, pattern: &TriggerPattern) {
         self.dk1c5_pattern(pattern);
         match pattern {
@@ -1528,12 +1540,12 @@ impl<'a> Walker<'a> {
             | TriggerPattern::PhasedOut { what }
             | TriggerPattern::PhasedIn { what }
             | TriggerPattern::Blocks { what }
-            | TriggerPattern::BecomesBlocked { what }
             | TriggerPattern::Unblocked { what }
             | TriggerPattern::CountersPut { what, .. }
             | TriggerPattern::CountersRemoved { what, .. } => {
                 self.at("what", |w| w.selector(what));
             }
+            TriggerPattern::BecomesBlocked { what, by } => self.becomes_blocked(what, by),
             TriggerPattern::Attached { what, to } => self.w11b_attached(what, to),
             TriggerPattern::GroupAttacks { .. } | TriggerPattern::Chapter { .. } => {
                 self.w2e_counted(pattern);
@@ -3339,6 +3351,7 @@ impl Walker<'_> {
             | ReplaceBy::PayLifeOrTapped(_)
             | ReplaceBy::TappedForCounters { .. }
             | ReplaceBy::RevealOrTapped(_)
+            | ReplaceBy::MayWithCounters { .. }
             | ReplaceBy::Riot
             | ReplaceBy::DayIfNeither
             | ReplaceBy::EntersPrepared

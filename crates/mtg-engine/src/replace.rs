@@ -598,6 +598,7 @@ fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
         }
         ReplaceBy::Tapped
         | ReplaceBy::WithCounters { .. }
+        | ReplaceBy::MayWithCounters { .. }
         | ReplaceBy::Choose(_)
         | ReplaceBy::PayLifeOrTapped(_)
         | ReplaceBy::TappedForCounters { .. }
@@ -1522,6 +1523,7 @@ impl Pass<'_> {
                             ReplaceBy::Tapped
                                 | ReplaceBy::Choose(_)
                                 | ReplaceBy::WithCounters { .. }
+                                | ReplaceBy::MayWithCounters { .. }
                                 | ReplaceBy::Devour { .. }
                                 | ReplaceBy::Riot
                                 | ReplaceBy::DayIfNeither
@@ -2342,31 +2344,18 @@ impl Pass<'_> {
                 count,
                 tapped: and_tapped,
             } => {
-                let scope = Scope::announcing(self.state, candidate.controller, candidate.object);
-                let number = scope.amount(count)?.max(0);
-                if let (Some(card), Ok(delta)) = (self.state.object(object), i32::try_from(number))
-                    && delta > 0
-                {
-                    // The counters go on the permanent the card becomes (CR 400.7).
-                    let on = Target::Object(ObjectRef {
-                        id: object,
-                        counter: card.counter() + 1,
-                    });
-                    let mut inherited = applied.clone();
-                    inherited.dedup();
-                    let follow = Slot {
-                        item: Item::One(Event::CountersChanged(CountersChanged {
-                            on,
-                            counter: counter.clone(),
-                            delta,
-                        })),
-                        applied: inherited,
-                        frozen: false,
-                    };
-                    self.slots.insert(at + 1, follow);
-                }
+                self.enter_with_counters(at, candidate, object, counter, count, &applied)?;
                 if *and_tapped {
                     tapped(self, at);
+                }
+            }
+            ReplaceBy::MayWithCounters { counter, count } => {
+                match self.takes_counters(source, controller)? {
+                    Asked::Ask(decision) => return Ok(Applied::Ask(decision)),
+                    Asked::Got(true) => {
+                        self.enter_with_counters(at, candidate, object, counter, count, &applied)?;
+                    }
+                    Asked::Got(false) => {}
                 }
             }
             ReplaceBy::PayLifeOrTapped(life) => {
@@ -2707,6 +2696,63 @@ impl Pass<'_> {
             }
             Some(other) => Err(Self::invalid(format!(
                 "{other:?} is no answer to the commander question of {owner:?}"
+            ))),
+        }
+    }
+
+    /// Adds the event that puts `count` counters of the kind on the permanent `object` becomes, after its enter event at `at`.
+    fn enter_with_counters(
+        &mut self,
+        at: usize,
+        candidate: &Candidate,
+        object: ObjectId,
+        counter: &CounterKind,
+        count: &mtg_cards::value::Amount,
+        applied: &[Origin],
+    ) -> Result<(), EngineError> {
+        let scope = Scope::announcing(self.state, candidate.controller, candidate.object);
+        let number = scope.amount(count)?.max(0);
+        if let (Some(card), Ok(delta)) = (self.state.object(object), i32::try_from(number))
+            && delta > 0
+        {
+            // The counters go on the permanent the card becomes (CR 400.7).
+            let on = Target::Object(ObjectRef {
+                id: object,
+                counter: card.counter() + 1,
+            });
+            let mut inherited = applied.to_vec();
+            inherited.dedup();
+            let follow = Slot {
+                item: Item::One(Event::CountersChanged(CountersChanged {
+                    on,
+                    counter: counter.clone(),
+                    delta,
+                })),
+                applied: inherited,
+                frozen: false,
+            };
+            self.slots.insert(at + 1, follow);
+        }
+        Ok(())
+    }
+
+    /// Whether `controller` has the permanent enter with counters: asked yes or no.
+    fn takes_counters(
+        &mut self,
+        source: ObjectId,
+        controller: PlayerId,
+    ) -> Result<Asked<bool>, EngineError> {
+        match self.answer() {
+            None => Ok(Asked::Ask(Decision {
+                player: controller,
+                kind: DecisionKind::YesNo(YesNoOptions::new(
+                    source,
+                    "Have it enter with the counters?".to_owned(),
+                )),
+            })),
+            Some((who, Choice::YesNo(yes))) if *who == controller => Ok(Asked::Got(*yes)),
+            Some(other) => Err(Self::invalid(format!(
+                "{other:?} is no answer to the counters of {controller:?}"
             ))),
         }
     }

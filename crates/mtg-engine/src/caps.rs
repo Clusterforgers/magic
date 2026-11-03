@@ -432,6 +432,7 @@ const RUNS: &[&str] = &[
     "ReplaceBy.PreventAllBut",
     "ReplaceBy.Tapped",
     "ReplaceBy.WithCounters",
+    "ReplaceBy.MayWithCounters",
     "ReplaceBy.Choose",
     "ReplaceBy.PayLifeOrTapped",
     "ReplaceBy.TappedForCounters",
@@ -658,6 +659,7 @@ mod tests {
     #[case::moving_instead("ReplaceBy.MoveTo", true)]
     #[case::entering_tapped("ReplaceBy.Tapped", true)]
     #[case::entering_with_counters("ReplaceBy.WithCounters", true)]
+    #[case::entering_with_counters_by_choice("ReplaceBy.MayWithCounters", true)]
     #[case::choosing_as_it_enters("ReplaceBy.Choose", true)]
     #[case::paying_life_or_entering_tapped("ReplaceBy.PayLifeOrTapped", true)]
     #[case::doing_something_instead("ReplaceBy.Instead", true)]

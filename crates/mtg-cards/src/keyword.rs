@@ -341,7 +341,7 @@ pub enum Keyword {
         #[serde(default, skip_serializing_if = "std::ops::Not::not")]
         once_per_turn: bool,
     },
-    /// A keyword the macro table expands into abilities of existing nodes (`macros::KEYWORDS`: Bushido, Modular, Mobilize), with its number.
+    /// A keyword the macro table expands into abilities of existing nodes (`macros::KEYWORDS`), with its number (0 for a keyword that prints none).
     Macro {
         /// The name in the table.
         name: String,
