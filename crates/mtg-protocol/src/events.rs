@@ -67,6 +67,11 @@ pub enum HiddenEvent {
     },
     /// A card the viewer could not see left the game with its owner.
     ObjectLeftGame,
+    /// A source remembered objects the viewer cannot identify; how many is all that shows.
+    Remembered {
+        /// Objects added to the slot.
+        count: u32,
+    },
     /// A player looked at cards in a library; which, only they know.
     LibraryLooked {
         /// Who looked.
@@ -270,6 +275,7 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         | Event::Scried(_)
         | Event::Surveilled(_)
         | Event::ZoneChanged { .. }
+        | Event::Remembered(_)
         | Event::ChoiceMade { .. }
         | Event::StepDone { .. } => redact_effects(before, event, viewer),
         // A card moved by hand is named unless it goes between places the viewer cannot see into, as `ZoneChanged` does.
@@ -351,7 +357,6 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         | Event::CardCopied(_)
         | Event::CopyCeased { .. }
         | Event::AbilityCopied(_)
-        | Event::Remembered(_)
         | Event::CopyEnded { .. }
         | Event::Entered { .. }
         | Event::Attached { .. }
@@ -453,6 +458,17 @@ fn redact_effects(before: &GameState, event: &Event, viewer: PlayerId) -> Option
             Some(HiddenEvent::CardsFound {
                 player: found.player,
                 count: count(found.cards.len()),
+            })
+        }
+        // A memory of cards the viewer cannot see names no id, as `ZoneChanged` names none.
+        Event::Remembered(change)
+            if !change
+                .objects
+                .iter()
+                .all(|object| knows(before, object.id, viewer)) =>
+        {
+            Some(HiddenEvent::Remembered {
+                count: count(change.objects.len()),
             })
         }
         Event::Scried(scried) if scried.player != viewer => Some(HiddenEvent::Scried {
@@ -873,6 +889,31 @@ mod tests {
     /// What `viewer` is told of `event`: `Err` with the hidden form, `Ok` when it is the event as logged.
     fn told(state: &GameState, event: &Event, viewer: PlayerId) -> Result<(), HiddenEvent> {
         redact(state, event, viewer).map_or(Ok(()), Err)
+    }
+
+    /// A memory names the cards it holds only to a viewer who can identify them all; others learn how many.
+    #[test]
+    fn a_memory_of_cards_the_viewer_cannot_see_names_no_id() {
+        let t = table();
+        let remember = |object: ObjectId| {
+            let source = t.state.object(t.creature).unwrap().reference();
+            let held = t.state.object(object).unwrap().reference();
+            Event::Remembered(Box::new(mtg_engine::memory::Remembered {
+                source,
+                slot: "s".to_owned(),
+                objects: vec![held],
+                replace: false,
+            }))
+        };
+        let hidden = Err(HiddenEvent::Remembered { count: 1 });
+        for (object, owner, other) in [
+            (t.hand, Ok(()), hidden.clone()),
+            (t.library, hidden.clone(), hidden),
+            (t.creature, Ok(()), Ok(())),
+        ] {
+            assert_eq!(told(&t.state, &remember(object), OWNER), owner);
+            assert_eq!(told(&t.state, &remember(object), OTHER), other);
+        }
     }
 
     /// A search tells the viewer which cards it found in a zone the viewer sees into and only how many in any other.

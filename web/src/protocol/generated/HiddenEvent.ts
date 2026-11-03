@@ -49,7 +49,11 @@ player: PlayerId,
 /**
  * Cards placed.
  */
-count: number, } } | "ObjectLeftGame" | { "LibraryLooked": { 
+count: number, } } | "ObjectLeftGame" | { "Remembered": { 
+/**
+ * Objects added to the slot.
+ */
+count: number, } } | { "LibraryLooked": { 
 /**
  * Who looked.
  */

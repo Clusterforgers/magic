@@ -460,6 +460,7 @@ const HIDDEN: Record<VariantName<HiddenEvent>, [HiddenEvent, string]> = {
     'Bo puts 1 card on the bottom of their library',
   ],
   ObjectLeftGame: ['ObjectLeftGame', 'A card leaves the game'],
+  Remembered: [{ Remembered: { count: 1 } }, 'A source remembers objects'],
   LibraryLooked: [{ LibraryLooked: { player: 1, count: 2 } }, 'Bo looks at 2 cards of their library'],
   CardsFound: [{ CardsFound: { player: 1, count: 1 } }, 'Bo finds 1 card'],
   Scried: [{ Scried: { player: 1, top: 1, bottom: 1 } }, 'Bo scries 2'],

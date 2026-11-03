@@ -75,6 +75,18 @@ const fn unpaid(item: &CostItem) -> &'static str {
     }
 }
 
+/// Whether the amount is worked out from X (twice X, half of X), which no value stands for before X is announced.
+fn builds_on_x(amount: &Amount) -> bool {
+    match amount {
+        Amount::X => true,
+        Amount::Sum(parts) => parts.iter().any(builds_on_x),
+        Amount::Times { of, .. } | Amount::Half { of, .. } | Amount::EvenShare(of) => {
+            builds_on_x(of)
+        }
+        _ => false,
+    }
+}
+
 impl Price {
     /// The price of a cost paid in the middle of a resolution, or the name of the first part the engine does not pay:
     /// another kind of cost, a part that needs the announcement of an ability to pick what it takes, an `{X}`
@@ -108,7 +120,9 @@ impl Price {
                 let Some(amount) = item.amount_mut() else {
                     continue;
                 };
-                if matches!(amount, Amount::Fixed(_) | Amount::X) {
+                // An amount built on X has no value before X is announced: left as it is, the engine refuses to pay it
+                // rather than count it as 0 and make the part free.
+                if matches!(amount, Amount::Fixed(_) | Amount::X) || builds_on_x(amount) {
                     continue;
                 }
                 if let Ok(number) = scope.amount(amount)
@@ -468,5 +482,24 @@ mod tests {
             .collect();
         assert_eq!(sources.len(), 1);
         assert!(!sources.contains(&rock));
+    }
+
+    #[rstest]
+    #[case::twice_x(r#"[{"PayLife":{"Times":{"by":2,"of":"X"}}}]"#, false)]
+    #[case::x_and_one(r#"[{"PayEnergy":{"Sum":["X",1]}}]"#, false)]
+    #[case::half_of_x(r#"[{"Mill":{"Half":{"of":"X","up":true}}}]"#, false)]
+    #[case::plain_x(r#"[{"PayLife":"X"}]"#, true)]
+    #[case::a_count_settled_on_announcing(
+        r#"[{"PayLife":{"Counters":{"on":"This","counter":"charge"}}}]"#,
+        true
+    )]
+    fn an_amount_built_on_x_is_refused_not_settled_to_nothing(
+        #[case] json: &str,
+        #[case] priced: bool,
+    ) {
+        let game = state(vec![vec![], vec![]], vec![vec![], vec![]]);
+        let cost = cost(json);
+        let result = Price::announced_in(&cost, &game, PlayerId(0), ObjectId(0));
+        assert_eq!(result.is_ok(), priced, "{result:?}");
     }
 }

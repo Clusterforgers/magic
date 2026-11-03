@@ -107,7 +107,7 @@ fn nothing_begins_on_the_battlefield_while_a_seat_still_decides(
             .all(|decision| matches!(decision.kind, DecisionKind::Mulligan(_))),
         "no opening-hand question while a seat decides"
     );
-    assert!(driver.state().zone(Zone::Battlefield).is_empty());
+    assert_eq!(driver.state().zone(Zone::Battlefield), []);
     assert!(asked.iter().all(|decision| decision.player != first));
     // Once the last seat keeps, the one seat with such cards is asked.
     driver.answer(Answer::Mulligan(MulliganChoice::Keep))?;

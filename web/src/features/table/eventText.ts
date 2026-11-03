@@ -975,6 +975,7 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
 
 function describeHidden(event: HiddenEvent, n: EventNames): LogLine {
   if (typeof event === 'string') return quiet('A card leaves the game')
+  if ('Remembered' in event) return quiet('A source remembers objects')
   if ('CardDrawn' in event) return line(`${n.seat(event.CardDrawn.player)} draws a card`)
   if ('HandDealt' in event)
     return line(`${n.seat(event.HandDealt.player)} is dealt ${cards(event.HandDealt.count)}`)
