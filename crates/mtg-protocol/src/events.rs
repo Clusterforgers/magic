@@ -286,6 +286,7 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         | Event::FirstPlayerChosen { .. }
         | Event::MulliganPhaseBegan
         | Event::MulliganDeclared { .. }
+        | Event::OpeningCardsPlayed { .. }
         | Event::MulliganKept { .. }
         | Event::MulliganPhaseEnded
         | Event::TurnBegan { .. }
@@ -350,6 +351,7 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         | Event::CardCopied(_)
         | Event::CopyCeased { .. }
         | Event::AbilityCopied(_)
+        | Event::Remembered(_)
         | Event::CopyEnded { .. }
         | Event::Entered { .. }
         | Event::Attached { .. }
@@ -1334,6 +1336,7 @@ mod tests {
                 when: TriggerPattern::AnyOf(Vec::new()),
                 once: true,
                 this_turn: false,
+                targets: Vec::new(),
                 effects: Vec::new(),
                 bindings: vec![("card".to_owned(), vec![Target::Object(reference)])],
             }))

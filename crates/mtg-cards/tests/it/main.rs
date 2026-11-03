@@ -17,6 +17,7 @@ mod deck_read;
 mod deck_report;
 mod deck_table;
 mod fixture_real;
+mod forge_tier;
 mod generated;
 mod hand_written;
 mod linked_exile;

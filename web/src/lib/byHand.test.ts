@@ -18,6 +18,7 @@ const counts = (found: Partial<Counts>): Counts => ({
   total: 100,
   verified: 100,
   read: 0,
+  forge: 0,
   partial: 0,
   manual: 0,
   stale: 0,
@@ -55,6 +56,7 @@ describe('the words', () => {
   it.each<[Support, boolean]>([
     ['verified', true],
     ['read', true],
+    ['forge', true],
     ['partial', false],
     ['manual', false],
     ['stale', false],

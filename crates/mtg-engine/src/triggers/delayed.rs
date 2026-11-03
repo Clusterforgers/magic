@@ -6,7 +6,7 @@ use std::sync::Arc;
 use mtg_cards::ability::Ability;
 use mtg_cards::effect::Effect;
 use mtg_cards::modify::Duration;
-use mtg_cards::refs::ZoneKind;
+use mtg_cards::refs::{TargetSpec, ZoneKind};
 use mtg_cards::trigger::TriggerPattern;
 use mtg_core::ids::PlayerId;
 use serde::{Deserialize, Serialize};
@@ -47,6 +47,10 @@ pub struct DelayedCreated {
     /// Whether it waits only until the end of the turn it was set up in, also when it triggers once.
     #[serde(default)]
     pub this_turn: bool,
+    /// The targets it chooses as it goes on the stack (a reflexive trigger).
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[cfg_attr(feature = "ts", ts(type = "unknown"))]
+    pub targets: Vec<TargetSpec>,
     /// What it does.
     #[cfg_attr(feature = "ts", ts(type = "unknown"))]
     pub effects: Vec<Effect>,
@@ -170,7 +174,7 @@ pub(crate) fn fold_created(
             intervening_if: None,
             limit: None,
             from: ZoneKind::Battlefield,
-            targets: Vec::new(),
+            targets: created.targets.clone(),
             effects: created.effects.clone(),
         }),
         bindings,
@@ -237,6 +241,7 @@ mod tests {
                 who: Ref::You,
                 amount: mtg_cards::value::Amount::Fixed(1),
             }],
+            targets: Vec::new(),
             bindings,
         }
     }

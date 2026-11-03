@@ -31,6 +31,7 @@ fn stat_word(stat: StatKind) -> &'static str {
         StatKind::Loyalty => "loyalty",
         StatKind::Colors => "colors",
         StatKind::BasicLandTypes => "basic land types",
+        StatKind::BasePower => "base power",
     }
 }
 
@@ -478,6 +479,16 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
             },
             false,
         ),
+        TriggerPattern::Did {
+            action, who: by, ..
+        } => {
+            let (name, s) = who(by);
+            let (plural, singular) = action.verbs();
+            (
+                format!("{name} {}", if s.is_empty() { plural } else { singular }),
+                false,
+            )
+        }
         TriggerPattern::Proliferated { who: by } => {
             let (name, s) = who(by);
             (format!("{name} proliferate{s}"), false)
@@ -669,10 +680,17 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
         TriggerPattern::Blocks { what } => {
             (format!("{} blocks", subject(what)), what.0 == [Pred::This])
         }
-        TriggerPattern::BecomesBlocked { what } => (
-            format!("{} becomes blocked", subject(what)),
-            what.0 == [Pred::This],
-        ),
+        TriggerPattern::BecomesBlocked { what, by } => {
+            let blocker = if by.is_empty() {
+                String::new()
+            } else {
+                format!(" by {}", subject(by))
+            };
+            (
+                format!("{} becomes blocked{blocker}", subject(what)),
+                what.0 == [Pred::This],
+            )
+        }
         TriggerPattern::Unblocked { what } => (
             format!("{} attacks and isn't blocked", subject(what)),
             what.0 == [Pred::This],
@@ -928,6 +946,9 @@ pub(crate) const ENCHANT: &str = "Choose what the Aura enchants.";
 
 /// What a scry asks about the cards looked at.
 pub(crate) const SCRY: &str = "Put any number of the cards on the bottom of your library.";
+
+/// The question about cards that may begin the game on the battlefield.
+pub(crate) const OPENING_HAND: &str = "Choose the cards to begin the game on the battlefield.";
 
 /// What a surveil asks about the cards looked at.
 pub(crate) const SURVEIL: &str = "Put any number of the cards into your graveyard.";

@@ -5,6 +5,8 @@ mod combat;
 mod crew_record;
 #[cfg(test)]
 mod entered;
+#[cfg(test)]
+mod fe1a_atoms;
 mod opening;
 mod resolution;
 #[cfg(test)]
@@ -61,6 +63,7 @@ pub fn apply_event(state: &mut GameState, event: &Event) -> Result<(), EngineErr
     }
     w2c_note_destroyed(state, event);
     w14b_note_exiled(state, event);
+    crate::memory::forget_object(state, event);
     let folded = fold_event(state, event);
     // A read in the middle of the fold saw the state before the rest of the event: forget it.
     if changes_layers {
@@ -83,6 +86,7 @@ fn fold_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         | Event::MulliganTaken { .. }
         | Event::MulliganKept { .. }
         | Event::CardsBottomed { .. }
+        | Event::OpeningCardsPlayed { .. }
         | Event::MulliganPhaseEnded => opening::apply(state, event),
         Event::LandPlayed { .. }
         | Event::SpellCast { .. }
@@ -147,6 +151,10 @@ fn fold_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         Event::CardCopied(copy) => crate::copies::fold_card(state, copy),
         Event::CopyCeased { object } => crate::copies::fold_card_ceased(state, *object),
         Event::AbilityCopied(copy) => crate::copies::fold_ability(state, copy),
+        Event::Remembered(change) => {
+            crate::memory::fold(state, change);
+            Ok(())
+        }
         ended @ Event::CopyEnded { .. } => crate::copies::fold_ended(state, ended),
         Event::Prepared { object } => set_prepared(state, *object, true),
         Event::Unprepared { object } => set_prepared(state, *object, false),

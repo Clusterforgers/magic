@@ -148,6 +148,8 @@ async fn a_wrong_draft_changes_nothing_and_a_draft_read_on_an_old_hash_waits_aga
         oracle_id: pyroblast.oracle_id.clone(),
         read_hash: "0123456789abcdef0123456789abcdef".to_owned(),
         rules,
+        source: "sweep".to_owned(),
+        oracle_matches: false,
     };
     db.drafts()
         .insert(std::slice::from_ref(&old))

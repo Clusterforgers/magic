@@ -18,6 +18,11 @@ verified: number,
  */
 read: number, 
 /**
+ * Copies of `forge` cards: trusted translations of Forge scripts, which the game runs like `read` ones. A check
+ * stored before this tier has none.
+ */
+forge: number, 
+/**
  * Copies of `partial` cards.
  */
 partial: number, 

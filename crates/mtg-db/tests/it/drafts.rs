@@ -61,6 +61,8 @@ async fn a_draft_reads_back_exactly_as_it_was_written(pool: PgPool) {
         read_hash: hash(1),
         rules: row.rules,
         retired: false,
+        source: "sweep".into(),
+        oracle_matches: false,
     };
     assert_eq!(
         database.drafts().current().await.unwrap(),

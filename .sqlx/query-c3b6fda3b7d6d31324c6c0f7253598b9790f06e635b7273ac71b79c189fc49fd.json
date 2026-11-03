@@ -1,0 +1,18 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "INSERT INTO card_drafts (oracle_id, read_hash, rules, source, oracle_matches)\n                 VALUES ($1, $2, $3, $4, $5)\n                 ON CONFLICT (oracle_id, read_hash) DO UPDATE SET retired = false\n                 WHERE card_drafts.retired",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Uuid",
+        "Text",
+        "Jsonb",
+        "Text",
+        "Bool"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "c3b6fda3b7d6d31324c6c0f7253598b9790f06e635b7273ac71b79c189fc49fd"
+}

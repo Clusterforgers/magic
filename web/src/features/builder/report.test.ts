@@ -67,8 +67,15 @@ describe('arrange', () => {
 
 describe('the order of the states', () => {
   it('goes from the worst to verified, and every state but verified gets a mark', () => {
-    expect(SUPPORT_ORDER).toEqual(['unplayable', 'manual', 'stale', 'partial', 'read', 'verified'])
-    expect(SUPPORT_ORDER.filter(isIssue)).toEqual(['unplayable', 'manual', 'stale', 'partial', 'read'])
+    expect(SUPPORT_ORDER).toEqual(['unplayable', 'manual', 'stale', 'partial', 'forge', 'read', 'verified'])
+    expect(SUPPORT_ORDER.filter(isIssue)).toEqual([
+      'unplayable',
+      'manual',
+      'stale',
+      'partial',
+      'forge',
+      'read',
+    ])
   })
 })
 

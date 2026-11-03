@@ -63,8 +63,7 @@ pub(super) fn move_object(
     object.exiled_until = None;
     object.encoded_on = None;
     object.monarch_wait = None;
-    object.cast_from_hand = false;
-    object.cast_from_graveyard = false;
+    object.forget_cast(from, to);
     // What the spell paid for stays with the permanent it becomes, for its abilities to read.
     let paid = if from == Zone::Stack && to == Zone::Battlefield {
         std::mem::take(&mut object.choices.optional_costs)
@@ -300,12 +299,14 @@ fn spell_cast(
         spell.choices.clone_from(choices);
         spell.cast_from_hand = matches!(from, Zone::Hand(_));
         spell.cast_from_graveyard = matches!(from, Zone::Graveyard(_));
+        spell.cast = Some((crate::resolve::zone_kind(from), player));
         if choices.way == Some(CastWay::FaceDown) {
             spell.face_down = Some(FaceDown::cast_as(&spell.def));
         }
     }
     note_rebound(state, object, from);
     note_aftermath(state, object, from);
+    state.log_event(mtg_cards::value::TallyEvent::SpellCast, player, object);
     // A spell cast for its flashback cost, or with its buyback cost paid, is moved by a replacement effect.
     let bought_back = state.objects.get(&object).is_some_and(|spell| {
         payments(spell.card(), &choices.optional_costs, OptionalKind::Buyback) > 0

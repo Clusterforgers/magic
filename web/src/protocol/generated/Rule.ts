@@ -34,7 +34,15 @@ who: Array<PlayerId>,
 /**
  * The keyword they have.
  */
-keyword: unknown, } } | { "CantDraw": Array<PlayerId> } | { "CantSearch": Array<PlayerId> } | { "VoteAgain": Array<PlayerId> } | { "SkipExtraTurns": Array<PlayerId> } | { "RevealTop": Array<PlayerId> } | { "NoMaxHandSize": Array<PlayerId> } | { "SkipDrawStep": Array<PlayerId> } | { "LookAtTop": Array<PlayerId> } | { "AdditionalLandPlays": Array<[PlayerId, number]> } | { "MayCast": { 
+keyword: unknown, } } | { "CantDraw": Array<PlayerId> } | { "CantSearch": Array<PlayerId> } | { "VoteAgain": Array<PlayerId> } | { "SkipExtraTurns": Array<PlayerId> } | { "RevealTop": Array<PlayerId> } | { "NoMaxHandSize": Array<PlayerId> } | { "MaxHandSize": Array<[PlayerId, number]> } | { "NoLegendRule": Array<PlayerId> } | { "UntapDuring": { 
+/**
+ * The permanents, judged when the step untaps.
+ */
+what: unknown, 
+/**
+ * The players whose untap steps untap them.
+ */
+whose: Array<PlayerId>, } } | { "SkipDrawStep": Array<PlayerId> } | { "LookAtTop": Array<PlayerId> } | { "AdditionalLandPlays": Array<[PlayerId, number]> } | { "MayCast": { 
 /**
  * The players who may cast.
  */
@@ -70,7 +78,15 @@ once?: boolean,
 /**
  * What the caster pays in addition to the other costs of a cast through it.
  */
-additional?: unknown, } } | { "TriggerAgain": unknown } | { "DamageCantBePrevented": { 
+additional?: unknown, } } | { "TriggerAgain": { 
+/**
+ * The event that causes the trigger.
+ */
+cause: unknown, 
+/**
+ * Only abilities of the permanents it selects trigger again; every permanent of the controller when absent.
+ */
+source: unknown, } } | { "DamageCantBePrevented": { 
 /**
  * The sources, judged when the damage would be dealt.
  */

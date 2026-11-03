@@ -21,6 +21,12 @@ use crate::status::missing_table;
 /// Every file under `drafts/` with its slug (the file name without `.json`), by slug.
 const FILES: &[(&str, &str)] = include!(concat!(env!("OUT_DIR"), "/draft_files.rs"));
 
+/// Every file under `drafts/meta/` with its slug, by slug.
+const META: &[(&str, &str)] = include!(concat!(env!("OUT_DIR"), "/draft_meta.rs"));
+
+/// The folder of the drafts' metadata below the drafts directory.
+pub const META_DIR: &str = "meta";
+
 /// Where `promote --draft` writes, seen from the repository root.
 pub const DEFAULT_DIR: &str = "crates/mtg-cli/drafts";
 
@@ -33,6 +39,39 @@ const INVALID_SHOWN: usize = 20;
 /// The embedded draft files: slug and text, by slug.
 pub fn embedded() -> &'static [(&'static str, &'static str)] {
     FILES
+}
+
+/// The embedded metadata files: slug and text, by slug.
+pub fn embedded_meta() -> &'static [(&'static str, &'static str)] {
+    META
+}
+
+/// Where a draft came from, which `drafts/meta/<slug>.json` and a proposal's `meta/<slug>.json` say; a draft without
+/// a file is a sweep draft whose text was not matched.
+#[derive(Debug, Clone, PartialEq, Eq, Default, serde::Serialize, serde::Deserialize)]
+pub struct DraftMeta {
+    /// Who wrote it: `sweep` or `forge`; none leaves the choice to the caller.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub source: Option<String>,
+    /// The source's Oracle text equals the printed text after normalising; an absent key is false.
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    pub oracle_matches: bool,
+}
+
+impl DraftMeta {
+    /// The metadata a file holds; anything unreadable is the default (a sweep draft).
+    pub fn parse(text: &str) -> DraftMeta {
+        serde_json::from_str(text).unwrap_or_default()
+    }
+
+    /// The source the draft is stored with: the file's, else `fallback`, else `sweep`.
+    pub fn source_or(&self, fallback: Option<&str>) -> String {
+        self.source
+            .as_deref()
+            .or(fallback)
+            .unwrap_or(mtg_db::SOURCE_SWEEP)
+            .to_owned()
+    }
 }
 
 /// Why a draft does not stand for its stored card.
@@ -64,6 +103,7 @@ fn row(printed: &PrintedCard, card: &Card, read: ReadState) -> DraftRules {
         read_hash: read_hash(printed, card),
         rules: serde_json::to_value(card).unwrap_or_default(),
         read,
+        forge: false,
     }
 }
 
@@ -245,6 +285,7 @@ impl DraftCounts {
 /// The drafts of the build that fit a stored card, as rows to store, with the counts of those left out.
 fn fitting(
     files: &[(&str, &str)],
+    meta: &[(&str, &str)],
     library: &Library,
     caps: &Caps,
     cards: &[PrintedCard],
@@ -257,6 +298,10 @@ fn fitting(
         embedded: files.len(),
         ..DraftCounts::default()
     };
+    let metas: BTreeMap<&str, DraftMeta> = meta
+        .iter()
+        .map(|(slug, text)| (*slug, DraftMeta::parse(text)))
+        .collect();
     let mut parsed: Vec<(&PrintedCard, Card, &str)> = Vec::new();
     for (slug, text) in files {
         match serde_json::from_str::<Card>(text) {
@@ -281,10 +326,13 @@ fn fitting(
                 problems: vec![message],
             }),
             None => {
+                let meta = metas.get(slug).cloned().unwrap_or_default();
                 let draft = NewDraft {
                     oracle_id: OracleId(printed.oracle_id.clone()),
                     read_hash: read_hash(printed, card),
                     rules: serde_json::to_value(card).unwrap_or_default(),
+                    source: meta.source_or(None),
+                    oracle_matches: meta.oracle_matches,
                 };
                 put.insert(draft.oracle_id.clone(), draft);
             }
@@ -348,18 +396,19 @@ pub async fn store(
     caps: &Caps,
     cards: &[PrintedCard],
 ) -> Result<DraftCounts, CliError> {
-    store_files(db, embedded(), library, caps, cards).await
+    store_files(db, embedded(), embedded_meta(), library, caps, cards).await
 }
 
 /// [`store`] for these draft files (slug and text) instead of the embedded ones.
 pub async fn store_files(
     db: &Database,
     files: &[(&str, &str)],
+    meta: &[(&str, &str)],
     library: &Library,
     caps: &Caps,
     cards: &[PrintedCard],
 ) -> Result<DraftCounts, CliError> {
-    let (held, mut counts) = fitting(files, library, caps, cards);
+    let (held, mut counts) = fitting(files, meta, library, caps, cards);
     let repo = db.drafts();
     let missing = |error: mtg_db::DbError| {
         if missing_table(&error) {
@@ -408,6 +457,8 @@ mod tests {
             oracle_id: OracleId(id.into()),
             read_hash: hash.into(),
             rules: json!({}),
+            source: "sweep".into(),
+            oracle_matches: false,
         }
     }
 

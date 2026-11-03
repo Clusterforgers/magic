@@ -57,6 +57,7 @@ pub(super) fn who(ctx: &Ctx, reference: &Ref) -> String {
         Ref::MostLife => "the player with the most life".to_owned(),
         Ref::Bound(name) => format!("\u{201c}{name}\u{201d}"),
         Ref::Paid => "what was paid".to_owned(),
+        Ref::Remembered { on, slot } => format!("what {} remembers as {slot}", who(ctx, on)),
         Ref::ControllerOf(inner) => format!("the controller of {}", who(ctx, inner)),
         Ref::OwnerOf(inner) => format!("the owner of {}", who(ctx, inner)),
         Ref::Each(selector) => format!("each {}", self::selector(ctx, selector)),
@@ -373,6 +374,7 @@ fn stat_text(stat: StatKind) -> &'static str {
         StatKind::Loyalty => "loyalty",
         StatKind::Colors => "number of colors",
         StatKind::BasicLandTypes => "number of basic land types",
+        StatKind::BasePower => "base power",
     }
 }
 

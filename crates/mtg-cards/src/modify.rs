@@ -369,6 +369,23 @@ pub enum GameRule {
     LookAtTopAnyTime(Ref),
     /// The players have no maximum hand size (CR 402.2).
     NoMaxHandSize(Ref),
+    /// The players' maximum hand size is `size` (CR 402.2): the least of the sizes in force.
+    MaxHandSize {
+        /// The players.
+        who: Ref,
+        /// The cards they may keep at cleanup.
+        size: Amount,
+    },
+    /// The legend rule (CR 704.5j) does not apply to the legendary permanents of the players.
+    NoLegendRule(Ref),
+    /// The permanents the selector picks that the rule's controller controls untap during the untap step of each of the
+    /// players (CR 502.3): "untap all creatures you control during each other player's untap step".
+    UntapDuring {
+        /// The permanents, among those the rule's controller controls.
+        what: Selector,
+        /// The players whose untap steps untap them.
+        whose: Ref,
+    },
     /// The players skip their draw steps (CR 614.10): the step does not begin on their turns.
     SkipDrawStep(Ref),
     /// The players may play additional lands each of their turns (CR 305.2).
@@ -387,6 +404,9 @@ pub enum GameRule {
     TriggerAgain {
         /// The event that causes the trigger, as a triggered ability describes it.
         cause: TriggerPattern,
+        /// Only abilities of the permanents it selects trigger again; every permanent of the controller when absent.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        source: Option<Selector>,
     },
     /// Cards in graveyards can't be the targets of spells or abilities (CR 115.4).
     GraveyardCardsUntargetable,
@@ -581,7 +601,8 @@ mod tests {
     #[case(GameRule::CountersRemain, r#""CountersRemain""#)]
     #[case(
         GameRule::TriggerAgain {
-            cause: TriggerPattern::Attacks { what: Selector::this() }
+            cause: TriggerPattern::Attacks { what: Selector::this() },
+            source: None
         },
         r#"{"TriggerAgain":{"cause":{"Attacks":{"what":["This"]}}}}"#
     )]
@@ -596,6 +617,22 @@ mod tests {
     #[case(
         GameRule::Cant { who: Ref::You, action: Prohibited::SkipStep(Step::Draw) },
         r#"{"Cant":{"who":"You","action":{"SkipStep":"Draw"}}}"#
+    )]
+    #[case(
+        GameRule::MaxHandSize { who: Ref::You, size: Amount::Fixed(3) },
+        r#"{"MaxHandSize":{"who":"You","size":3}}"#
+    )]
+    #[case(
+        GameRule::NoLegendRule(Ref::EachPlayer),
+        r#"{"NoLegendRule":"EachPlayer"}"#
+    )]
+    #[case(
+        GameRule::UntapDuring { what: Selector::this(), whose: Ref::Opponents },
+        r#"{"UntapDuring":{"what":["This"],"whose":"Opponents"}}"#
+    )]
+    #[case(
+        GameRule::TriggerAgain { cause: TriggerPattern::Attacks { what: Selector::this() }, source: Some(Selector::this()) },
+        r#"{"TriggerAgain":{"cause":{"Attacks":{"what":["This"]}},"source":["This"]}}"#
     )]
     fn a_rule_is_written_with_the_players_or_objects_it_names(
         #[case] rule: GameRule,

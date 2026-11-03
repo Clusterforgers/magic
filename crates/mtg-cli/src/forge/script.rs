@@ -33,6 +33,18 @@ impl Params {
         self
     }
 
+    /// The pairs without those that have one of these keys.
+    #[must_use]
+    pub fn without(&self, keys: &[&str]) -> Params {
+        Params(
+            self.0
+                .iter()
+                .filter(|(key, _)| !keys.contains(&key.as_str()))
+                .cloned()
+                .collect(),
+        )
+    }
+
     /// The value of the first pair with this key.
     pub fn get(&self, key: &str) -> Option<&str> {
         self.0
@@ -194,6 +206,18 @@ pub struct Item {
 pub struct Face {
     /// The `Name:` line.
     pub name: String,
+    /// The `Types:` line.
+    pub types: String,
+    /// The `AlternateMode:` line (`Split`, `Modal`, `DoubleFaced`, `Adventure` and the like).
+    pub alternate_mode: String,
+    /// The `ManaCost:` line.
+    pub mana_cost: String,
+    /// The `Oracle:` line (Forge's rendering of the card's text, only a hint).
+    pub oracle: String,
+    /// The `PT:` line.
+    pub pt: Option<String>,
+    /// The `Colors:` line (tokens).
+    pub colors: Option<String>,
     /// The bodies of the `K:` lines.
     pub keywords: Vec<String>,
     /// The bodies of the `A:` lines.
@@ -233,6 +257,12 @@ impl Script {
             let body = body.trim();
             match tag {
                 "Name" => body.clone_into(&mut face.name),
+                "Types" => body.clone_into(&mut face.types),
+                "AlternateMode" => body.clone_into(&mut face.alternate_mode),
+                "Oracle" => body.clone_into(&mut face.oracle),
+                "ManaCost" => body.clone_into(&mut face.mana_cost),
+                "PT" => face.pt = Some(body.to_owned()),
+                "Colors" => face.colors = Some(body.to_owned()),
                 "K" => face.keywords.push(body.to_owned()),
                 "A" => face.abilities.push(body.to_owned()),
                 "T" => face.triggers.push(body.to_owned()),

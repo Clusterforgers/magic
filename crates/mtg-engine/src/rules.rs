@@ -95,6 +95,19 @@ pub enum Rule {
     RevealTop(Vec<PlayerId>),
     /// The players have no maximum hand size (CR 402.2).
     NoMaxHandSize(Vec<PlayerId>),
+    /// The players' maximum hand size is this many cards (CR 402.2).
+    MaxHandSize(Vec<(PlayerId, u32)>),
+    /// The legend rule does not apply to the players' permanents (CR 704.5j).
+    NoLegendRule(Vec<PlayerId>),
+    /// The permanents the selector picks that the rule's controller controls untap during the untap steps of the players
+    /// (CR 502.3).
+    UntapDuring {
+        /// The permanents, judged when the step untaps.
+        #[cfg_attr(feature = "ts", ts(type = "unknown"))]
+        what: Selector,
+        /// The players whose untap steps untap them.
+        whose: Vec<PlayerId>,
+    },
     /// The players skip their draw steps (CR 614.10).
     SkipDrawStep(Vec<PlayerId>),
     /// The players may look at the top card of their library any time.
@@ -131,7 +144,14 @@ pub enum Rule {
     },
     /// A triggered ability of a permanent the rule's controller controls triggers an additional time when the event
     /// the pattern describes causes it.
-    TriggerAgain(#[cfg_attr(feature = "ts", ts(type = "unknown"))] Box<TriggerPattern>),
+    TriggerAgain {
+        /// The event that causes the trigger.
+        #[cfg_attr(feature = "ts", ts(type = "unknown"))]
+        cause: Box<TriggerPattern>,
+        /// Only abilities of the permanents it selects trigger again; every permanent of the controller when absent.
+        #[cfg_attr(feature = "ts", ts(type = "unknown"))]
+        source: Option<Selector>,
+    },
     /// Damage from the sources can't be prevented (CR 614.17); every source when the selector is empty.
     DamageCantBePrevented {
         /// The sources, judged when the damage would be dealt.
@@ -312,6 +332,9 @@ pub(crate) struct Again {
     pub(crate) controller: PlayerId,
     /// The object that has the rule, for the pattern's `This`.
     pub(crate) source: ObjectRef,
+    /// The permanents whose abilities trigger again; every one of the controller when absent.
+    pub(crate) from: Option<Selector>,
+    /// The event that causes the trigger.
     pub(crate) cause: TriggerPattern,
 }
 
@@ -337,6 +360,9 @@ pub(crate) struct RulesInForce {
     look_top: BTreeSet<PlayerId>,
     extra_lands: BTreeMap<PlayerId, u32>,
     again: Vec<Again>,
+    max_hand: BTreeMap<PlayerId, u32>,
+    no_legend: BTreeSet<PlayerId>,
+    untap_during: Vec<UntapDuring>,
     unpreventable: Vec<Unpreventable>,
     casts: Vec<Cast>,
     taxes: Vec<Taxing>,
@@ -422,6 +448,19 @@ impl Cast {
     }
 }
 
+/// Permanents that untap in other untap steps: whose rule it is, which permanents, and whose steps.
+#[derive(Debug, Clone)]
+pub(crate) struct UntapDuring {
+    /// The player whose permanents untap.
+    pub(crate) controller: PlayerId,
+    /// The object that has the rule.
+    pub(crate) source: ObjectRef,
+    /// The permanents, among those the controller controls.
+    pub(crate) what: Selector,
+    /// The players whose untap steps untap them.
+    pub(crate) whose: Vec<PlayerId>,
+}
+
 /// Damage that can't be prevented: whose rule it is, and which damage it covers.
 #[derive(Debug, Clone)]
 struct Unpreventable {
@@ -451,6 +490,46 @@ impl RulesInForce {
                 .get(player)
                 .map_or(most, |was| (*was).min(most));
             self.block_limit_each.insert(*player, least);
+        }
+    }
+
+    /// Puts a rule about hands, the legend rule or the untap step in force.
+    fn put_option(&mut self, rule: &Rule, controller: PlayerId, source: Option<ObjectRef>) {
+        match rule {
+            Rule::MaxHandSize(sizes) => {
+                for (player, size) in sizes {
+                    let least = self
+                        .max_hand
+                        .get(player)
+                        .map_or(*size, |was| (*was).min(*size));
+                    self.max_hand.insert(*player, least);
+                }
+            }
+            Rule::NoLegendRule(players) => self.no_legend.extend(players),
+            Rule::TriggerAgain {
+                cause,
+                source: from,
+            } => {
+                if let Some(source) = source {
+                    self.again.push(Again {
+                        controller,
+                        source,
+                        from: from.clone(),
+                        cause: (**cause).clone(),
+                    });
+                }
+            }
+            Rule::UntapDuring { what, whose } => {
+                if let Some(source) = source {
+                    self.untap_during.push(UntapDuring {
+                        controller,
+                        source,
+                        what: what.clone(),
+                        whose: whose.clone(),
+                    });
+                }
+            }
+            _ => {}
         }
     }
 
@@ -490,6 +569,9 @@ impl RulesInForce {
             Rule::SkipExtraTurns(players) => self.skip_extra_turns.extend(players),
             Rule::RevealTop(players) => self.reveal_top.extend(players),
             Rule::NoMaxHandSize(players) => self.no_hand_limit.extend(players),
+            Rule::MaxHandSize(_) | Rule::NoLegendRule(_) | Rule::UntapDuring { .. } => {
+                self.put_option(rule, controller, source);
+            }
             Rule::SkipDrawStep(players) => self.skip_draw.extend(players),
             Rule::LookAtTop(players) => self.look_top.extend(players),
             Rule::AdditionalLandPlays(plays) => {
@@ -498,15 +580,7 @@ impl RulesInForce {
                     *total = total.saturating_add(*count);
                 }
             }
-            Rule::TriggerAgain(cause) => {
-                if let Some(source) = source {
-                    self.again.push(Again {
-                        controller,
-                        source,
-                        cause: (**cause).clone(),
-                    });
-                }
-            }
+            Rule::TriggerAgain { .. } => self.put_option(rule, controller, source),
             Rule::DamageCantBePrevented {
                 source: from,
                 combat,
@@ -684,7 +758,13 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
             once: permission.once,
             additional: permission.additional.clone().map(Box::new),
         },
-        GameRule::TriggerAgain { cause } => Rule::TriggerAgain(Box::new(cause.clone())),
+        GameRule::TriggerAgain { cause, source } => Rule::TriggerAgain {
+            cause: Box::new(cause.clone()),
+            source: source.clone(),
+        },
+        GameRule::MaxHandSize { .. } | GameRule::NoLegendRule(_) | GameRule::UntapDuring { .. } => {
+            lower_option(scope, wanted)?
+        }
         GameRule::LookAtTopAnyTime(who) => Rule::LookAtTop(scope.players(who)?),
         GameRule::NoMaxHandSize(who) => Rule::NoMaxHandSize(scope.players(who)?),
         GameRule::SkipDrawStep(who) => Rule::SkipDrawStep(scope.players(who)?),
@@ -710,6 +790,28 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
         | GameRule::CantCastSpells { .. }
         | GameRule::ToughnessAssignsDamage(_)
         | GameRule::CountersRemain => crate::w17b_statics::w17b_lower(scope, wanted)?,
+    })
+}
+
+/// The rules about hands, the legend rule and the untap step, with their players and amounts resolved.
+fn lower_option(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, ResolveError> {
+    Ok(match wanted {
+        GameRule::MaxHandSize { who, size } => {
+            let size = u32::try_from(scope.amount(size)?.max(0)).unwrap_or(u32::MAX);
+            Rule::MaxHandSize(
+                scope
+                    .players(who)?
+                    .into_iter()
+                    .map(|player| (player, size))
+                    .collect(),
+            )
+        }
+        GameRule::NoLegendRule(who) => Rule::NoLegendRule(scope.players(who)?),
+        GameRule::UntapDuring { what, whose } => Rule::UntapDuring {
+            what: what.clone(),
+            whose: scope.players(whose)?,
+        },
+        _ => return Err(ResolveError::Unsupported("Rule")),
     })
 }
 
@@ -745,7 +847,10 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         | Rule::RevealTop(players)
         | Rule::LookAtTop(players)
         | Rule::SkipDrawStep(players)
+        | Rule::NoLegendRule(players)
         | Rule::NoMaxHandSize(players) => players.is_empty(),
+        Rule::MaxHandSize(sizes) => sizes.is_empty(),
+        Rule::UntapDuring { whose, .. } => whose.is_empty(),
         Rule::AttackLimitAt { at, .. } => at.is_empty(),
         Rule::AdditionalLandPlays(plays) => plays.iter().all(|(_, count)| *count == 0),
         Rule::MayCast { who, only, .. } => {
@@ -753,7 +858,7 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         }
         Rule::BlockLimitEach { who, .. } | Rule::PlayersHave { who, .. } => who.is_empty(),
         Rule::Cant { who, .. } => who.is_empty(),
-        Rule::TriggerAgain(_)
+        Rule::TriggerAgain { .. }
         | Rule::DamageCantBePrevented { .. }
         | Rule::Regenerate(_)
         | Rule::AttackLimit(_)
@@ -877,6 +982,9 @@ static NONE: RulesInForce = RulesInForce {
     look_top: BTreeSet::new(),
     extra_lands: BTreeMap::new(),
     again: Vec::new(),
+    max_hand: BTreeMap::new(),
+    no_legend: BTreeSet::new(),
+    untap_during: Vec::new(),
     unpreventable: Vec::new(),
     casts: Vec::new(),
     taxes: Vec::new(),
@@ -1188,6 +1296,50 @@ pub(crate) fn c11b_once_source(
 /// The taxes on attacking in force: the one place the attack declaration reads this rule (`attack_tax`).
 pub(crate) fn attack_taxes(state: &GameState) -> &[Taxing] {
     &state.rules().taxes
+}
+
+/// The maximum hand size of `player` under the rules in force, `base` when no rule sets one: the one place cleanup reads
+/// it, beside `no_max_hand_size`.
+pub(crate) fn max_hand_size(state: &GameState, player: PlayerId, base: usize) -> usize {
+    state
+        .rules()
+        .max_hand
+        .get(&player)
+        .map_or(base, |size| usize::try_from(*size).unwrap_or(usize::MAX))
+}
+
+/// Whether the legend rule does not apply to the permanents `player` controls: the one place the state-based actions
+/// read this rule.
+pub(crate) fn no_legend_rule(state: &GameState, player: PlayerId) -> bool {
+    state.rules().no_legend.contains(&player)
+}
+
+/// The permanents that untap during the untap step of `active` besides its own: those each rule in force selects among
+/// the permanents its controller controls, in battlefield order.
+pub(crate) fn untap_during(state: &GameState, active: PlayerId) -> Vec<ObjectId> {
+    let mut found = Vec::new();
+    for rule in state
+        .rules()
+        .untap_during
+        .iter()
+        .filter(|rule| rule.whose.contains(&active))
+    {
+        let scope = Scope::announcing(state, rule.controller, rule.source);
+        for &id in state.zone(Zone::Battlefield) {
+            let Some(object) = state.object(id) else {
+                continue;
+            };
+            if crate::characteristics::controller_of(state, id) == Some(rule.controller)
+                && !found.contains(&id)
+                && scope
+                    .selects(&rule.what, object.reference())
+                    .unwrap_or(false)
+            {
+                found.push(id);
+            }
+        }
+    }
+    found
 }
 
 /// The triggers that trigger an additional time: the one place trigger detection reads this rule.

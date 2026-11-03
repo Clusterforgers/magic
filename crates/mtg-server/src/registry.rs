@@ -33,6 +33,7 @@ use tokio::sync::watch;
 use tokio::task::JoinHandle;
 
 use crate::actor::{GameConfig, StartError, spawn_named};
+use crate::cards::Reads;
 use crate::cards::{CardSource, CatalogError};
 use crate::config::{Retention, ServerConfig};
 use crate::demo::{self, DemoDeck};
@@ -40,7 +41,7 @@ use crate::game_id::GameId;
 use crate::handle::{GameHandle, GameStatus};
 use crate::images::Warmer;
 use crate::join_code::JoinCode;
-use crate::recipe::{Catalog, FormatKind, GameRecipe, RecipeError};
+use crate::recipe::{Catalog, FormatKind, GameRecipe, RecipeError, merged_reads};
 use crate::recorder::Recorder;
 use crate::records::{
     Binding, GameRecords, NewGame, NewSeat, RecordError, SeatState, UserGame, Visibility,
@@ -478,6 +479,7 @@ impl Registry {
             seed,
             decks: held.iter().map(|deck| deck.reference().clone()).collect(),
             fingerprints: held.iter().map(|deck| *deck.fingerprint()).collect(),
+            reads: merged_reads(held.iter().map(|deck| deck.reads())),
         };
         let libraries = held.iter().map(|deck| deck.cards().to_vec()).collect();
         let commanders = held.iter().map(|deck| deck.commanders().to_vec()).collect();
@@ -514,11 +516,13 @@ impl Registry {
         host: Option<UserId>,
         options: GameOptions,
     ) -> Result<Created, CreateError> {
-        let catalog = match &self.shared.cards {
-            Some(cards) => cards.catalog_for(&recipe).await?,
-            None => Catalog::default(),
+        let ids = recipe.oracle_ids();
+        let (catalog, reads) = match &self.shared.cards {
+            Some(cards) if !ids.is_empty() => cards.catalog_pinned(&ids).await?,
+            _ => (Catalog::default(), Reads::new()),
         };
-        let recipe = recipe.with_fingerprints_from(&catalog)?;
+        let mut recipe = recipe.with_fingerprints_from(&catalog)?;
+        recipe.reads = reads;
         let setup = recipe.build_with(&catalog)?;
         self.admit(setup, names, Some(recipe), host, options, None)
             .await
@@ -623,6 +627,14 @@ impl Registry {
         Ok((id, code))
     }
 
+    /// Where the server's own read verdicts go; none without a card database.
+    pub(crate) fn read_repo(&self) -> Option<mtg_db::ReadRepo> {
+        self.shared
+            .cards
+            .as_ref()
+            .map(|cards| cards.database().reads())
+    }
+
     /// Records the game when it has a recipe and a database, and starts its actor.
     async fn start(
         &self,
@@ -656,7 +668,8 @@ impl Registry {
             .collect();
         records.insert(id, recipe, meta, &rows).await?;
         let recorder = Recorder::new(records.clone(), id, vec![false; slots.len()], false)
-            .with_warmer(self.warmer(), recipe.card_art());
+            .with_warmer(self.warmer(), recipe.card_art())
+            .with_reads(self.read_repo(), recipe.reads.clone());
         let spawned = spawn_named(
             id,
             setup,

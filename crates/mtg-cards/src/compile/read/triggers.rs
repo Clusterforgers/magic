@@ -66,7 +66,7 @@ pub fn itself_acts(pattern: &TriggerPattern) -> bool {
 pub fn event_creature(pattern: &TriggerPattern) -> Option<Ref> {
     let (what, named_by_the_cause) = match pattern {
         TriggerPattern::Attacks { what }
-        | TriggerPattern::BecomesBlocked { what }
+        | TriggerPattern::BecomesBlocked { what, .. }
         | TriggerPattern::Unblocked { what }
         | TriggerPattern::Mutates { what }
         | TriggerPattern::Exerted { what }
@@ -134,7 +134,7 @@ pub fn event_creature(pattern: &TriggerPattern) -> Option<Ref> {
 /// its own, the creature of the event otherwise.
 pub fn event_subject(pattern: &TriggerPattern) -> Option<Ref> {
     let (TriggerPattern::Attacks { what }
-    | TriggerPattern::BecomesBlocked { what }
+    | TriggerPattern::BecomesBlocked { what, .. }
     | TriggerPattern::Unblocked { what }
     | TriggerPattern::Blocks { what }
     | TriggerPattern::ZoneChange { what, .. }) = pattern
@@ -814,7 +814,10 @@ fn verb(r: &mut Reader<'_>, what: &Selector) -> Option<TriggerPattern> {
     } else if r.word("blocks") {
         return Some(TriggerPattern::Blocks { what: what.clone() });
     } else if r.words("becomes blocked") {
-        return Some(TriggerPattern::BecomesBlocked { what: what.clone() });
+        return Some(TriggerPattern::BecomesBlocked {
+            what: what.clone(),
+            by: Selector::default(),
+        });
     } else if r.words("becomes tapped") {
         return Some(TriggerPattern::Tapped { what: what.clone() });
     } else if r.words("phases out") || r.words("phase out") {
@@ -1238,6 +1241,9 @@ pub(super) fn player_verb(by: &Ref, verb: &str) -> Option<String> {
     })
 }
 
+/// The words of a creature that becomes blocked by any creature.
+const BLOCKED: &str = "becomes blocked";
+
 /// The subject of a pattern that is about one thing happening to it, and what happens.
 fn happening(pattern: &TriggerPattern) -> Option<(Selector, String)> {
     let said = |what: &Selector, verb: &str| Some((what.clone(), verb.to_owned()));
@@ -1293,7 +1299,7 @@ fn happening(pattern: &TriggerPattern) -> Option<(Selector, String)> {
             said(what, "attacks you or a planeswalker you control")
         }
         TriggerPattern::Blocks { what } => said(what, "blocks"),
-        TriggerPattern::BecomesBlocked { what } => said(what, "becomes blocked"),
+        TriggerPattern::BecomesBlocked { what, by } if by.0.is_empty() => said(what, BLOCKED),
         TriggerPattern::Unblocked { what } => said(what, "attacks and isn't blocked"),
         TriggerPattern::Tapped { what } => said(what, "becomes tapped"),
         TriggerPattern::Untapped { what } => said(what, "becomes untapped"),

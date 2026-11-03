@@ -32,6 +32,7 @@ mod exile_open;
 mod extra_turn_view;
 mod faces_view;
 mod foretell_view;
+mod forge_wire;
 mod gives_view;
 mod granted_miracle_hidden;
 mod hidden_info;

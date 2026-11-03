@@ -101,7 +101,12 @@ impl Registry {
 
     async fn revive(&self, records: &GameRecords, record: GameRecord) -> Outcome {
         let id = record.id;
-        let unpacked = match decode(&record) {
+        let decoded = decode(&record);
+        let reads = decoded
+            .as_ref()
+            .map(|recipe| recipe.reads.clone())
+            .unwrap_or_default();
+        let unpacked = match decoded {
             Ok(recipe) => match self.catalog_of(&recipe).await {
                 Ok(catalog) => unpack(&record, &recipe, &catalog),
                 Err(unloadable) => Err(unloadable),
@@ -122,7 +127,8 @@ impl Registry {
         let names: Vec<String> = seats.iter().map(|slot| slot.name.clone()).collect();
         let joined = record.seats.iter().map(|seat| seat.joined).collect();
         let recorder = Recorder::new(records.clone(), id, joined, record.manual_play)
-            .with_warmer(self.warmer(), Vec::new());
+            .with_warmer(self.warmer(), Vec::new())
+            .with_reads(self.read_repo(), reads);
         // Replaying a log is where a bug would panic; that must cost one game, not the boot.
         let resuming = tokio::spawn(resume_named(
             records.store(),

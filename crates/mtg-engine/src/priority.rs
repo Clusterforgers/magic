@@ -176,7 +176,7 @@ fn can_activate(
     {
         return false;
     }
-    let Ok(price) = Price::announced(cost) else {
+    let Ok(price) = Price::announced_in(cost, state, player, object.id()) else {
         return false;
     };
     if rules.is_mana_ability() {

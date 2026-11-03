@@ -5,7 +5,10 @@ use mtg_core::color::Color;
 use serde::{Deserialize, Serialize};
 
 use crate::keyword::Keyword;
-use crate::value::{Amount, Cmp, CounterKind, StatKind};
+use crate::value::{Amount, CastWay, Cmp, CounterKind, StatKind};
+
+/// The slot of `Ref::Remembered` that holds what the source exiled (`Pred::ExiledWith` reads it).
+pub const EXILED_SLOT: &str = "exiled";
 
 /// A zone a selector or a pattern can name.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Default, Serialize, Deserialize)]
@@ -86,6 +89,14 @@ pub enum Ref {
     /// The objects picked for the cost of the ability ("the creature tapped to pay it"): their characteristics are those they
     /// have as the ability resolves, and none is named when the cost picks nothing.
     Paid,
+    /// The objects the source named by `on` remembers in `slot` (`Effect::Remember`; the slot `exiled` holds what the source
+    /// exiled), as the objects they are now: one that has changed zones since is another object and drops out.
+    Remembered {
+        /// The object whose memory is read.
+        on: Box<Ref>,
+        /// The name of the memory.
+        slot: String,
+    },
     /// The controller of the referenced object.
     ControllerOf(Box<Ref>),
     /// The owner of the referenced object.
@@ -154,7 +165,8 @@ pub enum Pred {
     /// Is a permanent attached to one of the objects the reference names ("Aura attached to it", "Equipment attached to
     /// equipped creature").
     AttachedTo(Ref),
-    /// Is a card exiled face down by one of the permanents the reference names, which has not left since (hideaway, CR 702.75a).
+    /// Is a card exiled by one of the permanents the reference names, which has not left since: face down by hideaway
+    /// (CR 702.75a), or by any effect of that permanent (CR 607.2a), read from its `exiled` memory.
     ExiledWith(Ref),
     /// Is a creature on the battlefield that one of the cards the reference names is encoded on, which has not left since (cipher, CR 702.99).
     EncodedWith(Ref),
@@ -254,6 +266,37 @@ pub enum Pred {
     /// Is a card in a graveyard that was put there from the battlefield this turn ("creature cards in your graveyard that were
     /// put there from the battlefield this turn").
     GravedThisTurn,
+    /// Is a spell cast, or a permanent that entered as a spell cast, by one of the players `by` names (anyone when absent)
+    /// from the kind of zone `from` (anywhere when absent); a copy or a token was never cast.
+    WasCast {
+        /// The players who cast it.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        by: Option<Ref>,
+        /// The zone it was cast from.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        from: Option<ZoneKind>,
+    },
+    /// Is a spell, or a permanent that entered as a spell, cast for the alternative cost (kicked, flashed back, evoked).
+    CastWith(CastWay),
+    /// Is the top card of its owner's library.
+    TopOfLibrary,
+    /// Is the bottom card of its owner's library.
+    BottomOfLibrary,
+    /// Is an attacking creature blocked by one of the creatures the reference names.
+    BlockedBy(Ref),
+    /// Is a creature blocking one of the creatures the reference names.
+    Blocks(Ref),
+    /// Is a target of one of the spells or abilities on the stack the reference names.
+    TargetedBy(Ref),
+    /// Has the greatest value of the characteristic among the objects the group selector matches (a tie counts for each).
+    GreatestAmong {
+        /// The characteristic compared.
+        stat: StatKind,
+        /// The objects compared; the object itself counts when it matches.
+        group: Selector,
+    },
+    /// Is a card in exile with a time counter on it and suspend (CR 702.62).
+    Suspended,
     /// The predicate is false.
     Not(Box<Pred>),
     /// At least one of the predicates is true.
@@ -428,6 +471,31 @@ mod tests {
         r#"{"Not":{"HasCounter":"poison"}}"#
     )]
     fn predicates_over_counters_have_stable_json(#[case] value: Pred, #[case] json: &str) {
+        assert_eq!(serde_json::to_string(&value).unwrap(), json);
+        assert_eq!(serde_json::from_str::<Pred>(json).unwrap(), value);
+    }
+
+    #[rstest]
+    #[case::any_cast(Pred::WasCast { by: None, from: None }, r#"{"WasCast":{}}"#)]
+    #[case::cast_by_you_from_hand(
+        Pred::WasCast { by: Some(Ref::You), from: Some(ZoneKind::Hand) },
+        r#"{"WasCast":{"by":"You","from":"Hand"}}"#
+    )]
+    #[case::cast_with(Pred::CastWith(CastWay::Flashback), r#"{"CastWith":"Flashback"}"#)]
+    #[case::top(Pred::TopOfLibrary, r#""TopOfLibrary""#)]
+    #[case::bottom(Pred::BottomOfLibrary, r#""BottomOfLibrary""#)]
+    #[case::blocked_by(Pred::BlockedBy(Ref::This), r#"{"BlockedBy":"This"}"#)]
+    #[case::blocks(Pred::Blocks(Ref::This), r#"{"Blocks":"This"}"#)]
+    #[case::targeted_by(Pred::TargetedBy(Ref::Triggering), r#"{"TargetedBy":"Triggering"}"#)]
+    #[case::greatest(
+        Pred::GreatestAmong { stat: StatKind::Power, group: Selector(vec![Pred::Other]) },
+        r#"{"GreatestAmong":{"stat":"Power","group":["Other"]}}"#
+    )]
+    #[case::suspended(Pred::Suspended, r#""Suspended""#)]
+    fn the_cast_library_combat_and_greatest_atoms_have_stable_json(
+        #[case] value: Pred,
+        #[case] json: &str,
+    ) {
         assert_eq!(serde_json::to_string(&value).unwrap(), json);
         assert_eq!(serde_json::from_str::<Pred>(json).unwrap(), value);
     }

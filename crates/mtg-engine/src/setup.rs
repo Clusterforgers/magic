@@ -503,6 +503,7 @@ impl GameState {
             looked_by_hand: Vec::new(),
             revealed_by_hand: Vec::new(),
             notes: Vec::new(),
+            memory: crate::memory::Memory::new(),
         };
         game.note_what_cards_can_do();
         // A commander is moved by a replacement effect and costs a tax, so both are looked for in its game.

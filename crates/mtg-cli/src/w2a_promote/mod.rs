@@ -13,13 +13,13 @@ use mtg_cards::load::{Library, canonical, slug};
 use mtg_cards::proposal::{Verdict, check};
 use mtg_cards::support::{Caps, PrintedCard, Support, support};
 use mtg_cards::{builtin, card::Card};
-use mtg_db::Database;
+use mtg_db::{Database, SOURCE_FORGE, SOURCE_SWEEP};
 
 use crate::args::PromoteArgs;
 use crate::audit::stored_cards;
 use crate::cache::Cache;
 use crate::compile::names_of;
-use crate::drafts::{self, SmokeKind};
+use crate::drafts::{self, DraftMeta, SmokeKind};
 use crate::error::CliError;
 use fixture::{w2a_oracle_cards, w2a_records};
 
@@ -85,6 +85,10 @@ pub struct W2aPromotion {
     pub rules: Card,
     /// Whether it becomes a draft for players to read (an `Unchecked` proposal) and not a corpus card.
     pub draft: bool,
+    /// Who wrote the draft: `sweep` or `forge`; unused for a corpus card.
+    pub source: String,
+    /// The source's Oracle text equals the printed text; with source `forge` the draft runs without a human read.
+    pub oracle_matches: bool,
 }
 
 /// What becomes of one proposal file.
@@ -119,6 +123,8 @@ pub struct W2aBasis<'a> {
     pub partial: bool,
     /// Whether `Unchecked` proposals that are whole cards become drafts.
     pub draft: bool,
+    /// The source of the drafts when a proposal's meta names none (`--source`).
+    pub source: Option<&'a str>,
 }
 
 impl W2aBasis<'_> {
@@ -129,7 +135,12 @@ impl W2aBasis<'_> {
             || self.out.join(W2A_FIXTURES).join(&file).is_file()
     }
 
-    fn decide_one(&self, printed: &PrintedCard, text: &str) -> Result<W2aPromotion, W2aSkip> {
+    fn decide_one(
+        &self,
+        printed: &PrintedCard,
+        text: &str,
+        meta: &DraftMeta,
+    ) -> Result<W2aPromotion, W2aSkip> {
         let slug = slug(&printed.name);
         if self.has_corpus_file(printed, &slug) {
             return Err(W2aSkip::CorpusFile);
@@ -140,8 +151,12 @@ impl W2aBasis<'_> {
         }
         let report = check(text, printed, self.library, self.names, self.caps);
         let verdict = report.verdict();
-        if self.draft && verdict == Verdict::Unchecked {
-            return draft::decide(printed, slug, report);
+        if self.draft {
+            let source = meta.source_or(self.source);
+            let trusted = source == SOURCE_FORGE && meta.oracle_matches;
+            if verdict == Verdict::Unchecked || (trusted && verdict == Verdict::Mismatch) {
+                return draft::decide(printed, slug, report, source, meta.oracle_matches);
+            }
         }
         let (Verdict::Accepted, Some(record), Some(rules)) =
             (verdict, report.support, report.rules)
@@ -161,6 +176,8 @@ impl W2aBasis<'_> {
             state,
             rules,
             draft: false,
+            source: SOURCE_SWEEP.into(),
+            oracle_matches: false,
         })
     }
 }
@@ -182,6 +199,17 @@ pub fn w2a_names_outside(
     corpus: &BTreeSet<String>,
 ) -> bool {
     !library.check_generated(rules, printed, corpus).is_empty()
+}
+
+/// The metadata of a proposal: `meta/<slug>.json` beside the proposal file; none is the default.
+fn proposal_meta(file: &Path, stem: &str) -> DraftMeta {
+    let path = file
+        .parent()
+        .unwrap_or_else(|| Path::new(""))
+        .join("meta")
+        .join(format!("{stem}.json"));
+    std::fs::read_to_string(path)
+        .map_or_else(|_| DraftMeta::default(), |text| DraftMeta::parse(&text))
 }
 
 /// The fixture directory below the `mtg-cards` crate.
@@ -209,7 +237,7 @@ pub fn w2a_decide(basis: &W2aBasis, files: &[(PathBuf, String)]) -> Vec<W2aDecis
         let outcome = if promoted.contains(&printed.oracle_id) {
             Err(W2aSkip::Repeated)
         } else {
-            basis.decide_one(printed, text)
+            basis.decide_one(printed, text, &proposal_meta(file, stem))
         };
         // Drafts are sorted out after the smoke gate: the first one that passes wins.
         if matches!(&outcome, Ok(promotion) if !promotion.draft) {
@@ -415,6 +443,7 @@ pub async fn w2a_promote_against(
         out: &out,
         partial: args.partial,
         draft: args.draft,
+        source: args.source.as_deref(),
     };
     let mut decisions = w2a_decide(&basis, &files);
     let records = w2a_attach_records(&mut decisions, &w2a_oracle_cards(cache)?)?;

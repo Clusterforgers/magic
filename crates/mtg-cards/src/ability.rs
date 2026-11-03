@@ -224,6 +224,9 @@ pub enum Ability {
         /// What must hold as the spell is cast.
         condition: Condition,
     },
+    /// "If this card is in your opening hand, you may begin the game with it on the battlefield." (CR 103.6): the card
+    /// is asked about once its owner has kept a hand.
+    OpeningHand,
     /// A keyword ability; the engine knows what it does.
     Keyword(Keyword),
     /// A clause of the oracle text the data does not model; the table resolves it by hand.

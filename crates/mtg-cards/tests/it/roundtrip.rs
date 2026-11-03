@@ -572,7 +572,11 @@ fn game_rule() -> impl Strategy<Value = GameRule> {
                     additional: None,
                 })
             }),
-        trigger_pattern().prop_map(|cause| GameRule::TriggerAgain { cause }),
+        (trigger_pattern(), proptest::option::of(selector()))
+            .prop_map(|(cause, source)| GameRule::TriggerAgain { cause, source }),
+        (reference(), amount()).prop_map(|(who, size)| GameRule::MaxHandSize { who, size }),
+        reference().prop_map(GameRule::NoLegendRule),
+        (selector(), reference()).prop_map(|(what, whose)| GameRule::UntapDuring { what, whose }),
         (reference(), prohibited()).prop_map(|(who, action)| GameRule::Cant { who, action }),
     ]
 }
@@ -637,7 +641,10 @@ fn trigger_pattern() -> impl Strategy<Value = TriggerPattern> {
         selector().prop_map(|what| TriggerPattern::Tapped { what }),
         (selector(), reference()).prop_map(|(what, by)| TriggerPattern::TappedForMana { what, by }),
         selector().prop_map(|what| TriggerPattern::Blocks { what }),
-        selector().prop_map(|what| TriggerPattern::BecomesBlocked { what }),
+        selector().prop_map(|what| TriggerPattern::BecomesBlocked {
+            what,
+            by: Selector::default()
+        }),
         selector().prop_map(|what| TriggerPattern::Unblocked { what }),
         (selector(), 1u32..5)
             .prop_map(|(what, at_least)| TriggerPattern::GroupAttacks { what, at_least }),
@@ -806,6 +813,8 @@ fn leaf_effect() -> impl Strategy<Value = Effect> {
             }),
         reference().prop_map(|what| Effect::ExileHidden { what }),
         (reference(), reference()).prop_map(|(what, on)| Effect::Encode { what, on }),
+        (reference(), "[a-z]{1,6}").prop_map(|(what, slot)| Effect::Remember { what, slot }),
+        "[a-z]{1,6}".prop_map(|slot| Effect::Forget { slot }),
         (who(), reference(), "[a-z]{1,6}").prop_map(|(who, what, bind)| Effect::CopyCard {
             who,
             what,

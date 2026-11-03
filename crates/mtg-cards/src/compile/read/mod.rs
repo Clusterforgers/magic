@@ -87,6 +87,7 @@ mod group_phrases;
 mod group_pump;
 mod instead_pairs;
 mod joined;
+mod keyword_actions;
 mod kicked_copies;
 mod land_types;
 mod lands;

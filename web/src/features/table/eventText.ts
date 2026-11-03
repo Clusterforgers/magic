@@ -523,6 +523,7 @@ const PIPELINE = [
   'ResolutionBegan',
   'ChoiceMade',
   'StepDone',
+  'Remembered',
   'ResolutionEnded',
   'AbilityLeftToTable',
   'ZoneChanged',
@@ -599,6 +600,7 @@ function describePipeline(event: PipelineEvent, n: EventNames, context?: EventCo
     const { player, choice } = event.ChoiceMade
     return quiet(`${n.seat(player)} ${describeChoice(choice, n)}`)
   }
+  if ('Remembered' in event) return quiet('A source remembers objects')
   if ('StepDone' in event) return quiet('A step of the resolution is done')
   if ('ResolutionEnded' in event) {
     const { object, outcome } = event.ResolutionEnded
@@ -703,6 +705,13 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
   }
   if ('MulliganDeclared' in event) return line(`${n.seat(event.MulliganDeclared.player)} decides to mulligan`)
   if ('MulliganTaken' in event) return line(`${n.seat(event.MulliganTaken.player)} takes a mulligan`)
+  if ('OpeningCardsPlayed' in event) {
+    const { player, cards: begun } = event.OpeningCardsPlayed
+    const names = begun.map((id) => n.card(id)).join(', ')
+    return line(
+      `${n.seat(player)} begins the game with ${names === '' ? 'no cards' : names} on the battlefield`,
+    )
+  }
   if ('MulliganKept' in event) return line(`${n.seat(event.MulliganKept.player)} keeps their hand`)
   if ('CardsBottomed' in event) {
     const { player, cards: bottomed } = event.CardsBottomed

@@ -37,6 +37,10 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
   MulliganDeclared: [{ MulliganDeclared: { player: 1 } }, 'Bo decides to mulligan'],
   MulliganTaken: [{ MulliganTaken: { player: 1, library_order: [] } }, 'Bo takes a mulligan'],
   MulliganKept: [{ MulliganKept: { player: 0 } }, 'Ana keeps their hand'],
+  OpeningCardsPlayed: [
+    { OpeningCardsPlayed: { player: 0, cards: [] } },
+    'Ana begins the game with no cards on the battlefield',
+  ],
   CardsBottomed: [
     { CardsBottomed: { player: 0, cards: [1, 2] } },
     'Ana puts 2 cards on the bottom of their library',
@@ -289,6 +293,17 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
     'Ana chooses Grizzly Bears and Hill Giant',
   ],
   StepDone: [{ StepDone: { position: [1], bound: [], snapshots: [] } }, 'A step of the resolution is done'],
+  Remembered: [
+    {
+      Remembered: {
+        source: { id: 3, counter: 0 },
+        slot: 'exiled',
+        objects: [{ id: 1, counter: 1 }],
+        replace: false,
+      },
+    },
+    'A source remembers objects',
+  ],
   ResolutionEnded: [
     { ResolutionEnded: { object: 4, outcome: 'Resolved' } },
     'Lightning Bolt finishes resolving',
@@ -940,7 +955,10 @@ describe('events with more than one shape', () => {
       ),
       "Ana may cast Grizzly Bears and Hill Giant until the end of their controller's next turn",
     ],
-    [ruleEffect({ TriggerAgain: null }, 'Forever'), 'Triggered abilities trigger an additional time'],
+    [
+      ruleEffect({ TriggerAgain: { cause: null, source: null } }, 'Forever'),
+      'Triggered abilities trigger an additional time',
+    ],
     [
       ruleEffect({ BlockLimitEach: { most: 1, who: [1] } }, 'UntilEndOfCombat'),
       "Bo can't block with more than 1 creature until end of combat",

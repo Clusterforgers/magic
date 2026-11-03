@@ -1,7 +1,7 @@
 /** The precon browser as plain data: a deck's check in words, the filters, the dates and the copyable list. Pure, so tables test it. */
 import { cardsText } from '@/features/decks/format'
 import { BY_HAND, byHandCopies, cardsByHand, runsWhole } from '@/lib/byHand'
-import { cardsOnReads, RUNS_ON_READS } from '@/lib/toRead'
+import { cardsFromForge, cardsOnReads, RUNS_ON_READS } from '@/lib/toRead'
 import { copyText } from '@/features/decks/unvalidated/model'
 import type { FaceTexts, FlaggedCard } from '@/features/decks/unvalidated/model'
 import type { DeckZone, PreconCardView, PreconListItem, PreconView } from '@/protocol/generated'
@@ -107,6 +107,7 @@ export function checkLine(precon: PreconListItem): string {
   const hand = byHandCopies(counts)
   const parts = [
     counts.read > 0 ? cardsOnReads(counts.read) : null,
+    counts.forge > 0 ? cardsFromForge(counts.forge) : null,
     hand > 0 ? `${hand} ${BY_HAND}` : null,
     counts.unplayable > 0 ? `${counts.unplayable} unplayable` : null,
   ].filter((part) => part !== null)

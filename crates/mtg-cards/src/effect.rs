@@ -453,6 +453,21 @@ pub enum Effect {
         /// The creature it is encoded on.
         on: Ref,
     },
+    /// The source remembers the objects `what` names in `slot` (Forge: Remember), added to what the slot holds. The memory
+    /// belongs to the object that is the source of the ability, is part of the game state and ends when that object
+    /// leaves its zone; `Ref::Remembered` reads it. An object that changes zones afterwards is another object and is no
+    /// longer remembered, so name objects after a move (a bound result) to remember where they went.
+    Remember {
+        /// The objects remembered.
+        what: Ref,
+        /// The name of the memory.
+        slot: String,
+    },
+    /// The source forgets everything it remembers in `slot` (Forge: Clear Remembered).
+    Forget {
+        /// The name of the memory.
+        slot: String,
+    },
     /// The player sacrifices permanents they control that match, of their choice.
     Sacrifice {
         /// Who sacrifices.
@@ -1128,6 +1143,16 @@ pub enum Effect {
         /// It waits only until the end of the turn it was set up in ("when you next cast a spell this turn").
         #[serde(default, skip_serializing_if = "is_false")]
         this_turn: bool,
+        /// What it does.
+        effects: Vec<Effect>,
+    },
+    /// A reflexive triggered ability ("when you do", CR 603.12): when the step before it was carried out, a trigger with
+    /// its own `targets` goes on the stack the next time a player would receive priority and runs `effects`; with no
+    /// legal target it is removed.
+    Reflexive {
+        /// The targets, chosen as the trigger goes on the stack.
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        targets: Vec<TargetSpec>,
         /// What it does.
         effects: Vec<Effect>,
     },

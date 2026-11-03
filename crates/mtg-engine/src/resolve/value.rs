@@ -11,7 +11,7 @@ use mtg_cards::ability::Ability;
 use mtg_cards::keyword::Keyword;
 use mtg_cards::refs::{AbilityKind, Pred, Ref, Selector, TargetSpec, Targetable, ZoneKind};
 use mtg_cards::value::{
-    Amount, CastWay, Condition, CounterKind, DayNight, DieResult, StatKind, TurnTally,
+    Amount, CastWay, Condition, CounterKind, DayNight, DieResult, StatKind, TallyEvent, TurnTally,
 };
 use mtg_core::card::{CardType, Subtype};
 use mtg_core::color::Color;
@@ -22,6 +22,7 @@ use thiserror::Error;
 use super::W7D_LEGAL;
 use super::share::{OUTSIDE_A_DIVISION, Share};
 
+mod fe1a_atoms;
 mod soulbond;
 mod w21a_atoms;
 mod w6d_shares;
@@ -35,7 +36,6 @@ use crate::announce::{kicked_with, payments};
 use crate::characteristics::{Characteristics, characteristics, controller_of, seen_as};
 use crate::choose::legal_from;
 use crate::choose::{Choices, Target};
-use crate::combat::AttackTarget;
 use crate::keywords::{self, OptionalKind, gift};
 use crate::layers::{Held, View, outside};
 use crate::object::{Chosen, FaceDown, GameObject, ObjectKind, ObjectRef, PermanentState};
@@ -118,26 +118,26 @@ pub(crate) struct CastTargets<'a> {
 }
 
 /// What is known of an object: the object itself if it is still the one that was named, else how it was.
-struct Seen<'a> {
+pub(super) struct Seen<'a> {
     owner: PlayerId,
     controller: PlayerId,
     zone: Zone,
     kind: ObjectKind,
-    chars: Cow<'a, Characteristics>,
+    pub(super) chars: Cow<'a, Characteristics>,
     tapped: Option<bool>,
     /// The same card, whichever zone it has moved to since: its printed side does not change.
     card: Option<&'a GameObject>,
     /// The keywords it has: where the layers have worked them out, or as its snapshot holds them.
     keywords: Option<&'a [Keyword]>,
     /// The counters on it: its own while it is the object that was named, else those its snapshot holds.
-    counters: Counted<'a>,
+    pub(super) counters: Counted<'a>,
     /// The X it was cast with while it is a spell on the stack, else 0 (CR 202.3e).
     x: u32,
 }
 
 /// The counters of an object that was seen.
 #[derive(Clone, Copy)]
-enum Counted<'a> {
+pub(super) enum Counted<'a> {
     /// The permanent still is the object that was named.
     Live(&'a PermanentState),
     /// How a snapshot recorded them.
@@ -148,7 +148,7 @@ enum Counted<'a> {
 
 impl Counted<'_> {
     /// How many counters of `kind` there are.
-    fn of(self, kind: &CounterKind) -> u32 {
+    pub(super) fn of(self, kind: &CounterKind) -> u32 {
         match self {
             Counted::Live(permanent) => permanent.counters_of(kind),
             Counted::Shot(held) => held
@@ -435,6 +435,62 @@ impl<'a> Scope<'a> {
         Ok(false)
     }
 
+    /// The colors in the identity of the commanders the players `who` names have, each counted once.
+    fn commander_colors(&self, who: &Ref) -> Result<i64, ResolveError> {
+        let mut colors = BTreeSet::new();
+        for player in self.players(who)? {
+            colors.extend(
+                crate::mana_kinds::identity_types(self.state, player)
+                    .into_iter()
+                    .map(|mana| format!("{mana:?}")),
+            );
+        }
+        Ok(i64::try_from(colors.len()).unwrap_or(i64::MAX))
+    }
+
+    /// How many targets the spell that triggered the ability has, each specification's targets counted.
+    fn triggering_targets(&self) -> Result<i64, ResolveError> {
+        let cause = self
+            .cause
+            .ok_or_else(|| ResolveError::Invalid("there is no triggering event".into()))?;
+        let count = cause
+            .subjects
+            .iter()
+            .filter_map(|subject| match subject {
+                Target::Object(object) => self.state.object(object.id),
+                Target::Player(_) => None,
+            })
+            .map(|spell| spell.choices().targets.iter().flatten().count())
+            .next()
+            .unwrap_or(0);
+        Ok(i64::try_from(count).unwrap_or(i64::MAX))
+    }
+
+    /// The events of the kind this turn that count for the players `who` names and whose object the filter selects.
+    fn logged(&self, event: TallyEvent, who: &Ref, filter: &Selector) -> Result<i64, ResolveError> {
+        let players = self.players(who)?;
+        let mut scope = self.clone();
+        scope
+            .snapshots
+            .extend(self.state.tallies.logged.iter().map(|(_, _, shot)| shot));
+        let mut count = 0i64;
+        for (kind, player, shot) in &self.state.tallies.logged {
+            if *kind == event
+                && players.contains(player)
+                && scope.selects(
+                    filter,
+                    ObjectRef {
+                        id: shot.id,
+                        counter: shot.counter,
+                    },
+                )?
+            {
+                count += 1;
+            }
+        }
+        Ok(count)
+    }
+
     /// How many permanents the source devoured as it entered (CR 702.82); zero once it is a new object.
     fn w7e_devoured(&self) -> i64 {
         self.state
@@ -467,7 +523,7 @@ impl<'a> Scope<'a> {
         Ok(total)
     }
 
-    fn seen(&self, reference: ObjectRef) -> Option<Seen<'a>> {
+    pub(super) fn seen(&self, reference: ObjectRef) -> Option<Seen<'a>> {
         let live = self.state.object(reference.id);
         if let Some(object) = live.filter(|o| o.counter() == reference.counter) {
             let tapped = object
@@ -777,6 +833,12 @@ impl<'a> Scope<'a> {
                 .cloned()
                 .ok_or_else(|| ResolveError::Invalid(format!("`{name}` is not bound")))?,
             Ref::Paid => self.paid(),
+            Ref::Remembered { on, slot } => self
+                .objects(on)?
+                .into_iter()
+                .flat_map(|source| crate::memory::recall(state, source, slot))
+                .map(Target::Object)
+                .collect(),
             Ref::ControllerOf(inner) => self.seats_of(inner, |seen| seen.controller)?,
             Ref::OwnerOf(inner) => self.seats_of(inner, |seen| seen.owner)?,
             Ref::Each(selector) => self
@@ -1015,17 +1077,23 @@ impl<'a> Scope<'a> {
         Ok(true)
     }
 
-    /// Whether the object is a card in exile that one of the permanents the reference names hid face down (hideaway).
+    /// Whether the object is a card in exile that one of the permanents the reference names hid face down (hideaway) or exiled.
     fn exiled_with(&self, named: &Ref, reference: ObjectRef) -> Result<bool, ResolveError> {
-        let hidden = self
+        let card = self
             .state
             .object(reference.id)
-            .filter(|card| card.counter() == reference.counter && card.zone() == Zone::Exile)
-            .and_then(GameObject::face_down);
-        match hidden {
-            Some(FaceDown::Hideaway { by }) => Ok(self.objects(named)?.contains(&by)),
-            _ => Ok(false),
+            .filter(|card| card.counter() == reference.counter && card.zone() == Zone::Exile);
+        let Some(card) = card else {
+            return Ok(false);
+        };
+        let sources = self.objects(named)?;
+        if let Some(FaceDown::Hideaway { by }) = card.face_down() {
+            return Ok(sources.contains(&by));
         }
+        Ok(sources.into_iter().any(|source| {
+            crate::memory::recall(self.state, source, mtg_cards::refs::EXILED_SLOT)
+                .contains(&reference)
+        }))
     }
 
     /// Whether the object is a creature that one of the cards the reference names is encoded on (cipher).
@@ -1136,24 +1204,6 @@ impl<'a> Scope<'a> {
                 .iter()
                 .any(|card| card.id == reference.id),
             Pred::Targeting(inner) => self.targets_match(inner, reference, seen)?,
-            Pred::Attacking => state
-                .combat()
-                .attackers()
-                .iter()
-                .any(|a| a.object() == reference.id),
-            Pred::AttackingPlayer(who) => {
-                let attacked = self.players(who)?;
-                state.combat().attackers().iter().any(|a| {
-                    a.object() == reference.id
-                        && matches!(a.target(), AttackTarget::Player(player) if attacked.contains(&player))
-                })
-            }
-            Pred::Blocking => state
-                .combat()
-                .attackers()
-                .iter()
-                .any(|a| a.blockers().contains(&reference.id)),
-            Pred::Unblocked => state.combat().is_unblocked(state, reference.id),
             Pred::ControlledBy(who) => self.players(who)?.contains(&seen.controller),
             Pred::OwnedBy(who) => self.players(who)?.contains(&seen.owner),
             Pred::In(kind) => zone_kind(seen.zone) == *kind,
@@ -1183,6 +1233,19 @@ impl<'a> Scope<'a> {
             Pred::Modified | Pred::FaceDown | Pred::TargetsPlayer(_) | Pred::GravedThisTurn => {
                 self.w21a_pred(pred, reference, seen)?
             }
+            Pred::Attacking
+            | Pred::AttackingPlayer(_)
+            | Pred::Blocking
+            | Pred::Unblocked
+            | Pred::WasCast { .. }
+            | Pred::CastWith(_)
+            | Pred::TopOfLibrary
+            | Pred::BottomOfLibrary
+            | Pred::BlockedBy(_)
+            | Pred::Blocks(_)
+            | Pred::TargetedBy(_)
+            | Pred::GreatestAmong { .. }
+            | Pred::Suspended => self.fe1a_pred(pred, reference, seen)?,
             Pred::Not(inner) => !self.pred(inner, reference, seen)?,
             Pred::AnyOf(any) => self.w6d_any_of(any, reference, seen)?,
         })
@@ -1211,11 +1274,12 @@ impl<'a> Scope<'a> {
             .and_then(|permanent| permanent.chosen())
     }
 
-    fn stat(seen: &Seen<'_>, stat: StatKind) -> Option<i64> {
+    pub(super) fn stat(seen: &Seen<'_>, stat: StatKind) -> Option<i64> {
         match stat {
             StatKind::Power => seen.chars.power.map(i64::from),
             StatKind::Toughness => seen.chars.toughness.map(i64::from),
             StatKind::Colors => i64::try_from(seen.chars.colors.iter().count()).ok(),
+            StatKind::BasePower => seen.card.and_then(|c| c.card().power).map(i64::from),
             // A spell on the stack counts the X it was cast with for each {X} of its cost (CR 202.3e).
             StatKind::ManaValue => seen
                 .card
@@ -1286,21 +1350,7 @@ impl<'a> Scope<'a> {
                 .into_iter()
                 .map(|player| i64::from(self.state.commander_casts_by(player)))
                 .sum(),
-            Amount::Counters { on, counter } => {
-                let mut total = 0i64;
-                for named in self.refs(on)? {
-                    total += match named {
-                        Target::Player(player) => self
-                            .state
-                            .player(player)
-                            .map_or(0, |held| i64::from(held.counters_of(counter))),
-                        Target::Object(object) => self
-                            .seen(object)
-                            .map_or(0, |seen| i64::from(seen.counters.of(counter))),
-                    };
-                }
-                total
-            }
+            Amount::Counters { on, counter } => self.counters_on(on, counter)?,
             Amount::AnyCounters(on) => self.c10_any_counters(on)?,
             Amount::Sum(parts) => {
                 let mut sum = 0i64;
@@ -1357,6 +1407,17 @@ impl<'a> Scope<'a> {
             Amount::Mutations(of) => self.mutations(of)?,
             Amount::Kicks => i64::try_from(self.payments(OptionalKind::Kicker))
                 .map_err(|_| ResolveError::Invalid("too many kicks".into()))?,
+            Amount::CommanderColors(who) => self.commander_colors(who)?,
+            Amount::TurnNumber => i64::from(self.state.turn().number()),
+            Amount::TriggeringTargets => self.triggering_targets()?,
+            Amount::When { .. }
+            | Amount::ManaSpent { .. }
+            | Amount::ManaColors(_)
+            | Amount::MostCommon { .. }
+            | Amount::Random { .. }
+            | Amount::ManaInPool(_)
+            | Amount::Doors(_) => self.fill_amount(amount, share)?,
+            Amount::Tally { event, who, filter } => self.logged(*event, who, filter)?,
             Amount::Triggering => self
                 .cause
                 .map(|cause| i64::from(cause.amount))
@@ -1501,6 +1562,16 @@ impl<'a> Scope<'a> {
     /// The life the resolving spell or ability has made players lose so far; 0 outside a resolution.
     /// How many different values of the characteristic there are among the objects the selector matches.
     fn w2c_distinct(&self, of: &Selector, stat: StatKind) -> Result<i64, ResolveError> {
+        if stat == StatKind::Colors {
+            // Each color once among the objects, a multicolored object adding every one of its colors.
+            let mut colors = BTreeSet::new();
+            for object in self.matching(of)? {
+                if let Some(seen) = self.seen(object) {
+                    colors.extend(seen.chars.colors.iter().map(|color| format!("{color:?}")));
+                }
+            }
+            return Ok(i64::try_from(colors.len()).unwrap_or(i64::MAX));
+        }
         let values: BTreeSet<i64> = if stat == StatKind::BasicLandTypes {
             // Domain counts each basic land type once, a land of several types adding each of them.
             let mut types = BTreeSet::new();
@@ -1638,7 +1709,7 @@ impl<'a> Scope<'a> {
 
     /// The mana spent to cast the spell: what the spell announced, else what the spell its source is or came from paid
     /// while that is still the object named, else what its last-known information holds.
-    fn mana_spent(&self) -> Vec<ManaType> {
+    pub(super) fn mana_spent(&self) -> Vec<ManaType> {
         if !self.choices.spent().is_empty() {
             return self.choices.spent().to_vec();
         }
@@ -1762,6 +1833,11 @@ impl<'a> Scope<'a> {
             Condition::IsNight => self.state.day_night() == Some(DayNight::Night),
             Condition::NeitherDayNorNight => self.state.day_night().is_none(),
             Condition::YourTurn => self.state.turn().active() == self.controller,
+            Condition::StartingPlayer(who) => {
+                let first = self.state.first_player();
+                let named = self.players(who)?;
+                !named.is_empty() && named.iter().all(|player| *player == first)
+            }
             Condition::Step(named) => {
                 crate::triggers::step_matches(*named, self.state.turn().step())
             }

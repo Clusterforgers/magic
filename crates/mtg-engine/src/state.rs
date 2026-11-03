@@ -9,6 +9,8 @@ use mtg_core::house::HouseRules;
 use mtg_core::ids::{ObjectId, PlayerId};
 use serde::{Deserialize, Serialize};
 
+use mtg_cards::value::TallyEvent;
+
 use crate::abilities::AbilitySource;
 use crate::combat::CombatState;
 use crate::effects::ContinuousEffect;
@@ -180,6 +182,8 @@ pub(crate) struct Tallies {
     pub(crate) damaged_by: BTreeSet<(ObjectRef, ObjectRef)>,
     /// The modes the abilities chose, as (source, where the ability comes from, its index, the mode).
     pub(crate) modes: BTreeSet<(ObjectRef, AbilitySource, usize, usize)>,
+    /// The events of the logged kinds in the order they happened, each with the player it counts for and the object as it was.
+    pub(crate) logged: Vec<(TallyEvent, PlayerId, crate::snapshot::Snapshot)>,
 }
 
 /// A creature that dealt combat damage to a player this turn, as it was then (prowl, CR 702.76).
@@ -267,6 +271,8 @@ pub struct GameState {
     pub(crate) revealed_by_hand: Vec<crate::object::ObjectRef>,
     /// The notes seats put on cards by hand (`ManualAction::Note`), kept while the card is still the object it was put on.
     pub(crate) notes: Vec<(crate::object::ObjectRef, String)>,
+    /// What each source remembers by slot (`Effect::Remember`); ends with the source.
+    pub(crate) memory: crate::memory::Memory,
 }
 
 impl GameState {
@@ -499,6 +505,13 @@ impl GameState {
             .sum()
     }
 
+    /// Logs an event of the kind for the player with the object `id` as it is now (`Amount::Tally`).
+    pub(crate) fn log_event(&mut self, event: TallyEvent, player: PlayerId, id: ObjectId) {
+        if let Some(shot) = crate::snapshot::snapshot(self, id) {
+            self.tallies.logged.push((event, player, shot));
+        }
+    }
+
     /// How many events of the kind the player has had this turn.
     pub(crate) fn tallied(&self, player: PlayerId, kind: Tally) -> u32 {
         let counted = self.tallies.players.get(&(player, kind));
@@ -714,6 +727,10 @@ impl Hash for GameState {
         if !self.notes.is_empty() {
             self.notes.hash(state);
         }
+        // Likewise a game in which nothing was remembered.
+        if !self.memory.is_empty() {
+            self.memory.hash(state);
+        }
         // Likewise a game that counted nothing this turn.
         if !self.tallies.players.is_empty() {
             self.tallies.players.hash(state);
@@ -735,6 +752,9 @@ impl Hash for GameState {
         }
         if !self.tallies.modes.is_empty() {
             self.tallies.modes.hash(state);
+        }
+        if !self.tallies.logged.is_empty() {
+            self.tallies.logged.hash(state);
         }
         self.result.hash(state);
         // A game that has seen neither day nor night hashes as it did before they existed.

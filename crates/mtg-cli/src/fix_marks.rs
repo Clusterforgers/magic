@@ -39,6 +39,7 @@ pub const fn support_word(support: Support) -> &'static str {
     match support {
         Support::Verified => "verified",
         Support::Read => "read",
+        Support::Forge => "forge",
         Support::Partial => "partial",
         Support::Manual => "manual",
         Support::Stale => "stale",

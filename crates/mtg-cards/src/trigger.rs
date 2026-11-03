@@ -3,6 +3,7 @@
 use mtg_core::color::Color;
 use serde::{Deserialize, Serialize};
 
+use crate::did::Action;
 use crate::effect::{Effect, is_false};
 use crate::modify::Modification;
 use crate::refs::{Ref, Selector, ZoneKind};
@@ -276,6 +277,9 @@ pub enum TriggerPattern {
     BecomesBlocked {
         /// The attacker.
         what: Selector,
+        /// Only when blocked by a creature matching this (empty: any blocker). With it the trigger happens once for each such blocker and `Ref::Dealer` names that blocker.
+        #[serde(default, skip_serializing_if = "Selector::is_empty")]
+        by: Selector,
     },
     /// A creature matching the selector attacks and isn't blocked: it is unblocked once its defending player has
     /// declared blockers (CR 509.1h).
@@ -580,6 +584,21 @@ pub enum TriggerPattern {
         /// The state.
         condition: Condition,
     },
+    /// A player or object takes an action (`Action`): the one node for the keyword actions and the rest of the events
+    /// that have no pattern of their own. `Triggering` is the player and the object, when the action has them.
+    Did {
+        /// What was done.
+        action: Action,
+        /// Who did it.
+        #[serde(
+            default = "Ref::each_player",
+            skip_serializing_if = "Ref::is_each_player"
+        )]
+        who: Ref,
+        /// The object it was done to or by; anything when empty.
+        #[serde(default, skip_serializing_if = "Selector::is_empty")]
+        what: Selector,
+    },
     /// Any of the patterns ("enters or attacks"); one event triggers the ability once.
     AnyOf(Vec<TriggerPattern>),
     /// One or more events the pattern describes that happen together ("one or more creatures you control deal combat
@@ -746,6 +765,13 @@ pub enum ReplaceBy {
         #[serde(default, skip_serializing_if = "is_false")]
         tapped: bool,
     },
+    /// The permanent enters with these counters when its controller says yes as it enters ("You may have this creature enter with a +1/+1 counter on it"); asked like the payment of `PayLifeOrTapped`.
+    MayWithCounters {
+        /// The kind of counter.
+        counter: CounterKind,
+        /// How many.
+        count: Amount,
+    },
     /// As the permanent enters, its controller makes this choice, which the permanent remembers for its abilities.
     Choose(EntersChoice),
     /// As the permanent enters, its controller may pay this much life; if they don't (or can't) it enters tapped.
@@ -818,6 +844,14 @@ mod tests {
     #[case::opponent_casts(
         TriggerPattern::SpellCast { what: Selector::default(), by: Ref::Opponents },
         r#"{"SpellCast":{"by":"Opponents"}}"#
+    )]
+    #[case::blocked_by_any(
+        TriggerPattern::BecomesBlocked { what: Selector::this(), by: Selector::default() },
+        r#"{"BecomesBlocked":{"what":["This"]}}"#
+    )]
+    #[case::blocked_by_a_kind(
+        TriggerPattern::BecomesBlocked { what: Selector::this(), by: Selector(vec![Pred::Token]) },
+        r#"{"BecomesBlocked":{"what":["This"],"by":["Token"]}}"#
     )]
     #[case::a_state(
         TriggerPattern::State { condition: Condition::Not(Box::new(Condition::YourTurn)) },

@@ -6,6 +6,7 @@
 //! afterwards changes nothing. [`SeatDecks`] keeps one choice per seat while the game is in its
 //! lobby; the decks of the seats go into the game's recipe when it starts.
 
+use std::collections::BTreeMap;
 use std::sync::Arc;
 
 use mtg_cards::CardDefinition;
@@ -16,7 +17,9 @@ use mtg_protocol::SeatDeck;
 use crate::cards::with_printings;
 use crate::deck_choice::format_issues;
 use crate::demo::{self, DemoDeck};
-use crate::recipe::{DeckFingerprint, DeckRef, FingerprintError, FormatKind, GameRecipe};
+use crate::recipe::{
+    DeckFingerprint, DeckRef, FingerprintError, FormatKind, GameRecipe, merged_reads,
+};
 
 /// The format key the table is told for a built-in deck.
 const DEMO_FORMAT: &str = "normal";
@@ -31,6 +34,7 @@ pub struct ChosenDeck {
     fingerprint: DeckFingerprint,
     note: SeatDeck,
     own_issues: Arc<[Issue]>,
+    reads: BTreeMap<String, String>,
 }
 
 impl ChosenDeck {
@@ -51,6 +55,7 @@ impl ChosenDeck {
                 manual_cards: 0,
             },
             own_issues: Arc::from([]),
+            reads: BTreeMap::new(),
         })
     }
 
@@ -77,6 +82,7 @@ impl ChosenDeck {
                 manual_cards: 0,
             },
             own_issues: Arc::from([]),
+            reads: BTreeMap::new(),
         })
     }
 
@@ -113,6 +119,7 @@ impl ChosenDeck {
             },
             note,
             own_issues: Arc::from([]),
+            reads: BTreeMap::new(),
         })
     }
 
@@ -192,6 +199,19 @@ impl ChosenDeck {
     /// The companion the seat names, a card the game keeps outside it until the seat pays for it.
     pub fn companion(&self) -> Option<&Arc<CardDefinition>> {
         self.companion.as_ref()
+    }
+
+    /// The deck with the drafts its cards play on pinned: the `read_hash` of each card that runs on a read, by oracle id
+    /// (the recipe keeps them so a resumed game builds the same cards).
+    #[must_use]
+    pub fn with_reads(mut self, reads: BTreeMap<String, String>) -> ChosenDeck {
+        self.reads = reads;
+        self
+    }
+
+    /// The drafts the deck's cards play on, by oracle id.
+    pub fn reads(&self) -> &BTreeMap<String, String> {
+        &self.reads
     }
 
     /// The deck with the issues its own check found (`deck_report` in the deck's format), which a
@@ -334,6 +354,7 @@ impl SeatDecks {
             seed: self.seed,
             decks: chosen.iter().map(|deck| deck.deck.clone()).collect(),
             fingerprints: chosen.iter().map(|deck| deck.fingerprint).collect(),
+            reads: merged_reads(chosen.iter().map(|deck| &deck.reads)),
         })
     }
 }

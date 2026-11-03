@@ -70,7 +70,7 @@ async fn store_texts(db: &Database, texts: &[(String, String)], library: &Librar
         .collect();
     let cards = stored_cards(db).await.unwrap();
     let caps: Caps = mtg_engine::caps();
-    store_files(db, &files, library, &caps, &cards)
+    store_files(db, &files, &[], library, &caps, &cards)
         .await
         .unwrap()
 }
@@ -263,4 +263,58 @@ async fn compile_reports_the_drafts_of_the_build(pool: PgPool) {
 
     assert_eq!(report.drafts.embedded, mtg_cli::drafts::embedded().len());
     assert!(report.render().contains("drafts: "), "{}", report.render());
+}
+
+/// The metadata files that decide what `compile` stores as the draft's source and oracle match.
+const META: &[(&str, &str, &str, bool)] = &[
+    ("no file", "", "sweep", false),
+    (
+        "a file of a Forge draft",
+        r#"{"source":"forge","oracle_matches":true}"#,
+        "forge",
+        true,
+    ),
+    (
+        "a Forge draft whose text did not match",
+        r#"{"source":"forge"}"#,
+        "forge",
+        false,
+    ),
+    ("a file that is not json", "{", "sweep", false),
+];
+
+#[sqlx::test]
+async fn the_metadata_of_a_draft_file_gives_the_source_and_the_oracle_match(pool: PgPool) {
+    let dir = tempfile::tempdir().unwrap();
+    let (db, _, card) = loaded(pool, dir.path()).await;
+    let cards = stored_cards(&db).await.unwrap();
+    let caps: Caps = mtg_engine::caps();
+    let text = canonical(&card);
+    for (name, meta, source, matched) in META {
+        let meta_files: Vec<(&str, &str)> = if meta.is_empty() {
+            Vec::new()
+        } else {
+            vec![("draft_0", *meta)]
+        };
+        store_files(
+            &db,
+            &[("draft_0", &text)],
+            &meta_files,
+            &Library::default(),
+            &caps,
+            &cards,
+        )
+        .await
+        .unwrap();
+        let current = db.drafts().current().await.unwrap();
+        assert_eq!(
+            (current[0].source.as_str(), current[0].oracle_matches),
+            (*source, *matched),
+            "{name}"
+        );
+        sqlx::query("DELETE FROM card_drafts")
+            .execute(db.pool())
+            .await
+            .unwrap();
+    }
 }

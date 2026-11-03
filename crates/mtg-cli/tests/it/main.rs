@@ -26,5 +26,6 @@ mod propose;
 mod propose_http;
 mod reads;
 mod t18a_propose_speed;
+mod translate_forge;
 mod w2a_promote;
 mod w3a_propose_schema;

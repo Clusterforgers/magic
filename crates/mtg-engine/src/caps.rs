@@ -120,6 +120,24 @@ const RUNS: &[&str] = &[
     "Cost.RemoveCounters",
     "Cost.ExileFromGraveyard",
     "Cost.TapPermanents",
+    "Cost.UntapPermanents",
+    "Cost.PutCounters",
+    "Cost.Exert",
+    "Cost.RemoveCountersAmong",
+    "Cost.PayLife.Counted.Activated",
+    "Cost.PayEnergy.Counted.Activated",
+    "Cost.Mill.Counted.Activated",
+    "Cost.RemoveCounters.Counted.Activated",
+    "Cost.Sacrifice.Counted.Activated",
+    "Cost.Discard.Counted.Activated",
+    "Cost.ExileFromGraveyard.Counted.Activated",
+    "Cost.ExileFromHand.Counted.Activated",
+    "Cost.RevealFromHand.Counted.Activated",
+    "Cost.TapPermanents.Counted.Activated",
+    "Cost.ReturnToHand.Counted.Activated",
+    "Cost.PutCounters.Counted.Activated",
+    "Cost.UntapPermanents.Counted.Activated",
+    "Cost.RemoveCountersAmong.Counted.Activated",
     "Cost.ReturnToHand",
     "Cost.ExileFromHand",
     "Cost.RevealFromHand",
@@ -145,6 +163,8 @@ const RUNS: &[&str] = &[
     "Effect.ExileTop",
     "Effect.ExileHidden",
     "Effect.Encode",
+    "Effect.Remember",
+    "Effect.Forget",
     "Effect.CopyCard",
     "Effect.Manifest",
     "Effect.Cloak",
@@ -267,6 +287,9 @@ const RUNS: &[&str] = &[
     "Rule.SkipExtraTurns",
     "Rule.RevealTop",
     "Rule.NoMaxHandSize",
+    "Rule.MaxHandSize",
+    "Rule.NoLegendRule",
+    "Rule.UntapDuring",
     "Rule.SkipDrawStep",
     "Rule.LookAtTopAnyTime",
     "Rule.AdditionalLandPlays",
@@ -323,6 +346,7 @@ const RUNS: &[&str] = &[
     "Mod.BlocksAdditional",
     "Mod.Goaded",
     "Effect.DelayedTrigger",
+    "Effect.Reflexive",
     "Effect.If",
     "Effect.May",
     "Effect.Pay",
@@ -425,6 +449,18 @@ const RUNS: &[&str] = &[
     "Amount.Largest",
     "Amount.StartingLife",
     "Amount.Party",
+    "Amount.Tally",
+    "Amount.CommanderColors",
+    "Amount.TurnNumber",
+    "Amount.TriggeringTargets",
+    "Amount.When",
+    "Amount.ManaSpent",
+    "Amount.ManaColors",
+    "Amount.MostCommon",
+    "Amount.Random",
+    "Amount.ManaInPool",
+    "Amount.Doors",
+    "Condition.StartingPlayer",
     "Ability.Replacement",
     "Ability.CostModifier",
     "ReplaceWhen.TokenCreation",
@@ -446,6 +482,7 @@ const RUNS: &[&str] = &[
     "ReplaceBy.PreventAllBut",
     "ReplaceBy.Tapped",
     "ReplaceBy.WithCounters",
+    "ReplaceBy.MayWithCounters",
     "ReplaceBy.Choose",
     "ReplaceBy.PayLifeOrTapped",
     "ReplaceBy.TappedForCounters",
@@ -496,6 +533,7 @@ const RUNS: &[&str] = &[
     "Keyword.Saddle",
     "Keyword.Saddled",
     "Keyword.Exert",
+    "Keyword.Macro",
     "Keyword.Station",
     "Keyword.Myriad",
     "Keyword.Squad",
@@ -555,6 +593,15 @@ const RUNS: &[&str] = &[
     "Pred.FaceDown",
     "Pred.TargetsPlayer",
     "Pred.GravedThisTurn",
+    "Pred.WasCast",
+    "Pred.CastWith",
+    "Pred.TopOfLibrary",
+    "Pred.BottomOfLibrary",
+    "Pred.BlockedBy",
+    "Pred.Blocks",
+    "Pred.TargetedBy",
+    "Pred.GreatestAmong",
+    "Pred.Suspended",
 ];
 
 /// The capabilities of this engine.
@@ -671,6 +718,7 @@ mod tests {
     #[case::moving_instead("ReplaceBy.MoveTo", true)]
     #[case::entering_tapped("ReplaceBy.Tapped", true)]
     #[case::entering_with_counters("ReplaceBy.WithCounters", true)]
+    #[case::entering_with_counters_by_choice("ReplaceBy.MayWithCounters", true)]
     #[case::choosing_as_it_enters("ReplaceBy.Choose", true)]
     #[case::paying_life_or_entering_tapped("ReplaceBy.PayLifeOrTapped", true)]
     #[case::doing_something_instead("ReplaceBy.Instead", true)]
@@ -736,6 +784,9 @@ mod tests {
     #[case::no_searching("Rule.CantSearch", true)]
     #[case::a_revealed_top("Rule.RevealTop", true)]
     #[case::no_maximum_hand_size("Rule.NoMaxHandSize", true)]
+    #[case::a_set_maximum_hand_size("Rule.MaxHandSize", true)]
+    #[case::no_legend_rule("Rule.NoLegendRule", true)]
+    #[case::untapping_in_other_steps("Rule.UntapDuring", true)]
     #[case::no_draw_step("Rule.SkipDrawStep", true)]
     #[case::triggers_again("Rule.TriggerAgain", true)]
     #[case::damage_that_cant_be_prevented("Rule.DamageCantBePrevented", true)]
@@ -761,6 +812,11 @@ mod tests {
     #[case::the_number_of_kicks("Amount.Kicks", true)]
     #[case::the_number_of_mutations("Amount.Mutations", true)]
     #[case::the_size_of_a_party("Amount.Party", true)]
+    #[case::a_logged_tally("Amount.Tally", true)]
+    #[case::commander_colors("Amount.CommanderColors", true)]
+    #[case::turn_number("Amount.TurnNumber", true)]
+    #[case::triggering_targets("Amount.TriggeringTargets", true)]
+    #[case::starting_player("Condition.StartingPlayer", true)]
     #[case::cast_for_a_way("Amount.CastWith", true)]
     #[case::colors_spent("Amount.ColorsSpent", true)]
     #[case::destroyed_this_way("Amount.Destroyed", true)]
@@ -898,6 +954,12 @@ mod tests {
     #[case::paying_a_counted_amount_of_energy("Cost.PayEnergy.Counted", false)]
     #[case::removing_counters_as_a_cost("Cost.RemoveCounters", true)]
     #[case::tapping_permanents_as_a_cost("Cost.TapPermanents", true)]
+    #[case::gn1m_putting_counters_as_a_cost("Cost.PutCounters", true)]
+    #[case::gn1m_exerting_as_a_cost("Cost.Exert", true)]
+    #[case::gn1m_untapping_as_a_cost("Cost.UntapPermanents", true)]
+    #[case::gn1m_removing_counters_among_as_a_cost("Cost.RemoveCountersAmong", true)]
+    #[case::gn1m_a_counted_sacrifice_of_an_ability("Cost.Sacrifice.Counted.Activated", true)]
+    #[case::gn1m_a_counted_sacrifice_elsewhere("Cost.Sacrifice.Counted", false)]
     #[case::exiling_from_a_graveyard_as_a_cost("Cost.ExileFromGraveyard", true)]
     #[case::returning_to_a_hand_as_a_cost("Cost.ReturnToHand", true)]
     #[case::dealing_damage_triggers("Trigger.DealsDamage", true)]
@@ -1010,6 +1072,7 @@ mod tests {
     #[case::saddle("Keyword.Saddle", true)]
     #[case::saddled("Keyword.Saddled", true)]
     #[case::exert("Keyword.Exert", true)]
+    #[case::macro_keyword("Keyword.Macro", true)]
     #[case::station("Keyword.Station", true)]
     #[case::ravenous("Keyword.Ravenous", true)]
     #[case::riot("Keyword.Riot", true)]

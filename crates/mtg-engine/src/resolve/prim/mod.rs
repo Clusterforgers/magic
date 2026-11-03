@@ -67,6 +67,8 @@ mod modal;
 mod monstrosity;
 mod move_counters;
 mod pair;
+mod reflexive;
+mod remember;
 // dk1b
 mod dk1c5_unlock;
 #[cfg(test)]
@@ -150,6 +152,7 @@ fn dispatch(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::Exile { .. } => exile::run(cx, effect),
         Effect::ExileHidden { .. } => exile_hidden::run(cx, effect),
         Effect::Encode { .. } => encode::run(cx, effect),
+        Effect::Remember { .. } | Effect::Forget { .. } => remember::run(cx, effect),
         Effect::Manifest { .. } | Effect::Cloak { .. } => manifest::run(cx, effect),
         Effect::Sacrifice { .. } => sacrifice::run(cx, effect),
         Effect::Counter { .. } => counter::run(cx, effect),
@@ -217,6 +220,7 @@ fn dispatch(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::RemoveFromCombat { .. } => remove_from_combat::run(cx, effect),
         Effect::Shield { .. } => shield::run(cx, effect),
         Effect::DelayedTrigger { .. } => delayed_trigger::run(cx, effect),
+        Effect::Reflexive { .. } => reflexive::run(cx, effect),
         Effect::If { .. } => if_then::run(cx, effect),
         Effect::May { .. } => may::run(cx, effect),
         Effect::Pay { .. } => pay::run(cx, effect),
@@ -257,7 +261,7 @@ mod tests {
         {"Surveil":{}}, {"Proliferate":{}}, {"Goad":{"what":"This"}}, {"Fight":{"what":"This","with":"This"}},
         {"BecomeMonarch":{}}, {"CreateEmblem":{"abilities":[]}}, {"BecomeDayNight":{"to":"Night"}}, {"Amass":{"subtype":"Orc","count":1}}, {"Incubate":{"count":1}}, {"Venture":{}}, {"TakeInitiative":{}}, {"Monstrosity":{"count":1}}, {"Renown":{"count":1}}, {"Exploit":{}}, {"BecomeLevel":{"level":2}},
         {"Adapt":{"count":1}}, {"Bolster":{"count":1}}, {"Fabricate":{"count":1}}, {"Learn":{}}, {"Crewed":{}}, {"Explore":{"what":"This"}}, {"Connive":{"what":"This"}},
-        {"ExileUntil":{"filter":[],"as":"found","exiled_as":"exiled"}}, {"RevealUntil":{"filter":[],"as":"found","revealed_as":"revealed"}}, {"ExileTop":{"as":"top"}}, {"ExileHidden":{"what":"This"}}, {"Encode":{"what":"This","on":"This"}}, {"Manifest":{}}, {"Cloak":{}}, {"CastFromZone":{"what":"This"}}, {"TimeTravel":{}}, {"ExtraTurn":{}}, "EndTurn",
+        {"ExileUntil":{"filter":[],"as":"found","exiled_as":"exiled"}}, {"RevealUntil":{"filter":[],"as":"found","revealed_as":"revealed"}}, {"ExileTop":{"as":"top"}}, {"ExileHidden":{"what":"This"}}, {"Encode":{"what":"This","on":"This"}}, {"Remember":{"what":"This","slot":"s"}}, {"Forget":{"slot":"s"}}, {"Manifest":{}}, {"Cloak":{}}, {"CastFromZone":{"what":"This"}}, {"TimeTravel":{}}, {"ExtraTurn":{}}, "EndTurn",
         {"CopySpell":{"what":"This"}}, {"CopyAbility":{"what":"This"}}, {"CopyCard":{"what":"This","as":"copy"}},
         {"BecomeCopy":{"what":"This","of":"This","duration":"UntilEndOfTurn"}},
         {"CreateToken":{"token":{"Named":"treasure"}}},
@@ -267,6 +271,7 @@ mod tests {
         {"Regenerate":{"what":"This"}}, {"RemoveFromCombat":{"what":"This"}},
         {"Shield":{"when":{"Damage":{}},"by":"Prevent","duration":"UntilEndOfTurn"}},
         {"DelayedTrigger":{"when":{"StepBegins":{"step":"Upkeep","whose":"You"}},"effects":[]}},
+        {"Reflexive":{"effects":[]}},
         {"If":{"condition":"YourTurn","then":[]}}, {"May":{"effects":[]}}, {"Pay":{"cost":"{1}"}},
         {"Modal":{"modes":[]}}, {"RepeatEach":{"over":"EachPlayer","as":"each","effects":[{"Draw":{}}]}},
         {"RollDice":{"sides":6,"results":[{"from":1,"effects":[]}]}}, {"FlipCoin":{"win":[]}}, {"Clash":{}},
@@ -291,7 +296,7 @@ mod tests {
     #[test]
     fn the_capabilities_name_exactly_the_effects_that_run() {
         let effects: Vec<Effect> = serde_json::from_str(EFFECTS).unwrap();
-        assert_eq!(effects.len(), 93, "one sample for each variant of Effect");
+        assert_eq!(effects.len(), 96, "one sample for each variant of Effect");
         let game = state(
             vec![vec![], vec![]],
             vec![vec![creature("Bear", 2, 2)], vec![]],
@@ -389,6 +394,8 @@ mod tests {
         "Effect.ExileTop",
         "Effect.ExileHidden",
         "Effect.Encode",
+        "Effect.Remember",
+        "Effect.Forget",
         "Effect.Manifest",
         "Effect.Cloak",
         "Effect.CastFromZone",
@@ -407,6 +414,7 @@ mod tests {
         "Effect.RemoveFromCombat",
         "Effect.Shield",
         "Effect.DelayedTrigger",
+        "Effect.Reflexive",
         "Effect.If",
         "Effect.May",
         "Effect.Pay",

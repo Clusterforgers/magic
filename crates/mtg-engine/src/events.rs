@@ -110,6 +110,13 @@ pub enum Event {
         /// Cards in the order placed (the last is the bottom).
         cards: Vec<ObjectId>,
     },
+    /// Cards that begin the game on the battlefield were put there from the opening hand (CR 103.6).
+    OpeningCardsPlayed {
+        /// Whose cards.
+        player: PlayerId,
+        /// The cards, from the hand.
+        cards: Vec<ObjectId>,
+    },
     /// All players kept; the game proper begins.
     MulliganPhaseEnded,
     /// A new turn began.
@@ -671,6 +678,8 @@ pub enum Event {
     },
     /// An activated or triggered ability was copied (CR 707.10): the copy is put on the stack above it, not activated or triggered.
     AbilityCopied(Box<AbilityCopy>),
+    /// A source remembered objects, or forgot a slot (`Effect::Remember`, `Effect::Forget`; the exiles of a permanent too).
+    Remembered(Box<crate::memory::Remembered>),
     /// A permanent's copy effect that lasted until end of turn, or until a player's next turn, ended.
     CopyEnded {
         /// The permanent.
@@ -1110,6 +1119,7 @@ impl Event {
             Event::LibraryRefilled { order: cards, .. }
             | Event::HandDealt { cards, .. }
             | Event::CardsBottomed { cards, .. }
+            | Event::OpeningCardsPlayed { cards, .. }
             | Event::LibraryBottomed { cards, .. } => cards.clone(),
             Event::Scried(scried) => scried.top.iter().chain(&scried.bottom).copied().collect(),
             Event::Surveilled(surveilled) => surveilled
@@ -1125,6 +1135,7 @@ impl Event {
             Event::SpellCopied(copy) => vec![copy.object],
             Event::CardCopied(copy) => vec![copy.object],
             Event::AbilityCopied(copy) => vec![copy.object],
+            Event::Remembered(change) => vec![change.source.id],
             Event::AbilityPutOnStack(put) => vec![put.object],
             Event::LandPlayed { object, .. }
             | Event::SpellCast { object, .. }

@@ -28,6 +28,8 @@ pub enum StatKind {
     Colors,
     /// Its basic land types (CR 305.6): how many as a number, each type once among objects (`Amount::Distinct`, domain).
     BasicLandTypes,
+    /// Its printed power, as the card has it before any effect (a face-down or copied object reads what it is now).
+    BasePower,
 }
 
 /// A comparison between two numbers.
@@ -266,6 +268,15 @@ pub enum TurnTally {
     CardsLeftGraveyard,
 }
 
+/// A kind of event the game logs for the turn with the object it was about, which `Amount::Tally` filters and counts.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+pub enum TallyEvent {
+    /// A token was created (the object is the token, as it entered).
+    TokenCreated,
+    /// A spell was cast (the object is the spell, as it was cast).
+    SpellCast,
+}
+
 /// Which result of the latest die roll an amount reads.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub enum DieResult {
@@ -427,8 +438,59 @@ pub enum Amount {
     /// dealt, the life gained or lost, the counters put or removed; for a batch ("one or more") how many of its events
     /// the pattern found, and for a batch of damage the damage dealt in all.
     Triggering,
+    /// The events of the kind this turn whose object the filter selects, counted for the players the reference names
+    /// ("the second creature token you created this turn").
+    Tally {
+        /// The kind of event.
+        event: TallyEvent,
+        /// The players whose events are counted.
+        who: Ref,
+        /// The objects the events were about, as they were then; empty selects every one.
+        filter: Selector,
+    },
+    /// The number of colors in the color identity of the commanders the players named have, all together (CR 903.4).
+    CommanderColors(Ref),
+    /// The number of the turn, counting from 1 (CR 500).
+    TurnNumber,
+    /// How many targets the spell or ability that triggered this one has.
+    TriggeringTargets,
     /// A result of the latest die roll of the resolving spell or ability ("X, where X is the result", "equal to that result").
     DieResult(DieResult),
+    /// The first amount when the condition holds when the effect runs, else the second ("X is 3 if you control a Goblin, else 1").
+    When {
+        /// The fact checked.
+        condition: Box<Condition>,
+        /// The amount when it holds.
+        then: Box<Amount>,
+        /// The amount when it does not.
+        otherwise: Box<Amount>,
+    },
+    /// How much mana was spent to cast the spell the source is or came from: of the one type, or of all types when none is named.
+    ManaSpent {
+        /// The type counted; all mana when none.
+        of: Option<ManaType>,
+    },
+    /// How many different colors of mana the players the reference names hold in their pools, all together.
+    ManaColors(Ref),
+    /// How many permanents share the value of the characteristic that most of the objects the selector names share
+    /// ("the most common color among creatures you control", with `Colors` each color counted once per object); zero when none match.
+    MostCommon {
+        /// The objects compared.
+        of: Selector,
+        /// The characteristic.
+        stat: StatKind,
+    },
+    /// A whole number from `min` to `max`, drawn from the game's seeded random stream, so a replay of the log draws it again.
+    Random {
+        /// The lowest number.
+        min: i32,
+        /// The highest number.
+        max: i32,
+    },
+    /// How much mana the players the reference names hold in their pools, restricted mana included.
+    ManaInPool(Ref),
+    /// The doors unlocked among the Rooms the selector names (CR 709.5), both doors of a Room counting twice.
+    Doors(Selector),
 }
 
 impl Amount {
@@ -467,21 +529,42 @@ impl Amount {
 enum Tagged {
     X,
     Count(Selector),
-    Stat { of: Ref, stat: StatKind },
+    Stat {
+        of: Ref,
+        stat: StatKind,
+    },
     Life(Ref),
     CommanderCasts(Ref),
-    Counters { on: Ref, counter: CounterKind },
+    Counters {
+        on: Ref,
+        counter: CounterKind,
+    },
     AnyCounters(Ref),
     Sum(Vec<Amount>),
-    Times { by: i32, of: Box<Amount> },
-    Half { of: Box<Amount>, up: bool },
+    Times {
+        by: i32,
+        of: Box<Amount>,
+    },
+    Half {
+        of: Box<Amount>,
+        up: bool,
+    },
     Divided,
     EvenShare(Box<Amount>),
     TargetCount(u8),
     Devotion(Vec<Color>),
-    Greatest { of: Selector, stat: StatKind },
-    Total { of: Selector, stat: StatKind },
-    Distinct { of: Selector, stat: StatKind },
+    Greatest {
+        of: Selector,
+        stat: StatKind,
+    },
+    Total {
+        of: Selector,
+        stat: StatKind,
+    },
+    Distinct {
+        of: Selector,
+        stat: StatKind,
+    },
     CardTypes(Selector),
     Players(Ref),
     LowestLife(Ref),
@@ -498,12 +581,45 @@ enum Tagged {
     CastWith(CastWay),
     ColorsSpent,
     PermanentsGraved,
-    Tallied { who: Ref, what: TurnTally },
-    Largest { who: Ref, of: Selector },
+    Tallied {
+        who: Ref,
+        what: TurnTally,
+    },
+    Largest {
+        who: Ref,
+        of: Selector,
+    },
     StartingLife(Ref),
     Party(Ref),
     Triggering,
+    Tally {
+        event: TallyEvent,
+        who: Ref,
+        filter: Selector,
+    },
+    CommanderColors(Ref),
+    TurnNumber,
+    TriggeringTargets,
     DieResult(DieResult),
+    When {
+        condition: Box<Condition>,
+        then: Box<Amount>,
+        otherwise: Box<Amount>,
+    },
+    ManaSpent {
+        of: Option<ManaType>,
+    },
+    ManaColors(Ref),
+    MostCommon {
+        of: Selector,
+        stat: StatKind,
+    },
+    Random {
+        min: i32,
+        max: i32,
+    },
+    ManaInPool(Ref),
+    Doors(Selector),
 }
 
 /// The tagged forms of [`Amount`] by reference, written by serde.
@@ -574,7 +690,34 @@ enum TaggedRef<'a> {
     StartingLife(&'a Ref),
     Party(&'a Ref),
     Triggering,
+    Tally {
+        event: TallyEvent,
+        who: &'a Ref,
+        filter: &'a Selector,
+    },
+    CommanderColors(&'a Ref),
+    TurnNumber,
+    TriggeringTargets,
     DieResult(DieResult),
+    When {
+        condition: &'a Condition,
+        then: &'a Amount,
+        otherwise: &'a Amount,
+    },
+    ManaSpent {
+        of: Option<ManaType>,
+    },
+    ManaColors(&'a Ref),
+    MostCommon {
+        of: &'a Selector,
+        stat: StatKind,
+    },
+    Random {
+        min: i32,
+        max: i32,
+    },
+    ManaInPool(&'a Ref),
+    Doors(&'a Selector),
 }
 
 impl From<Tagged> for Amount {
@@ -619,6 +762,25 @@ impl From<Tagged> for Amount {
             Tagged::Party(who) => Amount::Party(who),
             Tagged::Triggering => Amount::Triggering,
             Tagged::DieResult(which) => Amount::DieResult(which),
+            Tagged::Tally { event, who, filter } => Amount::Tally { event, who, filter },
+            Tagged::CommanderColors(who) => Amount::CommanderColors(who),
+            Tagged::TurnNumber => Amount::TurnNumber,
+            Tagged::TriggeringTargets => Amount::TriggeringTargets,
+            Tagged::When {
+                condition,
+                then,
+                otherwise,
+            } => Amount::When {
+                condition,
+                then,
+                otherwise,
+            },
+            Tagged::ManaSpent { of } => Amount::ManaSpent { of },
+            Tagged::ManaColors(who) => Amount::ManaColors(who),
+            Tagged::MostCommon { of, stat } => Amount::MostCommon { of, stat },
+            Tagged::Random { min, max } => Amount::Random { min, max },
+            Tagged::ManaInPool(who) => Amount::ManaInPool(who),
+            Tagged::Doors(of) => Amount::Doors(of),
         }
     }
 }
@@ -676,6 +838,37 @@ impl Serialize for Amount {
             Amount::Party(who) => TaggedRef::Party(who).serialize(serializer),
             Amount::Triggering => TaggedRef::Triggering.serialize(serializer),
             Amount::DieResult(which) => TaggedRef::DieResult(*which).serialize(serializer),
+            Amount::Tally { event, who, filter } => TaggedRef::Tally {
+                event: *event,
+                who,
+                filter,
+            }
+            .serialize(serializer),
+            Amount::CommanderColors(who) => TaggedRef::CommanderColors(who).serialize(serializer),
+            Amount::TurnNumber => TaggedRef::TurnNumber.serialize(serializer),
+            Amount::TriggeringTargets => TaggedRef::TriggeringTargets.serialize(serializer),
+            Amount::When {
+                condition,
+                then,
+                otherwise,
+            } => TaggedRef::When {
+                condition,
+                then,
+                otherwise,
+            }
+            .serialize(serializer),
+            Amount::ManaSpent { of } => TaggedRef::ManaSpent { of: *of }.serialize(serializer),
+            Amount::ManaColors(who) => TaggedRef::ManaColors(who).serialize(serializer),
+            Amount::MostCommon { of, stat } => {
+                TaggedRef::MostCommon { of, stat: *stat }.serialize(serializer)
+            }
+            Amount::Random { min, max } => TaggedRef::Random {
+                min: *min,
+                max: *max,
+            }
+            .serialize(serializer),
+            Amount::ManaInPool(who) => TaggedRef::ManaInPool(who).serialize(serializer),
+            Amount::Doors(of) => TaggedRef::Doors(of).serialize(serializer),
         }
     }
 }
@@ -757,6 +950,8 @@ pub enum Condition {
     ManaSpent(ManaType),
     /// It is the controller's turn.
     YourTurn,
+    /// The player the reference names (all of them when it names several) took the first turn of the game.
+    StartingPlayer(Ref),
     /// A player the reference names (any of them when it names several) searched their own zone of that kind earlier in
     /// this resolution, whether or not they found a card ("If you search your library this way, shuffle").
     Searched {
@@ -880,6 +1075,22 @@ mod tests {
     #[case::destroyed_this_way(Amount::Destroyed(Selector(vec![Pred::Type(CardType::Creature)])), r#"{"Destroyed":[{"Type":"Creature"}]}"#)]
     #[case::exiled_this_way(Amount::Exiled(Selector(vec![Pred::Type(CardType::Creature)])), r#"{"Exiled":[{"Type":"Creature"}]}"#)]
     #[case::distinct(Amount::Distinct { of: Selector(vec![Pred::Type(CardType::Creature)]), stat: StatKind::Power }, r#"{"Distinct":{"of":[{"Type":"Creature"}],"stat":"Power"}}"#)]
+    #[case::tally(Amount::Tally { event: TallyEvent::TokenCreated, who: Ref::You, filter: Selector(vec![Pred::Type(CardType::Creature)]) }, r#"{"Tally":{"event":"TokenCreated","who":"You","filter":[{"Type":"Creature"}]}}"#)]
+    #[case::commander_colors(Amount::CommanderColors(Ref::You), r#"{"CommanderColors":"You"}"#)]
+    #[case::turn_number(Amount::TurnNumber, r#""TurnNumber""#)]
+    #[case::triggering_targets(Amount::TriggeringTargets, r#""TriggeringTargets""#)]
+    #[case::when(
+        Amount::When { condition: Box::new(Condition::YourTurn), then: Box::new(Amount::Fixed(3)), otherwise: Box::new(Amount::X) },
+        r#"{"When":{"condition":"YourTurn","then":3,"otherwise":"X"}}"#
+    )]
+    #[case::mana_spent(Amount::ManaSpent { of: Some(ManaType::Red) }, r#"{"ManaSpent":{"of":"Red"}}"#)]
+    #[case::all_mana_spent(Amount::ManaSpent { of: None }, r#"{"ManaSpent":{"of":null}}"#)]
+    #[case::mana_colors(Amount::ManaColors(Ref::You), r#"{"ManaColors":"You"}"#)]
+    #[case::mana_in_pool(Amount::ManaInPool(Ref::You), r#"{"ManaInPool":"You"}"#)]
+    #[case::most_common(Amount::MostCommon { of: Selector(vec![Pred::Type(CardType::Creature)]), stat: StatKind::Colors }, r#"{"MostCommon":{"of":[{"Type":"Creature"}],"stat":"Colors"}}"#)]
+    #[case::random(Amount::Random { min: 1, max: 6 }, r#"{"Random":{"min":1,"max":6}}"#)]
+    #[case::doors(Amount::Doors(Selector(vec![Pred::Type(CardType::Enchantment)])), r#"{"Doors":[{"Type":"Enchantment"}]}"#)]
+    #[case::base_power(Amount::Stat { of: Ref::This, stat: StatKind::BasePower }, r#"{"Stat":{"of":"This","stat":"BasePower"}}"#)]
     #[case::c11e_the_other_result(Amount::DieResult(DieResult::Other), r#"{"DieResult":"Other"}"#)]
     #[case::counters(
         Amount::Counters { on: Ref::This, counter: CounterKind::PlusOnePlusOne },

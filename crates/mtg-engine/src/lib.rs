@@ -100,6 +100,7 @@ mod manual_effects;
 mod manual_library;
 mod manual_roll;
 mod manual_show;
+pub mod memory;
 pub mod merged;
 pub mod monarch;
 pub mod object;
@@ -111,6 +112,8 @@ pub mod prohibit;
 pub mod replace;
 pub mod resolve;
 pub mod rng;
+#[cfg(test)]
+mod rule_options;
 pub mod rules;
 pub mod setup;
 pub mod sight;

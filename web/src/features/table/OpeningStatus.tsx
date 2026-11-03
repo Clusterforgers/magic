@@ -6,7 +6,7 @@ import { describeOpening } from './turnText'
 
 /** How a status groups for the eye: still choosing, done, or going again. */
 function kindOf(status: MulliganStatus): 'choosing' | 'done' | 'again' {
-  if (status === 'Deciding') return 'choosing'
+  if (status === 'Deciding' || status === 'Opening') return 'choosing'
   if (status === 'Kept' || typeof status !== 'string') return 'done'
   return 'again'
 }

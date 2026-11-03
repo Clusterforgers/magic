@@ -64,6 +64,14 @@ pub enum CostItem {
         #[serde(default, skip_serializing_if = "Option::is_none")]
         from: Option<Selector>,
     },
+    /// Put counters on the source ("Put a -1/-1 counter on this creature").
+    PutCounters {
+        /// The kind of counter.
+        counter: CounterKind,
+        /// How many.
+        #[serde(default = "Amount::one", skip_serializing_if = "Amount::is_one")]
+        count: Amount,
+    },
     /// Tap untapped permanents the payer controls that match ("Tap an untapped creature you control").
     TapPermanents {
         /// Which permanents may be chosen.
@@ -71,6 +79,29 @@ pub enum CostItem {
         /// How many.
         #[serde(default = "Amount::one", skip_serializing_if = "Amount::is_one")]
         count: Amount,
+    },
+    /// Untap tapped permanents the payer controls that match ("Untap two tapped creatures you control").
+    UntapPermanents {
+        /// Which permanents may be chosen.
+        filter: Selector,
+        /// How many.
+        #[serde(default = "Amount::one", skip_serializing_if = "Amount::is_one")]
+        count: Amount,
+    },
+    /// Exert the source (CR 701.43): it does not untap during its controller's next untap step.
+    Exert,
+    /// Remove that many counters in all from among the permanents the payer controls that match ("Remove three counters
+    /// from among artifacts you control"), of the kind named or of any kind; the engine takes them from the permanents in
+    /// play order.
+    RemoveCountersAmong {
+        /// The kind of counter; any kind when absent.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        counter: Option<CounterKind>,
+        /// How many counters in all.
+        #[serde(default = "Amount::one", skip_serializing_if = "Amount::is_one")]
+        count: Amount,
+        /// The permanents the counters come from.
+        from: Selector,
     },
     /// Tap any number of untapped permanents the payer controls that match, with total power at least that much
     /// (crew, CR 702.122a: "Tap any number of untapped creatures you control with total power 3 or more").
@@ -136,6 +167,29 @@ pub enum CostItem {
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Default)]
 pub struct Cost(pub Vec<CostItem>);
 
+impl CostItem {
+    /// The amount a part counts (its life, energy, cards, counters or objects), `None` for a part that counts nothing.
+    pub fn amount_mut(&mut self) -> Option<&mut Amount> {
+        match self {
+            CostItem::PayLife(amount) | CostItem::PayEnergy(amount) | CostItem::Mill(amount) => {
+                Some(amount)
+            }
+            CostItem::RemoveCounters { count, .. }
+            | CostItem::RemoveCountersAmong { count, .. }
+            | CostItem::PutCounters { count, .. }
+            | CostItem::UntapPermanents { count, .. }
+            | CostItem::Sacrifice { count, .. }
+            | CostItem::Discard { count, .. }
+            | CostItem::TapPermanents { count, .. }
+            | CostItem::ExileFromGraveyard { count, .. }
+            | CostItem::ExileFromHand { count, .. }
+            | CostItem::RevealFromHand { count, .. }
+            | CostItem::ReturnToHand { count, .. } => Some(count),
+            _ => None,
+        }
+    }
+}
+
 impl Cost {
     /// A cost of mana only.
     pub fn mana(cost: ManaCostX) -> Cost {
@@ -149,7 +203,10 @@ impl Cost {
             CostItem::PayLife(amount) | CostItem::PayEnergy(amount) | CostItem::Mill(amount) => {
                 *amount == Amount::X
             }
-            CostItem::RemoveCounters { count, .. }
+            CostItem::RemoveCountersAmong { count, .. }
+            | CostItem::PutCounters { count, .. }
+            | CostItem::UntapPermanents { count, .. }
+            | CostItem::RemoveCounters { count, .. }
             | CostItem::Sacrifice { count, .. }
             | CostItem::Discard { count, .. }
             | CostItem::TapPermanents { count, .. }

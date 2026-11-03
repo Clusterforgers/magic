@@ -171,6 +171,7 @@ pub(crate) fn reads_of_ref(reference: &Ref) -> Traits {
         | Ref::MostLife
         | Ref::Bound(_)
         | Ref::Paid => Traits::NONE,
+        Ref::Remembered { on, .. } => reads_of_ref(on),
         Ref::ControllerOf(inner) => Traits::CONTROL.or(reads_of_ref(inner)),
         Ref::OwnerOf(inner) => reads_of_ref(inner),
         Ref::Each(selector) => reads_of_selector(selector),
@@ -213,10 +214,19 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         | Pred::HasAnyCounter
         | Pred::Named(_)
         | Pred::FaceDown
-        | Pred::GravedThisTurn => Traits::NONE,
+        | Pred::GravedThisTurn
+        | Pred::CastWith(_)
+        | Pred::TopOfLibrary
+        | Pred::BottomOfLibrary
+        | Pred::Suspended => Traits::NONE,
+        Pred::WasCast { by, .. } => by.as_ref().map_or(Traits::NONE, reads_of_ref),
+        Pred::GreatestAmong { stat, group } => reads_of_stat(*stat).or(reads_of_selector(group)),
         Pred::Modified => Traits::CONTROL,
         Pred::Goaded => Traits::GOADED,
         Pred::Is(who)
+        | Pred::BlockedBy(who)
+        | Pred::Blocks(who)
+        | Pred::TargetedBy(who)
         | Pred::TargetsPlayer(who)
         | Pred::OwnedBy(who)
         | Pred::AttackingPlayer(who)
@@ -252,7 +262,7 @@ fn reads_of_stat(stat: StatKind) -> Traits {
         StatKind::Toughness => Traits::TOUGHNESS,
         StatKind::Colors => Traits::COLORS,
         StatKind::BasicLandTypes => Traits::SUBTYPES,
-        StatKind::ManaValue | StatKind::Loyalty => Traits::NONE,
+        StatKind::ManaValue | StatKind::Loyalty | StatKind::BasePower => Traits::NONE,
     }
 }
 
@@ -274,6 +284,12 @@ pub(crate) fn reads_of_amount(amount: &Amount) -> Traits {
         | Amount::Exiled(_)
         | Amount::PhasedOut(_)
         | Amount::DieResult(_)
+        | Amount::TurnNumber
+        | Amount::ManaSpent { .. }
+        | Amount::ManaColors(_)
+        | Amount::ManaInPool(_)
+        | Amount::Random { .. }
+        | Amount::TriggeringTargets
         | Amount::Triggering => Traits::NONE,
         Amount::Count(selector) => reads_of_selector(selector),
         Amount::Stat { of, stat } => reads_of_ref(of).or(reads_of_stat(*stat)),
@@ -284,6 +300,7 @@ pub(crate) fn reads_of_amount(amount: &Amount) -> Traits {
         | Amount::Mutations(who)
         | Amount::Players(who)
         | Amount::Tallied { who, .. }
+        | Amount::CommanderColors(who)
         | Amount::StartingLife(who)
         | Amount::LowestLife(who)
         | Amount::LowestHand(who)
@@ -296,7 +313,17 @@ pub(crate) fn reads_of_amount(amount: &Amount) -> Traits {
         Amount::Devotion(_) => Traits::CONTROL,
         Amount::Greatest { of, stat }
         | Amount::Total { of, stat }
-        | Amount::Distinct { of, stat } => reads_of_selector(of).or(reads_of_stat(*stat)),
+        | Amount::Distinct { of, stat }
+        | Amount::MostCommon { of, stat } => reads_of_selector(of).or(reads_of_stat(*stat)),
+        Amount::Doors(of) => reads_of_selector(of),
+        Amount::When {
+            condition,
+            then,
+            otherwise,
+        } => reads_of_condition(condition)
+            .or(reads_of_amount(then))
+            .or(reads_of_amount(otherwise)),
+        Amount::Tally { who, filter, .. } => reads_of_ref(who).or(reads_of_selector(filter)),
         Amount::CardTypes(of) => reads_of_selector(of).or(Traits::TYPES),
         Amount::Largest { who, of } => reads_of_ref(who).or(reads_of_selector(of)),
         Amount::Party(who) => reads_of_ref(who)
@@ -337,6 +364,7 @@ pub(crate) fn reads_of_condition(condition: &Condition) -> Traits {
         | Condition::CompletedDungeon(who)
         | Condition::Initiative(who)
         | Condition::CitysBlessing(who)
+        | Condition::StartingPlayer(who)
         | Condition::Searched { who, .. } => reads_of_ref(who),
         Condition::Level { of, .. } => reads_of_ref(of),
     }
