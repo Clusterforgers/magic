@@ -97,6 +97,7 @@ fn stat() -> impl Strategy<Value = StatKind> {
         StatKind::Toughness,
         StatKind::ManaValue,
         StatKind::Loyalty,
+        StatKind::ManaSpent,
     ])
 }
 

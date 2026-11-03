@@ -6,6 +6,7 @@
 use crate::ability::Ability;
 use crate::effect::Effect;
 use crate::refs::Ref;
+use crate::value::Amount;
 
 /// One macro: its name as the card prints it and the JSON it expands to.
 #[derive(Debug, Clone, Copy)]
@@ -67,9 +68,24 @@ pub const KEYWORDS: &[Entry] = &[
         template: r#"[{"Replacement":{"when":{"Enters":{"what":["This"]}},"by":{"MayWithCounters":{"counter":"+1/+1","count":1}}}},
             {"Static":{"affected":"This","mods":["CantBlock"],"condition":{"Compare":{"left":{"Counters":{"on":"This","counter":"+1/+1"}},"op":"Ge","right":1}}}}]"#,
     },
+    Entry {
+        name: "living metal",
+        template: r#"[{"Static":{"affected":"This","mods":[{"AddType":"Creature"}],"condition":"YourTurn"}}]"#,
+    },
+    Entry {
+        name: "teamwork",
+        template: r#"[{"AdditionalCost":{"cost":[{"TapPower":{"filter":[{"Type":"Creature"},{"ControlledBy":"You"}],"power":$N}}]}}]"#,
+    },
+    Entry {
+        name: "increment",
+        template: r#"[{"Triggered":{"when":{"SpellCast":{"by":"You"}},
+             "if":{"Any":[{"Compare":{"left":{"Stat":{"of":"Triggering","stat":"ManaSpent"}},"op":"Gt","right":{"Stat":{"of":"This","stat":"Power"}}}},
+                          {"Compare":{"left":{"Stat":{"of":"Triggering","stat":"ManaSpent"}},"op":"Gt","right":{"Stat":{"of":"This","stat":"Toughness"}}}}]},
+             "effects":[{"PutCounters":{"on":"This","counter":"+1/+1","count":1}}]}}]"#,
+    },
 ];
 
-/// The keyword actions that expand into effects: populate, endure and earthbend.
+/// The keyword actions that expand into effects: populate, endure, earthbend, blight, recruit, empower and assimilate.
 pub const ACTIONS: &[Entry] = &[
     Entry {
         name: "populate",
@@ -88,6 +104,31 @@ pub const ACTIONS: &[Entry] = &[
             {"PutCounters":{"on":$ON,"counter":"+1/+1","count":$N}},
             {"DelayedTrigger":{"when":{"AnyOf":[{"ZoneChange":{"what":[{"Is":$ON}],"from":"Battlefield","to":"Graveyard"}},{"ZoneChange":{"what":[{"Is":$ON}],"from":"Battlefield","to":"Exile"}}]},
              "effects":[{"Move":{"what":"Triggering","to":{"Battlefield":{"tapped":true}}}}]}}]"#,
+    },
+    Entry {
+        name: "blight",
+        template: r#"[{"Choose":{"from":{"Each":[{"Type":"Creature"},{"ControlledBy":"You"}]},"as":"blighted"}},
+            {"PutCounters":{"on":{"Bound":"blighted"},"counter":"-1/-1","count":$N}}]"#,
+    },
+    Entry {
+        name: "recruit",
+        template: r#"[{"Draw":{}},{"Discard":{"as":"discarded"}},
+            {"If":{"condition":{"Compare":{"left":{"Count":[{"Is":{"Bound":"discarded"}},{"In":"Graveyard"},{"Not":{"Type":"Land"}}]},"op":"Ge","right":1}},
+             "then":[{"CreateToken":{"token":{"Custom":{"name":"Human Soldier","colors":["White"],"types":["Creature"],"subtypes":["Human","Soldier"],"power":1,"toughness":1}}}}]}}]"#,
+    },
+    Entry {
+        name: "empower",
+        template: r#"[{"If":{"condition":{"Compare":{"left":{"Count":[{"Subtype":"Jace"},"Token",{"ControlledBy":"You"}]},"op":"Lt","right":1}},
+             "then":[{"CreateToken":{"token":{"Custom":{"name":"Jace","colors":["Blue"],"types":["Planeswalker"],"subtypes":["Jace"],"abilities":[
+               {"Loyalty":{"cost":{"Minus":1},"effects":[{"Surveil":{"count":1}}]}},
+               {"Loyalty":{"cost":{"Minus":3},"effects":[{"Draw":{"count":1}}]}}]}}}}]}},
+            {"Choose":{"from":{"Each":[{"Subtype":"Jace"},"Token",{"ControlledBy":"You"}]},"as":"jace"}},
+            {"PutCounters":{"on":{"Bound":"jace"},"counter":"loyalty","count":$N}}]"#,
+    },
+    Entry {
+        name: "assimilate",
+        template: r#"[{"Move":{"what":$ON,"to":{"Battlefield":{"under":"You","counters":[["+1/+1",1]]}}}},
+            {"Continuous":{"affected":$ON,"mods":[{"AddType":"Artifact"},{"SetCreatureTypes":["Borg"]}],"duration":"Forever"}}]"#,
     },
 ];
 
@@ -114,23 +155,27 @@ pub fn is_action(name: &str) -> bool {
 }
 
 /// The template with the number and the object put in.
-fn fill(template: &str, amount: u32, on: &Ref) -> Option<String> {
+fn fill(template: &str, amount: &Amount, on: &Ref) -> Option<String> {
     let on = serde_json::to_string(on).ok()?;
-    Some(
-        template
-            .replace("$ON", &on)
-            .replace("$N", &amount.to_string()),
-    )
+    let amount = serde_json::to_string(amount).ok()?;
+    Some(template.replace("$ON", &on).replace("$N", &amount))
 }
 
 /// The abilities a keyword macro stands for; `None` for a name that is not in the table.
 pub fn keyword_abilities(name: &str, amount: u32) -> Option<Vec<Ability>> {
     let entry = find(KEYWORDS, name)?;
-    serde_json::from_str(&fill(entry.template, amount, &Ref::This)?).ok()
+    let amount = Amount::Fixed(i32::try_from(amount).ok()?);
+    serde_json::from_str(&fill(entry.template, &amount, &Ref::This)?).ok()
 }
 
 /// The effects a keyword action stands for on the object `on`; `None` for a name that is not in the table.
 pub fn action_effects(name: &str, amount: u32, on: &Ref) -> Option<Vec<Effect>> {
+    let amount = Amount::Fixed(i32::try_from(amount).ok()?);
+    action_effects_of(name, &amount, on)
+}
+
+/// The effects a keyword action stands for with any amount ("empower Jace X"); `None` for a name that is not in the table.
+pub fn action_effects_of(name: &str, amount: &Amount, on: &Ref) -> Option<Vec<Effect>> {
     let entry = find(ACTIONS, name)?;
     serde_json::from_str(&fill(entry.template, amount, on)?).ok()
 }
