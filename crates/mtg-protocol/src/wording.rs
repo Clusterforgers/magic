@@ -74,7 +74,8 @@ pub fn activated_views(
         place += 1;
         let keyword = match address.source {
             AbilitySource::PrintedKeyword(_) | AbilitySource::GrantedKeyword(_) => {
-                keyword_adding(state, address).map(|keyword| keyword_line(keyword.name(), &rules))
+                keyword_adding(state, address)
+                    .map(|keyword| keyword_line(&keyword.shown_name(), &rules))
             }
             AbilitySource::Printed | AbilitySource::Granted(_) => None,
         };

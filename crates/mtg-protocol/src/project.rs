@@ -149,9 +149,9 @@ fn zone_view(state: &GameState, viewer: PlayerId, zone: Zone) -> ZoneView {
 fn keyword_names(state: &GameState, id: ObjectId) -> Vec<String> {
     let mut names: Vec<String> = Vec::new();
     for keyword in keywords_of(state, id) {
-        let name = keyword.name();
-        if !names.iter().any(|seen| seen == name) {
-            names.push(name.to_owned());
+        let name = keyword.shown_name();
+        if !names.contains(&name) {
+            names.push(name);
         }
     }
     names
@@ -186,7 +186,7 @@ fn given_keyword_names(keywords: &[Keyword]) -> Vec<String> {
                 last.push_str(word);
             }
             (Some(word), _) => names.push(format!("Protection from {word}")),
-            (None, _) => names.push(keyword.name().to_owned()),
+            (None, _) => names.push(keyword.shown_name()),
         }
         protecting = word.is_some();
     }
@@ -198,9 +198,9 @@ fn printed_keyword_names(card: &CardDefinition) -> Vec<String> {
     let mut names: Vec<String> = Vec::new();
     for rules in &card.rules {
         if let Ability::Keyword(keyword) = &**rules {
-            let name = keyword.name();
-            if !names.iter().any(|seen| seen == name) {
-                names.push(name.to_owned());
+            let name = keyword.shown_name();
+            if !names.contains(&name) {
+                names.push(name);
             }
         }
     }

@@ -81,7 +81,7 @@ impl PendingTrigger {
             source: self.trigger.origin,
         };
         match ability_reader::keyword_adding_as_it_was(state, address, &self.trigger.snapshot) {
-            Some(keyword) => wording::keyword_trigger(keyword.name(), &said),
+            Some(keyword) => wording::keyword_trigger(&keyword.shown_name(), &said),
             None => said,
         }
     }

@@ -91,3 +91,29 @@ fn the_chosen_cards_begin_on_the_battlefield_and_the_rest_stay_in_hand(
     );
     Ok(())
 }
+
+#[rstest]
+fn nothing_begins_on_the_battlefield_while_a_seat_still_decides(
+    #[values(1, 2, 3, 4)] seed: u64,
+) -> Result<(), ScriptError> {
+    let mut driver = opening(40, seed)?;
+    // One seat keeps; the other has not answered yet.
+    let first = driver.decision()?.player;
+    driver.answer(Answer::Mulligan(MulliganChoice::Keep))?;
+    let asked = driver.engine().decisions();
+    assert!(
+        asked
+            .iter()
+            .all(|decision| matches!(decision.kind, DecisionKind::Mulligan(_))),
+        "no opening-hand question while a seat decides"
+    );
+    assert!(driver.state().zone(Zone::Battlefield).is_empty());
+    assert!(asked.iter().all(|decision| decision.player != first));
+    // Once the last seat keeps, the one seat with such cards is asked.
+    driver.answer(Answer::Mulligan(MulliganChoice::Keep))?;
+    let asked = driver.engine().decisions();
+    assert_eq!(asked.len(), 1);
+    assert_eq!(asked[0].player, PlayerId(0));
+    assert!(matches!(asked[0].kind, DecisionKind::ChooseCards(_)));
+    Ok(())
+}

@@ -43,10 +43,12 @@ pub(super) fn origin(cx: &Cx<'_>) -> Result<Origin, ResolveError> {
         || spell_ability(state, object.id()).map_or(0, |(address, _)| address.ability),
         crate::abilities::AbilityObject::index,
     );
+    // What a step did belongs to the resolution that ran it: the delayed trigger reads its own steps by position.
     let bindings = cx
         .resolving
         .bindings()
         .iter()
+        .filter(|(name, _)| !name.starts_with("?performed"))
         .map(|(name, targets)| (name.clone(), targets.clone()))
         .collect();
     Ok(Origin {
