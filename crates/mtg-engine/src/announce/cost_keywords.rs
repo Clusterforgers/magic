@@ -54,7 +54,11 @@ fn artifact() -> Arc<CardDefinition> {
 fn engine(keyword: Keyword, others: Vec<Arc<CardDefinition>>) -> (Engine, ObjectId) {
     let mut field = vec![mountain(), mountain()];
     field.extend(others);
-    let engine = Engine::new(setup(vec![vec![spell(keyword)], vec![]], vec![field, vec![]])).unwrap();
+    let engine = Engine::new(setup(
+        vec![vec![spell(keyword)], vec![]],
+        vec![field, vec![]],
+    ))
+    .unwrap();
     let card = engine.state().zone(Zone::Hand(SEAT))[0];
     (engine, card)
 }
@@ -118,7 +122,11 @@ fn a_bargained_cast_sacrifices_the_permanent_it_picks() {
     let (costs, events) = cast(&mut engine, card, true);
     assert_eq!(costs, vec![0]);
     assert!(events.iter().any(|e| matches!(e, Event::SpellCast { .. })));
-    assert_eq!(engine.state().zone(Zone::Graveyard(SEAT)).len(), 1, "the artifact was sacrificed");
+    assert_eq!(
+        engine.state().zone(Zone::Graveyard(SEAT)).len(),
+        1,
+        "the artifact was sacrificed"
+    );
 }
 
 #[test]

@@ -36,8 +36,10 @@ pub(crate) struct Paid {
 pub(crate) struct ModeCosts {
     /// The cost of each mode; `None` for one the engine does not pay, which is never offered.
     each: Vec<Option<Paid>>,
-    /// The cost of each mode beyond the first: `Some(None)` for one the engine does not pay, so only one mode is chosen.
-    extra: Option<Option<Paid>>,
+    /// The cost of each mode beyond the first.
+    extra: Option<Paid>,
+    /// The extra cost has a part the engine does not pay, so only one mode is chosen.
+    one_only: bool,
 }
 
 /// What the engine pays of `cost` when a choice adds it, or `None` for a cost with a part it does not pay.
@@ -76,9 +78,11 @@ impl ModeCosts {
                 }),
             })
             .collect();
+        let printed = modal.extra_mode_cost;
         Some(ModeCosts {
             each,
-            extra: modal.extra_mode_cost.map(read),
+            extra: printed.and_then(read),
+            one_only: printed.is_some_and(|cost| read(cost).is_none()),
         })
     }
 
@@ -97,7 +101,7 @@ impl ModeCosts {
             .iter()
             .filter_map(|index| self.each.get(*index)?.as_ref())
             .collect();
-        if let Some(Some(extra)) = &self.extra {
+        if let Some(extra) = &self.extra {
             paid.extend(std::iter::repeat_n(extra, chosen.len().saturating_sub(1)));
         }
         paid
@@ -118,10 +122,7 @@ impl ModeCosts {
 
     /// The most modes the extra cost lets be chosen: one when the engine does not pay it.
     fn at_most(&self) -> usize {
-        match self.extra {
-            Some(None) => 1,
-            _ => usize::MAX,
-        }
+        if self.one_only { 1 } else { usize::MAX }
     }
 }
 
@@ -164,7 +165,10 @@ pub(super) fn restrict(ctx: &Ctx<'_>, choices: &Choices, options: &mut ModeOptio
     let mut order: Vec<usize> = options.modes.iter().map(|mode| mode.index).collect();
     order.sort_by_key(|index| {
         let paid = costs.charged(&[*index]);
-        (paid.first().map_or(0, |paid| paid.mana.mana_value()), *index)
+        (
+            paid.first().map_or(0, |paid| paid.mana.mana_value()),
+            *index,
+        )
     });
     let mut most = 0;
     while most < order.len().min(costs.at_most()) && fits(ctx, choices, &order[..=most]) {
@@ -212,7 +216,10 @@ pub(crate) fn floor<'a>(
         .collect();
     cheapest.sort_by_key(|index| {
         let paid = costs.charged(&[*index]);
-        (paid.first().map_or(0, |paid| paid.mana.mana_value()), *index)
+        (
+            paid.first().map_or(0, |paid| paid.mana.mana_value()),
+            *index,
+        )
     });
     if cheapest.len() < usize::try_from(options.min).unwrap_or(usize::MAX) {
         return None;
@@ -222,10 +229,9 @@ pub(crate) fn floor<'a>(
     if paid.is_empty() {
         return Some(Cow::Borrowed(cost));
     }
-    let symbols = cost
-        .symbols()
-        .iter()
-        .copied()
-        .chain(paid.iter().flat_map(|paid| paid.mana.symbols().iter().copied()));
+    let symbols = cost.symbols().iter().copied().chain(
+        paid.iter()
+            .flat_map(|paid| paid.mana.symbols().iter().copied()),
+    );
     Some(Cow::Owned(ManaCost::from_symbols(symbols)))
 }

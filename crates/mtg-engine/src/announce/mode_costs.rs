@@ -67,11 +67,8 @@ impl Spell {
         let forest = Arc::new(CardDefinition::basic_land(Some(Color::Green)));
         let mut hand = vec![self.card()];
         hand.extend((0..others).map(|n| creature(&format!("Spare {n}"), 1, 1)));
-        let engine = Engine::new(setup(
-            vec![hand, vec![]],
-            vec![vec![forest; lands], vec![]],
-        ))
-        .unwrap();
+        let engine =
+            Engine::new(setup(vec![hand, vec![]], vec![vec![forest; lands], vec![]])).unwrap();
         let card = engine.state().zone(Zone::Hand(SEAT))[0];
         (engine, card)
     }
@@ -95,8 +92,11 @@ fn cast(engine: &mut Engine, card: ObjectId) -> Option<ModeOptions> {
     }
 }
 
+/// The modes offered by index and cost words, and the most to choose.
+type Offer = (Vec<(usize, Option<String>)>, u32);
+
 /// `(index, cost words)` of the modes offered and the most that may be chosen.
-fn shape(options: &ModeOptions) -> (Vec<(usize, Option<String>)>, u32) {
+fn shape(options: &ModeOptions) -> Offer {
     (
         options
             .modes
@@ -132,7 +132,7 @@ fn named(index: usize, cost: Option<&str>) -> (usize, Option<String>) {
 )]
 fn a_spree_offers_the_modes_the_player_pays_for_and_the_castable_list_agrees(
     #[case] lands: usize,
-    #[case] expected: Option<(Vec<(usize, Option<String>)>, u32)>,
+    #[case] expected: Option<Offer>,
 ) {
     let spell = Spell {
         costs: vec![mana("{G}"), mana("{1}{G}"), mana("{2}")],
@@ -240,9 +240,6 @@ fn a_cast_with_modes_that_cost_nothing_extra_asks_no_more_than_before() {
     let options = cast(&mut engine, card).expect("modes to choose");
     assert_eq!(
         shape(&options),
-        (
-            vec![named(0, None), named(1, None), named(2, None)],
-            3
-        )
+        (vec![named(0, None), named(1, None), named(2, None)], 3)
     );
 }

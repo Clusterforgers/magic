@@ -89,6 +89,21 @@ fn table_answer(
     }
 }
 
+/// The answer to a mode decision, refused when the cost of the modes it names cannot be paid.
+fn mode_checked(
+    state: &GameState,
+    player: mtg_core::ids::PlayerId,
+    options: &choose::ModeOptions,
+    choice: choose::ModeChoice,
+    pending: Option<&Pending>,
+) -> Result<Outcome, EngineError> {
+    let outcome = choose::mode_answer(player, options, choice)?;
+    if let (Outcome::Modes(modes), Some(pending)) = (&outcome, pending) {
+        pending.check_modes(state, modes)?;
+    }
+    Ok(outcome)
+}
+
 /// Checks `answer` against `decision`; the result is only built from legal options.
 ///
 /// `pending` is the cast or activation in progress, whose announcements its payment puts on the spell or ability;
@@ -143,11 +158,7 @@ pub(crate) fn handle(
             choose::targets_answer(player, options, choice, pending.is_some())
         }
         (DecisionKind::ChooseMode(options), Answer::ChooseMode(choice)) => {
-            let outcome = choose::mode_answer(player, options, choice)?;
-            if let (Outcome::Modes(modes), Some(pending)) = (&outcome, pending) {
-                pending.check_modes(state, modes)?;
-            }
-            Ok(outcome)
+            mode_checked(state, player, options, choice, pending)
         }
         (DecisionKind::ChooseNumber(options), Answer::ChooseNumber(choice)) => {
             choose::number_answer(player, options, choice, pending.is_some())

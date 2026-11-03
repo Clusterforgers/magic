@@ -207,7 +207,11 @@ impl Needs {
             optional: optional::read(state, what),
             x: XCost::of(state, what, rules),
             price: parts::read(what, rules),
-            modes: if matches!(what, What::Spell(_)) { price::ModeCosts::of(rules) } else { None },
+            modes: if matches!(what, What::Spell(_)) {
+                price::ModeCosts::of(rules)
+            } else {
+                None
+            },
         }
     }
 
@@ -399,7 +403,11 @@ impl Pending {
     }
 
     /// Whether the spell can be paid for with the modes chosen: the answer is refused when their costs cannot be paid.
-    pub(crate) fn check_modes(&self, state: &GameState, modes: &[usize]) -> Result<(), IllegalAnswer> {
+    pub(crate) fn check_modes(
+        &self,
+        state: &GameState,
+        modes: &[usize],
+    ) -> Result<(), IllegalAnswer> {
         let (What::Spell(card), Some(needs)) = (&self.what, &self.needs) else {
             return Ok(());
         };
