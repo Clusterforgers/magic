@@ -210,6 +210,7 @@ export type { PriorityView } from "./PriorityView";
 export type { PutOnStack } from "./PutOnStack";
 export type { ReadState } from "./ReadState";
 export type { Reason } from "./Reason";
+export type { Remembered } from "./Remembered";
 export type { ReplacementCandidate } from "./ReplacementCandidate";
 export type { ReplacementChoice } from "./ReplacementChoice";
 export type { ReplacementOptions } from "./ReplacementOptions";

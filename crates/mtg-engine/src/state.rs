@@ -271,6 +271,8 @@ pub struct GameState {
     pub(crate) revealed_by_hand: Vec<crate::object::ObjectRef>,
     /// The notes seats put on cards by hand (`ManualAction::Note`), kept while the card is still the object it was put on.
     pub(crate) notes: Vec<(crate::object::ObjectRef, String)>,
+    /// What each source remembers by slot (`Effect::Remember`); ends with the source.
+    pub(crate) memory: crate::memory::Memory,
 }
 
 impl GameState {
@@ -724,6 +726,10 @@ impl Hash for GameState {
         }
         if !self.notes.is_empty() {
             self.notes.hash(state);
+        }
+        // Likewise a game in which nothing was remembered.
+        if !self.memory.is_empty() {
+            self.memory.hash(state);
         }
         // Likewise a game that counted nothing this turn.
         if !self.tallies.players.is_empty() {

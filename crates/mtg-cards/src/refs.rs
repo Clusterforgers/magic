@@ -7,6 +7,9 @@ use serde::{Deserialize, Serialize};
 use crate::keyword::Keyword;
 use crate::value::{Amount, CastWay, Cmp, CounterKind, StatKind};
 
+/// The slot of `Ref::Remembered` that holds what the source exiled (`Pred::ExiledWith` reads it).
+pub const EXILED_SLOT: &str = "exiled";
+
 /// A zone a selector or a pattern can name.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Default, Serialize, Deserialize)]
 pub enum ZoneKind {
@@ -86,6 +89,14 @@ pub enum Ref {
     /// The objects picked for the cost of the ability ("the creature tapped to pay it"): their characteristics are those they
     /// have as the ability resolves, and none is named when the cost picks nothing.
     Paid,
+    /// The objects the source named by `on` remembers in `slot` (`Effect::Remember`; the slot `exiled` holds what the source
+    /// exiled), as the objects they are now: one that has changed zones since is another object and drops out.
+    Remembered {
+        /// The object whose memory is read.
+        on: Box<Ref>,
+        /// The name of the memory.
+        slot: String,
+    },
     /// The controller of the referenced object.
     ControllerOf(Box<Ref>),
     /// The owner of the referenced object.
@@ -154,7 +165,8 @@ pub enum Pred {
     /// Is a permanent attached to one of the objects the reference names ("Aura attached to it", "Equipment attached to
     /// equipped creature").
     AttachedTo(Ref),
-    /// Is a card exiled face down by one of the permanents the reference names, which has not left since (hideaway, CR 702.75a).
+    /// Is a card exiled by one of the permanents the reference names, which has not left since: face down by hideaway
+    /// (CR 702.75a), or by any effect of that permanent (CR 607.2a), read from its `exiled` memory.
     ExiledWith(Ref),
     /// Is a creature on the battlefield that one of the cards the reference names is encoded on, which has not left since (cipher, CR 702.99).
     EncodedWith(Ref),

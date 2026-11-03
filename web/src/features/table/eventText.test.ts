@@ -293,6 +293,17 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
     'Ana chooses Grizzly Bears and Hill Giant',
   ],
   StepDone: [{ StepDone: { position: [1], bound: [], snapshots: [] } }, 'A step of the resolution is done'],
+  Remembered: [
+    {
+      Remembered: {
+        source: { id: 3, counter: 0 },
+        slot: 'exiled',
+        objects: [{ id: 1, counter: 1 }],
+        replace: false,
+      },
+    },
+    'A source remembers objects',
+  ],
   ResolutionEnded: [
     { ResolutionEnded: { object: 4, outcome: 'Resolved' } },
     'Lightning Bolt finishes resolving',

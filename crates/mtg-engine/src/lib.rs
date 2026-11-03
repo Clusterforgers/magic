@@ -100,6 +100,7 @@ mod manual_effects;
 mod manual_library;
 mod manual_roll;
 mod manual_show;
+pub mod memory;
 pub mod merged;
 pub mod monarch;
 pub mod object;
