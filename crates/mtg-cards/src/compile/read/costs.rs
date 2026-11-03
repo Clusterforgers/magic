@@ -201,7 +201,11 @@ fn exile(r: &mut Reader<'_>) -> Option<CostItem> {
     Some(if from_hand {
         CostItem::ExileFromHand { filter, count }
     } else {
-        CostItem::ExileFromGraveyard { filter, count }
+        CostItem::ExileFromGraveyard {
+            filter,
+            any_player: false,
+            count,
+        }
     })
 }
 
@@ -400,7 +404,11 @@ fn item_text(item: &CostItem) -> Option<String> {
             format!("Discard {}", text.strip_suffix(" from your hand")?)
         }
         CostItem::TapPermanents { filter, count } => tap_text(filter, count)?,
-        CostItem::ExileFromGraveyard { filter, count } => {
+        CostItem::ExileFromGraveyard {
+            filter,
+            count,
+            any_player: false,
+        } => {
             let mut said = filter.clone();
             said.0
                 .extend([Pred::In(ZoneKind::Graveyard), Pred::OwnedBy(Ref::You)]);

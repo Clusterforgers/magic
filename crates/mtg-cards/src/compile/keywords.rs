@@ -1289,7 +1289,7 @@ mod tests {
         "Escape\u{2014}{2}{R}, Exile three other cards from your graveyard.",
         Keyword::Escape(Cost(vec![
             CostItem::Mana("{2}{R}".parse().unwrap()),
-            CostItem::ExileFromGraveyard { filter: Selector(vec![Pred::Other]), count: Amount::Fixed(3) },
+            CostItem::ExileFromGraveyard { filter: Selector(vec![Pred::Other]), any_player: false, count: Amount::Fixed(3) },
         ]))
     )]
     #[case::crew("Crew 3", Keyword::Crew(3))]

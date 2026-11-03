@@ -447,3 +447,30 @@ fn a_counter_of_any_kind_takes_the_kind_chosen(
         })]
     );
 }
+
+#[rstest]
+#[case::damage(r#"{"DamageToYou":3}"#, "Cost.DamageToYou")]
+#[case::unattach(r#""Unattach""#, "Cost.Unattach")]
+#[case::exile_top(r#"{"ExileTop":2}"#, "Cost.ExileTop")]
+#[case::evidence(r#"{"CollectEvidence":4}"#, "Cost.CollectEvidence")]
+#[case::blight(r#"{"Blight":1}"#, "Cost.Blight")]
+#[case::behold(r#"{"Behold":{"filter":[]}}"#, "Cost.Behold")]
+#[case::to_library(r#"{"ToLibrary":{"from":"Hand","filter":[]}}"#, "Cost.ToLibrary")]
+#[case::forage(r#""Forage""#, "Cost.Forage")]
+#[case::any_graveyard(
+    r#"{"ExileFromGraveyard":{"filter":[],"any_player":true}}"#,
+    "Cost.ExileFromGraveyard"
+)]
+fn the_new_parts_are_read_and_named(#[case] json: &str, #[case] name: &str) {
+    assert_eq!(part(json).name(), name);
+}
+
+#[rstest]
+#[case::damage(r#"{"DamageToYou":{"Life":"You"}}"#, "Cost.DamageToYou.Counted")]
+#[case::exile_top(r#"{"ExileTop":{"Life":"You"}}"#, "Cost.ExileTop.Counted")]
+#[case::blight(r#"{"Blight":{"Life":"You"}}"#, "Cost.Blight.Counted")]
+#[case::blight_x(r#"{"Blight":"X"}"#, "Cost.Blight.Counted")]
+#[case::library_zone(r#"{"ToLibrary":{"from":"Exile","filter":[]}}"#, "Cost.ToLibrary.Zone")]
+fn the_new_parts_name_what_they_cannot_count(#[case] json: &str, #[case] name: &str) {
+    assert_eq!(Part::read(&item(json)), Err(name));
+}

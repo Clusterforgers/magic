@@ -149,9 +149,14 @@ fn repeated(cost: &Cost, times: usize) -> Cost {
                     count: times_over(count),
                     filter: filter.clone(),
                 }],
-                CostItem::ExileFromGraveyard { filter, count } => {
+                CostItem::ExileFromGraveyard {
+                    filter,
+                    count,
+                    any_player,
+                } => {
                     vec![CostItem::ExileFromGraveyard {
                         filter: filter.clone(),
+                        any_player: *any_player,
                         count: times_over(count),
                     }]
                 }

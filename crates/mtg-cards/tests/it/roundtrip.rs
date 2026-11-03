@@ -199,8 +199,13 @@ fn cost_item() -> impl Strategy<Value = CostItem> {
             .prop_map(|(filter, count)| CostItem::TapPermanents { filter, count }),
         (leaf_selector(), 0..20u32)
             .prop_map(|(filter, power)| CostItem::TapPower { filter, power }),
-        (leaf_selector(), simple_amount())
-            .prop_map(|(filter, count)| CostItem::ExileFromGraveyard { filter, count }),
+        (leaf_selector(), simple_amount()).prop_map(|(filter, count)| {
+            CostItem::ExileFromGraveyard {
+                filter,
+                any_player: false,
+                count,
+            }
+        }),
         (leaf_selector(), simple_amount())
             .prop_map(|(filter, count)| CostItem::ReturnToHand { filter, count }),
     ]

@@ -85,8 +85,13 @@ fn cost_item(ctx: &Ctx, item: &CostItem) -> String {
         CostItem::TapPermanents { filter, count } => {
             format!("tap {} you control", taken(ctx, count, filter))
         }
-        CostItem::ExileFromGraveyard { filter, count } => {
-            format!("exile {} from your graveyard", taken(ctx, count, filter))
+        CostItem::ExileFromGraveyard {
+            filter,
+            count,
+            any_player,
+        } => {
+            let whose = if *any_player { "a" } else { "your" };
+            format!("exile {} from {whose} graveyard", taken(ctx, count, filter))
         }
         CostItem::ReturnToHand { filter, count } => {
             format!(

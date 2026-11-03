@@ -207,6 +207,7 @@ mod face_rules;
 mod faces;
 mod faces_fuzz;
 mod fail_soft;
+mod fe1o_cost_parts;
 mod fight;
 mod fight_fuzz;
 mod fight_targets;

@@ -5,28 +5,38 @@
 //! (`announce/parts.rs`), and every part is paid with its events as the ability goes on the stack (`cast.rs`).
 
 mod among;
+mod behold;
+mod blight;
 mod bounce;
 mod c11c_counter_picks;
 mod counters;
+mod damage;
 mod discard;
 pub(crate) mod energy;
+mod evidence;
 mod exile;
 mod exile_hand;
+mod exile_top;
+mod forage;
 mod life;
 pub(crate) mod mill;
 mod reveal;
 mod sacrifice;
 mod source;
 mod tap;
+mod to_library;
+mod unattach;
 mod untap;
 
 pub(crate) use counters::after_removal;
 
 use mtg_cards::cost::CostItem;
-use mtg_cards::refs::{Pred, Selector};
+use mtg_cards::refs::{Pred, Selector, ZoneKind};
 use mtg_cards::value::{Amount, CounterKind};
+use mtg_core::card::CardType;
 use mtg_core::ids::{ObjectId, PlayerId};
 
+use crate::error::IllegalAnswer;
 use crate::events::Event;
 use crate::resolve::Scope;
 use crate::snapshot::{Snapshot, snapshot};
@@ -55,6 +65,18 @@ pub(crate) enum Kind {
     Return,
     /// A permanent the payer controls loses a counter of the kind its filter names.
     Counter,
+    /// A card in any player's graveyard is exiled.
+    ExileAny,
+    /// Cards in the payer's graveyard are exiled, with total mana value at least `Pick.count` (CR 701.59).
+    Evidence,
+    /// A creature the payer controls gets that many -1/-1 counters.
+    Blight(u32),
+    /// A permanent the payer controls is chosen, or a card in their hand is revealed.
+    Behold,
+    /// Cards of a zone of the payer go on top of their library, or at the bottom of it when the flag is set.
+    ToLibrary(ZoneKind, bool),
+    /// One Food the payer controls is sacrificed, or three cards of their graveyard are exiled.
+    Forage,
 }
 
 /// A part of the cost that takes objects the player picks.
@@ -80,6 +102,12 @@ pub(crate) enum Part {
         /// How many.
         count: u32,
     },
+    /// Damage the source deals to the payer.
+    Damage(u32),
+    /// The source stops being attached.
+    Unattach,
+    /// Cards exiled from the top of the payer's library.
+    ExileTop(u32),
     /// Counters put on the source.
     PutCounters {
         /// The kind of counter.
@@ -114,6 +142,11 @@ const fn counted(item: &CostItem) -> &'static str {
         CostItem::PayLife(_) => "Cost.PayLife.Counted",
         CostItem::PayEnergy(_) => "Cost.PayEnergy.Counted",
         CostItem::Mill(_) => "Cost.Mill.Counted",
+        CostItem::DamageToYou(_) => "Cost.DamageToYou.Counted",
+        CostItem::ExileTop(_) => "Cost.ExileTop.Counted",
+        CostItem::Blight(_) => "Cost.Blight.Counted",
+        CostItem::Behold { .. } => "Cost.Behold.Counted",
+        CostItem::ToLibrary { .. } => "Cost.ToLibrary.Counted",
         CostItem::RemoveCounters { .. } => "Cost.RemoveCounters.Counted",
         CostItem::PutCounters { .. } => "Cost.PutCounters.Counted",
         CostItem::UntapPermanents { .. } => "Cost.UntapPermanents.Counted",
@@ -156,6 +189,76 @@ fn pick(
         }),
         x,
     ))
+}
+
+/// The parts of the cost items beyond the common picks: damage, unattaching, exiling the top, evidence, blight, behold,
+/// a move into the library and forage.
+fn read_more(item: &CostItem) -> Result<Option<(Part, bool)>, &'static str> {
+    Ok(Some(match item {
+        CostItem::DamageToYou(count) => {
+            let (number, x) = amount(count, item)?;
+            (Part::Damage(number), x)
+        }
+        CostItem::ExileTop(count) => {
+            let (number, x) = amount(count, item)?;
+            (Part::ExileTop(number), x)
+        }
+        CostItem::Unattach => (Part::Unattach, false),
+        CostItem::CollectEvidence(value) => {
+            let count = usize::try_from(*value).unwrap_or(usize::MAX);
+            let filter = Selector::default();
+            let kind = Kind::Evidence;
+            (
+                Part::Pick(Pick {
+                    kind,
+                    filter,
+                    count,
+                }),
+                false,
+            )
+        }
+        CostItem::Blight(count) => {
+            let (number, x) = amount(count, item)?;
+            if x {
+                return Err(counted(item));
+            }
+            let filter = Selector(vec![Pred::Type(CardType::Creature)]);
+            let kind = Kind::Blight(number);
+            (
+                Part::Pick(Pick {
+                    kind,
+                    filter,
+                    count: 1,
+                }),
+                false,
+            )
+        }
+        CostItem::Behold { filter, count } => pick(Kind::Behold, filter, count, item)?,
+        CostItem::ToLibrary {
+            from,
+            filter,
+            count,
+            bottom,
+        } => {
+            if !to_library::supported(*from) {
+                return Err("Cost.ToLibrary.Zone");
+            }
+            pick(Kind::ToLibrary(*from, *bottom), filter, count, item)?
+        }
+        CostItem::Forage => {
+            let filter = Selector::default();
+            let kind = Kind::Forage;
+            (
+                Part::Pick(Pick {
+                    kind,
+                    filter,
+                    count: 1,
+                }),
+                false,
+            )
+        }
+        _ => return Ok(None),
+    }))
 }
 
 impl Part {
@@ -231,8 +334,17 @@ impl Part {
                 count,
                 item,
             )?,
-            CostItem::ExileFromGraveyard { filter, count } => {
-                pick(Kind::Exile, filter, count, item)?
+            CostItem::ExileFromGraveyard {
+                filter,
+                count,
+                any_player,
+            } => {
+                let kind = if *any_player {
+                    Kind::ExileAny
+                } else {
+                    Kind::Exile
+                };
+                pick(kind, filter, count, item)?
             }
             CostItem::ExileFromHand { filter, count } => {
                 pick(Kind::ExileHand, filter, count, item)?
@@ -248,7 +360,10 @@ impl Part {
                 false,
             ),
             CostItem::ReturnToHand { filter, count } => pick(Kind::Return, filter, count, item)?,
-            _ => return Ok(None),
+            _ => match read_more(item)? {
+                Some(found) => found,
+                None => return Ok(None),
+            },
         };
         Ok(Some(if x { Part::X(Box::new(part)) } else { part }))
     }
@@ -260,6 +375,9 @@ impl Part {
                 Part::Life(_) => Part::Life(x),
                 Part::Energy(_) => Part::Energy(x),
                 Part::Mill(_) => Part::Mill(x),
+                Part::Damage(_) => Part::Damage(x),
+                Part::ExileTop(_) => Part::ExileTop(x),
+                Part::Unattach => Part::Unattach,
                 Part::Counters { counter, .. } => Part::Counters {
                     counter: counter.clone(),
                     count: x,
@@ -310,7 +428,9 @@ impl Part {
                 counter, filter, ..
             } => among::most(payer, filter, counter.as_ref()),
             Part::Pick(pick) => u32::try_from(pick.candidates(payer).len()).unwrap_or(u32::MAX),
-            Part::Exert | Part::X(_) => return None,
+            Part::Damage(_) => u32::MAX,
+            Part::ExileTop(_) => exile_top::most(payer),
+            Part::Exert | Part::Unattach | Part::X(_) => return None,
         };
         Some(number)
     }
@@ -321,6 +441,9 @@ impl Part {
             Part::Life(_) => "Cost.PayLife",
             Part::Energy(_) => "Cost.PayEnergy",
             Part::Mill(_) => "Cost.Mill",
+            Part::Damage(_) => "Cost.DamageToYou",
+            Part::Unattach => "Cost.Unattach",
+            Part::ExileTop(_) => "Cost.ExileTop",
             Part::Counters { .. } => "Cost.RemoveCounters",
             Part::PutCounters { .. } => "Cost.PutCounters",
             Part::Exert => "Cost.Exert",
@@ -330,6 +453,12 @@ impl Part {
                 Kind::Sacrifice => "Cost.Sacrifice",
                 Kind::Discard => "Cost.Discard",
                 Kind::Exile => "Cost.ExileFromGraveyard",
+                Kind::ExileAny => "Cost.ExileFromGraveyard",
+                Kind::Evidence => "Cost.CollectEvidence",
+                Kind::Blight(_) => "Cost.Blight",
+                Kind::Behold => "Cost.Behold",
+                Kind::ToLibrary(..) => "Cost.ToLibrary",
+                Kind::Forage => "Cost.Forage",
                 Kind::ExileHand => "Cost.ExileFromHand",
                 Kind::Reveal => "Cost.RevealFromHand",
                 Kind::Tap => "Cost.TapPermanents",
@@ -351,6 +480,10 @@ impl Part {
                     "{E}".repeat(usize::try_from(*amount).unwrap_or(0))
                 )
             }
+            Part::Damage(amount) => format!("Take {amount} damage"),
+            Part::Unattach => "Unattach this permanent".to_owned(),
+            Part::ExileTop(1) => "Exile the top card of your library".to_owned(),
+            Part::ExileTop(amount) => format!("Exile the top {amount} cards of your library"),
             Part::Mill(1) => "Mill a card".to_owned(),
             Part::Mill(amount) => format!("Mill {amount} cards"),
             Part::Counters { counter, count } => {
@@ -394,6 +527,21 @@ impl Part {
             Part::Life(amount) => life::payable(payer, *amount).then(Vec::new),
             Part::Energy(amount) => energy::payable(payer, *amount).then(Vec::new),
             Part::Mill(amount) => mill::payable(payer, *amount).then(Vec::new),
+            Part::Damage(_) => payer.state.object(payer.source).is_some().then(Vec::new),
+            Part::Unattach => unattach::payable(payer).then(Vec::new),
+            Part::ExileTop(amount) => exile_top::payable(payer, *amount).then(Vec::new),
+            Part::Pick(pick) if pick.kind == Kind::Evidence => {
+                let found = pick.candidates(payer);
+                (!pick.short(payer.state, &found)).then_some(found)
+            }
+            Part::Pick(pick) if pick.kind == Kind::Forage => {
+                if let Some(food) = forage::foods(payer).first() {
+                    return Some(vec![*food]);
+                }
+                let cards = forage::cards(payer);
+                (cards.len() >= forage::CARDS)
+                    .then(|| cards.into_iter().take(forage::CARDS).collect())
+            }
             Part::Counters { counter, count } => {
                 counters::payable(payer, counter, *count).then(Vec::new)
             }
@@ -439,6 +587,9 @@ impl Part {
             Part::Life(amount) => life::events(player, *amount),
             Part::Energy(amount) => energy::events(player, *amount),
             Part::Mill(amount) => mill::events(state, player, *amount),
+            Part::Damage(amount) => damage::events(state, player, source, *amount),
+            Part::Unattach => vec![unattach::event(source)],
+            Part::ExileTop(amount) => exile_top::events(state, player, *amount),
             Part::Counters { counter, count } => counters::events(state, source, counter, *count),
             Part::PutCounters { counter, count } => source::put(state, source, counter, *count),
             Part::Exert => source::exert(player, source),
@@ -449,7 +600,7 @@ impl Part {
             } => among::events(state, (player, source), filter, counter.as_ref(), *count),
             Part::Pick(pick) => picked
                 .iter()
-                .filter_map(|object| pick.event(state, player, *object, kinds))
+                .flat_map(|object| pick.events(state, player, *object, kinds))
                 .collect(),
             Part::X(inner) => inner.w2f_events(state, (player, source), picked, kinds),
         }
@@ -471,7 +622,14 @@ pub(crate) fn photographed(
         let Some(picked) = picks.next() else { break };
         if matches!(
             pick.kind,
-            Kind::Sacrifice | Kind::Discard | Kind::Exile | Kind::ExileHand | Kind::Reveal
+            Kind::Sacrifice
+                | Kind::Discard
+                | Kind::Exile
+                | Kind::ExileAny
+                | Kind::Evidence
+                | Kind::Forage
+                | Kind::ExileHand
+                | Kind::Reveal
         ) {
             shots.extend(picked.iter().filter_map(|id| snapshot(state, *id)));
         }
@@ -556,6 +714,12 @@ impl Pick {
             Kind::Return => bounce::candidates(payer, &self.filter),
             Kind::Untap => untap::candidates(payer, &self.filter),
             Kind::Counter => c11c_counter_picks::c11c_candidates(payer, &self.filter),
+            Kind::ExileAny => exile::candidates_any(payer, &self.filter),
+            Kind::Evidence => exile::candidates(payer, &self.filter),
+            Kind::Blight(_) => bounce::candidates(payer, &self.filter),
+            Kind::Behold => behold::candidates(payer, &self.filter),
+            Kind::ToLibrary(from, _) => to_library::candidates(payer, from, &self.filter),
+            Kind::Forage => forage::candidates(payer),
         }
     }
 
@@ -564,15 +728,27 @@ impl Pick {
         match self.kind {
             Kind::TapPower => usize::try_from(tap::total_power(state, candidates))
                 .is_ok_and(|total| total < self.count),
+            Kind::Evidence => usize::try_from(evidence::total_value(state, candidates))
+                .is_ok_and(|total| total < self.count),
             _ => candidates.len() < self.count,
         }
     }
 
     /// What the part takes without a question when the player has nothing to choose between: all of `candidates`
     /// when they are exactly as many as it takes, the one candidate for a pick by power, and nothing for 0.
-    pub(crate) fn unasked(&self, candidates: &[ObjectId]) -> Option<Vec<ObjectId>> {
+    pub(crate) fn unasked(
+        &self,
+        state: &GameState,
+        candidates: &[ObjectId],
+    ) -> Option<Vec<ObjectId>> {
         let alone = match self.kind {
             Kind::TapPower => candidates.len() == 1,
+            Kind::Evidence => {
+                candidates.len() == 1
+                    || usize::try_from(evidence::total_value(state, candidates))
+                        .is_ok_and(|total| total == self.count)
+            }
+            Kind::Forage => forage::alone(state, candidates),
             _ => candidates.len() == self.count,
         };
         if alone {
@@ -586,21 +762,35 @@ impl Pick {
 
     /// The fewest and the most objects the question takes from `offered` candidates.
     pub(crate) fn bounds(&self, offered: usize) -> (u32, u32) {
-        if self.kind == Kind::TapPower {
+        if matches!(self.kind, Kind::TapPower | Kind::Evidence) {
             return (1, u32::try_from(offered).unwrap_or(u32::MAX));
+        }
+        if self.kind == Kind::Forage {
+            let most = u32::try_from(forage::CARDS.min(offered)).unwrap_or(u32::MAX);
+            return (1, most);
         }
         let count = u32::try_from(self.count).unwrap_or(u32::MAX);
         (count, count)
     }
 
-    /// Whether `picked` are too weak for the part, and the power they and the part have: a pick by power only.
-    pub(crate) fn weak(&self, state: &GameState, picked: &[ObjectId]) -> Option<(u32, u32)> {
-        if self.kind != Kind::TapPower {
-            return None;
-        }
-        let got = tap::total_power(state, picked);
+    /// Why `picked` cannot pay the part, when they cannot: too little power or mana value for a pick by total, or not one
+    /// Food or three cards for a forage.
+    pub(crate) fn weak(&self, state: &GameState, picked: &[ObjectId]) -> Option<IllegalAnswer> {
         let needed = u32::try_from(self.count).unwrap_or(u32::MAX);
-        (got < needed).then_some((needed, got))
+        match self.kind {
+            Kind::TapPower => {
+                let got = tap::total_power(state, picked);
+                (got < needed).then_some(IllegalAnswer::TooLittlePower { needed, got })
+            }
+            Kind::Evidence => {
+                let got = evidence::total_value(state, picked);
+                (got < needed).then_some(IllegalAnswer::TooLittleValue { needed, got })
+            }
+            Kind::Forage => (!forage::valid(state, picked)).then_some(IllegalAnswer::WrongPick(
+                "one Food to sacrifice or three cards of the graveyard to exile",
+            )),
+            _ => None,
+        }
     }
 
     /// What the question asks of the player, in the words of a card.
@@ -616,6 +806,32 @@ impl Pick {
             Kind::Return => bounce::text(&self.filter, self.count),
             Kind::Untap => untap::text(&self.filter, self.count),
             Kind::Counter => c11c_counter_picks::c11c_text(&self.filter, self.count),
+            Kind::ExileAny => exile::text_any(&self.filter, self.count),
+            Kind::Evidence => evidence::text(self.count),
+            Kind::Blight(count) => blight::text(count),
+            Kind::Behold => behold::text(&self.filter, self.count),
+            Kind::ToLibrary(from, bottom) => {
+                to_library::text(from, &self.filter, self.count, bottom)
+            }
+            Kind::Forage => forage::text(),
+        }
+    }
+
+    /// The events that pay this part with `object`, picked for it.
+    fn events(
+        &self,
+        state: &GameState,
+        player: PlayerId,
+        object: ObjectId,
+        kinds: &mut std::slice::Iter<'_, CounterKind>,
+    ) -> Vec<Event> {
+        match self.kind {
+            Kind::ToLibrary(from, bottom) => to_library::events(state, from, bottom, object),
+            Kind::Blight(count) => blight::events(state, object, count),
+            _ => self
+                .event(state, player, object, kinds)
+                .into_iter()
+                .collect(),
         }
     }
 
@@ -637,6 +853,10 @@ impl Pick {
             Kind::Return => bounce::event(state, object),
             Kind::Untap => Some(untap::event(object)),
             Kind::Counter => c11c_counter_picks::c11c_event(state, &self.filter, object, kinds),
+            Kind::ExileAny | Kind::Evidence => exile::event(state, object),
+            Kind::Behold => behold::event(state, player, object),
+            Kind::Forage => forage::event(state, object),
+            Kind::Blight(_) | Kind::ToLibrary(..) => None,
         }
     }
 }

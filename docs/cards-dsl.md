@@ -168,8 +168,9 @@ ReplaceBy   = Multiply(n) | Add(n) | Prevent | PreventUpTo(n) | PreventAllBut(n)
             | AsCopy{of: Selector, except: [Modification]} | UmbraArmor | DayIfNeither | EntersPrepared
 CostItem    = Mana(ManaCostX) | Tap | Untap | PayLife(Amount) | SacrificeSelf | ExileSelf | DiscardSelf
             | Sacrifice{filter,count} | Discard{count,filter?} | PayEnergy(Amount) | RemoveCounters{counter,count}
-            | TapPermanents{filter,count} | TapPower{filter,power} | ExileFromGraveyard{filter,count} | ExileFromHand{filter,count}
+            | TapPermanents{filter,count} | TapPower{filter,power} | ExileFromGraveyard{filter,count,any_player?} | ExileFromHand{filter,count}
             | RevealFromHand{filter,count} | ReturnToHand{filter,count} | OneOf([Cost])
+            | DamageToYou(n) | Unattach | ExileTop(n) | CollectEvidence(n) | Blight(n) | Behold{filter,count} | ToLibrary{from,filter,count,bottom?} | Forage
             | PutCounters{counter,count} | UntapPermanents{filter,count} | Exert | RemoveCountersAmong{counter?,count,from}
 Modification= ModifyPT{power,toughness} SetPT{..} SwitchPT AddType SetTypes RemoveSupertype AddSubtype SetCreatureTypes SetLandTypes AddAllCreatureTypes SetColors
             | AddKeyword AddProtectionFromChosenColor AddProtectionFromChosenCardType RemoveKeyword SetController(Ref) CantAttack CantAttackYou(Attacked) CantBlock
