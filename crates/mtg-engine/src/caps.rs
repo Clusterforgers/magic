@@ -411,6 +411,11 @@ const RUNS: &[&str] = &[
     "Amount.Largest",
     "Amount.StartingLife",
     "Amount.Party",
+    "Amount.Tally",
+    "Amount.CommanderColors",
+    "Amount.TurnNumber",
+    "Amount.TriggeringTargets",
+    "Condition.StartingPlayer",
     "Ability.Replacement",
     "Ability.CostModifier",
     "ReplaceWhen.TokenCreation",
@@ -749,6 +754,11 @@ mod tests {
     #[case::the_number_of_kicks("Amount.Kicks", true)]
     #[case::the_number_of_mutations("Amount.Mutations", true)]
     #[case::the_size_of_a_party("Amount.Party", true)]
+    #[case::a_logged_tally("Amount.Tally", true)]
+    #[case::commander_colors("Amount.CommanderColors", true)]
+    #[case::turn_number("Amount.TurnNumber", true)]
+    #[case::triggering_targets("Amount.TriggeringTargets", true)]
+    #[case::starting_player("Condition.StartingPlayer", true)]
     #[case::cast_for_a_way("Amount.CastWith", true)]
     #[case::colors_spent("Amount.ColorsSpent", true)]
     #[case::destroyed_this_way("Amount.Destroyed", true)]

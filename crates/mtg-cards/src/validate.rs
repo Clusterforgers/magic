@@ -649,21 +649,41 @@ impl<'a> Walker<'a> {
                 self.hand_or_life_lost(amount);
             }
             Amount::Kicks | Amount::Promised | Amount::Devoured => self.paid_amount(amount),
+            Amount::PermanentsGraved => self.uses("Amount", "PermanentsGraved"),
+            Amount::Tallied { who, what } => self.tallied(who, *what),
+            Amount::Triggering => self.c11e_triggering(),
+            _ => self.general_amount(amount),
+        }
+    }
+
+    /// The amounts of the general kinds: a logged tally, the commanders' colors, the turn and the targets of the trigger.
+    fn general_amount(&mut self, amount: &Amount) {
+        match amount {
+            Amount::Tally { who, filter, .. } => {
+                self.player_amount("Tally", who);
+                self.at("filter", |w| w.selector(filter));
+            }
             Amount::Mutations(of) => {
                 self.uses("Amount", "Mutations");
                 self.at("of", |w| w.reference(of, Kind::Either));
             }
-            Amount::CastWith(_) => self.uses("Amount", "CastWith"),
-            Amount::ColorsSpent => self.uses("Amount", "ColorsSpent"),
-            Amount::PermanentsGraved => self.uses("Amount", "PermanentsGraved"),
-            Amount::Tallied { who, what } => self.tallied(who, *what),
             Amount::Largest { who, of } => {
                 self.player_amount("Largest", who);
                 self.at("of", |w| w.selector(of));
             }
             Amount::StartingLife(who) => self.player_amount("StartingLife", who),
             Amount::Party(who) => self.player_amount("Party", who),
-            Amount::Triggering => self.c11e_triggering(),
+            Amount::CastWith(_) => self.uses("Amount", "CastWith"),
+            Amount::ColorsSpent => self.uses("Amount", "ColorsSpent"),
+            Amount::CommanderColors(who) => self.player_amount("CommanderColors", who),
+            Amount::TriggeringTargets => {
+                self.uses("Amount", "TriggeringTargets");
+                if !self.scope.in_trigger {
+                    self.problem("`TriggeringTargets` is only valid in a triggered ability");
+                }
+            }
+            Amount::TurnNumber => self.uses("Amount", "TurnNumber"),
+            _ => {}
         }
     }
 
@@ -735,6 +755,10 @@ impl<'a> Walker<'a> {
             Condition::CastWith(_) => self.uses("Condition", "CastWith"),
             Condition::ManaSpent(_) => self.uses("Condition", "ManaSpent"),
             Condition::YourTurn => {}
+            Condition::StartingPlayer(who) => {
+                self.uses("Condition", "StartingPlayer");
+                self.at("StartingPlayer", |w| w.reference(who, Kind::Player));
+            }
             Condition::Performed => {
                 self.uses("Condition", "Performed");
                 // The engine knows whether a `May` was accepted, whether a `CastFromZone` cast or played the card and whether a `Sacrifice` or a `RemoveCounters` took something; any other effect before it waits.
