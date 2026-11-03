@@ -118,26 +118,26 @@ pub(crate) struct CastTargets<'a> {
 }
 
 /// What is known of an object: the object itself if it is still the one that was named, else how it was.
-struct Seen<'a> {
+pub(super) struct Seen<'a> {
     owner: PlayerId,
     controller: PlayerId,
     zone: Zone,
     kind: ObjectKind,
-    chars: Cow<'a, Characteristics>,
+    pub(super) chars: Cow<'a, Characteristics>,
     tapped: Option<bool>,
     /// The same card, whichever zone it has moved to since: its printed side does not change.
     card: Option<&'a GameObject>,
     /// The keywords it has: where the layers have worked them out, or as its snapshot holds them.
     keywords: Option<&'a [Keyword]>,
     /// The counters on it: its own while it is the object that was named, else those its snapshot holds.
-    counters: Counted<'a>,
+    pub(super) counters: Counted<'a>,
     /// The X it was cast with while it is a spell on the stack, else 0 (CR 202.3e).
     x: u32,
 }
 
 /// The counters of an object that was seen.
 #[derive(Clone, Copy)]
-enum Counted<'a> {
+pub(super) enum Counted<'a> {
     /// The permanent still is the object that was named.
     Live(&'a PermanentState),
     /// How a snapshot recorded them.
@@ -148,7 +148,7 @@ enum Counted<'a> {
 
 impl Counted<'_> {
     /// How many counters of `kind` there are.
-    fn of(self, kind: &CounterKind) -> u32 {
+    pub(super) fn of(self, kind: &CounterKind) -> u32 {
         match self {
             Counted::Live(permanent) => permanent.counters_of(kind),
             Counted::Shot(held) => held
@@ -523,7 +523,7 @@ impl<'a> Scope<'a> {
         Ok(total)
     }
 
-    fn seen(&self, reference: ObjectRef) -> Option<Seen<'a>> {
+    pub(super) fn seen(&self, reference: ObjectRef) -> Option<Seen<'a>> {
         let live = self.state.object(reference.id);
         if let Some(object) = live.filter(|o| o.counter() == reference.counter) {
             let tapped = object
@@ -1262,7 +1262,7 @@ impl<'a> Scope<'a> {
             .and_then(|permanent| permanent.chosen())
     }
 
-    fn stat(seen: &Seen<'_>, stat: StatKind) -> Option<i64> {
+    pub(super) fn stat(seen: &Seen<'_>, stat: StatKind) -> Option<i64> {
         match stat {
             StatKind::Power => seen.chars.power.map(i64::from),
             StatKind::Toughness => seen.chars.toughness.map(i64::from),
@@ -1338,21 +1338,7 @@ impl<'a> Scope<'a> {
                 .into_iter()
                 .map(|player| i64::from(self.state.commander_casts_by(player)))
                 .sum(),
-            Amount::Counters { on, counter } => {
-                let mut total = 0i64;
-                for named in self.refs(on)? {
-                    total += match named {
-                        Target::Player(player) => self
-                            .state
-                            .player(player)
-                            .map_or(0, |held| i64::from(held.counters_of(counter))),
-                        Target::Object(object) => self
-                            .seen(object)
-                            .map_or(0, |seen| i64::from(seen.counters.of(counter))),
-                    };
-                }
-                total
-            }
+            Amount::Counters { on, counter } => self.counters_on(on, counter)?,
             Amount::AnyCounters(on) => self.c10_any_counters(on)?,
             Amount::Sum(parts) => {
                 let mut sum = 0i64;
@@ -1412,6 +1398,13 @@ impl<'a> Scope<'a> {
             Amount::CommanderColors(who) => self.commander_colors(who)?,
             Amount::TurnNumber => i64::from(self.state.turn().number()),
             Amount::TriggeringTargets => self.triggering_targets()?,
+            Amount::When { .. }
+            | Amount::ManaSpent { .. }
+            | Amount::ManaColors(_)
+            | Amount::MostCommon { .. }
+            | Amount::Random { .. }
+            | Amount::ManaInPool(_)
+            | Amount::Doors(_) => self.fill_amount(amount, share)?,
             Amount::Tally { event, who, filter } => self.logged(*event, who, filter)?,
             Amount::Triggering => self
                 .cause
@@ -1704,7 +1697,7 @@ impl<'a> Scope<'a> {
 
     /// The mana spent to cast the spell: what the spell announced, else what the spell its source is or came from paid
     /// while that is still the object named, else what its last-known information holds.
-    fn mana_spent(&self) -> Vec<ManaType> {
+    pub(super) fn mana_spent(&self) -> Vec<ManaType> {
         if !self.choices.spent().is_empty() {
             return self.choices.spent().to_vec();
         }

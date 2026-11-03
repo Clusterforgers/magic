@@ -456,6 +456,41 @@ pub enum Amount {
     TriggeringTargets,
     /// A result of the latest die roll of the resolving spell or ability ("X, where X is the result", "equal to that result").
     DieResult(DieResult),
+    /// The first amount when the condition holds when the effect runs, else the second ("X is 3 if you control a Goblin, else 1").
+    When {
+        /// The fact checked.
+        condition: Box<Condition>,
+        /// The amount when it holds.
+        then: Box<Amount>,
+        /// The amount when it does not.
+        otherwise: Box<Amount>,
+    },
+    /// How much mana was spent to cast the spell the source is or came from: of the one type, or of all types when none is named.
+    ManaSpent {
+        /// The type counted; all mana when none.
+        of: Option<ManaType>,
+    },
+    /// How many different colors of mana the players the reference names hold in their pools, all together.
+    ManaColors(Ref),
+    /// How many permanents share the value of the characteristic that most of the objects the selector names share
+    /// ("the most common color among creatures you control", with `Colors` each color counted once per object); zero when none match.
+    MostCommon {
+        /// The objects compared.
+        of: Selector,
+        /// The characteristic.
+        stat: StatKind,
+    },
+    /// A whole number from `min` to `max`, drawn from the game's seeded random stream, so a replay of the log draws it again.
+    Random {
+        /// The lowest number.
+        min: i32,
+        /// The highest number.
+        max: i32,
+    },
+    /// How much mana the players the reference names hold in their pools, restricted mana included.
+    ManaInPool(Ref),
+    /// The doors unlocked among the Rooms the selector names (CR 709.5), both doors of a Room counting twice.
+    Doors(Selector),
 }
 
 impl Amount {
@@ -566,6 +601,25 @@ enum Tagged {
     TurnNumber,
     TriggeringTargets,
     DieResult(DieResult),
+    When {
+        condition: Box<Condition>,
+        then: Box<Amount>,
+        otherwise: Box<Amount>,
+    },
+    ManaSpent {
+        of: Option<ManaType>,
+    },
+    ManaColors(Ref),
+    MostCommon {
+        of: Selector,
+        stat: StatKind,
+    },
+    Random {
+        min: i32,
+        max: i32,
+    },
+    ManaInPool(Ref),
+    Doors(Selector),
 }
 
 /// The tagged forms of [`Amount`] by reference, written by serde.
@@ -645,6 +699,25 @@ enum TaggedRef<'a> {
     TurnNumber,
     TriggeringTargets,
     DieResult(DieResult),
+    When {
+        condition: &'a Condition,
+        then: &'a Amount,
+        otherwise: &'a Amount,
+    },
+    ManaSpent {
+        of: Option<ManaType>,
+    },
+    ManaColors(&'a Ref),
+    MostCommon {
+        of: &'a Selector,
+        stat: StatKind,
+    },
+    Random {
+        min: i32,
+        max: i32,
+    },
+    ManaInPool(&'a Ref),
+    Doors(&'a Selector),
 }
 
 impl From<Tagged> for Amount {
@@ -693,6 +766,21 @@ impl From<Tagged> for Amount {
             Tagged::CommanderColors(who) => Amount::CommanderColors(who),
             Tagged::TurnNumber => Amount::TurnNumber,
             Tagged::TriggeringTargets => Amount::TriggeringTargets,
+            Tagged::When {
+                condition,
+                then,
+                otherwise,
+            } => Amount::When {
+                condition,
+                then,
+                otherwise,
+            },
+            Tagged::ManaSpent { of } => Amount::ManaSpent { of },
+            Tagged::ManaColors(who) => Amount::ManaColors(who),
+            Tagged::MostCommon { of, stat } => Amount::MostCommon { of, stat },
+            Tagged::Random { min, max } => Amount::Random { min, max },
+            Tagged::ManaInPool(who) => Amount::ManaInPool(who),
+            Tagged::Doors(of) => Amount::Doors(of),
         }
     }
 }
@@ -759,6 +847,28 @@ impl Serialize for Amount {
             Amount::CommanderColors(who) => TaggedRef::CommanderColors(who).serialize(serializer),
             Amount::TurnNumber => TaggedRef::TurnNumber.serialize(serializer),
             Amount::TriggeringTargets => TaggedRef::TriggeringTargets.serialize(serializer),
+            Amount::When {
+                condition,
+                then,
+                otherwise,
+            } => TaggedRef::When {
+                condition,
+                then,
+                otherwise,
+            }
+            .serialize(serializer),
+            Amount::ManaSpent { of } => TaggedRef::ManaSpent { of: *of }.serialize(serializer),
+            Amount::ManaColors(who) => TaggedRef::ManaColors(who).serialize(serializer),
+            Amount::MostCommon { of, stat } => {
+                TaggedRef::MostCommon { of, stat: *stat }.serialize(serializer)
+            }
+            Amount::Random { min, max } => TaggedRef::Random {
+                min: *min,
+                max: *max,
+            }
+            .serialize(serializer),
+            Amount::ManaInPool(who) => TaggedRef::ManaInPool(who).serialize(serializer),
+            Amount::Doors(of) => TaggedRef::Doors(of).serialize(serializer),
         }
     }
 }
@@ -969,6 +1079,17 @@ mod tests {
     #[case::commander_colors(Amount::CommanderColors(Ref::You), r#"{"CommanderColors":"You"}"#)]
     #[case::turn_number(Amount::TurnNumber, r#""TurnNumber""#)]
     #[case::triggering_targets(Amount::TriggeringTargets, r#""TriggeringTargets""#)]
+    #[case::when(
+        Amount::When { condition: Box::new(Condition::YourTurn), then: Box::new(Amount::Fixed(3)), otherwise: Box::new(Amount::X) },
+        r#"{"When":{"condition":"YourTurn","then":3,"otherwise":"X"}}"#
+    )]
+    #[case::mana_spent(Amount::ManaSpent { of: Some(ManaType::Red) }, r#"{"ManaSpent":{"of":"Red"}}"#)]
+    #[case::all_mana_spent(Amount::ManaSpent { of: None }, r#"{"ManaSpent":{"of":null}}"#)]
+    #[case::mana_colors(Amount::ManaColors(Ref::You), r#"{"ManaColors":"You"}"#)]
+    #[case::mana_in_pool(Amount::ManaInPool(Ref::You), r#"{"ManaInPool":"You"}"#)]
+    #[case::most_common(Amount::MostCommon { of: Selector(vec![Pred::Type(CardType::Creature)]), stat: StatKind::Colors }, r#"{"MostCommon":{"of":[{"Type":"Creature"}],"stat":"Colors"}}"#)]
+    #[case::random(Amount::Random { min: 1, max: 6 }, r#"{"Random":{"min":1,"max":6}}"#)]
+    #[case::doors(Amount::Doors(Selector(vec![Pred::Type(CardType::Enchantment)])), r#"{"Doors":[{"Type":"Enchantment"}]}"#)]
     #[case::base_power(Amount::Stat { of: Ref::This, stat: StatKind::BasePower }, r#"{"Stat":{"of":"This","stat":"BasePower"}}"#)]
     #[case::c11e_the_other_result(Amount::DieResult(DieResult::Other), r#"{"DieResult":"Other"}"#)]
     #[case::counters(

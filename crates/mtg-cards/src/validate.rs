@@ -738,7 +738,65 @@ impl<'a> Walker<'a> {
                 }
             }
             Amount::TurnNumber => self.uses("Amount", "TurnNumber"),
-            _ => {}
+            Amount::When {
+                condition,
+                then,
+                otherwise,
+            } => {
+                self.uses("Amount", "When");
+                self.at("condition", |w| w.condition(condition));
+                self.at("then", |w| w.amount(then));
+                self.at("otherwise", |w| w.amount(otherwise));
+            }
+            Amount::ManaSpent { .. } => self.uses("Amount", "ManaSpent"),
+            Amount::ManaColors(who) => self.player_amount("ManaColors", who),
+            Amount::ManaInPool(who) => self.player_amount("ManaInPool", who),
+            Amount::MostCommon { of, .. } => self.w2c_selector_amount("MostCommon", of),
+            Amount::Doors(of) => self.w2c_selector_amount("Doors", of),
+            Amount::Random { min, max } => self.random_amount(*min, *max),
+            // Checked by `amount` before it reaches here; listed so a new variant must be placed.
+            Amount::Fixed(_)
+            | Amount::X
+            | Amount::Count(_)
+            | Amount::Stat { .. }
+            | Amount::Life(_)
+            | Amount::CommanderCasts(_)
+            | Amount::Counters { .. }
+            | Amount::AnyCounters(_)
+            | Amount::Sum(_)
+            | Amount::Times { .. }
+            | Amount::Half { .. }
+            | Amount::Divided
+            | Amount::EvenShare(_)
+            | Amount::TargetCount(_)
+            | Amount::Devotion(_)
+            | Amount::Greatest { .. }
+            | Amount::Total { .. }
+            | Amount::Distinct { .. }
+            | Amount::CardTypes(_)
+            | Amount::Players(_)
+            | Amount::LowestLife(_)
+            | Amount::HighestLife(_)
+            | Amount::LowestHand(_)
+            | Amount::LifeLostThisWay
+            | Amount::Destroyed(_)
+            | Amount::Exiled(_)
+            | Amount::PhasedOut(_)
+            | Amount::Kicks
+            | Amount::Promised
+            | Amount::Devoured
+            | Amount::PermanentsGraved
+            | Amount::Tallied { .. }
+            | Amount::Triggering
+            | Amount::DieResult(_) => {}
+        }
+    }
+
+    /// A random number: its bounds must be in order.
+    fn random_amount(&mut self, min: i32, max: i32) {
+        self.uses("Amount", "Random");
+        if min > max {
+            self.problem(format!("the minimum {min} is above the maximum {max}"));
         }
     }
 
@@ -4345,6 +4403,18 @@ mod tests {
     #[case::a_target_in_the_cause(
         r#"{"Rule":{"rule":{"TriggerAgain":{"cause":{"ZoneChange":{"what":[{"Is":{"Target":0}}]}}}}}}"#,
         "abilities[0].Rule.rule.TriggerAgain.cause.what[0]: target 0 does not exist"
+    )]
+    #[case::an_inverted_random_range(
+        r#"{"Spell":{"effects":[{"Draw":{"count":{"Random":{"min":3,"max":1}}}}]}}"#,
+        "the minimum 3 is above the maximum 1"
+    )]
+    #[case::a_bad_target_in_a_when_branch(
+        r#"{"Spell":{"effects":[{"Draw":{"count":{"When":{"condition":{"Compare":{"left":1,"op":"Eq","right":1}},"then":{"TargetCount":4},"otherwise":1}}}}]}}"#,
+        "Draw.count.then: target 4 does not exist"
+    )]
+    #[case::a_bad_target_in_a_when_condition(
+        r#"{"Spell":{"effects":[{"Draw":{"count":{"When":{"condition":{"Compare":{"left":{"TargetCount":2},"op":"Eq","right":1}},"then":1,"otherwise":1}}}}]}}"#,
+        "Draw.count.condition.left: target 2 does not exist"
     )]
     #[case::the_triggering_event_in_the_cause(
         r#"{"Rule":{"rule":{"TriggerAgain":{"cause":{"ZoneChange":{"what":[{"Is":"Triggering"}]}}}}}}"#,

@@ -284,6 +284,10 @@ pub(crate) fn reads_of_amount(amount: &Amount) -> Traits {
         | Amount::PhasedOut(_)
         | Amount::DieResult(_)
         | Amount::TurnNumber
+        | Amount::ManaSpent { .. }
+        | Amount::ManaColors(_)
+        | Amount::ManaInPool(_)
+        | Amount::Random { .. }
         | Amount::TriggeringTargets
         | Amount::Triggering => Traits::NONE,
         Amount::Count(selector) => reads_of_selector(selector),
@@ -308,7 +312,16 @@ pub(crate) fn reads_of_amount(amount: &Amount) -> Traits {
         Amount::Devotion(_) => Traits::CONTROL,
         Amount::Greatest { of, stat }
         | Amount::Total { of, stat }
-        | Amount::Distinct { of, stat } => reads_of_selector(of).or(reads_of_stat(*stat)),
+        | Amount::Distinct { of, stat }
+        | Amount::MostCommon { of, stat } => reads_of_selector(of).or(reads_of_stat(*stat)),
+        Amount::Doors(of) => reads_of_selector(of),
+        Amount::When {
+            condition,
+            then,
+            otherwise,
+        } => reads_of_condition(condition)
+            .or(reads_of_amount(then))
+            .or(reads_of_amount(otherwise)),
         Amount::Tally { who, filter, .. } => reads_of_ref(who).or(reads_of_selector(filter)),
         Amount::CardTypes(of) => reads_of_selector(of).or(Traits::TYPES),
         Amount::Largest { who, of } => reads_of_ref(who).or(reads_of_selector(of)),
