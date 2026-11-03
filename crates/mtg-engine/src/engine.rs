@@ -26,6 +26,8 @@ use crate::triggers;
 
 /// Internal progress steps allowed between decisions before the engine reports a stall.
 const MAX_INTERNAL_STEPS: usize = 10_000;
+/// How many times in a row abilities that trigger on the triggering of abilities are looked for.
+const MAX_TRIGGER_CHAIN: usize = 16;
 
 /// Where an engine stood before a step; [`Engine::restore`] returns it to that point.
 #[derive(Debug, Clone)]
@@ -585,15 +587,25 @@ impl Engine {
         if !watching {
             return Ok(());
         }
-        let triggered = triggers::detect(
-            before.as_ref().unwrap_or(&self.state),
-            &self.events[start..],
-            &self.state,
-        );
-        for trigger in triggered {
-            let event = Event::AbilityTriggered(Box::new(trigger));
-            apply_event(&mut self.state, &event)?;
-            self.events.push(event);
+        // The abilities found are events too, and an ability may trigger on one ("whenever an ability triggers"): the
+        // events they add are read again, down a chain that ends when nothing more triggers or at `MAX_TRIGGER_CHAIN`.
+        let (mut scanned, mut before) = (start, before);
+        for _ in 0..MAX_TRIGGER_CHAIN {
+            let triggered = triggers::detect(
+                before.as_ref().unwrap_or(&self.state),
+                &self.events[scanned..],
+                &self.state,
+            );
+            if triggered.is_empty() {
+                break;
+            }
+            scanned = self.events.len();
+            before = None;
+            for trigger in triggered {
+                let event = Event::AbilityTriggered(Box::new(trigger));
+                apply_event(&mut self.state, &event)?;
+                self.events.push(event);
+            }
         }
         Ok(())
     }

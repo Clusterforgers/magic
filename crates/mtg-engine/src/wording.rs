@@ -103,7 +103,7 @@ fn phrase(selector: &Selector) -> (String, String) {
             Pred::In(kind) => zone = Some(*kind),
             Pred::Named(name) => nouns.push(format!("card named {name}")),
             Pred::HasKeyword(keyword) => {
-                tail.push(format!("with {}", keyword.name().to_lowercase()));
+                tail.push(format!("with {}", keyword.shown_name().to_lowercase()));
             }
             Pred::HasCounter(kind) => tail.push(format!("with a {} counter on it", kind.name())),
             Pred::HasAnyCounter => tail.push("with a counter on it".to_owned()),

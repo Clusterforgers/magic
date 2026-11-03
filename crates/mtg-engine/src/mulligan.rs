@@ -188,6 +188,23 @@ pub(crate) fn opening_answer(
     }]))
 }
 
+/// Whether `player` is asked about the cards that begin on the battlefield now: once every seat has a final hand
+/// (CR 103.6 comes after the mulligans), one seat at a time in turn order from the first player.
+fn opening_turn(state: &GameState, player: PlayerId) -> bool {
+    let order = state.turn_order_from(state.first_player());
+    let waiting = |seat: &PlayerId| {
+        !matches!(
+            status(state, *seat),
+            None | Some(MulliganStatus::Opening | MulliganStatus::Kept)
+        )
+    };
+    !order.iter().any(waiting)
+        && order
+            .iter()
+            .find(|seat| status(state, **seat) == Some(MulliganStatus::Opening))
+            == Some(&player)
+}
+
 /// The question the opening asks `player` now, if any: the cards to bottom, the scry, or keep or mulligan.
 pub(crate) fn seat_decision(state: &GameState, player: PlayerId) -> Option<Decision> {
     let kind = match status(state, player)? {
@@ -197,6 +214,9 @@ pub(crate) fn seat_decision(state: &GameState, player: PlayerId) -> Option<Decis
         }),
         MulliganStatus::Scrying => return scry_decision(state, player),
         MulliganStatus::Opening => {
+            if !opening_turn(state, player) {
+                return None;
+            }
             let from = opening_cards(state, player);
             DecisionKind::ChooseCards(CardsOptions {
                 source: *from.first()?,

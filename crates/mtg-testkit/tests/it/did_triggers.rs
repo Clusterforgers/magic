@@ -302,3 +302,51 @@ fn an_ability_activated_triggers_what_waits_for_it_for_the_player_and_source_it_
     replays(&driver, &setup);
     Ok(())
 }
+
+/// A creature named Chain that gains its controller 3 life whenever an ability of a Watcher triggers.
+fn chain() -> Arc<CardDefinition> {
+    let rule: Ability = serde_json::from_str(
+        r#"{"Triggered":{"when":{"Did":{"action":"AbilityTriggered","what":[{"Named":"Watcher"}]}},"effects":[{"GainLife":{"amount":3}}]}}"#,
+    )
+    .unwrap();
+    Arc::new(
+        CardDefinition::new("Chain")
+            .with_type(CardType::Creature)
+            .with_power_toughness(1, 1)
+            .with_rules(rule),
+    )
+}
+
+#[rstest]
+fn an_ability_that_triggers_triggers_what_waits_for_that(
+    #[values(2, 3, 4)] seats: usize,
+) -> Result<(), ScriptError> {
+    let scenario = || {
+        Scenario::new(seats)
+            .hand(0, vec![forest()])
+            .library(0, vec![forest(); 12])
+            .battlefield(
+                0,
+                vec![
+                    ready(watcher(r#"{"action":"PlayedLand","who":"You"}"#)),
+                    ready(chain()),
+                ],
+            )
+    };
+    let setup = scenario().setup().unwrap();
+    let mut driver = Driver::from_scenario(scenario())?;
+    let before = life(&driver, 0);
+    driver.play_land("Forest")?;
+    for _ in 0..60 {
+        if driver.state().stack().is_empty()
+            && driver.state().resolving().is_none()
+            && driver.state().pending_triggers().is_empty()
+        {
+            break;
+        }
+        driver.answer_passively()?;
+    }
+    assert_eq!(life(&driver, 0), before + LIFE + 3);
+    replays(&driver, &setup);
+    Ok(())
+}

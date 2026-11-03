@@ -202,7 +202,7 @@ impl Needs {
         Needs {
             ways: alternative::read(state, player, what, granted),
             optional: optional::read(state, what),
-            x: XCost::of(state, what, rules),
+            x: XCost::of(state, player, what, rules),
             price: parts::read(state, player, what, rules),
         }
     }

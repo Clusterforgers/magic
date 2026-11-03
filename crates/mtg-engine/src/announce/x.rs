@@ -39,7 +39,12 @@ pub(crate) enum XCost {
 impl XCost {
     /// The X that `what` asks for, read from the cost printed on the card or in its rules: `rules` are the rules of
     /// the ability being announced.
-    pub(crate) fn of(state: &GameState, what: &What, rules: Option<&Ability>) -> Option<XCost> {
+    pub(crate) fn of(
+        state: &GameState,
+        player: PlayerId,
+        what: &What,
+        rules: Option<&Ability>,
+    ) -> Option<XCost> {
         let symbols = match what {
             What::Spell(spell) => {
                 let card = state.object(*spell)?.card();
@@ -49,9 +54,9 @@ impl XCost {
                 }
                 u32::from(card.x_in_cost)
             }
-            What::Ability(_) => match rules? {
+            What::Ability(ability) => match rules? {
                 Ability::Activated { cost, .. } => {
-                    let price = Price::announced(cost).ok()?;
+                    let price = Price::announced_in(cost, state, player, ability.object).ok()?;
                     if price.x == 0 && price.counted() {
                         return Some(XCost::Parts);
                     }
@@ -379,7 +384,10 @@ mod tests {
     fn a_spell_asks_for_the_x_symbols_of_its_cost(#[case] x: u8, #[case] expected: Option<XCost>) {
         let game = state(vec![vec![spell("{G}", x)], vec![]], vec![vec![], vec![]]);
         let card = game.zone(Zone::Hand(SEAT))[0];
-        assert_eq!(XCost::of(&game, &What::Spell(card), None), expected);
+        assert_eq!(
+            XCost::of(&game, PlayerId(0), &What::Spell(card), None),
+            expected
+        );
     }
 
     #[rstest]
@@ -418,7 +426,10 @@ mod tests {
         );
         let game = state(vec![vec![card], vec![]], vec![vec![], vec![]]);
         let spell = game.zone(Zone::Hand(SEAT))[0];
-        assert_eq!(XCost::of(&game, &What::Spell(spell), None), expected);
+        assert_eq!(
+            XCost::of(&game, PlayerId(0), &What::Spell(spell), None),
+            expected
+        );
     }
 
     #[test]
@@ -432,7 +443,10 @@ mod tests {
         );
         let game = state(vec![vec![card], vec![]], vec![vec![], vec![]]);
         let spell = game.zone(Zone::Hand(SEAT))[0];
-        assert_eq!(XCost::of(&game, &What::Spell(spell), None), None);
+        assert_eq!(
+            XCost::of(&game, PlayerId(0), &What::Spell(spell), None),
+            None
+        );
     }
 
     #[rstest]
@@ -454,6 +468,14 @@ mod tests {
         r#"{"Activated":{"cost":[{"Mana":"{X}"},{"Mana":"{X}{1}"}],"effects":[{"Draw":{}}]}}"#,
         Some(XCost::Mana { symbols: 2 })
     )]
+    #[case::x_and_a_counted_part(
+        r#"{"Activated":{"cost":[{"Mana":"{X}"},{"PayLife":{"Counters":{"on":"This","counter":"charge"}}}],"effects":[{"Draw":{}}]}}"#,
+        Some(XCost::Mana { symbols: 1 })
+    )]
+    #[case::x_life_and_a_counted_part(
+        r#"{"Activated":{"cost":[{"PayLife":"X"},{"PayEnergy":{"Counters":{"on":"This","counter":"charge"}}}],"effects":[{"Draw":{}}]}}"#,
+        Some(XCost::Parts)
+    )]
     #[case::minus_x(
         r#"{"Loyalty":{"cost":"MinusX","effects":[{"Draw":{}}]}}"#,
         Some(XCost::Loyalty)
@@ -468,7 +490,10 @@ mod tests {
             ability: 0,
             source: AbilitySource::Printed,
         });
-        assert_eq!(XCost::of(&game, &what, Some(&rules(json))), expected);
+        assert_eq!(
+            XCost::of(&game, PlayerId(0), &what, Some(&rules(json))),
+            expected
+        );
     }
 
     /// What the cast of `cost` with `x` symbols of `{X}` and `lands` Forests asks first: the most X offered, or `None`
@@ -487,7 +512,7 @@ mod tests {
         let needs = Needs {
             ways: Vec::new(),
             optional: Vec::new(),
-            x: XCost::of(&game, &What::Spell(card), None),
+            x: XCost::of(&game, PlayerId(0), &What::Spell(card), None),
             price: None,
         };
         let mut pending = Pending::needing(SEAT, What::Spell(card), needs);
@@ -602,7 +627,7 @@ mod tests {
         let needs = Needs {
             ways: Vec::new(),
             optional: Vec::new(),
-            x: XCost::of(&game, &What::Spell(card), None),
+            x: XCost::of(&game, PlayerId(0), &What::Spell(card), None),
             price: None,
         };
         let mut pending = Pending::needing(SEAT, What::Spell(card), needs);

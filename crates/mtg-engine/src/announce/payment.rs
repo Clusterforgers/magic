@@ -67,7 +67,7 @@ pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Next {
 
 /// What the payment of the cost being announced is for: the spell or the ability, with whether the cost has {X}.
 pub(super) fn spend(ctx: &Ctx<'_>, way: Option<CastWay>) -> Spend {
-    let x = XCost::of(ctx.state, ctx.what, ctx.ability);
+    let x = XCost::of(ctx.state, ctx.player, ctx.what, ctx.ability);
     let has_x = x.is_some();
     match ctx.what {
         // Only an `{X}` of the mana cost is mana for X: "pay X life" is paid with life.

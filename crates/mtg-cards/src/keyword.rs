@@ -520,6 +520,20 @@ impl Keyword {
         "Macro",
     ];
 
+    /// The name a player reads: `name`, except that a macro keyword shows its own table name (`Bushido`), never `Macro`.
+    pub fn shown_name(&self) -> String {
+        match self {
+            Keyword::Macro { name, .. } => {
+                let mut chars = name.chars();
+                chars
+                    .next()
+                    .map(|first| first.to_uppercase().chain(chars).collect())
+                    .unwrap_or_default()
+            }
+            other => other.name().to_owned(),
+        }
+    }
+
     /// The keyword as Scryfall spells it (`First strike`).
     pub const fn name(&self) -> &'static str {
         match self {
@@ -889,6 +903,13 @@ mod tests {
                 amount: 2,
             },
         ]
+    }
+
+    #[rstest::rstest]
+    #[case::macro_keyword(Keyword::Macro { name: "bushido".to_owned(), amount: 2 }, "Bushido")]
+    #[case::plain(Keyword::FirstStrike, "First strike")]
+    fn a_player_reads_the_keywords_own_name(#[case] keyword: Keyword, #[case] shown: &str) {
+        assert_eq!(keyword.shown_name(), shown);
     }
 
     #[test]

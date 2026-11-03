@@ -2041,7 +2041,7 @@ fn delayed(
 }
 
 /// Whether [`detect`] reads the state before `events`: only a move out of the battlefield, a death, a discard, a change
-/// of day or night (which was something else before) and a
+/// of day or night (which was something else before), an arrival on the battlefield and a
 /// spell or ability that ends without resolving look back at it. Any other batch is judged by the state after it
 /// alone, which saves copying the whole state for it.
 pub(crate) fn needs_before(events: &[Event]) -> bool {
@@ -2054,8 +2054,12 @@ pub(crate) fn needs_before(events: &[Event]) -> bool {
         | Event::EffectCreated { .. }
         | Event::EffectExpired { .. }
         | Event::Attached { .. }
-        | Event::Unattached { .. } => true,
-        Event::ZoneChanged { from, .. } => *from == Zone::Battlefield,
+        | Event::Unattached { .. }
+        | Event::ObjectLeftGame { .. } => true,
+        // An arrival can change who controls a permanent already there, as a departure can (`did::controller_changes`).
+        Event::ZoneChanged { from, to, .. } => {
+            *from == Zone::Battlefield || *to == Zone::Battlefield
+        }
         Event::ResolutionEnded { outcome, .. } => *outcome != ResolutionOutcome::Resolved,
         _ => false,
     })
@@ -2997,6 +3001,13 @@ mod tests {
         object: ObjectId(1),
         from: Zone::Hand(ME),
         to: Zone::Battlefield,
+        cause: ZoneCause::Moved,
+    }], true)]
+    #[case::an_object_that_left_the_game(vec![Event::ObjectLeftGame { object: ObjectId(1) }], true)]
+    #[case::a_move_between_hidden_zones(vec![Event::ZoneChanged {
+        object: ObjectId(1),
+        from: Zone::Hand(ME),
+        to: Zone::Graveyard(ME),
         cause: ZoneCause::Moved,
     }], false)]
     #[case::a_land_played(vec![Event::LandPlayed { player: ME, object: ObjectId(1), face: None }], false)]
