@@ -49,6 +49,8 @@ pub fn modal(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
             once_each_turn,
             once_ever,
             all_if,
+            mode_costs: Vec::new(),
+            extra_mode_cost: None,
             modes,
         }]
     })

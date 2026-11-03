@@ -133,16 +133,7 @@ fn read_cost(printed: Printed) -> Optional {
     } else {
         format!("{name} {}", words.join(", "))
     };
-    // A part that needs a source to lose, tap or hold counters, or an X, is not paid for a spell; a repeated cost asks
-    // its picks again for each payment.
-    let payable = !price.tap
-        && !price.moves_source()
-        && price.x == 0
-        && (price.mana.is_some() || !price.parts.is_empty())
-        && price
-            .parts
-            .iter()
-            .all(|part| !part.is_counted() && !matches!(part, Part::Counters { .. }));
+    let payable = payable(&price) && (price.mana.is_some() || !price.parts.is_empty());
     Optional {
         label,
         mana,
@@ -151,6 +142,18 @@ fn read_cost(printed: Printed) -> Optional {
         kind,
         offerable: payable,
     }
+}
+
+/// Whether the engine pays the cost `price` reads as a spell is announced. A part that needs a source to lose, tap or
+/// hold counters, or an X, is not paid for a spell; a repeated cost asks its picks again for each payment.
+pub(super) fn payable(price: &Price) -> bool {
+    !price.tap
+        && !price.moves_source()
+        && price.x == 0
+        && price
+            .parts
+            .iter()
+            .all(|part| !part.is_counted() && !matches!(part, Part::Counters { .. }))
 }
 
 /// The optional costs of a card, by index.

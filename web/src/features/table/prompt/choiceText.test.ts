@@ -83,6 +83,8 @@ describe('what an answer is called', () => {
   it.each([
     [{ index: 0, label: 'Draw a card' }, 'Draw a card'],
     [{ index: 2, label: null }, 'Mode 3'],
+    [{ index: 0, label: 'Draw a card', cost: '{1}{G}' }, 'Draw a card ({1}{G})'],
+    [{ index: 1, label: null, cost: '{2}' }, 'Mode 2 ({2})'],
   ])('%j is "%s"', (mode, label) => {
     expect(modeLabel(mode)).toBe(label)
   })

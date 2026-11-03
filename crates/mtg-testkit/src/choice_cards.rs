@@ -115,6 +115,8 @@ pub fn charm(name: &str, min: u32, max: u32, repeat: bool) -> Arc<CardDefinition
             once_each_turn: false,
             once_ever: false,
             all_if: None,
+            mode_costs: Vec::new(),
+            extra_mode_cost: None,
             modes: vec![
                 mode(
                     "Damage",

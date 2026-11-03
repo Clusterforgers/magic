@@ -101,6 +101,7 @@ fn needs(kicked: bool, x: u32) -> Needs {
         optional: if kicked { vec![kicker()] } else { Vec::new() },
         x: (x > 0).then_some(XCost::Mana { symbols: x }),
         price: None,
+        modes: None,
     }
 }
 

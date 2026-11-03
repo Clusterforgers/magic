@@ -1187,6 +1187,13 @@ pub enum Effect {
         /// you cast this spell, you may choose both instead"); the fewest to choose stays.
         #[serde(default, skip_serializing_if = "Option::is_none")]
         all_if: Option<Condition>,
+        /// The cost each mode adds to the total cost when chosen, parallel to `modes` (Spree, Tiered); empty when no mode
+        /// has one. A mode without a cost holds an empty cost.
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        mode_costs: Vec<Cost>,
+        /// The cost added for each mode chosen beyond the first (Escalate).
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        extra_mode_cost: Option<Cost>,
         /// The modes, in printed order.
         modes: Vec<Mode>,
     },

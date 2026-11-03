@@ -778,10 +778,12 @@ pub(super) fn alternatives(targets: &[TargetSpec], effects: &[Effect]) -> Vec<Ve
             once_each_turn,
             once_ever,
             all_if,
+            mode_costs,
+            extra_mode_cost: None,
         },
     ] = effects
     {
-        if !targets.is_empty() || modes.len() < 2 {
+        if !targets.is_empty() || modes.len() < 2 || !mode_costs.is_empty() {
             return Vec::new();
         }
         let flags = choices::C11dFlags {

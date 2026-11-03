@@ -143,7 +143,11 @@ pub(crate) fn handle(
             choose::targets_answer(player, options, choice, pending.is_some())
         }
         (DecisionKind::ChooseMode(options), Answer::ChooseMode(choice)) => {
-            choose::mode_answer(player, options, choice)
+            let outcome = choose::mode_answer(player, options, choice)?;
+            if let (Outcome::Modes(modes), Some(pending)) = (&outcome, pending) {
+                pending.check_modes(state, modes)?;
+            }
+            Ok(outcome)
         }
         (DecisionKind::ChooseNumber(options), Answer::ChooseNumber(choice)) => {
             choose::number_answer(player, options, choice, pending.is_some())

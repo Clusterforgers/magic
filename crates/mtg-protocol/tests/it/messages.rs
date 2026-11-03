@@ -367,10 +367,12 @@ fn pipeline_decision_kinds() -> Vec<DecisionKind> {
                 ModeOption {
                     index: 0,
                     label: Some("Draw".into()),
+                    cost: None,
                 },
                 ModeOption {
                     index: 1,
                     label: None,
+                    cost: None,
                 },
             ],
             min: 1,
@@ -1633,6 +1635,7 @@ fn the_question_of_a_yes_no_or_option_decision_is_left_out_while_empty_and_a_mod
             modes: vec![ModeOption {
                 index: 1,
                 label: None,
+                cost: None,
             }],
             min: 1,
             max: 1,

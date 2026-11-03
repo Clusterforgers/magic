@@ -145,6 +145,10 @@ pub(crate) fn payable(
     cost: &ManaCost,
     pays: impl Fn(&ManaCost) -> bool,
 ) -> bool {
+    let Some(cost) = super::price::floor(state, player, id, cost) else {
+        return false;
+    };
+    let cost = &*cost;
     let rules = spell_ability(state, id)
         .map(|(_, rules)| rules)
         .filter(|rules| targets_read_x(rules));
@@ -489,6 +493,7 @@ mod tests {
             optional: Vec::new(),
             x: XCost::of(&game, &What::Spell(card), None),
             price: None,
+            modes: None,
         };
         let mut pending = Pending::needing(SEAT, What::Spell(card), needs);
         match announce(&game, &mut pending) {
@@ -553,6 +558,7 @@ mod tests {
             optional: Vec::new(),
             x: Some(XCost::Mana { symbols: 1 }),
             price: None,
+            modes: None,
         };
         let mut pending = Pending::needing(SEAT, What::Spell(card), needs);
         assert!(matches!(announce(&game, &mut pending), Next::Drop));
@@ -604,6 +610,7 @@ mod tests {
             optional: Vec::new(),
             x: XCost::of(&game, &What::Spell(card), None),
             price: None,
+            modes: None,
         };
         let mut pending = Pending::needing(SEAT, What::Spell(card), needs);
         match announce(&game, &mut pending) {

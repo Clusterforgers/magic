@@ -2662,8 +2662,11 @@ impl Walker<'_> {
                 once_each_turn,
                 once_ever,
                 all_if,
+                mode_costs,
+                extra_mode_cost,
             } => {
                 w.modal(choose, modes, *repeat, only_effect);
+                w.mode_costs(mode_costs, extra_mode_cost.as_ref(), modes.len());
                 w.modal_flags(choose, *repeat, *at_random, (*once_each_turn, *once_ever));
                 if let Some(condition) = all_if {
                     w.uses("Effect", "Modal.AllIf");
@@ -2674,6 +2677,23 @@ impl Walker<'_> {
                 }
             }
         });
+    }
+
+    /// The costs of the modes: one for each mode or none, and an extra cost needs a choice of more than one mode.
+    fn mode_costs(&mut self, costs: &[Cost], extra: Option<&Cost>, modes: usize) {
+        if !costs.is_empty() {
+            self.uses("Effect", "Modal.ModeCosts");
+            if costs.len() != modes {
+                self.problem("a modal effect with mode costs has one cost for each mode");
+            }
+            for (i, cost) in costs.iter().enumerate() {
+                self.at(format!("mode_costs[{i}]"), |w| w.cost(cost));
+            }
+        }
+        if let Some(cost) = extra {
+            self.uses("Effect", "Modal.ExtraModeCost");
+            self.at("extra_mode_cost", |w| w.cost(cost));
+        }
     }
 
     /// A pick at random chooses a fixed number of modes, none twice; each flag is a primitive of its own.

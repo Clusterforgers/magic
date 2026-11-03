@@ -20,6 +20,8 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
             once_each_turn: false,
             once_ever: false,
             all_if: None,
+            mode_costs,
+            extra_mode_cost: None,
             modes,
         },
     ] = ability.effects()
@@ -29,7 +31,7 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
     let [first, second] = modes.as_slice() else {
         return;
     };
-    if !choose.is_one() || !first.targets.is_empty() || !second.targets.is_empty() {
+    if !choose.is_one() || !mode_costs.is_empty() || !first.targets.is_empty() || !second.targets.is_empty() {
         return;
     }
     let Some(plain) = twin(ability, only_the_first) else {

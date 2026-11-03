@@ -11,4 +11,8 @@ index: number,
 /**
  * A short name, when the card gives one.
  */
-label: string | null, };
+label: string | null, 
+/**
+ * What choosing the mode adds to the cost, when it has a cost of its own (Spree, Tiered).
+ */
+cost?: string | null, };
