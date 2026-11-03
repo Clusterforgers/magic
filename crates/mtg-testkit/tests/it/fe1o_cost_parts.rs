@@ -274,7 +274,7 @@ fn collect_evidence_is_offered_while_the_graveyard_has_the_value(
     }
     settle(&mut driver)?;
     assert_eq!(zone(&driver, Zone::Exile).len(), values.len());
-    assert!(zone(&driver, Zone::Graveyard(pid(0))).is_empty());
+    assert_eq!(zone(&driver, Zone::Graveyard(pid(0))).len(), 0);
     assert_eq!(life(&driver), 21);
     Ok(())
 }

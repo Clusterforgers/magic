@@ -204,6 +204,19 @@ fn read_more(item: &CostItem) -> Result<Option<(Part, bool)>, &'static str> {
             (Part::ExileTop(number), x)
         }
         CostItem::Unattach => (Part::Unattach, false),
+        CostItem::TapPower { filter, power } => {
+            let count = usize::try_from(*power).unwrap_or(usize::MAX);
+            let kind = Kind::TapPower;
+            let filter = filter.clone();
+            (
+                Part::Pick(Pick {
+                    kind,
+                    filter,
+                    count,
+                }),
+                false,
+            )
+        }
         CostItem::CollectEvidence(value) => {
             let count = usize::try_from(*value).unwrap_or(usize::MAX);
             let filter = Selector::default();
@@ -351,14 +364,6 @@ impl Part {
             }
             CostItem::RevealFromHand { filter, count } => pick(Kind::Reveal, filter, count, item)?,
             CostItem::TapPermanents { filter, count } => pick(Kind::Tap, filter, count, item)?,
-            CostItem::TapPower { filter, power } => (
-                Part::Pick(Pick {
-                    kind: Kind::TapPower,
-                    filter: filter.clone(),
-                    count: usize::try_from(*power).unwrap_or(usize::MAX),
-                }),
-                false,
-            ),
             CostItem::ReturnToHand { filter, count } => pick(Kind::Return, filter, count, item)?,
             _ => match read_more(item)? {
                 Some(found) => found,
@@ -423,12 +428,11 @@ impl Part {
             Part::Energy(_) => energy::most(payer),
             Part::Mill(_) => mill::most(payer),
             Part::Counters { counter, .. } => counters::most(payer, counter),
-            Part::PutCounters { .. } => u32::MAX,
+            Part::PutCounters { .. } | Part::Damage(_) => u32::MAX,
             Part::Among {
                 counter, filter, ..
             } => among::most(payer, filter, counter.as_ref()),
             Part::Pick(pick) => u32::try_from(pick.candidates(payer).len()).unwrap_or(u32::MAX),
-            Part::Damage(_) => u32::MAX,
             Part::ExileTop(_) => exile_top::most(payer),
             Part::Exert | Part::Unattach | Part::X(_) => return None,
         };
@@ -452,8 +456,7 @@ impl Part {
             Part::Pick(pick) => match pick.kind {
                 Kind::Sacrifice => "Cost.Sacrifice",
                 Kind::Discard => "Cost.Discard",
-                Kind::Exile => "Cost.ExileFromGraveyard",
-                Kind::ExileAny => "Cost.ExileFromGraveyard",
+                Kind::Exile | Kind::ExileAny => "Cost.ExileFromGraveyard",
                 Kind::Evidence => "Cost.CollectEvidence",
                 Kind::Blight(_) => "Cost.Blight",
                 Kind::Behold => "Cost.Behold",
@@ -707,16 +710,14 @@ impl Pick {
         match self.kind {
             Kind::Sacrifice => sacrifice::candidates(payer, &self.filter),
             Kind::Discard => discard::candidates(payer, &self.filter),
-            Kind::Exile => exile::candidates(payer, &self.filter),
+            Kind::Exile | Kind::Evidence => exile::candidates(payer, &self.filter),
             Kind::ExileHand => exile_hand::candidates(payer, &self.filter),
             Kind::Reveal => reveal::candidates(payer, &self.filter),
             Kind::Tap | Kind::TapPower => tap::candidates(payer, &self.filter),
-            Kind::Return => bounce::candidates(payer, &self.filter),
+            Kind::Return | Kind::Blight(_) => bounce::candidates(payer, &self.filter),
             Kind::Untap => untap::candidates(payer, &self.filter),
             Kind::Counter => c11c_counter_picks::c11c_candidates(payer, &self.filter),
             Kind::ExileAny => exile::candidates_any(payer, &self.filter),
-            Kind::Evidence => exile::candidates(payer, &self.filter),
-            Kind::Blight(_) => bounce::candidates(payer, &self.filter),
             Kind::Behold => behold::candidates(payer, &self.filter),
             Kind::ToLibrary(from, _) => to_library::candidates(payer, from, &self.filter),
             Kind::Forage => forage::candidates(payer),
@@ -846,8 +847,7 @@ impl Pick {
         match self.kind {
             Kind::Sacrifice => sacrifice::event(state, object),
             Kind::Discard => Some(discard::event(player, object)),
-            Kind::Exile => exile::event(state, object),
-            Kind::ExileHand => exile_hand::event(state, object),
+            Kind::Exile | Kind::ExileHand => exile_hand::event(state, object),
             Kind::Reveal => Some(reveal::event(player, object)),
             Kind::Tap | Kind::TapPower => Some(tap::event(object)),
             Kind::Return => bounce::event(state, object),
