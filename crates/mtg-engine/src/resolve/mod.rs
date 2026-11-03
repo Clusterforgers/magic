@@ -12,6 +12,8 @@ mod prim;
 mod share;
 mod tree;
 mod value;
+#[cfg(test)]
+mod value_general;
 
 use std::sync::Arc;
 

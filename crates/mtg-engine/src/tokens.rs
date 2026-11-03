@@ -139,6 +139,11 @@ pub(crate) fn fold(state: &mut GameState, event: &TokenCreated) -> Result<(), En
         });
     }
     state.tally(event.controller, Tally::Tokens);
+    state.log_event(
+        mtg_cards::value::TallyEvent::TokenCreated,
+        event.controller,
+        id,
+    );
     reset_passes(state);
     Ok(())
 }

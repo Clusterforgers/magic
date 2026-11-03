@@ -252,7 +252,7 @@ fn reads_of_stat(stat: StatKind) -> Traits {
         StatKind::Toughness => Traits::TOUGHNESS,
         StatKind::Colors => Traits::COLORS,
         StatKind::BasicLandTypes => Traits::SUBTYPES,
-        StatKind::ManaValue | StatKind::Loyalty => Traits::NONE,
+        StatKind::ManaValue | StatKind::Loyalty | StatKind::BasePower => Traits::NONE,
     }
 }
 
@@ -274,6 +274,8 @@ pub(crate) fn reads_of_amount(amount: &Amount) -> Traits {
         | Amount::Exiled(_)
         | Amount::PhasedOut(_)
         | Amount::DieResult(_)
+        | Amount::TurnNumber
+        | Amount::TriggeringTargets
         | Amount::Triggering => Traits::NONE,
         Amount::Count(selector) => reads_of_selector(selector),
         Amount::Stat { of, stat } => reads_of_ref(of).or(reads_of_stat(*stat)),
@@ -284,6 +286,7 @@ pub(crate) fn reads_of_amount(amount: &Amount) -> Traits {
         | Amount::Mutations(who)
         | Amount::Players(who)
         | Amount::Tallied { who, .. }
+        | Amount::CommanderColors(who)
         | Amount::StartingLife(who)
         | Amount::LowestLife(who)
         | Amount::LowestHand(who)
@@ -297,6 +300,7 @@ pub(crate) fn reads_of_amount(amount: &Amount) -> Traits {
         Amount::Greatest { of, stat }
         | Amount::Total { of, stat }
         | Amount::Distinct { of, stat } => reads_of_selector(of).or(reads_of_stat(*stat)),
+        Amount::Tally { who, filter, .. } => reads_of_ref(who).or(reads_of_selector(filter)),
         Amount::CardTypes(of) => reads_of_selector(of).or(Traits::TYPES),
         Amount::Largest { who, of } => reads_of_ref(who).or(reads_of_selector(of)),
         Amount::Party(who) => reads_of_ref(who)
@@ -337,6 +341,7 @@ pub(crate) fn reads_of_condition(condition: &Condition) -> Traits {
         | Condition::CompletedDungeon(who)
         | Condition::Initiative(who)
         | Condition::CitysBlessing(who)
+        | Condition::StartingPlayer(who)
         | Condition::Searched { who, .. } => reads_of_ref(who),
         Condition::Level { of, .. } => reads_of_ref(of),
     }
