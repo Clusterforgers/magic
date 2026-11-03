@@ -158,7 +158,7 @@ async fn translate_command(
     cache: &Cache,
     args: &args::TranslateForgeArgs,
 ) -> Result<String, CliError> {
-    let db = if args.stored {
+    let db = if args.stored || args.precons {
         Some(connect(database_url).await?)
     } else {
         None

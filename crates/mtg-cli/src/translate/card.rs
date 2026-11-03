@@ -29,6 +29,8 @@ pub struct CardOut {
     pub name: String,
     /// One entry for each face.
     pub faces: Vec<FaceOut>,
+    /// Forge's `Oracle:` line of each face.
+    pub oracle: Vec<String>,
 }
 
 impl CardOut {
@@ -67,6 +69,11 @@ pub fn translate_script(world: &World, script: &Script) -> CardOut {
             .faces
             .iter()
             .map(|face| translate_face(world, face))
+            .collect(),
+        oracle: script
+            .faces
+            .iter()
+            .map(|face| face.oracle.clone())
             .collect(),
     }
 }

@@ -16,18 +16,21 @@ pub mod effects_effect;
 pub mod effects_obj;
 pub mod effects_zone;
 pub mod keyword;
+pub mod mayplay;
+pub mod oracle;
 pub mod replacements;
 pub mod report;
 pub mod statics;
 pub mod stored;
 pub mod tokens;
 pub mod triggers;
+pub mod triggers_more;
 pub mod valid;
 
 #[cfg(test)]
 mod tests;
 
-use std::collections::BTreeMap;
+use std::collections::{BTreeMap, BTreeSet};
 use std::fmt::Write as _;
 use std::fs;
 use std::path::{Path, PathBuf};
@@ -54,7 +57,7 @@ pub async fn translate_forge(
     args: &TranslateForgeArgs,
 ) -> Result<String, CliError> {
     let stored = match db {
-        Some(db) => Some(Stored::load(db).await?),
+        Some(db) => Some(Stored::load(db, args.precons).await?),
         None => None,
     };
     let scripts = read_checkout(&args.dir)?;
@@ -67,6 +70,7 @@ pub async fn translate_forge(
     let mut funnel = Funnel::default();
     let popularity = Popularity::from_cache(cache).ok();
     let mut index = String::from("slug\tname\ttranslated\ttoday\n");
+    let mut cards = String::from("slug\tname\ttranslated\ttoday\toracle_matches\tgaps\n");
     for script in &scripts {
         if !wanted.is_empty() && !selected(script, &wanted) {
             continue;
@@ -78,7 +82,7 @@ pub async fn translate_forge(
             continue;
         }
         let today = match &stored {
-            Some(stored) if card.translated() > 0 => stored.today(&stem),
+            Some(stored) if card.translated() > 0 || args.precons => stored.today(&stem),
             _ => String::new(),
         };
         let weight = match (&stored, &popularity) {
@@ -87,20 +91,41 @@ pub async fn translate_forge(
             }
             _ => 0.0,
         };
-        let written = funnel.add(&card, !today.ends_with("verified"), weight);
+        let oracle_matches = stored.as_ref().and_then(|stored| {
+            let printed = stored.printed_oracle(&stem)?;
+            Some(oracle::matches(
+                card.oracle.iter().map(String::as_str),
+                printed,
+            ))
+        });
+        let written = funnel.add(&card, !today.ends_with("verified"), weight, &today);
+        let state = match (card.lines(), card.translated(), card.gaps().next()) {
+            (0, _, _) => "plain",
+            (_, 0, _) => "skipped",
+            (_, _, None) => "whole",
+            _ => "partial",
+        };
+        let gaps: BTreeSet<&str> = card.gaps().map(|gap| gap.0.as_str()).collect();
+        let gaps: Vec<&str> = gaps.into_iter().collect();
+        let _ = writeln!(
+            cards,
+            "{stem}\t{}\t{state}\t{today}\t{}\t{}",
+            card.name,
+            oracle_matches.map_or("", |same| if same { "true" } else { "false" }),
+            gaps.join("; ")
+        );
         if written {
-            write_proposal(&out_dir, &card)?;
-            let state = if card.gaps().next().is_none() {
-                "whole"
-            } else {
-                "partial"
-            };
+            write_proposal(&out_dir, &card, oracle_matches)?;
             let _ = writeln!(index, "{stem}\t{}\t{state}\t{today}", card.name);
         }
     }
     let ledger = out_dir.join("translate-gaps.tsv");
     write_file(&ledger, &funnel.ledger())?;
     write_file(&out_dir.join("translate-index.tsv"), &index)?;
+    write_file(&out_dir.join("translate-cards.tsv"), &cards)?;
+    if let Some(lines) = stored.as_ref().and_then(Stored::precon_lines) {
+        write_file(&out_dir.join("precon-today.tsv"), &lines)?;
+    }
     Ok(funnel.render(&out_dir))
 }
 
@@ -114,7 +139,11 @@ fn selected(script: &Script, wanted: &[String]) -> bool {
 }
 
 /// Writes the proposal of a card as `<slug>.json` and marks its source in `meta/<slug>.json`.
-fn write_proposal(dir: &Path, card: &CardOut) -> Result<(), CliError> {
+fn write_proposal(
+    dir: &Path,
+    card: &CardOut,
+    oracle_matches: Option<bool>,
+) -> Result<(), CliError> {
     let stem = slug(&card.name);
     let text = serde_json::to_string_pretty(&card.proposal()).unwrap_or_default();
     write_file(&dir.join(format!("{stem}.json")), &format!("{text}\n"))?;
@@ -125,6 +154,9 @@ fn write_proposal(dir: &Path, card: &CardOut) -> Result<(), CliError> {
         .filter(Value::is_object)
         .unwrap_or_else(|| json!({}));
     record["source"] = json!("forge");
+    if let Some(matches) = oracle_matches {
+        record["oracle_matches"] = json!(matches);
+    }
     let text = serde_json::to_string_pretty(&record).unwrap_or_default();
     write_file(&meta, &format!("{text}\n"))
 }

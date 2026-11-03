@@ -42,6 +42,7 @@ pub fn duration(word: Option<&str>) -> Tr<&'static str> {
         Some("Permanent") => Ok("Forever"),
         Some("UntilEndOfCombat") => Ok("UntilEndOfCombat"),
         Some("UntilYourNextTurn") => Ok("UntilYourNextTurn"),
+        Some("UntilTheEndOfYourNextTurn") => Ok("UntilEndOfYourNextTurn"),
         Some("UntilHostLeavesPlay") => Ok("WhileSourceOnBattlefield"),
         Some(other) => unmapped(format!("duration:{other}")),
     }

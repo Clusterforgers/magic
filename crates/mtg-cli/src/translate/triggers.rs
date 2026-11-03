@@ -9,7 +9,8 @@ use super::valid::selector_any;
 use crate::forge::script::Params;
 
 /// The keys every trigger line may carry besides its mode's own.
-const COMMON: [&str; 5] = [
+const COMMON: [&str; 6] = [
+    "ActivationLimit",
     "Mode",
     "Execute",
     "TriggerZones",
@@ -70,6 +71,11 @@ pub fn triggered(ctx: &mut Ctx, body: &str) -> Tr<Value> {
     if let Some(condition) = intervening {
         ability["if"] = condition;
     }
+    match p.get("ActivationLimit") {
+        None => {}
+        Some("1") => ability["limit"] = json!("OncePerTurn"),
+        Some(other) => return unmapped(format!("key:Trigger.ActivationLimit={other}")),
+    }
     if !ctx.targets.is_empty() {
         ability["targets"] = Value::Array(ctx.targets.clone());
     }
@@ -108,7 +114,7 @@ fn about_this(value: &mut Value) {
 }
 
 /// Checks the keys of a trigger line against those a mode reads.
-fn keys(p: &Params, mode: &str, read: &[&str]) -> Tr<()> {
+pub(super) fn keys(p: &Params, mode: &str, read: &[&str]) -> Tr<()> {
     for (key, _) in p.iter() {
         if COMMON.contains(&key) || read.contains(&key) || super::ctx::is_hint(key) {
             continue;
@@ -120,6 +126,9 @@ fn keys(p: &Params, mode: &str, read: &[&str]) -> Tr<()> {
 
 fn pattern(ctx: &Ctx, p: &Params) -> Tr<Value> {
     let mode = p.get("Mode").unwrap_or_default();
+    if let Some(found) = super::triggers_more::pattern(ctx, p, mode) {
+        return found;
+    }
     match mode {
         "ChangesZone" => changes_zone(ctx, p),
         "Phase" => phase(p),
@@ -129,10 +138,10 @@ fn pattern(ctx: &Ctx, p: &Params) -> Tr<Value> {
         "Cycled" => card_event(ctx, p, "Cycled"),
         "TurnFaceUp" => what_trigger(ctx, p, "TurnedFaceUp"),
         "SpellCast" => spell_cast(ctx, p),
-        "DamageDone" => damage_done(ctx, p),
+        "DamageDone" => super::triggers_more::damage(ctx, p, "DamageDone"),
         "Drawn" => drawn(p),
         "LifeGained" => life_gained(p),
-        "Sacrificed" => what_trigger(ctx, p, "Sacrificed"),
+        "Sacrificed" => sacrificed(ctx, p),
         "Taps" => what_trigger(ctx, p, "Tapped"),
         "Untaps" => what_trigger(ctx, p, "Untapped"),
         "Blocks" => what_trigger(ctx, p, "Blocks"),
@@ -266,7 +275,7 @@ fn attackers_declared(ctx: &Ctx, p: &Params) -> Tr<Value> {
     Ok(json!({ "GroupAttacks": pattern }))
 }
 
-fn player_ref(word: Option<&str>) -> Tr<&'static str> {
+pub(super) fn player_ref(word: Option<&str>) -> Tr<&'static str> {
     match word {
         None | Some("Player") => Ok("EachPlayer"),
         Some("You") => Ok("You"),
@@ -276,35 +285,29 @@ fn player_ref(word: Option<&str>) -> Tr<&'static str> {
 }
 
 fn spell_cast(ctx: &Ctx, p: &Params) -> Tr<Value> {
-    keys(p, "SpellCast", &["ValidCard", "ValidActivatingPlayer"])?;
+    keys(
+        p,
+        "SpellCast",
+        &[
+            "ValidCard",
+            "ValidActivatingPlayer",
+            "ActivatorThisTurnCast",
+        ],
+    )?;
     let by = player_ref(p.get("ValidActivatingPlayer"))?;
     let mut pattern = json!({ "by": by });
     if let Some(valid) = p.get("ValidCard") {
         pattern["what"] = json!(selector_any(ctx, valid)?);
     }
-    Ok(json!({ "SpellCast": pattern }))
+    super::triggers_more::nth_spell(p, json!({ "SpellCast": pattern }))
 }
 
-fn damage_done(ctx: &Ctx, p: &Params) -> Tr<Value> {
-    keys(
-        p,
-        "DamageDone",
-        &["ValidSource", "ValidTarget", "CombatDamage"],
-    )?;
-    let source = selector_any(ctx, p.get("ValidSource").unwrap_or("Card"))?;
-    let mut pattern = json!({ "source": source });
-    if let Some(target) = p.get("ValidTarget") {
-        pattern["to"] = match target {
-            "Player" => json!("EachPlayer"),
-            "You" => json!("You"),
-            "Opponent" | "Player.Opponent" => json!("Opponents"),
-            other => return unmapped(format!("key:Trigger.DamageDone.ValidTarget={other}")),
-        };
-    }
-    if p.get("CombatDamage") == Some("True") {
-        pattern["combat"] = json!(true);
-    }
-    Ok(json!({ "DealsDamage": pattern }))
+/// A permanent is sacrificed, by a player.
+fn sacrificed(ctx: &Ctx, p: &Params) -> Tr<Value> {
+    keys(p, "Sacrificed", &["ValidCard", "ValidPlayer"])?;
+    let what = selector_any(ctx, p.get("ValidCard").unwrap_or("Card"))?;
+    let by = player_ref(p.get("ValidPlayer"))?;
+    Ok(json!({"Sacrificed": {"what": what, "by": by}}))
 }
 
 fn drawn(p: &Params) -> Tr<Value> {

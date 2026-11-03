@@ -161,12 +161,27 @@ pub fn dig(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             "Tapped",
             "NoReveal",
             "ForceRevealToController",
+            "ValidTgts",
+            "TargetMin",
+            "TargetMax",
+            "RememberChanged",
         ],
     )?;
-    if !matches!(p.get("Defined"), None | Some("You")) {
-        return unmapped("key:Dig.Defined");
-    }
+    let who = subject(ctx, p, "You", None)?;
     let count = amount(ctx, p.get("DigNum").unwrap_or("1"))?;
+    if p.get("ChangeNum") == Some("All")
+        && p.get("DestinationZone") == Some("Exile")
+        && !p.has("ChangeValid")
+    {
+        // Every card looked at is exiled: the impulse shape.
+        let exiled = ctx.fresh("exiled");
+        if p.get("RememberChanged") == Some("True") {
+            ctx.remembered = Some(json!({ "Bound": exiled }));
+        }
+        return Ok(vec![
+            json!({"ExileTop": {"who": who, "count": count, "as": exiled}}),
+        ]);
+    }
     let top = ctx.fresh("top");
     let kept = ctx.fresh("kept");
     let rest = ctx.fresh("rest");
@@ -214,8 +229,11 @@ pub fn dig(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     } else {
         json!({ "Bound": rest })
     };
+    if p.get("RememberChanged") == Some("True") {
+        ctx.remembered = Some(json!({ "Bound": kept }));
+    }
     let mut effects = vec![
-        json!({"LookAtTop": {"count": count, "as": top}}),
+        json!({"LookAtTop": {"who": who, "count": count, "as": top}}),
         json!({ "Choose": choose }),
     ];
     if p.get("Reveal") == Some("True") {

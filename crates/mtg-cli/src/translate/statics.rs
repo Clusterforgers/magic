@@ -17,6 +17,9 @@ pub fn static_line(ctx: &mut Ctx, body: &str) -> Tr<Value> {
     let condition = condition(ctx, &all)?;
     let p = strip(&all);
     let mut ability = match p.get("Mode").unwrap_or_default() {
+        "Continuous" if p.has("MayPlay") => {
+            json!({"Rule": {"rule": super::mayplay::may_cast(ctx, &p, None)?}})
+        }
         "Continuous" => continuous(ctx, &p)?,
         "CantAttack" => restriction(ctx, &p, "CantAttack")?,
         "CantBlock" => restriction(ctx, &p, "CantBlock")?,

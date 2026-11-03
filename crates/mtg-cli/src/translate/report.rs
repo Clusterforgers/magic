@@ -38,13 +38,33 @@ pub struct Funnel {
     pub partial: usize,
     /// Cards with rule lines and none translated.
     pub skipped: usize,
+    /// With `--stored`: the cards by their state today, as counts of whole, partial, skipped and plain.
+    states: BTreeMap<String, [usize; 4]>,
     rows: BTreeMap<String, Row>,
     first: BTreeMap<String, usize>,
 }
 
 impl Funnel {
     /// Counts a card; true when it has a proposal to write.
-    pub fn add(&mut self, card: &CardOut, ranked: bool, weight: f64) -> bool {
+    pub fn add(&mut self, card: &CardOut, ranked: bool, weight: f64, today: &str) -> bool {
+        let kind = self.add_card(card, ranked, weight);
+        if !today.is_empty() {
+            let slot = match (
+                card.lines(),
+                card.translated(),
+                card.gaps().next().is_none(),
+            ) {
+                (0, _, _) => 3,
+                (_, 0, _) => 2,
+                (_, _, true) => 0,
+                _ => 1,
+            };
+            self.states.entry(today.to_owned()).or_default()[slot] += 1;
+        }
+        kind
+    }
+
+    fn add_card(&mut self, card: &CardOut, ranked: bool, weight: f64) -> bool {
         self.read += 1;
         let names: BTreeSet<&str> = card.gaps().map(|gap| gap.0.as_str()).collect();
         if !ranked {
@@ -129,6 +149,15 @@ impl Funnel {
             self.plain,
             self.unstored
         );
+        if !self.states.is_empty() {
+            text.push_str("by state today (whole, partial, skipped, no rule line):\n");
+            for (state, [whole, partial, skipped, plain]) in &self.states {
+                let _ = writeln!(
+                    text,
+                    "  {state:<12} {whole:>6} {partial:>6} {skipped:>6} {plain:>6}"
+                );
+            }
+        }
         if self.verified_today > 0 {
             let _ = writeln!(
                 text,

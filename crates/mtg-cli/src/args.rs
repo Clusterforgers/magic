@@ -175,6 +175,11 @@ pub struct TranslateForgeArgs {
     #[arg(long)]
     pub stored: bool,
 
+    /// Only the cards of the stored precons (needs a database; implies `--stored`): the funnel, the ranking and the `today` column
+    /// are those of the precon cards, and `precon-today.tsv` lists the state of every precon card.
+    #[arg(long)]
+    pub precons: bool,
+
     /// Where the proposals go (default: `proposals/forge` in the cache directory): `<slug>.json`, `meta/<slug>.json` and `translate-gaps.tsv`.
     #[arg(long, value_name = "DIR")]
     pub out: Option<PathBuf>,

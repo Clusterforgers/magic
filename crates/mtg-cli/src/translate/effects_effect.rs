@@ -38,6 +38,10 @@ pub fn effects(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     let duration = duration(p.get("Duration"))?;
     let who = remembered(ctx, p)?;
     let part = ctx.sub(name)?;
+    if part.has("MayPlay") {
+        let rule = super::mayplay::may_cast(ctx, &part, Some(who))?;
+        return Ok(vec![json!({"Rule": {"rule": rule, "duration": duration}})]);
+    }
     for (key, _) in part.iter() {
         let read = [
             "Mode",
