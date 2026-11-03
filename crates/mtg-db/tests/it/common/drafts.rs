@@ -23,5 +23,7 @@ pub fn draft(card: &OracleId, n: u32) -> NewDraft {
         oracle_id: card.clone(),
         read_hash: hash(n),
         rules: json!({"name": "A card", "n": n}),
+        source: "sweep".into(),
+        oracle_matches: false,
     }
 }

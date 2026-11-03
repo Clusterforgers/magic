@@ -35,11 +35,12 @@ pub enum ReadState {
 }
 
 impl ReadState {
-    /// The state of a hash with `wrong` and `correct` counting verdicts: one wrong wins.
-    pub fn of_counts(wrong: u32, correct: u32) -> Self {
+    /// The state of a hash with `wrong` and `correct` counting verdicts: one wrong wins; a trusted Forge draft
+    /// is approved without a verdict.
+    pub fn of_counts(wrong: u32, correct: u32, forge: bool) -> Self {
         if wrong > 0 {
             Self::Wrong
-        } else if correct > 0 {
+        } else if correct > 0 || forge {
             Self::Approved
         } else {
             Self::Pending
@@ -81,6 +82,9 @@ pub struct DraftRead {
     pub correct: u32,
     /// How many counting verdicts are `wrong`: accounts whose newest verdict is `wrong`, and the server's.
     pub wrong: u32,
+    /// The draft is a trusted translation of a Forge script (source `forge`, Oracle text matched): it is `approved`
+    /// without a human verdict unless a `wrong` counts.
+    pub forge: bool,
 }
 
 /// An account's verdict on a card: on the current hash when it has one there, else its newest on an older hash.
@@ -217,11 +221,12 @@ impl ReadRepo {
                )
                SELECT d.oracle_id, d.read_hash,
                       count(c.verdict) FILTER (WHERE c.verdict = 'wrong') AS "wrong!",
-                      count(c.verdict) FILTER (WHERE c.verdict = 'correct') AS "correct!"
+                      count(c.verdict) FILTER (WHERE c.verdict = 'correct') AS "correct!",
+                      (d.source = 'forge' AND d.oracle_matches) AS "forge!"
                FROM card_drafts d
                LEFT JOIN counting c ON c.oracle_id = d.oracle_id AND c.read_hash = d.read_hash
                WHERE NOT d.retired AND ($1::uuid[] IS NULL OR d.oracle_id = ANY($1))
-               GROUP BY d.oracle_id, d.read_hash
+               GROUP BY d.oracle_id, d.read_hash, d.source, d.oracle_matches
                ORDER BY d.oracle_id"#,
             cards
         )
@@ -234,9 +239,10 @@ impl ReadRepo {
                 DraftRead {
                     oracle_id: OracleId(row.oracle_id.to_string()),
                     read_hash: row.read_hash,
-                    state: ReadState::of_counts(wrong, correct),
+                    state: ReadState::of_counts(wrong, correct, row.forge),
                     correct,
                     wrong,
+                    forge: row.forge,
                 }
             })
             .collect())
@@ -362,7 +368,9 @@ mod tests {
     #[case(1, 5, ReadState::Wrong)]
     #[case(3, 3, ReadState::Wrong)]
     fn one_wrong_wins(#[case] wrong: u32, #[case] correct: u32, #[case] state: ReadState) {
-        assert_eq!(ReadState::of_counts(wrong, correct), state);
+        assert_eq!(ReadState::of_counts(wrong, correct, false), state);
+        let trusted = if wrong > 0 { state } else { ReadState::Approved };
+        assert_eq!(ReadState::of_counts(wrong, correct, true), trusted);
     }
 
     #[test]
@@ -378,6 +386,7 @@ mod tests {
             state,
             correct: 0,
             wrong: 0,
+            forge: false,
         }
     }
 

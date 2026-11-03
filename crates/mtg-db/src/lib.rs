@@ -25,7 +25,9 @@ pub use cards::{
 };
 pub use database::{Database, RowCounts};
 pub use decks::{CreateDeckError, DeckDraft, DeckId, DeckLine, DeckRepo, DeckZone, StoredDeck};
-pub use drafts::{DraftKey, DraftRepo, DraftsVersion, NewDraft, StoredDraft};
+pub use drafts::{
+    DraftKey, DraftRepo, DraftsVersion, NewDraft, SOURCE_FORGE, SOURCE_SWEEP, StoredDraft,
+};
 pub use error::DbError;
 pub use favourites::{FavouritePreconRepo, MAX_CODE_CHARS, is_code};
 pub use fix_marks::{FixMark, FixMarkRepo, MAX_NOTE_CHARS, RankedMark};
