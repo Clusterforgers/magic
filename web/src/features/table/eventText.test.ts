@@ -944,7 +944,10 @@ describe('events with more than one shape', () => {
       ),
       "Ana may cast Grizzly Bears and Hill Giant until the end of their controller's next turn",
     ],
-    [ruleEffect({ TriggerAgain: null }, 'Forever'), 'Triggered abilities trigger an additional time'],
+    [
+      ruleEffect({ TriggerAgain: { cause: null, source: null } }, 'Forever'),
+      'Triggered abilities trigger an additional time',
+    ],
     [
       ruleEffect({ BlockLimitEach: { most: 1, who: [1] } }, 'UntilEndOfCombat'),
       "Bo can't block with more than 1 creature until end of combat",
