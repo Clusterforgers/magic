@@ -14,7 +14,7 @@ use std::sync::OnceLock;
 use mtg_cards::ability::Ability;
 use mtg_cards::cost::Cost;
 use mtg_cards::keyword::Keyword;
-use mtg_cards::modify::{Attacked, GameRule};
+use mtg_cards::modify::{Attacked, GameRule, Prohibited};
 use mtg_cards::refs::{Ref, Selector, ZoneKind};
 use mtg_cards::trigger::TriggerPattern;
 use mtg_core::ids::{EffectId, ObjectId, PlayerId};
@@ -172,6 +172,14 @@ pub enum Rule {
     },
     /// Each creature the players control assigns combat damage equal to its toughness (CR 510.1a).
     ToughnessAssignsDamage(Vec<PlayerId>),
+    /// The players and objects can't do the action (CR 101.2): `GameRule::Cant`.
+    Cant {
+        /// The players and objects it is about.
+        who: Vec<Target>,
+        /// What they can't do.
+        #[cfg_attr(feature = "ts", ts(type = "unknown"))]
+        action: Box<Prohibited>,
+    },
 }
 
 /// A tax on attacking: whom it protects, which attackers it taxes and what each costs.
@@ -336,6 +344,8 @@ pub(crate) struct RulesInForce {
     attack_limit_at: BTreeMap<AttackTarget, u32>,
     block_limit: Option<u32>,
     block_limit_each: BTreeMap<PlayerId, u32>,
+    /// The prohibitions (`prohibit.rs`).
+    pub(crate) cants: Vec<crate::prohibit::Banned>,
     /// The rules about targets in graveyards, losing, casting and combat damage.
     pub(crate) w17b: crate::w17b_statics::W17bRules,
 }
@@ -537,6 +547,9 @@ impl RulesInForce {
                     });
                 }
             }
+            Rule::Cant { who, action } => self.cants.push(crate::prohibit::Banned::new(
+                who, action, controller, source,
+            )),
             // Shields are read by the replacement step from the rule changes themselves.
             Rule::PreventDamage(_) | Rule::Regenerate(_) | Rule::DiesInstead { .. } => {}
             Rule::GraveyardCardsUntargetable
@@ -687,6 +700,10 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
         }
         // Eligibility is read from the definition when a seat is checked (`CardDefinition::can_be_commander`); no
         // rule is ever in force and an effect cannot start one.
+        GameRule::Cant { who, action } => Rule::Cant {
+            who: scope.refs(who)?,
+            action: Box::new(action.clone()),
+        },
         GameRule::CanBeCommander => return Err(ResolveError::Unsupported("Rule.CanBeCommander")),
         GameRule::GraveyardCardsUntargetable
         | GameRule::CantLoseGame { .. }
@@ -735,6 +752,7 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
             who.is_empty() || only.as_ref().is_some_and(Vec::is_empty)
         }
         Rule::BlockLimitEach { who, .. } | Rule::PlayersHave { who, .. } => who.is_empty(),
+        Rule::Cant { who, .. } => who.is_empty(),
         Rule::TriggerAgain(_)
         | Rule::DamageCantBePrevented { .. }
         | Rule::Regenerate(_)
@@ -866,6 +884,7 @@ static NONE: RulesInForce = RulesInForce {
     attack_limit_at: BTreeMap::new(),
     block_limit: None,
     block_limit_each: BTreeMap::new(),
+    cants: Vec::new(),
     w17b: crate::w17b_statics::W17B_NONE,
 };
 

@@ -930,7 +930,7 @@ impl InvariantChecker {
             let expected = if *extra {
                 self.shadow.extra_turns().last().map(|turn| turn.player)
             } else {
-                self.shadow.next_alive_after(regular)
+                self.next_turn_taker(regular)
             };
             if expected != Some(*active) || *number != self.shadow.turn().number() + 1 {
                 return Err(Violation::Bookkeeping(format!(
@@ -1128,6 +1128,20 @@ impl InvariantChecker {
     }
 
     /// What an attach, an attach to a player and an unattach leave every attachment attached to.
+    /// The player who takes the regular turn after the one of `regular`: the next player in turn order whose turns are
+    /// not skipped (CR 614.10), or the next player when every turn is skipped.
+    fn next_turn_taker(&self, regular: PlayerId) -> Option<PlayerId> {
+        let first = self.shadow.next_alive_after(regular)?;
+        let mut next = first;
+        for _ in 0..self.shadow.players().len() {
+            if !mtg_engine::prohibit::skips_turn(&self.shadow, next) {
+                return Some(next);
+            }
+            next = self.shadow.next_alive_after(next)?;
+        }
+        Some(first)
+    }
+
     fn account_attachment(&mut self, event: &Event) -> Result<(), Violation> {
         match event {
             Event::Attached { object, to } => {

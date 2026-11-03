@@ -117,6 +117,8 @@ pub(crate) fn unplayable(
 fn land_reason(state: &GameState, player: PlayerId) -> Option<Unplayable> {
     if !sorcery_timing(state, player) {
         Some(Unplayable::Timing)
+    } else if crate::prohibit::forbidden(state, crate::prohibit::Doing::PlayLand { player }) {
+        Some(Unplayable::Restricted)
     } else if !land_play_left(state, player) {
         Some(Unplayable::LandPlayed)
     } else {

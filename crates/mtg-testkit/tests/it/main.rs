@@ -368,6 +368,7 @@ mod prevention_fuzz;
 mod preview_matches_games;
 mod priority_can_act;
 mod priority_stack;
+mod prohibitions;
 mod proliferate;
 mod promise_of_loyalty;
 mod protection;

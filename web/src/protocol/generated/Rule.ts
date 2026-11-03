@@ -4,6 +4,7 @@ import type { AttackTax } from "./AttackTax";
 import type { DamageShield } from "./DamageShield";
 import type { ObjectRef } from "./ObjectRef";
 import type { PlayerId } from "./PlayerId";
+import type { Target } from "./Target";
 
 /**
  * A rule of the game as the engine plays it: the players or objects the data's references named, found when the rule
@@ -101,4 +102,12 @@ who: Array<PlayerId>,
 /**
  * The player during whose turns they can't; every turn when absent.
  */
-turn: PlayerId | null, } } | { "ToughnessAssignsDamage": Array<PlayerId> };
+turn: PlayerId | null, } } | { "ToughnessAssignsDamage": Array<PlayerId> } | { "Cant": { 
+/**
+ * The players and objects it is about.
+ */
+who: Array<Target>, 
+/**
+ * What they can't do.
+ */
+action: unknown, } };

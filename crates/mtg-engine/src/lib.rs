@@ -107,6 +107,7 @@ mod party;
 pub mod phasing;
 pub mod player;
 pub mod priority;
+pub mod prohibit;
 pub mod replace;
 pub mod resolve;
 pub mod rng;

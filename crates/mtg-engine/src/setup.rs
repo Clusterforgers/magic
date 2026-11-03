@@ -467,6 +467,7 @@ impl GameState {
                 extra: false,
                 combats: 0,
                 ahead: Vec::new(),
+                ending: false,
             },
             priority: None,
             combat: CombatState::default(),

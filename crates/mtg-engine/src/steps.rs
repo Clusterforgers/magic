@@ -233,14 +233,25 @@ fn priority_round(state: &GameState) -> Progress {
 
 /// The step after `step`: a skipped step does not begin at all (CR 614.10), so nothing triggers at its start.
 fn next_step(state: &GameState, step: Step) -> Step {
+    let mut next = following_step(state, step);
+    while state
+        .active_player()
+        .is_some_and(|p| skipped_by(state, p, next))
+    {
+        next = following_step(state, next);
+    }
+    next
+}
+
+/// Whether the turn of `player` skips `step` (CR 614.10): the draw step by `SkipDrawStep`, any step by a prohibition.
+fn skipped_by(state: &GameState, player: PlayerId, step: Step) -> bool {
+    (step == Step::Draw && skips_draw_step(state, player))
+        || crate::prohibit::skips_step(state, player, step)
+}
+
+/// The step after `step` before any step is skipped.
+fn following_step(state: &GameState, step: Step) -> Step {
     match step {
-        Step::Upkeep
-            if state
-                .active_player()
-                .is_some_and(|p| skips_draw_step(state, p)) =>
-        {
-            Step::Main1
-        }
         Step::DeclareAttackers if state.combat().attackers().is_empty() => Step::EndCombat,
         Step::DeclareBlockers if !first_strike_step_needed(state) => Step::CombatDamage,
         other => other.next().unwrap_or(Step::Cleanup),
@@ -373,11 +384,14 @@ pub(crate) fn end_turn(state: &GameState) -> Vec<Event> {
         events.push(Event::DayNightChanged { to });
     }
     // A skipped untap step does not begin at all (CR 614.10).
-    let first = if extra.is_some_and(|turn| turn.skip_untap) {
+    let mut first = if extra.is_some_and(|turn| turn.skip_untap) {
         Step::Upkeep
     } else {
         Step::Untap
     };
+    while skipped_by(state, active, first) {
+        first = first.next().unwrap_or(Step::Cleanup);
+    }
     events.push(Event::StepBegan { step: first });
     events
 }
@@ -388,7 +402,10 @@ pub(crate) fn end_turn(state: &GameState) -> Vec<Event> {
 fn next_turn(state: &GameState) -> (Vec<Event>, PlayerId, Option<ExtraTurn>) {
     let mut passed = Vec::new();
     for turn in state.extra_turns().iter().rev() {
-        if state.is_alive(turn.player) && !crate::rules::skips_extra_turns(state, turn.player) {
+        if state.is_alive(turn.player)
+            && !crate::rules::skips_extra_turns(state, turn.player)
+            && !crate::prohibit::skips_turn(state, turn.player)
+        {
             return (passed, turn.player, Some(*turn));
         }
         passed.push(Event::ExtraTurnSkipped {
@@ -396,11 +413,16 @@ fn next_turn(state: &GameState) -> (Vec<Event>, PlayerId, Option<ExtraTurn>) {
         });
     }
     let regular = state.turn().regular();
-    (
-        passed,
-        state.next_alive_after(regular).unwrap_or(regular),
-        None,
-    )
+    let first = state.next_alive_after(regular).unwrap_or(regular);
+    // A skipped turn is not taken; when every player skips, the first takes theirs.
+    let mut next = first;
+    for _ in 0..state.players().len() {
+        if !crate::prohibit::skips_turn(state, next) {
+            return (passed, next, None);
+        }
+        next = state.next_alive_after(next).unwrap_or(next);
+    }
+    (passed, first, None)
 }
 
 /// Whether the turn that is ending is the last of the last round the house rule allows.

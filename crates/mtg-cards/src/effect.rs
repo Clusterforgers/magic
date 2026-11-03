@@ -893,6 +893,9 @@ pub enum Effect {
         #[serde(default, skip_serializing_if = "is_false")]
         skip_untap: bool,
     },
+    /// The turn ends (CR 723): the other spells and abilities on the stack are exiled, combat ends and the game goes on
+    /// at the cleanup step.
+    EndTurn,
     /// Phases are added after the current phase (CR 500.8), in this order and before any phase added earlier:
     /// "After this main phase, there is an additional combat phase followed by an additional main phase."
     AddPhase {
