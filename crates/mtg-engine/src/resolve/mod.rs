@@ -465,6 +465,10 @@ fn run_step(
                         .map(|name| (format!("{CLEAR}{name}"), Vec::new())),
                 );
             }
+            // What a permanent exiles it remembers as exiled with it (CR 607.2a), whichever effect exiled it.
+            if let Some(remembered) = crate::memory::exiled_by(cx.scope.source, &events, state) {
+                events.push(remembered);
+            }
             events.push(Event::StepDone {
                 position,
                 bound,

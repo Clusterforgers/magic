@@ -32,6 +32,7 @@ import type { ObjectId } from "./ObjectId";
 import type { ObjectRef } from "./ObjectRef";
 import type { PlayerId } from "./PlayerId";
 import type { PutOnStack } from "./PutOnStack";
+import type { Remembered } from "./Remembered";
 import type { ResolutionOutcome } from "./ResolutionOutcome";
 import type { Restricted } from "./Restricted";
 import type { Revealed } from "./Revealed";
@@ -637,7 +638,7 @@ object: ObjectId, } } | { "BecameCopy": BecameCopy } | { "SpellCopied": SpellCop
 /**
  * The copy.
  */
-object: ObjectId, } } | { "AbilityCopied": AbilityCopy } | { "CopyEnded": { 
+object: ObjectId, } } | { "AbilityCopied": AbilityCopy } | { "Remembered": Remembered } | { "CopyEnded": { 
 /**
  * The permanent.
  */

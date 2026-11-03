@@ -787,6 +787,8 @@ fn leaf_effect() -> impl Strategy<Value = Effect> {
             }),
         reference().prop_map(|what| Effect::ExileHidden { what }),
         (reference(), reference()).prop_map(|(what, on)| Effect::Encode { what, on }),
+        (reference(), "[a-z]{1,6}").prop_map(|(what, slot)| Effect::Remember { what, slot }),
+        "[a-z]{1,6}".prop_map(|slot| Effect::Forget { slot }),
         (who(), reference(), "[a-z]{1,6}").prop_map(|(who, what, bind)| Effect::CopyCard {
             who,
             what,

@@ -453,6 +453,21 @@ pub enum Effect {
         /// The creature it is encoded on.
         on: Ref,
     },
+    /// The source remembers the objects `what` names in `slot` (Forge: Remember), added to what the slot holds. The memory
+    /// belongs to the object that is the source of the ability, is part of the game state and ends when that object
+    /// leaves its zone; `Ref::Remembered` reads it. An object that changes zones afterwards is another object and is no
+    /// longer remembered, so name objects after a move (a bound result) to remember where they went.
+    Remember {
+        /// The objects remembered.
+        what: Ref,
+        /// The name of the memory.
+        slot: String,
+    },
+    /// The source forgets everything it remembers in `slot` (Forge: Clear Remembered).
+    Forget {
+        /// The name of the memory.
+        slot: String,
+    },
     /// The player sacrifices permanents they control that match, of their choice.
     Sacrifice {
         /// Who sacrifices.

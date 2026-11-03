@@ -368,6 +368,10 @@ impl<'a> Walker<'a> {
                 self.expect(Kind::Player, want);
             }
             Ref::This | Ref::Attached => self.expect(Kind::Object, want),
+            Ref::Remembered { on, .. } => {
+                self.reference(on, Kind::Object);
+                self.expect(Kind::Object, want);
+            }
             Ref::Paid => {
                 if !self.pays_objects {
                     self.problem("`Paid` needs a cost that takes objects: a sacrifice, a discard, an exile or a tap");
@@ -1837,7 +1841,12 @@ impl Walker<'_> {
             | Ref::Defending
             | Ref::ControllerOf(_)
             | Ref::OwnerOf(_) => Kind::Player,
-            Ref::This | Ref::Dealer | Ref::Attached | Ref::Paid | Ref::Each(_) => Kind::Object,
+            Ref::This
+            | Ref::Dealer
+            | Ref::Attached
+            | Ref::Paid
+            | Ref::Remembered { .. }
+            | Ref::Each(_) => Kind::Object,
             Ref::Target(index) => self
                 .scope
                 .targets
@@ -2205,6 +2214,7 @@ impl Walker<'_> {
                 w.at("what", |w| w.reference(what, Kind::Object));
                 w.at("with", |w| w.reference(with, Kind::Object));
             }
+            Effect::Remember { what, .. } => w.at("what", |w| w.reference(what, Kind::Object)),
             Effect::Encode { what, on } => {
                 w.at("what", |w| w.reference(what, Kind::Object));
                 w.at("on", |w| w.reference(on, Kind::Object));
@@ -2568,7 +2578,8 @@ impl Walker<'_> {
                     w.problem("counters remain on a card by a static ability, not by an effect");
                 }
             }),
-            Effect::Crewed { .. }
+            Effect::Forget { .. }
+            | Effect::Crewed { .. }
             | Effect::BecomeDayNight { .. }
             | Effect::Planechase { .. } => {}
             Effect::BecomeLevel { level } => {

@@ -777,6 +777,12 @@ impl<'a> Scope<'a> {
                 .cloned()
                 .ok_or_else(|| ResolveError::Invalid(format!("`{name}` is not bound")))?,
             Ref::Paid => self.paid(),
+            Ref::Remembered { on, slot } => self
+                .objects(on)?
+                .into_iter()
+                .flat_map(|source| crate::memory::recall(state, source, slot))
+                .map(Target::Object)
+                .collect(),
             Ref::ControllerOf(inner) => self.seats_of(inner, |seen| seen.controller)?,
             Ref::OwnerOf(inner) => self.seats_of(inner, |seen| seen.owner)?,
             Ref::Each(selector) => self
@@ -1015,17 +1021,23 @@ impl<'a> Scope<'a> {
         Ok(true)
     }
 
-    /// Whether the object is a card in exile that one of the permanents the reference names hid face down (hideaway).
+    /// Whether the object is a card in exile that one of the permanents the reference names hid face down (hideaway) or exiled.
     fn exiled_with(&self, named: &Ref, reference: ObjectRef) -> Result<bool, ResolveError> {
-        let hidden = self
+        let card = self
             .state
             .object(reference.id)
-            .filter(|card| card.counter() == reference.counter && card.zone() == Zone::Exile)
-            .and_then(GameObject::face_down);
-        match hidden {
-            Some(FaceDown::Hideaway { by }) => Ok(self.objects(named)?.contains(&by)),
-            _ => Ok(false),
+            .filter(|card| card.counter() == reference.counter && card.zone() == Zone::Exile);
+        let Some(card) = card else {
+            return Ok(false);
+        };
+        let sources = self.objects(named)?;
+        if let Some(FaceDown::Hideaway { by }) = card.face_down() {
+            return Ok(sources.contains(&by));
         }
+        Ok(sources.into_iter().any(|source| {
+            crate::memory::recall(self.state, source, mtg_cards::refs::EXILED_SLOT)
+                .contains(&reference)
+        }))
     }
 
     /// Whether the object is a creature that one of the cards the reference names is encoded on (cipher).

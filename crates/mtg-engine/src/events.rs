@@ -671,6 +671,8 @@ pub enum Event {
     },
     /// An activated or triggered ability was copied (CR 707.10): the copy is put on the stack above it, not activated or triggered.
     AbilityCopied(Box<AbilityCopy>),
+    /// A source remembered objects, or forgot a slot (`Effect::Remember`, `Effect::Forget`; the exiles of a permanent too).
+    Remembered(Box<crate::memory::Remembered>),
     /// A permanent's copy effect that lasted until end of turn, or until a player's next turn, ended.
     CopyEnded {
         /// The permanent.
@@ -1125,6 +1127,7 @@ impl Event {
             Event::SpellCopied(copy) => vec![copy.object],
             Event::CardCopied(copy) => vec![copy.object],
             Event::AbilityCopied(copy) => vec![copy.object],
+            Event::Remembered(change) => vec![change.source.id],
             Event::AbilityPutOnStack(put) => vec![put.object],
             Event::LandPlayed { object, .. }
             | Event::SpellCast { object, .. }

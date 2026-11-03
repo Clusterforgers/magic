@@ -145,6 +145,8 @@ const RUNS: &[&str] = &[
     "Effect.ExileTop",
     "Effect.ExileHidden",
     "Effect.Encode",
+    "Effect.Remember",
+    "Effect.Forget",
     "Effect.CopyCard",
     "Effect.Manifest",
     "Effect.Cloak",
