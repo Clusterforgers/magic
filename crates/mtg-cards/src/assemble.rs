@@ -571,15 +571,41 @@ fn pays_with_activation(item: &CostItem) -> bool {
     fixed || is_x_counters(item)
 }
 
-/// Whether `item` removes X counters from the source.
+/// Whether `item` removes X counters from the source or takes X permanents or cards.
 fn is_x_counters(item: &CostItem) -> bool {
     matches!(
         item,
         CostItem::RemoveCounters {
             count: Amount::X,
             ..
+        } | CostItem::TapPermanents {
+            count: Amount::X,
+            ..
+        } | CostItem::Sacrifice {
+            count: Amount::X,
+            ..
+        } | CostItem::ExileFromHand {
+            count: Amount::X,
+            ..
         }
     )
+}
+
+/// Whether the X of the cost is the X of the mana and nothing else binds it.
+fn x_binds(pays: &[&CostItem], picks: &[&CostItem], produces: &ManaProduced<'_>) -> bool {
+    let x_paid = pays
+        .iter()
+        .chain(picks)
+        .filter(|item| is_x_counters(item))
+        .count();
+    let x_added = usize::from(matches!(
+        produces,
+        ManaProduced::AnyCombination {
+            count: Amount::X,
+            ..
+        } | ManaProduced::AnyColor(Amount::X)
+    ));
+    x_paid == x_added
 }
 
 /// Whether `item` is a part of a mana ability's cost that takes other permanents or cards of the payer, which the payment
@@ -590,7 +616,7 @@ fn picked_by_the_planner(item: &CostItem) -> bool {
         CostItem::TapPermanents { count, .. }
         | CostItem::Sacrifice { count, .. }
         | CostItem::ExileFromHand { count, .. } => {
-            matches!(count, Amount::Fixed(number) if *number > 0)
+            matches!(count, Amount::Fixed(number) if *number > 0) || matches!(count, Amount::X)
         }
         _ => false,
     }
@@ -670,21 +696,21 @@ pub fn mana_shape(ability: &Ability) -> Option<ManaShape<'_>> {
             return None;
         }
     }
-    // The X of the cost is the X of the mana and nothing else binds it.
-    let x_paid = pays.iter().filter(|item| is_x_counters(item)).count();
-    let x_added = usize::from(matches!(
-        produces,
-        ManaProduced::AnyCombination {
-            count: Amount::X,
-            ..
-        } | ManaProduced::AnyColor(Amount::X)
-    ));
-    if x_paid != x_added {
+    if !x_binds(&pays, &picks, &produces) {
         return None;
     }
+    // A cost of mana alone ends the loop of using it again: each use spends mana from the pool.
+    let paid_mana = cost_mana
+        .as_ref()
+        .is_some_and(|cost| !cost.symbols().is_empty());
     let distinct = c8_time_distinct(then);
     (targets.is_empty()
-        && (tap || sacrifice || !pays.is_empty() || !picks.is_empty() || limit.is_some())
+        && (tap
+            || sacrifice
+            || !pays.is_empty()
+            || !picks.is_empty()
+            || limit.is_some()
+            || paid_mana)
         && then.iter().all(needs_no_answer)
         && distinct
         && produces.each() > 0)
@@ -1320,9 +1346,9 @@ mod tests {
         r#"{"Activated":{"cost":"{1}","limit":"OncePerTurn","effects":[{"AddMana":{"mana":{"OneOf":["Red","White"]}}}]}}"#,
         Some((ManaProduced::OneOf(&[ManaType::Red, ManaType::White]), false, false, 0))
     )]
-    #[case::a_limit_alone_has_no_cost_to_pay_for_it(
+    #[case::a_mana_cost_alone_is_paid_from_the_pool_each_use(
         r#"{"Activated":{"cost":"{1}","effects":[{"AddMana":{"mana":{"Fixed":["Red"]}}}]}}"#,
-        None
+        Some((ManaProduced::Fixed { mana: ManaType::Red, count: 1 }, false, false, 0))
     )]
     #[case::the_plain_ability_has_the_shape_too(
         r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"Fixed":["Green"]}}}]}}"#,
@@ -1532,7 +1558,7 @@ mod tests {
     )]
     #[case::a_mana_cost_without_a_tap(
         r#"{"Activated":{"cost":[{"Mana":"{1}"}],"effects":[{"AddMana":{"mana":{"AnyColor":1}}}]}}"#,
-        Some("Ability.ManaAbility.Other")
+        Some("Ability.ManaAbility.Complex")
     )]
     #[case::once_each_turn_with_a_mana_cost(
         r#"{"Activated":{"cost":"{1}","limit":"OncePerTurn","effects":[{"AddMana":{"mana":{"Fixed":["Green"]}}}]}}"#,
