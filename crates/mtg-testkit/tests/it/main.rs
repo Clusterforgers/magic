@@ -90,6 +90,7 @@ mod choose_cards;
 mod choose_decisions;
 mod chosen_color_lands;
 mod chosen_player;
+mod chosen_values;
 mod cipher;
 mod class;
 mod combat_damage;

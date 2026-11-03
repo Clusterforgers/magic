@@ -81,6 +81,15 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
                     resolving.bindings.remove(cleared);
                     continue;
                 }
+                if let Some(value) = name.strip_prefix(crate::resolve::CHOSEN_VALUE) {
+                    let (key, json) = value
+                        .split_once('\t')
+                        .ok_or_else(|| invalid(format!("`{name}` names no chosen value")))?;
+                    let chosen = serde_json::from_str(json)
+                        .map_err(|_| invalid(format!("`{name}` names no chosen value")))?;
+                    resolving.chosen.insert(key.to_owned(), chosen);
+                    continue;
+                }
                 if let Some(x) = name.strip_prefix(crate::resolve::W6C_PAID_X) {
                     let x = x
                         .parse()

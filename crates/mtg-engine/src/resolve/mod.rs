@@ -45,6 +45,10 @@ pub(crate) const CLEAR: &str = "~clear:";
 /// The prefix of a bound name in a finished step that records the X its payment announced (`~x:3`) instead.
 pub(crate) const W6C_PAID_X: &str = "~x:";
 
+/// The prefix of a bound name in a finished step that records a chosen value (`~value:<as>` and the value as JSON after
+/// a tab) instead: what `Effect::ChooseValue` remembers for the rest of the resolution.
+pub(crate) const CHOSEN_VALUE: &str = "~value:";
+
 /// The prefix of the bound name (`~legal:<index>`) under which the first step records the targets of a specification
 /// that are legal as the resolution begins: the later steps act on them even after an earlier step made them illegal
 /// (CR 608.2b).
@@ -85,6 +89,8 @@ pub struct Resolving {
     pub(crate) w6c_paid_x: Option<u32>,
     /// The zones the resolution has searched so far, by the player who searched, which "if you search your library this way" reads.
     pub(crate) searched: Vec<(PlayerId, Zone)>,
+    /// The values the resolution has chosen so far, by name, which `ChosenAs` reads.
+    pub(crate) chosen: std::collections::BTreeMap<String, crate::object::Chosen>,
 }
 
 impl Resolving {
@@ -103,6 +109,7 @@ impl Resolving {
             w11b_phased: Vec::new(),
             w6c_paid_x: None,
             searched: Vec::new(),
+            chosen: std::collections::BTreeMap::new(),
         }
     }
 

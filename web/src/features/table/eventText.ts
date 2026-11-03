@@ -4,6 +4,7 @@ import type {
   AttackTarget,
   Choice,
   ContinuousEffect,
+  Chosen,
   CounterKind,
   DamageTarget,
   DeathCause,
@@ -52,6 +53,19 @@ export interface LogLine {
 
 const line = (text: string): LogLine => ({ text, minor: false })
 const quiet = (text: string): LogLine => ({ text, minor: true })
+
+/** What a permanent chose as it entered, in words: ", choosing red". */
+function chosenWords(chosen: Chosen, n: EventNames): string {
+  if ('Chapter' in chosen) return `, reading ahead to chapter ${chosen.Chapter}`
+  if ('Color' in chosen) return `, choosing ${chosen.Color.toLowerCase()}`
+  if ('Player' in chosen) return `, choosing ${n.seat(chosen.Player)}`
+  if ('LandType' in chosen) return `, choosing ${chosen.LandType}`
+  if ('CardType' in chosen) return `, choosing ${chosen.CardType.toLowerCase()}`
+  if ('Name' in chosen) return `, choosing ${chosen.Name}`
+  if ('Number' in chosen) return `, choosing ${chosen.Number}`
+  if ('Word' in chosen) return `, choosing ${chosen.Word}`
+  return `, choosing ${chosen.CreatureType}`
+}
 
 /**
  * A spell or ability on the stack by name: a spell as its card is named, an ability as "an ability of" its source
@@ -717,12 +731,7 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
   }
   if ('Entered' in event) {
     const { object, tapped, controller, chosen } = event.Entered
-    const chose =
-      chosen === undefined
-        ? ''
-        : 'Chapter' in chosen
-          ? `, reading ahead to chapter ${chosen.Chapter}`
-          : `, choosing ${'Color' in chosen ? chosen.Color.toLowerCase() : 'Player' in chosen ? n.seat(chosen.Player) : 'LandType' in chosen ? chosen.LandType : chosen.CreatureType}`
+    const chose = chosen === undefined ? '' : chosenWords(chosen, n)
     return quiet(
       `${n.card(object)} enters${tapped ? ' tapped' : ''} under ${n.seat(controller)}'s control${chose}`,
     )

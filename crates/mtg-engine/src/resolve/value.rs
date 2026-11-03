@@ -1168,13 +1168,8 @@ impl<'a> Scope<'a> {
             Pred::HasCounter(kind) => seen.counters.of(kind) > 0,
             Pred::HasAnyCounter => seen.counters.c10_any_total() > 0,
             Pred::Named(name) => seen.card.is_some_and(|c| c.card().name == *name),
-            Pred::ChosenColor => {
-                matches!(self.entered_choice(), Some(Chosen::Color(color)) if seen.chars.colors.contains(*color))
-            }
-            Pred::ChosenSubtype => {
-                matches!(self.entered_choice(), Some(Chosen::CreatureType(subtype))
-                    if seen.chars.has_subtype(&[], subtype)
-                        || seen.card.is_some_and(|c| seen.chars.has_subtype(&c.card().subtypes, subtype)))
+            Pred::ChosenColor | Pred::ChosenSubtype | Pred::ChosenName | Pred::ChosenAs(_) => {
+                self.chosen_pred(pred, seen)
             }
             Pred::Compare { stat, op, to } => match Self::stat(seen, *stat) {
                 Some(value) => op.holds(value, self.amount(to)?),
@@ -1345,6 +1340,7 @@ impl<'a> Scope<'a> {
             Amount::Exiled(of) => self.w14b_exiled(of)?,
             Amount::PhasedOut(of) => self.w11b_phased(of)?,
             Amount::DieResult(which) => self.c11e_die_result(*which),
+            Amount::Chosen | Amount::ChosenAs(_) => self.chosen_number(amount),
             Amount::Promised => i64::from(self.payments(OptionalKind::Gift) > 0),
             Amount::Devoured => self.w7e_devoured(),
             Amount::CastWith(way) => i64::from(self.cast_way() == Some(*way)),
@@ -1390,6 +1386,71 @@ impl<'a> Scope<'a> {
         std::ptr::eq(self.choices, object.choices())
             .then_some(resolving.w6c_paid_x)
             .flatten()
+    }
+
+    /// The value the resolving spell or ability chose under the name (`Effect::ChooseValue`), read only by the scope of
+    /// that spell or ability.
+    pub(crate) fn chosen_value(&self, name: &str) -> Option<&Chosen> {
+        let resolving = self.state.resolving.as_ref()?;
+        let object = self.state.object(resolving.object)?;
+        std::ptr::eq(self.choices, object.choices())
+            .then(|| resolving.chosen.get(name))
+            .flatten()
+    }
+
+    /// Whether the object has what the source chose as it entered (a colour, a creature type, a card name) or what the
+    /// resolution chose under a name (any value that is a characteristic).
+    fn chosen_pred(&self, pred: &Pred, seen: &Seen<'_>) -> bool {
+        match pred {
+            Pred::ChosenColor => {
+                matches!(self.entered_choice(), Some(Chosen::Color(color)) if seen.chars.colors.contains(*color))
+            }
+            Pred::ChosenSubtype => {
+                matches!(self.entered_choice(), Some(Chosen::CreatureType(_)))
+                    && self
+                        .entered_choice()
+                        .is_some_and(|chosen| Self::is_chosen(seen, chosen))
+            }
+            Pred::ChosenName => {
+                matches!(self.entered_choice(), Some(Chosen::Name(_)))
+                    && self
+                        .entered_choice()
+                        .is_some_and(|chosen| Self::is_chosen(seen, chosen))
+            }
+            Pred::ChosenAs(name) => self
+                .chosen_value(name)
+                .is_some_and(|chosen| Self::is_chosen(seen, chosen)),
+            _ => false,
+        }
+    }
+
+    /// The number the source chose as it entered or the resolution chose under a name; 0 for any other value.
+    fn chosen_number(&self, amount: &Amount) -> i64 {
+        let chosen = match amount {
+            Amount::ChosenAs(name) => self.chosen_value(name),
+            _ => self.entered_choice(),
+        };
+        match chosen {
+            Some(Chosen::Number(number)) => i64::from(*number),
+            _ => 0,
+        }
+    }
+
+    /// Whether the object has the colour, type or name that was chosen; a number or a word is no characteristic.
+    fn is_chosen(seen: &Seen<'_>, chosen: &Chosen) -> bool {
+        let has_subtype = |subtype: &Subtype| {
+            seen.chars.has_subtype(&[], subtype)
+                || seen
+                    .card
+                    .is_some_and(|c| seen.chars.has_subtype(&c.card().subtypes, subtype))
+        };
+        match chosen {
+            Chosen::Color(color) => seen.chars.colors.contains(*color),
+            Chosen::CreatureType(subtype) | Chosen::LandType(subtype) => has_subtype(subtype),
+            Chosen::CardType(kind) => seen.chars.types.contains(*kind),
+            Chosen::Name(name) => seen.card.is_some_and(|c| c.card().name == *name),
+            Chosen::Player(_) | Chosen::Chapter(_) | Chosen::Number(_) | Chosen::Word(_) => false,
+        }
     }
 
     /// A characteristic of each object the selector matches that has one.

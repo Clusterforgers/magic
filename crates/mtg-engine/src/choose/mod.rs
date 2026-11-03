@@ -18,6 +18,7 @@ mod scry;
 mod sole;
 mod targets;
 mod triggers;
+pub(crate) mod values;
 mod yes_no;
 
 use mtg_cards::value::{CastWay, CounterKind};

@@ -317,6 +317,7 @@ const RUNS: &[&str] = &[
     "Effect.Pay.X.Energy",
     "Effect.Choose",
     "Effect.ChooseAtRandom",
+    "Effect.ChooseValue",
     "Effect.Modal",
     "Effect.RepeatEach",
     "Effect.RollDice",
@@ -756,6 +757,7 @@ mod tests {
     #[case::may("Effect.May", true)]
     #[case::choosing("Effect.Choose", true)]
     #[case::choosing_at_random("Effect.ChooseAtRandom", true)]
+    #[case::choosing_a_value("Effect.ChooseValue", true)]
     #[case::modes("Effect.Modal", true)]
     #[case::repeating_for_each("Effect.RepeatEach", true)]
     #[case::rolling_dice("Effect.RollDice", true)]

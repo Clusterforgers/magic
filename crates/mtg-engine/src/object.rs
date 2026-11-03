@@ -68,6 +68,14 @@ pub enum Chosen {
     LandType(mtg_core::card::Subtype),
     /// A player (public, like every choice made as a permanent enters).
     Player(PlayerId),
+    /// A card type.
+    CardType(mtg_core::card::CardType),
+    /// A card name (CR 201.3).
+    Name(String),
+    /// A number.
+    Number(u32),
+    /// One of the words a choice offered.
+    Word(String),
     /// The chapter a Saga with read ahead entered at (CR 702.155): lower chapters don't trigger.
     Chapter(u32),
 }

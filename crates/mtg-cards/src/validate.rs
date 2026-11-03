@@ -11,7 +11,9 @@ use crate::ability::{Ability, LoyaltyCost, Timing};
 use crate::assemble::{MANA_WAYS, PLAIN_MANA_ABILITY, mana_shape, plain_mana_ability};
 use crate::card::{Card, Face, ImplStatus, TokenSpec};
 use crate::cost::{Cost, CostItem};
-use crate::effect::{Destination, DieRow, Effect, Mode, Order, Place, Produce, TokenRef, VoteFor};
+use crate::effect::{
+    Destination, DieRow, Effect, Mode, Order, Place, Produce, TokenRef, ValueKind, VoteFor,
+};
 use crate::keyword::Keyword;
 use crate::modify::{CastPermission, Duration, GameRule, Modification};
 use crate::refs::{Bounds, Pred, Ref, Selector, TargetSpec, Targetable, ZoneKind};
@@ -116,12 +118,15 @@ fn is_name(text: &str) -> bool {
 enum Kind {
     Player,
     Object,
+    /// A value an `Effect::ChooseValue` remembers.
+    Value,
     Either,
 }
 
 impl Kind {
     const fn word(self) -> &'static str {
         match self {
+            Kind::Value => "a chosen value",
             Kind::Player => "a player",
             Kind::Object => "an object",
             Kind::Either => "a player or an object",
@@ -343,6 +348,35 @@ impl<'a> Walker<'a> {
         }
     }
 
+    /// A name read as a chosen value must be bound by an earlier `ChooseValue`.
+    fn chosen_as(&mut self, name: &str) {
+        match self.scope.lookup(name) {
+            Some(Kind::Value) => {}
+            Some(_) => self.problem(format!("`{name}` is not a chosen value")),
+            None => self.problem(format!("`{name}` is not bound by an earlier step")),
+        }
+    }
+
+    /// What a `ChooseValue` asks for: the amounts of a number and the selector of a name are read in the scope so far.
+    fn value_kind(&mut self, kind: &ValueKind) {
+        match kind {
+            ValueKind::CardName(selector) => self.at("kind", |w| w.selector(selector)),
+            ValueKind::Number(min, max) => {
+                if let (Amount::Fixed(low), Amount::Fixed(high)) = (min, max)
+                    && low > high
+                {
+                    self.problem(format!("the minimum {low} is above the maximum {high}"));
+                }
+                self.at("min", |w| w.amount(min));
+                self.at("max", |w| w.amount(max));
+            }
+            ValueKind::Options(words) if words.len() < 2 => {
+                self.problem("a choice of words needs at least two");
+            }
+            _ => {}
+        }
+    }
+
     fn bind(&mut self, name: &str, kind: Kind) {
         if !is_name(name) {
             self.problem(format!("`{name}` is not a name (lowercase letters, digits and underscores, starting with a letter)"));
@@ -459,6 +493,7 @@ impl<'a> Walker<'a> {
                 self.reference(r, Kind::Object);
             }
             Pred::HasKeyword(keyword) => self.keyword(keyword),
+            Pred::ChosenAs(name) => self.chosen_as(name),
             Pred::Named(name) => self
                 .names
                 .push((self.face, self.current_path(), name.clone())),
@@ -512,6 +547,7 @@ impl<'a> Walker<'a> {
             | Pred::XInCost
             | Pred::Goaded
             | Pred::ChosenSubtype
+            | Pred::ChosenName
             | Pred::In(_) => {}
         }
     }
@@ -566,7 +602,8 @@ impl<'a> Walker<'a> {
         // Only the amount of damage or counters, or a sum or even share made of it, can be a recipient's share.
         let sharing = std::mem::take(&mut self.amounting) == Amounting::Shared;
         match amount {
-            Amount::Fixed(_) => {}
+            Amount::Fixed(_) | Amount::Chosen => {}
+            Amount::ChosenAs(name) => self.chosen_as(name),
             Amount::X => {
                 if !self.x_free && !self.counts_x {
                     self.x_uses.push((self.face, self.current_path()));
@@ -2313,6 +2350,11 @@ impl Walker<'_> {
                     w.at("rest_as", |w| w.bind(rest, kind));
                 }
             }
+            Effect::ChooseValue { who, kind, bind } => {
+                w.at("who", |w| w.reference(who, Kind::Player));
+                w.value_kind(kind);
+                w.at("as", |w| w.bind(bind, Kind::Value));
+            }
             Effect::ChooseAtRandom { from, count, bind } => {
                 w.at("from", |w| w.reference(from, Kind::Object));
                 w.at("count", |w| w.amount(count));
@@ -3976,6 +4018,7 @@ mod tests {
     #[case::storm_is_a_keyword(r#"{"Keyword":"Storm"}"#, &["Keyword.Storm"])]
     #[case::a_copy_with_the_exceptions_the_values_keep(r#"{"Spell":{"effects":[{"CreateToken":{"token":{"CopyOf":{"of":"This","except":[{"AddKeyword":"Haste"},{"AddSubtype":"Zombie"},{"SetColors":["Blue"]},{"SetPT":{"power":1,"toughness":1}}]}}}}]}}"#, &["Ability.Spell", "Effect.CreateToken", "Effect.CreateToken.Copy", "Keyword.Haste", "Mod.AddKeyword", "Mod.AddSubtype", "Mod.SetColors", "Mod.SetPT"])]
     #[case::a_copy_with_an_exception_that_waits(r#"{"Spell":{"effects":[{"CreateToken":{"token":{"CopyOf":{"of":"This","except":["SwitchPT"]}}}}]}}"#, &["Ability.Spell", "Copy.Except.SwitchPT", "Effect.CreateToken", "Effect.CreateToken.Copy", "Mod.SwitchPT"])]
+    #[case::a_chosen_value(r#"{"Spell":{"effects":[{"ChooseValue":{"kind":"Color","as":"it"}},{"GainLife":{"amount":{"Count":[{"ChosenAs":"it"}]}}}]}}"#, &["Ability.Spell", "Effect.ChooseValue", "Effect.GainLife"])]
     #[case::populate(r#"{"Spell":{"effects":[{"Choose":{"from":{"Each":[{"Type":"Creature"},"Token",{"ControlledBy":"You"}]},"as":"token"}},{"CreateToken":{"token":{"CopyOf":{"of":{"Bound":"token"}}}}}]}}"#, &["Ability.Spell", "Effect.Choose", "Effect.CreateToken", "Effect.CreateToken.Copy"])]
     #[case::a_copy_that_is_exiled_at_the_end_step(r#"{"Spell":{"effects":[{"CreateToken":{"token":{"CopyOf":{"of":"This","except":[{"AddKeyword":"Haste"}]}},"as":"copy"}},{"DelayedTrigger":{"when":{"StepBegins":{"step":"End"}},"effects":[{"Exile":{"what":{"Bound":"copy"}}}]}}]}}"#, &["Ability.Spell", "Effect.CreateToken", "Effect.CreateToken.Copy", "Effect.DelayedTrigger", "Effect.Exile", "Keyword.Haste", "Mod.AddKeyword", "Trigger.StepBegins"])]
     #[case::enters_as_a_copy(r#"{"Replacement":{"when":{"Enters":{"what":["This"]}},"by":{"AsCopy":{"of":[{"Type":"Creature"}],"except":[{"AddSubtype":"Illusion"}]}}}}"#, &["Ability.Replacement", "Mod.AddSubtype", "ReplaceBy.AsCopy", "ReplaceWhen.Enters"])]
@@ -4599,6 +4642,34 @@ mod tests {
     #[case::bound_twice(
         r#"{"Spell":{"effects":[{"LookAtTop":{"as":"top"}},{"LookAtTop":{"as":"top"}}]}}"#,
         "`top` is already bound"
+    )]
+    #[case::a_chosen_value_never_chosen(
+        r#"{"Spell":{"effects":[{"GainLife":{"amount":{"ChosenAs":"it"}}}]}}"#,
+        "`it` is not bound by an earlier step"
+    )]
+    #[case::a_chosen_value_read_as_a_selector_never_chosen(
+        r#"{"Spell":{"effects":[{"Destroy":{"what":{"Each":[{"ChosenAs":"it"}]}}}]}}"#,
+        "`it` is not bound by an earlier step"
+    )]
+    #[case::a_value_read_as_an_object(
+        r#"{"Spell":{"effects":[{"ChooseValue":{"kind":"Color","as":"it"}},{"Destroy":{"what":{"Bound":"it"}}}]}}"#,
+        "expected an object but this is a chosen value"
+    )]
+    #[case::an_object_read_as_a_chosen_value(
+        r#"{"Spell":{"effects":[{"LookAtTop":{"as":"top"}},{"GainLife":{"amount":{"ChosenAs":"top"}}}]}}"#,
+        "`top` is not a chosen value"
+    )]
+    #[case::a_value_chosen_twice(
+        r#"{"Spell":{"effects":[{"ChooseValue":{"kind":"Color","as":"it"}},{"ChooseValue":{"kind":"CardType","as":"it"}}]}}"#,
+        "`it` is already bound"
+    )]
+    #[case::one_word_to_choose(
+        r#"{"Spell":{"effects":[{"ChooseValue":{"kind":{"Options":["only"]},"as":"it"}}]}}"#,
+        "a choice of words needs at least two"
+    )]
+    #[case::a_minimum_above_the_maximum(
+        r#"{"Spell":{"effects":[{"ChooseValue":{"kind":{"Number":[5,1]},"as":"it"}}]}}"#,
+        "the minimum 5 is above the maximum 1"
     )]
     #[case::a_vote_with_one_choice(
         r#"{"Spell":{"effects":[{"Vote":{"options":{"Named":["only"]}}}]}}"#,

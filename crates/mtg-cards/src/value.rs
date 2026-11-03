@@ -429,6 +429,10 @@ pub enum Amount {
     Triggering,
     /// A result of the latest die roll of the resolving spell or ability ("X, where X is the result", "equal to that result").
     DieResult(DieResult),
+    /// The number the controller of the source chose as the source entered the battlefield; 0 when it chose none.
+    Chosen,
+    /// The number the resolution remembered under the name (`Effect::ChooseValue`); 0 for a value that is no number.
+    ChosenAs(String),
 }
 
 impl Amount {
@@ -504,6 +508,8 @@ enum Tagged {
     Party(Ref),
     Triggering,
     DieResult(DieResult),
+    Chosen,
+    ChosenAs(String),
 }
 
 /// The tagged forms of [`Amount`] by reference, written by serde.
@@ -575,6 +581,8 @@ enum TaggedRef<'a> {
     Party(&'a Ref),
     Triggering,
     DieResult(DieResult),
+    Chosen,
+    ChosenAs(&'a String),
 }
 
 impl From<Tagged> for Amount {
@@ -619,6 +627,8 @@ impl From<Tagged> for Amount {
             Tagged::Party(who) => Amount::Party(who),
             Tagged::Triggering => Amount::Triggering,
             Tagged::DieResult(which) => Amount::DieResult(which),
+            Tagged::Chosen => Amount::Chosen,
+            Tagged::ChosenAs(name) => Amount::ChosenAs(name),
         }
     }
 }
@@ -676,6 +686,8 @@ impl Serialize for Amount {
             Amount::Party(who) => TaggedRef::Party(who).serialize(serializer),
             Amount::Triggering => TaggedRef::Triggering.serialize(serializer),
             Amount::DieResult(which) => TaggedRef::DieResult(*which).serialize(serializer),
+            Amount::Chosen => TaggedRef::Chosen.serialize(serializer),
+            Amount::ChosenAs(name) => TaggedRef::ChosenAs(name).serialize(serializer),
         }
     }
 }
@@ -880,6 +892,8 @@ mod tests {
     #[case::destroyed_this_way(Amount::Destroyed(Selector(vec![Pred::Type(CardType::Creature)])), r#"{"Destroyed":[{"Type":"Creature"}]}"#)]
     #[case::exiled_this_way(Amount::Exiled(Selector(vec![Pred::Type(CardType::Creature)])), r#"{"Exiled":[{"Type":"Creature"}]}"#)]
     #[case::distinct(Amount::Distinct { of: Selector(vec![Pred::Type(CardType::Creature)]), stat: StatKind::Power }, r#"{"Distinct":{"of":[{"Type":"Creature"}],"stat":"Power"}}"#)]
+    #[case::the_number_a_permanent_chose(Amount::Chosen, r#""Chosen""#)]
+    #[case::the_number_a_resolution_chose(Amount::ChosenAs("n".to_owned()), r#"{"ChosenAs":"n"}"#)]
     #[case::c11e_the_other_result(Amount::DieResult(DieResult::Other), r#"{"DieResult":"Other"}"#)]
     #[case::counters(
         Amount::Counters { on: Ref::This, counter: CounterKind::PlusOnePlusOne },

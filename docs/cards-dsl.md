@@ -1139,7 +1139,6 @@ A script runs when no construct of it is new: 27,931 scripts (81.8%) today, 30,4
 | `Pred` atoms: `WasCast`, `CastWith`, `TopOfLibrary`, `BlockedBy`, `TargetedBy`, `GreatestAmong` | `fe1a` | 686 | 451 |
 | `Amount::When` and amount fill | `fe1b` | 482 | 415 |
 | Source memory: `Effect::Remember`, `Ref::Remembered` | `fe1c` | 425 | 267 |
-| `Effect::ChooseValue` | `fe1d` | 339 | 257 |
 | `Amount::Tally` | `gn1c` | 311 | 235 |
 | `Effect::Conjure`, spellbooks, intensity | `fe1j` | 257 | 147 |
 | `TriggerPattern::Did` | `fe1f` | 246 | 178 |
