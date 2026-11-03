@@ -546,7 +546,7 @@ impl Pick {
 
     /// The objects the player may pick for this part.
     pub(crate) fn candidates(&self, payer: &Payer<'_>) -> Vec<ObjectId> {
-        match self.kind {
+        let mut found = match self.kind {
             Kind::Sacrifice => sacrifice::candidates(payer, &self.filter),
             Kind::Discard => discard::candidates(payer, &self.filter),
             Kind::Exile => exile::candidates(payer, &self.filter),
@@ -556,7 +556,15 @@ impl Pick {
             Kind::Return => bounce::candidates(payer, &self.filter),
             Kind::Untap => untap::candidates(payer, &self.filter),
             Kind::Counter => c11c_counter_picks::c11c_candidates(payer, &self.filter),
-        }
+        };
+        // A prohibition keeps an object out of the cost it forbids (`prohibit.rs`).
+        found.retain(|id| match self.kind {
+            Kind::Sacrifice => crate::prohibit::may_sacrifice(payer.state, payer.player, *id),
+            Kind::Discard => crate::prohibit::may_discard(payer.state, payer.player, *id),
+            Kind::Exile | Kind::ExileHand => crate::prohibit::may_exile(payer.state, *id),
+            _ => true,
+        });
+        found
     }
 
     /// Whether `candidates` cannot pay the part: too few of them, or too little power among them.

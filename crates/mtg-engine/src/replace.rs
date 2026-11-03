@@ -79,6 +79,7 @@ pub fn process(
     proposed: Vec<Event>,
     journal: &[(PlayerId, Choice)],
 ) -> Result<Processed, EngineError> {
+    let proposed = crate::prohibit::filter(state, proposed);
     if !(state.possible.replacements || state.possible.protection) || proposed.is_empty() {
         return Ok(Processed::Events(proposed));
     }

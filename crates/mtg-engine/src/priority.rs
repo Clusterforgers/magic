@@ -74,11 +74,12 @@ pub(crate) fn sorcery_timing(state: &GameState, player: PlayerId) -> bool {
 /// Whether `player` has a land play left this turn (CR 305.2): the turn's plays so far are fewer than the ruleset and
 /// the rules in play allow.
 pub(crate) fn land_play_left(state: &GameState, player: PlayerId) -> bool {
-    state.turn().lands_played()
-        < state
-            .ruleset()
-            .land_plays_per_turn()
-            .saturating_add(crate::rules::extra_land_plays(state, player))
+    !crate::prohibit::forbidden(state, crate::prohibit::Doing::PlayLand { player })
+        && state.turn().lands_played()
+            < state
+                .ruleset()
+                .land_plays_per_turn()
+                .saturating_add(crate::rules::extra_land_plays(state, player))
 }
 
 /// Whether `player` could play a land card now while the ability `resolving` resolves (CR 305.1, 702.75a): it is their
@@ -100,6 +101,27 @@ fn hand_land(state: &GameState, id: ObjectId) -> bool {
         .is_some_and(|o| o.base_types().contains(CardType::Land))
 }
 
+/// Whether the cost can take the source from where it is, as it leaves, and no rule forbids it.
+fn leaves_from_here(
+    state: &GameState,
+    player: PlayerId,
+    object: &GameObject,
+    leaves: Leaves,
+) -> bool {
+    match leaves {
+        Leaves::Stays => true,
+        Leaves::Exiled => crate::prohibit::may_exile(state, object.id()),
+        Leaves::Sacrificed => {
+            object.zone() == Zone::Battlefield
+                && crate::prohibit::may_sacrifice(state, player, object.id())
+        }
+        Leaves::Discarded => {
+            matches!(object.zone(), Zone::Hand(_))
+                && crate::prohibit::may_discard(state, player, object.id())
+        }
+    }
+}
+
 /// Whether the ability `rules`, which `address` names among the abilities of the permanent `object`, could be
 /// activated by `player` now.
 ///
@@ -113,6 +135,15 @@ fn can_activate(
     address: AbilityRef,
     rules: &Ability,
 ) -> bool {
+    if crate::prohibit::forbidden(
+        state,
+        crate::prohibit::Doing::Activate {
+            player,
+            source: object.id(),
+        },
+    ) {
+        return false;
+    }
     // A loyalty ability costs counters, not a cost the price below knows (CR 606).
     if let Ability::Loyalty { cost, .. } = rules {
         // A `-X` removes X counters, at most those the planeswalker holds (CR 606.6).
@@ -151,12 +182,7 @@ fn can_activate(
     if rules.is_mana_ability() {
         return false;
     }
-    let leaves_from_here = match price.leaves {
-        Leaves::Stays | Leaves::Exiled => true,
-        Leaves::Sacrificed => object.zone() == Zone::Battlefield,
-        Leaves::Discarded => matches!(object.zone(), Zone::Hand(_)),
-    };
-    if !leaves_from_here {
+    if !leaves_from_here(state, player, object, price.leaves) {
         return false;
     }
     // Life, counters and the objects the other parts take must be there to pay (CR 118.3).

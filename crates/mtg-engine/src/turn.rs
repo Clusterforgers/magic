@@ -143,6 +143,9 @@ pub struct TurnState {
     /// begins with, the added ones first and the phase of the regular sequence they hold up last; empty while the
     /// turn runs its regular sequence.
     pub(crate) ahead: Vec<Step>,
+    /// Whether the turn was ended by an effect (CR 723): the cleanup step began while a spell or ability resolved, and no
+    /// player gets priority when it finishes.
+    pub(crate) ending: bool,
 }
 
 // The fields a game without extra turns or phases never sets add nothing, so such a game hashes as it did before.
@@ -162,6 +165,9 @@ impl Hash for TurnState {
         }
         if !self.ahead.is_empty() {
             self.ahead.hash(state);
+        }
+        if self.ending {
+            self.ending.hash(state);
         }
     }
 }

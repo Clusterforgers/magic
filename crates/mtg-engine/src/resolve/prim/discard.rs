@@ -40,7 +40,13 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
             .into_iter()
             .map(|player| Chooser {
                 player,
-                from: cx.state().zone(Zone::Hand(player)).to_vec(),
+                from: cx
+                    .state()
+                    .zone(Zone::Hand(player))
+                    .iter()
+                    .copied()
+                    .filter(|id| crate::prohibit::may_discard(cx.state(), player, *id))
+                    .collect(),
                 take,
                 text: wording::discard(take),
             })

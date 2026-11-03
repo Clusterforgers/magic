@@ -99,6 +99,7 @@ fn reports(effect: &Effect) -> Reports {
         | Effect::Regenerate { .. }
         | Effect::RemoveFromCombat { .. }
         | Effect::Shield { .. }
+        | Effect::EndTurn
         | Effect::Planechase { .. } => Reports::Events,
         Effect::Pay { .. } => Reports::Paid,
         Effect::May { .. } | Effect::CastFromZone { .. } => Reports::Itself,

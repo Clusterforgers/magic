@@ -38,6 +38,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                     })
                 })
                 .map(|permanent| permanent.id)
+                .filter(|id| crate::prohibit::may_sacrifice(state, player, *id))
                 .collect(),
             take,
             text: wording::sacrifice(filter, take),

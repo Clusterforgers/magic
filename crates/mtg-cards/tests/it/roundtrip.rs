@@ -8,7 +8,7 @@ use mtg_cards::effect::{Destination, Effect, Mode, Order, PhaseKind, Place, Prod
 use mtg_cards::keyword::Keyword;
 use mtg_cards::load::{canonical, parse_json};
 use mtg_cards::mana::ManaCostX;
-use mtg_cards::modify::{CastPermission, Duration, GameRule, Modification};
+use mtg_cards::modify::{CastPermission, Duration, GameRule, Modification, Prohibited};
 use mtg_cards::refs::{AbilityKind, Bounds, Pred, Ref, Selector, TargetSpec, Targetable, ZoneKind};
 use mtg_cards::spend::{ManaLasts, SpendFact, SpendFilter, SpendOn, WhenSpent};
 use mtg_cards::trigger::{EntersChoice, ReplaceBy, ReplaceWhen, Step, TriggerPattern};
@@ -577,6 +577,25 @@ fn game_rule() -> impl Strategy<Value = GameRule> {
         (reference(), amount()).prop_map(|(who, size)| GameRule::MaxHandSize { who, size }),
         reference().prop_map(GameRule::NoLegendRule),
         (selector(), reference()).prop_map(|(what, whose)| GameRule::UntapDuring { what, whose }),
+        (reference(), prohibited()).prop_map(|(who, action)| GameRule::Cant { who, action }),
+    ]
+}
+
+/// Every prohibition, the ones with a selector or a pattern over generated ones.
+fn prohibited() -> impl Strategy<Value = Prohibited> {
+    prop_oneof![
+        selector().prop_map(Prohibited::Activate),
+        selector().prop_map(Prohibited::BeTargeted),
+        trigger_pattern().prop_map(Prohibited::Trigger),
+        Just(Prohibited::PlayLand),
+        Just(Prohibited::Sacrifice),
+        Just(Prohibited::PutCounter),
+        Just(Prohibited::Attach),
+        Just(Prohibited::Discard),
+        Just(Prohibited::Exile),
+        Just(Prohibited::Transform),
+        Just(Prohibited::SkipTurn),
+        Just(Prohibited::SkipStep(Step::Draw)),
     ]
 }
 
@@ -990,6 +1009,7 @@ fn leaf_effect() -> impl Strategy<Value = Effect> {
                     bind,
                 }
             }),
+        Just(Effect::EndTurn),
         who().prop_map(|who| Effect::TimeTravel { who }),
         (who(), amount(), any::<bool>()).prop_map(|(who, count, skip_untap)| Effect::ExtraTurn {
             who,

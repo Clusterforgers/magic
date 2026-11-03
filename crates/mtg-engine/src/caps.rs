@@ -209,6 +209,7 @@ const RUNS: &[&str] = &[
     "Effect.Prepare",
     "Effect.WinGame",
     "Effect.ExtraTurn",
+    "Effect.EndTurn",
     "Effect.AddPhase",
     "Effect.Surveil",
     "Effect.Proliferate",
@@ -299,6 +300,19 @@ const RUNS: &[&str] = &[
     "Rule.CantCastSpells",
     "Rule.ToughnessAssignsDamage",
     "Rule.CountersRemain",
+    "Rule.Cant",
+    "Rule.Cant.Activate",
+    "Rule.Cant.BeTargeted",
+    "Rule.Cant.PlayLand",
+    "Rule.Cant.Sacrifice",
+    "Rule.Cant.PutCounter",
+    "Rule.Cant.Trigger",
+    "Rule.Cant.Attach",
+    "Rule.Cant.Discard",
+    "Rule.Cant.Exile",
+    "Rule.Cant.Transform",
+    "Rule.Cant.SkipStep",
+    "Rule.Cant.SkipTurn",
     VARIABLE_STATS,
     "Mod.ModifyPT",
     "Mod.AddKeyword",
@@ -905,6 +919,19 @@ mod tests {
     #[case::time_travelling("Effect.TimeTravel", true)]
     #[case::extra_turns("Effect.ExtraTurn", true)]
     #[case::added_phases("Effect.AddPhase", true)]
+    #[case::ending_the_turn("Effect.EndTurn", true)]
+    #[case::cant_activate("Rule.Cant.Activate", true)]
+    #[case::cant_be_targeted("Rule.Cant.BeTargeted", true)]
+    #[case::cant_play_land("Rule.Cant.PlayLand", true)]
+    #[case::cant_sacrifice("Rule.Cant.Sacrifice", true)]
+    #[case::cant_put_counter("Rule.Cant.PutCounter", true)]
+    #[case::cant_trigger("Rule.Cant.Trigger", true)]
+    #[case::cant_attach("Rule.Cant.Attach", true)]
+    #[case::cant_discard("Rule.Cant.Discard", true)]
+    #[case::cant_exile("Rule.Cant.Exile", true)]
+    #[case::cant_transform("Rule.Cant.Transform", true)]
+    #[case::cant_skip_step("Rule.Cant.SkipStep", true)]
+    #[case::cant_skip_turn("Rule.Cant.SkipTurn", true)]
     #[case::a_choice_of_mana("Effect.AddMana.OneOf", true)]
     #[case::a_choice_of_lists_of_mana("Effect.AddMana.OneOfLists", true)]
     #[case::mana_of_the_chosen_color("Effect.AddMana.ChosenColor", true)]

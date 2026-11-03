@@ -265,17 +265,24 @@ pub(crate) fn legal_from(
     legal.retain(|target| match target {
         Target::Object(object) => {
             !crate::w17b_statics::w17b_shielded_in_graveyard(state, object.id)
+                && !forbidden_target(state, Target::Object(*object), source)
                 && !keywords::protects(state, object.id, source.id, controller)
                 && !keywords::protected_from(state, keywords::Holder::Object(object.id), origin)
         }
         Target::Player(player) => {
             !keywords::protects_player(state, *player, controller)
+                && !forbidden_target(state, Target::Player(*player), source)
                 && !keywords::protected_from(state, keywords::Holder::Player(*player), origin)
         }
     });
     legal.sort_unstable();
     legal.dedup();
     legal
+}
+
+/// Whether a prohibition keeps the spell or ability of `by` from targeting `target` (`GameRule::Cant`).
+fn forbidden_target(state: &GameState, target: Target, by: ObjectRef) -> bool {
+    crate::prohibit::forbidden(state, crate::prohibit::Doing::BeTargeted { target, by })
 }
 
 /// Whether `target` is among the legal targets of `spec`.

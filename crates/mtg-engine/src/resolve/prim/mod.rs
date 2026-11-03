@@ -43,6 +43,7 @@ mod dk1c5_either;
 mod done;
 mod draw;
 mod encode;
+mod end_turn;
 mod exile;
 mod exile_hidden;
 mod exile_top;
@@ -204,6 +205,7 @@ fn dispatch(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::CastFromZone { .. } => cast_from_zone::run(cx, effect),
         Effect::TimeTravel { .. } => time_travel::run(cx, effect),
         Effect::ExtraTurn { .. } => extra_turn::run(cx, effect),
+        Effect::EndTurn => Ok(end_turn::run(cx)),
         Effect::AddPhase { .. } => add_phase::run(cx, effect),
         Effect::WinGame { .. } => win_game::run(cx, effect),
         Effect::CopySpell { .. } => copy_spell::run(cx, effect),
@@ -259,7 +261,7 @@ mod tests {
         {"Surveil":{}}, {"Proliferate":{}}, {"Goad":{"what":"This"}}, {"Fight":{"what":"This","with":"This"}},
         {"BecomeMonarch":{}}, {"CreateEmblem":{"abilities":[]}}, {"BecomeDayNight":{"to":"Night"}}, {"Amass":{"subtype":"Orc","count":1}}, {"Incubate":{"count":1}}, {"Venture":{}}, {"TakeInitiative":{}}, {"Monstrosity":{"count":1}}, {"Renown":{"count":1}}, {"Exploit":{}}, {"BecomeLevel":{"level":2}},
         {"Adapt":{"count":1}}, {"Bolster":{"count":1}}, {"Fabricate":{"count":1}}, {"Learn":{}}, {"Crewed":{}}, {"Explore":{"what":"This"}}, {"Connive":{"what":"This"}},
-        {"ExileUntil":{"filter":[],"as":"found","exiled_as":"exiled"}}, {"RevealUntil":{"filter":[],"as":"found","revealed_as":"revealed"}}, {"ExileTop":{"as":"top"}}, {"ExileHidden":{"what":"This"}}, {"Encode":{"what":"This","on":"This"}}, {"Remember":{"what":"This","slot":"s"}}, {"Forget":{"slot":"s"}}, {"Manifest":{}}, {"Cloak":{}}, {"CastFromZone":{"what":"This"}}, {"TimeTravel":{}}, {"ExtraTurn":{}},
+        {"ExileUntil":{"filter":[],"as":"found","exiled_as":"exiled"}}, {"RevealUntil":{"filter":[],"as":"found","revealed_as":"revealed"}}, {"ExileTop":{"as":"top"}}, {"ExileHidden":{"what":"This"}}, {"Encode":{"what":"This","on":"This"}}, {"Remember":{"what":"This","slot":"s"}}, {"Forget":{"slot":"s"}}, {"Manifest":{}}, {"Cloak":{}}, {"CastFromZone":{"what":"This"}}, {"TimeTravel":{}}, {"ExtraTurn":{}}, "EndTurn",
         {"CopySpell":{"what":"This"}}, {"CopyAbility":{"what":"This"}}, {"CopyCard":{"what":"This","as":"copy"}},
         {"BecomeCopy":{"what":"This","of":"This","duration":"UntilEndOfTurn"}},
         {"CreateToken":{"token":{"Named":"treasure"}}},
@@ -279,17 +281,22 @@ mod tests {
     ]"#;
 
     fn tag(effect: &Effect) -> String {
-        serde_json::to_value(effect)
-            .unwrap()
-            .as_object()
-            .and_then(|map| map.keys().next().cloned())
-            .unwrap()
+        let value = serde_json::to_value(effect).unwrap();
+        value.as_str().map_or_else(
+            || {
+                value
+                    .as_object()
+                    .and_then(|map| map.keys().next().cloned())
+                    .unwrap()
+            },
+            str::to_owned,
+        )
     }
 
     #[test]
     fn the_capabilities_name_exactly_the_effects_that_run() {
         let effects: Vec<Effect> = serde_json::from_str(EFFECTS).unwrap();
-        assert_eq!(effects.len(), 95, "one sample for each variant of Effect");
+        assert_eq!(effects.len(), 96, "one sample for each variant of Effect");
         let game = state(
             vec![vec![], vec![]],
             vec![vec![creature("Bear", 2, 2)], vec![]],
@@ -394,6 +401,7 @@ mod tests {
         "Effect.CastFromZone",
         "Effect.TimeTravel",
         "Effect.ExtraTurn",
+        "Effect.EndTurn",
         "Effect.CopySpell",
         "Effect.CopyAbility",
         "Effect.CopyCard",

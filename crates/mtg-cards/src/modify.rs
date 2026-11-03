@@ -11,7 +11,7 @@ use crate::cost::Cost;
 use crate::keyword::Keyword;
 use crate::mana::ManaCostX;
 use crate::refs::{Ref, Selector, ZoneKind};
-use crate::trigger::TriggerPattern;
+use crate::trigger::{Step, TriggerPattern};
 use crate::value::{Amount, CounterKind};
 
 /// A change to an object. Static abilities apply them continuously; `Effect::Continuous` applies
@@ -235,6 +235,37 @@ pub enum Attacked {
     Both,
 }
 
+/// What a `GameRule::Cant` forbids its subjects. A subject is covered when it is the object an action is about or the
+/// player who does it (or owns the object). Adding a prohibition is one entry here and one check where the engine does
+/// the action.
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
+pub enum Prohibited {
+    /// Activate abilities of the sources the selector picks (every source when empty), except mana abilities (CR 605).
+    Activate(Selector),
+    /// Be the target of spells and abilities from the sources the selector picks (CR 115); every source when empty.
+    BeTargeted(Selector),
+    /// Play lands as the special action (CR 305.1).
+    PlayLand,
+    /// Sacrifice permanents, or be sacrificed (CR 701.21).
+    Sacrifice,
+    /// Have counters put on them (CR 122).
+    PutCounter,
+    /// Have triggered abilities of the subjects' permanents trigger from the event the pattern describes (CR 603).
+    Trigger(TriggerPattern),
+    /// Become attached, or have anything attached to them (CR 701.3).
+    Attach,
+    /// Discard cards, or be discarded (CR 701.9).
+    Discard,
+    /// Be exiled (CR 406).
+    Exile,
+    /// Transform (CR 701.28).
+    Transform,
+    /// Skip the step on their turns (CR 614.10); the cleanup step is never skipped.
+    SkipStep(Step),
+    /// Skip their turns (CR 614.10).
+    SkipTurn,
+}
+
 /// A change to the rules of the game rather than to an object. `Effect::Rule` makes it for a duration and
 /// `Ability::Rule` for as long as its source has the ability; the references name the players or objects it is about.
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
@@ -400,6 +431,14 @@ pub enum GameRule {
     /// Counters remain on the card as it moves to any zone other than a hand or a library (CR 122.2); the card reads it
     /// in every zone, so the rule is written without `from`.
     CountersRemain,
+    /// The subjects `who` names (players or objects) can't do what `action` names: it is not offered, and an effect that
+    /// would have it done does nothing.
+    Cant {
+        /// The players or objects the prohibition is about.
+        who: Ref,
+        /// What they can't do.
+        action: Prohibited,
+    },
 }
 
 #[cfg(test)]
@@ -566,6 +605,18 @@ mod tests {
             source: None
         },
         r#"{"TriggerAgain":{"cause":{"Attacks":{"what":["This"]}}}}"#
+    )]
+    #[case(
+        GameRule::Cant { who: Ref::You, action: Prohibited::PlayLand },
+        r#"{"Cant":{"who":"You","action":"PlayLand"}}"#
+    )]
+    #[case(
+        GameRule::Cant { who: Ref::Opponents, action: Prohibited::Activate(Selector::this()) },
+        r#"{"Cant":{"who":"Opponents","action":{"Activate":["This"]}}}"#
+    )]
+    #[case(
+        GameRule::Cant { who: Ref::You, action: Prohibited::SkipStep(Step::Draw) },
+        r#"{"Cant":{"who":"You","action":{"SkipStep":"Draw"}}}"#
     )]
     #[case(
         GameRule::MaxHandSize { who: Ref::You, size: Amount::Fixed(3) },

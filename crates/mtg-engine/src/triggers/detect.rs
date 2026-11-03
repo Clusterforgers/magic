@@ -1997,6 +1997,31 @@ fn repeats(
         .count()
 }
 
+/// Drops the abilities from `first` on that a prohibition keeps from triggering on `happened` (`GameRule::Cant` with a
+/// trigger): its subjects are the players who control the abilities and the objects that have them.
+fn forbid_triggers(
+    state: &GameState,
+    happened: &Happened,
+    found: &mut Vec<Triggered>,
+    first: usize,
+) {
+    for (ban, pattern) in crate::prohibit::trigger_bans(state) {
+        let mut index = first;
+        while index < found.len() {
+            let ability = &found[index];
+            let scope =
+                Scope::announcing(state, ban.controller, ban.source.unwrap_or(ability.source));
+            if crate::prohibit::covers(&ban.who, Some(ability.controller), Some(ability.source.id))
+                && matching(pattern, happened, &scope).is_some()
+            {
+                found.remove(index);
+            } else {
+                index += 1;
+            }
+        }
+    }
+}
+
 /// The delayed triggered abilities of `post` that trigger on `happened`, judged in `state`.
 fn delayed(
     state: &GameState,
@@ -2085,9 +2110,11 @@ pub fn detect(pre: &GameState, events: &[Event], post: &GameState) -> Vec<Trigge
         } else {
             (post, after.get_or_init(|| Watchers::of(post)))
         };
+        let first = found.len();
         permanents(state, watching, happened, &mut found, &mut used);
         elsewhere(state, happened, &mut found, &mut used);
         delayed(state, post, happened, &mut found, &mut used);
+        forbid_triggers(state, happened, &mut found, first);
     }
     // The events of the batch together, after each of them: what looks back is judged against `pre`, the rest `post`.
     let (back, forward): (Vec<Happened>, Vec<Happened>) =
@@ -2098,8 +2125,10 @@ pub fn detect(pre: &GameState, events: &[Event], post: &GameState) -> Vec<Trigge
             starts.push(found.len());
             let together = Happened::Batch(members);
             let watching = watching.get_or_init(|| Watchers::of(state));
+            let first = found.len();
             permanents(state, watching, &together, &mut found, &mut used);
             elsewhere(state, &together, &mut found, &mut used);
+            forbid_triggers(state, &together, &mut found, first);
         }
     }
     if let [back, forward] = starts[..] {

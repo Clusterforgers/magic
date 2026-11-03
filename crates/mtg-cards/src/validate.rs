@@ -13,11 +13,11 @@ use crate::card::{Card, Face, ImplStatus, TokenSpec};
 use crate::cost::{Cost, CostItem};
 use crate::effect::{Destination, DieRow, Effect, Mode, Order, Place, Produce, TokenRef, VoteFor};
 use crate::keyword::Keyword;
-use crate::modify::{CastPermission, Duration, GameRule, Modification};
+use crate::modify::{CastPermission, Duration, GameRule, Modification, Prohibited};
 use crate::refs::{Bounds, Pred, Ref, Selector, TargetSpec, Targetable, ZoneKind};
 use crate::spend::{SpendOn, WhenSpent};
 use crate::support::{PrintedCard, PrintedFace, oracle_fingerprint};
-use crate::trigger::{ReplaceBy, ReplaceWhen, TriggerPattern};
+use crate::trigger::{ReplaceBy, ReplaceWhen, Step, TriggerPattern};
 use crate::value::CastWay;
 use crate::value::{Amount, Condition, TurnTally};
 
@@ -2751,7 +2751,8 @@ impl Walker<'_> {
                     w.problem("counters remain on a card by a static ability, not by an effect");
                 }
             }),
-            Effect::Forget { .. }
+            Effect::EndTurn
+            | Effect::Forget { .. }
             | Effect::Crewed { .. }
             | Effect::BecomeDayNight { .. }
             | Effect::Planechase { .. } => {}
@@ -3333,6 +3334,10 @@ impl Walker<'_> {
             | GameRule::CantCastSpells { .. }
             | GameRule::ToughnessAssignsDamage(_)
             | GameRule::CountersRemain => self.w17b_rule(&tag, rule),
+            GameRule::Cant { who, action } => self.at(tag, |w| {
+                w.at("who", |w| w.reference(who, Kind::Either));
+                w.cant_action(action);
+            }),
             GameRule::TriggerAgain { .. }
             | GameRule::NoLegendRule(_)
             | GameRule::MaxHandSize { .. }
@@ -3362,6 +3367,26 @@ impl Walker<'_> {
                 w.at("what", |w| w.selector(what));
                 w.at("whose", |w| w.reference(whose, Kind::Player));
             }),
+            _ => {}
+        }
+    }
+
+    /// What a prohibition forbids: the selector of a source, or the event of a trigger (judged without a target or a
+    /// triggering event).
+    fn cant_action(&mut self, action: &Prohibited) {
+        self.uses("Rule", &format!("Cant.{}", tag_of(action)));
+        match action {
+            Prohibited::Activate(sources) | Prohibited::BeTargeted(sources) => {
+                self.at("action", |w| w.selector(sources));
+            }
+            Prohibited::Trigger(cause) => {
+                let saved = std::mem::replace(&mut self.scope, Scope::new(&[], false));
+                self.at("action", |w| w.trigger_pattern(cause));
+                self.scope = saved;
+            }
+            Prohibited::SkipStep(Step::Cleanup) => {
+                self.at("action", |w| w.problem("the cleanup step can't be skipped"));
+            }
             _ => {}
         }
     }

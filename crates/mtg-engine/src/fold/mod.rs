@@ -281,6 +281,7 @@ fn begin_turn(
     state.turn.lands_played = 0;
     state.turn.combats = 0;
     state.turn.ahead.clear();
+    state.turn.ending = false;
     if !extra && (before == 0 || state.opens_round(previous, active)) {
         state.turn.round += 1;
     }
@@ -337,6 +338,8 @@ fn apply_turn(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
                     .players
                     .retain(|(_, kind), _| *kind != Tally::C6BlkDrawStepDrawn);
             }
+            // A cleanup step that begins during a resolution ends the turn by an effect (CR 723).
+            state.turn.ending = *step == Step::Cleanup && state.resolving.is_some();
             state.turn.step = *step;
             state.priority = None;
             // Each combat damage step divides its damage afresh: a double striker divides twice.
@@ -603,6 +606,9 @@ fn lose_life(state: &mut GameState, id: PlayerId, amount: u32) -> Result<(), Eng
 /// Gives priority to the active player (or the next player in turn order) with nobody having passed, as it
 /// is after something leaves the stack (CR 117.3b).
 pub(crate) fn priority_to_active(state: &mut GameState) {
+    if state.turn.ending {
+        return;
+    }
     let active = state.turn.active;
     if let Some(holder) = state.turn_order_from(active).first().copied() {
         state.priority = Some(PriorityState {
