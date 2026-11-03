@@ -373,9 +373,9 @@ pub fn variants(ability: &Ability) -> Vec<String> {
             .collect();
         texts.extend(pronouns);
     }
-    // A trigger about the card itself may say "it explores" or "it connives" for the card (Seekers' Squire).
+    // A trigger about the card itself may say "it explores", "it connives" or "it endures" for the card (Seekers' Squire).
     if matches!(ability, Ability::Triggered { when, .. } if itself_acts(when)) {
-        for verb in ["explores", "connives"] {
+        for verb in ["explores", "connives", "endures"] {
             let (named, pronoun) = (format!(", ~ {verb}"), format!(", it {verb}"));
             let pronouns: Vec<String> = texts
                 .iter()
@@ -2559,8 +2559,16 @@ impl Writer<'_> {
             .or_else(|| super::w7e_phase::w7e_phased_and_protected_text(effects))
             .or_else(|| super::w7e_phase::w7e_protected_text(effects))
             .or_else(|| super::w11b_phase::w11b_untap_then_phase_out_text(effects))
+            .or_else(|| self.macro_action(effects))
             // Populate is two steps and one word.
             .or_else(|| copies::is_populate(effects).then(|| ("populate".to_owned(), 2)))
+    }
+
+    /// A keyword action of the macro table; earthbend names its target without writing it.
+    fn macro_action(&mut self, effects: &[Effect]) -> Option<(String, usize)> {
+        let found = super::keyword_actions::text(effects, |on| self.object(on))?;
+        self.named |= found.0.starts_with("earthbend");
+        Some(found)
     }
 
     /// "~ explores, then it explores again": one creature that explores twice is one sentence, which no joint splits.

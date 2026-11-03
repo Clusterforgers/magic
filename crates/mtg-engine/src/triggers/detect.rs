@@ -1645,8 +1645,22 @@ fn matching_permanents(
                 )
             })
         }
-        (TriggerPattern::BecomesBlocked { what }, Happened::BecameBlocked { attacker })
-        | (TriggerPattern::Unblocked { what }, Happened::Unblocked { attacker }) => {
+        (TriggerPattern::BecomesBlocked { what, by }, Happened::Blocked { blocker, attacker })
+            if !by.is_empty() =>
+        {
+            let (blocker, attacker) = (object(*blocker)?, object(*attacker)?);
+            (picks(what, attacker)? && picks(by, blocker)?).then(|| Cause {
+                source: Some(blocker),
+                ..cause(state, vec![Target::Object(attacker)])
+            })
+        }
+        (TriggerPattern::BecomesBlocked { what, by }, Happened::BecameBlocked { attacker })
+            if by.is_empty() =>
+        {
+            let attacker = object(*attacker)?;
+            picks(what, attacker)?.then(|| cause(state, vec![Target::Object(attacker)]))
+        }
+        (TriggerPattern::Unblocked { what }, Happened::Unblocked { attacker }) => {
             let attacker = object(*attacker)?;
             picks(what, attacker)?.then(|| cause(state, vec![Target::Object(attacker)]))
         }

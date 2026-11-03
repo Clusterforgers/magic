@@ -341,6 +341,13 @@ pub enum Keyword {
         #[serde(default, skip_serializing_if = "std::ops::Not::not")]
         once_per_turn: bool,
     },
+    /// A keyword the macro table expands into abilities of existing nodes (`macros::KEYWORDS`), with its number (0 for a keyword that prints none).
+    Macro {
+        /// The name in the table.
+        name: String,
+        /// The number printed after the name.
+        amount: u32,
+    },
 }
 
 /// What a promised gift is (CR 702.174).
@@ -510,6 +517,7 @@ impl Keyword {
         "Harmonize",
         "Read ahead",
         "Exert",
+        "Macro",
     ];
 
     /// The keyword as Scryfall spells it (`First strike`).
@@ -671,6 +679,7 @@ impl Keyword {
             Keyword::Harmonize(_) => "Harmonize",
             Keyword::ReadAhead => "Read ahead",
             Keyword::Exert { .. } => "Exert",
+            Keyword::Macro { .. } => "Macro",
             // The keywords before it are named by `name`; the test of the names lists every variant.
             _ => "",
         }
@@ -874,6 +883,10 @@ mod tests {
             Keyword::ReadAhead,
             Keyword::Exert {
                 once_per_turn: true,
+            },
+            Keyword::Macro {
+                name: "bushido".to_owned(),
+                amount: 2,
             },
         ]
     }

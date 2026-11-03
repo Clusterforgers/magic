@@ -670,10 +670,17 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
         TriggerPattern::Blocks { what } => {
             (format!("{} blocks", subject(what)), what.0 == [Pred::This])
         }
-        TriggerPattern::BecomesBlocked { what } => (
-            format!("{} becomes blocked", subject(what)),
-            what.0 == [Pred::This],
-        ),
+        TriggerPattern::BecomesBlocked { what, by } => {
+            let blocker = if by.is_empty() {
+                String::new()
+            } else {
+                format!(" by {}", subject(by))
+            };
+            (
+                format!("{} becomes blocked{blocker}", subject(what)),
+                what.0 == [Pred::This],
+            )
+        }
         TriggerPattern::Unblocked { what } => (
             format!("{} attacks and isn't blocked", subject(what)),
             what.0 == [Pred::This],

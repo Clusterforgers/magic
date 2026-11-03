@@ -122,7 +122,7 @@ fn status_of(text: &str) -> Option<ImplStatus> {
     Some(ImplStatus::Full)
 )]
 #[case::reminder_text_of_a_counter_in_a_keyword_line(
-    "Training (Whenever this creature attacks with another creature with greater power, put a +1/+1 counter on this creature.)",
+    "Tribute 2 (As this creature enters, an opponent of your choice may put two +1/+1 counters on it.)",
     Some(ImplStatus::Manual)
 )]
 fn reminder_text_that_explains_a_counter_keeps_the_clause_with_the_table(

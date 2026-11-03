@@ -276,6 +276,9 @@ pub enum TriggerPattern {
     BecomesBlocked {
         /// The attacker.
         what: Selector,
+        /// Only when blocked by a creature matching this (empty: any blocker). With it the trigger happens once for each such blocker and `Ref::Dealer` names that blocker.
+        #[serde(default, skip_serializing_if = "Selector::is_empty")]
+        by: Selector,
     },
     /// A creature matching the selector attacks and isn't blocked: it is unblocked once its defending player has
     /// declared blockers (CR 509.1h).
@@ -746,6 +749,13 @@ pub enum ReplaceBy {
         #[serde(default, skip_serializing_if = "is_false")]
         tapped: bool,
     },
+    /// The permanent enters with these counters when its controller says yes as it enters ("You may have this creature enter with a +1/+1 counter on it"); asked like the payment of `PayLifeOrTapped`.
+    MayWithCounters {
+        /// The kind of counter.
+        counter: CounterKind,
+        /// How many.
+        count: Amount,
+    },
     /// As the permanent enters, its controller makes this choice, which the permanent remembers for its abilities.
     Choose(EntersChoice),
     /// As the permanent enters, its controller may pay this much life; if they don't (or can't) it enters tapped.
@@ -818,6 +828,14 @@ mod tests {
     #[case::opponent_casts(
         TriggerPattern::SpellCast { what: Selector::default(), by: Ref::Opponents },
         r#"{"SpellCast":{"by":"Opponents"}}"#
+    )]
+    #[case::blocked_by_any(
+        TriggerPattern::BecomesBlocked { what: Selector::this(), by: Selector::default() },
+        r#"{"BecomesBlocked":{"what":["This"]}}"#
+    )]
+    #[case::blocked_by_a_kind(
+        TriggerPattern::BecomesBlocked { what: Selector::this(), by: Selector(vec![Pred::Token]) },
+        r#"{"BecomesBlocked":{"what":["This"],"by":["Token"]}}"#
     )]
     #[case::a_state(
         TriggerPattern::State { condition: Condition::Not(Box::new(Condition::YourTurn)) },

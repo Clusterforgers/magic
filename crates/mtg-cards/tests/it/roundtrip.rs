@@ -622,7 +622,10 @@ fn trigger_pattern() -> impl Strategy<Value = TriggerPattern> {
         selector().prop_map(|what| TriggerPattern::Tapped { what }),
         (selector(), reference()).prop_map(|(what, by)| TriggerPattern::TappedForMana { what, by }),
         selector().prop_map(|what| TriggerPattern::Blocks { what }),
-        selector().prop_map(|what| TriggerPattern::BecomesBlocked { what }),
+        selector().prop_map(|what| TriggerPattern::BecomesBlocked {
+            what,
+            by: Selector::default()
+        }),
         selector().prop_map(|what| TriggerPattern::Unblocked { what }),
         (selector(), 1u32..5)
             .prop_map(|(what, at_least)| TriggerPattern::GroupAttacks { what, at_least }),

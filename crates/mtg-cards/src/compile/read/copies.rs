@@ -32,9 +32,6 @@ use crate::value::Amount;
 /// The name the token of a copy that a delayed effect acts on is bound to.
 pub(super) const COPY: &str = "copy";
 
-/// The name the token that populate copies is chosen as.
-const CHOSEN: &str = "token";
-
 /// How many tokens a copy makes and how they enter.
 struct Made {
     /// The number of tokens.
@@ -472,38 +469,9 @@ pub fn then_populate(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     populate(r)
 }
 
-/// The two steps of populate.
+/// The two steps of populate, from the macro table.
 fn populate_steps() -> Vec<Effect> {
-    vec![
-        Effect::Choose {
-            who: Ref::You,
-            from: Ref::Each(populated()),
-            count: Bounds::default(),
-            bind: CHOSEN.to_owned(),
-            rest_as: None,
-        },
-        Effect::CreateToken {
-            who: Ref::You,
-            token: TokenRef::CopyOf {
-                of: Ref::Bound(CHOSEN.to_owned()),
-                except: Vec::new(),
-                no_mana_cost: false,
-            },
-            count: Amount::one(),
-            tapped: false,
-            attacking: false,
-            bind: None,
-        },
-    ]
-}
-
-/// The tokens populate chooses from.
-fn populated() -> Selector {
-    Selector(vec![
-        Pred::Type(CardType::Creature),
-        Pred::Token,
-        Pred::ControlledBy(Ref::You),
-    ])
+    crate::macros::action_effects("populate", 1, &Ref::This).unwrap_or_default()
 }
 
 /// Whether the effects begin with the two steps of populate.

@@ -465,6 +465,7 @@ const RUNS: &[&str] = &[
     "ReplaceBy.PreventAllBut",
     "ReplaceBy.Tapped",
     "ReplaceBy.WithCounters",
+    "ReplaceBy.MayWithCounters",
     "ReplaceBy.Choose",
     "ReplaceBy.PayLifeOrTapped",
     "ReplaceBy.TappedForCounters",
@@ -515,6 +516,7 @@ const RUNS: &[&str] = &[
     "Keyword.Saddle",
     "Keyword.Saddled",
     "Keyword.Exert",
+    "Keyword.Macro",
     "Keyword.Station",
     "Keyword.Myriad",
     "Keyword.Squad",
@@ -699,6 +701,7 @@ mod tests {
     #[case::moving_instead("ReplaceBy.MoveTo", true)]
     #[case::entering_tapped("ReplaceBy.Tapped", true)]
     #[case::entering_with_counters("ReplaceBy.WithCounters", true)]
+    #[case::entering_with_counters_by_choice("ReplaceBy.MayWithCounters", true)]
     #[case::choosing_as_it_enters("ReplaceBy.Choose", true)]
     #[case::paying_life_or_entering_tapped("ReplaceBy.PayLifeOrTapped", true)]
     #[case::doing_something_instead("ReplaceBy.Instead", true)]
@@ -1039,6 +1042,7 @@ mod tests {
     #[case::saddle("Keyword.Saddle", true)]
     #[case::saddled("Keyword.Saddled", true)]
     #[case::exert("Keyword.Exert", true)]
+    #[case::macro_keyword("Keyword.Macro", true)]
     #[case::station("Keyword.Station", true)]
     #[case::ravenous("Keyword.Ravenous", true)]
     #[case::riot("Keyword.Riot", true)]
