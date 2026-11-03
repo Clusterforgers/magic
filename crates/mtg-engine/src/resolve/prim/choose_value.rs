@@ -1,16 +1,17 @@
 //! `Effect::ChooseValue`: a player chooses a colour, a type, a card name, a number or one of some words, and the
 //! resolution remembers the choice under a name for `Pred::ChosenAs` and `Amount::ChosenAs`.
 
-use std::collections::BTreeSet;
-
 use mtg_cards::effect::{Effect, ValueKind};
+use mtg_cards::refs::{Pred, Selector};
 use mtg_core::card::{CardType, Subtype};
 use mtg_core::color::Color;
 use mtg_core::ids::PlayerId;
 
 use super::wrong_effect;
 use crate::choose::values;
-use crate::choose::{Choice, ChoiceOption, NumberOptions, OptionChooser, Optioned, pick_options};
+use crate::choose::{
+    Choice, ChoiceOption, NameOptions, NumberOptions, OptionChooser, Optioned, pick_options,
+};
 use crate::decision::{Decision, DecisionKind};
 use crate::object::Chosen;
 use crate::resolve::{CHOSEN_VALUE, Cx, Next, ResolveError, Run};
@@ -54,7 +55,10 @@ fn choice(
         let high = u32::try_from(cx.scope.amount(high)?.max(0)).unwrap_or(u32::MAX);
         return Ok(number(cx, player, low, high.max(low))?.map(|n| Some(Chosen::Number(n))));
     }
-    let options = options(cx, kind)?;
+    if let ValueKind::CardName(filter) = kind {
+        return name(cx, player, filter);
+    }
+    let options = options(kind);
     let chooser = OptionChooser {
         player,
         text: question(kind),
@@ -117,29 +121,47 @@ fn number(
     }
 }
 
+/// The card name the player gave, read from the journal, or the question for it. Any card may be named (CR 201.3), so the
+/// question carries no list; naming nothing is no value. A filter that leaves out lands is passed on to the client.
+fn name(
+    cx: &Cx<'_>,
+    player: PlayerId,
+    filter: &Selector,
+) -> Result<Result<Option<Chosen>, Decision>, ResolveError> {
+    match cx.journal() {
+        [(who, Choice::Name(name))] if *who == player => Ok(Ok(
+            (!name.is_empty()).then(|| Chosen::Name(name.clone()))
+        )),
+        [] => Ok(Err(Decision {
+            player,
+            kind: DecisionKind::ChooseName(NameOptions {
+                source: cx.scope.source.id,
+                text: question(&ValueKind::CardName(filter.clone())),
+                nonland: filter.0.iter().any(
+                    |pred| matches!(pred, Pred::Not(inner) if **inner == Pred::Type(CardType::Land)),
+                ),
+            }),
+        })),
+        other => Err(ResolveError::Invalid(format!(
+            "{other:?} is no name chosen by {player:?}"
+        ))),
+    }
+}
+
 /// What the player chooses between.
-fn options(cx: &Cx<'_>, kind: &ValueKind) -> Result<Vec<ChoiceOption>, ResolveError> {
-    Ok(match kind {
+fn options(kind: &ValueKind) -> Vec<ChoiceOption> {
+    match kind {
         ValueKind::Color => Color::ALL
             .iter()
             .copied()
             .map(ChoiceOption::Color)
             .collect(),
-        ValueKind::CreatureType => values::creature_types(cx.state()),
+        ValueKind::CreatureType => values::creature_types(),
         ValueKind::CardType => values::card_types(),
         ValueKind::LandType => values::land_types(),
-        ValueKind::CardName(filter) => {
-            let mut fits = BTreeSet::new();
-            for object in cx.state().objects() {
-                if cx.scope.selects(filter, object.reference())? {
-                    fits.insert(object.id);
-                }
-            }
-            values::card_names(cx.state(), |object| fits.contains(&object.id))
-        }
         ValueKind::Options(words) => words.iter().cloned().map(ChoiceOption::Label).collect(),
-        ValueKind::Number(..) => Vec::new(),
-    })
+        ValueKind::CardName(_) | ValueKind::Number(..) => Vec::new(),
+    }
 }
 
 /// The question in the words of a card.
@@ -169,7 +191,6 @@ fn value(kind: &ValueKind, option: &ChoiceOption) -> Option<Chosen> {
             .into_iter()
             .find(|card_type: &CardType| format!("{card_type:?}") == *name)
             .map(Chosen::CardType),
-        (ValueKind::CardName(_), ChoiceOption::Label(name)) => Some(Chosen::Name(name.clone())),
         (ValueKind::Options(_), ChoiceOption::Label(word)) => Some(Chosen::Word(word.clone())),
         _ => None,
     }
@@ -181,6 +202,10 @@ mod tests {
     use rstest::rstest;
 
     use mtg_core::card::LAND_TYPES;
+
+    use std::sync::Arc;
+
+    use mtg_cards::CardDefinition;
 
     use super::*;
     use crate::fixtures::{creature, state};
@@ -233,8 +258,6 @@ mod tests {
     #[case::colors(r#""Color""#, 5, "Choose a color.")]
     #[case::card_types(r#""CardType""#, 9, "Choose a card type.")]
     #[case::land_types(r#""LandType""#, 17, "Choose a land type.")]
-    #[case::every_card_name(r#"{"CardName":[]}"#, 8, "Choose a card name.")]
-    #[case::names_in_a_hand(r#"{"CardName":[{"In":"Hand"}]}"#, 2, "Choose a card name.")]
     #[case::words(r#"{"Options":["odd","even"]}"#, 2, "Choose odd or even.")]
     fn the_player_is_asked_between_the_options_of_the_kind(
         #[case] json: &str,
@@ -258,7 +281,6 @@ mod tests {
     #[case::a_color(r#""Color""#, 1, Chosen::Color(Color::ALL[1]))]
     #[case::a_land_type(r#""LandType""#, 0, Chosen::LandType(Subtype(LAND_TYPES[0].to_owned())))]
     #[case::a_card_type(r#""CardType""#, 2, Chosen::CardType(CardType::Creature))]
-    #[case::a_name(r#"{"CardName":[{"In":"Hand"}]}"#, 1, Chosen::Name("B".to_owned()))]
     #[case::a_word(r#"{"Options":["odd","even"]}"#, 1, Chosen::Word("even".to_owned()))]
     fn the_answer_is_remembered_as_the_value_of_its_option(
         #[case] json: &str,
@@ -300,7 +322,6 @@ mod tests {
     #[case::one_number(r#"{"Number":[4,4]}"#, Some(Chosen::Number(4)))]
     #[case::reversed_bounds_take_the_lower(r#"{"Number":[4,2]}"#, Some(Chosen::Number(4)))]
     #[case::one_word(r#"{"Options":["only"]}"#, Some(Chosen::Word("only".to_owned())))]
-    #[case::no_card_name(r#"{"CardName":[{"In":"Exile"}]}"#, None)]
     fn a_choice_with_one_option_or_none_is_not_asked(
         #[case] json: &str,
         #[case] expected: Option<Chosen>,
@@ -323,5 +344,75 @@ mod tests {
         assert!(run_with(vec![], each).is_err());
         let nobody = r#"{"ChooseValue":{"who":{"Target":0},"kind":"Color","as":"hue"}}"#;
         assert_eq!(remembered(run_with(vec![], nobody).unwrap()), None);
+    }
+
+    #[rstest]
+    #[case::any_card(r#"{"CardName":[]}"#, "Choose a card name.", false)]
+    #[case::a_filter_without_lands(
+        r#"{"CardName":[{"Not":{"Type":"Land"}}]}"#,
+        "Choose a card name.",
+        true
+    )]
+    fn a_card_name_is_asked_as_text_with_no_list(
+        #[case] json: &str,
+        #[case] text: &str,
+        #[case] nonland: bool,
+    ) {
+        let Run::Ask(decision) = run_with(vec![], &kind(json)).unwrap() else {
+            panic!("the controller is asked");
+        };
+        assert_eq!(decision.player, ME);
+        let DecisionKind::ChooseName(options) = decision.kind else {
+            panic!("a name was expected");
+        };
+        assert_eq!((options.text.as_str(), options.nonland), (text, nonland));
+    }
+
+    #[rstest]
+    #[case::a_name_outside_the_game("Black Lotus", Some(Chosen::Name("Black Lotus".to_owned())))]
+    #[case::a_name_in_the_game("Source", Some(Chosen::Name("Source".to_owned())))]
+    #[case::no_name("", None)]
+    fn the_name_given_is_remembered(#[case] given: &str, #[case] expected: Option<Chosen>) {
+        let journal = vec![(ME, Choice::Name(given.to_owned()))];
+        let done = run_with(journal, &kind(r#"{"CardName":[]}"#)).unwrap();
+        assert_eq!(remembered(done), expected);
+    }
+
+    /// A card in an opponent's hand and one in a library, with a name and a creature type nobody else has.
+    fn secret_game() -> GameState {
+        let hidden = |name: &str| {
+            Arc::new(
+                CardDefinition::new(name)
+                    .with_type(CardType::Creature)
+                    .with_subtype("Zzxsubtype")
+                    .with_power_toughness(1, 1),
+            )
+        };
+        state(
+            vec![vec![], vec![hidden("Zzxhand")]],
+            vec![vec![creature("Source", 1, 1)], vec![]],
+        )
+    }
+
+    #[rstest]
+    #[case::a_card_name(r#"{"CardName":[]}"#)]
+    #[case::a_creature_type(r#""CreatureType""#)]
+    #[case::a_card_type(r#""CardType""#)]
+    #[case::a_land_type(r#""LandType""#)]
+    #[case::a_color(r#""Color""#)]
+    fn a_prompt_holds_nothing_of_a_hidden_zone(#[case] json: &str) {
+        let game = secret_game();
+        let effect: Effect = serde_json::from_str(&kind(json)).unwrap();
+        let source = game.object(game.zone(Zone::Battlefield)[0]).unwrap();
+        let resolving = Resolving::begin(source.id());
+        let cx = Cx {
+            scope: Scope::announcing(&game, ME, source.reference()),
+            resolving: &resolving,
+        };
+        let Run::Ask(decision) = run(&cx, &effect).unwrap() else {
+            panic!("the controller is asked");
+        };
+        let wire = serde_json::to_string(&decision).unwrap();
+        assert!(!wire.contains("Zzx"), "{wire}");
     }
 }

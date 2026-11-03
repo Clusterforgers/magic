@@ -29,6 +29,7 @@ pub use keywords::quality_word as protection_quality_word;
 pub use keywords::read as read_keyword;
 pub use keywords::read_all as read_keywords;
 pub(crate) use keywords::split_items;
+pub use read::subtypes::creature_types;
 pub use read::{
     BlockPlan, all_groups, block_plan, die_row, die_row_texts, keyword_grant, render_ability,
     render_cost, render_mode, render_variants, same_text, static_pair_texts, subject_group,

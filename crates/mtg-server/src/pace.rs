@@ -95,6 +95,7 @@ impl Class {
             | DecisionKind::ChooseOption(_)
             | DecisionKind::ChooseMode(_)
             | DecisionKind::ChooseNumber(_)
+            | DecisionKind::ChooseName(_)
             | DecisionKind::DivideAmount(_)
             | DecisionKind::ChooseCosts(_)
             | DecisionKind::ChooseCards(_)
@@ -236,6 +237,10 @@ pub(crate) fn fallback(decision: &Decision) -> Option<Answer> {
         } else {
             NumberChoice::Number(options.min)
         })),
+        // No card named: the answer that decides the least, and the same for every seat.
+        DecisionKind::ChooseName(_) => Some(Answer::ChooseName(mtg_engine::choose::NameChoice(
+            String::new(),
+        ))),
         DecisionKind::ChooseCosts(options) => Some(Answer::ChooseCosts(if options.can_cancel {
             CostsChoice::Cancel
         } else {
@@ -1065,6 +1070,14 @@ mod tests {
     #[case::the_lowest_number_when_it_cannot_be_taken_back(
         number(2, None, false),
         Some(Answer::ChooseNumber(NumberChoice::Number(2)))
+    )]
+    #[case::no_card_is_named(
+        DecisionKind::ChooseName(mtg_engine::choose::NameOptions {
+            source: ObjectId(1),
+            text: String::new(),
+            nonland: true,
+        }),
+        Some(Answer::ChooseName(mtg_engine::choose::NameChoice(String::new())))
     )]
     #[case::optional_costs_are_taken_back(
         costs(2, true),

@@ -41,8 +41,8 @@ use crate::announce::payments;
 use crate::characteristics::controller_of_object;
 use crate::choose::values;
 use crate::choose::{
-    CardsOptions, Choice, ChoiceOption, NumberOptions, OptionOptions, ReplacementCandidate,
-    ReplacementOptions, Target, YesNoOptions,
+    CardsOptions, Choice, ChoiceOption, NameOptions, NumberOptions, OptionOptions,
+    ReplacementCandidate, ReplacementOptions, Target, YesNoOptions,
 };
 use crate::combat::DamageTarget;
 use crate::copies::{BecameCopy, copiable_values, may_be_copied};
@@ -2739,6 +2739,35 @@ impl Pass<'_> {
         }
     }
 
+    /// A card name that `controller` names as the card enters (CR 201.3); nothing when they name nothing.
+    fn chooses_name(
+        &mut self,
+        source: ObjectId,
+        controller: PlayerId,
+        nonland: bool,
+    ) -> Result<Asked<Option<Chosen>>, EngineError> {
+        match self.answer() {
+            None => Ok(Asked::Ask(Decision {
+                player: controller,
+                kind: DecisionKind::ChooseName(NameOptions {
+                    source,
+                    text: if nonland {
+                        "Choose a nonland card name.".to_owned()
+                    } else {
+                        "Choose a card name.".to_owned()
+                    },
+                    nonland,
+                }),
+            })),
+            Some((who, Choice::Name(name))) if *who == controller => Ok(Asked::Got(
+                (!name.is_empty()).then(|| Chosen::Name(name.clone())),
+            )),
+            Some(other) => Err(Self::invalid(format!(
+                "{other:?} is no answer to the choice of a name of {controller:?}"
+            ))),
+        }
+    }
+
     /// A number from `min` to `max` that `controller` chooses as the card enters; the smallest when only one is allowed.
     fn chooses_number(
         &mut self,
@@ -2786,6 +2815,9 @@ impl Pass<'_> {
         if let EntersChoice::Number { min, max } = kind {
             return self.chooses_number(source, controller, min, max);
         }
+        if matches!(kind, EntersChoice::CardName | EntersChoice::NonlandCardName) {
+            return self.chooses_name(source, controller, kind == EntersChoice::NonlandCardName);
+        }
         let options = self.options_of(kind, controller, source);
         let picked = match options.as_slice() {
             [] => None,
@@ -2805,9 +2837,9 @@ impl Pass<'_> {
                         EntersChoice::Player => "Choose a player.".to_owned(),
                         EntersChoice::Opponent => "Choose an opponent.".to_owned(),
                         EntersChoice::Chapter => "Choose a chapter to start with.".to_owned(),
-                        EntersChoice::CardName => "Choose a card name.".to_owned(),
-                        EntersChoice::NonlandCardName => "Choose a nonland card name.".to_owned(),
-                        EntersChoice::CardType => "Choose a card type.".to_owned(),
+                        EntersChoice::CardName
+                        | EntersChoice::NonlandCardName
+                        | EntersChoice::CardType => "Choose a card type.".to_owned(),
                         EntersChoice::Number { .. } => String::new(),
                     };
                     return Ok(Asked::Ask(Decision {
@@ -2880,14 +2912,12 @@ impl Pass<'_> {
                 .filter(|color| *color != other)
                 .map(ChoiceOption::Color)
                 .collect(),
-            EntersChoice::CreatureType => values::creature_types(self.state),
+            EntersChoice::CreatureType => values::creature_types(),
             EntersChoice::LandType => values::land_types(),
-            EntersChoice::CardName => values::card_names(self.state, |_| true),
-            EntersChoice::NonlandCardName => {
-                values::card_names(self.state, |o| !o.card().is_type(CardType::Land))
-            }
             EntersChoice::CardType => values::card_types(),
-            EntersChoice::Number { .. } => Vec::new(),
+            EntersChoice::CardName
+            | EntersChoice::NonlandCardName
+            | EntersChoice::Number { .. } => Vec::new(),
             EntersChoice::Player => self
                 .state
                 .turn_order_from(controller)

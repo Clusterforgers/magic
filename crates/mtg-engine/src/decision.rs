@@ -9,9 +9,9 @@ use serde::{Deserialize, Serialize};
 use crate::abilities::AbilityRef;
 use crate::choose::{
     CardsChoice, CardsOptions, CostsChoice, CostsOptions, DivideChoice, DivideOptions, ModeChoice,
-    ModeOptions, NumberChoice, NumberOptions, OptionChoice, OptionOptions, OrderChoice,
-    OrderOptions, ReplacementChoice, ReplacementOptions, ScryChoice, ScryOptions, TargetChoice,
-    TargetOptions, TriggersChoice, TriggersOptions, YesNoChoice, YesNoOptions,
+    ModeOptions, NameChoice, NameOptions, NumberChoice, NumberOptions, OptionChoice, OptionOptions,
+    OrderChoice, OrderOptions, ReplacementChoice, ReplacementOptions, ScryChoice, ScryOptions,
+    TargetChoice, TargetOptions, TriggersChoice, TriggersOptions, YesNoChoice, YesNoOptions,
 };
 use crate::combat::{AttackTarget, DamageTarget};
 use crate::help::{Help, Offered};
@@ -55,6 +55,8 @@ pub enum DecisionKind {
     ChooseMode(ModeOptions),
     /// Choose a number (X, or "any number").
     ChooseNumber(NumberOptions),
+    /// Name a card (CR 201.3); the answer is text.
+    ChooseName(NameOptions),
     /// Divide damage or counters among the targets.
     DivideAmount(DivideOptions),
     /// Choose cards from a list; any seat may be asked.
@@ -90,6 +92,7 @@ impl DecisionKind {
             DecisionKind::ChooseTargets(_) => "choose-targets",
             DecisionKind::ChooseMode(_) => "choose-mode",
             DecisionKind::ChooseNumber(_) => "choose-number",
+            DecisionKind::ChooseName(_) => "choose-name",
             DecisionKind::DivideAmount(_) => "divide-amount",
             DecisionKind::ChooseCards(_) => "choose-cards",
             DecisionKind::OrderCards(_) => "order-cards",
@@ -677,6 +680,8 @@ pub enum Answer {
     ChooseMode(ModeChoice),
     /// The number chosen.
     ChooseNumber(NumberChoice),
+    /// The card name.
+    ChooseName(NameChoice),
     /// How the amount is divided.
     DivideAmount(DivideChoice),
     /// The cards chosen.
@@ -712,6 +717,7 @@ impl Answer {
             Answer::ChooseTargets(_) => "choose-targets",
             Answer::ChooseMode(_) => "choose-mode",
             Answer::ChooseNumber(_) => "choose-number",
+            Answer::ChooseName(_) => "choose-name",
             Answer::DivideAmount(_) => "divide-amount",
             Answer::ChooseCards(_) => "choose-cards",
             Answer::OrderCards(_) => "order-cards",

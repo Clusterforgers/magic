@@ -64,6 +64,10 @@ impl Picks {
             DecisionKind::YesNo(options) => {
                 Choice::YesNo(self.pick(if options.only_no { 1 } else { 2 }) == 1)
             }
+            DecisionKind::ChooseName(_) => {
+                self.pick(1);
+                Choice::Name(String::new())
+            }
             DecisionKind::ChooseNumber(options) => {
                 let span = options
                     .max

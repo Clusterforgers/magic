@@ -27,6 +27,11 @@ use mtg_engine::{Decision, Engine, EngineError, Event, GameState};
 
 use crate::windows::{Mode, SeatWindows, Side, Stop};
 
+/// The answer to a question for a card name: none.
+fn no_name() -> Answer {
+    Answer::ChooseName(mtg_engine::choose::NameChoice(String::new()))
+}
+
 /// Picks random legal answers from a seeded generator, so a bot game is reproducible from its seed.
 #[derive(Debug, Clone)]
 pub struct RandomBot {
@@ -544,6 +549,7 @@ impl RandomBot {
                 Answer::ChooseMode(ModeChoice::Modes(chosen))
             }
             DecisionKind::ChooseNumber(options) => self.number(options),
+            DecisionKind::ChooseName(_) => no_name(),
             DecisionKind::DivideAmount(options) => {
                 Answer::DivideAmount(DivideChoice::Division(self.share_out(options)))
             }

@@ -701,6 +701,9 @@ impl Driver {
                 Answer::ChooseNumber(NumberChoice::Cancel)
             }
             DecisionKind::ChooseNumber(o) => Answer::ChooseNumber(NumberChoice::Number(o.min)),
+            DecisionKind::ChooseName(_) => {
+                Answer::ChooseName(mtg_engine::choose::NameChoice(String::new()))
+            }
             DecisionKind::DivideAmount(o) if o.can_cancel => {
                 Answer::DivideAmount(DivideChoice::Cancel)
             }

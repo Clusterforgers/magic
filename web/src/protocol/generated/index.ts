@@ -176,6 +176,8 @@ export type { MyGame } from "./MyGame";
 export type { MyGameSeat } from "./MyGameSeat";
 export type { MyGameStatus } from "./MyGameStatus";
 export type { MyGames } from "./MyGames";
+export type { NameChoice } from "./NameChoice";
+export type { NameOptions } from "./NameOptions";
 export type { NothingToDo } from "./NothingToDo";
 export type { NumberChoice } from "./NumberChoice";
 export type { NumberOptions } from "./NumberOptions";

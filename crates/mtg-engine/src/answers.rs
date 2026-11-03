@@ -148,6 +148,7 @@ pub(crate) fn handle(
         (DecisionKind::ChooseNumber(options), Answer::ChooseNumber(choice)) => {
             choose::number_answer(player, options, choice, pending.is_some())
         }
+        (DecisionKind::ChooseName(_), Answer::ChooseName(it)) => choose::name_answer(player, &it),
         (DecisionKind::DivideAmount(options), Answer::DivideAmount(choice)) => {
             choose::divide_answer(player, options, choice)
         }

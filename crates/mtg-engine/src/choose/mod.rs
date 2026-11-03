@@ -10,6 +10,7 @@ mod cards;
 mod costs;
 mod divide;
 mod mode;
+mod name;
 mod number;
 mod option;
 mod order;
@@ -33,6 +34,7 @@ pub use cards::{CardsChoice, CardsOptions};
 pub use costs::{CostsChoice, CostsOptions, OptionalCost};
 pub use divide::{DivideChoice, DivideOptions};
 pub use mode::{ModeChoice, ModeOption, ModeOptions};
+pub use name::{MAX_NAME_LEN, NameChoice, NameOptions, is_name};
 pub use number::{NumberChoice, NumberOptions};
 pub use option::{ChoiceOption, OptionChoice, OptionOptions};
 pub use order::{OrderChoice, OrderOptions};
@@ -60,6 +62,7 @@ pub(crate) use cards::answer as cards_answer;
 pub(crate) use costs::answer as costs_answer;
 pub(crate) use divide::answer as divide_answer;
 pub(crate) use mode::answer as mode_answer;
+pub(crate) use name::answer as name_answer;
 pub(crate) use number::answer as number_answer;
 pub(crate) use option::answer as option_answer;
 pub(crate) use order::answer as order_answer;
@@ -271,6 +274,8 @@ impl Choices {
 pub enum Choice {
     /// A number (`ChooseNumber`).
     Number(u32),
+    /// A card name (`ChooseName`), empty for none.
+    Name(String),
     /// Cards chosen (`ChooseCards`).
     Cards(Vec<ObjectId>),
     /// Cards put in an order, first to last (`OrderCards`).
@@ -296,6 +301,7 @@ impl Choice {
             Choice::Cards(cards) | Choice::Order(cards) => cards.clone(),
             Choice::Scry(piles) => piles.top.iter().chain(&piles.bottom).copied().collect(),
             Choice::Number(_)
+            | Choice::Name(_)
             | Choice::YesNo(_)
             | Choice::Option(_)
             | Choice::Vote(_)

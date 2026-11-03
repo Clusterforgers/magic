@@ -7,7 +7,7 @@ use std::sync::Arc;
 use mtg_cards::CardDefinition;
 use mtg_core::card::CardType;
 use mtg_core::color::Color;
-use mtg_engine::choose::{NumberChoice, OptionChoice};
+use mtg_engine::choose::{NameChoice, NumberChoice, OptionChoice};
 use mtg_engine::decision::{Answer, DecisionKind};
 use mtg_engine::object::Chosen;
 use mtg_engine::{Event, replay};
@@ -63,7 +63,9 @@ fn play_out(driver: &mut Driver, answers: &mut VecDeque<Answer>) -> Result<usize
             DecisionKind::Priority(_) => {
                 driver.pass()?;
             }
-            DecisionKind::ChooseOption(_) | DecisionKind::ChooseNumber(_) => {
+            DecisionKind::ChooseOption(_)
+            | DecisionKind::ChooseNumber(_)
+            | DecisionKind::ChooseName(_) => {
                 asked += 1;
                 let answer = answers.pop_front().expect("an answer for the question");
                 driver.answer(answer)?;
@@ -78,6 +80,10 @@ fn play_out(driver: &mut Driver, answers: &mut VecDeque<Answer>) -> Result<usize
 
 fn number(n: u32) -> Answer {
     Answer::ChooseNumber(NumberChoice::Number(n))
+}
+
+fn named(name: &str) -> Answer {
+    Answer::ChooseName(NameChoice(name.to_owned()))
 }
 
 fn option(at: usize) -> Answer {
@@ -144,13 +150,23 @@ const GAIN_MATCHING: &str = r#"{"GainLife":{"amount":{"Count":[{"ChosenAs":"it"}
 )]
 #[case::a_card_name(
     &format!(r#"[{{"ChooseValue":{{"kind":{{"CardName":[{{"Type":"Creature"}}]}},"as":"it"}}}},{GAIN_MATCHING}]"#),
-    option(1),
+    named("Elf"),
     2
 )]
-#[case::the_first_name(
+#[case::a_name_in_play(
     &format!(r#"[{{"ChooseValue":{{"kind":{{"CardName":[{{"Type":"Creature"}}]}},"as":"it"}}}},{GAIN_MATCHING}]"#),
-    option(0),
+    named("Bear"),
     1
+)]
+#[case::a_name_no_card_in_the_game_has(
+    &format!(r#"[{{"ChooseValue":{{"kind":{{"CardName":[]}},"as":"it"}}}},{GAIN_MATCHING}]"#),
+    named("Black Lotus"),
+    0
+)]
+#[case::naming_nothing(
+    &format!(r#"[{{"ChooseValue":{{"kind":{{"CardName":[]}},"as":"it"}}}},{GAIN_MATCHING}]"#),
+    named(""),
+    0
 )]
 fn a_value_chosen_in_a_resolution_is_read_by_the_effects_after_it(
     #[values(2, 3, 4)] seats: usize,
@@ -190,14 +206,14 @@ fn a_value_chosen_in_a_resolution_is_read_by_the_effects_after_it(
 #[case::a_card_name(
     r#""CardName""#,
     r#"{"Count":[{"Type":"Creature"},"ChosenName"]}"#,
-    option(1),
+    named("Elf"),
     2,
     Chosen::Name("Elf".to_owned())
 )]
 #[case::a_nonland_card_name(
     r#""NonlandCardName""#,
     r#"{"Count":[{"Type":"Creature"},"ChosenName"]}"#,
-    option(2),
+    named("Giant"),
     1,
     Chosen::Name("Giant".to_owned())
 )]

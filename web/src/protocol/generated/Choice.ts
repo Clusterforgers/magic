@@ -6,4 +6,4 @@ import type { Target } from "./Target";
 /**
  * One answer a player gave during a resolution, kept in the journal until the step that asked consumes it.
  */
-export type Choice = { "Number": number } | { "Cards": Array<ObjectId> } | { "Order": Array<ObjectId> } | { "Scry": ScryChoice } | { "YesNo": boolean } | { "Option": number } | { "Vote": number } | { "Replacement": number } | { "Targets": Array<Target> };
+export type Choice = { "Number": number } | { "Name": string } | { "Cards": Array<ObjectId> } | { "Order": Array<ObjectId> } | { "Scry": ScryChoice } | { "YesNo": boolean } | { "Option": number } | { "Vote": number } | { "Replacement": number } | { "Targets": Array<Target> };
