@@ -479,6 +479,16 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
             },
             false,
         ),
+        TriggerPattern::Did {
+            action, who: by, ..
+        } => {
+            let (name, s) = who(by);
+            let (plural, singular) = action.verbs();
+            (
+                format!("{name} {}", if s.is_empty() { plural } else { singular }),
+                false,
+            )
+        }
         TriggerPattern::Proliferated { who: by } => {
             let (name, s) = who(by);
             (format!("{name} proliferate{s}"), false)

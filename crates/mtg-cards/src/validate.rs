@@ -1664,7 +1664,7 @@ impl<'a> Walker<'a> {
             | TriggerPattern::W11cCrime { who } => {
                 self.at("who", |w| w.reference(who, Kind::Player));
             }
-            TriggerPattern::Drew { who, what } => {
+            TriggerPattern::Drew { who, what } | TriggerPattern::Did { who, what, .. } => {
                 self.at("who", |w| w.reference(who, Kind::Player));
                 self.at("what", |w| w.selector(what));
             }

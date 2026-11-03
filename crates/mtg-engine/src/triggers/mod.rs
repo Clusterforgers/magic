@@ -11,6 +11,8 @@ mod detect_batches;
 #[cfg(test)]
 mod detect_crewed;
 #[cfg(test)]
+mod detect_did;
+#[cfg(test)]
 mod detect_events;
 #[cfg(test)]
 mod detect_except;

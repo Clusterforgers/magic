@@ -172,6 +172,7 @@ mod determinism_replay;
 mod devour_casualty_offspring;
 mod devour_fuzz;
 mod dice_and_coins;
+mod did_triggers;
 mod discard_casts;
 mod divided_resolution;
 mod dredge;
