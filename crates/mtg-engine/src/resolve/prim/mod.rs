@@ -66,6 +66,7 @@ mod modal;
 mod monstrosity;
 mod move_counters;
 mod pair;
+mod reflexive;
 // dk1b
 mod dk1c5_unlock;
 #[cfg(test)]
@@ -215,6 +216,7 @@ fn dispatch(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::RemoveFromCombat { .. } => remove_from_combat::run(cx, effect),
         Effect::Shield { .. } => shield::run(cx, effect),
         Effect::DelayedTrigger { .. } => delayed_trigger::run(cx, effect),
+        Effect::Reflexive { .. } => reflexive::run(cx, effect),
         Effect::If { .. } => if_then::run(cx, effect),
         Effect::May { .. } => may::run(cx, effect),
         Effect::Pay { .. } => pay::run(cx, effect),
@@ -265,6 +267,7 @@ mod tests {
         {"Regenerate":{"what":"This"}}, {"RemoveFromCombat":{"what":"This"}},
         {"Shield":{"when":{"Damage":{}},"by":"Prevent","duration":"UntilEndOfTurn"}},
         {"DelayedTrigger":{"when":{"StepBegins":{"step":"Upkeep","whose":"You"}},"effects":[]}},
+        {"Reflexive":{"effects":[]}},
         {"If":{"condition":"YourTurn","then":[]}}, {"May":{"effects":[]}}, {"Pay":{"cost":"{1}"}},
         {"Modal":{"modes":[]}}, {"RepeatEach":{"over":"EachPlayer","as":"each","effects":[{"Draw":{}}]}},
         {"RollDice":{"sides":6,"results":[{"from":1,"effects":[]}]}}, {"FlipCoin":{"win":[]}}, {"Clash":{}},
@@ -399,6 +402,7 @@ mod tests {
         "Effect.RemoveFromCombat",
         "Effect.Shield",
         "Effect.DelayedTrigger",
+        "Effect.Reflexive",
         "Effect.If",
         "Effect.May",
         "Effect.Pay",

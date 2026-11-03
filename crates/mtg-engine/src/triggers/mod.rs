@@ -84,7 +84,7 @@ pub struct Triggered {
 /// triggers.
 fn effects_trigger(effects: &[Effect]) -> bool {
     effects.iter().any(|effect| match effect {
-        Effect::DelayedTrigger { .. } => true,
+        Effect::DelayedTrigger { .. } | Effect::Reflexive { .. } => true,
         Effect::Continuous { mods, .. } => grants_trigger(mods),
         Effect::If {
             then, otherwise, ..

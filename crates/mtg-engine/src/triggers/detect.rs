@@ -2861,6 +2861,7 @@ mod tests {
             once,
             this_turn: false,
             effects: gain(),
+            targets: Vec::new(),
             bindings: vec![("kept".to_owned(), vec![Target::Player(FOE)])],
         }))
     }

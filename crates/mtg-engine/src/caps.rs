@@ -309,6 +309,7 @@ const RUNS: &[&str] = &[
     "Mod.BlocksAdditional",
     "Mod.Goaded",
     "Effect.DelayedTrigger",
+    "Effect.Reflexive",
     "Effect.If",
     "Effect.May",
     "Effect.Pay",
