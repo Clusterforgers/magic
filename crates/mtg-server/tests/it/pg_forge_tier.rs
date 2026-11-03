@@ -372,11 +372,6 @@ async fn an_ability_left_to_the_table_records_the_servers_wrong_and_the_next_gam
         drive(&mut bots, &handle, usize::MAX).await;
     }
 
-    let cast: i64 =
-        sqlx::query_scalar("SELECT count(*) FROM game_events WHERE event::text LIKE '%SpellCast%'")
-            .fetch_one(&pool)
-            .await
-            .unwrap();
     let left: i64 = sqlx::query_scalar(
         "SELECT count(*) FROM game_events WHERE event::text LIKE '%AbilityLeftToTable%'",
     )
