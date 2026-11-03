@@ -97,6 +97,21 @@ fn printed_as(card: &CardDefinition, printing_id: &str) -> CardDefinition {
     printed
 }
 
+/// `card` with the printing `printing` on the card and on each face; none clears it.
+pub(crate) fn reprinted(card: &CardDefinition, printing: Option<&str>) -> CardDefinition {
+    let mut printed = card.clone();
+    for identity in printed
+        .faces
+        .iter_mut()
+        .map(|face| &mut face.identity)
+        .chain([&mut printed.identity])
+        .flatten()
+    {
+        identity.printing_id = printing.map(str::to_owned);
+    }
+    printed
+}
+
 /// `cards` with the printing each position names, as the deck line that holds the card chose it. Copies of one card in
 /// one printing share a definition; a position with no printing, or a card with no identity, keeps its card. The
 /// printing is a label for the table's art: the rules, the fingerprint and the game state do not see it.
@@ -149,7 +164,7 @@ pub(crate) fn card_facts(card: &Card) -> CardFacts {
 }
 
 /// The spelling of an oracle id the database answers with, so `A1B2...` and `a1b2...` are one card.
-fn canonical(id: &str) -> String {
+pub(crate) fn canonical(id: &str) -> String {
     Uuid::parse_str(id).map_or_else(|_| id.to_owned(), |uuid| uuid.to_string())
 }
 
@@ -231,7 +246,8 @@ struct StoredRules {
 #[derive(Debug)]
 struct Built {
     rules: RulesVersion,
-    drafts: DraftsVersion,
+    /// None when the drafts could not be read, so the next call reads them again.
+    drafts: Option<DraftsVersion>,
     /// The hand-written and the compiled rules, without drafts: what a game that pinned no read builds with.
     base: Arc<Library>,
     /// `base` with the current drafts and their read state.
@@ -352,12 +368,19 @@ impl CardSource {
             None => Arc::new(self.compiled_library(&repo).await?),
         };
         let full = match held {
-            Some(held) if held.drafts == drafts => held.full,
-            _ => Arc::new(self.with_current_drafts(&base).await),
+            Some(held) if held.drafts.as_ref() == Some(&drafts) => {
+                (held.full, Some(drafts.clone()))
+            }
+            _ => match self.with_current_drafts(&base).await {
+                Some(library) => (Arc::new(library), Some(drafts.clone())),
+                // Served this once, never cached as current.
+                None => (base.clone(), None),
+            },
         };
+        let (full, cached) = full;
         *built = Some(Built {
             rules: rules.clone(),
-            drafts: drafts.clone(),
+            drafts: cached,
             base: base.clone(),
             full: full.clone(),
         });
@@ -398,19 +421,19 @@ impl CardSource {
         Ok(library)
     }
 
-    /// `base` with the current drafts and the state of their reads; without drafts if they cannot be read.
-    async fn with_current_drafts(&self, base: &Library) -> Library {
+    /// `base` with the current drafts and the state of their reads; none if they cannot be read.
+    async fn with_current_drafts(&self, base: &Library) -> Option<Library> {
         match self.current_drafts().await {
             Ok(rows) => {
                 let (library, left_out) = base.with_drafts(&rows);
                 for error in &left_out {
                     tracing::warn!(%error, "draft left out");
                 }
-                library
+                Some(library)
             }
             Err(error) => {
                 tracing::warn!(%error, "the drafts could not be read");
-                base.clone()
+                None
             }
         }
     }

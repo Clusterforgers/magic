@@ -14,7 +14,7 @@ use mtg_cards::deck::Issue;
 use mtg_core::house::HouseRules;
 use mtg_protocol::SeatDeck;
 
-use crate::cards::with_printings;
+use crate::cards::{canonical, reprinted, with_printings};
 use crate::deck_choice::format_issues;
 use crate::demo::{self, DemoDeck};
 use crate::recipe::{
@@ -214,6 +214,57 @@ impl ChosenDeck {
         &self.reads
     }
 
+    /// Every card definition of the deck: library, commanders, companion.
+    fn definitions(&self) -> impl Iterator<Item = &Arc<CardDefinition>> {
+        self.cards
+            .iter()
+            .chain(self.commanders.iter())
+            .chain(self.companion.iter())
+    }
+
+    /// The deck with each card of `chosen` it does not already play on that draft rebuilt from the chosen definition
+    /// (keeping the deck line's printing) and pinned to it; the fingerprint follows.
+    fn adopt(
+        &mut self,
+        chosen: &BTreeMap<String, (String, Arc<CardDefinition>)>,
+    ) -> Result<(), FingerprintError> {
+        let mut made: BTreeMap<(String, Option<String>), Arc<CardDefinition>> = BTreeMap::new();
+        let mut pinned = BTreeMap::new();
+        let mut swap = |card: &Arc<CardDefinition>| -> Arc<CardDefinition> {
+            let Some(id) = oracle_of(card) else {
+                return Arc::clone(card);
+            };
+            let Some((hash, source)) = chosen.get(&id) else {
+                return Arc::clone(card);
+            };
+            if self.reads.get(&id) == Some(hash) {
+                return Arc::clone(card);
+            }
+            pinned.insert(id.clone(), hash.clone());
+            let printing = card
+                .identity
+                .as_ref()
+                .and_then(|identity| identity.printing_id.clone());
+            let key = (id, printing);
+            let built = made.entry(key).or_insert_with_key(|(_, printing)| {
+                Arc::new(reprinted(source, printing.as_deref()))
+            });
+            Arc::clone(built)
+        };
+        let cards: Vec<_> = self.cards.iter().map(&mut swap).collect();
+        let commanders: Vec<_> = self.commanders.iter().map(&mut swap).collect();
+        let companion = self.companion.as_ref().map(&mut swap);
+        if pinned.is_empty() {
+            return Ok(());
+        }
+        self.fingerprint = DeckFingerprint::of_seat_with(&cards, &commanders, companion.as_ref())?;
+        self.cards = cards.into();
+        self.commanders = commanders.into();
+        self.companion = companion;
+        self.reads.extend(pinned);
+        Ok(())
+    }
+
     /// The deck with the issues its own check found (`deck_report` in the deck's format), which a
     /// table's deck rules may lift ([`ChosenDeck::issues_in`]). Only issues of codes a table can lift
     /// belong here: the others refuse the deck before it is chosen.
@@ -255,6 +306,40 @@ impl ChosenDeck {
             own
         }
     }
+}
+
+/// The oracle id a definition was made for, in the spelling the database answers with.
+fn oracle_of(card: &CardDefinition) -> Option<String> {
+    card.identity
+        .as_ref()
+        .map(|identity| canonical(&identity.oracle_id))
+}
+
+/// Puts every seat on one definition per card: a card some seat pinned to a draft plays on that draft (the first
+/// seat's) in every seat that holds it, so the recipe, the fingerprints and a resumed game agree whatever the
+/// verdicts were when each seat chose.
+pub(crate) fn unify_reads<'a>(
+    decks: impl IntoIterator<Item = &'a mut ChosenDeck>,
+) -> Result<(), FingerprintError> {
+    let mut decks: Vec<&mut ChosenDeck> = decks.into_iter().collect();
+    let mut chosen: BTreeMap<String, (String, Arc<CardDefinition>)> = BTreeMap::new();
+    for deck in &decks {
+        for (card, hash) in deck.reads() {
+            if chosen.contains_key(card) {
+                continue;
+            }
+            let held = deck
+                .definitions()
+                .find(|held| oracle_of(held).as_deref() == Some(card.as_str()));
+            if let Some(held) = held {
+                chosen.insert(card.clone(), (hash.clone(), Arc::clone(held)));
+            }
+        }
+    }
+    if chosen.is_empty() {
+        return Ok(());
+    }
+    decks.iter_mut().try_for_each(|deck| deck.adopt(&chosen))
 }
 
 /// The choice of every seat of a lobby, and the decks the game was made with.
@@ -332,11 +417,28 @@ impl SeatDecks {
         self.current.get(seat)?.as_ref()
     }
 
+    /// Puts the seats on one definition per card ([`unify_reads`]); the seats whose deck changed, with it.
+    pub(crate) fn unify(&mut self) -> Result<Vec<(usize, ChosenDeck)>, FingerprintError> {
+        let before: Vec<Option<DeckFingerprint>> = self
+            .current
+            .iter()
+            .map(|d| d.as_ref().map(|d| d.fingerprint))
+            .collect();
+        unify_reads(self.current.iter_mut().flatten())?;
+        Ok(self
+            .current
+            .iter()
+            .enumerate()
+            .filter(|(at, deck)| deck.as_ref().map(|d| d.fingerprint) != before[*at])
+            .filter_map(|(at, deck)| deck.clone().map(|deck| (at, deck)))
+            .collect())
+    }
+
     /// Whether any seat plays something else than the deck the game was made with.
     pub(crate) fn changed(&self) -> bool {
         let named = |deck: &Option<ChosenDeck>| {
             deck.as_ref()
-                .map(|deck| (deck.deck.clone(), deck.fingerprint))
+                .map(|deck| (deck.deck.clone(), deck.fingerprint, deck.reads.clone()))
         };
         self.current
             .iter()

@@ -100,7 +100,7 @@ impl DraftRepo {
 
     /// Makes each draft the current draft of its card, in one transaction: the card's other current draft
     /// is retired, a draft that is stored and retired becomes current again, one that is stored and
-    /// current stays as it is (its rules are not rewritten: the hash covers them). Returns how many
+    /// current keeps its rules (the hash covers them) and takes the new `source` and `oracle_matches`, which decide whether Forge meta is trusted; verdicts live apart and are untouched. Returns how many
     /// drafts became current. When a card appears twice, the last one wins.
     ///
     /// A draft for a card the database does not hold, or with a malformed hash, is an error and nothing
@@ -123,11 +123,19 @@ impl DraftRepo {
             )
             .execute(&mut *tx)
             .await?;
-            let done = sqlx::query!(
+            let was_retired = sqlx::query_scalar!(
+                "SELECT retired FROM card_drafts WHERE oracle_id = $1 AND read_hash = $2",
+                oracle_id,
+                draft.read_hash
+            )
+            .fetch_optional(&mut *tx)
+            .await?
+            .unwrap_or(true);
+            sqlx::query!(
                 "INSERT INTO card_drafts (oracle_id, read_hash, rules, source, oracle_matches)
                  VALUES ($1, $2, $3, $4, $5)
-                 ON CONFLICT (oracle_id, read_hash) DO UPDATE SET retired = false
-                 WHERE card_drafts.retired",
+                 ON CONFLICT (oracle_id, read_hash) DO UPDATE
+                 SET retired = false, source = EXCLUDED.source, oracle_matches = EXCLUDED.oracle_matches",
                 oracle_id,
                 draft.read_hash,
                 draft.rules,
@@ -136,7 +144,7 @@ impl DraftRepo {
             )
             .execute(&mut *tx)
             .await?;
-            became_current += done.rows_affected();
+            became_current += u64::from(was_retired);
         }
         tx.commit().await?;
         Ok(became_current)
@@ -209,7 +217,7 @@ impl DraftRepo {
     /// earlier is still current. A verdict on a retired draft moves it too, which only costs a rebuild.
     pub async fn version(&self) -> Result<DraftsVersion, DbError> {
         let row = sqlx::query!(
-            r#"SELECT (SELECT md5(coalesce(string_agg(oracle_id::text || read_hash, ',' ORDER BY oracle_id), ''))
+            r#"SELECT (SELECT md5(coalesce(string_agg(oracle_id::text || read_hash || coalesce(source, '') || oracle_matches::text, ',' ORDER BY oracle_id), ''))
                        FROM card_drafts WHERE NOT retired) AS "current!",
                       (SELECT count(*) FROM card_reads) AS "reads!",
                       (SELECT max(id) FROM card_reads) AS last_read"#

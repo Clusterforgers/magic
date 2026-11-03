@@ -396,3 +396,42 @@ async fn the_version_moves_with_the_current_drafts_and_the_verdicts_and_with_not
         "a draft was retired"
     );
 }
+
+#[sqlx::test]
+async fn inserting_a_stored_draft_again_takes_its_new_source_and_keeps_its_verdicts(pool: PgPool) {
+    let database = seeded(pool.clone()).await;
+    let bolt = oracle_of("Lightning Bolt");
+    let repo = database.drafts();
+    let first = draft(&bolt, 1);
+    repo.insert(std::slice::from_ref(&first)).await.unwrap();
+    let made = database
+        .reads()
+        .append(
+            Some(Uuid::from_u128(1)),
+            &key(&bolt, 1),
+            Verdict::Correct,
+            None,
+        )
+        .await
+        .unwrap();
+    assert!(made.is_some());
+
+    // The embedded record decides: a sweep draft later given Forge meta is trusted, and one whose meta is gone is not.
+    for (source, matches) in [("forge", true), ("sweep", false), ("forge", false)] {
+        let before = repo.version().await.unwrap();
+        let again = NewDraft {
+            source: source.into(),
+            oracle_matches: matches,
+            ..first.clone()
+        };
+        assert_eq!(repo.insert(&[again]).await.unwrap(), 0, "still current");
+        let now = repo.current().await.unwrap();
+        assert_eq!(
+            (now[0].source.as_str(), now[0].oracle_matches),
+            (source, matches)
+        );
+        assert_ne!(repo.version().await.unwrap(), before, "{source} {matches}");
+    }
+    let verdicts = database.reads().state().await.unwrap();
+    assert_eq!(verdicts.len(), 1, "the verdict survives the updates");
+}
