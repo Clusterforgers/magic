@@ -282,6 +282,7 @@ mod lifelink_combat;
 mod living_weapon;
 mod lords;
 mod loyalty_fuzz;
+mod macro_keywords;
 mod madness;
 mod madness_fuzz;
 mod mana_abilities;

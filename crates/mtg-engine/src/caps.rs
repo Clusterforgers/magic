@@ -482,6 +482,7 @@ const RUNS: &[&str] = &[
     "Keyword.Saddle",
     "Keyword.Saddled",
     "Keyword.Exert",
+    "Keyword.Macro",
     "Keyword.Station",
     "Keyword.Myriad",
     "Keyword.Squad",
@@ -983,6 +984,7 @@ mod tests {
     #[case::saddle("Keyword.Saddle", true)]
     #[case::saddled("Keyword.Saddled", true)]
     #[case::exert("Keyword.Exert", true)]
+    #[case::macro_keyword("Keyword.Macro", true)]
     #[case::station("Keyword.Station", true)]
     #[case::ravenous("Keyword.Ravenous", true)]
     #[case::riot("Keyword.Riot", true)]

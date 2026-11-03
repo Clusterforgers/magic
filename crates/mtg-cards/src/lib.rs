@@ -21,6 +21,7 @@ pub mod generated;
 pub(crate) mod identity;
 pub mod keyword;
 pub mod load;
+pub mod macros;
 pub mod mana;
 pub mod mana_trigger;
 pub mod modify;

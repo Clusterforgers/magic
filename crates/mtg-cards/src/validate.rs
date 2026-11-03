@@ -1155,6 +1155,19 @@ impl<'a> Walker<'a> {
         }
     }
 
+    /// A keyword macro: a name in the table, a number of at least 1, and the abilities it expands to.
+    fn keyword_macro(&mut self, name: &str, amount: u32) {
+        match crate::macros::keyword_abilities(name, amount) {
+            _ if amount == 0 => self.problem(format!("{name} needs a number of at least 1")),
+            None => self.problem(format!("`{name}` is not a keyword macro")),
+            Some(abilities) => {
+                for ability in &abilities {
+                    self.ability(ability);
+                }
+            }
+        }
+    }
+
     /// A companion condition may only ask about the card itself, since the deck check reads it from the card alone.
     fn companion(&mut self, condition: &crate::companion::DeckCondition) {
         for pred in condition.unreadable() {
@@ -1267,6 +1280,7 @@ impl<'a> Walker<'a> {
             Keyword::Dredge(0) => self.problem("dredge needs a number of at least 1"),
             Keyword::Fabricate(0) => self.problem("fabricate needs a number of at least 1"),
             Keyword::Afterlife(0) => self.problem("afterlife needs a number of at least 1"),
+            Keyword::Macro { name, amount } => self.keyword_macro(name, *amount),
             Keyword::Companion(condition) => self.companion(condition),
             Keyword::PartnerWith(name) => {
                 self.names
@@ -3973,6 +3987,9 @@ mod tests {
     #[case::a_copy_until_end_of_turn(r#"{"Spell":{"effects":[{"BecomeCopy":{"what":"This","of":"This","duration":"UntilEndOfTurn"}}]}}"#, &["Ability.Spell", "Effect.BecomeCopy"])]
     #[case::a_copy_without_end(r#"{"Spell":{"effects":[{"BecomeCopy":{"what":"This","of":"This","duration":"Forever"}}]}}"#, &["Ability.Spell", "Effect.BecomeCopy"])]
     #[case::a_copy_that_ends_with_another_duration(r#"{"Spell":{"effects":[{"BecomeCopy":{"what":"This","of":"This","duration":"UntilYourNextTurn"}}]}}"#, &["Ability.Spell", "Copy.Duration.UntilYourNextTurn", "Effect.BecomeCopy"])]
+    #[case::bushido_is_a_macro(r#"{"Keyword":{"Macro":{"name":"bushido","amount":2}}}"#, &["Ability.Triggered", "Effect.Continuous", "Keyword.Macro", "Mod.ModifyPT", "Trigger.AnyOf", "Trigger.BecomesBlocked", "Trigger.Blocks"])]
+    #[case::modular_is_a_macro(r#"{"Keyword":{"Macro":{"name":"modular","amount":2}}}"#, &["Ability.Replacement", "Ability.Triggered", "Effect.May", "Effect.PutCounters", "Keyword.Macro", "ReplaceBy.WithCounters", "ReplaceWhen.Enters", "Trigger.ZoneChange"])]
+    #[case::mobilize_is_a_macro(r#"{"Keyword":{"Macro":{"name":"mobilize","amount":2}}}"#, &["Ability.Triggered", "Effect.CreateToken", "Effect.DelayedTrigger", "Effect.Sacrifice", "Keyword.Macro", "Trigger.Attacks", "Trigger.StepBegins"])]
     #[case::storm_is_a_keyword(r#"{"Keyword":"Storm"}"#, &["Keyword.Storm"])]
     #[case::a_copy_with_the_exceptions_the_values_keep(r#"{"Spell":{"effects":[{"CreateToken":{"token":{"CopyOf":{"of":"This","except":[{"AddKeyword":"Haste"},{"AddSubtype":"Zombie"},{"SetColors":["Blue"]},{"SetPT":{"power":1,"toughness":1}}]}}}}]}}"#, &["Ability.Spell", "Effect.CreateToken", "Effect.CreateToken.Copy", "Keyword.Haste", "Mod.AddKeyword", "Mod.AddSubtype", "Mod.SetColors", "Mod.SetPT"])]
     #[case::a_copy_with_an_exception_that_waits(r#"{"Spell":{"effects":[{"CreateToken":{"token":{"CopyOf":{"of":"This","except":["SwitchPT"]}}}}]}}"#, &["Ability.Spell", "Copy.Except.SwitchPT", "Effect.CreateToken", "Effect.CreateToken.Copy", "Mod.SwitchPT"])]

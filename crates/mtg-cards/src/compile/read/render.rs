@@ -2559,8 +2559,16 @@ impl Writer<'_> {
             .or_else(|| super::w7e_phase::w7e_phased_and_protected_text(effects))
             .or_else(|| super::w7e_phase::w7e_protected_text(effects))
             .or_else(|| super::w11b_phase::w11b_untap_then_phase_out_text(effects))
+            .or_else(|| self.macro_action(effects))
             // Populate is two steps and one word.
             .or_else(|| copies::is_populate(effects).then(|| ("populate".to_owned(), 2)))
+    }
+
+    /// A keyword action of the macro table; earthbend names its target without writing it.
+    fn macro_action(&mut self, effects: &[Effect]) -> Option<(String, usize)> {
+        let found = super::keyword_actions::text(effects)?;
+        self.named |= found.0.starts_with("earthbend");
+        Some(found)
     }
 
     /// "~ explores, then it explores again": one creature that explores twice is one sentence, which no joint splits.

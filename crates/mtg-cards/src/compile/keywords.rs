@@ -447,6 +447,10 @@ pub fn read(item: &str) -> Option<Keyword> {
             ]),
             cost,
         }),
+        name if crate::macros::is_keyword(name) => positive(rest).map(|amount| Keyword::Macro {
+            name: name.to_owned(),
+            amount,
+        }),
         name if rest.is_empty() => plain(name),
         _ => None,
     }
@@ -938,6 +942,34 @@ mod tests {
         #[case] expected: &[Keyword],
     ) {
         assert_eq!(read_all(item).as_deref(), Some(expected));
+    }
+
+    #[rstest]
+    #[case::bushido("Bushido 1", "bushido", 1)]
+    #[case::bushido_capitals("bushido 3", "bushido", 3)]
+    #[case::modular("Modular 2", "modular", 2)]
+    #[case::mobilize("Mobilize 4", "mobilize", 4)]
+    fn a_keyword_of_the_macro_table_reads_with_its_number(
+        #[case] item: &str,
+        #[case] name: &str,
+        #[case] amount: u32,
+    ) {
+        assert_eq!(
+            read(item),
+            Some(Keyword::Macro {
+                name: name.to_owned(),
+                amount
+            })
+        );
+        assert!(is_keyword_line(item));
+    }
+
+    #[rstest]
+    #[case::no_number("Bushido")]
+    #[case::zero("Modular 0")]
+    #[case::a_cost("Mobilize {2}")]
+    fn a_macro_keyword_without_a_number_reads_as_no_keyword(#[case] item: &str) {
+        assert_eq!(read(item), None);
     }
 
     #[rstest]
@@ -1500,7 +1532,7 @@ mod tests {
 
     /// The keywords a sentence names, read by the static templates and not by the keyword table ("You may exert ~ as it
     /// attacks.").
-    const W9D_SENTENCES: [&str; 1] = ["Exert"];
+    const W9D_SENTENCES: [&str; 2] = ["Exert", "Macro"];
 
     #[test]
     fn every_keyword_the_dsl_declares_is_recognised_by_name() {
