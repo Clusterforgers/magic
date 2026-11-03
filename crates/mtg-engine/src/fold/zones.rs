@@ -306,6 +306,7 @@ fn spell_cast(
     }
     note_rebound(state, object, from);
     note_aftermath(state, object, from);
+    state.log_event(mtg_cards::value::TallyEvent::SpellCast, player, object);
     // A spell cast for its flashback cost, or with its buyback cost paid, is moved by a replacement effect.
     let bought_back = state.objects.get(&object).is_some_and(|spell| {
         payments(spell.card(), &choices.optional_costs, OptionalKind::Buyback) > 0
