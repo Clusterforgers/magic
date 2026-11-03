@@ -24,7 +24,10 @@ export function verdictOf(report: DeckReport): Verdict {
   if (state === 'blocked' && reasons.length === 0) reasons.push('The deck cannot be played as it stands.')
   if (reasons.length > 0) return { kind: 'blocked', reasons }
   const cards = counts.manual + counts.partial + counts.stale
-  if (cards === 0) return counts.read === 0 ? { kind: 'runs' } : { kind: 'reads', cards: counts.read }
+  if (cards === 0)
+    return counts.read + counts.forge === 0
+      ? { kind: 'runs' }
+      : { kind: 'reads', cards: counts.read + counts.forge }
   const names = [...new Set(report.cards.filter((card) => !runsWhole(card.support)).map((card) => card.name))]
   return { kind: 'hand', cards, names, toRead: report.summary.to_read }
 }

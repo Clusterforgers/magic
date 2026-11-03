@@ -5,7 +5,7 @@ import type { Support } from '@/protocol/generated'
 import { SUPPORT_LABEL } from './format'
 import { SupportGlyph, SupportMark, supportEdge, supportRing } from './SupportMark'
 
-const STATES: readonly Support[] = ['verified', 'read', 'partial', 'manual', 'stale', 'unplayable']
+const STATES: readonly Support[] = ['verified', 'read', 'forge', 'partial', 'manual', 'stale', 'unplayable']
 
 function mark(support: Support): HTMLElement {
   const { container } = render(<SupportMark support={support} />)

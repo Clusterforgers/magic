@@ -129,6 +129,7 @@ const SOURCES: Record<ImportSource, true> = {
 const SUPPORTS: Record<Support, true> = {
   verified: true,
   read: true,
+  forge: true,
   partial: true,
   manual: true,
   stale: true,
@@ -152,9 +153,11 @@ const isNullableText = (value: unknown): value is string | null => value === nul
 function readCounts(value: unknown): Counts | null {
   if (!isRecord(value)) return null
   const { total, verified, read, partial, manual, stale, unplayable } = value
+  // A check stored before the Forge tier has no count of it.
+  const forge = value.forge === undefined ? 0 : value.forge
   if (!isCount(total) || !isCount(verified) || !isCount(read) || !isCount(partial)) return null
-  if (!isCount(manual) || !isCount(stale) || !isCount(unplayable)) return null
-  return { total, verified, read, partial, manual, stale, unplayable }
+  if (!isCount(manual) || !isCount(stale) || !isCount(unplayable) || !isCount(forge)) return null
+  return { total, verified, read, forge, partial, manual, stale, unplayable }
 }
 
 /** Reads the summary of a check; null when a field is missing or of another kind. */

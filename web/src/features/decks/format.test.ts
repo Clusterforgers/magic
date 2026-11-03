@@ -93,6 +93,7 @@ describe('STATE_LABEL', () => {
 describe('SUPPORT_LABEL', () => {
   it.each([
     ['verified', 'Verified'],
+    ['forge', 'From Forge'],
     ['partial', 'Partial'],
     ['manual', 'Manual'],
     ['stale', 'Stale'],
@@ -123,6 +124,12 @@ describe('countsText', () => {
       'read cards beside the others (a read card is not played by hand)',
       counts({ total: 10, verified: 3, read: 2, partial: 1, manual: 2, stale: 1, unplayable: 1 }),
       '3 of 10 verified, 2 on reads, 4 played by hand, 1 unplayable',
+    ],
+    ['forge cards', counts({ verified: 96, forge: 4 }), '96 of 100 verified, 4 cards from Forge'],
+    [
+      'read and forge cards beside the others (neither is played by hand)',
+      counts({ total: 10, verified: 3, read: 2, forge: 1, manual: 3, unplayable: 1 }),
+      '3 of 10 verified, 2 on reads, 1 card from Forge, 3 played by hand, 1 unplayable',
     ],
     ['no cards', counts({ total: 0, verified: 0 }), '0 of 0 verified'],
   ] satisfies ReadonlyArray<[string, Counts, string]>)('words %s', (_what, given, text) => {
