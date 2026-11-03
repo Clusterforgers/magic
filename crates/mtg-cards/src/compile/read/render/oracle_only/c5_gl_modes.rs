@@ -25,6 +25,7 @@ pub(super) fn c5_gl_add(ability: &Ability, texts: &mut Vec<String>) {
     let [
         Effect::Modal {
             choose,
+            who: crate::refs::Ref::You,
             repeat: false,
             at_random: false,
             once_each_turn: false,

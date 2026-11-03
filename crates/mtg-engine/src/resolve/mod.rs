@@ -50,6 +50,9 @@ pub(crate) const CLEAR: &str = "~clear:";
 /// The prefix of a bound name in a finished step that records the X its payment announced (`~x:3`) instead.
 pub(crate) const W6C_PAID_X: &str = "~x:";
 
+/// The prefix of a bound name in a finished step that keeps a number (`~let:<number>:<name>`) for `Amount::Bound` instead.
+pub(crate) const LET: &str = "~let:";
+
 /// The prefix of the bound name (`~legal:<index>`) under which the first step records the targets of a specification
 /// that are legal as the resolution begins: the later steps act on them even after an earlier step made them illegal
 /// (CR 608.2b).
@@ -88,6 +91,8 @@ pub struct Resolving {
     pub(crate) w11b_phased: Vec<ObjectRef>,
     /// The X announced as a payment in the resolution was made ("you may pay {X}{R}. If you do"), which the effects after it read.
     pub(crate) w6c_paid_x: Option<u32>,
+    /// The numbers `Let` steps fixed, by name, which `Amount::Bound` reads.
+    pub(crate) lets: Vec<(String, i64)>,
     /// The zones the resolution has searched so far, by the player who searched, which "if you search your library this way" reads.
     pub(crate) searched: Vec<(PlayerId, Zone)>,
 }
@@ -107,6 +112,7 @@ impl Resolving {
             w14b_exiled: Vec::new(),
             w11b_phased: Vec::new(),
             w6c_paid_x: None,
+            lets: Vec::new(),
             searched: Vec::new(),
         }
     }

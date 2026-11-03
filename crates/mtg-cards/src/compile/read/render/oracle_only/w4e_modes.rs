@@ -29,6 +29,7 @@ pub(super) fn wordings(ability: &Ability) -> Vec<String> {
     let [
         Effect::Modal {
             choose,
+            who: crate::refs::Ref::You,
             repeat,
             at_random: false,
             once_each_turn: false,

@@ -772,6 +772,7 @@ pub(super) fn alternatives(targets: &[TargetSpec], effects: &[Effect]) -> Vec<Ve
     if let [
         Effect::Modal {
             choose,
+            who: crate::refs::Ref::You,
             repeat,
             modes,
             at_random,

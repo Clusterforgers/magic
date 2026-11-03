@@ -115,6 +115,7 @@ pub fn split_charm(name: &str) -> Arc<CardDefinition> {
         Ability::Spell {
             targets: Vec::new(),
             effects: vec![Effect::Modal {
+                who: mtg_cards::refs::Ref::You,
                 choose: Bounds {
                     min: Amount::one(),
                     max: Some(Amount::Fixed(1)),

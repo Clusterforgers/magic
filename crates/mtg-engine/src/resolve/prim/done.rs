@@ -119,6 +119,7 @@ fn reports(effect: &Effect) -> Reports {
         | Effect::Clash { .. }
         | Effect::Vote { .. }
         | Effect::VillainousChoice { .. }
+        | Effect::Let { .. }
         | Effect::Either { .. } => Reports::Nothing,
     }
 }

@@ -275,6 +275,7 @@ mod lands_and_sickness;
 mod layers;
 mod layers_fuzz;
 mod legend_rule;
+mod let_and_modal_who;
 mod level_up;
 mod library_effects;
 mod library_fuzz;

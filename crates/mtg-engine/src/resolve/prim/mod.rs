@@ -26,6 +26,7 @@ mod copy_card;
 mod copy_spell;
 mod crewed;
 mod join_attack;
+mod let_amount;
 mod retarget;
 mod unattach;
 mod w2d_villainous;
@@ -225,6 +226,7 @@ fn dispatch(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::May { .. } => may::run(cx, effect),
         Effect::Pay { .. } => pay::run(cx, effect),
         Effect::Modal { .. } => modal::run(cx, effect),
+        Effect::Let { .. } => let_amount::run(cx, effect),
         Effect::RepeatEach { .. } => repeat_each::run(cx, effect),
         Effect::RollDice { .. } => roll_dice::run(cx, effect),
         Effect::FlipCoin { .. } => flip_coin::run(cx, effect),

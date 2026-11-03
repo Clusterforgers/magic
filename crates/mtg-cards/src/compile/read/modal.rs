@@ -43,6 +43,7 @@ pub fn modal(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     let fits = c11d_fits(&choose, repeat, modes.len());
     (fits && (all_if.is_none() || modes.len() == 2)).then(|| {
         vec![Effect::Modal {
+            who: crate::refs::Ref::You,
             choose,
             repeat,
             at_random,

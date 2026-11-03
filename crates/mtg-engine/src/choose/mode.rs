@@ -8,7 +8,7 @@
 use mtg_cards::ability::Ability;
 use mtg_cards::compile::render_mode;
 use mtg_cards::effect::{Effect, Mode};
-use mtg_cards::refs::{Bounds, TargetSpec};
+use mtg_cards::refs::{Bounds, Ref, TargetSpec};
 use mtg_cards::value::{Amount, Condition};
 use mtg_core::ids::{ObjectId, PlayerId};
 use serde::{Deserialize, Serialize};
@@ -101,6 +101,8 @@ pub(crate) fn answer(
 
 /// The modes of a modal ability and how many are chosen.
 pub(crate) struct Modal<'a> {
+    /// Who chooses the modes.
+    pub(crate) who: &'a Ref,
     /// How many modes are chosen.
     pub(crate) choose: &'a Bounds,
     /// The same mode may be chosen more than once.
@@ -147,6 +149,7 @@ pub(crate) fn modal_of(rules: &Ability) -> Option<Modal<'_>> {
         [
             Effect::Modal {
                 choose,
+                who,
                 repeat,
                 modes,
                 at_random,
@@ -155,6 +158,7 @@ pub(crate) fn modal_of(rules: &Ability) -> Option<Modal<'_>> {
                 all_if,
             },
         ] => Some(Modal {
+            who,
             choose,
             repeat: *repeat,
             modes,

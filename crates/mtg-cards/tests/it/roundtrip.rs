@@ -170,6 +170,7 @@ fn simple_amount() -> impl Strategy<Value = Amount> {
         leaf_ref().prop_map(Amount::Players),
         leaf_ref().prop_map(Amount::LowestLife),
         Just(Amount::Kicks),
+        bound_name().prop_map(Amount::Bound),
     ]
 }
 
@@ -1105,6 +1106,7 @@ fn effect() -> impl Strategy<Value = Effect> {
                     }
                 }
             ),
+            (bound_name(), amount()).prop_map(|(bind, amount)| Effect::Let { bind, amount }),
             (trigger_pattern(), any::<bool>(), list()).prop_map(|(when, once, effects)| {
                 Effect::DelayedTrigger {
                     when,
@@ -1116,6 +1118,7 @@ fn effect() -> impl Strategy<Value = Effect> {
             (
                 bounds(),
                 any::<bool>(),
+                reference(),
                 vec(
                     (
                         proptest::option::of(text()),
@@ -1125,8 +1128,9 @@ fn effect() -> impl Strategy<Value = Effect> {
                     1..3
                 )
             )
-                .prop_map(|(choose, repeat, modes)| Effect::Modal {
+                .prop_map(|(choose, repeat, who, modes)| Effect::Modal {
                     choose,
+                    who,
                     repeat,
                     at_random: false,
                     once_each_turn: false,

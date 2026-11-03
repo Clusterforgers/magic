@@ -406,6 +406,8 @@ pub enum Amount {
     Promised,
     /// How many permanents this permanent devoured as it entered (CR 702.82); zero once it has left the battlefield.
     Devoured,
+    /// The number a `Let` of the resolving spell or ability fixed under the name; zero before it ran.
+    Bound(String),
     /// One if the spell was cast for this alternative cost, else zero (a target specification that only awaken adds reads it in its most).
     CastWith(CastWay),
     /// How many colors there are among the mana spent to cast the spell the source is or came from (CR 702.44, sunburst).
@@ -578,6 +580,7 @@ enum Tagged {
     Mutations(Ref),
     Promised,
     Devoured,
+    Bound(String),
     CastWith(CastWay),
     ColorsSpent,
     PermanentsGraved,
@@ -676,6 +679,7 @@ enum TaggedRef<'a> {
     Mutations(&'a Ref),
     Promised,
     Devoured,
+    Bound(&'a str),
     CastWith(CastWay),
     ColorsSpent,
     PermanentsGraved,
@@ -753,6 +757,7 @@ impl From<Tagged> for Amount {
             Tagged::Mutations(of) => Amount::Mutations(of),
             Tagged::Promised => Amount::Promised,
             Tagged::Devoured => Amount::Devoured,
+            Tagged::Bound(name) => Amount::Bound(name),
             Tagged::CastWith(way) => Amount::CastWith(way),
             Tagged::ColorsSpent => Amount::ColorsSpent,
             Tagged::PermanentsGraved => Amount::PermanentsGraved,
@@ -827,6 +832,7 @@ impl Serialize for Amount {
             Amount::Mutations(of) => TaggedRef::Mutations(of).serialize(serializer),
             Amount::Promised => TaggedRef::Promised.serialize(serializer),
             Amount::Devoured => TaggedRef::Devoured.serialize(serializer),
+            Amount::Bound(name) => TaggedRef::Bound(name).serialize(serializer),
             Amount::CastWith(way) => TaggedRef::CastWith(*way).serialize(serializer),
             Amount::ColorsSpent => TaggedRef::ColorsSpent.serialize(serializer),
             Amount::PermanentsGraved => TaggedRef::PermanentsGraved.serialize(serializer),
