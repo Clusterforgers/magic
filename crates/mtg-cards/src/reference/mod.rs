@@ -17,6 +17,7 @@ const SOURCES: &[&str] = &[
     include_str!("../card.rs"),
     include_str!("../ability.rs"),
     include_str!("../effect.rs"),
+    include_str!("../did.rs"),
     include_str!("../trigger.rs"),
     include_str!("../cost.rs"),
     include_str!("../refs.rs"),
