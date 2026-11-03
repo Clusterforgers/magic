@@ -7,7 +7,8 @@ use axum::Json;
 use axum::extract::rejection::PathRejection;
 use axum::extract::{Path, Request, State};
 use axum::http::{HeaderMap, StatusCode};
-use mtg_db::{FixMark, FixMarkRepo};
+use mtg_cards::support::Support;
+use mtg_db::{DraftKey, FixMark, FixMarkRepo, ReadRepo, Verdict};
 use mtg_import::ids::OracleId;
 use mtg_protocol::rest::{
     DeckErrorCode, FixMarkBody, FixMarkList, FixMarkView, MAX_FIX_NOTE_CHARS,
@@ -16,7 +17,11 @@ use sqlx::types::uuid::Uuid;
 
 use crate::api::{ApiError, read_json_limited};
 use crate::card_api::failed;
+use crate::cards::CardSource;
 use crate::server::AppState;
+
+/// The note of the `wrong` verdict that a mark without a note of its own leaves on a card that runs on a read.
+const MARKED_TO_FIX: &str = "marked to fix";
 
 /// Largest body of a mark: a note of 280 characters, each escaped in JSON.
 const MARK_BODY_LIMIT: usize = 4 * 1024;
@@ -24,6 +29,8 @@ const MARK_BODY_LIMIT: usize = 4 * 1024;
 /// What every fix-mark request has: the signed-in account's marks and its id.
 struct Session {
     repo: FixMarkRepo,
+    reads: ReadRepo,
+    cards: CardSource,
     user: Uuid,
 }
 
@@ -39,8 +46,54 @@ async fn session(app: &AppState, headers: &HeaderMap) -> Result<Session, ApiErro
     let user = app.auth().require_user(headers).await?;
     Ok(Session {
         repo: cards.database().fix_marks(),
+        reads: cards.database().reads(),
+        cards: cards.clone(),
         user: user.id.uuid(),
     })
+}
+
+impl Session {
+    /// A card that runs on a read (a player's or Forge's) is played by hand from the next game once an account marks
+    /// it to fix: its draft gets this account's `wrong` verdict with the mark's note. A card in another state, or a
+    /// failure, changes nothing; the mark itself stands.
+    async fn read_wrong(&self, card: &OracleId, note: Option<&str>) {
+        let wrong = async {
+            let found = self
+                .cards
+                .database()
+                .cards()
+                .get_many(std::slice::from_ref(card))
+                .await
+                .map_err(|error| error.to_string())?;
+            let Some(stored) = found.first() else {
+                return Ok(());
+            };
+            let rules = self
+                .cards
+                .rules()
+                .await
+                .map_err(|error| error.to_string())?;
+            let support = rules.support_of(stored).support;
+            let draft = rules.library().draft(card.as_str());
+            let (true, Some(draft)) = (matches!(support, Support::Read | Support::Forge), draft)
+            else {
+                return Ok(());
+            };
+            let key = DraftKey {
+                oracle_id: card.clone(),
+                read_hash: draft.read_hash.clone(),
+            };
+            let note = note.unwrap_or(MARKED_TO_FIX);
+            self.reads
+                .append(Some(self.user), &key, Verdict::Wrong, Some(note))
+                .await
+                .map(drop)
+                .map_err(|error| error.to_string())
+        };
+        if let Err(error) = wrong.await {
+            tracing::warn!(%error, "could not record the wrong read of a marked card");
+        }
+    }
 }
 
 /// The id of a card in the path; one that is no id and one that names no card look alike.
@@ -111,6 +164,7 @@ pub(crate) async fn put(
         .await
         .map_err(|error| failed(&error))?
         .ok_or_else(ApiError::not_found)?;
+    s.read_wrong(&card, note.as_deref()).await;
     Ok(Json(view_of(mark)))
 }
 

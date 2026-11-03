@@ -11,6 +11,7 @@ export const SUPPORT_ORDER: readonly Support[] = [
   'manual',
   'stale',
   'partial',
+  'forge',
   'read',
   'verified',
 ]
@@ -20,8 +21,9 @@ const RANK: Readonly<Record<Support, number>> = {
   manual: 1,
   stale: 2,
   partial: 3,
-  read: 4,
-  verified: 5,
+  forge: 4,
+  read: 5,
+  verified: 6,
 }
 
 /** True for a state the game does not run whole. */

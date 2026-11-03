@@ -275,6 +275,7 @@ pub(crate) async fn draft_library(db: &Database) -> Result<(Library, usize), Cli
                 .filter(|state| state.read_hash == draft.read_hash)
                 .map_or(CardsReadState::Pending, |state| cards_state(state.state));
             DraftRules {
+                forge: false,
                 oracle_id: draft.oracle_id.as_str().to_owned(),
                 read_hash: draft.read_hash,
                 rules: draft.rules,
@@ -358,6 +359,7 @@ mod tests {
             state,
             correct: 0,
             wrong: 0,
+            forge: false,
         }
     }
 

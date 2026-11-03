@@ -10,6 +10,14 @@ export const TO_READ_TITLE = 'To read'
 /** The deck state of a deck whose only cards that are not Verified are approved reads. */
 export const RUNS_ON_READS = 'Runs on reads'
 
+/** What a card translated from a Forge script is, in plain words: the game runs it, nobody verified it. */
+export const FROM_FORGE = 'Runs automatically, translated from Forge, not verified'
+
+/** "1 card from Forge", "4 cards from Forge": copies of cards that run on a Forge translation. */
+export function cardsFromForge(count: number): string {
+  return `${count} ${count === 1 ? 'card' : 'cards'} from Forge`
+}
+
 /** "no cards to read", "1 card to read", "12 cards to read". */
 export function cardsToRead(count: number): string {
   if (count === 0) return `no cards ${TO_READ}`

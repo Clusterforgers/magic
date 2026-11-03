@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "SELECT d.oracle_id, d.read_hash, d.rules, d.retired FROM card_drafts d\n             JOIN unnest($1::uuid[], $2::text[]) AS k(oracle_id, read_hash)\n               ON d.oracle_id = k.oracle_id AND d.read_hash = k.read_hash\n             ORDER BY d.oracle_id, d.created_at, d.read_hash",
+  "query": "SELECT oracle_id, read_hash, rules, retired, source, oracle_matches FROM card_drafts\n             WHERE NOT retired ORDER BY oracle_id",
   "describe": {
     "columns": [
       {
@@ -46,20 +46,41 @@
             "name": "retired"
           }
         }
+      },
+      {
+        "ordinal": 4,
+        "name": "source",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "card_drafts",
+            "name": "source"
+          }
+        }
+      },
+      {
+        "ordinal": 5,
+        "name": "oracle_matches",
+        "type_info": "Bool",
+        "origin": {
+          "Table": {
+            "table": "card_drafts",
+            "name": "oracle_matches"
+          }
+        }
       }
     ],
     "parameters": {
-      "Left": [
-        "UuidArray",
-        "TextArray"
-      ]
+      "Left": []
     },
     "nullable": [
+      false,
+      false,
       false,
       false,
       false,
       false
     ]
   },
-  "hash": "90e5bab307cccbfff931c327454caa38c0ea15f8b8e7dbd3ecea55d0eba2db9e"
+  "hash": "133df1944965a152cc03702a114c7aa8adad2af5fea7ed3e8200708c2ae740c7"
 }

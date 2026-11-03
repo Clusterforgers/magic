@@ -9,13 +9,14 @@ The per-card support lookup (`Library::support` in `mtg-cards`), the report (`mt
 - Card support, per oracle id, is computed from the card's rules file, its imported oracle text and the primitives the engine runs ([cards-dsl.md](cards-dsl.md) owns the definitions):
   - `Verified`: the rules cover the whole text, the text is unchanged, and the engine runs every primitive used. A card with no file and no rules text once reminder text (parentheses) is removed, such as a vanilla creature or a basic land, is `Verified` too.
   - `Read`: a whole draft the checker could not prove, read and found correct by a player; it runs like `Verified` and is counted apart ([cards-dsl.md](cards-dsl.md), Read tier).
+  - `Forge`: a trusted whole translation of a Forge script whose Oracle text equals ours (cards-dsl.md, Forge source); it runs like `Read`, is counted apart and shown as "From Forge", and a `wrong` read ends it.
   - `Partial`: implemented except the listed clauses; each carries a plain reason and the span of oracle text it covers.
   - `Manual`: no implementation; the table resolves the whole text by hand.
   - `Stale`: the oracle text changed since the rules were written (errata). Counts as `Manual` until reviewed.
   - `Unplayable`: the engine cannot host the card at all (digital-only actions, ante, joke-set mechanics).
 - Deck state:
   - `Verified`: legal, and every card of every zone is `Verified`, the sideboard included.
-  - `Runs on reads` (`read`): legal, and every card is `Verified` or `Read`, at least one `Read`.
+  - `Runs on reads` (`read`): legal, and every card is `Verified`, `Read` or `Forge`, at least one of the last two; the counts line names the copies from Forge ("4 cards from Forge").
   - `Played by hand` (`manual_play`): legal, with some cards neither `Verified` nor `Read`.
   - `Blocked`: illegal, or holds an `Unplayable` card.
   - `Unchecked`: never checked, or changed since.
@@ -32,7 +33,7 @@ The per-card support lookup (`Library::support` in `mtg-cards`), the report (`mt
 
 ## The report
 
-`DeckReport { deck_hash, coverage_hash, format, legality: [Issue], cards: [{oracle_id, name, zone, count, support, draft?, reasons: [{face, span, text}]}], summary }`; `summary` is `{format, state, counts, zones, issues, to_read}` with copies by support state (`total`, `verified`, `read`, `partial`, `manual`, `stale`, `unplayable`) overall and per zone, and `state` one of `verified`, `read`, `manual_play`, `blocked` (a report is never `unchecked`); `draft` is the read state of a card's draft (`Library::draft_state`) and is left out while the card has none, `to_read` the distinct cards whose draft is `pending`.
+`DeckReport { deck_hash, coverage_hash, format, legality: [Issue], cards: [{oracle_id, name, zone, count, support, draft?, reasons: [{face, span, text}]}], summary }`; `summary` is `{format, state, counts, zones, issues, to_read}` with copies by support state (`total`, `verified`, `read`, `forge`, `partial`, `manual`, `stale`, `unplayable`) overall and per zone, and `state` one of `verified`, `read`, `manual_play`, `blocked` (a report is never `unchecked`); `draft` is the read state of a card's draft (`Library::draft_state`) and is left out while the card has none, `to_read` the distinct cards whose draft is `pending`.
 
 - One pure function in `mtg-cards` (`deck_report(format, lines, cards, library, caps)` in the `deck` module) over the deck, the facts of its cards and the rules library serves the deck endpoints, the CLI and tests.
 - Legality is its own section (`legality`, a list of `Issue {code, message, zone, oracle_id, name}`), so "illegal" and "not implemented" never blur. The rules:
@@ -54,7 +55,7 @@ The server runs the engine's check in the game's format when a seat chooses a de
 
 ## Highlighting
 
-- Deck list and builder: every card that is not `Verified` gets an icon, a word (Read, Manual, Partial, Stale, Unplayable) and a coloured edge, never colour alone. The header counts them ("96 of 100 verified, 4 played by hand", the partial, manual and stale copies added up) with an "issues only" filter and a sort that puts them first. A deck whose cards are `Verified` or `Read` is marked "Runs on reads", its read copies are counted ("24 of 28 verified, 4 on reads"), and a deck with drafts waiting says "N cards to read" beside the counts; a card played by hand says in a line whether its draft waits for a read or was found wrong.
+- Deck list and builder: every card that is not `Verified` gets an icon, a word (Read, From Forge, Manual, Partial, Stale, Unplayable) and a coloured edge, never colour alone. The header counts them ("96 of 100 verified, 4 played by hand", the partial, manual and stale copies added up) with an "issues only" filter and a sort that puts them first. A deck whose cards are `Verified` or `Read` is marked "Runs on reads", its read copies are counted ("24 of 28 verified, 4 on reads"), and a deck with drafts waiting says "N cards to read" beside the counts; a card played by hand says in a line whether its draft waits for a read or was found wrong.
 - Builder summary: the header says "N cards played by hand" (and how many cannot be played), a "Played by hand" list gives each such card with its state, reasons and a flag that marks it important to fix, and the save bar names what stands in the way of saving (legality issues never do).
 - Card preview: the oracle text with the unsupported clauses underlined and the reason beside it, and a "Mark important to fix" button for any card (`web.md`, Fix marks).
 - Not-validated list: `/decks/unvalidated` (every saved deck) and `/decks/$deckId/unvalidated` (one) list each card that is not `Verified` with its unread clauses, each the quoted span of the card's oracle text beside its plain reason, the decks that hold it, a filter by state (and one for the cards to read), a note on each card whose draft waits or was found wrong, and a "Copy as text" button; the cards of most decks come first, so the owner sees what to fix first (`web.md`). The precon details quote the same clauses.

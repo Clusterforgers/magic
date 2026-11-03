@@ -18,15 +18,16 @@ use mtg_cards::load::Library;
 use mtg_cards::{Caps, CardDefinition};
 use mtg_core::color::ColorSet;
 use mtg_core::house::HouseRules;
-use mtg_db::{
-    DbError, DeckBoard, IndexVersion, PreconDeckDetail, PreconDeckId, PreconVersion, RulesVersion,
-};
+use mtg_db::{DbError, DeckBoard, IndexVersion, PreconDeckDetail, PreconDeckId, PreconVersion};
 use mtg_protocol::rest::{DeckPicture, MAX_DECK_PICTURES, PreconListItem};
 use thiserror::Error;
 use tokio::sync::Mutex;
 
 use crate::card_api::card_colors;
-use crate::cards::{CardSource, CatalogError, Rules, card_facts, identified, printed_card};
+use crate::cards::{
+    CardSource, CatalogError, Reads, Rules, StoredVersion, card_facts, identified, pin_of,
+    printed_card,
+};
 use crate::deck_cards::Line;
 use crate::deck_choice::{commander_ids, format_issues, library_ids};
 use crate::recipe::FormatKind;
@@ -83,6 +84,8 @@ pub(crate) struct Judged {
     pub(crate) commanders: Vec<String>,
     /// Their definitions, in the same order.
     pub(crate) leaders: Vec<Arc<CardDefinition>>,
+    /// The draft each card that runs on a read plays on, by oracle id.
+    pub(crate) reads: Reads,
 }
 
 /// The cards whose pictures stand for a deck in a list: its commanders, else its first card of the main board.
@@ -163,6 +166,7 @@ pub(crate) struct Judge<'a> {
     caps: &'a Caps,
     facts: BTreeMap<String, CardFacts>,
     definitions: HashMap<String, Arc<CardDefinition>>,
+    reads: Reads,
 }
 
 impl<'a> Judge<'a> {
@@ -173,6 +177,7 @@ impl<'a> Judge<'a> {
             caps: rules.caps(),
             facts: BTreeMap::new(),
             definitions: HashMap::new(),
+            reads: Reads::new(),
         }
     }
 
@@ -192,6 +197,11 @@ impl<'a> Judge<'a> {
                     if !self.facts.contains_key(&id) {
                         let printed = printed_card(card);
                         let assembled = self.library.assemble(&printed, self.caps);
+                        if let Some((card, hash)) =
+                            pin_of(self.library, &id, assembled.support.support)
+                        {
+                            self.reads.insert(card, hash);
+                        }
                         self.facts.insert(id.clone(), card_facts(card));
                         let definition = identified(assembled.definition, &id);
                         self.definitions.insert(id.clone(), Arc::new(definition));
@@ -245,6 +255,12 @@ impl<'a> Judge<'a> {
             issues = format_issues(kind, &cards, &leaders, None, &HouseRules::default());
         }
         let playable = issues.is_empty() && report.summary.state != DeckState::Blocked;
+        let reads: Reads = self
+            .reads
+            .iter()
+            .filter(|(card, _)| lines.iter().any(|line| &line.oracle_id == *card))
+            .map(|(card, hash)| (card.clone(), hash.clone()))
+            .collect();
         Judged {
             format,
             report,
@@ -255,6 +271,7 @@ impl<'a> Judge<'a> {
             cards,
             commanders,
             leaders,
+            reads,
         }
     }
 }
@@ -421,7 +438,7 @@ impl PreconIndex {
 struct Stamp {
     cards: IndexVersion,
     precons: PreconVersion,
-    rules: RulesVersion,
+    rules: StoredVersion,
 }
 
 /// The index of the precons, built the first time it is needed and again when the precons, the

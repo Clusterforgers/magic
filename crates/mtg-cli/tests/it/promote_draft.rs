@@ -100,6 +100,7 @@ struct Run {
     draft: bool,
     dry: bool,
     no_smoke: bool,
+    origin: Option<String>,
     files: Vec<PathBuf>,
 }
 
@@ -115,6 +116,7 @@ async fn promote(
         draft: run.draft,
         no_smoke: run.no_smoke,
         drafts: run.draft.then(|| drafts.clone()),
+        source: run.origin,
         files: run.files,
     };
     w2a_promote_against(db, cache, &args, &Library::default())
@@ -127,6 +129,7 @@ fn drafting(files: Vec<PathBuf>) -> Run {
         draft: true,
         dry: false,
         no_smoke: false,
+        origin: None,
         files,
     }
 }
@@ -262,4 +265,125 @@ async fn of_several_drafts_of_a_card_the_first_stays_and_an_accepted_one_wins(po
         rendered.ends_with("1 promoted, 2 drafted, 2 skipped: 2 an earlier file promotes it"),
         "{rendered}"
     );
+}
+
+/// The Reservoir proposal with a wrong amount of damage, which the checker judges `Mismatch`.
+fn mismatching_reservoir() -> String {
+    let text = stored_proposal(RESERVOIR).replace("\"amount\":50", "\"amount\":40");
+    assert_ne!(text, stored_proposal(RESERVOIR));
+    text
+}
+
+/// Writes `meta/<slug>.json` beside the proposal at `file`.
+fn meta(file: &Path, text: &str) {
+    let path = file
+        .parent()
+        .unwrap()
+        .join("meta")
+        .join(file.file_name().unwrap());
+    fs::create_dir_all(path.parent().unwrap()).unwrap();
+    fs::write(path, text).unwrap();
+}
+
+/// A Forge run: the proposal text, its meta (if any) and the `--source` flag.
+type ForgeCase = (
+    &'static str,
+    Option<&'static str>,
+    Option<&'static str>,
+    bool,
+    bool,
+);
+
+/// What each case drafts: whether the Mismatch becomes a draft, and whether the meta file records Forge as the source.
+const FORGE_CASES: &[(&str, ForgeCase)] = &[
+    (
+        "mismatch with a matching Oracle text",
+        (
+            "mismatch",
+            Some(r#"{"source":"forge","oracle_matches":true}"#),
+            None,
+            true,
+            true,
+        ),
+    ),
+    (
+        "mismatch from the flag and a matching text",
+        (
+            "mismatch",
+            Some(r#"{"oracle_matches":true}"#),
+            Some("forge"),
+            true,
+            true,
+        ),
+    ),
+    (
+        "mismatch with a text that did not match",
+        (
+            "mismatch",
+            Some(r#"{"source":"forge"}"#),
+            None,
+            false,
+            false,
+        ),
+    ),
+    (
+        "mismatch with no meta",
+        ("mismatch", None, Some("forge"), false, false),
+    ),
+    (
+        "mismatch from a sweep",
+        (
+            "mismatch",
+            Some(r#"{"source":"sweep","oracle_matches":true}"#),
+            None,
+            false,
+            false,
+        ),
+    ),
+    (
+        "unchecked from Forge, not matched",
+        ("unchecked", Some(r#"{"source":"forge"}"#), None, true, true),
+    ),
+    (
+        "unchecked with no meta",
+        ("unchecked", None, None, true, false),
+    ),
+];
+
+#[sqlx::test]
+async fn only_a_forge_translation_with_a_matching_text_is_drafted_when_it_mismatches(pool: PgPool) {
+    let dir = tempfile::tempdir().unwrap();
+    let stored = loaded(pool, dir.path()).await;
+    for (name, (kind, meta_text, flag, drafted, forge)) in FORGE_CASES {
+        let places = dirs(dir.path());
+        let (slug, text) = if *kind == "mismatch" {
+            (RESERVOIR, mismatching_reservoir())
+        } else {
+            (PYRE, stored_proposal(PYRE))
+        };
+        let file = proposal(dir.path(), "forge", slug, &text);
+        let _ = fs::remove_dir_all(file.parent().unwrap().join("meta"));
+        if let Some(meta_text) = meta_text {
+            meta(&file, meta_text);
+        }
+        let _ = fs::remove_dir_all(&places.1);
+        let run = Run {
+            origin: flag.map(str::to_owned),
+            ..drafting(vec![file])
+        };
+
+        let promoted = promote(&stored, &places, run).await;
+
+        let outcome = &promoted.decisions[0].outcome;
+        assert_eq!(outcome.is_ok(), *drafted, "{name}: {outcome:?}");
+        if *drafted {
+            let meta_file = places.1.join(format!("meta/{slug}.json"));
+            assert_eq!(meta_file.is_file(), *forge, "{name}");
+            if *forge {
+                let written: serde_json::Value =
+                    serde_json::from_str(&fs::read_to_string(meta_file).unwrap()).unwrap();
+                assert_eq!(written["source"], "forge", "{name}");
+            }
+        }
+    }
 }

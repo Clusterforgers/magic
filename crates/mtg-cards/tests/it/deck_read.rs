@@ -156,6 +156,7 @@ fn library_of(entries: &[Entry]) -> Library {
             });
         }
         rows.push(DraftRules {
+            forge: false,
             oracle_id: card.oracle_id.clone(),
             read_hash: hash,
             rules: serde_json::to_value(&card).unwrap(),

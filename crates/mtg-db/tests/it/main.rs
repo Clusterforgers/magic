@@ -14,6 +14,7 @@ mod decks;
 mod drafts;
 mod favourites;
 mod fix_marks;
+mod forge_drafts;
 mod import_failures;
 mod import_nul;
 mod import_run_reaping;

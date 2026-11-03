@@ -43,6 +43,7 @@ mod pg_decks;
 mod pg_failed_games;
 mod pg_favourites;
 mod pg_fix_marks;
+mod pg_forge_tier;
 mod pg_game;
 mod pg_game_close;
 mod pg_house_rules;

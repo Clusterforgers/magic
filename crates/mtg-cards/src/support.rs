@@ -59,6 +59,10 @@ pub enum Support {
     /// A whole draft the checker could not prove, read and found correct by a player; the game runs it like `Verified`
     /// but counts it apart (`docs/cards-dsl.md`, Read tier).
     Read,
+    /// A whole translation of a Forge script that the checker could not prove but whose Oracle text equals ours: the
+    /// game runs it like `Read` without a player's read and counts it apart; a `wrong` verdict ends it
+    /// (`docs/cards-dsl.md`, Read tier).
+    Forge,
     /// Rules exist except the listed clauses.
     Partial,
     /// No rules, or the engine runs none of them: the table resolves the card by hand.
@@ -70,9 +74,9 @@ pub enum Support {
 }
 
 impl Support {
-    /// Whether the game runs every rule of the card, so nothing is played by hand: `Verified` or `Read`.
+    /// Whether the game runs every rule of the card, so nothing is played by hand: `Verified`, `Read` or `Forge`.
     pub const fn runs_whole(self) -> bool {
-        matches!(self, Support::Verified | Support::Read)
+        matches!(self, Support::Verified | Support::Read | Support::Forge)
     }
 }
 
@@ -234,6 +238,7 @@ fn state_tag(state: Support) -> &'static str {
     match state {
         Support::Verified => "verified",
         Support::Read => "read",
+        Support::Forge => "forge",
         Support::Partial => "partial",
         Support::Manual => "manual",
         Support::Stale => "stale",
@@ -412,6 +417,7 @@ pub(crate) fn read_support(
     draft: &Card,
     printed: &PrintedCard,
     caps: &Caps,
+    tier: Support,
 ) -> Option<SupportRecord> {
     if draft.impl_status != ImplStatus::Full {
         return None;
@@ -420,12 +426,12 @@ pub(crate) fn read_support(
     (proven.support == Support::Verified).then(|| SupportRecord {
         fingerprint: fingerprint(
             &printed.oracle_id,
-            Support::Read,
+            tier,
             &proven.clauses,
             Some(draft),
             &current_fingerprints(printed),
         ),
-        support: Support::Read,
+        support: tier,
         ..proven
     })
 }
@@ -522,7 +528,7 @@ mod tests {
         #[case] expected: Option<Support>,
     ) {
         let rules = card(ImplStatus::Full, vec![bolt_ability()], TEXT);
-        let record = read_support(&rules, &printed(TEXT), &caps);
+        let record = read_support(&rules, &printed(TEXT), &caps, Support::Read);
         assert_eq!(record.as_ref().map(|r| r.support), expected);
         if let Some(record) = record {
             let verified = support(Some(&rules), &printed(TEXT), &caps);
@@ -538,7 +544,7 @@ mod tests {
     fn only_a_full_draft_has_a_read_record(#[case] status: ImplStatus) {
         let rules = card(status, vec![bolt_ability()], TEXT);
         assert_eq!(
-            read_support(&rules, &printed(TEXT), &Caps::everything()),
+            read_support(&rules, &printed(TEXT), &Caps::everything(), Support::Read),
             None
         );
     }

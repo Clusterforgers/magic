@@ -3,8 +3,12 @@
 //! The records never decide anything: a failed write is logged and the game goes on, because the
 //! event log is the truth and boot repairs a status that lags behind it.
 
+use std::collections::BTreeMap;
+
 use mtg_core::ids::PlayerId;
+use mtg_db::{DraftKey, MAX_NOTE_CHARS, ReadRepo, Verdict};
 use mtg_engine::state::GameResult;
+use mtg_import::ids::OracleId;
 
 use crate::game_id::GameId;
 use crate::images::Warmer;
@@ -25,6 +29,10 @@ pub(crate) struct Recorder {
     warmer: Option<Warmer>,
     /// The cards of the decks the game was made with, for a game whose seats do not choose.
     art: Vec<CardArt>,
+    /// Where the server's own verdicts go; none without a card database.
+    verdicts: Option<ReadRepo>,
+    /// The draft each card that runs on a read plays on in this game, by oracle id.
+    reads: BTreeMap<String, String>,
 }
 
 impl Recorder {
@@ -43,6 +51,8 @@ impl Recorder {
             manual_play,
             warmer: None,
             art: Vec::new(),
+            verdicts: None,
+            reads: BTreeMap::new(),
         }
     }
 
@@ -53,6 +63,24 @@ impl Recorder {
         self.warmer = warmer;
         self.art = art;
         self
+    }
+
+    /// The same recorder that writes the server's `wrong` verdict on the draft a card plays on (`reads`, by oracle id)
+    /// when one of its abilities is left to the table.
+    #[must_use]
+    pub(crate) fn with_reads(
+        mut self,
+        verdicts: Option<ReadRepo>,
+        reads: BTreeMap<String, String>,
+    ) -> Recorder {
+        self.verdicts = verdicts;
+        self.reads = reads;
+        self
+    }
+
+    /// Replaces the pinned drafts, for a game whose seats chose other decks than it was made with.
+    pub(crate) fn set_reads(&mut self, reads: BTreeMap<String, String>) {
+        self.reads = reads;
     }
 
     /// Starts fetching the pictures of the cards in the background: those of the decks the seats
@@ -66,6 +94,28 @@ impl Recorder {
     /// Whether the records showed the table as playing with manual cards when the recorder was made.
     pub(crate) fn manual_play(&self) -> bool {
         self.manual_play
+    }
+
+    /// Records the server's own `wrong` verdict on the draft `oracle_id` plays on in this game, with the words of the
+    /// ability the game could not run as the note, so the card is played by hand from the next game. A card that
+    /// is pinned to no draft, or a failed write, is only logged.
+    pub(crate) async fn left_to_table(&self, oracle_id: &str, text: &str) {
+        let (Some(repo), Some(hash)) = (&self.verdicts, self.reads.get(oracle_id)) else {
+            return;
+        };
+        let note: String = text.trim().chars().take(MAX_NOTE_CHARS).collect();
+        let note = if note.is_empty() {
+            "an ability could not be run in a game"
+        } else {
+            note.as_str()
+        };
+        let draft = DraftKey {
+            oracle_id: OracleId(oracle_id.to_owned()),
+            read_hash: hash.clone(),
+        };
+        if let Err(error) = repo.append(None, &draft, Verdict::Wrong, Some(note)).await {
+            tracing::warn!(game = %self.game, %error, "could not record a read that failed");
+        }
     }
 
     /// Notes the first connection to `seat`.

@@ -82,6 +82,12 @@ describe('the deck preview', () => {
     expect(document.querySelector('[data-slot="deck-to-read"]')).toBeNull()
   })
 
+  it('says a deck with cards from Forge runs whole and names the copies from Forge in plain words', () => {
+    const cards = [card('Bolt', { count: 40 }), card('Odd Dragon', { support: 'forge', count: 3 })]
+    render(<DeckPreview deck={{ ...DECK, commanders: [], cards, toRead: 0 }} />)
+    expect(screen.getByText('The whole deck runs, 3 cards from Forge.')).toBeInTheDocument()
+  })
+
   it.each([
     [{ deck: 'deck-1' }, '/read?deck=deck-1'],
     [{ precon: 'c18-x' }, '/read?precon=c18-x'],

@@ -187,7 +187,7 @@ fn the_bindings_carry_the_card_types() {
     }
     assert!(files["CardColor.ts"].contains("\"W\" | \"U\" | \"B\" | \"R\" | \"G\""));
     assert!(files["Support.ts"].contains(
-        "\"verified\" | \"read\" | \"partial\" | \"manual\" | \"stale\" | \"unplayable\""
+        "\"verified\" | \"read\" | \"forge\" | \"partial\" | \"manual\" | \"stale\" | \"unplayable\""
     ));
     assert!(files["CardSearchPage.ts"].contains("cards: Array<CardHit>"));
     assert!(files["CardSearchPage.ts"].contains("total: number"));

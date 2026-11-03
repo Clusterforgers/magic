@@ -11,9 +11,10 @@ use mtg_cards::load::{canonical, unwhole};
 use mtg_cards::proposal::{Report, Verdict};
 use mtg_cards::support::Support;
 use mtg_cards::{CardDefinition, PrintedCard};
+use mtg_db::SOURCE_SWEEP;
 
 use super::{W2aBasis, W2aDecision, W2aPromotion, W2aSkip};
-use crate::drafts::{FIXTURES, SmokeKind, read_definitions, smoke};
+use crate::drafts::{DraftMeta, FIXTURES, META_DIR, SmokeKind, read_definitions, smoke};
 use crate::error::CliError;
 
 /// The stack of a thread that plays the smoke gate: as large as the main thread's.
@@ -28,6 +29,8 @@ pub fn decide(
     printed: &PrintedCard,
     slug: String,
     report: Report,
+    source: String,
+    oracle_matches: bool,
 ) -> Result<W2aPromotion, W2aSkip> {
     let (Some(record), Some(rules)) = (report.support, report.rules) else {
         return Err(W2aSkip::Rejected(Verdict::Unchecked));
@@ -44,6 +47,8 @@ pub fn decide(
         state: record.support,
         rules,
         draft: true,
+        source,
+        oracle_matches,
     })
 }
 
@@ -174,6 +179,7 @@ pub fn write(
     promotion: &W2aPromotion,
     record: &str,
 ) -> Result<std::path::PathBuf, CliError> {
+    write_meta(dir, promotion)?;
     let file = format!("{}.json", promotion.slug);
     let fixtures = dir.join(FIXTURES);
     std::fs::create_dir_all(&fixtures).map_err(|source| CliError::io(&fixtures, source))?;
@@ -185,6 +191,28 @@ pub fn write(
     Ok(rules)
 }
 
+/// Writes `meta/<slug>.json` for a draft that is not a plain sweep draft, and removes a stale one for a sweep draft.
+fn write_meta(dir: &Path, promotion: &W2aPromotion) -> Result<(), CliError> {
+    let path = dir.join(META_DIR).join(format!("{}.json", promotion.slug));
+    if promotion.source == SOURCE_SWEEP && !promotion.oracle_matches {
+        return match std::fs::remove_file(&path) {
+            Err(error) if error.kind() != std::io::ErrorKind::NotFound => {
+                Err(CliError::io(&path, error))
+            }
+            _ => Ok(()),
+        };
+    }
+    let meta = DraftMeta {
+        source: Some(promotion.source.clone()),
+        oracle_matches: promotion.oracle_matches,
+    };
+    let text = serde_json::to_string_pretty(&meta).unwrap_or_default();
+    if let Some(parent) = path.parent() {
+        std::fs::create_dir_all(parent).map_err(|source| CliError::io(parent, source))?;
+    }
+    std::fs::write(&path, format!("{text}\n")).map_err(|source| CliError::io(&path, source))
+}
+
 /// Removes the draft of a card that has just become a corpus card, and its record; returns whether there was one.
 pub fn remove_superseded(dir: &Path, slug: &str) -> Result<bool, CliError> {
     let file = format!("{slug}.json");
@@ -192,7 +220,11 @@ pub fn remove_superseded(dir: &Path, slug: &str) -> Result<bool, CliError> {
     if !rules.is_file() {
         return Ok(false);
     }
-    for path in [rules, dir.join(FIXTURES).join(&file)] {
+    for path in [
+        rules,
+        dir.join(FIXTURES).join(&file),
+        dir.join(META_DIR).join(&file),
+    ] {
         match std::fs::remove_file(&path) {
             Ok(()) => {}
             Err(error) if error.kind() == std::io::ErrorKind::NotFound => {}
@@ -266,7 +298,13 @@ mod tests {
     ) {
         let rules = card(status, abilities);
 
-        let decided = decide(&printed(), "x".into(), report(Some(rules), state));
+        let decided = decide(
+            &printed(),
+            "x".into(),
+            report(Some(rules), state),
+            "sweep".into(),
+            false,
+        );
 
         match (decided, skip) {
             (Ok(promotion), None) => {

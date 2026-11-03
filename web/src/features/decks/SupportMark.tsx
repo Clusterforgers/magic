@@ -2,6 +2,7 @@ import {
   BanIcon,
   BookOpenCheckIcon,
   ClockAlertIcon,
+  HammerIcon,
   HandIcon,
   ShieldCheckIcon,
   ShieldHalfIcon,
@@ -32,6 +33,13 @@ const LOOK: Record<
     edge: 'border-support-read',
     ring: 'ring-support-read',
     decoration: 'decoration-support-read',
+  },
+  forge: {
+    Icon: HammerIcon,
+    mark: 'border-support-forge bg-support-forge/12 text-support-forge',
+    edge: 'border-support-forge',
+    ring: 'ring-support-forge',
+    decoration: 'decoration-support-forge',
   },
   partial: {
     Icon: ShieldHalfIcon,
@@ -73,7 +81,7 @@ export const supportRing = (support: Support): string => LOOK[support].ring
 export const supportDecoration = (support: Support): string => LOOK[support].decoration
 
 /**
- * How far the game plays a card as a pill: an icon, the word (Verified, Read, Partial, Manual, Stale, Unplayable) and an
+ * How far the game plays a card as a pill: an icon, the word (Verified, Read, From Forge, Partial, Manual, Stale, Unplayable) and an
  * edge in the state's colour, so colour never carries the meaning alone.
  */
 export function SupportMark({ support, className }: { support: Support; className?: string }) {

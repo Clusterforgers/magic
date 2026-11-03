@@ -9,6 +9,11 @@ use uuid::Uuid;
 
 use crate::error::DbError;
 
+/// The source of a draft a model proposed in a sweep.
+pub const SOURCE_SWEEP: &str = "sweep";
+/// The source of a draft translated from a Forge script.
+pub const SOURCE_FORGE: &str = "forge";
+
 /// A draft named by its card and read hash.
 #[derive(Debug, Clone, PartialEq, Eq, Hash, PartialOrd, Ord)]
 pub struct DraftKey {
@@ -27,6 +32,10 @@ pub struct NewDraft {
     pub read_hash: String,
     /// The draft's rules as the DSL's JSON, an object.
     pub rules: Value,
+    /// Who wrote it: [`SOURCE_SWEEP`] or [`SOURCE_FORGE`].
+    pub source: String,
+    /// The source's Oracle text equals the printed text; with [`SOURCE_FORGE`] the draft runs without a human read.
+    pub oracle_matches: bool,
 }
 
 /// A stored draft.
@@ -38,6 +47,10 @@ pub struct StoredDraft {
     pub read_hash: String,
     /// The draft's rules as the DSL's JSON.
     pub rules: Value,
+    /// Who wrote it.
+    pub source: String,
+    /// The source's Oracle text equals the printed text.
+    pub oracle_matches: bool,
     /// Whether a later draft (or the build) replaced it.
     pub retired: bool,
 }
@@ -55,7 +68,7 @@ impl StoredDraft {
 /// What the current drafts and the verdicts looked like when [`DraftRepo::version`] read them: two equal
 /// versions mean no draft became current or retired and no verdict was added or removed in between, so a
 /// library built from them is current.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, Default, PartialEq, Eq)]
 pub struct DraftsVersion {
     current: String,
     reads: i64,
@@ -111,12 +124,15 @@ impl DraftRepo {
             .execute(&mut *tx)
             .await?;
             let done = sqlx::query!(
-                "INSERT INTO card_drafts (oracle_id, read_hash, rules) VALUES ($1, $2, $3)
+                "INSERT INTO card_drafts (oracle_id, read_hash, rules, source, oracle_matches)
+                 VALUES ($1, $2, $3, $4, $5)
                  ON CONFLICT (oracle_id, read_hash) DO UPDATE SET retired = false
                  WHERE card_drafts.retired",
                 oracle_id,
                 draft.read_hash,
-                draft.rules
+                draft.rules,
+                draft.source,
+                draft.oracle_matches
             )
             .execute(&mut *tx)
             .await?;
@@ -144,7 +160,7 @@ impl DraftRepo {
     /// The current draft of every card that has one, by oracle id.
     pub async fn current(&self) -> Result<Vec<StoredDraft>, DbError> {
         let rows = sqlx::query!(
-            "SELECT oracle_id, read_hash, rules, retired FROM card_drafts
+            "SELECT oracle_id, read_hash, rules, retired, source, oracle_matches FROM card_drafts
              WHERE NOT retired ORDER BY oracle_id"
         )
         .fetch_all(&self.pool)
@@ -156,6 +172,8 @@ impl DraftRepo {
                 read_hash: row.read_hash,
                 rules: row.rules,
                 retired: row.retired,
+                source: row.source,
+                oracle_matches: row.oracle_matches,
             })
             .collect())
     }
@@ -165,7 +183,7 @@ impl DraftRepo {
     pub async fn get(&self, drafts: &[DraftKey]) -> Result<Vec<StoredDraft>, DbError> {
         let (ids, hashes) = unzip_keys(drafts);
         let rows = sqlx::query!(
-            "SELECT d.oracle_id, d.read_hash, d.rules, d.retired FROM card_drafts d
+            "SELECT d.oracle_id, d.read_hash, d.rules, d.retired, d.source, d.oracle_matches FROM card_drafts d
              JOIN unnest($1::uuid[], $2::text[]) AS k(oracle_id, read_hash)
                ON d.oracle_id = k.oracle_id AND d.read_hash = k.read_hash
              ORDER BY d.oracle_id, d.created_at, d.read_hash",
@@ -181,6 +199,8 @@ impl DraftRepo {
                 read_hash: row.read_hash,
                 rules: row.rules,
                 retired: row.retired,
+                source: row.source,
+                oracle_matches: row.oracle_matches,
             })
             .collect())
     }

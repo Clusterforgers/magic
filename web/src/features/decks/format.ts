@@ -1,6 +1,6 @@
 /** Words for the decks page: format names, the check state and its note, card counts and the kind of a pasted list. */
 import { BY_HAND, BY_HAND_TITLE, byHandCopies, cardsByHand } from '@/lib/byHand'
-import { RUNS_ON_READS } from '@/lib/toRead'
+import { cardsFromForge, RUNS_ON_READS } from '@/lib/toRead'
 import type {
   Counts,
   DeckListItem,
@@ -56,6 +56,7 @@ export const BLOCKED_MEANING = 'Cannot be taken to a game until its issues are f
 export const SUPPORT_LABEL: Readonly<Record<Support, string>> = {
   verified: 'Verified',
   read: 'Read',
+  forge: 'From Forge',
   partial: 'Partial',
   manual: 'Manual',
   stale: 'Stale',
@@ -74,6 +75,7 @@ export function countsText(counts: Counts): string {
   const hand = byHandCopies(counts)
   const parts = [
     counts.read > 0 ? `${counts.read} on reads` : null,
+    counts.forge > 0 ? cardsFromForge(counts.forge) : null,
     hand > 0 ? `${hand} ${BY_HAND}` : null,
     counts.unplayable > 0 ? `${counts.unplayable} unplayable` : null,
   ].filter((part) => part !== null)
