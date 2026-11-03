@@ -50,6 +50,11 @@ mod exile_until;
 mod explore;
 mod extra_turn;
 mod fabricate;
+mod fe1n_damage;
+mod fe1n_game;
+mod fe1n_life;
+mod fe1n_piles;
+mod fe1n_repeat_while;
 mod fight;
 mod flip;
 mod flip_coin;
@@ -129,6 +134,20 @@ fn wrong_effect(name: &str) -> ResolveError {
 /// Runs one effect; a sacrifice or a removal of counters also reports whether it did anything (`done::report`).
 pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     Ok(done::report(cx, effect, dispatch(cx, effect)?))
+}
+
+/// The game, life, damage, repeat and pile effects.
+fn fe1n(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
+    match effect {
+        Effect::LoseGame { .. } => fe1n_game::lose(cx, effect),
+        Effect::DrawGame {} => fe1n_game::draw(cx, effect),
+        Effect::SetLife { .. } => fe1n_life::set(cx, effect),
+        Effect::ExchangeLife { .. } => fe1n_life::exchange(cx, effect),
+        Effect::RemoveDamage { .. } => fe1n_damage::run(cx, effect),
+        Effect::RepeatWhile { .. } => fe1n_repeat_while::run(cx, effect),
+        Effect::SeparatePiles { .. } => fe1n_piles::run(cx, effect),
+        _ => Err(wrong_effect("dispatch")),
+    }
 }
 
 /// Hands the effect to the primitive of its variant.
@@ -227,6 +246,7 @@ fn dispatch(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::Planechase { .. } => c10_vp_planechase::run(cx, effect),
         Effect::VillainousChoice { .. } => w2d_villainous::run(cx, effect),
         Effect::Either { .. } => dk1c5_either::run(cx, effect),
+        other => fe1n(cx, other),
     }
 }
 
@@ -251,7 +271,7 @@ mod tests {
         {"LoseLife":{"amount":1}}, {"AddMana":{"mana":{"Fixed":["Green"]}}},
         {"PutCounters":{"on":"This","counter":"+1/+1"}}, {"RemoveCounters":{"from":"This","counter":"+1/+1"}},
         {"MoveCounters":{"from":"This","to":"This","counter":"+1/+1"}}, {"MultiplyCounters":{"on":"This"}}, {"Tap":{"what":"This"}},
-        {"Untap":{"what":"This"}}, {"TapOrUntap":{"what":"This"}}, {"PhaseOut":{"what":"This"}}, {"Attach":{"what":"This","to":"This"}}, {"Unattach":{"what":"This"}}, {"Pair":{"what":"This","with":"This"}}, {"MyriadCopies":{"of":"This"}}, {"Transform":{"what":"This"}}, {"Flip":{"what":"This"}}, {"Prepare":{"what":"This"}}, {"WinGame":{}}, {"AddPhase":{"phases":["Combat","Main"]}},
+        {"Untap":{"what":"This"}}, {"TapOrUntap":{"what":"This"}}, {"PhaseOut":{"what":"This"}}, {"Attach":{"what":"This","to":"This"}}, {"Unattach":{"what":"This"}}, {"Pair":{"what":"This","with":"This"}}, {"MyriadCopies":{"of":"This"}}, {"Transform":{"what":"This"}}, {"Flip":{"what":"This"}}, {"Prepare":{"what":"This"}}, {"WinGame":{}}, {"LoseGame":{}}, {"DrawGame":{}}, {"SetLife":{"amount":20}}, {"ExchangeLife":{"with":"Opponents"}}, {"RemoveDamage":{"what":"This"}}, {"RepeatWhile":{"condition":"YourTurn","effects":[{"Draw":{}}],"most":3}}, {"SeparatePiles":{"what":"This","chooser":"Opponents","as":"pile_a","rest_as":"pile_b"}}, {"AddPhase":{"phases":["Combat","Main"]}},
         {"Surveil":{}}, {"Proliferate":{}}, {"Goad":{"what":"This"}}, {"Fight":{"what":"This","with":"This"}},
         {"BecomeMonarch":{}}, {"CreateEmblem":{"abilities":[]}}, {"BecomeDayNight":{"to":"Night"}}, {"Amass":{"subtype":"Orc","count":1}}, {"Incubate":{"count":1}}, {"Venture":{}}, {"TakeInitiative":{}}, {"Monstrosity":{"count":1}}, {"Renown":{"count":1}}, {"Exploit":{}}, {"BecomeLevel":{"level":2}},
         {"Adapt":{"count":1}}, {"Bolster":{"count":1}}, {"Fabricate":{"count":1}}, {"Learn":{}}, {"Crewed":{}}, {"Explore":{"what":"This"}}, {"Connive":{"what":"This"}},
@@ -284,7 +304,7 @@ mod tests {
     #[test]
     fn the_capabilities_name_exactly_the_effects_that_run() {
         let effects: Vec<Effect> = serde_json::from_str(EFFECTS).unwrap();
-        assert_eq!(effects.len(), 92, "one sample for each variant of Effect");
+        assert_eq!(effects.len(), 99, "one sample for each variant of Effect");
         let game = state(
             vec![vec![], vec![]],
             vec![vec![creature("Bear", 2, 2)], vec![]],
@@ -354,6 +374,13 @@ mod tests {
         "Effect.Flip",
         "Effect.Prepare",
         "Effect.WinGame",
+        "Effect.LoseGame",
+        "Effect.DrawGame",
+        "Effect.SetLife",
+        "Effect.ExchangeLife",
+        "Effect.RemoveDamage",
+        "Effect.RepeatWhile",
+        "Effect.SeparatePiles",
         "Effect.AddPhase",
         "Effect.Surveil",
         "Effect.Proliferate",

@@ -1858,6 +1858,21 @@ impl Walker<'_> {
         self.effect_list_with("effects", effects, false, Some((bind, kind)));
     }
 
+    /// `RepeatWhile`: a condition read before each pass and a body of at least one effect, with a bound on the passes.
+    fn repeat_while(&mut self, condition: &Condition, effects: &[Effect], most: u32) {
+        self.at("condition", |w| w.condition(condition));
+        if effects.is_empty() {
+            self.problem("a repeat with nothing to do");
+        }
+        if most == 0 || most > crate::effect::MOST_PASSES {
+            self.problem(format!(
+                "`most` is between 1 and {}",
+                crate::effect::MOST_PASSES
+            ));
+        }
+        self.effect_list("effects", effects, false);
+    }
+
     /// `RollDice`: a die of at least two faces and rows that each hold a range of totals; several dice only for a choice
     /// of one result, which has no table and adds nothing.
     fn roll_dice(
@@ -2333,6 +2348,7 @@ impl Walker<'_> {
             }
             Effect::Shuffle { who }
             | Effect::WinGame { who }
+            | Effect::LoseGame { who }
             | Effect::Proliferate { who }
             | Effect::BecomeMonarch { who }
             | Effect::TakeInitiative { who }
@@ -2417,6 +2433,33 @@ impl Walker<'_> {
                 bind,
                 effects,
             } => w.repeat_each(over, bind, effects),
+            Effect::SetLife { who, amount } => {
+                w.at("who", |w| w.reference(who, Kind::Player));
+                w.at("amount", |w| w.amount(amount));
+            }
+            Effect::ExchangeLife { who, with } => {
+                w.at("who", |w| w.reference(who, Kind::Player));
+                w.at("with", |w| w.reference(with, Kind::Player));
+            }
+            Effect::RemoveDamage { what } => w.at("what", |w| w.reference(what, Kind::Object)),
+            Effect::RepeatWhile {
+                condition,
+                effects,
+                most,
+            } => w.repeat_while(condition, effects, *most),
+            Effect::SeparatePiles {
+                who,
+                what,
+                chooser,
+                chosen_as,
+                rest_as,
+            } => {
+                w.at("who", |w| w.reference(who, Kind::Player));
+                w.at("what", |w| w.reference(what, Kind::Object));
+                w.at("chooser", |w| w.reference(chooser, Kind::Player));
+                w.at("as", |w| w.bind(chosen_as, Kind::Object));
+                w.at("rest_as", |w| w.bind(rest_as, Kind::Object));
+            }
             Effect::RollDice {
                 who,
                 sides,
@@ -2568,7 +2611,8 @@ impl Walker<'_> {
                     w.problem("counters remain on a card by a static ability, not by an effect");
                 }
             }),
-            Effect::Crewed { .. }
+            Effect::DrawGame {}
+            | Effect::Crewed { .. }
             | Effect::BecomeDayNight { .. }
             | Effect::Planechase { .. } => {}
             Effect::BecomeLevel { level } => {
@@ -4599,6 +4643,22 @@ mod tests {
     #[case::bound_twice(
         r#"{"Spell":{"effects":[{"LookAtTop":{"as":"top"}},{"LookAtTop":{"as":"top"}}]}}"#,
         "`top` is already bound"
+    )]
+    #[case::a_repeat_with_no_passes(
+        r#"{"Spell":{"effects":[{"RepeatWhile":{"condition":"YourTurn","effects":[{"Draw":{}}],"most":0}}]}}"#,
+        "`most` is between 1 and 1000"
+    )]
+    #[case::a_repeat_past_the_hard_bound(
+        r#"{"Spell":{"effects":[{"RepeatWhile":{"condition":"YourTurn","effects":[{"Draw":{}}],"most":1001}}]}}"#,
+        "`most` is between 1 and 1000"
+    )]
+    #[case::a_repeat_with_no_body(
+        r#"{"Spell":{"effects":[{"RepeatWhile":{"condition":"YourTurn","effects":[],"most":2}}]}}"#,
+        "a repeat with nothing to do"
+    )]
+    #[case::piles_bound_twice(
+        r#"{"Spell":{"effects":[{"SeparatePiles":{"what":"This","chooser":"Opponents","as":"p","rest_as":"p"}}]}}"#,
+        "`p` is already bound"
     )]
     #[case::a_vote_with_one_choice(
         r#"{"Spell":{"effects":[{"Vote":{"options":{"Named":["only"]}}}]}}"#,
