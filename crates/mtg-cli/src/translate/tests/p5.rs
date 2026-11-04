@@ -340,3 +340,90 @@ fn keyword_actions_expand(#[case] line: &str) {
     let effects = found[0]["Spell"]["effects"].as_array().map_or(0, Vec::len);
     assert!(effects >= 3, "{effects}");
 }
+
+/// The effects of a copy line, each checked to be a node of the language.
+fn copy_nodes(words: &str) -> Vec<Value> {
+    let line = format!("CopyPermanent | ValidTgts$ Creature.YouCtrl | {words}");
+    assert_eq!(gaps(&plain(&line)), Vec::<String>::new(), "{words}");
+    let found = abilities(&plain(&line));
+    let effects = found[0]["Spell"]["effects"]
+        .as_array()
+        .cloned()
+        .unwrap_or_default();
+    for effect in &effects {
+        let parsed = serde_json::from_value::<mtg_cards::effect::Effect>(effect.clone());
+        assert!(parsed.is_ok(), "{effect}");
+    }
+    effects
+}
+
+#[rstest]
+#[case::stats("SetPower$ 4 | SetToughness$ 4", json!({"SetPT": {"power": 4, "toughness": 4}}))]
+#[case::color("SetColor$ Black", json!({"SetColors": ["Black"]}))]
+#[case::creature_type("SetCreatureTypes$ Soldier", json!({"SetCreatureTypes": ["Soldier"]}))]
+#[case::artifact("AddTypes$ Artifact", json!({"AddType": "Artifact"}))]
+#[case::subtype("AddTypes$ Soldier", json!({"AddSubtype": "Soldier"}))]
+#[case::legendary("AddTypes$ Legendary", json!({"AddSupertype": "Legendary"}))]
+#[case::non_legendary("NonLegendary$ True", json!({"RemoveSupertype": "Legendary"}))]
+#[case::keyword("AddKeywords$ Haste", json!({"AddKeyword": "Haste"}))]
+#[case::pumped_keyword("PumpKeywords$ Haste", json!({"AddKeyword": "Haste"}))]
+fn copy_exceptions_are_written_into_the_copy(#[case] words: &str, #[case] change: Value) {
+    let effects = copy_nodes(words);
+    assert_eq!(effects.len(), 1);
+    assert_eq!(
+        effects[0]["CreateToken"]["token"]["CopyOf"]["except"][0],
+        change
+    );
+}
+
+#[test]
+fn a_pump_duration_makes_the_keyword_a_continuous_effect_on_the_copies() {
+    let effects = copy_nodes("PumpKeywords$ Haste | PumpDuration$ EOT");
+    let bind = effects[0]["CreateToken"]["as"].clone();
+    assert!(
+        effects[0]["CreateToken"]["token"]["CopyOf"]
+            .get("except")
+            .is_none()
+    );
+    assert_eq!(effects[1]["Continuous"]["affected"], json!({"Bound": bind}));
+    assert_eq!(effects[1]["Continuous"]["duration"], "UntilEndOfTurn");
+}
+
+#[rstest]
+#[case::sacrifice("Sacrifice", "End", "", "Sacrifice")]
+#[case::exile("Exile", "End", "", "Exile")]
+#[case::your_exile("YourExile", "End", "You", "Exile")]
+#[case::combat("ExileCombat", "EndCombat", "", "Exile")]
+#[case::destroy("Destroy", "End", "", "Destroy")]
+fn the_copies_leave_at_the_end_step(
+    #[case] word: &str,
+    #[case] step: &str,
+    #[case] whose: &str,
+    #[case] verb: &str,
+) {
+    let effects = copy_nodes(&format!("AtEOT$ {word}"));
+    let bind = effects[0]["CreateToken"]["as"].clone();
+    let when = &effects[1]["DelayedTrigger"]["when"]["StepBegins"];
+    // Every player's step is the default and is not written.
+    let whose = if whose.is_empty() {
+        Value::Null
+    } else {
+        json!(whose)
+    };
+    assert_eq!((&when["step"], &when["whose"]), (&json!(step), &whose));
+    let effect = &effects[1]["DelayedTrigger"]["effects"][0][verb];
+    assert!(effect.to_string().contains(&bind.to_string()), "{effect}");
+}
+
+#[rstest]
+#[case::half_stats("SetPower$ 4", "key:CopyPermanent.half-stats")]
+#[case::unknown_type("AddTypes$ Wibble", "key:CopyPermanent.AddTypes=Wibble")]
+#[case::later_upkeep("AtEOT$ SacrificeUpkeep", "key:AtEOT=SacrificeUpkeep")]
+#[case::pump_for_ever(
+    "PumpKeywords$ Haste | PumpDuration$ Permanent",
+    "key:CopyPermanent.PumpDuration=Permanent"
+)]
+fn copy_words_that_are_not_read_are_gaps(#[case] words: &str, #[case] gap: &str) {
+    let line = format!("CopyPermanent | ValidTgts$ Creature | {words}");
+    assert_eq!(gaps(&plain(&line)), [gap]);
+}

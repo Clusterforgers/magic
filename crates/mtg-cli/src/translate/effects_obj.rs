@@ -375,7 +375,7 @@ fn animate(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
 }
 
 /// Colours as the DSL names them.
-fn color_names(colors: &str) -> Tr<Vec<&'static str>> {
+pub fn color_names(colors: &str) -> Tr<Vec<&'static str>> {
     colors
         .split(',')
         .map(|word| match word.trim() {
