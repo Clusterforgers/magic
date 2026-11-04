@@ -216,13 +216,37 @@ fn negated(preds: Vec<Value>) -> Tr<Value> {
     }
 }
 
+/// The properties of an alternative, split at `+`. A property with an object argument (`AttachedTo Creature.attacking`)
+/// takes the `+` parts after it: they belong to the object it names (`AttachedTo Creature.attacking+OppCtrl` is an Aura
+/// on an attacking creature an opponent controls).
+fn split_properties(props: &str) -> Vec<String> {
+    let mut out: Vec<String> = Vec::new();
+    let mut greedy = false;
+    for part in props.split('+').filter(|part| !part.is_empty()) {
+        match out.last_mut() {
+            Some(last) if greedy => {
+                last.push('+');
+                last.push_str(part);
+            }
+            _ => {
+                greedy = ["AttachedTo ", "EnchantedBy ", "EquippedBy "]
+                    .iter()
+                    .any(|head| part.strip_prefix(head).is_some_and(|arg| arg.contains('.')));
+                out.push(part.to_owned());
+            }
+        }
+    }
+    out
+}
+
 /// One alternative (`Creature.YouCtrl+Other`) as a selector.
 pub fn selector(ctx: &Ctx, spec: &str) -> Tr<Vec<Value>> {
     let spec = spec.trim();
     let (head, props) = spec.split_once('.').unwrap_or((spec, ""));
     let mut preds = base(ctx, head)?;
     let kind = preds.clone();
-    for prop in props.split('+').filter(|prop| !prop.is_empty()) {
+    for prop in split_properties(props) {
+        let prop = prop.as_str();
         if let Some(found) = super::valid_atoms::extreme(ctx, prop, &kind)? {
             preds.extend(found);
             continue;

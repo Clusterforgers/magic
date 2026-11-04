@@ -142,3 +142,50 @@ fn the_dreadnought_stays_only_when_the_chosen_total_power_is_twelve(
 ) {
     assert_eq!(dreadnought(pick), left);
 }
+
+const AURAS: &str = "Name:Unhook\nManaCost:W\nTypes:Instant\nA:SP$ DestroyAll | ValidCards$ Card.Aura+AttachedTo Creature.attacking+OppCtrl | SpellDescription$ x\n";
+
+#[rstest]
+#[case::on_the_attacker(0, false)]
+#[case::on_one_that_stays_home(1, true)]
+fn an_aura_on_an_attacking_creature_an_opponent_controls_is_destroyed(
+    #[case] host: usize,
+    #[case] stays: bool,
+) {
+    use mtg_core::card::CardType;
+    use mtg_engine::turn::Step;
+    use mtg_testkit::scenario::attached_to;
+    let aura = std::sync::Arc::new(
+        mtg_cards::CardDefinition::new("Curse")
+            .with_type(CardType::Enchantment)
+            .with_subtype("Aura"),
+    );
+    let mut world = mtg_cli::translate::ctx::World::default();
+    world.subtypes.insert("Aura".to_owned());
+    let card = crate::r3p3_runs::translated_in(&world, AURAS, "Unhook", "Instant", "{W}");
+    let scenario = Scenario::new(2)
+        .at(2, 1, Step::Main1)
+        .hand(0, [card])
+        .battlefield(0, [ready(plains()), attached_to(ready(aura), 1, host)])
+        .battlefield(
+            1,
+            [
+                ready(free_creature("Raider", 2, 2)),
+                ready(free_creature("Idle", 2, 2)),
+            ],
+        )
+        .library(0, [plains()])
+        .library(1, [plains()]);
+    let mut driver = Driver::from_scenario(scenario).unwrap();
+    driver.pass_until(Step::DeclareAttackers).unwrap();
+    driver.attack(&[("Raider", 0)]).unwrap();
+    driver.pass().unwrap();
+    driver.cast("Unhook").unwrap();
+    settle(&mut driver);
+    let state = driver.state();
+    let curse = state
+        .zone(Zone::Battlefield)
+        .iter()
+        .any(|id| state.object(*id).unwrap().card().name == "Curse");
+    assert_eq!(curse, stays);
+}

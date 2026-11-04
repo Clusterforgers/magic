@@ -46,3 +46,15 @@ fn a_token_flag_the_table_does_not_know_stays_a_gap(#[case] keys: &str, #[case] 
     );
     assert!(gaps(&text).iter().any(|g| g == gap), "{:?}", gaps(&text));
 }
+
+#[test]
+fn control_after_an_attached_to_argument_belongs_to_the_host() {
+    let text = "Name:T\nTypes:Instant\nA:SP$ DestroyAll | ValidCards$ Card.Aura+AttachedTo Creature.attacking+OppCtrl\n";
+    assert_eq!(gaps(text), Vec::<String>::new());
+    let found = abilities(text)[0].to_string();
+    assert!(
+        found.contains(r#"{"AttachedTo":{"Each":["#)
+            && found.contains(r#"{"ControlledBy":"Opponents"}]}}"#),
+        "{found}"
+    );
+}
