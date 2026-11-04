@@ -93,3 +93,23 @@ fn a_targeted_battlefield_sweep_stays_a_gap() {
     let text = "Name:T\nTypes:Sorcery\nA:SP$ ChangeZoneAll | ValidTgts$ Player | Origin$ Battlefield | Destination$ Hand | ChangeType$ Creature\n";
     assert_eq!(gaps(text), ["key:ChangeZoneAll.ValidTgts"]);
 }
+
+#[test]
+fn cultivate_style_search_leaves_the_found_cards_in_the_library() {
+    let text = "Name:T\nTypes:Sorcery\nA:SP$ ChangeZone | Origin$ Library | Destination$ Library | ChangeType$ Land.Basic | ChangeNum$ 2 | RememberChanged$ True | Reveal$ True | Shuffle$ False | SubAbility$ H\nSVar:H:DB$ ChangeZone | Origin$ Library | Destination$ Hand | ChangeType$ Land.IsRemembered | Mandatory$ True | NoLooking$ True\n";
+    assert_eq!(gaps(text), Vec::<String>::new());
+    let found = effects(text);
+    assert_eq!(found.len(), 4, "{found:?}");
+    assert!(found[0].get("Search").is_some());
+    assert_eq!(
+        found[0]["Search"]["count"],
+        json!({"min": 0, "max": 2}),
+        "up to two"
+    );
+}
+
+#[test]
+fn a_search_to_the_library_without_a_place_or_memory_stays_a_gap() {
+    let text = "Name:T\nTypes:Sorcery\nA:SP$ ChangeZone | Origin$ Library | Destination$ Library | ChangeType$ Land.Basic | Shuffle$ False\n";
+    assert_eq!(gaps(text), ["key:ChangeZone.LibraryPosition"]);
+}

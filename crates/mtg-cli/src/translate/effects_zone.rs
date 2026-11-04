@@ -554,8 +554,17 @@ fn search(ctx: &mut Ctx, p: &Params, destination: &str) -> Tr<Vec<Value>> {
             "GainControl",
             "WithCountersType",
             "WithCountersAmount",
+            "NoLooking",
         ],
     )?;
+    // Not looking at the library only matters when the cards are not named already.
+    if p.has("NoLooking")
+        && !p
+            .get("ChangeType")
+            .is_some_and(|t| t.contains("IsRemembered"))
+    {
+        return unmapped("key:ChangeZone.Search.NoLooking");
+    }
     let filter = selector_any(ctx, p.get("ChangeType").unwrap_or("Card"))?;
     let filter_is_open = filter.is_empty();
     let bind = ctx.fresh("found");
@@ -600,6 +609,15 @@ fn search(ctx: &mut Ctx, p: &Params, destination: &str) -> Tr<Vec<Value>> {
         ctx.remembered = Some(found.clone());
     }
     let search = json!({ "Search": find });
+    // "Search, reveal, then do something with those cards": the cards stay in the library and the steps after read them.
+    let stays = destination == "Library"
+        && alternative.is_none()
+        && !p.has("LibraryPosition")
+        && p.get("Shuffle") == Some("False")
+        && p.get("RememberChanged") == Some("True");
+    if stays {
+        return Ok(vec![search]);
+    }
     let put = moves(&found, goes_found(ctx, p, destination)?);
     // Searching only another zone leaves the library as it was: "if you search your library this way, shuffle".
     let shuffle = if alternative.is_some() {
@@ -607,25 +625,30 @@ fn search(ctx: &mut Ctx, p: &Params, destination: &str) -> Tr<Vec<Value>> {
     } else {
         json!({"Shuffle": {}})
     };
-    let mut effects = match (destination, p.get("Shuffle")) {
+    let effects = match (destination, p.get("Shuffle")) {
         // The shuffle comes first when the card goes back on top: "then shuffle and put that card on top".
         ("Library", _) => vec![search, shuffle, put],
         (_, Some("False")) => vec![search, put],
         _ => vec![search, put, shuffle],
     };
-    if p.get("Optional") == Some("True") {
-        // A "may" the printed description does not carry is Forge's narrowing, not the card's.
-        if let Some(text) = p.get("SpellDescription")
-            && !text
-                .to_lowercase()
-                .split(|c: char| !c.is_alphabetic())
-                .any(|w| w == "may")
-        {
-            return unmapped("key:ChangeZone.Optional");
-        }
-        effects = vec![json!({"May": {"effects": effects}})];
+    optional(p, effects)
+}
+
+/// The search as a "may" when Forge marks it optional and the printed text says so too.
+fn optional(p: &Params, effects: Vec<Value>) -> Tr<Vec<Value>> {
+    if p.get("Optional") != Some("True") {
+        return Ok(effects);
     }
-    Ok(effects)
+    // A "may" the printed description does not carry is Forge's narrowing, not the card's.
+    if let Some(text) = p.get("SpellDescription")
+        && !text
+            .to_lowercase()
+            .split(|c: char| !c.is_alphabetic())
+            .any(|w| w == "may")
+    {
+        return unmapped("key:ChangeZone.Optional");
+    }
+    Ok(vec![json!({"May": {"effects": effects}})])
 }
 
 /// The keys of a `Dig` line that are read.

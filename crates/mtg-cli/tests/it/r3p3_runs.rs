@@ -170,3 +170,20 @@ fn a_targeted_players_graveyard_is_exiled_and_the_other_stays() {
         1
     );
 }
+
+const WANDER: &str = "Name:Wander Lore\nManaCost:2 G\nTypes:Sorcery\nA:SP$ ChangeZone | Origin$ Library | Destination$ Library | ChangeType$ Land.Basic | ChangeNum$ 2 | RememberChanged$ True | Reveal$ True | Shuffle$ False | SubAbility$ Hand\nSVar:Hand:DB$ ChangeZone | Origin$ Library | Destination$ Hand | ChangeType$ Land.IsRemembered | Mandatory$ True | NoLooking$ True | SubAbility$ Rest\nSVar:Rest:DB$ ChangeZone | Origin$ Library | Destination$ Battlefield | ChangeType$ Land.IsRemembered | Tapped$ True | Mandatory$ True | NoLooking$ True\n";
+
+#[test]
+fn a_search_that_leaves_the_cards_in_the_library_feeds_the_next_steps() {
+    let spell = translated(WANDER, "Wander Lore", "Sorcery", "{2}{G}");
+    let scenario = Scenario::new(2)
+        .hand(0, [spell])
+        .battlefield(0, (0..3).map(|_| ready(forest())))
+        .library(0, [forest(), forest(), bear(), forest()]);
+    let mut driver = Driver::from_scenario(scenario).unwrap();
+    driver.cast("Wander Lore").unwrap();
+    settle(&mut driver);
+    let me = PlayerId::from_index(0);
+    assert_eq!(named(&driver, Zone::Hand(me), "Forest").len(), 1);
+    assert_eq!(named(&driver, Zone::Battlefield, "Forest").len(), 4);
+}
