@@ -22,6 +22,14 @@ use super::{abilities, gaps, normal};
     "Name:T\nTypes:Creature Elf\nS:Mode$ Continuous | Affected$ Creature.wasDealtDamageThisTurn | AddPower$ 1\n",
     json!({"Static": {"affected": {"Each": [{"Type": "Creature"}, "DamagedThisTurn"]}, "mods": [{"ModifyPT": {"power": 1, "toughness": 0}}]}})
 )]
+#[case::cards_in_hand_get_a_keyword(
+    "Name:T\nTypes:Enchantment\nS:Mode$ Continuous | Affected$ Creature.YouOwn | AffectedZone$ Hand | AddKeyword$ Flash\n",
+    json!({"Static": {"affected": {"Each": [{"Type": "Creature"}, {"OwnedBy": "You"}, {"In": "Hand"}]}, "mods": [{"AddKeyword": "Flash"}]}})
+)]
+#[case::spells_on_the_stack_get_a_keyword(
+    "Name:T\nTypes:Enchantment\nS:Mode$ Continuous | Affected$ Creature.YouCtrl+wasCastFromHand | AffectedZone$ Stack | AddKeyword$ Flash\n",
+    json!({"Static": {"affected": {"Each": [{"Type": "Creature"}, {"ControlledBy": "You"}, {"WasCast": {"from": "Hand"}}, {"In": "Stack"}]}, "mods": [{"AddKeyword": "Flash"}]}})
+)]
 fn selector_atoms_map(#[case] script: &str, #[case] expected: Value) {
     let mut found = abilities(script);
     assert_eq!(found.len(), 1, "{:?}", gaps(script));
@@ -31,6 +39,7 @@ fn selector_atoms_map(#[case] script: &str, #[case] expected: Value) {
 #[rstest]
 #[case::wrong_cast_zone("Creature.wasCastFromTheirHand")]
 #[case::unknown_cast_suffix("Creature.wasCastFromNowhere")]
+#[case::every_zone_at_once("Creature.YouOwn | AffectedZone$ All")]
 #[case::saddled_is_a_condition("Creature.IsSaddled")]
 fn atoms_outside_the_nodes_stay_gaps(#[case] valid: &str) {
     let script = format!(
