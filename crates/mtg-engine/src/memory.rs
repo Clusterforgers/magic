@@ -61,7 +61,9 @@ pub(crate) fn forget_object(state: &mut GameState, event: &Event) {
             }
             let forgotten = state.object(id).and_then(|left| {
                 let me = left.reference();
-                (!has_trigger(left) && !waiting(state, me, Waiting::default())).then_some(me)
+                (!crate::ability_reader::has_triggered(left)
+                    && !waiting(state, me, Waiting::default()))
+                .then_some(me)
             });
             if let Some(me) = forgotten {
                 state.memory.retain(|(source, _), _| *source != me);
@@ -105,15 +107,6 @@ struct Waiting {
     stacked: Option<mtg_core::ids::ObjectId>,
     /// How many of the queued triggers of the source are ending.
     queued: usize,
-}
-
-/// Whether the printed rules of the object hold a triggered ability, which may read what it remembered once it has left.
-fn has_trigger(object: &crate::object::GameObject) -> bool {
-    object
-        .card()
-        .rules
-        .iter()
-        .any(|rule| matches!(**rule, mtg_cards::ability::Ability::Triggered { .. }))
 }
 
 /// Whether an ability of `source` is on the stack, waits to go there, or is a delayed trigger, the ending ones apart.

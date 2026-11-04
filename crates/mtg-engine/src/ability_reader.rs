@@ -525,6 +525,15 @@ pub(crate) fn keyword_abilities(state: &GameState, id: ObjectId) -> Vec<&Keyword
     })
 }
 
+/// Whether the printed rules of the object hold a triggered ability, which may read what it remembered once it has left.
+pub(crate) fn has_triggered(object: &GameObject) -> bool {
+    object
+        .card()
+        .rules
+        .iter()
+        .any(|rule| matches!(**rule, Ability::Triggered { .. }))
+}
+
 #[cfg(test)]
 mod tests {
     //! Goal: an object has the abilities printed on its card, in the order of its rules, each under the address that names it, wherever it is (battlefield, hand, stack, graveyard) and whether it is a card or a token; an address resolves to the very ability it was read with and to nothing when the object is not in the game, is an ability on the stack or has no such ability; and no module other than this one reads the rules of a card, or other than `characteristics` its plain mana abilities, directly.
