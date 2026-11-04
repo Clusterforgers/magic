@@ -310,3 +310,58 @@ fn a_translated_static_recolours_and_retypes_a_creature_in_a_game(
         (colors, types.to_owned())
     );
 }
+
+const GRANTS_A_STATIC: &str = "Name:Banner\nTypes:Enchantment\nS:Mode$ Continuous | Affected$ Creature.YouCtrl | AddStaticAbility$ Boost | Description$ Creatures you control have \"This creature gets +1/+1.\"\nSVar:Boost:Mode$ Continuous | AffectedDefined$ Self | AddPower$ 1 | AddToughness$ 1\n";
+
+#[test]
+fn a_granted_static_line_is_a_static_the_creatures_gain() {
+    assert_eq!(
+        abilities(GRANTS_A_STATIC),
+        vec![json!({"Static": {
+            "affected": {"Each": [{"Type": "Creature"}, {"ControlledBy": "You"}]},
+            "mods": [{"GrantAbility": {"Static": {"affected": "This", "mods": [{"ModifyPT": {"power": 1, "toughness": 1}}]}}}],
+        }})]
+    );
+}
+
+#[rstest]
+#[case::a_rule(
+    "Mode$ CantGainLife | ValidPlayer$ You",
+    "key:Static.Continuous.AddStaticAbility-not-a-static"
+)]
+#[case::grants_in_turn(
+    "Mode$ Continuous | AffectedDefined$ Self | AddKeyword$ Flying | AddStaticAbility$ Boost",
+    "key:Static.Continuous.AddStaticAbility-shape"
+)]
+#[case::a_missing_part("", "key:Static.Continuous.AddStaticAbility-not-a-part")]
+fn a_granted_static_it_cannot_carry_stays_a_gap_by_name(#[case] part: &str, #[case] gap: &str) {
+    let part = if part.is_empty() {
+        String::new()
+    } else {
+        format!("SVar:Boost:{part}\n")
+    };
+    let text = format!(
+        "Name:Banner\nTypes:Enchantment\nS:Mode$ Continuous | Affected$ Creature.YouCtrl | AddStaticAbility$ Boost\n{part}"
+    );
+    assert!(
+        gaps(&text).iter().any(|found| found == gap),
+        "{:?}",
+        gaps(&text)
+    );
+}
+
+#[test]
+fn a_creature_with_a_granted_static_gets_its_modification_in_a_game() {
+    let banner = card_with(&[CardType::Enchantment], "Banner", GRANTS_A_STATIC);
+    let scenario = Scenario::new(2).at(1, 0, Step::Main1).battlefield(
+        0,
+        [
+            ready(banner),
+            ready(mtg_testkit::cards::free_creature("Pest", 1, 1)),
+        ],
+    );
+    let driver = Driver::from_scenario(scenario).unwrap();
+    let id = driver.id_of("Pest").unwrap();
+    let chars = mtg_engine::characteristics::characteristics(driver.state(), id).unwrap();
+    assert_eq!((chars.power, chars.toughness), (Some(2), Some(2)));
+}

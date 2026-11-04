@@ -138,7 +138,8 @@ fn affected_valid(ctx: &Ctx, word: &str) -> Tr<Value> {
 }
 
 /// The keys a continuous static line reads.
-const CONTINUOUS: [&str; 22] = [
+const CONTINUOUS: [&str; 23] = [
+    "AddStaticAbility",
     "RemoveCreatureTypes",
     "AddAllCreatureTypes",
     "AddHiddenKeyword",
@@ -229,6 +230,9 @@ fn continuous(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
         if let Some(names) = p.get(key) {
             mods.extend(granted(ctx, names, trigger)?);
         }
+    }
+    if let Some(names) = p.get("AddStaticAbility") {
+        mods.extend(granted_statics(ctx, names)?);
     }
     if mods.is_empty() {
         return unmapped("static:Continuous-nothing");
@@ -516,4 +520,34 @@ fn half_stats(
         }
         _ => gap(),
     }
+}
+
+/// `AddStaticAbility$`: the named `S:` parts as static abilities the affected objects gain. Only a static (not a rule or a
+/// cost modifier) and one that gives nothing in turn can be granted.
+fn granted_statics(ctx: &mut Ctx, names: &str) -> Tr<Vec<Value>> {
+    let mut mods = Vec::new();
+    for name in names.split('&').map(str::trim) {
+        let Some(text) = ctx.svar(name) else {
+            return unmapped("key:Static.Continuous.AddStaticAbility-not-a-part");
+        };
+        // A granted static grants nothing in turn; reading it first also stops a part that names itself.
+        if text.contains("AddStaticAbility")
+            || text.contains("AddAbility")
+            || text.contains("AddTrigger")
+        {
+            return unmapped("key:Static.Continuous.AddStaticAbility-shape");
+        }
+        let ability = static_line(ctx, &text.to_owned())?;
+        let Some(inner) = ability.get("Static") else {
+            return unmapped("key:Static.Continuous.AddStaticAbility-not-a-static");
+        };
+        if inner.get("defining").is_some()
+            || inner.to_string().contains("\"GrantAbility\"")
+            || inner.get("from").is_some()
+        {
+            return unmapped("key:Static.Continuous.AddStaticAbility-shape");
+        }
+        mods.push(json!({"GrantAbility": ability}));
+    }
+    Ok(mods)
 }
