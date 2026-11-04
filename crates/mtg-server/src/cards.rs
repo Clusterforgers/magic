@@ -676,6 +676,10 @@ impl CardSource {
         &self,
         seeds: &[Arc<CardDefinition>],
     ) -> Result<(BTreeMap<String, Arc<CardDefinition>>, Reads), CatalogError> {
+        // A game of built-in decks conjures nothing and must not need the card tables.
+        if seeds.iter().all(|card| card.conjured_names().is_empty()) {
+            return Ok((BTreeMap::new(), Reads::new()));
+        }
         let (rules, _) = self.library().await?;
         self.conjured_in(&rules, seeds).await
     }
