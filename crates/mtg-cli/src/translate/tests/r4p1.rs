@@ -194,3 +194,35 @@ fn a_search_of_a_targets_library_stays_a_named_gap(#[case] lines: &str, #[case] 
     assert!(abilities(&script).is_empty(), "{:?}", abilities(&script));
     assert_eq!(gaps(&script), [gap]);
 }
+
+#[rstest]
+#[case::until_the_source_leaves(
+    "A:SP$ ChangeZone | ValidTgts$ Creature | Origin$ Battlefield | Destination$ Exile | Duration$ UntilHostLeavesPlay",
+    true
+)]
+#[case::another_duration(
+    "A:SP$ ChangeZone | ValidTgts$ Creature | Origin$ Battlefield | Destination$ Exile | Duration$ UntilYourNextTurn",
+    false
+)]
+#[case::not_an_exile(
+    "A:SP$ ChangeZone | ValidTgts$ Creature | Origin$ Battlefield | Destination$ Hand | Duration$ UntilHostLeavesPlay",
+    false
+)]
+#[case::not_from_the_battlefield(
+    "A:SP$ ChangeZone | ValidTgts$ Card | Origin$ Graveyard | Destination$ Exile | Duration$ UntilHostLeavesPlay",
+    false
+)]
+fn an_exile_with_a_duration_names_it_or_stays_a_gap(#[case] lines: &str, #[case] maps: bool) {
+    let script = card("Sorcery", lines);
+    let found = abilities(&script);
+    assert_eq!(found.len(), usize::from(maps), "{:?}", gaps(&script));
+    if maps {
+        assert!(
+            found[0]
+                .to_string()
+                .contains(r#""duration":"WhileSourceOnBattlefield""#)
+        );
+    } else {
+        assert_eq!(gaps(&script), ["key:ChangeZone.Duration"]);
+    }
+}

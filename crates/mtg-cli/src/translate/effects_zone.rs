@@ -384,6 +384,7 @@ fn change_zone(ctx: &mut Ctx, p: &Params, origin: &str, destination: &str) -> Tr
             "AttachedTo",
             "StaticEffect",
             "Optional",
+            "Duration",
         ],
     )?;
     let what = if origin == "Stack" && !p.has("ValidTgts") {
@@ -392,6 +393,14 @@ fn change_zone(ctx: &mut Ctx, p: &Params, origin: &str, destination: &str) -> Tr
         subject(ctx, p, "Self", Some(origin))?
     };
     let mut effect = moves(&what, goes(ctx, p, destination)?);
+    match p.get("Duration") {
+        None => {}
+        // "Exile it until ~ leaves the battlefield": the exiled permanent returns when the source goes.
+        Some("UntilHostLeavesPlay") if destination == "Exile" && origin == "Battlefield" => {
+            effect["Exile"]["duration"] = json!("WhileSourceOnBattlefield");
+        }
+        Some(_) => return unmapped("key:ChangeZone.Duration"),
+    }
     if remember::wanted(p, &["RememberChanged", "RememberLKI", "RememberTargets"]) {
         let (verb, stem) = if effect.get("Exile").is_some() {
             ("Exile", "exiled")

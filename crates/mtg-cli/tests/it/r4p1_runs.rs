@@ -218,3 +218,41 @@ fn the_targeted_player_searches_their_own_library_and_the_caster_does_not() {
         "the caster's own Forest and the one found: {seen:?}"
     );
 }
+
+const WARDEN: &str = "Name:Warden\nManaCost:2\nTypes:Artifact\nA:AB$ ChangeZone | Cost$ T | Origin$ Battlefield | Destination$ Exile | ValidTgts$ Creature.OppCtrl | Duration$ UntilHostLeavesPlay | SpellDescription$ Exile target creature an opponent controls until Warden leaves the battlefield.\n";
+const SMASH: &str = "Name:Smash\nManaCost:R\nTypes:Instant\nA:SP$ Destroy | ValidTgts$ Artifact\n";
+
+#[test]
+fn an_exile_until_the_source_leaves_returns_the_creature_when_it_goes() {
+    use mtg_testkit::cards::mountain;
+    let scenario = Scenario::new(2)
+        .battlefield(
+            0,
+            [
+                ready(translated(WARDEN, "Warden", "Artifact", "{2}")),
+                ready(mountain()),
+            ],
+        )
+        .hand(0, [translated(SMASH, "Smash", "Instant", "{R}")])
+        .battlefield(1, [ready(bear())]);
+    let mut driver = Driver::from_scenario(scenario).unwrap();
+    driver.begin_activation("Warden").unwrap();
+    let target = driver.target_named("Grizzly Bears").unwrap();
+    driver.choose_targets(&[target]).unwrap();
+    crate::r3p3_runs::settle(&mut driver);
+    let count = |driver: &Driver, zone: Zone| {
+        let state = driver.state();
+        state
+            .zone(zone)
+            .iter()
+            .filter(|id| state.object(**id).unwrap().card().name == "Grizzly Bears")
+            .count()
+    };
+    assert_eq!(count(&driver, Zone::Exile), 1, "held while Warden stays");
+    assert_eq!(count(&driver, Zone::Battlefield), 0);
+    let warden = driver.target_named("Warden").unwrap();
+    driver.cast_at("Smash", &[warden]).unwrap();
+    crate::r3p3_runs::settle(&mut driver);
+    assert_eq!(count(&driver, Zone::Exile), 0, "back once Warden is gone");
+    assert_eq!(count(&driver, Zone::Battlefield), 1);
+}
