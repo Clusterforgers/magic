@@ -109,6 +109,19 @@ fn hand(driver: &Driver) -> usize {
     Scenario::new(2),
     1
 )]
+#[case::sacrificing_the_source(
+    r#"["SacrificeSelf"]"#,
+    "Sacrifice this permanent?",
+    Scenario::new(2),
+    0
+)]
+#[case::exiling_the_source(r#"["ExileSelf"]"#, "Exile this?", Scenario::new(2), 0)]
+#[case::mana_and_sacrificing_the_source(
+    r#"[{"Mana":"{1}"},"SacrificeSelf"]"#,
+    "Pay {1}, sacrifice this permanent?",
+    Scenario::new(2),
+    1
+)]
 #[case::mana_and_a_return(
     r#"[{"Mana":"{1}"},{"ReturnToHand":{"filter":[{"Type":"Land"}]}}]"#,
     "Pay {1}, return a land you control to its owner's hand?",
@@ -142,6 +155,29 @@ fn a_player_who_can_pay_is_asked_in_the_words_of_the_cost_and_pays_it_all(
         }
     }
     settle(&mut driver)?;
+    let named = |zone| -> Vec<String> {
+        driver
+            .state()
+            .zone(zone)
+            .iter()
+            .map(|id| name_of(driver.state(), *id))
+            .collect()
+    };
+    // The source is lost with the payment, to the zone the cost names.
+    let (sacrificed, exiled) = (
+        cost.contains("\"SacrificeSelf\""),
+        cost.contains("\"ExileSelf\""),
+    );
+    let sacrificed = sacrificed || cost.contains("\"Sacrifice\"");
+    assert_eq!(
+        named(Zone::Graveyard(pid(0))).contains(&"Taxed".to_owned()),
+        sacrificed
+    );
+    assert_eq!(named(Zone::Exile).contains(&"Taxed".to_owned()), exiled);
+    assert_eq!(
+        named(Zone::Battlefield).contains(&"Taxed".to_owned()),
+        !sacrificed && !exiled
+    );
     // The card the paid effect draws, less the one discarded, plus the land returned.
     let returned = usize::from(cost.contains("ReturnToHand"));
     assert_eq!(

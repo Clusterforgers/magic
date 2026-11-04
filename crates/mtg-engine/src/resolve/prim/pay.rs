@@ -13,7 +13,7 @@ use super::{w6c_pay_x, wrong_effect};
 use crate::cast::payment_decision;
 use crate::choose::{CardsOptions, Choice, YesNoOptions};
 use crate::decision::{Decision, DecisionKind};
-use crate::events::Event;
+use crate::events::{Event, ZoneCause};
 use crate::help::Offered;
 use crate::mana::{can_afford, reserve_energy};
 use crate::parts::{Part, Payer};
@@ -21,7 +21,9 @@ use crate::price::{Leaves, Price};
 use crate::priority::mana_options;
 use crate::resolve::{Cx, Next, ResolveError, Run};
 use crate::spend::Spend;
+use crate::state::GameState;
 use crate::wording;
+use crate::zones::Zone;
 
 /// The players the effect names who are in the game are asked in turn order whether they will pay ("Pay {2}?", "Pay 2
 /// life?", "Discard a card?"), until one does. A player who cannot pay, with the floating mana and the permanents they
@@ -54,6 +56,10 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         });
     }
     let template = price_of(&repeated(&c6_eg_counted(cx, cost)?, times))?;
+    // The source is lost once; a cost that loses it several times over is not one payment.
+    if times > 1 && template.moves_source() {
+        return Err(ResolveError::Unsupported(leaving_name(template.leaves)));
+    }
     let state = cx.state();
     let mut journal = cx
         .journal()
@@ -185,17 +191,62 @@ fn unexpected(answer: &Choice, player: PlayerId) -> ResolveError {
     ))
 }
 
+/// The name of the payment that loses the source.
+fn leaving_name(leaves: Leaves) -> &'static str {
+    match leaves {
+        Leaves::Exiled => "Effect.Pay.ExileSelf",
+        Leaves::Discarded => "Effect.Pay.DiscardSelf",
+        Leaves::Sacrificed | Leaves::Stays => "Effect.Pay.SacrificeSelf",
+    }
+}
+
+/// Whether the source is where the payment takes it from and no rule keeps it there: a sacrifice takes a permanent of
+/// the payer's from the battlefield, an exile takes the source from the zone it is in.
+fn source_may_leave(state: &GameState, player: PlayerId, source: ObjectId, leaves: Leaves) -> bool {
+    let Some(object) = state.object(source) else {
+        return leaves == Leaves::Stays;
+    };
+    match leaves {
+        Leaves::Stays => true,
+        Leaves::Sacrificed => {
+            object.zone() == Zone::Battlefield
+                && object.controller() == player
+                && crate::prohibit::may_sacrifice(state, player, source)
+        }
+        Leaves::Exiled => crate::prohibit::may_exile(state, source),
+        Leaves::Discarded => false,
+    }
+}
+
+/// The move of the source that the payment makes, after its other parts.
+fn source_leaves(state: &GameState, source: ObjectId, leaves: Leaves) -> Option<Event> {
+    let object = state.object(source)?;
+    match leaves {
+        Leaves::Sacrificed => Some(Event::ZoneChanged {
+            object: source,
+            from: Zone::Battlefield,
+            to: Zone::Graveyard(object.owner()),
+            cause: ZoneCause::Sacrificed,
+        }),
+        Leaves::Exiled => Some(Event::ZoneChanged {
+            object: source,
+            from: object.zone(),
+            to: Zone::Exile,
+            cause: ZoneCause::Exiled,
+        }),
+        Leaves::Stays | Leaves::Discarded => None,
+    }
+}
+
 /// The price of a cost an effect asks for: mana, with the `{X}` the payer announces once they say yes, and the parts the
 /// engine pays (life, counters removed from the source, energy, objects picked). A cost that loses the source, taps it or
 /// has a part that counts X is refused by name.
 fn price_of(cost: &Cost) -> Result<Price, ResolveError> {
     let price = Price::announced(cost).map_err(ResolveError::Unsupported)?;
     match price.leaves {
-        // Losing the source is a cost of an ability; no effect asks a player to pay it yet.
-        Leaves::Sacrificed => return Err(ResolveError::Unsupported("Effect.Pay.SacrificeSelf")),
-        Leaves::Exiled => return Err(ResolveError::Unsupported("Effect.Pay.ExileSelf")),
+        // A resolution has no hand to discard the source from.
         Leaves::Discarded => return Err(ResolveError::Unsupported("Effect.Pay.DiscardSelf")),
-        Leaves::Stays => {}
+        Leaves::Sacrificed | Leaves::Exiled | Leaves::Stays => {}
     }
     // Energy is the one part whose X is announced with a payment an effect asks for.
     if price
@@ -205,7 +256,7 @@ fn price_of(cost: &Cost) -> Result<Price, ResolveError> {
     {
         return Err(ResolveError::Unsupported("Effect.Pay.X.Parts"));
     }
-    if price.tap || (price.mana.is_none() && price.parts.is_empty()) {
+    if price.tap || (price.mana.is_none() && price.parts.is_empty() && !price.moves_source()) {
         return Err(ResolveError::Invalid(
             "a payment is mana, life, counters, energy or objects picked".into(),
         ));
@@ -217,6 +268,9 @@ fn price_of(cost: &Cost) -> Result<Price, ResolveError> {
 /// from the permanents they may tap, other than the ones the other parts take.
 pub(super) fn can_pay(cx: &Cx<'_>, player: PlayerId, price: &Price) -> bool {
     let state = cx.state();
+    if !source_may_leave(state, player, cx.scope.source.id, price.leaves) {
+        return false;
+    }
     let Some(claimed) = price.claimed(state, player, cx.scope.source.id) else {
         return false;
     };
@@ -252,6 +306,11 @@ fn said(price: &Price) -> Vec<String> {
         .iter()
         .map(|mana| w6c_pay_x::mana_text(mana, price.x))
         .chain(price.parts.iter().map(Part::text))
+        .chain(match price.leaves {
+            Leaves::Sacrificed => Some("Sacrifice this permanent".to_owned()),
+            Leaves::Exiled => Some("Exile this".to_owned()),
+            Leaves::Stays | Leaves::Discarded => None,
+        })
         .collect()
 }
 
@@ -340,6 +399,7 @@ fn settle<'a>(
         };
         events.extend(part.events(state, player, source, picked));
     }
+    events.extend(source_leaves(state, source, price.leaves));
     Ok(Settled::Paid(events))
 }
 
@@ -376,7 +436,7 @@ fn payment(
 
 #[cfg(test)]
 mod tests {
-    //! Goal: a payment asks the players it names in turn order "Pay {2}?" until one says yes and then for the payment itself (no way back), asks a player who cannot pay in the same words with No as the only answer (for every kind of mana cost: generic, coloured, hybrid, Phyrexian, floating, tapped and wrong-coloured sources), skips a player who left the game, enters the paid effects once a payment is logged and the unpaid ones when nobody paid, reads a player's answers back from the journal (paying spends what could pay), refuses answers it did not ask for, asks a player who pays a cost with {X} for X from 0 to the most they can pay and binds the X paid, and refuses by name a cost the effect cannot ask (losing the source, tapping it, a part that counts X).
+    //! Goal: a payment asks the players it names in turn order "Pay {2}?" until one says yes and then for the payment itself (no way back), asks a player who cannot pay in the same words with No as the only answer (for every kind of mana cost: generic, coloured, hybrid, Phyrexian, floating, tapped and wrong-coloured sources), skips a player who left the game, enters the paid effects once a payment is logged and the unpaid ones when nobody paid, reads a player's answers back from the journal (paying spends what could pay), refuses answers it did not ask for, asks a player who pays a cost with {X} for X from 0 to the most they can pay and binds the X paid, and refuses by name a cost the effect cannot ask (discarding the source, tapping it, a part that counts X).
     use std::sync::Arc;
 
     use mtg_cards::CardDefinition;
@@ -819,13 +879,13 @@ mod tests {
         ResolveError::Unsupported("Effect.Pay.X.Parts")
     )]
     #[case::counted_mill(r#"[{"Mill":"X"}]"#, ResolveError::Unsupported("Effect.Pay.X.Parts"))]
-    #[case::sacrifice(
-        r#"["SacrificeSelf"]"#,
-        ResolveError::Unsupported("Effect.Pay.SacrificeSelf")
+    #[case::discarding_the_source(
+        r#"["DiscardSelf"]"#,
+        ResolveError::Unsupported("Effect.Pay.DiscardSelf")
     )]
-    #[case::mana_and_sacrifice(
-        r#"[{"Mana":"{2}"},"SacrificeSelf"]"#,
-        ResolveError::Unsupported("Effect.Pay.SacrificeSelf")
+    #[case::mana_and_discarding_the_source(
+        r#"[{"Mana":"{2}"},"DiscardSelf"]"#,
+        ResolveError::Unsupported("Effect.Pay.DiscardSelf")
     )]
     #[case::tapping(
         r#"[{"Mana":"{1}"},"Tap"]"#,

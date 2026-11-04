@@ -386,6 +386,8 @@ const RUNS: &[&str] = &[
     "Effect.Pay.Counted",
     "Effect.Pay.X",
     "Effect.Pay.X.Energy",
+    "Effect.Pay.SacrificeSelf",
+    "Effect.Pay.ExileSelf",
     "Effect.Choose",
     "Effect.ChooseAtRandom",
     "Effect.ChooseValue",
@@ -916,8 +918,8 @@ mod tests {
     #[case::storming("Keyword.Storm", true)]
     #[case::sacrificing_the_source("Cost.SacrificeSelf", true)]
     #[case::sacrificing_a_permanent("Cost.Sacrifice", true)]
-    #[case::paying_by_sacrificing_the_source("Effect.Pay.SacrificeSelf", false)]
-    #[case::paying_by_exiling_the_source("Effect.Pay.ExileSelf", false)]
+    #[case::paying_by_sacrificing_the_source("Effect.Pay.SacrificeSelf", true)]
+    #[case::paying_by_exiling_the_source("Effect.Pay.ExileSelf", true)]
     #[case::paying_by_discarding_the_source("Effect.Pay.DiscardSelf", false)]
     #[case::mana_abilities_of_several_mana_or_with_more_effects(
         "Ability.ManaAbility.Complex",
