@@ -21,25 +21,7 @@
               {
                 "If": {
                   "condition": {
-                    "Compare": {
-                      "left": {
-                        "Count": [
-                          { "Is": { "Bound": "sacrificed" } },
-                          {
-                            "AnyOf": [
-                              { "In": "Battlefield" },
-                              { "In": "Hand" },
-                              { "In": "Library" },
-                              { "In": "Graveyard" },
-                              { "In": "Exile" },
-                              { "In": "Stack" }
-                            ]
-                          }
-                        ]
-                      },
-                      "op": "Eq",
-                      "right": 0
-                    }
+                    "Compare": { "left": { "Bound": "sacrificed~moved" }, "op": "Eq", "right": 0 }
                   },
                   "then": [{ "LoseLife": { "who": { "Target": 0 }, "amount": 2 } }]
                 }
@@ -47,25 +29,7 @@
               {
                 "If": {
                   "condition": {
-                    "Compare": {
-                      "left": {
-                        "Count": [
-                          { "Is": { "Bound": "sacrificed" } },
-                          {
-                            "AnyOf": [
-                              { "In": "Battlefield" },
-                              { "In": "Hand" },
-                              { "In": "Library" },
-                              { "In": "Graveyard" },
-                              { "In": "Exile" },
-                              { "In": "Stack" }
-                            ]
-                          }
-                        ]
-                      },
-                      "op": "Eq",
-                      "right": 0
-                    }
+                    "Compare": { "left": { "Bound": "sacrificed~moved" }, "op": "Eq", "right": 0 }
                   },
                   "then": [{ "Draw": {} }]
                 }
@@ -80,25 +44,7 @@
               {
                 "If": {
                   "condition": {
-                    "Compare": {
-                      "left": {
-                        "Count": [
-                          { "Is": { "Bound": "sacrificed2" } },
-                          {
-                            "AnyOf": [
-                              { "In": "Battlefield" },
-                              { "In": "Hand" },
-                              { "In": "Library" },
-                              { "In": "Graveyard" },
-                              { "In": "Exile" },
-                              { "In": "Stack" }
-                            ]
-                          }
-                        ]
-                      },
-                      "op": "Eq",
-                      "right": 0
-                    }
+                    "Compare": { "left": { "Bound": "sacrificed2~moved" }, "op": "Eq", "right": 0 }
                   },
                   "then": [{ "LoseLife": { "who": { "Target": 0 }, "amount": 2 } }]
                 }
@@ -106,25 +52,7 @@
               {
                 "If": {
                   "condition": {
-                    "Compare": {
-                      "left": {
-                        "Count": [
-                          { "Is": { "Bound": "sacrificed2" } },
-                          {
-                            "AnyOf": [
-                              { "In": "Battlefield" },
-                              { "In": "Hand" },
-                              { "In": "Library" },
-                              { "In": "Graveyard" },
-                              { "In": "Exile" },
-                              { "In": "Stack" }
-                            ]
-                          }
-                        ]
-                      },
-                      "op": "Eq",
-                      "right": 0
-                    }
+                    "Compare": { "left": { "Bound": "sacrificed2~moved" }, "op": "Eq", "right": 0 }
                   },
                   "then": [{ "Draw": {} }]
                 }
@@ -139,25 +67,7 @@
               {
                 "If": {
                   "condition": {
-                    "Compare": {
-                      "left": {
-                        "Count": [
-                          { "Is": { "Bound": "sacrificed3" } },
-                          {
-                            "AnyOf": [
-                              { "In": "Battlefield" },
-                              { "In": "Hand" },
-                              { "In": "Library" },
-                              { "In": "Graveyard" },
-                              { "In": "Exile" },
-                              { "In": "Stack" }
-                            ]
-                          }
-                        ]
-                      },
-                      "op": "Eq",
-                      "right": 0
-                    }
+                    "Compare": { "left": { "Bound": "sacrificed3~moved" }, "op": "Eq", "right": 0 }
                   },
                   "then": [{ "LoseLife": { "who": { "Target": 0 }, "amount": 2 } }]
                 }
@@ -165,25 +75,7 @@
               {
                 "If": {
                   "condition": {
-                    "Compare": {
-                      "left": {
-                        "Count": [
-                          { "Is": { "Bound": "sacrificed3" } },
-                          {
-                            "AnyOf": [
-                              { "In": "Battlefield" },
-                              { "In": "Hand" },
-                              { "In": "Library" },
-                              { "In": "Graveyard" },
-                              { "In": "Exile" },
-                              { "In": "Stack" }
-                            ]
-                          }
-                        ]
-                      },
-                      "op": "Eq",
-                      "right": 0
-                    }
+                    "Compare": { "left": { "Bound": "sacrificed3~moved" }, "op": "Eq", "right": 0 }
                   },
                   "then": [{ "Draw": {} }]
                 }

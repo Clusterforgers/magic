@@ -29,21 +29,7 @@
                       "toughness": 2
                     }
                   },
-                  "count": {
-                    "Count": [
-                      { "Is": { "Bound": "sacrificed" } },
-                      {
-                        "AnyOf": [
-                          { "In": "Battlefield" },
-                          { "In": "Hand" },
-                          { "In": "Library" },
-                          { "In": "Graveyard" },
-                          { "In": "Exile" },
-                          { "In": "Stack" }
-                        ]
-                      }
-                    ]
-                  }
+                  "count": { "Bound": "sacrificed~moved" }
                 }
               }
             ]
