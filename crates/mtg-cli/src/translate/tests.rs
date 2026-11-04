@@ -32,6 +32,11 @@ fn world() -> World {
     })
     .collect();
     let mut world = World::new(&[], tokens);
+    world.stored = Some(
+        ["lightning-bolt", "ponder", "mox-opal"]
+            .map(str::to_owned)
+            .into(),
+    );
     world.subtypes.extend(
         [
             "Elf",

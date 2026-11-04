@@ -27,6 +27,8 @@ pub struct World {
     pub subtypes: BTreeSet<String>,
     /// The token scripts by file stem (`w_1_1_soldier`).
     pub tokens: BTreeMap<String, Face>,
+    /// The slugs of the cards the database stores, when the run reads it: a name a card conjures is checked against them.
+    pub stored: Option<BTreeSet<String>>,
 }
 
 impl World {
@@ -39,7 +41,11 @@ impl World {
         for face in tokens.values() {
             subtypes.extend(subtypes_of(&face.types));
         }
-        World { subtypes, tokens }
+        World {
+            subtypes,
+            tokens,
+            stored: None,
+        }
     }
 }
 

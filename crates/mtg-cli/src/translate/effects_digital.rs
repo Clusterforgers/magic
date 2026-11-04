@@ -34,6 +34,13 @@ fn make_card(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     if name == "ChosenName" || name.contains('$') {
         return unmapped("key:MakeCard.Name");
     }
+    // A card that conjures a name the game cannot resolve would play wrong and still count as automatic, so the name must
+    // be a stored card; a run that cannot tell (no database) leaves the line a gap.
+    match &ctx.world.stored {
+        Some(stored) if stored.contains(&mtg_cards::load::slug(name)) => {}
+        Some(_) => return unmapped("name:MakeCard.Unstored"),
+        None => return unmapped("name:MakeCard.Unchecked"),
+    }
     let zone = match p.get("Zone") {
         Some(zone @ ("Hand" | "Graveyard" | "Exile")) => zone,
         Some(other) => return unmapped(format!("zone:MakeCard.{other}")),

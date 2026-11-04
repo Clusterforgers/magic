@@ -92,7 +92,8 @@ pub async fn translate_forge(
         None => None,
     };
     let scripts = read_checkout(&args.dir)?;
-    let world = World::new(&scripts, read_tokens(&args.dir));
+    let mut world = World::new(&scripts, read_tokens(&args.dir));
+    world.stored = stored.as_ref().map(Stored::slugs);
     let wanted: Vec<String> = args.cards.iter().map(|name| fold(name)).collect();
     let out_dir = args
         .out

@@ -83,7 +83,7 @@ mod tests {
             vec![Vec::new(), Vec::new()],
             vec![vec![creature("Source", 1, 1)], Vec::new()],
         )
-        .with_conjurable([creature("Bolt", 2, 1)]);
+        .with_conjurable([("Bolt".to_owned(), creature("Bolt", 2, 1))]);
         GameState::from_setup(&table).unwrap()
     }
 

@@ -34,6 +34,10 @@ fn a_digital_verb_maps_to_its_node(#[case] line: &str, #[case] node: Value) {
 }
 
 #[rstest]
+#[case::unstored_name(
+    "MakeCard | Name$ Nobody Knows | Conjure$ True | Zone$ Hand",
+    "name:MakeCard.Unstored"
+)]
 #[case::chosen_name(
     "MakeCard | Name$ ChosenName | Conjure$ True | Zone$ Hand",
     "key:MakeCard.Name"

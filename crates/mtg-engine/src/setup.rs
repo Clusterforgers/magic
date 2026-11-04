@@ -153,15 +153,13 @@ impl GameSetup {
         }
     }
 
-    /// The setup whose effects may conjure these cards, found by their names.
+    /// The setup whose effects may conjure these cards, each under the name an effect asks for it by.
     #[must_use]
-    pub fn with_conjurable(mut self, cards: impl IntoIterator<Item = Arc<CardDefinition>>) -> Self {
-        self.conjurable = Arc::new(
-            cards
-                .into_iter()
-                .map(|card| (card.name.clone(), card))
-                .collect(),
-        );
+    pub fn with_conjurable(
+        mut self,
+        cards: impl IntoIterator<Item = (String, Arc<CardDefinition>)>,
+    ) -> Self {
+        self.conjurable = Arc::new(cards.into_iter().collect());
         self
     }
 

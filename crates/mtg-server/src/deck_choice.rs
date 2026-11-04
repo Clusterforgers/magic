@@ -18,6 +18,7 @@ use mtg_engine::format::{Commander, DeckError, FormatRules, Normal, RuleSet};
 use mtg_protocol::SeatDeck;
 use mtg_protocol::rest::{DeckBlockedBody, DeckChoiceErrorCode, PRECON_DECK_PREFIX};
 use sqlx::types::uuid::Uuid;
+use std::collections::BTreeMap;
 use std::sync::Arc;
 
 use crate::api::ApiError;
@@ -150,6 +151,18 @@ async fn precon(app: &AppState, code: &str) -> Result<ChosenDeck, Refused> {
         manual_cards: manual_cards(&judged.report),
     };
     let printings = printings_of(&judged.lines, false);
+    let seeds: Vec<Arc<CardDefinition>> = judged
+        .cards
+        .iter()
+        .chain(&judged.leaders)
+        .cloned()
+        .collect();
+    let (conjured, conjured_reads) = source
+        .conjured_for(&seeds)
+        .await
+        .map_err(|error| Refused::Failed(ApiError::from(error)))?;
+    let mut reads = judged.reads.clone();
+    reads.extend(conjured_reads);
     ChosenDeck::led(
         judged.library,
         judged.cards,
@@ -161,7 +174,8 @@ async fn precon(app: &AppState, code: &str) -> Result<ChosenDeck, Refused> {
         chosen
             .with_own_issues(own_issues)
             .with_printings(printings)
-            .with_reads(judged.reads.clone())
+            .with_reads(reads)
+            .with_conjured(conjured)
     })
     .map_err(|error| {
         tracing::error!(%error, "a precon could not be fingerprinted");
@@ -201,6 +215,7 @@ async fn stored(app: &AppState, headers: &HeaderMap, id: &str) -> Result<ChosenD
         commanders,
         companion,
         reads,
+        conjured,
     } = assemble(source, &lines).await?;
     let note = SeatDeck {
         name: deck.name.clone(),
@@ -217,7 +232,8 @@ async fn stored(app: &AppState, headers: &HeaderMap, id: &str) -> Result<ChosenD
     };
     let chosen = ChosenDeck::led(ids, library, commander_ids, commanders, note)
         .map_err(unreadable)?
-        .with_reads(reads);
+        .with_reads(reads)
+        .with_conjured(conjured);
     let printings = printings_of(&lines, companion.is_some());
     let chosen = match companion {
         Some((id, card)) => chosen.with_companion(id, card).map_err(unreadable)?,
@@ -236,6 +252,8 @@ struct Assembled {
     companion: Option<(String, Arc<CardDefinition>)>,
     /// The draft each card that runs on a read plays on.
     reads: Reads,
+    /// The cards the deck's cards can conjure, by name.
+    conjured: BTreeMap<String, Arc<CardDefinition>>,
 }
 
 /// The definitions of the main deck, the commanders and the companion of `lines`, read in one query.
@@ -251,7 +269,9 @@ async fn assemble(source: &CardSource, lines: &[Line]) -> Result<Assembled, ApiE
         .chain(&companion)
         .cloned()
         .collect();
-    let (mut library, reads) = source.deck_pinned(&all).await?;
+    let (mut library, mut reads) = source.deck_pinned(&all).await?;
+    let (conjured, conjured_reads) = source.conjured_for(&library).await?;
+    reads.extend(conjured_reads);
     let mut rest = library.split_off(ids.len());
     let card = if companion.is_some() {
         rest.pop()
@@ -265,6 +285,7 @@ async fn assemble(source: &CardSource, lines: &[Line]) -> Result<Assembled, ApiE
             .zip(card)
             .filter(|(_, card)| card.companion_condition().is_some()),
         reads,
+        conjured,
     })
 }
 
