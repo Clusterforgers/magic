@@ -214,9 +214,8 @@ fn phase(p: &Params) -> Tr<Value> {
     let step = match (p.get("Phase"), p.get("PhaseCount")) {
         (Some("Main"), Some("1")) => "Main1",
         (Some("Main"), Some("2")) => "Main2",
-        (Some("Main"), _) => return unmapped("key:Trigger.Phase.PhaseCount"),
+        (Some("Main"), _) | (_, Some(_)) => return unmapped("key:Trigger.Phase.PhaseCount"),
         (word, None) => step(word.unwrap_or_default())?,
-        (_, Some(_)) => return unmapped("key:Trigger.Phase.PhaseCount"),
     };
     let whose = match p.get("ValidPlayer") {
         // Forge scripts "the end step" (every player's) with `ValidPlayer$ You`; the print has no "your".
@@ -241,7 +240,7 @@ fn attacks(ctx: &Ctx, p: &Params) -> Tr<Value> {
         if p.get("Alone") == Some("True") {
             return unmapped("key:Trigger.Attacks.Attacked-with-Alone");
         }
-        return attacks_at(word, what);
+        return attacks_at(word, &what);
     }
     let variant = if p.get("Alone") == Some("True") {
         "AttacksAlone"
@@ -253,7 +252,7 @@ fn attacks(ctx: &Ctx, p: &Params) -> Tr<Value> {
 
 /// An attack on a player (`Attacked$ You`), or on a player or a planeswalker that player controls
 /// (`Attacked$ You,Planeswalker.YouCtrl`): the two stay apart, and any other attacked thing is a gap.
-fn attacks_at(word: &str, what: Vec<Value>) -> Tr<Value> {
+fn attacks_at(word: &str, what: &[Value]) -> Tr<Value> {
     let gap = || unmapped(format!("key:Trigger.Attacks.Attacked={word}"));
     let mut parts = word.split(',');
     let Some(player) = parts.next() else {
