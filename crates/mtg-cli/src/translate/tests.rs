@@ -595,3 +595,5 @@ mod fg4a_emblem;
 mod fg4b;
 mod fg4b_names;
 mod fg4d_amounts;
+mod gn2;
+mod gn2_play;

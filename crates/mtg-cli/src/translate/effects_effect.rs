@@ -29,6 +29,7 @@ pub fn effects(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             "Defined",
             "ReplacementEffects",
             "Triggers",
+            "Boon",
         ],
     )?;
     // The Forge effect object ends when what it remembers changes zones; our references to remembered objects drop out the
@@ -44,29 +45,55 @@ pub fn effects(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             return unmapped("key:Effect.Triggers-and-ReplacementEffects");
         }
         let remembered = super::replacements_damage::remembered_of(ctx, p)?;
-        return super::effects_ambient::delayed_triggers(ctx, p, remembered.as_ref());
+        let mut out = ambient_with(ctx, p)?;
+        out.extend(super::effects_ambient::delayed_triggers(
+            ctx,
+            p,
+            remembered.as_ref(),
+        )?);
+        return Ok(out);
     }
     if p.has("ReplacementEffects") {
-        if p.has("StaticAbilities") {
-            return unmapped("key:Effect.static-and-replacement");
-        }
         let remembered = super::replacements_damage::remembered_of(ctx, p)?;
-        return super::replacements_damage::shield(ctx, p, remembered.as_ref());
+        let mut out = ambient_with(ctx, p)?;
+        out.extend(super::replacements_damage::shield(
+            ctx,
+            p,
+            remembered.as_ref(),
+        )?);
+        return Ok(out);
     }
     if !p.has("RememberObjects") && !p.has("ValidTgts") {
         return super::effects_ambient::continuous_statics(ctx, p);
     }
-    let Some(name) = p.get("StaticAbilities") else {
+    let Some(names) = p.get("StaticAbilities") else {
         return unmapped("key:Effect.no-StaticAbilities");
     };
-    if name.contains(',') {
-        return unmapped("key:Effect.StaticAbilities-list");
-    }
     let duration = duration(p.get("Duration"))?;
     let who = remembered(ctx, p)?;
+    let mut out = Vec::new();
+    for name in names.split(',').map(str::trim) {
+        out.extend(remembered_static(ctx, name, &who, duration)?);
+    }
+    Ok(out)
+}
+
+/// The statics of an `Effect` line that has no remembered objects, when the line also holds a trigger or a replacement.
+fn ambient_with(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
+    if !p.has("StaticAbilities") {
+        return Ok(Vec::new());
+    }
+    if p.has("RememberObjects") || p.has("ValidTgts") {
+        return unmapped("key:Effect.static-with-remembered-and-more");
+    }
+    super::effects_ambient::continuous_statics(ctx, p)
+}
+
+/// One static of an `Effect` line about the objects it remembers.
+fn remembered_static(ctx: &mut Ctx, name: &str, who: &Value, duration: &str) -> Tr<Vec<Value>> {
     let part = ctx.sub(name)?;
     if part.has("MayPlay") {
-        let rule = super::mayplay::may_cast(ctx, &part, Some(&who))?;
+        let rule = super::mayplay::may_cast(ctx, &part, Some(who))?;
         return Ok(vec![json!({"Rule": {"rule": rule, "duration": duration}})]);
     }
     let read = [
@@ -88,20 +115,20 @@ pub fn effects(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     };
     match part.get("Mode").unwrap_or_default() {
         "CantBlockBy" if on_remembered("ValidAttacker") && !part.has("ValidBlocker") => {
-            Ok(vec![continuous(&who, &[json!("CantBeBlocked")], duration)])
+            Ok(vec![continuous(who, &[json!("CantBeBlocked")], duration)])
         }
         "CantAttack" if on_remembered("ValidCard") => {
-            Ok(vec![continuous(&who, &[json!("CantAttack")], duration)])
+            Ok(vec![continuous(who, &[json!("CantAttack")], duration)])
         }
         "CantBlock" if on_remembered("ValidCard") => {
-            Ok(vec![continuous(&who, &[json!("CantBlock")], duration)])
+            Ok(vec![continuous(who, &[json!("CantBlock")], duration)])
         }
         "MustAttack" if on_remembered("ValidCreature") => Ok(vec![
             json!({"Rule": {"rule": {"MustAttack": who}, "duration": duration}}),
         ]),
         "Continuous" if on_remembered("Affected") => {
             let mods = pump_like(ctx, &part)?;
-            Ok(vec![continuous(&who, &mods, duration)])
+            Ok(vec![continuous(who, &mods, duration)])
         }
         other => unmapped(format!("effect:Effect-static-{other}")),
     }

@@ -266,6 +266,10 @@ fn animate(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             "Colors",
             "OverwriteColors",
             "Keywords",
+            "RemoveKeywords",
+            "RemoveAllAbilities",
+            "Triggers",
+            "Abilities",
             "RemoveCreatureTypes",
             "ValidCards",
             "Duration",
@@ -300,6 +304,7 @@ fn animate(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             mods.push(json!({ "AddKeyword": keyword }));
         }
     }
+    mods.extend(super::effects_animate::abilities(ctx, p)?);
     if mods.is_empty() {
         return unmapped("key:Animate.nothing");
     }

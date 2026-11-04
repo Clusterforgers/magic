@@ -22,6 +22,9 @@ pub fn continuous_statics(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         };
         let line = ctx.nested(None, |ctx| static_line(ctx, text))?;
         if let Some(rule) = line.get("Rule").and_then(|rule| rule.get("rule")) {
+            if line.pointer("/Rule/condition").is_some() {
+                return unmapped("effect:Effect-rule-with-condition");
+            }
             out.push(json!({"Rule": {"rule": rule, "duration": duration}}));
             continue;
         }
@@ -42,9 +45,6 @@ pub fn continuous_statics(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
 /// The triggers `Triggers$` names as delayed triggers that fire every time for the effect's duration; `remembered` is
 /// what the effect remembers, which a trigger reads as `IsRemembered`.
 pub fn delayed_triggers(ctx: &mut Ctx, p: &Params, remembered: Option<&Value>) -> Tr<Vec<Value>> {
-    if p.has("StaticAbilities") {
-        return unmapped("key:Effect.Triggers-and-StaticAbilities");
-    }
     let this_turn = match p.get("Duration") {
         None | Some("EOT") => true,
         Some("Permanent") => false,
@@ -73,7 +73,8 @@ pub fn delayed_triggers(ctx: &mut Ctx, p: &Params, remembered: Option<&Value>) -
         if when.to_string().contains("\"This\"") || effects.to_string().contains("\"This\"") {
             return unmapped("effect:Effect-trigger-about-the-source");
         }
-        let mut delayed = json!({"when": when, "once": false, "effects": effects});
+        let boon = p.get("Boon") == Some("True");
+        let mut delayed = json!({"when": when, "once": boon, "effects": effects});
         if this_turn {
             delayed["this_turn"] = json!(true);
         }
