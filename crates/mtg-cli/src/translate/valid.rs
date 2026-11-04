@@ -495,6 +495,10 @@ pub fn target_spec(ctx: &Ctx, params: &Params, zone: Option<&str>) -> Tr<Value> 
             spec["bounds"] = json!({"min": min, "max": max});
         }
     }
+    if valid.starts_with(super::header::FOR_EACH) {
+        // `per_player_targets` took the "up to one each" bounds off the line; the engine reads min 0 as up to one of each.
+        spec["bounds"] = json!({"min": 0, "max": 1});
+    }
     if let Some(total) = params.get("DividedAsYouChoose") {
         spec["divide"] = amount(ctx, total)?;
     }
