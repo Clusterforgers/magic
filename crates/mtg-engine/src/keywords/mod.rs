@@ -790,6 +790,7 @@ mod tests {
             Keyword::Indestructible,
             Keyword::Hexproof,
             Keyword::Shroud,
+            Keyword::HexproofFrom(Selector::default()),
             Keyword::Protection(Selector::default()),
             Keyword::Prowess,
             Keyword::Convoke,
@@ -1174,6 +1175,7 @@ mod tests {
     #[case::indestructible(Keyword::Indestructible, Hooks { indestructible: true, ..Hooks::none() })]
     #[case::hexproof(Keyword::Hexproof, Hooks { shields_player: true, ..Hooks::none() })]
     #[case::shroud(Keyword::Shroud, Hooks { shields_player: true, ..Hooks::none() })]
+    #[case::hexproof_from(Keyword::HexproofFrom(Selector::default()), Hooks::none())]
     #[case::protection(Keyword::Protection(Selector::default()), Hooks::none())]
     #[case::first_strike(Keyword::FirstStrike, Hooks { damage: damage(|d| d.first_strike = true), ..Hooks::none() })]
     #[case::double_strike(Keyword::DoubleStrike, Hooks { damage: damage(|d| d.double_strike = true), ..Hooks::none() })]
