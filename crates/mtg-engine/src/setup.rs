@@ -483,6 +483,7 @@ impl GameState {
             delayed: Vec::new(),
             next_delayed: 0,
             limits_spent: BTreeSet::new(),
+            game_limits_spent: BTreeSet::new(),
             loyalty_used: BTreeSet::new(),
             modes_ever: BTreeSet::new(),
             tallies: Tallies::default(),

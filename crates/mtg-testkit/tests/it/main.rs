@@ -355,6 +355,7 @@ mod ninjutsu;
 mod object_nth;
 mod observed_stasis;
 mod offered_helpers;
+mod once_a_game;
 mod opening_hand;
 mod optional_triggers;
 mod owner_left;

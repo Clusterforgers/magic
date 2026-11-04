@@ -34,6 +34,8 @@ impl Timing {
 pub enum Limit {
     /// Once each turn.
     OncePerTurn,
+    /// Once each game for the object that has it (an exhaust ability, CR 702.177).
+    OncePerGame,
 }
 
 /// The loyalty cost of a planeswalker ability (CR 606.4).

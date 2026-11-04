@@ -5,7 +5,7 @@
 
 use std::sync::Arc;
 
-use mtg_cards::ability::{Ability, Limit};
+use mtg_cards::ability::Ability;
 use mtg_core::ids::PlayerId;
 
 use super::{DelayedId, Triggered};
@@ -118,8 +118,8 @@ pub(crate) fn fold_triggered(state: &mut GameState, t: &Triggered) -> Result<(),
             t.ability, t.source
         )));
     };
-    if limit == &Some(Limit::OncePerTurn)
-        && !state.limits_spent.insert((t.source, t.origin, t.ability))
+    if let Some(limit) = limit
+        && !state.spend_limit(*limit, t.source, t.origin, t.ability)
     {
         return Err(invalid(format!(
             "ability {} of {:?} already triggered this turn",

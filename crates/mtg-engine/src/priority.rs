@@ -3,7 +3,7 @@
 use std::collections::BTreeSet;
 use std::sync::Arc;
 
-use mtg_cards::ability::{Ability, Limit, LoyaltyCost, Timing};
+use mtg_cards::ability::{Ability, LoyaltyCost, Timing};
 use mtg_cards::value::CounterKind;
 use mtg_core::card::CardType;
 use mtg_core::ids::{ObjectId, PlayerId};
@@ -171,9 +171,7 @@ fn can_activate(
     if *from != zone_kind(object.zone()) {
         return false;
     }
-    if *limit == Some(Limit::OncePerTurn)
-        && state.limit_spent(object.reference(), address.source, address.ability)
-    {
+    if limit.is_some() && state.limit_spent(object.reference(), address.source, address.ability) {
         return false;
     }
     let Ok(price) = Price::announced_in(cost, state, player, object.id()) else {

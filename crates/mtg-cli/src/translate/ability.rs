@@ -55,9 +55,11 @@ fn additional_cost(ctx: &Ctx, text: &str) -> Tr<Option<Value>> {
 }
 
 /// The keys only an activated ability has.
-const ACTIVATION: [&str; 5] = [
+const ACTIVATION: [&str; 7] = [
     "SorcerySpeed",
     "ActivationLimit",
+    "GameActivationLimit",
+    "Exhaust",
     "ActivationZone",
     "Planeswalker",
     "Ultimate",
@@ -114,6 +116,8 @@ fn activated(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     let p = &strip(p);
     let words = activation_words(p)?;
     let p = &p.without(&ACTIVATION_WORDS);
+    let game_limited = once_a_game(p)?;
+    let p = &p.without(&["Exhaust", "GameActivationLimit"]);
     let effects = chain(ctx, p)?;
     let targets = ctx.targets.clone();
     if p.get("Planeswalker") == Some("True") {
@@ -146,6 +150,10 @@ fn activated(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
         Some("1") => ability["limit"] = json!("OncePerTurn"),
         Some(other) => return unmapped(format!("key:AB.ActivationLimit={other}")),
     }
+    // Once a game is stricter than once a turn, so it replaces it.
+    if game_limited {
+        ability["limit"] = json!("OncePerGame");
+    }
     match (p.get("ActivationZone"), words.from) {
         (None | Some("Battlefield"), None) => {}
         (None, Some(zone)) | (Some(zone @ ("Graveyard" | "Hand" | "Exile")), None) => {
@@ -158,6 +166,23 @@ fn activated(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
         ability["targets"] = Value::Array(targets);
     }
     Ok(json!({ "Activated": ability }))
+}
+
+/// Whether the line is used once each game: `GameActivationLimit$ 1`, or `Exhaust$ True` ("activate each exhaust ability
+/// only once", CR 702.177). Another limit stays a gap.
+fn once_a_game(p: &Params) -> Tr<bool> {
+    let mut limited = false;
+    match p.get("GameActivationLimit") {
+        None => {}
+        Some("1") => limited = true,
+        Some(other) => return unmapped(format!("key:AB.GameActivationLimit={other}")),
+    }
+    match p.get("Exhaust") {
+        None => {}
+        Some("True") => limited = true,
+        Some(other) => return unmapped(format!("key:AB.Exhaust={other}")),
+    }
+    Ok(limited)
 }
 
 fn loyalty_ability(p: &Params, text: &str, effects: &[Value], targets: &[Value]) -> Tr<Value> {

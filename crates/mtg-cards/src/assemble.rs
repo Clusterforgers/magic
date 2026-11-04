@@ -717,6 +717,7 @@ pub fn mana_shape(ability: &Ability) -> Option<ManaShape<'_>> {
         .is_some_and(|cost| !cost.symbols().is_empty());
     let distinct = c8_time_distinct(then);
     (targets.is_empty()
+        && *limit != Some(Limit::OncePerGame)
         && (tap
             || sacrifice
             || !pays.is_empty()

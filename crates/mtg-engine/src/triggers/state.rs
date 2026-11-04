@@ -7,7 +7,7 @@
 
 use std::sync::Arc;
 
-use mtg_cards::ability::{Ability, Limit};
+use mtg_cards::ability::Ability;
 use mtg_cards::refs::ZoneKind;
 use mtg_cards::trigger::TriggerPattern;
 
@@ -84,9 +84,7 @@ fn triggers_of(
         {
             continue;
         }
-        if *limit == Some(Limit::OncePerTurn)
-            && state.limit_spent(source, address.source, address.ability)
-        {
+        if limit.is_some() && state.limit_spent(source, address.source, address.ability) {
             continue;
         }
         let Some(shot) = snapshot(state, object.id()) else {

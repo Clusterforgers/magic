@@ -208,3 +208,22 @@ fn a_gating_word_the_table_does_not_know_stays_a_gap(#[case] keys: &str) {
 fn a_condition_value_the_table_does_not_know_stays_a_gap(#[case] keys: &str) {
     assert!(gaps(&chain(keys)).into_iter().next().is_some());
 }
+
+#[rstest]
+#[case::exhaust("Exhaust$ True", Some("OncePerGame"))]
+#[case::once_a_game("GameActivationLimit$ 1", Some("OncePerGame"))]
+#[case::beside_once_a_turn("ActivationLimit$ 1 | GameActivationLimit$ 1", Some("OncePerGame"))]
+#[case::once_a_turn("ActivationLimit$ 1", Some("OncePerTurn"))]
+#[case::unlimited("Defined$ You", None)]
+fn an_ability_used_once_a_game_has_that_limit(#[case] keys: &str, #[case] limit: Option<&str>) {
+    assert_eq!(activated(keys)["Activated"]["limit"].as_str(), limit);
+}
+
+#[rstest]
+#[case::twice_a_game("GameActivationLimit$ 2")]
+#[case::exhaust_false("Exhaust$ False")]
+#[case::exhaust_beside_two_a_turn("Exhaust$ True | ActivationLimit$ 2")]
+fn a_game_limit_the_table_does_not_know_stays_a_gap(#[case] keys: &str) {
+    let text = format!("Name:T\nTypes:Creature Elf\nA:AB$ Draw | Cost$ 1 | NumCards$ 1 | {keys}\n");
+    assert!(gaps(&text).into_iter().next().is_some());
+}

@@ -9,6 +9,7 @@ use mtg_core::house::HouseRules;
 use mtg_core::ids::{ObjectId, PlayerId};
 use serde::{Deserialize, Serialize};
 
+use mtg_cards::ability::Limit;
 use mtg_cards::value::TallyEvent;
 
 use crate::abilities::AbilitySource;
@@ -229,6 +230,8 @@ pub struct GameState {
     pub(crate) delayed: Vec<Delayed>,
     pub(crate) next_delayed: u64,
     pub(crate) limits_spent: BTreeSet<(ObjectRef, AbilitySource, usize)>,
+    /// The once-each-game abilities used, as `limits_spent`; a new turn keeps them.
+    pub(crate) game_limits_spent: BTreeSet<(ObjectRef, AbilitySource, usize)>,
     /// The planeswalkers that had a loyalty ability activated this turn: no more than one for each (CR 606.3).
     pub(crate) loyalty_used: BTreeSet<ObjectRef>,
     /// The modes the abilities that choose a mode not yet chosen chose, in any turn, as (source, where the ability comes
@@ -461,14 +464,30 @@ impl GameState {
         self.triggers_possible || !self.delayed.is_empty()
     }
 
-    /// Whether the once-each-turn ability `ability` of `source` has been used this turn.
+    /// Whether the once-each-turn ability `ability` of `source` has been used this turn, or the once-each-game one this game.
     pub(crate) fn limit_spent(
         &self,
         source: ObjectRef,
         origin: AbilitySource,
         ability: usize,
     ) -> bool {
-        self.limits_spent.contains(&(source, origin, ability))
+        let key = (source, origin, ability);
+        self.limits_spent.contains(&key) || self.game_limits_spent.contains(&key)
+    }
+
+    /// Records a use of a limited ability; `false` when its limit was already spent.
+    pub(crate) fn spend_limit(
+        &mut self,
+        limit: Limit,
+        source: ObjectRef,
+        origin: AbilitySource,
+        ability: usize,
+    ) -> bool {
+        let key = (source, origin, ability);
+        match limit {
+            Limit::OncePerTurn => self.limits_spent.insert(key),
+            Limit::OncePerGame => self.game_limits_spent.insert(key),
+        }
     }
 
     /// A new turn begins: the abilities used once each turn and the planeswalkers that activated a loyalty ability are free again.
@@ -709,6 +728,10 @@ impl Hash for GameState {
         self.delayed.hash(state);
         self.next_delayed.hash(state);
         self.limits_spent.hash(state);
+        // A game with no once-a-game ability hashes as it did before they existed.
+        if !self.game_limits_spent.is_empty() {
+            self.game_limits_spent.hash(state);
+        }
         // A game with no planeswalker hashes as it did before they existed.
         if !self.loyalty_used.is_empty() {
             self.loyalty_used.hash(state);
