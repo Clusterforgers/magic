@@ -96,3 +96,94 @@ fn a_shape_the_node_cannot_say_stays_a_named_gap(#[case] lines: &str, #[case] ga
         gaps(&script)
     );
 }
+
+#[rstest]
+#[case::hybrid("Cycling:WB", json!({"Cycling": "{W/B}"}))]
+#[case::hybrid_in_cost("Cycling:1 UR UR", json!({"Cycling": "{1}{U/R}{U/R}"}))]
+#[case::phyrexian("Flashback:3 GP", json!({"Flashback": "{3}{G/P}"}))]
+fn a_hybrid_or_phyrexian_word_is_its_symbol(#[case] line: &str, #[case] expected: Value) {
+    let script = creature(&format!("K:{line}"));
+    assert_eq!(
+        abilities(&script),
+        vec![json!({ "Keyword": expected })],
+        "{:?}",
+        gaps(&script)
+    );
+    let symbols = expected.as_object().and_then(|map| map.values().next());
+    let text = symbols.and_then(Value::as_str).unwrap_or_default();
+    assert!(text.parse::<mtg_cards::mana::ManaCostX>().is_ok(), "{text}");
+}
+
+#[test]
+fn returning_the_source_is_a_cost() {
+    let script = creature("A:AB$ Draw | Cost$ T Return<1/CARDNAME> | NumCards$ 1\n");
+    let found = abilities(&script);
+    assert_eq!(
+        found[0]["Activated"]["cost"],
+        json!(["Tap", {"ReturnToHand": {"filter": ["This"]}}]),
+        "{:?}",
+        gaps(&script)
+    );
+}
+
+#[rstest]
+#[case::mandatory(
+    "A:AB$ Draw | Cost$ Mandatory Sac<1/CARDNAME> | NumCards$ 1",
+    "cost:Mandatory"
+)]
+#[case::x_at_least_one("A:AB$ Draw | Cost$ XMin1 X T | NumCards$ 1", "cost:XMin1")]
+#[case::unless_y("K:Cycling:Y", "cost:Y")]
+fn a_word_that_changes_who_decides_stays_a_named_gap(#[case] lines: &str, #[case] gap: &str) {
+    let script = creature(lines);
+    assert!(
+        gaps(&script).iter().any(|found| found == gap),
+        "{:?}",
+        gaps(&script)
+    );
+}
+
+#[test]
+#[ignore]
+fn scratch_survey() {
+    use std::collections::BTreeMap;
+    let dir = std::path::Path::new(&std::env::var("HOME").unwrap())
+        .join(".cache/mtg-cli/forge/forge-gui/res/cardsfolder");
+    let prefix = std::env::var("SURVEY").unwrap_or_default();
+    let mut lines: BTreeMap<String, usize> = BTreeMap::new();
+    let mut stack = vec![dir];
+    while let Some(d) = stack.pop() {
+        for e in std::fs::read_dir(d).unwrap().flatten() {
+            let p = e.path();
+            if p.is_dir() {
+                stack.push(p);
+            } else if let Ok(t) = std::fs::read_to_string(&p) {
+                for l in t.lines() {
+                    if let Some(k) = l.strip_prefix(&std::env::var("LINE").unwrap_or("K:".into())) {
+                        if k.starts_with(&prefix) {
+                            *lines.entry(k.to_owned()).or_default() += 1;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    let mut tally: BTreeMap<String, (usize, String)> = BTreeMap::new();
+    for (k, n) in &lines {
+        let script = format!(
+            "Name:T\nTypes:Creature Elf\n{}{k}\n",
+            std::env::var("LINE").unwrap_or("K:".into())
+        );
+        for g in super::gaps(&script) {
+            let e = tally.entry(g).or_default();
+            e.0 += n;
+            if e.1.is_empty() {
+                e.1 = k.clone();
+            }
+        }
+    }
+    let mut v: Vec<_> = tally.into_iter().collect();
+    v.sort_by_key(|(_, (n, _))| std::cmp::Reverse(*n));
+    for (g, (n, ex)) in v {
+        println!("{n:5} {g}  e.g. {ex}");
+    }
+}
