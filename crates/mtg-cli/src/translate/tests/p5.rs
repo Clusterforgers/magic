@@ -428,6 +428,30 @@ fn copy_words_that_are_not_read_are_gaps(#[case] words: &str, #[case] gap: &str)
     assert_eq!(gaps(&plain(&line)), [gap]);
 }
 
+#[test]
+fn a_villainous_choice_is_made_by_one_player() {
+    let line = "VillainousChoice | Defined$ You | Choices$ Sub,Main";
+    assert_eq!(gaps(&spell(line)), Vec::<String>::new());
+    let found = abilities(&spell(line));
+    let node = &found[0]["Spell"]["effects"][0]["VillainousChoice"];
+    assert_eq!(node["who"], "You");
+    assert_eq!(node["first"], json!([{"LoseLife": {"amount": 2}}]));
+    assert_eq!(node["second"], json!([{"GainLife": {"amount": 3}}]));
+}
+
+#[rstest]
+#[case::opponents(
+    "VillainousChoice | Defined$ Opponent | Choices$ Sub,Main",
+    "key:VillainousChoice.Defined=Opponent"
+)]
+#[case::three(
+    "VillainousChoice | Defined$ You | Choices$ Sub,Main,Sub",
+    "key:VillainousChoice.Choices"
+)]
+fn villainous_choice_gaps(#[case] line: &str, #[case] gap: &str) {
+    assert_eq!(gaps(&spell(line)), [gap]);
+}
+
 /// The modifications an animate line gives.
 fn animate_mods(words: &str) -> Vec<Value> {
     let line = format!("Animate | ValidTgts$ Permanent | Duration$ Permanent | {words}");

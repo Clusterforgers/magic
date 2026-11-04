@@ -5,7 +5,7 @@ use serde_json::{Value, json};
 use super::amount::amount;
 use super::ctx::{Ctx, Tr, only, unmapped};
 use super::effects::chain_at;
-use super::valid::{cmp, subject};
+use super::valid::{cmp, defined, subject};
 use crate::forge::script::Params;
 
 /// The effects of a verb this module reads; `None` for any other API.
@@ -14,9 +14,31 @@ pub fn effects(ctx: &mut Ctx, p: &Params, api: &str) -> Option<Tr<Vec<Value>>> {
         "GenericChoice" => generic_choice(ctx, p),
         "Branch" => branch(ctx, p),
         "SetState" => set_state(ctx, p),
+        "VillainousChoice" => villainous_choice(ctx, p),
         _ => return None,
     };
     Some(node.map(|node| vec![node]))
+}
+
+/// `VillainousChoice`: the player `Defined$` names (an opponent, a chosen or remembered player) chooses one of the two
+/// parts of `Choices$`.
+fn villainous_choice(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
+    only(p, "VillainousChoice", &["Choices", "Defined"])?;
+    let Some(word) = p.get("Defined") else {
+        return unmapped("key:VillainousChoice.no-Defined");
+    };
+    let who = defined(ctx, word)?;
+    // Exactly one player faces the choice: a group of opponents is not one.
+    if matches!(who.as_str(), Some("Opponents" | "EachPlayer")) {
+        return unmapped(format!("key:VillainousChoice.Defined={word}"));
+    }
+    let names: Vec<&str> = p.get("Choices").unwrap_or_default().split(',').collect();
+    let [first, second] = names[..] else {
+        return unmapped("key:VillainousChoice.Choices");
+    };
+    let first = part(ctx, first)?;
+    let second = part(ctx, second)?;
+    Ok(json!({"VillainousChoice": {"who": who, "first": first, "second": second}}))
 }
 
 /// The effects of the named part.
