@@ -1,0 +1,57 @@
+{
+  "oracle_id": "40bf6454-04a8-427c-b791-6d9afbdc43bc",
+  "name": "Runecarved Obelisk",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Runecarved Obelisk",
+      "oracle_fingerprint": "029edc013cdd68377e8aba369935ddbd",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              { "AddMana": { "mana": { "Fixed": ["Colorless", "Colorless"] } } },
+              { "PutCounters": { "on": "This", "counter": "charge", "count": 2 } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap", "SacrificeSelf"],
+            "effects": [
+              {
+                "Seek": {
+                  "filter": [
+                    {
+                      "Compare": {
+                        "stat": "ManaValue",
+                        "op": "Eq",
+                        "to": {
+                          "Greatest": {
+                            "of": [
+                              { "OwnedBy": "You" },
+                              {
+                                "Compare": {
+                                  "stat": "ManaValue",
+                                  "op": "Le",
+                                  "to": { "Counters": { "on": "This", "counter": "charge" } }
+                                }
+                              },
+                              { "In": "Library" }
+                            ],
+                            "stat": "ManaValue"
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

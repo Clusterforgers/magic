@@ -1,0 +1,45 @@
+{
+  "oracle_id": "b20671e6-d740-4ef6-b408-bf8a0465c0da",
+  "name": "Legion Conquistador",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Legion Conquistador",
+      "oracle_fingerprint": "4b8a2971ab9b29b01a17ec20484ec64c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Search": {
+                        "filter": [{ "Named": "Legion Conquistador" }],
+                        "count": {
+                          "min": 0,
+                          "max": {
+                            "Count": [
+                              { "OwnedBy": "You" },
+                              { "Named": "Legion Conquistador" },
+                              { "In": "Library" }
+                            ]
+                          }
+                        },
+                        "reveal": true,
+                        "as": "found"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+                    { "Shuffle": {} }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

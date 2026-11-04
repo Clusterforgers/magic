@@ -1,0 +1,39 @@
+{
+  "oracle_id": "8d7ce7b5-2e56-4060-9406-f700ce1fbb7d",
+  "name": "Lair Delve",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lair Delve",
+      "oracle_fingerprint": "2437d07c2f2264f88f0a33c1320a2141",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "LookAtTop": { "count": 2, "as": "top" } },
+              { "Reveal": { "what": { "Bound": "top" } } },
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "AnyOf": [{ "Type": "Creature" }, { "Type": "Land" }] }
+                    ]
+                  },
+                  "to": "Hand"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Bottom", "order": "Chosen" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

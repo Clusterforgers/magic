@@ -1,0 +1,29 @@
+{
+  "oracle_id": "f57901c2-80c6-49d6-8de3-c96aaeb72bbf",
+  "name": "Devout Harpist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Devout Harpist",
+      "oracle_fingerprint": "4473e3186929df6896f9511f78fc43d0",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Subtype": "Aura" },
+                    { "AttachedTo": { "Each": [{ "Type": "Creature" }] } }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

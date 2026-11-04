@@ -1,0 +1,77 @@
+{
+  "oracle_id": "3a9059ac-c595-4e71-b704-b04d2d47db70",
+  "name": "Compel Brutality",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Compel Brutality",
+      "oracle_fingerprint": "73bf98c7fee6c86d1524eb2e0a75825a",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [
+                        {
+                          "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+                        },
+                        {
+                          "what": {
+                            "Object": [
+                              { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] },
+                              { "ControlledBy": "Opponents" }
+                            ]
+                          }
+                        }
+                      ],
+                      "effects": [
+                        {
+                          "DealDamage": {
+                            "source": { "Target": 0 },
+                            "to": { "Target": 1 },
+                            "amount": { "Stat": { "of": { "Target": 0 }, "stat": "Power" } }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [{ "Type": "Planeswalker" }, { "ControlledBy": "You" }]
+                          }
+                        },
+                        {
+                          "what": {
+                            "Object": [
+                              { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] },
+                              { "ControlledBy": "Opponents" }
+                            ]
+                          }
+                        }
+                      ],
+                      "effects": [
+                        {
+                          "DealDamage": {
+                            "source": { "Target": 0 },
+                            "to": { "Target": 1 },
+                            "amount": {
+                              "Counters": { "on": { "Target": 0 }, "counter": "loyalty" }
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

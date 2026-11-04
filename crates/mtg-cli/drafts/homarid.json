@@ -1,0 +1,59 @@
+{
+  "oracle_id": "5d02b0d9-cc53-4967-84bb-8b7f5c489b5c",
+  "name": "Homarid",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Homarid",
+      "oracle_fingerprint": "8f1599bff952fcf42e9ca0228156522d",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": { "Other": "tide" }, "count": 1 } }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [{ "PutCounters": { "on": "This", "counter": { "Other": "tide" } } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": -1, "toughness": -1 } }],
+            "condition": {
+              "Matches": {
+                "subject": "This",
+                "selector": [
+                  { "CounterCount": { "kind": { "Other": "tide" }, "op": "Eq", "to": 1 } }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+            "condition": {
+              "Matches": {
+                "subject": "This",
+                "selector": [
+                  { "CounterCount": { "kind": { "Other": "tide" }, "op": "Eq", "to": 3 } }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 278, "end": 375 }
+          }
+        }
+      ]
+    }
+  ]
+}

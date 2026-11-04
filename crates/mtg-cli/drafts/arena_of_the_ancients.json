@@ -1,0 +1,31 @@
+{
+  "oracle_id": "12584f75-77c1-4b6b-ae9d-1882792b6b94",
+  "name": "Arena of the Ancients",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Arena of the Ancients",
+      "oracle_fingerprint": "423a22daefbcd1c0b3aa3504a8329124",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "Supertype": "Legendary" }] },
+            "mods": ["DoesntUntap"]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Tap": {
+                  "what": { "Each": [{ "Type": "Creature" }, { "Supertype": "Legendary" }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

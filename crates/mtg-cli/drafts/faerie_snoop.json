@@ -1,0 +1,26 @@
+{
+  "oracle_id": "b759e8a6-8dd0-48ce-8816-e45b35a79895",
+  "name": "Faerie Snoop",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Faerie Snoop",
+      "oracle_fingerprint": "393390d8efda36c19ee5a12391092ca0",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": { "Disguise": "{1}{U/B}{U/B}" } },
+        {
+          "Triggered": {
+            "when": { "TurnedFaceUp": { "what": ["This"] } },
+            "effects": [
+              { "LookAtTop": { "count": 2, "as": "top" } },
+              { "Choose": { "from": { "Bound": "top" }, "as": "kept2", "rest_as": "rest3" } },
+              { "Move": { "what": { "Bound": "kept2" }, "to": "Hand" } },
+              { "Move": { "what": { "Bound": "rest3" }, "to": "Graveyard" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

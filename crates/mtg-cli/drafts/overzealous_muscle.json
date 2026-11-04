@@ -1,0 +1,28 @@
+{
+  "oracle_id": "4cb63198-29b5-4607-bd4a-f449807fb764",
+  "name": "Overzealous Muscle",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Overzealous Muscle",
+      "oracle_fingerprint": "5de5e13fb5f4db5356a5d97d8f47a1a0",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "W11cCrime": { "who": "You" } },
+            "if": { "AtTrigger": "YourTurn" },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddKeyword": "Indestructible" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

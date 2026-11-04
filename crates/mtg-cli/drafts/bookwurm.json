@@ -1,0 +1,29 @@
+{
+  "oracle_id": "ce77fff1-32f8-4a55-9124-b1dafe95840d",
+  "name": "Bookwurm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bookwurm",
+      "oracle_fingerprint": "53f16c626b199b84afc13f5c052bd190",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "GainLife": { "amount": 3 } }, { "Draw": {} }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{2}{G}",
+            "from": "Graveyard",
+            "effects": [
+              { "Move": { "what": "This", "to": { "Library": { "place": { "Below": 2 } } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

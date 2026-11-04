@@ -1,0 +1,26 @@
+{
+  "oracle_id": "0a1f4892-c9fa-4c60-a41e-7986cdd59096",
+  "name": "Nevermore",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nevermore",
+      "oracle_fingerprint": "3e0518f4bb8e47cdecd821f11b9e1745",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "Choose": "NonlandCardName" }
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "Cant": { "who": "EachPlayer", "action": { "Cast": { "filter": ["ChosenName"] } } }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,57 @@
+{
+  "oracle_id": "49da6a78-f3b2-4691-975c-efbb644311f3",
+  "name": "Kamiz, Obscura Oculus",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kamiz, Obscura Oculus",
+      "oracle_fingerprint": "83d2316720fe6c0710fe66f6b09e95e0",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+            },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Attacking"] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["CantBeBlocked"],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Connive": { "what": { "Target": 0 } } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      "Attacking",
+                      { "Not": { "Is": { "Target": 0 } } },
+                      {
+                        "Compare": {
+                          "stat": "Power",
+                          "op": "Lt",
+                          "to": { "Stat": { "of": { "Target": 0 }, "stat": "Power" } }
+                        }
+                      }
+                    ]
+                  },
+                  "as": "card"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "card" },
+                  "mods": [{ "AddKeyword": "DoubleStrike" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

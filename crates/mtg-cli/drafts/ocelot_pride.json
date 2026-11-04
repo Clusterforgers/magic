@@ -1,0 +1,62 @@
+{
+  "oracle_id": "b4ce2c8f-a19c-461e-8a2e-0ec2bd3ebca3",
+  "name": "Ocelot Pride",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ocelot Pride",
+      "oracle_fingerprint": "2d1c3c0f1bfd3526939398ac5d78f92c",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        { "Keyword": "Lifelink" },
+        { "Keyword": "Ascend" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "LifeGainedTotal" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Cat",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Cat"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              },
+              {
+                "If": {
+                  "condition": { "CitysBlessing": "You" },
+                  "then": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "CopyOf": {
+                            "of": {
+                              "Each": ["Token", { "ControlledBy": "You" }, "EnteredThisTurn"]
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

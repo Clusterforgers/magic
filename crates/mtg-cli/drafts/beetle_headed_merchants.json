@@ -1,0 +1,35 @@
+{
+  "oracle_id": "0e6609b4-f359-4bf1-a06e-f4317a0e7b3c",
+  "name": "Beetle-Headed Merchants",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Beetle-Headed Merchants",
+      "oracle_fingerprint": "9f9957118a02418aa7e8a3b242101b23",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [
+                    {
+                      "Sacrifice": {
+                        "filter": [
+                          { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] },
+                          "Other"
+                        ]
+                      }
+                    }
+                  ],
+                  "paid": [{ "Draw": {} }, { "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

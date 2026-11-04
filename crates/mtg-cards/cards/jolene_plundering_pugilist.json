@@ -1,0 +1,37 @@
+{
+  "oracle_id": "fb8efd6e-b8f8-4da8-ac65-5b745c02d2bb",
+  "name": "Jolene, Plundering Pugilist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jolene, Plundering Pugilist",
+      "oracle_fingerprint": "5e37e8e46e24878b68c19ec5398703ff",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "ControlledBy": "You" },
+                  { "Compare": { "stat": "Power", "op": "Ge", "to": 4 } }
+                ]
+              }
+            },
+            "effects": [{ "CreateToken": { "token": { "Named": "treasure" } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{1}{R}" },
+              { "Sacrifice": { "filter": [{ "Subtype": "Treasure" }] } }
+            ],
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

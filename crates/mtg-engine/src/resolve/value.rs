@@ -315,6 +315,9 @@ impl<'a> Scope<'a> {
             TurnTally::Discarded => Tally::Discarded,
             TurnTally::Drawn => Tally::Drawn,
             TurnTally::LandsPlayed => Tally::LandsPlayed,
+            TurnTally::Scried => Tally::Scried,
+            TurnTally::Surveilled => Tally::Surveilled,
+            TurnTally::Sacrificed => Tally::Sacrificed,
             TurnTally::LifeGainedTotal
             | TurnTally::CreaturesAttacked
             | TurnTally::CreaturesDied
@@ -1249,6 +1252,9 @@ impl<'a> Scope<'a> {
             },
             Pred::HasCounter(kind) => seen.counters.of(kind) > 0,
             Pred::HasAnyCounter => seen.counters.c10_any_total() > 0,
+            Pred::CounterCount { kind, op, to } => {
+                op.holds(i64::from(seen.counters.of(kind)), i64::from(*to))
+            }
             Pred::Named(name) => seen.card.is_some_and(|c| c.card().name == *name),
             Pred::ChosenColor | Pred::ChosenSubtype | Pred::ChosenName | Pred::ChosenAs(_) => {
                 self.chosen_pred(pred, seen)
@@ -2702,6 +2708,17 @@ mod tests {
     #[case::no_plus_counter(r#"[{"Type":"Creature"},{"Not":{"HasCounter":"+1/+1"}}]"#, &["Ogre 1", "Bear 1"])]
     #[case::either_kind(r#"[{"AnyOf":[{"HasCounter":"+1/+1"},{"HasCounter":"-1/-1"}]}]"#, &["Bear 0", "Ogre 1"])]
     #[case::with_the_rest_of_the_selector(r#"[{"ControlledBy":"Opponents"},{"HasCounter":"+1/+1"}]"#, &[])]
+    #[case::count_at_least_two(r#"[{"CounterCount":{"kind":"+1/+1","op":"Ge","to":2}}]"#, &["Bear 0"])]
+    #[case::count_at_least_three(r#"[{"CounterCount":{"kind":"+1/+1","op":"Ge","to":3}}]"#, &[])]
+    #[case::count_fewer_than_two_includes_none(
+        r#"[{"Type":"Creature"},{"CounterCount":{"kind":"+1/+1","op":"Lt","to":2}}]"#,
+        &["Ogre 1", "Bear 1"]
+    )]
+    #[case::count_exactly_zero(
+        r#"[{"Type":"Creature"},{"CounterCount":{"kind":"+1/+1","op":"Eq","to":0}}]"#,
+        &["Ogre 1", "Bear 1"]
+    )]
+    #[case::count_of_another_kind(r#"[{"CounterCount":{"kind":"-1/-1","op":"Eq","to":1}}]"#, &["Ogre 1"])]
     #[case::c10_any_kind(r#"["HasAnyCounter"]"#, &["Bear 0", "Ogre 1"])]
     #[case::c10_any_none(r#"[{"Type":"Creature"},{"Not":"HasAnyCounter"}]"#, &["Bear 1"])]
     #[case::c10_any_of_yours(r#"[{"ControlledBy":"You"},"HasAnyCounter"]"#, &["Bear 0"])]

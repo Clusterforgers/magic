@@ -1,0 +1,36 @@
+{
+  "oracle_id": "ca9dde44-fdee-4bc1-a2ea-ef171737b9e4",
+  "name": "Bubbling Cauldron",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bubbling Cauldron",
+      "oracle_fingerprint": "cb3435e4d57b68e45e4da7bd27d9e7cd",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{1}" },
+              "Tap",
+              { "Sacrifice": { "filter": [{ "Type": "Creature" }] } }
+            ],
+            "effects": [{ "GainLife": { "amount": 4 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{1}" },
+              "Tap",
+              { "Sacrifice": { "filter": [{ "Type": "Creature" }, { "Named": "Festering Newt" }] } }
+            ],
+            "effects": [
+              { "LoseLife": { "who": "Opponents", "amount": 4 } },
+              { "GainLife": { "amount": 0 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

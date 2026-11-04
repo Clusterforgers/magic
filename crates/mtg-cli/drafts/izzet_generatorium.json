@@ -1,0 +1,25 @@
+{
+  "oracle_id": "6a618c4a-e604-4dce-a078-755fd35ac5d9",
+  "name": "Izzet Generatorium",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Izzet Generatorium",
+      "oracle_fingerprint": "29a091dc7cd7a54a0e808869d4edcac7",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "CountersPut": { "on": "You", "counter": { "Other": "energy" } } },
+            "by": { "Add": 1 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 92, "end": 174 }
+          }
+        }
+      ]
+    }
+  ]
+}

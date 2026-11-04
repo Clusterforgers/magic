@@ -1,0 +1,27 @@
+{
+  "oracle_id": "b6a50858-a013-4703-a9d7-5b69ef9bd9ae",
+  "name": "Myr Servitor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Myr Servitor",
+      "oracle_fingerprint": "2e81f6a0386d38799757588f85529f73",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "if": { "Compare": { "left": { "Count": ["This"] }, "op": "Ge", "right": 1 } },
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Each": [{ "Named": "Myr Servitor" }, { "In": "Graveyard" }] },
+                  "to": { "Battlefield": {} }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

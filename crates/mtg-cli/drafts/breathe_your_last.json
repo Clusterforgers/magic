@@ -1,0 +1,28 @@
+{
+  "oracle_id": "dc3af7cb-03b9-445f-82eb-18798ec92934",
+  "name": "Breathe Your Last",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Breathe Your Last",
+      "oracle_fingerprint": "963382447293da970e314b3e9c9df873",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }]
+                }
+              }
+            ],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              { "GainLife": { "amount": { "Stat": { "of": { "Target": 0 }, "stat": "Colors" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "oracle_id": "b0509fea-4850-4434-95f6-733fcfdd03bd",
+  "name": "Effie, Fast Learner",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Effie, Fast Learner",
+      "oracle_fingerprint": "c9bbe103e4e010d12bc3f48a42ddb427",
+      "abilities": [
+        { "Keyword": { "Macro": { "name": "enlist", "amount": 0 } } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Main2", "whose": "You" } },
+            "if": {
+              "CountOf": { "subject": "This", "selector": ["Tapped"], "op": "Ge", "right": 1 }
+            },
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": { "Each": [{ "Type": "Creature" }, "Tapped", { "ControlledBy": "You" }] },
+                  "counter": "+1/+1"
+                }
+              },
+              {
+                "Seek": {
+                  "filter": [
+                    { "Subtype": "Survivor" },
+                    {
+                      "Compare": {
+                        "stat": "ManaValue",
+                        "op": "Le",
+                        "to": {
+                          "Count": [{ "Type": "Creature" }, "Tapped", { "ControlledBy": "You" }]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

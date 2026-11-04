@@ -1,0 +1,42 @@
+{
+  "oracle_id": "67d2a021-a042-4e5f-b6e4-39cb35514794",
+  "name": "Darkstar Augur",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Darkstar Augur",
+      "oracle_fingerprint": "cfb36eff5f4ff59e28d448171d7ca73d",
+      "abilities": [
+        { "Keyword": { "Offspring": "{B}" } },
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              { "LookAtTop": { "as": "top" } },
+              { "Reveal": { "what": { "Bound": "top" } } },
+              {
+                "Move": {
+                  "what": { "Each": [{ "In": "Library" }, { "Is": { "Bound": "top" } }] },
+                  "to": "Hand",
+                  "as": "moved4"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Bottom", "order": "Chosen" } }
+                }
+              },
+              {
+                "LoseLife": {
+                  "amount": { "Stat": { "of": { "Bound": "moved4" }, "stat": "ManaValue" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

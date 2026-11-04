@@ -1,0 +1,20 @@
+{
+  "oracle_id": "15db62f0-c955-4c04-bc76-47300da198d6",
+  "name": "Motivated Muralist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Motivated Muralist",
+      "oracle_fingerprint": "698efc6211c227a1b958f1ad8725ad35",
+      "abilities": [
+        { "Keyword": "Improvise" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Conjure": { "name": "Inspiring Statuary", "zone": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

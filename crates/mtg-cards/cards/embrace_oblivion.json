@@ -1,0 +1,37 @@
+{
+  "oracle_id": "0fad5713-c09c-43d3-9cc0-10c65aead488",
+  "name": "Embrace Oblivion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Embrace Oblivion",
+      "oracle_fingerprint": "4b810926df87536c702ff1fe8831520d",
+      "abilities": [
+        {
+          "AdditionalCost": {
+            "cost": [
+              {
+                "Sacrifice": {
+                  "filter": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] }]
+                }
+              }
+            ],
+            "required": true
+          }
+        },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Creature" }, { "Subtype": "Spacecraft" }] }]
+                }
+              }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

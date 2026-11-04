@@ -1,0 +1,30 @@
+{
+  "oracle_id": "4604c729-8d2d-4b2b-a95c-5245563637e6",
+  "name": "Clear the Land",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Clear the Land",
+      "oracle_fingerprint": "b94b6165af3305016f20c65137e909f4",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "LookAtTop": { "who": "EachPlayer", "count": 5, "as": "top" } },
+              { "Reveal": { "what": { "Bound": "top" } } },
+              {
+                "Move": {
+                  "what": {
+                    "Each": [{ "In": "Library" }, { "Is": { "Bound": "top" } }, { "Type": "Land" }]
+                  },
+                  "to": { "Battlefield": { "tapped": true } }
+                }
+              },
+              { "Exile": { "what": { "Bound": "top" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

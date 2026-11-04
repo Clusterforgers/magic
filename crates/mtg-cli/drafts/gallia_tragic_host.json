@@ -1,0 +1,31 @@
+{
+  "oracle_id": "58285b70-0d13-4723-b5a4-91fb6f9ccf03",
+  "name": "Gallia, Tragic Host",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gallia, Tragic Host",
+      "oracle_fingerprint": "6ef04125ac1a5ae7264293cacacc602a",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{4}{B}" },
+              { "ExileFromGraveyard": { "filter": [{ "Type": "Creature" }, "Other"] } }
+            ],
+            "from": "Graveyard",
+            "effects": [
+              {
+                "Move": {
+                  "what": "This",
+                  "to": { "Battlefield": { "tapped": true, "counters": [["+1/+1", 1]] } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

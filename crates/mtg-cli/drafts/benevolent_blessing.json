@@ -1,0 +1,24 @@
+{
+  "oracle_id": "9472c96a-2827-4af6-a6a1-b6749a5e9069",
+  "name": "Benevolent Blessing",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Benevolent Blessing",
+      "oracle_fingerprint": "d0c26e61c13f577f4a9570c359d45835",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": { "Choose": "Color" } }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "AddKeyword": { "Protection": ["ChosenColor"] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

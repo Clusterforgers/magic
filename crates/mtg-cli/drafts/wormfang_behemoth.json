@@ -1,0 +1,41 @@
+{
+  "oracle_id": "77a000de-76d9-44f8-9789-875aa9f576e7",
+  "name": "Wormfang Behemoth",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wormfang Behemoth",
+      "oracle_fingerprint": "bb405ee975315d9236aa201aa000d1a8",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Exile": {
+                  "what": { "Each": [{ "OwnedBy": "You" }, { "In": "Hand" }] },
+                  "as": "exiled"
+                }
+              },
+              { "Remember": { "what": { "Bound": "exiled" }, "slot": "remembered" } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield" } },
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Remembered": { "on": "This", "slot": "remembered" } },
+                  "to": "Hand"
+                }
+              },
+              { "Forget": { "slot": "remembered" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

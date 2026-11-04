@@ -1,0 +1,45 @@
+{
+  "oracle_id": "f787c6cf-a4ff-487b-a7b0-0f516e68510a",
+  "name": "Mizzix of the Izmagnus",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mizzix of the Izmagnus",
+      "oracle_fingerprint": "e3a122e82ba730279977a03b68796e31",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [
+                  { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                  {
+                    "Compare": {
+                      "stat": "ManaValue",
+                      "op": "Gt",
+                      "to": { "Counters": { "on": "You", "counter": { "Other": "experience" } } }
+                    }
+                  }
+                ],
+                "by": "You"
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "You", "counter": { "Other": "experience" } } }]
+          }
+        },
+        {
+          "CostModifier": {
+            "applies_to": [
+              "Spell",
+              { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+              { "ControlledBy": "You" }
+            ],
+            "change": "Reduce",
+            "mana": "{1}",
+            "per": { "Counters": { "on": "You", "counter": { "Other": "experience" } } }
+          }
+        }
+      ]
+    }
+  ]
+}

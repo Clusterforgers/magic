@@ -1,0 +1,48 @@
+{
+  "oracle_id": "e6377683-1c36-4786-bd8d-c62ff2d25767",
+  "name": "Popular Egotist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Popular Egotist",
+      "oracle_fingerprint": "15dd54a628674d9a9ac7bcae6275ae65",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{1}{B}" },
+              {
+                "Sacrifice": {
+                  "filter": [
+                    { "AnyOf": [{ "Type": "Creature" }, { "Type": "Enchantment" }] },
+                    "Other"
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddKeyword": "Indestructible" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Tap": { "what": "This" } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Sacrificed": { "what": [{ "ControlledBy": "You" }], "by": "You" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              { "LoseLife": { "who": { "Target": 0 }, "amount": 1 } },
+              { "GainLife": { "amount": 1 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

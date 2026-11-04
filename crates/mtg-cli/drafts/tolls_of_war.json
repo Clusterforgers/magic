@@ -1,0 +1,42 @@
+{
+  "oracle_id": "5d1d9914-3ef2-45c5-b1cb-cb85d2f7394c",
+  "name": "Tolls of War",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tolls of War",
+      "oracle_fingerprint": "a02c24f6c01f9663fb14738e0969227d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "CreateToken": { "token": { "Named": "clue" } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Sacrificed": { "what": [{ "ControlledBy": "You" }], "by": "You" } },
+            "if": { "AtTrigger": "YourTurn" },
+            "limit": "OncePerTurn",
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Ally",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Ally"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

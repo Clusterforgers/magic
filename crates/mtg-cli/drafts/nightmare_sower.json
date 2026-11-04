@@ -1,0 +1,25 @@
+{
+  "oracle_id": "4121b7d9-5fbe-40e2-a2a6-d7633f423b5f",
+  "name": "Nightmare Sower",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nightmare Sower",
+      "oracle_fingerprint": "c29f1fc1c6dc0fa9531f9d9107c73e72",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Lifelink" },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "by": "You" } },
+            "if": { "AtTrigger": { "Not": "YourTurn" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 0, "max": 1 } }
+            ],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "-1/-1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

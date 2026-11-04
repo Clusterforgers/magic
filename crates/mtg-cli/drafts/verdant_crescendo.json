@@ -1,0 +1,46 @@
+{
+  "oracle_id": "b184d12d-41d8-4a74-99b1-8c7fced212f8",
+  "name": "Verdant Crescendo",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Verdant Crescendo",
+      "oracle_fingerprint": "e1e8db290a34c841ac0cebad39afb3b6",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Search": {
+                  "filter": [{ "Type": "Land" }, { "Supertype": "Basic" }],
+                  "as": "found"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "found" },
+                  "to": { "Battlefield": { "tapped": true } }
+                }
+              },
+              {
+                "Search": {
+                  "also": ["Graveyard"],
+                  "filter": [{ "Named": "Nissa, Nature's Artisan" }],
+                  "reveal": true,
+                  "as": "found2"
+                }
+              },
+              { "Move": { "what": { "Bound": "found2" }, "to": "Hand" } },
+              {
+                "If": {
+                  "condition": { "Searched": { "zone": "Library" } },
+                  "then": [{ "Shuffle": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

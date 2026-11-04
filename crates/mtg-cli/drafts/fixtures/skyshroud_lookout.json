@@ -1,0 +1,130 @@
+{
+  "object": "card",
+  "id": "16a6c0f4-54c4-4717-af98-920a1113b081",
+  "oracle_id": "5ff34179-8697-4075-9f6f-4f97ff7781d0",
+  "multiverse_ids": [
+    534609
+  ],
+  "arena_id": 79388,
+  "name": "Skyshroud Lookout",
+  "lang": "en",
+  "released_at": "2021-08-26",
+  "uri": "https://api.scryfall.com/cards/16a6c0f4-54c4-4717-af98-920a1113b081",
+  "scryfall_uri": "https://scryfall.com/card/j21/30/skyshroud-lookout?utm_source=api",
+  "layout": "normal",
+  "highres_image": false,
+  "image_status": "lowres",
+  "image_updated_at": "2026-07-13T06:58:03Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/1/6/16a6c0f4-54c4-4717-af98-920a1113b081.jpg?1783925883",
+    "normal": "https://cards.scryfall.io/normal/front/1/6/16a6c0f4-54c4-4717-af98-920a1113b081.jpg?1783925883",
+    "large": "https://cards.scryfall.io/large/front/1/6/16a6c0f4-54c4-4717-af98-920a1113b081.jpg?1783925883",
+    "png": "https://cards.scryfall.io/png/front/1/6/16a6c0f4-54c4-4717-af98-920a1113b081.png?1783925883",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/1/6/16a6c0f4-54c4-4717-af98-920a1113b081.jpg?1783925883",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/1/6/16a6c0f4-54c4-4717-af98-920a1113b081.jpg?1783925883",
+    "thumb": "https://cards.scryfall.io/thumb/front/1/6/16a6c0f4-54c4-4717-af98-920a1113b081.webp?1783925883",
+    "grid": "https://cards.scryfall.io/grid/front/1/6/16a6c0f4-54c4-4717-af98-920a1113b081.webp?1783925883",
+    "display": "https://cards.scryfall.io/display/front/1/6/16a6c0f4-54c4-4717-af98-920a1113b081.webp?1783925883",
+    "art": "https://cards.scryfall.io/art/front/1/6/16a6c0f4-54c4-4717-af98-920a1113b081.webp?1783925883",
+    "crop": "https://cards.scryfall.io/crop/front/1/6/16a6c0f4-54c4-4717-af98-920a1113b081.webp?1783925883",
+    "jpeg": "https://cards.scryfall.io/normal/front/1/6/16a6c0f4-54c4-4717-af98-920a1113b081.jpg?1783925883"
+  },
+  "mana_cost": "{1}{G}",
+  "cmc": 2.0,
+  "type_line": "Creature — Elf Archer",
+  "oracle_text": "Reach\nWhen this creature enters, seek an Elf card.",
+  "power": "1",
+  "toughness": "1",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Reach",
+    "Seek"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "not_legal",
+    "pauper": "not_legal",
+    "vintage": "not_legal",
+    "penny": "not_legal",
+    "commander": "not_legal",
+    "oathbreaker": "not_legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "not_legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "e1cc23bd-379b-4f2c-a4e0-83fc1e7be023",
+  "set": "j21",
+  "set_name": "Jumpstart: Historic Horizons",
+  "set_type": "draft_innovation",
+  "set_uri": "https://api.scryfall.com/sets/e1cc23bd-379b-4f2c-a4e0-83fc1e7be023",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aj21&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/j21?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/16a6c0f4-54c4-4717-af98-920a1113b081/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A5ff34179-8697-4075-9f6f-4f97ff7781d0&unique=prints",
+  "collector_number": "30",
+  "digital": true,
+  "rarity": "uncommon",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Olena Richards",
+  "artist_ids": [
+    "fad4282c-49d1-4b5b-be1d-713369fc8bc8"
+  ],
+  "illustration_id": "e9901c4e-a651-4d0a-88eb-cbdf83cc71bc",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "preview": {
+    "source": "Dengeki Online",
+    "source_uri": "https://dengekionline.com/articles/89732/",
+    "previewed_at": "2021-08-02"
+  },
+  "prices": {
+    "usd": null,
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": null,
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=534609&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DSkyshroud%2BLookout",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DSkyshroud%2BLookout",
+    "edhrec": "https://edhrec.com/route/?cc=Skyshroud+Lookout"
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "oracle_id": "3c7ea8d0-d866-4c02-bdfc-13bbc87c094a",
+  "name": "Slippery Scoundrel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Slippery Scoundrel",
+      "oracle_fingerprint": "2e410b08484d045a4c450246cbb9aee4",
+      "abilities": [
+        { "Keyword": "Ascend" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Hexproof" }],
+            "condition": { "CitysBlessing": "You" }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": ["CantBeBlocked"],
+            "condition": { "CitysBlessing": "You" }
+          }
+        }
+      ]
+    }
+  ]
+}

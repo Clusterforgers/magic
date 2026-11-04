@@ -1,0 +1,33 @@
+{
+  "oracle_id": "09a400bd-83f1-4fac-a218-64c9f041874f",
+  "name": "Stall for Time",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stall for Time",
+      "oracle_fingerprint": "74c4340ad0c871731cddd26b3273d8e1",
+      "abilities": [
+        { "Keyword": { "Kicker": "{1}{U}" } },
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 0, "max": 2 } }
+            ],
+            "effects": [
+              { "Tap": { "what": { "Target": 0 } } },
+              {
+                "If": {
+                  "condition": "Kicked",
+                  "then": [
+                    { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "stun" } } }
+                  ]
+                }
+              },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

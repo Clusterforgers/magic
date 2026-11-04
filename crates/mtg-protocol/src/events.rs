@@ -33,6 +33,11 @@ pub enum HiddenEvent {
         /// Who drew.
         player: PlayerId,
     },
+    /// A card was conjured for a player into a hand or a library.
+    CardConjured {
+        /// Whose card.
+        player: PlayerId,
+    },
     /// A player was dealt an opening hand.
     HandDealt {
         /// Who received it.
@@ -266,6 +271,9 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         Event::CardDrawn { player, .. } if !own(player) => {
             Some(HiddenEvent::CardDrawn { player: *player })
         }
+        Event::CardConjured(card) if matches!(card.zone, Zone::Hand(_) | Zone::Library(_)) && !own(&card.owner) => {
+            Some(HiddenEvent::CardConjured { player: card.owner })
+        }
         Event::AnnouncementRewound { player, .. } if *player != viewer => {
             Some(HiddenEvent::AnnouncementRewound { player: *player })
         }
@@ -334,6 +342,8 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         | Event::ManaPoolEmptied { .. }
         | Event::ManaBurned { .. }
         | Event::LifePaid { .. }
+        | Event::CardConjured(_)
+        | Event::Sought { .. }
         | Event::DrewFromEmptyLibrary { .. }
         | Event::CardDiscarded { .. }
         | Event::Cycled { .. }
@@ -933,6 +943,47 @@ mod tests {
             assert_eq!(told(&t.state, &remember(object), OWNER), owner);
             assert_eq!(told(&t.state, &remember(object), OTHER), other);
         }
+    }
+
+    /// A conjured card is told whole when it lands in a zone every seat sees and to its owner alone in a hand or a library.
+    #[test]
+    fn a_conjured_card_is_named_only_where_the_viewer_sees_it() {
+        let t = table();
+        let hidden = Err(HiddenEvent::CardConjured { player: OWNER });
+        let cases = [
+            (Zone::Library(OWNER), hidden.clone()),
+            (Zone::Hand(OWNER), hidden),
+            (Zone::Graveyard(OWNER), Ok(())),
+            (Zone::Exile, Ok(())),
+        ];
+        for (zone, other) in cases {
+            let conjured = Event::CardConjured(mtg_engine::conjure::CardConjured {
+                object: ObjectId(900),
+                owner: OWNER,
+                zone,
+                name: "Bear".to_owned(),
+                definition: std::sync::Arc::new(mtg_cards::CardDefinition::new("Bear")),
+            });
+            assert_eq!(
+                told(&t.state, &conjured, OWNER),
+                Ok(()),
+                "{zone:?} to the owner"
+            );
+            assert_eq!(
+                told(&t.state, &conjured, OTHER),
+                other,
+                "{zone:?} to another seat"
+            );
+        }
+        let sought = Event::Sought {
+            player: OWNER,
+            count: 2,
+        };
+        assert_eq!(
+            told(&t.state, &sought, OTHER),
+            Ok(()),
+            "a seek tells only how many"
+        );
     }
 
     /// A search tells the viewer which cards it found in a zone the viewer sees into and only how many in any other.

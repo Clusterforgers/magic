@@ -1,0 +1,64 @@
+{
+  "oracle_id": "c612ba0a-5134-45fa-a762-f4621bda4f83",
+  "name": "Proctor of Potential",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Proctor of Potential",
+      "oracle_fingerprint": "aa59e752ef5aaffe489d7119f56d6896",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  {
+                    "AnyOf": [
+                      "This",
+                      {
+                        "Not": {
+                          "AnyOf": [
+                            { "Not": { "Type": "Creature" } },
+                            { "Not": { "ControlledBy": "You" } }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                ],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [{ "Surveil": {} }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{W}{U}",
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Sum": [
+                    { "Tallied": { "who": "You", "what": "Scried" } },
+                    { "Tallied": { "who": "You", "what": "Surveilled" } }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "from": "Graveyard",
+            "effects": [
+              {
+                "Move": {
+                  "what": "This",
+                  "to": { "Battlefield": { "counters": [[{ "Other": "finality" }, 1]] } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

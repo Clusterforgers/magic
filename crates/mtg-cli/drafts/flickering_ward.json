@@ -1,0 +1,26 @@
+{
+  "oracle_id": "3e2ae59a-40a1-46ca-8f24-3231ebd4e4eb",
+  "name": "Flickering Ward",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Flickering Ward",
+      "oracle_fingerprint": "754b5d5a622c2d4ce952be6d07dd3cea",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": { "Choose": "Color" } }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "AddKeyword": { "Protection": ["ChosenColor"] } }]
+          }
+        },
+        {
+          "Activated": { "cost": "{W}", "effects": [{ "Move": { "what": "This", "to": "Hand" } }] }
+        }
+      ]
+    }
+  ]
+}

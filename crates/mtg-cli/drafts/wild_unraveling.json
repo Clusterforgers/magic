@@ -1,0 +1,22 @@
+{
+  "oracle_id": "dd1a4219-437b-494f-ae0e-1d3181ffcd63",
+  "name": "Wild Unraveling",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wild Unraveling",
+      "oracle_fingerprint": "b7464c9de8b3fab4743a9b4186dd4792",
+      "abilities": [
+        {
+          "AdditionalCost": { "cost": [{ "OneOf": [[{ "Blight": 2 }], "{1}"] }], "required": true }
+        },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [{ "Counter": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

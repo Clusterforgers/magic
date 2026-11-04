@@ -1,0 +1,33 @@
+{
+  "oracle_id": "ec57dcb8-127f-4922-a9f9-5227db1751a9",
+  "name": "Sai of the Shinobi",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sai of the Shinobi",
+      "oracle_fingerprint": "52bb95386df8502cbd5725fc41bbd236",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              { "May": { "effects": [{ "Attach": { "what": "This", "to": "Triggering" } }] } }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{2}" } }
+      ]
+    }
+  ]
+}

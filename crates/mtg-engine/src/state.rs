@@ -153,6 +153,10 @@ pub(crate) enum Tally {
     Cycled,
     /// A surveil (counted for the player).
     Surveilled,
+    /// A scry (counted for the player).
+    Scried,
+    /// A permanent sacrificed (counted for the player who controlled it).
+    Sacrificed,
     /// A token created (counted for the player who controls it).
     Tokens,
     /// A kind of counter put on a permanent or a card in exile, once for each event (counted for the object).
@@ -205,6 +209,8 @@ pub struct GameState {
     /// What the table's creator set in place of the format's values.
     pub(crate) house_rules: HouseRules,
     pub(crate) seed: u64,
+    /// The cards an effect may conjure, by name.
+    pub(crate) conjurable: Arc<BTreeMap<String, Arc<mtg_cards::CardDefinition>>>,
     pub(crate) rng_index: u64,
     pub(crate) stage: Stage,
     pub(crate) first_player: PlayerId,

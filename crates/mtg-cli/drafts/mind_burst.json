@@ -1,0 +1,28 @@
+{
+  "oracle_id": "efc32c4a-ad84-400d-b79f-5861a3e4fa2f",
+  "name": "Mind Burst",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mind Burst",
+      "oracle_fingerprint": "3a5420b869bb618f0fe55c8f0173b54c",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Discard": {
+                  "who": { "Target": 0 },
+                  "count": {
+                    "Sum": [{ "Count": [{ "Named": "Mind Burst" }, { "In": "Graveyard" }] }, 1]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

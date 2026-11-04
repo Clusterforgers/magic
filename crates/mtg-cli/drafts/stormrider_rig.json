@@ -1,0 +1,33 @@
+{
+  "oracle_id": "51c7beca-ca19-4a4d-9512-0255146a9cd0",
+  "name": "Stormrider Rig",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stormrider Rig",
+      "oracle_fingerprint": "52bb95386df8502cbd5725fc41bbd236",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              { "May": { "effects": [{ "Attach": { "what": "This", "to": "Triggering" } }] } }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{2}" } }
+      ]
+    }
+  ]
+}

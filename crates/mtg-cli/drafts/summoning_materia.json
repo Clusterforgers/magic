@@ -1,0 +1,51 @@
+{
+  "oracle_id": "2ca9e6e5-5eec-4593-8816-5c4317c79eb0",
+  "name": "Summoning Materia",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Summoning Materia",
+      "oracle_fingerprint": "83a240c1792af21a78d4341347b9b347",
+      "abilities": [
+        { "Rule": { "rule": { "LookAtTopAnyTime": "You" } } },
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": {
+                "what": [{ "Type": "Creature" }, { "Not": { "Type": "Land" } }, "TopOfLibrary"],
+                "from": "Library"
+              }
+            },
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": ["This", { "AttachedTo": { "Each": [{ "Type": "Creature" }] } }]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "ModifyPT": { "power": 2, "toughness": 2 } },
+              { "AddKeyword": "Vigilance" },
+              {
+                "GrantAbility": {
+                  "Activated": {
+                    "cost": ["Tap"],
+                    "effects": [{ "AddMana": { "mana": { "Fixed": ["Green"] } } }]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{2}" } }
+      ]
+    }
+  ]
+}

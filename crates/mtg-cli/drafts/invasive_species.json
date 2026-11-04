@@ -1,0 +1,27 @@
+{
+  "oracle_id": "9c4c478c-6f0c-430a-91eb-4125a73d03a7",
+  "name": "Invasive Species",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Invasive Species",
+      "oracle_fingerprint": "5ba8662e3bc2a221ff43024c3bb88d66",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Choose": {
+                  "from": { "Each": ["Other", { "ControlledBy": "You" }] },
+                  "as": "picked"
+                }
+              },
+              { "Move": { "what": { "Bound": "picked" }, "to": "Hand" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "oracle_id": "e32573e8-91a8-438b-966f-1c6d098d54ae",
+  "name": "Goldmane Griffin",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Goldmane Griffin",
+      "oracle_fingerprint": "0d96d0ddb80b87cfb73665cd1fa31755",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "May": {
+                        "effects": [
+                          {
+                            "Search": {
+                              "also": ["Graveyard"],
+                              "filter": [
+                                { "OwnedBy": "You" },
+                                { "Named": "Ajani, Inspiring Leader" }
+                              ],
+                              "reveal": true,
+                              "as": "found"
+                            }
+                          },
+                          { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+                          {
+                            "If": {
+                              "condition": { "Searched": { "zone": "Library" } },
+                              "then": [{ "Shuffle": {} }]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

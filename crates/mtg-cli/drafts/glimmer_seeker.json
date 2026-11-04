@@ -1,0 +1,57 @@
+{
+  "oracle_id": "cbb5526b-3aa1-43d9-acdb-bd230ce3fe63",
+  "name": "Glimmer Seeker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Glimmer Seeker",
+      "oracle_fingerprint": "c535cd10c89019126e661d8c11b3b167",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Main2", "whose": "You" } },
+            "if": {
+              "CountOf": { "subject": "This", "selector": ["Tapped"], "op": "Ge", "right": 1 }
+            },
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Count": [
+                          { "Type": "Creature" },
+                          { "Subtype": "Glimmer" },
+                          { "ControlledBy": "You" }
+                        ]
+                      },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Draw": {} }],
+                  "otherwise": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Glimmer",
+                            "colors": ["White"],
+                            "types": ["Enchantment", "Creature"],
+                            "subtypes": ["Glimmer"],
+                            "power": 1,
+                            "toughness": 1
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "oracle_id": "34ceb733-0329-4c1b-8d75-25c34fd4400f",
+  "name": "Mowu, Loyal Companion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mowu, Loyal Companion",
+      "oracle_fingerprint": "2c8a01364cbdecce539f0f6ccf212449",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        { "Keyword": "Trample" },
+        {
+          "Replacement": {
+            "when": { "CountersPut": { "on": { "Each": ["This"] }, "counter": "+1/+1" } },
+            "by": { "Add": 1 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,51 @@
+{
+  "oracle_id": "ca8950ce-43d9-47bd-85f3-58c1fad42420",
+  "name": "Flame Channeler // Embodiment of Flame",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Flame Channeler",
+      "oracle_fingerprint": "66383fd9c483f64f59c1687f64be1c60",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Batch": { "DealsDamage": { "source": ["Spell", { "ControlledBy": "You" }] } }
+            },
+            "effects": [{ "Transform": { "what": "This" } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Embodiment of Flame",
+      "oracle_fingerprint": "7d8bb84f37fe6f36ca7823d958007c6b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Batch": { "DealsDamage": { "source": ["Spell", { "ControlledBy": "You" }] } }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": { "Other": "flame" } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, { "RemoveCounters": { "counter": { "Other": "flame" } } }],
+            "effects": [
+              { "ExileTop": { "as": "exiled" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": { "from": "Exile", "only": { "Bound": "exiled" }, "play": true }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

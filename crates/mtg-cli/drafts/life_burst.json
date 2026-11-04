@@ -1,0 +1,32 @@
+{
+  "oracle_id": "dc10544f-dd30-4d4a-b6e6-bbed7d1ed4a7",
+  "name": "Life Burst",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Life Burst",
+      "oracle_fingerprint": "f1a4cb9cc6655538931eb88a3abf176d",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              { "GainLife": { "who": { "Target": 0 }, "amount": 4 } },
+              {
+                "GainLife": {
+                  "who": { "Target": 0 },
+                  "amount": {
+                    "Times": {
+                      "by": 4,
+                      "of": { "Count": [{ "Named": "Life Burst" }, { "In": "Graveyard" }] }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

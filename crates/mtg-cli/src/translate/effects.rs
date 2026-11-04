@@ -20,21 +20,47 @@ pub fn chain(ctx: &mut Ctx, params: &Params) -> Tr<Vec<Value>> {
 pub fn chain_at(ctx: &mut Ctx, p: &Params, top: bool) -> Tr<Vec<Value>> {
     ctx.mark_parent();
     let (condition, own) = prefixed(ctx, p)?;
-    let mut effects = line(ctx, &own.without(&["UnlessCost", "UnlessPayer"]))?;
+    let unless_keys = [
+        "UnlessCost",
+        "UnlessPayer",
+        "UnlessSwitched",
+        "UnlessResolveSubs",
+    ];
+    let asks = asks_may(p)?;
+    let spent: &[&str] = match (asks, p.has("OptionalDecider")) {
+        (false, _) => &[],
+        (true, true) => &["OptionalDecider"],
+        (true, false) => &["Optional"],
+    };
+    let mut effects = line(ctx, &own.without(&unless_keys).without(spent))?;
+    if asks {
+        let who = may_decider(ctx, p)?;
+        let mut node = serde_json::Map::new();
+        if who != json!("You") {
+            node.insert("who".into(), who);
+        }
+        node.insert("effects".into(), json!(effects));
+        effects = vec![json!({ "May": node })];
+    }
+    let mut rest = match p.get("SubAbility") {
+        Some(name) => {
+            let next = ctx.sub(name)?;
+            chain_at(ctx, &next, false)?
+        }
+        None => Vec::new(),
+    };
     if let Some(unless) = p.get("UnlessCost") {
-        effects = if p.get("UnlessSwitched") == Some("True") {
-            pays_to_do(ctx, p, unless, &effects)?
-        } else {
-            unless_pays(ctx, p, unless, &effects)?
-        };
+        if condition.is_some() && p.has("UnlessResolveSubs") {
+            return unmapped("key:Unless.UnlessResolveSubs-with-condition");
+        }
+        effects = unless_pays(ctx, p, unless, effects, &mut rest)?;
+    } else if unless_keys.iter().any(|key| p.has(key)) {
+        return unmapped("key:Unless.without-UnlessCost");
     }
     if let Some(condition) = condition {
         effects = vec![json!({"If": {"condition": condition, "then": effects}})];
     }
-    if let Some(name) = p.get("SubAbility") {
-        let next = ctx.sub(name)?;
-        effects.extend(chain_at(ctx, &next, false)?);
-    }
+    effects.extend(rest);
     match p.get("Cost") {
         Some(text) if !top => {
             let cost = super::cost::cost(ctx, text)?;
@@ -44,28 +70,99 @@ pub fn chain_at(ctx: &mut Ctx, p: &Params, top: bool) -> Tr<Vec<Value>> {
     }
 }
 
-/// `UnlessCost$`: the effects happen unless the player named by `UnlessPayer$` pays.
-fn unless_pays(ctx: &Ctx, p: &Params, unless: &str, effects: &[Value]) -> Tr<Vec<Value>> {
-    let who = match p.get("UnlessPayer") {
-        Some("You") => json!("You"),
-        Some("TargetedController") => json!({ "ControllerOf": ctx.last_target()? }),
-        None if api_of(p)? == "Counter" => json!({ "ControllerOf": ctx.last_target()? }),
-        Some(other) => return unmapped(format!("key:Unless.UnlessPayer={other}")),
-        None => return unmapped("key:Unless.no-UnlessPayer"),
-    };
-    let cost = unless_cost(ctx, unless)?;
-    Ok(vec![
-        json!({"Pay": {"who": who, "cost": cost, "unpaid": effects}}),
-    ])
+/// APIs whose `Optional$ True` asks the player who gets the effect whether to do all of it ("you may draw a card"). The
+/// other APIs read the key themselves, with a meaning of their own (a count, a choice), or leave it a named gap.
+const MAY_APIS: [&str; 8] = [
+    "Draw",
+    "Mill",
+    "GainLife",
+    "LoseLife",
+    "Untap",
+    "Tap",
+    "PutCounter",
+    "Animate",
+];
+
+/// Whether the line asks a player to do it: `OptionalDecider$`, or `Optional$ True` on an API of `MAY_APIS`.
+fn asks_may(p: &Params) -> Tr<bool> {
+    let optional = p.get("Optional") == Some("True");
+    Ok(p.has("OptionalDecider") || (optional && MAY_APIS.contains(&api_of(p)?)))
 }
 
-/// `UnlessSwitched$ True`: the effects happen if the player pays the cost ("you may pay; if you do").
-fn pays_to_do(ctx: &Ctx, p: &Params, cost: &str, effects: &[Value]) -> Tr<Vec<Value>> {
-    if p.get("UnlessPayer") != Some("You") {
-        return unmapped("key:Unless.UnlessSwitched-payer");
+/// The player who decides, once the line has declared its targets: the one `OptionalDecider$` names, or you for `Optional$`
+/// on an effect that acts on you. A line with sub-abilities stays a gap: whether they follow a refusal is not known here.
+fn may_decider(ctx: &Ctx, p: &Params) -> Tr<Value> {
+    let decider = p.get("OptionalDecider");
+    if p.has("SubAbility") {
+        return unmapped("key:May.with-SubAbility");
     }
-    let cost = unless_cost(ctx, cost)?;
-    Ok(vec![json!({"Pay": {"cost": cost, "paid": effects}})])
+    let who = match decider {
+        Some(word) => match defined(ctx, word)? {
+            group if matches!(group.as_str(), Some("Opponents" | "EachPlayer")) => {
+                return unmapped(format!("key:May.OptionalDecider={word}"));
+            }
+            single => single,
+        },
+        None if !p.has("ValidTgts") && matches!(p.get("Defined"), None | Some("You")) => {
+            json!("You")
+        }
+        None => return unmapped("key:May.Optional-decider"),
+    };
+    Ok(who)
+}
+
+/// `UnlessCost$`: the player named by `UnlessPayer$` may pay; the effects happen if they do not (`UnlessSwitched$ True`: if
+/// they do). `UnlessResolveSubs$` says in which case the sub-abilities (`rest`) happen too, moved into that branch; without
+/// it they happen either way.
+fn unless_pays(
+    ctx: &Ctx,
+    p: &Params,
+    unless: &str,
+    effects: Vec<Value>,
+    rest: &mut Vec<Value>,
+) -> Tr<Vec<Value>> {
+    let switched = p.get("UnlessSwitched") == Some("True");
+    let subs_when_paid = match p.get("UnlessResolveSubs") {
+        None => None,
+        Some("WhenPaid") => Some(true),
+        Some("WhenNotPaid") => Some(false),
+        Some(other) => return unmapped(format!("key:Unless.UnlessResolveSubs={other}")),
+    };
+    let who = match p.get("UnlessPayer") {
+        None if api_of(p)? == "Counter" => json!({ "ControllerOf": ctx.last_target()? }),
+        None => return unmapped("key:Unless.no-UnlessPayer"),
+        Some(word) => match defined(ctx, word)? {
+            // Nobody decides for a group: whether any of them pays is not one player's choice.
+            group if matches!(group.as_str(), Some("Opponents" | "EachPlayer")) => {
+                return unmapped(format!("key:Unless.UnlessPayer={word}"));
+            }
+            single => single,
+        },
+    };
+    let cost = unless_cost(ctx, unless)?;
+    let (mut paid, mut unpaid) = (Vec::new(), Vec::new());
+    if switched {
+        paid.extend(effects);
+    } else {
+        unpaid.extend(effects);
+    }
+    match subs_when_paid {
+        Some(true) => paid.append(rest),
+        Some(false) => unpaid.append(rest),
+        None => {}
+    }
+    let mut pay = serde_json::Map::new();
+    if !(switched && who == json!("You")) {
+        pay.insert("who".into(), who);
+    }
+    pay.insert("cost".into(), cost);
+    if !paid.is_empty() {
+        pay.insert("paid".into(), json!(paid));
+    }
+    if !unpaid.is_empty() {
+        pay.insert("unpaid".into(), json!(unpaid));
+    }
+    Ok(vec![json!({ "Pay": pay })])
 }
 
 /// The cost an `UnlessCost$` names: mana and the items `Pay` asks the payer for (life, discard, sacrifice, energy);
@@ -98,20 +195,10 @@ fn api_of(params: &Params) -> Tr<&str> {
         .map_or_else(|| unmapped("line:no-api"), Ok)
 }
 
-/// The effects of one line, without its sub-abilities.
-/// One line: its effects, and the latest target it declared as what `RememberTargets` leaves to remember when the API does not
-/// move it (a move names what it moved).
+/// One line: its effects, with the objects it remembers or imprints bound (`memory::line`).
 fn line(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     let api = api_of(p)?;
-    if p.get("RememberTargets") != Some("True") || matches!(api, "ChangeZone" | "Destroy") {
-        return api_line(ctx, p, api);
-    }
-    if !p.has("ValidTgts") {
-        return unmapped("key:RememberTargets-without-targets");
-    }
-    let effects = api_line(ctx, &p.without(&["RememberTargets"]), api)?;
-    ctx.remembered = Some(ctx.last_target()?);
-    Ok(effects)
+    super::memory::line(ctx, p, api, api_line)
 }
 
 fn api_line(ctx: &mut Ctx, p: &Params, api: &str) -> Tr<Vec<Value>> {
@@ -120,6 +207,9 @@ fn api_line(ctx: &mut Ctx, p: &Params, api: &str) -> Tr<Vec<Value>> {
         return found;
     }
     if let Some(found) = super::effects_copy::effects(ctx, p, api) {
+        return found;
+    }
+    if let Some(found) = super::effects_digital::effects(ctx, p, api) {
         return found;
     }
     if let Some(found) = super::effects_verbs::effects(ctx, p, api) {

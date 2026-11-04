@@ -1,0 +1,27 @@
+{
+  "oracle_id": "82344b5b-7cd9-460d-9966-f09432ed8e59",
+  "name": "Bog Elemental",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bog Elemental",
+      "oracle_fingerprint": "38d5ab03d13ddf5a9e911f07e7c61b6f",
+      "abilities": [
+        { "Keyword": { "Protection": [{ "Color": "White" }] } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "Sacrifice": { "filter": [{ "Type": "Land" }] } }],
+                  "unpaid": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

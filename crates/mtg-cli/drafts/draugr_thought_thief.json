@@ -1,0 +1,37 @@
+{
+  "oracle_id": "0952cfaf-8031-4df7-b276-dcb0b8f19ab7",
+  "name": "Draugr Thought-Thief",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Draugr Thought-Thief",
+      "oracle_fingerprint": "97b82e80bf1ea8d2910bfe9989c05854",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              { "LookAtTop": { "who": { "Target": 0 }, "as": "top" } },
+              {
+                "Choose": {
+                  "from": { "Bound": "top" },
+                  "count": { "min": 0, "max": null },
+                  "as": "kept2",
+                  "rest_as": "rest3"
+                }
+              },
+              { "Move": { "what": { "Bound": "kept2" }, "to": "Graveyard" } },
+              {
+                "Move": {
+                  "what": { "Bound": "rest3" },
+                  "to": { "Library": { "place": "Top", "order": "Chosen" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

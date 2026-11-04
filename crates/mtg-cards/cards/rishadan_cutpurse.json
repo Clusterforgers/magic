@@ -1,0 +1,35 @@
+{
+  "oracle_id": "147e0e74-f76b-4f0a-951f-d39afdd72c02",
+  "name": "Rishadan Cutpurse",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rishadan Cutpurse",
+      "oracle_fingerprint": "081bf0ee78cf5d71f0994145bd958831",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "Opponents",
+                  "as": "each",
+                  "effects": [
+                    {
+                      "Pay": {
+                        "who": { "Bound": "each" },
+                        "cost": "{1}",
+                        "unpaid": [{ "Sacrifice": { "who": { "Bound": "each" }, "filter": [] } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

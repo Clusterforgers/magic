@@ -1,0 +1,31 @@
+{
+  "oracle_id": "273f0353-4936-491b-82da-6d4d7f3259a6",
+  "name": "Mtenda Griffin",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mtenda Griffin",
+      "oracle_fingerprint": "568c97794162d792193e03faba16c175",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{W}" }, "Tap"],
+            "condition": { "All": ["YourTurn", { "Step": "Upkeep" }] },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Subtype": "Griffin" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": "This", "to": "Hand" } },
+              { "Move": { "what": { "Target": 0 }, "to": "Hand" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

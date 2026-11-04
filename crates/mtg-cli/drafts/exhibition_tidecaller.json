@@ -1,0 +1,44 @@
+{
+  "oracle_id": "d32c9439-4c97-412b-83cc-6d9acb48be3c",
+  "name": "Exhibition Tidecaller",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Exhibition Tidecaller",
+      "oracle_fingerprint": "22f6688bbca5f76b870e6ad49311b727",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                "by": "You"
+              }
+            },
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Mill": {
+                  "who": { "Target": 0 },
+                  "count": {
+                    "When": {
+                      "condition": {
+                        "Compare": {
+                          "left": { "Stat": { "of": "Triggering", "stat": "ManaSpent" } },
+                          "op": "Ge",
+                          "right": 5
+                        }
+                      },
+                      "then": 10,
+                      "otherwise": 3
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

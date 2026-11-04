@@ -1,0 +1,35 @@
+{
+  "oracle_id": "07bc407e-7ba1-45aa-a562-0597ebe56044",
+  "name": "Starke of Rath",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Starke of Rath",
+      "oracle_fingerprint": "e52ba8ab256def99741a35614b4cc82a",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] }]
+                }
+              }
+            ],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "SetController": { "ControllerOf": { "Target": 0 } } }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

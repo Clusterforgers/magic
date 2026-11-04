@@ -1,0 +1,48 @@
+{
+  "oracle_id": "0e3cb267-5704-4708-94c8-e2fbce4978af",
+  "name": "Flawless Forgery",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Flawless Forgery",
+      "oracle_fingerprint": "ee82989c38af2bf255df246db0708cde",
+      "abilities": [
+        { "Keyword": { "Casualty": 3 } },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                    { "OwnedBy": "Opponents" },
+                    { "In": "Graveyard" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              {
+                "RepeatEach": {
+                  "over": {
+                    "Each": [
+                      { "Is": { "Bound": "exiled" } },
+                      { "ExiledWith": "This" },
+                      { "In": "Exile" }
+                    ]
+                  },
+                  "as": "card2",
+                  "effects": [
+                    { "CopyCard": { "what": { "Bound": "card2" }, "as": "copy3" } },
+                    { "CastFromZone": { "what": { "Bound": "copy3" }, "free": true } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

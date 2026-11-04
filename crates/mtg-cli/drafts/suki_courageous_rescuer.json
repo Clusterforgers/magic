@@ -1,0 +1,44 @@
+{
+  "oracle_id": "70ea1a9d-ec52-4c11-8c4d-0d957e5491ad",
+  "name": "Suki, Courageous Rescuer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Suki, Courageous Rescuer",
+      "oracle_fingerprint": "b7b92947570a7042a889d6cc3b207d06",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }] },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": { "what": [{ "ControlledBy": "You" }, "Other"], "from": "Battlefield" }
+            },
+            "if": { "AtTrigger": "YourTurn" },
+            "limit": "OncePerTurn",
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Ally",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Ally"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "oracle_id": "c4023e1f-26e3-4225-98d0-3d33f6654616",
+  "name": "Caustic Exhale",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Caustic Exhale",
+      "oracle_fingerprint": "13d4d1ac99a50c8b6685ab937d87082d",
+      "abilities": [
+        {
+          "AdditionalCost": {
+            "cost": [{ "OneOf": [[{ "Behold": { "filter": [{ "Subtype": "Dragon" }] } }], "{1}"] }],
+            "required": true
+          }
+        },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": -3, "toughness": -3 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

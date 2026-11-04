@@ -1,0 +1,40 @@
+{
+  "oracle_id": "5811effb-5010-44b9-bb97-9d7eb358327f",
+  "name": "Doomsday Specter",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Doomsday Specter",
+      "oracle_fingerprint": "b16eca42d1ab35de6c7e2386bff8b484",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "AnyOf": [{ "Color": "Black" }, { "Color": "Blue" }] },
+                      { "ControlledBy": "You" }
+                    ]
+                  },
+                  "as": "picked"
+                }
+              },
+              { "Move": { "what": { "Bound": "picked" }, "to": "Hand" } }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 99, "end": 239 }
+          }
+        }
+      ]
+    }
+  ]
+}

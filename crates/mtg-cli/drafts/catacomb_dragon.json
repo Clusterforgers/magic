@@ -1,0 +1,54 @@
+{
+  "oracle_id": "a5e9f72b-7628-4265-8b43-592a0bf678b3",
+  "name": "Catacomb Dragon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Catacomb Dragon",
+      "oracle_fingerprint": "ba084ad68a9c33346f80d1528a63b438",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "BecomesBlocked": {
+                "what": ["This"],
+                "by": [
+                  { "Type": "Creature" },
+                  { "Not": { "Type": "Artifact" } },
+                  { "Not": { "Subtype": "Dragon" } }
+                ]
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Dealer",
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": {
+                          "Times": {
+                            "by": -1,
+                            "of": {
+                              "Half": {
+                                "of": { "Stat": { "of": "Dealer", "stat": "Power" } },
+                                "up": false
+                              }
+                            }
+                          }
+                        },
+                        "toughness": 0
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

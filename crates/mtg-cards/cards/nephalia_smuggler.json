@@ -1,0 +1,30 @@
+{
+  "oracle_id": "f96a2aa6-3259-4bb6-92cd-4d17215d04d0",
+  "name": "Nephalia Smuggler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nephalia Smuggler",
+      "oracle_fingerprint": "0ebbb0cfa9e0476ca1cc99c730b9d423",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}{U}" }, "Tap"],
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              {
+                "Move": {
+                  "what": { "Bound": "exiled" },
+                  "to": { "Battlefield": { "under": "You" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

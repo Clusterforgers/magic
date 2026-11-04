@@ -1,0 +1,119 @@
+{
+  "oracle_id": "8b1e453a-35a6-4dff-bd37-498f34d0470e",
+  "name": "The Long Reach of Night // Animus of Night's Reach",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Long Reach of Night",
+      "oracle_fingerprint": "1fee7026c371b069b26e5ad87a5a786b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "Opponents",
+                  "as": "each",
+                  "effects": [
+                    {
+                      "Pay": {
+                        "who": { "Bound": "each" },
+                        "cost": [{ "Discard": {} }],
+                        "unpaid": [
+                          {
+                            "Sacrifice": {
+                              "who": { "Bound": "each" },
+                              "filter": [{ "Type": "Creature" }]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "Opponents",
+                  "as": "each",
+                  "effects": [
+                    {
+                      "Pay": {
+                        "who": { "Bound": "each" },
+                        "cost": [{ "Discard": {} }],
+                        "unpaid": [
+                          {
+                            "Sacrifice": {
+                              "who": { "Bound": "each" },
+                              "filter": [{ "Type": "Creature" }]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "effects": [
+              { "Exile": { "what": "This", "as": "exiled" } },
+              {
+                "Move": {
+                  "what": { "Bound": "exiled" },
+                  "to": { "Battlefield": { "under": "You", "transformed": true } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Animus of Night's Reach",
+      "oracle_fingerprint": "cbc1845f724cbf93cfe50c87b6c5d4ce",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": {
+                          "Count": [
+                            { "Type": "Creature" },
+                            { "OwnedBy": "Defending" },
+                            { "In": "Graveyard" }
+                          ]
+                        },
+                        "toughness": 0
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

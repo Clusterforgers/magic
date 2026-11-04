@@ -1,0 +1,28 @@
+{
+  "oracle_id": "f854ea0d-aae3-4b6a-9767-6ac1788f2190",
+  "name": "Draugr Recruiter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Draugr Recruiter",
+      "oracle_fingerprint": "9e7276efae5b2b819e9eb2ab80316931",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{3}{B}",
+            "condition": { "Matches": { "subject": "This", "selector": ["AttackedThisTurn"] } },
+            "limit": "OncePerTurn",
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

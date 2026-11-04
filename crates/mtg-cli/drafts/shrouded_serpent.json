@@ -1,0 +1,35 @@
+{
+  "oracle_id": "6e0deb42-f876-4fb8-9536-6d9a42bd6e5e",
+  "name": "Shrouded Serpent",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shrouded Serpent",
+      "oracle_fingerprint": "c33ef3790f7bc14099d9b90e3d2d8276",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Pay": {
+                  "who": "Defending",
+                  "cost": "{4}",
+                  "unpaid": [
+                    {
+                      "Continuous": {
+                        "affected": "This",
+                        "mods": ["CantBeBlocked"],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -29,6 +29,8 @@ pub struct World {
     pub tokens: BTreeMap<String, Face>,
     /// The names of the checkout's cards and tokens.
     pub names: BTreeSet<String>,
+    /// The slugs of the cards the database stores, when the run reads it: a name a card conjures is checked against them.
+    pub stored: Option<BTreeSet<String>>,
 }
 
 impl World {
@@ -48,6 +50,7 @@ impl World {
             subtypes,
             tokens,
             names,
+            stored: None,
         }
     }
 }
@@ -95,6 +98,10 @@ pub struct Ctx<'a> {
     pub targets: Vec<Value>,
     /// The objects the latest zone change moved (`RememberChanged$`), which `Defined$ Remembered` names later.
     pub remembered: Option<Value>,
+    /// The objects the latest `Imprint*` step moved, which `Defined$ Imprinted` names later.
+    pub imprinted: Option<Value>,
+    /// The memories the card reads on a line other than the one that wrote them.
+    pub memory: super::memory::Plan,
     /// The objects an `Effect` object remembers, which a trigger or static it carries reads as `IsRemembered`; kept across
     /// `reset` because the carried lines are translated as lines of their own.
     pub pinned: Option<Value>,
@@ -124,6 +131,8 @@ impl<'a> Ctx<'a> {
             world,
             targets: Vec::new(),
             remembered: None,
+            imprinted: None,
+            memory: super::memory::plan(face),
             pinned: None,
             parent_target: None,
             chosen: None,
@@ -138,6 +147,7 @@ impl<'a> Ctx<'a> {
     pub fn reset(&mut self) {
         self.targets.clear();
         self.remembered = None;
+        self.imprinted = None;
         self.parent_target = None;
         self.chosen = None;
         self.chosen_card = None;
@@ -152,6 +162,7 @@ impl<'a> Ctx<'a> {
         let targets = std::mem::take(&mut self.targets);
         let saved = (
             self.remembered.take(),
+            self.imprinted.take(),
             self.parent_target,
             self.chosen.take(),
             self.chosen_card.take(),
@@ -164,6 +175,7 @@ impl<'a> Ctx<'a> {
         self.targets = targets;
         (
             self.remembered,
+            self.imprinted,
             self.parent_target,
             self.chosen,
             self.chosen_card,

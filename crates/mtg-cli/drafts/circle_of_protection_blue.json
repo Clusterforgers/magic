@@ -1,0 +1,38 @@
+{
+  "oracle_id": "d7572f17-f85d-45c0-ac64-43aac760eafe",
+  "name": "Circle of Protection: Blue",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Circle of Protection: Blue",
+      "oracle_fingerprint": "f374cca5775cd066f50e282cff58db57",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{1}",
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "AnyOf": [{ "In": "Battlefield" }, { "In": "Stack" }, { "In": "Command" }] },
+                      { "Color": "Blue" }
+                    ]
+                  },
+                  "as": "source"
+                }
+              },
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": "You", "source": [{ "Is": { "Bound": "source" } }] } },
+                  "by": "PreventNext",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

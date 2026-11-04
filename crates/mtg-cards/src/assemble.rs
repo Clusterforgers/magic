@@ -637,6 +637,7 @@ fn picked_by_the_planner(item: &CostItem) -> bool {
 /// The shape of a mana ability the engine activates at priority, if `ability` has it.
 ///
 /// The first effect adds mana to the controller's pool and the rest each ask nothing; one effect of a kind.
+#[allow(clippy::too_many_lines)]
 pub fn mana_shape(ability: &Ability) -> Option<ManaShape<'_>> {
     let Ability::Activated {
         cost,

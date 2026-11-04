@@ -1,0 +1,34 @@
+{
+  "oracle_id": "0335e7db-5e0e-4271-8ae7-437a1d2c16ac",
+  "name": "Torrent Elemental",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Torrent Elemental",
+      "oracle_fingerprint": "56e1319d8e28c3239f2ebb702bde354b",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Tap": {
+                  "what": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "Defending" }] }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{3}{B/G}{B/G}",
+            "timing": "Sorcery",
+            "from": "Exile",
+            "effects": [{ "Move": { "what": "This", "to": { "Battlefield": { "tapped": true } } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

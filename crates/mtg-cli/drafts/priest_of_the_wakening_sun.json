@@ -1,0 +1,36 @@
+{
+  "oracle_id": "cc11efa2-27ca-4745-8178-31576539512a",
+  "name": "Priest of the Wakening Sun",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Priest of the Wakening Sun",
+      "oracle_fingerprint": "96176786ecaf81a9fbde47c88d5a8783",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "RevealFromHand": { "filter": [{ "Subtype": "Dinosaur" }] } }],
+                  "paid": [{ "GainLife": { "amount": 2 } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}{W}{W}" }, "SacrificeSelf"],
+            "effects": [
+              { "Search": { "filter": [{ "Subtype": "Dinosaur" }], "reveal": true, "as": "found" } },
+              { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

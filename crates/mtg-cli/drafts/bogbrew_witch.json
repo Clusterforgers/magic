@@ -1,0 +1,35 @@
+{
+  "oracle_id": "ad138184-ab2d-407a-9f9c-94b0675be19d",
+  "name": "Bogbrew Witch",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bogbrew Witch",
+      "oracle_fingerprint": "1680a6785fbfd511060203d8d1f16550",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap"],
+            "effects": [
+              {
+                "Search": {
+                  "filter": [
+                    { "AnyOf": [{ "Named": "Festering Newt" }, { "Named": "Bubbling Cauldron" }] }
+                  ],
+                  "as": "found"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "found" },
+                  "to": { "Battlefield": { "tapped": true } }
+                }
+              },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

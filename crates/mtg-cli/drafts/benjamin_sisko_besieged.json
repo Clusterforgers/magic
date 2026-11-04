@@ -1,0 +1,25 @@
+{
+  "oracle_id": "f1416577-97d0-4d6c-afd2-455798556d4c",
+  "name": "Benjamin Sisko, Besieged",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Benjamin Sisko, Besieged",
+      "oracle_fingerprint": "67fb81665243758f4cb8b9bc811b55a3",
+      "abilities": [
+        { "Rule": { "rule": { "RevealTop": "You" } } },
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": {
+                "what": [{ "AnyOf": [{ "Type": "Land" }, { "Type": "Creature" }] }, "TopOfLibrary"],
+                "from": "Library",
+                "play": true
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

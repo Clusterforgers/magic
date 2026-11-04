@@ -1,0 +1,50 @@
+{
+  "oracle_id": "c394d4b6-cfb8-4639-90cb-a322a25c0a2f",
+  "name": "Dropkick Bomber",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dropkick Bomber",
+      "oracle_fingerprint": "3cdd2ed3d3c9d8ee1f6e1a87bffa1859",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Goblin" }, "Other", { "ControlledBy": "You" }] },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{R}",
+            "targets": [
+              {
+                "what": { "Object": [{ "Subtype": "Goblin" }, "Other", { "ControlledBy": "You" }] }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "AddKeyword": "Flying" },
+                    {
+                      "GrantAbility": {
+                        "Triggered": {
+                          "when": {
+                            "Batch": { "DealsDamage": { "source": ["This"], "combat": true } }
+                          },
+                          "effects": [{ "Sacrifice": { "filter": ["This"] } }]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "oracle_id": "fe4c0dc1-f6a9-4828-9c19-4239c4f955a7",
+  "name": "Invader Parasite",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Invader Parasite",
+      "oracle_fingerprint": "b497e5b49b8804b14d4bd34fcdd438fe",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": { "Object": [{ "Type": "Land" }] } }],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              { "Remember": { "what": { "Bound": "exiled" }, "slot": "imprinted" } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "Type": "Land" },
+                  { "SharesName": { "Remembered": { "on": "This", "slot": "imprinted" } } },
+                  { "ControlledBy": "Opponents" }
+                ],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [{ "DealDamage": { "to": { "ControllerOf": "Triggering" }, "amount": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

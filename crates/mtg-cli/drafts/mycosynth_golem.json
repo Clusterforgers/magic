@@ -1,0 +1,27 @@
+{
+  "oracle_id": "ebcd864a-b7dd-4330-89e1-80576a9437ec",
+  "name": "Mycosynth Golem",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mycosynth Golem",
+      "oracle_fingerprint": "73dcbce43e7709a60659c623d3c36322",
+      "abilities": [
+        { "Keyword": { "Affinity": [{ "Type": "Artifact" }] } },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Artifact" },
+                { "Type": "Creature" },
+                { "WasCast": { "by": "You" } },
+                { "In": "Stack" }
+              ]
+            },
+            "mods": [{ "AddKeyword": { "Affinity": [{ "Type": "Artifact" }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

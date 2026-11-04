@@ -269,7 +269,7 @@ fn a_static_effect_is_a_forever_continuous_over_the_moved_object(
 #[case::missing_svar("SVar:Other:Mode$ Continuous | AddType$ Hero")]
 fn a_static_effect_that_means_more_stays_a_gap(#[case] svar: &str) {
     let (_, found) = sorcery(&format!("{MOVE_BACK}\n{svar}"));
-    assert!(!found.is_empty());
+    assert_ne!(found.len(), 0);
 }
 
 #[test]
@@ -299,7 +299,7 @@ fn manifest_dread_looks_at_two_keeps_one_and_buries_the_rest() {
 #[case::unknown_key("A:SP$ ManifestDread | Mandatory$ False")]
 fn manifest_dread_beyond_once_stays_a_gap(#[case] line: &str) {
     let (_, found) = sorcery(line);
-    assert!(!found.is_empty());
+    assert_ne!(found.len(), 0);
 }
 
 #[test]
@@ -307,5 +307,5 @@ fn a_static_effect_on_a_move_elsewhere_stays_a_gap() {
     let (_, found) = sorcery(
         "A:SP$ ChangeZone | Origin$ Graveyard | Destination$ Hand | ValidTgts$ Artifact.YouOwn | StaticEffect$ Animate\nSVar:Animate:Mode$ Continuous | AddType$ Hero",
     );
-    assert!(!found.is_empty());
+    assert_ne!(found.len(), 0);
 }

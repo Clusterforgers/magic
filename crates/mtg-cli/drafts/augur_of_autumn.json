@@ -1,0 +1,47 @@
+{
+  "oracle_id": "9e774188-caa1-4b62-b9cc-547f8e444b7f",
+  "name": "Augur of Autumn",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Augur of Autumn",
+      "oracle_fingerprint": "365273491175c12ac737db24400b2bf2",
+      "abilities": [
+        { "Rule": { "rule": { "LookAtTopAnyTime": "You" } } },
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": {
+                "what": [{ "Type": "Land" }, "TopOfLibrary"],
+                "from": "Library",
+                "play": true
+              }
+            }
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": {
+                "what": [{ "Type": "Creature" }, "TopOfLibrary", { "Not": { "Type": "Land" } }],
+                "from": "Library"
+              }
+            },
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Distinct": {
+                    "of": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                    "stat": "Power"
+                  }
+                },
+                "op": "Ge",
+                "right": 3
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

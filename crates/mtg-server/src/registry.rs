@@ -474,6 +474,24 @@ impl Registry {
             .iter()
             .map(|deck| deck.as_ref().unwrap_or(&stand_in))
             .collect();
+        let seeds: Vec<Arc<mtg_cards::CardDefinition>> = held
+            .iter()
+            .flat_map(|deck| {
+                deck.cards()
+                    .iter()
+                    .chain(deck.commanders())
+                    .chain(deck.companion())
+            })
+            .cloned()
+            .collect();
+        let (conjured, conjured_reads) = match &self.shared.cards {
+            Some(cards) => cards.conjured_for(&seeds).await?,
+            None => Default::default(),
+        };
+        let mut reads = merged_reads(held.iter().map(|deck| deck.reads()));
+        for (card, hash) in conjured_reads {
+            reads.entry(card).or_insert(hash);
+        }
         // The decks as they are now, kept so that a later boot can tell when a deploy changed one.
         let recipe = GameRecipe {
             format: options.format,
@@ -481,7 +499,8 @@ impl Registry {
             seed,
             decks: held.iter().map(|deck| deck.reference().clone()).collect(),
             fingerprints: held.iter().map(|deck| *deck.fingerprint()).collect(),
-            reads: merged_reads(held.iter().map(|deck| deck.reads())),
+            reads,
+            conjured: crate::recipe::fingerprints_of(&conjured).map_err(RecipeError::from)?,
         };
         let libraries = held.iter().map(|deck| deck.cards().to_vec()).collect();
         let commanders = held.iter().map(|deck| deck.commanders().to_vec()).collect();
@@ -489,7 +508,8 @@ impl Registry {
         let setup = GameSetup::new(options.format.rules(), seed, libraries)
             .with_commanders(commanders)
             .with_companions(companions)
-            .with_house_rules(options.house_rules.clone());
+            .with_house_rules(options.house_rules.clone())
+            .with_conjurable(conjured);
         // Refused like a recipe that does not build: too few seats, a deck the format does not allow.
         setup.validate().map_err(RecipeError::from)?;
         self.admit(setup, names, Some(recipe), host, options, Some(decks))

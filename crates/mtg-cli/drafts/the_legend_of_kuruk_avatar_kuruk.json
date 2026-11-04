@@ -1,0 +1,87 @@
+{
+  "oracle_id": "201b8936-18f4-4881-a1d4-c308cf3832bf",
+  "name": "The Legend of Kuruk // Avatar Kuruk",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "The Legend of Kuruk",
+      "oracle_fingerprint": "a34cbefcdd8cf7110c4abe2b558710d4",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "effects": [{ "Scry": { "count": 2 } }, { "Draw": {} }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "effects": [{ "Scry": { "count": 2 } }, { "Draw": {} }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "effects": [
+              { "Exile": { "what": "This", "as": "exiled" } },
+              {
+                "Move": {
+                  "what": { "Bound": "exiled" },
+                  "to": { "Battlefield": { "under": "You", "transformed": true } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Avatar Kuruk",
+      "oracle_fingerprint": "2c6dba4416ef6e0e4f1c4555237149b5",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "by": "You" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Spirit",
+                      "types": ["Creature"],
+                      "subtypes": ["Spirit"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [
+                        {
+                          "Static": {
+                            "affected": "This",
+                            "mods": [
+                              { "CanBlockOnly": [{ "Type": "Creature" }, { "Subtype": "Spirit" }] },
+                              {
+                                "CantBeBlockedBy": [
+                                  { "Type": "Creature" },
+                                  { "Not": { "Subtype": "Spirit" } }
+                                ]
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 141, "end": 348 }
+          }
+        }
+      ]
+    }
+  ]
+}

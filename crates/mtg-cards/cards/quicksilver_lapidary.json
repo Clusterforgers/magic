@@ -1,0 +1,19 @@
+{
+  "oracle_id": "e7b3dab1-7d27-4e57-b66f-542442663b92",
+  "name": "Quicksilver Lapidary",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Quicksilver Lapidary",
+      "oracle_fingerprint": "62c1809ca559f84db475aa955fa72efe",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Conjure": { "name": "Mox Opal", "zone": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "oracle_id": "cad1cd10-4810-495e-9305-0ae812596f6a",
+  "name": "Goblin Glory Chaser",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Goblin Glory Chaser",
+      "oracle_fingerprint": "757edd670fd6b1dddc4540e73b2b6ace",
+      "abilities": [
+        { "Keyword": { "Renown": 1 } },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Menace" }],
+            "condition": { "Matches": { "subject": "This", "selector": ["Renowned"] } }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "oracle_id": "82076865-7917-4d3b-8fe8-c21bfcd64d29",
+  "name": "Slaughterhouse Bouncer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Slaughterhouse Bouncer",
+      "oracle_fingerprint": "3f691a3c824406a6a8dceb088a4383e6",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
+                "op": "Eq",
+                "right": 0
+              }
+            },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": -3, "toughness": -3 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

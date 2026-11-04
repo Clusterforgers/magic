@@ -1,0 +1,28 @@
+{
+  "oracle_id": "ec5dc165-c760-4060-99fb-ec50f87374cb",
+  "name": "Thought Gorger",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Thought Gorger",
+      "oracle_fingerprint": "e35b86e88998a55c0e12c4ba225150a0",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 8, "end": 118 }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield" } },
+            "effects": [
+              { "Draw": { "count": { "Counters": { "on": "This", "counter": "+1/+1" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

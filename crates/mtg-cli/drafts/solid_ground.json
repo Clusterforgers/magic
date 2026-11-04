@@ -1,0 +1,30 @@
+{
+  "oracle_id": "8609ed1a-f202-483e-9299-408ef6e84ad6",
+  "name": "Solid Ground",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Solid Ground",
+      "oracle_fingerprint": "5d434ae025dfcc9e383c93c37c87de1a",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 219 }
+          }
+        },
+        {
+          "Replacement": {
+            "when": {
+              "CountersPut": {
+                "on": { "Each": [{ "ControlledBy": "You" }, { "In": "Battlefield" }] },
+                "counter": "+1/+1"
+              }
+            },
+            "by": { "Add": 1 }
+          }
+        }
+      ]
+    }
+  ]
+}

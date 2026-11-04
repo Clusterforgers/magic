@@ -1,8 +1,6 @@
 //! Alternative-cost keywords: `Warp`, `Surge`, `Web-slinging` and `Impending` as an `AltCast` with the abilities that read
 //! how the card was cast, the same shapes the engine's alternative-cost table runs (`mtg_cards::alt_riders`).
 
-use std::fmt::Write as _;
-
 use mtg_cards::alt_riders::{alt_cast, impending_riders, warp_riders};
 use mtg_cards::mana::ManaCostX;
 use mtg_cards::value::CastWay;
@@ -32,7 +30,7 @@ fn mana(text: &str) -> Option<ManaCostX> {
     }
     let mut symbols = String::new();
     for word in &words {
-        let _ = write!(symbols, "{{{word}}}");
+        symbols.push_str(&super::cost::symbol(word));
     }
     symbols.parse().ok()
 }

@@ -1,0 +1,38 @@
+{
+  "oracle_id": "bbf07bec-9c02-455b-885d-7cb5fc77b5de",
+  "name": "Descendant of Kiyomaro",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Descendant of Kiyomaro",
+      "oracle_fingerprint": "cf4bfd8bc900f0dcc687b6d9c2a89820",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              { "ModifyPT": { "power": 1, "toughness": 2 } },
+              {
+                "GrantAbility": {
+                  "Triggered": {
+                    "when": { "Batch": { "DealsDamage": { "source": ["This"], "combat": true } } },
+                    "effects": [{ "GainLife": { "amount": 3 } }]
+                  }
+                }
+              }
+            ],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "OwnedBy": "You" }, { "In": "Hand" }] },
+                "op": "Gt",
+                "right": {
+                  "Largest": { "who": "Opponents", "of": [{ "In": "Hand" }, { "OwnedBy": "You" }] }
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

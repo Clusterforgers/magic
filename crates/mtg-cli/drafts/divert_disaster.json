@@ -1,0 +1,62 @@
+{
+  "oracle_id": "76fdbc2c-d2b1-466f-9230-06e187bcc9e6",
+  "name": "Divert Disaster",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Divert Disaster",
+      "oracle_fingerprint": "05f896eb57353fc609fb5f4d116c86d1",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [
+              {
+                "Pay": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "cost": "{2}",
+                  "paid": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Lander",
+                            "types": ["Artifact"],
+                            "subtypes": ["Lander"],
+                            "abilities": [
+                              {
+                                "Activated": {
+                                  "cost": [{ "Mana": "{2}" }, "Tap", "SacrificeSelf"],
+                                  "effects": [
+                                    {
+                                      "Search": {
+                                        "filter": [{ "Type": "Land" }, { "Supertype": "Basic" }],
+                                        "as": "found"
+                                      }
+                                    },
+                                    {
+                                      "Move": {
+                                        "what": { "Bound": "found" },
+                                        "to": { "Battlefield": { "tapped": true } }
+                                      }
+                                    },
+                                    { "Shuffle": {} }
+                                  ]
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  ],
+                  "unpaid": [{ "Counter": { "what": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

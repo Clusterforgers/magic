@@ -1,0 +1,20 @@
+{
+  "oracle_id": "a74e41b4-6284-453c-a586-d575735dca65",
+  "name": "Emergent Woodwurm",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Emergent Woodwurm",
+      "oracle_fingerprint": "1139a5b0460823a7d19a41363aeb79a9",
+      "abilities": [
+        { "Keyword": { "Backup": { "count": 3 } } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 161, "end": 410 }
+          }
+        }
+      ]
+    }
+  ]
+}

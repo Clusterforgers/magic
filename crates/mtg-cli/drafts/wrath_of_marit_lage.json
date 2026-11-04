@@ -1,0 +1,27 @@
+{
+  "oracle_id": "740cafc6-9521-403a-ab5f-11582bf55af0",
+  "name": "Wrath of Marit Lage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wrath of Marit Lage",
+      "oracle_fingerprint": "054b8d1f01217857af426f933c88dc49",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "Tap": { "what": { "Each": [{ "Type": "Creature" }, { "Color": "Red" }] } } }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "Color": "Red" }] },
+            "mods": ["DoesntUntap"]
+          }
+        }
+      ]
+    }
+  ]
+}

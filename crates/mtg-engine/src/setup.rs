@@ -125,6 +125,8 @@ pub struct GameSetup {
     pub start: Start,
     /// Whether decks are checked against the format (off for scenario setups).
     pub validate_decks: bool,
+    /// The cards an effect may conjure, by name; a name missing here conjures nothing.
+    pub conjurable: Arc<BTreeMap<String, Arc<CardDefinition>>>,
 }
 
 impl GameSetup {
@@ -147,7 +149,18 @@ impl GameSetup {
                 .collect(),
             start: Start::Mulligan,
             validate_decks: true,
+            conjurable: Arc::default(),
         }
+    }
+
+    /// The setup whose effects may conjure these cards, each under the name an effect asks for it by.
+    #[must_use]
+    pub fn with_conjurable(
+        mut self,
+        cards: impl IntoIterator<Item = (String, Arc<CardDefinition>)>,
+    ) -> Self {
+        self.conjurable = Arc::new(cards.into_iter().collect());
+        self
     }
 
     /// The setup with these commanders, one list for each seat in table order, starting in the command zone.
@@ -445,6 +458,7 @@ impl GameState {
             format: Arc::clone(&setup.format),
             house_rules: setup.house_rules.clone(),
             seed: setup.seed,
+            conjurable: Arc::clone(&setup.conjurable),
             rng_index: 0,
             stage,
             first_player,

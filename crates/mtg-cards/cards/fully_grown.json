@@ -1,0 +1,28 @@
+{
+  "oracle_id": "c98163f4-4a78-43f8-9855-4a23ebb9ceeb",
+  "name": "Fully Grown",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fully Grown",
+      "oracle_fingerprint": "ac6990b6fb8361e56c5d0c62890cfce9",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 3, "toughness": 3 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "trample" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

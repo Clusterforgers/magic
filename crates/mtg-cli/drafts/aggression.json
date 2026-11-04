@@ -1,0 +1,33 @@
+{
+  "oracle_id": "b6c38a2b-2fe8-4080-80ce-cfa12aaf57f0",
+  "name": "Aggression",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Aggression",
+      "oracle_fingerprint": "6402f00a9eb873b3cce40b2ccdb8046d",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }, { "Not": { "Subtype": "Wall" } }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "AddKeyword": "FirstStrike" }, { "AddKeyword": "Trample" }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": { "ControllerOf": "Attached" } } },
+            "if": {
+              "Compare": {
+                "left": { "Count": [{ "Is": "Attached" }, { "Not": "AttackedThisTurn" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "Destroy": { "what": "Attached" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "oracle_id": "95e1c368-b58a-4e69-9583-587560ad558d",
+  "name": "Eagle's Rescue",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Eagle's Rescue",
+      "oracle_fingerprint": "13441378258cabf4d72ddbddfc1cd7b9",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }, { "AddKeyword": "Flying" }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{2}{W/U}{W/U}",
+            "timing": "Sorcery",
+            "from": "Graveyard",
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "ControlledBy": "You" },
+                    { "Compare": { "stat": "Power", "op": "Le", "to": 1 } }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Move": {
+                  "what": "This",
+                  "to": { "BattlefieldAttached": { "to": { "Target": 0 } } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

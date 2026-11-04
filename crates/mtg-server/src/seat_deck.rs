@@ -35,6 +35,7 @@ pub struct ChosenDeck {
     note: SeatDeck,
     own_issues: Arc<[Issue]>,
     reads: BTreeMap<String, String>,
+    conjured: BTreeMap<String, Arc<CardDefinition>>,
 }
 
 impl ChosenDeck {
@@ -56,6 +57,7 @@ impl ChosenDeck {
             },
             own_issues: Arc::from([]),
             reads: BTreeMap::new(),
+            conjured: BTreeMap::new(),
         })
     }
 
@@ -83,6 +85,7 @@ impl ChosenDeck {
             },
             own_issues: Arc::from([]),
             reads: BTreeMap::new(),
+            conjured: BTreeMap::new(),
         })
     }
 
@@ -120,6 +123,7 @@ impl ChosenDeck {
             note,
             own_issues: Arc::from([]),
             reads: BTreeMap::new(),
+            conjured: BTreeMap::new(),
         })
     }
 
@@ -207,6 +211,18 @@ impl ChosenDeck {
     pub fn with_reads(mut self, reads: BTreeMap<String, String>) -> ChosenDeck {
         self.reads = reads;
         self
+    }
+
+    /// The deck with the cards its cards can conjure, by the name a conjure asks for.
+    #[must_use]
+    pub fn with_conjured(mut self, conjured: BTreeMap<String, Arc<CardDefinition>>) -> ChosenDeck {
+        self.conjured = conjured;
+        self
+    }
+
+    /// The cards the deck's cards can conjure, by name.
+    pub fn conjured(&self) -> &BTreeMap<String, Arc<CardDefinition>> {
+        &self.conjured
     }
 
     /// The drafts the deck's cards play on, by oracle id.
@@ -446,6 +462,17 @@ impl SeatDecks {
             .ne(self.defaults.iter().map(named))
     }
 
+    /// The cards the chosen decks can conjure, by name; where two seats name one card the first wins.
+    pub(crate) fn conjured(&self) -> BTreeMap<String, Arc<CardDefinition>> {
+        let mut all = BTreeMap::new();
+        for deck in self.current.iter().flatten() {
+            for (name, card) in deck.conjured() {
+                all.entry(name.clone()).or_insert_with(|| Arc::clone(card));
+            }
+        }
+        all
+    }
+
     /// The recipe of the game as the seats chose it; none while a seat has no deck.
     pub(crate) fn recipe(&self) -> Option<GameRecipe> {
         let chosen: Option<Vec<&ChosenDeck>> = self.current.iter().map(Option::as_ref).collect();
@@ -457,6 +484,7 @@ impl SeatDecks {
             decks: chosen.iter().map(|deck| deck.deck.clone()).collect(),
             fingerprints: chosen.iter().map(|deck| deck.fingerprint).collect(),
             reads: merged_reads(chosen.iter().map(|deck| &deck.reads)),
+            conjured: crate::recipe::fingerprints_of(&self.conjured()).ok()?,
         })
     }
 }

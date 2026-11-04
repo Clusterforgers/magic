@@ -1,0 +1,38 @@
+{
+  "oracle_id": "d0ec32d9-1d4e-4b6f-bc95-addbb484b0d3",
+  "name": "Mold Folk",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mold Folk",
+      "oracle_fingerprint": "41a994b05a393b201c6371610ee7fd8f",
+      "abilities": [
+        { "Keyword": "Lifelink" },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{1}" },
+              {
+                "Sacrifice": {
+                  "filter": [
+                    {
+                      "AnyOf": [
+                        {
+                          "Not": {
+                            "AnyOf": [{ "Not": { "Type": "Creature" } }, { "Not": "Other" }]
+                          }
+                        },
+                        { "Type": "Artifact" }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

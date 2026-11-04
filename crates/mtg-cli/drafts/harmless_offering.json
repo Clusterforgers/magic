@@ -1,0 +1,30 @@
+{
+  "oracle_id": "f5d32e5f-066b-42cf-8dd1-072a96275313",
+  "name": "Harmless Offering",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Harmless Offering",
+      "oracle_fingerprint": "bc04579a9287fcc907fc8879432703de",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": "Opponent" },
+              { "what": { "Object": [{ "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 1 },
+                  "mods": [{ "SetController": { "Target": 0 } }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

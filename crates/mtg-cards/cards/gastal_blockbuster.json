@@ -1,0 +1,45 @@
+{
+  "oracle_id": "3b601721-90ca-45d3-9a3a-19c719799bfa",
+  "name": "Gastal Blockbuster",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gastal Blockbuster",
+      "oracle_fingerprint": "f9e821198d8ac0d08ce45c2f09fd8848",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [
+                    {
+                      "Sacrifice": {
+                        "filter": [{ "AnyOf": [{ "Type": "Creature" }, { "Subtype": "Vehicle" }] }]
+                      }
+                    }
+                  ],
+                  "paid": [
+                    {
+                      "Reflexive": {
+                        "targets": [
+                          {
+                            "what": {
+                              "Object": [{ "Type": "Artifact" }, { "ControlledBy": "Opponents" }]
+                            }
+                          }
+                        ],
+                        "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

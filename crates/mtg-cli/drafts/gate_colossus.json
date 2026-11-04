@@ -1,0 +1,47 @@
+{
+  "oracle_id": "386c5895-9713-4c28-9ba8-8ca0caa06c13",
+  "name": "Gate Colossus",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gate Colossus",
+      "oracle_fingerprint": "a4d90bda73e6b24aab08d5274c28cb36",
+      "abilities": [
+        { "Keyword": { "Affinity": [{ "Subtype": "Gate" }] } },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "CantBeBlockedBy": [
+                  { "Type": "Creature" },
+                  { "Compare": { "stat": "Power", "op": "Le", "to": 2 } }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Subtype": "Gate" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "from": "Graveyard",
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "Move": { "what": "This", "to": { "Library": { "place": "Top" } } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,57 @@
+{
+  "oracle_id": "d5efba91-8400-41a3-91c6-cb5e81f07976",
+  "name": "Iymrith, Desert Doom",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Iymrith, Desert Doom",
+      "oracle_fingerprint": "945cf4aeba5c443946c535286564ede5",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": { "Ward": "{4}" } }],
+            "condition": { "Matches": { "subject": "This", "selector": ["Untapped"] } }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              { "Draw": {} },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "OwnedBy": "You" }, { "In": "Hand" }] },
+                      "op": "Lt",
+                      "right": 3
+                    }
+                  },
+                  "then": [
+                    {
+                      "Draw": {
+                        "count": {
+                          "Sum": [
+                            3,
+                            {
+                              "Times": {
+                                "by": -1,
+                                "of": { "Count": [{ "OwnedBy": "You" }, { "In": "Hand" }] }
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

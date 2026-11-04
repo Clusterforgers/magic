@@ -1,0 +1,43 @@
+{
+  "oracle_id": "5d7acb89-1778-409a-9e91-aaeadd13ca27",
+  "name": "Venarian Gold",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Venarian Gold",
+      "oracle_fingerprint": "b4e0010d43bff023614e71fda15cc05b",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "Tap": { "what": "Attached" } },
+              { "PutCounters": { "on": "Attached", "counter": { "Other": "sleep" }, "count": "X" } }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                { "Is": "Attached" },
+                { "HasCounter": { "Other": "sleep" } }
+              ]
+            },
+            "mods": ["DoesntUntap"]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": { "ControllerOf": "Attached" } } },
+            "effects": [
+              { "RemoveCounters": { "from": "Attached", "counter": { "Other": "sleep" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

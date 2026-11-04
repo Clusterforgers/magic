@@ -213,7 +213,7 @@ const STATIC_CARD_TYPES: [&str; 8] = [
     "Battle",
 ];
 
-/// The modifications of the static the `StaticEffect$` SVar names ("It's a 1/1 Spirit creature with flying in addition to
+/// The modifications of the static the `StaticEffect$` `SVar` names ("It's a 1/1 Spirit creature with flying in addition to
 /// its other types"): types added, a fixed power and toughness, a color and keywords. A word that takes something away or
 /// adds a color stays a gap.
 fn static_effect_mods(ctx: &mut Ctx, name: &str) -> Tr<Vec<Value>> {
@@ -296,13 +296,13 @@ fn with_static_effect(
     let Some(step) = effects.iter_mut().find(|step| step.get("Move").is_some()) else {
         return unmapped("key:ChangeZone.StaticEffect=move");
     };
-    let moved = match step["Move"].get("as").and_then(Value::as_str) {
-        Some(name) => name.to_owned(),
-        None => {
-            let name = ctx.fresh("moved");
-            step["Move"]["as"] = json!(name);
-            name
-        }
+    let named = step["Move"].get("as").and_then(Value::as_str);
+    let moved = if let Some(name) = named {
+        name.to_owned()
+    } else {
+        let name = ctx.fresh("moved");
+        step["Move"]["as"] = json!(name);
+        name
     };
     effects.push(json!({"Continuous": {
         "affected": {"Bound": moved},
@@ -432,20 +432,17 @@ fn choose_and_move(ctx: &mut Ctx, p: &Params, origin: &str, destination: &str) -
         };
         remember::bind_moved(ctx, &mut moved, verb, stem);
     }
-    match who.each {
-        Some((over, name)) => {
-            if remember::wanted(p, &["RememberChanged"]) || p.has("StaticEffect") {
-                return unmapped("key:ChangeZone.Choose.RememberChanged-for-each-player");
-            }
-            Ok(vec![
-                json!({"RepeatEach": {"over": over, "as": name, "effects": [choose, moved]}}),
-            ])
+    if let Some((over, name)) = who.each {
+        if remember::wanted(p, &["RememberChanged"]) || p.has("StaticEffect") {
+            return unmapped("key:ChangeZone.Choose.RememberChanged-for-each-player");
         }
-        None => {
-            let mut steps = vec![choose, moved];
-            with_static_effect(ctx, p, destination, &mut steps)?;
-            Ok(steps)
-        }
+        Ok(vec![
+            json!({"RepeatEach": {"over": over, "as": name, "effects": [choose, moved]}}),
+        ])
+    } else {
+        let mut steps = vec![choose, moved];
+        with_static_effect(ctx, p, destination, &mut steps)?;
+        Ok(steps)
     }
 }
 

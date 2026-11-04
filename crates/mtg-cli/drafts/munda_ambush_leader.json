@@ -1,0 +1,73 @@
+{
+  "oracle_id": "4d5da73a-f22a-4446-b5f9-504dfabf1d52",
+  "name": "Munda, Ambush Leader",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Munda, Ambush Leader",
+      "oracle_fingerprint": "31a806ae0ed7315b1cb833bf552e23c6",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  {
+                    "AnyOf": [
+                      "This",
+                      {
+                        "Not": {
+                          "AnyOf": [
+                            { "Not": { "Subtype": "Ally" } },
+                            { "Not": "Other" },
+                            { "Not": { "ControlledBy": "You" } }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                ],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "LookAtTop": { "count": 4, "as": "top" } },
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "In": "Library" },
+                            { "Is": { "Bound": "top" } },
+                            { "Subtype": "Ally" }
+                          ]
+                        },
+                        "count": { "min": 0, "max": null },
+                        "as": "kept2"
+                      }
+                    },
+                    {
+                      "Move": {
+                        "what": { "Bound": "kept2" },
+                        "to": { "Library": { "place": "Top" } }
+                      }
+                    },
+                    {
+                      "Move": {
+                        "what": { "Bound": "top" },
+                        "to": { "Library": { "place": "Bottom", "order": "Chosen" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

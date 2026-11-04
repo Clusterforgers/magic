@@ -1,0 +1,72 @@
+{
+  "oracle_id": "6783f559-33d7-4b13-9a91-02b821e97163",
+  "name": "Anchor to Reality",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Anchor to Reality",
+      "oracle_fingerprint": "c7536ce5c17ef9fe42c3d591107ceef5",
+      "abilities": [
+        {
+          "AdditionalCost": {
+            "cost": [
+              {
+                "Sacrifice": {
+                  "filter": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] }]
+                }
+              }
+            ],
+            "required": true
+          }
+        },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Search": {
+                  "filter": [{ "AnyOf": [{ "Subtype": "Equipment" }, { "Subtype": "Vehicle" }] }],
+                  "as": "found"
+                }
+              },
+              { "Move": { "what": { "Bound": "found" }, "to": { "Battlefield": {} } } },
+              { "Shuffle": {} },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "found" },
+                      "selector": [],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Scry": {
+                        "count": {
+                          "When": {
+                            "condition": {
+                              "Compare": {
+                                "left": {
+                                  "Stat": { "of": { "Bound": "found" }, "stat": "ManaValue" }
+                                },
+                                "op": "Lt",
+                                "right": { "Stat": { "of": "Paid", "stat": "ManaValue" } }
+                              }
+                            },
+                            "then": 2,
+                            "otherwise": 0
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

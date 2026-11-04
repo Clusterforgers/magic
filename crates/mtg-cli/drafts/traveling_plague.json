@@ -1,0 +1,49 @@
+{
+  "oracle_id": "371e8e29-f569-4b23-bae4-cf89e5b09fd3",
+  "name": "Traveling Plague",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Traveling Plague",
+      "oracle_fingerprint": "67d6ef03eaac854d11f0c45a45b607f7",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "effects": [{ "PutCounters": { "on": "This", "counter": { "Other": "plague" } } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": {
+                    "Times": {
+                      "by": -1,
+                      "of": { "Counters": { "on": "This", "counter": { "Other": "plague" } } }
+                    }
+                  },
+                  "toughness": {
+                    "Times": {
+                      "by": -1,
+                      "of": { "Counters": { "on": "This", "counter": { "Other": "plague" } } }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": [{ "Is": "Attached" }], "from": "Battlefield" } },
+            "effects": [{ "Move": { "what": "This", "to": { "Battlefield": {} } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

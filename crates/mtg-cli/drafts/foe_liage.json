@@ -1,0 +1,20 @@
+{
+  "oracle_id": "017cadd8-55ee-497a-84d4-6535173bc1eb",
+  "name": "Foe-liage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Foe-liage",
+      "oracle_fingerprint": "b4ac750c5db5e274613cb2b141ca385f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": [{ "Type": "Land" }], "to": "Battlefield" } },
+            "if": { "AtTrigger": "YourTurn" },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

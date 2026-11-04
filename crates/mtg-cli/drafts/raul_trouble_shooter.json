@@ -1,0 +1,26 @@
+{
+  "oracle_id": "d247a86d-917d-4833-82c4-876943d54e2c",
+  "name": "Raul, Trouble Shooter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Raul, Trouble Shooter",
+      "oracle_fingerprint": "720d62d0e27a7f2958f022dbd2d1cfda",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": {
+                "what": [{ "Not": { "Type": "Land" } }, "MilledThisTurn"],
+                "from": "Graveyard",
+                "once": true
+              }
+            },
+            "condition": "YourTurn"
+          }
+        },
+        { "Activated": { "cost": ["Tap"], "effects": [{ "Mill": { "who": "EachPlayer" } }] } }
+      ]
+    }
+  ]
+}

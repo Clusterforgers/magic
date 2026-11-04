@@ -1,0 +1,38 @@
+{
+  "oracle_id": "31f3d37f-e613-427f-b34c-cc87611ea078",
+  "name": "Muse Seeker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Muse Seeker",
+      "oracle_fingerprint": "82cd4e13447fad09d530e7b2220f95b3",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                "by": "You"
+              }
+            },
+            "effects": [
+              { "Draw": {} },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Stat": { "of": "Triggering", "stat": "ManaSpent" } },
+                      "op": "Lt",
+                      "right": 5
+                    }
+                  },
+                  "then": [{ "Discard": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

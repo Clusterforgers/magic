@@ -1,0 +1,23 @@
+{
+  "oracle_id": "a2db1035-008e-4de3-b5e5-2a0de83082b2",
+  "name": "Grazing Kelpie",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Grazing Kelpie",
+      "oracle_fingerprint": "0086f10edff6bee252c9c71c48881fdf",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{G/U}" }, "SacrificeSelf"],
+            "targets": [{ "what": { "Object": [{ "In": "Graveyard" }] } }],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Library": { "place": "Bottom" } } } }
+            ]
+          }
+        },
+        { "Keyword": "Persist" }
+      ]
+    }
+  ]
+}

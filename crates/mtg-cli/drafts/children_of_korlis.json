@@ -1,0 +1,21 @@
+{
+  "oracle_id": "d44a8f89-b9c0-4e8a-9179-baa0c448a3c9",
+  "name": "Children of Korlis",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Children of Korlis",
+      "oracle_fingerprint": "af9abaf1d5c2e950baee2b535a9ed3f0",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["SacrificeSelf"],
+            "effects": [
+              { "GainLife": { "amount": { "Tallied": { "who": "You", "what": "LifeLost" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

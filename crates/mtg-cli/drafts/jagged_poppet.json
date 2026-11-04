@@ -1,0 +1,32 @@
+{
+  "oracle_id": "4beec1a6-a9c6-471f-b6fa-c754a42ad227",
+  "name": "Jagged Poppet",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jagged Poppet",
+      "oracle_fingerprint": "596f527a3db57b43969c7f166b93ce36",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Batch": { "DealsDamage": { "source": [], "to": "This" } } },
+            "effects": [{ "Discard": { "count": "Triggering" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "if": {
+              "Compare": {
+                "left": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
+                "op": "Eq",
+                "right": 0
+              }
+            },
+            "effects": [{ "Discard": { "who": "Triggering", "count": "Triggering" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

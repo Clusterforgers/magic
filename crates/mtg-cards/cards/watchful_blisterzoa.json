@@ -1,0 +1,30 @@
+{
+  "oracle_id": "ca130ba1-a4a8-4225-9799-75d56bac6fb3",
+  "name": "Watchful Blisterzoa",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Watchful Blisterzoa",
+      "oracle_fingerprint": "baafa95c28c59d49ec3f7121113e6246",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": { "Other": "oil" }, "count": 1 } }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              {
+                "Draw": { "count": { "Counters": { "on": "This", "counter": { "Other": "oil" } } } }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

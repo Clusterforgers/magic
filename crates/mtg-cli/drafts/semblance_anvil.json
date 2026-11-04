@@ -1,0 +1,52 @@
+{
+  "oracle_id": "bbd0c406-c995-46e0-898d-375fdbede203",
+  "name": "Semblance Anvil",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Semblance Anvil",
+      "oracle_fingerprint": "1dcb23465c7e174322231cfdf476cee4",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "Not": { "Type": "Land" } },
+                            { "In": "Hand" },
+                            { "OwnedBy": "You" }
+                          ]
+                        },
+                        "count": { "min": 0, "max": 1 },
+                        "as": "picked"
+                      }
+                    },
+                    { "Exile": { "what": { "Bound": "picked" }, "as": "exiled2" } },
+                    { "Remember": { "what": { "Bound": "exiled2" }, "slot": "imprinted" } }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "CostModifier": {
+            "applies_to": [
+              "Spell",
+              { "SharesType": { "Remembered": { "on": "This", "slot": "imprinted" } } },
+              { "ControlledBy": "You" }
+            ],
+            "change": "Reduce",
+            "mana": "{2}"
+          }
+        }
+      ]
+    }
+  ]
+}

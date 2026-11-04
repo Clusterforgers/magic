@@ -1,0 +1,50 @@
+{
+  "oracle_id": "bea3ff6e-7649-4e51-b2ad-763f9ac2d4b8",
+  "name": "Renewed Solidarity",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Renewed Solidarity",
+      "oracle_fingerprint": "2580b33b767c48636ba5491c818db5b2",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "Choose": "CreatureType" }
+          }
+        },
+        {
+          "Static": {
+            "affected": {
+              "Each": [{ "Type": "Creature" }, "ChosenSubtype", { "ControlledBy": "You" }]
+            },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "CopyOf": {
+                      "of": {
+                        "Each": [
+                          "Token",
+                          { "ControlledBy": "You" },
+                          "ChosenSubtype",
+                          "EnteredThisTurn"
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
