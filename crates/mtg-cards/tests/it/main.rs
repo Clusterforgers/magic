@@ -21,6 +21,7 @@ mod forge_tier;
 mod generated;
 mod hand_written;
 mod linked_exile;
+mod partial;
 mod player_words;
 mod printed;
 mod proposal;
