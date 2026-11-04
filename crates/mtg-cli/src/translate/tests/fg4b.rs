@@ -58,6 +58,22 @@ fn game_verbs(#[case] line: &str, #[case] effect: Value) {
 }
 
 #[rstest]
+#[case::exert("2 Exert<1/CARDNAME>", json!([{"Mana": "{2}"}, "Exert"]))]
+#[case::blight("Blight<2>", json!([{"Blight": 2}]))]
+#[case::damage("DamageYou<3>", json!([{"DamageToYou": 3}]))]
+#[case::evidence("CollectEvidence<4>", json!([{"CollectEvidence": 4}]))]
+#[case::exile_top("ExileFromTop<2/Card>", json!([{"ExileTop": 2}]))]
+#[case::forage("T Forage", json!(["Tap", "Forage"]))]
+#[case::add_counter("AddCounter<1/M1M1>", json!([{"PutCounters": {"counter": "-1/-1"}}]))]
+#[case::remove_from_a_creature("SubCounter<1/P1P1/Creature.YouCtrl/a creature you control>", json!([{"RemoveCounters": {"counter": "+1/+1", "from": [{"Type": "Creature"}, {"ControlledBy": "You"}]}}]))]
+#[case::remove_any_from_self("RemoveAnyCounter<1/Any/CARDNAME/this creature>", json!([{"RemoveCounters": {}}]))]
+#[case::remove_any_among("RemoveAnyCounter<2/Any/Creature.YouCtrl/creatures>", json!([{"RemoveCountersAmong": {"count": 2, "from": [{"Type": "Creature"}, {"ControlledBy": "You"}]}}]))]
+fn cost_words(#[case] cost: &str, #[case] expected: Value) {
+    let script = format!("Name:T\nTypes:Artifact\nA:AB$ Draw | Cost$ {cost} | NumCards$ 1\n");
+    assert_eq!(abilities(&script)[0]["Activated"]["cost"], expected);
+}
+
+#[rstest]
 #[case::goad_duration(
     "SP$ Goad | ValidTgts$ Creature | Duration$ Permanent",
     "key:Goad.Duration"

@@ -94,12 +94,19 @@ fn item(ctx: &Ctx, word: &str) -> Tr<Value> {
         "Q" => return Ok(json!("Untap")),
         _ => {}
     }
+    if let Some(found) = super::cost_more::bare(word) {
+        return Ok(found);
+    }
     let Some((head, rest)) = word.split_once('<') else {
         return unmapped(format!("cost:{word}"));
     };
     let Some(inner) = rest.strip_suffix('>') else {
         return unmapped(format!("cost:{head}"));
     };
+    let all: Vec<&str> = inner.split('/').collect();
+    if let Some(found) = super::cost_more::item(ctx, head, &all) {
+        return found;
+    }
     let mut fields = inner.split('/');
     let number = fields.next().unwrap_or_default();
     let what = fields.next().unwrap_or_default();
