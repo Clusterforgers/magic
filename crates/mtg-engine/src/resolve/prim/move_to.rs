@@ -31,6 +31,7 @@ use crate::zones::Zone;
 fn movers<'a>(
     cx: &'a Cx<'_>,
     what: &mtg_cards::refs::Ref,
+    stack_ok: bool,
 ) -> Result<Vec<&'a GameObject>, ResolveError> {
     let state = cx.state();
     let mut found: Vec<&GameObject> = Vec::new();
@@ -38,13 +39,25 @@ fn movers<'a>(
         // A triggered ability that moves "this card" after it left the battlefield finds the card in the graveyard or exile it
         // went to, one zone change on (CR 400.7).
         let followed = matches!(what, Ref::This) && cx.scope.cause.is_some();
+        // A spell that moves itself as it resolves ("shuffle ~ into its owner's library") and the spell a cast trigger names
+        // ("return that spell to its owner's hand") leave the stack; a copy of a spell is no card and stays.
+        let spell_by_name = stack_ok
+            && match what {
+                Ref::This => named.id == cx.resolving.object(),
+                Ref::Triggering => true,
+                _ => false,
+            };
         let object = state.object(named.id).filter(|object| {
             (object.counter() == named.counter
                 || (followed
                     && object.counter() == named.counter + 1
                     && matches!(object.zone(), Zone::Graveyard(_) | Zone::Exile)))
                 && object.kind() != ObjectKind::Ability
-                && !matches!(object.zone(), Zone::Stack | Zone::PhasedOut)
+                && match object.zone() {
+                    Zone::Stack => spell_by_name && object.kind() == ObjectKind::Card,
+                    Zone::PhasedOut => false,
+                    _ => true,
+                }
         });
         if let Some(object) = object
             && !found.iter().any(|seen| seen.id() == object.id())
@@ -104,7 +117,14 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         return Err(wrong_effect("Move"));
     };
     let state = cx.state();
-    let objects = movers(cx, what)?;
+    let objects = movers(
+        cx,
+        what,
+        matches!(
+            to,
+            Destination::Hand | Destination::Graveyard | Destination::Library { .. }
+        ),
+    )?;
     let mut events = Vec::new();
     let mut snapshots = Vec::new();
     match to {

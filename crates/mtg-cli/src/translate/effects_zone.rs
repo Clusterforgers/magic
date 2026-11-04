@@ -11,7 +11,11 @@ use crate::forge::script::Params;
 
 /// The effects of `ChangeZone` and `ChangeZoneAll`.
 pub fn effects(ctx: &mut Ctx, p: &Params, api: &str) -> Tr<Vec<Value>> {
-    let origin = zone_word(p.get("Origin"), "Origin", true)?;
+    let origin = if api == "ChangeZone" && p.get("Origin") == Some("Stack") {
+        "Stack"
+    } else {
+        zone_word(p.get("Origin"), "Origin", true)?
+    };
     let destination = zone_word(p.get("Destination"), "Destination", false)?;
     match (api, origin) {
         ("ChangeZone", "Library") if p.has("Defined") && !p.has("ChangeType") => {
@@ -319,6 +323,25 @@ fn moves(what: &Value, goes: Goes) -> Value {
     }
 }
 
+/// The spell a move from the stack names without a target: the spell itself (`Self`, or `Parent` and nothing on a
+/// sorcery or instant, whose chain is the spell), or the spell a cast trigger is about. Any other word is a gap.
+fn spell_subject(ctx: &Ctx, p: &Params) -> Tr<Value> {
+    let spell = ctx.types.contains("Instant") || ctx.types.contains("Sorcery");
+    match p.get("Defined") {
+        None | Some("Self") => Ok(json!("This")),
+        Some("Parent") if spell => Ok(json!("This")),
+        Some("TriggeredSpellAbility" | "TriggeredCard")
+            if ctx
+                .trigger
+                .as_ref()
+                .is_some_and(|shape| shape.mode == "SpellCast") =>
+        {
+            Ok(json!("Triggering"))
+        }
+        Some(other) => unmapped(format!("defined:Stack-{other}")),
+    }
+}
+
 fn change_zone(ctx: &mut Ctx, p: &Params, origin: &str, destination: &str) -> Tr<Vec<Value>> {
     only(
         p,
@@ -344,7 +367,11 @@ fn change_zone(ctx: &mut Ctx, p: &Params, origin: &str, destination: &str) -> Tr
             "StaticEffect",
         ],
     )?;
-    let what = subject(ctx, p, "Self", Some(origin))?;
+    let what = if origin == "Stack" && !p.has("ValidTgts") {
+        spell_subject(ctx, p)?
+    } else {
+        subject(ctx, p, "Self", Some(origin))?
+    };
     let mut effect = moves(&what, goes(ctx, p, destination)?);
     if remember::wanted(p, &["RememberChanged", "RememberLKI", "RememberTargets"]) {
         let (verb, stem) = if effect.get("Exile").is_some() {
