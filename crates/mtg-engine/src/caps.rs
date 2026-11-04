@@ -632,6 +632,7 @@ const RUNS: &[&str] = &[
     "Pred.FaceDown",
     "Pred.TargetsPlayer",
     "Pred.GravedThisTurn",
+    "Pred.ArrivedFrom",
     "Pred.WasCast",
     "Pred.CastWith",
     "Pred.TopOfLibrary",

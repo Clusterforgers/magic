@@ -41,6 +41,11 @@ impl Scope<'_> {
                         .object_tallied(reference, None, Tally::W21aGraved)
                         > 0
             }
+            Pred::ArrivedFrom(origin) => {
+                self.state
+                    .object_tallied(reference, None, Tally::ArrivedFrom(*origin))
+                    > 0
+            }
             _ => false,
         })
     }

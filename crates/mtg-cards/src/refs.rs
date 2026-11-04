@@ -11,7 +11,9 @@ use crate::value::{Amount, CastWay, Cmp, CounterKind, StatKind};
 pub const EXILED_SLOT: &str = "exiled";
 
 /// A zone a selector or a pattern can name.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Default, Serialize, Deserialize)]
+#[derive(
+    Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Default, Serialize, Deserialize,
+)]
 pub enum ZoneKind {
     /// The battlefield (the default place to look).
     #[default]
@@ -294,6 +296,9 @@ pub enum Pred {
     /// Is a card in a graveyard that was put there from the battlefield this turn ("creature cards in your graveyard that were
     /// put there from the battlefield this turn").
     GravedThisTurn,
+    /// Went into the zone it is in now this turn from a zone of the kind ("creature cards put into your graveyard from your
+    /// library this turn"); an object that moved again counts only for its latest move, and a token made there came from nowhere.
+    ArrivedFrom(ZoneKind),
     /// Is a spell cast, or a permanent that entered as a spell cast, by one of the players `by` names (anyone when absent)
     /// from the kind of zone `from` (anywhere when absent); a copy or a token was never cast.
     WasCast {

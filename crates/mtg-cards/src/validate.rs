@@ -539,6 +539,7 @@ impl<'a> Walker<'a> {
                 self.uses("Pred", "TargetsPlayer");
                 self.at("TargetsPlayer", |w| w.reference(who, Kind::Player));
             }
+            Pred::ArrivedFrom(_) => self.uses("Pred", "ArrivedFrom"),
             _ => self.uses("Pred", "GravedThisTurn"),
         }
     }
@@ -581,7 +582,11 @@ impl<'a> Walker<'a> {
                 }
             }
             Pred::Targeting(inner) | Pred::HasAttached(inner) => self.selector(inner),
-            Pred::Modified | Pred::FaceDown | Pred::TargetsPlayer(_) | Pred::GravedThisTurn => {
+            Pred::Modified
+            | Pred::FaceDown
+            | Pred::TargetsPlayer(_)
+            | Pred::GravedThisTurn
+            | Pred::ArrivedFrom(_) => {
                 self.w21a_pred(pred);
             }
             Pred::WasCast { .. }

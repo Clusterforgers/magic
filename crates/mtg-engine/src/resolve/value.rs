@@ -1276,9 +1276,11 @@ impl<'a> Scope<'a> {
                 Some(value) => op.holds(value, self.amount(to)?),
                 None => false,
             },
-            Pred::Modified | Pred::FaceDown | Pred::TargetsPlayer(_) | Pred::GravedThisTurn => {
-                self.w21a_pred(pred, reference, seen)?
-            }
+            Pred::Modified
+            | Pred::FaceDown
+            | Pred::TargetsPlayer(_)
+            | Pred::GravedThisTurn
+            | Pred::ArrivedFrom(_) => self.w21a_pred(pred, reference, seen)?,
             Pred::Attacking
             | Pred::AttackingPlayer(_)
             | Pred::Blocking

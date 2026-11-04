@@ -14,6 +14,8 @@ mod fe1a_atoms;
 mod opening;
 #[cfg(test)]
 mod p12_amounts;
+#[cfg(test)]
+mod p12_arrived;
 mod resolution;
 #[cfg(test)]
 mod tests;

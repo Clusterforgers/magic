@@ -230,6 +230,7 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         | Pred::ChosenName
         | Pred::FaceDown
         | Pred::GravedThisTurn
+        | Pred::ArrivedFrom(_)
         | Pred::CastWith(_)
         | Pred::TopOfLibrary
         | Pred::BottomOfLibrary

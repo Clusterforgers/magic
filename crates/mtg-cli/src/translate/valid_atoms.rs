@@ -25,6 +25,8 @@ pub fn atom(prop: &str) -> Option<Vec<Value>> {
         "nonColorless" => return one(json!({"Not": "Colorless"})),
         // Only an attacker that no creature was declared to block; `blocked` is not its negation.
         "unblocked" => return one(json!("Unblocked")),
+        // An attacker that was declared blocked (it stays blocked when its blockers are gone), so `Not Unblocked` while attacking.
+        "blocked" => return Some(vec![json!("Attacking"), json!({"Not": "Unblocked"})]),
         "PairedWith" => return one(json!({"PairedWith": "This"})),
         "milledThisTurn" => return one(json!("MilledThisTurn")),
         "MonoColor" => return one(compare("Colors", "Eq", 1)),
@@ -34,6 +36,19 @@ pub fn atom(prop: &str) -> Option<Vec<Value>> {
         "prowled" => return one(json!({"CastWith": "Prowl"})),
         "webSlinged" => return one(json!({"CastWith": "WebSlinging"})),
         _ => {}
+    }
+    if let Some(zone) = prop.strip_prefix("ThisTurnEnteredFrom_")
+        && [
+            "Battlefield",
+            "Library",
+            "Graveyard",
+            "Hand",
+            "Exile",
+            "Stack",
+        ]
+        .contains(&zone)
+    {
+        return one(json!({"ArrivedFrom": zone}));
     }
     if let Some(found) = counters(prop) {
         return Some(vec![found]);
