@@ -25,3 +25,16 @@ export function cardsByHand(count: number): string {
   if (count === 0) return `no cards ${BY_HAND}`
   return `${count} ${count === 1 ? 'card' : 'cards'} ${BY_HAND}`
 }
+
+/** Lines to do by hand over the copies of the partly automatic cards: one per distinct clause. */
+export function linesByHand(
+  cards: readonly { support: Support; count: number; reasons: readonly string[] }[],
+): number {
+  return cards.reduce(
+    (sum, card) => (card.support === 'partial' ? sum + card.count * new Set(card.reasons).size : sum),
+    0,
+  )
+}
+
+/** "1 line by hand", "3 lines by hand". */
+export const linesText = (count: number): string => `${count} ${count === 1 ? 'line' : 'lines'} by hand`

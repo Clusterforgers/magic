@@ -225,6 +225,7 @@ function Body({ card, api, fixMarks }: { card: CardHit; api: CardsApi; fixMarks?
             name={card.name}
             api={fixMarks}
             emphasis={isIssue(support) ? 'prominent' : 'quiet'}
+            support={support}
           />
         )}
       </header>

@@ -7,6 +7,7 @@ import { BY_HAND, BY_HAND_TITLE, ON_A_READ, PARTLY_BY_HAND, runsWhole } from '@/
 import { FROM_FORGE } from '@/lib/toRead'
 import { cn } from '@/lib/utils'
 import type { Support } from '@/protocol/generated'
+import { LineMarks } from './LineMarks'
 import { copiesOf } from './model'
 import type { CardGroup, PreviewCard } from './model'
 
@@ -49,6 +50,7 @@ export function CardZoom({ card, onClose }: { card: PreviewCard | null; onClose:
               </DialogTitle>
               <DialogDescription>{card.typeLine}</DialogDescription>
               <SupportMark support={card.support} />
+              {card.support === 'partial' ? <LineMarks card={card} /> : null}
               {card.reasons.length === 0 ? null : (
                 <ul aria-label={BY_HAND_TITLE} className="grid gap-1 text-left text-xs text-muted-foreground">
                   {[...new Set(card.reasons)].map((reason) => (
