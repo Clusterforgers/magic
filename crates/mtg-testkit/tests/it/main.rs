@@ -33,6 +33,7 @@ mod block_limits;
 mod block_limits_fuzz;
 mod block_restrictions;
 mod block_restrictions_fuzz;
+mod borrowed_mana;
 mod c10_any_cards;
 mod c10_dice_per_player;
 mod c10_pa_attacks;

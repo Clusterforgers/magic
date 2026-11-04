@@ -159,7 +159,7 @@ fn chosen_in(scope: &Scope<'_>, keyword: &Keyword) -> Keyword {
     }
 }
 
-/// The activated abilities printed on the cards `from` names now, each with the card it is printed on: what a static ability
+/// The activated abilities printed on the cards `from` names now (and the mana ability of a basic land), each with the card it is printed on: what a static ability
 /// that gives the abilities of other cards gives while the layers are worked out.
 fn borrowed(scope: &Scope<'_>, from: &mtg_cards::refs::Ref) -> Result<Vec<Borrowed>, ResolveError> {
     let mut found = Vec::new();
@@ -167,14 +167,12 @@ fn borrowed(scope: &Scope<'_>, from: &mtg_cards::refs::Ref) -> Result<Vec<Borrow
         let Some(object) = scope.state.object(donor.id) else {
             continue;
         };
-        for (address, rules) in crate::ability_reader::printed(object) {
-            if matches!(**rules, mtg_cards::ability::Ability::Activated { .. }) {
-                found.push(Borrowed {
-                    donor: donor.id,
-                    index: address.ability,
-                    body: Arc::clone(rules),
-                });
-            }
+        for (index, body) in crate::ability_reader::lendable(object.card()) {
+            found.push(Borrowed {
+                donor: donor.id,
+                index,
+                body,
+            });
         }
     }
     Ok(found)
