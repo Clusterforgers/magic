@@ -324,7 +324,7 @@ impl DraftCounts {
 }
 
 /// The drafts of the build that fit a stored card, as rows to store, with the counts of those left out.
-fn fitting(
+pub fn fitting(
     files: &[(&str, &str)],
     meta: &[(&str, &str)],
     library: &Library,

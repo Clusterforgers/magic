@@ -17,7 +17,7 @@ use mtg_cards::proposal::{Verdict, check};
 use mtg_cards::support::read_hash;
 use mtg_cards::{Caps, PrintedCard};
 use mtg_cli::cache::{Cache, default_dir};
-use mtg_cli::drafts::{self, DraftMeta, FIXTURES, Misfit, misfits};
+use mtg_cli::drafts::{self, DraftItem, DraftMeta, FIXTURES, Misfit, misfits_proved};
 use mtg_cli::w2a_promote::fixture::w2a_oracle_cards;
 use mtg_import::scryfall::{CardRecord, cards, cards_jsonl};
 use mtg_testkit::corpus::printed_card;
@@ -178,15 +178,39 @@ fn every_draft_is_a_whole_unchecked_card_in_canonical_form_that_fits_its_record(
     let library = builtin::library().unwrap();
     let names = names_of(&items);
     let caps: Caps = mtg_engine::caps();
-    let pairs: Vec<(&PrintedCard, &Card)> = items.iter().map(|i| (&i.printed, &i.card)).collect();
-    let fits = misfits(library, &caps, &pairs);
+    let metas: Vec<DraftMeta> = items
+        .iter()
+        .map(|item| {
+            fs::read_to_string(
+                dir()
+                    .join(drafts::META_DIR)
+                    .join(format!("{}.json", item.slug)),
+            )
+            .map_or_else(|_| DraftMeta::default(), |text| DraftMeta::parse(&text))
+        })
+        .collect();
+    // Only a trusted Forge translation may carry a proof.
+    let proofs: Vec<_> = metas
+        .iter()
+        .map(|meta| {
+            (meta.source.as_deref() == Some("forge") && meta.oracle_matches)
+                .then_some(meta.proof.as_ref())
+                .flatten()
+        })
+        .collect();
+    let pairs: Vec<DraftItem> = items
+        .iter()
+        .zip(&proofs)
+        .map(|(i, proof)| (&i.printed, &i.card, *proof))
+        .collect();
+    let fits = misfits_proved(library, &caps, &pairs);
     let mut hashes: BTreeMap<String, &str> = BTreeMap::new();
-    for (item, fit) in items.iter().zip(fits) {
+    for (((item, fit), meta), proof) in items.iter().zip(fits).zip(&metas).zip(&proofs) {
         let slug = &item.slug;
         if item.text != canonical(&item.card) {
             problems.push(format!("{slug}: not in canonical form (`cargo run -p mtg-cli -- promote --draft` writes it)"));
         }
-        if let Some(why) = unwhole(&item.card) {
+        if let Some(why) = unwhole(&item.card).filter(|_| proof.is_none()) {
             problems.push(format!("{slug}: {why}"));
         }
         match fit {
@@ -197,10 +221,10 @@ fn every_draft_is_a_whole_unchecked_card_in_canonical_form_that_fits_its_record(
             Some(other) => problems.push(format!("{slug}: {}", other.reason())),
         }
         let report = check(&item.text, &item.printed, library, &names, &caps);
-        let meta = fs::read_to_string(dir().join(drafts::META_DIR).join(format!("{slug}.json")))
-            .map_or_else(|_| DraftMeta::default(), |text| DraftMeta::parse(&text));
         let trusted = meta.source.as_deref() == Some("forge") && meta.oracle_matches;
         match report.verdict() {
+            // A proved partial draft is accepted as `Partial`; the proof carries it.
+            Verdict::Accepted if proof.is_some() => {}
             Verdict::Unchecked => {}
             Verdict::Mismatch if trusted => {}
             Verdict::Accepted => problems.push(format!(
@@ -261,4 +285,49 @@ fn every_record_equals_the_cached_oracle_card() {
         }
     }
     assert!(problems.is_empty(), "{}", problems.join("\n"));
+}
+
+#[test]
+fn a_committed_partial_draft_reaches_the_build_with_its_proof_and_without_it_is_left_out() {
+    let (items, _) = items();
+    let library = builtin::library().unwrap();
+    let caps: Caps = mtg_engine::caps();
+    let (item, meta_text) = items
+        .iter()
+        .find_map(|item| {
+            let text = fs::read_to_string(
+                dir()
+                    .join(drafts::META_DIR)
+                    .join(format!("{}.json", item.slug)),
+            )
+            .ok()?;
+            DraftMeta::parse(&text).proof.map(|_| (item, text))
+        })
+        .expect("a committed partial draft");
+    let cards = [item.printed.clone()];
+    let files = [(item.slug.as_str(), item.text.as_str())];
+
+    let (put, counts) = drafts::fitting(
+        &files,
+        &[(item.slug.as_str(), &meta_text)],
+        library,
+        &caps,
+        &cards,
+    );
+
+    assert!(counts.invalid.is_empty(), "{:?}", counts.invalid);
+    assert_eq!(put.len(), 1);
+    assert_eq!(put[0].source, "forge");
+    assert!(put[0].proof.is_some());
+
+    let stripped = meta_text.replace("\"proof\"", "\"unproved\"");
+    let (put, counts) = drafts::fitting(
+        &files,
+        &[(item.slug.as_str(), &stripped)],
+        library,
+        &caps,
+        &cards,
+    );
+
+    assert!(put.is_empty() && counts.invalid.len() == 1, "{counts:?}");
 }
