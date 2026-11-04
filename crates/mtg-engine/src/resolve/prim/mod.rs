@@ -19,6 +19,7 @@ mod c10_vp_planechase;
 mod cast_from_zone;
 mod choose;
 mod choose_at_random;
+mod choose_value;
 mod connive;
 mod continuous;
 mod copy_ability;
@@ -140,7 +141,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     Ok(done::report(cx, effect, dispatch(cx, effect)?))
 }
 
-/// The game, life, damage, repeat and pile effects.
+/// The game, life, damage, repeat, pile and kept-number effects.
 fn fe1n(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     match effect {
         Effect::LoseGame { .. } => fe1n_game::lose(cx, effect),
@@ -150,6 +151,7 @@ fn fe1n(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::RemoveDamage { .. } => fe1n_damage::run(cx, effect),
         Effect::RepeatWhile { .. } => fe1n_repeat_while::run(cx, effect),
         Effect::SeparatePiles { .. } => fe1n_piles::run(cx, effect),
+        Effect::Let { .. } => let_amount::run(cx, effect),
         _ => Err(wrong_effect("dispatch")),
     }
 }
@@ -166,6 +168,7 @@ fn dispatch(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::Search { .. } => search::run(cx, effect),
         Effect::Choose { .. } => choose::run(cx, effect),
         Effect::ChooseAtRandom { .. } => choose_at_random::run(cx, effect),
+        Effect::ChooseValue { .. } => choose_value::run(cx, effect),
         Effect::Shuffle { .. } => shuffle::run(cx, effect),
         Effect::Move { .. } => move_to::run(cx, effect),
         Effect::Destroy { .. } => destroy::run(cx, effect),
@@ -245,7 +248,6 @@ fn dispatch(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::May { .. } => may::run(cx, effect),
         Effect::Pay { .. } => pay::run(cx, effect),
         Effect::Modal { .. } => modal::run(cx, effect),
-        Effect::Let { .. } => let_amount::run(cx, effect),
         Effect::RepeatEach { .. } => repeat_each::run(cx, effect),
         Effect::RollDice { .. } => roll_dice::run(cx, effect),
         Effect::FlipCoin { .. } => flip_coin::run(cx, effect),
@@ -273,7 +275,7 @@ mod tests {
     const EFFECTS: &str = r#"[
         {"Draw":{}}, {"Discard":{}}, {"Mill":{}}, {"Scry":{}}, {"LookAtTop":{"as":"top"}},
         {"Reveal":{"what":"This"}}, {"Search":{"filter":[],"as":"found"}},
-        {"Choose":{"from":"This","as":"chosen"}}, {"ChooseAtRandom":{"from":"This","as":"picked"}}, {"Shuffle":{}}, {"Move":{"what":"This","to":"Hand"}},
+        {"Choose":{"from":"This","as":"chosen"}}, {"ChooseAtRandom":{"from":"This","as":"picked"}}, {"ChooseValue":{"kind":"Color","as":"hue"}}, {"Shuffle":{}}, {"Move":{"what":"This","to":"Hand"}},
         {"Destroy":{"what":"This"}}, {"Exile":{"what":"This"}}, {"Sacrifice":{"filter":[]}},
         {"Counter":{"what":"This"}}, {"DealDamage":{"to":"You","amount":1}}, {"GainLife":{"amount":1}},
         {"LoseLife":{"amount":1}}, {"AddMana":{"mana":{"Fixed":["Green"]}}},
@@ -318,7 +320,7 @@ mod tests {
     #[test]
     fn the_capabilities_name_exactly_the_effects_that_run() {
         let effects: Vec<Effect> = serde_json::from_str(EFFECTS).unwrap();
-        assert_eq!(effects.len(), 103, "one sample for each variant of Effect");
+        assert_eq!(effects.len(), 104, "one sample for each variant of Effect");
         let game = state(
             vec![vec![], vec![]],
             vec![vec![creature("Bear", 2, 2)], vec![]],
@@ -362,6 +364,7 @@ mod tests {
         "Effect.Search",
         "Effect.Choose",
         "Effect.ChooseAtRandom",
+        "Effect.ChooseValue",
         "Effect.Shuffle",
         "Effect.Move",
         "Effect.Destroy",

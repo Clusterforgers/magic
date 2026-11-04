@@ -493,6 +493,10 @@ pub enum Amount {
     ManaInPool(Ref),
     /// The doors unlocked among the Rooms the selector names (CR 709.5), both doors of a Room counting twice.
     Doors(Selector),
+    /// The number the controller of the source chose as the source entered the battlefield; 0 when it chose none.
+    Chosen,
+    /// The number the resolution remembered under the name (`Effect::ChooseValue`); 0 for a value that is no number.
+    ChosenAs(String),
 }
 
 impl Amount {
@@ -623,6 +627,8 @@ enum Tagged {
     },
     ManaInPool(Ref),
     Doors(Selector),
+    Chosen,
+    ChosenAs(String),
 }
 
 /// The tagged forms of [`Amount`] by reference, written by serde.
@@ -722,6 +728,8 @@ enum TaggedRef<'a> {
     },
     ManaInPool(&'a Ref),
     Doors(&'a Selector),
+    Chosen,
+    ChosenAs(&'a String),
 }
 
 impl From<Tagged> for Amount {
@@ -786,6 +794,8 @@ impl From<Tagged> for Amount {
             Tagged::Random { min, max } => Amount::Random { min, max },
             Tagged::ManaInPool(who) => Amount::ManaInPool(who),
             Tagged::Doors(of) => Amount::Doors(of),
+            Tagged::Chosen => Amount::Chosen,
+            Tagged::ChosenAs(name) => Amount::ChosenAs(name),
         }
     }
 }
@@ -875,6 +885,8 @@ impl Serialize for Amount {
             .serialize(serializer),
             Amount::ManaInPool(who) => TaggedRef::ManaInPool(who).serialize(serializer),
             Amount::Doors(of) => TaggedRef::Doors(of).serialize(serializer),
+            Amount::Chosen => TaggedRef::Chosen.serialize(serializer),
+            Amount::ChosenAs(name) => TaggedRef::ChosenAs(name).serialize(serializer),
         }
     }
 }
@@ -1097,6 +1109,8 @@ mod tests {
     #[case::random(Amount::Random { min: 1, max: 6 }, r#"{"Random":{"min":1,"max":6}}"#)]
     #[case::doors(Amount::Doors(Selector(vec![Pred::Type(CardType::Enchantment)])), r#"{"Doors":[{"Type":"Enchantment"}]}"#)]
     #[case::base_power(Amount::Stat { of: Ref::This, stat: StatKind::BasePower }, r#"{"Stat":{"of":"This","stat":"BasePower"}}"#)]
+    #[case::the_number_a_permanent_chose(Amount::Chosen, r#""Chosen""#)]
+    #[case::the_number_a_resolution_chose(Amount::ChosenAs("n".to_owned()), r#"{"ChosenAs":"n"}"#)]
     #[case::c11e_the_other_result(Amount::DieResult(DieResult::Other), r#"{"DieResult":"Other"}"#)]
     #[case::counters(
         Amount::Counters { on: Ref::This, counter: CounterKind::PlusOnePlusOne },

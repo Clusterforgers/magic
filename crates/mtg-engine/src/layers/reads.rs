@@ -213,6 +213,7 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         | Pred::XInCost
         | Pred::HasAnyCounter
         | Pred::Named(_)
+        | Pred::ChosenName
         | Pred::FaceDown
         | Pred::GravedThisTurn
         | Pred::CastWith(_)
@@ -243,6 +244,7 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         Pred::SharesColor(who) => Traits::COLORS.or(reads_of_ref(who)),
         Pred::Type(_) => Traits::TYPES,
         Pred::Subtype(_) | Pred::ChosenSubtype => Traits::SUBTYPES,
+        Pred::ChosenAs(_) => Traits::COLORS.or(Traits::TYPES).or(Traits::SUBTYPES),
         Pred::SharesSubtype(who) => Traits::SUBTYPES.or(reads_of_ref(who)),
         Pred::Color(_) | Pred::Colorless | Pred::ChosenColor => Traits::COLORS,
         Pred::ControlledBy(who) => Traits::CONTROL.or(reads_of_ref(who)),
@@ -291,6 +293,8 @@ pub(crate) fn reads_of_amount(amount: &Amount) -> Traits {
         | Amount::ManaInPool(_)
         | Amount::Random { .. }
         | Amount::TriggeringTargets
+        | Amount::Chosen
+        | Amount::ChosenAs(_)
         | Amount::Triggering => Traits::NONE,
         Amount::Count(selector) => reads_of_selector(selector),
         Amount::Stat { of, stat } => reads_of_ref(of).or(reads_of_stat(*stat)),

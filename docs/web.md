@@ -264,9 +264,10 @@ After a Welcome the lobby or table stays under the reconnect notice. A `notice` 
 | `ChooseTargets` | the legal objects, as toggles | a button per legal target, players and undrawn cards too; Confirm targets; Undo; Cancel the spell (`can_cancel`); the chosen targets listed with Remove | `Targets`, `Cancel` |
 | `OrderTriggers` | none | the triggers in resolution order with Up and Down; Default order; Confirm order | the indices in the order they go on the stack |
 | `YesNo` | none | Yes and No, keys Y and N; focus on No; Yes and Y disabled with `only_no` | `true`, `false` |
-| `ChooseOption` | none | a button per option, keys 1 to 9 and 0; focus on the first | the index |
+| `ChooseOption` | none | a button per option, keys 1 to 9 and 0; focus on the first; from 13 options (a card name) a filter field narrows the buttons and the answer keeps the index in the whole list | the index |
 | `ChooseMode` | none | a button per mode, keys 1 to 9 and 0; Confirm modes and Undo when it is not exactly one; Cancel the spell or ability (`can_cancel`) | `{ Modes }` by index, `Cancel` |
 | `ChooseNumber` | none | a number field named by `text`, Less and More, a slider when `max` is set, Enter or Choose N; the total cost for an X; Cancel (`can_cancel`) | `{ Number }`, `Cancel` |
+| `ChooseName` | none | a search field over the card catalog (`GET /api/cards`), at most eight hits as buttons (lands left out for a nonland name), Enter for the exact or only hit, "Name no card" | the name as text, empty for none |
 | `DivideAmount` | the targets that are cards on the table | a row per target (picture or player, name, Less, a number, More); Confirm once nothing is left to give; Cancel the spell or ability (`can_cancel`) | `{ Division }` in the order of `among`, `Cancel` |
 | `ChooseCosts` | none | a toggle per optional cost, keys 1 to 9 and 0; the extra cost added up; Confirm costs; Cancel the spell or ability (`can_cancel`); focus on Confirm costs | `{ Costs }` in ascending order, `Cancel` |
 | `ChooseCards` | the cards of `from` that are on the table, as toggles | the cards in a grid, keys 1 to 9 and 0, a filter box from 13 cards; Confirm | the ids in the order chosen |

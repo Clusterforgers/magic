@@ -143,6 +143,13 @@ const ROWS: Row[] = [
     { ChooseNumber: { Number: 2 } },
   ],
   [
+    'ChooseName',
+    { ChooseName: { source: mine, text: 'Choose a card name.' } },
+    ['Name no card'],
+    0,
+    { ChooseName: '' },
+  ],
+  [
     'DivideAmount',
     { DivideAmount: { source: mine, total: 3, among: [{ Player: 1 }, object(foe)], can_cancel: true } },
     ['Divide evenly', 'Cancel the ability'],

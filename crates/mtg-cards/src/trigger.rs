@@ -721,6 +721,19 @@ pub enum EntersChoice {
     Opponent,
     /// A chapter number of the Saga, which it enters with as many lore counters (read ahead, CR 702.155).
     Chapter,
+    /// A card name (CR 201.3): any card of the game.
+    CardName,
+    /// The name of a card that is not a land ("choose a nonland card name").
+    NonlandCardName,
+    /// A card type.
+    CardType,
+    /// A number from `min` to `max`.
+    Number {
+        /// The smallest number.
+        min: u32,
+        /// The largest number.
+        max: u32,
+    },
 }
 
 /// What happens instead.

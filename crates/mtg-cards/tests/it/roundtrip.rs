@@ -133,6 +133,8 @@ fn leaf_pred() -> impl Strategy<Value = Pred> {
         text().prop_map(Pred::Named),
         Just(Pred::ChosenColor),
         Just(Pred::ChosenSubtype),
+        Just(Pred::ChosenName),
+        "[a-z]{1,4}".prop_map(Pred::ChosenAs),
     ]
 }
 

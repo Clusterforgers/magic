@@ -236,6 +236,11 @@ pub enum Pred {
     ChosenColor,
     /// Has the creature type the controller of the source chose as the source entered the battlefield; in a landwalk the land type.
     ChosenSubtype,
+    /// Has the card name the controller of the source chose as the source entered the battlefield.
+    ChosenName,
+    /// Matches the value the resolution remembered under the name (`Effect::ChooseValue`): has the colour, the creature,
+    /// land or card type or the card name; a number or a word matches nothing.
+    ChosenAs(String),
     /// Its power, toughness, mana value or loyalty compares to the amount.
     Compare {
         /// The characteristic.

@@ -31,7 +31,7 @@ use mtg_cards::modify::Modification;
 use mtg_cards::refs::{Ref, Selector, ZoneKind};
 use mtg_cards::trigger::{EntersChoice, ReplaceBy, ReplaceWhen};
 use mtg_cards::value::{CastWay, CounterKind};
-use mtg_core::card::{CardType, LAND_TYPES, Subtype};
+use mtg_core::card::{CardType, Subtype};
 use mtg_core::color::Color;
 use mtg_core::ids::{EffectId, ObjectId, PlayerId};
 
@@ -39,9 +39,10 @@ use crate::abilities::AbilityRef;
 use crate::ability_reader::{abilities_of, provided_here, working_here};
 use crate::announce::payments;
 use crate::characteristics::controller_of_object;
+use crate::choose::values;
 use crate::choose::{
-    CardsOptions, Choice, ChoiceOption, OptionOptions, ReplacementCandidate, ReplacementOptions,
-    Target, YesNoOptions,
+    CardsOptions, Choice, ChoiceOption, NameOptions, NumberOptions, OptionOptions,
+    ReplacementCandidate, ReplacementOptions, Target, YesNoOptions,
 };
 use crate::combat::DamageTarget;
 use crate::copies::{BecameCopy, copiable_values, may_be_copied};
@@ -2786,6 +2787,72 @@ impl Pass<'_> {
         }
     }
 
+    /// A card name that `controller` names as the card enters (CR 201.3); nothing when they name nothing.
+    fn chooses_name(
+        &mut self,
+        source: ObjectId,
+        controller: PlayerId,
+        nonland: bool,
+    ) -> Result<Asked<Option<Chosen>>, EngineError> {
+        match self.answer() {
+            None => Ok(Asked::Ask(Decision {
+                player: controller,
+                kind: DecisionKind::ChooseName(NameOptions {
+                    source,
+                    text: if nonland {
+                        "Choose a nonland card name.".to_owned()
+                    } else {
+                        "Choose a card name.".to_owned()
+                    },
+                    nonland,
+                }),
+            })),
+            Some((who, Choice::Name(name))) if *who == controller => Ok(Asked::Got(
+                (!name.is_empty()).then(|| Chosen::Name(name.clone())),
+            )),
+            Some(other) => Err(Self::invalid(format!(
+                "{other:?} is no answer to the choice of a name of {controller:?}"
+            ))),
+        }
+    }
+
+    /// A number from `min` to `max` that `controller` chooses as the card enters; the smallest when only one is allowed.
+    fn chooses_number(
+        &mut self,
+        source: ObjectId,
+        controller: PlayerId,
+        min: u32,
+        max: u32,
+    ) -> Result<Asked<Option<Chosen>>, EngineError> {
+        let max = max.max(min);
+        if min == max {
+            return Ok(Asked::Got(Some(Chosen::Number(min))));
+        }
+        match self.answer() {
+            None => Ok(Asked::Ask(Decision {
+                player: controller,
+                kind: DecisionKind::ChooseNumber(NumberOptions {
+                    source,
+                    min,
+                    max: Some(max),
+                    except: Vec::new(),
+                    text: "Choose a number.".to_owned(),
+                    can_cancel: false,
+                    cost: None,
+                    per_x: 0,
+                }),
+            })),
+            Some((who, Choice::Number(number)))
+                if *who == controller && (min..=max).contains(number) =>
+            {
+                Ok(Asked::Got(Some(Chosen::Number(*number))))
+            }
+            Some(other) => Err(Self::invalid(format!(
+                "{other:?} is no answer to the choice of a number of {controller:?}"
+            ))),
+        }
+    }
+
     /// What `controller` chooses as the card enters: asked unless there is one thing to choose or none.
     fn chooses(
         &mut self,
@@ -2793,6 +2860,12 @@ impl Pass<'_> {
         controller: PlayerId,
         kind: EntersChoice,
     ) -> Result<Asked<Option<Chosen>>, EngineError> {
+        if let EntersChoice::Number { min, max } = kind {
+            return self.chooses_number(source, controller, min, max);
+        }
+        if matches!(kind, EntersChoice::CardName | EntersChoice::NonlandCardName) {
+            return self.chooses_name(source, controller, kind == EntersChoice::NonlandCardName);
+        }
         let options = self.options_of(kind, controller, source);
         let picked = match options.as_slice() {
             [] => None,
@@ -2812,6 +2885,10 @@ impl Pass<'_> {
                         EntersChoice::Player => "Choose a player.".to_owned(),
                         EntersChoice::Opponent => "Choose an opponent.".to_owned(),
                         EntersChoice::Chapter => "Choose a chapter to start with.".to_owned(),
+                        EntersChoice::CardName
+                        | EntersChoice::NonlandCardName
+                        | EntersChoice::CardType => "Choose a card type.".to_owned(),
+                        EntersChoice::Number { .. } => String::new(),
                     };
                     return Ok(Asked::Ask(Decision {
                         player: controller,
@@ -2838,17 +2915,26 @@ impl Pass<'_> {
             let chapter = picked.and_then(|index| u32::try_from(index + 1).ok());
             return Ok(Asked::Got(chapter.map(Chosen::Chapter)));
         }
-        Ok(Asked::Got(picked.and_then(
-            |index| match options[index].clone() {
+        Ok(Asked::Got(picked.and_then(|index| {
+            match options[index].clone() {
                 ChoiceOption::Color(color) => Some(Chosen::Color(color)),
                 ChoiceOption::Label(name) if kind == EntersChoice::LandType => {
                     Some(Chosen::LandType(Subtype(name)))
                 }
+                ChoiceOption::Label(name) if kind == EntersChoice::CardType => values::CARD_TYPES
+                    .into_iter()
+                    .find(|card_type| format!("{card_type:?}") == name)
+                    .map(Chosen::CardType),
+                ChoiceOption::Label(name)
+                    if matches!(kind, EntersChoice::CardName | EntersChoice::NonlandCardName) =>
+                {
+                    Some(Chosen::Name(name))
+                }
                 ChoiceOption::Label(name) => Some(Chosen::CreatureType(Subtype(name))),
                 ChoiceOption::Player(player) => Some(Chosen::Player(player)),
                 ChoiceOption::Secret(_) => None,
-            },
-        )))
+            }
+        })))
     }
 
     /// What a player may choose as a permanent enters: the five colours (less the one a choice excludes), the creature types of the cards in the game, the land types or the players.
@@ -2874,21 +2960,12 @@ impl Pass<'_> {
                 .filter(|color| *color != other)
                 .map(ChoiceOption::Color)
                 .collect(),
-            EntersChoice::CreatureType => {
-                let mut types: Vec<String> = self
-                    .state
-                    .objects()
-                    .filter(|o| o.card().is_type(CardType::Creature))
-                    .flat_map(|o| o.card().subtypes.iter().map(|s| s.0.clone()))
-                    .collect();
-                types.sort();
-                types.dedup();
-                types.into_iter().map(ChoiceOption::Label).collect()
-            }
-            EntersChoice::LandType => LAND_TYPES
-                .iter()
-                .map(|name| ChoiceOption::Label((*name).to_owned()))
-                .collect(),
+            EntersChoice::CreatureType => values::creature_types(),
+            EntersChoice::LandType => values::land_types(),
+            EntersChoice::CardType => values::card_types(),
+            EntersChoice::CardName
+            | EntersChoice::NonlandCardName
+            | EntersChoice::Number { .. } => Vec::new(),
             EntersChoice::Player => self
                 .state
                 .turn_order_from(controller)

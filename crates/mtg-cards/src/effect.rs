@@ -244,6 +244,25 @@ pub enum VoteFor {
     Of(Ref),
 }
 
+/// What an `Effect::ChooseValue` asks a player for.
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
+pub enum ValueKind {
+    /// A colour.
+    Color,
+    /// A creature type.
+    CreatureType,
+    /// A card type.
+    CardType,
+    /// A land type (CR 205.3i).
+    LandType,
+    /// The name of a card of the game that the selector matches (CR 201.3); an empty selector is any card.
+    CardName(Selector),
+    /// A whole number from the first amount to the second, read when the choice is made.
+    Number(Amount, Amount),
+    /// One of these words ("choose odd or even").
+    Options(Vec<String>),
+}
+
 /// One instruction of a spell or ability. Optional fields have defaults: `who` is the
 /// controller, an `Amount` is one, `source` is the ability's source.
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
@@ -352,6 +371,18 @@ pub enum Effect {
         /// The name the objects not chosen are bound to.
         #[serde(default, skip_serializing_if = "Option::is_none")]
         rest_as: Option<String>,
+    },
+    /// A player chooses a value that is not an object or a player and the resolution remembers it under the name:
+    /// `Pred::ChosenAs` and `Amount::ChosenAs` read it. A player with one option (or none) is not asked.
+    ChooseValue {
+        /// Who chooses; exactly one player.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        who: Ref,
+        /// What is chosen.
+        kind: ValueKind,
+        /// The name the value is remembered under.
+        #[serde(rename = "as")]
+        bind: String,
     },
     /// Cards of a public zone are picked at random, with the game's random source, and the pick is bound; fewer are
     /// picked when the set holds fewer.
@@ -1585,6 +1616,22 @@ mod tests {
     #[case::c10_vp_chaos_ensues(
         Effect::Planechase { act: PlanarAct::ChaosEnsues },
         r#"{"Planechase":{"act":"ChaosEnsues"}}"#
+    )]
+    #[case::choose_a_number(
+        Effect::ChooseValue { who: Ref::You, kind: ValueKind::Number(Amount::Fixed(1), Amount::X), bind: "n".to_owned() },
+        r#"{"ChooseValue":{"kind":{"Number":[1,"X"]},"as":"n"}}"#
+    )]
+    #[case::choose_a_name(
+        Effect::ChooseValue { who: Ref::Opponents, kind: ValueKind::CardName(Selector(vec![Pred::Type(CardType::Land)])), bind: "n".to_owned() },
+        r#"{"ChooseValue":{"who":"Opponents","kind":{"CardName":[{"Type":"Land"}]},"as":"n"}}"#
+    )]
+    #[case::choose_a_word(
+        Effect::ChooseValue { who: Ref::You, kind: ValueKind::Options(vec!["odd".to_owned(), "even".to_owned()]), bind: "n".to_owned() },
+        r#"{"ChooseValue":{"kind":{"Options":["odd","even"]},"as":"n"}}"#
+    )]
+    #[case::choose_a_color(
+        Effect::ChooseValue { who: Ref::You, kind: ValueKind::Color, bind: "c".to_owned() },
+        r#"{"ChooseValue":{"kind":"Color","as":"c"}}"#
     )]
     #[case::vote_on_objects(
         Effect::Vote { options: VoteFor::Of(Ref::Each(Selector(vec![Pred::In(ZoneKind::Battlefield)]))), secret: false, bind: Some("top".to_owned()) },

@@ -998,6 +998,22 @@ describe('the choice a permanent enters with', () => {
       { Entered: { object: 3, tapped: false, controller: 0, chosen: { LandType: 'Swamp' } } },
       "Forest enters under Ana's control, choosing Swamp",
     ],
+    [
+      { Entered: { object: 3, tapped: false, controller: 0, chosen: { CardType: 'Creature' } } },
+      "Forest enters under Ana's control, choosing creature",
+    ],
+    [
+      { Entered: { object: 3, tapped: false, controller: 0, chosen: { Name: 'Llanowar Elves' } } },
+      "Forest enters under Ana's control, choosing Llanowar Elves",
+    ],
+    [
+      { Entered: { object: 3, tapped: false, controller: 0, chosen: { Number: 7 } } },
+      "Forest enters under Ana's control, choosing 7",
+    ],
+    [
+      { Entered: { object: 3, tapped: false, controller: 0, chosen: { Word: 'odd' } } },
+      "Forest enters under Ana's control, choosing odd",
+    ],
   ])('%j reads "%s"', (event, text) => {
     expect(say(event)).toBe(text)
   })

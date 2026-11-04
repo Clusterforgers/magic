@@ -4,6 +4,7 @@ import { BottomCardsPrompt } from './kinds/BottomCards'
 import { ChooseCardsPrompt } from './kinds/ChooseCards'
 import { ChooseCostsPrompt } from './kinds/ChooseCosts'
 import { ChooseModePrompt } from './kinds/ChooseMode'
+import { ChooseNamePrompt } from './kinds/ChooseName'
 import { ChooseNumberPrompt } from './kinds/ChooseNumber'
 import { ChooseOptionPrompt } from './kinds/ChooseOption'
 import { ChooseReplacementPrompt } from './kinds/ChooseReplacement'
@@ -37,6 +38,7 @@ export const PROMPTS: { [K in DecisionName]: PromptComponent<K> } = {
   ChooseTargets: ChooseTargetsPrompt,
   ChooseMode: ChooseModePrompt,
   ChooseNumber: ChooseNumberPrompt,
+  ChooseName: ChooseNamePrompt,
   DivideAmount: DivideAmountPrompt,
   ChooseCards: ChooseCardsPrompt,
   OrderCards: OrderCardsPrompt,

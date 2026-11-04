@@ -5,6 +5,7 @@ import type { CostsChoice } from "./CostsChoice";
 import type { DivideChoice } from "./DivideChoice";
 import type { ModeChoice } from "./ModeChoice";
 import type { MulliganChoice } from "./MulliganChoice";
+import type { NameChoice } from "./NameChoice";
 import type { NumberChoice } from "./NumberChoice";
 import type { ObjectId } from "./ObjectId";
 import type { OptionChoice } from "./OptionChoice";
@@ -28,4 +29,4 @@ attackers: Array<[ObjectId, AttackTarget]>,
 /**
  * The attackers exerted, each offered with `AttackerOption::exert`.
  */
-exert: Array<ObjectId>, } } | { "DeclareBlockers": Array<[ObjectId, ObjectId]> } | { "AssignDamage": Array<[ObjectId, number]> } | { "Discard": Array<ObjectId> } | { "ChooseTargets": TargetChoice } | { "ChooseMode": ModeChoice } | { "ChooseNumber": NumberChoice } | { "DivideAmount": DivideChoice } | { "ChooseCards": CardsChoice } | { "OrderCards": OrderChoice } | { "Scry": ScryChoice } | { "YesNo": YesNoChoice } | { "ChooseOption": OptionChoice } | { "ChooseCosts": CostsChoice } | { "OrderTriggers": TriggersChoice } | { "ChooseReplacement": ReplacementChoice };
+exert: Array<ObjectId>, } } | { "DeclareBlockers": Array<[ObjectId, ObjectId]> } | { "AssignDamage": Array<[ObjectId, number]> } | { "Discard": Array<ObjectId> } | { "ChooseTargets": TargetChoice } | { "ChooseMode": ModeChoice } | { "ChooseNumber": NumberChoice } | { "ChooseName": NameChoice } | { "DivideAmount": DivideChoice } | { "ChooseCards": CardsChoice } | { "OrderCards": OrderChoice } | { "Scry": ScryChoice } | { "YesNo": YesNoChoice } | { "ChooseOption": OptionChoice } | { "ChooseCosts": CostsChoice } | { "OrderTriggers": TriggersChoice } | { "ChooseReplacement": ReplacementChoice };
