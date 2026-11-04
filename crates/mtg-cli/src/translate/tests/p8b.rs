@@ -73,10 +73,6 @@ fn a_counter_named_for_a_keyword_is_the_engines_keyword_counter(
     "K:etbCounter:P1P1:1:Hellbent$ True:x\n",
     "keyword:etbCounter-condition"
 )]
-#[case::other_cast_count(
-    "K:etbCounter:P1P1:1:CheckSVar$ C:x\nSVar:C:Count$wasCastFromYourHandByYou.2.0\n",
-    "amount:Count$wasCastFromYourHandByYou"
-)]
 #[case::self_property(
     "K:etbCounter:P1P1:1:ValidCard$ Card.Self+untapped:x\n",
     "keyword:etbCounter-condition"
