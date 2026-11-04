@@ -37,7 +37,7 @@ pub fn keyword_name(word: &str) -> Option<&'static str> {
         "Partner" => "Partner",
         "Battle cry" => "BattleCry",
         "Fuse" => "Fuse",
-        "Living weapon" => "LivingWeapon",
+        "Living weapon" | "Living Weapon" => "LivingWeapon",
         "Changeling" => "Changeling",
         "Devoid" => "Devoid",
         "Infect" => "Infect",
@@ -84,7 +84,6 @@ pub fn keyword_name(word: &str) -> Option<&'static str> {
         "Doctor's companion" => "DoctorsCompanion",
         "For Mirrodin" | "For Mirrodin!" => "ForMirrodin",
         "Job select" => "JobSelect",
-        "Living Weapon" => "LivingWeapon",
         _ => return None,
     })
 }
