@@ -75,6 +75,9 @@ fn affected(ctx: &Ctx, p: &Params) -> Tr<Value> {
             static_defined(ctx, word)
         }
         (Some(_), Some(_)) => unmapped("static-affected:Defined+Affected"),
+        (None, Some("You")) if !p.has("AffectedZone") => Ok(json!("You")),
+        (None, Some("Player")) if !p.has("AffectedZone") => Ok(json!("EachPlayer")),
+        (None, Some("Opponent")) if !p.has("AffectedZone") => Ok(json!("Opponents")),
         (None, Some(valid)) => zoned(ctx, valid, p.get("AffectedZone")),
         (None, None) if p.get("CharacteristicDefining") == Some("True") => Ok(json!("This")),
         (None, None) => unmapped("static-affected:none"),
@@ -206,6 +209,18 @@ fn continuous(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     }
     if mods.is_empty() {
         return unmapped("static:Continuous-nothing");
+    }
+    // Only the keywords a player can have apply to players; any other change would be lost.
+    if matches!(affected.as_str(), Some("You" | "EachPlayer" | "Opponents"))
+        && !mods.iter().all(|m| {
+            m.get("AddKeyword")
+                .is_some_and(|k| k == "Hexproof" || k == "Shroud")
+        })
+    {
+        return unmapped(format!(
+            "static-affected:{}",
+            p.get("Affected").unwrap_or_default()
+        ));
     }
     let mut ability = json!({"affected": affected, "mods": mods});
     if let Some(refinement) = refinement {

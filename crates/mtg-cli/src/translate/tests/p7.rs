@@ -387,6 +387,38 @@ fn a_creature_that_cant_attack_you_keeps_what_it_protects(
     assert_eq!(static_ability(line), expected);
 }
 
+#[rstest]
+#[case::you_hexproof(
+    "Mode$ Continuous | Affected$ You | AddKeyword$ Hexproof",
+    json!({"Static": {"affected": "You", "mods": [{"AddKeyword": "Hexproof"}]}})
+)]
+#[case::each_player_shroud(
+    "Mode$ Continuous | Affected$ Player | AddKeyword$ Shroud",
+    json!({"Static": {"affected": "EachPlayer", "mods": [{"AddKeyword": "Shroud"}]}})
+)]
+fn a_player_with_a_keyword_a_player_can_have_is_affected(
+    #[case] line: &str,
+    #[case] expected: Value,
+) {
+    assert_eq!(static_ability(line), expected);
+}
+
+#[rstest]
+#[case::flying(
+    "Mode$ Continuous | Affected$ You | AddKeyword$ Flying",
+    "static-affected:You"
+)]
+#[case::power(
+    "Mode$ Continuous | Affected$ Player | AddPower$ 1",
+    "static-affected:Player"
+)]
+fn a_player_given_what_a_player_cannot_have_stays_a_named_gap(
+    #[case] line: &str,
+    #[case] name: &str,
+) {
+    assert_eq!(static_gaps(line), [name]);
+}
+
 #[test]
 fn an_attack_target_that_is_not_known_stays_a_named_gap() {
     assert_eq!(
