@@ -14,8 +14,8 @@ use mtg_testkit::cards::free_creature;
 use mtg_testkit::{Driver, Scenario, ScriptError, ready};
 use rstest::rstest;
 
-/// A 0/9 creature with one triggered ability written in the card DSL.
-fn watcher(name: &str, when: &str, to: &str) -> Arc<CardDefinition> {
+/// A creature with a toughness of 9 with one triggered ability written in the card DSL.
+fn watcher(name: &str, power: i32, when: &str, to: &str) -> Arc<CardDefinition> {
     let rules: Ability = serde_json::from_str(&format!(
         r#"{{"Triggered":{{"when":{when},"effects":[{{"DealDamage":{{"to":{to},"amount":2}}}}]}}}}"#
     ))
@@ -23,7 +23,7 @@ fn watcher(name: &str, when: &str, to: &str) -> Arc<CardDefinition> {
     Arc::new(
         CardDefinition::new(name)
             .with_type(CardType::Creature)
-            .with_power_toughness(0, 9)
+            .with_power_toughness(power, 9)
             .with_rules(rules),
     )
 }
@@ -40,17 +40,14 @@ fn marked(driver: &Driver, name: &str) -> u32 {
 }
 
 fn life(driver: &Driver, seat: usize) -> i32 {
-    driver
-        .state()
-        .player(common::pid(seat))
-        .unwrap()
-        .life()
+    driver.state().player(common::pid(seat)).unwrap().life()
 }
 
 /// Passes until the stack is empty again after the declaration just made.
 fn settle(driver: &mut Driver) -> Result<(), ScriptError> {
     for _ in 0..6 {
-        if driver.state().stack().is_empty() && driver.state().turn().step() != Step::DeclareAttackers
+        if driver.state().stack().is_empty()
+            && driver.state().turn().step() != Step::DeclareAttackers
         {
             break;
         }
@@ -71,6 +68,7 @@ fn a_block_names_the_attacker_and_the_blocker_apart(
 ) -> Result<(), ScriptError> {
     let attacker = watcher(
         "Acolyte",
+        0,
         r#"{"BecomesBlocked":{"what":["This"],"by":[{"Type":"Creature"}]}}"#,
         to,
     );
@@ -100,13 +98,14 @@ fn damage_names_its_source_and_its_recipient_apart(
 ) -> Result<(), ScriptError> {
     let source = watcher(
         "Striker",
+        1,
         r#"{"DealsDamage":{"source":["This"],"combat":true}}"#,
         to,
     );
     let mut driver = Driver::from_scenario(
         Scenario::new(2)
             .at(2, 0, Step::DeclareAttackers)
-            .battlefield(0, [ready(source_with_power(source))]),
+            .battlefield(0, [ready(source)]),
     )?;
     driver.attack(&[("Striker", 1)])?;
     for _ in 0..8 {
@@ -115,11 +114,4 @@ fn damage_names_its_source_and_its_recipient_apart(
     assert_eq!(marked(&driver, "Striker"), source_damage);
     assert_eq!(life(&driver, 1), defender_life);
     Ok(())
-}
-
-/// The same creature with a power of 1, so that it deals combat damage.
-fn source_with_power(card: Arc<CardDefinition>) -> Arc<CardDefinition> {
-    let mut definition = (*card).clone();
-    definition = definition.with_power_toughness(1, 9);
-    Arc::new(definition)
 }

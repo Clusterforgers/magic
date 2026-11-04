@@ -424,5 +424,5 @@ async fn a_translation_with_a_gap_is_skipped_as_gapped_and_never_drafted(pool: P
         outcomes(&promoted),
         [("Cathartic Pyre".to_owned(), Some(W2aSkip::Gapped))]
     );
-    assert!(promoted.written.is_empty());
+    assert_eq!(promoted.written.len(), 0);
 }

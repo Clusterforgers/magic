@@ -256,7 +256,11 @@ fn cant_block_by(ctx: &Ctx, p: &Params) -> Tr<Value> {
                 return unmapped("static:CantBlockBy-shape");
             };
             // "Can't block X and not Y" is "blocks only Y" for an attacker that is a creature; any other filter would be lost.
-            if only.iter().enumerate().any(|(i, pred)| i != at && *pred != json!({"Type": "Creature"})) {
+            if only
+                .iter()
+                .enumerate()
+                .any(|(i, pred)| i != at && *pred != json!({"Type": "Creature"}))
+            {
                 return unmapped("static:CantBlockBy-extra-filter");
             }
             let inner = only.remove(at)["Not"].clone();

@@ -37,11 +37,7 @@ const SELF_BLOCKED_BY: &str =
     "TriggeredBlocker",
     Err("defined:TriggeredBlocker-in-AttackerBlocked")
 )]
-#[case::this_blocks(
-    "Mode$ Blocks | ValidCard$ Card.Self",
-    "TriggeredBlocker",
-    Ok("This")
-)]
+#[case::this_blocks("Mode$ Blocks | ValidCard$ Card.Self", "TriggeredBlocker", Ok("This"))]
 #[case::this_blocks_the_attacker_is_not_held(
     "Mode$ Blocks | ValidCard$ Card.Self",
     "TriggeredAttacker",
@@ -159,7 +155,10 @@ fn a_condition_the_engine_rechecks_is_not_translated_as_unchecked(
     "SP$ DelayedTrigger | Mode$ Phase | Phase$ Upkeep | ValidPlayer$ You | NextTurn$ True | Execute$ Go",
     &["key:DelayedTrigger.NextTurn"]
 )]
-fn a_key_a_mapper_lists_is_read_or_the_line_is_a_gap(#[case] line: &str, #[case] expected: &[&str]) {
+fn a_key_a_mapper_lists_is_read_or_the_line_is_a_gap(
+    #[case] line: &str,
+    #[case] expected: &[&str],
+) {
     let text = format!("Name:T\nTypes:Sorcery\nA:{line}\nSVar:Go:DB$ Draw | NumCards$ 1\n");
     assert_eq!(gaps(&text), expected);
 }
@@ -169,7 +168,10 @@ fn no_mapper_checks_the_keys_of_a_line_on_its_own() {
     // A loop over the keys of a line that is not `ctx::check_keys` would accept keys without the audit seeing them.
     let dir = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("src/translate");
     let mut offenders = Vec::new();
-    for entry in std::fs::read_dir(dir).unwrap_or_else(|e| panic!("{e}")).flatten() {
+    for entry in std::fs::read_dir(dir)
+        .unwrap_or_else(|e| panic!("{e}"))
+        .flatten()
+    {
         let path = entry.path();
         let name = entry.file_name().to_string_lossy().into_owned();
         if path.extension().is_none_or(|ext| ext != "rs") || name == "ctx.rs" {
@@ -196,7 +198,7 @@ fn the_audit_names_a_promised_key_that_is_never_read() {
     });
     assert_eq!(read.as_deref(), Some("2"));
     assert_eq!(unread.as_deref(), Some("Draw.Defined"));
-    let (_, none) = audit(|| {
+    let ((), none) = audit(|| {
         let line = Params::parse("DB$ Draw | NumCards$ 2");
         line.promise("Draw", &["NumCards", "Defined"]);
         let _ = line.get("NumCards");

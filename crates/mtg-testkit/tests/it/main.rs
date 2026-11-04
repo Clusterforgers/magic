@@ -22,6 +22,7 @@ mod attack_tax;
 mod attack_tax_fuzz;
 mod aura_abilities;
 mod aura_grants;
+mod back_face_dies;
 mod backup_damage;
 mod backup_keyword;
 mod bestow;

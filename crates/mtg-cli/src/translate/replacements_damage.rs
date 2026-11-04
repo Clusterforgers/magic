@@ -101,7 +101,12 @@ fn scaled(ctx: &Ctx, name: &str) -> Tr<Value> {
     let Some(part) = ctx.svar(name).map(Params::parse) else {
         return unmapped("svar:missing");
     };
-    check_keys(&part, "ReplaceEffect", &["DB", "VarName", "VarValue"], |_, _| false)?;
+    check_keys(
+        &part,
+        "ReplaceEffect",
+        &["DB", "VarName", "VarValue"],
+        |_, _| false,
+    )?;
     if part.get("DB") != Some("ReplaceEffect") || part.get("VarName") != Some("DamageAmount") {
         return unmapped("replacement:DamageDone-ReplaceWith-shape");
     }

@@ -130,7 +130,12 @@ fn waiting(state: &GameState, source: ObjectRef, ending: Waiting) -> bool {
         .iter()
         .filter(|pending| pending.trigger().source == source)
         .count();
-    on_stack || queued > ending.queued || state.delayed().iter().any(|delayed| delayed.source == source)
+    on_stack
+        || queued > ending.queued
+        || state
+            .delayed()
+            .iter()
+            .any(|delayed| delayed.source == source)
 }
 
 /// Drops the memory of a source that has left once no ability waits on it.

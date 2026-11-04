@@ -10,8 +10,8 @@ use mtg_cards::CardDefinition;
 use mtg_cards::ability::Ability;
 use mtg_core::card::CardType;
 use mtg_engine::decision::DecisionKind;
-use mtg_engine::zones::Zone;
 use mtg_engine::replay;
+use mtg_engine::zones::Zone;
 use mtg_testkit::cards::free_creature;
 use mtg_testkit::{Driver, Scenario, ScriptError, ready};
 use rstest::rstest;
@@ -47,7 +47,10 @@ fn on_battlefield(driver: &Driver) -> Vec<String> {
 fn settle(driver: &mut Driver) -> Result<(), ScriptError> {
     for _ in 0..12 {
         let priority = matches!(driver.decision()?.kind, DecisionKind::Priority(_));
-        if priority && driver.state().stack().is_empty() && driver.state().pending_triggers().is_empty() {
+        if priority
+            && driver.state().stack().is_empty()
+            && driver.state().pending_triggers().is_empty()
+        {
             return Ok(());
         }
         driver.pass()?;

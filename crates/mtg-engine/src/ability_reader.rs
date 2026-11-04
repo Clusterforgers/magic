@@ -403,7 +403,11 @@ fn card_of<'a>(
     let left = shot.filter(|shot| shot.id == id && shot.counter != object.counter());
     match left.and_then(|shot| shot.merged.as_deref().or(shot.copy.as_deref())) {
         Some(copy) => Some(copy),
-        None => Some(object.card()),
+        // The new object is the card as a whole; the abilities were those of the face the permanent was in use as.
+        None => match left.and_then(|shot| shot.face) {
+            Some(face) => Some(object.whole_card().face(face)),
+            None => Some(object.card()),
+        },
     }
 }
 

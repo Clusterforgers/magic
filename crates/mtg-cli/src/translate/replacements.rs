@@ -27,14 +27,16 @@ pub fn replacement_line(ctx: &mut Ctx, body: &str) -> Tr<Value> {
         return unmapped(format!("replacement:{event}"));
     }
     let read = [
-            "Event",
-            "ValidCard",
-            "Destination",
-            "ReplaceWith",
-            "ReplacementResult",
+        "Event",
+        "ValidCard",
+        "Destination",
+        "ReplaceWith",
+        "ReplacementResult",
     ];
     check_keys(&p, "Replacement.Moved", &read, |_, _| false)?;
-    if p.get("ReplacementResult").is_some_and(|result| result != "Updated") {
+    if p.get("ReplacementResult")
+        .is_some_and(|result| result != "Updated")
+    {
         return unmapped("key:Replacement.Moved.ReplacementResult");
     }
     if p.get("ValidCard") != Some("Card.Self") || p.get("Destination") != Some("Battlefield") {

@@ -81,7 +81,12 @@ pub fn resolve(shape: Option<&Shape>, word: &str) -> Tr<Value> {
             "Triggering"
         }
         Word::Card if did.is_some_and(|(_, object)| object) => "Triggering",
-        Word::Attacker if matches!(mode, "Attacks" | "AttackerBlocked" | "AttackerBlockedByCreature") => {
+        Word::Attacker
+            if matches!(
+                mode,
+                "Attacks" | "AttackerBlocked" | "AttackerBlockedByCreature"
+            ) =>
+        {
             "Triggering"
         }
         Word::Blocker if mode == "AttackerBlockedByCreature" && shape.by => "Dealer",

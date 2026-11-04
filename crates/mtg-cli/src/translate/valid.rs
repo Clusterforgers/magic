@@ -309,7 +309,14 @@ pub fn selector_in(ctx: &Ctx, spec: &str, zone: Option<&str>) -> Tr<Vec<Value>> 
         if permanents != spec.split(',').count() {
             return unmapped("valid:Permanent-card-beside-other-alternatives");
         }
-        let types = ["Artifact", "Battle", "Creature", "Enchantment", "Land", "Planeswalker"];
+        let types = [
+            "Artifact",
+            "Battle",
+            "Creature",
+            "Enchantment",
+            "Land",
+            "Planeswalker",
+        ];
         let any: Vec<Value> = types.iter().map(|name| json!({"Type": name})).collect();
         preds.push(json!({"AnyOf": any}));
     }
@@ -360,7 +367,9 @@ pub fn defined(ctx: &Ctx, word: &str) -> Tr<Value> {
             .remembered
             .clone()
             .map_or_else(|| unmapped("defined:Remembered-without-a-change"), Ok),
-        word if super::triggered::is_word(word) => super::triggered::resolve(ctx.trigger.as_ref(), word),
+        word if super::triggered::is_word(word) => {
+            super::triggered::resolve(ctx.trigger.as_ref(), word)
+        }
         "DefendingPlayer" | "TriggeredDefendingPlayer" => Ok(json!("Defending")),
         other => unmapped(format!("defined:{other}")),
     }

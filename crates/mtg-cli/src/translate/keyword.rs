@@ -278,8 +278,9 @@ fn choice(ctx: &Ctx, name: &str) -> Tr<Value> {
     if part.get("Defined").is_some_and(|who| who != "You") {
         return unmapped("key:ETBReplacement.Defined");
     }
-    let hints_only =
-        |read: &[&str]| -> Tr<()> { super::ctx::check_keys(&part, "ETBReplacement", read, |_, _| false) };
+    let hints_only = |read: &[&str]| -> Tr<()> {
+        super::ctx::check_keys(&part, "ETBReplacement", read, |_, _| false)
+    };
     match (part.get("DB"), part.get("Type"), part.get("Choices")) {
         (Some("ChooseColor"), None, None) => {
             hints_only(&["DB", "Defined"])?;

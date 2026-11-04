@@ -70,14 +70,14 @@ pub fn effects(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         return Ok(vec![json!({"Rule": {"rule": rule, "duration": duration}})]);
     }
     let read = [
-            "Mode",
-            "ValidAttacker",
-            "ValidCreature",
-            "ValidCard",
-            "Affected",
-            "AddKeyword",
-            "AddPower",
-            "AddToughness",
+        "Mode",
+        "ValidAttacker",
+        "ValidCreature",
+        "ValidCard",
+        "Affected",
+        "AddKeyword",
+        "AddPower",
+        "AddToughness",
     ];
     check_keys(&part, "Effect.static", &read, |_, _| false)?;
     let on_remembered = |key: &str| {
