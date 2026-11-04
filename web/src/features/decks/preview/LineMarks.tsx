@@ -4,8 +4,8 @@ import { useCardDetail } from '@/features/builder/useCardDetail'
 import { CardsApiContext } from '@/features/table/cardsContext'
 import { RUNS_AUTOMATICALLY, YOU_DO_BY_HAND, lineMarks } from '@/lib/lineMarks'
 import { cn } from '@/lib/utils'
-import type { CardDetail } from "@/protocol/generated"
-import type { PreviewCard } from "./model"
+import type { CardDetail } from '@/protocol/generated'
+import type { PreviewCard } from './model'
 
 function MarkTag({ hand }: { hand: boolean }) {
   const Icon = hand ? HandIcon : CheckIcon
@@ -27,7 +27,12 @@ export function LineMarksList({ detail }: { detail: CardDetail }) {
   const { faces, oracle_text: whole, reasons } = detail
   const texts = faces.length > 0 ? faces.map((face) => face.oracle_text) : [whole]
   return (
-    <div role="group" aria-label="Lines of the card" data-slot="line-marks" className="grid gap-1 text-left text-sm">
+    <div
+      role="group"
+      aria-label="Lines of the card"
+      data-slot="line-marks"
+      className="grid gap-1 text-left text-sm"
+    >
       {texts.flatMap((text, face) => {
         const { lines, unplaced } = lineMarks(text, reasons, face)
         return [
@@ -52,5 +57,5 @@ export function LineMarksList({ detail }: { detail: CardDetail }) {
 /** `LineMarksList` for a card of the deck preview, which loads the card detail itself. */
 export function LineMarks({ card }: { card: PreviewCard }) {
   const { state } = useCardDetail(useContext(CardsApiContext), card.oracleId)
-  return state.status === "ready" ? <LineMarksList detail={state.detail} /> : null
+  return state.status === 'ready' ? <LineMarksList detail={state.detail} /> : null
 }
