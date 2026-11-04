@@ -9,6 +9,8 @@ use super::effects::chain_at;
 use super::valid::selector_any;
 use crate::forge::script::Params;
 
+mod more;
+
 /// The DSL name of a keyword that has no parameter.
 pub fn keyword_name(word: &str) -> Option<&'static str> {
     Some(match word.trim() {
@@ -76,12 +78,23 @@ pub fn keyword_name(word: &str) -> Option<&'static str> {
         "Demonstrate" => "Demonstrate",
         "Read ahead" => "ReadAhead",
         "Umbra armor" => "UmbraArmor",
+        "Bargain" => "Bargain",
+        "Conspire" => "Conspire",
+        "Choose a Background" => "ChooseABackground",
+        "Doctor's companion" => "DoctorsCompanion",
+        "For Mirrodin" | "For Mirrodin!" => "ForMirrodin",
+        "Job select" => "JobSelect",
+        "Living Weapon" => "LivingWeapon",
         _ => return None,
     })
 }
 
 /// Keywords with one cost: the Forge word and the DSL variant.
-const COSTED: [(&str, &str); 37] = [
+const COSTED: [(&str, &str); 41] = [
+    ("Disturb", "Disturb"),
+    ("Harmonize", "Harmonize"),
+    ("Offspring", "Offspring"),
+    ("Escape", "Escape"),
     ("Equip", "Equip"),
     ("Ward", "Ward"),
     ("Reconfigure", "Reconfigure"),
@@ -144,6 +157,9 @@ pub fn keyword_value(ctx: &Ctx, text: &str) -> Tr<Value> {
     let text = text.trim();
     if let Some(name) = keyword_name(text) {
         return Ok(json!(name));
+    }
+    if let Some(found) = more::special(ctx, text) {
+        return found;
     }
     let mut fields = text.split(':');
     let name = fields.next().unwrap_or_default();
