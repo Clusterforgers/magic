@@ -47,7 +47,24 @@
               },
               {
                 "LoseLife": {
-                  "amount": { "Stat": { "of": { "Bound": "found" }, "stat": "ManaValue" } }
+                  "amount": {
+                    "Total": {
+                      "of": [
+                        { "Is": { "Bound": "found" } },
+                        {
+                          "AnyOf": [
+                            { "In": "Battlefield" },
+                            { "In": "Hand" },
+                            { "In": "Library" },
+                            { "In": "Graveyard" },
+                            { "In": "Exile" },
+                            { "In": "Stack" }
+                          ]
+                        }
+                      ],
+                      "stat": "ManaValue"
+                    }
+                  }
                 }
               }
             ]

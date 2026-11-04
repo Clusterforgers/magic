@@ -22,7 +22,24 @@
               {
                 "DealDamage": {
                   "to": "You",
-                  "amount": { "Stat": { "of": { "Bound": "exiled" }, "stat": "ManaValue" } }
+                  "amount": {
+                    "Total": {
+                      "of": [
+                        { "Is": { "Bound": "exiled" } },
+                        {
+                          "AnyOf": [
+                            { "In": "Battlefield" },
+                            { "In": "Hand" },
+                            { "In": "Library" },
+                            { "In": "Graveyard" },
+                            { "In": "Exile" },
+                            { "In": "Stack" }
+                          ]
+                        }
+                      ],
+                      "stat": "ManaValue"
+                    }
+                  }
                 }
               },
               {

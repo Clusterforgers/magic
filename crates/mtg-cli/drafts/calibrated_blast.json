@@ -42,7 +42,22 @@
                             "DealDamage": {
                               "to": { "Target": 0 },
                               "amount": {
-                                "Stat": { "of": { "Bound": "found" }, "stat": "ManaValue" }
+                                "Total": {
+                                  "of": [
+                                    { "Is": { "Bound": "found" } },
+                                    {
+                                      "AnyOf": [
+                                        { "In": "Battlefield" },
+                                        { "In": "Hand" },
+                                        { "In": "Library" },
+                                        { "In": "Graveyard" },
+                                        { "In": "Exile" },
+                                        { "In": "Stack" }
+                                      ]
+                                    }
+                                  ],
+                                  "stat": "ManaValue"
+                                }
                               }
                             }
                           }

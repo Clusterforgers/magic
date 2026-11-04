@@ -1,3 +1,4 @@
 {
-  "source": "forge"
+  "source": "forge",
+  "oracle_matches": true
 }

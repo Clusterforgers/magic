@@ -31,7 +31,22 @@
               { "LookAtTop": { "count": 4, "as": "top" } },
               {
                 "Choose": {
-                  "from": { "Each": [{ "In": "Library" }, { "Is": { "Bound": "top" } }] },
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      {
+                        "AnyOf": [
+                          { "Type": "Artifact" },
+                          { "Type": "Battle" },
+                          { "Type": "Creature" },
+                          { "Type": "Enchantment" },
+                          { "Type": "Land" },
+                          { "Type": "Planeswalker" }
+                        ]
+                      }
+                    ]
+                  },
                   "count": { "min": 0, "max": 1 },
                   "as": "kept2"
                 }

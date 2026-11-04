@@ -17,7 +17,17 @@
                     "Each": [
                       { "In": "Library" },
                       { "Is": { "Bound": "top" } },
-                      { "Supertype": "Snow" }
+                      { "Supertype": "Snow" },
+                      {
+                        "AnyOf": [
+                          { "Type": "Artifact" },
+                          { "Type": "Battle" },
+                          { "Type": "Creature" },
+                          { "Type": "Enchantment" },
+                          { "Type": "Land" },
+                          { "Type": "Planeswalker" }
+                        ]
+                      }
                     ]
                   },
                   "count": { "min": 0, "max": null },

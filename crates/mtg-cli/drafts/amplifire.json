@@ -33,13 +33,47 @@
                         "power": {
                           "Times": {
                             "by": 2,
-                            "of": { "Stat": { "of": { "Bound": "found" }, "stat": "Power" } }
+                            "of": {
+                              "Total": {
+                                "of": [
+                                  { "Is": { "Bound": "found" } },
+                                  {
+                                    "AnyOf": [
+                                      { "In": "Battlefield" },
+                                      { "In": "Hand" },
+                                      { "In": "Library" },
+                                      { "In": "Graveyard" },
+                                      { "In": "Exile" },
+                                      { "In": "Stack" }
+                                    ]
+                                  }
+                                ],
+                                "stat": "Power"
+                              }
+                            }
                           }
                         },
                         "toughness": {
                           "Times": {
                             "by": 2,
-                            "of": { "Stat": { "of": { "Bound": "found" }, "stat": "Toughness" } }
+                            "of": {
+                              "Total": {
+                                "of": [
+                                  { "Is": { "Bound": "found" } },
+                                  {
+                                    "AnyOf": [
+                                      { "In": "Battlefield" },
+                                      { "In": "Hand" },
+                                      { "In": "Library" },
+                                      { "In": "Graveyard" },
+                                      { "In": "Exile" },
+                                      { "In": "Stack" }
+                                    ]
+                                  }
+                                ],
+                                "stat": "Toughness"
+                              }
+                            }
                           }
                         }
                       }

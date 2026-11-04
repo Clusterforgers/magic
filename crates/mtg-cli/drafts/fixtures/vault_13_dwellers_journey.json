@@ -1,0 +1,136 @@
+{
+  "object": "card",
+  "id": "a22ad436-215a-4da1-b12e-1faac474f948",
+  "oracle_id": "586fb987-cd77-420f-978c-2ce140bcdcfb",
+  "multiverse_ids": [
+    652113
+  ],
+  "mtgo_id": 132299,
+  "tcgplayer_id": 541386,
+  "cardmarket_id": 758276,
+  "name": "Vault 13: Dweller's Journey",
+  "lang": "en",
+  "released_at": "2024-03-08",
+  "uri": "https://api.scryfall.com/cards/a22ad436-215a-4da1-b12e-1faac474f948",
+  "scryfall_uri": "https://scryfall.com/card/pip/26/vault-13:-dwellers-journey?utm_source=api",
+  "layout": "saga",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:13:34Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/a/2/a22ad436-215a-4da1-b12e-1faac474f948.jpg?1783912414",
+    "normal": "https://cards.scryfall.io/normal/front/a/2/a22ad436-215a-4da1-b12e-1faac474f948.jpg?1783912414",
+    "large": "https://cards.scryfall.io/large/front/a/2/a22ad436-215a-4da1-b12e-1faac474f948.jpg?1783912414",
+    "png": "https://cards.scryfall.io/png/front/a/2/a22ad436-215a-4da1-b12e-1faac474f948.png?1783912414",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/a/2/a22ad436-215a-4da1-b12e-1faac474f948.jpg?1783912414",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/a/2/a22ad436-215a-4da1-b12e-1faac474f948.jpg?1783912414",
+    "thumb": "https://cards.scryfall.io/thumb/front/a/2/a22ad436-215a-4da1-b12e-1faac474f948.webp?1783912414",
+    "grid": "https://cards.scryfall.io/grid/front/a/2/a22ad436-215a-4da1-b12e-1faac474f948.webp?1783912414",
+    "display": "https://cards.scryfall.io/display/front/a/2/a22ad436-215a-4da1-b12e-1faac474f948.webp?1783912414",
+    "art": "https://cards.scryfall.io/art/front/a/2/a22ad436-215a-4da1-b12e-1faac474f948.webp?1783912414",
+    "crop": "https://cards.scryfall.io/crop/front/a/2/a22ad436-215a-4da1-b12e-1faac474f948.webp?1783912414",
+    "jpeg": "https://cards.scryfall.io/normal/front/a/2/a22ad436-215a-4da1-b12e-1faac474f948.jpg?1783912414"
+  },
+  "mana_cost": "{3}{W}",
+  "cmc": 4.0,
+  "type_line": "Enchantment — Saga",
+  "oracle_text": "(As this Saga enters and after your draw step, add a lore counter. Sacrifice after III.)\nI — For each player, exile up to one other target enchantment or creature that player controls until this Saga leaves the battlefield.\nII — You gain 2 life and scry 2.\nIII — Return two cards exiled with this Saga to the battlefield under their owners' control and put the rest on the bottom of their owners' libraries.",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Scry"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "d84d7a49-2ef4-4808-83b4-8c65b4aa0e2d",
+  "set": "pip",
+  "set_name": "Fallout",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/d84d7a49-2ef4-4808-83b4-8c65b4aa0e2d",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Apip&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/pip?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/a22ad436-215a-4da1-b12e-1faac474f948/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A586fb987-cd77-420f-978c-2ce140bcdcfb&unique=prints",
+  "collector_number": "26",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Gaboleps",
+  "artist_ids": [
+    "0c37cdfe-5651-4ae6-a3c8-e7153509f970"
+  ],
+  "illustration_id": "86dcdfbc-942f-450d-9d96-8c3eb7312584",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 14836,
+  "prices": {
+    "usd": "0.24",
+    "usd_foil": "0.72",
+    "usd_etched": null,
+    "eur": "0.21",
+    "eur_foil": "0.78",
+    "tix": "0.78"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=652113&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DVault%2B13%253A%2BDweller%2527s%2BJourney",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DVault%2B13%253A%2BDweller%2527s%2BJourney",
+    "edhrec": "https://edhrec.com/route/?cc=Vault+13%3A+Dweller%27s+Journey"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F541386%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=758276&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/132299?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

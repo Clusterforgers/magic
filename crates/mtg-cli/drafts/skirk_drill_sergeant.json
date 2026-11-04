@@ -38,7 +38,17 @@
                           "Each": [
                             { "In": "Library" },
                             { "Is": { "Bound": "top" } },
-                            { "Subtype": "Goblin" }
+                            { "Subtype": "Goblin" },
+                            {
+                              "AnyOf": [
+                                { "Type": "Artifact" },
+                                { "Type": "Battle" },
+                                { "Type": "Creature" },
+                                { "Type": "Enchantment" },
+                                { "Type": "Land" },
+                                { "Type": "Planeswalker" }
+                              ]
+                            }
                           ]
                         },
                         "to": { "Battlefield": {} }

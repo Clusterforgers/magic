@@ -27,6 +27,16 @@
                           "op": "Le",
                           "to": { "Stat": { "of": "This", "stat": "Power" } }
                         }
+                      },
+                      {
+                        "AnyOf": [
+                          { "Type": "Artifact" },
+                          { "Type": "Battle" },
+                          { "Type": "Creature" },
+                          { "Type": "Enchantment" },
+                          { "Type": "Land" },
+                          { "Type": "Planeswalker" }
+                        ]
                       }
                     ]
                   },

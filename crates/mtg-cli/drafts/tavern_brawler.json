@@ -24,7 +24,22 @@
                             {
                               "ModifyPT": {
                                 "power": {
-                                  "Stat": { "of": { "Bound": "exiled" }, "stat": "ManaValue" }
+                                  "Total": {
+                                    "of": [
+                                      { "Is": { "Bound": "exiled" } },
+                                      {
+                                        "AnyOf": [
+                                          { "In": "Battlefield" },
+                                          { "In": "Hand" },
+                                          { "In": "Library" },
+                                          { "In": "Graveyard" },
+                                          { "In": "Exile" },
+                                          { "In": "Stack" }
+                                        ]
+                                      }
+                                    ],
+                                    "stat": "ManaValue"
+                                  }
                                 },
                                 "toughness": 0
                               }

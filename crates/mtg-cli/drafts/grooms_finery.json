@@ -24,9 +24,14 @@
                   "Count": [
                     { "Subtype": "Equipment" },
                     {
-                      "AttachedTo": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
-                    },
-                    { "Named": "Bride's Gown" }
+                      "AttachedTo": {
+                        "Each": [
+                          { "Type": "Creature" },
+                          { "ControlledBy": "You" },
+                          { "Named": "Bride's Gown" }
+                        ]
+                      }
+                    }
                   ]
                 },
                 "op": "Ge",

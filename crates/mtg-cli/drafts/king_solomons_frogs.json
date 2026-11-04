@@ -23,7 +23,8 @@
                     "players": "Opponents",
                     "what": [{ "Compare": { "stat": "ManaValue", "op": "Ge", "to": 3 } }]
                   }
-                }
+                },
+                "bounds": { "min": 0, "max": 1 }
               }
             ],
             "effects": [

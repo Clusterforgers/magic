@@ -1,0 +1,73 @@
+{
+  "oracle_id": "586fb987-cd77-420f-978c-2ce140bcdcfb",
+  "name": "Vault 13: Dweller's Journey",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vault 13: Dweller's Journey",
+      "oracle_fingerprint": "849b568ffb144229c80ef251c6dd8a1b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "targets": [
+              {
+                "what": {
+                  "PerPlayer": {
+                    "players": "EachPlayer",
+                    "what": [{ "AnyOf": [{ "Type": "Enchantment" }, { "Type": "Creature" }] }]
+                  }
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "duration": "WhileSourceOnBattlefield" } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "effects": [{ "GainLife": { "amount": 2 } }, { "Scry": { "count": 2 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [{ "ExiledWith": "This" }, { "In": "Exile" }, { "OwnedBy": "You" }]
+                  },
+                  "count": { "min": 2, "max": 2 },
+                  "as": "picked"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "picked" },
+                  "to": { "Battlefield": {} },
+                  "as": "moved2"
+                }
+              },
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      { "ExiledWith": "This" },
+                      { "Not": { "Is": { "Bound": "moved2" } } },
+                      { "In": "Exile" }
+                    ]
+                  },
+                  "to": { "Library": { "place": "Bottom" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -17,7 +17,8 @@
                     "players": "EachPlayer",
                     "what": [{ "Not": { "Type": "Land" } }, { "Not": { "Subtype": "Saga" } }]
                   }
-                }
+                },
+                "bounds": { "min": 0, "max": 1 }
               }
             ],
             "effects": [
@@ -62,7 +63,8 @@
                     "players": "EachPlayer",
                     "what": [{ "Not": { "Type": "Land" } }, { "Not": { "Subtype": "Saga" } }]
                   }
-                }
+                },
+                "bounds": { "min": 0, "max": 1 }
               }
             ],
             "effects": [

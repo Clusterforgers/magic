@@ -27,9 +27,14 @@
                   "Count": [
                     { "Subtype": "Equipment" },
                     {
-                      "AttachedTo": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
-                    },
-                    { "Named": "Groom's Finery" }
+                      "AttachedTo": {
+                        "Each": [
+                          { "Type": "Creature" },
+                          { "ControlledBy": "You" },
+                          { "Named": "Groom's Finery" }
+                        ]
+                      }
+                    }
                   ]
                 },
                 "op": "Ge",

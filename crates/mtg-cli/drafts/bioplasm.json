@@ -29,9 +29,41 @@
                         "mods": [
                           {
                             "ModifyPT": {
-                              "power": { "Stat": { "of": { "Bound": "exiled" }, "stat": "Power" } },
+                              "power": {
+                                "Total": {
+                                  "of": [
+                                    { "Is": { "Bound": "exiled" } },
+                                    {
+                                      "AnyOf": [
+                                        { "In": "Battlefield" },
+                                        { "In": "Hand" },
+                                        { "In": "Library" },
+                                        { "In": "Graveyard" },
+                                        { "In": "Exile" },
+                                        { "In": "Stack" }
+                                      ]
+                                    }
+                                  ],
+                                  "stat": "Power"
+                                }
+                              },
                               "toughness": {
-                                "Stat": { "of": { "Bound": "exiled" }, "stat": "Toughness" }
+                                "Total": {
+                                  "of": [
+                                    { "Is": { "Bound": "exiled" } },
+                                    {
+                                      "AnyOf": [
+                                        { "In": "Battlefield" },
+                                        { "In": "Hand" },
+                                        { "In": "Library" },
+                                        { "In": "Graveyard" },
+                                        { "In": "Exile" },
+                                        { "In": "Stack" }
+                                      ]
+                                    }
+                                  ],
+                                  "stat": "Toughness"
+                                }
                               }
                             }
                           }

@@ -38,10 +38,15 @@
                                 { "Not": { "Subtype": "Aura" } },
                                 {
                                   "Not": {
-                                    "AttachedTo": { "Each": [{ "Type": "Creature" }, "Attacking"] }
+                                    "AttachedTo": {
+                                      "Each": [
+                                        { "Type": "Creature" },
+                                        "Attacking",
+                                        { "ControlledBy": "Opponents" }
+                                      ]
+                                    }
                                   }
-                                },
-                                { "Not": { "ControlledBy": "Opponents" } }
+                                }
                               ]
                             }
                           }
@@ -81,10 +86,15 @@
                                 { "Not": { "Subtype": "Aura" } },
                                 {
                                   "Not": {
-                                    "AttachedTo": { "Each": [{ "Type": "Creature" }, "Attacking"] }
+                                    "AttachedTo": {
+                                      "Each": [
+                                        { "Type": "Creature" },
+                                        "Attacking",
+                                        { "ControlledBy": "Opponents" }
+                                      ]
+                                    }
                                   }
-                                },
-                                { "Not": { "ControlledBy": "Opponents" } }
+                                }
                               ]
                             }
                           }

@@ -17,7 +17,17 @@
                     "Each": [
                       { "In": "Library" },
                       { "Is": { "Bound": "top" } },
-                      { "Compare": { "stat": "ManaValue", "op": "Le", "to": 5 } }
+                      { "Compare": { "stat": "ManaValue", "op": "Le", "to": 5 } },
+                      {
+                        "AnyOf": [
+                          { "Type": "Artifact" },
+                          { "Type": "Battle" },
+                          { "Type": "Creature" },
+                          { "Type": "Enchantment" },
+                          { "Type": "Land" },
+                          { "Type": "Planeswalker" }
+                        ]
+                      }
                     ]
                   },
                   "count": { "min": 0, "max": 2 },

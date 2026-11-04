@@ -19,7 +19,17 @@
                       { "Is": { "Bound": "top" } },
                       { "Not": { "Type": "Creature" } },
                       { "Not": { "Type": "Land" } },
-                      { "Compare": { "stat": "ManaValue", "op": "Le", "to": 3 } }
+                      { "Compare": { "stat": "ManaValue", "op": "Le", "to": 3 } },
+                      {
+                        "AnyOf": [
+                          { "Type": "Artifact" },
+                          { "Type": "Battle" },
+                          { "Type": "Creature" },
+                          { "Type": "Enchantment" },
+                          { "Type": "Land" },
+                          { "Type": "Planeswalker" }
+                        ]
+                      }
                     ]
                   },
                   "count": { "min": 0, "max": 2 },

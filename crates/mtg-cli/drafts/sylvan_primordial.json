@@ -18,7 +18,8 @@
                     "players": "Opponents",
                     "what": [{ "Not": { "Type": "Creature" } }]
                   }
-                }
+                },
+                "bounds": { "min": 0, "max": 1 }
               }
             ],
             "effects": [

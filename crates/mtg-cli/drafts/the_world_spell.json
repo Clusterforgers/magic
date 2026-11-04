@@ -19,7 +19,17 @@
                     "Each": [
                       { "In": "Library" },
                       { "Is": { "Bound": "top" } },
-                      { "Not": { "Subtype": "Saga" } }
+                      { "Not": { "Subtype": "Saga" } },
+                      {
+                        "AnyOf": [
+                          { "Type": "Artifact" },
+                          { "Type": "Battle" },
+                          { "Type": "Creature" },
+                          { "Type": "Enchantment" },
+                          { "Type": "Land" },
+                          { "Type": "Planeswalker" }
+                        ]
+                      }
                     ]
                   },
                   "count": { "min": 0, "max": 1 },
@@ -47,7 +57,17 @@
                     "Each": [
                       { "In": "Library" },
                       { "Is": { "Bound": "top" } },
-                      { "Not": { "Subtype": "Saga" } }
+                      { "Not": { "Subtype": "Saga" } },
+                      {
+                        "AnyOf": [
+                          { "Type": "Artifact" },
+                          { "Type": "Battle" },
+                          { "Type": "Creature" },
+                          { "Type": "Enchantment" },
+                          { "Type": "Land" },
+                          { "Type": "Planeswalker" }
+                        ]
+                      }
                     ]
                   },
                   "count": { "min": 0, "max": 1 },

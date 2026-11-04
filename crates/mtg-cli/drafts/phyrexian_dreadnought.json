@@ -27,7 +27,24 @@
                 "If": {
                   "condition": {
                     "Compare": {
-                      "left": { "Stat": { "of": { "Bound": "card" }, "stat": "Power" } },
+                      "left": {
+                        "Total": {
+                          "of": [
+                            { "Is": { "Bound": "card" } },
+                            {
+                              "AnyOf": [
+                                { "In": "Battlefield" },
+                                { "In": "Hand" },
+                                { "In": "Library" },
+                                { "In": "Graveyard" },
+                                { "In": "Exile" },
+                                { "In": "Stack" }
+                              ]
+                            }
+                          ],
+                          "stat": "Power"
+                        }
+                      },
                       "op": "Lt",
                       "right": 12
                     }
@@ -39,7 +56,24 @@
                 "If": {
                   "condition": {
                     "Compare": {
-                      "left": { "Stat": { "of": { "Bound": "card" }, "stat": "Power" } },
+                      "left": {
+                        "Total": {
+                          "of": [
+                            { "Is": { "Bound": "card" } },
+                            {
+                              "AnyOf": [
+                                { "In": "Battlefield" },
+                                { "In": "Hand" },
+                                { "In": "Library" },
+                                { "In": "Graveyard" },
+                                { "In": "Exile" },
+                                { "In": "Stack" }
+                              ]
+                            }
+                          ],
+                          "stat": "Power"
+                        }
+                      },
                       "op": "Ge",
                       "right": 12
                     }
