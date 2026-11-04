@@ -179,6 +179,7 @@ pub(crate) fn reads_of_ref(reference: &Ref) -> Traits {
         | Ref::Defending
         | Ref::Attacked
         | Ref::MostLife
+        | Ref::ActivePlayer
         | Ref::Bound(_)
         | Ref::Paid => Traits::NONE,
         Ref::Remembered { on, .. } => reads_of_ref(on),
@@ -231,6 +232,7 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         | Pred::CastWith(_)
         | Pred::TopOfLibrary
         | Pred::BottomOfLibrary
+        | Pred::Kicked
         | Pred::Suspended => Traits::NONE,
         Pred::WasCast { by, .. } => by.as_ref().map_or(Traits::NONE, reads_of_ref),
         Pred::GreatestAmong { stat, group } => reads_of_stat(*stat).or(reads_of_selector(group)),

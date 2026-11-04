@@ -7,6 +7,7 @@
 
 pub mod ability;
 pub mod amount;
+pub mod amount_more;
 pub mod amount_when;
 pub mod card;
 pub mod condition;
@@ -46,6 +47,7 @@ pub mod triggers_did;
 pub mod triggers_more;
 pub mod valid;
 pub mod valid_atoms;
+pub mod valid_more;
 
 #[cfg(test)]
 mod tests;

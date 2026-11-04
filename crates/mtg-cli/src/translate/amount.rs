@@ -37,9 +37,12 @@ pub fn amount(ctx: &Ctx, text: &str) -> Tr<Value> {
         return Ok(json!(number));
     }
     if let Some(inner) = text.strip_prefix('-')
-        && let Some(value) = negate(ctx, inner)
+        && inner
+            .chars()
+            .next()
+            .is_some_and(|c| c.is_ascii_alphabetic())
     {
-        return Ok(value);
+        return negate(ctx, inner);
     }
     match ctx.svar(text) {
         Some(expression) => expression_amount(ctx, expression),
@@ -47,13 +50,13 @@ pub fn amount(ctx: &Ctx, text: &str) -> Tr<Value> {
     }
 }
 
-/// `-X` and `-N`: the amount times minus one.
-fn negate(ctx: &Ctx, inner: &str) -> Option<Value> {
-    let value = amount(ctx, inner).ok()?;
-    match value.as_i64() {
-        Some(number) => Some(json!(-number)),
-        None => Some(json!({"Times": {"by": -1, "of": value}})),
-    }
+/// `-X`: the amount times minus one; a part that cannot be read is the gap, not the negation.
+fn negate(ctx: &Ctx, inner: &str) -> Tr<Value> {
+    let value = amount(ctx, inner)?;
+    Ok(match value.as_i64() {
+        Some(number) => json!(-number),
+        None => json!({"Times": {"by": -1, "of": value}}),
+    })
 }
 
 /// The amount of the value of a named part.
@@ -117,6 +120,9 @@ fn event_amount(ctx: &Ctx, expression: &str) -> Tr<Option<Value>> {
             } else {
                 "Opponents"
             };
+            if let Some(found) = super::amount_more::highest(ctx, who, what) {
+                return found.map(Some);
+            }
             let key = match what {
                 "Amount" => "Players",
                 "HighestLifeTotal" => "HighestLife",
@@ -126,9 +132,21 @@ fn event_amount(ctx: &Ctx, expression: &str) -> Tr<Option<Value>> {
             };
             return Ok(Some(json!({ key: who })));
         }
+        "PlayerCountPropertyYou" => {
+            return match super::amount_more::player_amount(head, what, &json!("You")) {
+                Some(found) => found.map(Some),
+                None => unmapped(format!("amount:{head}${what}")),
+            };
+        }
+        "TargetedPlayer" => {
+            return match super::amount_more::player_amount(head, what, &ctx.player_target()?) {
+                Some(found) => found.map(Some),
+                None => unmapped(format!("amount:{head}${what}")),
+            };
+        }
         "TriggeredCard" => super::triggered::resolve(ctx.trigger.as_ref(), "TriggeredCard")?,
         "Sacrificed" => json!("Paid"),
-        "Remembered" if what != "Amount" => match &ctx.remembered {
+        "Remembered" | "RememberedLKI" if what != "Amount" => match &ctx.remembered {
             Some(remembered) => remembered.clone(),
             None => return unmapped("amount:Remembered-without-a-change"),
         },
@@ -162,6 +180,8 @@ fn apply_steps(ctx: &Ctx, mut value: Value, steps: &str) -> Tr<Value> {
             Some(("Minus", n)) => plus(ctx, &value, n, true)?,
             Some(("Times", n)) => times(&value, parse_number(n)?),
             None if step == "Twice" => times(&value, 2),
+            None if step == "HalfUp" => json!({"Half": {"of": value, "up": true}}),
+            None if step == "HalfDown" => json!({"Half": {"of": value, "up": false}}),
             _ => return unmapped(format!("amount:Count/{}", head(step))),
         };
     }
@@ -198,13 +218,12 @@ fn count_base(ctx: &Ctx, base: &str) -> Tr<Value> {
     if let Some(chosen) = super::amount_when::when(ctx, base) {
         return chosen;
     }
-    let (word, rest) = base.split_once(' ').unwrap_or((base, ""));
+    if let Some(found) = super::amount_more::count(ctx, base) {
+        return found;
+    }
+    let word = base.split_once(' ').map_or(base, |(word, _)| word);
     match word {
         "xPaid" => Ok(json!("X")),
-        "Valid" => Ok(json!({"Count": selector_in(ctx, rest, None)?})),
-        "ValidGraveyard" => Ok(json!({"Count": selector_in(ctx, rest, Some("Graveyard"))?})),
-        "ValidHand" => Ok(json!({"Count": selector_in(ctx, rest, Some("Hand"))?})),
-        "ValidExile" => Ok(json!({"Count": selector_in(ctx, rest, Some("Exile"))?})),
         "CardPower" => Ok(stat_of_this("Power")),
         "CardToughness" => Ok(stat_of_this("Toughness")),
         "CardManaCost" => Ok(stat_of_this("ManaValue")),

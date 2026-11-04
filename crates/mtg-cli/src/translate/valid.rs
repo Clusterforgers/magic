@@ -27,7 +27,8 @@ pub fn cmp(word: &str) -> Option<&'static str> {
 fn property(ctx: &Ctx, prop: &str) -> Tr<Vec<Value>> {
     let one = |value: Value| Ok(vec![value]);
     match prop {
-        "YouCtrl" => return one(json!({"ControlledBy": "You"})),
+        // Teams do not exist at our tables: a player's team is the player.
+        "YouCtrl" | "YourTeamCtrl" => return one(json!({"ControlledBy": "You"})),
         "OppCtrl" => return one(json!({"ControlledBy": "Opponents"})),
         "YouDontCtrl" => return one(json!({"Not": {"ControlledBy": "You"}})),
         "YouOwn" => return one(json!({"OwnedBy": "You"})),
@@ -79,10 +80,10 @@ fn property(ctx: &Ctx, prop: &str) -> Tr<Vec<Value>> {
             return one(json!({"AnyOf": [
                 {"Supertype": "Legendary"}, {"Type": "Artifact"}, {"Subtype": "Saga"}]}));
         }
-        "inZoneGraveyard" => return one(json!({"In": "Graveyard"})),
-        "inZoneHand" => return one(json!({"In": "Hand"})),
-        "inZoneExile" => return one(json!({"In": "Exile"})),
         _ => {}
+    }
+    if let Some(preds) = super::valid_more::property(ctx, prop)? {
+        return Ok(preds);
     }
     if let Some(preds) = super::valid_atoms::atom(prop) {
         return Ok(preds);
@@ -90,7 +91,7 @@ fn property(ctx: &Ctx, prop: &str) -> Tr<Vec<Value>> {
     if let Some(preds) = typed_property(prop) {
         return Ok(preds);
     }
-    if let Some(preds) = numeric_property(prop) {
+    if let Some(preds) = numeric_property(ctx, prop)? {
         return Ok(preds);
     }
     if let Some(word) = prop.strip_prefix("with")
@@ -159,22 +160,31 @@ fn capitalize(word: &str) -> String {
 }
 
 /// `powerGE4`, `toughnessLE2`, `cmcEQ3`.
-fn numeric_property(prop: &str) -> Option<Vec<Value>> {
-    let (stat, rest) = [
+fn numeric_property(ctx: &Ctx, prop: &str) -> Tr<Option<Vec<Value>>> {
+    let Some((stat, rest)) = [
         ("power", "Power"),
         ("toughness", "Toughness"),
         ("cmc", "ManaValue"),
     ]
     .iter()
-    .find_map(|(word, stat)| prop.strip_prefix(word).map(|rest| (*stat, rest)))?;
-    let op = cmp(rest.get(..2)?)?;
-    let bound = rest.get(2..)?;
-    let to = if bound == "X" {
-        json!("X")
-    } else {
-        json!(bound.parse::<i32>().ok()?)
+    .find_map(|(word, stat)| prop.strip_prefix(word).map(|rest| (*stat, rest))) else {
+        return Ok(None);
     };
-    Some(vec![json!({"Compare": {"stat": stat, "op": op, "to": to}})])
+    let Some((op, bound)) = rest.get(..2).and_then(cmp).zip(rest.get(2..)) else {
+        return Ok(None);
+    };
+    let named = bound
+        .chars()
+        .next()
+        .is_some_and(|c| c.is_ascii_uppercase() || c.is_ascii_digit());
+    if !named || !bound.chars().all(|c| c.is_ascii_alphanumeric()) {
+        return Ok(None);
+    }
+    // The bound is a number or the part that names it (`cmcLEX` reads the part `X`).
+    let to = amount(ctx, bound)?;
+    Ok(Some(vec![
+        json!({"Compare": {"stat": stat, "op": op, "to": to}}),
+    ]))
 }
 
 /// The predicates of the base word of an alternative (`Creature`, `Permanent`, `Elf`).
@@ -190,11 +200,16 @@ fn base(ctx: &Ctx, word: &str) -> Tr<Vec<Value>> {
     }
 }
 
-/// The negation of the predicates of one property (`!token`): only one predicate can be negated.
-fn negated(mut preds: Vec<Value>) -> Tr<Value> {
-    match (preds.pop(), preds.is_empty()) {
-        (Some(pred), true) => Ok(json!({ "Not": pred })),
-        _ => unmapped("valid:negation-of-several"),
+/// The negation of the predicates of one property (`!token`); several predicates are negated by De Morgan: some of them fails.
+fn negated(preds: Vec<Value>) -> Tr<Value> {
+    let mut fails: Vec<Value> = preds
+        .into_iter()
+        .map(|pred| json!({ "Not": pred }))
+        .collect();
+    match fails.len() {
+        0 => unmapped("valid:negation-of-nothing"),
+        1 => Ok(fails.remove(0)),
+        _ => Ok(json!({ "AnyOf": fails })),
     }
 }
 

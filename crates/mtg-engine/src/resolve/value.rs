@@ -836,6 +836,11 @@ impl<'a> Scope<'a> {
                 .map(Target::Player)
                 .collect(),
             Ref::MostLife => self.most_life().into_iter().map(Target::Player).collect(),
+            Ref::ActivePlayer => state
+                .active_player()
+                .map(Target::Player)
+                .into_iter()
+                .collect(),
             Ref::Bound(name) => self
                 .bindings
                 .get(name)
@@ -1251,6 +1256,7 @@ impl<'a> Scope<'a> {
             | Pred::TargetedBy(_)
             | Pred::SingleTarget
             | Pred::GreatestAmong { .. }
+            | Pred::Kicked
             | Pred::Suspended => self.fe1a_pred(pred, reference, seen)?,
             Pred::Not(inner) => !self.pred(inner, reference, seen)?,
             Pred::AnyOf(any) => self.w6d_any_of(any, reference, seen)?,

@@ -41,6 +41,11 @@ fn world() -> World {
             "Equipment",
             "Plains",
             "Island",
+            "Assassin",
+            "Mercenary",
+            "Pirate",
+            "Rogue",
+            "Warlock",
         ]
         .map(str::to_owned),
     );
@@ -618,6 +623,8 @@ mod fg4b;
 mod fg4b_names;
 mod fg4ba;
 mod fg4d_amounts;
+mod fg5_amounts;
+mod fg5_valid;
 mod gn2;
 mod gn2_cant;
 mod gn2_play;

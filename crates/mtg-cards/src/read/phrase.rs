@@ -55,6 +55,7 @@ pub(super) fn who(ctx: &Ctx, reference: &Ref) -> String {
         Ref::Defending => "the defending player".to_owned(),
         Ref::Attacked => "the attacked player".to_owned(),
         Ref::MostLife => "the player with the most life".to_owned(),
+        Ref::ActivePlayer => "the active player".to_owned(),
         Ref::Bound(name) => format!("\u{201c}{name}\u{201d}"),
         Ref::Paid => "what was paid".to_owned(),
         Ref::Remembered { on, slot } => format!("what {} remembers as {slot}", who(ctx, on)),

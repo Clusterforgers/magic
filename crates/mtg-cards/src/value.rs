@@ -287,6 +287,10 @@ pub enum TallyEvent {
     TokenCreated,
     /// A spell was cast (the object is the spell, as it was cast).
     SpellCast,
+    /// A permanent entered the battlefield, a token included (the object as it entered, under the controller it entered with).
+    Entered,
+    /// A permanent was put into a graveyard from the battlefield (the object as it last existed there, tokens included).
+    Died,
 }
 
 /// Which result of the latest die roll an amount reads.
