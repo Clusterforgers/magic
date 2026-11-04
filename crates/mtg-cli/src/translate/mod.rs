@@ -13,6 +13,7 @@ pub mod cost;
 pub mod ctx;
 pub mod effects;
 pub mod effects_effect;
+pub mod effects_game;
 pub mod effects_loop;
 pub mod effects_obj;
 pub mod effects_zone;
