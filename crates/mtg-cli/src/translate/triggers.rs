@@ -287,12 +287,21 @@ fn spell_cast(ctx: &Ctx, p: &Params) -> Tr<Value> {
             "ValidCard",
             "ValidActivatingPlayer",
             "ActivatorThisTurnCast",
+            "TargetsValid",
         ],
     )?;
     let by = player_ref(p.get("ValidActivatingPlayer"))?;
     let mut pattern = json!({ "by": by });
     if let Some(valid) = p.get("ValidCard") {
         pattern["what"] = json!(selector_any(ctx, valid)?);
+    }
+    // "Whenever you cast a spell that targets a creature you control": one of its targets matches.
+    if let Some(valid) = p.get("TargetsValid") {
+        let targeted = selector_any(ctx, valid)?;
+        match pattern.get_mut("what").and_then(Value::as_array_mut) {
+            Some(what) => what.push(json!({ "Targeting": targeted })),
+            None => pattern["what"] = json!([{ "Targeting": targeted }]),
+        }
     }
     super::triggers_more::nth_spell(p, json!({ "SpellCast": pattern }))
 }

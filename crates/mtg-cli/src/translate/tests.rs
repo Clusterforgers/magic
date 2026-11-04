@@ -637,6 +637,7 @@ mod fg5e_triggers;
 mod fg5e_verbs;
 mod fg5ea1_verbs;
 mod fg5ea2;
+mod fg5ka;
 mod fg5s;
 mod fg5s_arrest;
 mod fg5s_block;
