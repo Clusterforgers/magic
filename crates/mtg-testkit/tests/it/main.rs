@@ -324,6 +324,7 @@ mod manual_triggers;
 mod many_seats;
 mod mayhem;
 mod mayhem_fuzz;
+mod memory_after_leaving;
 mod mill_effects;
 mod miracle;
 mod miracle_fuzz;
