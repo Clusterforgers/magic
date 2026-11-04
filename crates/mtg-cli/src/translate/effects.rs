@@ -53,12 +53,7 @@ fn unless_pays(ctx: &Ctx, p: &Params, unless: &str, effects: &[Value]) -> Tr<Vec
         Some(other) => return unmapped(format!("key:Unless.UnlessPayer={other}")),
         None => return unmapped("key:Unless.no-UnlessPayer"),
     };
-    let Value::String(cost) = super::cost::cost(ctx, unless)? else {
-        return unmapped("key:Unless.UnlessCost-shape");
-    };
-    if cost.contains('X') {
-        return unmapped("key:Unless.UnlessCost-X");
-    }
+    let cost = unless_cost(ctx, unless)?;
     Ok(vec![
         json!({"Pay": {"who": who, "cost": cost, "unpaid": effects}}),
     ])
@@ -69,13 +64,30 @@ fn pays_to_do(ctx: &Ctx, p: &Params, cost: &str, effects: &[Value]) -> Tr<Vec<Va
     if p.get("UnlessPayer") != Some("You") {
         return unmapped("key:Unless.UnlessSwitched-payer");
     }
-    let Value::String(cost) = super::cost::cost(ctx, cost)? else {
-        return unmapped("key:Unless.UnlessCost-shape");
-    };
-    if cost.contains('X') {
+    let cost = unless_cost(ctx, cost)?;
+    Ok(vec![json!({"Pay": {"cost": cost, "paid": effects}})])
+}
+
+/// The cost an `UnlessCost$` names: mana and the items `Pay` asks the payer for (life, discard, sacrifice, energy);
+/// a cost that reads an announced X stays a gap because nobody announces it here.
+fn unless_cost(ctx: &Ctx, text: &str) -> Tr<Value> {
+    let cost = super::cost::cost(ctx, text)?;
+    if reads_x(&cost) {
         return unmapped("key:Unless.UnlessCost-X");
     }
-    Ok(vec![json!({"Pay": {"cost": cost, "paid": effects}})])
+    Ok(cost)
+}
+
+/// Whether a serialized cost holds an `{X}` of mana or the announced X as an amount.
+fn reads_x(value: &Value) -> bool {
+    match value {
+        Value::String(text) => text == "X" || text.contains("X}"),
+        Value::Array(items) => items.iter().any(reads_x),
+        Value::Object(fields) => fields
+            .iter()
+            .any(|(key, inner)| key == "X" || reads_x(inner)),
+        _ => false,
+    }
 }
 
 /// The API a line names.

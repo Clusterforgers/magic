@@ -117,11 +117,19 @@ fn choose_and_move(ctx: &mut Ctx, p: &Params, origin: &str, destination: &str) -
             "Tapped",
             "LibraryPosition",
             "Shuffle",
+            "DefinedPlayer",
+            "Chooser",
+            "ValidTgts",
         ],
     )?;
+    let (owner, chooser) = defined_player(ctx, p)?;
     let mut filter = selector_in(ctx, p.get("ChangeType").unwrap_or("Card"), Some(origin))?;
-    if !filter.iter().any(|pred| pred.get("OwnedBy").is_some()) {
-        filter.push(json!({"OwnedBy": "You"}));
+    if filter.iter().any(|pred| pred.get("OwnedBy").is_some()) {
+        if owner != json!("You") {
+            return unmapped("key:ChangeZone.Choose.DefinedPlayer");
+        }
+    } else {
+        filter.push(json!({"OwnedBy": owner}));
     }
     let max = amount(ctx, p.get("ChangeNum").unwrap_or("1"))?;
     let min = if p.get("Mandatory") == Some("True") && p.get("Optional") != Some("True") {
@@ -137,9 +145,40 @@ fn choose_and_move(ctx: &mut Ctx, p: &Params, origin: &str, destination: &str) -
         }
         json!({"ChooseAtRandom": {"from": {"Each": filter}, "count": max, "as": bind}})
     } else {
-        json!({"Choose": {"from": {"Each": filter}, "count": {"min": min, "max": max}, "as": bind}})
+        json!({"Choose": {"who": chooser, "from": {"Each": filter}, "count": {"min": min, "max": max}, "as": bind}})
     };
     Ok(vec![choose, moves(&chosen, goes(p, destination)?)])
+}
+
+/// `DefinedPlayer$` and `Chooser$` of a choice from a hidden zone: whose cards are chosen from (you, or the one player the
+/// line targets with `ValidTgts$ Player` or `Opponent`) and who chooses (the same player unless `Chooser$ You`).
+fn defined_player(ctx: &mut Ctx, p: &Params) -> Tr<(Value, Value)> {
+    let targeted = match (p.get("DefinedPlayer"), p.has("ValidTgts")) {
+        (None, false) if !p.has("Chooser") => return Ok((json!("You"), json!("You"))),
+        (Some("You"), false) => false,
+        (Some("Targeted"), true)
+            if matches!(p.get("ValidTgts"), Some("Player" | "Opponent"))
+                && !p.has("TargetMin")
+                && !p.has("TargetMax") =>
+        {
+            true
+        }
+        (None, true) => return unmapped("key:ChangeZone.Choose.ValidTgts"),
+        (None, false) => return unmapped("key:ChangeZone.Choose.Chooser"),
+        _ => return unmapped("key:ChangeZone.Choose.DefinedPlayer"),
+    };
+    let owner = if targeted {
+        subject(ctx, p, "You", None)?
+    } else {
+        json!("You")
+    };
+    let chooser = match p.get("Chooser") {
+        None => owner.clone(),
+        Some("You") => json!("You"),
+        Some("Targeted") if targeted => owner.clone(),
+        Some(_) => return unmapped("key:ChangeZone.Choose.Chooser"),
+    };
+    Ok((owner, chooser))
 }
 
 /// The library search: the search, the move of what was found, then the shuffle.
