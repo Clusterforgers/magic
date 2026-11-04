@@ -29,6 +29,8 @@ pub struct World {
     pub tokens: BTreeMap<String, Face>,
     /// The names of the checkout's cards and tokens.
     pub names: BTreeSet<String>,
+    /// The slugs of the cards the database stores, when the run reads it: a name a card conjures is checked against them.
+    pub stored: Option<BTreeSet<String>>,
 }
 
 impl World {
@@ -48,6 +50,7 @@ impl World {
             subtypes,
             tokens,
             names,
+            stored: None,
         }
     }
 }

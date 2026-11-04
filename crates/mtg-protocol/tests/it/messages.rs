@@ -796,6 +796,7 @@ fn every_event_view_variant_round_trips() {
     let player = PlayerId(1);
     let hidden = [
         HiddenEvent::CardDrawn { player },
+        HiddenEvent::CardConjured { player },
         HiddenEvent::HandDealt { player, count: 7 },
         HiddenEvent::LibraryShuffled { player },
         HiddenEvent::MulliganTaken { player },

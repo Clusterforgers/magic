@@ -67,6 +67,8 @@ fn reports(effect: &Effect) -> Reports {
         | Effect::BecomeDayNight { .. }
         | Effect::Amass { .. }
         | Effect::Incubate { .. }
+        | Effect::Conjure { .. }
+        | Effect::Seek { .. }
         | Effect::Venture { .. }
         | Effect::UnlockDoor { .. }
         | Effect::TakeInitiative { .. }

@@ -2464,6 +2464,29 @@ impl Walker<'_> {
                 w.at("who", |w| w.reference(who, Kind::Player));
                 w.at("count", |w| w.amount(count));
             }
+            Effect::Conjure {
+                who,
+                name,
+                zone,
+                count,
+            } => {
+                if name.is_empty() {
+                    w.problem("a conjured card has a name");
+                }
+                if !matches!(
+                    zone,
+                    ZoneKind::Hand | ZoneKind::Library | ZoneKind::Graveyard | ZoneKind::Exile
+                ) {
+                    w.problem("a card is conjured into a hand, a library, a graveyard or exile");
+                }
+                w.at("who", |w| w.reference(who, Kind::Player));
+                w.at("count", |w| w.amount(count));
+            }
+            Effect::Seek { who, filter, count } => {
+                w.at("who", |w| w.reference(who, Kind::Player));
+                w.at("filter", |w| w.selector(filter));
+                w.at("count", |w| w.amount(count));
+            }
             Effect::Mill { who, count, bind } => {
                 w.at("who", |w| w.reference(who, Kind::Player));
                 w.at("count", |w| w.amount(count));
@@ -4472,6 +4495,28 @@ mod tests {
         #[case] expected: &[&str],
     ) {
         assert_eq!(problems(&ability), expected);
+    }
+
+    #[rstest]
+    #[case::conjure_into_a_hand(
+        r#"{"Spell":{"effects":[{"Conjure":{"name":"Ponder","zone":"Hand"}}]}}"#,
+        0
+    )]
+    #[case::conjure_into_exile(
+        r#"{"Spell":{"effects":[{"Conjure":{"name":"Ponder","zone":"Exile"}}]}}"#,
+        0
+    )]
+    #[case::conjure_onto_the_battlefield(
+        r#"{"Spell":{"effects":[{"Conjure":{"name":"Ponder","zone":"Battlefield"}}]}}"#,
+        1
+    )]
+    #[case::conjure_nothing(r#"{"Spell":{"effects":[{"Conjure":{"name":"","zone":"Hand"}}]}}"#, 1)]
+    #[case::seek_a_land(r#"{"Spell":{"effects":[{"Seek":{"filter":[{"Type":"Land"}]}}]}}"#, 0)]
+    fn conjure_names_a_card_and_a_zone_that_takes_new_cards(
+        #[case] ability: &str,
+        #[case] expected: usize,
+    ) {
+        assert_eq!(problems(ability).len(), expected, "{ability}");
     }
 
     #[rstest]
