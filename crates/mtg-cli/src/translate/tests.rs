@@ -322,6 +322,13 @@ fn gaps(text: &str) -> Vec<String> {
         [{"Type": "Artifact"}, {"ControlledBy": "You"}]}, "op": "Ge", "right": 1}},
         "then": [{"GainLife": {"amount": 2}}]}}]}})
 )]
+#[case::a_condition_on_a_target(
+    "Name:Test Boon2\nTypes:Sorcery\nA:SP$ Tap | ValidTgts$ Creature | SubAbility$ Gain\nSVar:Gain:DB$ GainLife | LifeAmount$ 2 | ConditionDefined$ Targeted | ConditionPresent$ Creature.YouCtrl | ConditionCompare$ EQ1\n",
+    json!({"Spell": {"targets": [{"what": {"Object": [{"Type": "Creature"}]}}],
+        "effects": [{"Tap": {"what": {"Target": 0}}},
+            {"If": {"condition": {"CountOf": {"subject": {"Target": 0}, "selector": [{"Type": "Creature"}, {"ControlledBy": "You"}], "op": "Eq", "right": 1}},
+        "then": [{"GainLife": {"amount": 2}}]}}]}})
+)]
 #[case::a_creature_deals_damage_equal_to_its_power(
     "Name:Test Bite\nTypes:Sorcery\nA:SP$ Pump | ValidTgts$ Creature.YouCtrl | SubAbility$ Hit\nSVar:Hit:DB$ DealDamage | ValidTgts$ Creature.YouDontCtrl | NumDmg$ X | DamageSource$ ParentTarget\nSVar:X:ParentTargeted$CardPower\n",
     json!({"Spell": {"targets": [

@@ -141,24 +141,29 @@ fn a_trigger_resolves_against_the_targets_that_are_still_legal_when_it_has_two()
 }
 
 #[rstest]
-#[case::the_condition_stays_true(20, ResolutionOutcome::Resolved, 1)]
-#[case::the_condition_is_gone_by_the_time_it_resolves(12, ResolutionOutcome::Lapsed, 0)]
+#[case::the_condition_stays_true(20, ResolutionOutcome::Resolved, 1, false)]
+#[case::the_condition_is_gone_by_the_time_it_resolves(12, ResolutionOutcome::Lapsed, 0, false)]
+#[case::a_trigger_time_only_check_is_not_repeated(12, ResolutionOutcome::Resolved, 1, true)]
 fn an_intervening_if_is_checked_again_as_the_trigger_resolves(
     #[case] life: i32,
     #[case] outcome: ResolutionOutcome,
     #[case] drawn: usize,
+    #[case] at_trigger_only: bool,
 ) -> Result<(), ScriptError> {
     // "At the beginning of your upkeep, if you have 10 or more life, draw a card."
+    let check = Condition::Compare {
+        left: Amount::Life(Ref::You),
+        op: Cmp::Ge,
+        right: Amount::Fixed(10),
+    };
+    let check = if at_trigger_only {
+        Condition::AtTrigger(Box::new(check))
+    } else {
+        check
+    };
     let tithe = artifact_with(
         "Tithe",
-        vec![only_if(
-            trigger(when::your_upkeep(), vec![draw(1)]),
-            Condition::Compare {
-                left: Amount::Life(Ref::You),
-                op: Cmp::Ge,
-                right: Amount::Fixed(10),
-            },
-        )],
+        vec![only_if(trigger(when::your_upkeep(), vec![draw(1)]), check)],
     );
     let mut driver = Driver::from_scenario(
         Scenario::new(2)

@@ -917,7 +917,11 @@ impl<'a> Walker<'a> {
                 self.at("left", |w| w.amount(left));
                 self.at("right", |w| w.amount(right));
             }
-            Condition::Matches { subject, selector } => {
+            Condition::AtTrigger(inner) => self.at("inner", |w| w.condition(inner)),
+            Condition::Matches { subject, selector }
+            | Condition::CountOf {
+                subject, selector, ..
+            } => {
                 self.at("subject", |w| w.reference(subject, Kind::Object));
                 self.at("selector", |w| w.selector(selector));
             }
