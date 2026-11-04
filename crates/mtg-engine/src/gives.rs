@@ -109,7 +109,9 @@ impl Gives {
             Modification::CantBeTurnedFaceUp => GivenRule::CantBeTurnedFaceUp,
             Modification::LoseAbilities => GivenRule::LoseAbilities,
             Modification::RemoveKeyword(_) | Modification::LockKeyword(_) => GivenRule::LoseKeyword,
-            Modification::GrantAbility(_) => GivenRule::GainAbility,
+            Modification::GrantAbility(_) | Modification::GainAbilities(_) => {
+                GivenRule::GainAbility
+            }
             Modification::SetController(_) => GivenRule::SetController,
             Modification::SwitchPowerToughness => GivenRule::SwitchPowerToughness,
             Modification::AddType(_)
@@ -160,6 +162,7 @@ pub fn gives(state: &GameState, id: ObjectId) -> Option<Gives> {
 fn from(state: &GameState, applied: &Applied, id: ObjectId) -> bool {
     match applied.origin {
         Grant::Static { source, .. } => source == id,
+        Grant::Borrowed { .. } => false,
         Grant::Effect(effect) => state
             .effects()
             .iter()

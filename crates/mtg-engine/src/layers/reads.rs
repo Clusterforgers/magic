@@ -63,6 +63,7 @@ pub(crate) fn writes(modification: &Modification) -> Traits {
         | Modification::SwitchPowerToughness => Traits::POWER.or(Traits::TOUGHNESS),
         // An ability that is given adds effects (the pass finds them as they come) and changes none that exist.
         Modification::GrantAbility(_)
+        | Modification::GainAbilities(_)
         | Modification::CantAttack
         | Modification::CantAttackYou { .. }
         | Modification::CantBlock
@@ -100,6 +101,7 @@ pub(crate) fn writes_of_wanted(wanted: &Wanted) -> Traits {
             Traits::POWER.or(Traits::TOUGHNESS)
         }
         Wanted::GrantAbility(_)
+        | Wanted::GainAbilitiesOf(_)
         | Wanted::RemoveSupertype(_)
         | Wanted::AddSupertype(_)
         | Wanted::SetName(_)
@@ -125,7 +127,7 @@ pub(crate) fn reads_of_modification(wanted: &Wanted) -> Traits {
         Wanted::ModifyPT { power, toughness } | Wanted::SetPT { power, toughness } => {
             reads_of_amount(power).or(reads_of_amount(toughness))
         }
-        Wanted::SetController(who) => reads_of_ref(who),
+        Wanted::SetController(who) | Wanted::GainAbilitiesOf(who) => reads_of_ref(who),
         Wanted::CantBeBlockedBy(blockers) | Wanted::CanBlockOnly(blockers) => {
             reads_of_selector(blockers)
         }

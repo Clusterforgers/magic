@@ -84,6 +84,19 @@ impl Selector {
     }
 }
 
+/// An activated ability printed on a card, which another object has (`Modification::GainAbilities`).
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
+pub struct Borrowed {
+    /// The card the ability is printed on.
+    pub donor: ObjectId,
+    /// The ability's index among the rules of that card.
+    pub index: usize,
+    /// The ability.
+    #[cfg_attr(feature = "ts", ts(type = "unknown"))]
+    pub body: Arc<Ability>,
+}
+
 /// What an effect changes.
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 #[cfg_attr(feature = "ts", derive(ts_rs::TS))]
@@ -113,6 +126,10 @@ pub enum Modification {
     LockKeyword(#[cfg_attr(feature = "ts", ts(type = "unknown"))] Keyword),
     /// Gives an activated or a triggered ability (layer 6); `ability_reader` lists it under an address of its own.
     GrantAbility(#[cfg_attr(feature = "ts", ts(type = "unknown"))] Arc<Ability>),
+    /// Gives the activated abilities printed on other cards (layer 6): the cards the static ability named when the layers
+    /// were worked out, each with its ability and its place among the rules of its card; `ability_reader` lists each under an
+    /// address of its own.
+    GainAbilities(Vec<Borrowed>),
     /// Takes away every ability the object has so far (layer 6): the printed ones, the plain mana abilities and
     /// those granted earlier. What is granted after it still counts.
     LoseAbilities,
@@ -209,6 +226,7 @@ impl Modification {
             | Modification::LockKeyword(_)
             | Modification::RemoveKeyword(_)
             | Modification::GrantAbility(_)
+            | Modification::GainAbilities(_)
             | Modification::LoseAbilities => Layer::Ability,
             Modification::SetPowerToughness { .. } => Layer::PtSet,
             Modification::ModifyPowerToughness { .. } => Layer::PtModify,
@@ -290,6 +308,7 @@ impl Modification {
             | Modification::RemoveKeyword(_)
             | Modification::LockKeyword(_)
             | Modification::GrantAbility(_)
+            | Modification::GainAbilities(_)
             | Modification::CantAttack
             | Modification::CantAttackYou { .. }
             | Modification::CantBlock

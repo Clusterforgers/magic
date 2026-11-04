@@ -578,12 +578,141 @@ fn damage_dealt_by_a_wall_of_toughness(line: &str) -> i32 {
 }
 
 fn life_of(driver: &Driver, seat: usize) -> i32 {
-    driver.state().player(PlayerId::from_index(seat)).unwrap().life()
+    driver
+        .state()
+        .player(PlayerId::from_index(seat))
+        .unwrap()
+        .life()
 }
 
 #[rstest]
 #[case::with_the_line("S:Mode$ CombatDamageToughness | ValidCard$ Creature.YouCtrl", 5)]
 #[case::without_it("", 0)]
-fn the_translated_line_makes_a_creature_hit_for_its_toughness(#[case] line: &str, #[case] dealt: i32) {
+fn the_translated_line_makes_a_creature_hit_for_its_toughness(
+    #[case] line: &str,
+    #[case] dealt: i32,
+) {
     assert_eq!(damage_dealt_by_a_wall_of_toughness(line), dealt);
+}
+
+const OOZE: &str = "Name:Necrotic Ooze\nTypes:Creature Ooze\nPT:2/2\nS:Mode$ Continuous | AffectedDefined$ Self | EffectZone$ Battlefield | GainsAbilitiesOf$ Creature | GainsAbilitiesOfZones$ Graveyard | Description$ As long as CARDNAME is on the battlefield, it has all activated abilities of all creature cards in all graveyards.\n";
+
+const SHAMAN: &str = "Name:Shaman\nTypes:Creature Elf\nPT:1/1\nA:AB$ GainLife | Cost$ T | LifeAmount$ 3 | SpellDescription$ You gain 3 life.\n";
+
+#[rstest]
+#[case::creature_cards_in_graveyards(
+    "GainsAbilitiesOf$ Creature | GainsAbilitiesOfZones$ Graveyard",
+    json!({"GainAbilitiesOf": {"Each": [{"Type": "Creature"}, {"In": "Graveyard"}]}})
+)]
+#[case::creature_cards_in_your_graveyard(
+    "GainsAbilitiesOf$ Creature.YouOwn | GainsAbilitiesOfZones$ Graveyard",
+    json!({"GainAbilitiesOf": {"Each": [{"Type": "Creature"}, {"OwnedBy": "You"}, {"In": "Graveyard"}]}})
+)]
+fn a_static_that_has_the_abilities_of_other_cards_names_them_by_zone(
+    #[case] words: &str,
+    #[case] modification: Value,
+) {
+    let line =
+        format!("S:Mode$ Continuous | AffectedDefined$ Self | EffectZone$ Battlefield | {words}");
+    assert_eq!(
+        abilities(&format!("Name:Ooze\nTypes:Creature Ooze\nPT:2/2\n{line}\n")),
+        vec![json!({"Static": {"affected": "This", "mods": [modification]}})]
+    );
+}
+
+#[rstest]
+#[case::on_the_battlefield(
+    "GainsAbilitiesOf$ Creature.Other",
+    "key:Static.Continuous.GainsAbilitiesOf-battlefield"
+)]
+#[case::in_two_zones(
+    "GainsAbilitiesOf$ Creature | GainsAbilitiesOfZones$ Graveyard,Exile",
+    "key:Static.Continuous.GainsAbilitiesOfZones=Graveyard,Exile"
+)]
+#[case::loyalty_only(
+    "GainsAbilitiesOf$ Planeswalker.Other | GainsValidAbilities$ Activated.Loyalty | GainsAbilitiesOfZones$ Graveyard",
+    "key:Static.Continuous.GainsValidAbilities"
+)]
+#[case::triggers_too(
+    "GainsAbilitiesOf$ Card.ExiledWithSource | GainsTriggerAbsOf$ Card.ExiledWithSource | GainsAbilitiesOfZones$ Exile",
+    "key:Static.Continuous.GainsTriggerAbsOf"
+)]
+fn a_static_with_abilities_it_cannot_read_stays_a_gap_by_name(
+    #[case] words: &str,
+    #[case] gap: &str,
+) {
+    let line =
+        format!("S:Mode$ Continuous | AffectedDefined$ Self | EffectZone$ Battlefield | {words}");
+    let text = format!("Name:Ooze\nTypes:Creature Ooze\nPT:2/2\n{line}\n");
+    assert!(
+        gaps(&text).iter().any(|found| found == gap),
+        "{:?}",
+        gaps(&text)
+    );
+}
+
+fn definition(script: &str, name: &str) -> Arc<CardDefinition> {
+    let card = CardDefinition::new(name)
+        .with_type(CardType::Creature)
+        .with_power_toughness(2, 2);
+    Arc::new(abilities(script).into_iter().fold(card, |card, rule| {
+        card.with_rules(serde_json::from_value::<Ability>(rule).unwrap())
+    }))
+}
+
+/// Seat 0's Ooze with the Shaman in the graveyard of `in_seat` (or on the battlefield of seat 1): the abilities the Ooze may activate.
+fn ooze_abilities(shaman_in_graveyard_of: Option<usize>) -> usize {
+    let ooze = definition(OOZE, "Necrotic Ooze");
+    let shaman = definition(SHAMAN, "Shaman");
+    let mut scenario = Scenario::new(2)
+        .at(1, 0, Step::Main1)
+        .battlefield(0, [ready(ooze)]);
+    scenario = match shaman_in_graveyard_of {
+        Some(seat) => scenario.graveyard(seat, [shaman]),
+        None => scenario.battlefield(1, [ready(shaman)]),
+    };
+    let driver = Driver::from_scenario(scenario).unwrap();
+    driver.offered_abilities("Necrotic Ooze").unwrap().len()
+}
+
+#[rstest]
+#[case::a_card_in_your_graveyard(Some(0), 1)]
+#[case::a_card_in_an_opponents_graveyard(Some(1), 1)]
+#[case::a_creature_on_the_battlefield_gives_nothing(None, 0)]
+fn the_ooze_may_activate_the_abilities_of_creature_cards_in_graveyards(
+    #[case] graveyard: Option<usize>,
+    #[case] offered: usize,
+) {
+    assert_eq!(ooze_abilities(graveyard), offered);
+}
+
+#[test]
+fn an_ability_gained_from_a_graveyard_card_is_paid_by_the_ooze_and_resolves() {
+    let scenario = Scenario::new(2)
+        .at(1, 0, Step::Main1)
+        .battlefield(0, [ready(definition(OOZE, "Necrotic Ooze"))])
+        .graveyard(1, [definition(SHAMAN, "Shaman")]);
+    let mut driver = Driver::from_scenario(scenario).unwrap();
+    let start = life(&driver);
+    driver.begin_activation("Necrotic Ooze").unwrap();
+    for _ in 0..30 {
+        if driver.state().stack().is_empty()
+            && driver.state().resolving().is_none()
+            && life(&driver) != start
+        {
+            break;
+        }
+        driver.answer_passively().unwrap();
+    }
+    assert_eq!(life(&driver), start + 3);
+    let ooze = driver.id_of("Necrotic Ooze").unwrap();
+    assert!(
+        driver
+            .state()
+            .object(ooze)
+            .unwrap()
+            .permanent()
+            .unwrap()
+            .tapped()
+    );
 }

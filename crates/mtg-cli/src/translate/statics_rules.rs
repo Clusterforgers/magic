@@ -187,7 +187,9 @@ fn toughness_damage(p: &Params) -> Tr<Value> {
         Some("Creature.YouCtrl") => "You",
         Some("Creature") => "EachPlayer",
         Some(other) => {
-            return unmapped(format!("key:Static.CombatDamageToughness.ValidCard={other}"));
+            return unmapped(format!(
+                "key:Static.CombatDamageToughness.ValidCard={other}"
+            ));
         }
         None => return unmapped("key:Static.CombatDamageToughness.no-ValidCard"),
     };

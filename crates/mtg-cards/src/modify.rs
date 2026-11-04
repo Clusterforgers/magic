@@ -80,6 +80,9 @@ pub enum Modification {
     LockKeyword(Keyword),
     /// Gives the object an activated or a triggered ability (layer 6); a keyword is `AddKeyword`.
     GrantAbility(Arc<Ability>),
+    /// The object has the activated abilities printed on the cards the reference names, wherever they are (layer 6): "has all
+    /// activated abilities of all creature cards in graveyards". A card that leaves its zone is a new object and gives none.
+    GainAbilitiesOf(Ref),
     /// The object loses all its abilities (layer 6); abilities granted after it still count.
     LoseAbilities,
     /// Changes the controller to the player (layer 2).
@@ -149,6 +152,7 @@ impl Modification {
             | Modification::LockKeyword(_)
             | Modification::RemoveKeyword(_)
             | Modification::GrantAbility(_)
+            | Modification::GainAbilitiesOf(_)
             | Modification::LoseAbilities => Some("6"),
             Modification::SetPT { .. } => Some("7b"),
             Modification::ModifyPT { .. } => Some("7c"),

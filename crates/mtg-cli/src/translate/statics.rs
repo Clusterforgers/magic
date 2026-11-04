@@ -142,7 +142,9 @@ fn affected_valid(ctx: &Ctx, word: &str) -> Tr<Value> {
 }
 
 /// The keys a continuous static line reads.
-const CONTINUOUS: [&str; 23] = [
+const CONTINUOUS: [&str; 25] = [
+    "GainsAbilitiesOf",
+    "GainsAbilitiesOfZones",
     "AddStaticAbility",
     "RemoveCreatureTypes",
     "AddAllCreatureTypes",
@@ -234,6 +236,9 @@ fn continuous(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
         if let Some(names) = p.get(key) {
             mods.extend(granted(ctx, names, trigger)?);
         }
+    }
+    if let Some(valid) = p.get("GainsAbilitiesOf") {
+        mods.push(gains_abilities(ctx, p, valid)?);
     }
     if let Some(names) = p.get("AddStaticAbility") {
         mods.extend(granted_statics(ctx, names)?);
@@ -565,4 +570,23 @@ fn granted_statics(ctx: &mut Ctx, names: &str) -> Tr<Vec<Value>> {
         mods.push(json!({"GrantAbility": ability}));
     }
     Ok(mods)
+}
+
+/// `GainsAbilitiesOf$`: the object has the activated abilities printed on the cards of a valid-string in a graveyard,
+/// in exile or on top of a library. A card on the battlefield may have other abilities than it prints, which the node
+/// does not read, so that stays a gap.
+fn gains_abilities(ctx: &Ctx, p: &Params, valid: &str) -> Tr<Value> {
+    if p.has("GainsValidAbilities") {
+        return unmapped("key:Static.Continuous.GainsValidAbilities");
+    }
+    let zone = match p.get("GainsAbilitiesOfZones") {
+        Some(zone @ ("Graveyard" | "Exile" | "Library")) => zone,
+        Some(other) => {
+            return unmapped(format!(
+                "key:Static.Continuous.GainsAbilitiesOfZones={other}"
+            ));
+        }
+        None => return unmapped("key:Static.Continuous.GainsAbilitiesOf-battlefield"),
+    };
+    Ok(json!({"GainAbilitiesOf": {"Each": selector_in(ctx, valid, Some(zone))?}}))
 }
