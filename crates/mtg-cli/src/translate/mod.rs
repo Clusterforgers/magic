@@ -25,6 +25,7 @@ pub mod keyword;
 pub mod mayplay;
 pub mod needs;
 pub mod oracle;
+pub mod remember;
 pub mod replacements;
 pub mod replacements_damage;
 pub mod report;
