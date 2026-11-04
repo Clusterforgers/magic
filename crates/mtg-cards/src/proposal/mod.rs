@@ -163,6 +163,29 @@ pub fn check(
     names: &BTreeSet<String>,
     caps: &Caps,
 ) -> Report {
+    check_with(text, printed, hand_written, names, caps, true)
+}
+
+/// Like [`check`] without the repairs: a translator draft is judged as written, so a slip makes it a problem and is
+/// never changed into other rules.
+pub fn check_exact(
+    text: &str,
+    printed: &PrintedCard,
+    hand_written: &Library,
+    names: &BTreeSet<String>,
+    caps: &Caps,
+) -> Report {
+    check_with(text, printed, hand_written, names, caps, false)
+}
+
+fn check_with(
+    text: &str,
+    printed: &PrintedCard,
+    hand_written: &Library,
+    names: &BTreeSet<String>,
+    caps: &Caps,
+    repairs: bool,
+) -> Report {
     let file = format!("cards/{}.json", slug(&printed.name));
     let mut report = Report {
         card: printed.name.clone(),
@@ -180,7 +203,9 @@ pub fn check(
             return report;
         }
     };
-    report.repairs = repair::repair(&mut value, printed);
+    if repairs {
+        report.repairs = repair::repair(&mut value, printed);
+    }
     let proposed = match complete::parse(value, printed, &file) {
         Ok(card) => card,
         Err(error) => {

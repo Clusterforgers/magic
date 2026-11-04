@@ -438,3 +438,29 @@ fn the_controller_of_anything_else_is_left_alone(#[case] before: Value) {
     assert_eq!(abilities, before);
     assert!(classes.is_empty(), "{classes:?}");
 }
+
+#[test]
+fn an_exact_check_never_rewrites_a_translators_x() {
+    use std::collections::BTreeSet;
+
+    use crate::proposal::Library;
+    use crate::proposal::{check, check_exact};
+    use crate::support::Caps;
+
+    let printed = card(
+        "Land",
+        "",
+        "Channel \u{2014} {2}{W}, Discard this card: It deals 4 damage to each player.",
+    );
+    let text = r#"{"faces":[{"abilities":[{"Activated":{"effects":[{"DealDamage":{"amount":"X","to":"EachPlayer"}}]}}]}]}"#;
+    let (library, names, caps) = (Library::default(), BTreeSet::new(), Caps::default());
+    let repaired = check(text, &printed, &library, &names, &caps);
+    let exact = check_exact(text, &printed, &library, &names, &caps);
+    assert!(
+        repaired
+            .repairs
+            .iter()
+            .any(|r| r.class == RepairClass::InventedX)
+    );
+    assert_eq!(exact.repairs.len(), 0);
+}

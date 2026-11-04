@@ -15,6 +15,11 @@ pub fn counter_kind(word: &str) -> Option<Value> {
     {
         return None;
     }
+    // Only +1/+1 and -1/-1 counters change power and toughness in the engine; every other P/T counter and "all" would
+    // be a counter kind that does nothing.
+    if word == "ALL" || (word != "P1P1" && word != "M1M1" && is_power_toughness(word)) {
+        return None;
+    }
     Some(match word {
         "P1P1" => json!("+1/+1"),
         "M1M1" => json!("-1/-1"),
@@ -23,6 +28,22 @@ pub fn counter_kind(word: &str) -> Option<Value> {
         "CHARGE" => json!("charge"),
         other => json!({"Other": other.to_lowercase().replace('_', " ")}),
     })
+}
+
+/// Whether the word is a power/toughness counter (`P2P2`, `M0M1`).
+fn is_power_toughness(word: &str) -> bool {
+    let mut rest = word;
+    for _ in 0..2 {
+        let Some(after) = rest.strip_prefix(['P', 'M']) else {
+            return false;
+        };
+        let trimmed = after.trim_start_matches(|c: char| c.is_ascii_digit());
+        if trimmed.len() == after.len() {
+            return false;
+        }
+        rest = trimmed;
+    }
+    rest.is_empty()
 }
 
 /// The amount a Forge value stands for: a number, `X`, or the name of a part that holds an expression.
@@ -211,4 +232,26 @@ fn counters_or_gap(ctx: &Ctx, word: &str) -> Tr<Value> {
         return Ok(json!({"Counters": {"on": on, "counter": kind}}));
     }
     unmapped(format!("amount:Count${}", head(word)))
+}
+
+#[cfg(test)]
+mod tests {
+    //! Goal: only counter kinds the engine gives an effect map; other power/toughness counters and "all" stay gaps.
+    use rstest::rstest;
+    use serde_json::json;
+
+    use super::counter_kind;
+
+    #[rstest]
+    #[case("P1P1", Some(json!("+1/+1")))]
+    #[case("M1M1", Some(json!("-1/-1")))]
+    #[case("CHARGE", Some(json!("charge")))]
+    #[case("TIME", Some(json!({"Other": "time"})))]
+    #[case("P2P2", None)]
+    #[case("M0M1", None)]
+    #[case("P1P0", None)]
+    #[case("ALL", None)]
+    fn counter_kinds(#[case] word: &str, #[case] kind: Option<serde_json::Value>) {
+        assert_eq!(counter_kind(word), kind);
+    }
 }

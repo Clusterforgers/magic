@@ -586,3 +586,39 @@ fn keywords_map_to_the_keyword_set(#[case] line: &str, #[case] expected: Value) 
     let script = format!("Name:T\nTypes:Creature Elf\nK:{line}\n");
     assert_eq!(abilities(&script), vec![json!({ "Keyword": expected })]);
 }
+
+#[rstest]
+#[case::pt_counter(
+    "Name:T\nTypes:Sorcery\nA:SP$ PutCounter | ValidTgts$ Creature | CounterType$ P2P2\n",
+    "key:PutCounter.CounterType"
+)]
+#[case::all_counters(
+    "Name:T\nTypes:Sorcery\nA:SP$ RemoveCounter | ValidTgts$ Creature | CounterType$ ALL\n",
+    "key:RemoveCounter.CounterType"
+)]
+#[case::if_tapped_on_activation(
+    "Name:T\nTypes:Creature Elf\nA:AB$ Draw | Cost$ 0 | IsPresent$ Card.Self+tapped\n",
+    "key:AB.IsPresent=Self"
+)]
+#[case::may_the_print_lacks(
+    "Name:T\nTypes:Sorcery\nA:SP$ ChangeZone | Origin$ Library | Destination$ Hand | ChangeType$ Land | Optional$ True | SpellDescription$ Search your library for a land card.\n",
+    "key:ChangeZone.Optional"
+)]
+fn narrower_than_print_shapes_stay_gaps(#[case] script: &str, #[case] gap: &str) {
+    assert!(
+        gaps(script).iter().any(|found| found == gap),
+        "{:?}",
+        gaps(script)
+    );
+}
+
+#[test]
+fn the_end_step_without_your_is_every_players() {
+    let script = "Name:T\nTypes:Creature Elf\nT:Mode$ Phase | Phase$ End of Turn | ValidPlayer$ You | Execute$ Go | TriggerDescription$ At the beginning of the end step, draw.\nSVar:Go:DB$ Draw\n";
+    assert_eq!(
+        abilities(script),
+        vec![
+            json!({"Triggered": {"when": {"StepBegins": {"step": "End", "whose": "EachPlayer"}}, "effects": [{"Draw": {}}]}})
+        ]
+    );
+}
