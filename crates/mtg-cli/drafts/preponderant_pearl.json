@@ -1,0 +1,25 @@
+{
+  "oracle_id": "a02ac6f9-7551-4f4b-b73e-fc5e9ffd90b0",
+  "name": "Preponderant Pearl",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Preponderant Pearl",
+      "oracle_fingerprint": "8e88cec138fd06ae3e2917d11a415c02",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Conjure": { "name": "Ponder", "zone": "Hand" } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 71, "end": 231 }
+          }
+        }
+      ]
+    }
+  ]
+}

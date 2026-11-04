@@ -1,0 +1,40 @@
+{
+  "oracle_id": "4d6e38f6-480b-4f81-a5d4-342fc45e39b0",
+  "name": "Dawn Evangel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dawn Evangel",
+      "oracle_fingerprint": "d3c486045a9a2fd8dacf4ab5bdb89591",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "HasAttached": [{ "Subtype": "Aura" }, { "ControlledBy": "You" }] }
+                ],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "OwnedBy": "You" },
+                    { "Compare": { "stat": "ManaValue", "op": "Le", "to": 2 } },
+                    { "In": "Graveyard" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

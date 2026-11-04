@@ -1,0 +1,19 @@
+{
+  "oracle_id": "e01382e0-a685-41c4-9ab6-727ffdbf2e0a",
+  "name": "Reach of Shadows",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Reach of Shadows",
+      "oracle_fingerprint": "580ba78d62c691440896795fac177374",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, { "Not": "Colorless" }] } }],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

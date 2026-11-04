@@ -1,0 +1,62 @@
+{
+  "oracle_id": "4d99e786-585d-4026-9253-19741fb357de",
+  "name": "Dimir Charm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dimir Charm",
+      "oracle_fingerprint": "2a840b1eb05b08d36333345cd8aaed87",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [{ "what": { "Object": ["Spell", { "Type": "Sorcery" }] } }],
+                      "effects": [{ "Counter": { "what": { "Target": 0 } } }]
+                    },
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [
+                              { "Type": "Creature" },
+                              { "Compare": { "stat": "Power", "op": "Le", "to": 2 } }
+                            ]
+                          }
+                        }
+                      ],
+                      "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+                    },
+                    {
+                      "targets": [{ "what": "Player" }],
+                      "effects": [
+                        { "LookAtTop": { "who": { "Target": 0 }, "count": 3, "as": "top" } },
+                        {
+                          "Choose": {
+                            "from": { "Bound": "top" },
+                            "as": "kept2",
+                            "rest_as": "rest3"
+                          }
+                        },
+                        {
+                          "Move": {
+                            "what": { "Bound": "kept2" },
+                            "to": { "Library": { "place": "Top" } }
+                          }
+                        },
+                        { "Move": { "what": { "Bound": "rest3" }, "to": "Graveyard" } }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

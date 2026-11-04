@@ -1,0 +1,34 @@
+{
+  "oracle_id": "994bc16d-fdc6-475c-96df-beeb4d5aa03e",
+  "name": "Mystic Forge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mystic Forge",
+      "oracle_fingerprint": "76c7a44b13edf4bc9582e6149430d04b",
+      "abilities": [
+        { "Rule": { "rule": { "LookAtTopAnyTime": "You" } } },
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": {
+                "what": [
+                  { "AnyOf": [{ "Type": "Artifact" }, "Colorless"] },
+                  "TopOfLibrary",
+                  { "Not": { "Type": "Land" } }
+                ],
+                "from": "Library"
+              }
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap", { "PayLife": 1 }],
+            "effects": [{ "ExileTop": { "as": "exiled" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,188 @@
+{
+  "object": "card",
+  "id": "517392f6-d3fd-4c59-8317-2a3595ab7562",
+  "oracle_id": "99473461-3c6f-4f7f-8ba2-d6c090ddb567",
+  "multiverse_ids": [
+    548466,
+    548467
+  ],
+  "mtgo_id": 97256,
+  "arena_id": 79593,
+  "tcgplayer_id": 261999,
+  "cardmarket_id": 607008,
+  "name": "The Shattered States Era // Nameless Conqueror",
+  "lang": "en",
+  "released_at": "2022-02-18",
+  "uri": "https://api.scryfall.com/cards/517392f6-d3fd-4c59-8317-2a3595ab7562",
+  "scryfall_uri": "https://scryfall.com/card/neo/162/the-shattered-states-era-nameless-conqueror?utm_source=api",
+  "layout": "transform",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T06:24:25Z",
+  "cmc": 5.0,
+  "type_line": "Enchantment — Saga // Enchantment Creature — Human Samurai",
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Transform",
+    "Haste",
+    "Trample"
+  ],
+  "card_faces": [
+    {
+      "object": "card_face",
+      "name": "The Shattered States Era",
+      "mana_cost": "{4}{R}",
+      "type_line": "Enchantment — Saga",
+      "oracle_text": "(As this Saga enters and after your draw step, add a lore counter.)\nI — Gain control of target creature until end of turn. Untap it. It gains haste until end of turn.\nII — Creatures you control get +1/+0 until end of turn.\nIII — Exile this Saga, then return it to the battlefield transformed under your control.",
+      "colors": [
+        "R"
+      ],
+      "artist": "David Gaillet",
+      "artist_id": "3496c5b4-57bf-4e5e-8bac-a1e05a911a2d",
+      "illustration_id": "07aea44a-b1d9-499a-be06-c6ae1b367479",
+      "image_uris": {
+        "small": "https://cards.scryfall.io/small/front/5/1/517392f6-d3fd-4c59-8317-2a3595ab7562.jpg?1783923865",
+        "normal": "https://cards.scryfall.io/normal/front/5/1/517392f6-d3fd-4c59-8317-2a3595ab7562.jpg?1783923865",
+        "large": "https://cards.scryfall.io/large/front/5/1/517392f6-d3fd-4c59-8317-2a3595ab7562.jpg?1783923865",
+        "png": "https://cards.scryfall.io/png/front/5/1/517392f6-d3fd-4c59-8317-2a3595ab7562.png?1783923865",
+        "art_crop": "https://cards.scryfall.io/art_crop/front/5/1/517392f6-d3fd-4c59-8317-2a3595ab7562.jpg?1783923865",
+        "border_crop": "https://cards.scryfall.io/border_crop/front/5/1/517392f6-d3fd-4c59-8317-2a3595ab7562.jpg?1783923865",
+        "thumb": "https://cards.scryfall.io/thumb/front/5/1/517392f6-d3fd-4c59-8317-2a3595ab7562.webp?1783923865",
+        "grid": "https://cards.scryfall.io/grid/front/5/1/517392f6-d3fd-4c59-8317-2a3595ab7562.webp?1783923865",
+        "display": "https://cards.scryfall.io/display/front/5/1/517392f6-d3fd-4c59-8317-2a3595ab7562.webp?1783923865",
+        "art": "https://cards.scryfall.io/art/front/5/1/517392f6-d3fd-4c59-8317-2a3595ab7562.webp?1783923865",
+        "crop": "https://cards.scryfall.io/crop/front/5/1/517392f6-d3fd-4c59-8317-2a3595ab7562.webp?1783923865",
+        "jpeg": "https://cards.scryfall.io/normal/front/5/1/517392f6-d3fd-4c59-8317-2a3595ab7562.jpg?1783923865"
+      }
+    },
+    {
+      "object": "card_face",
+      "name": "Nameless Conqueror",
+      "mana_cost": "",
+      "type_line": "Enchantment Creature — Human Samurai",
+      "oracle_text": "Trample, haste",
+      "colors": [
+        "R"
+      ],
+      "color_indicator": [
+        "R"
+      ],
+      "power": "3",
+      "toughness": "3",
+      "flavor_text": "\"In the wake of the Kami War, Kamigawa descended into a state of constant warfare. Even with Kyodai's wisdom guiding them, it took the first Imperials decades of work and bloodshed to subdue the clans and bring peace to the land.\"\n—*History of the Empire*",
+      "artist": "David Gaillet",
+      "artist_id": "3496c5b4-57bf-4e5e-8bac-a1e05a911a2d",
+      "illustration_id": "33bd3415-e75b-4c00-a592-00e970f50253",
+      "image_uris": {
+        "small": "https://cards.scryfall.io/small/back/5/1/517392f6-d3fd-4c59-8317-2a3595ab7562.jpg?1783923865",
+        "normal": "https://cards.scryfall.io/normal/back/5/1/517392f6-d3fd-4c59-8317-2a3595ab7562.jpg?1783923865",
+        "large": "https://cards.scryfall.io/large/back/5/1/517392f6-d3fd-4c59-8317-2a3595ab7562.jpg?1783923865",
+        "png": "https://cards.scryfall.io/png/back/5/1/517392f6-d3fd-4c59-8317-2a3595ab7562.png?1783923865",
+        "art_crop": "https://cards.scryfall.io/art_crop/back/5/1/517392f6-d3fd-4c59-8317-2a3595ab7562.jpg?1783923865",
+        "border_crop": "https://cards.scryfall.io/border_crop/back/5/1/517392f6-d3fd-4c59-8317-2a3595ab7562.jpg?1783923865",
+        "thumb": "https://cards.scryfall.io/thumb/back/5/1/517392f6-d3fd-4c59-8317-2a3595ab7562.webp?1783923865",
+        "grid": "https://cards.scryfall.io/grid/back/5/1/517392f6-d3fd-4c59-8317-2a3595ab7562.webp?1783923865",
+        "display": "https://cards.scryfall.io/display/back/5/1/517392f6-d3fd-4c59-8317-2a3595ab7562.webp?1783923865",
+        "art": "https://cards.scryfall.io/art/back/5/1/517392f6-d3fd-4c59-8317-2a3595ab7562.webp?1783923865",
+        "crop": "https://cards.scryfall.io/crop/back/5/1/517392f6-d3fd-4c59-8317-2a3595ab7562.webp?1783923865",
+        "jpeg": "https://cards.scryfall.io/normal/back/5/1/517392f6-d3fd-4c59-8317-2a3595ab7562.jpg?1783923865"
+      }
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo",
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "59a2059f-5482-433f-8761-eb2e17859b71",
+  "set": "neo",
+  "set_name": "Kamigawa: Neon Dynasty",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/59a2059f-5482-433f-8761-eb2e17859b71",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aneo&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/neo?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/517392f6-d3fd-4c59-8317-2a3595ab7562/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A99473461-3c6f-4f7f-8ba2-d6c090ddb567&unique=prints",
+  "collector_number": "162",
+  "digital": false,
+  "rarity": "common",
+  "artist": "David Gaillet",
+  "artist_ids": [
+    "3496c5b4-57bf-4e5e-8bac-a1e05a911a2d"
+  ],
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "fandfc",
+    "enchantment"
+  ],
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 16575,
+  "penny_rank": 18126,
+  "preview": {
+    "source": "Wizards of the Coast",
+    "source_uri": "https://www.twitch.tv/videos/1277767538",
+    "previewed_at": "2022-01-27"
+  },
+  "prices": {
+    "usd": "0.20",
+    "usd_foil": "0.21",
+    "usd_etched": null,
+    "eur": "0.13",
+    "eur_foil": "0.15",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=548466&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DThe%2BShattered%2BStates%2BEra%2B%252F%252F%2BNameless%2BConqueror",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DThe%2BShattered%2BStates%2BEra%2B%252F%252F%2BNameless%2BConqueror",
+    "edhrec": "https://edhrec.com/route/?cc=The+Shattered+States+Era"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F261999%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=607008&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/97256?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

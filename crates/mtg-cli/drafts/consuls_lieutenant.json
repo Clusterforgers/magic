@@ -1,0 +1,39 @@
+{
+  "oracle_id": "a38b672f-4739-4b7e-8958-2a455510656e",
+  "name": "Consul's Lieutenant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Consul's Lieutenant",
+      "oracle_fingerprint": "04a906a81c73094d77541444265b9777",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        { "Keyword": { "Renown": 1 } },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "if": {
+              "Compare": { "left": { "Count": ["This", "Renowned"] }, "op": "Ge", "right": 1 }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      "Attacking",
+                      "Other",
+                      { "ControlledBy": "You" }
+                    ]
+                  },
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

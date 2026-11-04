@@ -1,0 +1,60 @@
+{
+  "oracle_id": "a2019c23-09b8-4b0f-8b91-d8137804cb95",
+  "name": "Flash Conscription",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Flash Conscription",
+      "oracle_fingerprint": "b44dcbd6b4ba4b42863f8df608fd3f1d",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Untap": { "what": { "Target": 0 } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "If": {
+                  "condition": { "ManaSpent": "White" },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [
+                          {
+                            "GrantAbility": {
+                              "Triggered": {
+                                "when": {
+                                  "Batch": { "DealsDamage": { "source": ["This"], "combat": true } }
+                                },
+                                "effects": [{ "GainLife": { "amount": "Triggering" } }]
+                              }
+                            }
+                          }
+                        ],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

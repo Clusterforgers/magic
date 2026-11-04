@@ -1,0 +1,44 @@
+{
+  "oracle_id": "f695a073-7235-45c8-bc42-f1e29bb086ee",
+  "name": "Groundling Pouncer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Groundling Pouncer",
+      "oracle_fingerprint": "33cb32781d5c6fca67cfb689a6349fda",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{G/U}",
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "Type": "Creature" },
+                    { "HasKeyword": "Flying" },
+                    { "ControlledBy": "Opponents" }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "limit": "OncePerTurn",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "ModifyPT": { "power": 1, "toughness": 3 } },
+                    { "AddKeyword": "Flying" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "oracle_id": "18a8b50b-2328-459b-979d-04c4c769e569",
+  "name": "Revered Unicorn",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Revered Unicorn",
+      "oracle_fingerprint": "2f8ee13e25688764c58f3b8565a0e706",
+      "abilities": [
+        { "Keyword": { "CumulativeUpkeep": "{1}" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield" } },
+            "effects": [
+              {
+                "GainLife": {
+                  "amount": { "Counters": { "on": "This", "counter": { "Other": "age" } } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

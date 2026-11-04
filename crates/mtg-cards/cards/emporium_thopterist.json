@@ -1,0 +1,25 @@
+{
+  "oracle_id": "a178d2de-3f1b-4e98-b657-003dff6a9171",
+  "name": "Emporium Thopterist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Emporium Thopterist",
+      "oracle_fingerprint": "9c0580713d0732fb00fdfd8fec14d534",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Thopter" }, { "ControlledBy": "You" }] },
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [{ "Conjure": { "name": "Ornithopter", "zone": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

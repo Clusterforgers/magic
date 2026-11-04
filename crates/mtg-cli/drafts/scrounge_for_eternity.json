@@ -1,0 +1,77 @@
+{
+  "oracle_id": "71982b17-1d9a-4f98-b8b5-d232e3a8cf1d",
+  "name": "Scrounge for Eternity",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Scrounge for Eternity",
+      "oracle_fingerprint": "f28cce6abd313050bc548f25a9c5d056",
+      "abilities": [
+        {
+          "AdditionalCost": {
+            "cost": [
+              {
+                "Sacrifice": {
+                  "filter": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] }]
+                }
+              }
+            ],
+            "required": true
+          }
+        },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Creature" }, { "Subtype": "Spacecraft" }] },
+                    { "OwnedBy": "You" },
+                    { "Compare": { "stat": "ManaValue", "op": "Le", "to": 5 } },
+                    { "In": "Graveyard" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Lander",
+                      "types": ["Artifact"],
+                      "subtypes": ["Lander"],
+                      "abilities": [
+                        {
+                          "Activated": {
+                            "cost": [{ "Mana": "{2}" }, "Tap", "SacrificeSelf"],
+                            "effects": [
+                              {
+                                "Search": {
+                                  "filter": [{ "Type": "Land" }, { "Supertype": "Basic" }],
+                                  "as": "found"
+                                }
+                              },
+                              {
+                                "Move": {
+                                  "what": { "Bound": "found" },
+                                  "to": { "Battlefield": { "tapped": true } }
+                                }
+                              },
+                              { "Shuffle": {} }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

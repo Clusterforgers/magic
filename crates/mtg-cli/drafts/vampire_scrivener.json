@@ -1,0 +1,28 @@
+{
+  "oracle_id": "a945710e-fab6-4b54-ba40-586f2e54baf4",
+  "name": "Vampire Scrivener",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vampire Scrivener",
+      "oracle_fingerprint": "a7a0bd885f7d2fddebf4bc1f3d219648",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "LifeGained": { "who": "You" } },
+            "if": { "AtTrigger": "YourTurn" },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "LifeLost": { "who": "You" } },
+            "if": { "AtTrigger": "YourTurn" },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

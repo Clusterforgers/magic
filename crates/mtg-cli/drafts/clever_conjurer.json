@@ -1,0 +1,23 @@
+{
+  "oracle_id": "628e59e2-3665-40dd-ba4f-11ab5824de22",
+  "name": "Clever Conjurer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Clever Conjurer",
+      "oracle_fingerprint": "feda27c49b136e706a79354662fce022",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "timing": "Sorcery",
+            "targets": [
+              { "what": { "Object": ["Other", { "Not": { "Named": "Clever Conjurer" } }] } }
+            ],
+            "effects": [{ "Untap": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

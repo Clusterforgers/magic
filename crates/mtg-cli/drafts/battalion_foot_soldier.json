@@ -1,0 +1,45 @@
+{
+  "oracle_id": "f6f39a85-28b9-49f3-ab90-2ff99169de42",
+  "name": "Battalion Foot Soldier",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Battalion Foot Soldier",
+      "oracle_fingerprint": "838346be53d2038ed8e27925e7401f53",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Search": {
+                        "filter": [{ "Named": "Battalion Foot Soldier" }],
+                        "count": {
+                          "min": 0,
+                          "max": {
+                            "Count": [
+                              { "OwnedBy": "You" },
+                              { "Named": "Battalion Foot Soldier" },
+                              { "In": "Library" }
+                            ]
+                          }
+                        },
+                        "reveal": true,
+                        "as": "found"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+                    { "Shuffle": {} }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

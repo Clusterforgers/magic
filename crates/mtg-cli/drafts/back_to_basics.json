@@ -1,0 +1,19 @@
+{
+  "oracle_id": "05c2dec2-d2f7-4036-b91f-4fccba10a8bb",
+  "name": "Back to Basics",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Back to Basics",
+      "oracle_fingerprint": "b7e108735d7b08981ad8d8b6eba9e111",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Land" }, { "Not": { "Supertype": "Basic" } }] },
+            "mods": ["DoesntUntap"]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "oracle_id": "ad6442c2-7aa2-4c24-8133-f679a3499bde",
+  "name": "Vengeful Villagers",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vengeful Villagers",
+      "oracle_fingerprint": "0fbcc641001756dcdac5bdbae50f8a6a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              { "Tap": { "what": { "Target": 0 } } },
+              {
+                "Pay": {
+                  "cost": [
+                    {
+                      "Sacrifice": {
+                        "filter": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] }]
+                      }
+                    }
+                  ],
+                  "paid": [
+                    { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "stun" } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

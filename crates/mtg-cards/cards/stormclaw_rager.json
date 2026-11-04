@@ -1,0 +1,27 @@
+{
+  "oracle_id": "d1a77708-7ddf-4645-bf1e-1d8147a57f23",
+  "name": "Stormclaw Rager",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stormclaw Rager",
+      "oracle_fingerprint": "ffc83fae6d526c7c3c5b20166d4b283a",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{1}" },
+              {
+                "Sacrifice": {
+                  "filter": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Artifact" }] }, "Other"]
+                }
+              }
+            ],
+            "timing": "Sorcery",
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }, { "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

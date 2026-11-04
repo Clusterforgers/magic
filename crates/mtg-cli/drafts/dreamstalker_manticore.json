@@ -1,0 +1,21 @@
+{
+  "oracle_id": "1ecb3349-ccb8-4b54-bd81-8d649d6f96f0",
+  "name": "Dreamstalker Manticore",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dreamstalker Manticore",
+      "oracle_fingerprint": "50df4177c4913b41499f8f7378b4045d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Nth": { "event": { "SpellCast": { "by": "You" } }, "nth": 1 } },
+            "if": { "AtTrigger": { "Not": "YourTurn" } },
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

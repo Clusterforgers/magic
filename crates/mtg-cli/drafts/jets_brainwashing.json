@@ -1,0 +1,51 @@
+{
+  "oracle_id": "5cca85e0-43e8-4b97-a43b-1b8f23f541d1",
+  "name": "Jet's Brainwashing",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jet's Brainwashing",
+      "oracle_fingerprint": "937b547edc12f20aeb41f15b8cc584f1",
+      "abilities": [
+        { "Keyword": { "Kicker": "{3}" } },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["CantBlock"],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "If": {
+                  "condition": "Kicked",
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [{ "SetController": "You" }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    },
+                    { "Untap": { "what": { "Target": 0 } } },
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [{ "AddKeyword": "Haste" }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              },
+              { "CreateToken": { "token": { "Named": "clue" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

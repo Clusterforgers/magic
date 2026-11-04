@@ -1,0 +1,57 @@
+{
+  "oracle_id": "12bd2051-297b-4bab-ac64-6eb26a42e3e2",
+  "name": "Nahiri's Resolve",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nahiri's Resolve",
+      "oracle_fingerprint": "d8620369b406fa33a4839859dcbb40fd",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }, { "AddKeyword": "Haste" }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "AnyOf": [{ "Type": "Creature" }, { "Type": "Artifact" }] },
+                      { "ControlledBy": "You" },
+                      { "Not": "Token" }
+                    ]
+                  },
+                  "count": {
+                    "min": 0,
+                    "max": {
+                      "Count": [
+                        { "AnyOf": [{ "Type": "Creature" }, { "Type": "Artifact" }] },
+                        { "ControlledBy": "You" },
+                        { "Not": "Token" }
+                      ]
+                    }
+                  },
+                  "as": "picked"
+                }
+              },
+              { "Exile": { "what": { "Bound": "picked" }, "as": "exiled2" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+                  "effects": [
+                    { "Move": { "what": { "Bound": "exiled2" }, "to": { "Battlefield": {} } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

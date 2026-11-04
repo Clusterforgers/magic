@@ -1,0 +1,20 @@
+{
+  "oracle_id": "0d61239f-28e4-4adb-8f6e-b56e9c8699af",
+  "name": "Cursed Land",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cursed Land",
+      "oracle_fingerprint": "269b12e88a3f387e00dff567daf20be8",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Land" }] } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": { "ControllerOf": "Attached" } } },
+            "effects": [{ "DealDamage": { "to": "Triggering", "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

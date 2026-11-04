@@ -1,0 +1,76 @@
+{
+  "oracle_id": "1a080b26-c766-4f7c-9198-4974d2133f75",
+  "name": "Tellah, Great Sage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tellah, Great Sage",
+      "oracle_fingerprint": "a6ae663e86fbe079cc8f3c3dd9ff85f8",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Not": { "Type": "Creature" } }], "by": "You" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Hero",
+                      "types": ["Creature"],
+                      "subtypes": ["Hero"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Stat": { "of": "Triggering", "stat": "ManaSpent" } },
+                      "op": "Ge",
+                      "right": 4
+                    }
+                  },
+                  "then": [{ "Draw": { "count": 2 } }]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Stat": { "of": "Triggering", "stat": "ManaSpent" } },
+                      "op": "Ge",
+                      "right": 8
+                    }
+                  },
+                  "then": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Stat": { "of": "Triggering", "stat": "ManaSpent" } },
+                      "op": "Ge",
+                      "right": 8
+                    }
+                  },
+                  "then": [
+                    {
+                      "DealDamage": {
+                        "to": "Opponents",
+                        "amount": { "Stat": { "of": "Triggering", "stat": "ManaSpent" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

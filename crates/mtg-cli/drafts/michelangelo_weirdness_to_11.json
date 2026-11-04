@@ -1,0 +1,60 @@
+{
+  "oracle_id": "170ab932-9d50-4ce7-9a42-08e1edce7e7c",
+  "name": "Michelangelo, Weirdness to 11",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Michelangelo, Weirdness to 11",
+      "oracle_fingerprint": "5b3bc4ffdbb19623aab5afb2090cf550",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Mutagen",
+                      "types": ["Artifact"],
+                      "subtypes": ["Mutagen"],
+                      "abilities": [
+                        {
+                          "Activated": {
+                            "cost": [{ "Mana": "{1}" }, "Tap", "SacrificeSelf"],
+                            "timing": "Sorcery",
+                            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                            "effects": [
+                              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Replacement": {
+            "when": {
+              "CountersPut": {
+                "on": {
+                  "Each": [
+                    { "Type": "Creature" },
+                    { "ControlledBy": "You" },
+                    { "In": "Battlefield" }
+                  ]
+                },
+                "counter": "+1/+1"
+              }
+            },
+            "by": { "Add": 1 }
+          }
+        }
+      ]
+    }
+  ]
+}

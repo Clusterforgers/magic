@@ -1,0 +1,30 @@
+{
+  "oracle_id": "b9526bd5-ed83-466f-8819-e9a8487bbe77",
+  "name": "Magmatic Core",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Magmatic Core",
+      "oracle_fingerprint": "d0f8f477ab08949aba880489e3d7155d",
+      "abilities": [
+        { "Keyword": { "CumulativeUpkeep": "{1}" } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }] },
+                "bounds": {
+                  "min": 0,
+                  "max": { "Counters": { "on": "This", "counter": { "Other": "age" } } }
+                },
+                "divide": { "Counters": { "on": "This", "counter": { "Other": "age" } } }
+              }
+            ],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": "Divided" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

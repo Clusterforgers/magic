@@ -1,0 +1,33 @@
+{
+  "oracle_id": "a959a91a-3e1d-4bd4-9e14-5ee977540146",
+  "name": "Planar Incision",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Planar Incision",
+      "oracle_fingerprint": "7267be517f68981a55e941670393cd85",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] }]
+                }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              {
+                "Move": {
+                  "what": { "Bound": "exiled" },
+                  "to": { "Battlefield": { "counters": [["+1/+1", 1]] } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

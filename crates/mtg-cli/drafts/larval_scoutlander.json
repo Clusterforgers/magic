@@ -1,0 +1,60 @@
+{
+  "oracle_id": "b3f3d55c-a3f6-441b-a380-60c0734dc514",
+  "name": "Larval Scoutlander",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Larval Scoutlander",
+      "oracle_fingerprint": "bf1cb62c111f8afc47336071e3d823da",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [
+                    {
+                      "Sacrifice": {
+                        "filter": [{ "AnyOf": [{ "Type": "Land" }, { "Subtype": "Lander" }] }]
+                      }
+                    }
+                  ],
+                  "paid": [
+                    {
+                      "Search": {
+                        "filter": [{ "Type": "Land" }, { "Supertype": "Basic" }],
+                        "count": { "min": 0, "max": 2 },
+                        "as": "found"
+                      }
+                    },
+                    {
+                      "Move": {
+                        "what": { "Bound": "found" },
+                        "to": { "Battlefield": { "tapped": true } }
+                      }
+                    },
+                    { "Shuffle": {} }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "Station" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Flying" }, { "AddType": "Creature" }],
+            "condition": {
+              "Matches": {
+                "subject": "This",
+                "selector": [{ "CounterCount": { "kind": "charge", "op": "Ge", "to": 7 } }]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

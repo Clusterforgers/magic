@@ -1,0 +1,33 @@
+{
+  "oracle_id": "2f56de72-80d7-48c6-9b57-84fbd252c699",
+  "name": "Rose Tyler",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Rose Tyler",
+      "oracle_fingerprint": "64edb917632b8764938691c2b4630d4e",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": { "Counters": { "on": "This", "counter": { "Other": "time" } } },
+                  "toughness": { "Counters": { "on": "This", "counter": { "Other": "time" } } }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 51, "end": 211 }
+          }
+        },
+        { "Keyword": "DoctorsCompanion" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,62 @@
+{
+  "oracle_id": "dfd3adec-033b-47ed-a227-ea1f48b4057c",
+  "name": "Rise of the Hobgoblins",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rise of the Hobgoblins",
+      "oracle_fingerprint": "28a6775cb90014c03c971b929a9b75a4",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{X}",
+                  "paid": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Goblin Soldier",
+                            "colors": ["Red", "White"],
+                            "types": ["Creature"],
+                            "subtypes": ["Goblin", "Soldier"],
+                            "power": 1,
+                            "toughness": 1
+                          }
+                        },
+                        "count": "X"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{R/W}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "AnyOf": [{ "Color": "Red" }, { "Color": "White" }] },
+                      { "ControlledBy": "You" }
+                    ]
+                  },
+                  "mods": [{ "AddKeyword": "FirstStrike" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

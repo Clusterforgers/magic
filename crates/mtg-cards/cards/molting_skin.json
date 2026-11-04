@@ -1,0 +1,20 @@
+{
+  "oracle_id": "8262dbb3-7abb-4de8-9a1d-edee71906a10",
+  "name": "Molting Skin",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Molting Skin",
+      "oracle_fingerprint": "8f48ae995a65ee3954e88d6f7246181a",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "ReturnToHand": { "filter": ["This"] } }],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "Regenerate": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

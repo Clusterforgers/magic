@@ -1,0 +1,48 @@
+{
+  "oracle_id": "404d8766-28bc-427b-99a7-eb74c8d8bf18",
+  "name": "Norn's Disassembly",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Norn's Disassembly",
+      "oracle_fingerprint": "a4e9795f7789cbc1672a676f6af95bdd",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{1}{W}" },
+              {
+                "Sacrifice": {
+                  "filter": [
+                    {
+                      "AnyOf": [
+                        { "Supertype": "Legendary" },
+                        { "Type": "Artifact" },
+                        { "Subtype": "Saga" }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Seek": {
+                  "filter": [
+                    {
+                      "AnyOf": [
+                        { "Supertype": "Legendary" },
+                        { "Type": "Artifact" },
+                        { "Subtype": "Saga" }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

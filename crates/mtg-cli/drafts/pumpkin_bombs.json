@@ -1,0 +1,36 @@
+{
+  "oracle_id": "b0695221-a61a-41e4-8195-3eeaaab2d969",
+  "name": "Pumpkin Bombs",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pumpkin Bombs",
+      "oracle_fingerprint": "61a1e40bf7efc6ecf92e26960b5881e3",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap", { "Discard": { "count": 2 } }],
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              { "Draw": { "count": 3 } },
+              { "PutCounters": { "on": "This", "counter": { "Other": "fuse" } } },
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": { "Counters": { "on": "This", "counter": { "Other": "fuse" } } }
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "SetController": { "Target": 0 } }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

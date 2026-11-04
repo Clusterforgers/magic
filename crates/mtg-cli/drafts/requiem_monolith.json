@@ -1,0 +1,47 @@
+{
+  "oracle_id": "13a8b19b-23bd-4e45-81ff-23371665e4fc",
+  "name": "Requiem Monolith",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Requiem Monolith",
+      "oracle_fingerprint": "03d1f6f4ddf9fe7fb6c49d495633f4cf",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "timing": "Sorcery",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "GrantAbility": {
+                        "Triggered": {
+                          "when": { "Batch": { "DealsDamage": { "source": [], "to": "This" } } },
+                          "effects": [
+                            { "Draw": { "count": "Triggering" } },
+                            { "LoseLife": { "amount": "Triggering" } }
+                          ]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "May": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

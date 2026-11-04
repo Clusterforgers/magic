@@ -1,0 +1,36 @@
+{
+  "oracle_id": "ba0291ad-09ea-4fee-baa9-7778fbbb6ba7",
+  "name": "Daru Cavalier",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Daru Cavalier",
+      "oracle_fingerprint": "8c08fd99a0473814383187c3ee18ccfa",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Search": {
+                        "filter": [{ "Named": "Daru Cavalier" }],
+                        "reveal": true,
+                        "as": "found"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+                    { "Shuffle": {} }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

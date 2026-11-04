@@ -1,0 +1,59 @@
+{
+  "oracle_id": "bd0a7a86-a567-4145-b1d8-e0b72091db84",
+  "name": "Weapons Vendor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Weapons Vendor",
+      "oracle_fingerprint": "419e2ffde526a284381a19aae32b5028",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Draw": {} }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": [{ "Subtype": "Equipment" }, { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{1}",
+                  "paid": [
+                    {
+                      "Reflexive": {
+                        "targets": [
+                          {
+                            "what": {
+                              "Object": [{ "Subtype": "Equipment" }, { "ControlledBy": "You" }]
+                            }
+                          },
+                          {
+                            "what": {
+                              "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                            }
+                          }
+                        ],
+                        "effects": [
+                          { "Attach": { "what": { "Target": 0 }, "to": { "Target": 1 } } }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

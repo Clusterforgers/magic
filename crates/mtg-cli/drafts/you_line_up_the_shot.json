@@ -1,0 +1,28 @@
+{
+  "oracle_id": "cb892a6b-4c5d-49bc-95f9-8c36f7e344fe",
+  "name": "You Line Up the Shot",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "You Line Up the Shot",
+      "oracle_fingerprint": "3baa1b20389e199e5782b592d8d9c795",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    { "effects": [{ "Conjure": { "name": "Plummet", "zone": "Hand" } }] },
+                    { "effects": [{ "Conjure": { "name": "Naturalize", "zone": "Hand" } }] },
+                    { "effects": [{ "Draw": {} }] }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

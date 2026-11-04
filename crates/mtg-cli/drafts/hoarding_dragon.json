@@ -1,0 +1,50 @@
+{
+  "oracle_id": "d36d3c93-ed24-4447-9d15-3071f5c0989b",
+  "name": "Hoarding Dragon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hoarding Dragon",
+      "oracle_fingerprint": "71583c83a0a17aea40feee01dc70aeb0",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "Search": { "filter": [{ "Type": "Artifact" }], "as": "found" } },
+                    { "Exile": { "what": { "Bound": "found" } } },
+                    { "Shuffle": {} },
+                    { "Remember": { "what": { "Bound": "found" }, "slot": "remembered" } }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Move": {
+                        "what": { "Remembered": { "on": "This", "slot": "remembered" } },
+                        "to": "Hand"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

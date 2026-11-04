@@ -1,0 +1,161 @@
+{
+  "object": "card",
+  "id": "212462b7-e23e-4c87-93aa-9cadefbf1ac8",
+  "oracle_id": "b0b93253-6432-401e-9a01-94c41fb72c10",
+  "multiverse_ids": [
+    503747
+  ],
+  "mtgo_id": 87605,
+  "arena_id": 75178,
+  "tcgplayer_id": 230671,
+  "cardmarket_id": 532067,
+  "name": "Fearless Liberator",
+  "lang": "en",
+  "released_at": "2021-02-05",
+  "uri": "https://api.scryfall.com/cards/212462b7-e23e-4c87-93aa-9cadefbf1ac8",
+  "scryfall_uri": "https://scryfall.com/card/khm/135/fearless-liberator?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T07:37:11Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/2/1/212462b7-e23e-4c87-93aa-9cadefbf1ac8.jpg?1783928231",
+    "normal": "https://cards.scryfall.io/normal/front/2/1/212462b7-e23e-4c87-93aa-9cadefbf1ac8.jpg?1783928231",
+    "large": "https://cards.scryfall.io/large/front/2/1/212462b7-e23e-4c87-93aa-9cadefbf1ac8.jpg?1783928231",
+    "png": "https://cards.scryfall.io/png/front/2/1/212462b7-e23e-4c87-93aa-9cadefbf1ac8.png?1783928231",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/2/1/212462b7-e23e-4c87-93aa-9cadefbf1ac8.jpg?1783928231",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/2/1/212462b7-e23e-4c87-93aa-9cadefbf1ac8.jpg?1783928231",
+    "thumb": "https://cards.scryfall.io/thumb/front/2/1/212462b7-e23e-4c87-93aa-9cadefbf1ac8.webp?1783928231",
+    "grid": "https://cards.scryfall.io/grid/front/2/1/212462b7-e23e-4c87-93aa-9cadefbf1ac8.webp?1783928231",
+    "display": "https://cards.scryfall.io/display/front/2/1/212462b7-e23e-4c87-93aa-9cadefbf1ac8.webp?1783928231",
+    "art": "https://cards.scryfall.io/art/front/2/1/212462b7-e23e-4c87-93aa-9cadefbf1ac8.webp?1783928231",
+    "crop": "https://cards.scryfall.io/crop/front/2/1/212462b7-e23e-4c87-93aa-9cadefbf1ac8.webp?1783928231",
+    "jpeg": "https://cards.scryfall.io/normal/front/2/1/212462b7-e23e-4c87-93aa-9cadefbf1ac8.jpg?1783928231"
+  },
+  "mana_cost": "{1}{R}",
+  "cmc": 2.0,
+  "type_line": "Creature — Dwarf Berserker",
+  "oracle_text": "Boast — {2}{R}: Create a 2/1 red Dwarf Berserker creature token. (Activate only if this creature attacked this turn and only once each turn.)",
+  "power": "2",
+  "toughness": "1",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Boast"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "142bbbe1-4446-4d80-b82d-0df8ef17eac1",
+      "component": "token",
+      "name": "Dwarf Berserker",
+      "type_line": "Token Creature — Dwarf Berserker",
+      "uri": "https://api.scryfall.com/cards/142bbbe1-4446-4d80-b82d-0df8ef17eac1"
+    },
+    {
+      "object": "related_card",
+      "id": "212462b7-e23e-4c87-93aa-9cadefbf1ac8",
+      "component": "combo_piece",
+      "name": "Fearless Liberator",
+      "type_line": "Creature — Dwarf Berserker",
+      "uri": "https://api.scryfall.com/cards/212462b7-e23e-4c87-93aa-9cadefbf1ac8"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "arena",
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "43057fad-b1c1-437f-bc48-0045bce6d8c9",
+  "set": "khm",
+  "set_name": "Kaldheim",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/43057fad-b1c1-437f-bc48-0045bce6d8c9",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Akhm&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/khm?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/212462b7-e23e-4c87-93aa-9cadefbf1ac8/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ab0b93253-6432-401e-9a01-94c41fb72c10&unique=prints",
+  "collector_number": "135",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "\"No one else had the spine for it, so I ran right between that giant's legs and hauled poor Valdir back to Axgard!\"",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Zezhou Chen",
+  "artist_ids": [
+    "810677e5-a502-4c03-b726-78cd808a75d4"
+  ],
+  "illustration_id": "ab8a96c8-5d4b-4331-9b5c-f183606f5bd1",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 14289,
+  "penny_rank": 13202,
+  "preview": {
+    "source": "Jim Davis",
+    "source_uri": "https://www.twitch.tv/videos/873334862",
+    "previewed_at": "2021-01-14"
+  },
+  "prices": {
+    "usd": "0.30",
+    "usd_foil": "0.30",
+    "usd_etched": null,
+    "eur": "0.11",
+    "eur_foil": "0.29",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=503747&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DFearless%2BLiberator",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DFearless%2BLiberator",
+    "edhrec": "https://edhrec.com/route/?cc=Fearless+Liberator"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F230671%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=532067&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/87605?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

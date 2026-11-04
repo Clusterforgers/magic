@@ -1,0 +1,66 @@
+{
+  "oracle_id": "a2976426-108b-43a6-ab04-f71afac79893",
+  "name": "Tempting Wurm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tempting Wurm",
+      "oracle_fingerprint": "3a6e53354bce7fdc1176e2dfc559cf7d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "Opponents",
+                  "as": "each",
+                  "effects": [
+                    {
+                      "Choose": {
+                        "who": { "Bound": "each" },
+                        "from": {
+                          "Each": [
+                            {
+                              "AnyOf": [
+                                { "Type": "Artifact" },
+                                { "Type": "Creature" },
+                                { "Type": "Enchantment" },
+                                { "Type": "Land" }
+                              ]
+                            },
+                            { "In": "Hand" },
+                            { "OwnedBy": { "Bound": "each" } }
+                          ]
+                        },
+                        "count": {
+                          "min": 0,
+                          "max": {
+                            "Count": [
+                              {
+                                "AnyOf": [
+                                  { "Type": "Artifact" },
+                                  { "Type": "Creature" },
+                                  { "Type": "Enchantment" },
+                                  { "Type": "Land" }
+                                ]
+                              },
+                              { "OwnedBy": { "Bound": "each" } },
+                              { "In": "Hand" }
+                            ]
+                          }
+                        },
+                        "as": "picked2"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "picked2" }, "to": { "Battlefield": {} } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

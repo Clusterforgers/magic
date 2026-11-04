@@ -1,0 +1,22 @@
+{
+  "oracle_id": "d169738e-af0b-4488-a399-3aa1d1933aa1",
+  "name": "Brotherhood Regalia",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Brotherhood Regalia",
+      "oracle_fingerprint": "da7e2ab86da244395da0435ee18e2623",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "AddKeyword": { "Ward": "{2}" } }, { "AddSubtype": "Assassin" }]
+          }
+        },
+        { "Keyword": { "EquipTo": { "to": [{ "Supertype": "Legendary" }], "cost": "{1}" } } },
+        { "Keyword": { "Equip": "{3}" } },
+        { "Static": { "affected": "Attached", "mods": ["CantBeBlocked"] } }
+      ]
+    }
+  ]
+}

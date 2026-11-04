@@ -1,0 +1,53 @@
+{
+  "oracle_id": "9188031e-1c24-4981-a3d2-461a2bf917b6",
+  "name": "Archfiend of the Dross",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Archfiend of the Dross",
+      "oracle_fingerprint": "058b53734d0c768c9a0f9b665a41efa7",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": { "Other": "oil" }, "count": 4 } }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              { "RemoveCounters": { "from": "This", "counter": { "Other": "oil" } } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": "This",
+                      "selector": [{ "Not": { "HasCounter": { "Other": "oil" } } }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "LoseGame": {} }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [{ "LoseLife": { "who": { "ControllerOf": "Triggering" }, "amount": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

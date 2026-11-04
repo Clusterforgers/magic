@@ -1,0 +1,23 @@
+{
+  "oracle_id": "e42d087e-c999-4f9a-bdc5-4327e8ce94b6",
+  "name": "Numbing Dose",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Numbing Dose",
+      "oracle_fingerprint": "012967f6d5c8ac90ff63db3943e1d689",
+      "abilities": [
+        {
+          "Keyword": { "Enchant": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] }] }
+        },
+        { "Static": { "affected": "Attached", "mods": ["DoesntUntap"] } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": { "ControllerOf": "Attached" } } },
+            "effects": [{ "LoseLife": { "who": "Triggering", "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

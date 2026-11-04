@@ -1,0 +1,38 @@
+{
+  "oracle_id": "b03eb0c4-89a4-420d-8a23-1a868a07d9cf",
+  "name": "Greater Realm of Preservation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Greater Realm of Preservation",
+      "oracle_fingerprint": "e1bcef5532ba2074974fca58b860646e",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{1}{W}",
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "AnyOf": [{ "In": "Battlefield" }, { "In": "Stack" }, { "In": "Command" }] },
+                      { "AnyOf": [{ "Color": "Black" }, { "Color": "Red" }] }
+                    ]
+                  },
+                  "as": "source"
+                }
+              },
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": "You", "source": [{ "Is": { "Bound": "source" } }] } },
+                  "by": "PreventNext",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

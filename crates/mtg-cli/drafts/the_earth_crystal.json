@@ -1,0 +1,52 @@
+{
+  "oracle_id": "5e7ef7fe-968b-4ada-9fe4-6fda0541aafc",
+  "name": "The Earth Crystal",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Earth Crystal",
+      "oracle_fingerprint": "18aaa96862a80533c7412bc2ecdc2cdd",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["Spell", { "Color": "Green" }, { "ControlledBy": "You" }],
+            "change": "Reduce",
+            "mana": "{1}"
+          }
+        },
+        {
+          "Replacement": {
+            "when": {
+              "CountersPut": {
+                "on": {
+                  "Each": [
+                    { "Type": "Creature" },
+                    { "ControlledBy": "You" },
+                    { "In": "Battlefield" }
+                  ]
+                },
+                "counter": "+1/+1"
+              }
+            },
+            "by": { "Multiply": 2 }
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{4}{G}{G}" }, "Tap"],
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                "bounds": { "min": 1, "max": 2 },
+                "divide": 2
+              }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1", "count": "Divided" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

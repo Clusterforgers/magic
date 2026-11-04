@@ -1,0 +1,21 @@
+{
+  "oracle_id": "f587676e-d45f-4b1d-be2c-b404d8f55fb3",
+  "name": "Magus of the Mirror",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Magus of the Mirror",
+      "oracle_fingerprint": "2ea6aa5612bb10f85e8f584038550021",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap", "SacrificeSelf"],
+            "condition": { "All": ["YourTurn", { "Step": "Upkeep" }] },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [{ "ExchangeLife": { "with": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

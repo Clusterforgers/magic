@@ -1,0 +1,31 @@
+{
+  "oracle_id": "2a800427-ff8c-4b3c-baee-85211b70656d",
+  "name": "Aurelia, the Law Above",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Aurelia, the Law Above",
+      "oracle_fingerprint": "b974fc478249899ce9bc9668dbd17fe5",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Vigilance" },
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "GroupAttacks": { "what": [{ "Type": "Creature" }], "at_least": 3 } },
+            "effects": [{ "Draw": {} }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "GroupAttacks": { "what": [{ "Type": "Creature" }], "at_least": 5 } },
+            "effects": [
+              { "DealDamage": { "to": "Opponents", "amount": 3 } },
+              { "GainLife": { "amount": 3 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

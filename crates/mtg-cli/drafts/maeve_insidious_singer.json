@@ -1,0 +1,35 @@
+{
+  "oracle_id": "2494daad-c81d-4a80-ba5d-e7011af8de46",
+  "name": "Maeve, Insidious Singer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Maeve, Insidious Singer",
+      "oracle_fingerprint": "8cd4da8591673393ecc86b8f3849f97d",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{2}{U}",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Goad": { "what": { "Target": 0 } } },
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "AttacksPlayer": {
+                      "what": [{ "Type": "Creature" }, { "Is": { "Target": 0 } }],
+                      "at": "Opponents"
+                    }
+                  },
+                  "once": false,
+                  "this_turn": true,
+                  "effects": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

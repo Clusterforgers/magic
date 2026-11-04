@@ -1,0 +1,27 @@
+{
+  "oracle_id": "75c81ce4-ca1d-464a-bb39-e568f8ebf71f",
+  "name": "Arashin War Beast",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Arashin War Beast",
+      "oracle_fingerprint": "a73293c3409665dc59cd90b4791e2191",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "DealsDamage": {
+                  "source": ["This"],
+                  "to": { "Each": [{ "Type": "Creature" }, "Blocking"] },
+                  "combat": true
+                }
+              }
+            },
+            "effects": [{ "Manifest": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

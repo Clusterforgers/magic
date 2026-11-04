@@ -1,0 +1,56 @@
+{
+  "oracle_id": "ef842299-8a31-4793-9142-2bcd7a8b2fab",
+  "name": "Razorfield Ripper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Razorfield Ripper",
+      "oracle_fingerprint": "83efc1422720a7dc324052248f41459e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Attacks": {
+                "what": [
+                  {
+                    "AnyOf": [
+                      "This",
+                      {
+                        "Not": {
+                          "AnyOf": [
+                            { "Not": { "Type": "Creature" } },
+                            { "Not": { "Is": "Attached" } }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            "effects": [
+              { "PutCounters": { "on": "You", "counter": { "Other": "energy" } } },
+              {
+                "Continuous": {
+                  "affected": "Triggering",
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": { "Counters": { "on": "You", "counter": { "Other": "energy" } } },
+                        "toughness": {
+                          "Counters": { "on": "You", "counter": { "Other": "energy" } }
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Reconfigure": "{2}" } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "oracle_id": "916cb70f-3b06-48ed-972d-75f805aa0892",
+  "name": "Brineborn Cutthroat",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Brineborn Cutthroat",
+      "oracle_fingerprint": "b20fcad30fc3bd0ac9fc65e53ef850a7",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "by": "You" } },
+            "if": { "AtTrigger": { "Not": "YourTurn" } },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

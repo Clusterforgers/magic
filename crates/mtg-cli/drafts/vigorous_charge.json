@@ -1,0 +1,50 @@
+{
+  "oracle_id": "b8ce3f84-2053-4d16-ab3d-e552bd8d0e8c",
+  "name": "Vigorous Charge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vigorous Charge",
+      "oracle_fingerprint": "c06ed33d138c641414f3cc171b90252d",
+      "abilities": [
+        { "Keyword": { "Kicker": "{W}" } },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Trample" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "If": {
+                  "condition": "Kicked",
+                  "then": [
+                    {
+                      "DelayedTrigger": {
+                        "when": {
+                          "Batch": {
+                            "DealsDamage": {
+                              "source": [{ "Type": "Creature" }, { "Is": { "Target": 0 } }],
+                              "combat": true
+                            }
+                          }
+                        },
+                        "once": false,
+                        "this_turn": true,
+                        "effects": [{ "GainLife": { "amount": "Triggering" } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

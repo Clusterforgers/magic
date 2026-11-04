@@ -1,0 +1,56 @@
+{
+  "oracle_id": "05ac6e5c-b773-45ed-9c74-3cd4b05bc287",
+  "name": "Deathrender",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Deathrender",
+      "oracle_fingerprint": "7aa686e755f6a06fed5e2eb00fb4806e",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Is": "Attached" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [{ "Type": "Creature" }, { "In": "Hand" }, { "OwnedBy": "You" }]
+                        },
+                        "count": { "min": 0, "max": 1 },
+                        "as": "picked"
+                      }
+                    },
+                    {
+                      "Move": {
+                        "what": { "Bound": "picked" },
+                        "to": { "Battlefield": {} },
+                        "as": "moved2"
+                      }
+                    },
+                    { "Attach": { "what": "This", "to": { "Bound": "moved2" } } }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{2}" } }
+      ]
+    }
+  ]
+}

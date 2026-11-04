@@ -1,0 +1,298 @@
+{
+  "oracle_id": "aab905ef-b945-4523-b26f-fb5e6932bb56",
+  "name": "Equipoise",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Equipoise",
+      "oracle_fingerprint": "f4d5021e040500d8174d16604e065342",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Type": "Land" }, { "ControlledBy": { "Target": 0 } }] },
+                  "count": {
+                    "min": {
+                      "When": {
+                        "condition": {
+                          "Compare": {
+                            "left": {
+                              "Sum": [
+                                {
+                                  "Count": [{ "Type": "Land" }, { "ControlledBy": { "Target": 0 } }]
+                                },
+                                {
+                                  "Times": {
+                                    "by": -1,
+                                    "of": {
+                                      "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }]
+                                    }
+                                  }
+                                }
+                              ]
+                            },
+                            "op": "Lt",
+                            "right": 0
+                          }
+                        },
+                        "then": 0,
+                        "otherwise": {
+                          "Sum": [
+                            { "Count": [{ "Type": "Land" }, { "ControlledBy": { "Target": 0 } }] },
+                            {
+                              "Times": {
+                                "by": -1,
+                                "of": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] }
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    },
+                    "max": {
+                      "When": {
+                        "condition": {
+                          "Compare": {
+                            "left": {
+                              "Sum": [
+                                {
+                                  "Count": [{ "Type": "Land" }, { "ControlledBy": { "Target": 0 } }]
+                                },
+                                {
+                                  "Times": {
+                                    "by": -1,
+                                    "of": {
+                                      "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }]
+                                    }
+                                  }
+                                }
+                              ]
+                            },
+                            "op": "Lt",
+                            "right": 0
+                          }
+                        },
+                        "then": 0,
+                        "otherwise": {
+                          "Sum": [
+                            { "Count": [{ "Type": "Land" }, { "ControlledBy": { "Target": 0 } }] },
+                            {
+                              "Times": {
+                                "by": -1,
+                                "of": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] }
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  },
+                  "as": "card"
+                }
+              },
+              { "PhaseOut": { "what": { "Bound": "card" } } },
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Type": "Artifact" }, { "ControlledBy": { "Target": 0 } }] },
+                  "count": {
+                    "min": {
+                      "When": {
+                        "condition": {
+                          "Compare": {
+                            "left": {
+                              "Sum": [
+                                {
+                                  "Count": [
+                                    { "Type": "Artifact" },
+                                    { "ControlledBy": { "Target": 0 } }
+                                  ]
+                                },
+                                {
+                                  "Times": {
+                                    "by": -1,
+                                    "of": {
+                                      "Count": [{ "Type": "Artifact" }, { "ControlledBy": "You" }]
+                                    }
+                                  }
+                                }
+                              ]
+                            },
+                            "op": "Lt",
+                            "right": 0
+                          }
+                        },
+                        "then": 0,
+                        "otherwise": {
+                          "Sum": [
+                            {
+                              "Count": [{ "Type": "Artifact" }, { "ControlledBy": { "Target": 0 } }]
+                            },
+                            {
+                              "Times": {
+                                "by": -1,
+                                "of": {
+                                  "Count": [{ "Type": "Artifact" }, { "ControlledBy": "You" }]
+                                }
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    },
+                    "max": {
+                      "When": {
+                        "condition": {
+                          "Compare": {
+                            "left": {
+                              "Sum": [
+                                {
+                                  "Count": [
+                                    { "Type": "Artifact" },
+                                    { "ControlledBy": { "Target": 0 } }
+                                  ]
+                                },
+                                {
+                                  "Times": {
+                                    "by": -1,
+                                    "of": {
+                                      "Count": [{ "Type": "Artifact" }, { "ControlledBy": "You" }]
+                                    }
+                                  }
+                                }
+                              ]
+                            },
+                            "op": "Lt",
+                            "right": 0
+                          }
+                        },
+                        "then": 0,
+                        "otherwise": {
+                          "Sum": [
+                            {
+                              "Count": [{ "Type": "Artifact" }, { "ControlledBy": { "Target": 0 } }]
+                            },
+                            {
+                              "Times": {
+                                "by": -1,
+                                "of": {
+                                  "Count": [{ "Type": "Artifact" }, { "ControlledBy": "You" }]
+                                }
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  },
+                  "as": "card2"
+                }
+              },
+              { "PhaseOut": { "what": { "Bound": "card2" } } },
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Type": "Creature" }, { "ControlledBy": { "Target": 0 } }] },
+                  "count": {
+                    "min": {
+                      "When": {
+                        "condition": {
+                          "Compare": {
+                            "left": {
+                              "Sum": [
+                                {
+                                  "Count": [
+                                    { "Type": "Creature" },
+                                    { "ControlledBy": { "Target": 0 } }
+                                  ]
+                                },
+                                {
+                                  "Times": {
+                                    "by": -1,
+                                    "of": {
+                                      "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                                    }
+                                  }
+                                }
+                              ]
+                            },
+                            "op": "Lt",
+                            "right": 0
+                          }
+                        },
+                        "then": 0,
+                        "otherwise": {
+                          "Sum": [
+                            {
+                              "Count": [{ "Type": "Creature" }, { "ControlledBy": { "Target": 0 } }]
+                            },
+                            {
+                              "Times": {
+                                "by": -1,
+                                "of": {
+                                  "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                                }
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    },
+                    "max": {
+                      "When": {
+                        "condition": {
+                          "Compare": {
+                            "left": {
+                              "Sum": [
+                                {
+                                  "Count": [
+                                    { "Type": "Creature" },
+                                    { "ControlledBy": { "Target": 0 } }
+                                  ]
+                                },
+                                {
+                                  "Times": {
+                                    "by": -1,
+                                    "of": {
+                                      "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                                    }
+                                  }
+                                }
+                              ]
+                            },
+                            "op": "Lt",
+                            "right": 0
+                          }
+                        },
+                        "then": 0,
+                        "otherwise": {
+                          "Sum": [
+                            {
+                              "Count": [{ "Type": "Creature" }, { "ControlledBy": { "Target": 0 } }]
+                            },
+                            {
+                              "Times": {
+                                "by": -1,
+                                "of": {
+                                  "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                                }
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  },
+                  "as": "card3"
+                }
+              },
+              { "PhaseOut": { "what": { "Bound": "card3" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "oracle_id": "c17f0e65-e5a3-4113-b782-0b192ab52046",
+  "name": "Killian's Confidence",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Killian's Confidence",
+      "oracle_fingerprint": "e1d8acb69b572912181e89630055aafd",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Draw": {} }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "DealsDamage": {
+                  "source": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                  "to": "EachPlayer",
+                  "combat": true
+                }
+              }
+            },
+            "from": "Graveyard",
+            "effects": [
+              { "Pay": { "cost": "{W/B}", "paid": [{ "Move": { "what": "This", "to": "Hand" } }] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

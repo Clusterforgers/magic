@@ -1,0 +1,34 @@
+{
+  "oracle_id": "b97648b7-ae98-45c9-8f0f-a52d6faf2d2d",
+  "name": "Surveillance Phantasm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Surveillance Phantasm",
+      "oracle_fingerprint": "64a01086e8de7ad0363b7f3e71b01b30",
+      "abilities": [
+        { "Keyword": "Defender" },
+        { "Keyword": "Flying" },
+        { "Keyword": "Vigilance" },
+        {
+          "Rule": {
+            "rule": { "Combat": { "who": "This", "quirk": "AttackDespiteDefender" } },
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Sum": [
+                    { "Tallied": { "who": "You", "what": "Scried" } },
+                    { "Tallied": { "who": "You", "what": "Surveilled" } }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        },
+        { "Activated": { "cost": "{3}{U}", "effects": [{ "Surveil": {} }] } }
+      ]
+    }
+  ]
+}

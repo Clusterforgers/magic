@@ -1,0 +1,39 @@
+{
+  "oracle_id": "a6657fcf-f08c-4b03-8ec8-cb0b194eb553",
+  "name": "Adaptive Training Post",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Adaptive Training Post",
+      "oracle_fingerprint": "fb6551ddeb4ce60c614773aaa0b26f65",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                "by": "You"
+              }
+            },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Count": ["This", { "CounterCount": { "kind": "charge", "op": "Lt", "to": 3 } }]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "charge" } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 136, "end": 295 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "oracle_id": "85271333-af96-447a-8a16-9fadf0eaedb2",
+  "name": "Dragon Wings",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dragon Wings",
+      "oracle_fingerprint": "e197dd6d4f985686fda381096a8188d7",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        { "Static": { "affected": "Attached", "mods": [{ "AddKeyword": "Flying" }] } },
+        { "Keyword": { "Cycling": "{1}{U}" } },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "Compare": { "stat": "ManaValue", "op": "Ge", "to": 6 } }
+                ],
+                "to": "Battlefield"
+              }
+            },
+            "from": "Graveyard",
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Move": {
+                        "what": "This",
+                        "to": { "BattlefieldAttached": { "to": "Triggering" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

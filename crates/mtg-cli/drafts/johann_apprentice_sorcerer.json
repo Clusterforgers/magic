@@ -1,0 +1,29 @@
+{
+  "oracle_id": "8068f80f-88ee-4c0b-a0fb-3a6337f83f22",
+  "name": "Johann, Apprentice Sorcerer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Johann, Apprentice Sorcerer",
+      "oracle_fingerprint": "5e4a4098928ad08a977c27c6ae295f14",
+      "abilities": [
+        { "Rule": { "rule": { "LookAtTopAnyTime": "You" } } },
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": {
+                "what": [
+                  { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                  "TopOfLibrary",
+                  { "Not": { "Type": "Land" } }
+                ],
+                "from": "Library",
+                "once": true
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

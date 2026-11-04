@@ -1,0 +1,33 @@
+{
+  "oracle_id": "0d3e843e-eeb4-421e-b55d-ceb21f51a080",
+  "name": "Insubordination",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Insubordination",
+      "oracle_fingerprint": "1af1c61b3d3666dcb85770b9b4249f6a",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": { "ControllerOf": "Attached" } } },
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "Is": "Attached" }, { "Not": "AttackedThisTurn" }] },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "DealDamage": { "to": "Triggering", "amount": 2 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

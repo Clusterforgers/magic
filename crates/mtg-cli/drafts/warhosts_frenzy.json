@@ -1,0 +1,48 @@
+{
+  "oracle_id": "a0218a14-8301-4484-aed5-90334349620e",
+  "name": "Warhost's Frenzy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Warhost's Frenzy",
+      "oracle_fingerprint": "b02a226e095cda2beb6d3a0d7ca89666",
+      "abilities": [
+        { "Keyword": { "Kicker": "{B}" } },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "If": {
+                  "condition": "Kicked",
+                  "then": [
+                    {
+                      "DelayedTrigger": {
+                        "when": {
+                          "ZoneChange": {
+                            "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                            "from": "Battlefield",
+                            "to": "Graveyard"
+                          }
+                        },
+                        "once": false,
+                        "this_turn": true,
+                        "effects": [{ "Draw": {} }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

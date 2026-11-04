@@ -1,0 +1,24 @@
+{
+  "oracle_id": "75f381a6-49f9-4caf-a96a-91c75640b9b0",
+  "name": "Raking Canopy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Raking Canopy",
+      "oracle_fingerprint": "8f6f7979686b2cd8a59f2b7759cf0f72",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AttacksPlayer": {
+                "what": [{ "Type": "Creature" }, { "HasKeyword": "Flying" }],
+                "at": "You"
+              }
+            },
+            "effects": [{ "DealDamage": { "to": "Triggering", "amount": 4 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

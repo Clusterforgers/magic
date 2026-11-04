@@ -1,0 +1,31 @@
+{
+  "oracle_id": "925b3d1b-98cd-44f5-8aa0-e2b17df2808a",
+  "name": "Take Inventory",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Take Inventory",
+      "oracle_fingerprint": "662763f1c8a20eac1db25f44ed1a306a",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Draw": {} },
+              {
+                "Draw": {
+                  "count": {
+                    "Count": [
+                      { "OwnedBy": "You" },
+                      { "Named": "Take Inventory" },
+                      { "In": "Graveyard" }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

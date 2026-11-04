@@ -1,0 +1,39 @@
+{
+  "oracle_id": "0fd1ddc3-65cc-489f-81b9-6c144843fc67",
+  "name": "Life Matrix",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Life Matrix",
+      "oracle_fingerprint": "7e843a24e5b9c8a456efe7270e11010e",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{4}" }, "Tap"],
+            "condition": { "All": ["YourTurn", { "Step": "Upkeep" }] },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "matrix" } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "GrantAbility": {
+                        "Activated": {
+                          "cost": [{ "RemoveCounters": { "counter": { "Other": "matrix" } } }],
+                          "effects": [{ "Regenerate": { "what": "This" } }]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

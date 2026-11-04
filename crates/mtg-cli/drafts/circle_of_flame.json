@@ -1,0 +1,24 @@
+{
+  "oracle_id": "c31801e6-2444-4158-8e19-2afe751d7cff",
+  "name": "Circle of Flame",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Circle of Flame",
+      "oracle_fingerprint": "32333f40198cc790c3afd93ae39e4b71",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AttacksPlayerOrPlaneswalker": {
+                "what": [{ "Type": "Creature" }, { "Not": { "HasKeyword": "Flying" } }],
+                "at": "You"
+              }
+            },
+            "effects": [{ "DealDamage": { "to": "Triggering", "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

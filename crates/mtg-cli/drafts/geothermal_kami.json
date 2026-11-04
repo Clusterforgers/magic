@@ -1,0 +1,53 @@
+{
+  "oracle_id": "fbf8fdf5-0d7d-41a3-a6b9-27bb7a644c20",
+  "name": "Geothermal Kami",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Geothermal Kami",
+      "oracle_fingerprint": "fc8884095a1929b419f9f83922ce195e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": [{ "Type": "Enchantment" }, { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": { "Each": [{ "Type": "Enchantment" }, { "ControlledBy": "You" }] },
+                        "as": "picked"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "picked" }, "to": "Hand", "as": "moved2" } },
+                    {
+                      "If": {
+                        "condition": {
+                          "CountOf": {
+                            "subject": { "Bound": "moved2" },
+                            "selector": [],
+                            "op": "Ge",
+                            "right": 1
+                          }
+                        },
+                        "then": [{ "GainLife": { "amount": 3 } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

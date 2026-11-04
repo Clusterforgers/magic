@@ -1,0 +1,34 @@
+{
+  "oracle_id": "be1f0d72-14b5-41be-a37a-7abeb52ec0e5",
+  "name": "Rescuer Chwinga",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rescuer Chwinga",
+      "oracle_fingerprint": "d91373f2be70bfcb57ed26afa00b95e3",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": { "Each": ["Other", { "ControlledBy": "You" }] },
+                        "as": "picked"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "picked" }, "to": "Hand" } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "oracle_id": "02fe8ed4-3c5d-4875-b584-b33b819c47be",
+  "name": "Gideon's Intervention",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gideon's Intervention",
+      "oracle_fingerprint": "b0ad31e648bb9d4d401ed51cb592d37e",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "Choose": "CardName" }
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "Opponents",
+                "action": { "Cast": { "filter": ["ChosenName", { "Not": { "Type": "Land" } }] } }
+              }
+            }
+          }
+        },
+        {
+          "Replacement": {
+            "when": { "Damage": { "to": "You", "source": ["ChosenName"] } },
+            "by": "Prevent"
+          }
+        },
+        {
+          "Replacement": {
+            "when": {
+              "Damage": { "to": { "Each": [{ "ControlledBy": "You" }] }, "source": ["ChosenName"] }
+            },
+            "by": "Prevent"
+          }
+        }
+      ]
+    }
+  ]
+}

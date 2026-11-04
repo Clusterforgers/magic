@@ -1,0 +1,36 @@
+{
+  "oracle_id": "b1e0841d-b004-40f9-a644-aecb422f6ad5",
+  "name": "Madame Web, Clairvoyant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Madame Web, Clairvoyant",
+      "oracle_fingerprint": "f5a30a5d84a7343cb57fb3c6c97ffd83",
+      "abilities": [
+        { "Rule": { "rule": { "LookAtTopAnyTime": "You" } } },
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": {
+                "what": [
+                  { "AnyOf": [{ "Subtype": "Spider" }, { "Not": { "Type": "Creature" } }] },
+                  "TopOfLibrary",
+                  { "Not": { "Type": "Land" } }
+                ],
+                "from": "Library"
+              }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+            },
+            "effects": [{ "May": { "effects": [{ "Mill": {} }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "oracle_id": "6fde4790-4186-4786-aa1a-b6a53bfadc1c",
+  "name": "Curse of Marit Lage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Curse of Marit Lage",
+      "oracle_fingerprint": "2de0896859ae1ff703357ca28ac03b7b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Tap": { "what": { "Each": [{ "Subtype": "Island" }] } } }]
+          }
+        },
+        { "Static": { "affected": { "Each": [{ "Subtype": "Island" }] }, "mods": ["DoesntUntap"] } }
+      ]
+    }
+  ]
+}

@@ -6,6 +6,7 @@ use super::condition::{condition, strip};
 use super::cost::{cost, loyalty};
 use super::ctx::{Ctx, Tr, unmapped};
 use super::effects::chain;
+use super::header::{ACTIVATION_WORDS, activation_words};
 use crate::forge::script::Params;
 
 /// The abilities of an `A:` line: none for a line the DSL states by other means (an Aura's attach), one, or a spell with
@@ -54,9 +55,8 @@ fn additional_cost(ctx: &Ctx, text: &str) -> Tr<Option<Value>> {
 }
 
 /// The keys only an activated ability has.
-const ACTIVATION: [&str; 6] = [
+const ACTIVATION: [&str; 5] = [
     "SorcerySpeed",
-    "PlayerTurn",
     "ActivationLimit",
     "ActivationZone",
     "Planeswalker",
@@ -71,12 +71,31 @@ fn spell(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         Some(text) => additional_cost(ctx, text)?,
         None => None,
     };
+    // "Cast this spell only during your turn / only during combat" (CR 601.3).
+    let mut when: Vec<Value> = Vec::new();
+    match p.get("PlayerTurn") {
+        None => {}
+        Some("True") => when.push(json!("YourTurn")),
+        Some(other) => return unmapped(format!("key:Spell.PlayerTurn={other}")),
+    }
+    let words = activation_words(p)?;
+    if words.once_per_turn || words.from.is_some() {
+        return unmapped("key:Spell.Boast-or-Forecast");
+    }
+    when.extend(words.conditions);
+    let only = match when.len() {
+        0 => None,
+        1 => when.pop(),
+        _ => Some(json!({ "All": when })),
+    };
+    let p = &p.without(&["PlayerTurn", "ActivationPhases", "Boast", "Forecast"]);
     let effects = chain(ctx, p)?;
     let mut ability = json!({ "effects": effects });
     if !ctx.targets.is_empty() {
         ability["targets"] = Value::Array(ctx.targets.clone());
     }
     let mut out: Vec<Value> = extra.into_iter().collect();
+    out.extend(only.map(|condition| json!({"CastOnly": {"condition": condition}})));
     out.push(json!({ "Spell": ability }));
     Ok(out)
 }
@@ -93,10 +112,12 @@ fn activated(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     }
     let when = condition(ctx, p)?;
     let p = &strip(p);
+    let words = activation_words(p)?;
+    let p = &p.without(&ACTIVATION_WORDS);
     let effects = chain(ctx, p)?;
     let targets = ctx.targets.clone();
     if p.get("Planeswalker") == Some("True") {
-        if when.is_some() {
+        if when.is_some() || !words.conditions.is_empty() {
             return unmapped("key:Loyalty.condition");
         }
         return loyalty_ability(p, text, &effects, &targets);
@@ -105,6 +126,11 @@ fn activated(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     let mut conditions: Vec<Value> = when.into_iter().collect();
     if p.get("PlayerTurn") == Some("True") {
         conditions.insert(0, json!("YourTurn"));
+    }
+    for condition in words.conditions {
+        if !conditions.contains(&condition) {
+            conditions.push(condition);
+        }
     }
     match conditions.len() {
         0 => {}
@@ -115,14 +141,18 @@ fn activated(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
         ability["timing"] = json!("Sorcery");
     }
     match p.get("ActivationLimit") {
+        None if words.once_per_turn => ability["limit"] = json!("OncePerTurn"),
         None => {}
         Some("1") => ability["limit"] = json!("OncePerTurn"),
         Some(other) => return unmapped(format!("key:AB.ActivationLimit={other}")),
     }
-    match p.get("ActivationZone") {
-        None | Some("Battlefield") => {}
-        Some(zone @ ("Graveyard" | "Hand" | "Exile")) => ability["from"] = json!(zone),
-        Some(other) => return unmapped(format!("key:AB.ActivationZone={other}")),
+    match (p.get("ActivationZone"), words.from) {
+        (None | Some("Battlefield"), None) => {}
+        (None, Some(zone)) | (Some(zone @ ("Graveyard" | "Hand" | "Exile")), None) => {
+            ability["from"] = json!(zone);
+        }
+        (Some(zone), Some(from)) if zone == from => ability["from"] = json!(from),
+        (Some(other), _) => return unmapped(format!("key:AB.ActivationZone={other}")),
     }
     if !targets.is_empty() {
         ability["targets"] = Value::Array(targets);

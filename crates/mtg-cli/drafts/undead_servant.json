@@ -1,0 +1,41 @@
+{
+  "oracle_id": "5bf9f397-0216-4ec9-a57b-406758dcc233",
+  "name": "Undead Servant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Undead Servant",
+      "oracle_fingerprint": "e2c215edd0b7713078f582b3f18035d5",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Zombie",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Zombie"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  },
+                  "count": {
+                    "Count": [
+                      { "OwnedBy": "You" },
+                      { "Named": "Undead Servant" },
+                      { "In": "Graveyard" }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

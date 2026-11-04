@@ -1,0 +1,42 @@
+{
+  "oracle_id": "f6e75db5-b119-4401-942c-bbaeeb694761",
+  "name": "Embermage Goblin",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Embermage Goblin",
+      "oracle_fingerprint": "ab2e058fa2cff8042ab241d637bccb25",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Search": {
+                        "filter": [{ "Named": "Embermage Goblin" }],
+                        "reveal": true,
+                        "as": "found"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+                    { "Shuffle": {} }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

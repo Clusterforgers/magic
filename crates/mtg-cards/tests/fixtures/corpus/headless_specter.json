@@ -1,0 +1,142 @@
+{
+  "object": "card",
+  "id": "888b4b76-6af9-4479-8cfd-cde3b8694fe5",
+  "oracle_id": "9aa9c7ca-e160-4bfa-8ba5-87114222fd86",
+  "multiverse_ids": [
+    464044
+  ],
+  "mtgo_id": 72562,
+  "tcgplayer_id": 190632,
+  "cardmarket_id": 374379,
+  "name": "Headless Specter",
+  "lang": "en",
+  "released_at": "2019-06-14",
+  "uri": "https://api.scryfall.com/cards/888b4b76-6af9-4479-8cfd-cde3b8694fe5",
+  "scryfall_uri": "https://scryfall.com/card/mh1/95/headless-specter?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T08:58:45Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/8/8/888b4b76-6af9-4479-8cfd-cde3b8694fe5.jpg?1783933125",
+    "normal": "https://cards.scryfall.io/normal/front/8/8/888b4b76-6af9-4479-8cfd-cde3b8694fe5.jpg?1783933125",
+    "large": "https://cards.scryfall.io/large/front/8/8/888b4b76-6af9-4479-8cfd-cde3b8694fe5.jpg?1783933125",
+    "png": "https://cards.scryfall.io/png/front/8/8/888b4b76-6af9-4479-8cfd-cde3b8694fe5.png?1783933125",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/8/8/888b4b76-6af9-4479-8cfd-cde3b8694fe5.jpg?1783933125",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/8/8/888b4b76-6af9-4479-8cfd-cde3b8694fe5.jpg?1783933125",
+    "thumb": "https://cards.scryfall.io/thumb/front/8/8/888b4b76-6af9-4479-8cfd-cde3b8694fe5.webp?1783933125",
+    "grid": "https://cards.scryfall.io/grid/front/8/8/888b4b76-6af9-4479-8cfd-cde3b8694fe5.webp?1783933125",
+    "display": "https://cards.scryfall.io/display/front/8/8/888b4b76-6af9-4479-8cfd-cde3b8694fe5.webp?1783933125",
+    "art": "https://cards.scryfall.io/art/front/8/8/888b4b76-6af9-4479-8cfd-cde3b8694fe5.webp?1783933125",
+    "crop": "https://cards.scryfall.io/crop/front/8/8/888b4b76-6af9-4479-8cfd-cde3b8694fe5.webp?1783933125",
+    "jpeg": "https://cards.scryfall.io/normal/front/8/8/888b4b76-6af9-4479-8cfd-cde3b8694fe5.jpg?1783933125"
+  },
+  "mana_cost": "{1}{B}{B}",
+  "cmc": 3.0,
+  "type_line": "Creature — Specter",
+  "oracle_text": "Flying\nHellbent — Whenever this creature deals combat damage to a player, if you have no cards in hand, that player discards a card at random.",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Flying",
+    "Hellbent"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "d7efccd6-55bc-4fb8-9138-e72577510a99",
+  "set": "mh1",
+  "set_name": "Modern Horizons",
+  "set_type": "draft_innovation",
+  "set_uri": "https://api.scryfall.com/sets/d7efccd6-55bc-4fb8-9138-e72577510a99",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Amh1&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/mh1?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/888b4b76-6af9-4479-8cfd-cde3b8694fe5/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A9aa9c7ca-e160-4bfa-8ba5-87114222fd86&unique=prints",
+  "collector_number": "95",
+  "digital": false,
+  "rarity": "common",
+  "flavor_text": "No tongue to chant, yet the forsaken hymn still emanates from its body.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Anastasia Ovchinnikova",
+  "artist_ids": [
+    "3605d81f-5c97-4958-9dcc-d44a85e10305"
+  ],
+  "illustration_id": "e9385db2-ea81-4b20-a3cf-4694d1bb4322",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 28406,
+  "penny_rank": 17249,
+  "preview": {
+    "source": "Wizards of the Coast",
+    "source_uri": "https://www.twitch.tv/videos/427047692",
+    "previewed_at": "2019-05-19"
+  },
+  "prices": {
+    "usd": "0.06",
+    "usd_foil": "0.20",
+    "usd_etched": null,
+    "eur": "0.08",
+    "eur_foil": "0.20",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=464044&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DHeadless%2BSpecter",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DHeadless%2BSpecter",
+    "edhrec": "https://edhrec.com/route/?cc=Headless+Specter"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F190632%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=374379&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/72562?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

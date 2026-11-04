@@ -1,0 +1,39 @@
+{
+  "oracle_id": "c00a0be5-d9a9-4263-a87e-7bf2d128ab3a",
+  "name": "Yoshimaru, Beloved Companion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Yoshimaru, Beloved Companion",
+      "oracle_fingerprint": "bf44b3887c6cbb895c8b0527f20a9e11",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": {
+              "CountersPut": {
+                "on": {
+                  "Each": [
+                    { "Type": "Creature" },
+                    { "ControlledBy": "You" },
+                    { "In": "Battlefield" }
+                  ]
+                },
+                "counter": "+1/+1"
+              }
+            },
+            "by": { "Add": 1 }
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{6}",
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "Supertype": "Legendary" }] } }
+            ],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

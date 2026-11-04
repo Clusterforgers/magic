@@ -1,0 +1,21 @@
+{
+  "oracle_id": "7ac00312-8963-4fee-8561-1a54e533adbb",
+  "name": "Doomskar Warrior",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Doomskar Warrior",
+      "oracle_fingerprint": "5ea311c6dd44a7e3dcec82026223dd66",
+      "abilities": [
+        { "Keyword": { "Backup": { "count": 1 } } },
+        { "Keyword": "Trample" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 17, "end": 280 }
+          }
+        }
+      ]
+    }
+  ]
+}

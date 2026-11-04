@@ -1,0 +1,81 @@
+{
+  "oracle_id": "9dbccdc5-61f7-4a7d-bbbc-5cab393e24f7",
+  "name": "Rith's Charm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rith's Charm",
+      "oracle_fingerprint": "ed173c5744df61066012c3c07ca127a1",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [{ "Type": "Land" }, { "Not": { "Supertype": "Basic" } }]
+                          }
+                        }
+                      ],
+                      "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "CreateToken": {
+                            "token": {
+                              "Custom": {
+                                "name": "Saproling",
+                                "colors": ["Green"],
+                                "types": ["Creature"],
+                                "subtypes": ["Saproling"],
+                                "power": 1,
+                                "toughness": 1
+                              }
+                            },
+                            "count": 3
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "Choose": {
+                            "from": {
+                              "Each": [
+                                {
+                                  "AnyOf": [
+                                    { "In": "Battlefield" },
+                                    { "In": "Stack" },
+                                    { "In": "Command" }
+                                  ]
+                                }
+                              ]
+                            },
+                            "as": "source"
+                          }
+                        },
+                        {
+                          "Shield": {
+                            "when": { "Damage": { "source": [{ "Is": { "Bound": "source" } }] } },
+                            "by": "Prevent",
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

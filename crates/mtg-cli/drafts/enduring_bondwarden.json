@@ -1,0 +1,20 @@
+{
+  "oracle_id": "c17d4818-5825-4bff-8fc5-5fd740cc0c70",
+  "name": "Enduring Bondwarden",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Enduring Bondwarden",
+      "oracle_fingerprint": "7380dc523a6da87058edac763e433c97",
+      "abilities": [
+        { "Keyword": { "Backup": { "count": 1 } } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 156, "end": 229 }
+          }
+        }
+      ]
+    }
+  ]
+}

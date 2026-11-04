@@ -1,0 +1,49 @@
+{
+  "oracle_id": "21989fad-9672-46d4-b7d5-101906e7aed2",
+  "name": "Rona's Vortex",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rona's Vortex",
+      "oracle_fingerprint": "ccad5fe8502734069cd316b545e4ccbb",
+      "abilities": [
+        { "Keyword": { "Kicker": "{2}{B}" } },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] },
+                    { "Not": { "ControlledBy": "You" } }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "If": {
+                  "condition": { "Compare": { "left": "Kicks", "op": "Eq", "right": 0 } },
+                  "then": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+                }
+              },
+              {
+                "If": {
+                  "condition": "Kicked",
+                  "then": [
+                    {
+                      "Move": {
+                        "what": { "Target": 0 },
+                        "to": { "Library": { "place": "Bottom" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,159 @@
+{
+  "object": "card",
+  "id": "f5b54d46-2caf-4d1b-8be1-dbd9e9dce058",
+  "oracle_id": "47ee6837-2e2f-4344-ab9f-6b8887874f77",
+  "multiverse_ids": [],
+  "resource_id": "C3989B80215E032BA7129DCDD96ABCA2761AEB4F2953FBF137F0F8BC0A099D3B",
+  "mtgo_id": 149859,
+  "arena_id": 102639,
+  "tcgplayer_id": 686531,
+  "cardmarket_id": 880514,
+  "name": "Colorstorm Stallion",
+  "lang": "en",
+  "released_at": "2026-04-24",
+  "uri": "https://api.scryfall.com/cards/f5b54d46-2caf-4d1b-8be1-dbd9e9dce058",
+  "scryfall_uri": "https://scryfall.com/card/sos/180/colorstorm-stallion?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T00:47:27Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/f/5/f5b54d46-2caf-4d1b-8be1-dbd9e9dce058.jpg?1783903647",
+    "normal": "https://cards.scryfall.io/normal/front/f/5/f5b54d46-2caf-4d1b-8be1-dbd9e9dce058.jpg?1783903647",
+    "large": "https://cards.scryfall.io/large/front/f/5/f5b54d46-2caf-4d1b-8be1-dbd9e9dce058.jpg?1783903647",
+    "png": "https://cards.scryfall.io/png/front/f/5/f5b54d46-2caf-4d1b-8be1-dbd9e9dce058.png?1783903647",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/f/5/f5b54d46-2caf-4d1b-8be1-dbd9e9dce058.jpg?1783903647",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/f/5/f5b54d46-2caf-4d1b-8be1-dbd9e9dce058.jpg?1783903647",
+    "thumb": "https://cards.scryfall.io/thumb/front/f/5/f5b54d46-2caf-4d1b-8be1-dbd9e9dce058.webp?1783903647",
+    "grid": "https://cards.scryfall.io/grid/front/f/5/f5b54d46-2caf-4d1b-8be1-dbd9e9dce058.webp?1783903647",
+    "display": "https://cards.scryfall.io/display/front/f/5/f5b54d46-2caf-4d1b-8be1-dbd9e9dce058.webp?1783903647",
+    "art": "https://cards.scryfall.io/art/front/f/5/f5b54d46-2caf-4d1b-8be1-dbd9e9dce058.webp?1783903647",
+    "crop": "https://cards.scryfall.io/crop/front/f/5/f5b54d46-2caf-4d1b-8be1-dbd9e9dce058.webp?1783903647",
+    "jpeg": "https://cards.scryfall.io/normal/front/f/5/f5b54d46-2caf-4d1b-8be1-dbd9e9dce058.jpg?1783903647"
+  },
+  "mana_cost": "{1}{U}{R}",
+  "cmc": 3.0,
+  "type_line": "Creature — Elemental Horse",
+  "oracle_text": "Ward {1}, haste\nOpus — Whenever you cast an instant or sorcery spell, this creature gets +1/+1 until end of turn. If five or more mana was spent to cast that spell, create a token that's a copy of this creature.",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "R",
+    "U"
+  ],
+  "color_identity": [
+    "R",
+    "U"
+  ],
+  "keywords": [
+    "Haste",
+    "Ward",
+    "Opus"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "e8800c58-574f-4a77-bed9-2d99e8f5813c",
+      "component": "combo_piece",
+      "name": "Colorstorm Stallion",
+      "type_line": "Creature — Elemental Horse",
+      "uri": "https://api.scryfall.com/cards/e8800c58-574f-4a77-bed9-2d99e8f5813c"
+    },
+    {
+      "object": "related_card",
+      "id": "4e119457-948d-4ef8-8c27-59fa675f766f",
+      "component": "token",
+      "name": "Copy",
+      "type_line": "Token",
+      "uri": "https://api.scryfall.com/cards/4e119457-948d-4ef8-8c27-59fa675f766f"
+    }
+  ],
+  "legalities": {
+    "standard": "legal",
+    "future": "legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo",
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "e487c9ce-5e76-4756-bcd0-e4b7db5c38a3",
+  "set": "sos",
+  "set_name": "Secrets of Strixhaven",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/e487c9ce-5e76-4756-bcd0-e4b7db5c38a3",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Asos&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/sos?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/f5b54d46-2caf-4d1b-8be1-dbd9e9dce058/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A47ee6837-2e2f-4344-ab9f-6b8887874f77&unique=prints",
+  "collector_number": "180",
+  "digital": false,
+  "rarity": "rare",
+  "watermark": "prismari",
+  "flavor_text": "Prismari students are never afraid to let their imaginations run wild.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Lorenzo Lanfranconi",
+  "artist_ids": [
+    "334dd388-1e26-4181-8eca-f9c097e29c5e"
+  ],
+  "illustration_id": "c4e1a47d-6312-486e-bf4f-249b6f734eac",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 13921,
+  "prices": {
+    "usd": "0.38",
+    "usd_foil": "0.53",
+    "usd_etched": null,
+    "eur": "0.49",
+    "eur_foil": "0.58",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DColorstorm%2BStallion",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DColorstorm%2BStallion",
+    "edhrec": "https://edhrec.com/route/?cc=Colorstorm+Stallion"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F686531%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=880514&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/149859?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

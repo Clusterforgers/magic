@@ -1,0 +1,24 @@
+{
+  "oracle_id": "d0d4ab83-8b9b-49cd-86b8-720abd0550f4",
+  "name": "Axgard Braggart",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Axgard Braggart",
+      "oracle_fingerprint": "a790bda3b847ef9513163822914dd52d",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{1}{W}",
+            "condition": { "Matches": { "subject": "This", "selector": ["AttackedThisTurn"] } },
+            "limit": "OncePerTurn",
+            "effects": [
+              { "Untap": { "what": "This" } },
+              { "PutCounters": { "on": "This", "counter": "+1/+1" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

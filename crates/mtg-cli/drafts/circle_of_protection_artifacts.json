@@ -1,0 +1,38 @@
+{
+  "oracle_id": "2e61e9c0-a2b9-4a24-8cb0-5160accce183",
+  "name": "Circle of Protection: Artifacts",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Circle of Protection: Artifacts",
+      "oracle_fingerprint": "2190f044e86316d602b757987d84f146",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{2}",
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "AnyOf": [{ "In": "Battlefield" }, { "In": "Stack" }, { "In": "Command" }] },
+                      { "Type": "Artifact" }
+                    ]
+                  },
+                  "as": "source"
+                }
+              },
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": "You", "source": [{ "Is": { "Bound": "source" } }] } },
+                  "by": "PreventNext",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

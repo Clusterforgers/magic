@@ -1,0 +1,31 @@
+{
+  "oracle_id": "e26f7a58-18ae-432b-bc3f-c410512eb6bf",
+  "name": "Mind Whip",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mind Whip",
+      "oracle_fingerprint": "5e0a3bc2650bcca00ddbbfe1fd1820f2",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": { "ControllerOf": "Attached" } } },
+            "effects": [
+              {
+                "Pay": {
+                  "who": "Triggering",
+                  "cost": "{3}",
+                  "unpaid": [
+                    { "DealDamage": { "to": "Triggering", "amount": 2 } },
+                    { "Tap": { "what": "Attached" } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

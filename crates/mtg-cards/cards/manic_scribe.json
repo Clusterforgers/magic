@@ -1,0 +1,32 @@
+{
+  "oracle_id": "d2ef475d-6043-4da8-83f0-dffa76052707",
+  "name": "Manic Scribe",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Manic Scribe",
+      "oracle_fingerprint": "c13ab97b4bcb03eedf2280015bd94d5a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Mill": { "who": "Opponents", "count": 3 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "Opponents" } },
+            "if": {
+              "Compare": {
+                "left": { "CardTypes": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                "op": "Ge",
+                "right": 4
+              }
+            },
+            "effects": [{ "Mill": { "who": "Triggering", "count": 3 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

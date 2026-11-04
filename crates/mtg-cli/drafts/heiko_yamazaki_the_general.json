@@ -1,0 +1,43 @@
+{
+  "oracle_id": "a4d67f2d-6b0f-4feb-bf7d-90ab4f2e46ab",
+  "name": "Heiko Yamazaki, the General",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Heiko Yamazaki, the General",
+      "oracle_fingerprint": "28a0aed5260f553b0c92015e18850965",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": {
+              "AttacksAlone": {
+                "what": [
+                  { "AnyOf": [{ "Subtype": "Samurai" }, { "Subtype": "Warrior" }] },
+                  { "ControlledBy": "You" }
+                ]
+              }
+            },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Artifact" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": { "from": "Graveyard", "only": { "Target": 0 }, "play": true }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

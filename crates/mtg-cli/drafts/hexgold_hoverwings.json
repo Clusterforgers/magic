@@ -1,0 +1,28 @@
+{
+  "oracle_id": "63018d1c-f7fb-44c8-bcd2-292e74ab5b54",
+  "name": "Hexgold Hoverwings",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hexgold Hoverwings",
+      "oracle_fingerprint": "d413f11ed97862e6049b2c43966f44ab",
+      "abilities": [
+        { "Keyword": "ForMirrodin" },
+        { "Static": { "affected": "Attached", "mods": [{ "AddKeyword": "Flying" }] } },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                { "ControlledBy": "You" },
+                { "HasAttached": [{ "Subtype": "Equipment" }] }
+              ]
+            },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }]
+          }
+        },
+        { "Keyword": { "Equip": "{2}{W}" } }
+      ]
+    }
+  ]
+}

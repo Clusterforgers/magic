@@ -1,0 +1,44 @@
+{
+  "oracle_id": "775617cd-7264-4365-94c4-ffae4eb9ec8b",
+  "name": "Aetherflux Conduit",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Aetherflux Conduit",
+      "oracle_fingerprint": "eabb94166cdb1a2fc8c62e06639f309e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "by": "You" } },
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": "You",
+                  "counter": { "Other": "energy" },
+                  "count": { "Stat": { "of": "Triggering", "stat": "ManaSpent" } }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap", { "PayEnergy": 50 }],
+            "effects": [
+              { "Draw": { "count": 7 } },
+              {
+                "RepeatEach": {
+                  "over": {
+                    "Each": [{ "Not": { "Type": "Land" } }, { "OwnedBy": "You" }, { "In": "Hand" }]
+                  },
+                  "as": "card",
+                  "effects": [{ "CastFromZone": { "what": { "Bound": "card" }, "free": true } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

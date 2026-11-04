@@ -1,0 +1,39 @@
+{
+  "oracle_id": "605dd1b5-8946-4bd0-b31b-e99bf63a1bc4",
+  "name": "Rune of Protection: Lands",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rune of Protection: Lands",
+      "oracle_fingerprint": "3dbba1391b14909bb7205ffad4619d37",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{W}",
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "AnyOf": [{ "In": "Battlefield" }, { "In": "Stack" }, { "In": "Command" }] },
+                      { "Type": "Land" }
+                    ]
+                  },
+                  "as": "source"
+                }
+              },
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": "You", "source": [{ "Is": { "Bound": "source" } }] } },
+                  "by": "PreventNext",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Cycling": "{2}" } }
+      ]
+    }
+  ]
+}

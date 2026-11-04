@@ -1,0 +1,64 @@
+{
+  "oracle_id": "1da10d5c-36a8-473f-a5d4-782ad61d8057",
+  "name": "Umezawa's Jitte",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Umezawa's Jitte",
+      "oracle_fingerprint": "3f9efabf93627255ad0304187d24815d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "DealsDamage": {
+                  "source": [{ "Type": "Creature" }, { "Is": "Attached" }],
+                  "combat": true
+                }
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "charge", "count": 2 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "RemoveCounters": { "counter": "charge" } }],
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": "Attached",
+                            "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": { "Target": 0 },
+                            "mods": [{ "ModifyPT": { "power": -1, "toughness": -1 } }],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    },
+                    { "effects": [{ "GainLife": { "amount": 2 } }] }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{2}" } }
+      ]
+    }
+  ]
+}

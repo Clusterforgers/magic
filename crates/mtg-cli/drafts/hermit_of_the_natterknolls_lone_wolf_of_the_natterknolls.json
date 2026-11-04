@@ -1,0 +1,45 @@
+{
+  "oracle_id": "6d32f688-a854-4d82-b654-d720b93fb766",
+  "name": "Hermit of the Natterknolls // Lone Wolf of the Natterknolls",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Hermit of the Natterknolls",
+      "oracle_fingerprint": "874682c5f76b933d8416d1dd58bd3506",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "by": "Opponents" } },
+            "if": { "AtTrigger": "YourTurn" },
+            "effects": [{ "Draw": {} }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 66, "end": 157 }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Lone Wolf of the Natterknolls",
+      "oracle_fingerprint": "3106bd98893cb7d357f468bc72f6bf2e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "by": "Opponents" } },
+            "if": { "AtTrigger": "YourTurn" },
+            "effects": [{ "Draw": { "count": 2 } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 69, "end": 173 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "oracle_id": "958c2a27-9fb1-42b4-a0ef-296584763a98",
+  "name": "Stiltzkin, Moogle Merchant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stiltzkin, Moogle Merchant",
+      "oracle_fingerprint": "e57f81e39a7ba2dc81cf8ebfe9fffb9c",
+      "abilities": [
+        { "Keyword": "Lifelink" },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap"],
+            "targets": [
+              { "what": "Opponent" },
+              { "what": { "Object": ["Other", { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 1 },
+                  "mods": [{ "SetController": { "Target": 0 } }],
+                  "duration": "Forever"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Target": 1 },
+                      "selector": [],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

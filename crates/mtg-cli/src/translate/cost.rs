@@ -1,7 +1,5 @@
 //! Costs: Forge's `Cost$` words (`2 R T Sac<1/Creature>`) as the DSL's cost items, and loyalty costs.
 
-use std::fmt::Write as _;
-
 use serde_json::{Value, json};
 
 use super::amount::{amount, counter_kind};
@@ -36,10 +34,27 @@ pub fn parts(cost: &str) -> Vec<&str> {
 pub fn is_mana(word: &str) -> bool {
     !word.is_empty()
         && (word.chars().all(|c| c.is_ascii_digit())
+            || hybrid(word).is_some()
             || (word.len() <= 3
                 && word
                     .split('/')
                     .all(|side| side.len() == 1 && "WUBRGCXSP".contains(side) || side == "2")))
+}
+
+/// The symbol of a Forge hybrid or Phyrexian word: `WB` is `{W/B}` and `GP` is `{G/P}`.
+fn hybrid(word: &str) -> Option<String> {
+    let mut chars = word.chars();
+    let (first, second) = (chars.next()?, chars.next()?);
+    let color = |c: char| "WUBRG".contains(c);
+    if chars.next().is_some() || !color(first) {
+        return None;
+    }
+    (second == 'P' || (color(second) && second != first)).then(|| format!("{{{first}/{second}}}"))
+}
+
+/// The mana symbol a cost word stands for, with its braces.
+pub fn symbol(word: &str) -> String {
+    hybrid(word).unwrap_or_else(|| format!("{{{word}}}"))
 }
 
 /// The loyalty cost a word stands for (`AddCounter<2/LOYALTY>`).
@@ -73,7 +88,7 @@ pub fn cost(ctx: &Ctx, text: &str) -> Tr<Value> {
     let mut items = Vec::new();
     for word in parts(text) {
         if is_mana(word) {
-            let _ = write!(mana, "{{{word}}}");
+            mana.push_str(&symbol(word));
         } else {
             items.push(item(ctx, word)?);
         }
@@ -124,7 +139,7 @@ fn item(ctx: &Ctx, word: &str) -> Tr<Value> {
         "Exile" | "ExileFromGrave" if on_self => Ok(json!("ExileSelf")),
         "ExileFromGrave" => zone_cost(ctx, "ExileFromGraveyard", number, what),
         "ExileFromHand" => zone_cost(ctx, "ExileFromHand", number, what),
-        "Return" if on_self => unmapped("cost:Return-self"),
+        "Return" if on_self => Ok(json!({"ReturnToHand": {"filter": ["This"]}})),
         "Return" => zone_cost(ctx, "ReturnToHand", number, what),
         "Reveal" => zone_cost(ctx, "RevealFromHand", number, what),
         "tapXType" => zone_cost(ctx, "TapPermanents", number, what),

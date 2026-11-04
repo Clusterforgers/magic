@@ -1,0 +1,72 @@
+{
+  "oracle_id": "4fa826ca-d361-4391-ad0d-989ebcfa4a91",
+  "name": "Kavaron, Memorial World",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kavaron, Memorial World",
+      "oracle_fingerprint": "640a65c61bd00169ac398c538ffa3b53",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Red"] } } }]
+          }
+        },
+        { "Keyword": "Station" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Activated": {
+                    "cost": [
+                      { "Mana": "{1}{R}" },
+                      "Tap",
+                      { "Sacrifice": { "filter": [{ "Type": "Land" }] } }
+                    ],
+                    "effects": [
+                      {
+                        "CreateToken": {
+                          "token": {
+                            "Custom": {
+                              "name": "Robot",
+                              "types": ["Artifact", "Creature"],
+                              "subtypes": ["Robot"],
+                              "power": 2,
+                              "toughness": 2
+                            }
+                          }
+                        }
+                      },
+                      {
+                        "Continuous": {
+                          "affected": {
+                            "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                          },
+                          "mods": [
+                            { "ModifyPT": { "power": 1, "toughness": 0 } },
+                            { "AddKeyword": "Haste" }
+                          ],
+                          "duration": "UntilEndOfTurn"
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ],
+            "condition": {
+              "Matches": {
+                "subject": "This",
+                "selector": [{ "CounterCount": { "kind": "charge", "op": "Ge", "to": 12 } }]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

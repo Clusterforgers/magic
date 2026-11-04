@@ -1,0 +1,58 @@
+{
+  "oracle_id": "835abd35-27ea-45fe-b55d-25081c57bd4a",
+  "name": "Zero Point Ballad",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Zero Point Ballad",
+      "oracle_fingerprint": "a215884ffa523783cbb1e24bc36d49bc",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Destroy": {
+                  "what": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "Compare": { "stat": "Toughness", "op": "Le", "to": "X" } }
+                    ]
+                  },
+                  "as": "destroyed"
+                }
+              },
+              { "LoseLife": { "amount": "X" } },
+              {
+                "If": {
+                  "condition": { "Compare": { "left": "X", "op": "Ge", "right": 6 } },
+                  "then": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "Type": "Creature" },
+                            { "Not": "Token" },
+                            { "Is": { "Bound": "destroyed" } },
+                            { "In": "Graveyard" },
+                            { "OwnedBy": "You" }
+                          ]
+                        },
+                        "as": "picked2"
+                      }
+                    },
+                    {
+                      "Move": {
+                        "what": { "Bound": "picked2" },
+                        "to": { "Battlefield": { "under": "You" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

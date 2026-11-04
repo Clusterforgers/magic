@@ -1,0 +1,79 @@
+{
+  "oracle_id": "c92d6f26-5856-42dc-9ee5-21292d78a1fb",
+  "name": "Deathbonnet Sprout // Deathbonnet Hulk",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Deathbonnet Sprout",
+      "oracle_fingerprint": "8570d75c452be49073336e1bfc6b758e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              { "Mill": {} },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Count": [
+                          { "Type": "Creature" },
+                          { "OwnedBy": "You" },
+                          { "In": "Graveyard" }
+                        ]
+                      },
+                      "op": "Ge",
+                      "right": 3
+                    }
+                  },
+                  "then": [{ "Transform": { "what": "This" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Deathbonnet Hulk",
+      "oracle_fingerprint": "0bfb101297bd384a6122360188867ae2",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": { "Each": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                        "count": { "min": 0, "max": 1 },
+                        "as": "picked"
+                      }
+                    },
+                    { "Exile": { "what": { "Bound": "picked" }, "as": "exiled2" } },
+                    {
+                      "If": {
+                        "condition": {
+                          "CountOf": {
+                            "subject": { "Bound": "exiled2" },
+                            "selector": [{ "Type": "Creature" }],
+                            "op": "Ge",
+                            "right": 1
+                          }
+                        },
+                        "then": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

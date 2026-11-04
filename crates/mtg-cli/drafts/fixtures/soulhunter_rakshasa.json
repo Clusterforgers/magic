@@ -1,0 +1,122 @@
+{
+  "object": "card",
+  "id": "16537b4c-5dd8-4d38-a1ce-7ac803c3f48a",
+  "oracle_id": "0f26be86-eab1-45fd-8b69-5ecff2565c60",
+  "multiverse_ids": [
+    548170
+  ],
+  "arena_id": 75503,
+  "name": "Soulhunter Rakshasa",
+  "lang": "en",
+  "released_at": "2020-08-13",
+  "uri": "https://api.scryfall.com/cards/16537b4c-5dd8-4d38-a1ce-7ac803c3f48a",
+  "scryfall_uri": "https://scryfall.com/card/anb/62/soulhunter-rakshasa?utm_source=api",
+  "layout": "normal",
+  "highres_image": false,
+  "image_status": "lowres",
+  "image_updated_at": "2026-10-17T08:48:34Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/1/6/16537b4c-5dd8-4d38-a1ce-7ac803c3f48a.jpg?1792226914",
+    "normal": "https://cards.scryfall.io/normal/front/1/6/16537b4c-5dd8-4d38-a1ce-7ac803c3f48a.jpg?1792226914",
+    "large": "https://cards.scryfall.io/large/front/1/6/16537b4c-5dd8-4d38-a1ce-7ac803c3f48a.jpg?1792226914",
+    "png": "https://cards.scryfall.io/png/front/1/6/16537b4c-5dd8-4d38-a1ce-7ac803c3f48a.png?1792226914",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/1/6/16537b4c-5dd8-4d38-a1ce-7ac803c3f48a.jpg?1792226914",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/1/6/16537b4c-5dd8-4d38-a1ce-7ac803c3f48a.jpg?1792226914",
+    "thumb": "https://cards.scryfall.io/thumb/front/1/6/16537b4c-5dd8-4d38-a1ce-7ac803c3f48a.webp?1792226914",
+    "grid": "https://cards.scryfall.io/grid/front/1/6/16537b4c-5dd8-4d38-a1ce-7ac803c3f48a.webp?1792226914",
+    "display": "https://cards.scryfall.io/display/front/1/6/16537b4c-5dd8-4d38-a1ce-7ac803c3f48a.webp?1792226914",
+    "art": "https://cards.scryfall.io/art/front/1/6/16537b4c-5dd8-4d38-a1ce-7ac803c3f48a.webp?1792226914",
+    "crop": "https://cards.scryfall.io/crop/front/1/6/16537b4c-5dd8-4d38-a1ce-7ac803c3f48a.webp?1792226914",
+    "jpeg": "https://cards.scryfall.io/normal/front/1/6/16537b4c-5dd8-4d38-a1ce-7ac803c3f48a.jpg?1792226914"
+  },
+  "mana_cost": "{3}{B}{B}",
+  "cmc": 5.0,
+  "type_line": "Creature — Demon",
+  "oracle_text": "This creature can't block.\nWhen this creature enters, if you cast it from your hand, it deals 1 damage to target opponent for each Swamp you control.",
+  "power": "5",
+  "toughness": "5",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "not_legal",
+    "pauper": "not_legal",
+    "vintage": "not_legal",
+    "penny": "not_legal",
+    "commander": "not_legal",
+    "oathbreaker": "not_legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "legal",
+    "paupercommander": "not_legal",
+    "duel": "not_legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "fb2d12a7-a385-4ec0-b7fd-e2ff1796d7a8",
+  "set": "anb",
+  "set_name": "Arena Beginner Set",
+  "set_type": "starter",
+  "set_uri": "https://api.scryfall.com/sets/fb2d12a7-a385-4ec0-b7fd-e2ff1796d7a8",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aanb&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/anb?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/16537b4c-5dd8-4d38-a1ce-7ac803c3f48a/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A0f26be86-eab1-45fd-8b69-5ecff2565c60&unique=prints",
+  "collector_number": "62",
+  "digital": true,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Caio Monteiro",
+  "artist_ids": [
+    "d5053eb6-af72-47a0-b6e8-023cc3b9aefb"
+  ],
+  "illustration_id": "0f56b61f-0e7f-4d02-8500-b43b509bff04",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "prices": {
+    "usd": null,
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": null,
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=548170&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DSoulhunter%2BRakshasa",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DSoulhunter%2BRakshasa",
+    "edhrec": "https://edhrec.com/route/?cc=Soulhunter+Rakshasa"
+  }
+}

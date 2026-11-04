@@ -1,0 +1,19 @@
+{
+  "oracle_id": "6b87a933-b0d2-4120-b4a0-65ab0f3dbe48",
+  "name": "Ugin's Construct",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ugin's Construct",
+      "oracle_fingerprint": "9c22c41a4fdb8a65325878ae4f86c7cf",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Sacrifice": { "filter": [{ "Not": "Colorless" }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

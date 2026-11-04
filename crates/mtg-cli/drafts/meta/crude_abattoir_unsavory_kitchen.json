@@ -1,0 +1,42 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "When you unlock this door, this Room deals 2 damage to target creature.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    },
+    {
+      "face": 1,
+      "tag": "T",
+      "text": "Whenever a source you control deals noncombat damage to a creature, choose a creature card in your hand. It perpetually gets +2/+0 and gains haste.",
+      "abilities": [],
+      "gap": "valid-base:Emblem"
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 71
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 1,
+        "span": {
+          "start": 0,
+          "end": 147
+        },
+        "mark": "ByHand"
+      }
+    ]
+  }
+}

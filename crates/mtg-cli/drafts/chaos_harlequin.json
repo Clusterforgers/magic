@@ -1,0 +1,75 @@
+{
+  "oracle_id": "c8e96a51-24c9-4955-8bf0-6ef448fa8011",
+  "name": "Chaos Harlequin",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Chaos Harlequin",
+      "oracle_fingerprint": "23fe9f41d84f8358d7fde04907bcf1c0",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{R}",
+            "effects": [
+              { "LookAtTop": { "as": "top" } },
+              {
+                "Exile": {
+                  "what": { "Each": [{ "In": "Library" }, { "Is": { "Bound": "top" } }] },
+                  "as": "exiled4"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Bottom", "order": "Chosen" } }
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "exiled4" },
+                      "selector": [{ "Type": "Land" }],
+                      "op": "Gt",
+                      "right": 0
+                    }
+                  },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": "This",
+                        "mods": [{ "ModifyPT": { "power": -4, "toughness": 0 } }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "exiled4" },
+                      "selector": [{ "Type": "Land" }],
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": "This",
+                        "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

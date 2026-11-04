@@ -1,0 +1,74 @@
+{
+  "oracle_id": "5cd99378-e8e2-43fe-80fc-13d680746a4a",
+  "name": "Flunk",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Flunk",
+      "oracle_fingerprint": "0730be26c071f094e01183a45b1e5d0a",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": {
+                          "Times": {
+                            "by": -1,
+                            "of": {
+                              "Sum": [
+                                7,
+                                {
+                                  "Times": {
+                                    "by": -1,
+                                    "of": {
+                                      "Count": [
+                                        { "In": "Hand" },
+                                        { "OwnedBy": { "ControllerOf": { "Target": 0 } } }
+                                      ]
+                                    }
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        },
+                        "toughness": {
+                          "Times": {
+                            "by": -1,
+                            "of": {
+                              "Sum": [
+                                7,
+                                {
+                                  "Times": {
+                                    "by": -1,
+                                    "of": {
+                                      "Count": [
+                                        { "In": "Hand" },
+                                        { "OwnedBy": { "ControllerOf": { "Target": 0 } } }
+                                      ]
+                                    }
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

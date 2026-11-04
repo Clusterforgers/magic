@@ -1,0 +1,65 @@
+{
+  "oracle_id": "c8cdabc4-e147-491b-9c44-96e57f6ec3b4",
+  "name": "Waking the Trolls",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Waking the Trolls",
+      "oracle_fingerprint": "cf7363bce89fa8a0acb45a665a49548b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "targets": [{ "what": { "Object": [{ "Type": "Land" }] } }],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "targets": [{ "what": { "Object": [{ "Type": "Land" }, { "In": "Graveyard" }] } }],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": { "under": "You" } } } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Troll Warrior",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Troll", "Warrior"],
+                      "power": 4,
+                      "toughness": 4,
+                      "abilities": [{ "Keyword": "Trample" }]
+                    }
+                  },
+                  "count": {
+                    "Sum": [
+                      { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] },
+                      {
+                        "Times": {
+                          "by": -1,
+                          "of": {
+                            "Count": [{ "Type": "Land" }, { "ControlledBy": { "Target": 0 } }]
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

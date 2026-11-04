@@ -1,0 +1,36 @@
+{
+  "oracle_id": "031cfc7d-8bda-454b-b88a-15d3f5fe47e2",
+  "name": "Hired Claw",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hired Claw",
+      "oracle_fingerprint": "0f12170e4ff122271552b32a8122b4f5",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": { "what": [{ "Subtype": "Lizard" }, { "ControlledBy": "You" }] }
+            },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{1}{R}",
+            "condition": {
+              "Compare": {
+                "left": { "Tallied": { "who": "Opponents", "what": "LifeLost" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "limit": "OncePerTurn",
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

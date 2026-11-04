@@ -50,7 +50,7 @@ fn property(ctx: &Ctx, prop: &str) -> Tr<Vec<Value>> {
         "HasCounters" => return one(json!("HasAnyCounter")),
         "hasXCost" => return one(json!("XInCost")),
         "RememberedPlayerCtrl" => {
-            return match &ctx.remembered {
+            return match super::memory::slot_ref(ctx, super::memory::Slot::Remembered) {
                 Some(who) => one(json!({"ControlledBy": who})),
                 None => unmapped("valid:RememberedPlayerCtrl-without-a-player"),
             };
@@ -64,13 +64,7 @@ fn property(ctx: &Ctx, prop: &str) -> Tr<Vec<Value>> {
         "ChosenColor" | "ChosenType" => {
             return match &ctx.chosen {
                 Some(name) => one(json!({"ChosenAs": name})),
-                None => unmapped(format!("valid:{prop}-without-a-choice")),
-            };
-        }
-        "IsRemembered" => {
-            return match &ctx.pinned {
-                Some(who) => one(json!({"Is": who})),
-                None => unmapped("valid:IsRemembered"),
+                None => super::memory::entered_with(ctx, prop).map(|pred| vec![pred]),
             };
         }
         "ExiledWithSource" => return one(json!({"ExiledWith": "This"})),
@@ -407,14 +401,9 @@ pub fn defined(ctx: &Ctx, word: &str) -> Tr<Value> {
         "DelayTriggerRemembered"
         | "DelayTriggerRememberedLKI"
         | "DelayedTriggerRemembered"
-        | "RememberedLKI" => ctx
-            .remembered
-            .clone()
-            .map_or_else(|| unmapped("defined:Remembered-without-a-change"), Ok),
-        "Player.IsRemembered" | "Remembered" => ctx
-            .remembered
-            .clone()
-            .map_or_else(|| unmapped("defined:Remembered-without-a-change"), Ok),
+        | "RememberedLKI"
+        | "Player.IsRemembered"
+        | "Remembered" => super::memory::remembered(ctx),
         word if super::triggered::is_word(word) => {
             super::triggered::resolve(ctx.trigger.as_ref(), word)
         }

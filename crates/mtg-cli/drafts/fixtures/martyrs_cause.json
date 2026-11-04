@@ -1,0 +1,133 @@
+{
+  "object": "card",
+  "id": "4c1f026b-8c7f-4051-9922-5684a6b2c06b",
+  "oracle_id": "72d1c789-e79f-4f15-80d0-981d4120b085",
+  "multiverse_ids": [
+    9712
+  ],
+  "mtgo_id": 12603,
+  "mtgo_foil_id": 12604,
+  "tcgplayer_id": 6340,
+  "cardmarket_id": 10570,
+  "name": "Martyr's Cause",
+  "lang": "en",
+  "released_at": "1999-02-15",
+  "uri": "https://api.scryfall.com/cards/4c1f026b-8c7f-4051-9922-5684a6b2c06b",
+  "scryfall_uri": "https://scryfall.com/card/ulg/13/martyrs-cause?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T12:37:31Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/4/c/4c1f026b-8c7f-4051-9922-5684a6b2c06b.jpg?1783946251",
+    "normal": "https://cards.scryfall.io/normal/front/4/c/4c1f026b-8c7f-4051-9922-5684a6b2c06b.jpg?1783946251",
+    "large": "https://cards.scryfall.io/large/front/4/c/4c1f026b-8c7f-4051-9922-5684a6b2c06b.jpg?1783946251",
+    "png": "https://cards.scryfall.io/png/front/4/c/4c1f026b-8c7f-4051-9922-5684a6b2c06b.png?1783946251",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/4/c/4c1f026b-8c7f-4051-9922-5684a6b2c06b.jpg?1783946251",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/4/c/4c1f026b-8c7f-4051-9922-5684a6b2c06b.jpg?1783946251",
+    "thumb": "https://cards.scryfall.io/thumb/front/4/c/4c1f026b-8c7f-4051-9922-5684a6b2c06b.webp?1783946251",
+    "grid": "https://cards.scryfall.io/grid/front/4/c/4c1f026b-8c7f-4051-9922-5684a6b2c06b.webp?1783946251",
+    "display": "https://cards.scryfall.io/display/front/4/c/4c1f026b-8c7f-4051-9922-5684a6b2c06b.webp?1783946251",
+    "art": "https://cards.scryfall.io/art/front/4/c/4c1f026b-8c7f-4051-9922-5684a6b2c06b.webp?1783946251",
+    "crop": "https://cards.scryfall.io/crop/front/4/c/4c1f026b-8c7f-4051-9922-5684a6b2c06b.webp?1783946251",
+    "jpeg": "https://cards.scryfall.io/normal/front/4/c/4c1f026b-8c7f-4051-9922-5684a6b2c06b.jpg?1783946251"
+  },
+  "mana_cost": "{2}{W}",
+  "cmc": 3.0,
+  "type_line": "Enchantment",
+  "oracle_text": "Sacrifice a creature: The next time a source of your choice would deal damage to any target this turn, prevent that damage.",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "78ced61b-4b8a-4b33-b6b2-f5bd66f1a75a",
+  "set": "ulg",
+  "set_name": "Urza's Legacy",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/78ced61b-4b8a-4b33-b6b2-f5bd66f1a75a",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aulg&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/ulg?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/4c1f026b-8c7f-4051-9922-5684a6b2c06b/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A72d1c789-e79f-4f15-80d0-981d4120b085&unique=prints",
+  "collector_number": "13",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "Dying is a soldier's talent.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Jeff Laubenstein",
+  "artist_ids": [
+    "7c5b6391-2a5a-4b78-b19d-2b181149cb0f"
+  ],
+  "illustration_id": "96e3b974-ddec-483e-be28-2c7146d3b656",
+  "border_color": "black",
+  "frame": "1997",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 8054,
+  "penny_rank": 16067,
+  "prices": {
+    "usd": "1.81",
+    "usd_foil": "20.66",
+    "usd_etched": null,
+    "eur": "1.30",
+    "eur_foil": "11.92",
+    "tix": "0.04"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=9712&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DMartyr%2527s%2BCause",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DMartyr%2527s%2BCause",
+    "edhrec": "https://edhrec.com/route/?cc=Martyr%27s+Cause"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F6340%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=10570&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/12603?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

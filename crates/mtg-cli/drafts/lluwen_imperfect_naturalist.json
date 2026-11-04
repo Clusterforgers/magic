@@ -1,0 +1,66 @@
+{
+  "oracle_id": "81ff5764-72ce-4b9a-a14f-07413700d935",
+  "name": "Lluwen, Imperfect Naturalist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lluwen, Imperfect Naturalist",
+      "oracle_fingerprint": "4f532c8b4a341e0653367991fceb0ac3",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "Mill": { "count": 4, "as": "milled" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "AnyOf": [{ "Type": "Creature" }, { "Type": "Land" }] },
+                      { "Is": { "Bound": "milled" } },
+                      { "AnyOf": [{ "In": "Graveyard" }, { "In": "Exile" }] },
+                      { "OwnedBy": "You" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked2"
+                }
+              },
+              {
+                "Move": { "what": { "Bound": "picked2" }, "to": { "Library": { "place": "Top" } } }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{2}{B/G}{B/G}{B/G}" },
+              "Tap",
+              { "Discard": { "filter": [{ "Type": "Land" }] } }
+            ],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Worm",
+                      "colors": ["Black", "Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Worm"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": {
+                    "Count": [{ "Type": "Land" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

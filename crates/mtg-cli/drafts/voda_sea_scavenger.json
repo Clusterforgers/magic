@@ -1,0 +1,46 @@
+{
+  "oracle_id": "81a9da9d-c422-4293-b210-d89222633b4c",
+  "name": "Voda Sea Scavenger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Voda Sea Scavenger",
+      "oracle_fingerprint": "93b6baa4a11c737899dc16df48c0cc63",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "LookAtTop": {
+                  "count": {
+                    "Distinct": {
+                      "of": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                      "stat": "BasicLandTypes"
+                    }
+                  },
+                  "as": "top"
+                }
+              },
+              {
+                "Choose": {
+                  "from": { "Bound": "top" },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "kept2",
+                  "rest_as": "rest3"
+                }
+              },
+              { "Move": { "what": { "Bound": "kept2" }, "to": { "Library": { "place": "Top" } } } },
+              {
+                "Move": {
+                  "what": { "Bound": "rest3" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

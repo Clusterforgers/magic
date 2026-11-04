@@ -1,0 +1,29 @@
+{
+  "oracle_id": "b796ecc8-a2e8-4ab9-8736-6825b650434d",
+  "name": "Entrust the Spark",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Entrust the Spark",
+      "oracle_fingerprint": "c1df5ae1876f694f325e2c2c9ac5b461",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "Sacrifice": { "filter": [{ "Type": "Planeswalker" }] } }],
+                  "paid": [
+                    { "Search": { "filter": [{ "Type": "Planeswalker" }], "as": "found" } },
+                    { "Move": { "what": { "Bound": "found" }, "to": { "Battlefield": {} } } },
+                    { "Shuffle": {} }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

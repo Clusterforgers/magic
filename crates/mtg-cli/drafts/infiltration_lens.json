@@ -1,0 +1,22 @@
+{
+  "oracle_id": "72dfd729-ebba-4bb1-83eb-54c2051fea3b",
+  "name": "Infiltration Lens",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Infiltration Lens",
+      "oracle_fingerprint": "01d3e4c86ceb971263899dc706c5e731",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "BecomesBlocked": { "what": [{ "Is": "Attached" }], "by": [{ "Type": "Creature" }] }
+            },
+            "effects": [{ "May": { "effects": [{ "Draw": { "count": 2 } }] } }]
+          }
+        },
+        { "Keyword": { "Equip": "{1}" } }
+      ]
+    }
+  ]
+}

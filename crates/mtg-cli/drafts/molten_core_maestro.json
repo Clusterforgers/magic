@@ -1,0 +1,46 @@
+{
+  "oracle_id": "485233bf-dc4b-4f31-8dfb-5054aee70c08",
+  "name": "Molten-Core Maestro",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Molten-Core Maestro",
+      "oracle_fingerprint": "1d0de9f08790f4f916afb5049b142b33",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                "by": "You"
+              }
+            },
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": "+1/+1" } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Stat": { "of": "Triggering", "stat": "ManaSpent" } },
+                      "op": "Ge",
+                      "right": 5
+                    }
+                  },
+                  "then": [
+                    {
+                      "AddMana": {
+                        "mana": { "Fixed": ["Red"] },
+                        "times": { "Stat": { "of": "This", "stat": "Power" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

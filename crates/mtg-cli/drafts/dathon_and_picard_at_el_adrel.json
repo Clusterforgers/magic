@@ -1,0 +1,53 @@
+{
+  "oracle_id": "76b7e1ee-43f0-4b56-822a-71b064c9201b",
+  "name": "Dathon and Picard at El-Adrel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dathon and Picard at El-Adrel",
+      "oracle_fingerprint": "db46b22d72ff277862b241ac880c8925",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": { "Target": 0 },
+                            "mods": [
+                              { "ModifyPT": { "power": 3, "toughness": 3 } },
+                              { "AddKeyword": "Trample" }
+                            ],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "Sacrifice": {
+                            "who": "Opponents",
+                            "filter": [
+                              { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Enchantment" }] },
+                              { "Not": "Token" }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

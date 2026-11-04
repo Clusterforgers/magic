@@ -1,0 +1,129 @@
+{
+  "object": "card",
+  "id": "ec7d7c80-4e3c-454e-b2ed-6f0436df19c9",
+  "oracle_id": "c8e96a51-24c9-4955-8bf0-6ef448fa8011",
+  "multiverse_ids": [
+    3167
+  ],
+  "tcgplayer_id": 4120,
+  "cardmarket_id": 7954,
+  "name": "Chaos Harlequin",
+  "lang": "en",
+  "released_at": "1996-06-10",
+  "uri": "https://api.scryfall.com/cards/ec7d7c80-4e3c-454e-b2ed-6f0436df19c9",
+  "scryfall_uri": "https://scryfall.com/card/all/69/chaos-harlequin?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T12:52:59Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/e/c/ec7d7c80-4e3c-454e-b2ed-6f0436df19c9.jpg?1783947179",
+    "normal": "https://cards.scryfall.io/normal/front/e/c/ec7d7c80-4e3c-454e-b2ed-6f0436df19c9.jpg?1783947179",
+    "large": "https://cards.scryfall.io/large/front/e/c/ec7d7c80-4e3c-454e-b2ed-6f0436df19c9.jpg?1783947179",
+    "png": "https://cards.scryfall.io/png/front/e/c/ec7d7c80-4e3c-454e-b2ed-6f0436df19c9.png?1783947179",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/e/c/ec7d7c80-4e3c-454e-b2ed-6f0436df19c9.jpg?1783947179",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/e/c/ec7d7c80-4e3c-454e-b2ed-6f0436df19c9.jpg?1783947179",
+    "thumb": "https://cards.scryfall.io/thumb/front/e/c/ec7d7c80-4e3c-454e-b2ed-6f0436df19c9.webp?1783947179",
+    "grid": "https://cards.scryfall.io/grid/front/e/c/ec7d7c80-4e3c-454e-b2ed-6f0436df19c9.webp?1783947179",
+    "display": "https://cards.scryfall.io/display/front/e/c/ec7d7c80-4e3c-454e-b2ed-6f0436df19c9.webp?1783947179",
+    "art": "https://cards.scryfall.io/art/front/e/c/ec7d7c80-4e3c-454e-b2ed-6f0436df19c9.webp?1783947179",
+    "crop": "https://cards.scryfall.io/crop/front/e/c/ec7d7c80-4e3c-454e-b2ed-6f0436df19c9.webp?1783947179",
+    "jpeg": "https://cards.scryfall.io/normal/front/e/c/ec7d7c80-4e3c-454e-b2ed-6f0436df19c9.jpg?1783947179"
+  },
+  "mana_cost": "{2}{R}{R}",
+  "cmc": 4.0,
+  "type_line": "Creature — Human",
+  "oracle_text": "{R}: Exile the top card of your library. If that card is a land card, this creature gets -4/-0 until end of turn. Otherwise, this creature gets +2/+0 until end of turn.",
+  "power": "2",
+  "toughness": "4",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": true,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "64987b06-4a5c-443d-b560-ff5691744582",
+  "set": "all",
+  "set_name": "Alliances",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/64987b06-4a5c-443d-b560-ff5691744582",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aall&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/all?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/ec7d7c80-4e3c-454e-b2ed-6f0436df19c9/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ac8e96a51-24c9-4955-8bf0-6ef448fa8011&unique=prints",
+  "collector_number": "69",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Alan Rabinowitz",
+  "artist_ids": [
+    "8562e6e1-f7f3-499e-8309-cc5775b37847"
+  ],
+  "illustration_id": "c5fda921-50d3-4776-a9af-2e3587d24956",
+  "border_color": "black",
+  "frame": "1993",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 30781,
+  "prices": {
+    "usd": "0.43",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "1.06",
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=3167&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DChaos%2BHarlequin",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DChaos%2BHarlequin",
+    "edhrec": "https://edhrec.com/route/?cc=Chaos+Harlequin"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F4120%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=7954&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Chaos+Harlequin&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

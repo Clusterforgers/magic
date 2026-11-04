@@ -1,0 +1,28 @@
+{
+  "oracle_id": "87330f08-07a2-4703-9535-f9c1cd546106",
+  "name": "Glorifying Verse",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Glorifying Verse",
+      "oracle_fingerprint": "2b52bc7c677a52e8107774856574bddc",
+      "abilities": [
+        { "Keyword": "Exalted" },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [
+                  { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                  { "Targeting": [{ "Type": "Creature" }, { "In": "Battlefield" }] }
+                ],
+                "by": "You"
+              }
+            },
+            "effects": [{ "Conjure": { "name": "Glorifying Verse", "zone": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

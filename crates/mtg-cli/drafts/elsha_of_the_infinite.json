@@ -1,0 +1,30 @@
+{
+  "oracle_id": "da339200-ed26-42e4-b24f-b96bc4daef7c",
+  "name": "Elsha of the Infinite",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Elsha of the Infinite",
+      "oracle_fingerprint": "f7f76dc2b516ac85c2dae1d4ddef1acd",
+      "abilities": [
+        { "Keyword": "Prowess" },
+        { "Rule": { "rule": { "LookAtTopAnyTime": "You" } } },
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": {
+                "what": [
+                  "TopOfLibrary",
+                  { "Not": { "Type": "Land" } },
+                  { "Not": { "Type": "Creature" } }
+                ],
+                "from": "Library",
+                "flash": true
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

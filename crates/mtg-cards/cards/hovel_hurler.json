@@ -1,0 +1,40 @@
+{
+  "oracle_id": "fb9cd9d0-8eea-4aa8-bb9c-bb0aac847421",
+  "name": "Hovel Hurler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hovel Hurler",
+      "oracle_fingerprint": "e7087d2296ac60632058af11cff98259",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "-1/-1", "count": 2 } }
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{R/W}{R/W}" }, { "RemoveCounters": {} }],
+            "timing": "Sorcery",
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "ModifyPT": { "power": 1, "toughness": 0 } },
+                    { "AddKeyword": "Flying" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

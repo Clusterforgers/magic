@@ -1,0 +1,49 @@
+{
+  "oracle_id": "023f9e20-51fc-493d-a7aa-c9fcbdc7cd04",
+  "name": "Unnerving Assault",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Unnerving Assault",
+      "oracle_fingerprint": "25b6ee36347b0e1de853581488bde9e8",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "If": {
+                  "condition": { "ManaSpent": "Blue" },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": {
+                          "Each": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }]
+                        },
+                        "mods": [{ "ModifyPT": { "power": -1, "toughness": 0 } }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": { "ManaSpent": "Red" },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                        "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
