@@ -138,7 +138,8 @@ fn affected_valid(ctx: &Ctx, word: &str) -> Tr<Value> {
 }
 
 /// The keys a continuous static line reads.
-const CONTINUOUS: [&str; 19] = [
+const CONTINUOUS: [&str; 20] = [
+    "AddHiddenKeyword",
     "AddSVar",
     "AffectedZone",
     "AddAbility",
@@ -186,6 +187,17 @@ fn continuous(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
             for keyword in keyword_list(ctx, keywords)? {
                 mods.push(json!({ variant: keyword }));
             }
+        }
+    }
+    if let Some(word) = p.get("AddHiddenKeyword") {
+        // Only the combat restrictions have a modification; any other hidden keyword is another rule.
+        match word.trim_end_matches('.') {
+            "CARDNAME can't block" => mods.push(json!("CantBlock")),
+            "CARDNAME can't attack" => mods.push(json!("CantAttack")),
+            "CARDNAME can't attack or block" => {
+                mods.extend([json!("CantAttack"), json!("CantBlock")]);
+            }
+            _ => return unmapped("key:Static.Continuous.AddHiddenKeyword"),
         }
     }
     if p.get("RemoveAllAbilities") == Some("True") {

@@ -485,6 +485,36 @@ fn a_duration_word_reads_as_the_end_it_prints(#[case] word: &str, #[case] expect
     assert_eq!(pump_duration(word), expected);
 }
 
+#[rstest]
+#[case::cant_block(
+    "Mode$ Continuous | Affected$ Creature.withoutFlying | AddHiddenKeyword$ CARDNAME can't block.",
+    json!(["CantBlock"])
+)]
+#[case::cant_attack_or_block(
+    "Mode$ Continuous | AffectedDefined$ Enchanted | AddPower$ 2 | AddHiddenKeyword$ CARDNAME can't attack or block.",
+    json!([{"ModifyPT": {"power": 2, "toughness": 0}}, "CantAttack", "CantBlock"])
+)]
+fn a_hidden_keyword_of_a_static_line_is_the_restriction_it_prints(
+    #[case] line: &str,
+    #[case] mods: Value,
+) {
+    assert_eq!(static_ability(line).pointer("/Static/mods"), Some(&mods));
+}
+
+#[rstest]
+#[case::untap(
+    "Mode$ Continuous | Affected$ Creature | AddHiddenKeyword$ This card doesn't untap during your next untap step."
+)]
+#[case::must_be_blocked(
+    "Mode$ Continuous | Affected$ Creature | AddHiddenKeyword$ CARDNAME must be blocked if able."
+)]
+fn a_hidden_keyword_with_no_modification_stays_a_named_gap(#[case] line: &str) {
+    assert_eq!(
+        static_gaps(line),
+        ["key:Static.Continuous.AddHiddenKeyword"]
+    );
+}
+
 #[test]
 fn an_attack_target_that_is_not_known_stays_a_named_gap() {
     assert_eq!(
