@@ -1,0 +1,15 @@
+{
+  "oracle_id": "492e0e6c-8c27-4376-938b-f8a8b6205810",
+  "name": "Leyline of Sanctity",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Leyline of Sanctity",
+      "oracle_fingerprint": "ea3adc19b501c575ae8b20e7a7881a96",
+      "abilities": [
+        "OpeningHand",
+        { "Static": { "affected": "You", "mods": [{ "AddKeyword": "Hexproof" }] } }
+      ]
+    }
+  ]
+}

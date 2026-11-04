@@ -8,13 +8,17 @@
       "oracle_fingerprint": "0030be817adb6dc4ea671a24b85e2704",
       "abilities": [
         {
-          "Static": {
-            "affected": "This",
-            "mods": [{ "AddKeyword": "Indestructible" }],
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": { "Other": "divinity" }, "count": 1 } },
             "condition": {
               "Matches": {
                 "subject": "This",
-                "selector": [{ "HasCounter": { "Other": "divinity" } }]
+                "selector": [
+                  "This",
+                  { "WasCast": { "by": "You", "from": "Hand" } },
+                  { "OwnedBy": "You" }
+                ]
               }
             }
           }
@@ -24,10 +28,9 @@
             "affected": "This",
             "mods": [{ "AddKeyword": "Indestructible" }],
             "condition": {
-              "Compare": {
-                "left": { "Counters": { "on": "This", "counter": { "Other": "divinity" } } },
-                "op": "Ge",
-                "right": 1
+              "Matches": {
+                "subject": "This",
+                "selector": [{ "HasCounter": { "Other": "divinity" } }]
               }
             }
           }

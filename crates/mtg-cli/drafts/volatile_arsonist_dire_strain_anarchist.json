@@ -1,0 +1,61 @@
+{
+  "oracle_id": "215dfa88-b130-44df-9cfc-f1f0e4a36f4d",
+  "name": "Volatile Arsonist // Dire-Strain Anarchist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Volatile Arsonist",
+      "oracle_fingerprint": "f146cc75fca56b60107147b9fe180243",
+      "abilities": [
+        { "Keyword": "Menace" },
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 0, "max": 1 } },
+              { "what": "Player", "bounds": { "min": 0, "max": 1 } },
+              {
+                "what": { "Object": [{ "Type": "Planeswalker" }] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 1 } },
+              { "DealDamage": { "to": { "Target": 1 }, "amount": 1 } },
+              { "DealDamage": { "to": { "Target": 2 }, "amount": 1 } }
+            ]
+          }
+        },
+        { "Keyword": "Daybound" }
+      ]
+    },
+    {
+      "name": "Dire-Strain Anarchist",
+      "oracle_fingerprint": "b9a1411c74c9bd903e7758335c542c26",
+      "abilities": [
+        { "Keyword": "Menace" },
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 0, "max": 1 } },
+              { "what": "Player", "bounds": { "min": 0, "max": 1 } },
+              {
+                "what": { "Object": [{ "Type": "Planeswalker" }] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 2 } },
+              { "DealDamage": { "to": { "Target": 1 }, "amount": 2 } },
+              { "DealDamage": { "to": { "Target": 2 }, "amount": 2 } }
+            ]
+          }
+        },
+        { "Keyword": "Nightbound" }
+      ]
+    }
+  ]
+}

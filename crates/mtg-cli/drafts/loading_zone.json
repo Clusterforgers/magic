@@ -11,13 +11,50 @@
           "Replacement": {
             "when": {
               "CountersPut": {
-                "on": { "Each": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }
+                "on": {
+                  "Each": [
+                    {
+                      "AnyOf": [
+                        { "Type": "Creature" },
+                        { "Subtype": "Spacecraft" },
+                        { "Subtype": "Planet" }
+                      ]
+                    },
+                    { "ControlledBy": "You" },
+                    { "In": "Battlefield" }
+                  ]
+                }
               }
             },
             "by": { "Multiply": 2 }
           }
         },
-        { "Keyword": { "Ward": "{G}" } }
+        { "AltCast": { "way": "Warp", "cost": "{G}" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": { "CastWith": "Warp" },
+            "effects": [
+              { "Choose": { "from": "This", "as": "warped" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    { "Exile": { "what": { "Bound": "warped" }, "as": "warped_card" } },
+                    {
+                      "Rule": {
+                        "rule": {
+                          "MayCast": { "from": "Exile", "only": { "Bound": "warped_card" } }
+                        },
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
       ]
     }
   ]

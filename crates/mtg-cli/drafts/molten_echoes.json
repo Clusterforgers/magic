@@ -20,8 +20,8 @@
                 "what": [
                   { "Type": "Creature" },
                   { "Not": "Token" },
-                  { "ControlledBy": "You" },
-                  { "Subtype": "ChosenSubtype" }
+                  "ChosenSubtype",
+                  { "ControlledBy": "You" }
                 ],
                 "to": "Battlefield"
               }

@@ -1,0 +1,30 @@
+{
+  "oracle_id": "5291deb9-0b89-42c2-bde6-26f88931c3f4",
+  "name": "Chandra's Pyreling",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Chandra's Pyreling",
+      "oracle_fingerprint": "603144ce4767684b37294fd09e55567f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": [{ "ControlledBy": "You" }], "to": "Opponents" } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "ModifyPT": { "power": 1, "toughness": 0 } },
+                    { "AddKeyword": "DoubleStrike" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

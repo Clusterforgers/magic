@@ -1,7 +1,7 @@
 {
   "oracle_id": "f40e6bbf-1fed-4ec5-869d-18c2dd396d14",
   "name": "Vincent Valentine // Galian Beast",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Vincent Valentine",
@@ -42,9 +42,16 @@
         { "Keyword": "Trample" },
         { "Keyword": "Lifelink" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 18, "end": 94 }
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              {
+                "Move": {
+                  "what": "This",
+                  "to": { "Battlefield": { "tapped": true, "under": "You" } }
+                }
+              }
+            ]
           }
         }
       ]

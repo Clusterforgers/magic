@@ -1,0 +1,26 @@
+{
+  "oracle_id": "b49efbe8-e15b-4dc7-82de-970cbce92b79",
+  "name": "Noggle the Mind",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Noggle the Mind",
+      "oracle_fingerprint": "987bf82a5e186a959d3f86d8c91dbfee",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "SetPT": { "power": 1, "toughness": 1 } },
+              "LoseAbilities",
+              { "SetColors": [] },
+              { "SetCreatureTypes": ["Noggle"] }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

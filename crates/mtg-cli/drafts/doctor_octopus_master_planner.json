@@ -1,7 +1,7 @@
 {
   "oracle_id": "2fecfbef-e521-4025-94ea-451c9abde3de",
   "name": "Doctor Octopus, Master Planner",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Doctor Octopus, Master Planner",
@@ -15,9 +15,32 @@
         },
         { "Rule": { "rule": { "MaxHandSize": { "who": "You", "size": 8 } } } },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 71, "end": 185 }
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": [{ "OwnedBy": "You" }, { "In": "Hand" }] },
+                "op": "Lt",
+                "right": 8
+              }
+            },
+            "effects": [
+              {
+                "Draw": {
+                  "count": {
+                    "Sum": [
+                      8,
+                      {
+                        "Times": {
+                          "by": -1,
+                          "of": { "Count": [{ "OwnedBy": "You" }, { "In": "Hand" }] }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
           }
         }
       ]

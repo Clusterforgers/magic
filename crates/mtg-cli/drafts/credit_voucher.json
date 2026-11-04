@@ -1,0 +1,56 @@
+{
+  "oracle_id": "8496a8f1-f505-403a-8007-c35aedb90e2d",
+  "name": "Credit Voucher",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Credit Voucher",
+      "oracle_fingerprint": "e3eff49995c7806c45a18787d9ee2cf6",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap", "SacrificeSelf"],
+            "effects": [
+              {
+                "Choose": {
+                  "from": { "Each": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
+                  "count": {
+                    "min": 0,
+                    "max": { "Count": [{ "OwnedBy": "You" }, { "In": "Hand" }] }
+                  },
+                  "as": "picked"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "picked" },
+                  "to": { "Library": { "place": "Shuffled" } },
+                  "as": "moved2"
+                }
+              },
+              {
+                "Draw": {
+                  "count": {
+                    "Count": [
+                      { "Is": { "Bound": "moved2" } },
+                      {
+                        "AnyOf": [
+                          { "In": "Battlefield" },
+                          { "In": "Hand" },
+                          { "In": "Library" },
+                          { "In": "Graveyard" },
+                          { "In": "Exile" },
+                          { "In": "Stack" }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

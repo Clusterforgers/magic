@@ -1,0 +1,41 @@
+{
+  "oracle_id": "064c3269-c012-4fc7-84c3-5f147a82a03c",
+  "name": "Stalactite Dagger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stalactite Dagger",
+      "oracle_fingerprint": "01e91ab09eb61098583985cb5fc15789",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Shapeshifter",
+                      "types": ["Creature"],
+                      "subtypes": ["Shapeshifter"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Changeling" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }, "AddAllCreatureTypes"]
+          }
+        },
+        { "Keyword": { "Equip": "{2}" } }
+      ]
+    }
+  ]
+}

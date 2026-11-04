@@ -1,0 +1,36 @@
+{
+  "oracle_id": "acc7d3b8-60f2-4f3b-9cf9-b6b39627d8f6",
+  "name": "Crimson Roc",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Crimson Roc",
+      "oracle_fingerprint": "6b71e51ae75ad54a5952e1ebdadc5d92",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "BecomesBlocked": {
+                "what": [{ "Type": "Creature" }, { "Not": { "HasKeyword": "Flying" } }],
+                "by": ["This"]
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "ModifyPT": { "power": 1, "toughness": 0 } },
+                    { "AddKeyword": "FirstStrike" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "oracle_id": "c70598e1-30c6-4f92-a265-34a7a73bc2b8",
+  "name": "Forsaken Crossroads",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Forsaken Crossroads",
+      "oracle_fingerprint": "5cf9948efd92b5e09c366219bd7c1546",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": { "Choose": "Color" } }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "When": {
+                          "condition": { "StartingPlayer": "You" },
+                          "then": 1,
+                          "otherwise": 0
+                        }
+                      },
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [
+                    {
+                      "Either": {
+                        "first": [{ "Scry": {} }],
+                        "second": [{ "Untap": { "what": "This" } }]
+                      }
+                    }
+                  ],
+                  "otherwise": [{ "Scry": {} }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "ChosenColor": 1 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

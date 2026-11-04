@@ -1,0 +1,47 @@
+{
+  "oracle_id": "cf8a0782-f545-445e-abac-d9063dad696b",
+  "name": "Hunter's Insight",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hunter's Insight",
+      "oracle_fingerprint": "ae93fb3450182677292e3e3330d15d22",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "AnyOf": [
+                      {
+                        "DealsDamage": {
+                          "source": [{ "Type": "Creature" }, { "Is": { "Target": 0 } }],
+                          "to": "EachPlayer",
+                          "combat": true
+                        }
+                      },
+                      {
+                        "DealsDamage": {
+                          "source": [{ "Type": "Creature" }, { "Is": { "Target": 0 } }],
+                          "to": { "Each": [{ "Type": "Planeswalker" }] },
+                          "combat": true
+                        }
+                      }
+                    ]
+                  },
+                  "once": false,
+                  "this_turn": true,
+                  "effects": [{ "Draw": { "count": "Triggering" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

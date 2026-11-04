@@ -1,16 +1,31 @@
 {
   "oracle_id": "11932191-4b19-49b1-bfe4-abb7b83b2e59",
   "name": "Silvan Reveler",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Silvan Reveler",
       "oracle_fingerprint": "0bb3551b68a53cac4c0f9fbbcfe9e867",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 0, "end": 153 }
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "Draw": {} },
+              { "Discard": { "as": "discarded" } },
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      { "Type": "Land" },
+                      { "Is": { "Bound": "discarded" } },
+                      { "In": "Graveyard" }
+                    ]
+                  },
+                  "to": { "Battlefield": { "tapped": true } }
+                }
+              }
+            ]
           }
         },
         {

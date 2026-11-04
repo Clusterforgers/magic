@@ -1,0 +1,32 @@
+{
+  "oracle_id": "8353f834-678a-4fa1-857a-8bfdfb8d6378",
+  "name": "Lurebound Scarecrow",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lurebound Scarecrow",
+      "oracle_fingerprint": "7391dff73c295581d5688450b9d3a9ad",
+      "abilities": [
+        {
+          "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": { "Choose": "Color" } }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "State": {
+                "condition": {
+                  "Compare": {
+                    "left": { "Count": [{ "ControlledBy": "You" }, "ChosenColor"] },
+                    "op": "Eq",
+                    "right": 0
+                  }
+                }
+              }
+            },
+            "effects": [{ "Sacrifice": { "filter": ["This"] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

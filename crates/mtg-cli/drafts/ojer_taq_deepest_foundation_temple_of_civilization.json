@@ -1,7 +1,7 @@
 {
   "oracle_id": "486bb9a5-73f1-4cec-b097-fb07ac80b72e",
   "name": "Ojer Taq, Deepest Foundation // Temple of Civilization",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Ojer Taq, Deepest Foundation",
@@ -15,9 +15,16 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 137, "end": 235 }
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              {
+                "Move": {
+                  "what": "This",
+                  "to": { "Battlefield": { "tapped": true, "transformed": true } }
+                }
+              }
+            ]
           }
         }
       ]

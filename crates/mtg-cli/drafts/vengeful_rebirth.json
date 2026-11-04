@@ -1,0 +1,45 @@
+{
+  "oracle_id": "522297b1-493a-4c62-a82a-3017c44183e8",
+  "name": "Vengeful Rebirth",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vengeful Rebirth",
+      "oracle_fingerprint": "c3aed2c0ec2a61b2832598aff03deae7",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "OwnedBy": "You" }, { "In": "Graveyard" }] } },
+              { "what": "AnyTarget" }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": "Hand", "as": "moved" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "moved" },
+                      "selector": [{ "Not": { "Type": "Land" } }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "DealDamage": {
+                        "to": { "Target": 1 },
+                        "amount": { "Stat": { "of": { "Bound": "moved" }, "stat": "ManaValue" } }
+                      }
+                    }
+                  ]
+                }
+              },
+              { "Exile": { "what": "This" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

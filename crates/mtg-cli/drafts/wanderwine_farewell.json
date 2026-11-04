@@ -1,0 +1,69 @@
+{
+  "oracle_id": "7e1da4a1-5922-4a2e-8bbc-25fbcbf20935",
+  "name": "Wanderwine Farewell",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wanderwine Farewell",
+      "oracle_fingerprint": "61bce30133d3a506237d7b2a05b879db",
+      "abilities": [
+        { "Keyword": "Convoke" },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "Not": { "Type": "Land" } }] },
+                "bounds": { "min": 1, "max": 2 }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": "Hand", "as": "moved" } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "Subtype": "Merfolk" }, { "ControlledBy": "You" }] },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Merfolk",
+                            "colors": ["White", "Blue"],
+                            "types": ["Creature"],
+                            "subtypes": ["Merfolk"],
+                            "power": 1,
+                            "toughness": 1
+                          }
+                        },
+                        "count": {
+                          "Count": [
+                            { "Is": { "Bound": "moved" } },
+                            {
+                              "AnyOf": [
+                                { "In": "Battlefield" },
+                                { "In": "Hand" },
+                                { "In": "Library" },
+                                { "In": "Graveyard" },
+                                { "In": "Exile" },
+                                { "In": "Stack" }
+                              ]
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

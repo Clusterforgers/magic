@@ -17,8 +17,8 @@
                   "times": {
                     "Count": [
                       { "Type": "Artifact" },
-                      { "ControlledBy": "You" },
-                      { "Named": "Powerstone Shard" }
+                      { "Named": "Powerstone Shard" },
+                      { "ControlledBy": "You" }
                     ]
                   }
                 }

@@ -1,0 +1,47 @@
+{
+  "oracle_id": "f0fd78bb-cb83-4dfa-a910-0334d225f87c",
+  "name": "Attack-in-the-Box",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Attack-in-the-Box",
+      "oracle_fingerprint": "f129857049b9aff1883345d820435d21",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Continuous": {
+                        "affected": "This",
+                        "mods": [{ "ModifyPT": { "power": 4, "toughness": 0 } }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    },
+                    {
+                      "DelayedTrigger": {
+                        "when": { "StepBegins": { "step": "End" } },
+                        "effects": [
+                          {
+                            "Sacrifice": {
+                              "who": { "ControllerOf": "This" },
+                              "filter": [{ "Is": "This" }],
+                              "count": { "Count": [{ "Is": "This" }] }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

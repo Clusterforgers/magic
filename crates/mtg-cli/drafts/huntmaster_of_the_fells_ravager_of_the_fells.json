@@ -1,0 +1,65 @@
+{
+  "oracle_id": "582328cd-660d-47a4-bb23-e91e80b9a907",
+  "name": "Huntmaster of the Fells // Ravager of the Fells",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Huntmaster of the Fells",
+      "oracle_fingerprint": "63d74a84430f59caa38c012beefc4e67",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "Did": { "action": "Transformed", "what": ["This"] } }
+              ]
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Wolf",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Wolf"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  }
+                }
+              },
+              { "GainLife": { "amount": 2 } }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 134, "end": 225 }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Ravager of the Fells",
+      "oracle_fingerprint": "9832e410174c499b3a2cd299ac5ebecd",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 8, "end": 219 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 220, "end": 324 }
+          }
+        }
+      ]
+    }
+  ]
+}

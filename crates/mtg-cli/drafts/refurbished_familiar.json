@@ -1,0 +1,52 @@
+{
+  "oracle_id": "009e1638-9055-4872-93e1-85841bce4648",
+  "name": "Refurbished Familiar",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Refurbished Familiar",
+      "oracle_fingerprint": "adc5c6e5988a24b3a1c4279e2c756a2a",
+      "abilities": [
+        { "Keyword": { "Affinity": [{ "Type": "Artifact" }] } },
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "Discard": { "who": "Opponents", "as": "discarded" } },
+              {
+                "Draw": {
+                  "count": {
+                    "Sum": [
+                      { "Players": "Opponents" },
+                      {
+                        "Times": {
+                          "by": -1,
+                          "of": {
+                            "Count": [
+                              { "Is": { "Bound": "discarded" } },
+                              {
+                                "AnyOf": [
+                                  { "In": "Battlefield" },
+                                  { "In": "Hand" },
+                                  { "In": "Library" },
+                                  { "In": "Graveyard" },
+                                  { "In": "Exile" },
+                                  { "In": "Stack" }
+                                ]
+                              }
+                            ]
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

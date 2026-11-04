@@ -1,0 +1,64 @@
+{
+  "oracle_id": "f2c10591-4c0c-4286-af91-e8d8d10a4c9d",
+  "name": "Thing in the Ice // Awoken Horror",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thing in the Ice",
+      "oracle_fingerprint": "28b950910c07f8add76682a8879b8491",
+      "abilities": [
+        { "Keyword": "Defender" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": { "Other": "ice" }, "count": 4 } }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                "by": "You"
+              }
+            },
+            "effects": [
+              { "RemoveCounters": { "from": "This", "counter": { "Other": "ice" } } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": ["This", { "Not": { "HasCounter": { "Other": "ice" } } }] },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Transform": { "what": "This" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Awoken Horror",
+      "oracle_fingerprint": "d42af47a2a2251e059d8ba8beeb40563",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Did": { "action": "Transformed", "what": ["This"] } },
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Each": [{ "Type": "Creature" }, { "Not": { "Subtype": "Horror" } }] },
+                  "to": "Hand"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

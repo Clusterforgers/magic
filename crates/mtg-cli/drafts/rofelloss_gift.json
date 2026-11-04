@@ -1,0 +1,68 @@
+{
+  "oracle_id": "7c309759-e607-4bad-b615-f7c673e508ac",
+  "name": "Rofellos's Gift",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rofellos's Gift",
+      "oracle_fingerprint": "32a6ef477818b8f3a81498cfc4d8e051",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Color": "Green" }, { "OwnedBy": "You" }, { "In": "Hand" }] },
+                  "count": { "min": 0, "max": null },
+                  "as": "revealed"
+                }
+              },
+              { "Reveal": { "what": { "Bound": "revealed" } } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [{ "Type": "Enchantment" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                  },
+                  "count": {
+                    "min": {
+                      "Count": [
+                        { "Is": { "Bound": "revealed" } },
+                        {
+                          "AnyOf": [
+                            { "In": "Battlefield" },
+                            { "In": "Hand" },
+                            { "In": "Library" },
+                            { "In": "Graveyard" },
+                            { "In": "Exile" },
+                            { "In": "Stack" }
+                          ]
+                        }
+                      ]
+                    },
+                    "max": {
+                      "Count": [
+                        { "Is": { "Bound": "revealed" } },
+                        {
+                          "AnyOf": [
+                            { "In": "Battlefield" },
+                            { "In": "Hand" },
+                            { "In": "Library" },
+                            { "In": "Graveyard" },
+                            { "In": "Exile" },
+                            { "In": "Stack" }
+                          ]
+                        }
+                      ]
+                    }
+                  },
+                  "as": "picked2"
+                }
+              },
+              { "Move": { "what": { "Bound": "picked2" }, "to": "Hand" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

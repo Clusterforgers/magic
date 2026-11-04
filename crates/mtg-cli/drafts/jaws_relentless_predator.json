@@ -1,0 +1,41 @@
+{
+  "oracle_id": "1202725c-170b-42d7-9f82-a431a987f30e",
+  "name": "Jaws, Relentless Predator",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jaws, Relentless Predator",
+      "oracle_fingerprint": "02c5876ed5b1ad69535e1f6e9f682ed9",
+      "abilities": [
+        { "Keyword": "Trample" },
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [{ "CreateToken": { "token": { "Named": "blood" }, "count": "Triggering" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                {
+                  "Sacrificed": {
+                    "what": [{ "Type": "Artifact" }, { "Not": { "Type": "Creature" } }]
+                  }
+                },
+                {
+                  "Did": {
+                    "action": "Destroyed",
+                    "what": [{ "Type": "Artifact" }, { "Not": { "Type": "Creature" } }]
+                  }
+                }
+              ]
+            },
+            "effects": [{ "DealDamage": { "to": "Opponents", "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

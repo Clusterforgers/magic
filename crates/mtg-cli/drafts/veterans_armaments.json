@@ -1,7 +1,7 @@
 {
   "oracle_id": "a671f8ca-1177-4511-9d51-ca4ff12a5104",
   "name": "Veteran's Armaments",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Veteran's Armaments",
@@ -61,9 +61,16 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 127, "end": 199 }
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "Subtype": "Soldier" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              { "May": { "effects": [{ "Attach": { "what": "This", "to": "Triggering" } }] } }
+            ]
           }
         },
         { "Keyword": { "Equip": "{2}" } }

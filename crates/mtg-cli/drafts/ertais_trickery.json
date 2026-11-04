@@ -1,0 +1,33 @@
+{
+  "oracle_id": "93d0691f-17b8-458b-a624-e182fc481f49",
+  "name": "Ertai's Trickery",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ertai's Trickery",
+      "oracle_fingerprint": "70d2154bf2386593fb9e61ccbc69bced",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Target": 0 },
+                      "selector": ["Spell", "Kicked"],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Counter": { "what": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

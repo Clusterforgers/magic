@@ -1,0 +1,132 @@
+{
+  "object": "card",
+  "id": "d61748dd-4010-47da-8717-ca0147877057",
+  "oracle_id": "1b2ad355-3f1e-4c8b-93ee-848934646b23",
+  "multiverse_ids": [
+    22966
+  ],
+  "mtgo_id": 14673,
+  "mtgo_foil_id": 14674,
+  "tcgplayer_id": 7754,
+  "cardmarket_id": 3745,
+  "name": "Winnow",
+  "lang": "en",
+  "released_at": "2000-10-02",
+  "uri": "https://api.scryfall.com/cards/d61748dd-4010-47da-8717-ca0147877057",
+  "scryfall_uri": "https://scryfall.com/card/inv/45/winnow?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T12:28:31Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/d/6/d61748dd-4010-47da-8717-ca0147877057.jpg?1783945711",
+    "normal": "https://cards.scryfall.io/normal/front/d/6/d61748dd-4010-47da-8717-ca0147877057.jpg?1783945711",
+    "large": "https://cards.scryfall.io/large/front/d/6/d61748dd-4010-47da-8717-ca0147877057.jpg?1783945711",
+    "png": "https://cards.scryfall.io/png/front/d/6/d61748dd-4010-47da-8717-ca0147877057.png?1783945711",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/d/6/d61748dd-4010-47da-8717-ca0147877057.jpg?1783945711",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/d/6/d61748dd-4010-47da-8717-ca0147877057.jpg?1783945711",
+    "thumb": "https://cards.scryfall.io/thumb/front/d/6/d61748dd-4010-47da-8717-ca0147877057.webp?1783945711",
+    "grid": "https://cards.scryfall.io/grid/front/d/6/d61748dd-4010-47da-8717-ca0147877057.webp?1783945711",
+    "display": "https://cards.scryfall.io/display/front/d/6/d61748dd-4010-47da-8717-ca0147877057.webp?1783945711",
+    "art": "https://cards.scryfall.io/art/front/d/6/d61748dd-4010-47da-8717-ca0147877057.webp?1783945711",
+    "crop": "https://cards.scryfall.io/crop/front/d/6/d61748dd-4010-47da-8717-ca0147877057.webp?1783945711",
+    "jpeg": "https://cards.scryfall.io/normal/front/d/6/d61748dd-4010-47da-8717-ca0147877057.jpg?1783945711"
+  },
+  "mana_cost": "{1}{W}",
+  "cmc": 2.0,
+  "type_line": "Instant",
+  "oracle_text": "Destroy target nonland permanent if another permanent with the same name is on the battlefield.\nDraw a card.",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "b9ae5e02-7726-47ca-b5e4-5ec402b41cd1",
+  "set": "inv",
+  "set_name": "Invasion",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/b9ae5e02-7726-47ca-b5e4-5ec402b41cd1",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ainv&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/inv?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/d61748dd-4010-47da-8717-ca0147877057/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A1b2ad355-3f1e-4c8b-93ee-848934646b23&unique=prints",
+  "collector_number": "45",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "\"Strength in numbers? I think not.\"\n—Gerrard",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Roger Raupp",
+  "artist_ids": [
+    "79d6f296-1948-4a24-a2ce-a76e89057f23"
+  ],
+  "illustration_id": "24b60136-0dfd-4238-bf20-aa9128f500b1",
+  "border_color": "black",
+  "frame": "1997",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 29820,
+  "prices": {
+    "usd": "0.33",
+    "usd_foil": "1.77",
+    "usd_etched": null,
+    "eur": "0.28",
+    "eur_foil": "4.73",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=22966&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DWinnow",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DWinnow",
+    "edhrec": "https://edhrec.com/route/?cc=Winnow"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F7754%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=3745&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/14673?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

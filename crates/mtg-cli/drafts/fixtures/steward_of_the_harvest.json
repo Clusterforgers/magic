@@ -1,0 +1,133 @@
+{
+  "object": "card",
+  "id": "6e6ddbf5-e282-48ae-ba86-d15589d96e36",
+  "oracle_id": "1bb7a942-c4b9-47a2-9782-3ec3efcdaff5",
+  "multiverse_ids": [
+    695977
+  ],
+  "mtgo_id": 138113,
+  "tcgplayer_id": 624478,
+  "cardmarket_id": 818704,
+  "name": "Steward of the Harvest",
+  "lang": "en",
+  "released_at": "2025-04-11",
+  "uri": "https://api.scryfall.com/cards/6e6ddbf5-e282-48ae-ba86-d15589d96e36",
+  "scryfall_uri": "https://scryfall.com/card/tdc/48/steward-of-the-harvest?utm_source=api",
+  "layout": "normal",
+  "highres_image": false,
+  "image_status": "lowres",
+  "image_updated_at": "2026-07-13T01:46:06Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/6/e/6e6ddbf5-e282-48ae-ba86-d15589d96e36.jpg?1783907166",
+    "normal": "https://cards.scryfall.io/normal/front/6/e/6e6ddbf5-e282-48ae-ba86-d15589d96e36.jpg?1783907166",
+    "large": "https://cards.scryfall.io/large/front/6/e/6e6ddbf5-e282-48ae-ba86-d15589d96e36.jpg?1783907166",
+    "png": "https://cards.scryfall.io/png/front/6/e/6e6ddbf5-e282-48ae-ba86-d15589d96e36.png?1783907166",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/6/e/6e6ddbf5-e282-48ae-ba86-d15589d96e36.jpg?1783907166",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/6/e/6e6ddbf5-e282-48ae-ba86-d15589d96e36.jpg?1783907166",
+    "thumb": "https://cards.scryfall.io/thumb/front/6/e/6e6ddbf5-e282-48ae-ba86-d15589d96e36.webp?1783907166",
+    "grid": "https://cards.scryfall.io/grid/front/6/e/6e6ddbf5-e282-48ae-ba86-d15589d96e36.webp?1783907166",
+    "display": "https://cards.scryfall.io/display/front/6/e/6e6ddbf5-e282-48ae-ba86-d15589d96e36.webp?1783907166",
+    "art": "https://cards.scryfall.io/art/front/6/e/6e6ddbf5-e282-48ae-ba86-d15589d96e36.webp?1783907166",
+    "crop": "https://cards.scryfall.io/crop/front/6/e/6e6ddbf5-e282-48ae-ba86-d15589d96e36.webp?1783907166",
+    "jpeg": "https://cards.scryfall.io/normal/front/6/e/6e6ddbf5-e282-48ae-ba86-d15589d96e36.jpg?1783907166"
+  },
+  "mana_cost": "{3}{G}",
+  "cmc": 4.0,
+  "type_line": "Creature — Human Druid",
+  "oracle_text": "When this creature enters, exile up to three target land cards from your graveyard.\nCreatures you control have all activated abilities of all land cards exiled with this creature.",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "bca9779c-0a0b-4ac1-8794-f3fc25549cf4",
+  "set": "tdc",
+  "set_name": "Tarkir: Dragonstorm Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/bca9779c-0a0b-4ac1-8794-f3fc25549cf4",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Atdc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/tdc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/6e6ddbf5-e282-48ae-ba86-d15589d96e36/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A1bb7a942-c4b9-47a2-9782-3ec3efcdaff5&unique=prints",
+  "collector_number": "48",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "\"Sleep, and return your energy to the lifepool. Sleep, and enrich the land for the next harvest.\"",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Marie Magny",
+  "artist_ids": [
+    "fa463dea-41ba-4c0d-9277-c176d2b2509f"
+  ],
+  "illustration_id": "7a35ade8-2b01-4a84-8729-e680171bf029",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 8478,
+  "prices": {
+    "usd": "0.27",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.26",
+    "eur_foil": null,
+    "tix": "1.14"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=695977&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DSteward%2Bof%2Bthe%2BHarvest",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DSteward%2Bof%2Bthe%2BHarvest",
+    "edhrec": "https://edhrec.com/route/?cc=Steward+of+the+Harvest"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F624478%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=818704&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/138113?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

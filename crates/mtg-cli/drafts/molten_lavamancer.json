@@ -1,0 +1,41 @@
+{
+  "oracle_id": "5fc60833-6e03-4bfa-833f-7d51c696db93",
+  "name": "Molten Lavamancer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Molten Lavamancer",
+      "oracle_fingerprint": "bd58fa03fd4bb1e667b78f2ff858b516",
+      "abilities": [
+        { "Keyword": "Prowess" },
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "DealsDamage": { "source": [{ "ControlledBy": "You" }], "to": "Opponents" }
+              }
+            },
+            "if": { "AtTrigger": "YourTurn" },
+            "limit": "OncePerTurn",
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Elemental",
+                      "colors": ["Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Elemental"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

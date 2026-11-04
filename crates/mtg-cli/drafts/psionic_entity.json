@@ -1,0 +1,23 @@
+{
+  "oracle_id": "37aae6d1-1de0-47d1-85dd-d4a6d9635c05",
+  "name": "Psionic Entity",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Psionic Entity",
+      "oracle_fingerprint": "687aa5f91c100db6e17a5a71a87b3ce8",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 2 } },
+              { "DealDamage": { "to": "This", "amount": 3 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

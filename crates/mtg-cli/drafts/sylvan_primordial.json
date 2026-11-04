@@ -1,0 +1,63 @@
+{
+  "oracle_id": "52b88034-bf0f-4d29-b776-40ce421f1107",
+  "name": "Sylvan Primordial",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sylvan Primordial",
+      "oracle_fingerprint": "af93ba8f03ca779a1d0d55526d32396b",
+      "abilities": [
+        { "Keyword": "Reach" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "PerPlayer": {
+                    "players": "Opponents",
+                    "what": [{ "Not": { "Type": "Creature" } }]
+                  }
+                }
+              }
+            ],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 }, "as": "destroyed" } },
+              {
+                "Search": {
+                  "filter": [{ "Subtype": "Forest" }],
+                  "count": {
+                    "min": 0,
+                    "max": {
+                      "Count": [
+                        { "Is": { "Bound": "destroyed" } },
+                        {
+                          "AnyOf": [
+                            { "In": "Battlefield" },
+                            { "In": "Hand" },
+                            { "In": "Library" },
+                            { "In": "Graveyard" },
+                            { "In": "Exile" },
+                            { "In": "Stack" }
+                          ]
+                        }
+                      ]
+                    }
+                  },
+                  "as": "found2"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "found2" },
+                  "to": { "Battlefield": { "tapped": true } }
+                }
+              },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

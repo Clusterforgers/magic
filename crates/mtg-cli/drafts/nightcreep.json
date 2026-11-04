@@ -20,7 +20,7 @@
               {
                 "Continuous": {
                   "affected": { "Each": [{ "Type": "Land" }] },
-                  "mods": [{ "AddSubtype": "Swamp" }],
+                  "mods": [{ "SetLandTypes": ["Swamp"] }],
                   "duration": "UntilEndOfTurn"
                 }
               }

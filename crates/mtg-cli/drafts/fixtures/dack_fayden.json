@@ -1,0 +1,153 @@
+{
+  "object": "card",
+  "id": "10158a5e-5a03-41ab-85d2-0907ccf32c9b",
+  "oracle_id": "9d4b1e44-3c66-4b1b-8a1d-308aa4f841f8",
+  "multiverse_ids": [
+    413741
+  ],
+  "mtgo_id": 60731,
+  "mtgo_foil_id": 60732,
+  "tcgplayer_id": 118426,
+  "cardmarket_id": 290191,
+  "name": "Dack Fayden",
+  "lang": "en",
+  "released_at": "2016-06-10",
+  "uri": "https://api.scryfall.com/cards/10158a5e-5a03-41ab-85d2-0907ccf32c9b",
+  "scryfall_uri": "https://scryfall.com/card/ema/199/dack-fayden?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T10:12:35Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/1/0/10158a5e-5a03-41ab-85d2-0907ccf32c9b.jpg?1783937555",
+    "normal": "https://cards.scryfall.io/normal/front/1/0/10158a5e-5a03-41ab-85d2-0907ccf32c9b.jpg?1783937555",
+    "large": "https://cards.scryfall.io/large/front/1/0/10158a5e-5a03-41ab-85d2-0907ccf32c9b.jpg?1783937555",
+    "png": "https://cards.scryfall.io/png/front/1/0/10158a5e-5a03-41ab-85d2-0907ccf32c9b.png?1783937555",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/1/0/10158a5e-5a03-41ab-85d2-0907ccf32c9b.jpg?1783937555",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/1/0/10158a5e-5a03-41ab-85d2-0907ccf32c9b.jpg?1783937555",
+    "thumb": "https://cards.scryfall.io/thumb/front/1/0/10158a5e-5a03-41ab-85d2-0907ccf32c9b.webp?1783937555",
+    "grid": "https://cards.scryfall.io/grid/front/1/0/10158a5e-5a03-41ab-85d2-0907ccf32c9b.webp?1783937555",
+    "display": "https://cards.scryfall.io/display/front/1/0/10158a5e-5a03-41ab-85d2-0907ccf32c9b.webp?1783937555",
+    "art": "https://cards.scryfall.io/art/front/1/0/10158a5e-5a03-41ab-85d2-0907ccf32c9b.webp?1783937555",
+    "crop": "https://cards.scryfall.io/crop/front/1/0/10158a5e-5a03-41ab-85d2-0907ccf32c9b.webp?1783937555",
+    "jpeg": "https://cards.scryfall.io/normal/front/1/0/10158a5e-5a03-41ab-85d2-0907ccf32c9b.jpg?1783937555"
+  },
+  "mana_cost": "{1}{U}{R}",
+  "cmc": 3.0,
+  "type_line": "Legendary Planeswalker — Dack",
+  "oracle_text": "+1: Target player draws two cards, then discards two cards.\n−2: Gain control of target artifact.\n−6: You get an emblem with \"Whenever you cast a spell that targets one or more permanents, gain control of those permanents.\"",
+  "loyalty": "3",
+  "colors": [
+    "R",
+    "U"
+  ],
+  "color_identity": [
+    "R",
+    "U"
+  ],
+  "keywords": [],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "d92a00d8-ddac-45df-8130-87ac32815984",
+      "component": "combo_piece",
+      "name": "Dack Fayden Emblem",
+      "type_line": "Emblem — Dack",
+      "uri": "https://api.scryfall.com/cards/d92a00d8-ddac-45df-8130-87ac32815984"
+    },
+    {
+      "object": "related_card",
+      "id": "10158a5e-5a03-41ab-85d2-0907ccf32c9b",
+      "component": "combo_piece",
+      "name": "Dack Fayden",
+      "type_line": "Legendary Planeswalker — Dack",
+      "uri": "https://api.scryfall.com/cards/10158a5e-5a03-41ab-85d2-0907ccf32c9b"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "1f29f022-3ace-4c96-85e8-1f7b63aadf7e",
+  "set": "ema",
+  "set_name": "Eternal Masters",
+  "set_type": "masters",
+  "set_uri": "https://api.scryfall.com/sets/1f29f022-3ace-4c96-85e8-1f7b63aadf7e",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aema&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/ema?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/10158a5e-5a03-41ab-85d2-0907ccf32c9b/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A9d4b1e44-3c66-4b1b-8a1d-308aa4f841f8&unique=prints",
+  "collector_number": "199",
+  "digital": false,
+  "rarity": "mythic",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Eric Deschamps",
+  "artist_ids": [
+    "37970e22-9cee-44c1-af44-5ee27cf26b76"
+  ],
+  "illustration_id": "37c6b2f9-96bf-4510-9765-ea04b36052f7",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 6908,
+  "prices": {
+    "usd": "7.71",
+    "usd_foil": "15.78",
+    "usd_etched": null,
+    "eur": "5.52",
+    "eur_foil": "15.03",
+    "tix": "0.61"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=413741&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DDack%2BFayden",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DDack%2BFayden",
+    "edhrec": "https://edhrec.com/route/?cc=Dack+Fayden"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F118426%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=290191&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/60731?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

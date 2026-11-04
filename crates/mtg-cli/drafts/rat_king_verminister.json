@@ -1,0 +1,48 @@
+{
+  "oracle_id": "a5656dab-5ce6-48fd-9eae-2c06969bb8df",
+  "name": "Rat King, Verminister",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Rat King, Verminister",
+      "oracle_fingerprint": "a2c5ad147c0f2d3c98ce5547cb64a013",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "PermanentsLeftUnder" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Rat",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Rat"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              },
+              { "PutCounters": { "on": "This", "counter": "+1/+1" } }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 188, "end": 341 }
+          }
+        }
+      ]
+    }
+  ]
+}

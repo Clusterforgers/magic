@@ -1,0 +1,143 @@
+{
+  "object": "card",
+  "id": "ae2f3dee-1768-4562-9333-a50b9ee7570f",
+  "oracle_id": "43257a85-2cbe-4931-9755-106808ab124a",
+  "multiverse_ids": [
+    460993
+  ],
+  "mtgo_id": 71738,
+  "arena_id": 69517,
+  "tcgplayer_id": 188515,
+  "cardmarket_id": 372215,
+  "name": "Silent Submersible",
+  "lang": "en",
+  "released_at": "2019-05-03",
+  "uri": "https://api.scryfall.com/cards/ae2f3dee-1768-4562-9333-a50b9ee7570f",
+  "scryfall_uri": "https://scryfall.com/card/war/66/silent-submersible?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T09:04:18Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/a/e/ae2f3dee-1768-4562-9333-a50b9ee7570f.jpg?1783933458",
+    "normal": "https://cards.scryfall.io/normal/front/a/e/ae2f3dee-1768-4562-9333-a50b9ee7570f.jpg?1783933458",
+    "large": "https://cards.scryfall.io/large/front/a/e/ae2f3dee-1768-4562-9333-a50b9ee7570f.jpg?1783933458",
+    "png": "https://cards.scryfall.io/png/front/a/e/ae2f3dee-1768-4562-9333-a50b9ee7570f.png?1783933458",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/a/e/ae2f3dee-1768-4562-9333-a50b9ee7570f.jpg?1783933458",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/a/e/ae2f3dee-1768-4562-9333-a50b9ee7570f.jpg?1783933458",
+    "thumb": "https://cards.scryfall.io/thumb/front/a/e/ae2f3dee-1768-4562-9333-a50b9ee7570f.webp?1783933458",
+    "grid": "https://cards.scryfall.io/grid/front/a/e/ae2f3dee-1768-4562-9333-a50b9ee7570f.webp?1783933458",
+    "display": "https://cards.scryfall.io/display/front/a/e/ae2f3dee-1768-4562-9333-a50b9ee7570f.webp?1783933458",
+    "art": "https://cards.scryfall.io/art/front/a/e/ae2f3dee-1768-4562-9333-a50b9ee7570f.webp?1783933458",
+    "crop": "https://cards.scryfall.io/crop/front/a/e/ae2f3dee-1768-4562-9333-a50b9ee7570f.webp?1783933458",
+    "jpeg": "https://cards.scryfall.io/normal/front/a/e/ae2f3dee-1768-4562-9333-a50b9ee7570f.jpg?1783933458"
+  },
+  "mana_cost": "{U}{U}",
+  "cmc": 2.0,
+  "type_line": "Artifact — Vehicle",
+  "oracle_text": "Whenever this Vehicle deals combat damage to a player or planeswalker, draw a card.\nCrew 2 (Tap any number of creatures you control with total power 2 or more: This Vehicle becomes an artifact creature until end of turn.)",
+  "power": "2",
+  "toughness": "3",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Crew"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "arena",
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "ee044f0b-e101-4ead-8d0e-aa510aad4277",
+  "set": "war",
+  "set_name": "War of the Spark",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/ee044f0b-e101-4ead-8d0e-aa510aad4277",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Awar&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/war?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/ae2f3dee-1768-4562-9333-a50b9ee7570f/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A43257a85-2cbe-4931-9755-106808ab124a&unique=prints",
+  "collector_number": "66",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Daniel Ljunggren",
+  "artist_ids": [
+    "0fbd4798-76eb-46d5-a5d4-1e3a25870e34"
+  ],
+  "illustration_id": "8c125f18-9eaf-4742-8a9f-03a6df12abcc",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 16362,
+  "penny_rank": 10244,
+  "preview": {
+    "source": "TokyoMTG",
+    "source_uri": "https://tokyomtg.com/articles.html?post=e29",
+    "previewed_at": "2019-04-11"
+  },
+  "prices": {
+    "usd": "0.28",
+    "usd_foil": "0.25",
+    "usd_etched": null,
+    "eur": "0.20",
+    "eur_foil": "0.26",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=460993&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DSilent%2BSubmersible",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DSilent%2BSubmersible",
+    "edhrec": "https://edhrec.com/route/?cc=Silent+Submersible"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F188515%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=372215&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/71738?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

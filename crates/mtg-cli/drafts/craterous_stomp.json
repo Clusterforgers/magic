@@ -1,0 +1,56 @@
+{
+  "oracle_id": "e0aa676e-2a3a-4ed5-93f9-65e53a8fcb96",
+  "name": "Craterous Stomp",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Craterous Stomp",
+      "oracle_fingerprint": "100ddacd7cbb9ca67a81e885c2acbc31",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 3 } },
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "ControlledBy": { "ControllerOf": { "Target": 0 } } },
+                      { "Not": { "Is": { "Target": 0 } } }
+                    ]
+                  },
+                  "mods": [
+                    { "AddSubtype": "Coward" },
+                    {
+                      "GrantAbility": {
+                        "Static": {
+                          "affected": "This",
+                          "mods": [
+                            {
+                              "CanBlockOnly": [
+                                {
+                                  "Not": {
+                                    "AnyOf": [{ "Subtype": "Giant" }, { "Subtype": "Warrior" }]
+                                  }
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

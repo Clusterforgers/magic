@@ -1,0 +1,33 @@
+{
+  "oracle_id": "1197a595-3afc-4f18-b868-bbb096771922",
+  "name": "Leyline of Abundance",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Leyline of Abundance",
+      "oracle_fingerprint": "0036c13cde4c700addf7f7e2c2d204a6",
+      "abilities": [
+        "OpeningHand",
+        {
+          "Triggered": {
+            "when": { "TappedForMana": { "what": [{ "Type": "Creature" }], "by": "You" } },
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Green"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{6}{G}{G}",
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "counter": "+1/+1"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

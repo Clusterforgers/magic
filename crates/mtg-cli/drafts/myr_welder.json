@@ -1,0 +1,39 @@
+{
+  "oracle_id": "ea2cbf5a-2def-450b-9db8-40a5b6a604d0",
+  "name": "Myr Welder",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Myr Welder",
+      "oracle_fingerprint": "06412ea9372090a290e90a5032a1a2f8",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Artifact" }, { "In": "Graveyard" }] } }],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              { "Remember": { "what": { "Bound": "exiled" }, "slot": "imprinted" } }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "GainAbilitiesOf": {
+                  "Each": [
+                    { "Is": { "Remembered": { "on": "This", "slot": "imprinted" } } },
+                    { "ExiledWith": "This" },
+                    { "In": "Exile" }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

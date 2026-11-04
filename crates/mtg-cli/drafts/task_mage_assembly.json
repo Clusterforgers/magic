@@ -1,0 +1,35 @@
+{
+  "oracle_id": "dfbbfbe1-d6c1-4b5b-8d09-949d70b9ff42",
+  "name": "Task Mage Assembly",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Task Mage Assembly",
+      "oracle_fingerprint": "4e972fffacce827c932330179988c841",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "State": {
+                "condition": {
+                  "Compare": {
+                    "left": { "Count": [{ "Type": "Creature" }] },
+                    "op": "Eq",
+                    "right": 0
+                  }
+                }
+              }
+            },
+            "effects": [{ "Sacrifice": { "filter": ["This"] } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 76, "end": 192 }
+          }
+        }
+      ]
+    }
+  ]
+}

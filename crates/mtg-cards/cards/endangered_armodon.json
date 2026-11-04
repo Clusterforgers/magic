@@ -1,0 +1,35 @@
+{
+  "oracle_id": "68879437-bbe2-4e99-b17b-ddec30bfd3d0",
+  "name": "Endangered Armodon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Endangered Armodon",
+      "oracle_fingerprint": "6e5ad47228b1ec9ddc86435b1391abde",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "State": {
+                "condition": {
+                  "Compare": {
+                    "left": {
+                      "Count": [
+                        { "Type": "Creature" },
+                        { "Compare": { "stat": "Toughness", "op": "Le", "to": 2 } },
+                        { "ControlledBy": "You" }
+                      ]
+                    },
+                    "op": "Ge",
+                    "right": 1
+                  }
+                }
+              }
+            },
+            "effects": [{ "Sacrifice": { "filter": ["This"] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

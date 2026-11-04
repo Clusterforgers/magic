@@ -1,0 +1,28 @@
+{
+  "oracle_id": "741e4f32-0587-40fa-a73d-5bcf66b52348",
+  "name": "Wall of Frost",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wall of Frost",
+      "oracle_fingerprint": "4535fb99b3163ee856e6eb82515d9056",
+      "abilities": [
+        { "Keyword": "Defender" },
+        {
+          "Triggered": {
+            "when": { "BecomesBlocked": { "what": [], "by": ["This"] } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Triggering",
+                  "mods": ["DoesntUntap"],
+                  "duration": "NextUntapStep"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

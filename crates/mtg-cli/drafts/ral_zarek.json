@@ -1,0 +1,39 @@
+{
+  "oracle_id": "75ed6946-e7b1-4bf8-a05c-62a2ba5a6c79",
+  "name": "Ral Zarek",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Ral Zarek",
+      "oracle_fingerprint": "c13dbae919a40cb92fd14669b5b8626b",
+      "abilities": [
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "targets": [
+              { "what": { "Object": [] } },
+              { "what": { "Object": [{ "Not": { "Is": { "Target": 0 } } }] } }
+            ],
+            "effects": [
+              { "Tap": { "what": { "Target": 0 } } },
+              { "Untap": { "what": { "Target": 1 } } }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 2 },
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 3 } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 107, "end": 196 }
+          }
+        }
+      ]
+    }
+  ]
+}

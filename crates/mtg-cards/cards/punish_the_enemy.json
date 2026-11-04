@@ -1,0 +1,25 @@
+{
+  "oracle_id": "09f73f77-a9bc-4718-be7d-ba6e08576e3a",
+  "name": "Punish the Enemy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Punish the Enemy",
+      "oracle_fingerprint": "a140e8a48ba979010f8b95cb98260e2a",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Either": ["Player", { "Object": [{ "Type": "Planeswalker" }] }] } },
+              { "what": { "Object": [{ "Type": "Creature" }] } }
+            ],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 3 } },
+              { "DealDamage": { "to": { "Target": 1 }, "amount": 3 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

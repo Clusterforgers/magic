@@ -1,0 +1,146 @@
+{
+  "object": "card",
+  "id": "a3f64ad2-4041-421d-baa2-206cedcecf0e",
+  "oracle_id": "ff72b900-ce3c-4cc4-a50e-e501e17631ca",
+  "multiverse_ids": [
+    513725
+  ],
+  "mtgo_id": 88973,
+  "arena_id": 76641,
+  "tcgplayer_id": 236025,
+  "cardmarket_id": 558043,
+  "name": "Silverquill Pledgemage",
+  "lang": "en",
+  "released_at": "2021-04-23",
+  "uri": "https://api.scryfall.com/cards/a3f64ad2-4041-421d-baa2-206cedcecf0e",
+  "scryfall_uri": "https://scryfall.com/card/stx/233/silverquill-pledgemage?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T07:21:32Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/a/3/a3f64ad2-4041-421d-baa2-206cedcecf0e.jpg?1783927292",
+    "normal": "https://cards.scryfall.io/normal/front/a/3/a3f64ad2-4041-421d-baa2-206cedcecf0e.jpg?1783927292",
+    "large": "https://cards.scryfall.io/large/front/a/3/a3f64ad2-4041-421d-baa2-206cedcecf0e.jpg?1783927292",
+    "png": "https://cards.scryfall.io/png/front/a/3/a3f64ad2-4041-421d-baa2-206cedcecf0e.png?1783927292",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/a/3/a3f64ad2-4041-421d-baa2-206cedcecf0e.jpg?1783927292",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/a/3/a3f64ad2-4041-421d-baa2-206cedcecf0e.jpg?1783927292",
+    "thumb": "https://cards.scryfall.io/thumb/front/a/3/a3f64ad2-4041-421d-baa2-206cedcecf0e.webp?1783927292",
+    "grid": "https://cards.scryfall.io/grid/front/a/3/a3f64ad2-4041-421d-baa2-206cedcecf0e.webp?1783927292",
+    "display": "https://cards.scryfall.io/display/front/a/3/a3f64ad2-4041-421d-baa2-206cedcecf0e.webp?1783927292",
+    "art": "https://cards.scryfall.io/art/front/a/3/a3f64ad2-4041-421d-baa2-206cedcecf0e.webp?1783927292",
+    "crop": "https://cards.scryfall.io/crop/front/a/3/a3f64ad2-4041-421d-baa2-206cedcecf0e.webp?1783927292",
+    "jpeg": "https://cards.scryfall.io/normal/front/a/3/a3f64ad2-4041-421d-baa2-206cedcecf0e.jpg?1783927292"
+  },
+  "mana_cost": "{1}{W/B}{W/B}",
+  "cmc": 3.0,
+  "type_line": "Creature — Vampire Cleric",
+  "oracle_text": "Magecraft — Whenever you cast or copy an instant or sorcery spell, this creature gains your choice of flying or lifelink until end of turn.",
+  "power": "3",
+  "toughness": "1",
+  "colors": [
+    "B",
+    "W"
+  ],
+  "color_identity": [
+    "B",
+    "W"
+  ],
+  "keywords": [
+    "Magecraft"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "arena",
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "541c3c28-8747-40e5-a231-8e8f33234859",
+  "set": "stx",
+  "set_name": "Strixhaven: School of Mages",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/541c3c28-8747-40e5-a231-8e8f33234859",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Astx&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/stx?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/a3f64ad2-4041-421d-baa2-206cedcecf0e/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Aff72b900-ce3c-4cc4-a50e-e501e17631ca&unique=prints",
+  "collector_number": "233",
+  "digital": false,
+  "rarity": "common",
+  "watermark": "silverquill",
+  "flavor_text": "\"I avoid violence. It is the last resort of the witless. But if you insist, I'll make an exception for you.\"",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Denman Rooke",
+  "artist_ids": [
+    "5eedbc4b-34a3-4ca5-b3f5-9ac2f6b6adf7"
+  ],
+  "illustration_id": "9e789bfe-e63b-461f-b58f-a159f0188753",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 26381,
+  "penny_rank": 13392,
+  "preview": {
+    "source": "Wizards of the Coast",
+    "source_uri": "https://www.twitch.tv/videos/971754838",
+    "previewed_at": "2021-04-01"
+  },
+  "prices": {
+    "usd": "0.14",
+    "usd_foil": "0.15",
+    "usd_etched": null,
+    "eur": "0.07",
+    "eur_foil": "0.10",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=513725&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DSilverquill%2BPledgemage",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DSilverquill%2BPledgemage",
+    "edhrec": "https://edhrec.com/route/?cc=Silverquill+Pledgemage"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F236025%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=558043&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/88973?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

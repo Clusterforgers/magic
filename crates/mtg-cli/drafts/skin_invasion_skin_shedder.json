@@ -1,7 +1,7 @@
 {
   "oracle_id": "b5a146e6-053f-43ce-8b01-24505a398976",
   "name": "Skin Invasion // Skin Shedder",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Skin Invasion",
@@ -10,9 +10,22 @@
         { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
         { "Rule": { "rule": { "MustAttack": "Attached" } } },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 65, "end": 162 }
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Is": "Attached" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "Move": {
+                  "what": "This",
+                  "to": { "Battlefield": { "under": "You", "transformed": true } }
+                }
+              }
+            ]
           }
         }
       ]

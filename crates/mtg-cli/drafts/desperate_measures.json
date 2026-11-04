@@ -1,0 +1,40 @@
+{
+  "oracle_id": "f1f3df1c-5c51-445a-b66d-eee4aab23691",
+  "name": "Desperate Measures",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Desperate Measures",
+      "oracle_fingerprint": "a831782cf2f8a40869d5c9aea5ae4c69",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": -1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "ZoneChange": {
+                      "what": [{ "Is": { "Target": 0 } }, { "ControlledBy": "You" }],
+                      "from": "Battlefield",
+                      "to": "Graveyard"
+                    }
+                  },
+                  "this_turn": true,
+                  "effects": [{ "Draw": { "count": 2 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

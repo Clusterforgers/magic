@@ -1,0 +1,51 @@
+{
+  "oracle_id": "b1d43244-38b3-498d-8522-9b4011998a66",
+  "name": "Sink into Takenuma",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sink into Takenuma",
+      "oracle_fingerprint": "cbbb2580f23c7197aae6bf346aa84051",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Subtype": "Swamp" }, { "ControlledBy": "You" }] },
+                  "count": {
+                    "min": 0,
+                    "max": { "Count": [{ "Subtype": "Swamp" }, { "ControlledBy": "You" }] }
+                  },
+                  "as": "picked"
+                }
+              },
+              { "Move": { "what": { "Bound": "picked" }, "to": "Hand", "as": "moved2" } },
+              {
+                "Discard": {
+                  "who": { "Target": 0 },
+                  "count": {
+                    "Count": [
+                      { "Is": { "Bound": "moved2" } },
+                      {
+                        "AnyOf": [
+                          { "In": "Battlefield" },
+                          { "In": "Hand" },
+                          { "In": "Library" },
+                          { "In": "Graveyard" },
+                          { "In": "Exile" },
+                          { "In": "Stack" }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

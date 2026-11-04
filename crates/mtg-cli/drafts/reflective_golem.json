@@ -1,0 +1,35 @@
+{
+  "oracle_id": "3c067dbb-934b-4ebb-a656-8541349a4b2a",
+  "name": "Reflective Golem",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Reflective Golem",
+      "oracle_fingerprint": "2884a88ab6ceb7a2aa9b8984a54f8308",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [
+                  { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                  "SingleTarget",
+                  { "Targeting": ["This"] }
+                ],
+                "by": "You"
+              }
+            },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{2}",
+                  "paid": [{ "CopySpell": { "what": "Triggering", "new_targets": true } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

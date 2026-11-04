@@ -12,20 +12,12 @@
             "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
             "effects": [
               {
-                "Pay": {
-                  "cost": [{ "ReturnToHand": { "filter": ["Other", { "Type": "Creature" }] } }]
+                "Choose": {
+                  "from": { "Each": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }] },
+                  "as": "picked"
                 }
               },
-              {
-                "Pay": {
-                  "cost": [{ "ReturnToHand": { "filter": ["Other", { "Type": "Creature" }] } }]
-                }
-              },
-              {
-                "Pay": {
-                  "cost": [{ "ReturnToHand": { "filter": ["Other", { "Type": "Creature" }] } }]
-                }
-              }
+              { "Move": { "what": { "Bound": "picked" }, "to": "Hand" } }
             ]
           }
         }

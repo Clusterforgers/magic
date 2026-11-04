@@ -1,0 +1,12 @@
+{
+  "oracle_id": "0ac723bf-ce86-4028-a693-0ef498e4c82d",
+  "name": "Thran Lens",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thran Lens",
+      "oracle_fingerprint": "8a9046ba284bb2a1ebe021435bb56674",
+      "abilities": [{ "Static": { "affected": { "Each": [] }, "mods": [{ "SetColors": [] }] } }]
+    }
+  ]
+}

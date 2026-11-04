@@ -1,0 +1,66 @@
+{
+  "oracle_id": "655ae8e7-372b-4d8d-b33f-4aca46831abb",
+  "name": "Force Bubble",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Force Bubble",
+      "oracle_fingerprint": "70a1448e07e1c3fefa9e23730bbe6021",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Damage": { "to": "You" } },
+            "by": {
+              "Instead": [
+                {
+                  "PutCounters": {
+                    "on": "This",
+                    "counter": { "Other": "depletion" },
+                    "count": "Triggering"
+                  }
+                }
+              ]
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "State": {
+                "condition": {
+                  "Compare": {
+                    "left": {
+                      "Count": [
+                        "This",
+                        {
+                          "CounterCount": { "kind": { "Other": "depletion" }, "op": "Ge", "to": 4 }
+                        }
+                      ]
+                    },
+                    "op": "Ge",
+                    "right": 1
+                  }
+                }
+              }
+            },
+            "effects": [{ "Sacrifice": { "filter": ["This"] } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "effects": [
+              {
+                "RemoveCounters": {
+                  "from": "This",
+                  "counter": { "Other": "depletion" },
+                  "count": { "Counters": { "on": "This", "counter": { "Other": "depletion" } } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "oracle_id": "bd31487e-e95a-4d90-8c85-742aa83c3e90",
+  "name": "Grim Javelineer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Grim Javelineer",
+      "oracle_fingerprint": "4d16152754533004a2f128e5c2b4f142",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+            },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Attacking"] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "ZoneChange": {
+                      "what": [{ "Is": { "Target": 0 } }],
+                      "from": "Battlefield",
+                      "to": "Graveyard"
+                    }
+                  },
+                  "this_turn": true,
+                  "effects": [{ "Surveil": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

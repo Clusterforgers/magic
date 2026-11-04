@@ -1,0 +1,45 @@
+{
+  "oracle_id": "80ecb069-36e2-490d-9f6c-ef553c00e997",
+  "name": "Aetherblade Agent // Gitaxian Mindstinger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Aetherblade Agent",
+      "oracle_fingerprint": "73c3b718795085aec4a9d5831939a9c7",
+      "abilities": [
+        { "Keyword": "Deathtouch" },
+        {
+          "Activated": {
+            "cost": "{4}{U/P}",
+            "timing": "Sorcery",
+            "effects": [{ "Transform": { "what": "This" } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Gitaxian Mindstinger",
+      "oracle_fingerprint": "83b5edc9fd0814ebb6432d6d410e1d1c",
+      "abilities": [
+        { "Keyword": "Deathtouch" },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+                {
+                  "DealsDamage": {
+                    "source": ["This"],
+                    "to": { "Each": [{ "Type": "Battle" }] },
+                    "combat": true
+                  }
+                }
+              ]
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -11,90 +11,37 @@
           "Spell": {
             "effects": [
               {
-                "If": {
-                  "condition": { "CastWith": "Foretold" },
-                  "then": [
-                    {
-                      "DealDamage": {
-                        "source": "This",
-                        "to": {
-                          "Each": [
-                            {
-                              "Targeting": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }]
-                            }
-                          ]
-                        },
-                        "amount": 5
-                      }
-                    },
-                    {
-                      "DealDamage": {
-                        "source": "This",
-                        "to": {
-                          "Each": [
-                            {
-                              "Targeting": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }]
-                            }
-                          ]
-                        },
-                        "amount": 5
-                      }
-                    },
-                    {
-                      "DealDamage": {
-                        "source": "This",
-                        "to": {
-                          "Each": [
-                            {
-                              "Targeting": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }]
-                            }
-                          ]
-                        },
-                        "amount": 5
-                      }
+                "DealDamage": {
+                  "to": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] },
+                  "amount": {
+                    "When": {
+                      "condition": {
+                        "Matches": {
+                          "subject": "This",
+                          "selector": [{ "WasCast": { "from": "Exile" } }]
+                        }
+                      },
+                      "then": 5,
+                      "otherwise": 2
                     }
-                  ],
-                  "otherwise": [
-                    {
-                      "DealDamage": {
-                        "source": "This",
-                        "to": {
-                          "Each": [
-                            {
-                              "Targeting": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }]
-                            }
-                          ]
-                        },
-                        "amount": 2
-                      }
-                    },
-                    {
-                      "DealDamage": {
-                        "source": "This",
-                        "to": {
-                          "Each": [
-                            {
-                              "Targeting": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }]
-                            }
-                          ]
-                        },
-                        "amount": 2
-                      }
-                    },
-                    {
-                      "DealDamage": {
-                        "source": "This",
-                        "to": {
-                          "Each": [
-                            {
-                              "Targeting": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }]
-                            }
-                          ]
-                        },
-                        "amount": 2
-                      }
+                  }
+                }
+              },
+              {
+                "DealDamage": {
+                  "to": "Opponents",
+                  "amount": {
+                    "When": {
+                      "condition": {
+                        "Matches": {
+                          "subject": "This",
+                          "selector": [{ "WasCast": { "from": "Exile" } }]
+                        }
+                      },
+                      "then": 5,
+                      "otherwise": 2
                     }
-                  ]
+                  }
                 }
               }
             ]

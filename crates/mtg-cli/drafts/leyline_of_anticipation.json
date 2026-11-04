@@ -1,0 +1,12 @@
+{
+  "oracle_id": "9dc65ffe-17fc-4280-b4bd-78073ac7e12b",
+  "name": "Leyline of Anticipation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Leyline of Anticipation",
+      "oracle_fingerprint": "3c050f8d01d0a8d46f0c97fd35f6e096",
+      "abilities": ["OpeningHand", { "Rule": { "rule": { "MayCast": { "flash": true } } } }]
+    }
+  ]
+}

@@ -1,0 +1,114 @@
+{
+  "oracle_id": "640a7d2c-42c4-4ea7-bd5b-72f12a65785e",
+  "name": "Synthetic Destiny",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Synthetic Destiny",
+      "oracle_fingerprint": "67de99e88e05ae45867fbf7c2fd2aee5",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Exile": {
+                  "what": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "as": "exiled"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    {
+                      "If": {
+                        "condition": {
+                          "Compare": {
+                            "left": {
+                              "Count": [
+                                { "Is": { "Bound": "exiled" } },
+                                {
+                                  "AnyOf": [
+                                    { "In": "Battlefield" },
+                                    { "In": "Hand" },
+                                    { "In": "Library" },
+                                    { "In": "Graveyard" },
+                                    { "In": "Exile" },
+                                    { "In": "Stack" }
+                                  ]
+                                }
+                              ]
+                            },
+                            "op": "Gt",
+                            "right": 0
+                          }
+                        },
+                        "then": [
+                          {
+                            "RevealUntil": {
+                              "filter": [{ "Type": "Creature" }, { "OwnedBy": "You" }],
+                              "count": {
+                                "Count": [
+                                  { "Is": { "Bound": "exiled" } },
+                                  {
+                                    "AnyOf": [
+                                      { "In": "Battlefield" },
+                                      { "In": "Hand" },
+                                      { "In": "Library" },
+                                      { "In": "Graveyard" },
+                                      { "In": "Exile" },
+                                      { "In": "Stack" }
+                                    ]
+                                  }
+                                ]
+                              },
+                              "as": "found2",
+                              "revealed_as": "revealed3"
+                            }
+                          },
+                          { "Move": { "what": { "Bound": "found2" }, "to": { "Battlefield": {} } } },
+                          {
+                            "Move": {
+                              "what": { "Bound": "revealed3" },
+                              "to": { "Library": { "place": "Top" } }
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "If": {
+                        "condition": {
+                          "Compare": {
+                            "left": {
+                              "Count": [
+                                { "Is": { "Bound": "exiled" } },
+                                {
+                                  "AnyOf": [
+                                    { "In": "Battlefield" },
+                                    { "In": "Hand" },
+                                    { "In": "Library" },
+                                    { "In": "Graveyard" },
+                                    { "In": "Exile" },
+                                    { "In": "Stack" }
+                                  ]
+                                }
+                              ]
+                            },
+                            "op": "Gt",
+                            "right": 0
+                          }
+                        },
+                        "then": [{ "Shuffle": {} }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

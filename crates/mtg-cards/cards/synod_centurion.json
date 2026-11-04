@@ -1,0 +1,31 @@
+{
+  "oracle_id": "fe6337dc-df02-4baa-9fe0-b14e8d34186a",
+  "name": "Synod Centurion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Synod Centurion",
+      "oracle_fingerprint": "b976a28ce3649f2bd351f8ad6b91cd91",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "State": {
+                "condition": {
+                  "Compare": {
+                    "left": {
+                      "Count": [{ "Type": "Artifact" }, "Other", { "ControlledBy": "You" }]
+                    },
+                    "op": "Eq",
+                    "right": 0
+                  }
+                }
+              }
+            },
+            "effects": [{ "Sacrifice": { "filter": ["This"] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

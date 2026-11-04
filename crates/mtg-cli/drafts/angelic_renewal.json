@@ -1,0 +1,32 @@
+{
+  "oracle_id": "f86bcdde-8b1f-4efa-a01d-39e09dc826d0",
+  "name": "Angelic Renewal",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Angelic Renewal",
+      "oracle_fingerprint": "14760bae8f5500dfa1f984b4066b55d4",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "OwnedBy": "You" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": ["SacrificeSelf"],
+                  "paid": [{ "Move": { "what": "Triggering", "to": { "Battlefield": {} } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

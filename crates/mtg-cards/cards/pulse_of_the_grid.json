@@ -1,0 +1,38 @@
+{
+  "oracle_id": "73ea32e4-72c5-42ee-8ed5-21dee83d7eec",
+  "name": "Pulse of the Grid",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pulse of the Grid",
+      "oracle_fingerprint": "bc255d3b8fbec2053e51bfc2bd140035",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Draw": { "count": 2 } },
+              { "Discard": {} },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Largest": {
+                          "who": "Opponents",
+                          "of": [{ "In": "Hand" }, { "OwnedBy": "You" }]
+                        }
+                      },
+                      "op": "Gt",
+                      "right": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] }
+                    }
+                  },
+                  "then": [{ "Move": { "what": "This", "to": "Hand" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

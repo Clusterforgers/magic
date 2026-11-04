@@ -12,13 +12,7 @@
             "affected": {
               "Each": [
                 { "Type": "Creature" },
-                {
-                  "Compare": {
-                    "stat": "Power",
-                    "op": "Ge",
-                    "to": { "Greatest": { "of": [{ "Type": "Creature" }], "stat": "Power" } }
-                  }
-                }
+                { "Compare": { "stat": "Power", "op": "Ge", "to": 3 } }
               ]
             },
             "mods": ["DoesntUntap"]

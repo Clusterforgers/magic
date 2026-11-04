@@ -1,0 +1,43 @@
+{
+  "oracle_id": "4399c284-e3fe-46b1-aa1f-15a2846858f5",
+  "name": "Voldaren Pariah // Abolisher of Bloodlines",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Voldaren Pariah",
+      "oracle_fingerprint": "efa75ee98887cfdde2d421de794cb41b",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": [{ "Sacrifice": { "filter": [{ "Type": "Creature" }, "Other"], "count": 3 } }],
+            "effects": [{ "Transform": { "what": "This" } }]
+          }
+        },
+        { "Keyword": { "Madness": "{B}{B}{B}" } }
+      ]
+    },
+    {
+      "name": "Abolisher of Bloodlines",
+      "oracle_fingerprint": "43520ff8f8e3db0eaa509864961eaf0b",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "Did": { "action": "Transformed", "what": ["This"] } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Sacrifice": {
+                  "who": { "Target": 0 },
+                  "filter": [{ "Type": "Creature" }],
+                  "count": 3
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

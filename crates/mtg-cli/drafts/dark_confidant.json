@@ -13,10 +13,22 @@
             "effects": [
               { "LookAtTop": { "as": "top" } },
               { "Reveal": { "what": { "Bound": "top" } } },
-              { "Move": { "what": { "Bound": "top" }, "to": "Hand" } },
+              {
+                "Move": {
+                  "what": { "Each": [{ "In": "Library" }, { "Is": { "Bound": "top" } }] },
+                  "to": "Hand",
+                  "as": "moved4"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Bottom", "order": "Chosen" } }
+                }
+              },
               {
                 "LoseLife": {
-                  "amount": { "Stat": { "of": { "Bound": "top" }, "stat": "ManaValue" } }
+                  "amount": { "Stat": { "of": { "Bound": "moved4" }, "stat": "ManaValue" } }
                 }
               }
             ]

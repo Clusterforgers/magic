@@ -1,0 +1,42 @@
+{
+  "oracle_id": "e5128230-3535-4f77-8b97-20d0791e7b1d",
+  "name": "Psychic Surgery",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Psychic Surgery",
+      "oracle_fingerprint": "59ef5c9280f6173f34c758c71ee6f9c5",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Did": { "action": "Shuffled", "who": "Opponents" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "LookAtTop": { "who": "Triggering", "count": 2, "as": "top" } },
+                    {
+                      "Choose": {
+                        "from": { "Bound": "top" },
+                        "count": { "min": 0, "max": 1 },
+                        "as": "kept2",
+                        "rest_as": "rest3"
+                      }
+                    },
+                    { "Exile": { "what": { "Bound": "kept2" } } },
+                    {
+                      "Move": {
+                        "what": { "Bound": "rest3" },
+                        "to": { "Library": { "place": "Top", "order": "Chosen" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

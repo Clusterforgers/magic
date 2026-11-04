@@ -1,0 +1,38 @@
+{
+  "oracle_id": "e98429a7-a83f-4b69-afad-9eb68b09e38e",
+  "name": "Panic",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Panic",
+      "oracle_fingerprint": "e1e64b4f44cb0ea872fcc35f3f164229",
+      "abilities": [
+        {
+          "CastOnly": {
+            "condition": { "Any": [{ "Step": "BeginCombat" }, { "Step": "DeclareAttackers" }] }
+          }
+        },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["CantBlock"],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "Upkeep" } },
+                  "effects": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

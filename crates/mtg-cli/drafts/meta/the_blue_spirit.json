@@ -1,42 +1,4 @@
 {
   "source": "forge",
-  "oracle_matches": true,
-  "lines": [
-    {
-      "face": 0,
-      "tag": "T",
-      "text": "Whenever a nontoken creature you control enters during combat, draw a card.",
-      "abilities": [],
-      "gap": "key:Trigger.ChangesZone.Phase"
-    },
-    {
-      "face": 0,
-      "tag": "S",
-      "text": "You may cast the first creature spell you cast each turn as though it had flash.",
-      "abilities": [
-        0
-      ],
-      "gap": null
-    }
-  ],
-  "proof": {
-    "marks": [
-      {
-        "face": 0,
-        "span": {
-          "start": 0,
-          "end": 80
-        },
-        "mark": "Auto"
-      },
-      {
-        "face": 0,
-        "span": {
-          "start": 81,
-          "end": 156
-        },
-        "mark": "ByHand"
-      }
-    ]
-  }
+  "oracle_matches": true
 }

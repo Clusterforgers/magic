@@ -1,0 +1,36 @@
+{
+  "oracle_id": "b401a490-d25f-4029-bb91-8999e140c6a1",
+  "name": "Armed with Proof",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Armed with Proof",
+      "oracle_fingerprint": "49e0773cc31995e93dacb2d5b08df1d7",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 151 }
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Clue" }, { "ControlledBy": "You" }] },
+            "mods": [
+              { "AddKeyword": { "Equip": "{2}" } },
+              { "AddSubtype": "Equipment" },
+              {
+                "GrantAbility": {
+                  "Static": {
+                    "affected": "Attached",
+                    "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

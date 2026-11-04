@@ -1,0 +1,12 @@
+{
+  "oracle_id": "c73df59d-60e5-4541-81d9-5481cf2343bd",
+  "name": "How to Keep an Izzet Mage Busy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "How to Keep an Izzet Mage Busy",
+      "oracle_fingerprint": "1384a6d3be0cce2c096e401bc98c3d12",
+      "abilities": [{ "Spell": { "effects": [{ "Move": { "what": "This", "to": "Hand" } }] } }]
+    }
+  ]
+}

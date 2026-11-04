@@ -1,7 +1,7 @@
 {
   "oracle_id": "0b96cd7a-2132-4ff2-9666-6e2fbd0a2160",
   "name": "Thurid, Mare of Destiny",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Thurid, Mare of Destiny",
@@ -10,9 +10,29 @@
         { "Keyword": "Flying" },
         { "Keyword": "Lifelink" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 17, "end": 116 }
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [
+                  {
+                    "AnyOf": [
+                      { "Subtype": "Pegasus" },
+                      { "Subtype": "Unicorn" },
+                      {
+                        "Not": {
+                          "AnyOf": [
+                            { "Not": { "Type": "Creature" } },
+                            { "Not": { "Subtype": "Horse" } }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                ],
+                "by": "You"
+              }
+            },
+            "effects": [{ "CopySpell": { "what": "Triggering" } }]
           }
         },
         {

@@ -1,0 +1,69 @@
+{
+  "oracle_id": "432b37a5-d32a-4b78-91ab-860aa026b7cc",
+  "name": "Archangel Avacyn // Avacyn, the Purifier",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Archangel Avacyn",
+      "oracle_fingerprint": "4072230c225636d2ea9344f997fd9318",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": "Flying" },
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [{ "AddKeyword": "Indestructible" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "Not": { "Subtype": "Angel" } },
+                  { "ControlledBy": "You" }
+                ],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "Upkeep" } },
+                  "effects": [{ "Transform": { "what": "This" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Avacyn, the Purifier",
+      "oracle_fingerprint": "f278e5b2360793377a7465eda82ce7a2",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "Did": { "action": "Transformed", "what": ["This"] } },
+            "effects": [
+              { "DealDamage": { "to": { "Each": [{ "Type": "Creature" }, "Other"] }, "amount": 3 } },
+              { "DealDamage": { "to": "Opponents", "amount": 3 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "oracle_id": "6a265af8-448d-402b-b728-b7ed64521842",
+  "name": "Thought Collapse",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thought Collapse",
+      "oracle_fingerprint": "be97a44f43dfc960d590e11c7b60f62f",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [
+              { "Counter": { "what": { "Target": 0 } } },
+              { "Mill": { "who": { "ControllerOf": { "Target": 0 } }, "count": 3 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

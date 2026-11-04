@@ -1,7 +1,7 @@
 {
   "oracle_id": "c08ce0ec-e3fc-4fc3-a7b0-ce8e8fd079c0",
   "name": "Diviner's Wand",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Diviner's Wand",
@@ -35,9 +35,16 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 134, "end": 205 }
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "Subtype": "Wizard" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              { "May": { "effects": [{ "Attach": { "what": "This", "to": "Triggering" } }] } }
+            ]
           }
         },
         { "Keyword": { "Equip": "{3}" } }

@@ -10,16 +10,11 @@
         {
           "Spell": {
             "effects": [
+              { "AddMana": { "mana": { "Fixed": ["Red", "Red"] } } },
               {
                 "AddMana": {
                   "mana": { "Fixed": ["Red"] },
-                  "times": { "Count": [{ "In": "Graveyard" }, { "Named": "Rite of Flame" }] }
-                }
-              },
-              {
-                "AddMana": {
-                  "mana": { "Fixed": ["Red"] },
-                  "times": { "Count": [{ "In": "Graveyard" }, { "Named": "Rite of Flame" }] }
+                  "times": { "Count": [{ "Named": "Rite of Flame" }, { "In": "Graveyard" }] }
                 }
               }
             ]

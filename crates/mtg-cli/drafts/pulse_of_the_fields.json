@@ -1,0 +1,32 @@
+{
+  "oracle_id": "fc401c08-514d-43ea-9f57-6c3afe7c2652",
+  "name": "Pulse of the Fields",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pulse of the Fields",
+      "oracle_fingerprint": "feb9a61ae0c27eb35a45db4779f15869",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "GainLife": { "amount": 4 } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Life": "You" },
+                      "op": "Lt",
+                      "right": { "HighestLife": "Opponents" }
+                    }
+                  },
+                  "then": [{ "Move": { "what": "This", "to": "Hand" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -14,17 +14,24 @@
               {
                 "what": {
                   "Object": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Enchantment" }] }]
+                },
+                "bounds": {
+                  "min": { "When": { "condition": "Kicked", "then": 0, "otherwise": 1 } },
+                  "max": { "When": { "condition": "Kicked", "then": 0, "otherwise": 1 } }
                 }
               },
-              { "what": { "Object": [{ "Not": { "Type": "Land" } }] } }
+              {
+                "what": { "Object": [{ "Not": { "Type": "Land" } }] },
+                "bounds": {
+                  "min": { "When": { "condition": "Kicked", "then": 1, "otherwise": 0 } },
+                  "max": { "When": { "condition": "Kicked", "then": 1, "otherwise": 0 } }
+                }
+              }
             ],
             "effects": [
+              { "Exile": { "what": { "Target": 0 } } },
               {
-                "If": {
-                  "condition": "Kicked",
-                  "then": [{ "Move": { "what": { "Target": 1 }, "to": "Graveyard" } }],
-                  "otherwise": [{ "Move": { "what": { "Target": 0 }, "to": "Graveyard" } }]
-                }
+                "If": { "condition": "Kicked", "then": [{ "Exile": { "what": { "Target": 1 } } }] }
               }
             ]
           }

@@ -1,0 +1,54 @@
+{
+  "oracle_id": "43feb61f-5de0-41b6-b678-9785c476dc08",
+  "name": "Otherworldly Outburst",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Otherworldly Outburst",
+      "oracle_fingerprint": "5145fb36538f899b60e8c1fee3519d0a",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "ZoneChange": {
+                      "what": [{ "Is": { "Target": 0 } }],
+                      "from": "Battlefield",
+                      "to": "Graveyard"
+                    }
+                  },
+                  "this_turn": true,
+                  "effects": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Eldrazi Horror",
+                            "types": ["Creature"],
+                            "subtypes": ["Eldrazi", "Horror"],
+                            "power": 3,
+                            "toughness": 2
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

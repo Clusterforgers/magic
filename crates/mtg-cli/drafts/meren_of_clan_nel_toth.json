@@ -11,15 +11,12 @@
           "Triggered": {
             "when": {
               "ZoneChange": {
-                "what": [
-                  { "Type": "Creature" },
-                  { "ControlledBy": "You" },
-                  { "Not": { "Is": "This" } }
-                ],
+                "what": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }],
+                "from": "Battlefield",
                 "to": "Graveyard"
               }
             },
-            "effects": [{ "PutCounters": { "on": "You", "counter": "+1/+1" } }]
+            "effects": [{ "PutCounters": { "on": "You", "counter": { "Other": "experience" } } }]
           }
         },
         {
@@ -28,7 +25,7 @@
             "targets": [
               {
                 "what": {
-                  "Object": [{ "Type": "Creature" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
+                  "Object": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
                 }
               }
             ],
@@ -36,14 +33,47 @@
               {
                 "If": {
                   "condition": {
-                    "Compare": {
-                      "left": { "Stat": { "of": "Triggering", "stat": "ManaValue" } },
-                      "op": "Le",
-                      "right": { "Counters": { "on": "You", "counter": "+1/+1" } }
+                    "CountOf": {
+                      "subject": { "Target": 0 },
+                      "selector": [
+                        {
+                          "Compare": {
+                            "stat": "ManaValue",
+                            "op": "Le",
+                            "to": {
+                              "Counters": { "on": "You", "counter": { "Other": "experience" } }
+                            }
+                          }
+                        }
+                      ],
+                      "op": "Ge",
+                      "right": 1
                     }
                   },
-                  "then": [{ "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }],
-                  "otherwise": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+                  "then": [{ "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Target": 0 },
+                      "selector": [
+                        {
+                          "Compare": {
+                            "stat": "ManaValue",
+                            "op": "Gt",
+                            "to": {
+                              "Counters": { "on": "You", "counter": { "Other": "experience" } }
+                            }
+                          }
+                        }
+                      ],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
                 }
               }
             ]

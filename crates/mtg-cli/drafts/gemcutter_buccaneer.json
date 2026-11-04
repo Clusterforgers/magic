@@ -1,0 +1,57 @@
+{
+  "oracle_id": "68e45c07-96c5-4f87-a816-d9fa4f119740",
+  "name": "Gemcutter Buccaneer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gemcutter Buccaneer",
+      "oracle_fingerprint": "138e135b8c37ce54e511b148dc390444",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  {
+                    "AnyOf": [
+                      "This",
+                      {
+                        "Not": {
+                          "AnyOf": [
+                            { "Not": { "Subtype": "Pirate" } },
+                            { "Not": "Other" },
+                            { "Not": { "ControlledBy": "You" } }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                ],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [{ "CreateToken": { "token": { "Named": "treasure" }, "tapped": true } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Treasure" }, { "ControlledBy": "You" }] },
+            "mods": [
+              { "AddKeyword": { "Equip": "{3}" } },
+              { "AddKeyword": { "EquipTo": { "to": [{ "Subtype": "Pirate" }], "cost": "{1}" } } },
+              { "AddSubtype": "Equipment" },
+              {
+                "GrantAbility": {
+                  "Static": {
+                    "affected": "Attached",
+                    "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

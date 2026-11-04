@@ -1,0 +1,24 @@
+{
+  "oracle_id": "bf65e547-9d81-4f4b-8adb-46aee9088906",
+  "name": "Mindless Conscription",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mindless Conscription",
+      "oracle_fingerprint": "d403ba0567f9237d447949702c161d15",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "Nth": { "event": { "Drew": { "who": "You" } }, "nth": 3 } }
+              ]
+            },
+            "effects": [{ "Amass": { "subtype": "Zombie", "count": 3 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

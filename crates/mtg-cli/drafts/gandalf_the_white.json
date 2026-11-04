@@ -1,0 +1,52 @@
+{
+  "oracle_id": "5b3b5f6a-375e-4479-9384-a942eda83f9b",
+  "name": "Gandalf the White",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gandalf the White",
+      "oracle_fingerprint": "68528ca30da394a4dc2228bdaeb324f2",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": {
+                "what": [{ "AnyOf": [{ "Type": "Artifact" }, { "Supertype": "Legendary" }] }],
+                "flash": true
+              }
+            }
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "TriggerAgain": {
+                "cause": {
+                  "ZoneChange": {
+                    "what": [{ "AnyOf": [{ "Supertype": "Legendary" }, { "Type": "Artifact" }] }],
+                    "to": "Battlefield"
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "TriggerAgain": {
+                "cause": {
+                  "ZoneChange": {
+                    "what": [{ "AnyOf": [{ "Supertype": "Legendary" }, { "Type": "Artifact" }] }],
+                    "from": "Battlefield"
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

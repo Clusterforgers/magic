@@ -1,0 +1,106 @@
+{
+  "oracle_id": "7aae0a3d-8882-4485-a126-f06ea6593dcb",
+  "name": "Titania's Command",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Titania's Command",
+      "oracle_fingerprint": "0d91d758e546acd548570e8e2765094f",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "choose": { "min": 2, "max": 2 },
+                  "modes": [
+                    {
+                      "targets": [{ "what": "Player" }],
+                      "effects": [
+                        {
+                          "Exile": {
+                            "what": {
+                              "Each": [{ "In": "Graveyard" }, { "OwnedBy": { "Target": 0 } }]
+                            },
+                            "as": "exiled"
+                          }
+                        },
+                        {
+                          "GainLife": {
+                            "amount": {
+                              "Count": [
+                                { "Is": { "Bound": "exiled" } },
+                                {
+                                  "AnyOf": [
+                                    { "In": "Battlefield" },
+                                    { "In": "Hand" },
+                                    { "In": "Library" },
+                                    { "In": "Graveyard" },
+                                    { "In": "Exile" },
+                                    { "In": "Stack" }
+                                  ]
+                                }
+                              ]
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "Search": {
+                            "filter": [{ "Type": "Land" }],
+                            "count": { "min": 0, "max": 2 },
+                            "as": "found2"
+                          }
+                        },
+                        {
+                          "Move": {
+                            "what": { "Bound": "found2" },
+                            "to": { "Battlefield": { "tapped": true } }
+                          }
+                        },
+                        { "Shuffle": {} }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "CreateToken": {
+                            "token": {
+                              "Custom": {
+                                "name": "Bear",
+                                "colors": ["Green"],
+                                "types": ["Creature"],
+                                "subtypes": ["Bear"],
+                                "power": 2,
+                                "toughness": 2
+                              }
+                            },
+                            "count": 2
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "PutCounters": {
+                            "on": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                            "counter": "+1/+1",
+                            "count": 2
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

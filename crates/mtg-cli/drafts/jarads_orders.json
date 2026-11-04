@@ -1,0 +1,43 @@
+{
+  "oracle_id": "93036f4e-f553-4cc7-a747-6cd087b0994c",
+  "name": "Jarad's Orders",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jarad's Orders",
+      "oracle_fingerprint": "8335f14b5a8d715b51bdd5a23d3d34a1",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Search": {
+                  "filter": [{ "Type": "Creature" }],
+                  "count": { "min": 0, "max": 2 },
+                  "reveal": true,
+                  "as": "found"
+                }
+              },
+              {
+                "Search": {
+                  "filter": [{ "Type": "Creature" }, { "Is": { "Bound": "found" } }],
+                  "reveal": true,
+                  "as": "found2"
+                }
+              },
+              { "Move": { "what": { "Bound": "found2" }, "to": "Hand" } },
+              {
+                "Search": {
+                  "filter": [{ "Type": "Creature" }, { "Is": { "Bound": "found" } }],
+                  "as": "found3"
+                }
+              },
+              { "Move": { "what": { "Bound": "found3" }, "to": "Graveyard" } },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "oracle_id": "369aa9a6-af8a-432c-adff-ced2bb203dc7",
+  "name": "Construct a Cosmic Cube",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Construct a Cosmic Cube",
+      "oracle_fingerprint": "3a8f00d99ac7caf0ca9eea95031be9f1",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Nth": { "event": { "Drew": { "who": "You" } }, "nth": 2 } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Villain",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Villain"],
+                      "power": 2,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Menace" }]
+                    }
+                  }
+                }
+              },
+              { "PutCounters": { "on": "This", "counter": { "Other": "plan" } } }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 144, "end": 355 }
+          }
+        }
+      ]
+    }
+  ]
+}

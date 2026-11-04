@@ -7,12 +7,7 @@
       "name": "Choke",
       "oracle_fingerprint": "a595edc50881cfb1cbf42d90b7e3c2ac",
       "abilities": [
-        {
-          "Static": {
-            "affected": { "Each": [{ "Type": "Land" }, { "Subtype": "Island" }] },
-            "mods": ["DoesntUntap"]
-          }
-        }
+        { "Static": { "affected": { "Each": [{ "Subtype": "Island" }] }, "mods": ["DoesntUntap"] } }
       ]
     }
   ]

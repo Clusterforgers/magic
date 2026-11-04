@@ -1,0 +1,127 @@
+{
+  "object": "card",
+  "id": "e3fa08d9-d41b-4696-b81a-42c8eebdeb49",
+  "oracle_id": "6c943c9d-090b-41c1-9003-24c91601e589",
+  "multiverse_ids": [
+    6632
+  ],
+  "tcgplayer_id": 151,
+  "cardmarket_id": 9888,
+  "name": "Harmony of Nature",
+  "lang": "en",
+  "released_at": "1998-06-24",
+  "uri": "https://api.scryfall.com/cards/e3fa08d9-d41b-4696-b81a-42c8eebdeb49",
+  "scryfall_uri": "https://scryfall.com/card/p02/128/harmony-of-nature?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T12:40:57Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/e/3/e3fa08d9-d41b-4696-b81a-42c8eebdeb49.jpg?1783946457",
+    "normal": "https://cards.scryfall.io/normal/front/e/3/e3fa08d9-d41b-4696-b81a-42c8eebdeb49.jpg?1783946457",
+    "large": "https://cards.scryfall.io/large/front/e/3/e3fa08d9-d41b-4696-b81a-42c8eebdeb49.jpg?1783946457",
+    "png": "https://cards.scryfall.io/png/front/e/3/e3fa08d9-d41b-4696-b81a-42c8eebdeb49.png?1783946457",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/e/3/e3fa08d9-d41b-4696-b81a-42c8eebdeb49.jpg?1783946457",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/e/3/e3fa08d9-d41b-4696-b81a-42c8eebdeb49.jpg?1783946457",
+    "thumb": "https://cards.scryfall.io/thumb/front/e/3/e3fa08d9-d41b-4696-b81a-42c8eebdeb49.webp?1783946457",
+    "grid": "https://cards.scryfall.io/grid/front/e/3/e3fa08d9-d41b-4696-b81a-42c8eebdeb49.webp?1783946457",
+    "display": "https://cards.scryfall.io/display/front/e/3/e3fa08d9-d41b-4696-b81a-42c8eebdeb49.webp?1783946457",
+    "art": "https://cards.scryfall.io/art/front/e/3/e3fa08d9-d41b-4696-b81a-42c8eebdeb49.webp?1783946457",
+    "crop": "https://cards.scryfall.io/crop/front/e/3/e3fa08d9-d41b-4696-b81a-42c8eebdeb49.webp?1783946457",
+    "jpeg": "https://cards.scryfall.io/normal/front/e/3/e3fa08d9-d41b-4696-b81a-42c8eebdeb49.jpg?1783946457"
+  },
+  "mana_cost": "{2}{G}",
+  "cmc": 3.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Tap any number of untapped creatures you control. You gain 4 life for each creature tapped this way.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "ac67f18a-4f0e-407e-bab1-a9fe4f659565",
+  "set": "p02",
+  "set_name": "Portal Second Age",
+  "set_type": "starter",
+  "set_uri": "https://api.scryfall.com/sets/ac67f18a-4f0e-407e-bab1-a9fe4f659565",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ap02&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/p02?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/e3fa08d9-d41b-4696-b81a-42c8eebdeb49/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A6c943c9d-090b-41c1-9003-24c91601e589&unique=prints",
+  "collector_number": "128",
+  "digital": false,
+  "rarity": "uncommon",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Kaja Foglio",
+  "artist_ids": [
+    "e8b85539-756a-4eac-ac66-a2258d7cf547"
+  ],
+  "illustration_id": "6dce0e71-e52e-441f-8c9c-eb9ec8cda47f",
+  "border_color": "black",
+  "frame": "1997",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 24949,
+  "prices": {
+    "usd": "1.81",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "1.52",
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=6632&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DHarmony%2Bof%2BNature",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DHarmony%2Bof%2BNature",
+    "edhrec": "https://edhrec.com/route/?cc=Harmony+of+Nature"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F151%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=9888&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Harmony+of+Nature&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

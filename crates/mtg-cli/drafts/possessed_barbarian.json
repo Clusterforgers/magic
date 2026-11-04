@@ -1,0 +1,41 @@
+{
+  "oracle_id": "ee51365b-9f36-44a7-8706-ae5b2f86bd29",
+  "name": "Possessed Barbarian",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Possessed Barbarian",
+      "oracle_fingerprint": "75f78c2e0f34c5790c9a61e6108a88cd",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              { "ModifyPT": { "power": 1, "toughness": 1 } },
+              { "SetColors": ["Black"] },
+              {
+                "GrantAbility": {
+                  "Activated": {
+                    "cost": [{ "Mana": "{2}{B}" }, "Tap"],
+                    "targets": [
+                      { "what": { "Object": [{ "Type": "Creature" }, { "Color": "Red" }] } }
+                    ],
+                    "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+                  }
+                }
+              }
+            ],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                "op": "Ge",
+                "right": 7
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

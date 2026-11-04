@@ -1,0 +1,45 @@
+{
+  "oracle_id": "7a8baaf9-e21f-41a0-9f15-80764f6e5e68",
+  "name": "Sword of Truth and Justice",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sword of Truth and Justice",
+      "oracle_fingerprint": "56f992a78353397a9e7bfed8655ba57c",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "ModifyPT": { "power": 2, "toughness": 2 } },
+              { "AddKeyword": { "Protection": [{ "Color": "White" }] } },
+              { "AddKeyword": { "Protection": [{ "Color": "Blue" }] } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [{ "Type": "Creature" }, { "Is": "Attached" }],
+                "to": "EachPlayer",
+                "combat": true
+              }
+            },
+            "effects": [
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "as": "card"
+                }
+              },
+              { "PutCounters": { "on": { "Bound": "card" }, "counter": "+1/+1" } },
+              { "Proliferate": {} }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{2}" } }
+      ]
+    }
+  ]
+}

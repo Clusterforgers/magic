@@ -1,0 +1,25 @@
+{
+  "oracle_id": "5e642112-9592-475f-ba03-d71544270cfa",
+  "name": "Lunge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lunge",
+      "oracle_fingerprint": "f1c55a71cd8b38545d5f7c055679ed81",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] } },
+              { "what": { "Either": ["Player", { "Object": [{ "Type": "Planeswalker" }] }] } }
+            ],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 2 } },
+              { "DealDamage": { "to": { "Target": 1 }, "amount": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

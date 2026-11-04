@@ -1,0 +1,19 @@
+{
+  "oracle_id": "cb7d65f7-003f-46db-af71-7b575c713c6b",
+  "name": "Ghostflame Sliver",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ghostflame Sliver",
+      "oracle_fingerprint": "eb792c51b25bce0147fa242850d8c738",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Sliver" }] },
+            "mods": [{ "SetColors": [] }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,58 @@
+{
+  "oracle_id": "f82c628c-c01a-4a1c-af9a-e296ba50f12f",
+  "name": "Marshaling the Troops",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Marshaling the Troops",
+      "oracle_fingerprint": "801cc4f2037c7b2d44d48f5578b6dffd",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "Untapped"]
+                  },
+                  "count": {
+                    "min": 0,
+                    "max": {
+                      "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "Untapped"]
+                    }
+                  },
+                  "as": "tap"
+                }
+              },
+              { "Tap": { "what": { "Bound": "tap" }, "as": "tapped2" } },
+              {
+                "GainLife": {
+                  "amount": {
+                    "Times": {
+                      "by": 4,
+                      "of": {
+                        "Count": [
+                          { "Is": { "Bound": "tapped2" } },
+                          {
+                            "AnyOf": [
+                              { "In": "Battlefield" },
+                              { "In": "Hand" },
+                              { "In": "Library" },
+                              { "In": "Graveyard" },
+                              { "In": "Exile" },
+                              { "In": "Stack" }
+                            ]
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

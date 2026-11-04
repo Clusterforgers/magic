@@ -1,0 +1,51 @@
+{
+  "oracle_id": "0ca4e80e-c19c-4b74-b531-c5a4dc5a8ba9",
+  "name": "Restless Spire",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Restless Spire",
+      "oracle_fingerprint": "9b7960d4350dec1d10dd9e5e7b74d7e5",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "OneOf": ["Blue", "Red"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{U}{R}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "SetPT": { "power": 2, "toughness": 1 } },
+                    { "SetColors": ["Blue", "Red"] },
+                    { "AddSubtype": "Elemental" },
+                    { "AddType": "Creature" },
+                    {
+                      "GrantAbility": {
+                        "Static": {
+                          "affected": "This",
+                          "mods": [{ "AddKeyword": "FirstStrike" }],
+                          "condition": "YourTurn"
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": { "when": { "Attacks": { "what": ["This"] } }, "effects": [{ "Scry": {} }] }
+        }
+      ]
+    }
+  ]
+}

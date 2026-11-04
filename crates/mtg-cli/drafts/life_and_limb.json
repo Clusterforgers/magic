@@ -1,0 +1,28 @@
+{
+  "oracle_id": "d0d7250b-70d2-43f9-ae15-837227061ccb",
+  "name": "Life and Limb",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Life and Limb",
+      "oracle_fingerprint": "dde0217896c927ad96e9149fb993234e",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [{ "AnyOf": [{ "Subtype": "Forest" }, { "Subtype": "Saproling" }] }]
+            },
+            "mods": [
+              { "SetPT": { "power": 1, "toughness": 1 } },
+              { "SetColors": ["Green"] },
+              { "AddType": "Land" },
+              { "AddType": "Creature" },
+              { "AddSubtype": "Forest" },
+              { "AddSubtype": "Saproling" }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

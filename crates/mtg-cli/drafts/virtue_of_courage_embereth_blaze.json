@@ -1,0 +1,51 @@
+{
+  "oracle_id": "af6438b9-3fde-45c9-af69-dff686c1e0de",
+  "name": "Virtue of Courage // Embereth Blaze",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Virtue of Courage",
+      "oracle_fingerprint": "0aa6a244d4381bbb5a83ad6f32ae044e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": [{ "ControlledBy": "You" }], "to": "Opponents" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "ExileTop": { "count": "Triggering", "as": "exiled" } },
+                    {
+                      "Rule": {
+                        "rule": {
+                          "MayCast": {
+                            "from": "Exile",
+                            "only": { "Bound": "exiled" },
+                            "play": true
+                          }
+                        },
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Embereth Blaze",
+      "oracle_fingerprint": "7d7762261cdd1701b658e1b557dbcd55",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

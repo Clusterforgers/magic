@@ -1,7 +1,7 @@
 {
   "oracle_id": "416c70ab-f136-43e0-b5d5-9af8d4211c01",
   "name": "Deluge Virtuoso",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Deluge Virtuoso",
@@ -20,9 +20,53 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 186, "end": 386 }
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                "by": "You"
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": {
+                          "When": {
+                            "condition": {
+                              "Compare": {
+                                "left": { "Stat": { "of": "Triggering", "stat": "ManaSpent" } },
+                                "op": "Ge",
+                                "right": 5
+                              }
+                            },
+                            "then": 2,
+                            "otherwise": 1
+                          }
+                        },
+                        "toughness": {
+                          "When": {
+                            "condition": {
+                              "Compare": {
+                                "left": { "Stat": { "of": "Triggering", "stat": "ManaSpent" } },
+                                "op": "Ge",
+                                "right": 5
+                              }
+                            },
+                            "then": 2,
+                            "otherwise": 1
+                          }
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
           }
         }
       ]

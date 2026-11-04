@@ -1,0 +1,41 @@
+{
+  "oracle_id": "2fd1707b-917c-4842-a5c6-dfffbedcf918",
+  "name": "Possessed Centaur",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Possessed Centaur",
+      "oracle_fingerprint": "6d96915c5dc51330c2addbb84b097673",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              { "ModifyPT": { "power": 1, "toughness": 1 } },
+              { "SetColors": ["Black"] },
+              {
+                "GrantAbility": {
+                  "Activated": {
+                    "cost": [{ "Mana": "{2}{B}" }, "Tap"],
+                    "targets": [
+                      { "what": { "Object": [{ "Type": "Creature" }, { "Color": "Green" }] } }
+                    ],
+                    "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+                  }
+                }
+              }
+            ],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                "op": "Ge",
+                "right": 7
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

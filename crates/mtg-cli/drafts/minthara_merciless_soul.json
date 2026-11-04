@@ -1,7 +1,7 @@
 {
   "oracle_id": "fad0c174-4c4a-4662-bd1f-224886e826e1",
   "name": "Minthara, Merciless Soul",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Minthara, Merciless Soul",
@@ -9,9 +9,16 @@
       "abilities": [
         { "Static": { "affected": "This", "mods": [{ "AddKeyword": { "Ward": "{X}" } }] } },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 78, "end": 205 }
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "PermanentsLeftUnder" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "You", "counter": { "Other": "experience" } } }]
           }
         },
         {

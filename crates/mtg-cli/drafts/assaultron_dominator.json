@@ -1,0 +1,66 @@
+{
+  "oracle_id": "2c7818f4-a818-4603-9af1-05aee2d56ec8",
+  "name": "Assaultron Dominator",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Assaultron Dominator",
+      "oracle_fingerprint": "04a31caebf3c09270e26b36f97400912",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "PutCounters": { "on": "You", "counter": { "Other": "energy" }, "count": 2 } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "Attacks": {
+                "what": [{ "Type": "Creature" }, { "Type": "Artifact" }, { "ControlledBy": "You" }]
+              }
+            },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "PayEnergy": 1 }],
+                  "paid": [
+                    {
+                      "Either": {
+                        "first": [{ "PutCounters": { "on": "Triggering", "counter": "+1/+1" } }],
+                        "second": [
+                          {
+                            "Either": {
+                              "first": [
+                                {
+                                  "PutCounters": {
+                                    "on": "Triggering",
+                                    "counter": { "Other": "first strike" }
+                                  }
+                                }
+                              ],
+                              "second": [
+                                {
+                                  "PutCounters": {
+                                    "on": "Triggering",
+                                    "counter": { "Other": "trample" }
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

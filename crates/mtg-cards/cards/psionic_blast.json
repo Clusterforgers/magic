@@ -1,0 +1,22 @@
+{
+  "oracle_id": "7f221ad6-7ec4-483d-a6b5-1456c95c1cad",
+  "name": "Psionic Blast",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Psionic Blast",
+      "oracle_fingerprint": "3cf653f55254288ea772b79df31d1767",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 4 } },
+              { "DealDamage": { "to": "You", "amount": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

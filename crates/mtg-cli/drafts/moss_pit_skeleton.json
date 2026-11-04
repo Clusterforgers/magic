@@ -1,7 +1,7 @@
 {
   "oracle_id": "edf0e7c0-d9a1-4d29-9cee-5267d3a3978f",
   "name": "Moss-Pit Skeleton",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Moss-Pit Skeleton",
@@ -16,9 +16,32 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 139, "end": 290 }
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "CountersPut": {
+                  "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                  "counter": "+1/+1"
+                }
+              }
+            },
+            "if": {
+              "Compare": {
+                "left": { "Count": ["This", { "In": "Graveyard" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "from": "Graveyard",
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "Move": { "what": "This", "to": { "Library": { "place": "Top" } } } }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

@@ -11,31 +11,38 @@
           "Spell": {
             "effects": [
               { "LookAtTop": { "count": "X", "as": "top" } },
+              { "Reveal": { "what": { "Bound": "top" } } },
               {
-                "Choose": {
-                  "from": {
+                "Move": {
+                  "what": {
                     "Each": [{ "In": "Library" }, { "Is": { "Bound": "top" } }, { "Type": "Land" }]
                   },
-                  "count": {
-                    "min": {
-                      "Count": [
-                        { "In": "Library" },
-                        { "Is": { "Bound": "top" } },
-                        { "Type": "Land" }
-                      ]
-                    },
-                    "max": 1
-                  },
-                  "as": "kept"
+                  "to": { "Battlefield": { "tapped": true } },
+                  "as": "moved4"
                 }
-              },
-              {
-                "Move": { "what": { "Bound": "kept" }, "to": { "Battlefield": { "tapped": true } } }
               },
               {
                 "Move": {
                   "what": { "Bound": "top" },
                   "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Count": [
+                          { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                          { "OwnedBy": "You" },
+                          { "In": "Graveyard" }
+                        ]
+                      },
+                      "op": "Ge",
+                      "right": 2
+                    }
+                  },
+                  "then": [{ "Untap": { "what": { "Bound": "moved4" } } }]
                 }
               }
             ]

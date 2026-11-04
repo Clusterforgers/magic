@@ -1,7 +1,7 @@
 {
   "oracle_id": "dae4815e-9025-4993-ab46-52a3f1a7219e",
   "name": "Thornbite Staff",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Thornbite Staff",
@@ -38,9 +38,16 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 130, "end": 201 }
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "Subtype": "Shaman" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              { "May": { "effects": [{ "Attach": { "what": "This", "to": "Triggering" } }] } }
+            ]
           }
         },
         { "Keyword": { "Equip": "{4}" } }

@@ -1,0 +1,141 @@
+{
+  "object": "card",
+  "id": "480b6279-bb34-4b3f-a639-868b52af92b9",
+  "oracle_id": "e2171c48-a816-41b2-aa55-e0ba2503fd6a",
+  "multiverse_ids": [],
+  "resource_id": "5F38E2D721EB5554AC6B0743A12100CA8D9DAA1681AC7BD457CC46B13896FCAF",
+  "mtgo_id": 144614,
+  "arena_id": 97342,
+  "tcgplayer_id": 649388,
+  "cardmarket_id": 857432,
+  "name": "Otter-Penguin",
+  "lang": "en",
+  "released_at": "2025-11-21",
+  "uri": "https://api.scryfall.com/cards/480b6279-bb34-4b3f-a639-868b52af92b9",
+  "scryfall_uri": "https://scryfall.com/card/tla/67/otter-penguin?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T01:09:43Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/4/8/480b6279-bb34-4b3f-a639-868b52af92b9.jpg?1783904983",
+    "normal": "https://cards.scryfall.io/normal/front/4/8/480b6279-bb34-4b3f-a639-868b52af92b9.jpg?1783904983",
+    "large": "https://cards.scryfall.io/large/front/4/8/480b6279-bb34-4b3f-a639-868b52af92b9.jpg?1783904983",
+    "png": "https://cards.scryfall.io/png/front/4/8/480b6279-bb34-4b3f-a639-868b52af92b9.png?1783904983",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/4/8/480b6279-bb34-4b3f-a639-868b52af92b9.jpg?1783904983",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/4/8/480b6279-bb34-4b3f-a639-868b52af92b9.jpg?1783904983",
+    "thumb": "https://cards.scryfall.io/thumb/front/4/8/480b6279-bb34-4b3f-a639-868b52af92b9.webp?1783904983",
+    "grid": "https://cards.scryfall.io/grid/front/4/8/480b6279-bb34-4b3f-a639-868b52af92b9.webp?1783904983",
+    "display": "https://cards.scryfall.io/display/front/4/8/480b6279-bb34-4b3f-a639-868b52af92b9.webp?1783904983",
+    "art": "https://cards.scryfall.io/art/front/4/8/480b6279-bb34-4b3f-a639-868b52af92b9.webp?1783904983",
+    "crop": "https://cards.scryfall.io/crop/front/4/8/480b6279-bb34-4b3f-a639-868b52af92b9.webp?1783904983",
+    "jpeg": "https://cards.scryfall.io/normal/front/4/8/480b6279-bb34-4b3f-a639-868b52af92b9.jpg?1783904983"
+  },
+  "mana_cost": "{1}{U}",
+  "cmc": 2.0,
+  "type_line": "Creature — Otter Bird",
+  "oracle_text": "Whenever you draw your second card each turn, this creature gets +1/+2 until end of turn and can't be blocked this turn.",
+  "power": "2",
+  "toughness": "1",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "legal",
+    "future": "legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "arena",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "118f7e64-5caa-4cb7-99a8-184f4d3a7422",
+  "set": "tla",
+  "set_name": "Avatar: The Last Airbender",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/118f7e64-5caa-4cb7-99a8-184f4d3a7422",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Atla&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/tla?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/480b6279-bb34-4b3f-a639-868b52af92b9/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ae2171c48-a816-41b2-aa55-e0ba2503fd6a&unique=prints",
+  "collector_number": "67",
+  "digital": false,
+  "rarity": "common",
+  "flavor_text": "\"Will you go penguin sledding with me?\"\n—Aang",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Eilene Cherie",
+  "artist_ids": [
+    "9f1739c4-f188-4c36-b95d-c66f0047b434"
+  ],
+  "illustration_id": "3d7a76f3-2bb4-477d-96e9-48a1bf8271c1",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 17186,
+  "preview": {
+    "source": "IGN",
+    "source_uri": "https://www.ign.com/articles/avatar-the-last-airbender-magic-the-gathering-beginner-box-card-reveal-spoilers",
+    "previewed_at": "2025-08-14"
+  },
+  "prices": {
+    "usd": "0.16",
+    "usd_foil": "0.23",
+    "usd_etched": null,
+    "eur": "0.04",
+    "eur_foil": "0.14",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DOtter-Penguin",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DOtter-Penguin",
+    "edhrec": "https://edhrec.com/route/?cc=Otter-Penguin"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F649388%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=857432&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/144614?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

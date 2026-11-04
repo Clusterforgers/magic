@@ -1,0 +1,28 @@
+{
+  "oracle_id": "5a0eb270-b142-45da-87a2-2f1c4e25db17",
+  "name": "Chandra's Spitfire",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Chandra's Spitfire",
+      "oracle_fingerprint": "981de13e0248bc79f4ad7ed2a0cb1d32",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": [], "to": "Opponents" } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 3, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

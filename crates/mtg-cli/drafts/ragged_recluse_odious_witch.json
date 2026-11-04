@@ -1,14 +1,24 @@
 {
   "oracle_id": "9ad999fe-889a-426a-86b3-c0c311b82041",
   "name": "Ragged Recluse // Odious Witch",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Ragged Recluse",
       "oracle_fingerprint": "aa8e383fdb2c58a4311b94ffa9ebd04b",
       "abilities": [
         {
-          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 0, "end": 94 } }
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "Discarded" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "Transform": { "what": "This" } }]
+          }
         }
       ]
     },

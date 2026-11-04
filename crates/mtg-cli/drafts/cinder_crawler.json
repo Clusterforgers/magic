@@ -1,0 +1,34 @@
+{
+  "oracle_id": "3850479f-1c1e-4a72-ae47-6da2997202e2",
+  "name": "Cinder Crawler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cinder Crawler",
+      "oracle_fingerprint": "529165761247bc390f661172989b32ac",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{R}",
+            "condition": {
+              "Compare": {
+                "left": { "Count": ["This", "Attacking", { "Not": "Unblocked" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

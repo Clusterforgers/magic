@@ -1,7 +1,7 @@
 {
   "oracle_id": "bc681ecf-2a52-4782-9a47-90f5a9f435d8",
   "name": "Symbiote Spider-Man",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Symbiote Spider-Man",
@@ -25,9 +25,51 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 175, "end": 355 }
+          "Activated": {
+            "cost": [{ "Mana": "{2}{U/B}" }, "ExileSelf"],
+            "timing": "Sorcery",
+            "from": "Graveyard",
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "GrantAbility": {
+                        "Triggered": {
+                          "when": {
+                            "DealsDamage": {
+                              "source": ["This"],
+                              "to": "EachPlayer",
+                              "combat": true
+                            }
+                          },
+                          "effects": [
+                            { "LookAtTop": { "count": "Triggering", "as": "top" } },
+                            {
+                              "Choose": {
+                                "from": {
+                                  "Each": [{ "In": "Library" }, { "Is": { "Bound": "top" } }]
+                                },
+                                "count": { "min": 0, "max": 1 },
+                                "as": "kept2"
+                              }
+                            },
+                            { "Move": { "what": { "Bound": "kept2" }, "to": "Hand" } },
+                            { "Move": { "what": { "Bound": "top" }, "to": "Graveyard" } }
+                          ]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "Forever"
+                }
+              }
+            ]
           }
         }
       ]

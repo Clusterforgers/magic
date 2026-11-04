@@ -1,0 +1,31 @@
+{
+  "oracle_id": "e7bd3882-a0f2-4706-80e7-1d3ec455801f",
+  "name": "Stick, Fearless Mentor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stick, Fearless Mentor",
+      "oracle_fingerprint": "4b7ef8df6519c4109da345027f0818d6",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": [{ "ControlledBy": "You" }], "to": "You" } },
+            "limit": "OncePerTurn",
+            "effects": [
+              { "ExileTop": { "as": "exiled" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": { "from": "Exile", "only": { "Bound": "exiled" }, "play": true }
+                  },
+                  "duration": "UntilEndOfYourNextTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

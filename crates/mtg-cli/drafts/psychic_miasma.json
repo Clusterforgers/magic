@@ -1,0 +1,34 @@
+{
+  "oracle_id": "43d69e13-27df-43a9-b610-6628dc02e3b4",
+  "name": "Psychic Miasma",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Psychic Miasma",
+      "oracle_fingerprint": "064b6af226c0cba041a85c618b1eb118",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              { "Discard": { "who": { "Target": 0 }, "as": "discarded" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "discarded" },
+                      "selector": [{ "Type": "Land" }],
+                      "op": "Eq",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Move": { "what": "This", "to": "Hand" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,80 @@
+{
+  "oracle_id": "0068a341-92a5-470e-a565-9ace69eb04a8",
+  "name": "Warden of the First Tree",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Warden of the First Tree",
+      "oracle_fingerprint": "f410981f809dda6e3fcaa2c6b15c6bb0",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{1}{W/B}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "SetPT": { "power": 3, "toughness": 3 } },
+                    { "SetCreatureTypes": ["Human", "Warrior"] }
+                  ],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{2}{W/B}{W/B}",
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": ["This", { "Subtype": "Warrior" }] },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": "This",
+                        "mods": [
+                          { "SetCreatureTypes": ["Human", "Warrior", "Spirit"] },
+                          { "AddKeyword": "Trample" },
+                          { "AddKeyword": "Lifelink" }
+                        ],
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{3}{W/B}{W/B}{W/B}",
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": ["This", { "Subtype": "Spirit" }] },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "PutCounters": { "on": "This", "counter": "+1/+1", "count": 5 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

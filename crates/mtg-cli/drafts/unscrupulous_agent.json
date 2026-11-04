@@ -10,11 +10,17 @@
         {
           "Triggered": {
             "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
-            "targets": [
-              { "what": "Opponent" },
-              { "what": { "Object": [{ "In": "Hand" }, { "OwnedBy": { "Target": 0 } }] } }
-            ],
-            "effects": [{ "Exile": { "what": { "Target": 1 } } }]
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Choose": {
+                  "who": { "Target": 0 },
+                  "from": { "Each": [{ "In": "Hand" }, { "OwnedBy": { "Target": 0 } }] },
+                  "as": "picked"
+                }
+              },
+              { "Exile": { "what": { "Bound": "picked" } } }
+            ]
           }
         }
       ]

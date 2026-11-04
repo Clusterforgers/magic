@@ -1,7 +1,7 @@
 {
   "oracle_id": "e11a022c-140d-4b7f-84b0-17885f76faa6",
   "name": "Euroakus",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Euroakus",
@@ -35,9 +35,29 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 139, "end": 256 }
+          "Activated": {
+            "cost": "{4}{U}{G}",
+            "effects": [
+              {
+                "Draw": {
+                  "count": { "Count": [{ "Subtype": "Wizard" }, { "ControlledBy": "You" }] }
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Subtype": "Wizard" }, { "ControlledBy": "You" }] },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
+                        "toughness": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
           }
         }
       ]

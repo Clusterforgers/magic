@@ -1,0 +1,34 @@
+{
+  "oracle_id": "e02e7239-304b-4755-b913-bb65bc693e86",
+  "name": "Ghastly Demise",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ghastly Demise",
+      "oracle_fingerprint": "64e539044f9248a6e288365981baa609",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "Not": { "Color": "Black" } }] } }
+            ],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Stat": { "of": { "Target": 0 }, "stat": "Toughness" } },
+                      "op": "Le",
+                      "right": { "Count": [{ "OwnedBy": "You" }, { "In": "Graveyard" }] }
+                    }
+                  },
+                  "then": [{ "Destroy": { "what": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

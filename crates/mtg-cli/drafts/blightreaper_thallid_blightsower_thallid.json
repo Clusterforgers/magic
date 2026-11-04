@@ -1,0 +1,52 @@
+{
+  "oracle_id": "ea405cb4-a21b-4a26-98f3-251e65ea2aef",
+  "name": "Blightreaper Thallid // Blightsower Thallid",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Blightreaper Thallid",
+      "oracle_fingerprint": "cc798b85e10b96dacfee7cfd2ce9363a",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{3}{G/P}",
+            "timing": "Sorcery",
+            "effects": [{ "Transform": { "what": "This" } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Blightsower Thallid",
+      "oracle_fingerprint": "7dbecab5d1188bf3de7edc59b56c02d4",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "Did": { "action": "Transformed", "what": ["This"] } },
+                { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } }
+              ]
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Phyrexian Saproling",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Phyrexian", "Saproling"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

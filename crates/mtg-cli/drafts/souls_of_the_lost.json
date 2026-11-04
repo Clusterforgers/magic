@@ -8,6 +8,12 @@
       "oracle_fingerprint": "7decc939eb2c1516d13025573cc81765",
       "abilities": [
         {
+          "AdditionalCost": {
+            "cost": [{ "OneOf": [[{ "Discard": {} }], [{ "Sacrifice": { "filter": [] } }]] }],
+            "required": true
+          }
+        },
+        {
           "Static": {
             "affected": "This",
             "mods": [
@@ -45,55 +51,6 @@
                             ]
                           },
                           { "In": "Graveyard" }
-                        ]
-                      },
-                      1
-                    ]
-                  }
-                }
-              }
-            ],
-            "defining": true
-          }
-        },
-        {
-          "Static": {
-            "affected": "This",
-            "mods": [
-              {
-                "SetPT": {
-                  "power": {
-                    "Count": [
-                      {
-                        "AnyOf": [
-                          { "Type": "Artifact" },
-                          { "Type": "Battle" },
-                          { "Type": "Creature" },
-                          { "Type": "Enchantment" },
-                          { "Type": "Land" },
-                          { "Type": "Planeswalker" }
-                        ]
-                      },
-                      { "In": "Graveyard" },
-                      { "OwnedBy": "You" }
-                    ]
-                  },
-                  "toughness": {
-                    "Sum": [
-                      {
-                        "Count": [
-                          {
-                            "AnyOf": [
-                              { "Type": "Artifact" },
-                              { "Type": "Battle" },
-                              { "Type": "Creature" },
-                              { "Type": "Enchantment" },
-                              { "Type": "Land" },
-                              { "Type": "Planeswalker" }
-                            ]
-                          },
-                          { "In": "Graveyard" },
-                          { "OwnedBy": "You" }
                         ]
                       },
                       1

@@ -1,16 +1,43 @@
 {
   "oracle_id": "a6375c5b-ec78-4ee8-b681-8d92797a5b43",
   "name": "Bloodsworn Squire // Bloodsworn Knight",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Bloodsworn Squire",
       "oracle_fingerprint": "972e9e513bf3c476ff84806f93ef9e6d",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 0, "end": 233 }
+          "Activated": {
+            "cost": [{ "Mana": "{1}{B}" }, { "Discard": {} }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddKeyword": "Indestructible" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Tap": { "what": "This" } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Count": [
+                          { "Type": "Creature" },
+                          { "OwnedBy": "You" },
+                          { "In": "Graveyard" }
+                        ]
+                      },
+                      "op": "Ge",
+                      "right": 4
+                    }
+                  },
+                  "then": [{ "Transform": { "what": "This" } }]
+                }
+              }
+            ]
           }
         }
       ]

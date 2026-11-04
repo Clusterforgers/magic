@@ -1,0 +1,27 @@
+{
+  "oracle_id": "aad9f9f2-4c6b-48d0-80bd-77b73a9ea5f1",
+  "name": "Judgment Bolt",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Judgment Bolt",
+      "oracle_fingerprint": "3fe5797c602716a5c6aa1d59c17e05af",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 5 } },
+              {
+                "DealDamage": {
+                  "to": { "ControllerOf": { "Target": 0 } },
+                  "amount": { "Count": [{ "Subtype": "Equipment" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

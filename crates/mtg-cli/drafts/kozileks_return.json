@@ -1,0 +1,46 @@
+{
+  "oracle_id": "6caafe5a-884d-49e8-a62a-7bf609f0ce53",
+  "name": "Kozilek's Return",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kozilek's Return",
+      "oracle_fingerprint": "ffd1c42ff0e677aebef0a5a2357962cb",
+      "abilities": [
+        { "Keyword": "Devoid" },
+        {
+          "Spell": {
+            "effects": [
+              { "DealDamage": { "to": { "Each": [{ "Type": "Creature" }] }, "amount": 2 } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "Subtype": "Eldrazi" },
+                  { "Compare": { "stat": "ManaValue", "op": "Ge", "to": 7 } },
+                  { "ControlledBy": "You" }
+                ]
+              }
+            },
+            "from": "Graveyard",
+            "effects": [
+              {
+                "Pay": {
+                  "cost": ["ExileSelf"],
+                  "paid": [
+                    { "DealDamage": { "to": { "Each": [{ "Type": "Creature" }] }, "amount": 5 } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

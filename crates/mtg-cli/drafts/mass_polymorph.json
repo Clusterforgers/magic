@@ -1,0 +1,56 @@
+{
+  "oracle_id": "b133129d-1ffb-4b78-9f5b-852d163cc9b7",
+  "name": "Mass Polymorph",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mass Polymorph",
+      "oracle_fingerprint": "09b807b21b73f741c8991ecd49a41af6",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Exile": {
+                  "what": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "as": "exiled"
+                }
+              },
+              {
+                "RevealUntil": {
+                  "filter": [{ "Type": "Creature" }, { "OwnedBy": "You" }],
+                  "count": {
+                    "Count": [
+                      { "Is": { "Bound": "exiled" } },
+                      {
+                        "AnyOf": [
+                          { "In": "Battlefield" },
+                          { "In": "Hand" },
+                          { "In": "Library" },
+                          { "In": "Graveyard" },
+                          { "In": "Exile" },
+                          { "In": "Stack" }
+                        ]
+                      }
+                    ]
+                  },
+                  "as": "found2",
+                  "revealed_as": "revealed3"
+                }
+              },
+              { "Move": { "what": { "Bound": "found2" }, "to": { "Battlefield": {} } } },
+              {
+                "Move": {
+                  "what": { "Bound": "revealed3" },
+                  "to": { "Library": { "place": "Top" } }
+                }
+              },
+              { "Shuffle": {} },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

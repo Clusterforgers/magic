@@ -1,0 +1,24 @@
+{
+  "oracle_id": "2e41ae94-db31-4060-881b-a2f6d834c1ee",
+  "name": "Arachnoform",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Arachnoform",
+      "oracle_fingerprint": "36cc1481ff6759d38b71e67c87b06e74",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "ModifyPT": { "power": 2, "toughness": 2 } },
+              { "AddKeyword": "Reach" },
+              "AddAllCreatureTypes"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

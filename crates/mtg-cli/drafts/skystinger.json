@@ -1,0 +1,33 @@
+{
+  "oracle_id": "6bb7419b-e085-4616-8e5c-4ed08cb2b4c1",
+  "name": "Skystinger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Skystinger",
+      "oracle_fingerprint": "799f10ecfa51062d7ad309ae1d6afef6",
+      "abilities": [
+        { "Keyword": "Reach" },
+        {
+          "Triggered": {
+            "when": {
+              "BecomesBlocked": {
+                "what": [{ "Type": "Creature" }, { "HasKeyword": "Flying" }],
+                "by": ["This"]
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 5, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

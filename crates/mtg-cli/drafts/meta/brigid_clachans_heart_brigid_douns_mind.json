@@ -1,0 +1,85 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "Whenever this creature enters or transforms into CARDNAME, create a 1/1 green and white Kithkin creature token.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "Whenever this creature enters or transforms into CARDNAME, create a 1/1 green and white Kithkin creature token.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "At the beginning of your first main phase, you may pay {G}. If you do, transform NICKNAME.",
+      "abilities": [
+        1
+      ],
+      "gap": null
+    },
+    {
+      "face": 1,
+      "tag": "A",
+      "text": "Add X {G} or X {W}, where X is the number of other creatures you control.",
+      "abilities": [],
+      "gap": "key:Mana.Each"
+    },
+    {
+      "face": 1,
+      "tag": "T",
+      "text": "At the beginning of your first main phase, you may pay {W}. If you do, transform NICKNAME.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 126
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 127,
+          "end": 215
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 1,
+        "span": {
+          "start": 0,
+          "end": 78
+        },
+        "mark": "ByHand"
+      },
+      {
+        "face": 1,
+        "span": {
+          "start": 79,
+          "end": 167
+        },
+        "mark": "Auto"
+      }
+    ]
+  }
+}

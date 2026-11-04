@@ -1,0 +1,57 @@
+{
+  "oracle_id": "a8225b2e-62bf-45b7-b573-e3ce301a1eab",
+  "name": "Infernal Phantom",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Infernal Phantom",
+      "oracle_fingerprint": "c7e3fb5e52cfed7fbbf71aa550758fd5",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                {
+                  "ZoneChange": {
+                    "what": [{ "Type": "Enchantment" }, { "ControlledBy": "You" }],
+                    "to": "Battlefield"
+                  }
+                },
+                {
+                  "Did": {
+                    "action": "FullyUnlocked",
+                    "who": "You",
+                    "what": [{ "Subtype": "Room" }]
+                  }
+                }
+              ]
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": { "Stat": { "of": "This", "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

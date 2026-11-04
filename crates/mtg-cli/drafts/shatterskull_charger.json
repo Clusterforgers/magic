@@ -1,7 +1,7 @@
 {
   "oracle_id": "571f9d80-9c37-474e-9524-400e7a238e2c",
   "name": "Shatterskull Charger",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Shatterskull Charger",
@@ -18,9 +18,16 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 93, "end": 211 }
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": ["This", { "Not": { "HasCounter": "+1/+1" } }] },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "Move": { "what": "This", "to": "Hand" } }]
           }
         }
       ]

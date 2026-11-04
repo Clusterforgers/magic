@@ -1,0 +1,33 @@
+{
+  "oracle_id": "0ddb3fa0-447c-40c5-928a-541f3d543014",
+  "name": "Netcaster Spider",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Netcaster Spider",
+      "oracle_fingerprint": "d23991d99918e6e469680b3e2537cde2",
+      "abilities": [
+        { "Keyword": "Reach" },
+        {
+          "Triggered": {
+            "when": {
+              "BecomesBlocked": {
+                "what": [{ "Type": "Creature" }, { "HasKeyword": "Flying" }],
+                "by": ["This"]
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

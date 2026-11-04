@@ -1,0 +1,31 @@
+{
+  "oracle_id": "321b5cc6-8df6-4292-97a0-a6a3a22f3b55",
+  "name": "Twinflame Tyrant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Twinflame Tyrant",
+      "oracle_fingerprint": "8375c63906c3e44a0605fd4c9921c464",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Replacement": {
+            "when": { "Damage": { "to": "Opponents", "source": [{ "ControlledBy": "You" }] } },
+            "by": { "Multiply": 2 }
+          }
+        },
+        {
+          "Replacement": {
+            "when": {
+              "Damage": {
+                "to": { "Each": [{ "ControlledBy": "Opponents" }] },
+                "source": [{ "ControlledBy": "You" }]
+              }
+            },
+            "by": { "Multiply": 2 }
+          }
+        }
+      ]
+    }
+  ]
+}

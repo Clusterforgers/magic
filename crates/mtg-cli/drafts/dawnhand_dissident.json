@@ -1,0 +1,35 @@
+{
+  "oracle_id": "2cabf7a4-17af-45c7-b314-a84f5dc0d070",
+  "name": "Dawnhand Dissident",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dawnhand Dissident",
+      "oracle_fingerprint": "c355469f64cd51fd30399682aafed31b",
+      "abilities": [
+        { "Activated": { "cost": ["Tap", { "Blight": 1 }], "effects": [{ "Surveil": {} }] } },
+        {
+          "Activated": {
+            "cost": ["Tap", { "Blight": 2 }],
+            "targets": [{ "what": { "Object": [{ "In": "Graveyard" }] } }],
+            "effects": [{ "Exile": { "what": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": {
+                "what": [{ "Type": "Creature" }, { "ExiledWith": "This" }],
+                "from": "Exile",
+                "additional": [
+                  { "RemoveCountersAmong": { "count": 3, "from": [{ "Type": "Creature" }] } }
+                ]
+              }
+            },
+            "condition": "YourTurn"
+          }
+        }
+      ]
+    }
+  ]
+}

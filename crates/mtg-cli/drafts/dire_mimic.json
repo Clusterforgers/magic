@@ -1,0 +1,39 @@
+{
+  "oracle_id": "b657b3df-9287-44cf-a1cd-a80ead71a553",
+  "name": "Dire Mimic",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dire Mimic",
+      "oracle_fingerprint": "aa5ebee6e196eac3386e2eb217d3eae1",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Activated": {
+            "cost": ["Tap", "SacrificeSelf"],
+            "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{3}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "SetPT": { "power": 5, "toughness": 5 } },
+                    { "SetCreatureTypes": ["Shapeshifter"] },
+                    { "AddType": "Artifact" },
+                    { "AddType": "Creature" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

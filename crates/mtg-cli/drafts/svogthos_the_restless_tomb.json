@@ -1,0 +1,65 @@
+{
+  "oracle_id": "a34a70b8-02e5-4e8c-a9e7-b21c5a11dddf",
+  "name": "Svogthos, the Restless Tomb",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Svogthos, the Restless Tomb",
+      "oracle_fingerprint": "15057f171d381a2c6ed0f37f93cf603b",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{3}{B}{G}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "SetColors": ["Black", "Green"] },
+                    { "AddSubtype": "Zombie" },
+                    { "AddSubtype": "Plant" },
+                    { "AddType": "Creature" },
+                    {
+                      "GrantAbility": {
+                        "Static": {
+                          "affected": "This",
+                          "mods": [
+                            {
+                              "SetPT": {
+                                "power": {
+                                  "Count": [
+                                    { "Type": "Creature" },
+                                    { "OwnedBy": "You" },
+                                    { "In": "Graveyard" }
+                                  ]
+                                },
+                                "toughness": {
+                                  "Count": [
+                                    { "Type": "Creature" },
+                                    { "OwnedBy": "You" },
+                                    { "In": "Graveyard" }
+                                  ]
+                                }
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

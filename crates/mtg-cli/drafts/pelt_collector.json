@@ -69,10 +69,9 @@
             "affected": "This",
             "mods": [{ "AddKeyword": "Trample" }],
             "condition": {
-              "Compare": {
-                "left": { "Counters": { "on": "This", "counter": "+1/+1" } },
-                "op": "Ge",
-                "right": 3
+              "Matches": {
+                "subject": "This",
+                "selector": [{ "CounterCount": { "kind": "+1/+1", "op": "Ge", "to": 3 } }]
               }
             }
           }

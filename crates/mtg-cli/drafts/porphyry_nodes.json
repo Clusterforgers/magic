@@ -1,7 +1,7 @@
 {
   "oracle_id": "7cfeb732-8a35-4a1f-a417-11db4c1499fd",
   "name": "Porphyry Nodes",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Porphyry Nodes",
@@ -28,9 +28,19 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 176, "end": 251 }
+          "Triggered": {
+            "when": {
+              "State": {
+                "condition": {
+                  "Compare": {
+                    "left": { "Count": [{ "Type": "Creature" }] },
+                    "op": "Eq",
+                    "right": 0
+                  }
+                }
+              }
+            },
+            "effects": [{ "Sacrifice": { "filter": ["This"] } }]
           }
         }
       ]

@@ -1,0 +1,49 @@
+{
+  "oracle_id": "ea152809-85a2-4fde-8251-3b1f267e4443",
+  "name": "Lord of the Pit",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lord of the Pit",
+      "oracle_fingerprint": "a92769cd9e96177d329d5abd954805ea",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              { "Sacrifice": { "filter": [{ "Type": "Creature" }, "Other"], "as": "sacrificed" } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Count": [
+                          { "Is": { "Bound": "sacrificed" } },
+                          {
+                            "AnyOf": [
+                              { "In": "Battlefield" },
+                              { "In": "Hand" },
+                              { "In": "Library" },
+                              { "In": "Graveyard" },
+                              { "In": "Exile" },
+                              { "In": "Stack" }
+                            ]
+                          }
+                        ]
+                      },
+                      "op": "Lt",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "DealDamage": { "to": "You", "amount": 7 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

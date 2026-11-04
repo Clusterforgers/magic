@@ -53,44 +53,50 @@
         {
           "Triggered": {
             "when": { "StepBegins": { "step": "End" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    "This",
+                    { "CounterCount": { "kind": { "Other": "quest" }, "op": "Ge", "to": 3 } }
+                  ]
+                },
+                "op": "Eq",
+                "right": 1
+              }
+            },
             "effects": [
               {
-                "If": {
-                  "condition": {
-                    "Compare": {
-                      "left": { "Counters": { "on": "This", "counter": { "Other": "quest" } } },
-                      "op": "Ge",
-                      "right": 3
-                    }
-                  },
-                  "then": [
+                "May": {
+                  "effects": [
                     {
-                      "May": {
-                        "effects": [
-                          {
-                            "Choose": {
-                              "from": {
-                                "Each": [
-                                  { "In": "Hand" },
-                                  { "OwnedBy": "You" },
-                                  { "Type": "Creature" },
-                                  {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            {
+                              "AnyOf": [
+                                { "Subtype": "Kraken" },
+                                { "Subtype": "Leviathan" },
+                                { "Subtype": "Octopus" },
+                                {
+                                  "Not": {
                                     "AnyOf": [
-                                      { "Subtype": "Kraken" },
-                                      { "Subtype": "Leviathan" },
-                                      { "Subtype": "Octopus" },
-                                      { "Subtype": "Serpent" }
+                                      { "Not": { "Type": "Creature" } },
+                                      { "Not": { "Subtype": "Serpent" } }
                                     ]
                                   }
-                                ]
-                              },
-                              "as": "card"
-                            }
-                          },
-                          { "Move": { "what": { "Bound": "card" }, "to": { "Battlefield": {} } } }
-                        ]
+                                }
+                              ]
+                            },
+                            { "In": "Hand" },
+                            { "OwnedBy": "You" }
+                          ]
+                        },
+                        "count": { "min": 0, "max": 1 },
+                        "as": "picked"
                       }
-                    }
+                    },
+                    { "Move": { "what": { "Bound": "picked" }, "to": { "Battlefield": {} } } }
                   ]
                 }
               }

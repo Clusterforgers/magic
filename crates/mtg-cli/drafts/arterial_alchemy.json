@@ -1,0 +1,43 @@
+{
+  "oracle_id": "dfc982a2-9ae8-4206-a2d7-4dcfcde02451",
+  "name": "Arterial Alchemy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Arterial Alchemy",
+      "oracle_fingerprint": "9eb8f7a28a6d59897dfeda2ab90e3fc9",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": { "Named": "blood" },
+                  "count": { "Players": "Opponents" }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Blood" }, "Token", { "ControlledBy": "You" }] },
+            "mods": [
+              { "AddKeyword": { "Equip": "{2}" } },
+              { "AddSubtype": "Equipment" },
+              {
+                "GrantAbility": {
+                  "Static": {
+                    "affected": "Attached",
+                    "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

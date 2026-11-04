@@ -1,0 +1,40 @@
+{
+  "oracle_id": "fbf074b2-d650-43b2-b8b8-d7a778dfd27e",
+  "name": "Jokulmorder",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jokulmorder",
+      "oracle_fingerprint": "0986a2fd009e6263912e8f156a503a2a",
+      "abilities": [
+        { "Keyword": "Trample" },
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "Sacrifice": { "filter": [{ "Type": "Land" }], "count": 5 } }],
+                  "unpaid": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              }
+            ]
+          }
+        },
+        { "Static": { "affected": "This", "mods": ["DoesntUntap"] } },
+        {
+          "Triggered": {
+            "when": {
+              "Did": {
+                "action": "PlayedLand",
+                "what": [{ "Subtype": "Island" }, { "ControlledBy": "You" }]
+              }
+            },
+            "effects": [{ "May": { "effects": [{ "Untap": { "what": "This" } }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

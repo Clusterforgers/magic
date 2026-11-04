@@ -1,7 +1,7 @@
 {
   "oracle_id": "713bcfb6-e5ea-411e-b4b3-52e5eed5cdf1",
   "name": "Sanctuary Warden",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Sanctuary Warden",
@@ -15,9 +15,43 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 60, "end": 251 }
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "Attacks": { "what": ["This"] } }
+              ]
+            },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [
+                    {
+                      "RemoveCountersAmong": {
+                        "from": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }]
+                      }
+                    }
+                  ],
+                  "paid": [
+                    { "Draw": {} },
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Citizen",
+                            "colors": ["Green", "White"],
+                            "types": ["Creature"],
+                            "subtypes": ["Citizen"],
+                            "power": 1,
+                            "toughness": 1
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

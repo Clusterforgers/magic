@@ -1,14 +1,22 @@
 {
   "oracle_id": "4d01b62b-b924-4da5-8ff5-b2f29d7f19b2",
   "name": "Ticket Booth // Tunnel of Hate",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Ticket Booth",
       "oracle_fingerprint": "6505eb42f9c3d47b630481de75bd1989",
       "abilities": [
         {
-          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 0, "end": 42 } }
+          "Triggered": {
+            "when": { "DoorUnlocked": { "who": "You", "door": 0 } },
+            "effects": [
+              { "LookAtTop": { "count": 2, "as": "looked" } },
+              { "Choose": { "from": { "Bound": "looked" }, "as": "kept2", "rest_as": "rest3" } },
+              { "Move": { "what": { "Bound": "rest3" }, "to": "Graveyard" } },
+              { "Manifest": {} }
+            ]
+          }
         }
       ]
     },

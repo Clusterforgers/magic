@@ -1,0 +1,138 @@
+{
+  "object": "card",
+  "id": "42ebea93-14ba-4405-84a2-95e51a777ed5",
+  "oracle_id": "cc5e3a21-4911-49f8-8e3c-ab23812c4004",
+  "multiverse_ids": [
+    612132
+  ],
+  "mtgo_id": 111390,
+  "tcgplayer_id": 491516,
+  "cardmarket_id": 705455,
+  "name": "Vulpine Harvester",
+  "lang": "en",
+  "released_at": "2023-04-21",
+  "uri": "https://api.scryfall.com/cards/42ebea93-14ba-4405-84a2-95e51a777ed5",
+  "scryfall_uri": "https://scryfall.com/card/moc/19/vulpine-harvester?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T04:34:48Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/4/2/42ebea93-14ba-4405-84a2-95e51a777ed5.jpg?1783917288",
+    "normal": "https://cards.scryfall.io/normal/front/4/2/42ebea93-14ba-4405-84a2-95e51a777ed5.jpg?1783917288",
+    "large": "https://cards.scryfall.io/large/front/4/2/42ebea93-14ba-4405-84a2-95e51a777ed5.jpg?1783917288",
+    "png": "https://cards.scryfall.io/png/front/4/2/42ebea93-14ba-4405-84a2-95e51a777ed5.png?1783917288",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/4/2/42ebea93-14ba-4405-84a2-95e51a777ed5.jpg?1783917288",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/4/2/42ebea93-14ba-4405-84a2-95e51a777ed5.jpg?1783917288",
+    "thumb": "https://cards.scryfall.io/thumb/front/4/2/42ebea93-14ba-4405-84a2-95e51a777ed5.webp?1783917288",
+    "grid": "https://cards.scryfall.io/grid/front/4/2/42ebea93-14ba-4405-84a2-95e51a777ed5.webp?1783917288",
+    "display": "https://cards.scryfall.io/display/front/4/2/42ebea93-14ba-4405-84a2-95e51a777ed5.webp?1783917288",
+    "art": "https://cards.scryfall.io/art/front/4/2/42ebea93-14ba-4405-84a2-95e51a777ed5.webp?1783917288",
+    "crop": "https://cards.scryfall.io/crop/front/4/2/42ebea93-14ba-4405-84a2-95e51a777ed5.webp?1783917288",
+    "jpeg": "https://cards.scryfall.io/normal/front/4/2/42ebea93-14ba-4405-84a2-95e51a777ed5.jpg?1783917288"
+  },
+  "mana_cost": "{3}{W}",
+  "cmc": 4.0,
+  "type_line": "Creature — Phyrexian Fox",
+  "oracle_text": "Whenever one or more Phyrexians you control attack, return target artifact card from your graveyard to the battlefield if its mana value is less than or equal to their total power.",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "6bba5de9-5afb-42af-a7eb-24ac854bf671",
+  "set": "moc",
+  "set_name": "March of the Machine Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/6bba5de9-5afb-42af-a7eb-24ac854bf671",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Amoc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/moc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/42ebea93-14ba-4405-84a2-95e51a777ed5/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Acc5e3a21-4911-49f8-8e3c-ab23812c4004&unique=prints",
+  "collector_number": "19",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "\"Fear the fox given strength to match its cunning.\"\n—Vivien Reid",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Brent Hollowell",
+  "artist_ids": [
+    "19d4900c-f5a1-4c08-b5e0-b8d7ba733ec2"
+  ],
+  "illustration_id": "592be3d4-a4bb-4b93-a46e-4d2b361c77d7",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 9717,
+  "preview": {
+    "source": "MTGGoldfish",
+    "source_uri": "https://www.youtube.com/watch?v=1b333PG4_KQ",
+    "previewed_at": "2023-04-04"
+  },
+  "prices": {
+    "usd": "0.41",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.32",
+    "eur_foil": null,
+    "tix": "0.38"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=612132&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DVulpine%2BHarvester",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DVulpine%2BHarvester",
+    "edhrec": "https://edhrec.com/route/?cc=Vulpine+Harvester"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F491516%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=705455&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/111390?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

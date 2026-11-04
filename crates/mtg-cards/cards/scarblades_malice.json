@@ -1,0 +1,57 @@
+{
+  "oracle_id": "66d57851-2844-4b9d-be78-e90fc620b750",
+  "name": "Scarblade's Malice",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Scarblade's Malice",
+      "oracle_fingerprint": "9bb0650806e88ccc942dba9e9a15cec9",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Deathtouch" }, { "AddKeyword": "Lifelink" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "ZoneChange": {
+                      "what": [{ "Is": { "Target": 0 } }],
+                      "from": "Battlefield",
+                      "to": "Graveyard"
+                    }
+                  },
+                  "this_turn": true,
+                  "effects": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Elf",
+                            "colors": ["Black", "Green"],
+                            "types": ["Creature"],
+                            "subtypes": ["Elf"],
+                            "power": 2,
+                            "toughness": 2
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

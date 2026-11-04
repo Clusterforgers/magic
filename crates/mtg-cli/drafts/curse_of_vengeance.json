@@ -1,0 +1,37 @@
+{
+  "oracle_id": "b9b1c644-041a-4b61-9d6d-bc73a3a95bb8",
+  "name": "Curse of Vengeance",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Curse of Vengeance",
+      "oracle_fingerprint": "79e9b3e43b5bbe65600de9cee5277763",
+      "abilities": [
+        { "Keyword": { "EnchantPlayer": {} } },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "by": "AttachedPlayer" } },
+            "effects": [{ "PutCounters": { "on": "This", "counter": { "Other": "spite" } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Did": { "action": "LostGame", "who": "AttachedPlayer" } },
+            "effects": [
+              {
+                "GainLife": {
+                  "amount": { "Counters": { "on": "This", "counter": { "Other": "spite" } } }
+                }
+              },
+              {
+                "Draw": {
+                  "count": { "Counters": { "on": "This", "counter": { "Other": "spite" } } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

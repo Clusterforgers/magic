@@ -1,0 +1,32 @@
+{
+  "oracle_id": "2de138b0-3159-4a0c-a474-a4e5600b2e51",
+  "name": "Festival of Embers",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Festival of Embers",
+      "oracle_fingerprint": "4b7b00d1479517015956759e26a3c54a",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": {
+                "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                "from": "Graveyard",
+                "additional": [{ "PayLife": 1 }]
+              }
+            },
+            "condition": "YourTurn"
+          }
+        },
+        {
+          "Replacement": {
+            "when": { "ZoneChange": { "what": [{ "OwnedBy": "You" }], "to": "Graveyard" } },
+            "by": { "MoveTo": "Exile" }
+          }
+        },
+        { "Activated": { "cost": "{1}{R}", "effects": [{ "Sacrifice": { "filter": ["This"] } }] } }
+      ]
+    }
+  ]
+}

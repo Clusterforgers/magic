@@ -1,7 +1,7 @@
 {
   "oracle_id": "1ba45691-417b-4e6a-be45-6027e4f04599",
   "name": "Illusory Gains",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Illusory Gains",
@@ -10,9 +10,14 @@
         { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
         { "Static": { "affected": "Attached", "mods": [{ "SetController": "You" }] } },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 49, "end": 132 }
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [{ "Attach": { "what": "This", "to": "Triggering" } }]
           }
         }
       ]

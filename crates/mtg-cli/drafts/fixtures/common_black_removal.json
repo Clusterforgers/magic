@@ -1,0 +1,133 @@
+{
+  "object": "card",
+  "id": "44ba16ca-bc75-4d7b-9f40-547ff76ac02b",
+  "oracle_id": "f64eff0e-dda7-457b-adf9-aa4e537f4f58",
+  "multiverse_ids": [
+    677599
+  ],
+  "tcgplayer_id": 563998,
+  "cardmarket_id": 783789,
+  "name": "Common Black Removal",
+  "lang": "en",
+  "released_at": "2024-08-02",
+  "uri": "https://api.scryfall.com/cards/44ba16ca-bc75-4d7b-9f40-547ff76ac02b",
+  "scryfall_uri": "https://scryfall.com/card/mb2/543/common-black-removal?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T02:42:07Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/4/4/44ba16ca-bc75-4d7b-9f40-547ff76ac02b.jpg?1783910527",
+    "normal": "https://cards.scryfall.io/normal/front/4/4/44ba16ca-bc75-4d7b-9f40-547ff76ac02b.jpg?1783910527",
+    "large": "https://cards.scryfall.io/large/front/4/4/44ba16ca-bc75-4d7b-9f40-547ff76ac02b.jpg?1783910527",
+    "png": "https://cards.scryfall.io/png/front/4/4/44ba16ca-bc75-4d7b-9f40-547ff76ac02b.png?1783910527",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/4/4/44ba16ca-bc75-4d7b-9f40-547ff76ac02b.jpg?1783910527",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/4/4/44ba16ca-bc75-4d7b-9f40-547ff76ac02b.jpg?1783910527",
+    "thumb": "https://cards.scryfall.io/thumb/front/4/4/44ba16ca-bc75-4d7b-9f40-547ff76ac02b.webp?1783910527",
+    "grid": "https://cards.scryfall.io/grid/front/4/4/44ba16ca-bc75-4d7b-9f40-547ff76ac02b.webp?1783910527",
+    "display": "https://cards.scryfall.io/display/front/4/4/44ba16ca-bc75-4d7b-9f40-547ff76ac02b.webp?1783910527",
+    "art": "https://cards.scryfall.io/art/front/4/4/44ba16ca-bc75-4d7b-9f40-547ff76ac02b.webp?1783910527",
+    "crop": "https://cards.scryfall.io/crop/front/4/4/44ba16ca-bc75-4d7b-9f40-547ff76ac02b.webp?1783910527",
+    "jpeg": "https://cards.scryfall.io/normal/front/4/4/44ba16ca-bc75-4d7b-9f40-547ff76ac02b.jpg?1783910527"
+  },
+  "mana_cost": "{2}{B}{B}",
+  "cmc": 4.0,
+  "type_line": "Instant",
+  "oracle_text": "Choose one. Destroy target creature, then —\n• Create a Food token.\n• Create a Treasure token.\n• Put a menace counter on a creature you control.\n• That creature's controller mills cards equal to its power.",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Treasure",
+    "Food",
+    "Mill"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "not_legal",
+    "pauper": "not_legal",
+    "vintage": "not_legal",
+    "penny": "not_legal",
+    "commander": "not_legal",
+    "oathbreaker": "not_legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "not_legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "1e6879fe-2f29-4ad7-8d42-7f5bfb469f4a",
+  "set": "mb2",
+  "set_name": "Mystery Booster 2",
+  "set_type": "masters",
+  "set_uri": "https://api.scryfall.com/sets/1e6879fe-2f29-4ad7-8d42-7f5bfb469f4a",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Amb2&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/mb2?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/44ba16ca-bc75-4d7b-9f40-547ff76ac02b/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Af64eff0e-dda7-457b-adf9-aa4e537f4f58&unique=prints",
+  "collector_number": "543",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Michelle Esposito",
+  "artist_ids": [
+    "72a67dca-01b7-4f85-abda-5f3ec2a4814f"
+  ],
+  "illustration_id": "3557d93c-bab5-40db-bf1b-009600907c5d",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "playtest"
+  ],
+  "prices": {
+    "usd": "0.18",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.23",
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=677599&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DCommon%2BBlack%2BRemoval",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DCommon%2BBlack%2BRemoval",
+    "edhrec": "https://edhrec.com/route/?cc=Common+Black+Removal"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F563998%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=783789&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Common+Black+Removal&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

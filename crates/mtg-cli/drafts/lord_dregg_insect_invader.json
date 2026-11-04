@@ -1,0 +1,49 @@
+{
+  "oracle_id": "2db77e35-a54a-4e9c-8081-c97822515879",
+  "name": "Lord Dregg, Insect Invader",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lord Dregg, Insect Invader",
+      "oracle_fingerprint": "7b25b3e09480a3b038287f839fba1ccf",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "PermanentsLeftUnder" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Insect Warrior",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Insect", "Warrior"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}{G}" }, { "Sacrifice": { "filter": ["Token"] } }],
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

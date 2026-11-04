@@ -1,0 +1,31 @@
+{
+  "oracle_id": "5f657279-cc0f-4431-b517-47bd1c7109b6",
+  "name": "High Alert",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "High Alert",
+      "oracle_fingerprint": "5d15c4fbb5ebc27aa9b6d85eccf98faa",
+      "abilities": [
+        { "Rule": { "rule": { "ToughnessAssignsDamage": "You" } } },
+        {
+          "Rule": {
+            "rule": {
+              "Combat": {
+                "who": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                "quirk": "AttackDespiteDefender"
+              }
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{2}{W}{U}",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "Untap": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

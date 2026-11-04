@@ -1,7 +1,7 @@
 {
   "oracle_id": "606f3a9f-148a-4cd5-b364-376857d4e195",
   "name": "Solitary Defiance",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Solitary Defiance",
@@ -21,9 +21,14 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 87, "end": 178 }
+          "Triggered": {
+            "when": {
+              "AttacksAlone": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+            },
+            "effects": [
+              { "Seek": { "filter": [{ "Not": { "Type": "Land" } }], "count": 2 } },
+              { "Discard": {} }
+            ]
           }
         }
       ]

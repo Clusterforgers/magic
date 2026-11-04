@@ -1,0 +1,51 @@
+{
+  "oracle_id": "3bc12623-3852-42f0-b458-5c67fe1b7a07",
+  "name": "Fork in the Road",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fork in the Road",
+      "oracle_fingerprint": "f64a6bc4e9fc28209ca3470b4fab84bc",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Search": {
+                  "filter": [{ "Type": "Land" }, { "Supertype": "Basic" }],
+                  "count": { "min": 0, "max": 2 },
+                  "reveal": true,
+                  "as": "found"
+                }
+              },
+              {
+                "Search": {
+                  "filter": [
+                    { "Type": "Land" },
+                    { "Supertype": "Basic" },
+                    { "Is": { "Bound": "found" } }
+                  ],
+                  "reveal": true,
+                  "as": "found2"
+                }
+              },
+              { "Move": { "what": { "Bound": "found2" }, "to": "Hand" } },
+              {
+                "Search": {
+                  "filter": [
+                    { "Type": "Land" },
+                    { "Supertype": "Basic" },
+                    { "Is": { "Bound": "found" } }
+                  ],
+                  "as": "found3"
+                }
+              },
+              { "Move": { "what": { "Bound": "found3" }, "to": "Graveyard" } },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

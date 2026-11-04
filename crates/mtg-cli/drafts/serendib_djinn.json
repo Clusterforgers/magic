@@ -1,7 +1,7 @@
 {
   "oracle_id": "683e7135-de54-49c8-a978-4f84628a6a91",
   "name": "Serendib Djinn",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Serendib Djinn",
@@ -30,9 +30,19 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 132, "end": 183 }
+          "Triggered": {
+            "when": {
+              "State": {
+                "condition": {
+                  "Compare": {
+                    "left": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] },
+                    "op": "Eq",
+                    "right": 0
+                  }
+                }
+              }
+            },
+            "effects": [{ "Sacrifice": { "filter": ["This"] } }]
           }
         }
       ]

@@ -1,0 +1,48 @@
+{
+  "oracle_id": "9d5f712a-d46c-4d7e-8fea-45fdadb458df",
+  "name": "Hedonist's Trove",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hedonist's Trove",
+      "oracle_fingerprint": "dcf5c9dfb3cfe4b53f0ae1252ccdbffd",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Exile": {
+                  "what": { "Each": [{ "In": "Graveyard" }, { "OwnedBy": { "Target": 0 } }] }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": {
+                "what": [{ "Type": "Land" }, { "ExiledWith": "This" }],
+                "from": "Exile",
+                "play": true
+              }
+            }
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": {
+                "what": [{ "Not": { "Type": "Land" } }, { "ExiledWith": "This" }],
+                "from": "Exile",
+                "once": true
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

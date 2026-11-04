@@ -1,0 +1,57 @@
+{
+  "oracle_id": "e0f0f290-c83f-4d97-9f5d-786c7136b0d1",
+  "name": "Maddening Cacophony",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Maddening Cacophony",
+      "oracle_fingerprint": "f06394c3041052d66d93ff93ea374da5",
+      "abilities": [
+        { "Keyword": { "Kicker": "{3}{U}" } },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "Opponents",
+                  "as": "each",
+                  "effects": [
+                    {
+                      "If": {
+                        "condition": { "Compare": { "left": "Kicks", "op": "Eq", "right": 0 } },
+                        "then": [{ "Mill": { "who": { "Bound": "each" }, "count": 8 } }]
+                      }
+                    },
+                    {
+                      "If": {
+                        "condition": "Kicked",
+                        "then": [
+                          {
+                            "Mill": {
+                              "who": { "Bound": "each" },
+                              "count": {
+                                "Half": {
+                                  "of": {
+                                    "Count": [
+                                      { "In": "Library" },
+                                      { "OwnedBy": { "Bound": "each" } }
+                                    ]
+                                  },
+                                  "up": true
+                                }
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

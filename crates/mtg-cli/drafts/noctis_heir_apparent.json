@@ -1,0 +1,41 @@
+{
+  "oracle_id": "7abe351e-0889-4fc1-91ae-8372bcd28acb",
+  "name": "Noctis, Heir Apparent",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Noctis, Heir Apparent",
+      "oracle_fingerprint": "a11db20f43a3607433fd0626dee09146",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "if": { "AtTrigger": "InCombat" },
+            "targets": [
+              { "what": { "Object": [{ "Subtype": "Equipment" }, { "ControlledBy": "You" }] } },
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "May": {
+                  "effects": [{ "Attach": { "what": { "Target": 0 }, "to": { "Target": 1 } } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 130, "end": 334 }
+          }
+        }
+      ]
+    }
+  ]
+}

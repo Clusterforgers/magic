@@ -1,0 +1,137 @@
+{
+  "object": "card",
+  "id": "7261bcea-27e0-417f-b3bf-7089c1e8bf1e",
+  "oracle_id": "832f96a4-0f4d-47bb-bc1c-3884e73feabc",
+  "multiverse_ids": [
+    45209
+  ],
+  "mtgo_id": 19413,
+  "mtgo_foil_id": 19414,
+  "tcgplayer_id": 11012,
+  "cardmarket_id": 688,
+  "name": "Sunweb",
+  "lang": "en",
+  "released_at": "2003-07-28",
+  "uri": "https://api.scryfall.com/cards/7261bcea-27e0-417f-b3bf-7089c1e8bf1e",
+  "scryfall_uri": "https://scryfall.com/card/8ed/52/sunweb?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T12:13:41Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/7/2/7261bcea-27e0-417f-b3bf-7089c1e8bf1e.jpg?1783944821",
+    "normal": "https://cards.scryfall.io/normal/front/7/2/7261bcea-27e0-417f-b3bf-7089c1e8bf1e.jpg?1783944821",
+    "large": "https://cards.scryfall.io/large/front/7/2/7261bcea-27e0-417f-b3bf-7089c1e8bf1e.jpg?1783944821",
+    "png": "https://cards.scryfall.io/png/front/7/2/7261bcea-27e0-417f-b3bf-7089c1e8bf1e.png?1783944821",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/7/2/7261bcea-27e0-417f-b3bf-7089c1e8bf1e.jpg?1783944821",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/7/2/7261bcea-27e0-417f-b3bf-7089c1e8bf1e.jpg?1783944821",
+    "thumb": "https://cards.scryfall.io/thumb/front/7/2/7261bcea-27e0-417f-b3bf-7089c1e8bf1e.webp?1783944821",
+    "grid": "https://cards.scryfall.io/grid/front/7/2/7261bcea-27e0-417f-b3bf-7089c1e8bf1e.webp?1783944821",
+    "display": "https://cards.scryfall.io/display/front/7/2/7261bcea-27e0-417f-b3bf-7089c1e8bf1e.webp?1783944821",
+    "art": "https://cards.scryfall.io/art/front/7/2/7261bcea-27e0-417f-b3bf-7089c1e8bf1e.webp?1783944821",
+    "crop": "https://cards.scryfall.io/crop/front/7/2/7261bcea-27e0-417f-b3bf-7089c1e8bf1e.webp?1783944821",
+    "jpeg": "https://cards.scryfall.io/normal/front/7/2/7261bcea-27e0-417f-b3bf-7089c1e8bf1e.jpg?1783944821"
+  },
+  "mana_cost": "{3}{W}",
+  "cmc": 4.0,
+  "type_line": "Creature — Wall",
+  "oracle_text": "Defender (This creature can't attack.)\nFlying\nThis creature can't block creatures with power 2 or less.",
+  "power": "5",
+  "toughness": "6",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Flying",
+    "Defender"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "cae8d29d-5979-4d8f-884d-7f3183bcc886",
+  "set": "8ed",
+  "set_name": "Eighth Edition",
+  "set_type": "core",
+  "set_uri": "https://api.scryfall.com/sets/cae8d29d-5979-4d8f-884d-7f3183bcc886",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3A8ed&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/8ed?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/7261bcea-27e0-417f-b3bf-7089c1e8bf1e/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A832f96a4-0f4d-47bb-bc1c-3884e73feabc&unique=prints",
+  "collector_number": "52",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "Sometimes the wings of fallen dragons refuse to give up the sky.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Greg Staples",
+  "artist_ids": [
+    "93d65564-bf00-447b-8406-e2031f03b6b1"
+  ],
+  "illustration_id": "30ce3591-592b-4e14-9788-df304d03bc04",
+  "border_color": "white",
+  "frame": "2003",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 25205,
+  "penny_rank": 16432,
+  "prices": {
+    "usd": "0.38",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.48",
+    "eur_foil": null,
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=45209&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DSunweb",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DSunweb",
+    "edhrec": "https://edhrec.com/route/?cc=Sunweb"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F11012%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=688&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/19413?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

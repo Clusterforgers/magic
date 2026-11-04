@@ -1,0 +1,44 @@
+{
+  "oracle_id": "36396a14-9d0b-4670-bf8a-5c346fdda197",
+  "name": "King Solomon's Frogs",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "King Solomon's Frogs",
+      "oracle_fingerprint": "58771de3cd40e01456ba9408a77aee8f",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": ["This", { "WasCast": { "by": "You" } }],
+                "to": "Battlefield"
+              }
+            },
+            "targets": [
+              {
+                "what": {
+                  "PerPlayer": {
+                    "players": "Opponents",
+                    "what": [{ "Compare": { "stat": "ManaValue", "op": "Ge", "to": 3 } }]
+                  }
+                }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              { "Draw": { "who": { "ControllerOf": { "Target": 0 } } } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}" }, "Tap", "ExileSelf"],
+            "effects": [{ "BecomeMonarch": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

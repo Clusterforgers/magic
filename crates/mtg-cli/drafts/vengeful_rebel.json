@@ -1,0 +1,37 @@
+{
+  "oracle_id": "273bf1a8-42a9-4db5-bd83-06db4cb5e5df",
+  "name": "Vengeful Rebel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vengeful Rebel",
+      "oracle_fingerprint": "c2e08c2dac97287fbbc64fc1a05cb10a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "PermanentsLeftUnder" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": -3, "toughness": -3 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

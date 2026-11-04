@@ -1,0 +1,61 @@
+{
+  "oracle_id": "016a6ec3-f4f6-4b47-9931-e0b14a25bd5e",
+  "name": "Giant's Amulet",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Giant's Amulet",
+      "oracle_fingerprint": "bd50053670f6aea625efb00f6e2030d6",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{3}{U}",
+                  "paid": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Giant Wizard",
+                            "colors": ["Blue"],
+                            "types": ["Creature"],
+                            "subtypes": ["Giant", "Wizard"],
+                            "power": 4,
+                            "toughness": 4
+                          }
+                        },
+                        "as": "token"
+                      }
+                    },
+                    { "Attach": { "what": "This", "to": { "Bound": "token" } } }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "ModifyPT": { "power": 0, "toughness": 1 } },
+              {
+                "GrantAbility": {
+                  "Static": {
+                    "affected": "This",
+                    "mods": [{ "AddKeyword": "Hexproof" }],
+                    "condition": { "Matches": { "subject": "This", "selector": ["Untapped"] } }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{2}" } }
+      ]
+    }
+  ]
+}

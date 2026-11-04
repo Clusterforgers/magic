@@ -1,0 +1,30 @@
+{
+  "oracle_id": "fbf7a7f4-9915-4a53-84b3-e55e9f487323",
+  "name": "Energy Field",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Energy Field",
+      "oracle_fingerprint": "084a87595cd4349c72508295d451fc31",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Damage": { "to": "You", "source": [{ "Not": { "ControlledBy": "You" } }] } },
+            "by": "Prevent"
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Not": "Token" }, { "OwnedBy": "You" }, "Other"],
+                "to": "Graveyard"
+              }
+            },
+            "effects": [{ "Sacrifice": { "filter": ["This"] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

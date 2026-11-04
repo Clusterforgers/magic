@@ -1,0 +1,59 @@
+{
+  "oracle_id": "781d6981-d389-4677-9eaf-9c46c9192ed6",
+  "name": "Dreadmaw's Ire",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dreadmaw's Ire",
+      "oracle_fingerprint": "9716a936dabe588928d2b9d4118179b4",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Attacking"] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "ModifyPT": { "power": 2, "toughness": 2 } },
+                    { "AddKeyword": "Trample" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "GrantAbility": {
+                        "Triggered": {
+                          "when": {
+                            "DealsDamage": {
+                              "source": ["This"],
+                              "to": "EachPlayer",
+                              "combat": true
+                            }
+                          },
+                          "targets": [
+                            {
+                              "what": {
+                                "Object": [{ "Type": "Artifact" }, { "ControlledBy": "Triggering" }]
+                              }
+                            }
+                          ],
+                          "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,79 @@
+{
+  "oracle_id": "c1b4a6cf-ac9c-410f-9982-31e371d49aed",
+  "name": "Jodah's Avenger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jodah's Avenger",
+      "oracle_fingerprint": "d4a4572ecf7940281551904ce8a67d38",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{0}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": -1, "toughness": -1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Either": {
+                  "first": [
+                    {
+                      "Continuous": {
+                        "affected": "This",
+                        "mods": [{ "AddKeyword": "DoubleStrike" }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ],
+                  "second": [
+                    {
+                      "Either": {
+                        "first": [
+                          {
+                            "Continuous": {
+                              "affected": "This",
+                              "mods": [{ "AddKeyword": { "Protection": [{ "Color": "Red" }] } }],
+                              "duration": "UntilEndOfTurn"
+                            }
+                          }
+                        ],
+                        "second": [
+                          {
+                            "Either": {
+                              "first": [
+                                {
+                                  "Continuous": {
+                                    "affected": "This",
+                                    "mods": [{ "AddKeyword": "Vigilance" }],
+                                    "duration": "UntilEndOfTurn"
+                                  }
+                                }
+                              ],
+                              "second": [
+                                {
+                                  "Continuous": {
+                                    "affected": "This",
+                                    "mods": [{ "AddKeyword": "Shadow" }],
+                                    "duration": "UntilEndOfTurn"
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

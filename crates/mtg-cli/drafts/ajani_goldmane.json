@@ -1,0 +1,40 @@
+{
+  "oracle_id": "dfb5f660-fd8b-4b7b-934c-6a71cd182f15",
+  "name": "Ajani Goldmane",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Ajani Goldmane",
+      "oracle_fingerprint": "7d6d99553407d0ae82a94a8e35f664b5",
+      "abilities": [
+        { "Loyalty": { "cost": { "Plus": 1 }, "effects": [{ "GainLife": { "amount": 2 } }] } },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 1 },
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "counter": "+1/+1"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [{ "AddKeyword": "Vigilance" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 125, "end": 243 }
+          }
+        }
+      ]
+    }
+  ]
+}

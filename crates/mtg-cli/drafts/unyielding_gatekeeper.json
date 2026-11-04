@@ -1,0 +1,72 @@
+{
+  "oracle_id": "3c8fa799-7f30-4532-8317-f37a7ab787de",
+  "name": "Unyielding Gatekeeper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Unyielding Gatekeeper",
+      "oracle_fingerprint": "a64fbf2261c3349f3bc188a47de05251",
+      "abilities": [
+        { "Keyword": { "Disguise": "{1}{W}" } },
+        {
+          "Triggered": {
+            "when": { "TurnedFaceUp": { "what": ["This"] } },
+            "targets": [{ "what": { "Object": [{ "Not": { "Type": "Land" } }, "Other"] } }],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "exiled" },
+                      "selector": [{ "ControlledBy": "You" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Move": {
+                        "what": { "Bound": "exiled" },
+                        "to": { "Battlefield": { "under": "You" } }
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "exiled" },
+                      "selector": [{ "ControlledBy": "You" }],
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [
+                    {
+                      "CreateToken": {
+                        "who": { "ControllerOf": { "Target": 0 } },
+                        "token": {
+                          "Custom": {
+                            "name": "Detective",
+                            "colors": ["White", "Blue"],
+                            "types": ["Creature"],
+                            "subtypes": ["Detective"],
+                            "power": 2,
+                            "toughness": 2
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

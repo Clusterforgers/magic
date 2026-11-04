@@ -1,0 +1,37 @@
+{
+  "oracle_id": "2b3f791a-d672-46fb-a03a-96e19f2c3121",
+  "name": "Felothar the Steadfast",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Felothar the Steadfast",
+      "oracle_fingerprint": "7a7f59f57449910d390ca7b8ca3a1d41",
+      "abilities": [
+        { "Rule": { "rule": { "ToughnessAssignsDamage": "You" } } },
+        {
+          "Rule": {
+            "rule": {
+              "Combat": {
+                "who": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                "quirk": "AttackDespiteDefender"
+              }
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{3}" },
+              "Tap",
+              { "Sacrifice": { "filter": [{ "Type": "Creature" }, "Other"] } }
+            ],
+            "effects": [
+              { "Draw": { "count": { "Stat": { "of": "Paid", "stat": "Toughness" } } } },
+              { "Discard": { "count": { "Stat": { "of": "Paid", "stat": "Power" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

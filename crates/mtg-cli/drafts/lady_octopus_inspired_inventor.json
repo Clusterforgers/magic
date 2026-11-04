@@ -1,0 +1,30 @@
+{
+  "oracle_id": "8e51fdb8-4f83-4e94-b36c-40a501075ecb",
+  "name": "Lady Octopus, Inspired Inventor",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Lady Octopus, Inspired Inventor",
+      "oracle_fingerprint": "baa0674fa7d4d539043f3d0dd179a905",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "Nth": { "event": { "Drew": { "who": "You" } }, "nth": 1 } },
+                { "Nth": { "event": { "Drew": { "who": "You" } }, "nth": 2 } }
+              ]
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": { "Other": "ingenuity" } } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 97, "end": 264 }
+          }
+        }
+      ]
+    }
+  ]
+}

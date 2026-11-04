@@ -1,0 +1,45 @@
+{
+  "oracle_id": "0391691f-6708-481a-93a5-6677e6fa2ff3",
+  "name": "Sunflare Shaman",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sunflare Shaman",
+      "oracle_fingerprint": "6983a483953a87cf35f4b1856e109518",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{R}" }, "Tap"],
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": {
+                    "Count": [
+                      { "Subtype": "Elemental" },
+                      { "OwnedBy": "You" },
+                      { "In": "Graveyard" }
+                    ]
+                  }
+                }
+              },
+              {
+                "DealDamage": {
+                  "to": "This",
+                  "amount": {
+                    "Count": [
+                      { "Subtype": "Elemental" },
+                      { "OwnedBy": "You" },
+                      { "In": "Graveyard" }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

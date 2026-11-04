@@ -1,0 +1,44 @@
+{
+  "oracle_id": "9d4b1e44-3c66-4b1b-8a1d-308aa4f841f8",
+  "name": "Dack Fayden",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Dack Fayden",
+      "oracle_fingerprint": "d250d744d58fe48c09b04a6ef950343b",
+      "abilities": [
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              { "Draw": { "who": { "Target": 0 }, "count": 2 } },
+              { "Discard": { "who": { "Target": 0 }, "count": 2 } }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 2 },
+            "targets": [{ "what": { "Object": [{ "Type": "Artifact" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 97, "end": 222 }
+          }
+        }
+      ]
+    }
+  ]
+}

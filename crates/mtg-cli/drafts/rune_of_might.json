@@ -1,0 +1,47 @@
+{
+  "oracle_id": "7826ce52-2fcc-422e-817e-6040de70f5f1",
+  "name": "Rune of Might",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rune of Might",
+      "oracle_fingerprint": "67c1e1345f103e4684c59b83655a6949",
+      "abilities": [
+        { "Keyword": { "Enchant": [] } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Draw": {} }]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }, { "AddKeyword": "Trample" }]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Static": {
+                    "affected": "Attached",
+                    "mods": [
+                      { "ModifyPT": { "power": 1, "toughness": 1 } },
+                      { "AddKeyword": "Trample" }
+                    ]
+                  }
+                }
+              }
+            ],
+            "condition": {
+              "Matches": { "subject": "Attached", "selector": [{ "Subtype": "Equipment" }] }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

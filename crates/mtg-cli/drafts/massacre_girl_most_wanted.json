@@ -1,0 +1,39 @@
+{
+  "oracle_id": "81f35914-73bf-429f-ba20-32e23ac30159",
+  "name": "Massacre Girl, Most Wanted",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Massacre Girl, Most Wanted",
+      "oracle_fingerprint": "22cf3a0c94c02acacedbf9ea19e2ee8e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] },
+                  "Other",
+                  { "ControlledBy": "You" }
+                ],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 1 } },
+              { "GainLife": { "amount": 1 } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": [], "to": "Opponents" } },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "oracle_id": "9d1f9036-a466-46b6-ab7c-2de487876978",
+  "name": "Countless Gears Renegade",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Countless Gears Renegade",
+      "oracle_fingerprint": "5b98399d26eeeb6e025ea1c9ef57f99e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "PermanentsLeftUnder" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Servo",
+                      "types": ["Artifact", "Creature"],
+                      "subtypes": ["Servo"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

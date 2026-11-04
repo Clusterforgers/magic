@@ -1,0 +1,47 @@
+{
+  "oracle_id": "1374498c-58fd-40b9-b63b-f87fedc42e58",
+  "name": "Neglected Heirloom // Ashmouth Blade",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Neglected Heirloom",
+      "oracle_fingerprint": "f1d9686686b7bdedb64863753a77ccb7",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "Did": {
+                "action": "Transformed",
+                "what": [{ "Type": "Creature" }, { "Is": "Attached" }]
+              }
+            },
+            "effects": [{ "Transform": { "what": "This" } }]
+          }
+        },
+        { "Keyword": { "Equip": "{1}" } }
+      ]
+    },
+    {
+      "name": "Ashmouth Blade",
+      "oracle_fingerprint": "fe3a8d0c8915ebc571210de43358f52e",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "ModifyPT": { "power": 3, "toughness": 3 } },
+              { "AddKeyword": "FirstStrike" }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{3}" } }
+      ]
+    }
+  ]
+}

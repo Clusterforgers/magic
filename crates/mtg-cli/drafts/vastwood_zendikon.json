@@ -1,0 +1,38 @@
+{
+  "oracle_id": "10172c40-7169-4098-9452-b35797d27065",
+  "name": "Vastwood Zendikon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vastwood Zendikon",
+      "oracle_fingerprint": "55b274c4de28ef10d455f1780973d377",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Land" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "SetPT": { "power": 6, "toughness": 4 } },
+              { "SetColors": ["Green"] },
+              { "AddType": "Creature" },
+              { "AddSubtype": "Elemental" }
+            ],
+            "condition": { "Matches": { "subject": "Attached", "selector": [{ "Type": "Land" }] } }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Is": "Attached" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [{ "Move": { "what": "Triggering", "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

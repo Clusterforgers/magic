@@ -1,16 +1,41 @@
 {
   "oracle_id": "84eaac2e-74ce-4a16-9faa-409df7c58eb3",
   "name": "Winter, Tormented Loner",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Winter, Tormented Loner",
       "oracle_fingerprint": "6382ea2339c550a80d1a6e503d892f05",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 0, "end": 131 }
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [
+                    {
+                      "Sacrifice": {
+                        "filter": [
+                          { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }
+                        ]
+                      }
+                    }
+                  ],
+                  "paid": [
+                    {
+                      "Reflexive": {
+                        "effects": [
+                          {
+                            "Sacrifice": { "who": "Opponents", "filter": [{ "Type": "Creature" }] }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         },
         {

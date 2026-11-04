@@ -1,0 +1,56 @@
+{
+  "oracle_id": "b3779fbe-7701-433b-afad-bebd6096a3c8",
+  "name": "Ajani's Aid",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Ajani's Aid",
+      "oracle_fingerprint": "74ad6f800f6b239d13efb94b43451573",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "May": {
+                        "effects": [
+                          {
+                            "Search": {
+                              "also": ["Graveyard"],
+                              "filter": [
+                                { "OwnedBy": "You" },
+                                { "Named": "Ajani, Valiant Protector" }
+                              ],
+                              "reveal": true,
+                              "as": "found"
+                            }
+                          },
+                          { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+                          {
+                            "If": {
+                              "condition": { "Searched": { "zone": "Library" } },
+                              "then": [{ "Shuffle": {} }]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 202, "end": 303 }
+          }
+        }
+      ]
+    }
+  ]
+}

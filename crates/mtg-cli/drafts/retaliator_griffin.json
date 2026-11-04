@@ -1,0 +1,28 @@
+{
+  "oracle_id": "dd4b9e5a-b3ab-4b70-b200-228c8add9f52",
+  "name": "Retaliator Griffin",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Retaliator Griffin",
+      "oracle_fingerprint": "b0829f39760fc823a1941ef75c394665",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": [{ "ControlledBy": "Opponents" }], "to": "You" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "PutCounters": { "on": "This", "counter": "+1/+1", "count": "Triggering" } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

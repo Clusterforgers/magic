@@ -1,0 +1,31 @@
+{
+  "oracle_id": "46808926-d95b-4313-89d1-6bdfe13fcb77",
+  "name": "Zurgo Bellstriker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Zurgo Bellstriker",
+      "oracle_fingerprint": "3987a28399bed8b0a6ad89993993922a",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "CanBlockOnly": [
+                  {
+                    "AnyOf": [
+                      { "Not": { "Type": "Creature" } },
+                      { "Not": { "Compare": { "stat": "Power", "op": "Ge", "to": 2 } } }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Dash": "{1}{R}" } }
+      ]
+    }
+  ]
+}

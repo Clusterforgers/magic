@@ -1,7 +1,7 @@
 {
   "oracle_id": "e5e8368d-43af-4f83-8565-25d03da64360",
   "name": "The Archimandrite",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "The Archimandrite",
@@ -48,9 +48,25 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 265, "end": 344 }
+          "Activated": {
+            "cost": [
+              {
+                "TapPermanents": {
+                  "filter": [
+                    {
+                      "AnyOf": [
+                        { "Subtype": "Advisor" },
+                        { "Subtype": "Monk" },
+                        { "Subtype": "Artificer" }
+                      ]
+                    },
+                    { "ControlledBy": "You" }
+                  ],
+                  "count": 3
+                }
+              }
+            ],
+            "effects": [{ "Draw": {} }]
           }
         }
       ]

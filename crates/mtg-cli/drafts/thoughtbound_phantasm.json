@@ -1,0 +1,32 @@
+{
+  "oracle_id": "ca14f1b6-e8c2-4ea5-9375-5ed63f355052",
+  "name": "Thoughtbound Phantasm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thoughtbound Phantasm",
+      "oracle_fingerprint": "8051f4d218195c874b806c3842a80c78",
+      "abilities": [
+        { "Keyword": "Defender" },
+        {
+          "Triggered": {
+            "when": { "Did": { "action": "Surveilled", "who": "You" } },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "Combat": {
+                "who": {
+                  "Each": ["This", { "CounterCount": { "kind": "+1/+1", "op": "Ge", "to": 3 } }]
+                },
+                "quirk": "AttackDespiteDefender"
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

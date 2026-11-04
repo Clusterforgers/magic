@@ -1,0 +1,33 @@
+{
+  "oracle_id": "290cd0b1-55d6-4b30-962d-075a6f75d562",
+  "name": "Aerial Modification",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Aerial Modification",
+      "oracle_fingerprint": "52ce8ab4f9ee3b894a30d50720207981",
+      "abilities": [
+        {
+          "Keyword": {
+            "Enchant": [{ "AnyOf": [{ "Type": "Creature" }, { "Subtype": "Vehicle" }] }]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "AddType": "Creature" }],
+            "condition": {
+              "Matches": { "subject": "Attached", "selector": [{ "Subtype": "Vehicle" }] }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }, { "AddKeyword": "Flying" }]
+          }
+        }
+      ]
+    }
+  ]
+}

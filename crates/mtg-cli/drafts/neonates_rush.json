@@ -1,0 +1,37 @@
+{
+  "oracle_id": "721aeedc-1de5-40d0-a04c-a2ebc056d06a",
+  "name": "Neonate's Rush",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Neonate's Rush",
+      "oracle_fingerprint": "0720b9e5f6b67a55d5125a65e87d3d51",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{1}",
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Subtype": "Vampire" }, { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 1 } },
+              { "DealDamage": { "to": { "ControllerOf": { "Target": 0 } }, "amount": 1 } },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

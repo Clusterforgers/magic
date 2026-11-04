@@ -1,0 +1,47 @@
+{
+  "oracle_id": "78957246-4092-4f4a-80e3-142e24226962",
+  "name": "Quag Feast",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Quag Feast",
+      "oracle_fingerprint": "62879dcc4043c3e51a8ace8b30ec7012",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    {
+                      "AnyOf": [
+                        { "Type": "Creature" },
+                        { "Type": "Planeswalker" },
+                        { "Subtype": "Vehicle" }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Mill": { "count": 2 } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Stat": { "of": { "Target": 0 }, "stat": "ManaValue" } },
+                      "op": "Le",
+                      "right": { "Count": [{ "OwnedBy": "You" }, { "In": "Graveyard" }] }
+                    }
+                  },
+                  "then": [{ "Destroy": { "what": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

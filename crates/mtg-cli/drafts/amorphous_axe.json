@@ -1,0 +1,20 @@
+{
+  "oracle_id": "fe340efa-6b69-4ccc-a13c-3688f1c44c29",
+  "name": "Amorphous Axe",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Amorphous Axe",
+      "oracle_fingerprint": "42acbead0ebb9c16eb672ccd1ccb797d",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 3, "toughness": 0 } }, "AddAllCreatureTypes"]
+          }
+        },
+        { "Keyword": { "Equip": "{3}" } }
+      ]
+    }
+  ]
+}

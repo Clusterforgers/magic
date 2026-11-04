@@ -1,16 +1,30 @@
 {
   "oracle_id": "6a47865c-8fa2-4cb2-aebf-8009c065395f",
   "name": "Rakdos Joins Up",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Rakdos Joins Up",
       "oracle_fingerprint": "4f2eab1e54ab3935c725f1069698e751",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 0, "end": 137 }
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Target": 0 },
+                  "to": { "Battlefield": { "counters": [["+1/+1", 2]] } }
+                }
+              }
+            ]
           }
         },
         {

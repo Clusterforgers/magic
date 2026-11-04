@@ -1,0 +1,27 @@
+{
+  "oracle_id": "88079144-8d8e-4f98-9bee-3762540c94ca",
+  "name": "Thran Foundry",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thran Foundry",
+      "oracle_fingerprint": "f2ff59ad30e06ee1525e2d319ac1a3a5",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap", "ExileSelf"],
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Each": [{ "In": "Graveyard" }, { "OwnedBy": { "Target": 0 } }] },
+                  "to": { "Library": { "place": "Shuffled" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

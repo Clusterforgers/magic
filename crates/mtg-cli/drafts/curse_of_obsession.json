@@ -1,7 +1,7 @@
 {
   "oracle_id": "ca4b4bf2-ed34-444c-9088-dd1ea488ec4e",
   "name": "Curse of Obsession",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Curse of Obsession",
@@ -15,9 +15,16 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 105, "end": 186 }
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "AttachedPlayer" } },
+            "effects": [
+              {
+                "Discard": {
+                  "who": "Triggering",
+                  "count": { "Count": [{ "In": "Hand" }, { "OwnedBy": "Triggering" }] }
+                }
+              }
+            ]
           }
         }
       ]

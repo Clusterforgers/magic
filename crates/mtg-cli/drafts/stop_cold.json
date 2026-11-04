@@ -1,0 +1,25 @@
+{
+  "oracle_id": "e0206af2-8034-4351-a797-a1d996f080b5",
+  "name": "Stop Cold",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stop Cold",
+      "oracle_fingerprint": "093b39fc3ea6d9d3a74312c8a57e34d9",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Keyword": { "Enchant": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] }] }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Tap": { "what": "Attached" } }]
+          }
+        },
+        { "Static": { "affected": "Attached", "mods": ["LoseAbilities"] } },
+        { "Static": { "affected": "Attached", "mods": ["DoesntUntap"] } }
+      ]
+    }
+  ]
+}

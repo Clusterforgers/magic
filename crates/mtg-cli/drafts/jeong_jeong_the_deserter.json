@@ -1,0 +1,30 @@
+{
+  "oracle_id": "2158c73d-421b-4c94-af06-dd89cb8d3126",
+  "name": "Jeong Jeong, the Deserter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jeong Jeong, the Deserter",
+      "oracle_fingerprint": "c068f4059282d93a3c4b5eeb4b18925c",
+      "abilities": [
+        { "Keyword": { "Macro": { "name": "firebending", "amount": 1 } } },
+        {
+          "Activated": {
+            "cost": "{3}",
+            "limit": "OncePerGame",
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": "+1/+1" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "SpellCast": { "what": [{ "Subtype": "Lesson" }], "by": "You" } },
+                  "this_turn": true,
+                  "effects": [{ "CopySpell": { "what": "Triggering", "new_targets": true } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

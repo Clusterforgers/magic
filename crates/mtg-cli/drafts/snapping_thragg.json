@@ -1,0 +1,23 @@
+{
+  "oracle_id": "1a02cb6d-965a-4eeb-b126-8e153d4832a2",
+  "name": "Snapping Thragg",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Snapping Thragg",
+      "oracle_fingerprint": "009418cc5da0ccd2cc5381b89d278818",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Triggering" }] } }
+            ],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 3 } }]
+          }
+        },
+        { "Keyword": { "Morph": "{4}{R}{R}" } }
+      ]
+    }
+  ]
+}

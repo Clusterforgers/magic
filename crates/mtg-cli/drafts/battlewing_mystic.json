@@ -1,0 +1,24 @@
+{
+  "oracle_id": "49f0b317-6b06-482e-ab64-e02713e6c7e8",
+  "name": "Battlewing Mystic",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Battlewing Mystic",
+      "oracle_fingerprint": "92547a25cf435e6b10c4383b810de0ff",
+      "abilities": [
+        { "Keyword": { "Kicker": "{R}" } },
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This", "Kicked"], "to": "Battlefield" } },
+            "effects": [
+              { "Discard": { "count": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] } } },
+              { "Draw": { "count": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "oracle_id": "056a98aa-f3f7-4ac9-9755-3e8a60a59abb",
+  "name": "Afiya Grove",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Afiya Grove",
+      "oracle_fingerprint": "76128972324c4035b2fb08dd7b5c3660",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": 3 } }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "MoveCounters": { "from": "This", "to": { "Target": 0 }, "counter": "+1/+1" } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "State": {
+                "condition": {
+                  "Compare": {
+                    "left": { "Count": ["This", { "Not": { "HasCounter": "+1/+1" } }] },
+                    "op": "Ge",
+                    "right": 1
+                  }
+                }
+              }
+            },
+            "effects": [{ "Sacrifice": { "filter": ["This"] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

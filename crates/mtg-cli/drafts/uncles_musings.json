@@ -1,0 +1,43 @@
+{
+  "oracle_id": "6de489bf-6922-4f97-8001-efa8cb5a27cb",
+  "name": "Uncle's Musings",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Uncle's Musings",
+      "oracle_fingerprint": "467d699ae8b94061e35b0aea38838288",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "OwnedBy": "You" },
+                      {
+                        "AnyOf": [
+                          { "Type": "Artifact" },
+                          { "Type": "Battle" },
+                          { "Type": "Creature" },
+                          { "Type": "Enchantment" },
+                          { "Type": "Land" },
+                          { "Type": "Planeswalker" }
+                        ]
+                      },
+                      { "In": "Graveyard" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": "ColorsSpent" },
+                  "as": "picked"
+                }
+              },
+              { "Move": { "what": { "Bound": "picked" }, "to": "Hand" } },
+              { "Exile": { "what": "This" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

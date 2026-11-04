@@ -1,0 +1,64 @@
+{
+  "oracle_id": "3bd57758-00a6-4d49-b1fc-b14f8203da0b",
+  "name": "Commando Raid",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Commando Raid",
+      "oracle_fingerprint": "437de04a4a1dfe631761da612a2f9a19",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "GrantAbility": {
+                        "Triggered": {
+                          "when": {
+                            "DealsDamage": {
+                              "source": ["This"],
+                              "to": "EachPlayer",
+                              "combat": true
+                            }
+                          },
+                          "targets": [
+                            {
+                              "what": {
+                                "Object": [{ "Type": "Creature" }, { "ControlledBy": "Triggering" }]
+                              }
+                            }
+                          ],
+                          "effects": [
+                            {
+                              "May": {
+                                "effects": [
+                                  {
+                                    "DealDamage": {
+                                      "to": { "Target": 0 },
+                                      "amount": { "Stat": { "of": "This", "stat": "Power" } }
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

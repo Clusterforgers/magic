@@ -21,7 +21,7 @@
               }
             ],
             "effects": [
-              { "Move": { "what": { "Target": 0 }, "to": { "Library": { "place": "Top" } } } }
+              { "Move": { "what": { "Target": 0 }, "to": { "Library": { "place": "Shuffled" } } } }
             ]
           }
         }

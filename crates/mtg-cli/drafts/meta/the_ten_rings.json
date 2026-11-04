@@ -1,42 +1,4 @@
 {
   "source": "forge",
-  "oracle_matches": true,
-  "lines": [
-    {
-      "face": 0,
-      "tag": "T",
-      "text": "At the beginning of your end step, if you have fewer than ten cards in hand, draw cards equal to the difference.",
-      "abilities": [],
-      "gap": "amount:Number$"
-    },
-    {
-      "face": 0,
-      "tag": "S",
-      "text": "Your maximum hand size is ten.",
-      "abilities": [
-        0
-      ],
-      "gap": null
-    }
-  ],
-  "proof": {
-    "marks": [
-      {
-        "face": 0,
-        "span": {
-          "start": 0,
-          "end": 30
-        },
-        "mark": "Auto"
-      },
-      {
-        "face": 0,
-        "span": {
-          "start": 31,
-          "end": 143
-        },
-        "mark": "ByHand"
-      }
-    ]
-  }
+  "oracle_matches": true
 }

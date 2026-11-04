@@ -1,0 +1,77 @@
+{
+  "oracle_id": "3c970f43-17da-4187-a084-efd53b579067",
+  "name": "Ral, Crackling Wit",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ral, Crackling Wit",
+      "oracle_fingerprint": "7f12f4d59d614ebffd2a5fa91a7b789d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [{ "Not": { "Type": "Creature" } }, { "ControlledBy": "You" }]
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "loyalty" } }]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Otter",
+                      "colors": ["Blue", "Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Otter"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Prowess" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 3 },
+            "effects": [{ "Draw": { "count": 3 } }, { "Discard": { "count": 2 } }]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 10 },
+            "effects": [
+              { "Draw": { "count": 3 } },
+              {
+                "CreateEmblem": {
+                  "abilities": [
+                    {
+                      "Static": {
+                        "affected": {
+                          "Each": [
+                            { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                            { "ControlledBy": "You" },
+                            { "In": "Stack" }
+                          ]
+                        },
+                        "mods": [{ "AddKeyword": "Storm" }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

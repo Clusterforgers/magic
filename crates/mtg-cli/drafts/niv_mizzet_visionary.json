@@ -1,0 +1,21 @@
+{
+  "oracle_id": "d9f1dc61-831e-4244-a2da-aa9da6fd5b50",
+  "name": "Niv-Mizzet, Visionary",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Niv-Mizzet, Visionary",
+      "oracle_fingerprint": "4c6604ef07469f4672963798d5c5efb4",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Rule": { "rule": { "NoMaxHandSize": "You" } } },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": [{ "ControlledBy": "You" }], "to": "Opponents" } },
+            "effects": [{ "Draw": { "count": "Triggering" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

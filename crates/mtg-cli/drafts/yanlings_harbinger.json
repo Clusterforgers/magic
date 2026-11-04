@@ -1,0 +1,51 @@
+{
+  "oracle_id": "c4bf4397-22e5-458d-b9d1-3f3a0a27e9e5",
+  "name": "Yanling's Harbinger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Yanling's Harbinger",
+      "oracle_fingerprint": "dd19c9209637c1cbef4fe456d1d7c6bc",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "May": {
+                        "effects": [
+                          {
+                            "Search": {
+                              "also": ["Graveyard"],
+                              "filter": [
+                                { "OwnedBy": "You" },
+                                { "Named": "Mu Yanling, Celestial Wind" }
+                              ],
+                              "reveal": true,
+                              "as": "found"
+                            }
+                          },
+                          { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+                          {
+                            "If": {
+                              "condition": { "Searched": { "zone": "Library" } },
+                              "then": [{ "Shuffle": {} }]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,144 @@
+{
+  "object": "card",
+  "id": "81756844-c642-406f-842d-35c1e404fec0",
+  "oracle_id": "018327d1-a3ba-4912-9c88-f0f0c54a1750",
+  "multiverse_ids": [
+    673619
+  ],
+  "mtgo_id": 130559,
+  "arena_id": 92308,
+  "tcgplayer_id": 576895,
+  "cardmarket_id": 786846,
+  "name": "Fear of Infinity",
+  "lang": "en",
+  "released_at": "2024-09-27",
+  "uri": "https://api.scryfall.com/cards/81756844-c642-406f-842d-35c1e404fec0",
+  "scryfall_uri": "https://scryfall.com/card/dsk/214/fear-of-infinity?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T02:24:03Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/8/1/81756844-c642-406f-842d-35c1e404fec0.jpg?1783909443",
+    "normal": "https://cards.scryfall.io/normal/front/8/1/81756844-c642-406f-842d-35c1e404fec0.jpg?1783909443",
+    "large": "https://cards.scryfall.io/large/front/8/1/81756844-c642-406f-842d-35c1e404fec0.jpg?1783909443",
+    "png": "https://cards.scryfall.io/png/front/8/1/81756844-c642-406f-842d-35c1e404fec0.png?1783909443",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/8/1/81756844-c642-406f-842d-35c1e404fec0.jpg?1783909443",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/8/1/81756844-c642-406f-842d-35c1e404fec0.jpg?1783909443",
+    "thumb": "https://cards.scryfall.io/thumb/front/8/1/81756844-c642-406f-842d-35c1e404fec0.webp?1783909443",
+    "grid": "https://cards.scryfall.io/grid/front/8/1/81756844-c642-406f-842d-35c1e404fec0.webp?1783909443",
+    "display": "https://cards.scryfall.io/display/front/8/1/81756844-c642-406f-842d-35c1e404fec0.webp?1783909443",
+    "art": "https://cards.scryfall.io/art/front/8/1/81756844-c642-406f-842d-35c1e404fec0.webp?1783909443",
+    "crop": "https://cards.scryfall.io/crop/front/8/1/81756844-c642-406f-842d-35c1e404fec0.webp?1783909443",
+    "jpeg": "https://cards.scryfall.io/normal/front/8/1/81756844-c642-406f-842d-35c1e404fec0.jpg?1783909443"
+  },
+  "mana_cost": "{1}{U}{B}",
+  "cmc": 3.0,
+  "type_line": "Enchantment Creature — Nightmare",
+  "oracle_text": "Flying, lifelink\nThis creature can't block.\nEerie — Whenever an enchantment you control enters and whenever you fully unlock a Room, you may return this card from your graveyard to your hand.",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "B",
+    "U"
+  ],
+  "color_identity": [
+    "B",
+    "U"
+  ],
+  "keywords": [
+    "Flying",
+    "Lifelink",
+    "Eerie"
+  ],
+  "legalities": {
+    "standard": "legal",
+    "future": "legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo",
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "a111d8a9-b647-48ec-afab-2b78f92173f5",
+  "set": "dsk",
+  "set_name": "Duskmourn: House of Horror",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/a111d8a9-b647-48ec-afab-2b78f92173f5",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Adsk&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/dsk?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/81756844-c642-406f-842d-35c1e404fec0/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A018327d1-a3ba-4912-9c88-f0f0c54a1750&unique=prints",
+  "collector_number": "214",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "There are some nightmares so terrible, you're never truly rid of them.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Fernando Falcone",
+  "artist_ids": [
+    "d854f581-98a2-46d3-8da0-f072fba24857"
+  ],
+  "illustration_id": "9d20382e-5627-4226-9962-9e9f942132b9",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "enchantment"
+  ],
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 12702,
+  "prices": {
+    "usd": "0.21",
+    "usd_foil": "0.33",
+    "usd_etched": null,
+    "eur": "0.13",
+    "eur_foil": "0.15",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=673619&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DFear%2Bof%2BInfinity",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DFear%2Bof%2BInfinity",
+    "edhrec": "https://edhrec.com/route/?cc=Fear+of+Infinity"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F576895%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=786846&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/130559?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

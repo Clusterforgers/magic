@@ -1,7 +1,7 @@
 {
   "oracle_id": "a93a8edf-2879-4cae-b3b9-b46298270823",
   "name": "Hydro-Man, Fluid Felon",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Hydro-Man, Fluid Felon",
@@ -29,9 +29,28 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 93, "end": 250 }
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              { "Untap": { "what": "This" } },
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "SetTypes": ["Land"] },
+                    {
+                      "GrantAbility": {
+                        "Activated": {
+                          "cost": ["Tap"],
+                          "effects": [{ "AddMana": { "mana": { "Fixed": ["Blue"] } } }]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilYourNextTurn"
+                }
+              }
+            ]
           }
         }
       ]

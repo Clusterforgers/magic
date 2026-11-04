@@ -1,0 +1,46 @@
+{
+  "oracle_id": "f5ded323-75c8-471e-a516-238b9d6b06d3",
+  "name": "Hidden Stockpile",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hidden Stockpile",
+      "oracle_fingerprint": "22df1267ac349bb2b719b512bff0f974",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "PermanentsLeftUnder" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Servo",
+                      "types": ["Artifact", "Creature"],
+                      "subtypes": ["Servo"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, { "Sacrifice": { "filter": [{ "Type": "Creature" }] } }],
+            "effects": [{ "Scry": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

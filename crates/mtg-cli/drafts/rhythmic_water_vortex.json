@@ -1,0 +1,38 @@
+{
+  "oracle_id": "373c6cd0-0bf7-4dab-bc18-7ecf5f015e10",
+  "name": "Rhythmic Water Vortex",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rhythmic Water Vortex",
+      "oracle_fingerprint": "c53653a20922e52c0a643553ff11501b",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 0, "max": 2 } }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": "Hand" } },
+              {
+                "Search": {
+                  "also": ["Graveyard"],
+                  "filter": [{ "OwnedBy": "You" }, { "Named": "Mu Yanling" }],
+                  "reveal": true,
+                  "as": "found"
+                }
+              },
+              { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+              {
+                "If": {
+                  "condition": { "Searched": { "zone": "Library" } },
+                  "then": [{ "Shuffle": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

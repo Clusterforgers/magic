@@ -1,7 +1,7 @@
 {
   "oracle_id": "497e9c7c-a16d-43e5-a7ec-04153aa2566a",
   "name": "The Blue Spirit",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "The Blue Spirit",
@@ -26,9 +26,15 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 81, "end": 156 }
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "Not": "Token" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "if": { "AtTrigger": "InCombat" },
+            "effects": [{ "Draw": {} }]
           }
         }
       ]

@@ -10,7 +10,7 @@
         { "Keyword": { "Enchant": [{ "Type": "Artifact" }] } },
         {
           "Triggered": {
-            "when": { "Tapped": { "what": [{ "Is": "Attached" }, { "Type": "Artifact" }] } },
+            "when": { "Tapped": { "what": [{ "Is": "Attached" }] } },
             "effects": [
               { "PutCounters": { "on": { "ControllerOf": "Triggering" }, "counter": "poison" } }
             ]

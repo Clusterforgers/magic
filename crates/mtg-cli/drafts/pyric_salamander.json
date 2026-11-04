@@ -1,0 +1,41 @@
+{
+  "oracle_id": "745a2815-8487-4b78-93b7-d1d4ef6adc8f",
+  "name": "Pyric Salamander",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pyric Salamander",
+      "oracle_fingerprint": "4cacd646075ce9a8113e5ec0c5618c2a",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{R}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    {
+                      "Sacrifice": {
+                        "who": { "ControllerOf": "This" },
+                        "filter": [{ "Is": "This" }],
+                        "count": { "Count": [{ "Is": "This" }] }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -13,14 +13,14 @@
             "targets": [
               {
                 "what": { "Object": [{ "Type": "Land" }] },
-                "bounds": { "min": { "Stat": { "of": "This", "stat": "Power" } }, "max": 1 }
+                "bounds": { "min": 0, "max": { "Count": [{ "Type": "Land" }] } }
               }
             ],
             "effects": [
               {
                 "Continuous": {
                   "affected": { "Target": 0 },
-                  "mods": [{ "AddSubtype": "Forest" }],
+                  "mods": [{ "SetLandTypes": ["Forest"] }],
                   "duration": "UntilEndOfTurn"
                 }
               }

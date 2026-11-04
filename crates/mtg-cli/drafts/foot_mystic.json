@@ -1,0 +1,42 @@
+{
+  "oracle_id": "2043fbde-48c4-4a77-8911-8991d77de1eb",
+  "name": "Foot Mystic",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Foot Mystic",
+      "oracle_fingerprint": "09202f793047c77c81ca37e321200646",
+      "abilities": [
+        { "Keyword": "Lifelink" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "PermanentsLeftUnder" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Ninja",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Ninja"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

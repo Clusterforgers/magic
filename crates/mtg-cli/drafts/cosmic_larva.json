@@ -17,8 +17,7 @@
                   "cost": [{ "Sacrifice": { "filter": [{ "Type": "Land" }], "count": 2 } }],
                   "unpaid": [{ "Sacrifice": { "filter": ["This"] } }]
                 }
-              },
-              { "Scry": {} }
+              }
             ]
           }
         }

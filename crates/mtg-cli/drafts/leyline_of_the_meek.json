@@ -1,0 +1,20 @@
+{
+  "oracle_id": "971f7b30-0088-4e12-bc1a-262acc7f5f90",
+  "name": "Leyline of the Meek",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Leyline of the Meek",
+      "oracle_fingerprint": "8e0f839e87f209369f56fdaacc799c24",
+      "abilities": [
+        "OpeningHand",
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, "Token"] },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

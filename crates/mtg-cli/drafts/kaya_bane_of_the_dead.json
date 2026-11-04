@@ -1,0 +1,31 @@
+{
+  "oracle_id": "29d58aa4-9a7e-4052-9b0d-fc282f1be40e",
+  "name": "Kaya, Bane of the Dead",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kaya, Bane of the Dead",
+      "oracle_fingerprint": "2d664907d29ae3682b301a8fc615843e",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "IgnoreHexproof": {
+                "by": "You",
+                "what": { "Each": [{ "ControlledBy": "Opponents" }] },
+                "players": "Opponents"
+              }
+            }
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 3 },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "Exile": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

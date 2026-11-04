@@ -1,0 +1,24 @@
+{
+  "oracle_id": "c34cf404-729d-46ef-8661-1095e5581766",
+  "name": "Light of Sanction",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Light of Sanction",
+      "oracle_fingerprint": "2d9760deb456ff056f2116c1fbf23d26",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": {
+              "Damage": {
+                "to": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                "source": [{ "ControlledBy": "You" }]
+              }
+            },
+            "by": "Prevent"
+          }
+        }
+      ]
+    }
+  ]
+}

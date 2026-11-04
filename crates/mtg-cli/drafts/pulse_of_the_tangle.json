@@ -1,0 +1,45 @@
+{
+  "oracle_id": "26f034b1-9a96-4371-a28e-be00b02d9d60",
+  "name": "Pulse of the Tangle",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pulse of the Tangle",
+      "oracle_fingerprint": "62a48422891eb0ae64105128931430b3",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Beast",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Beast"],
+                      "power": 3,
+                      "toughness": 3
+                    }
+                  }
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] },
+                      "op": "Gt",
+                      "right": { "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+                    }
+                  },
+                  "then": [{ "Move": { "what": "This", "to": "Hand" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

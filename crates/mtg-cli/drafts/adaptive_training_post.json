@@ -1,7 +1,7 @@
 {
   "oracle_id": "a6657fcf-f08c-4b03-8ec8-cb0b194eb553",
   "name": "Adaptive Training Post",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Adaptive Training Post",
@@ -28,9 +28,22 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 136, "end": 295 }
+          "Activated": {
+            "cost": [{ "RemoveCounters": { "counter": "charge", "count": 3 } }],
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "SpellCast": {
+                      "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                      "by": "You"
+                    }
+                  },
+                  "this_turn": true,
+                  "effects": [{ "CopySpell": { "what": "Triggering", "new_targets": true } }]
+                }
+              }
+            ]
           }
         }
       ]

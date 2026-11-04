@@ -1,0 +1,142 @@
+{
+  "oracle_id": "3f8bfa3d-7490-4259-a403-d13585ed2f66",
+  "name": "Snowblind",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Snowblind",
+      "oracle_fingerprint": "b3693c8c107bda01339a9f7b24de361e",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": {
+                    "Times": {
+                      "by": -1,
+                      "of": {
+                        "Count": [
+                          { "Type": "Land" },
+                          { "ControlledBy": "Defending" },
+                          { "Supertype": "Snow" }
+                        ]
+                      }
+                    }
+                  },
+                  "toughness": {
+                    "Times": {
+                      "by": -1,
+                      "of": {
+                        "When": {
+                          "condition": {
+                            "Compare": {
+                              "left": {
+                                "Sum": [{ "Stat": { "of": "Attached", "stat": "Toughness" } }, -1]
+                              },
+                              "op": "Gt",
+                              "right": {
+                                "Count": [
+                                  { "Type": "Land" },
+                                  { "ControlledBy": "Defending" },
+                                  { "Supertype": "Snow" }
+                                ]
+                              }
+                            }
+                          },
+                          "then": {
+                            "Count": [
+                              { "Type": "Land" },
+                              { "ControlledBy": "Defending" },
+                              { "Supertype": "Snow" }
+                            ]
+                          },
+                          "otherwise": {
+                            "Sum": [{ "Stat": { "of": "Attached", "stat": "Toughness" } }, -1]
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            ],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Is": "Attached" }, "Attacking"] },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": {
+                    "Times": {
+                      "by": -1,
+                      "of": {
+                        "Count": [
+                          { "Type": "Land" },
+                          { "Supertype": "Snow" },
+                          { "ControlledBy": { "ControllerOf": "Attached" } }
+                        ]
+                      }
+                    }
+                  },
+                  "toughness": {
+                    "Times": {
+                      "by": -1,
+                      "of": {
+                        "When": {
+                          "condition": {
+                            "Compare": {
+                              "left": {
+                                "Sum": [{ "Stat": { "of": "Attached", "stat": "Toughness" } }, -1]
+                              },
+                              "op": "Gt",
+                              "right": {
+                                "Count": [
+                                  { "Type": "Land" },
+                                  { "Supertype": "Snow" },
+                                  { "ControlledBy": { "ControllerOf": "Attached" } }
+                                ]
+                              }
+                            }
+                          },
+                          "then": {
+                            "Count": [
+                              { "Type": "Land" },
+                              { "Supertype": "Snow" },
+                              { "ControlledBy": { "ControllerOf": "Attached" } }
+                            ]
+                          },
+                          "otherwise": {
+                            "Sum": [{ "Stat": { "of": "Attached", "stat": "Toughness" } }, -1]
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            ],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Is": "Attached" }, "Attacking"] },
+                "op": "Eq",
+                "right": 0
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

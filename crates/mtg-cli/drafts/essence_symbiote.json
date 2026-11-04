@@ -1,0 +1,27 @@
+{
+  "oracle_id": "9875cb1b-d67e-4ac4-8c16-164f28d4e4d4",
+  "name": "Essence Symbiote",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Essence Symbiote",
+      "oracle_fingerprint": "475003fb14c75e0ffc280034fe40ea68",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Did": {
+                "action": "Mutated",
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+              }
+            },
+            "effects": [
+              { "PutCounters": { "on": "Triggering", "counter": "+1/+1" } },
+              { "GainLife": { "amount": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

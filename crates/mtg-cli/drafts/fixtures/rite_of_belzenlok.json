@@ -1,0 +1,162 @@
+{
+  "object": "card",
+  "id": "1ed7cca3-79be-44ca-bf10-2ae1c0835ed1",
+  "oracle_id": "a3b2e0a2-f4ad-457b-ae70-7732bc3479ff",
+  "multiverse_ids": [
+    442990
+  ],
+  "mtgo_id": 67669,
+  "arena_id": 67308,
+  "tcgplayer_id": 164399,
+  "cardmarket_id": 355256,
+  "name": "Rite of Belzenlok",
+  "lang": "en",
+  "released_at": "2018-04-27",
+  "uri": "https://api.scryfall.com/cards/1ed7cca3-79be-44ca-bf10-2ae1c0835ed1",
+  "scryfall_uri": "https://scryfall.com/card/dom/102/rite-of-belzenlok?utm_source=api",
+  "layout": "saga",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-08-20T04:16:59Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/1/e/1ed7cca3-79be-44ca-bf10-2ae1c0835ed1.jpg?1787199419",
+    "normal": "https://cards.scryfall.io/normal/front/1/e/1ed7cca3-79be-44ca-bf10-2ae1c0835ed1.jpg?1787199419",
+    "large": "https://cards.scryfall.io/large/front/1/e/1ed7cca3-79be-44ca-bf10-2ae1c0835ed1.jpg?1787199419",
+    "png": "https://cards.scryfall.io/png/front/1/e/1ed7cca3-79be-44ca-bf10-2ae1c0835ed1.png?1787199419",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/1/e/1ed7cca3-79be-44ca-bf10-2ae1c0835ed1.jpg?1787199419",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/1/e/1ed7cca3-79be-44ca-bf10-2ae1c0835ed1.jpg?1787199419",
+    "thumb": "https://cards.scryfall.io/thumb/front/1/e/1ed7cca3-79be-44ca-bf10-2ae1c0835ed1.webp?1787199419",
+    "grid": "https://cards.scryfall.io/grid/front/1/e/1ed7cca3-79be-44ca-bf10-2ae1c0835ed1.webp?1787199419",
+    "display": "https://cards.scryfall.io/display/front/1/e/1ed7cca3-79be-44ca-bf10-2ae1c0835ed1.webp?1787199419",
+    "art": "https://cards.scryfall.io/art/front/1/e/1ed7cca3-79be-44ca-bf10-2ae1c0835ed1.webp?1787199419",
+    "crop": "https://cards.scryfall.io/crop/front/1/e/1ed7cca3-79be-44ca-bf10-2ae1c0835ed1.webp?1787199419",
+    "jpeg": "https://cards.scryfall.io/normal/front/1/e/1ed7cca3-79be-44ca-bf10-2ae1c0835ed1.jpg?1787199419"
+  },
+  "mana_cost": "{2}{B}{B}",
+  "cmc": 4.0,
+  "type_line": "Enchantment — Saga",
+  "oracle_text": "(As this Saga enters and after your draw step, add a lore counter. Sacrifice after III.)\nI, II — Create two 0/1 black Cleric creature tokens.\nIII — Create a 6/6 black Demon creature token with flying, trample, and \"At the beginning of your upkeep, sacrifice another creature. If you can't, this token deals 6 damage to you.\"",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Trample"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "74791ac4-7297-4731-aff8-20130da8b4b7",
+      "component": "token",
+      "name": "Cleric",
+      "type_line": "Token Creature — Cleric",
+      "uri": "https://api.scryfall.com/cards/74791ac4-7297-4731-aff8-20130da8b4b7"
+    },
+    {
+      "object": "related_card",
+      "id": "1ed7cca3-79be-44ca-bf10-2ae1c0835ed1",
+      "component": "combo_piece",
+      "name": "Rite of Belzenlok",
+      "type_line": "Enchantment — Saga",
+      "uri": "https://api.scryfall.com/cards/1ed7cca3-79be-44ca-bf10-2ae1c0835ed1"
+    },
+    {
+      "object": "related_card",
+      "id": "73b858b5-803b-4bcf-99d6-8c20c8b37f07",
+      "component": "token",
+      "name": "Demon",
+      "type_line": "Token Creature — Demon",
+      "uri": "https://api.scryfall.com/cards/73b858b5-803b-4bcf-99d6-8c20c8b37f07"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "arena",
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "be1daba3-51c9-4e7e-9212-36e68addc26c",
+  "set": "dom",
+  "set_name": "Dominaria",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/be1daba3-51c9-4e7e-9212-36e68addc26c",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Adom&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/dom?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/1ed7cca3-79be-44ca-bf10-2ae1c0835ed1/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Aa3b2e0a2-f4ad-457b-ae70-7732bc3479ff&unique=prints",
+  "collector_number": "102",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Seb McKinnon",
+  "artist_ids": [
+    "ad4caca0-8d89-44ce-a1a6-d5ca905bd6fb"
+  ],
+  "illustration_id": "7c1796fd-612e-4891-a7bc-9c94e5dfc3fa",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 16009,
+  "penny_rank": 8092,
+  "prices": {
+    "usd": "0.24",
+    "usd_foil": "0.48",
+    "usd_etched": null,
+    "eur": "0.19",
+    "eur_foil": "0.47",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=442990&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DRite%2Bof%2BBelzenlok",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DRite%2Bof%2BBelzenlok",
+    "edhrec": "https://edhrec.com/route/?cc=Rite+of+Belzenlok"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F164399%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=355256&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/67669?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

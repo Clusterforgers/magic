@@ -1,0 +1,47 @@
+{
+  "oracle_id": "ea904852-6322-4a24-9145-190acfce54ec",
+  "name": "Arjun, the Shifting Flame",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Arjun, the Shifting Flame",
+      "oracle_fingerprint": "97b64182293214b9e93c6e7dc4b720d7",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "by": "You" } },
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Each": [{ "OwnedBy": "You" }, { "In": "Hand" }] },
+                  "to": { "Library": { "place": "Bottom" } },
+                  "as": "moved"
+                }
+              },
+              {
+                "Draw": {
+                  "count": {
+                    "Count": [
+                      { "Is": { "Bound": "moved" } },
+                      {
+                        "AnyOf": [
+                          { "In": "Battlefield" },
+                          { "In": "Hand" },
+                          { "In": "Library" },
+                          { "In": "Graveyard" },
+                          { "In": "Exile" },
+                          { "In": "Stack" }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

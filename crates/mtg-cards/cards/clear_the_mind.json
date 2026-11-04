@@ -1,0 +1,27 @@
+{
+  "oracle_id": "141c33be-7a25-4981-b62c-efee8e8ec91d",
+  "name": "Clear the Mind",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Clear the Mind",
+      "oracle_fingerprint": "db9f31f7879f423da8ecae3c0c0872f3",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Each": [{ "In": "Graveyard" }, { "OwnedBy": { "Target": 0 } }] },
+                  "to": { "Library": { "place": "Shuffled" } }
+                }
+              },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

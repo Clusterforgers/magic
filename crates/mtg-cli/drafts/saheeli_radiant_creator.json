@@ -1,7 +1,7 @@
 {
   "oracle_id": "20f602b3-814f-406c-b7eb-2d1fc98f8cf1",
   "name": "Saheeli, Radiant Creator",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Saheeli, Radiant Creator",
@@ -19,9 +19,54 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 83, "end": 355 }
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "PayEnergy": 3 }],
+                  "paid": [
+                    {
+                      "Reflexive": {
+                        "targets": [{ "what": { "Object": [{ "ControlledBy": "You" }] } }],
+                        "effects": [
+                          {
+                            "CreateToken": {
+                              "token": {
+                                "CopyOf": {
+                                  "of": { "Target": 0 },
+                                  "except": [
+                                    { "SetPT": { "power": 5, "toughness": 5 } },
+                                    { "AddType": "Artifact" },
+                                    { "AddType": "Creature" },
+                                    { "AddKeyword": "Haste" }
+                                  ]
+                                }
+                              },
+                              "as": "copy"
+                            }
+                          },
+                          {
+                            "DelayedTrigger": {
+                              "when": { "StepBegins": { "step": "End" } },
+                              "effects": [
+                                {
+                                  "Sacrifice": {
+                                    "who": { "ControllerOf": { "Bound": "copy" } },
+                                    "filter": [{ "Is": { "Bound": "copy" } }],
+                                    "count": { "Count": [{ "Is": { "Bound": "copy" } }] }
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

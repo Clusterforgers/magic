@@ -1,0 +1,74 @@
+{
+  "oracle_id": "961d1128-a022-480c-918e-16ba0abf844b",
+  "name": "Trystan, Callous Cultivator // Trystan, Penitent Culler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Trystan, Callous Cultivator",
+      "oracle_fingerprint": "d42b522c15eac77c39b84c69cc4d7f12",
+      "abilities": [
+        { "Keyword": "Deathtouch" },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "Did": { "action": "Transformed", "what": ["This"] } }
+              ]
+            },
+            "effects": [
+              { "Mill": { "count": 3 } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Count": [{ "Subtype": "Elf" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                      },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "GainLife": { "amount": 2 } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Main1", "whose": "You" } },
+            "effects": [{ "Pay": { "cost": "{B}", "paid": [{ "Transform": { "what": "This" } }] } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Trystan, Penitent Culler",
+      "oracle_fingerprint": "d1c637428df1c6b65e7d20d7eb42c77e",
+      "abilities": [
+        { "Keyword": "Deathtouch" },
+        {
+          "Triggered": {
+            "when": { "Did": { "action": "Transformed", "what": ["This"] } },
+            "effects": [
+              { "Mill": { "count": 3 } },
+              {
+                "Pay": {
+                  "cost": [{ "ExileFromGraveyard": { "filter": [{ "Subtype": "Elf" }] } }],
+                  "paid": [{ "LoseLife": { "who": "Opponents", "amount": 2 } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Main1", "whose": "You" } },
+            "effects": [{ "Pay": { "cost": "{G}", "paid": [{ "Transform": { "what": "This" } }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

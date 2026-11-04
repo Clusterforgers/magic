@@ -1,0 +1,27 @@
+{
+  "oracle_id": "99c13f8d-7f18-48ce-86da-c74ddb6c1205",
+  "name": "Cleric of Chill Depths",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cleric of Chill Depths",
+      "oracle_fingerprint": "7ddb32f5f464b8d41724af6415c0676a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "BecomesBlocked": { "what": [], "by": ["This"] } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Triggering",
+                  "mods": ["DoesntUntap"],
+                  "duration": "NextUntapStep"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

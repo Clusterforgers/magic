@@ -1,7 +1,7 @@
 {
   "oracle_id": "a720f3d3-c2d7-4e50-8cc6-600120380e9c",
   "name": "Voldaren Bloodcaster // Bloodbat Summoner",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Voldaren Bloodcaster",
@@ -37,9 +37,18 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 186, "end": 287 }
+          "Triggered": {
+            "when": {
+              "Did": { "action": "TokenCreated", "who": "You", "what": [{ "Subtype": "Blood" }] }
+            },
+            "if": {
+              "Compare": {
+                "left": { "Count": [{ "Subtype": "Blood" }, "Token", { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 5
+              }
+            },
+            "effects": [{ "Transform": { "what": "This" } }]
           }
         }
       ]

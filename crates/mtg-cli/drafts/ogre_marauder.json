@@ -1,0 +1,41 @@
+{
+  "oracle_id": "d9dafa31-41ea-4f1c-bc63-ec84b01d57fa",
+  "name": "Ogre Marauder",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ogre Marauder",
+      "oracle_fingerprint": "77f8a66e5d2f4ddebd86683714f7a232",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Pay": {
+                  "who": "Defending",
+                  "cost": [{ "Sacrifice": { "filter": [{ "Type": "Creature" }] } }],
+                  "unpaid": [
+                    {
+                      "Continuous": {
+                        "affected": "This",
+                        "mods": [
+                          {
+                            "GrantAbility": {
+                              "Static": { "affected": "This", "mods": ["CantBeBlocked"] }
+                            }
+                          }
+                        ],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

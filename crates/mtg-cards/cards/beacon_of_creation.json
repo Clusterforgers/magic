@@ -1,0 +1,35 @@
+{
+  "oracle_id": "55f31c9c-a015-4965-a0c4-788b861dba21",
+  "name": "Beacon of Creation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Beacon of Creation",
+      "oracle_fingerprint": "902b2f75fff4c4499f3671b9988ccfb7",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Insect",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Insect"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": { "Count": [{ "Subtype": "Forest" }, { "ControlledBy": "You" }] }
+                }
+              },
+              { "Move": { "what": "This", "to": { "Library": { "place": "Shuffled" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

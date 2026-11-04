@@ -1,0 +1,39 @@
+{
+  "oracle_id": "018327d1-a3ba-4912-9c88-f0f0c54a1750",
+  "name": "Fear of Infinity",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fear of Infinity",
+      "oracle_fingerprint": "13b6db2ea90e89baedcee29094a83490",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Lifelink" },
+        { "Static": { "affected": "This", "mods": ["CantBlock"] } },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                {
+                  "ZoneChange": {
+                    "what": [{ "Type": "Enchantment" }, { "ControlledBy": "You" }],
+                    "to": "Battlefield"
+                  }
+                },
+                {
+                  "Did": {
+                    "action": "FullyUnlocked",
+                    "who": "You",
+                    "what": [{ "Subtype": "Room" }]
+                  }
+                }
+              ]
+            },
+            "from": "Graveyard",
+            "effects": [{ "May": { "effects": [{ "Move": { "what": "This", "to": "Hand" } }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

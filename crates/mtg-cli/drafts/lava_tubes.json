@@ -1,0 +1,36 @@
+{
+  "oracle_id": "2ffb2647-60bb-4916-b919-cbcf18e5e424",
+  "name": "Lava Tubes",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lava Tubes",
+      "oracle_fingerprint": "3d08bec971fbd1401b504f43723c3904",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": ["This", { "HasCounter": { "Other": "depletion" } }] },
+            "mods": ["DoesntUntap"]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              { "RemoveCounters": { "from": "This", "counter": { "Other": "depletion" } } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              { "AddMana": { "mana": { "OneOf": ["Black", "Red"] } } },
+              { "PutCounters": { "on": "This", "counter": { "Other": "depletion" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,59 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "A",
+      "text": "Put two +1/+1 counters on up to one target creature you control.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    },
+    {
+      "face": 0,
+      "tag": "A",
+      "text": "Until end of turn, CARDNAME becomes a copy of target creature you control. Prevent all damage that would be dealt to him this turn.",
+      "abilities": [],
+      "gap": "keyword:Prevent all damage that would be dealt to CARDNAME."
+    },
+    {
+      "face": 0,
+      "tag": "A",
+      "text": "Until end of turn, each creature you control has base power and toughness 10/10 and gains trample.",
+      "abilities": [
+        1
+      ],
+      "gap": null
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 68
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 69,
+          "end": 198
+        },
+        "mark": "ByHand"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 199,
+          "end": 301
+        },
+        "mark": "Auto"
+      }
+    ]
+  }
+}

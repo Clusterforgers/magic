@@ -1,0 +1,39 @@
+{
+  "oracle_id": "68a1a67e-9d40-47dd-b282-6c1b15465f62",
+  "name": "Crusher Zendikon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Crusher Zendikon",
+      "oracle_fingerprint": "8648d3a13359689eeb19dd2cbba00cf9",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Land" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "SetPT": { "power": 4, "toughness": 2 } },
+              { "AddKeyword": "Trample" },
+              { "SetColors": ["Red"] },
+              { "AddType": "Creature" },
+              { "AddSubtype": "Beast" }
+            ],
+            "condition": { "Matches": { "subject": "Attached", "selector": [{ "Type": "Land" }] } }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Is": "Attached" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [{ "Move": { "what": "Triggering", "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

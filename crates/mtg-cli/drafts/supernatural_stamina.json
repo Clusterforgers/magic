@@ -14,8 +14,14 @@
               {
                 "Continuous": {
                   "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
                   "mods": [
-                    { "ModifyPT": { "power": 2, "toughness": 0 } },
                     {
                       "GrantAbility": {
                         "Triggered": {
@@ -29,7 +35,7 @@
                           "effects": [
                             {
                               "Move": {
-                                "what": "Triggering",
+                                "what": "This",
                                 "to": { "Battlefield": { "tapped": true } }
                               }
                             }

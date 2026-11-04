@@ -9,9 +9,7 @@
       "abilities": [
         {
           "Triggered": {
-            "when": {
-              "ZoneChange": { "what": [{ "Type": "Land" }], "from": "Hand", "to": "Battlefield" }
-            },
+            "when": { "Did": { "action": "PlayedLand", "what": [{ "Type": "Land" }] } },
             "effects": [{ "Move": { "what": "This", "to": "Hand" } }]
           }
         }

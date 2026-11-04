@@ -1,0 +1,38 @@
+{
+  "oracle_id": "16604fee-cd8d-41e4-8269-3c7ff756613d",
+  "name": "Tomik, Izzet Sparkmage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tomik, Izzet Sparkmage",
+      "oracle_fingerprint": "b3c55890a3c8391f7ae373c30c54acb0",
+      "abilities": [
+        { "Keyword": "Prowess" },
+        {
+          "Replacement": {
+            "when": {
+              "Damage": {
+                "to": { "Each": [{ "ControlledBy": "Opponents" }] },
+                "source": [{ "ControlledBy": "You" }],
+                "combat": false
+              }
+            },
+            "by": { "Add": 1 }
+          }
+        },
+        {
+          "Replacement": {
+            "when": {
+              "Damage": {
+                "to": "Opponents",
+                "source": [{ "ControlledBy": "You" }],
+                "combat": false
+              }
+            },
+            "by": { "Add": 1 }
+          }
+        }
+      ]
+    }
+  ]
+}

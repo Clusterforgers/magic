@@ -13,10 +13,7 @@
             "effects": [
               {
                 "Pay": {
-                  "cost": [
-                    { "Discard": { "filter": [{ "Type": "Creature" }] } },
-                    { "Discard": { "filter": [{ "Type": "Creature" }] } }
-                  ],
+                  "cost": [{ "Discard": { "filter": [{ "Type": "Creature" }] } }],
                   "unpaid": [{ "Sacrifice": { "filter": ["This"] } }]
                 }
               }

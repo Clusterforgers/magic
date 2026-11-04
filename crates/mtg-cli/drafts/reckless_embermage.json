@@ -1,0 +1,23 @@
+{
+  "oracle_id": "5771296a-16f8-423e-9b83-8e6f687cbb34",
+  "name": "Reckless Embermage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Reckless Embermage",
+      "oracle_fingerprint": "3ecec8cb6a1ca5dcd4df730a52e5dd59",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{1}{R}",
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 1 } },
+              { "DealDamage": { "to": "This", "amount": 1 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

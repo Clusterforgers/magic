@@ -1,0 +1,45 @@
+{
+  "oracle_id": "895f23a2-55b7-4cc0-8939-2efaaf097e6f",
+  "name": "Solphim, Mayhem Dominus",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Solphim, Mayhem Dominus",
+      "oracle_fingerprint": "b9f57c1dbd772496dd7e1aa95325f492",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": {
+              "Damage": {
+                "to": { "Each": [{ "ControlledBy": "Opponents" }] },
+                "source": [{ "ControlledBy": "You" }],
+                "combat": false
+              }
+            },
+            "by": { "Multiply": 2 }
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{R/P}{R/P}" }, { "Discard": { "count": 2 } }],
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": { "Other": "indestructible" } } }
+            ]
+          }
+        },
+        {
+          "Replacement": {
+            "when": {
+              "Damage": {
+                "to": "Opponents",
+                "source": [{ "ControlledBy": "You" }],
+                "combat": false
+              }
+            },
+            "by": { "Multiply": 2 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "oracle_id": "c92f1d40-0441-4ede-9363-78821ff15f88",
+  "name": "Skirk Commando",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Skirk Commando",
+      "oracle_fingerprint": "ad39742a8e1f33f97bad8d18e6265fbf",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Triggering" }] } }
+            ],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 2 } }]
+          }
+        },
+        { "Keyword": { "Morph": "{2}{R}" } }
+      ]
+    }
+  ]
+}

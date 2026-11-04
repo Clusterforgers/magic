@@ -1,0 +1,44 @@
+{
+  "oracle_id": "675de007-a71e-4036-8204-140c67871b7f",
+  "name": "Sea Gate Stormcaller",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sea Gate Stormcaller",
+      "oracle_fingerprint": "491379d055d92aa4ff742843182a25c7",
+      "abilities": [
+        { "Keyword": { "Kicker": "{4}{U}" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "SpellCast": {
+                      "what": [
+                        { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                        { "Compare": { "stat": "ManaValue", "op": "Le", "to": 2 } }
+                      ],
+                      "by": "You"
+                    }
+                  },
+                  "this_turn": true,
+                  "effects": [
+                    {
+                      "CopySpell": {
+                        "what": "Triggering",
+                        "count": { "When": { "condition": "Kicked", "then": 2, "otherwise": 1 } },
+                        "new_targets": true
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,70 @@
+{
+  "oracle_id": "864d9db7-34ca-4440-8d6d-096f9eddedd4",
+  "name": "Surge Engine",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Surge Engine",
+      "oracle_fingerprint": "3243576e55b0abae0b2a53ef00b3007f",
+      "abilities": [
+        { "Keyword": "Defender" },
+        {
+          "Activated": {
+            "cost": "{U}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "RemoveKeyword": "Defender" },
+                    {
+                      "GrantAbility": {
+                        "Static": { "affected": "This", "mods": ["CantBeBlocked"] }
+                      }
+                    }
+                  ],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{2}{U}",
+            "condition": {
+              "Compare": {
+                "left": { "Count": ["This", { "Not": { "HasKeyword": "Defender" } }] },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "SetPT": { "power": 5, "toughness": 4 } }, { "SetColors": ["Blue"] }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{4}{U}{U}",
+            "condition": {
+              "Compare": {
+                "left": { "Count": ["This", { "Color": "Blue" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "limit": "OncePerGame",
+            "effects": [{ "Draw": { "count": 3 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

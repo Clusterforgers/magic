@@ -1,0 +1,57 @@
+{
+  "oracle_id": "a36dda2e-4cb8-4821-9c93-bd637ae7b333",
+  "name": "Skullslither Worm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Skullslither Worm",
+      "oracle_fingerprint": "71b74bcdfb0df7439e152e26fffc21d1",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "Discard": { "who": "Opponents", "as": "discarded" } },
+              {
+                "PutCounters": {
+                  "on": "This",
+                  "counter": "+1/+1",
+                  "count": {
+                    "Times": {
+                      "by": 2,
+                      "of": {
+                        "Sum": [
+                          { "Players": "Opponents" },
+                          {
+                            "Times": {
+                              "by": -1,
+                              "of": {
+                                "Count": [
+                                  { "Is": { "Bound": "discarded" } },
+                                  {
+                                    "AnyOf": [
+                                      { "In": "Battlefield" },
+                                      { "In": "Hand" },
+                                      { "In": "Library" },
+                                      { "In": "Graveyard" },
+                                      { "In": "Exile" },
+                                      { "In": "Stack" }
+                                    ]
+                                  }
+                                ]
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

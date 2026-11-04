@@ -1,0 +1,25 @@
+{
+  "oracle_id": "8242cd78-6675-43b5-8924-0a88c3aa6f76",
+  "name": "Genji Glove",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Genji Glove",
+      "oracle_fingerprint": "5de9f9bd9d1ad0995a999449f76a1692",
+      "abilities": [
+        { "Static": { "affected": "Attached", "mods": [{ "AddKeyword": "DoubleStrike" }] } },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": [{ "Is": "Attached" }] } },
+            "if": "FirstCombat",
+            "effects": [
+              { "Untap": { "what": "Attached" } },
+              { "AddPhase": { "phases": ["Combat"] } }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{3}" } }
+      ]
+    }
+  ]
+}

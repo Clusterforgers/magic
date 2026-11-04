@@ -1,0 +1,32 @@
+{
+  "oracle_id": "a6436330-f35a-4d31-9230-03e0c62f9e7e",
+  "name": "Calamity's Wake",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Calamity's Wake",
+      "oracle_fingerprint": "0b5570fd4e45fca0aa4f7b889bc898db",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Exile": { "what": { "Each": [{ "In": "Graveyard" }] } } },
+              {
+                "Rule": {
+                  "rule": {
+                    "Cant": {
+                      "who": "EachPlayer",
+                      "action": { "Cast": { "filter": [{ "Not": { "Type": "Creature" } }] } }
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Exile": { "what": "This" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

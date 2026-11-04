@@ -1,0 +1,25 @@
+{
+  "oracle_id": "163f1fce-70c8-44e3-a679-f97d52cd1e9a",
+  "name": "Spider-Man No More",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spider-Man No More",
+      "oracle_fingerprint": "b0dedb37bd485b0815decc26ba132ed0",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "SetPT": { "power": 1, "toughness": 1 } },
+              { "AddKeyword": "Defender" },
+              "LoseAbilities",
+              { "SetCreatureTypes": ["Citizen"] }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

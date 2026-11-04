@@ -1,14 +1,29 @@
 {
   "oracle_id": "31f59a3e-a040-451c-999e-1f60cb957c57",
   "name": "Cyclopean Titan",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Cyclopean Titan",
       "oracle_fingerprint": "ef065865399fd76aab5a3419fd21e533",
       "abilities": [
         {
-          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 0, "end": 81 } }
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Land" }] }, "bounds": { "min": 2, "max": 2 } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetLandTypes": ["Swamp"] }],
+                  "duration": "Forever"
+                }
+              },
+              { "Exile": { "what": "This" } }
+            ]
+          }
         },
         {
           "Activated": {

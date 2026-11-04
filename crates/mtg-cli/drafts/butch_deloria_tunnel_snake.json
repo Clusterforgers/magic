@@ -1,7 +1,7 @@
 {
   "oracle_id": "20f92504-d03c-437e-9814-b25ee384b3ba",
   "name": "Butch DeLoria, Tunnel Snake",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Butch DeLoria, Tunnel Snake",
@@ -42,9 +42,19 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 206, "end": 313 }
+          "Activated": {
+            "cost": "{1}{B}",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Other"] } }],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "menace" } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddSubtype": "Rogue" }],
+                  "duration": "Forever"
+                }
+              }
+            ]
           }
         }
       ]

@@ -1,0 +1,33 @@
+{
+  "oracle_id": "811c6f52-03cb-49a9-a3c7-7f4ae40e7155",
+  "name": "Woolly Spider",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Woolly Spider",
+      "oracle_fingerprint": "676eb6e1c6f2c187fff3b580c6d21ef5",
+      "abilities": [
+        { "Keyword": "Reach" },
+        {
+          "Triggered": {
+            "when": {
+              "BecomesBlocked": {
+                "what": [{ "Type": "Creature" }, { "HasKeyword": "Flying" }],
+                "by": ["This"]
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 0, "toughness": 2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

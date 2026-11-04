@@ -1,0 +1,44 @@
+{
+  "oracle_id": "4f427de6-b551-4699-b78a-44ff668198d8",
+  "name": "Puffer Extract",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Puffer Extract",
+      "oracle_fingerprint": "5ce5641e9b14bf07db8f67b4b91fb91d",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{X}" }, "Tap"],
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": "X", "toughness": "X" } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "RepeatEach": {
+                  "over": { "Target": 0 },
+                  "as": "pumped",
+                  "effects": [
+                    {
+                      "DelayedTrigger": {
+                        "when": { "StepBegins": { "step": "End" } },
+                        "effects": [{ "Destroy": { "what": { "Bound": "pumped" } } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

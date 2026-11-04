@@ -1,0 +1,50 @@
+{
+  "oracle_id": "9c462cd8-36f9-4e39-adf3-310ad4d76051",
+  "name": "Agadeem Occultist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Agadeem Occultist",
+      "oracle_fingerprint": "a384a3209823cdf6cf87d43799803e50",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "OwnedBy": "Opponents" },
+                    { "In": "Graveyard" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Stat": { "of": { "Target": 0 }, "stat": "ManaValue" } },
+                      "op": "Le",
+                      "right": { "Count": [{ "Subtype": "Ally" }, { "ControlledBy": "You" }] }
+                    }
+                  },
+                  "then": [
+                    {
+                      "Move": {
+                        "what": { "Target": 0 },
+                        "to": { "Battlefield": { "under": "You" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

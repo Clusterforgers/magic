@@ -1,0 +1,47 @@
+{
+  "oracle_id": "36f5f161-b25e-48e4-b8f9-e6c36dfefe5b",
+  "name": "Sorin's Guide",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sorin's Guide",
+      "oracle_fingerprint": "43d4acc43f5f345b9b943d258c185d7f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "May": {
+                        "effects": [
+                          {
+                            "Search": {
+                              "also": ["Graveyard"],
+                              "filter": [{ "OwnedBy": "You" }, { "Named": "Sorin, Vampire Lord" }],
+                              "reveal": true,
+                              "as": "found"
+                            }
+                          },
+                          { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+                          {
+                            "If": {
+                              "condition": { "Searched": { "zone": "Library" } },
+                              "then": [{ "Shuffle": {} }]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -12,7 +12,7 @@
             "Kicker": [
               {
                 "Sacrifice": {
-                  "filter": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] }]
+                  "filter": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Artifact" }] }]
                 }
               }
             ]

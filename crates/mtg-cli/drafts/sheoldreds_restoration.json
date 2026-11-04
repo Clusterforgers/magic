@@ -1,0 +1,53 @@
+{
+  "oracle_id": "df587772-516f-4ae8-aefe-e6fc63f8b365",
+  "name": "Sheoldred's Restoration",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sheoldred's Restoration",
+      "oracle_fingerprint": "dc68d085cac74dc587fc65e5b8f7a717",
+      "abilities": [
+        { "Keyword": { "Kicker": "{2}{W}" } },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } },
+              {
+                "If": {
+                  "condition": "Kicked",
+                  "then": [
+                    {
+                      "GainLife": {
+                        "amount": { "Stat": { "of": { "Target": 0 }, "stat": "ManaValue" } }
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": { "Compare": { "left": "Kicks", "op": "Eq", "right": 0 } },
+                  "then": [
+                    {
+                      "LoseLife": {
+                        "amount": { "Stat": { "of": { "Target": 0 }, "stat": "ManaValue" } }
+                      }
+                    }
+                  ]
+                }
+              },
+              { "Exile": { "what": "This" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

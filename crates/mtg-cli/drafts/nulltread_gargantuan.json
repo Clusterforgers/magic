@@ -14,10 +14,10 @@
               {
                 "Choose": {
                   "from": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
-                  "as": "chosen"
+                  "as": "picked"
                 }
               },
-              { "Move": { "what": { "Bound": "chosen" }, "to": { "Library": { "place": "Top" } } } }
+              { "Move": { "what": { "Bound": "picked" }, "to": { "Library": { "place": "Top" } } } }
             ]
           }
         }

@@ -1,0 +1,63 @@
+{
+  "oracle_id": "2385c8fb-9c38-4ff3-8f61-4e25a8c7d46b",
+  "name": "Krang & Shredder",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Krang & Shredder",
+      "oracle_fingerprint": "7196677da0dde983a50b1d59ec379c27",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "Attacks": { "what": ["This"] } }
+              ]
+            },
+            "effects": [
+              {
+                "RevealUntil": {
+                  "who": "Opponents",
+                  "filter": [{ "Not": { "Type": "Land" } }],
+                  "as": "found",
+                  "revealed_as": "revealed2"
+                }
+              },
+              { "Exile": { "what": { "Bound": "found" } } },
+              { "Exile": { "what": { "Bound": "revealed2" } } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "PermanentsLeftUnder" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Not": { "Type": "Land" } },
+                      { "ExiledWith": "This" },
+                      { "In": "Exile" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked"
+                }
+              },
+              { "CastFromZone": { "what": { "Bound": "picked" }, "free": true, "play": true } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

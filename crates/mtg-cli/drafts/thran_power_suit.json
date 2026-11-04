@@ -14,17 +14,43 @@
               {
                 "ModifyPT": {
                   "power": {
-                    "Count": [
-                      { "Type": "Artifact" },
-                      { "Subtype": "Aura" },
-                      { "Subtype": "Equipment" }
+                    "Sum": [
+                      {
+                        "Count": [
+                          { "Subtype": "Aura" },
+                          {
+                            "AttachedTo": { "Each": [{ "Type": "Creature" }, { "Is": "Attached" }] }
+                          }
+                        ]
+                      },
+                      {
+                        "Count": [
+                          { "Subtype": "Equipment" },
+                          {
+                            "AttachedTo": { "Each": [{ "Type": "Creature" }, { "Is": "Attached" }] }
+                          }
+                        ]
+                      }
                     ]
                   },
                   "toughness": {
-                    "Count": [
-                      { "Type": "Artifact" },
-                      { "Subtype": "Aura" },
-                      { "Subtype": "Equipment" }
+                    "Sum": [
+                      {
+                        "Count": [
+                          { "Subtype": "Aura" },
+                          {
+                            "AttachedTo": { "Each": [{ "Type": "Creature" }, { "Is": "Attached" }] }
+                          }
+                        ]
+                      },
+                      {
+                        "Count": [
+                          { "Subtype": "Equipment" },
+                          {
+                            "AttachedTo": { "Each": [{ "Type": "Creature" }, { "Is": "Attached" }] }
+                          }
+                        ]
+                      }
                     ]
                   }
                 }

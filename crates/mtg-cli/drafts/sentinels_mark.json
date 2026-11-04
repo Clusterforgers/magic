@@ -1,0 +1,41 @@
+{
+  "oracle_id": "ac34bc09-ba8a-4bfb-bc45-e9c3e4d7bdc0",
+  "name": "Sentinel's Mark",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sentinel's Mark",
+      "oracle_fingerprint": "1541dbe767acf933e00c6d7860ce3f47",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 2 } }, { "AddKeyword": "Vigilance" }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This", { "WasCast": {} }], "to": "Battlefield" } },
+            "if": {
+              "All": [
+                { "AtTrigger": "YourTurn" },
+                { "AtTrigger": { "Any": [{ "Step": "Main1" }, { "Step": "Main2" }] } }
+              ]
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Attached",
+                  "mods": [{ "AddKeyword": "Lifelink" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

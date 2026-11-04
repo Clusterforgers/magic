@@ -1,0 +1,30 @@
+{
+  "oracle_id": "ab0707fb-b404-433d-b845-0d50d01cd72e",
+  "name": "Flamespeaker Adept",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Flamespeaker Adept",
+      "oracle_fingerprint": "d95033ba23947c1f46300ba67687884f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Did": { "action": "Scried", "who": "You" } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "ModifyPT": { "power": 2, "toughness": 0 } },
+                    { "AddKeyword": "FirstStrike" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

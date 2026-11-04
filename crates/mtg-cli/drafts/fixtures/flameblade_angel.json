@@ -1,0 +1,137 @@
+{
+  "object": "card",
+  "id": "1031ec22-c99f-4843-a7cf-c8332234eca8",
+  "oracle_id": "f912c739-27a2-4068-bf0c-0891309639df",
+  "multiverse_ids": [
+    409909
+  ],
+  "mtgo_id": 60214,
+  "mtgo_foil_id": 60215,
+  "tcgplayer_id": 115268,
+  "cardmarket_id": 288919,
+  "name": "Flameblade Angel",
+  "lang": "en",
+  "released_at": "2016-04-08",
+  "uri": "https://api.scryfall.com/cards/1031ec22-c99f-4843-a7cf-c8332234eca8",
+  "scryfall_uri": "https://scryfall.com/card/soi/157/flameblade-angel?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T10:15:53Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/1/0/1031ec22-c99f-4843-a7cf-c8332234eca8.jpg?1783937753",
+    "normal": "https://cards.scryfall.io/normal/front/1/0/1031ec22-c99f-4843-a7cf-c8332234eca8.jpg?1783937753",
+    "large": "https://cards.scryfall.io/large/front/1/0/1031ec22-c99f-4843-a7cf-c8332234eca8.jpg?1783937753",
+    "png": "https://cards.scryfall.io/png/front/1/0/1031ec22-c99f-4843-a7cf-c8332234eca8.png?1783937753",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/1/0/1031ec22-c99f-4843-a7cf-c8332234eca8.jpg?1783937753",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/1/0/1031ec22-c99f-4843-a7cf-c8332234eca8.jpg?1783937753",
+    "thumb": "https://cards.scryfall.io/thumb/front/1/0/1031ec22-c99f-4843-a7cf-c8332234eca8.webp?1783937753",
+    "grid": "https://cards.scryfall.io/grid/front/1/0/1031ec22-c99f-4843-a7cf-c8332234eca8.webp?1783937753",
+    "display": "https://cards.scryfall.io/display/front/1/0/1031ec22-c99f-4843-a7cf-c8332234eca8.webp?1783937753",
+    "art": "https://cards.scryfall.io/art/front/1/0/1031ec22-c99f-4843-a7cf-c8332234eca8.webp?1783937753",
+    "crop": "https://cards.scryfall.io/crop/front/1/0/1031ec22-c99f-4843-a7cf-c8332234eca8.webp?1783937753",
+    "jpeg": "https://cards.scryfall.io/normal/front/1/0/1031ec22-c99f-4843-a7cf-c8332234eca8.jpg?1783937753"
+  },
+  "mana_cost": "{4}{R}{R}",
+  "cmc": 6.0,
+  "type_line": "Creature — Angel",
+  "oracle_text": "Flying\nWhenever a source an opponent controls deals damage to you or a permanent you control, you may have this creature deal 1 damage to that source's controller.",
+  "power": "4",
+  "toughness": "4",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Flying"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "5e914d7e-c1e9-446c-a33d-d093c02b2743",
+  "set": "soi",
+  "set_name": "Shadows over Innistrad",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/5e914d7e-c1e9-446c-a33d-d093c02b2743",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Asoi&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/soi?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/1031ec22-c99f-4843-a7cf-c8332234eca8/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Af912c739-27a2-4068-bf0c-0891309639df&unique=prints",
+  "collector_number": "157",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "\"You must pay for your sin in blood.\"",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Cynthia Sheppard",
+  "artist_ids": [
+    "9dfbdd58-65e6-40cf-951a-80e141061939"
+  ],
+  "illustration_id": "be421a80-0480-494d-8489-34a45a97983e",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 20539,
+  "prices": {
+    "usd": "0.30",
+    "usd_foil": "0.61",
+    "usd_etched": null,
+    "eur": "0.15",
+    "eur_foil": "0.58",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=409909&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DFlameblade%2BAngel",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DFlameblade%2BAngel",
+    "edhrec": "https://edhrec.com/route/?cc=Flameblade+Angel"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F115268%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=288919&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/60214?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

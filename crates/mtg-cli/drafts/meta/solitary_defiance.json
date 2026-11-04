@@ -1,42 +1,4 @@
 {
   "source": "forge",
-  "oracle_matches": true,
-  "lines": [
-    {
-      "face": 0,
-      "tag": "T",
-      "text": "Whenever a creature you control attacks alone, seek two nonland cards, then discard a card.",
-      "abilities": [],
-      "gap": "effect:Seek"
-    },
-    {
-      "face": 0,
-      "tag": "S",
-      "text": "As long as you control exactly one creature, that creature has vigilance and ward {2}.",
-      "abilities": [
-        0
-      ],
-      "gap": null
-    }
-  ],
-  "proof": {
-    "marks": [
-      {
-        "face": 0,
-        "span": {
-          "start": 0,
-          "end": 86
-        },
-        "mark": "Auto"
-      },
-      {
-        "face": 0,
-        "span": {
-          "start": 87,
-          "end": 178
-        },
-        "mark": "ByHand"
-      }
-    ]
-  }
+  "oracle_matches": true
 }

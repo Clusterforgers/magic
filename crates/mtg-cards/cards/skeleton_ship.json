@@ -1,0 +1,36 @@
+{
+  "oracle_id": "8c85887d-5935-46ec-a075-dc9f5133bb96",
+  "name": "Skeleton Ship",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Skeleton Ship",
+      "oracle_fingerprint": "875f2a3e83eb65e4f439794fdcb81f1b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "State": {
+                "condition": {
+                  "Compare": {
+                    "left": { "Count": [{ "Subtype": "Island" }, { "ControlledBy": "You" }] },
+                    "op": "Eq",
+                    "right": 0
+                  }
+                }
+              }
+            },
+            "effects": [{ "Sacrifice": { "filter": ["This"] } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "-1/-1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

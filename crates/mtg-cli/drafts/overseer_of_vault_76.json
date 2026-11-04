@@ -1,0 +1,83 @@
+{
+  "oracle_id": "84f32a1d-3861-418e-a3c2-7e731a2cd55c",
+  "name": "Overseer of Vault 76",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Overseer of Vault 76",
+      "oracle_fingerprint": "b9dd0aa74d636b46937c772a1eb5053e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  {
+                    "AnyOf": [
+                      "This",
+                      {
+                        "Not": {
+                          "AnyOf": [
+                            { "Not": { "Type": "Creature" } },
+                            { "Not": { "Compare": { "stat": "Power", "op": "Le", "to": 3 } } },
+                            { "Not": { "ControlledBy": "You" } },
+                            { "Not": "Other" }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                ],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": { "Other": "quest" } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [
+                    {
+                      "RemoveCountersAmong": {
+                        "counter": { "Other": "quest" },
+                        "count": 3,
+                        "from": []
+                      }
+                    }
+                  ],
+                  "paid": [
+                    {
+                      "Reflexive": {
+                        "effects": [
+                          {
+                            "PutCounters": {
+                              "on": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                              "counter": "+1/+1"
+                            }
+                          },
+                          {
+                            "Continuous": {
+                              "affected": {
+                                "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                              },
+                              "mods": [{ "AddKeyword": "Vigilance" }],
+                              "duration": "UntilEndOfTurn"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

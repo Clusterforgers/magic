@@ -1,0 +1,40 @@
+{
+  "oracle_id": "402506fa-6bd5-4814-8353-90c148dd576c",
+  "name": "Complete the Circuit",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Complete the Circuit",
+      "oracle_fingerprint": "01fd38b79be8c48d66287d59189d31ac",
+      "abilities": [
+        { "Keyword": "Convoke" },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Rule": {
+                  "rule": { "MayCast": { "what": [{ "Type": "Sorcery" }], "flash": true } },
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "SpellCast": {
+                      "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                      "by": "You"
+                    }
+                  },
+                  "this_turn": true,
+                  "effects": [
+                    { "CopySpell": { "what": "Triggering", "count": 2, "new_targets": true } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "oracle_id": "2a7504b9-220d-412e-9381-b6a8a3750241",
+  "name": "Najal, the Storm Runner",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Najal, the Storm Runner",
+      "oracle_fingerprint": "c9a22c028cd59f2d449ef781ac2673d5",
+      "abilities": [
+        { "Rule": { "rule": { "MayCast": { "what": [{ "Type": "Sorcery" }], "flash": true } } } },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{2}",
+                  "paid": [
+                    {
+                      "DelayedTrigger": {
+                        "when": {
+                          "SpellCast": {
+                            "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                            "by": "You"
+                          }
+                        },
+                        "this_turn": true,
+                        "effects": [{ "CopySpell": { "what": "Triggering", "new_targets": true } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

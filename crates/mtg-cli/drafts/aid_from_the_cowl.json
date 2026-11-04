@@ -1,0 +1,78 @@
+{
+  "oracle_id": "9597c974-6120-43a7-9ad3-7e4fddc8c9f5",
+  "name": "Aid from the Cowl",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Aid from the Cowl",
+      "oracle_fingerprint": "2987a6daa1487fbc4f1119e1e8c65f85",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "PermanentsLeftUnder" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              { "LookAtTop": { "as": "top" } },
+              {
+                "Choose": {
+                  "from": { "Each": [{ "In": "Library" }, { "Is": { "Bound": "top" } }] },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "kept2"
+                }
+              },
+              { "Reveal": { "what": { "Bound": "kept2" } } },
+              { "Move": { "what": { "Bound": "kept2" }, "to": { "Battlefield": {} } } },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Top", "order": "Chosen" } }
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "kept2" },
+                      "selector": [],
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [
+                    { "LookAtTop": { "as": "top4" } },
+                    {
+                      "Choose": {
+                        "from": { "Bound": "top4" },
+                        "count": { "min": 0, "max": 1 },
+                        "as": "kept5",
+                        "rest_as": "rest6"
+                      }
+                    },
+                    {
+                      "Move": {
+                        "what": { "Bound": "kept5" },
+                        "to": { "Library": { "place": "Bottom" } }
+                      }
+                    },
+                    {
+                      "Move": {
+                        "what": { "Bound": "rest6" },
+                        "to": { "Library": { "place": "Top", "order": "Chosen" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -12,6 +12,7 @@
             "cost": "{U}",
             "effects": [
               { "Exile": { "what": "This", "as": "exiled" } },
+              { "Remember": { "what": { "Bound": "exiled" }, "slot": "remembered" } },
               {
                 "If": {
                   "condition": {

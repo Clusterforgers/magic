@@ -1,0 +1,31 @@
+{
+  "oracle_id": "71220cc2-5f3d-4c97-ae66-05b1b79adef1",
+  "name": "Quest for Pure Flame",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Quest for Pure Flame",
+      "oracle_fingerprint": "abc5b7db3bda4bc2237451509895c502",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": [{ "ControlledBy": "You" }], "to": "Opponents" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [{ "PutCounters": { "on": "This", "counter": { "Other": "quest" } } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 108, "end": 319 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -13,13 +13,13 @@
             "effects": [
               {
                 "Search": {
-                  "filter": [{ "Supertype": "Basic" }, { "Subtype": "Forest" }],
+                  "filter": [{ "Subtype": "Forest" }, { "Supertype": "Basic" }],
                   "count": { "min": 0, "max": 2 },
                   "reveal": true,
-                  "as": "land"
+                  "as": "found"
                 }
               },
-              { "Move": { "what": { "Bound": "land" }, "to": "Hand" } },
+              { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
               { "Shuffle": {} }
             ]
           }

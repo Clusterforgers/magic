@@ -17,10 +17,10 @@
                 "SetPT": {
                   "power": {
                     "Count": [
+                      { "OwnedBy": "You" },
                       { "Not": { "Type": "Creature" } },
                       { "Not": { "Type": "Land" } },
-                      { "In": "Graveyard" },
-                      { "OwnedBy": "You" }
+                      { "In": "Graveyard" }
                     ]
                   },
                   "toughness": 3

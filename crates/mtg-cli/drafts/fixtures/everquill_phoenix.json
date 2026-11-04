@@ -1,0 +1,154 @@
+{
+  "object": "card",
+  "id": "333db3bc-98e9-4635-b1b0-a7e57ee59165",
+  "oracle_id": "56ba78c1-d1eb-4cc1-b70d-98c35d2972ba",
+  "multiverse_ids": [
+    612523
+  ],
+  "mtgo_id": 111006,
+  "tcgplayer_id": 491598,
+  "cardmarket_id": 705806,
+  "name": "Everquill Phoenix",
+  "lang": "en",
+  "released_at": "2023-04-21",
+  "uri": "https://api.scryfall.com/cards/333db3bc-98e9-4635-b1b0-a7e57ee59165",
+  "scryfall_uri": "https://scryfall.com/card/moc/275/everquill-phoenix?utm_source=api",
+  "layout": "mutate",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T04:32:29Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/3/3/333db3bc-98e9-4635-b1b0-a7e57ee59165.jpg?1783917149",
+    "normal": "https://cards.scryfall.io/normal/front/3/3/333db3bc-98e9-4635-b1b0-a7e57ee59165.jpg?1783917149",
+    "large": "https://cards.scryfall.io/large/front/3/3/333db3bc-98e9-4635-b1b0-a7e57ee59165.jpg?1783917149",
+    "png": "https://cards.scryfall.io/png/front/3/3/333db3bc-98e9-4635-b1b0-a7e57ee59165.png?1783917149",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/3/3/333db3bc-98e9-4635-b1b0-a7e57ee59165.jpg?1783917149",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/3/3/333db3bc-98e9-4635-b1b0-a7e57ee59165.jpg?1783917149",
+    "thumb": "https://cards.scryfall.io/thumb/front/3/3/333db3bc-98e9-4635-b1b0-a7e57ee59165.webp?1783917149",
+    "grid": "https://cards.scryfall.io/grid/front/3/3/333db3bc-98e9-4635-b1b0-a7e57ee59165.webp?1783917149",
+    "display": "https://cards.scryfall.io/display/front/3/3/333db3bc-98e9-4635-b1b0-a7e57ee59165.webp?1783917149",
+    "art": "https://cards.scryfall.io/art/front/3/3/333db3bc-98e9-4635-b1b0-a7e57ee59165.webp?1783917149",
+    "crop": "https://cards.scryfall.io/crop/front/3/3/333db3bc-98e9-4635-b1b0-a7e57ee59165.webp?1783917149",
+    "jpeg": "https://cards.scryfall.io/normal/front/3/3/333db3bc-98e9-4635-b1b0-a7e57ee59165.jpg?1783917149"
+  },
+  "mana_cost": "{2}{R}{R}",
+  "cmc": 4.0,
+  "type_line": "Creature — Phoenix",
+  "oracle_text": "Mutate {3}{R} (If you cast this spell for its mutate cost, put it over or under target non-Human creature you own. They mutate into the creature on top plus all abilities from under it.)\nFlying\nWhenever this creature mutates, create a red artifact token named Feather with \"{1}, Sacrifice this token: Return target Phoenix card from your graveyard to the battlefield tapped.\"",
+  "power": "4",
+  "toughness": "4",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Flying",
+    "Mutate"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "333db3bc-98e9-4635-b1b0-a7e57ee59165",
+      "component": "combo_piece",
+      "name": "Everquill Phoenix",
+      "type_line": "Creature — Phoenix",
+      "uri": "https://api.scryfall.com/cards/333db3bc-98e9-4635-b1b0-a7e57ee59165"
+    },
+    {
+      "object": "related_card",
+      "id": "e401e2a8-d0a3-4517-ba20-449a1fff7f85",
+      "component": "token",
+      "name": "Feather",
+      "type_line": "Token Artifact",
+      "uri": "https://api.scryfall.com/cards/e401e2a8-d0a3-4517-ba20-449a1fff7f85"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "6bba5de9-5afb-42af-a7eb-24ac854bf671",
+  "set": "moc",
+  "set_name": "March of the Machine Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/6bba5de9-5afb-42af-a7eb-24ac854bf671",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Amoc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/moc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/333db3bc-98e9-4635-b1b0-a7e57ee59165/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A56ba78c1-d1eb-4cc1-b70d-98c35d2972ba&unique=prints",
+  "collector_number": "275",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Lie Setiawan",
+  "artist_ids": [
+    "6f771d3f-310e-4aa4-841f-5ba4ba9f025a"
+  ],
+  "illustration_id": "b80a325c-ee25-491c-8a3d-4a57e307cba7",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 11540,
+  "penny_rank": 8894,
+  "prices": {
+    "usd": "0.31",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.15",
+    "eur_foil": null,
+    "tix": "0.17"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=612523&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DEverquill%2BPhoenix",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DEverquill%2BPhoenix",
+    "edhrec": "https://edhrec.com/route/?cc=Everquill+Phoenix"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F491598%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=705806&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/111006?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

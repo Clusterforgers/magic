@@ -1,0 +1,121 @@
+{
+  "oracle_id": "a3b2e0a2-f4ad-457b-ae70-7732bc3479ff",
+  "name": "Rite of Belzenlok",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rite of Belzenlok",
+      "oracle_fingerprint": "ade17c8d41636be405d7e2cd6affa84d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Cleric",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Cleric"],
+                      "power": 0,
+                      "toughness": 1
+                    }
+                  },
+                  "count": 2
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Cleric",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Cleric"],
+                      "power": 0,
+                      "toughness": 1
+                    }
+                  },
+                  "count": 2
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Demon",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Demon"],
+                      "power": 6,
+                      "toughness": 6,
+                      "abilities": [
+                        { "Keyword": "Flying" },
+                        { "Keyword": "Trample" },
+                        {
+                          "Triggered": {
+                            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+                            "effects": [
+                              {
+                                "Sacrifice": {
+                                  "filter": [{ "Type": "Creature" }, "Other"],
+                                  "as": "sacrificed"
+                                }
+                              },
+                              {
+                                "If": {
+                                  "condition": {
+                                    "Compare": {
+                                      "left": {
+                                        "Count": [
+                                          { "Is": { "Bound": "sacrificed" } },
+                                          {
+                                            "AnyOf": [
+                                              { "In": "Battlefield" },
+                                              { "In": "Hand" },
+                                              { "In": "Library" },
+                                              { "In": "Graveyard" },
+                                              { "In": "Exile" },
+                                              { "In": "Stack" }
+                                            ]
+                                          }
+                                        ]
+                                      },
+                                      "op": "Lt",
+                                      "right": 1
+                                    }
+                                  },
+                                  "then": [{ "DealDamage": { "to": "You", "amount": 6 } }]
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

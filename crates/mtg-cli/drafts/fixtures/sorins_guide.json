@@ -1,0 +1,156 @@
+{
+  "object": "card",
+  "id": "416b000d-77d0-4c83-bbbd-d1107f746dde",
+  "oracle_id": "36f5f161-b25e-48e4-b8f9-e6c36dfefe5b",
+  "multiverse_ids": [
+    469845
+  ],
+  "mtgo_id": 73501,
+  "arena_id": 70076,
+  "tcgplayer_id": 192759,
+  "cardmarket_id": 379206,
+  "name": "Sorin's Guide",
+  "lang": "en",
+  "released_at": "2019-07-12",
+  "uri": "https://api.scryfall.com/cards/416b000d-77d0-4c83-bbbd-d1107f746dde",
+  "scryfall_uri": "https://scryfall.com/card/m20/292/sorins-guide?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T08:55:20Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/4/1/416b000d-77d0-4c83-bbbd-d1107f746dde.jpg?1783932920",
+    "normal": "https://cards.scryfall.io/normal/front/4/1/416b000d-77d0-4c83-bbbd-d1107f746dde.jpg?1783932920",
+    "large": "https://cards.scryfall.io/large/front/4/1/416b000d-77d0-4c83-bbbd-d1107f746dde.jpg?1783932920",
+    "png": "https://cards.scryfall.io/png/front/4/1/416b000d-77d0-4c83-bbbd-d1107f746dde.png?1783932920",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/4/1/416b000d-77d0-4c83-bbbd-d1107f746dde.jpg?1783932920",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/4/1/416b000d-77d0-4c83-bbbd-d1107f746dde.jpg?1783932920",
+    "thumb": "https://cards.scryfall.io/thumb/front/4/1/416b000d-77d0-4c83-bbbd-d1107f746dde.webp?1783932920",
+    "grid": "https://cards.scryfall.io/grid/front/4/1/416b000d-77d0-4c83-bbbd-d1107f746dde.webp?1783932920",
+    "display": "https://cards.scryfall.io/display/front/4/1/416b000d-77d0-4c83-bbbd-d1107f746dde.webp?1783932920",
+    "art": "https://cards.scryfall.io/art/front/4/1/416b000d-77d0-4c83-bbbd-d1107f746dde.webp?1783932920",
+    "crop": "https://cards.scryfall.io/crop/front/4/1/416b000d-77d0-4c83-bbbd-d1107f746dde.webp?1783932920",
+    "jpeg": "https://cards.scryfall.io/normal/front/4/1/416b000d-77d0-4c83-bbbd-d1107f746dde.jpg?1783932920"
+  },
+  "mana_cost": "{3}{B}{B}",
+  "cmc": 5.0,
+  "type_line": "Creature — Vampire",
+  "oracle_text": "When this creature enters, you may search your library and/or graveyard for a card named Sorin, Vampire Lord, reveal it, and put it into your hand. If you search your library this way, shuffle.",
+  "power": "4",
+  "toughness": "2",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "416b000d-77d0-4c83-bbbd-d1107f746dde",
+      "component": "combo_piece",
+      "name": "Sorin's Guide",
+      "type_line": "Creature — Vampire",
+      "uri": "https://api.scryfall.com/cards/416b000d-77d0-4c83-bbbd-d1107f746dde"
+    },
+    {
+      "object": "related_card",
+      "id": "bf20ea7b-e480-4b0e-b080-888f24d3c08d",
+      "component": "combo_piece",
+      "name": "Sorin, Vampire Lord",
+      "type_line": "Legendary Planeswalker — Sorin",
+      "uri": "https://api.scryfall.com/cards/bf20ea7b-e480-4b0e-b080-888f24d3c08d"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "arena",
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "4a787360-9767-4f44-80b1-2405dc5e39c7",
+  "set": "m20",
+  "set_name": "Core Set 2020",
+  "set_type": "core",
+  "set_uri": "https://api.scryfall.com/sets/4a787360-9767-4f44-80b1-2405dc5e39c7",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Am20&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/m20?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/416b000d-77d0-4c83-bbbd-d1107f746dde/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A36f5f161-b25e-48e4-b8f9-e6c36dfefe5b&unique=prints",
+  "collector_number": "292",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "\"My people serve the dragon Kolaghan, but I give my blood for a greater lord.\"",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Jason Rainville",
+  "artist_ids": [
+    "6ed7e669-579b-443d-b223-e5cbcb2a7483"
+  ],
+  "illustration_id": "cafc69bc-5c24-4de5-9dd8-3be99cef3278",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "planeswalkerdeck"
+  ],
+  "edhrec_rank": 26918,
+  "prices": {
+    "usd": "0.25",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.12",
+    "eur_foil": null,
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=469845&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DSorin%2527s%2BGuide",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DSorin%2527s%2BGuide",
+    "edhrec": "https://edhrec.com/route/?cc=Sorin%27s+Guide"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F192759%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=379206&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/73501?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

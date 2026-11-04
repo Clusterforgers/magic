@@ -1,0 +1,130 @@
+{
+  "object": "card",
+  "id": "44154580-28f8-4b2f-88b7-528010816ddf",
+  "oracle_id": "81d6b42e-9c41-4d1e-bd28-4662e1fde572",
+  "multiverse_ids": [
+    383003
+  ],
+  "mtgo_id": 52767,
+  "mtgo_foil_id": 52768,
+  "name": "Lurking Evil",
+  "lang": "en",
+  "released_at": "2014-06-16",
+  "uri": "https://api.scryfall.com/cards/44154580-28f8-4b2f-88b7-528010816ddf",
+  "scryfall_uri": "https://scryfall.com/card/vma/127/lurking-evil?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T10:41:27Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/4/4/44154580-28f8-4b2f-88b7-528010816ddf.jpg?1783939287",
+    "normal": "https://cards.scryfall.io/normal/front/4/4/44154580-28f8-4b2f-88b7-528010816ddf.jpg?1783939287",
+    "large": "https://cards.scryfall.io/large/front/4/4/44154580-28f8-4b2f-88b7-528010816ddf.jpg?1783939287",
+    "png": "https://cards.scryfall.io/png/front/4/4/44154580-28f8-4b2f-88b7-528010816ddf.png?1783939287",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/4/4/44154580-28f8-4b2f-88b7-528010816ddf.jpg?1783939287",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/4/4/44154580-28f8-4b2f-88b7-528010816ddf.jpg?1783939287",
+    "thumb": "https://cards.scryfall.io/thumb/front/4/4/44154580-28f8-4b2f-88b7-528010816ddf.webp?1783939287",
+    "grid": "https://cards.scryfall.io/grid/front/4/4/44154580-28f8-4b2f-88b7-528010816ddf.webp?1783939287",
+    "display": "https://cards.scryfall.io/display/front/4/4/44154580-28f8-4b2f-88b7-528010816ddf.webp?1783939287",
+    "art": "https://cards.scryfall.io/art/front/4/4/44154580-28f8-4b2f-88b7-528010816ddf.webp?1783939287",
+    "crop": "https://cards.scryfall.io/crop/front/4/4/44154580-28f8-4b2f-88b7-528010816ddf.webp?1783939287",
+    "jpeg": "https://cards.scryfall.io/normal/front/4/4/44154580-28f8-4b2f-88b7-528010816ddf.jpg?1783939287"
+  },
+  "mana_cost": "{B}{B}{B}",
+  "cmc": 3.0,
+  "type_line": "Enchantment",
+  "oracle_text": "Pay half your life, rounded up: This enchantment becomes a 4/4 Phyrexian Horror creature with flying.",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "a944551a-73fa-41cd-9159-e8d0e4674403",
+  "set": "vma",
+  "set_name": "Vintage Masters",
+  "set_type": "masters",
+  "set_uri": "https://api.scryfall.com/sets/a944551a-73fa-41cd-9159-e8d0e4674403",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Avma&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/vma?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/44154580-28f8-4b2f-88b7-528010816ddf/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A81d6b42e-9c41-4d1e-bd28-4662e1fde572&unique=prints",
+  "collector_number": "127",
+  "digital": true,
+  "rarity": "uncommon",
+  "flavor_text": "\"Ash is our air, darkness our flesh.\"\n—Phyrexian Scriptures",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Scott Kirschner",
+  "artist_ids": [
+    "a9199ae8-9891-4366-bf5b-42cfb662d840"
+  ],
+  "illustration_id": "bd571928-f89e-4093-9e3d-46be1f520e6b",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 28895,
+  "penny_rank": 16046,
+  "prices": {
+    "usd": null,
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": null,
+    "eur_foil": null,
+    "tix": "0.06"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=383003&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DLurking%2BEvil",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DLurking%2BEvil",
+    "edhrec": "https://edhrec.com/route/?cc=Lurking+Evil"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fmagic%2Fproduct%3FproductLineName%3Dmagic%26q%3DLurking%2BEvil%26view%3Dgrid",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products/Search?referrer=scryfall&searchString=Lurking+Evil&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/52767?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "oracle_id": "564dac59-97f7-4988-9f30-d82a891e29ef",
+  "name": "Shocker, Unshakable",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shocker, Unshakable",
+      "oracle_fingerprint": "eee6b2ebd579cb73b40d85d705861ac9",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "FirstStrike" }],
+            "condition": "YourTurn"
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 2 } },
+              { "DealDamage": { "to": { "ControllerOf": { "Target": 0 } }, "amount": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "oracle_id": "f912c739-27a2-4068-bf0c-0891309639df",
+  "name": "Flameblade Angel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Flameblade Angel",
+      "oracle_fingerprint": "3bf45b6d9142bf5de015aa12c3995a32",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "DealsDamage": { "source": [{ "ControlledBy": "Opponents" }], "to": "You" } },
+                {
+                  "DealsDamage": {
+                    "source": [{ "ControlledBy": "Opponents" }],
+                    "to": { "Each": [{ "ControlledBy": "You" }] }
+                  }
+                }
+              ]
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [{ "DealDamage": { "to": { "ControllerOf": "Dealer" }, "amount": 1 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "oracle_id": "2a073f00-0d03-43d0-a0a8-f5bcee0855fc",
+  "name": "Gibbering Hyenas",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gibbering Hyenas",
+      "oracle_fingerprint": "eda7eabea1fa4045080978e15930ff69",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "CanBlockOnly": [
+                  { "AnyOf": [{ "Not": { "Type": "Creature" } }, { "Not": { "Color": "Black" } }] }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

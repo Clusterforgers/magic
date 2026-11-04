@@ -1,7 +1,7 @@
 {
   "oracle_id": "d21d7557-9702-46c1-8277-42a3442084c2",
   "name": "Spiders-Man, Heroic Horde",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Spiders-Man, Heroic Horde",
@@ -21,9 +21,33 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 133, "end": 271 }
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": ["This", { "WasCast": {} }, { "CastWith": "WebSlinging" }],
+                "from": "Stack",
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              { "GainLife": { "amount": 3 } },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Spider",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Spider"],
+                      "power": 2,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Reach" }]
+                    }
+                  },
+                  "count": 2
+                }
+              }
+            ]
           }
         }
       ]

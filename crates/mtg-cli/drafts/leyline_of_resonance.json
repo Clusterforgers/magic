@@ -1,0 +1,35 @@
+{
+  "oracle_id": "f69574dd-097f-4908-9cab-344b0eb39c62",
+  "name": "Leyline of Resonance",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Leyline of Resonance",
+      "oracle_fingerprint": "5902689288b45b91f67f2eecfcc34f46",
+      "abilities": [
+        "OpeningHand",
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [
+                  { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                  "SingleTarget",
+                  {
+                    "Targeting": [
+                      { "Type": "Creature" },
+                      { "ControlledBy": "You" },
+                      { "In": "Battlefield" }
+                    ]
+                  }
+                ],
+                "by": "You"
+              }
+            },
+            "effects": [{ "CopySpell": { "what": "Triggering", "new_targets": true } }]
+          }
+        }
+      ]
+    }
+  ]
+}

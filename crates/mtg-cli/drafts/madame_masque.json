@@ -1,0 +1,41 @@
+{
+  "oracle_id": "b5b0e85f-6651-4667-829c-2253ff8b130d",
+  "name": "Madame Masque",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Madame Masque",
+      "oracle_fingerprint": "11328998352061d9b7f3641d37963d5c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Connive": { "what": "This" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Nth": { "event": { "Drew": { "who": "You" } }, "nth": 2 } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Villain",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Villain"],
+                      "power": 2,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Menace" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

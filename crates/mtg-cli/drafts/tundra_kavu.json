@@ -13,10 +13,25 @@
             "targets": [{ "what": { "Object": [{ "Type": "Land" }] } }],
             "effects": [
               {
-                "Continuous": {
-                  "affected": { "Target": 0 },
-                  "mods": [{ "AddSubtype": "Plains" }, { "AddSubtype": "Island" }],
-                  "duration": "UntilEndOfTurn"
+                "Either": {
+                  "first": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [{ "SetLandTypes": ["Plains"] }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ],
+                  "second": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [{ "SetLandTypes": ["Island"] }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
                 }
               }
             ]

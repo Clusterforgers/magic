@@ -1,0 +1,45 @@
+{
+  "oracle_id": "e8e35b49-8cfb-4fb5-89aa-8050f15b11bf",
+  "name": "Earthbind",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Earthbind",
+      "oracle_fingerprint": "95b64a0afdfd341aefd7ea0153c0b7e8",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": [{ "Is": "Attached" }, { "HasKeyword": "Flying" }] },
+                "op": "Eq",
+                "right": 1
+              }
+            },
+            "effects": [
+              { "DealDamage": { "to": { "Each": [{ "Is": "Attached" }] }, "amount": 2 } },
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    {
+                      "GrantAbility": {
+                        "Static": {
+                          "affected": "Attached",
+                          "mods": [{ "RemoveKeyword": "Flying" }]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "oracle_id": "ac74bd52-a450-486f-8161-816fd8d966d0",
+  "name": "Blood Tyrant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Blood Tyrant",
+      "oracle_fingerprint": "abf046781f26489eeaf50d6227efdf7d",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              { "LoseLife": { "who": "EachPlayer", "amount": 1 } },
+              { "PutCounters": { "on": "This", "counter": "+1/+1", "count": 0 } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Did": { "action": "LostGame" } },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1", "count": 5 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,7 +1,7 @@
 {
   "oracle_id": "a82d855c-50c8-43f2-99ba-a84fe84539c5",
   "name": "The Ten Rings",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "The Ten Rings",
@@ -9,9 +9,32 @@
       "abilities": [
         { "Rule": { "rule": { "MaxHandSize": { "who": "You", "size": 10 } } } },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 31, "end": 143 }
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": [{ "OwnedBy": "You" }, { "In": "Hand" }] },
+                "op": "Lt",
+                "right": 10
+              }
+            },
+            "effects": [
+              {
+                "Draw": {
+                  "count": {
+                    "Sum": [
+                      10,
+                      {
+                        "Times": {
+                          "by": -1,
+                          "of": { "Count": [{ "OwnedBy": "You" }, { "In": "Hand" }] }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
           }
         }
       ]

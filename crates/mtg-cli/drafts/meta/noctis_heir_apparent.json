@@ -1,0 +1,42 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "A",
+      "text": "Exile NICKNAME. Return it to the battlefield under its owner's control tapped and attacking at the beginning of that player's next declare attackers step. It can't be blocked that combat.",
+      "abilities": [],
+      "gap": "key:Trigger.Phase=Declare Attackers"
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "Whenever a creature you control enters during combat, you may attach target Equipment you control to target creature you control.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 129
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 130,
+          "end": 334
+        },
+        "mark": "ByHand"
+      }
+    ]
+  }
+}

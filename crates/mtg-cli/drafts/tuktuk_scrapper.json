@@ -1,0 +1,83 @@
+{
+  "oracle_id": "85cf2403-b419-4364-8ac9-67dd1ceddf9e",
+  "name": "Tuktuk Scrapper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tuktuk Scrapper",
+      "oracle_fingerprint": "3b87ee8949ca935079d42e3ac5a6165c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  {
+                    "AnyOf": [
+                      "This",
+                      {
+                        "Not": {
+                          "AnyOf": [
+                            { "Not": { "Subtype": "Ally" } },
+                            { "Not": "Other" },
+                            { "Not": { "ControlledBy": "You" } }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                ],
+                "to": "Battlefield"
+              }
+            },
+            "targets": [{ "what": { "Object": [{ "Type": "Artifact" }] } }],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "Destroy": { "what": { "Target": 0 }, "as": "destroyed" } },
+                    {
+                      "If": {
+                        "condition": {
+                          "Compare": {
+                            "left": {
+                              "Count": [
+                                { "Is": { "Bound": "destroyed" } },
+                                {
+                                  "AnyOf": [
+                                    { "In": "Battlefield" },
+                                    { "In": "Hand" },
+                                    { "In": "Library" },
+                                    { "In": "Graveyard" },
+                                    { "In": "Exile" },
+                                    { "In": "Stack" }
+                                  ]
+                                }
+                              ]
+                            },
+                            "op": "Ge",
+                            "right": 1
+                          }
+                        },
+                        "then": [
+                          {
+                            "DealDamage": {
+                              "to": { "ControllerOf": { "Target": 0 } },
+                              "amount": {
+                                "Count": [{ "Subtype": "Ally" }, { "ControlledBy": "You" }]
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

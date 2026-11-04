@@ -1,0 +1,36 @@
+{
+  "oracle_id": "a597d2b7-484b-4cfd-89a6-d166cb1a3420",
+  "name": "Timberline Ridge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Timberline Ridge",
+      "oracle_fingerprint": "f187d15c899f88e2200fd207e06e3816",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": ["This", { "HasCounter": { "Other": "depletion" } }] },
+            "mods": ["DoesntUntap"]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              { "RemoveCounters": { "from": "This", "counter": { "Other": "depletion" } } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              { "AddMana": { "mana": { "OneOf": ["Red", "Green"] } } },
+              { "PutCounters": { "on": "This", "counter": { "Other": "depletion" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

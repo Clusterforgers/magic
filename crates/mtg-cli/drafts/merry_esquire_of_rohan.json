@@ -1,7 +1,7 @@
 {
   "oracle_id": "4dce1f49-ddad-4748-893a-e10d831ee7d7",
   "name": "Merry, Esquire of Rohan",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Merry, Esquire of Rohan",
@@ -21,9 +21,26 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 55, "end": 130 }
+          "Triggered": {
+            "when": { "GroupAttacks": { "what": ["This"] } },
+            "if": {
+              "AtTrigger": {
+                "Compare": {
+                  "left": {
+                    "Count": [
+                      { "Type": "Creature" },
+                      "Attacking",
+                      "Other",
+                      { "ControlledBy": "You" },
+                      { "Supertype": "Legendary" }
+                    ]
+                  },
+                  "op": "Ge",
+                  "right": 1
+                }
+              }
+            },
+            "effects": [{ "Draw": {} }]
           }
         }
       ]

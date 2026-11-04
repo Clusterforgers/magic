@@ -1,0 +1,39 @@
+{
+  "oracle_id": "f885ee54-3b26-4d61-9783-3930b0e625aa",
+  "name": "Lat-Nam's Legacy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lat-Nam's Legacy",
+      "oracle_fingerprint": "70d0e3df10fb3e2ca4a3858243444fd0",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Choose": {
+                  "from": { "Each": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "picked" },
+                  "to": { "Library": { "place": "Shuffled" } },
+                  "as": "moved2"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "Upkeep" } },
+                  "effects": [{ "Draw": { "count": 2 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

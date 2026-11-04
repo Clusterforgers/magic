@@ -1,0 +1,55 @@
+{
+  "oracle_id": "84f3736f-5b2a-40f9-8c3b-c18f8c637c22",
+  "name": "Empty the Laboratory",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Empty the Laboratory",
+      "oracle_fingerprint": "c30e89bfb7e6733bafc0d87c0dbeac7c",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Sacrifice": {
+                  "filter": [{ "Subtype": "Zombie" }],
+                  "count": "X",
+                  "as": "sacrificed"
+                }
+              },
+              {
+                "RevealUntil": {
+                  "filter": [{ "Type": "Creature" }, { "Subtype": "Zombie" }],
+                  "count": {
+                    "Count": [
+                      { "Is": { "Bound": "sacrificed" } },
+                      {
+                        "AnyOf": [
+                          { "In": "Battlefield" },
+                          { "In": "Hand" },
+                          { "In": "Library" },
+                          { "In": "Graveyard" },
+                          { "In": "Exile" },
+                          { "In": "Stack" }
+                        ]
+                      }
+                    ]
+                  },
+                  "as": "found2",
+                  "revealed_as": "revealed3"
+                }
+              },
+              { "Move": { "what": { "Bound": "found2" }, "to": { "Battlefield": {} } } },
+              {
+                "Move": {
+                  "what": { "Bound": "revealed3" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

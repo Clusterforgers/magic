@@ -1,0 +1,27 @@
+{
+  "oracle_id": "f50d2a5c-2408-4c09-81cd-55e2ca9b1ce1",
+  "name": "Vrock",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vrock",
+      "oracle_fingerprint": "cee1143dbe8a438ef9822a6dd0cfe21e",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "PermanentsLeftUnder" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "LoseLife": { "who": "Opponents", "amount": 3 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

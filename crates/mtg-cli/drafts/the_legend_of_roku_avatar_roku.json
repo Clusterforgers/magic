@@ -11,11 +11,11 @@
           "Triggered": {
             "when": { "Chapter": { "number": 1 } },
             "effects": [
-              { "ExileTop": { "count": 3, "as": "impulse" } },
+              { "ExileTop": { "count": 3, "as": "exiled" } },
               {
                 "Rule": {
                   "rule": {
-                    "MayCast": { "from": "Exile", "only": { "Bound": "impulse" }, "play": true }
+                    "MayCast": { "from": "Exile", "only": { "Bound": "exiled" }, "play": true }
                   },
                   "duration": "UntilEndOfYourNextTurn"
                 }

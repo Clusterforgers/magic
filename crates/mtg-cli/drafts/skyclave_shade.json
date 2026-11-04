@@ -1,7 +1,7 @@
 {
   "oracle_id": "2345b243-ed0d-4556-8017-d533db1fbc74",
   "name": "Skyclave Shade",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Skyclave Shade",
@@ -17,9 +17,34 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 111, "end": 258 }
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "if": {
+              "All": [
+                {
+                  "Compare": {
+                    "left": { "Count": ["This", { "In": "Graveyard" }] },
+                    "op": "Ge",
+                    "right": 1
+                  }
+                },
+                { "AtTrigger": "YourTurn" }
+              ]
+            },
+            "from": "Graveyard",
+            "effects": [
+              {
+                "Rule": {
+                  "rule": { "MayCast": { "from": "Graveyard", "only": "This" } },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
           }
         }
       ]

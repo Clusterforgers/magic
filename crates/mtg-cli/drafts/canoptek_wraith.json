@@ -1,0 +1,52 @@
+{
+  "oracle_id": "61849685-b407-4ed0-aafc-ec3a003200b9",
+  "name": "Canoptek Wraith",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Canoptek Wraith",
+      "oracle_fingerprint": "9a7090896ca1cfc46a7a2bea4bfcc8f7",
+      "abilities": [
+        { "Static": { "affected": "This", "mods": ["CantBeBlocked"] } },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "Mana": "{3}" }, "SacrificeSelf"],
+                  "paid": [
+                    {
+                      "Choose": {
+                        "from": { "Each": [{ "Type": "Land" }, { "ControlledBy": "You" }] },
+                        "as": "card"
+                      }
+                    },
+                    {
+                      "Search": {
+                        "filter": [
+                          { "Type": "Land" },
+                          { "Supertype": "Basic" },
+                          { "SharesName": { "Bound": "card" } }
+                        ],
+                        "count": { "min": 0, "max": 2 },
+                        "as": "found2"
+                      }
+                    },
+                    {
+                      "Move": {
+                        "what": { "Bound": "found2" },
+                        "to": { "Battlefield": { "tapped": true } }
+                      }
+                    },
+                    { "Shuffle": {} }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

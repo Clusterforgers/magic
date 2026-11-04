@@ -1,0 +1,23 @@
+{
+  "oracle_id": "b2402ac0-8ab8-413c-bac4-9f4ba2163c58",
+  "name": "Behold the Beyond",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Behold the Beyond",
+      "oracle_fingerprint": "0736df4948e4b66fa4609ba5e3653266",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Discard": { "count": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] } } },
+              { "Search": { "filter": [], "count": { "min": 0, "max": 3 }, "as": "found" } },
+              { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

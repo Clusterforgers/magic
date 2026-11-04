@@ -1,0 +1,27 @@
+{
+  "oracle_id": "9794f397-dd86-4cfe-a431-5f8d8c6b68ea",
+  "name": "Radiating Lightning",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Radiating Lightning",
+      "oracle_fingerprint": "92b068d798005cb22b61c7104e7ffb86",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 3 } },
+              {
+                "DealDamage": {
+                  "to": { "Each": [{ "Type": "Creature" }, { "ControlledBy": { "Target": 0 } }] },
+                  "amount": 1
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

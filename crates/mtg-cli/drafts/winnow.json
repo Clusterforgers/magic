@@ -1,0 +1,33 @@
+{
+  "oracle_id": "1b2ad355-3f1e-4c8b-93ee-848934646b23",
+  "name": "Winnow",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Winnow",
+      "oracle_fingerprint": "02ef987f60787c5647cbe5c459a2f32b",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Not": { "Type": "Land" } }] } }],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "SharesName": { "Target": 0 } }] },
+                      "op": "Ge",
+                      "right": 2
+                    }
+                  },
+                  "then": [{ "Destroy": { "what": { "Target": 0 } } }]
+                }
+              },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

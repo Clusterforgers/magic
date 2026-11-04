@@ -1,7 +1,7 @@
 {
   "oracle_id": "99d42ae8-8cee-449b-812b-98a81a593077",
   "name": "Startled Awake // Persistent Nightmare",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Startled Awake",
@@ -14,9 +14,13 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 38, "end": 144 }
+          "Activated": {
+            "cost": "{3}{U}{U}",
+            "timing": "Sorcery",
+            "from": "Graveyard",
+            "effects": [
+              { "Move": { "what": "This", "to": { "Battlefield": { "transformed": true } } } }
+            ]
           }
         }
       ]

@@ -1,0 +1,138 @@
+{
+  "object": "card",
+  "id": "4433ee12-2013-4fdc-979f-ae065f63a527",
+  "oracle_id": "2de138b0-3159-4a0c-a474-a4e5600b2e51",
+  "multiverse_ids": [
+    669048
+  ],
+  "mtgo_id": 129513,
+  "arena_id": 91669,
+  "tcgplayer_id": 559655,
+  "cardmarket_id": 778528,
+  "name": "Festival of Embers",
+  "lang": "en",
+  "released_at": "2024-08-02",
+  "uri": "https://api.scryfall.com/cards/4433ee12-2013-4fdc-979f-ae065f63a527",
+  "scryfall_uri": "https://scryfall.com/card/blb/134/festival-of-embers?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T02:47:00Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/4/4/4433ee12-2013-4fdc-979f-ae065f63a527.jpg?1783910820",
+    "normal": "https://cards.scryfall.io/normal/front/4/4/4433ee12-2013-4fdc-979f-ae065f63a527.jpg?1783910820",
+    "large": "https://cards.scryfall.io/large/front/4/4/4433ee12-2013-4fdc-979f-ae065f63a527.jpg?1783910820",
+    "png": "https://cards.scryfall.io/png/front/4/4/4433ee12-2013-4fdc-979f-ae065f63a527.png?1783910820",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/4/4/4433ee12-2013-4fdc-979f-ae065f63a527.jpg?1783910820",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/4/4/4433ee12-2013-4fdc-979f-ae065f63a527.jpg?1783910820",
+    "thumb": "https://cards.scryfall.io/thumb/front/4/4/4433ee12-2013-4fdc-979f-ae065f63a527.webp?1783910820",
+    "grid": "https://cards.scryfall.io/grid/front/4/4/4433ee12-2013-4fdc-979f-ae065f63a527.webp?1783910820",
+    "display": "https://cards.scryfall.io/display/front/4/4/4433ee12-2013-4fdc-979f-ae065f63a527.webp?1783910820",
+    "art": "https://cards.scryfall.io/art/front/4/4/4433ee12-2013-4fdc-979f-ae065f63a527.webp?1783910820",
+    "crop": "https://cards.scryfall.io/crop/front/4/4/4433ee12-2013-4fdc-979f-ae065f63a527.webp?1783910820",
+    "jpeg": "https://cards.scryfall.io/normal/front/4/4/4433ee12-2013-4fdc-979f-ae065f63a527.jpg?1783910820"
+  },
+  "mana_cost": "{4}{R}",
+  "cmc": 5.0,
+  "type_line": "Enchantment",
+  "oracle_text": "During your turn, you may cast instant and sorcery spells from your graveyard by paying 1 life in addition to their other costs.\nIf a card or token would be put into your graveyard from anywhere, exile it instead.\n{1}{R}: Sacrifice this enchantment.",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "legal",
+    "future": "legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo",
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "a2f58272-bba6-439d-871e-7a46686ac018",
+  "set": "blb",
+  "set_name": "Bloomburrow",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/a2f58272-bba6-439d-871e-7a46686ac018",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ablb&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/blb?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/4433ee12-2013-4fdc-979f-ae065f63a527/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A2de138b0-3159-4a0c-a474-a4e5600b2e51&unique=prints",
+  "collector_number": "134",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Greg Staples",
+  "artist_ids": [
+    "93d65564-bf00-447b-8406-e2031f03b6b1"
+  ],
+  "illustration_id": "0471bf82-0f0d-4843-ba2c-bdbb1d01ad04",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 12054,
+  "preview": {
+    "source": "Destructoid",
+    "source_uri": "https://www.destructoid.com/exclusive-brand-new-beautiful-mtg-bloomburrow-cards-revealed/",
+    "previewed_at": "2024-07-16"
+  },
+  "prices": {
+    "usd": "0.21",
+    "usd_foil": "0.37",
+    "usd_etched": null,
+    "eur": "0.16",
+    "eur_foil": "0.26",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=669048&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DFestival%2Bof%2BEmbers",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DFestival%2Bof%2BEmbers",
+    "edhrec": "https://edhrec.com/route/?cc=Festival+of+Embers"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F559655%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=778528&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/129513?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

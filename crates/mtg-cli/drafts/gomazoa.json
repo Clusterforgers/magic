@@ -32,7 +32,7 @@
                       }
                     ]
                   },
-                  "to": { "Library": { "place": "Top" } }
+                  "to": { "Library": { "place": "Shuffled" } }
                 }
               }
             ]

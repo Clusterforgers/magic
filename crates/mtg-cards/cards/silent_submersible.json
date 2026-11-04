@@ -1,0 +1,31 @@
+{
+  "oracle_id": "43257a85-2cbe-4931-9755-106808ab124a",
+  "name": "Silent Submersible",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Silent Submersible",
+      "oracle_fingerprint": "f52f906d7de2d0ac4327c3e485e45212",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+                {
+                  "DealsDamage": {
+                    "source": ["This"],
+                    "to": { "Each": [{ "Type": "Planeswalker" }] },
+                    "combat": true
+                  }
+                }
+              ]
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        },
+        { "Keyword": { "Crew": 2 } }
+      ]
+    }
+  ]
+}

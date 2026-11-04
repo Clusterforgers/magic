@@ -1,7 +1,7 @@
 {
   "oracle_id": "383e9005-5869-4d1d-917d-30e5f214fbd9",
   "name": "Drop of Honey",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Drop of Honey",
@@ -28,9 +28,19 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 176, "end": 251 }
+          "Triggered": {
+            "when": {
+              "State": {
+                "condition": {
+                  "Compare": {
+                    "left": { "Count": [{ "Type": "Creature" }] },
+                    "op": "Eq",
+                    "right": 0
+                  }
+                }
+              }
+            },
+            "effects": [{ "Sacrifice": { "filter": ["This"] } }]
           }
         }
       ]

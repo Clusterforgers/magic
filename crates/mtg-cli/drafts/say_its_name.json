@@ -1,7 +1,7 @@
 {
   "oracle_id": "474f0675-4088-4f77-8081-f9ed7d492837",
   "name": "Say Its Name",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Say Its Name",
@@ -29,9 +29,34 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 96, "end": 366 }
+          "Activated": {
+            "cost": [
+              "ExileSelf",
+              {
+                "ExileFromGraveyard": {
+                  "filter": ["Other", { "OwnedBy": "You" }, { "Named": "Say Its Name" }],
+                  "count": 2
+                }
+              }
+            ],
+            "timing": "Sorcery",
+            "from": "Graveyard",
+            "effects": [
+              {
+                "Search": {
+                  "also": ["Graveyard", "Hand"],
+                  "filter": [{ "OwnedBy": "You" }, { "Named": "Altanak, the Thrice-Called" }],
+                  "as": "found"
+                }
+              },
+              { "Move": { "what": { "Bound": "found" }, "to": { "Battlefield": {} } } },
+              {
+                "If": {
+                  "condition": { "Searched": { "zone": "Library" } },
+                  "then": [{ "Shuffle": {} }]
+                }
+              }
+            ]
           }
         }
       ]

@@ -1,7 +1,7 @@
 {
   "oracle_id": "9c54bd34-667d-415c-ad26-82e0eb0ff409",
   "name": "Killian, Decisive Mentor",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Killian, Decisive Mentor",
@@ -25,9 +25,16 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 198, "end": 291 }
+          "Triggered": {
+            "when": {
+              "GroupAttacks": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "HasAttached": [{ "Subtype": "Aura" }, { "ControlledBy": "You" }] }
+                ]
+              }
+            },
+            "effects": [{ "Draw": {} }]
           }
         }
       ]

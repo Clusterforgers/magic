@@ -1,14 +1,22 @@
 {
   "oracle_id": "7c48aa73-4576-4a21-ba0f-d5253128ee7c",
   "name": "Ethrimik, Imagined Fiend",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Ethrimik, Imagined Fiend",
       "oracle_fingerprint": "c318d7c89d88ff031c0fa81ee9d27f57",
       "abilities": [
         {
-          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 0, "end": 37 } }
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "LookAtTop": { "count": 2, "as": "looked" } },
+              { "Choose": { "from": { "Bound": "looked" }, "as": "kept2", "rest_as": "rest3" } },
+              { "Move": { "what": { "Bound": "rest3" }, "to": "Graveyard" } },
+              { "Manifest": {} }
+            ]
+          }
         },
         {
           "Static": {

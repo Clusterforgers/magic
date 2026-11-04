@@ -1,0 +1,46 @@
+{
+  "oracle_id": "41e4ba67-d038-4d0a-b740-709cb2350192",
+  "name": "Mindmoil",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mindmoil",
+      "oracle_fingerprint": "5ca19fc17ff19dffb0292c2b7916843f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "by": "You" } },
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Each": [{ "OwnedBy": "You" }, { "In": "Hand" }] },
+                  "to": { "Library": { "place": "Bottom" } },
+                  "as": "moved"
+                }
+              },
+              {
+                "Draw": {
+                  "count": {
+                    "Count": [
+                      { "Is": { "Bound": "moved" } },
+                      {
+                        "AnyOf": [
+                          { "In": "Battlefield" },
+                          { "In": "Hand" },
+                          { "In": "Library" },
+                          { "In": "Graveyard" },
+                          { "In": "Exile" },
+                          { "In": "Stack" }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

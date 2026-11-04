@@ -1,0 +1,38 @@
+{
+  "oracle_id": "3902048e-b7bf-4676-be92-e590bc76c729",
+  "name": "Corrupted Zendikon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Corrupted Zendikon",
+      "oracle_fingerprint": "dfe7957b3124d3bc3455b6f039c05fc1",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Land" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "SetPT": { "power": 3, "toughness": 3 } },
+              { "SetColors": ["Black"] },
+              { "AddType": "Creature" },
+              { "AddSubtype": "Ooze" }
+            ],
+            "condition": { "Matches": { "subject": "Attached", "selector": [{ "Type": "Land" }] } }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Is": "Attached" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [{ "Move": { "what": "Triggering", "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

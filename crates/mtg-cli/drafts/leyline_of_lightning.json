@@ -1,0 +1,30 @@
+{
+  "oracle_id": "bb87ec08-bb1b-43d8-8809-92904cbba685",
+  "name": "Leyline of Lightning",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Leyline of Lightning",
+      "oracle_fingerprint": "05e941d9ced7867ef3adb628ae509e62",
+      "abilities": [
+        "OpeningHand",
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "by": "You" } },
+            "targets": [
+              { "what": { "Either": ["Player", { "Object": [{ "Type": "Planeswalker" }] }] } }
+            ],
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{1}",
+                  "paid": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

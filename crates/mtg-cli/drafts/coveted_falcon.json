@@ -1,7 +1,7 @@
 {
   "oracle_id": "4c495e94-3194-47c7-8129-dd0a0f915daa",
   "name": "Coveted Falcon",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Coveted Falcon",
@@ -27,9 +27,43 @@
         },
         { "Keyword": { "Disguise": "{1}{U}" } },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 115, "end": 288 }
+          "Triggered": {
+            "when": { "TurnedFaceUp": { "what": ["This"] } },
+            "targets": [
+              { "what": "Opponent" },
+              {
+                "what": { "Object": [{ "ControlledBy": "You" }] },
+                "bounds": { "min": 0, "max": { "Count": [{ "ControlledBy": "You" }] } }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 1 },
+                  "mods": [{ "SetController": { "Target": 0 } }],
+                  "duration": "Forever"
+                }
+              },
+              {
+                "Draw": {
+                  "count": {
+                    "Count": [
+                      { "Is": { "Target": 1 } },
+                      {
+                        "AnyOf": [
+                          { "In": "Battlefield" },
+                          { "In": "Hand" },
+                          { "In": "Library" },
+                          { "In": "Graveyard" },
+                          { "In": "Exile" },
+                          { "In": "Stack" }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
           }
         }
       ]

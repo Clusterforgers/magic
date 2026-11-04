@@ -1,0 +1,130 @@
+{
+  "oracle_id": "4c6a0c30-b547-4eff-8ff4-0ca25803c076",
+  "name": "Urza's Saga",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Urza's Saga",
+      "oracle_fingerprint": "bafb55185281b4f6700f864fc0f755a9",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    {
+                      "GrantAbility": {
+                        "Activated": {
+                          "cost": ["Tap"],
+                          "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    {
+                      "GrantAbility": {
+                        "Activated": {
+                          "cost": [{ "Mana": "{2}" }, "Tap"],
+                          "effects": [
+                            {
+                              "CreateToken": {
+                                "token": {
+                                  "Custom": {
+                                    "name": "Construct",
+                                    "types": ["Artifact", "Creature"],
+                                    "subtypes": ["Construct"],
+                                    "power": 0,
+                                    "toughness": 0,
+                                    "abilities": [
+                                      {
+                                        "Static": {
+                                          "affected": "This",
+                                          "mods": [
+                                            {
+                                              "ModifyPT": {
+                                                "power": {
+                                                  "Count": [
+                                                    { "Type": "Artifact" },
+                                                    { "ControlledBy": "You" }
+                                                  ]
+                                                },
+                                                "toughness": {
+                                                  "Count": [
+                                                    { "Type": "Artifact" },
+                                                    { "ControlledBy": "You" }
+                                                  ]
+                                                }
+                                              }
+                                            }
+                                          ]
+                                        }
+                                      }
+                                    ]
+                                  }
+                                }
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "effects": [
+              {
+                "Search": {
+                  "filter": [
+                    { "Type": "Artifact" },
+                    {
+                      "AnyOf": [
+                        {
+                          "Not": {
+                            "AnyOf": [
+                              { "Not": { "Compare": { "stat": "ManaValue", "op": "Eq", "to": 0 } } },
+                              { "Not": { "Not": { "Type": "Land" } } },
+                              { "Not": { "Not": { "HasKeywordNamed": "Suspend" } } }
+                            ]
+                          }
+                        },
+                        { "Compare": { "stat": "ManaValue", "op": "Eq", "to": 1 } }
+                      ]
+                    },
+                    { "Not": "XInCost" }
+                  ],
+                  "as": "found"
+                }
+              },
+              { "Move": { "what": { "Bound": "found" }, "to": { "Battlefield": {} } } },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

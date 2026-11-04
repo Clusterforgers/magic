@@ -1,7 +1,7 @@
 {
   "oracle_id": "5c7f81ef-3c11-423c-a158-951275881f0b",
   "name": "Spectacle of Destruction",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Spectacle of Destruction",
@@ -22,9 +22,19 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 77, "end": 223 }
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": ["This", { "HasCounter": { "Other": "wreck" } }] },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              { "RemoveCounters": { "from": "This", "counter": { "Other": "wreck" } } },
+              { "Seek": { "filter": [{ "Not": { "Type": "Land" } }] } }
+            ]
           }
         }
       ]

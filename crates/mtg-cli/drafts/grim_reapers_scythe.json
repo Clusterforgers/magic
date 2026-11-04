@@ -1,7 +1,7 @@
 {
   "oracle_id": "91b1db8c-4bce-43d1-94ab-14b1435686c7",
   "name": "Grim Reaper's Scythe",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Grim Reaper's Scythe",
@@ -36,9 +36,28 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 100, "end": 338 }
+          "Activated": {
+            "cost": [
+              { "Mana": "{3}{B}" },
+              "Tap",
+              { "Sacrifice": { "filter": [{ "Type": "Creature" }], "count": 2 } }
+            ],
+            "timing": "Sorcery",
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Target": 0 },
+                  "to": { "Battlefield": { "counters": [[{ "Other": "finality" }, 1]] } }
+                }
+              }
+            ]
           }
         }
       ]

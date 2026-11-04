@@ -1,7 +1,7 @@
 {
   "oracle_id": "75e930dd-32e9-4c39-81a7-d833a3976b8d",
   "name": "Garland, Knight of Cornelia // Chaos, the Endless",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Garland, Knight of Cornelia",
@@ -14,9 +14,13 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 126, "end": 239 }
+          "Activated": {
+            "cost": "{3}{B}{B}{R}{R}",
+            "timing": "Sorcery",
+            "from": "Graveyard",
+            "effects": [
+              { "Move": { "what": "This", "to": { "Battlefield": { "transformed": true } } } }
+            ]
           }
         }
       ]

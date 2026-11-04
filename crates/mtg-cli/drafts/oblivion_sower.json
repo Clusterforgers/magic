@@ -9,25 +9,33 @@
       "abilities": [
         {
           "Triggered": {
-            "when": { "SpellCast": { "what": [{ "Is": "This" }], "by": "You" } },
+            "when": { "SpellCast": { "what": ["This"] } },
             "targets": [{ "what": "Opponent" }],
             "effects": [
               { "ExileTop": { "who": { "Target": 0 }, "count": 4, "as": "exiled" } },
               {
                 "Choose": {
                   "from": {
-                    "Each": [
-                      { "Is": { "Bound": "exiled" } },
-                      { "OwnedBy": { "Target": 0 } },
-                      { "Type": "Land" }
-                    ]
+                    "Each": [{ "Type": "Land" }, { "OwnedBy": { "Target": 0 } }, { "In": "Exile" }]
                   },
-                  "count": { "min": 0, "max": 1 },
-                  "as": "card"
+                  "count": {
+                    "min": 0,
+                    "max": {
+                      "Count": [
+                        { "Type": "Land" },
+                        { "OwnedBy": { "Target": 0 } },
+                        { "In": "Exile" }
+                      ]
+                    }
+                  },
+                  "as": "picked2"
                 }
               },
               {
-                "Move": { "what": { "Bound": "card" }, "to": { "Battlefield": { "under": "You" } } }
+                "Move": {
+                  "what": { "Bound": "picked2" },
+                  "to": { "Battlefield": { "under": "You" } }
+                }
               }
             ]
           }

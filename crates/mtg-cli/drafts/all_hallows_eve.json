@@ -1,0 +1,78 @@
+{
+  "oracle_id": "ebed900f-6de3-4ae7-9795-fae34882298d",
+  "name": "All Hallow's Eve",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "All Hallow's Eve",
+      "oracle_fingerprint": "a463144e723a50c8784b581ad025ca20",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Exile": { "what": "This", "as": "exiled" } },
+              {
+                "PutCounters": {
+                  "on": { "Bound": "exiled" },
+                  "counter": { "Other": "scream" },
+                  "count": 2
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Count": ["This", { "HasCounter": { "Other": "scream" } }, { "In": "Exile" }]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "from": "Exile",
+            "effects": [
+              { "RemoveCounters": { "from": "This", "counter": { "Other": "scream" } } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": "This",
+                      "selector": [{ "Not": { "HasCounter": { "Other": "scream" } } }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Move": { "what": "This", "to": "Graveyard" } }]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": "This",
+                      "selector": [{ "Not": { "HasCounter": { "Other": "scream" } } }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Move": {
+                        "what": { "Each": [{ "Type": "Creature" }, { "In": "Graveyard" }] },
+                        "to": { "Battlefield": {} }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

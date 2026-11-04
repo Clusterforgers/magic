@@ -1,0 +1,148 @@
+{
+  "object": "card",
+  "id": "63124d37-d16c-48d6-b1a2-a1a3834b3dc1",
+  "oracle_id": "bc7c3151-ad07-429a-8af8-e4f24b7d9f6b",
+  "multiverse_ids": [
+    539390
+  ],
+  "mtgo_id": 93674,
+  "tcgplayer_id": 248778,
+  "cardmarket_id": 575422,
+  "name": "Syphon Flesh",
+  "lang": "en",
+  "released_at": "2021-09-24",
+  "uri": "https://api.scryfall.com/cards/63124d37-d16c-48d6-b1a2-a1a3834b3dc1",
+  "scryfall_uri": "https://scryfall.com/card/mic/129/syphon-flesh?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T06:48:53Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/6/3/63124d37-d16c-48d6-b1a2-a1a3834b3dc1.jpg?1783925333",
+    "normal": "https://cards.scryfall.io/normal/front/6/3/63124d37-d16c-48d6-b1a2-a1a3834b3dc1.jpg?1783925333",
+    "large": "https://cards.scryfall.io/large/front/6/3/63124d37-d16c-48d6-b1a2-a1a3834b3dc1.jpg?1783925333",
+    "png": "https://cards.scryfall.io/png/front/6/3/63124d37-d16c-48d6-b1a2-a1a3834b3dc1.png?1783925333",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/6/3/63124d37-d16c-48d6-b1a2-a1a3834b3dc1.jpg?1783925333",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/6/3/63124d37-d16c-48d6-b1a2-a1a3834b3dc1.jpg?1783925333",
+    "thumb": "https://cards.scryfall.io/thumb/front/6/3/63124d37-d16c-48d6-b1a2-a1a3834b3dc1.webp?1783925333",
+    "grid": "https://cards.scryfall.io/grid/front/6/3/63124d37-d16c-48d6-b1a2-a1a3834b3dc1.webp?1783925333",
+    "display": "https://cards.scryfall.io/display/front/6/3/63124d37-d16c-48d6-b1a2-a1a3834b3dc1.webp?1783925333",
+    "art": "https://cards.scryfall.io/art/front/6/3/63124d37-d16c-48d6-b1a2-a1a3834b3dc1.webp?1783925333",
+    "crop": "https://cards.scryfall.io/crop/front/6/3/63124d37-d16c-48d6-b1a2-a1a3834b3dc1.webp?1783925333",
+    "jpeg": "https://cards.scryfall.io/normal/front/6/3/63124d37-d16c-48d6-b1a2-a1a3834b3dc1.jpg?1783925333"
+  },
+  "mana_cost": "{4}{B}",
+  "cmc": 5.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Each other player sacrifices a creature of their choice. You create a 2/2 black Zombie creature token for each creature sacrificed this way.",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "63124d37-d16c-48d6-b1a2-a1a3834b3dc1",
+      "component": "combo_piece",
+      "name": "Syphon Flesh",
+      "type_line": "Sorcery",
+      "uri": "https://api.scryfall.com/cards/63124d37-d16c-48d6-b1a2-a1a3834b3dc1"
+    },
+    {
+      "object": "related_card",
+      "id": "3d13fb9e-6906-47d3-b22d-c8817b2403b3",
+      "component": "token",
+      "name": "Zombie",
+      "type_line": "Token Creature — Zombie",
+      "uri": "https://api.scryfall.com/cards/3d13fb9e-6906-47d3-b22d-c8817b2403b3"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "7f9a4deb-715e-47d2-afac-3843ef92f39b",
+  "set": "mic",
+  "set_name": "Midnight Hunt Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/7f9a4deb-715e-47d2-afac-3843ef92f39b",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Amic&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/mic?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/63124d37-d16c-48d6-b1a2-a1a3834b3dc1/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Abc7c3151-ad07-429a-8af8-e4f24b7d9f6b&unique=prints",
+  "collector_number": "129",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "Necromancers deal in commodities far more precious than gold and grain.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Ironbrush",
+  "artist_ids": [
+    "a4a5b134-ffbb-4a86-9aeb-f5177c9786ef"
+  ],
+  "illustration_id": "c25b9b13-ee27-474a-a355-35fa3ea04d7c",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 9783,
+  "prices": {
+    "usd": "0.33",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.18",
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=539390&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DSyphon%2BFlesh",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DSyphon%2BFlesh",
+    "edhrec": "https://edhrec.com/route/?cc=Syphon+Flesh"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F248778%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=575422&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/93674?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

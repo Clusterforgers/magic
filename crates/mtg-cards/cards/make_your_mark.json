@@ -1,0 +1,55 @@
+{
+  "oracle_id": "1c7ca399-7d85-452b-97c0-5d7f6c0eeb12",
+  "name": "Make Your Mark",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Make Your Mark",
+      "oracle_fingerprint": "ed315bbbad8f707de9f8fd43311317dc",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "ZoneChange": {
+                      "what": [{ "Is": { "Target": 0 } }],
+                      "from": "Battlefield",
+                      "to": "Graveyard"
+                    }
+                  },
+                  "this_turn": true,
+                  "effects": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Spirit",
+                            "colors": ["Red", "White"],
+                            "types": ["Creature"],
+                            "subtypes": ["Spirit"],
+                            "power": 3,
+                            "toughness": 2
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

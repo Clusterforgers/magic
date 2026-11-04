@@ -1,0 +1,26 @@
+{
+  "oracle_id": "594c6b1f-ff0e-4122-8b29-852632a22a79",
+  "name": "Michelangelo, Game Master",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Michelangelo, Game Master",
+      "oracle_fingerprint": "7435d8ff4788ba9a4e739b0f922860ec",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "PermanentsLeftUnder" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

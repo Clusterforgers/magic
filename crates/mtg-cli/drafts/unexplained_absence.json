@@ -1,0 +1,28 @@
+{
+  "oracle_id": "71faaee5-70ff-449c-85c8-560eb189a0a7",
+  "name": "Unexplained Absence",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Unexplained Absence",
+      "oracle_fingerprint": "77b754370b25308cc9f582f74ddd2366",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "PerPlayer": { "players": "EachPlayer", "what": [{ "Not": { "Type": "Land" } }] }
+                }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              { "Cloak": { "who": { "ControllerOf": { "Target": 0 } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "oracle_id": "3e978db3-77ef-4b93-8f8f-e414e27254bd",
+  "name": "Elixir",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Elixir",
+      "oracle_fingerprint": "58cb5030b3aa66425771f4bbd407218c",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{5}" }, "Tap", "ExileSelf"],
+            "effects": [
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      { "Not": { "Type": "Land" } },
+                      { "OwnedBy": "You" },
+                      { "In": "Graveyard" }
+                    ]
+                  },
+                  "to": { "Library": { "place": "Shuffled" } },
+                  "as": "moved"
+                }
+              },
+              {
+                "GainLife": {
+                  "amount": {
+                    "Count": [
+                      { "Is": { "Bound": "moved" } },
+                      {
+                        "AnyOf": [
+                          { "In": "Battlefield" },
+                          { "In": "Hand" },
+                          { "In": "Library" },
+                          { "In": "Graveyard" },
+                          { "In": "Exile" },
+                          { "In": "Stack" }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

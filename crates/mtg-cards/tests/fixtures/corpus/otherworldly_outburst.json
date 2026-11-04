@@ -1,0 +1,151 @@
+{
+  "object": "card",
+  "id": "34409e34-04e9-4279-8d21-6ef362b20b72",
+  "oracle_id": "43feb61f-5de0-41b6-b678-9785c476dc08",
+  "multiverse_ids": [
+    414437
+  ],
+  "mtgo_id": 61416,
+  "mtgo_foil_id": 61417,
+  "tcgplayer_id": 120517,
+  "cardmarket_id": 291161,
+  "name": "Otherworldly Outburst",
+  "lang": "en",
+  "released_at": "2016-07-22",
+  "uri": "https://api.scryfall.com/cards/34409e34-04e9-4279-8d21-6ef362b20b72",
+  "scryfall_uri": "https://scryfall.com/card/emn/138/otherworldly-outburst?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T10:11:02Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/3/4/34409e34-04e9-4279-8d21-6ef362b20b72.jpg?1783937462",
+    "normal": "https://cards.scryfall.io/normal/front/3/4/34409e34-04e9-4279-8d21-6ef362b20b72.jpg?1783937462",
+    "large": "https://cards.scryfall.io/large/front/3/4/34409e34-04e9-4279-8d21-6ef362b20b72.jpg?1783937462",
+    "png": "https://cards.scryfall.io/png/front/3/4/34409e34-04e9-4279-8d21-6ef362b20b72.png?1783937462",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/3/4/34409e34-04e9-4279-8d21-6ef362b20b72.jpg?1783937462",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/3/4/34409e34-04e9-4279-8d21-6ef362b20b72.jpg?1783937462",
+    "thumb": "https://cards.scryfall.io/thumb/front/3/4/34409e34-04e9-4279-8d21-6ef362b20b72.webp?1783937462",
+    "grid": "https://cards.scryfall.io/grid/front/3/4/34409e34-04e9-4279-8d21-6ef362b20b72.webp?1783937462",
+    "display": "https://cards.scryfall.io/display/front/3/4/34409e34-04e9-4279-8d21-6ef362b20b72.webp?1783937462",
+    "art": "https://cards.scryfall.io/art/front/3/4/34409e34-04e9-4279-8d21-6ef362b20b72.webp?1783937462",
+    "crop": "https://cards.scryfall.io/crop/front/3/4/34409e34-04e9-4279-8d21-6ef362b20b72.webp?1783937462",
+    "jpeg": "https://cards.scryfall.io/normal/front/3/4/34409e34-04e9-4279-8d21-6ef362b20b72.jpg?1783937462"
+  },
+  "mana_cost": "{R}",
+  "cmc": 1.0,
+  "type_line": "Instant",
+  "oracle_text": "Target creature gets +1/+0 until end of turn. When that creature dies this turn, create a 3/2 colorless Eldrazi Horror creature token.",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "11d25bde-a303-4b06-a3e1-4ad642deae58",
+      "component": "token",
+      "name": "Eldrazi Horror",
+      "type_line": "Token Creature — Eldrazi Horror",
+      "uri": "https://api.scryfall.com/cards/11d25bde-a303-4b06-a3e1-4ad642deae58"
+    },
+    {
+      "object": "related_card",
+      "id": "34409e34-04e9-4279-8d21-6ef362b20b72",
+      "component": "combo_piece",
+      "name": "Otherworldly Outburst",
+      "type_line": "Instant",
+      "uri": "https://api.scryfall.com/cards/34409e34-04e9-4279-8d21-6ef362b20b72"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "5f0e4093-334f-4439-bbb5-a0affafd0ffc",
+  "set": "emn",
+  "set_name": "Eldritch Moon",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/5f0e4093-334f-4439-bbb5-a0affafd0ffc",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aemn&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/emn?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/34409e34-04e9-4279-8d21-6ef362b20b72/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A43feb61f-5de0-41b6-b678-9785c476dc08&unique=prints",
+  "collector_number": "138",
+  "digital": false,
+  "rarity": "common",
+  "flavor_text": "A tiny crack is enough to open the mind to Emrakul.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Kieran Yanner",
+  "artist_ids": [
+    "aa7e89ed-d294-4633-9057-ce04dacfcfa4"
+  ],
+  "illustration_id": "07aa8e4e-bee9-483b-a3ab-025abc9e4677",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 15135,
+  "penny_rank": 10971,
+  "prices": {
+    "usd": "0.26",
+    "usd_foil": "0.33",
+    "usd_etched": null,
+    "eur": "0.14",
+    "eur_foil": "0.52",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=414437&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DOtherworldly%2BOutburst",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DOtherworldly%2BOutburst",
+    "edhrec": "https://edhrec.com/route/?cc=Otherworldly+Outburst"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F120517%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=291161&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/61416?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

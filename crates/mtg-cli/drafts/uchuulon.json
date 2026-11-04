@@ -1,0 +1,78 @@
+{
+  "oracle_id": "1f266fa4-6667-49db-9d24-dfbabf1449ca",
+  "name": "Uchuulon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Uchuulon",
+      "oracle_fingerprint": "f9d44bf150982460350afe7a864f07ad",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "SetPT": {
+                  "power": {
+                    "Count": [
+                      {
+                        "AnyOf": [
+                          { "Subtype": "Crab" },
+                          { "Subtype": "Ooze" },
+                          { "Subtype": "Horror" }
+                        ]
+                      },
+                      { "ControlledBy": "You" }
+                    ]
+                  },
+                  "toughness": 4
+                }
+              }
+            ],
+            "defining": true
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "OwnedBy": "Opponents" },
+                    { "In": "Graveyard" }
+                  ]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              {
+                "CreateToken": {
+                  "token": { "CopyOf": { "of": "This" } },
+                  "count": {
+                    "Count": [
+                      { "Is": { "Bound": "exiled" } },
+                      {
+                        "AnyOf": [
+                          { "In": "Battlefield" },
+                          { "In": "Hand" },
+                          { "In": "Library" },
+                          { "In": "Graveyard" },
+                          { "In": "Exile" },
+                          { "In": "Stack" }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

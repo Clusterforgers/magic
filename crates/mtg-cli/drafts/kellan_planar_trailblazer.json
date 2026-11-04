@@ -1,0 +1,101 @@
+{
+  "oracle_id": "e8fd428f-7521-4e6a-86b7-835f20ee3c5c",
+  "name": "Kellan, Planar Trailblazer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kellan, Planar Trailblazer",
+      "oracle_fingerprint": "bb125a54e728b79be2f4dd1ec178e43e",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{1}{R}",
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": ["This", { "Subtype": "Scout" }] },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": "This",
+                        "mods": [
+                          { "SetCreatureTypes": ["Human", "Faerie", "Detective"] },
+                          {
+                            "GrantAbility": {
+                              "Triggered": {
+                                "when": {
+                                  "DealsDamage": {
+                                    "source": ["This"],
+                                    "to": "EachPlayer",
+                                    "combat": true
+                                  }
+                                },
+                                "effects": [
+                                  { "ExileTop": { "as": "exiled" } },
+                                  {
+                                    "Rule": {
+                                      "rule": {
+                                        "MayCast": {
+                                          "from": "Exile",
+                                          "only": { "Bound": "exiled" },
+                                          "play": true
+                                        }
+                                      },
+                                      "duration": "UntilEndOfTurn"
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          }
+                        ],
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{2}{R}",
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": ["This", { "Subtype": "Detective" }] },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": "This",
+                        "mods": [
+                          { "SetPT": { "power": 3, "toughness": 2 } },
+                          { "SetCreatureTypes": ["Human", "Faerie", "Rogue"] },
+                          { "AddKeyword": "DoubleStrike" }
+                        ],
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,58 @@
+{
+  "oracle_id": "bf0ff4b9-3543-4cfa-bfcd-f9504d27f00f",
+  "name": "Herbology Instructor // Malady Invoker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Herbology Instructor",
+      "oracle_fingerprint": "22ed16a122edbe4e11c5d9d57ca8e14d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "GainLife": { "amount": 3 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{6}{B/P}",
+            "timing": "Sorcery",
+            "effects": [{ "Transform": { "what": "This" } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Malady Invoker",
+      "oracle_fingerprint": "393a326587ec1ba297a1076144ce5671",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Did": { "action": "Transformed", "what": ["This"] } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": 0,
+                        "toughness": {
+                          "Times": { "by": -1, "of": { "Stat": { "of": "This", "stat": "Power" } } }
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

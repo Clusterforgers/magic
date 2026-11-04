@@ -1,0 +1,51 @@
+{
+  "oracle_id": "5c58353a-fd60-4528-bf0d-669626cda0b2",
+  "name": "Ugin, Eye of the Storms",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Ugin, Eye of the Storms",
+      "oracle_fingerprint": "867c789071cb12dc927b8a56e536191e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": ["This"] } },
+            "targets": [
+              { "what": { "Object": [{ "Not": "Colorless" }] }, "bounds": { "min": 0, "max": 1 } }
+            ],
+            "effects": [{ "Exile": { "what": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": ["Colorless"], "by": "You" } },
+            "targets": [
+              { "what": { "Object": [{ "Not": "Colorless" }] }, "bounds": { "min": 0, "max": 1 } }
+            ],
+            "effects": [{ "Exile": { "what": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Plus": 2 },
+            "effects": [{ "GainLife": { "amount": 3 } }, { "Draw": {} }]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": "Zero",
+            "effects": [
+              { "AddMana": { "mana": { "Fixed": ["Colorless", "Colorless", "Colorless"] } } }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 238, "end": 408 }
+          }
+        }
+      ]
+    }
+  ]
+}

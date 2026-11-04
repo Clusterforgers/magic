@@ -1,0 +1,46 @@
+{
+  "oracle_id": "5b90f8ed-84b2-4306-9dfa-b5654ea0e4cd",
+  "name": "Mercurial Spelldancer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mercurial Spelldancer",
+      "oracle_fingerprint": "71e68f8c213922a4191d9cfab58a7083",
+      "abilities": [
+        { "Static": { "affected": "This", "mods": ["CantBeBlocked"] } },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Not": { "Type": "Creature" } }], "by": "You" } },
+            "effects": [{ "PutCounters": { "on": "This", "counter": { "Other": "oil" } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "RemoveCounters": { "counter": { "Other": "oil" }, "count": 2 } }],
+                  "paid": [
+                    {
+                      "DelayedTrigger": {
+                        "when": {
+                          "SpellCast": {
+                            "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                            "by": "You"
+                          }
+                        },
+                        "this_turn": true,
+                        "effects": [{ "CopySpell": { "what": "Triggering", "new_targets": true } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

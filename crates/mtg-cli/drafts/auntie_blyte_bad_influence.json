@@ -1,0 +1,33 @@
+{
+  "oracle_id": "a5e9142e-76bf-40d4-aeaa-ffe197d38f25",
+  "name": "Auntie Blyte, Bad Influence",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Auntie Blyte, Bad Influence",
+      "oracle_fingerprint": "3251f0f3d79123e8b4eeadf5732c85aa",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": [{ "ControlledBy": "You" }], "to": "You" } },
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": "+1/+1", "count": "Triggering" } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{1}{R}" },
+              "Tap",
+              { "RemoveCounters": { "counter": "+1/+1", "count": "X" } }
+            ],
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": "X" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

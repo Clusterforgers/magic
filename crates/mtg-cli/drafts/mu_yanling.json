@@ -1,0 +1,42 @@
+{
+  "oracle_id": "34e1477a-c0fb-4364-bb93-04a85c0c2517",
+  "name": "Mu Yanling",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mu Yanling",
+      "oracle_fingerprint": "751d296dedd021f2daced53742a179e1",
+      "abilities": [
+        {
+          "Loyalty": {
+            "cost": { "Plus": 2 },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["CantBeBlocked"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Loyalty": { "cost": { "Minus": 3 }, "effects": [{ "Draw": { "count": 2 } }] } },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 10 },
+            "effects": [
+              {
+                "Tap": {
+                  "what": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] }
+                }
+              },
+              { "ExtraTurn": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

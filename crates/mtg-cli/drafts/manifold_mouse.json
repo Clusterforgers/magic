@@ -1,0 +1,46 @@
+{
+  "oracle_id": "b254ca74-2a96-4590-91bc-650f407daf5d",
+  "name": "Manifold Mouse",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Manifold Mouse",
+      "oracle_fingerprint": "228603018bf1a6771a7a39a95a4de19b",
+      "abilities": [
+        { "Keyword": { "Offspring": "{2}" } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "targets": [
+              { "what": { "Object": [{ "Subtype": "Mouse" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Either": {
+                  "first": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [{ "AddKeyword": "DoubleStrike" }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ],
+                  "second": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [{ "AddKeyword": "Trample" }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

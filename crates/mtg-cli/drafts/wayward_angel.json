@@ -1,0 +1,40 @@
+{
+  "oracle_id": "bf169a7a-e3cf-44b2-83eb-c2597bcf22d9",
+  "name": "Wayward Angel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wayward Angel",
+      "oracle_fingerprint": "6505f11b33388faba4a88541ff0942ea",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Vigilance" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              { "ModifyPT": { "power": 3, "toughness": 3 } },
+              { "AddKeyword": "Trample" },
+              { "SetColors": ["Black"] },
+              {
+                "GrantAbility": {
+                  "Triggered": {
+                    "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+                    "effects": [{ "Sacrifice": { "filter": [{ "Type": "Creature" }] } }]
+                  }
+                }
+              }
+            ],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                "op": "Ge",
+                "right": 7
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

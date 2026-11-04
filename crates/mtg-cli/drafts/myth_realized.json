@@ -1,7 +1,7 @@
 {
   "oracle_id": "3a726e40-829c-47ec-81a7-58a04164fc3f",
   "name": "Myth Realized",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Myth Realized",
@@ -20,9 +20,40 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 127, "end": 330 }
+          "Activated": {
+            "cost": "{W}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "AddSubtype": "Monk" },
+                    { "AddSubtype": "Avatar" },
+                    { "AddType": "Creature" },
+                    {
+                      "GrantAbility": {
+                        "Static": {
+                          "affected": "This",
+                          "mods": [
+                            {
+                              "SetPT": {
+                                "power": {
+                                  "Counters": { "on": "This", "counter": { "Other": "lore" } }
+                                },
+                                "toughness": {
+                                  "Counters": { "on": "This", "counter": { "Other": "lore" } }
+                                }
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
           }
         }
       ]

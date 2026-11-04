@@ -1,0 +1,50 @@
+{
+  "oracle_id": "7926b4c1-9a93-4193-ae6f-e75bbcd762ec",
+  "name": "Thorin, Company's Leader",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thorin, Company's Leader",
+      "oracle_fingerprint": "f8e430317c8079b5276b472df070311c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                {
+                  "DealsDamage": {
+                    "source": [{ "Subtype": "Dwarf" }, { "ControlledBy": "You" }],
+                    "to": "EachPlayer",
+                    "combat": true
+                  }
+                },
+                {
+                  "DealsDamage": {
+                    "source": [{ "Subtype": "Dwarf" }, { "ControlledBy": "You" }],
+                    "to": { "Each": [{ "Type": "Battle" }] },
+                    "combat": true
+                  }
+                }
+              ]
+            },
+            "effects": [{ "CreateToken": { "token": { "Named": "treasure" }, "count": 2 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{10}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [{ "AddKeyword": "DoubleStrike" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

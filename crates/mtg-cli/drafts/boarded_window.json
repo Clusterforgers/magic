@@ -1,7 +1,7 @@
 {
   "oracle_id": "3e159175-78e5-40df-8fe9-e694938e7222",
   "name": "Boarded Window",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Boarded Window",
@@ -14,9 +14,16 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 35, "end": 136 }
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "LifeLost" } },
+                "op": "Ge",
+                "right": 4
+              }
+            },
+            "effects": [{ "Exile": { "what": "This" } }]
           }
         }
       ]

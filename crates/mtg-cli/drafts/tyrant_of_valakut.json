@@ -1,7 +1,7 @@
 {
   "oracle_id": "a4ddd9e2-ea59-4bba-bb2f-a655cabbb65c",
   "name": "Tyrant of Valakut",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Tyrant of Valakut",
@@ -22,9 +22,12 @@
         },
         { "Keyword": "Flying" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 123, "end": 210 }
+          "Triggered": {
+            "when": {
+              "ZoneChange": { "what": ["This", { "CastWith": "Surge" }], "to": "Battlefield" }
+            },
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 3 } }]
           }
         }
       ]

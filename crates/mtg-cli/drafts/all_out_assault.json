@@ -1,0 +1,48 @@
+{
+  "oracle_id": "de8c0e2d-3207-4bc6-83ef-91e33b26a981",
+  "name": "All-Out Assault",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "All-Out Assault",
+      "oracle_fingerprint": "0eb7d89d30a82c85e7c04cfa9d3451e1",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }, { "AddKeyword": "Deathtouch" }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": {
+              "All": [
+                { "AtTrigger": "YourTurn" },
+                { "AtTrigger": { "Any": [{ "Step": "Main1" }, { "Step": "Main2" }] } }
+              ]
+            },
+            "effects": [
+              { "AddPhase": { "phases": ["Combat", "Main"] } },
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "GroupAttacks": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+                  },
+                  "this_turn": true,
+                  "effects": [
+                    {
+                      "Untap": {
+                        "what": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

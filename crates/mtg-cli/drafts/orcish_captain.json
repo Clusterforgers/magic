@@ -1,0 +1,43 @@
+{
+  "oracle_id": "76c06de7-39ff-4b80-8e54-20910372cffd",
+  "name": "Orcish Captain",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Orcish Captain",
+      "oracle_fingerprint": "3ee2987aa7b6906b1b70103401f7f266",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{1}",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, { "Subtype": "Orc" }] } }],
+            "effects": [
+              {
+                "FlipCoin": {
+                  "win": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ],
+                  "lose": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [{ "ModifyPT": { "power": 0, "toughness": -2 } }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

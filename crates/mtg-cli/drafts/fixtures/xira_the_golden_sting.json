@@ -1,0 +1,166 @@
+{
+  "object": "card",
+  "id": "48e60dff-8ac0-4e70-a7a8-a177e9e6847b",
+  "oracle_id": "18d0e6e1-3824-465d-9245-21e0174f551f",
+  "multiverse_ids": [
+    597924
+  ],
+  "mtgo_id": 103538,
+  "tcgplayer_id": 283115,
+  "cardmarket_id": 671764,
+  "name": "Xira, the Golden Sting",
+  "lang": "en",
+  "released_at": "2022-09-09",
+  "uri": "https://api.scryfall.com/cards/48e60dff-8ac0-4e70-a7a8-a177e9e6847b",
+  "scryfall_uri": "https://scryfall.com/card/dmc/48/xira-the-golden-sting?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T05:44:17Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/4/8/48e60dff-8ac0-4e70-a7a8-a177e9e6847b.jpg?1783921457",
+    "normal": "https://cards.scryfall.io/normal/front/4/8/48e60dff-8ac0-4e70-a7a8-a177e9e6847b.jpg?1783921457",
+    "large": "https://cards.scryfall.io/large/front/4/8/48e60dff-8ac0-4e70-a7a8-a177e9e6847b.jpg?1783921457",
+    "png": "https://cards.scryfall.io/png/front/4/8/48e60dff-8ac0-4e70-a7a8-a177e9e6847b.png?1783921457",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/4/8/48e60dff-8ac0-4e70-a7a8-a177e9e6847b.jpg?1783921457",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/4/8/48e60dff-8ac0-4e70-a7a8-a177e9e6847b.jpg?1783921457",
+    "thumb": "https://cards.scryfall.io/thumb/front/4/8/48e60dff-8ac0-4e70-a7a8-a177e9e6847b.webp?1783921457",
+    "grid": "https://cards.scryfall.io/grid/front/4/8/48e60dff-8ac0-4e70-a7a8-a177e9e6847b.webp?1783921457",
+    "display": "https://cards.scryfall.io/display/front/4/8/48e60dff-8ac0-4e70-a7a8-a177e9e6847b.webp?1783921457",
+    "art": "https://cards.scryfall.io/art/front/4/8/48e60dff-8ac0-4e70-a7a8-a177e9e6847b.webp?1783921457",
+    "crop": "https://cards.scryfall.io/crop/front/4/8/48e60dff-8ac0-4e70-a7a8-a177e9e6847b.webp?1783921457",
+    "jpeg": "https://cards.scryfall.io/normal/front/4/8/48e60dff-8ac0-4e70-a7a8-a177e9e6847b.jpg?1783921457"
+  },
+  "mana_cost": "{1}{B}{R}{G}",
+  "cmc": 4.0,
+  "type_line": "Legendary Creature — Insect Assassin",
+  "oracle_text": "Flying, haste\nWhenever Xira attacks, put an egg counter on another target creature without an egg counter on it. When that creature dies, if it has an egg counter on it, draw a card and create a 1/1 black Insect creature token with flying.",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "B",
+    "G",
+    "R"
+  ],
+  "color_identity": [
+    "B",
+    "G",
+    "R"
+  ],
+  "keywords": [
+    "Flying",
+    "Haste"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "ae580392-9fd1-4f51-aa2b-8fdabb177132",
+      "component": "combo_piece",
+      "name": "Xira, the Golden Sting",
+      "type_line": "Legendary Creature — Insect Assassin",
+      "uri": "https://api.scryfall.com/cards/ae580392-9fd1-4f51-aa2b-8fdabb177132"
+    },
+    {
+      "object": "related_card",
+      "id": "c41933b2-a91f-4c43-8734-08fc3a392ac2",
+      "component": "token",
+      "name": "Insect",
+      "type_line": "Token Creature — Insect",
+      "uri": "https://api.scryfall.com/cards/c41933b2-a91f-4c43-8734-08fc3a392ac2"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "78076b27-f888-4723-b27c-44074accd261",
+  "set": "dmc",
+  "set_name": "Dominaria United Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/78076b27-f888-4723-b27c-44074accd261",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Admc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/dmc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/48e60dff-8ac0-4e70-a7a8-a177e9e6847b/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A18d0e6e1-3824-465d-9245-21e0174f551f&unique=prints",
+  "collector_number": "48",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Mila Pesic",
+  "artist_ids": [
+    "81c5ec23-220b-4efa-b7df-9e49dd371e8d"
+  ],
+  "illustration_id": "37c53bd6-6f9c-49b1-a846-57465cc6695b",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 13698,
+  "preview": {
+    "source": "Wizards of the Coast",
+    "source_uri": "https://magic.wizards.com/en/articles/archive/card-image-gallery/dominaria-united-commander",
+    "previewed_at": "2022-08-21"
+  },
+  "prices": {
+    "usd": "0.38",
+    "usd_foil": "0.42",
+    "usd_etched": null,
+    "eur": "0.46",
+    "eur_foil": "0.44",
+    "tix": "0.30"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=597924&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DXira%252C%2Bthe%2BGolden%2BSting",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DXira%252C%2Bthe%2BGolden%2BSting",
+    "edhrec": "https://edhrec.com/route/?cc=Xira%2C+the+Golden+Sting"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F283115%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=671764&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/103538?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

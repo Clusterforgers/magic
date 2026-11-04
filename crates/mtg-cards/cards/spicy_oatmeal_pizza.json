@@ -1,0 +1,29 @@
+{
+  "oracle_id": "9665f940-c0a4-4d3e-b889-8049cf549a4f",
+  "name": "Spicy Oatmeal Pizza",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spicy Oatmeal Pizza",
+      "oracle_fingerprint": "3b799f1639aae2112f29a81f1e778cd6",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 4 } },
+              { "DealDamage": { "to": "You", "amount": 3 } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap", "SacrificeSelf"],
+            "effects": [{ "GainLife": { "amount": 3 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

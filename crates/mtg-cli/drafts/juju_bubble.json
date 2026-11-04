@@ -1,0 +1,31 @@
+{
+  "oracle_id": "9344ae2e-cb2e-400d-9157-e8158ce31813",
+  "name": "Juju Bubble",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Juju Bubble",
+      "oracle_fingerprint": "f662be95dd267cf406495d22acd7c5a6",
+      "abilities": [
+        { "Keyword": { "CumulativeUpkeep": "{1}" } },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "SpellCast": { "by": "You" } },
+                {
+                  "Did": {
+                    "action": "PlayedLand",
+                    "what": [{ "Type": "Land" }, { "ControlledBy": "You" }]
+                  }
+                }
+              ]
+            },
+            "effects": [{ "Sacrifice": { "filter": ["This"] } }]
+          }
+        },
+        { "Activated": { "cost": "{2}", "effects": [{ "GainLife": { "amount": 1 } }] } }
+      ]
+    }
+  ]
+}

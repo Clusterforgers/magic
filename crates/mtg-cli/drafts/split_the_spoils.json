@@ -1,0 +1,51 @@
+{
+  "oracle_id": "48ad5bd6-9568-4813-be29-99aef8b9327a",
+  "name": "Split the Spoils",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Split the Spoils",
+      "oracle_fingerprint": "5a7ed89be185a851f78899a725e4a4cd",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "OwnedBy": "You" },
+                    {
+                      "AnyOf": [
+                        { "Type": "Artifact" },
+                        { "Type": "Battle" },
+                        { "Type": "Creature" },
+                        { "Type": "Enchantment" },
+                        { "Type": "Land" },
+                        { "Type": "Planeswalker" }
+                      ]
+                    },
+                    { "In": "Graveyard" }
+                  ]
+                },
+                "bounds": { "min": 0, "max": 5 }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 } } },
+              {
+                "SeparatePiles": {
+                  "what": { "Target": 0 },
+                  "chooser": "Opponents",
+                  "as": "pile",
+                  "rest_as": "rest2"
+                }
+              },
+              { "Move": { "what": { "Bound": "pile" }, "to": "Hand" } },
+              { "Move": { "what": { "Bound": "rest2" }, "to": "Graveyard" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

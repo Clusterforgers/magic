@@ -1,0 +1,31 @@
+{
+  "oracle_id": "2dd7a4dc-902a-4e85-8a3b-c96a898fba86",
+  "name": "Animate Artifact",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Animate Artifact",
+      "oracle_fingerprint": "c2bf43320dd60f3afc19b1a082fb81bb",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Artifact" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "SetPT": {
+                  "power": { "Stat": { "of": "This", "stat": "ManaValue" } },
+                  "toughness": { "Stat": { "of": "This", "stat": "ManaValue" } }
+                }
+              },
+              { "AddType": "Creature" }
+            ],
+            "condition": {
+              "Matches": { "subject": "Attached", "selector": [{ "Not": { "Type": "Creature" } }] }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

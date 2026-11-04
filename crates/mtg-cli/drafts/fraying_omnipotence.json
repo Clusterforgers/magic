@@ -1,0 +1,66 @@
+{
+  "oracle_id": "3b00068d-ad07-417c-bbb3-5f980615fb06",
+  "name": "Fraying Omnipotence",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fraying Omnipotence",
+      "oracle_fingerprint": "f2fa49cdedf8f29e2c576975737192d7",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "each",
+                  "effects": [
+                    {
+                      "LoseLife": {
+                        "who": { "Bound": "each" },
+                        "amount": { "Half": { "of": { "Life": { "Bound": "each" } }, "up": true } }
+                      }
+                    },
+                    {
+                      "Discard": {
+                        "who": { "Bound": "each" },
+                        "count": {
+                          "Half": {
+                            "of": {
+                              "Count": [{ "In": "Hand" }, { "OwnedBy": { "Bound": "each" } }]
+                            },
+                            "up": true
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "Sacrifice": {
+                        "who": { "Bound": "each" },
+                        "filter": [{ "Type": "Creature" }],
+                        "count": {
+                          "Half": {
+                            "of": {
+                              "Largest": {
+                                "who": { "Bound": "each" },
+                                "of": [
+                                  { "Type": "Creature" },
+                                  { "ControlledBy": { "Bound": "each" } }
+                                ]
+                              }
+                            },
+                            "up": true
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

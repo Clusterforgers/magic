@@ -1,0 +1,136 @@
+{
+  "object": "card",
+  "id": "88b86280-f7a5-4d4d-bc00-71f21590835e",
+  "oracle_id": "21ea9501-9a0f-43a3-a2cc-e9648325c45e",
+  "multiverse_ids": [
+    643105
+  ],
+  "mtgo_id": 120723,
+  "tcgplayer_id": 531216,
+  "cardmarket_id": 748446,
+  "name": "Woebringer Demon",
+  "lang": "en",
+  "released_at": "2024-01-12",
+  "uri": "https://api.scryfall.com/cards/88b86280-f7a5-4d4d-bc00-71f21590835e",
+  "scryfall_uri": "https://scryfall.com/card/rvr/98/woebringer-demon?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:28:38Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/8/8/88b86280-f7a5-4d4d-bc00-71f21590835e.jpg?1783913318",
+    "normal": "https://cards.scryfall.io/normal/front/8/8/88b86280-f7a5-4d4d-bc00-71f21590835e.jpg?1783913318",
+    "large": "https://cards.scryfall.io/large/front/8/8/88b86280-f7a5-4d4d-bc00-71f21590835e.jpg?1783913318",
+    "png": "https://cards.scryfall.io/png/front/8/8/88b86280-f7a5-4d4d-bc00-71f21590835e.png?1783913318",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/8/8/88b86280-f7a5-4d4d-bc00-71f21590835e.jpg?1783913318",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/8/8/88b86280-f7a5-4d4d-bc00-71f21590835e.jpg?1783913318",
+    "thumb": "https://cards.scryfall.io/thumb/front/8/8/88b86280-f7a5-4d4d-bc00-71f21590835e.webp?1783913318",
+    "grid": "https://cards.scryfall.io/grid/front/8/8/88b86280-f7a5-4d4d-bc00-71f21590835e.webp?1783913318",
+    "display": "https://cards.scryfall.io/display/front/8/8/88b86280-f7a5-4d4d-bc00-71f21590835e.webp?1783913318",
+    "art": "https://cards.scryfall.io/art/front/8/8/88b86280-f7a5-4d4d-bc00-71f21590835e.webp?1783913318",
+    "crop": "https://cards.scryfall.io/crop/front/8/8/88b86280-f7a5-4d4d-bc00-71f21590835e.webp?1783913318",
+    "jpeg": "https://cards.scryfall.io/normal/front/8/8/88b86280-f7a5-4d4d-bc00-71f21590835e.jpg?1783913318"
+  },
+  "mana_cost": "{3}{B}{B}",
+  "cmc": 5.0,
+  "type_line": "Creature — Demon",
+  "oracle_text": "Flying\nAt the beginning of each player's upkeep, that player sacrifices a creature of their choice. If the player can't, sacrifice this creature.",
+  "power": "4",
+  "toughness": "4",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Flying"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "fed2c8cd-ab92-44f6-808a-41e7809bcfe2",
+  "set": "rvr",
+  "set_name": "Ravnica Remastered",
+  "set_type": "masters",
+  "set_uri": "https://api.scryfall.com/sets/fed2c8cd-ab92-44f6-808a-41e7809bcfe2",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Arvr&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/rvr?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/88b86280-f7a5-4d4d-bc00-71f21590835e/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A21ea9501-9a0f-43a3-a2cc-e9648325c45e&unique=prints",
+  "collector_number": "98",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "Each soul he devours adds its hunger to his own.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Daren Bader",
+  "artist_ids": [
+    "7da1a585-c875-45e4-b322-5da9e8e1f651"
+  ],
+  "illustration_id": "0255cccd-21d9-4366-a782-5c39f3518cb9",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 21904,
+  "penny_rank": 15459,
+  "prices": {
+    "usd": "0.26",
+    "usd_foil": "0.33",
+    "usd_etched": null,
+    "eur": "0.08",
+    "eur_foil": "0.10",
+    "tix": "0.04"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=643105&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DWoebringer%2BDemon",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DWoebringer%2BDemon",
+    "edhrec": "https://edhrec.com/route/?cc=Woebringer+Demon"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F531216%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=748446&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/120723?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

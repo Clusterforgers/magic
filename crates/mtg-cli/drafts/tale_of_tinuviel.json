@@ -9,15 +9,19 @@
       "abilities": [
         {
           "Triggered": {
-            "when": { "Chapter": { "number": 2 } },
+            "when": { "Chapter": { "number": 1 } },
             "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
               {
-                "what": {
-                  "Object": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Indestructible" }],
+                  "duration": "WhileYouControlSource"
                 }
               }
-            ],
-            "effects": [{ "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }]
+            ]
           }
         },
         {
@@ -26,7 +30,7 @@
             "targets": [
               {
                 "what": {
-                  "Object": [{ "Type": "Creature" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
+                  "Object": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
                 }
               }
             ],

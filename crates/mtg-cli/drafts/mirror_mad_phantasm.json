@@ -1,0 +1,64 @@
+{
+  "oracle_id": "fd26127d-6807-41e3-9dcf-20ef257d71d3",
+  "name": "Mirror-Mad Phantasm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mirror-Mad Phantasm",
+      "oracle_fingerprint": "144bde7854bcb16faa4ad3432ae7e1fd",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": "{1}{U}",
+            "effects": [
+              {
+                "Move": {
+                  "what": "This",
+                  "to": { "Library": { "place": "Shuffled" } },
+                  "as": "moved"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Count": [
+                          { "Is": { "Bound": "moved" } },
+                          {
+                            "AnyOf": [
+                              { "In": "Battlefield" },
+                              { "In": "Hand" },
+                              { "In": "Library" },
+                              { "In": "Graveyard" },
+                              { "In": "Exile" },
+                              { "In": "Stack" }
+                            ]
+                          }
+                        ]
+                      },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "RevealUntil": {
+                        "filter": [{ "Named": "Mirror-Mad Phantasm" }],
+                        "as": "found2",
+                        "revealed_as": "revealed3"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "found2" }, "to": { "Battlefield": {} } } },
+                    { "Move": { "what": { "Bound": "revealed3" }, "to": "Graveyard" } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

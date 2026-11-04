@@ -1,0 +1,47 @@
+{
+  "oracle_id": "5f928e54-3027-4f2f-9fef-d63b9ca416aa",
+  "name": "Psychic Spiral",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Psychic Spiral",
+      "oracle_fingerprint": "ec817ecb14faf4dee10c3cfd69454043",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Each": [{ "OwnedBy": "You" }, { "In": "Graveyard" }] },
+                  "to": { "Library": { "place": "Shuffled" } },
+                  "as": "moved"
+                }
+              },
+              {
+                "Mill": {
+                  "who": { "Target": 0 },
+                  "count": {
+                    "Count": [
+                      { "Is": { "Bound": "moved" } },
+                      {
+                        "AnyOf": [
+                          { "In": "Battlefield" },
+                          { "In": "Hand" },
+                          { "In": "Library" },
+                          { "In": "Graveyard" },
+                          { "In": "Exile" },
+                          { "In": "Stack" }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

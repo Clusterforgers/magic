@@ -1,0 +1,39 @@
+{
+  "oracle_id": "51780f71-bf60-4208-94ea-76fa84790fb6",
+  "name": "Drivnod, Carnage Dominus",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Drivnod, Carnage Dominus",
+      "oracle_fingerprint": "f86e702d56988992d8ee685a1e8f34a5",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "TriggerAgain": {
+                "cause": {
+                  "ZoneChange": {
+                    "what": [{ "Type": "Creature" }],
+                    "from": "Battlefield",
+                    "to": "Graveyard"
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{B/P}{B/P}" },
+              { "ExileFromGraveyard": { "filter": [{ "Type": "Creature" }], "count": 3 } }
+            ],
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": { "Other": "indestructible" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

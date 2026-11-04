@@ -1,0 +1,48 @@
+{
+  "oracle_id": "2e037c5e-3e07-4ffc-a388-7976459f6ff7",
+  "name": "Voracious Fell Beast",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Voracious Fell Beast",
+      "oracle_fingerprint": "8059dd0d205ed9b86e83698bbfa6f23f",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Sacrifice": {
+                  "who": "Opponents",
+                  "filter": [{ "Type": "Creature" }],
+                  "as": "sacrificed"
+                }
+              },
+              {
+                "CreateToken": {
+                  "token": { "Named": "food" },
+                  "count": {
+                    "Count": [
+                      { "Is": { "Bound": "sacrificed" } },
+                      {
+                        "AnyOf": [
+                          { "In": "Battlefield" },
+                          { "In": "Hand" },
+                          { "In": "Library" },
+                          { "In": "Graveyard" },
+                          { "In": "Exile" },
+                          { "In": "Stack" }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

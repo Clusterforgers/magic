@@ -1,0 +1,19 @@
+{
+  "oracle_id": "12827076-450d-42b1-98ca-9f9279a539fc",
+  "name": "Hunted Ghoul",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hunted Ghoul",
+      "oracle_fingerprint": "91a2a65549545ed8bdcc391e5d7acc29",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "CanBlockOnly": [{ "Not": { "Subtype": "Human" } }] }]
+          }
+        }
+      ]
+    }
+  ]
+}

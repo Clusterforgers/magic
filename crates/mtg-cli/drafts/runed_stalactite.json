@@ -1,0 +1,20 @@
+{
+  "oracle_id": "1c169307-71f5-4679-8b5a-d60c1109b9db",
+  "name": "Runed Stalactite",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Runed Stalactite",
+      "oracle_fingerprint": "5a629274e8a0e8d1ef6a342b63f15bb4",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }, "AddAllCreatureTypes"]
+          }
+        },
+        { "Keyword": { "Equip": "{2}" } }
+      ]
+    }
+  ]
+}

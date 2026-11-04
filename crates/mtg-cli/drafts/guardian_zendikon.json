@@ -1,0 +1,39 @@
+{
+  "oracle_id": "44154004-e50e-45d1-bde0-ba6e3354067c",
+  "name": "Guardian Zendikon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Guardian Zendikon",
+      "oracle_fingerprint": "83ee7f6d384954a492c56b25b6f3c8ec",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Land" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "SetPT": { "power": 2, "toughness": 6 } },
+              { "AddKeyword": "Defender" },
+              { "SetColors": ["White"] },
+              { "AddType": "Creature" },
+              { "AddSubtype": "Wall" }
+            ],
+            "condition": { "Matches": { "subject": "Attached", "selector": [{ "Type": "Land" }] } }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Is": "Attached" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [{ "Move": { "what": "Triggering", "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

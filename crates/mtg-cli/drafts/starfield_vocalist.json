@@ -1,0 +1,46 @@
+{
+  "oracle_id": "4add809e-9caa-45ae-bb0d-4760a360b8e2",
+  "name": "Starfield Vocalist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Starfield Vocalist",
+      "oracle_fingerprint": "549acf31d2c80179e749799c8716550b",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "TriggerAgain": { "cause": { "ZoneChange": { "what": [], "to": "Battlefield" } } }
+            }
+          }
+        },
+        { "AltCast": { "way": "Warp", "cost": "{1}{U}" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": { "CastWith": "Warp" },
+            "effects": [
+              { "Choose": { "from": "This", "as": "warped" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    { "Exile": { "what": { "Bound": "warped" }, "as": "warped_card" } },
+                    {
+                      "Rule": {
+                        "rule": {
+                          "MayCast": { "from": "Exile", "only": { "Bound": "warped_card" } }
+                        },
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

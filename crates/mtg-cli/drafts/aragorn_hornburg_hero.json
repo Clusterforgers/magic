@@ -1,7 +1,7 @@
 {
   "oracle_id": "07326335-45dd-4ebd-8ae6-5191b6eb2928",
   "name": "Aragorn, Hornburg Hero",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Aragorn, Hornburg Hero",
@@ -14,9 +14,15 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 202, "end": 318 }
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [{ "Type": "Creature" }, "Renowned", { "ControlledBy": "You" }],
+                "to": "EachPlayer",
+                "combat": true
+              }
+            },
+            "effects": [{ "MultiplyCounters": { "on": "Dealer", "counter": "+1/+1" } }]
           }
         }
       ]

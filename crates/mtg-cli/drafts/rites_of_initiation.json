@@ -1,0 +1,56 @@
+{
+  "oracle_id": "77aa591d-efb5-48b5-98aa-5c8912ede11b",
+  "name": "Rites of Initiation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rites of Initiation",
+      "oracle_fingerprint": "80cf13aaf6d332e1364cc968a9f7e103",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "ChooseValue": {
+                  "kind": { "Number": [0, { "Count": [{ "OwnedBy": "You" }, { "In": "Hand" }] }] },
+                  "as": "number"
+                }
+              },
+              {
+                "Discard": { "count": { "ChosenAs": "number" }, "random": true, "as": "discarded2" }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": {
+                          "Count": [
+                            { "Is": { "Bound": "discarded2" } },
+                            {
+                              "AnyOf": [
+                                { "In": "Battlefield" },
+                                { "In": "Hand" },
+                                { "In": "Library" },
+                                { "In": "Graveyard" },
+                                { "In": "Exile" },
+                                { "In": "Stack" }
+                              ]
+                            }
+                          ]
+                        },
+                        "toughness": 0
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

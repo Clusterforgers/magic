@@ -1,0 +1,22 @@
+{
+  "oracle_id": "b90bc464-a95a-42e4-9d9a-4b0882eb57ba",
+  "name": "Didn't Say Please",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Didn't Say Please",
+      "oracle_fingerprint": "be97a44f43dfc960d590e11c7b60f62f",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [
+              { "Counter": { "what": { "Target": 0 } } },
+              { "Mill": { "who": { "ControllerOf": { "Target": 0 } }, "count": 3 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

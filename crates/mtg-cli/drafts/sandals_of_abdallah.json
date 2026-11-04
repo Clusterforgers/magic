@@ -1,0 +1,41 @@
+{
+  "oracle_id": "ff77074f-48ef-4c01-8ede-4e9be3e483f4",
+  "name": "Sandals of Abdallah",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sandals of Abdallah",
+      "oracle_fingerprint": "a3cc63e85d2167d9efb66e99c91e8222",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": { "Landwalk": [{ "Subtype": "Island" }] } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "ZoneChange": {
+                      "what": [{ "Is": { "Target": 0 } }],
+                      "from": "Battlefield",
+                      "to": "Graveyard"
+                    }
+                  },
+                  "this_turn": true,
+                  "effects": [{ "Destroy": { "what": "This" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

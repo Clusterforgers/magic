@@ -1,0 +1,151 @@
+{
+  "object": "card",
+  "id": "ed9e5041-3c05-4a8a-9f00-081b01685d0c",
+  "oracle_id": "b3a80545-9a8a-46b2-9d8c-b0d66fb68a5d",
+  "multiverse_ids": [
+    660322
+  ],
+  "mtgo_id": 125413,
+  "arena_id": 90687,
+  "tcgplayer_id": 541265,
+  "cardmarket_id": 759021,
+  "name": "Sword of Wealth and Power",
+  "lang": "en",
+  "released_at": "2024-04-19",
+  "uri": "https://api.scryfall.com/cards/ed9e5041-3c05-4a8a-9f00-081b01685d0c",
+  "scryfall_uri": "https://scryfall.com/card/big/26/sword-of-wealth-and-power?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-21T11:45:11Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/e/d/ed9e5041-3c05-4a8a-9f00-081b01685d0c.jpg?1784634311",
+    "normal": "https://cards.scryfall.io/normal/front/e/d/ed9e5041-3c05-4a8a-9f00-081b01685d0c.jpg?1784634311",
+    "large": "https://cards.scryfall.io/large/front/e/d/ed9e5041-3c05-4a8a-9f00-081b01685d0c.jpg?1784634311",
+    "png": "https://cards.scryfall.io/png/front/e/d/ed9e5041-3c05-4a8a-9f00-081b01685d0c.png?1784634311",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/e/d/ed9e5041-3c05-4a8a-9f00-081b01685d0c.jpg?1784634311",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/e/d/ed9e5041-3c05-4a8a-9f00-081b01685d0c.jpg?1784634311",
+    "thumb": "https://cards.scryfall.io/thumb/front/e/d/ed9e5041-3c05-4a8a-9f00-081b01685d0c.webp?1784634311",
+    "grid": "https://cards.scryfall.io/grid/front/e/d/ed9e5041-3c05-4a8a-9f00-081b01685d0c.webp?1784634311",
+    "display": "https://cards.scryfall.io/display/front/e/d/ed9e5041-3c05-4a8a-9f00-081b01685d0c.webp?1784634311",
+    "art": "https://cards.scryfall.io/art/front/e/d/ed9e5041-3c05-4a8a-9f00-081b01685d0c.webp?1784634311",
+    "crop": "https://cards.scryfall.io/crop/front/e/d/ed9e5041-3c05-4a8a-9f00-081b01685d0c.webp?1784634311",
+    "jpeg": "https://cards.scryfall.io/normal/front/e/d/ed9e5041-3c05-4a8a-9f00-081b01685d0c.jpg?1784634311"
+  },
+  "mana_cost": "{3}",
+  "cmc": 3.0,
+  "type_line": "Artifact — Equipment",
+  "oracle_text": "Equipped creature gets +2/+2 and has protection from instants and from sorceries.\nWhenever equipped creature deals combat damage to a player, create a Treasure token. When you next cast an instant or sorcery spell this turn, copy that spell. You may choose new targets for the copy.\nEquip {2}",
+  "colors": [],
+  "color_identity": [],
+  "keywords": [
+    "Treasure",
+    "Equip"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "7ec6f053-96f7-4e57-b2eb-4e7699a40a4f",
+      "component": "token",
+      "name": "Treasure",
+      "type_line": "Token Artifact — Treasure",
+      "uri": "https://api.scryfall.com/cards/7ec6f053-96f7-4e57-b2eb-4e7699a40a4f"
+    },
+    {
+      "object": "related_card",
+      "id": "e5fdcd21-55a3-4cad-8b73-3d6f85a69ce1",
+      "component": "combo_piece",
+      "name": "Sword of Wealth and Power",
+      "type_line": "Artifact — Equipment",
+      "uri": "https://api.scryfall.com/cards/e5fdcd21-55a3-4cad-8b73-3d6f85a69ce1"
+    }
+  ],
+  "legalities": {
+    "standard": "legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "arena",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "14332d2c-ba93-4498-bf3f-9d601f88f783",
+  "set": "big",
+  "set_name": "The Big Score",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/14332d2c-ba93-4498-bf3f-9d601f88f783",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Abig&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/big?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/ed9e5041-3c05-4a8a-9f00-081b01685d0c/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ab3a80545-9a8a-46b2-9d8c-b0d66fb68a5d&unique=prints",
+  "collector_number": "26",
+  "digital": false,
+  "rarity": "mythic",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Dominik Mayer",
+  "artist_ids": [
+    "c3439c4a-1fee-4e33-9b89-18dac27ac927"
+  ],
+  "illustration_id": "1ee1fe7f-732a-4a87-b805-970d95180cdb",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 2252,
+  "penny_rank": 7386,
+  "prices": {
+    "usd": "20.22",
+    "usd_foil": "23.04",
+    "usd_etched": null,
+    "eur": "12.03",
+    "eur_foil": "17.69",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=660322&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DSword%2Bof%2BWealth%2Band%2BPower",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DSword%2Bof%2BWealth%2Band%2BPower",
+    "edhrec": "https://edhrec.com/route/?cc=Sword+of+Wealth+and+Power"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F541265%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=759021&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/125413?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

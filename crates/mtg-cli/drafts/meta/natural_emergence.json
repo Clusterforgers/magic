@@ -1,42 +1,4 @@
 {
   "source": "forge",
-  "oracle_matches": true,
-  "lines": [
-    {
-      "face": 0,
-      "tag": "T",
-      "text": "When CARDNAME enters, return a red or green enchantment you control to its owner's hand.",
-      "abilities": [],
-      "gap": "key:ChangeZone.Hidden"
-    },
-    {
-      "face": 0,
-      "tag": "S",
-      "text": "Lands you control are 2/2 creatures with first strike. They're still lands.",
-      "abilities": [
-        0
-      ],
-      "gap": null
-    }
-  ],
-  "proof": {
-    "marks": [
-      {
-        "face": 0,
-        "span": {
-          "start": 0,
-          "end": 96
-        },
-        "mark": "ByHand"
-      },
-      {
-        "face": 0,
-        "span": {
-          "start": 97,
-          "end": 172
-        },
-        "mark": "Auto"
-      }
-    ]
-  }
+  "oracle_matches": true
 }

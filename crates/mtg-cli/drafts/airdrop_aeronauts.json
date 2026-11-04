@@ -1,0 +1,27 @@
+{
+  "oracle_id": "009a399b-c78e-475b-8bc3-7db2afc9d676",
+  "name": "Airdrop Aeronauts",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Airdrop Aeronauts",
+      "oracle_fingerprint": "bab4f2899f75cb7a239a6049d5b85fbf",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "PermanentsLeftUnder" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "GainLife": { "amount": 5 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

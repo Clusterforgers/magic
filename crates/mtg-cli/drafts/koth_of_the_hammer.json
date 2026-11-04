@@ -1,0 +1,80 @@
+{
+  "oracle_id": "589186e0-3ebe-46a3-a9e7-798b1712fa93",
+  "name": "Koth of the Hammer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Koth of the Hammer",
+      "oracle_fingerprint": "36c13067b45f7f64b7430cfb19019f2b",
+      "abilities": [
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "targets": [{ "what": { "Object": [{ "Subtype": "Mountain" }] } }],
+            "effects": [
+              { "Untap": { "what": { "Target": 0 } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "SetPT": { "power": 4, "toughness": 4 } },
+                    { "SetColors": ["Red"] },
+                    { "AddSubtype": "Elemental" },
+                    { "AddType": "Creature" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 2 },
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["Red"] },
+                  "times": { "Count": [{ "Subtype": "Mountain" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 5 },
+            "effects": [
+              {
+                "CreateEmblem": {
+                  "abilities": [
+                    {
+                      "Static": {
+                        "affected": {
+                          "Each": [{ "Subtype": "Mountain" }, { "ControlledBy": "You" }]
+                        },
+                        "mods": [
+                          {
+                            "GrantAbility": {
+                              "Activated": {
+                                "cost": ["Tap"],
+                                "targets": [{ "what": "AnyTarget" }],
+                                "effects": [
+                                  { "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }
+                                ]
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "oracle_id": "43402a6c-9fba-4a80-90b3-14bac05c574b",
+  "name": "Countermand",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Countermand",
+      "oracle_fingerprint": "833d58319d12d1847a4133cdf3ae02cb",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [
+              { "Counter": { "what": { "Target": 0 } } },
+              { "Mill": { "who": { "ControllerOf": { "Target": 0 } }, "count": 4 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

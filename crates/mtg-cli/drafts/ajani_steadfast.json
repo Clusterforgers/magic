@@ -1,0 +1,47 @@
+{
+  "oracle_id": "90249526-1875-450a-882d-bf6f6bfd37a6",
+  "name": "Ajani Steadfast",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Ajani Steadfast",
+      "oracle_fingerprint": "841f4011cb8aecbc63a3b0d1315e3d58",
+      "abilities": [
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 0, "max": 1 } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "ModifyPT": { "power": 1, "toughness": 1 } },
+                    { "AddKeyword": "FirstStrike" },
+                    { "AddKeyword": "Vigilance" },
+                    { "AddKeyword": "Lifelink" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 109, "end": 223 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 224, "end": 354 }
+          }
+        }
+      ]
+    }
+  ]
+}

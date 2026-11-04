@@ -1,0 +1,28 @@
+{
+  "oracle_id": "3280488d-e94b-4d53-b279-c32ed711d4bc",
+  "name": "Council's Deliberation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Council's Deliberation",
+      "oracle_fingerprint": "4b504002a2f5616d314ad6b3444a6845",
+      "abilities": [
+        { "Spell": { "effects": [{ "Draw": {} }] } },
+        {
+          "Triggered": {
+            "when": { "Did": { "action": "Scried", "who": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": [{ "Subtype": "Island" }, { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "from": "Graveyard",
+            "effects": [{ "Pay": { "cost": ["ExileSelf"], "paid": [{ "Draw": {} }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

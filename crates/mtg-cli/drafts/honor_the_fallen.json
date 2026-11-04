@@ -1,0 +1,44 @@
+{
+  "oracle_id": "db557d5e-eecd-4891-90fa-c5bcb8532015",
+  "name": "Honor the Fallen",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Honor the Fallen",
+      "oracle_fingerprint": "fb3253d0bee3d9e8c49696241ea8440a",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Exile": {
+                  "what": { "Each": [{ "Type": "Creature" }, { "In": "Graveyard" }] },
+                  "as": "exiled"
+                }
+              },
+              {
+                "GainLife": {
+                  "amount": {
+                    "Count": [
+                      { "Is": { "Bound": "exiled" } },
+                      {
+                        "AnyOf": [
+                          { "In": "Battlefield" },
+                          { "In": "Hand" },
+                          { "In": "Library" },
+                          { "In": "Graveyard" },
+                          { "In": "Exile" },
+                          { "In": "Stack" }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

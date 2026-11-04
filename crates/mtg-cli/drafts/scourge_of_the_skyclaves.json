@@ -1,7 +1,7 @@
 {
   "oracle_id": "c6dfc91f-bfac-40c2-99e5-0cec981f7f1f",
   "name": "Scourge of the Skyclaves",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Scourge of the Skyclaves",
@@ -9,9 +9,24 @@
       "abilities": [
         { "Keyword": { "Kicker": "{4}{B}" } },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 14, "end": 104 }
+          "Triggered": {
+            "when": { "SpellCast": { "what": ["This", "Kicked"] } },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "each",
+                  "effects": [
+                    {
+                      "LoseLife": {
+                        "who": { "Bound": "each" },
+                        "amount": { "Half": { "of": { "Life": { "Bound": "each" } }, "up": true } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         },
         {

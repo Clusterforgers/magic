@@ -1,0 +1,35 @@
+{
+  "oracle_id": "96e25887-e556-423a-8a69-0cd148216f6a",
+  "name": "Dark Impostor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dark Impostor",
+      "oracle_fingerprint": "19a61a82f048bb9db594bae196223d05",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{4}{B}{B}",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 } } },
+              { "PutCounters": { "on": "This", "counter": "+1/+1" } }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "GainAbilitiesOf": {
+                  "Each": [{ "Type": "Creature" }, { "ExiledWith": "This" }, { "In": "Exile" }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

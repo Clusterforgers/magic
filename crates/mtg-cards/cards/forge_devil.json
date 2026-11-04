@@ -1,0 +1,23 @@
+{
+  "oracle_id": "be7a38a3-c27f-4917-a59c-763d0b36e427",
+  "name": "Forge Devil",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Forge Devil",
+      "oracle_fingerprint": "63cd48460ad6e8572af14030d18de9d8",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 1 } },
+              { "DealDamage": { "to": "You", "amount": 1 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

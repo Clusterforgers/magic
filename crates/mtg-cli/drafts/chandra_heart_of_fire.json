@@ -1,0 +1,103 @@
+{
+  "oracle_id": "58ad45fc-b625-4484-8d49-ebc42db9040a",
+  "name": "Chandra, Heart of Fire",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Chandra, Heart of Fire",
+      "oracle_fingerprint": "38dcf9d266208f3339bc677f37b66bd8",
+      "abilities": [
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "effects": [
+              { "Discard": { "count": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] } } },
+              { "LookAtTop": { "count": 3, "as": "top" } },
+              {
+                "Exile": {
+                  "what": { "Each": [{ "In": "Library" }, { "Is": { "Bound": "top" } }] },
+                  "as": "exiled4"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Bottom", "order": "Chosen" } }
+                }
+              },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": { "from": "Exile", "only": { "Bound": "exiled4" }, "play": true }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 2 } }]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 9 },
+            "effects": [
+              {
+                "Search": {
+                  "also": ["Graveyard"],
+                  "filter": [
+                    { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                    { "Color": "Red" }
+                  ],
+                  "count": {
+                    "min": 0,
+                    "max": {
+                      "Sum": [
+                        {
+                          "Count": [
+                            { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                            { "Color": "Red" },
+                            { "OwnedBy": "You" },
+                            { "In": "Graveyard" }
+                          ]
+                        },
+                        {
+                          "Count": [
+                            { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                            { "Color": "Red" },
+                            { "OwnedBy": "You" },
+                            { "In": "Library" }
+                          ]
+                        }
+                      ]
+                    }
+                  },
+                  "as": "found"
+                }
+              },
+              { "Exile": { "what": { "Bound": "found" }, "as": "found_exiled" } },
+              {
+                "If": {
+                  "condition": { "Searched": { "zone": "Library" } },
+                  "then": [{ "Shuffle": {} }]
+                }
+              },
+              {
+                "Rule": {
+                  "rule": { "MayCast": { "from": "Exile", "only": { "Bound": "found_exiled" } } },
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "AddMana": { "mana": { "Fixed": ["Red", "Red", "Red", "Red", "Red", "Red"] } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

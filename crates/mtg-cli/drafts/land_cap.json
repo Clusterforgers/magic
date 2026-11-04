@@ -1,0 +1,36 @@
+{
+  "oracle_id": "bfec4d0a-3792-4bc3-bae1-e639da5bb9a6",
+  "name": "Land Cap",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Land Cap",
+      "oracle_fingerprint": "ab5c4292ac399721471e3a8aff1b628f",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": ["This", { "HasCounter": { "Other": "depletion" } }] },
+            "mods": ["DoesntUntap"]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              { "RemoveCounters": { "from": "This", "counter": { "Other": "depletion" } } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              { "AddMana": { "mana": { "OneOf": ["White", "Blue"] } } },
+              { "PutCounters": { "on": "This", "counter": { "Other": "depletion" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

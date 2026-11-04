@@ -1,0 +1,23 @@
+{
+  "oracle_id": "af224f6f-cedd-498f-a08e-7be0db5a11b7",
+  "name": "Orcish Cannonade",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Orcish Cannonade",
+      "oracle_fingerprint": "42bb936a762db1011924cade25d2ac08",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 2 } },
+              { "DealDamage": { "to": "You", "amount": 3 } },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

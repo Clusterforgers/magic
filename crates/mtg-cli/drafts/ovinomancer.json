@@ -1,7 +1,7 @@
 {
   "oracle_id": "98026d30-a29f-4590-968f-b1b36926a275",
   "name": "Ovinomancer",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Ovinomancer",
@@ -28,9 +28,27 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 111, "end": 276 }
+          "Activated": {
+            "cost": [{ "ReturnToHand": { "filter": ["This"] } }, "Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 }, "regenerate": false } },
+              {
+                "CreateToken": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "token": {
+                    "Custom": {
+                      "name": "Sheep",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Sheep"],
+                      "power": 0,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
           }
         }
       ]

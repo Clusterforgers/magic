@@ -1,0 +1,27 @@
+{
+  "oracle_id": "da6a9a2e-7bed-46d7-b7dc-18d4a220b81e",
+  "name": "Pitchstone Wall",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pitchstone Wall",
+      "oracle_fingerprint": "372908bb764d4534946d4f2239da1d8d",
+      "abilities": [
+        { "Keyword": "Defender" },
+        {
+          "Triggered": {
+            "when": { "Discarded": { "by": "You" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": ["SacrificeSelf"],
+                  "paid": [{ "Move": { "what": "Triggering", "to": "Hand" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

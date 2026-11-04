@@ -1,0 +1,29 @@
+{
+  "oracle_id": "e6ab8a04-e225-4ff0-bb8b-c80d0e6ce50c",
+  "name": "Necrite",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Necrite",
+      "oracle_fingerprint": "839d48dfa79db1602f19fe6155ac902a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Unblocked": { "what": ["This"] } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Defending" }] } }
+            ],
+            "effects": [
+              {
+                "Pay": {
+                  "cost": ["SacrificeSelf"],
+                  "paid": [{ "Destroy": { "what": { "Target": 0 }, "regenerate": false } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

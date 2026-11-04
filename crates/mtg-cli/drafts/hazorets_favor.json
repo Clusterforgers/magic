@@ -1,0 +1,61 @@
+{
+  "oracle_id": "2071b712-2539-4797-8359-f9adb31889ae",
+  "name": "Hazoret's Favor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hazoret's Favor",
+      "oracle_fingerprint": "6203cf0966084d37f3532a30f995694c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [
+                          { "ModifyPT": { "power": 2, "toughness": 0 } },
+                          { "AddKeyword": "Haste" }
+                        ],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    },
+                    {
+                      "RepeatEach": {
+                        "over": { "Target": 0 },
+                        "as": "pumped",
+                        "effects": [
+                          {
+                            "DelayedTrigger": {
+                              "when": { "StepBegins": { "step": "End" } },
+                              "effects": [
+                                {
+                                  "Sacrifice": {
+                                    "who": { "ControllerOf": { "Bound": "pumped" } },
+                                    "filter": [{ "Is": { "Bound": "pumped" } }],
+                                    "count": { "Count": [{ "Is": { "Bound": "pumped" } }] }
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

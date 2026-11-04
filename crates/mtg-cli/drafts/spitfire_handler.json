@@ -1,0 +1,52 @@
+{
+  "oracle_id": "01990628-12b4-49c9-af3d-03120891efc4",
+  "name": "Spitfire Handler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spitfire Handler",
+      "oracle_fingerprint": "e726371825c48bd82a8db8a49aca5912",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "CanBlockOnly": [
+                  {
+                    "AnyOf": [
+                      { "Not": { "Type": "Creature" } },
+                      {
+                        "Not": {
+                          "Compare": {
+                            "stat": "Power",
+                            "op": "Gt",
+                            "to": { "Stat": { "of": "This", "stat": "Power" } }
+                          }
+                        }
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{R}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,7 +1,7 @@
 {
   "oracle_id": "86d67952-19b8-4bb8-b7d7-b2751e86591c",
   "name": "Gastal Thrillroller",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Gastal Thrillroller",
@@ -25,9 +25,18 @@
         },
         { "Keyword": { "Crew": 2 } },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 99, "end": 237 }
+          "Activated": {
+            "cost": [{ "Mana": "{2}{R}" }, { "Discard": {} }],
+            "timing": "Sorcery",
+            "from": "Graveyard",
+            "effects": [
+              {
+                "Move": {
+                  "what": "This",
+                  "to": { "Battlefield": { "counters": [[{ "Other": "finality" }, 1]] } }
+                }
+              }
+            ]
           }
         }
       ]

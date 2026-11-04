@@ -1,0 +1,64 @@
+{
+  "oracle_id": "f36d3d87-5596-4c26-b8d0-f2979a166b57",
+  "name": "Mesmerizing Benthid",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mesmerizing Benthid",
+      "oracle_fingerprint": "a03318e05630f53d3599648942d61d57",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Illusion",
+                      "colors": ["Blue"],
+                      "types": ["Creature"],
+                      "subtypes": ["Illusion"],
+                      "power": 0,
+                      "toughness": 2,
+                      "abilities": [
+                        {
+                          "Triggered": {
+                            "when": { "BecomesBlocked": { "what": [], "by": ["This"] } },
+                            "effects": [
+                              {
+                                "Continuous": {
+                                  "affected": "Triggering",
+                                  "mods": ["DoesntUntap"],
+                                  "duration": "NextUntapStep"
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "count": 2
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Hexproof" }],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Subtype": "Illusion" }, { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

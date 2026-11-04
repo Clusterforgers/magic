@@ -1,0 +1,31 @@
+{
+  "oracle_id": "5ade11c0-41dd-4b6a-9f5b-c5903a3a0d7f",
+  "name": "Elesh Norn, Mother of Machines",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Elesh Norn, Mother of Machines",
+      "oracle_fingerprint": "15b8305f4ec93a7a62c300c9a9af066d",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Rule": {
+            "rule": {
+              "TriggerAgain": { "cause": { "ZoneChange": { "what": [], "to": "Battlefield" } } }
+            }
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "Opponents",
+                "action": { "Trigger": { "ZoneChange": { "what": [], "to": "Battlefield" } } }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

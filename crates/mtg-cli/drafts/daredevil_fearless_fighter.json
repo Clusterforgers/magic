@@ -1,0 +1,42 @@
+{
+  "oracle_id": "9436a736-9139-4d8a-9eb0-9dbf706da51c",
+  "name": "Daredevil, Fearless Fighter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Daredevil, Fearless Fighter",
+      "oracle_fingerprint": "bffad2766526b8e356430e93cf8da0af",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": [{ "ControlledBy": "You" }], "to": "You" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": "Triggering" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              { "ExileTop": { "as": "exiled" } },
+              {
+                "DealDamage": {
+                  "to": "You",
+                  "amount": { "Stat": { "of": { "Bound": "exiled" }, "stat": "ManaValue" } }
+                }
+              },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": { "from": "Exile", "only": { "Bound": "exiled" }, "play": true }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,77 @@
+{
+  "oracle_id": "e23cd06d-1360-4e5d-aecc-adf902bede69",
+  "name": "Anax, Hardened in the Forge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Anax, Hardened in the Forge",
+      "oracle_fingerprint": "8268aa8e2e03343a54786f90c6437ee0",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "SetPT": { "power": { "Devotion": ["Red"] }, "toughness": 3 } }],
+            "defining": true
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  {
+                    "AnyOf": [
+                      "This",
+                      {
+                        "Not": {
+                          "AnyOf": [
+                            { "Not": { "Type": "Creature" } },
+                            { "Not": "Other" },
+                            { "Not": { "Not": "Token" } },
+                            { "Not": { "ControlledBy": "You" } }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                ],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Satyr",
+                      "colors": ["Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Satyr"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Static": { "affected": "This", "mods": ["CantBlock"] } }]
+                    }
+                  },
+                  "count": {
+                    "When": {
+                      "condition": {
+                        "Compare": {
+                          "left": { "Stat": { "of": "Triggering", "stat": "Power" } },
+                          "op": "Ge",
+                          "right": 4
+                        }
+                      },
+                      "then": 2,
+                      "otherwise": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

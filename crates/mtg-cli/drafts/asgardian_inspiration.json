@@ -1,7 +1,7 @@
 {
   "oracle_id": "1be4bb28-6ad7-4df9-98b7-fa32061e7a95",
   "name": "Asgardian Inspiration",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Asgardian Inspiration",
@@ -23,9 +23,12 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 63, "end": 210 }
+          "Triggered": {
+            "when": { "DealsDamage": { "source": [{ "ControlledBy": "You" }], "to": "Opponents" } },
+            "from": "Graveyard",
+            "effects": [
+              { "Pay": { "cost": "{2}", "paid": [{ "Move": { "what": "This", "to": "Hand" } }] } }
+            ]
           }
         }
       ]

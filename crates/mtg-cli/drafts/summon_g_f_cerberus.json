@@ -1,0 +1,54 @@
+{
+  "oracle_id": "b6b22bac-853a-45a8-a74d-9904ec2b34fd",
+  "name": "Summon: G.F. Cerberus",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Summon: G.F. Cerberus",
+      "oracle_fingerprint": "45590f8897a897ea338b5c9bd6e6ac66",
+      "abilities": [
+        { "Triggered": { "when": { "Chapter": { "number": 1 } }, "effects": [{ "Surveil": {} }] } },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "SpellCast": {
+                      "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                      "by": "You"
+                    }
+                  },
+                  "this_turn": true,
+                  "effects": [{ "CopySpell": { "what": "Triggering", "new_targets": true } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "SpellCast": {
+                      "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                      "by": "You"
+                    }
+                  },
+                  "this_turn": true,
+                  "effects": [
+                    { "CopySpell": { "what": "Triggering", "count": 2, "new_targets": true } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

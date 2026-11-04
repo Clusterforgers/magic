@@ -1,0 +1,47 @@
+{
+  "oracle_id": "94d57b98-0f96-43c6-bf04-441339c89063",
+  "name": "Rune of Speed",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rune of Speed",
+      "oracle_fingerprint": "6aee038828f4f3ce5da86354aa7d65fe",
+      "abilities": [
+        { "Keyword": { "Enchant": [] } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Draw": {} }]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }, { "AddKeyword": "Haste" }]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Static": {
+                    "affected": "Attached",
+                    "mods": [
+                      { "ModifyPT": { "power": 1, "toughness": 0 } },
+                      { "AddKeyword": "Haste" }
+                    ]
+                  }
+                }
+              }
+            ],
+            "condition": {
+              "Matches": { "subject": "Attached", "selector": [{ "Subtype": "Equipment" }] }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "oracle_id": "4efa1654-c822-4477-ad24-f379ed7ecb11",
+  "name": "Emissary of Despair",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Emissary of Despair",
+      "oracle_fingerprint": "cbf9ac3d243312011496545cca48fafe",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              {
+                "LoseLife": {
+                  "who": "Triggering",
+                  "amount": { "Count": [{ "Type": "Artifact" }, { "ControlledBy": "Triggering" }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

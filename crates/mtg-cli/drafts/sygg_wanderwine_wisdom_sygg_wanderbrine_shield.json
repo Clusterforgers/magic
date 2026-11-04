@@ -1,0 +1,85 @@
+{
+  "oracle_id": "9cc91ac5-6f2b-4fc0-b810-cdc92eebe6de",
+  "name": "Sygg, Wanderwine Wisdom // Sygg, Wanderbrine Shield",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Sygg, Wanderwine Wisdom",
+      "oracle_fingerprint": "6c5fe35c815f08cddf5f9a2efe434bf8",
+      "abilities": [
+        { "Static": { "affected": "This", "mods": ["CantBeBlocked"] } },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "Did": { "action": "Transformed", "what": ["This"] } }
+              ]
+            },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "GrantAbility": {
+                        "Triggered": {
+                          "when": {
+                            "AnyOf": [
+                              {
+                                "DealsDamage": {
+                                  "source": ["This"],
+                                  "to": "EachPlayer",
+                                  "combat": true
+                                }
+                              },
+                              {
+                                "DealsDamage": {
+                                  "source": ["This"],
+                                  "to": { "Each": [{ "Type": "Planeswalker" }] },
+                                  "combat": true
+                                }
+                              }
+                            ]
+                          },
+                          "effects": [{ "Draw": {} }]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Main1", "whose": "You" } },
+            "effects": [{ "Pay": { "cost": "{W}", "paid": [{ "Transform": { "what": "This" } }] } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Sygg, Wanderbrine Shield",
+      "oracle_fingerprint": "13b6d6d21c980a3b696240841f4e95c7",
+      "abilities": [
+        { "Static": { "affected": "This", "mods": ["CantBeBlocked"] } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 23, "end": 170 }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Main1", "whose": "You" } },
+            "effects": [{ "Pay": { "cost": "{U}", "paid": [{ "Transform": { "what": "This" } }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

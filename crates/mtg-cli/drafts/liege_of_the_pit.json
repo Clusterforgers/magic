@@ -1,0 +1,50 @@
+{
+  "oracle_id": "fd775874-0182-46b1-8624-267bdc4e8075",
+  "name": "Liege of the Pit",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Liege of the Pit",
+      "oracle_fingerprint": "c8cdcfff8a516f7eb0f922afeb29ce24",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              { "Sacrifice": { "filter": [{ "Type": "Creature" }, "Other"], "as": "sacrificed" } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Count": [
+                          { "Is": { "Bound": "sacrificed" } },
+                          {
+                            "AnyOf": [
+                              { "In": "Battlefield" },
+                              { "In": "Hand" },
+                              { "In": "Library" },
+                              { "In": "Graveyard" },
+                              { "In": "Exile" },
+                              { "In": "Stack" }
+                            ]
+                          }
+                        ]
+                      },
+                      "op": "Lt",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "DealDamage": { "to": "You", "amount": 7 } }]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Morph": "{B}{B}{B}{B}" } }
+      ]
+    }
+  ]
+}

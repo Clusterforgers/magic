@@ -1,0 +1,28 @@
+{
+  "oracle_id": "c7ee79c3-a273-45b4-b3a4-548d9b2b883c",
+  "name": "Leyline of Hope",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Leyline of Hope",
+      "oracle_fingerprint": "54d20353ffea3acb6648a164b41c5ae0",
+      "abilities": [
+        "OpeningHand",
+        { "Replacement": { "when": { "LifeGain": {} }, "by": { "Add": 1 } } },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+            "condition": {
+              "Compare": {
+                "left": { "Life": "You" },
+                "op": "Ge",
+                "right": { "Sum": [{ "StartingLife": "You" }, 7] }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

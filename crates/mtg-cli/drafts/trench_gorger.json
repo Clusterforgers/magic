@@ -1,0 +1,83 @@
+{
+  "oracle_id": "a5e37c6e-ae42-4c98-ba20-840ea3c4a6ab",
+  "name": "Trench Gorger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Trench Gorger",
+      "oracle_fingerprint": "a99a651de75941a1e1527763bb675239",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Search": {
+                        "filter": [{ "Type": "Land" }],
+                        "count": {
+                          "min": 0,
+                          "max": {
+                            "Count": [{ "Type": "Land" }, { "OwnedBy": "You" }, { "In": "Library" }]
+                          }
+                        },
+                        "as": "found"
+                      }
+                    },
+                    { "Exile": { "what": { "Bound": "found" }, "as": "found_exiled" } },
+                    { "Shuffle": {} },
+                    {
+                      "Continuous": {
+                        "affected": "This",
+                        "mods": [
+                          {
+                            "SetPT": {
+                              "power": {
+                                "Count": [
+                                  { "Is": { "Bound": "found_exiled" } },
+                                  {
+                                    "AnyOf": [
+                                      { "In": "Battlefield" },
+                                      { "In": "Hand" },
+                                      { "In": "Library" },
+                                      { "In": "Graveyard" },
+                                      { "In": "Exile" },
+                                      { "In": "Stack" }
+                                    ]
+                                  }
+                                ]
+                              },
+                              "toughness": {
+                                "Count": [
+                                  { "Is": { "Bound": "found_exiled" } },
+                                  {
+                                    "AnyOf": [
+                                      { "In": "Battlefield" },
+                                      { "In": "Hand" },
+                                      { "In": "Library" },
+                                      { "In": "Graveyard" },
+                                      { "In": "Exile" },
+                                      { "In": "Stack" }
+                                    ]
+                                  }
+                                ]
+                              }
+                            }
+                          }
+                        ],
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

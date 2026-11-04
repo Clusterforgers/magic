@@ -1,0 +1,70 @@
+{
+  "oracle_id": "0d397c05-a680-4274-972f-6a5f778b5133",
+  "name": "Ulrich of the Krallenhorde // Ulrich, Uncontested Alpha",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Ulrich of the Krallenhorde",
+      "oracle_fingerprint": "a1707a46f18350b4e90af110d4d7b4cc",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "Did": { "action": "Transformed", "what": ["This"] } }
+              ]
+            },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 4, "toughness": 4 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 123, "end": 227 }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Ulrich, Uncontested Alpha",
+      "oracle_fingerprint": "4205d17b971f2156c429abc38237ee4b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Did": { "action": "Transformed", "what": ["This"] } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "Not": { "Subtype": "Werewolf" } },
+                    { "Not": { "ControlledBy": "You" } }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "May": { "effects": [{ "Fight": { "what": "This", "with": { "Target": 0 } } }] } }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 136, "end": 233 }
+          }
+        }
+      ]
+    }
+  ]
+}

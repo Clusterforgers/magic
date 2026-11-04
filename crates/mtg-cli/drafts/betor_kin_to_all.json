@@ -1,0 +1,91 @@
+{
+  "oracle_id": "826a0db6-195a-4697-9bd6-f544b279e3cf",
+  "name": "Betor, Kin to All",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Betor, Kin to All",
+      "oracle_fingerprint": "c71d669aae8806e99d70b128ad9b89f8",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Total": {
+                    "of": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                    "stat": "Toughness"
+                  }
+                },
+                "op": "Ge",
+                "right": 10
+              }
+            },
+            "effects": [
+              { "Draw": {} },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Total": {
+                          "of": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                          "stat": "Toughness"
+                        }
+                      },
+                      "op": "Ge",
+                      "right": 20
+                    }
+                  },
+                  "then": [
+                    {
+                      "Untap": {
+                        "what": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Total": {
+                          "of": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                          "stat": "Toughness"
+                        }
+                      },
+                      "op": "Ge",
+                      "right": 40
+                    }
+                  },
+                  "then": [
+                    {
+                      "RepeatEach": {
+                        "over": "Opponents",
+                        "as": "each",
+                        "effects": [
+                          {
+                            "LoseLife": {
+                              "who": { "Bound": "each" },
+                              "amount": {
+                                "Half": { "of": { "Life": { "Bound": "each" } }, "up": true }
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

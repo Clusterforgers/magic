@@ -1,0 +1,61 @@
+{
+  "oracle_id": "ecc435e2-deb1-420a-a79f-01dd08747314",
+  "name": "Pyroblast",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pyroblast",
+      "oracle_fingerprint": "c13d947b7bea88227cf7f595b81fa2b9",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [{ "what": { "Object": ["Spell"] } }],
+                      "effects": [
+                        {
+                          "If": {
+                            "condition": {
+                              "CountOf": {
+                                "subject": { "Target": 0 },
+                                "selector": ["Spell", { "Color": "Blue" }],
+                                "op": "Ge",
+                                "right": 1
+                              }
+                            },
+                            "then": [{ "Counter": { "what": { "Target": 0 } } }]
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [{ "what": { "Object": [] } }],
+                      "effects": [
+                        {
+                          "If": {
+                            "condition": {
+                              "CountOf": {
+                                "subject": { "Target": 0 },
+                                "selector": [{ "Color": "Blue" }],
+                                "op": "Ge",
+                                "right": 1
+                              }
+                            },
+                            "then": [{ "Destroy": { "what": { "Target": 0 } } }]
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

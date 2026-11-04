@@ -1,0 +1,133 @@
+{
+  "object": "card",
+  "id": "5ecbf790-619b-4b55-ae4c-29f1459b0031",
+  "oracle_id": "e75b2a97-b28d-43fe-8b1e-ba87a09f339c",
+  "multiverse_ids": [
+    393943
+  ],
+  "mtgo_id": 28859,
+  "tcgplayer_id": 93626,
+  "cardmarket_id": 269907,
+  "name": "Ambush Commander",
+  "lang": "en",
+  "released_at": "2014-12-05",
+  "uri": "https://api.scryfall.com/cards/5ecbf790-619b-4b55-ae4c-29f1459b0031",
+  "scryfall_uri": "https://scryfall.com/card/evg/1/ambush-commander?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T10:32:55Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/5/e/5ecbf790-619b-4b55-ae4c-29f1459b0031.jpg?1783938775",
+    "normal": "https://cards.scryfall.io/normal/front/5/e/5ecbf790-619b-4b55-ae4c-29f1459b0031.jpg?1783938775",
+    "large": "https://cards.scryfall.io/large/front/5/e/5ecbf790-619b-4b55-ae4c-29f1459b0031.jpg?1783938775",
+    "png": "https://cards.scryfall.io/png/front/5/e/5ecbf790-619b-4b55-ae4c-29f1459b0031.png?1783938775",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/5/e/5ecbf790-619b-4b55-ae4c-29f1459b0031.jpg?1783938775",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/5/e/5ecbf790-619b-4b55-ae4c-29f1459b0031.jpg?1783938775",
+    "thumb": "https://cards.scryfall.io/thumb/front/5/e/5ecbf790-619b-4b55-ae4c-29f1459b0031.webp?1783938775",
+    "grid": "https://cards.scryfall.io/grid/front/5/e/5ecbf790-619b-4b55-ae4c-29f1459b0031.webp?1783938775",
+    "display": "https://cards.scryfall.io/display/front/5/e/5ecbf790-619b-4b55-ae4c-29f1459b0031.webp?1783938775",
+    "art": "https://cards.scryfall.io/art/front/5/e/5ecbf790-619b-4b55-ae4c-29f1459b0031.webp?1783938775",
+    "crop": "https://cards.scryfall.io/crop/front/5/e/5ecbf790-619b-4b55-ae4c-29f1459b0031.webp?1783938775",
+    "jpeg": "https://cards.scryfall.io/normal/front/5/e/5ecbf790-619b-4b55-ae4c-29f1459b0031.jpg?1783938775"
+  },
+  "mana_cost": "{3}{G}{G}",
+  "cmc": 5.0,
+  "type_line": "Creature — Elf",
+  "oracle_text": "Forests you control are 1/1 green Elf creatures that are still lands.\n{1}{G}, Sacrifice an Elf: Target creature gets +3/+3 until end of turn.",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": false,
+  "finishes": [
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "d5dbdea8-45f6-4d22-990b-6b6897f99d18",
+  "set": "evg",
+  "set_name": "Duel Decks Anthology: Elves vs. Goblins",
+  "set_type": "duel_deck",
+  "set_uri": "https://api.scryfall.com/sets/d5dbdea8-45f6-4d22-990b-6b6897f99d18",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aevg&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/evg?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/5ecbf790-619b-4b55-ae4c-29f1459b0031/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ae75b2a97-b28d-43fe-8b1e-ba87a09f339c&unique=prints",
+  "collector_number": "1",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Lucio Parrillo",
+  "artist_ids": [
+    "1b452d3f-5c32-46dc-adc3-83eba53052d5"
+  ],
+  "illustration_id": "bec6aec0-dc72-4089-b09f-c0a4f4a5d9dc",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 13409,
+  "penny_rank": 12028,
+  "prices": {
+    "usd": null,
+    "usd_foil": "0.87",
+    "usd_etched": null,
+    "eur": null,
+    "eur_foil": "1.20",
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=393943&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DAmbush%2BCommander",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DAmbush%2BCommander",
+    "edhrec": "https://edhrec.com/route/?cc=Ambush+Commander"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F93626%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=269907&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/28859?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

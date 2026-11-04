@@ -1,0 +1,32 @@
+{
+  "oracle_id": "81d6b42e-9c41-4d1e-bd28-4662e1fde572",
+  "name": "Lurking Evil",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lurking Evil",
+      "oracle_fingerprint": "5b978c060b5f604dc780c62d15be0140",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "PayLife": { "Half": { "of": { "Life": "You" }, "up": true } } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "SetPT": { "power": 4, "toughness": 4 } },
+                    { "SetCreatureTypes": ["Phyrexian", "Horror"] },
+                    { "SetTypes": ["Creature"] },
+                    { "AddKeyword": "Flying" }
+                  ],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

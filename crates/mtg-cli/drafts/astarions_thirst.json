@@ -1,0 +1,36 @@
+{
+  "oracle_id": "0236ad13-d8e4-49b4-b397-fe2f6136665d",
+  "name": "Astarion's Thirst",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Astarion's Thirst",
+      "oracle_fingerprint": "89bef54549a9e671fad21ae81402a585",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 } } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "Commander"]
+                  },
+                  "as": "card"
+                }
+              },
+              {
+                "PutCounters": {
+                  "on": { "Bound": "card" },
+                  "counter": "+1/+1",
+                  "count": { "Stat": { "of": { "Target": 0 }, "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

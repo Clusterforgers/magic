@@ -11,43 +11,32 @@
           "Triggered": {
             "when": { "StepBegins": { "step": "Main2", "whose": "You" } },
             "if": {
-              "Matches": {
-                "subject": "This",
-                "selector": [{ "Is": "This" }, { "HasKeyword": "Trample" }]
-              }
+              "CountOf": { "subject": "This", "selector": ["Tapped"], "op": "Ge", "right": 1 }
             },
             "effects": [
               {
-                "May": {
-                  "effects": [
-                    {
-                      "Choose": {
-                        "from": {
-                          "Each": [
-                            { "In": "Hand" },
-                            { "OwnedBy": "You" },
-                            {
-                              "AnyOf": [
-                                { "Type": "Artifact" },
-                                { "Type": "Battle" },
-                                { "Type": "Creature" },
-                                { "Type": "Enchantment" },
-                                { "Type": "Land" },
-                                { "Type": "Planeswalker" }
-                              ]
-                            }
-                          ]
-                        },
-                        "as": "card"
-                      }
-                    },
-                    { "Move": { "what": { "Bound": "card" }, "to": { "Battlefield": {} } } }
-                  ]
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "OwnedBy": "You" },
+                      {
+                        "AnyOf": [
+                          { "Type": "Artifact" },
+                          { "Type": "Battle" },
+                          { "Type": "Creature" },
+                          { "Type": "Enchantment" },
+                          { "Type": "Land" },
+                          { "Type": "Planeswalker" }
+                        ]
+                      },
+                      { "In": "Hand" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked"
                 }
               },
-              { "WinGame": {} },
-              { "Rule": { "rule": "GraveyardCardsUntargetable", "duration": "UntilEndOfTurn" } },
-              { "Rule": { "rule": "GraveyardCardsUntargetable", "duration": "UntilEndOfTurn" } }
+              { "Move": { "what": { "Bound": "picked" }, "to": { "Battlefield": {} } } }
             ]
           }
         }

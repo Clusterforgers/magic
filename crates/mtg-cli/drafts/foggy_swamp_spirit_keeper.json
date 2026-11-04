@@ -1,0 +1,50 @@
+{
+  "oracle_id": "faecfb8d-2f63-4b98-a842-b11448f0d538",
+  "name": "Foggy Swamp Spirit Keeper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Foggy Swamp Spirit Keeper",
+      "oracle_fingerprint": "0696acc180b4eb1f8dbb2c879f134025",
+      "abilities": [
+        { "Keyword": "Lifelink" },
+        {
+          "Triggered": {
+            "when": { "Nth": { "event": { "Drew": { "who": "You" } }, "nth": 2 } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Spirit",
+                      "types": ["Creature"],
+                      "subtypes": ["Spirit"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [
+                        {
+                          "Static": {
+                            "affected": "This",
+                            "mods": [
+                              { "CanBlockOnly": [{ "Type": "Creature" }, { "Subtype": "Spirit" }] },
+                              {
+                                "CantBeBlockedBy": [
+                                  { "Type": "Creature" },
+                                  { "Not": { "Subtype": "Spirit" } }
+                                ]
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "oracle_id": "f4e32fc1-1b8d-441e-8e76-71f19f98e925",
+  "name": "Leyline of the Void",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Leyline of the Void",
+      "oracle_fingerprint": "23b4b9e15a7cba4fa8df3d5bd11587b6",
+      "abilities": [
+        "OpeningHand",
+        {
+          "Replacement": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Not": "Token" }, { "OwnedBy": "Opponents" }],
+                "to": "Graveyard"
+              }
+            },
+            "by": { "MoveTo": "Exile" }
+          }
+        }
+      ]
+    }
+  ]
+}

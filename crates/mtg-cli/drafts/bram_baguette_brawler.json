@@ -1,0 +1,42 @@
+{
+  "oracle_id": "dca99e27-9581-41f0-8769-03e37641febe",
+  "name": "Bram, Baguette Brawler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bram, Baguette Brawler",
+      "oracle_fingerprint": "b985c7274003d96d801f3cbd80a1d395",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "CreateToken": { "token": { "Named": "food" } } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Subtype": "Food" },
+                { "Not": { "Type": "Creature" } },
+                { "ControlledBy": "You" }
+              ]
+            },
+            "mods": [
+              { "AddKeyword": { "Equip": "{1}" } },
+              { "AddSubtype": "Equipment" },
+              {
+                "GrantAbility": {
+                  "Static": {
+                    "affected": "Attached",
+                    "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

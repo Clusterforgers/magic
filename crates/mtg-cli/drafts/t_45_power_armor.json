@@ -1,0 +1,73 @@
+{
+  "oracle_id": "370aced9-d8bc-4abe-b648-4c62b5aee5ba",
+  "name": "T-45 Power Armor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "T-45 Power Armor",
+      "oracle_fingerprint": "603e8ab6bf82581816d9fb60ba51720b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "PutCounters": { "on": "You", "counter": { "Other": "energy" }, "count": 2 } }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 3, "toughness": 3 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "PayEnergy": 1 }],
+                  "paid": [
+                    { "Untap": { "what": "Attached" } },
+                    {
+                      "Either": {
+                        "first": [
+                          { "PutCounters": { "on": "Attached", "counter": { "Other": "menace" } } }
+                        ],
+                        "second": [
+                          {
+                            "Either": {
+                              "first": [
+                                {
+                                  "PutCounters": {
+                                    "on": "Attached",
+                                    "counter": { "Other": "trample" }
+                                  }
+                                }
+                              ],
+                              "second": [
+                                {
+                                  "PutCounters": {
+                                    "on": "Attached",
+                                    "counter": { "Other": "lifelink" }
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{3}" } },
+        { "Static": { "affected": "Attached", "mods": ["DoesntUntap"] } }
+      ]
+    }
+  ]
+}

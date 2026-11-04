@@ -1,0 +1,27 @@
+{
+  "oracle_id": "d64e96bf-6815-462c-93b4-c9c22dc43eda",
+  "name": "By Invitation Only",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "By Invitation Only",
+      "oracle_fingerprint": "f181c7235c4d5feb1f8bf4e8b0b9eb15",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "ChooseValue": { "kind": { "Number": [0, 13] }, "as": "number" } },
+              {
+                "Sacrifice": {
+                  "who": "EachPlayer",
+                  "filter": [{ "Type": "Creature" }],
+                  "count": { "ChosenAs": "number" }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

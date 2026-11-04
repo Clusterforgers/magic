@@ -1,0 +1,79 @@
+{
+  "oracle_id": "cff8b4e9-c60c-42c1-ad2e-74ae9d7f3afb",
+  "name": "Vraska, Swarm's Eminence",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vraska, Swarm's Eminence",
+      "oracle_fingerprint": "859e0123e4f635eba8e13ce6d4c233a6",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                {
+                  "DealsDamage": {
+                    "source": [
+                      { "Type": "Creature" },
+                      { "ControlledBy": "You" },
+                      { "HasKeyword": "Deathtouch" },
+                      { "In": "Battlefield" }
+                    ],
+                    "to": "EachPlayer"
+                  }
+                },
+                {
+                  "DealsDamage": {
+                    "source": [
+                      { "Type": "Creature" },
+                      { "ControlledBy": "You" },
+                      { "HasKeyword": "Deathtouch" },
+                      { "In": "Battlefield" }
+                    ],
+                    "to": { "Each": [{ "Type": "Planeswalker" }] }
+                  }
+                }
+              ]
+            },
+            "effects": [{ "PutCounters": { "on": "Dealer", "counter": "+1/+1" } }]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 2 },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Assassin",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Assassin"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [
+                        { "Keyword": "Deathtouch" },
+                        {
+                          "Triggered": {
+                            "when": {
+                              "DealsDamage": {
+                                "source": ["This"],
+                                "to": { "Each": [{ "Type": "Planeswalker" }] }
+                              }
+                            },
+                            "effects": [{ "Destroy": { "what": "Triggering" } }]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

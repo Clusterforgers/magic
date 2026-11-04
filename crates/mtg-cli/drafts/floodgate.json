@@ -1,0 +1,54 @@
+{
+  "oracle_id": "f5a85674-fd09-42d8-bba7-5656be25fcea",
+  "name": "Floodgate",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Floodgate",
+      "oracle_fingerprint": "061354262603980b41ba47edf45665e1",
+      "abilities": [
+        { "Keyword": "Defender" },
+        {
+          "Triggered": {
+            "when": {
+              "State": {
+                "condition": {
+                  "Compare": {
+                    "left": { "Count": ["This", { "HasKeyword": "Flying" }] },
+                    "op": "Ge",
+                    "right": 1
+                  }
+                }
+              }
+            },
+            "effects": [{ "Sacrifice": { "filter": ["This"] } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield" } },
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "Not": { "Color": "Blue" } },
+                      { "Not": { "HasKeyword": "Flying" } }
+                    ]
+                  },
+                  "amount": {
+                    "Half": {
+                      "of": { "Count": [{ "Subtype": "Island" }, { "ControlledBy": "You" }] },
+                      "up": false
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

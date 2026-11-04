@@ -1,0 +1,47 @@
+{
+  "oracle_id": "68a6fd00-9cb0-4518-97aa-b7f475da58c1",
+  "name": "Treefolk Mystic",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Treefolk Mystic",
+      "oracle_fingerprint": "228b54822414c41671357885e8399795",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "BecomesBlocked": { "what": [{ "Type": "Creature" }], "by": ["This"] } },
+            "effects": [
+              {
+                "Destroy": {
+                  "what": {
+                    "Each": [
+                      { "Subtype": "Aura" },
+                      { "AttachedTo": { "Each": [{ "Is": "Triggering" }] } }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "BecomesBlocked": { "what": ["This"], "by": [{ "Type": "Creature" }] } },
+            "effects": [
+              {
+                "Destroy": {
+                  "what": {
+                    "Each": [
+                      { "Subtype": "Aura" },
+                      { "AttachedTo": { "Each": [{ "Is": "Dealer" }] } }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

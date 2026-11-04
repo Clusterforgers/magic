@@ -1,0 +1,28 @@
+{
+  "oracle_id": "2f18bb2d-249f-4d7a-a0f7-8a285d365777",
+  "name": "Settle the Score",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Settle the Score",
+      "oracle_fingerprint": "4ff23f020a59140448d082a27845a963",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 } } },
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Type": "Planeswalker" }, { "ControlledBy": "You" }] },
+                  "as": "card"
+                }
+              },
+              { "PutCounters": { "on": { "Bound": "card" }, "counter": "loyalty", "count": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

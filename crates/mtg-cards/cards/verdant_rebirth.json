@@ -1,0 +1,43 @@
+{
+  "oracle_id": "c35540ad-9ab1-4be9-b97d-603813394a26",
+  "name": "Verdant Rebirth",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Verdant Rebirth",
+      "oracle_fingerprint": "e1fa876d0cccd90c3182c04b62a19d0c",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "GrantAbility": {
+                        "Triggered": {
+                          "when": {
+                            "ZoneChange": {
+                              "what": ["This"],
+                              "from": "Battlefield",
+                              "to": "Graveyard"
+                            }
+                          },
+                          "effects": [{ "Move": { "what": "This", "to": "Hand" } }]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

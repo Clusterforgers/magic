@@ -1,0 +1,59 @@
+{
+  "oracle_id": "cc5e3a21-4911-49f8-8e3c-ab23812c4004",
+  "name": "Vulpine Harvester",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vulpine Harvester",
+      "oracle_fingerprint": "492e02e3219bdf31f6d1c1f51103520b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": { "what": [{ "Subtype": "Phyrexian" }, { "ControlledBy": "You" }] }
+            },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Artifact" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Target": 0 },
+                      "selector": [
+                        {
+                          "Compare": {
+                            "stat": "ManaValue",
+                            "op": "Le",
+                            "to": {
+                              "Total": {
+                                "of": [
+                                  { "Subtype": "Phyrexian" },
+                                  { "ControlledBy": "You" },
+                                  "Attacking"
+                                ],
+                                "stat": "Power"
+                              }
+                            }
+                          }
+                        }
+                      ],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

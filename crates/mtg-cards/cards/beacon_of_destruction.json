@@ -1,0 +1,22 @@
+{
+  "oracle_id": "15feb59b-bbbe-462a-8d38-d20735bbc2f3",
+  "name": "Beacon of Destruction",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Beacon of Destruction",
+      "oracle_fingerprint": "b5eb18c4cfe10dbbda630e8f86a203c1",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 5 } },
+              { "Move": { "what": "This", "to": { "Library": { "place": "Shuffled" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

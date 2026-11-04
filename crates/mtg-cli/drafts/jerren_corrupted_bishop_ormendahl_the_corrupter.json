@@ -1,7 +1,7 @@
 {
   "oracle_id": "20d0df30-013c-47c0-b70b-d628d427d30b",
   "name": "Jerren, Corrupted Bishop // Ormendahl, the Corrupter",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Jerren, Corrupted Bishop",
@@ -63,9 +63,12 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 192, "end": 307 }
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": { "Compare": { "left": { "Life": "You" }, "op": "Eq", "right": 13 } },
+            "effects": [
+              { "Pay": { "cost": "{4}{B}{B}", "paid": [{ "Transform": { "what": "This" } }] } }
+            ]
           }
         }
       ]

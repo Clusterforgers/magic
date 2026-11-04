@@ -1,0 +1,40 @@
+{
+  "oracle_id": "7ad52f9c-48d8-486f-90b7-73ce5cb3b9db",
+  "name": "Rex, Cyber-Hound",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Rex, Cyber-Hound",
+      "oracle_fingerprint": "eb5ab7b05ff6f1b79f8db477f67bf1b8",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              { "Mill": { "who": "Triggering", "count": 2 } },
+              { "PutCounters": { "on": "You", "counter": { "Other": "energy" }, "count": 2 } }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 108, "end": 228 }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "GainAbilitiesOf": {
+                  "Each": [{ "HasCounter": { "Other": "brain" } }, { "In": "Exile" }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "oracle_id": "1a5f1670-3e71-4379-90ee-a883c8dc6070",
+  "name": "Possessed Aven",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Possessed Aven",
+      "oracle_fingerprint": "630d9926910ae35547f224b0a88195de",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              { "ModifyPT": { "power": 1, "toughness": 1 } },
+              { "SetColors": ["Black"] },
+              {
+                "GrantAbility": {
+                  "Activated": {
+                    "cost": [{ "Mana": "{2}{B}" }, "Tap"],
+                    "targets": [
+                      { "what": { "Object": [{ "Type": "Creature" }, { "Color": "Blue" }] } }
+                    ],
+                    "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+                  }
+                }
+              }
+            ],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                "op": "Ge",
+                "right": 7
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

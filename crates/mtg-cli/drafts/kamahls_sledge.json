@@ -1,0 +1,35 @@
+{
+  "oracle_id": "defa9b92-4b54-4b00-852e-6c5ec4015643",
+  "name": "Kamahl's Sledge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kamahl's Sledge",
+      "oracle_fingerprint": "3b88517eab30234f651b608516783fc1",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 4 } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                      "op": "Ge",
+                      "right": 7
+                    }
+                  },
+                  "then": [
+                    { "DealDamage": { "to": { "ControllerOf": { "Target": 0 } }, "amount": 4 } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

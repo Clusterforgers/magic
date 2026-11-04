@@ -1,0 +1,26 @@
+{
+  "oracle_id": "e16e2199-d821-49fd-94a0-30ecebd8bd4c",
+  "name": "Flood the Engine",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Flood the Engine",
+      "oracle_fingerprint": "160959507543528936176951f2c917d2",
+      "abilities": [
+        {
+          "Keyword": {
+            "Enchant": [{ "AnyOf": [{ "Type": "Creature" }, { "Subtype": "Vehicle" }] }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Tap": { "what": "Attached" } }]
+          }
+        },
+        { "Static": { "affected": "Attached", "mods": ["LoseAbilities"] } },
+        { "Static": { "affected": "Attached", "mods": ["DoesntUntap"] } }
+      ]
+    }
+  ]
+}

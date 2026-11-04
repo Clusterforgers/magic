@@ -11,15 +11,16 @@
           "Triggered": {
             "when": {
               "DealsDamage": {
-                "source": [{ "Type": "Creature" }, { "ControlledBy": "You" }, { "Not": "Token" }],
-                "to": "EachPlayer"
+                "source": [{ "Type": "Creature" }, { "Not": "Token" }, { "ControlledBy": "You" }],
+                "to": "EachPlayer",
+                "combat": true
               }
             },
             "effects": [
               {
                 "CreateToken": {
                   "token": {
-                    "CopyOf": { "of": "Triggering", "except": [{ "RemoveSupertype": "Legendary" }] }
+                    "CopyOf": { "of": "Dealer", "except": [{ "RemoveSupertype": "Legendary" }] }
                   }
                 }
               }

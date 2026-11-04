@@ -1,0 +1,50 @@
+{
+  "oracle_id": "011af4c1-e8ed-44bf-b7b5-dfdc18524cd0",
+  "name": "Heartwarming Redemption",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Heartwarming Redemption",
+      "oracle_fingerprint": "08a570851169da26b5a89efd2d3b6233",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Discard": {
+                  "count": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
+                  "as": "discarded"
+                }
+              },
+              {
+                "Draw": {
+                  "count": {
+                    "Sum": [
+                      {
+                        "Count": [
+                          { "Is": { "Bound": "discarded" } },
+                          {
+                            "AnyOf": [
+                              { "In": "Battlefield" },
+                              { "In": "Hand" },
+                              { "In": "Library" },
+                              { "In": "Graveyard" },
+                              { "In": "Exile" },
+                              { "In": "Stack" }
+                            ]
+                          }
+                        ]
+                      },
+                      1
+                    ]
+                  }
+                }
+              },
+              { "GainLife": { "amount": { "Count": [{ "OwnedBy": "You" }, { "In": "Hand" }] } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,7 +1,7 @@
 {
   "oracle_id": "2fa739c6-c1c4-4e08-bbe3-43bfee94d0c3",
   "name": "Fruitcake Elemental",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Fruitcake Elemental",
@@ -15,9 +15,18 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 107, "end": 163 }
+          "Activated": {
+            "cost": "{3}",
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "SetController": { "Target": 0 } }],
+                  "duration": "Forever"
+                }
+              }
+            ]
           }
         }
       ]

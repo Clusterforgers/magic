@@ -1,0 +1,33 @@
+{
+  "oracle_id": "037355be-71e7-4866-80a6-80352c304970",
+  "name": "Karlach, Fury of Avernus",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Karlach, Fury of Avernus",
+      "oracle_fingerprint": "29adf9af0917d23b4394504afab06fde",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+            },
+            "if": "FirstCombat",
+            "effects": [
+              { "Untap": { "what": { "Each": [{ "Type": "Creature" }, "Attacking"] } } },
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, "Attacking"] },
+                  "mods": [{ "AddKeyword": "FirstStrike" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "AddPhase": { "phases": ["Combat"] } }
+            ]
+          }
+        },
+        { "Keyword": "ChooseABackground" }
+      ]
+    }
+  ]
+}

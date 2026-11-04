@@ -1,7 +1,7 @@
 {
   "oracle_id": "d74f9a18-8dab-4549-be3f-9697ff68d73c",
   "name": "Sidequest: Hunt the Mark // Yiazmat, Ultimate Mark",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Sidequest: Hunt the Mark",
@@ -56,9 +56,25 @@
       "oracle_fingerprint": "34d52a268b1e36e6a831da2d5d409523",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 0, "end": 103 }
+          "Activated": {
+            "cost": [
+              { "Mana": "{1}{B}" },
+              {
+                "Sacrifice": {
+                  "filter": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Artifact" }] }, "Other"]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddKeyword": "Indestructible" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Tap": { "what": "This" } }
+            ]
           }
         }
       ]

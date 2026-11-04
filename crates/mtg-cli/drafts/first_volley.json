@@ -1,0 +1,22 @@
+{
+  "oracle_id": "b6a89457-1581-46d4-b75b-c5b8704d9f6f",
+  "name": "First Volley",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "First Volley",
+      "oracle_fingerprint": "5ca86c1ba2fe9fb7f0599ab5a8e380f6",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 1 } },
+              { "DealDamage": { "to": { "ControllerOf": { "Target": 0 } }, "amount": 1 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

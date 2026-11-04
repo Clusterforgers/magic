@@ -1,0 +1,25 @@
+{
+  "oracle_id": "ffa40f10-4efb-48d8-b16e-8a5711fcfad1",
+  "name": "Living Terrain",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Living Terrain",
+      "oracle_fingerprint": "4ea8f50742f1280b744c944f19aee0fc",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Land" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "SetPT": { "power": 5, "toughness": 6 } },
+              { "SetColors": ["Green"] },
+              { "AddType": "Creature" },
+              { "AddSubtype": "Treefolk" }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -13,12 +13,13 @@
             "when": {
               "AnyOf": [
                 {
-                  "ZoneChange": {
-                    "what": [{ "ControlledBy": "You" }, { "Is": "This" }],
-                    "to": "Battlefield"
+                  "Did": {
+                    "action": "TokenCreated",
+                    "who": "You",
+                    "what": ["Token", { "ControlledBy": "You" }]
                   }
                 },
-                { "Sacrificed": { "what": [{ "ControlledBy": "You" }, { "Is": "This" }] } }
+                { "Sacrificed": { "what": ["Token", { "ControlledBy": "You" }] } }
               ]
             },
             "effects": [{ "LoseLife": { "who": "Opponents", "amount": 1 } }]

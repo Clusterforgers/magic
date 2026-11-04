@@ -1,7 +1,7 @@
 {
   "oracle_id": "cf4be71e-0a9a-47a3-b0ec-43e04c3c07a0",
   "name": "Tide Shaper",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Tide Shaper",
@@ -9,9 +9,18 @@
       "abilities": [
         { "Keyword": { "Kicker": "{1}" } },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 67, "end": 198 }
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This", "Kicked"], "to": "Battlefield" } },
+            "targets": [{ "what": { "Object": [{ "Type": "Land" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetLandTypes": ["Island"] }],
+                  "duration": "WhileSourceOnBattlefield"
+                }
+              }
+            ]
           }
         },
         {

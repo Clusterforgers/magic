@@ -1,0 +1,83 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "Whenever this creature enters or transforms into CARDNAME, target creature gets +4/+4 until end of turn.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "Whenever this creature enters or transforms into CARDNAME, target creature gets +4/+4 until end of turn.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "At the beginning of each upkeep, if no spells were cast last turn, transform CARDNAME.",
+      "abilities": [],
+      "gap": "key:Trigger.Phase.WerewolfTransformCondition"
+    },
+    {
+      "face": 1,
+      "tag": "T",
+      "text": "Whenever this creature transforms into CARDNAME, you may have it fight target non-Werewolf creature you don't control.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    },
+    {
+      "face": 1,
+      "tag": "T",
+      "text": "At the beginning of each upkeep, if a player cast two or more spells last turn, transform CARDNAME.",
+      "abilities": [],
+      "gap": "key:Trigger.Phase.WerewolfUntransformCondition"
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 122
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 123,
+          "end": 227
+        },
+        "mark": "ByHand"
+      },
+      {
+        "face": 1,
+        "span": {
+          "start": 0,
+          "end": 135
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 1,
+        "span": {
+          "start": 136,
+          "end": 233
+        },
+        "mark": "ByHand"
+      }
+    ]
+  }
+}

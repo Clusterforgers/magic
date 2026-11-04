@@ -1,0 +1,133 @@
+{
+  "object": "card",
+  "id": "fbd9a10e-2bf7-4af7-bb34-52de01e03523",
+  "oracle_id": "0b8e3f9b-a4da-49a3-8545-ce7a265e5856",
+  "multiverse_ids": [
+    279856
+  ],
+  "mtgo_id": 43692,
+  "mtgo_foil_id": 43693,
+  "tcgplayer_id": 58117,
+  "cardmarket_id": 253597,
+  "name": "Stone Giant",
+  "lang": "en",
+  "released_at": "2012-03-30",
+  "uri": "https://api.scryfall.com/cards/fbd9a10e-2bf7-4af7-bb34-52de01e03523",
+  "scryfall_uri": "https://scryfall.com/card/ddi/55/stone-giant?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T11:06:05Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/f/b/fbd9a10e-2bf7-4af7-bb34-52de01e03523.jpg?1783940765",
+    "normal": "https://cards.scryfall.io/normal/front/f/b/fbd9a10e-2bf7-4af7-bb34-52de01e03523.jpg?1783940765",
+    "large": "https://cards.scryfall.io/large/front/f/b/fbd9a10e-2bf7-4af7-bb34-52de01e03523.jpg?1783940765",
+    "png": "https://cards.scryfall.io/png/front/f/b/fbd9a10e-2bf7-4af7-bb34-52de01e03523.png?1783940765",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/f/b/fbd9a10e-2bf7-4af7-bb34-52de01e03523.jpg?1783940765",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/f/b/fbd9a10e-2bf7-4af7-bb34-52de01e03523.jpg?1783940765",
+    "thumb": "https://cards.scryfall.io/thumb/front/f/b/fbd9a10e-2bf7-4af7-bb34-52de01e03523.webp?1783940765",
+    "grid": "https://cards.scryfall.io/grid/front/f/b/fbd9a10e-2bf7-4af7-bb34-52de01e03523.webp?1783940765",
+    "display": "https://cards.scryfall.io/display/front/f/b/fbd9a10e-2bf7-4af7-bb34-52de01e03523.webp?1783940765",
+    "art": "https://cards.scryfall.io/art/front/f/b/fbd9a10e-2bf7-4af7-bb34-52de01e03523.webp?1783940765",
+    "crop": "https://cards.scryfall.io/crop/front/f/b/fbd9a10e-2bf7-4af7-bb34-52de01e03523.webp?1783940765",
+    "jpeg": "https://cards.scryfall.io/normal/front/f/b/fbd9a10e-2bf7-4af7-bb34-52de01e03523.jpg?1783940765"
+  },
+  "mana_cost": "{2}{R}{R}",
+  "cmc": 4.0,
+  "type_line": "Creature — Giant",
+  "oracle_text": "{T}: Target creature you control with toughness less than this creature's power gains flying until end of turn. Destroy that creature at the beginning of the next end step.",
+  "power": "3",
+  "toughness": "4",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "a29e8ace-bbcd-4507-b159-7ec77d28f792",
+  "set": "ddi",
+  "set_name": "Duel Decks: Venser vs. Koth",
+  "set_type": "duel_deck",
+  "set_uri": "https://api.scryfall.com/sets/a29e8ace-bbcd-4507-b159-7ec77d28f792",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Addi&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/ddi?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/fbd9a10e-2bf7-4af7-bb34-52de01e03523/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A0b8e3f9b-a4da-49a3-8545-ce7a265e5856&unique=prints",
+  "collector_number": "55",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "A typical day for a giant. A momentous event for a goat.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Warren Mahy",
+  "artist_ids": [
+    "002c739e-aa1f-4c1d-921b-37cb2d1b1c5b"
+  ],
+  "illustration_id": "61911358-11dc-482d-b77c-9ed8c6792dac",
+  "border_color": "black",
+  "frame": "2003",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 29699,
+  "prices": {
+    "usd": "0.12",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.11",
+    "eur_foil": null,
+    "tix": "0.04"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=279856&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DStone%2BGiant",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DStone%2BGiant",
+    "edhrec": "https://edhrec.com/route/?cc=Stone+Giant"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F58117%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=253597&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/43692?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

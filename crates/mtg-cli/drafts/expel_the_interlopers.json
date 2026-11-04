@@ -1,0 +1,30 @@
+{
+  "oracle_id": "744b7e93-c893-4770-a3bb-6a45b7f8e4f7",
+  "name": "Expel the Interlopers",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Expel the Interlopers",
+      "oracle_fingerprint": "786fe582d47067b5f46f9706647c6b08",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "ChooseValue": { "kind": { "Number": [0, 10] }, "as": "number" } },
+              {
+                "Destroy": {
+                  "what": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "Compare": { "stat": "Power", "op": "Ge", "to": { "ChosenAs": "number" } } }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

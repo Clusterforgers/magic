@@ -1,7 +1,7 @@
 {
   "oracle_id": "563992ff-6fdf-45a0-afc2-7c73c2ec6f74",
   "name": "Magitek Infantry",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Magitek Infantry",
@@ -21,9 +21,18 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 66, "end": 178 }
+          "Activated": {
+            "cost": "{2}{W}",
+            "effects": [
+              { "Search": { "filter": [{ "Named": "Magitek Infantry" }], "as": "found" } },
+              {
+                "Move": {
+                  "what": { "Bound": "found" },
+                  "to": { "Battlefield": { "tapped": true } }
+                }
+              },
+              { "Shuffle": {} }
+            ]
           }
         }
       ]

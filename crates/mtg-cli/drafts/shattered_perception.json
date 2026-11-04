@@ -1,0 +1,45 @@
+{
+  "oracle_id": "9853d789-b048-4cba-a64d-db2694ca9173",
+  "name": "Shattered Perception",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shattered Perception",
+      "oracle_fingerprint": "d4ec1398e0fcb0eafece8d8a95f643d9",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Discard": {
+                  "count": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
+                  "as": "discarded"
+                }
+              },
+              {
+                "Draw": {
+                  "count": {
+                    "Count": [
+                      { "Is": { "Bound": "discarded" } },
+                      {
+                        "AnyOf": [
+                          { "In": "Battlefield" },
+                          { "In": "Hand" },
+                          { "In": "Library" },
+                          { "In": "Graveyard" },
+                          { "In": "Exile" },
+                          { "In": "Stack" }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Flashback": "{5}{R}" } }
+      ]
+    }
+  ]
+}

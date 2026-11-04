@@ -1,0 +1,52 @@
+{
+  "oracle_id": "595f1dee-8c3b-44a6-9e71-a4bb4334b309",
+  "name": "Liliana's Scrounger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Liliana's Scrounger",
+      "oracle_fingerprint": "754995c605013ead4e37d42bf96a5f65",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "Died",
+                    "who": "EachPlayer",
+                    "filter": [{ "Type": "Creature" }]
+                  }
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "Type": "Planeswalker" },
+                            { "Subtype": "Liliana" },
+                            { "ControlledBy": "You" }
+                          ]
+                        },
+                        "as": "card"
+                      }
+                    },
+                    { "PutCounters": { "on": { "Bound": "card" }, "counter": "loyalty" } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
