@@ -419,6 +419,22 @@ fn a_player_given_what_a_player_cannot_have_stays_a_named_gap(
     assert_eq!(static_gaps(line), [name]);
 }
 
+#[rstest]
+#[case::own_spell_with_a_target(
+    "Mode$ ReduceCost | ValidCard$ Card.Self | Type$ Spell | Amount$ 2 | EffectZone$ All | ValidTarget$ Creature.tapped",
+    json!({"CostModifier": {"applies_to": ["This", {"Targeting": [{"Type": "Creature"}, "Tapped"]}], "change": "Reduce", "mana": "{2}"}})
+)]
+#[case::spells_that_target_this(
+    "Mode$ RaiseCost | ValidTarget$ Card.Self | Activator$ Opponent | Type$ Spell | Amount$ 2",
+    json!({"CostModifier": {"applies_to": ["Spell", {"ControlledBy": "Opponents"}, {"Targeting": ["This"]}], "change": "Increase", "mana": "{2}"}})
+)]
+fn a_cost_change_for_spells_with_a_target_reads_the_target(
+    #[case] line: &str,
+    #[case] expected: Value,
+) {
+    assert_eq!(static_ability(line), expected);
+}
+
 #[test]
 fn an_attack_target_that_is_not_known_stays_a_named_gap() {
     assert_eq!(

@@ -360,7 +360,14 @@ fn cost_modifier(ctx: &Ctx, p: &Params, change: &str) -> Tr<Value> {
     keys(
         p,
         "CostModifier",
-        &["ValidCard", "Type", "Activator", "Amount", "EffectZone"],
+        &[
+            "ValidCard",
+            "ValidTarget",
+            "Type",
+            "Activator",
+            "Amount",
+            "EffectZone",
+        ],
     )?;
     if p.get("Type") != Some("Spell") {
         return unmapped("static:CostModifier-Type");
@@ -391,6 +398,11 @@ fn cost_modifier(ctx: &Ctx, p: &Params, change: &str) -> Tr<Value> {
             selector
         }
     };
+    let mut applies = applies;
+    if let Some(target) = p.get("ValidTarget") {
+        // "Spells that target a tapped creature": the cost is judged with the targets the spell has announced.
+        applies.push(json!({"Targeting": selector_any(ctx, target)?}));
+    }
     let amount = p.get("Amount").unwrap_or_default();
     // A number or coloured symbols are the mana; a count (an `SVar`) is how many times {1} applies.
     if ctx.svar(amount).is_some() {
