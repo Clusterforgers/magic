@@ -126,3 +126,30 @@ fn a_chosen_number_is_bound_and_read(#[case] choice: &str, #[case] range: serde_
 fn an_unread_number_choice_is_a_named_gap(#[case] choice: &str, #[case] gap: &str) {
     assert_eq!(gaps(&choosing(choice)), [gap]);
 }
+
+/// `AddPhase` adds the phases the card names, after the current one.
+#[rstest]
+#[case::combat_after_combat("ExtraPhase$ Combat | AfterPhase$ EndCombat", json!(["Combat"]))]
+#[case::combat_and_main("ExtraPhase$ Combat | FollowedBy$ Main2", json!(["Combat", "Main"]))]
+#[case::beginning("ExtraPhase$ Beginning", json!(["Beginning"]))]
+fn extra_phases_are_added(#[case] line: &str, #[case] phases: serde_json::Value) {
+    let script = spell(&format!("AddPhase | {line}"));
+    let found = abilities(&script);
+    assert_eq!(found.len(), 1, "{:?}", gaps(&script));
+    assert_eq!(
+        found[0]["Spell"]["effects"],
+        json!([{"AddPhase": {"phases": phases}}])
+    );
+}
+
+/// A phase the engine does not add stays a gap named after it.
+#[rstest]
+#[case::upkeep("ExtraPhase$ Upkeep", "key:AddPhase.Upkeep")]
+#[case::combat_after_main("ExtraPhase$ Combat | AfterPhase$ Main1", "key:AddPhase.CombatMain1")]
+#[case::delayed(
+    "ExtraPhase$ Combat | AfterPhase$ EndCombat | ExtraPhaseDelayedTrigger$ T",
+    "key:AddPhase.ExtraPhaseDelayedTrigger"
+)]
+fn an_unread_extra_phase_is_a_named_gap(#[case] line: &str, #[case] gap: &str) {
+    assert_eq!(gaps(&spell(&format!("AddPhase | {line}"))), [gap]);
+}

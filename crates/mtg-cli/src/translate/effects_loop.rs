@@ -229,3 +229,28 @@ pub fn choose_number(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         json!({"ChooseValue": {"who": who, "kind": {"Number": [min, max]}, "as": bind}}),
     ])
 }
+
+/// `AddPhase`: extra phases after the current one. An additional combat comes after the combat it is made in
+/// (`AfterPhase$ EndCombat`) or before an additional main phase (`FollowedBy$ Main2`); anything else stays a gap.
+pub fn add_phase(p: &Params) -> Tr<Value> {
+    only(p, "AddPhase", &["ExtraPhase", "AfterPhase", "FollowedBy"])?;
+    let phases = match (
+        p.get("ExtraPhase"),
+        p.get("AfterPhase"),
+        p.get("FollowedBy"),
+    ) {
+        (Some("Combat"), Some("EndCombat"), None) => json!(["Combat"]),
+        (Some("Combat"), None, Some("Main2")) => json!(["Combat", "Main"]),
+        (Some("Beginning"), None, None) => json!(["Beginning"]),
+        (Some(phase), after, followed) => {
+            let tail = format!(
+                "{}{}",
+                after.unwrap_or_default(),
+                followed.unwrap_or_default()
+            );
+            return unmapped(format!("key:AddPhase.{phase}{tail}"));
+        }
+        (None, ..) => return unmapped("key:AddPhase.no-ExtraPhase"),
+    };
+    Ok(json!({"AddPhase": {"phases": phases}}))
+}
