@@ -373,6 +373,17 @@ fn cant_block_by(ctx: &Ctx, p: &Params) -> Tr<Value> {
         }})),
         (valid, Some("Creature.Self" | "Card.Self")) => {
             let mut only = selector_any(ctx, valid)?;
+            if !only.iter().any(|pred| pred.get("Not").is_some()) {
+                // "Can't block X" is "blocks only what is not X"; not (a and b) is (not a) or (not b).
+                let negated: Vec<Value> = only.iter().map(|pred| json!({"Not": pred})).collect();
+                let outside = match negated.as_slice() {
+                    [single] => single.clone(),
+                    _ => json!({"AnyOf": negated}),
+                };
+                return Ok(
+                    json!({"Static": {"affected": "This", "mods": [{"CanBlockOnly": [outside]}]}}),
+                );
+            }
             let (Some(at), 1) = (
                 only.iter().position(|pred| pred.get("Not").is_some()),
                 only.iter().filter(|pred| pred.get("Not").is_some()).count(),

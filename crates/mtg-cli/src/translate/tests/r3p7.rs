@@ -462,3 +462,68 @@ fn a_cast_from_the_graveyard_pays_the_extra_life_in_a_game() {
     }
     assert_eq!(life(&driver), start - 3);
 }
+
+#[test]
+fn a_blocker_that_cant_block_a_kind_translates_to_blocks_only_the_rest() {
+    let line =
+        "S:Mode$ CantBlockBy | ValidAttacker$ Creature.powerGE2 | ValidBlocker$ Creature.Self";
+    let found = abilities(&format!(
+        "Name:Subject\nTypes:Creature Elf\nPT:1/1\n{line}\n"
+    ));
+    let outside = json!({"AnyOf": [
+        {"Not": {"Type": "Creature"}},
+        {"Not": {"Compare": {"op": "Ge", "stat": "Power", "to": 2}}},
+    ]});
+    assert_eq!(
+        found,
+        vec![json!({"Static": {"affected": "This", "mods": [{"CanBlockOnly": [outside]}]}})]
+    );
+}
+
+/// Whether the Wall of seat 1, which can't block creatures `attacker` names, may block the Runner of the given power.
+fn wall_can_block(attacker: &str, power: i32) -> bool {
+    let wall = CardDefinition::new("Wall")
+        .with_type(CardType::Creature)
+        .with_power_toughness(0, 9);
+    let line =
+        format!("S:Mode$ CantBlockBy | ValidAttacker$ {attacker} | ValidBlocker$ Creature.Self");
+    let script = format!("Name:Wall\nTypes:Creature Wall\nPT:0/9\n{line}\n");
+    let wall = abilities(&script).into_iter().fold(wall, |card, rule| {
+        card.with_rules(serde_json::from_value::<Ability>(rule).unwrap())
+    });
+    let scenario = Scenario::new(2)
+        .at(1, 0, Step::Main1)
+        .battlefield(
+            0,
+            [ready(mtg_testkit::cards::free_creature("Runner", power, 3))],
+        )
+        .battlefield(1, [ready(Arc::new(wall))]);
+    let mut driver = Driver::from_scenario(scenario).unwrap();
+    driver.pass_until(Step::DeclareAttackers).unwrap();
+    driver.attack(&[("Runner", 1)]).unwrap();
+    for _ in 0..40 {
+        match &driver.decision().unwrap().kind {
+            DecisionKind::DeclareBlockers(_) => {
+                return driver.block(&[("Wall", "Runner")]).is_ok();
+            }
+            _ if driver.state().turn().step() == Step::EndCombat => return false,
+            _ => {
+                driver.answer_passively().unwrap();
+            }
+        }
+    }
+    panic!("combat did not reach blocks");
+}
+
+#[rstest]
+#[case::power_two_attacker_is_refused("Creature.powerGE2", 2, false)]
+#[case::power_one_attacker_is_blocked("Creature.powerGE2", 1, true)]
+#[case::power_one_at_most_two_is_refused("Creature.powerLE2", 1, false)]
+#[case::power_three_above_the_limit_is_blocked("Creature.powerLE2", 3, true)]
+fn a_blocker_cant_block_the_attackers_its_line_names(
+    #[case] attacker: &str,
+    #[case] power: i32,
+    #[case] blocks: bool,
+) {
+    assert_eq!(wall_can_block(attacker, power), blocks);
+}
