@@ -527,3 +527,63 @@ fn a_blocker_cant_block_the_attackers_its_line_names(
 ) {
     assert_eq!(wall_can_block(attacker, power), blocks);
 }
+
+#[rstest]
+#[case::doran_the_siege_tower("Creature.YouCtrl", Some(json!("You")))]
+#[case::every_creature("Creature", Some(json!("EachPlayer")))]
+#[case::only_toughness_above_power("Creature.powerLTtoughness+YouCtrl", None)]
+#[case::only_equipped("Creature.EquippedBy+powerLTtoughness", None)]
+fn assigning_damage_by_toughness_is_read_only_for_every_creature(
+    #[case] valid: &str,
+    #[case] who: Option<Value>,
+) {
+    let text = format!(
+        "Name:Subject\nTypes:Creature Elf\nPT:0/5\nS:Mode$ CombatDamageToughness | ValidCard$ {valid}\n"
+    );
+    match who {
+        Some(who) => assert_eq!(
+            abilities(&text),
+            vec![json!({"Rule": {"rule": {"ToughnessAssignsDamage": who}}})]
+        ),
+        None => {
+            let wanted = format!("key:Static.CombatDamageToughness.ValidCard={valid}");
+            assert!(gaps(&text).contains(&wanted), "{:?}", gaps(&text));
+        }
+    }
+}
+
+/// The damage the Runner (0 power, 5 toughness) of seat 0 deals to seat 1 when it attacks unblocked, with a Doran line or not.
+fn damage_dealt_by_a_wall_of_toughness(line: &str) -> i32 {
+    let script = format!("Name:Runner\nTypes:Creature Wall\nPT:0/5\n{line}\n");
+    let card = abilities(&script).into_iter().fold(
+        CardDefinition::new("Runner")
+            .with_type(CardType::Creature)
+            .with_power_toughness(0, 5),
+        |card, rule| card.with_rules(serde_json::from_value::<Ability>(rule).unwrap()),
+    );
+    let scenario = Scenario::new(2)
+        .at(1, 0, Step::Main1)
+        .battlefield(0, [ready(Arc::new(card))]);
+    let mut driver = Driver::from_scenario(scenario).unwrap();
+    let before = life_of(&driver, 1);
+    driver.pass_until(Step::DeclareAttackers).unwrap();
+    driver.attack(&[("Runner", 1)]).unwrap();
+    for _ in 0..60 {
+        if driver.state().turn().step() == Step::EndCombat {
+            break;
+        }
+        driver.answer_passively().unwrap();
+    }
+    before - life_of(&driver, 1)
+}
+
+fn life_of(driver: &Driver, seat: usize) -> i32 {
+    driver.state().player(PlayerId::from_index(seat)).unwrap().life()
+}
+
+#[rstest]
+#[case::with_the_line("S:Mode$ CombatDamageToughness | ValidCard$ Creature.YouCtrl", 5)]
+#[case::without_it("", 0)]
+fn the_translated_line_makes_a_creature_hit_for_its_toughness(#[case] line: &str, #[case] dealt: i32) {
+    assert_eq!(damage_dealt_by_a_wall_of_toughness(line), dealt);
+}
