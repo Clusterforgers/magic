@@ -27,19 +27,28 @@ pub struct World {
     pub subtypes: BTreeSet<String>,
     /// The token scripts by file stem (`w_1_1_soldier`).
     pub tokens: BTreeMap<String, Face>,
+    /// The names of the checkout's cards and tokens.
+    pub names: BTreeSet<String>,
 }
 
 impl World {
     /// The subtypes of the card scripts and the given token scripts.
     pub fn new(scripts: &[Script], tokens: BTreeMap<String, Face>) -> World {
         let mut subtypes = BTreeSet::new();
+        let mut names = BTreeSet::new();
         for face in scripts.iter().flat_map(|script| &script.faces) {
             subtypes.extend(subtypes_of(&face.types));
+            names.insert(face.name.clone());
         }
         for face in tokens.values() {
             subtypes.extend(subtypes_of(&face.types));
+            names.insert(face.name.clone());
         }
-        World { subtypes, tokens }
+        World {
+            subtypes,
+            tokens,
+            names,
+        }
     }
 }
 

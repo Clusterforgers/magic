@@ -407,7 +407,7 @@ pub fn defined(ctx: &Ctx, word: &str) -> Tr<Value> {
             super::triggered::resolve(ctx.trigger.as_ref(), word)
         }
         "DefendingPlayer" | "TriggeredDefendingPlayer" => Ok(json!("Defending")),
-        other => unmapped(format!("defined:{other}")),
+        other => super::valid_more::defined_word(ctx, other),
     }
 }
 
