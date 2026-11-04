@@ -167,13 +167,35 @@ fn prevent_damage(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     Ok(json!({"Shield": {"when": {"Damage": {"to": to}}, "by": by, "duration": "UntilEndOfTurn"}}))
 }
 
-/// The restriction a hidden keyword (`HIDDEN CARDNAME can't block.`) stands for.
-fn hidden(word: &str) -> Option<Value> {
-    Some(match word.trim_end_matches('.') {
-        "HIDDEN CARDNAME can't block" => json!("CantBlock"),
-        "HIDDEN CARDNAME can't attack" => json!("CantAttack"),
+/// The modifications a hidden keyword (`HIDDEN CARDNAME can't block.`) stands for.
+fn hidden(word: &str) -> Option<Vec<Value>> {
+    let word = word.trim_end_matches('.');
+    Some(match word {
+        "HIDDEN CARDNAME can't block" => vec![json!("CantBlock")],
+        "HIDDEN CARDNAME can't attack" => vec![json!("CantAttack")],
+        "HIDDEN CARDNAME can't attack or block" => vec![json!("CantAttack"), json!("CantBlock")],
+        "HIDDEN CARDNAME's power and toughness are switched" => vec![json!("SwitchPT")],
+        DOESNT_UNTAP => vec![json!("DoesntUntap")],
         _ => return None,
     })
+}
+
+/// The hidden keyword whose effect lasts through the next untap step only.
+const DOESNT_UNTAP: &str = "HIDDEN This card doesn't untap during your next untap step";
+
+/// The duration of a pump line. "Doesn't untap during your next untap step" lasts through that step, whatever
+/// `Duration$ Permanent` says; it stands alone and with that duration only.
+fn pump_duration(p: &Params) -> Tr<&'static str> {
+    let Some(keywords) = p.get("KW") else {
+        return duration(p.get("Duration"));
+    };
+    if !keywords.contains("doesn't untap during your next untap step") {
+        return duration(p.get("Duration"));
+    }
+    if keywords.trim_end_matches('.') == DOESNT_UNTAP && p.get("Duration") == Some("Permanent") {
+        return Ok("NextUntapStep");
+    }
+    unmapped("keyword:HIDDEN-doesnt-untap-shape")
 }
 
 /// The modifications of a pump line: power and toughness, then keywords.
@@ -186,10 +208,10 @@ fn pump_mods(ctx: &Ctx, p: &Params) -> Tr<Vec<Value>> {
     }
     if let Some(keywords) = p.get("KW") {
         for word in keywords.split('&').map(str::trim) {
-            mods.push(match hidden(word) {
-                Some(modification) => modification,
-                None => json!({ "AddKeyword": keyword_value(ctx, word)? }),
-            });
+            match hidden(word) {
+                Some(found) => mods.extend(found),
+                None => mods.push(json!({ "AddKeyword": keyword_value(ctx, word)? })),
+            }
         }
     }
     if mods.is_empty() {
@@ -214,7 +236,7 @@ fn pump(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             "TargetMax",
         ],
     )?;
-    let duration = duration(p.get("Duration"))?;
+    let duration = pump_duration(p)?;
     let affected = objects(subject(ctx, p, "Self", None)?)?;
     // A pump that only chooses a target ("target creature you control deals damage ... to target creature") changes
     // nothing itself; the part after it uses the target.
@@ -243,7 +265,7 @@ fn pump_all(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             "IsCurse",
         ],
     )?;
-    let duration = duration(p.get("Duration"))?;
+    let duration = pump_duration(p)?;
     let valid = p.get("ValidCards").unwrap_or_default();
     let affected = json!({"Each": selector_any(ctx, valid)?});
     let mods = pump_mods(ctx, p)?;

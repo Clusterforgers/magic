@@ -234,6 +234,9 @@ pub fn keyword_abilities(ctx: &mut Ctx, body: &str) -> Vec<Tr<Value>> {
     if let Some(quirks) = combat_quirks(body.trim()) {
         return quirks.iter().map(|quirk| Ok(combat_rule(quirk))).collect();
     }
+    if let Some(rules) = super::keyword_prevent::prevent_keyword(body) {
+        return rules.into_iter().map(Ok).collect();
+    }
     match body.strip_prefix("Chapter:") {
         Some(rest) => chapters(ctx, rest),
         None => super::keyword_alt::alt_keyword(body)
@@ -297,15 +300,11 @@ pub fn keyword_ability(ctx: &mut Ctx, body: &str) -> Tr<Value> {
     let fields: Vec<&str> = body.split(':').collect();
     let mut condition = None;
     let by = match fields.as_slice() {
-        ["etbCounter", kind, count, rest @ ..]
-            if rest.is_empty() || rest[0] == "CheckSVar$ WasKicked" =>
-        {
+        ["etbCounter", kind, count, rest @ ..] if rest.len() <= 2 => {
             let Some(kind) = counter_kind(kind) else {
                 return unmapped("keyword:etbCounter-kind");
             };
-            if !rest.is_empty() {
-                condition = Some(json!("Kicked"));
-            }
+            condition = etb_condition(ctx, rest.first().copied())?;
             json!({"WithCounters": {"counter": kind, "count": amount(ctx, count)?}})
         }
         ["ETBReplacement", "Other", name] => choice(ctx, name)?,
@@ -355,6 +354,30 @@ fn choice(ctx: &Ctx, name: &str) -> Tr<Value> {
             }
         }
         (api, _, _) => unmapped(format!("keyword:ETBReplacement-{}", api.unwrap_or("?"))),
+    }
+}
+
+/// The condition field of an `etbCounter` line (the field after the count; the next one is the description): none for
+/// no field or `no Condition`, else the escape check or a `CheckSVar` condition; anything else is a gap.
+fn etb_condition(ctx: &Ctx, field: Option<&str>) -> Tr<Option<Value>> {
+    let Some(field) = field else {
+        return Ok(None);
+    };
+    match field {
+        "no Condition" => return Ok(None),
+        "CheckSVar$ WasKicked" => return Ok(Some(json!("Kicked"))),
+        "ValidCard$ Card.Self+escaped" => return Ok(Some(json!({"CastWith": "Escape"}))),
+        _ => {}
+    }
+    let params = Params::parse(field);
+    if !params.has("CheckSVar") {
+        return unmapped("keyword:etbCounter-condition");
+    }
+    let keys = ["CheckSVar", "SVarCompare"];
+    super::ctx::check_keys(&params, "etbCounter", &keys, |_, _| false)?;
+    match super::condition::condition(ctx, &params)? {
+        Some(condition) => Ok(Some(condition)),
+        None => unmapped("keyword:etbCounter-condition"),
     }
 }
 
