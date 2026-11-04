@@ -6,7 +6,7 @@ use super::amount::amount;
 use super::condition::prefixed;
 use super::ctx::{Ctx, Tr, only, unmapped};
 use super::valid::{defined, subject};
-use super::{effects_effect, effects_obj, effects_zone, tokens};
+use super::{effects_effect, effects_loop, effects_obj, effects_zone, tokens};
 use crate::forge::script::Params;
 
 /// The effects of an ability line and of the sub-abilities it names, in order.
@@ -83,6 +83,8 @@ fn line(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         "Proliferate" => one(proliferate(p)),
         "Cleanup" => cleanup(p),
         "Effect" => effects_effect::effects(ctx, p),
+        "RepeatEach" => effects_loop::repeat_each(ctx, p),
+        "ChooseColor" | "ChooseType" => effects_loop::choose_value(ctx, p, api),
         "Charm" => one(charm(ctx, p)),
         "DelayedTrigger" => one(delayed(ctx, p)),
         "Dig" => effects_zone::dig(ctx, p),

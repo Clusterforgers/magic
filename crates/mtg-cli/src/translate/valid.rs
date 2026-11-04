@@ -48,6 +48,18 @@ fn property(ctx: &Ctx, prop: &str) -> Tr<Vec<Value>> {
         "IsGoaded" | "Goaded" => return one(json!("Goaded")),
         "HasCounters" => return one(json!("HasAnyCounter")),
         "hasXCost" => return one(json!("XInCost")),
+        "RememberedPlayerCtrl" => {
+            return match &ctx.remembered {
+                Some(who) => one(json!({"ControlledBy": who})),
+                None => unmapped("valid:RememberedPlayerCtrl-without-a-player"),
+            };
+        }
+        "ChosenColor" | "ChosenType" => {
+            return match &ctx.chosen {
+                Some(name) => one(json!({"ChosenAs": name})),
+                None => unmapped(format!("valid:{prop}-without-a-choice")),
+            };
+        }
         "ExiledWithSource" => return one(json!({"ExiledWith": "This"})),
         "enchanted" => return one(json!({"HasAttached": [{"Subtype": "Aura"}]})),
         "equipped" => return one(json!({"HasAttached": [{"Subtype": "Equipment"}]})),
@@ -304,7 +316,7 @@ pub fn defined(ctx: &Ctx, word: &str) -> Tr<Value> {
         "Enchanted" | "Equipped" => Ok(json!("Attached")),
         "EnchantedController" | "EquippedController" => controller(json!("Attached")),
         "EnchantedPlayer" => Ok(json!("AttachedPlayer")),
-        "Remembered" => ctx
+        "Player.IsRemembered" | "Remembered" => ctx
             .remembered
             .clone()
             .map_or_else(|| unmapped("defined:Remembered-without-a-change"), Ok),

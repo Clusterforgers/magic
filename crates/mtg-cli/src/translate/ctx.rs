@@ -88,6 +88,8 @@ pub struct Ctx<'a> {
     pub remembered: Option<Value>,
     /// The latest target the ability had declared before the line being translated (`Defined$ ParentTarget`).
     pub parent_target: Option<u8>,
+    /// The name the latest value chosen by the ability is bound to (`ChosenColor`, `ChosenType` after it).
+    pub chosen: Option<String>,
     binds: usize,
     depth: usize,
 }
@@ -107,6 +109,7 @@ impl<'a> Ctx<'a> {
             targets: Vec::new(),
             remembered: None,
             parent_target: None,
+            chosen: None,
             binds: 0,
             depth: 0,
         }
@@ -117,6 +120,7 @@ impl<'a> Ctx<'a> {
         self.targets.clear();
         self.remembered = None;
         self.parent_target = None;
+        self.chosen = None;
         self.binds = 0;
         self.depth = 0;
     }
