@@ -170,6 +170,37 @@ fn with_counters(p: &Params) -> Tr<Value> {
     }
 }
 
+/// `ManifestDread` (CR 701.62a): look at the top two cards of the library, put one of them onto the battlefield face down as
+/// a 2/2 creature and the rest into the graveyard. The player picks the card to manifest; the other goes to the graveyard
+/// first, so the card kept is the top of the library the manifest takes (a library of one or none still works). Once
+/// only: "manifest dread X times" is a gap.
+pub fn manifest_dread(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
+    only(
+        p,
+        "ManifestDread",
+        &["Amount", "DefinedPlayer", "RememberManifested"],
+    )?;
+    if !matches!(p.get("Amount"), None | Some("1")) {
+        return unmapped("key:ManifestDread.Amount");
+    }
+    let who = defined(ctx, p.get("DefinedPlayer").unwrap_or("You"))?;
+    let looked = ctx.fresh("looked");
+    let kept = ctx.fresh("kept");
+    let rest = ctx.fresh("rest");
+    let mut manifest = json!({"Manifest": {"who": who}});
+    if p.get("RememberManifested") == Some("True") {
+        let name = ctx.fresh("manifested");
+        manifest["Manifest"]["as"] = json!(name);
+        ctx.remembered = Some(json!({ "Bound": name }));
+    }
+    Ok(vec![
+        json!({"LookAtTop": {"who": who, "count": 2, "as": looked}}),
+        json!({"Choose": {"who": who, "from": {"Bound": looked}, "as": kept, "rest_as": rest}}),
+        json!({"Move": {"what": {"Bound": rest}, "to": "Graveyard"}}),
+        manifest,
+    ])
+}
+
 /// The card types an `AddType$` word may name; any other word is a supertype or a subtype.
 const STATIC_CARD_TYPES: [&str; 8] = [
     "Creature",

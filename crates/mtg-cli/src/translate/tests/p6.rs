@@ -273,6 +273,36 @@ fn a_static_effect_that_means_more_stays_a_gap(#[case] svar: &str) {
 }
 
 #[test]
+fn manifest_dread_looks_at_two_keeps_one_and_buries_the_rest() {
+    let (json, found) = sorcery(
+        "A:SP$ ManifestDread | RememberManifested$ True | SubAbility$ P\nSVar:P:DB$ PutCounter | Defined$ Remembered | CounterType$ P1P1 | CounterNum$ 1",
+    );
+    assert!(found.is_empty(), "{found:?} {json}");
+    let order = [
+        "\"LookAtTop\":{\"as\":\"looked\",\"count\":2",
+        "\"Choose\":{\"as\":\"kept2\",\"from\":{\"Bound\":\"looked\"}",
+        "\"rest_as\":\"rest3\"",
+        "\"Move\":{\"to\":\"Graveyard\",\"what\":{\"Bound\":\"rest3\"}}",
+        "\"Manifest\":{\"as\":\"manifested4\"}",
+    ];
+    let mut at = 0;
+    for word in order {
+        let Some(found) = json[at..].find(word) else {
+            panic!("{word} missing or out of order in {json}");
+        };
+        at += found;
+    }
+}
+
+#[rstest]
+#[case::many_times("A:SP$ ManifestDread | Amount$ X\nSVar:X:Count$xPaid")]
+#[case::unknown_key("A:SP$ ManifestDread | Mandatory$ False")]
+fn manifest_dread_beyond_once_stays_a_gap(#[case] line: &str) {
+    let (_, found) = sorcery(line);
+    assert!(!found.is_empty());
+}
+
+#[test]
 fn a_static_effect_on_a_move_elsewhere_stays_a_gap() {
     let (_, found) = sorcery(
         "A:SP$ ChangeZone | Origin$ Graveyard | Destination$ Hand | ValidTgts$ Artifact.YouOwn | StaticEffect$ Animate\nSVar:Animate:Mode$ Continuous | AddType$ Hero",
