@@ -241,10 +241,10 @@ export const DeclareBlockersPrompt: PromptComponent<'DeclareBlockers'> = ({ opti
           : unserved.length > 0 && pairs.size === 0
             ? `${unserved.map(attackerName).join(', ')} must be blocked if able.`
             : firstShort !== undefined
-            ? `${attackerName(firstShort[0])} needs ${blockersNeeded(firstShort[1])}. Choose another creature to block it, or take its block back.`
-            : pairs.size === 0
-              ? 'Click a blocker, then the attacker it blocks.'
-              : `${blockSummary(pairs.size, new Set(pairs.values()).size)}.`
+              ? `${attackerName(firstShort[0])} needs ${blockersNeeded(firstShort[1])}. Choose another creature to block it, or take its block back.`
+              : pairs.size === 0
+                ? 'Click a blocker, then the attacker it blocks.'
+                : `${blockSummary(pairs.size, new Set(pairs.values()).size)}.`
 
   return (
     <PromptLayout compact text={text}>

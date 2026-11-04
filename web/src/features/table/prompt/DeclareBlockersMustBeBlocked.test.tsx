@@ -34,6 +34,15 @@ describe('an attacker a rule says must be blocked', () => {
     await t.user.click(t.card(t.attackers[0]))
     expect(t.button('Confirm blocks')).toBeEnabled()
     await t.user.click(t.button('Confirm blocks'))
-    expect(t.answer.mock.calls).toEqual([[{ DeclareBlockers: [[t.a, t.attackers[1]], [t.b, t.attackers[0]]] }]])
+    expect(t.answer.mock.calls).toEqual([
+      [
+        {
+          DeclareBlockers: [
+            [t.a, t.attackers[1]],
+            [t.b, t.attackers[0]],
+          ],
+        },
+      ],
+    ])
   })
 })
