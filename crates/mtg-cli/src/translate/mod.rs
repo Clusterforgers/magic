@@ -26,6 +26,7 @@ pub mod statics;
 pub mod stored;
 pub mod tokens;
 pub mod triggers;
+pub mod triggers_did;
 pub mod triggers_more;
 pub mod valid;
 
