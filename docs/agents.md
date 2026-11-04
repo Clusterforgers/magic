@@ -15,6 +15,7 @@ Deliver: <list>
 Tests: each test module starts with `//! Goal:`; table-driven/property tests over single cases.
 Docs you write follow the docs rule in CLAUDE.md.
 Checks before every non-wip commit: scripts/check.sh fast; before the final report: `git merge main`, then `scripts/check.sh gate` (agents never run `affected` or `all`: the orchestrator runs them once per batch). If main moved while it ran and the merge is clean, re-run only scripts/check.sh fast; run `gate` again only if the merge had conflicts in code. Once the check is green do not merge main again: it moves with every merge and push, and the orchestrator merges it into your branch and resolves the roadmap conflicts.
+Waiting: run the check once in the background and wait for its exit notice. No `pgrep -f` loop (it matches its own shell and never ends) and no `sleep` timers.
 Context: CARGO_BUILD_JOBS=4 (six cargo jobs share 24 cores); read line ranges (`grep -n`, `sed -n a,bp`) and each file once; run a check that takes more than a few minutes in the background and end the turn instead of polling; never wait in an `until` loop on `pgrep -f` (the pattern matches the loop's own command line, so it never ends and the agent never reports), wait on the command's own exit or on an end marker in its log.
 Commits: commit after every finished module or green run. Prefix unfinished checkpoints with `wip:`. Never add AI attribution.
 Last step: after the final green `scripts/check.sh gate`, run `rm -rf target` in your worktree.
