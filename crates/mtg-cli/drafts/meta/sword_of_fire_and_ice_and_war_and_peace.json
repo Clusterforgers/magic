@@ -1,0 +1,59 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "K",
+      "text": "Equip:4",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "Whenever equipped creature deals combat damage to an opponent, CARDNAME deals 2 damage to any target and you draw a card. Then, it deals damage to defending player equal to the number of cards in their hand and you gain 1 life for each card in your hand.",
+      "abilities": [],
+      "gap": "amount:TriggeredTarget"
+    },
+    {
+      "face": 0,
+      "tag": "S",
+      "text": "Equipped creature gets +4/+4 and has protection from white, blue, and red.",
+      "abilities": [
+        1
+      ],
+      "gap": null
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 74
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 75,
+          "end": 360
+        },
+        "mark": "ByHand"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 361,
+          "end": 370
+        },
+        "mark": "Auto"
+      }
+    ]
+  }
+}

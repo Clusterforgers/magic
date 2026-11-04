@@ -1,0 +1,131 @@
+{
+  "object": "card",
+  "id": "5277656c-70f5-4660-bd58-7d9261d53fb5",
+  "oracle_id": "c9798915-3f9e-466b-bbd6-f4e126bdb67d",
+  "multiverse_ids": [
+    2578
+  ],
+  "tcgplayer_id": 4788,
+  "cardmarket_id": 6354,
+  "name": "Maddening Wind",
+  "lang": "en",
+  "released_at": "1995-06-03",
+  "uri": "https://api.scryfall.com/cards/5277656c-70f5-4660-bd58-7d9261d53fb5",
+  "scryfall_uri": "https://scryfall.com/card/ice/254/maddening-wind?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T12:57:55Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/5/2/5277656c-70f5-4660-bd58-7d9261d53fb5.jpg?1783947475",
+    "normal": "https://cards.scryfall.io/normal/front/5/2/5277656c-70f5-4660-bd58-7d9261d53fb5.jpg?1783947475",
+    "large": "https://cards.scryfall.io/large/front/5/2/5277656c-70f5-4660-bd58-7d9261d53fb5.jpg?1783947475",
+    "png": "https://cards.scryfall.io/png/front/5/2/5277656c-70f5-4660-bd58-7d9261d53fb5.png?1783947475",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/5/2/5277656c-70f5-4660-bd58-7d9261d53fb5.jpg?1783947475",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/5/2/5277656c-70f5-4660-bd58-7d9261d53fb5.jpg?1783947475",
+    "thumb": "https://cards.scryfall.io/thumb/front/5/2/5277656c-70f5-4660-bd58-7d9261d53fb5.webp?1783947475",
+    "grid": "https://cards.scryfall.io/grid/front/5/2/5277656c-70f5-4660-bd58-7d9261d53fb5.webp?1783947475",
+    "display": "https://cards.scryfall.io/display/front/5/2/5277656c-70f5-4660-bd58-7d9261d53fb5.webp?1783947475",
+    "art": "https://cards.scryfall.io/art/front/5/2/5277656c-70f5-4660-bd58-7d9261d53fb5.webp?1783947475",
+    "crop": "https://cards.scryfall.io/crop/front/5/2/5277656c-70f5-4660-bd58-7d9261d53fb5.webp?1783947475",
+    "jpeg": "https://cards.scryfall.io/normal/front/5/2/5277656c-70f5-4660-bd58-7d9261d53fb5.jpg?1783947475"
+  },
+  "mana_cost": "{2}{G}",
+  "cmc": 3.0,
+  "type_line": "Enchantment — Aura",
+  "oracle_text": "Enchant creature\nCumulative upkeep {G} (At the beginning of your upkeep, put an age counter on this permanent, then sacrifice it unless you pay its upkeep cost for each age counter on it.)\nAt the beginning of the upkeep of enchanted creature's controller, this Aura deals 2 damage to that player.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Enchant",
+    "Cumulative upkeep"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "b0e08eea-5c01-4406-a6e2-dcd09c5e5b67",
+  "set": "ice",
+  "set_name": "Ice Age",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/b0e08eea-5c01-4406-a6e2-dcd09c5e5b67",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aice&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/ice?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/5277656c-70f5-4660-bd58-7d9261d53fb5/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ac9798915-3f9e-466b-bbd6-f4e126bdb67d&unique=prints",
+  "collector_number": "254",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "\"It is Freyalise, walking on the world.\"\n—Kolbjörn, Elder Druid of the Juniper Order",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Dameon Willich",
+  "artist_ids": [
+    "606a37b0-9d2d-477b-b679-100bc30b46b3"
+  ],
+  "illustration_id": "51233189-3ddf-4771-896f-eca194e16490",
+  "border_color": "black",
+  "frame": "1993",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 31438,
+  "prices": {
+    "usd": "0.19",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.16",
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=2578&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DMaddening%2BWind",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DMaddening%2BWind",
+    "edhrec": "https://edhrec.com/route/?cc=Maddening+Wind"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F4788%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=6354&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Maddening+Wind&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

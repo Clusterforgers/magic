@@ -1,0 +1,22 @@
+{
+  "oracle_id": "9cbc8765-1735-48ca-bbc2-411aa7da2ed3",
+  "name": "Goldmaw Champion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Goldmaw Champion",
+      "oracle_fingerprint": "98d5057f238ce4851e8f463e0452c93e",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{1}{W}",
+            "condition": { "Matches": { "subject": "This", "selector": ["AttackedThisTurn"] } },
+            "limit": "OncePerTurn",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "Tap": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

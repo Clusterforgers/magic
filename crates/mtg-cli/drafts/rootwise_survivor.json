@@ -1,0 +1,49 @@
+{
+  "oracle_id": "e42a6880-7ca6-498d-abc9-fb7ccd08b111",
+  "name": "Rootwise Survivor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rootwise Survivor",
+      "oracle_fingerprint": "4c8fa4a5278c323f616973f4fcb73d84",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Main2", "whose": "You" } },
+            "if": {
+              "CountOf": { "subject": "This", "selector": ["Tapped"], "op": "Ge", "right": 1 }
+            },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Land" }, { "ControlledBy": "You" }] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1", "count": 3 } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "SetPT": { "power": 0, "toughness": 0 } },
+                    { "AddSubtype": "Elemental" },
+                    { "AddType": "Creature" }
+                  ],
+                  "duration": "Forever"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "UntilYourNextTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "oracle_id": "0b1fc8da-5fff-40a1-924e-5875c7b948a1",
+  "name": "Clambassadors",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Clambassadors",
+      "oracle_fingerprint": "d349629cbe21a01103ad0acb133b6a23",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer" } },
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      {
+                        "AnyOf": [
+                          { "Type": "Artifact" },
+                          { "Type": "Creature" },
+                          { "Type": "Land" }
+                        ]
+                      },
+                      { "ControlledBy": "You" }
+                    ]
+                  },
+                  "as": "card"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "card" },
+                  "mods": [{ "SetController": "Triggering" }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "oracle_id": "d746290f-f7e7-4f73-b0a4-58ecaa56ffe8",
+  "name": "Syndicate Recruiter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Syndicate Recruiter",
+      "oracle_fingerprint": "764427a0d3e716fd7fadaf49894dccca",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": { "Ward": "{1}" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "Mill": { "count": 4 } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Distinct": {
+                          "of": [{ "OwnedBy": "You" }, { "In": "Graveyard" }],
+                          "stat": "ManaValue"
+                        }
+                      },
+                      "op": "Ge",
+                      "right": 5
+                    }
+                  },
+                  "then": [{ "Conjure": { "name": "Dig Up the Body", "zone": "Hand" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

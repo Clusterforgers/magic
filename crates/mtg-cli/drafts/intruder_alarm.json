@@ -1,0 +1,20 @@
+{
+  "oracle_id": "1e943e04-e213-4781-b1a7-935aad8790e1",
+  "name": "Intruder Alarm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Intruder Alarm",
+      "oracle_fingerprint": "cf365466a420e2ea25e234279696ce6f",
+      "abilities": [
+        { "Static": { "affected": { "Each": [{ "Type": "Creature" }] }, "mods": ["DoesntUntap"] } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": [{ "Type": "Creature" }], "to": "Battlefield" } },
+            "effects": [{ "Untap": { "what": { "Each": [{ "Type": "Creature" }] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

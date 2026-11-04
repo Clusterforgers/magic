@@ -1,0 +1,47 @@
+{
+  "oracle_id": "cba4ab80-09e8-4868-a082-a9a3bade9571",
+  "name": "Quest for Renewal",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Quest for Renewal",
+      "oracle_fingerprint": "83eb461431a8ad6376a2cd041b0e3ced",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Tapped": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [{ "PutCounters": { "on": "This", "counter": { "Other": "quest" } } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "UntapDuring": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                "whose": "Opponents"
+              }
+            },
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    "This",
+                    { "CounterCount": { "kind": { "Other": "quest" }, "op": "Ge", "to": 4 } }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

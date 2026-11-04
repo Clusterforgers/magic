@@ -1,0 +1,39 @@
+{
+  "oracle_id": "96cb97ca-4ce0-4d33-86fb-4db4ce1956be",
+  "name": "Edgar, Charmed Groom // Edgar Markov's Coffin",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Edgar, Charmed Groom",
+      "oracle_fingerprint": "a2828e8a645782f3371fbd7c09217786",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Vampire" }, "Other", { "ControlledBy": "You" }] },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              { "Move": { "what": "This", "to": { "Battlefield": { "transformed": true } } } }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Edgar Markov's Coffin",
+      "oracle_fingerprint": "da02dd14d352224e5f951570f0fc728e",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 250 }
+          }
+        }
+      ]
+    }
+  ]
+}

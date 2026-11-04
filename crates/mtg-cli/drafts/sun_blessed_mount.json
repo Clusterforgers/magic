@@ -1,0 +1,50 @@
+{
+  "oracle_id": "139b0fd5-8aa7-4b36-ab5d-cbf398381c6d",
+  "name": "Sun-Blessed Mount",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sun-Blessed Mount",
+      "oracle_fingerprint": "ca3b211466d1a4c93a56d481f49b0303",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "May": {
+                        "effects": [
+                          {
+                            "Search": {
+                              "also": ["Graveyard"],
+                              "filter": [
+                                { "OwnedBy": "You" },
+                                { "Named": "Huatli, Dinosaur Knight" }
+                              ],
+                              "reveal": true,
+                              "as": "found"
+                            }
+                          },
+                          { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+                          {
+                            "If": {
+                              "condition": { "Searched": { "zone": "Library" } },
+                              "then": [{ "Shuffle": {} }]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

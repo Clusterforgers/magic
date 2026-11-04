@@ -1,0 +1,41 @@
+{
+  "oracle_id": "4446e59c-29f7-4722-92be-2625c1d3dab9",
+  "name": "Eagle of Deliverance",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Eagle of Deliverance",
+      "oracle_fingerprint": "548978ba22dda0a68485e73628a91432",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "indestructible" } } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Target": 0 },
+                      "selector": [
+                        { "Type": "Creature" },
+                        { "Compare": { "stat": "Power", "op": "Le", "to": 2 } }
+                      ],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

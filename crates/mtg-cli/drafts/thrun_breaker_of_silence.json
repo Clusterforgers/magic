@@ -1,0 +1,34 @@
+{
+  "oracle_id": "789b7af5-ac15-40b6-b5b7-f3fcdcfb52e1",
+  "name": "Thrun, Breaker of Silence",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thrun, Breaker of Silence",
+      "oracle_fingerprint": "88471c7fdc462287bedb65ef774df0ed",
+      "abilities": [
+        { "Rule": { "rule": { "CantBeCountered": "This" }, "from": "Stack" } },
+        { "Keyword": "Trample" },
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "This",
+                "action": {
+                  "BeTargeted": [{ "Not": { "Color": "Green" } }, { "ControlledBy": "Opponents" }]
+                }
+              }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Indestructible" }],
+            "condition": "YourTurn"
+          }
+        }
+      ]
+    }
+  ]
+}

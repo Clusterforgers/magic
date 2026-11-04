@@ -1,0 +1,52 @@
+{
+  "oracle_id": "14596108-a8ed-4e68-b787-d655b28bdab4",
+  "name": "Mythos of Brokkos",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mythos of Brokkos",
+      "oracle_fingerprint": "dc300006ccb4aabf0ceab5d02d94fdc5",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "If": {
+                  "condition": { "All": [{ "ManaSpent": "Blue" }, { "ManaSpent": "Black" }] },
+                  "then": [
+                    { "Search": { "filter": [], "as": "found" } },
+                    { "Move": { "what": { "Bound": "found" }, "to": "Graveyard" } },
+                    { "Shuffle": {} }
+                  ]
+                }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "OwnedBy": "You" },
+                      {
+                        "AnyOf": [
+                          { "Type": "Artifact" },
+                          { "Type": "Battle" },
+                          { "Type": "Creature" },
+                          { "Type": "Enchantment" },
+                          { "Type": "Land" },
+                          { "Type": "Planeswalker" }
+                        ]
+                      },
+                      { "In": "Graveyard" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 2 },
+                  "as": "picked2"
+                }
+              },
+              { "Move": { "what": { "Bound": "picked2" }, "to": "Hand" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

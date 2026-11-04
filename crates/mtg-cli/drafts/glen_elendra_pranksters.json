@@ -1,0 +1,26 @@
+{
+  "oracle_id": "4b02df52-d6c0-4735-b2b8-d637cb41f0ba",
+  "name": "Glen Elendra Pranksters",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Glen Elendra Pranksters",
+      "oracle_fingerprint": "6e390b8bed6e2b7162a73f746c2681db",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "by": "You" } },
+            "if": { "AtTrigger": { "Not": "YourTurn" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              { "May": { "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

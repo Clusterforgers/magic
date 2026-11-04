@@ -1,0 +1,143 @@
+{
+  "object": "card",
+  "id": "28deeaf6-c32b-41f1-b94f-0ae303377ea0",
+  "oracle_id": "2a9f2d69-328c-46f4-be37-60b85b197b72",
+  "multiverse_ids": [],
+  "resource_id": "2A3E165A7A6A6B4D92038EA67758930AF46E8CF4D1BA3A001EB5B05E8461E850",
+  "mtgo_id": 150635,
+  "tcgplayer_id": 698201,
+  "cardmarket_id": 892708,
+  "name": "T'Chaka, Venerable King",
+  "lang": "en",
+  "released_at": "2026-06-26",
+  "uri": "https://api.scryfall.com/cards/28deeaf6-c32b-41f1-b94f-0ae303377ea0",
+  "scryfall_uri": "https://scryfall.com/card/msc/98/tchaka-venerable-king?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T00:41:03Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/2/8/28deeaf6-c32b-41f1-b94f-0ae303377ea0.jpg?1783903263",
+    "normal": "https://cards.scryfall.io/normal/front/2/8/28deeaf6-c32b-41f1-b94f-0ae303377ea0.jpg?1783903263",
+    "large": "https://cards.scryfall.io/large/front/2/8/28deeaf6-c32b-41f1-b94f-0ae303377ea0.jpg?1783903263",
+    "png": "https://cards.scryfall.io/png/front/2/8/28deeaf6-c32b-41f1-b94f-0ae303377ea0.png?1783903263",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/2/8/28deeaf6-c32b-41f1-b94f-0ae303377ea0.jpg?1783903263",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/2/8/28deeaf6-c32b-41f1-b94f-0ae303377ea0.jpg?1783903263",
+    "thumb": "https://cards.scryfall.io/thumb/front/2/8/28deeaf6-c32b-41f1-b94f-0ae303377ea0.webp?1783903263",
+    "grid": "https://cards.scryfall.io/grid/front/2/8/28deeaf6-c32b-41f1-b94f-0ae303377ea0.webp?1783903263",
+    "display": "https://cards.scryfall.io/display/front/2/8/28deeaf6-c32b-41f1-b94f-0ae303377ea0.webp?1783903263",
+    "art": "https://cards.scryfall.io/art/front/2/8/28deeaf6-c32b-41f1-b94f-0ae303377ea0.webp?1783903263",
+    "crop": "https://cards.scryfall.io/crop/front/2/8/28deeaf6-c32b-41f1-b94f-0ae303377ea0.webp?1783903263",
+    "jpeg": "https://cards.scryfall.io/normal/front/2/8/28deeaf6-c32b-41f1-b94f-0ae303377ea0.jpg?1783903263"
+  },
+  "mana_cost": "{G}{W}",
+  "cmc": 2.0,
+  "type_line": "Legendary Creature — Human Noble Hero",
+  "oracle_text": "When T'Chaka enters, mill three cards, then you may put an artifact or land card from among the milled cards into your hand.\n{3}, Exile this card from your graveyard: You become the monarch. Activate only if you control your commander.",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "G",
+    "W"
+  ],
+  "color_identity": [
+    "G",
+    "W"
+  ],
+  "keywords": [
+    "Mill"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "9d739461-c5ac-43a1-af41-3d5a585b5c8d",
+  "set": "msc",
+  "set_name": "Marvel Super Heroes Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/9d739461-c5ac-43a1-af41-3d5a585b5c8d",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Amsc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/msc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/28deeaf6-c32b-41f1-b94f-0ae303377ea0/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A2a9f2d69-328c-46f4-be37-60b85b197b72&unique=prints",
+  "collector_number": "98",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "\"I am king of Wakanda. A line unbroken. A crown unconquered.\"",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "L.A. Draws",
+  "artist_ids": [
+    "1f22abb8-3873-4e81-93f3-79db5e56dd64"
+  ],
+  "illustration_id": "4e6da9a5-d3d2-45ee-9702-9d111ccf5374",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "surgefoil",
+    "universesbeyond"
+  ],
+  "edhrec_rank": 20265,
+  "prices": {
+    "usd": "0.17",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.21",
+    "eur_foil": null,
+    "tix": "1.60"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DT%2527Chaka%252C%2BVenerable%2BKing",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DT%2527Chaka%252C%2BVenerable%2BKing",
+    "edhrec": "https://edhrec.com/route/?cc=T%27Chaka%2C+Venerable+King"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F698201%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=892708&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/150635?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

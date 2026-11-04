@@ -1,0 +1,46 @@
+{
+  "oracle_id": "0611beb7-a38d-4fbf-af9b-ee2a5b9a2896",
+  "name": "Colossal Growth",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Colossal Growth",
+      "oracle_fingerprint": "ab7a319290e2790abbe60fef03198d8c",
+      "abilities": [
+        { "Keyword": { "Kicker": "{R}" } },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 3, "toughness": 3 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "If": {
+                  "condition": "Kicked",
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [
+                          { "ModifyPT": { "power": 1, "toughness": 1 } },
+                          { "AddKeyword": "Haste" },
+                          { "AddKeyword": "Trample" }
+                        ],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

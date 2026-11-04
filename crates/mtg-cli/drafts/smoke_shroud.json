@@ -1,0 +1,45 @@
+{
+  "oracle_id": "a621c5f6-c1c6-4bc9-88b1-f459efa07a39",
+  "name": "Smoke Shroud",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Smoke Shroud",
+      "oracle_fingerprint": "eb28aaa15f4aa9cc98b5502e6d444ce1",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }, { "AddKeyword": "Flying" }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Subtype": "Ninja" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "from": "Graveyard",
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Move": {
+                        "what": "This",
+                        "to": { "BattlefieldAttached": { "to": "Triggering" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

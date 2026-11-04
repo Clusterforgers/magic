@@ -1,0 +1,38 @@
+{
+  "oracle_id": "f48b2349-797e-4e79-aea7-2413e78129e1",
+  "name": "Morgul-Knife Wound",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Morgul-Knife Wound",
+      "oracle_fingerprint": "3531b4d9113951f844146371504662a0",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "ModifyPT": { "power": -3, "toughness": 0 } },
+              {
+                "GrantAbility": {
+                  "Triggered": {
+                    "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+                    "effects": [
+                      {
+                        "Pay": {
+                          "who": "Triggering",
+                          "cost": [{ "PayLife": 2 }],
+                          "unpaid": [{ "Exile": { "what": "This" } }]
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

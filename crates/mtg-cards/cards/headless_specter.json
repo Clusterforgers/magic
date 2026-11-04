@@ -1,0 +1,27 @@
+{
+  "oracle_id": "9aa9c7ca-e160-4bfa-8ba5-87114222fd86",
+  "name": "Headless Specter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Headless Specter",
+      "oracle_fingerprint": "0e0b54d5378b5552665f5fd4d86c4e56",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "if": {
+              "Compare": {
+                "left": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
+                "op": "Eq",
+                "right": 0
+              }
+            },
+            "effects": [{ "Discard": { "who": "Triggering", "random": true } }]
+          }
+        }
+      ]
+    }
+  ]
+}

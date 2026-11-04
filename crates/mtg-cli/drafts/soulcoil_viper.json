@@ -1,0 +1,34 @@
+{
+  "oracle_id": "24c3c505-ddaa-4adb-983e-7c78d9933cc7",
+  "name": "Soulcoil Viper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Soulcoil Viper",
+      "oracle_fingerprint": "36042198ab0ba0fd73ad57b118837eb7",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{B}" }, "Tap", "SacrificeSelf"],
+            "timing": "Sorcery",
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Target": 0 },
+                  "to": { "Battlefield": { "counters": [[{ "Other": "finality" }, 1]] } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

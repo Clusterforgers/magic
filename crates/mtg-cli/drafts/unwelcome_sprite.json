@@ -1,0 +1,21 @@
+{
+  "oracle_id": "d0a38e8c-c42c-4c99-8a44-d390ff2511ff",
+  "name": "Unwelcome Sprite",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Unwelcome Sprite",
+      "oracle_fingerprint": "89693f278c78532c02e82c0cb3002740",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "by": "You" } },
+            "if": { "AtTrigger": { "Not": "YourTurn" } },
+            "effects": [{ "Surveil": { "count": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

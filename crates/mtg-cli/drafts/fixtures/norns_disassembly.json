@@ -1,0 +1,118 @@
+{
+  "object": "card",
+  "id": "cc481432-c88e-4e76-92ca-5b006438d377",
+  "oracle_id": "404d8766-28bc-427b-99a7-eb74c8d8bf18",
+  "multiverse_ids": [],
+  "name": "Norn's Disassembly",
+  "lang": "en",
+  "released_at": "2022-12-13",
+  "uri": "https://api.scryfall.com/cards/cc481432-c88e-4e76-92ca-5b006438d377",
+  "scryfall_uri": "https://scryfall.com/card/ybro/2/norns-disassembly?utm_source=api",
+  "layout": "normal",
+  "highres_image": false,
+  "image_status": "lowres",
+  "image_updated_at": "2026-07-13T04:55:52Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/c/c/cc481432-c88e-4e76-92ca-5b006438d377.jpg?1783918552",
+    "normal": "https://cards.scryfall.io/normal/front/c/c/cc481432-c88e-4e76-92ca-5b006438d377.jpg?1783918552",
+    "large": "https://cards.scryfall.io/large/front/c/c/cc481432-c88e-4e76-92ca-5b006438d377.jpg?1783918552",
+    "png": "https://cards.scryfall.io/png/front/c/c/cc481432-c88e-4e76-92ca-5b006438d377.png?1783918552",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/c/c/cc481432-c88e-4e76-92ca-5b006438d377.jpg?1783918552",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/c/c/cc481432-c88e-4e76-92ca-5b006438d377.jpg?1783918552",
+    "thumb": "https://cards.scryfall.io/thumb/front/c/c/cc481432-c88e-4e76-92ca-5b006438d377.webp?1783918552",
+    "grid": "https://cards.scryfall.io/grid/front/c/c/cc481432-c88e-4e76-92ca-5b006438d377.webp?1783918552",
+    "display": "https://cards.scryfall.io/display/front/c/c/cc481432-c88e-4e76-92ca-5b006438d377.webp?1783918552",
+    "art": "https://cards.scryfall.io/art/front/c/c/cc481432-c88e-4e76-92ca-5b006438d377.webp?1783918552",
+    "crop": "https://cards.scryfall.io/crop/front/c/c/cc481432-c88e-4e76-92ca-5b006438d377.webp?1783918552",
+    "jpeg": "https://cards.scryfall.io/normal/front/c/c/cc481432-c88e-4e76-92ca-5b006438d377.jpg?1783918552"
+  },
+  "mana_cost": "{W}",
+  "cmc": 1.0,
+  "type_line": "Enchantment",
+  "oracle_text": "{1}{W}, Sacrifice a historic permanent: Seek a historic card.",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Seek"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "not_legal",
+    "pauper": "not_legal",
+    "vintage": "not_legal",
+    "penny": "not_legal",
+    "commander": "not_legal",
+    "oathbreaker": "not_legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "not_legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "5e5f43cc-2312-426e-8ba3-8cda4c2dbba2",
+  "set": "ybro",
+  "set_name": "Alchemy: The Brothers' War",
+  "set_type": "alchemy",
+  "set_uri": "https://api.scryfall.com/sets/5e5f43cc-2312-426e-8ba3-8cda4c2dbba2",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aybro&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/ybro?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/cc481432-c88e-4e76-92ca-5b006438d377/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A404d8766-28bc-427b-99a7-eb74c8d8bf18&unique=prints",
+  "collector_number": "2",
+  "digital": true,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Camille Alquier",
+  "artist_ids": [
+    "a0670296-0225-4630-95c6-feab68d14df4"
+  ],
+  "illustration_id": "fd5e0704-d0cf-4f0a-9c7f-b34880342f2b",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "prices": {
+    "usd": null,
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": null,
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DNorn%2527s%2BDisassembly",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DNorn%2527s%2BDisassembly",
+    "edhrec": "https://edhrec.com/route/?cc=Norn%27s+Disassembly"
+  }
+}

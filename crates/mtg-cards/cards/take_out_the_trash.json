@@ -1,0 +1,39 @@
+{
+  "oracle_id": "e07700e7-218a-45a3-9ee4-de2cc25cdc02",
+  "name": "Take Out the Trash",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Take Out the Trash",
+      "oracle_fingerprint": "00605a99336db7f1046c5a05eb9d83cb",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }]
+                }
+              }
+            ],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 3 } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "Subtype": "Raccoon" }, { "ControlledBy": "You" }] },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Pay": { "cost": [{ "Discard": {} }], "paid": [{ "Draw": {} }] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

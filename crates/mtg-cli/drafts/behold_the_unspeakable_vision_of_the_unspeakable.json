@@ -1,0 +1,84 @@
+{
+  "oracle_id": "464372ef-0b16-4b8d-ba6f-fbf5c905c479",
+  "name": "Behold the Unspeakable // Vision of the Unspeakable",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Behold the Unspeakable",
+      "oracle_fingerprint": "1cbddd8f6b20c7a181ee1a0bd2d889a9",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [{ "Type": "Creature" }, { "Not": { "ControlledBy": "You" } }]
+                  },
+                  "mods": [{ "ModifyPT": { "power": -2, "toughness": 0 } }],
+                  "duration": "UntilYourNextTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "OwnedBy": "You" }, { "In": "Hand" }] },
+                      "op": "Le",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Draw": { "count": 4 } }],
+                  "otherwise": [{ "Scry": { "count": 2 } }, { "Draw": { "count": 2 } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "effects": [
+              { "Exile": { "what": "This", "as": "exiled" } },
+              {
+                "Move": {
+                  "what": { "Bound": "exiled" },
+                  "to": { "Battlefield": { "under": "You", "transformed": true } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Vision of the Unspeakable",
+      "oracle_fingerprint": "3b84f70b0ef6b9f4ad42fe7b8d0048f2",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Trample" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": { "Count": [{ "OwnedBy": "You" }, { "In": "Hand" }] },
+                  "toughness": { "Count": [{ "OwnedBy": "You" }, { "In": "Hand" }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

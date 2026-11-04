@@ -1,0 +1,36 @@
+{
+  "oracle_id": "e7e41303-69a8-4617-b418-142cf41edb9b",
+  "name": "Maester Seymour",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Maester Seymour",
+      "oracle_fingerprint": "3d696dac1214340d7da76a176054fe0f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "Other"] } }
+            ],
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": { "Target": 0 },
+                  "counter": "+1/+1",
+                  "count": { "Stat": { "of": "This", "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 145, "end": 322 }
+          }
+        }
+      ]
+    }
+  ]
+}

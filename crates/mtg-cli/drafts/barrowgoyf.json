@@ -1,0 +1,58 @@
+{
+  "oracle_id": "74c0164c-130f-4572-9066-626c77f6e2ff",
+  "name": "Barrowgoyf",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Barrowgoyf",
+      "oracle_fingerprint": "7adc04f7b4a9b6c26a7860e1b4202abe",
+      "abilities": [
+        { "Keyword": "Deathtouch" },
+        { "Keyword": "Lifelink" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "SetPT": {
+                  "power": { "CardTypes": [{ "In": "Graveyard" }] },
+                  "toughness": { "Sum": [{ "CardTypes": [{ "In": "Graveyard" }] }, 1] }
+                }
+              }
+            ],
+            "defining": true
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "Mill": { "count": "Triggering", "as": "milled" } },
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "Type": "Creature" },
+                            { "Is": { "Bound": "milled" } },
+                            { "AnyOf": [{ "In": "Graveyard" }, { "In": "Exile" }] },
+                            { "OwnedBy": "You" }
+                          ]
+                        },
+                        "count": { "min": 0, "max": 1 },
+                        "as": "picked2"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "picked2" }, "to": "Hand" } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

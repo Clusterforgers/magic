@@ -1,0 +1,42 @@
+{
+  "oracle_id": "ed36b1f6-2922-46a9-b48d-b9ebedb9a142",
+  "name": "Sifter Wurm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sifter Wurm",
+      "oracle_fingerprint": "6385dffe38027c2d18cce3bb59fcc079",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "Scry": { "count": 3 } },
+              { "LookAtTop": { "as": "top" } },
+              { "Reveal": { "what": { "Bound": "top" } } },
+              {
+                "Move": {
+                  "what": { "Each": [{ "In": "Library" }, { "Is": { "Bound": "top" } }] },
+                  "to": { "Library": { "place": "Top" } },
+                  "as": "moved4"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Top", "order": "Chosen" } }
+                }
+              },
+              {
+                "GainLife": {
+                  "amount": { "Stat": { "of": { "Bound": "moved4" }, "stat": "ManaValue" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

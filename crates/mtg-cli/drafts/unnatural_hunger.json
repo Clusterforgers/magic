@@ -1,0 +1,41 @@
+{
+  "oracle_id": "d37a361e-83e8-4f0a-bd09-3135fb918471",
+  "name": "Unnatural Hunger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Unnatural Hunger",
+      "oracle_fingerprint": "054201e910036be44f011750cbefa15f",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": { "ControllerOf": "Attached" } } },
+            "effects": [
+              {
+                "Pay": {
+                  "who": { "ControllerOf": "Attached" },
+                  "cost": [
+                    {
+                      "Sacrifice": {
+                        "filter": [{ "Type": "Creature" }, { "Not": { "Is": "Attached" } }]
+                      }
+                    }
+                  ],
+                  "unpaid": [
+                    {
+                      "DealDamage": {
+                        "to": "Triggering",
+                        "amount": { "Stat": { "of": "Attached", "stat": "Power" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

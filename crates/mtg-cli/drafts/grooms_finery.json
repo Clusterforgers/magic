@@ -1,0 +1,41 @@
+{
+  "oracle_id": "b7d2feda-1a0e-4b62-be6d-a8dec7d8ea31",
+  "name": "Groom's Finery",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Groom's Finery",
+      "oracle_fingerprint": "50ce160126989e1dfe68f7921704bef4",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }]
+          }
+        },
+        { "Keyword": { "Equip": "{2}" } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 0, "toughness": 2 } }, { "AddKeyword": "Deathtouch" }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "Subtype": "Equipment" },
+                    {
+                      "AttachedTo": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+                    },
+                    { "Named": "Bride's Gown" }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

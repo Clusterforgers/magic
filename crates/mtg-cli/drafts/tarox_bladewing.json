@@ -1,0 +1,36 @@
+{
+  "oracle_id": "e195f2f8-2db7-46b8-948c-c3c27f2e5825",
+  "name": "Tarox Bladewing",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tarox Bladewing",
+      "oracle_fingerprint": "7be52c525f80f3b86bbd0410ea573ad7",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Haste" },
+        {
+          "Activated": {
+            "cost": [{ "Discard": { "filter": [{ "Named": "Tarox Bladewing" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": { "Stat": { "of": "This", "stat": "Power" } },
+                        "toughness": { "Stat": { "of": "This", "stat": "Power" } }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

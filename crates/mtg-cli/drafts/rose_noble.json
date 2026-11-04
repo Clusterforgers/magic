@@ -1,0 +1,40 @@
+{
+  "oracle_id": "cf66067b-8f5e-46f6-9d61-cffb8875d858",
+  "name": "Rose Noble",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rose Noble",
+      "oracle_fingerprint": "1f29101a1d10895835483e916cf38b10",
+      "abilities": [
+        { "Keyword": { "Ward": "{2}" } },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [
+                  {
+                    "AnyOf": [
+                      { "Subtype": "Doctor" },
+                      {
+                        "Not": {
+                          "AnyOf": [
+                            { "Not": { "Type": "Creature" } },
+                            { "Not": { "HasKeyword": "DoctorsCompanion" } }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                ],
+                "by": "You"
+              }
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        },
+        { "Keyword": "DoctorsCompanion" }
+      ]
+    }
+  ]
+}

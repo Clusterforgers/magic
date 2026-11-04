@@ -1,0 +1,163 @@
+{
+  "object": "card",
+  "id": "d3b0800f-23c3-4aad-8b62-3ea3d4d5b591",
+  "oracle_id": "e84becc0-6e15-4a74-aec0-9746b86ab5cc",
+  "multiverse_ids": [],
+  "resource_id": "F11F42A39D01A6582A0E59E79544AC2827B253327AD9319E390A053C3C69F195",
+  "mtgo_id": 145718,
+  "arena_id": 98699,
+  "tcgplayer_id": 660613,
+  "cardmarket_id": 855790,
+  "name": "Sokka and Suki",
+  "lang": "en",
+  "released_at": "2025-11-21",
+  "uri": "https://api.scryfall.com/cards/d3b0800f-23c3-4aad-8b62-3ea3d4d5b591",
+  "scryfall_uri": "https://scryfall.com/card/tle/71/sokka-and-suki?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T01:07:18Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/d/3/d3b0800f-23c3-4aad-8b62-3ea3d4d5b591.jpg?1783904838",
+    "normal": "https://cards.scryfall.io/normal/front/d/3/d3b0800f-23c3-4aad-8b62-3ea3d4d5b591.jpg?1783904838",
+    "large": "https://cards.scryfall.io/large/front/d/3/d3b0800f-23c3-4aad-8b62-3ea3d4d5b591.jpg?1783904838",
+    "png": "https://cards.scryfall.io/png/front/d/3/d3b0800f-23c3-4aad-8b62-3ea3d4d5b591.png?1783904838",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/d/3/d3b0800f-23c3-4aad-8b62-3ea3d4d5b591.jpg?1783904838",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/d/3/d3b0800f-23c3-4aad-8b62-3ea3d4d5b591.jpg?1783904838",
+    "thumb": "https://cards.scryfall.io/thumb/front/d/3/d3b0800f-23c3-4aad-8b62-3ea3d4d5b591.webp?1783904838",
+    "grid": "https://cards.scryfall.io/grid/front/d/3/d3b0800f-23c3-4aad-8b62-3ea3d4d5b591.webp?1783904838",
+    "display": "https://cards.scryfall.io/display/front/d/3/d3b0800f-23c3-4aad-8b62-3ea3d4d5b591.webp?1783904838",
+    "art": "https://cards.scryfall.io/art/front/d/3/d3b0800f-23c3-4aad-8b62-3ea3d4d5b591.webp?1783904838",
+    "crop": "https://cards.scryfall.io/crop/front/d/3/d3b0800f-23c3-4aad-8b62-3ea3d4d5b591.webp?1783904838",
+    "jpeg": "https://cards.scryfall.io/normal/front/d/3/d3b0800f-23c3-4aad-8b62-3ea3d4d5b591.jpg?1783904838"
+  },
+  "mana_cost": "{U}{R}{W}",
+  "cmc": 3.0,
+  "type_line": "Legendary Creature — Human Warrior Ally",
+  "oracle_text": "Whenever Sokka and Suki or another Ally you control enters, attach up to one target Equipment you control to that creature.\nWhenever an Equipment you control enters, create a 1/1 white Ally creature token.",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "R",
+    "U",
+    "W"
+  ],
+  "color_identity": [
+    "R",
+    "U",
+    "W"
+  ],
+  "keywords": [],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "01439983-8394-4a0c-9e9e-92a3f1927fe3",
+      "component": "token",
+      "name": "Ally",
+      "type_line": "Token Creature — Ally",
+      "uri": "https://api.scryfall.com/cards/01439983-8394-4a0c-9e9e-92a3f1927fe3"
+    },
+    {
+      "object": "related_card",
+      "id": "d3b0800f-23c3-4aad-8b62-3ea3d4d5b591",
+      "component": "combo_piece",
+      "name": "Sokka and Suki",
+      "type_line": "Legendary Creature — Human Warrior Ally",
+      "uri": "https://api.scryfall.com/cards/d3b0800f-23c3-4aad-8b62-3ea3d4d5b591"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "arena",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "a75e6ceb-d62c-4063-8e96-f269e3a0b025",
+  "set": "tle",
+  "set_name": "Avatar: The Last Airbender Eternal",
+  "set_type": "eternal",
+  "set_uri": "https://api.scryfall.com/sets/a75e6ceb-d62c-4063-8e96-f269e3a0b025",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Atle&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/tle?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/d3b0800f-23c3-4aad-8b62-3ea3d4d5b591/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ae84becc0-6e15-4a74-aec0-9746b86ab5cc&unique=prints",
+  "collector_number": "71",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Brian Yuen",
+  "artist_ids": [
+    "25ac6960-1226-4597-86b5-78840ace2c33"
+  ],
+  "illustration_id": "7ceb5a2c-2004-4806-b58f-57f712e12ea3",
+  "border_color": "borderless",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary",
+    "inverted"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond",
+    "boosterfun"
+  ],
+  "edhrec_rank": 15443,
+  "prices": {
+    "usd": "2.39",
+    "usd_foil": "0.98",
+    "usd_etched": null,
+    "eur": "1.80",
+    "eur_foil": "0.91",
+    "tix": "1.76"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DSokka%2Band%2BSuki",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DSokka%2Band%2BSuki",
+    "edhrec": "https://edhrec.com/route/?cc=Sokka+and+Suki"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F660613%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=855790&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/145718?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

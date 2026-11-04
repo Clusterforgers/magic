@@ -1,0 +1,94 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "K",
+      "text": "Chapter:3:DBDestroyAll,DBExile,DBTransform",
+      "abilities": [
+        0,
+        1,
+        2
+      ],
+      "gap": null
+    },
+    {
+      "face": 1,
+      "tag": "K",
+      "text": "Trample",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    },
+    {
+      "face": 1,
+      "tag": "T",
+      "text": "Whenever CARDNAME deals damage, put a +1/+1 counter on it.",
+      "abilities": [
+        1
+      ],
+      "gap": null
+    },
+    {
+      "face": 1,
+      "tag": "T",
+      "text": "Whenever CARDNAME deals damage to a player, if it has dealt 10 or more damage to that player this turn, they lose the game.",
+      "abilities": [],
+      "gap": "valid-base:Player"
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 68,
+          "end": 129
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 130,
+          "end": 156
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 157,
+          "end": 245
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 1,
+        "span": {
+          "start": 0,
+          "end": 7
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 1,
+        "span": {
+          "start": 8,
+          "end": 71
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 1,
+        "span": {
+          "start": 72,
+          "end": 200
+        },
+        "mark": "ByHand"
+      }
+    ]
+  }
+}

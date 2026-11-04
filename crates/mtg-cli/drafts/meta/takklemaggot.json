@@ -1,0 +1,59 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "K",
+      "text": "Enchant:Creature",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "At the beginning of the upkeep of enchanted creature's controller, put a -0/-1 counter on that creature.",
+      "abilities": [
+        1
+      ],
+      "gap": null
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "When enchanted creature dies, that creature's controller chooses a creature that CARDNAME could enchant. If the player does, return CARDNAME to the battlefield under your control attached to that creature. If they don't, return CARDNAME to the battlefield under your control as a non-Aura enchantment. It loses \"enchant creature\" and gains \"At the beginning of that player's upkeep, CARDNAME deals 1 damage to that player.\"",
+      "abilities": [],
+      "gap": "valid:CanBeEnchantedBy"
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 16
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 17,
+          "end": 121
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 122,
+          "end": 556
+        },
+        "mark": "ByHand"
+      }
+    ]
+  }
+}

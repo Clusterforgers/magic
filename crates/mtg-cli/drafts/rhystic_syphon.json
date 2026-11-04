@@ -1,0 +1,30 @@
+{
+  "oracle_id": "b1eea34a-74ef-4d7c-bf70-c64b3487f296",
+  "name": "Rhystic Syphon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rhystic Syphon",
+      "oracle_fingerprint": "035f75d83c0653178c0f5057bf3f7c5c",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Pay": {
+                  "who": { "Target": 0 },
+                  "cost": "{3}",
+                  "unpaid": [
+                    { "LoseLife": { "who": { "Target": 0 }, "amount": 5 } },
+                    { "GainLife": { "amount": 5 } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

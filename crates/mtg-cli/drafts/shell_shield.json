@@ -1,0 +1,44 @@
+{
+  "oracle_id": "73535033-2875-4a82-98d5-84548e349f13",
+  "name": "Shell Shield",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shell Shield",
+      "oracle_fingerprint": "2558764f04fe3053e12f203e3d626f87",
+      "abilities": [
+        { "Keyword": { "Kicker": "{1}" } },
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 0, "toughness": 3 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "If": {
+                  "condition": "Kicked",
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [{ "AddKeyword": "Hexproof" }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

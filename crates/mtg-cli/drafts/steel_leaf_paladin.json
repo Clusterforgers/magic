@@ -1,0 +1,34 @@
+{
+  "oracle_id": "15e0250e-a23b-499a-a8d2-24fc13084c28",
+  "name": "Steel Leaf Paladin",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Steel Leaf Paladin",
+      "oracle_fingerprint": "bc10a888cdf0564886c27576e31af2bd",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "AnyOf": [{ "Color": "White" }, { "Color": "Green" }] },
+                      { "ControlledBy": "You" }
+                    ]
+                  },
+                  "as": "picked"
+                }
+              },
+              { "Move": { "what": { "Bound": "picked" }, "to": "Hand" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

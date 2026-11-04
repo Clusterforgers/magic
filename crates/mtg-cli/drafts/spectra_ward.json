@@ -1,0 +1,23 @@
+{
+  "oracle_id": "effb99e6-db1b-4ada-879d-431d9d13d4b7",
+  "name": "Spectra Ward",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spectra Ward",
+      "oracle_fingerprint": "b6443296e64e3997f5deac71a5577662",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "ModifyPT": { "power": 2, "toughness": 2 } },
+              { "AddKeyword": { "Protection": [{ "Not": "Colorless" }] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

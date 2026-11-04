@@ -1,0 +1,46 @@
+{
+  "oracle_id": "2e1deb7e-d40d-437e-b817-b66132d2d1d6",
+  "name": "Avarax",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Avarax",
+      "oracle_fingerprint": "00c1c69bc19834c58b527d1af72c2b41",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Search": { "filter": [{ "Named": "Avarax" }], "reveal": true, "as": "found" }
+                    },
+                    { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+                    { "Shuffle": {} }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{1}{R}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

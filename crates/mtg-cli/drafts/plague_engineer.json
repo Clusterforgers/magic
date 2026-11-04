@@ -1,0 +1,28 @@
+{
+  "oracle_id": "df130616-8efe-42ed-a7f0-b58bef3f11c4",
+  "name": "Plague Engineer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Plague Engineer",
+      "oracle_fingerprint": "0c34ff1c694342dac1b4546035bd7bec",
+      "abilities": [
+        { "Keyword": "Deathtouch" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "Choose": "CreatureType" }
+          }
+        },
+        {
+          "Static": {
+            "affected": {
+              "Each": [{ "Type": "Creature" }, "ChosenSubtype", { "ControlledBy": "Opponents" }]
+            },
+            "mods": [{ "ModifyPT": { "power": -1, "toughness": -1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

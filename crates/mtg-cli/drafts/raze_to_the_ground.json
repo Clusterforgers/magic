@@ -1,0 +1,34 @@
+{
+  "oracle_id": "efe24eed-e1e2-4807-ae61-2e5be529ae3c",
+  "name": "Raze to the Ground",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Raze to the Ground",
+      "oracle_fingerprint": "200c283329b032f513ffd7cce608de62",
+      "abilities": [
+        { "Rule": { "rule": { "CantBeCountered": "This" }, "from": "Stack" } },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Artifact" }] } }],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Stat": { "of": { "Target": 0 }, "stat": "ManaValue" } },
+                      "op": "Le",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

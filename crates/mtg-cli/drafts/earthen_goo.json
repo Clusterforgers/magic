@@ -1,0 +1,28 @@
+{
+  "oracle_id": "f52c0ef9-ca35-47bd-9359-01e7b97ee770",
+  "name": "Earthen Goo",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Earthen Goo",
+      "oracle_fingerprint": "03fbb08d13a81b9d40f778737f8e8e7d",
+      "abilities": [
+        { "Keyword": "Trample" },
+        { "Keyword": { "CumulativeUpkeep": "{R/G}" } },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": { "Counters": { "on": "This", "counter": { "Other": "age" } } },
+                  "toughness": { "Counters": { "on": "This", "counter": { "Other": "age" } } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

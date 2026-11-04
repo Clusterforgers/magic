@@ -1,0 +1,202 @@
+{
+  "object": "card",
+  "id": "d41b07c8-f0c8-4654-bcc2-00c785c8c628",
+  "oracle_id": "245aa786-d607-414f-ab55-b003b2b9faf4",
+  "multiverse_ids": [
+    409951,
+    409952
+  ],
+  "mtgo_id": 60398,
+  "mtgo_foil_id": 60399,
+  "tcgplayer_id": 116487,
+  "cardmarket_id": 289126,
+  "name": "Autumnal Gloom // Ancient of the Equinox",
+  "lang": "en",
+  "released_at": "2016-04-08",
+  "uri": "https://api.scryfall.com/cards/d41b07c8-f0c8-4654-bcc2-00c785c8c628",
+  "scryfall_uri": "https://scryfall.com/card/soi/194/autumnal-gloom-ancient-of-the-equinox?utm_source=api",
+  "layout": "transform",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T10:15:42Z",
+  "cmc": 3.0,
+  "type_line": "Enchantment // Creature — Treefolk",
+  "color_identity": [
+    "B",
+    "G"
+  ],
+  "keywords": [
+    "Delirium",
+    "Transform",
+    "Hexproof",
+    "Trample",
+    "Mill"
+  ],
+  "card_faces": [
+    {
+      "object": "card_face",
+      "name": "Autumnal Gloom",
+      "mana_cost": "{2}{G}",
+      "type_line": "Enchantment",
+      "oracle_text": "{B}: Mill a card.\nDelirium — At the beginning of your end step, if there are four or more card types among cards in your graveyard, transform this enchantment.",
+      "colors": [
+        "G"
+      ],
+      "artist": "Jaime Jones",
+      "artist_id": "92f6c2c1-fa57-4b52-99c4-0fd866c13dc9",
+      "illustration_id": "1158fe63-e2a1-41aa-a0a9-e5badcaa835b",
+      "image_uris": {
+        "small": "https://cards.scryfall.io/small/front/d/4/d41b07c8-f0c8-4654-bcc2-00c785c8c628.jpg?1783937742",
+        "normal": "https://cards.scryfall.io/normal/front/d/4/d41b07c8-f0c8-4654-bcc2-00c785c8c628.jpg?1783937742",
+        "large": "https://cards.scryfall.io/large/front/d/4/d41b07c8-f0c8-4654-bcc2-00c785c8c628.jpg?1783937742",
+        "png": "https://cards.scryfall.io/png/front/d/4/d41b07c8-f0c8-4654-bcc2-00c785c8c628.png?1783937742",
+        "art_crop": "https://cards.scryfall.io/art_crop/front/d/4/d41b07c8-f0c8-4654-bcc2-00c785c8c628.jpg?1783937742",
+        "border_crop": "https://cards.scryfall.io/border_crop/front/d/4/d41b07c8-f0c8-4654-bcc2-00c785c8c628.jpg?1783937742",
+        "thumb": "https://cards.scryfall.io/thumb/front/d/4/d41b07c8-f0c8-4654-bcc2-00c785c8c628.webp?1783937742",
+        "grid": "https://cards.scryfall.io/grid/front/d/4/d41b07c8-f0c8-4654-bcc2-00c785c8c628.webp?1783937742",
+        "display": "https://cards.scryfall.io/display/front/d/4/d41b07c8-f0c8-4654-bcc2-00c785c8c628.webp?1783937742",
+        "art": "https://cards.scryfall.io/art/front/d/4/d41b07c8-f0c8-4654-bcc2-00c785c8c628.webp?1783937742",
+        "crop": "https://cards.scryfall.io/crop/front/d/4/d41b07c8-f0c8-4654-bcc2-00c785c8c628.webp?1783937742",
+        "jpeg": "https://cards.scryfall.io/normal/front/d/4/d41b07c8-f0c8-4654-bcc2-00c785c8c628.jpg?1783937742"
+      }
+    },
+    {
+      "object": "card_face",
+      "name": "Ancient of the Equinox",
+      "mana_cost": "",
+      "type_line": "Creature — Treefolk",
+      "oracle_text": "Trample, hexproof",
+      "colors": [
+        "G"
+      ],
+      "color_indicator": [
+        "G"
+      ],
+      "power": "4",
+      "toughness": "4",
+      "flavor_text": "\"When the leaves fall and the nights grow cold, look elsewhere for firewood.\"\n—Ola of Lambholt",
+      "artist": "Jaime Jones",
+      "artist_id": "92f6c2c1-fa57-4b52-99c4-0fd866c13dc9",
+      "illustration_id": "8df6ad41-ceab-484f-8835-9a4dec4a72fb",
+      "image_uris": {
+        "small": "https://cards.scryfall.io/small/back/d/4/d41b07c8-f0c8-4654-bcc2-00c785c8c628.jpg?1783937742",
+        "normal": "https://cards.scryfall.io/normal/back/d/4/d41b07c8-f0c8-4654-bcc2-00c785c8c628.jpg?1783937742",
+        "large": "https://cards.scryfall.io/large/back/d/4/d41b07c8-f0c8-4654-bcc2-00c785c8c628.jpg?1783937742",
+        "png": "https://cards.scryfall.io/png/back/d/4/d41b07c8-f0c8-4654-bcc2-00c785c8c628.png?1783937742",
+        "art_crop": "https://cards.scryfall.io/art_crop/back/d/4/d41b07c8-f0c8-4654-bcc2-00c785c8c628.jpg?1783937742",
+        "border_crop": "https://cards.scryfall.io/border_crop/back/d/4/d41b07c8-f0c8-4654-bcc2-00c785c8c628.jpg?1783937742",
+        "thumb": "https://cards.scryfall.io/thumb/back/d/4/d41b07c8-f0c8-4654-bcc2-00c785c8c628.webp?1783937742",
+        "grid": "https://cards.scryfall.io/grid/back/d/4/d41b07c8-f0c8-4654-bcc2-00c785c8c628.webp?1783937742",
+        "display": "https://cards.scryfall.io/display/back/d/4/d41b07c8-f0c8-4654-bcc2-00c785c8c628.webp?1783937742",
+        "art": "https://cards.scryfall.io/art/back/d/4/d41b07c8-f0c8-4654-bcc2-00c785c8c628.webp?1783937742",
+        "crop": "https://cards.scryfall.io/crop/back/d/4/d41b07c8-f0c8-4654-bcc2-00c785c8c628.webp?1783937742",
+        "jpeg": "https://cards.scryfall.io/normal/back/d/4/d41b07c8-f0c8-4654-bcc2-00c785c8c628.jpg?1783937742"
+      }
+    }
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "d41b07c8-f0c8-4654-bcc2-00c785c8c628",
+      "component": "combo_piece",
+      "name": "Autumnal Gloom // Ancient of the Equinox",
+      "type_line": "Enchantment // Creature — Treefolk",
+      "uri": "https://api.scryfall.com/cards/d41b07c8-f0c8-4654-bcc2-00c785c8c628"
+    },
+    {
+      "object": "related_card",
+      "id": "4d323ead-24f5-42e4-9e23-aa14eb66264d",
+      "component": "combo_piece",
+      "name": "Shadows Over Innistrad Checklist 1",
+      "type_line": "Card",
+      "uri": "https://api.scryfall.com/cards/4d323ead-24f5-42e4-9e23-aa14eb66264d"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "5e914d7e-c1e9-446c-a33d-d093c02b2743",
+  "set": "soi",
+  "set_name": "Shadows over Innistrad",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/5e914d7e-c1e9-446c-a33d-d093c02b2743",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Asoi&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/soi?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/d41b07c8-f0c8-4654-bcc2-00c785c8c628/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A245aa786-d607-414f-ab55-b003b2b9faf4&unique=prints",
+  "collector_number": "194",
+  "digital": false,
+  "rarity": "uncommon",
+  "artist": "Jaime Jones",
+  "artist_ids": [
+    "92f6c2c1-fa57-4b52-99c4-0fd866c13dc9"
+  ],
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "sunmoondfc"
+  ],
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 24932,
+  "penny_rank": 8399,
+  "prices": {
+    "usd": "0.09",
+    "usd_foil": "0.35",
+    "usd_etched": null,
+    "eur": "0.08",
+    "eur_foil": "0.43",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=409951&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DAutumnal%2BGloom%2B%252F%252F%2BAncient%2Bof%2Bthe%2BEquinox",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DAutumnal%2BGloom%2B%252F%252F%2BAncient%2Bof%2Bthe%2BEquinox",
+    "edhrec": "https://edhrec.com/route/?cc=Autumnal+Gloom"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F116487%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=289126&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/60398?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

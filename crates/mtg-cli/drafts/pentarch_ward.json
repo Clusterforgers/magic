@@ -1,0 +1,29 @@
+{
+  "oracle_id": "70d39ca3-1bbd-47ec-8723-2abe35b6dc51",
+  "name": "Pentarch Ward",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pentarch Ward",
+      "oracle_fingerprint": "c8e5d98d5dc78025b061b3f6570b8acb",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": { "Choose": "Color" } }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Draw": {} }]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "AddKeyword": { "Protection": ["ChosenColor"] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

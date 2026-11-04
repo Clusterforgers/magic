@@ -1,0 +1,69 @@
+{
+  "oracle_id": "78da7a38-0f08-4371-bda3-38f079f7724d",
+  "name": "Invasion of Ravnica // Guildpact Paragon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Invasion of Ravnica",
+      "oracle_fingerprint": "7c63944d98f52c7fb7ed61e830ef58ca",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Not": { "Type": "Land" } },
+                    { "ControlledBy": "Opponents" },
+                    { "Not": { "Compare": { "stat": "Colors", "op": "Eq", "to": 2 } } }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Exile": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Guildpact Paragon",
+      "oracle_fingerprint": "955205eeb6b97c5563c0eb23a163055f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [{ "Compare": { "stat": "Colors", "op": "Eq", "to": 2 } }],
+                "by": "You"
+              }
+            },
+            "effects": [
+              { "LookAtTop": { "count": 6, "as": "top" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "Compare": { "stat": "Colors", "op": "Eq", "to": 2 } }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "kept2"
+                }
+              },
+              { "Move": { "what": { "Bound": "kept2" }, "to": "Hand" } },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

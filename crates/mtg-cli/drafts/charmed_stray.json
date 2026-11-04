@@ -1,0 +1,27 @@
+{
+  "oracle_id": "6781166b-f6ab-4076-8e97-0cd9342f1b41",
+  "name": "Charmed Stray",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Charmed Stray",
+      "oracle_fingerprint": "85f383096862e1c3d1d4e7432e88f6e5",
+      "abilities": [
+        { "Keyword": "Lifelink" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": { "Each": [{ "Type": "Creature" }, { "Named": "Charmed Stray" }, "Other"] },
+                  "counter": "+1/+1"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

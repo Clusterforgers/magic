@@ -1,0 +1,73 @@
+{
+  "oracle_id": "dfa47d0d-17f0-4a12-89d3-0d3c7f3db8c6",
+  "name": "Radagast the Brown",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Radagast the Brown",
+      "oracle_fingerprint": "dd71a4b8ea66e00fd6a095e72fdaaf6a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  {
+                    "AnyOf": [
+                      {
+                        "Not": {
+                          "AnyOf": [
+                            { "Not": { "Type": "Creature" } },
+                            { "Not": { "ControlledBy": "You" } },
+                            { "Not": { "Not": "Token" } }
+                          ]
+                        }
+                      },
+                      "This"
+                    ]
+                  }
+                ],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "LookAtTop": {
+                  "count": { "Stat": { "of": "Triggering", "stat": "ManaValue" } },
+                  "as": "top"
+                }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "Type": "Creature" },
+                      {
+                        "Not": {
+                          "SharesSubtype": {
+                            "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "kept2"
+                }
+              },
+              { "Move": { "what": { "Bound": "kept2" }, "to": "Hand" } },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

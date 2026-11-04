@@ -1,0 +1,34 @@
+{
+  "oracle_id": "a24d3d60-2bd7-40cb-8002-b092943f61fe",
+  "name": "Assimilate Essence",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Assimilate Essence",
+      "oracle_fingerprint": "b5f99ced2a1e0c63324c0ce88b5db576",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": ["Spell", { "AnyOf": [{ "Type": "Creature" }, { "Type": "Battle" }] }]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Pay": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "cost": "{4}",
+                  "paid": [{ "Incubate": { "count": 2 } }],
+                  "unpaid": [{ "Counter": { "what": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

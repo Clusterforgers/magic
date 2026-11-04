@@ -1,0 +1,46 @@
+{
+  "oracle_id": "b2d597b4-f9ba-44b0-a947-0c2ecda2d308",
+  "name": "Amy Rose",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Amy Rose",
+      "oracle_fingerprint": "bd320283850ed08b3881f2313aea5d40",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Subtype": "Equipment" }] },
+                "bounds": { "min": 0, "max": 1 }
+              },
+              {
+                "what": { "Object": [{ "Type": "Creature" }, "Attacking", "Other"] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "Attach": { "what": { "Target": 0 }, "to": "This" } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 1 },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": { "Stat": { "of": "This", "stat": "Power" } },
+                        "toughness": 0
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

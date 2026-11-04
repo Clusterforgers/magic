@@ -1,0 +1,44 @@
+{
+  "oracle_id": "43b5794a-4ed6-471d-bc45-22fac486895d",
+  "name": "Thunderdrum Soloist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thunderdrum Soloist",
+      "oracle_fingerprint": "13c6127955c70baf4fab1c8c3136cdb5",
+      "abilities": [
+        { "Keyword": "Reach" },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                "by": "You"
+              }
+            },
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": "Opponents",
+                  "amount": {
+                    "When": {
+                      "condition": {
+                        "Compare": {
+                          "left": { "Stat": { "of": "Triggering", "stat": "ManaSpent" } },
+                          "op": "Ge",
+                          "right": 5
+                        }
+                      },
+                      "then": 3,
+                      "otherwise": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

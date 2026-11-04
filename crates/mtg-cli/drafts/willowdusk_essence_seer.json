@@ -1,0 +1,41 @@
+{
+  "oracle_id": "94723d61-3e29-4180-91bc-df37c4086a66",
+  "name": "Willowdusk, Essence Seer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Willowdusk, Essence Seer",
+      "oracle_fingerprint": "40428c6a90b1ce75cb55fb8e20781ae5",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap"],
+            "timing": "Sorcery",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Other"] } }],
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": { "Target": 0 },
+                  "counter": "+1/+1",
+                  "count": {
+                    "When": {
+                      "condition": {
+                        "Compare": {
+                          "left": { "Tallied": { "who": "You", "what": "LifeGainedTotal" } },
+                          "op": "Lt",
+                          "right": { "Tallied": { "who": "You", "what": "LifeLost" } }
+                        }
+                      },
+                      "then": { "Tallied": { "who": "You", "what": "LifeLost" } },
+                      "otherwise": { "Tallied": { "who": "You", "what": "LifeGainedTotal" } }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

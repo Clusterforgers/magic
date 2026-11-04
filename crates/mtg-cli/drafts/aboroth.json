@@ -1,0 +1,14 @@
+{
+  "oracle_id": "28f70f86-19a9-4811-bc10-423a05842d39",
+  "name": "Aboroth",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Aboroth",
+      "oracle_fingerprint": "41ee1936a362d25a8bafcfecada7798b",
+      "abilities": [
+        { "Keyword": { "CumulativeUpkeep": [{ "PutCounters": { "counter": "-1/-1" } }] } }
+      ]
+    }
+  ]
+}

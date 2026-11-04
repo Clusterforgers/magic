@@ -1,0 +1,145 @@
+{
+  "object": "card",
+  "id": "aa9d0279-4fe0-4228-a82f-bc3cd91500df",
+  "oracle_id": "fad0118b-d046-4ee7-87d9-e6799f70a7a8",
+  "multiverse_ids": [
+    473171
+  ],
+  "mtgo_id": 78562,
+  "arena_id": 70356,
+  "tcgplayer_id": 198970,
+  "cardmarket_id": 400454,
+  "name": "Elite Headhunter",
+  "lang": "en",
+  "released_at": "2019-10-04",
+  "uri": "https://api.scryfall.com/cards/aa9d0279-4fe0-4228-a82f-bc3cd91500df",
+  "scryfall_uri": "https://scryfall.com/card/eld/209/elite-headhunter?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T08:49:50Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/a/a/aa9d0279-4fe0-4228-a82f-bc3cd91500df.jpg?1783932590",
+    "normal": "https://cards.scryfall.io/normal/front/a/a/aa9d0279-4fe0-4228-a82f-bc3cd91500df.jpg?1783932590",
+    "large": "https://cards.scryfall.io/large/front/a/a/aa9d0279-4fe0-4228-a82f-bc3cd91500df.jpg?1783932590",
+    "png": "https://cards.scryfall.io/png/front/a/a/aa9d0279-4fe0-4228-a82f-bc3cd91500df.png?1783932590",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/a/a/aa9d0279-4fe0-4228-a82f-bc3cd91500df.jpg?1783932590",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/a/a/aa9d0279-4fe0-4228-a82f-bc3cd91500df.jpg?1783932590",
+    "thumb": "https://cards.scryfall.io/thumb/front/a/a/aa9d0279-4fe0-4228-a82f-bc3cd91500df.webp?1783932590",
+    "grid": "https://cards.scryfall.io/grid/front/a/a/aa9d0279-4fe0-4228-a82f-bc3cd91500df.webp?1783932590",
+    "display": "https://cards.scryfall.io/display/front/a/a/aa9d0279-4fe0-4228-a82f-bc3cd91500df.webp?1783932590",
+    "art": "https://cards.scryfall.io/art/front/a/a/aa9d0279-4fe0-4228-a82f-bc3cd91500df.webp?1783932590",
+    "crop": "https://cards.scryfall.io/crop/front/a/a/aa9d0279-4fe0-4228-a82f-bc3cd91500df.webp?1783932590",
+    "jpeg": "https://cards.scryfall.io/normal/front/a/a/aa9d0279-4fe0-4228-a82f-bc3cd91500df.jpg?1783932590"
+  },
+  "mana_cost": "{B/R}{B/R}{B/R}{B/R}",
+  "cmc": 4.0,
+  "type_line": "Creature — Human Knight",
+  "oracle_text": "Menace (This creature can't be blocked except by two or more creatures.)\n{B/R}{B/R}{B/R}, Sacrifice another creature or an artifact: This creature deals 2 damage to target creature or planeswalker.",
+  "power": "2",
+  "toughness": "3",
+  "colors": [
+    "B",
+    "R"
+  ],
+  "color_identity": [
+    "B",
+    "R"
+  ],
+  "keywords": [
+    "Menace"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "arena",
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "a90a7b2f-9dd8-4fc7-9f7d-8ea2797ec782",
+  "set": "eld",
+  "set_name": "Throne of Eldraine",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/a90a7b2f-9dd8-4fc7-9f7d-8ea2797ec782",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aeld&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/eld?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/aa9d0279-4fe0-4228-a82f-bc3cd91500df/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Afad0118b-d046-4ee7-87d9-e6799f70a7a8&unique=prints",
+  "collector_number": "209",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "Nothing remains of his foes but the gripping story of their downfall.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Daarken",
+  "artist_ids": [
+    "e607a0d4-fc12-4c01-9e3f-501f5269b9cb"
+  ],
+  "illustration_id": "69e76903-9a97-4520-9df5-8ea12717fbbf",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 28266,
+  "penny_rank": 15764,
+  "preview": {
+    "source": "Wizards of the Coast",
+    "source_uri": "https://www.facebook.com/MagicTheGathering.apac/posts/2447921041943409:0",
+    "previewed_at": "2019-09-12"
+  },
+  "prices": {
+    "usd": "0.13",
+    "usd_foil": "0.29",
+    "usd_etched": null,
+    "eur": "0.03",
+    "eur_foil": "0.12",
+    "tix": "0.04"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=473171&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DElite%2BHeadhunter",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DElite%2BHeadhunter",
+    "edhrec": "https://edhrec.com/route/?cc=Elite+Headhunter"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F198970%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=400454&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/78562?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "oracle_id": "ffa3b20b-d77b-43d5-86ac-6a591df1877f",
+  "name": "Auxiliary Boosters",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Auxiliary Boosters",
+      "oracle_fingerprint": "81b6e1640a91b0a312f7084cbca1f064",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Robot",
+                      "types": ["Artifact", "Creature"],
+                      "subtypes": ["Robot"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  },
+                  "as": "token"
+                }
+              },
+              { "Attach": { "what": "This", "to": { "Bound": "token" } } }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 2 } }, { "AddKeyword": "Flying" }]
+          }
+        },
+        { "Keyword": { "Equip": "{3}" } }
+      ]
+    }
+  ]
+}

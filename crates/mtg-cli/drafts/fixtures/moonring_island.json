@@ -1,0 +1,133 @@
+{
+  "object": "card",
+  "id": "64b36993-666c-40d0-b61a-1d162bd06dcc",
+  "oracle_id": "cf620c66-7db1-4db8-ae56-ee4bc2f77d74",
+  "multiverse_ids": [
+    141943
+  ],
+  "mtgo_id": 29317,
+  "mtgo_foil_id": 29318,
+  "tcgplayer_id": 18714,
+  "cardmarket_id": 19290,
+  "name": "Moonring Island",
+  "lang": "en",
+  "released_at": "2008-05-02",
+  "uri": "https://api.scryfall.com/cards/64b36993-666c-40d0-b61a-1d162bd06dcc",
+  "scryfall_uri": "https://scryfall.com/card/shm/276/moonring-island?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T11:38:26Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/6/4/64b36993-666c-40d0-b61a-1d162bd06dcc.jpg?1783942706",
+    "normal": "https://cards.scryfall.io/normal/front/6/4/64b36993-666c-40d0-b61a-1d162bd06dcc.jpg?1783942706",
+    "large": "https://cards.scryfall.io/large/front/6/4/64b36993-666c-40d0-b61a-1d162bd06dcc.jpg?1783942706",
+    "png": "https://cards.scryfall.io/png/front/6/4/64b36993-666c-40d0-b61a-1d162bd06dcc.png?1783942706",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/6/4/64b36993-666c-40d0-b61a-1d162bd06dcc.jpg?1783942706",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/6/4/64b36993-666c-40d0-b61a-1d162bd06dcc.jpg?1783942706",
+    "thumb": "https://cards.scryfall.io/thumb/front/6/4/64b36993-666c-40d0-b61a-1d162bd06dcc.webp?1783942706",
+    "grid": "https://cards.scryfall.io/grid/front/6/4/64b36993-666c-40d0-b61a-1d162bd06dcc.webp?1783942706",
+    "display": "https://cards.scryfall.io/display/front/6/4/64b36993-666c-40d0-b61a-1d162bd06dcc.webp?1783942706",
+    "art": "https://cards.scryfall.io/art/front/6/4/64b36993-666c-40d0-b61a-1d162bd06dcc.webp?1783942706",
+    "crop": "https://cards.scryfall.io/crop/front/6/4/64b36993-666c-40d0-b61a-1d162bd06dcc.webp?1783942706",
+    "jpeg": "https://cards.scryfall.io/normal/front/6/4/64b36993-666c-40d0-b61a-1d162bd06dcc.jpg?1783942706"
+  },
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land — Island",
+  "oracle_text": "({T}: Add {U}.)\nThis land enters tapped.\n{U}, {T}: Look at the top card of target player's library. Activate only if you control two or more blue permanents.",
+  "colors": [],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [],
+  "produced_mana": [
+    "U"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "c18c0ba1-2081-4808-9b2e-549bc3a666f3",
+  "set": "shm",
+  "set_name": "Shadowmoor",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/c18c0ba1-2081-4808-9b2e-549bc3a666f3",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ashm&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/shm?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/64b36993-666c-40d0-b61a-1d162bd06dcc/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Acf620c66-7db1-4db8-ae56-ee4bc2f77d74&unique=prints",
+  "collector_number": "276",
+  "digital": false,
+  "rarity": "uncommon",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Brandon Kitkouski",
+  "artist_ids": [
+    "0330b5e8-2cf0-4ecb-8fd7-e20a18bdeb20"
+  ],
+  "illustration_id": "d4d6242d-944f-44c7-8219-060bb36930b7",
+  "border_color": "black",
+  "frame": "2003",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 11843,
+  "penny_rank": 9456,
+  "prices": {
+    "usd": "0.46",
+    "usd_foil": "10.05",
+    "usd_etched": null,
+    "eur": "0.48",
+    "eur_foil": "2.06",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=141943&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DMoonring%2BIsland",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DMoonring%2BIsland",
+    "edhrec": "https://edhrec.com/route/?cc=Moonring+Island"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F18714%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=19290&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/29317?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "oracle_id": "62817ef5-9b8d-4bca-bdd4-ab3bc4e063d0",
+  "name": "Decomposition",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Decomposition",
+      "oracle_fingerprint": "35a43215734cb187e0e4a437d5fb3b05",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }, { "Color": "Black" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "AddKeyword": { "CumulativeUpkeep": [{ "PayLife": 1 }] } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Is": "Attached" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [{ "LoseLife": { "who": { "ControllerOf": "Triggering" }, "amount": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

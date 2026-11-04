@@ -1,0 +1,62 @@
+{
+  "oracle_id": "33005c63-fe9f-4051-b781-eacf1ca5eec6",
+  "name": "Sporogenesis",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Sporogenesis",
+      "oracle_fingerprint": "51fce4052e7784dd5c1eabc7d8a521ea",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, { "Not": "Token" }] } }],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "fungus" } } }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "HasCounter": { "Other": "fungus" } }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Saproling",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Saproling"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": { "Counters": { "on": "Triggering", "counter": { "Other": "fungus" } } }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 231, "end": 323 }
+          }
+        }
+      ]
+    }
+  ]
+}

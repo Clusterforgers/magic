@@ -1,0 +1,35 @@
+{
+  "oracle_id": "8a8213c6-c8b1-40b6-8290-7f2e33c10fc1",
+  "name": "Oglor, Devoted Assistant",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Oglor, Devoted Assistant",
+      "oracle_fingerprint": "51fa4c2f801adfc5b4ccd83342e52f82",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              { "LookAtTop": { "count": 2, "as": "top" } },
+              { "Choose": { "from": { "Bound": "top" }, "as": "kept2", "rest_as": "rest3" } },
+              { "Move": { "what": { "Bound": "kept2" }, "to": "Graveyard" } },
+              {
+                "Move": {
+                  "what": { "Bound": "rest3" },
+                  "to": { "Library": { "place": "Top", "order": "Chosen" } }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 118, "end": 306 }
+          }
+        }
+      ]
+    }
+  ]
+}

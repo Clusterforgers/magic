@@ -1,0 +1,34 @@
+{
+  "oracle_id": "70c96b50-ac2b-493d-bd15-fc66eb767111",
+  "name": "Vision of Love",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vision of Love",
+      "oracle_fingerprint": "607f7b723b84e76f13718c6ba6f06403",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Either": {
+                  "first": [
+                    {
+                      "Pay": {
+                        "cost": [{ "Sacrifice": { "filter": [{ "Type": "Artifact" }] } }],
+                        "paid": [{ "Draw": { "count": 2 } }]
+                      }
+                    }
+                  ],
+                  "second": [
+                    { "Pay": { "cost": [{ "Discard": {} }], "paid": [{ "Draw": { "count": 2 } }] } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

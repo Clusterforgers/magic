@@ -1,0 +1,30 @@
+{
+  "oracle_id": "f888f3ba-8316-4c10-bf97-873731f7d364",
+  "name": "Angel of Deliverance",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Angel of Deliverance",
+      "oracle_fingerprint": "d8fc516b39a1fde51a8bf50ae56d28f2",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "Batch": { "DealsDamage": { "source": ["This"] } } },
+            "if": {
+              "Compare": {
+                "left": { "CardTypes": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                "op": "Ge",
+                "right": 4
+              }
+            },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [{ "Exile": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

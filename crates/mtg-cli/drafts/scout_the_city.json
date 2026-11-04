@@ -1,0 +1,63 @@
+{
+  "oracle_id": "ecb8e283-5cdb-4e6a-bdff-546c1617363c",
+  "name": "Scout the City",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Scout the City",
+      "oracle_fingerprint": "90b7ca9094cfccb1006b385f4bed5113",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "effects": [
+                        { "Mill": { "count": 3, "as": "milled" } },
+                        {
+                          "Choose": {
+                            "from": {
+                              "Each": [
+                                { "Is": { "Bound": "milled" } },
+                                {
+                                  "AnyOf": [
+                                    { "Type": "Artifact" },
+                                    { "Type": "Battle" },
+                                    { "Type": "Creature" },
+                                    { "Type": "Enchantment" },
+                                    { "Type": "Land" },
+                                    { "Type": "Planeswalker" }
+                                  ]
+                                },
+                                { "AnyOf": [{ "In": "Graveyard" }, { "In": "Exile" }] },
+                                { "OwnedBy": "You" }
+                              ]
+                            },
+                            "count": { "min": 0, "max": 1 },
+                            "as": "picked2"
+                          }
+                        },
+                        { "Move": { "what": { "Bound": "picked2" }, "to": "Hand" } },
+                        { "GainLife": { "amount": 3 } }
+                      ]
+                    },
+                    {
+                      "targets": [
+                        {
+                          "what": { "Object": [{ "Type": "Creature" }, { "HasKeyword": "Flying" }] }
+                        }
+                      ],
+                      "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

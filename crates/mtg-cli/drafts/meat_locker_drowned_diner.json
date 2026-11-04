@@ -1,0 +1,39 @@
+{
+  "oracle_id": "897eef47-3e99-4a5f-8a3e-ddb06bc95e9a",
+  "name": "Meat Locker // Drowned Diner",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Meat Locker",
+      "oracle_fingerprint": "d0e5d9d80259bedbc263e5f390e9a1a9",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "DoorUnlocked": { "who": "You", "door": 0 } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 0, "max": 1 } }
+            ],
+            "effects": [
+              { "Tap": { "what": { "Target": 0 } } },
+              {
+                "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "stun" }, "count": 2 }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Drowned Diner",
+      "oracle_fingerprint": "8ee7e83504ac183d19801f4ccf92102d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "DoorUnlocked": { "who": "You", "door": 0 } },
+            "effects": [{ "Draw": { "count": 3 } }, { "Discard": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

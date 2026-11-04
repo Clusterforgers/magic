@@ -1,0 +1,54 @@
+{
+  "oracle_id": "5d748bce-dff8-46fa-a3d1-633863b7bbff",
+  "name": "Kiora, the Rising Tide",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kiora, the Rising Tide",
+      "oracle_fingerprint": "f24addf9344ecd930eb26e3604fa848f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Draw": { "count": 2 } }, { "Discard": { "count": 2 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "if": {
+              "Compare": {
+                "left": { "Count": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                "op": "Ge",
+                "right": 7
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Scion of the Deep",
+                            "colors": ["Blue"],
+                            "supertypes": ["Legendary"],
+                            "types": ["Creature"],
+                            "subtypes": ["Octopus"],
+                            "power": 8,
+                            "toughness": 8
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

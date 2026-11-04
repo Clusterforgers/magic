@@ -1,0 +1,23 @@
+{
+  "oracle_id": "f074c0d0-8455-484d-ae75-820fdfbc4740",
+  "name": "Ribbons of Night",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ribbons of Night",
+      "oracle_fingerprint": "f933c7bb5b2f1af1c94108d4b5e814ce",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 4 } },
+              { "GainLife": { "amount": 4 } },
+              { "If": { "condition": { "ManaSpent": "Blue" }, "then": [{ "Draw": {} }] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

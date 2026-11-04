@@ -1,0 +1,31 @@
+{
+  "oracle_id": "36dda03b-a3c1-4ef4-ae62-da318028a39e",
+  "name": "Tuskeri Firewalker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tuskeri Firewalker",
+      "oracle_fingerprint": "f3e23392a0e2a1d14e2a2f04c9b68808",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{1}",
+            "condition": { "Matches": { "subject": "This", "selector": ["AttackedThisTurn"] } },
+            "limit": "OncePerTurn",
+            "effects": [
+              { "ExileTop": { "as": "exiled" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": { "from": "Exile", "only": { "Bound": "exiled" }, "play": true }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

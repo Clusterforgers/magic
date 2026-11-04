@@ -1,0 +1,36 @@
+{
+  "oracle_id": "1afb9ce6-658e-40e4-a4a2-9a68182a1e73",
+  "name": "Vengeful Possession",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vengeful Possession",
+      "oracle_fingerprint": "92eb5573bc8c8f7292a0c4975a8ed053",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Untap": { "what": { "Target": 0 } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Pay": { "cost": [{ "Discard": {} }], "paid": [{ "Draw": {} }] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

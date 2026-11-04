@@ -1,0 +1,48 @@
+{
+  "oracle_id": "3992209a-0a28-449d-8ba5-f75e861a79b4",
+  "name": "Domri's Nodorog",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Domri's Nodorog",
+      "oracle_fingerprint": "7b7fd3e8a0e2e071f36967362778e112",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "May": {
+                        "effects": [
+                          {
+                            "Search": {
+                              "also": ["Graveyard"],
+                              "filter": [{ "OwnedBy": "You" }, { "Named": "Domri, City Smasher" }],
+                              "reveal": true,
+                              "as": "found"
+                            }
+                          },
+                          { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+                          {
+                            "If": {
+                              "condition": { "Searched": { "zone": "Library" } },
+                              "then": [{ "Shuffle": {} }]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

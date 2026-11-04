@@ -1,0 +1,43 @@
+{
+  "oracle_id": "6f143c8f-cb5c-4abc-a01b-b6813f5a524c",
+  "name": "Norika Yamazaki, the Poet",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Norika Yamazaki, the Poet",
+      "oracle_fingerprint": "2a527ff2276146e81c444da8834cf9cd",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": {
+              "AttacksAlone": {
+                "what": [
+                  { "AnyOf": [{ "Subtype": "Samurai" }, { "Subtype": "Warrior" }] },
+                  { "ControlledBy": "You" }
+                ]
+              }
+            },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Enchantment" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": { "from": "Graveyard", "only": { "Target": 0 }, "play": true }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

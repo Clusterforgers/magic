@@ -1,0 +1,32 @@
+{
+  "oracle_id": "52963d93-a90c-41a6-984d-fbc49ebfb20a",
+  "name": "Crude Abattoir // Unsavory Kitchen",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Crude Abattoir",
+      "oracle_fingerprint": "f9709209b75c195c486b8dd8cf75ada0",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "DoorUnlocked": { "who": "You", "door": 0 } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 2 } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Unsavory Kitchen",
+      "oracle_fingerprint": "73b7ec85ddeccaabee0eea3eca47ae7f",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 147 }
+          }
+        }
+      ]
+    }
+  ]
+}

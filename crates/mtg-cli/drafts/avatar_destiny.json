@@ -1,0 +1,67 @@
+{
+  "oracle_id": "ecb81888-589b-4486-a444-e0c26384854e",
+  "name": "Avatar Destiny",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Avatar Destiny",
+      "oracle_fingerprint": "8a52bba47b6b34456fe6762aa8cf3984",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": {
+                    "Count": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                  },
+                  "toughness": {
+                    "Count": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                  }
+                }
+              },
+              { "AddSubtype": "Avatar" }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Is": "Attached" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "Mill": {
+                  "count": { "Stat": { "of": "Triggering", "stat": "Power" } },
+                  "as": "milled"
+                }
+              },
+              { "Move": { "what": "This", "to": "Hand" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "Is": { "Bound": "milled" } },
+                      { "AnyOf": [{ "In": "Graveyard" }, { "In": "Exile" }] },
+                      { "OwnedBy": "You" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked2"
+                }
+              },
+              { "Move": { "what": { "Bound": "picked2" }, "to": { "Battlefield": {} } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

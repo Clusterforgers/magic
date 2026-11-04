@@ -1,0 +1,38 @@
+{
+  "oracle_id": "41b0f347-1398-4778-bf3f-4007d8a77162",
+  "name": "Circle of Protection: Green",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Circle of Protection: Green",
+      "oracle_fingerprint": "7744aa580408ce898d62a7d26dd738ee",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{1}",
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "AnyOf": [{ "In": "Battlefield" }, { "In": "Stack" }, { "In": "Command" }] },
+                      { "Color": "Green" }
+                    ]
+                  },
+                  "as": "source"
+                }
+              },
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": "You", "source": [{ "Is": { "Bound": "source" } }] } },
+                  "by": "PreventNext",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

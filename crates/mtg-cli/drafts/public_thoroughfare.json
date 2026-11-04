@@ -1,0 +1,39 @@
+{
+  "oracle_id": "de5b995c-9691-4555-9070-66bcbc29f955",
+  "name": "Public Thoroughfare",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Public Thoroughfare",
+      "oracle_fingerprint": "d67526c19b66504d94d3ed69eea24e38",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [
+                    {
+                      "TapPermanents": {
+                        "filter": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Land" }] }]
+                      }
+                    }
+                  ],
+                  "unpaid": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

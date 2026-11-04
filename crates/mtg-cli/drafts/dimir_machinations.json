@@ -1,0 +1,37 @@
+{
+  "oracle_id": "cab67380-4e1a-4210-a98b-d2a21022b4b7",
+  "name": "Dimir Machinations",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dimir Machinations",
+      "oracle_fingerprint": "f71e322b187908b01b3ab9b02b548cc5",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              { "LookAtTop": { "who": { "Target": 0 }, "count": 3, "as": "top" } },
+              {
+                "Choose": {
+                  "from": { "Bound": "top" },
+                  "count": { "min": 0, "max": null },
+                  "as": "kept2",
+                  "rest_as": "rest3"
+                }
+              },
+              { "Exile": { "what": { "Bound": "kept2" } } },
+              {
+                "Move": {
+                  "what": { "Bound": "rest3" },
+                  "to": { "Library": { "place": "Top", "order": "Chosen" } }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Transmute": "{1}{B}{B}" } }
+      ]
+    }
+  ]
+}

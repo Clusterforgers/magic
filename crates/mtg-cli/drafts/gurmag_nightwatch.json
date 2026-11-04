@@ -1,0 +1,30 @@
+{
+  "oracle_id": "fde50a0d-9bc6-45f4-873e-3de81a513fac",
+  "name": "Gurmag Nightwatch",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gurmag Nightwatch",
+      "oracle_fingerprint": "01e53707d37c47e9e5b594a2a115a661",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "LookAtTop": { "count": 3, "as": "top" } },
+              {
+                "Choose": {
+                  "from": { "Each": [{ "In": "Library" }, { "Is": { "Bound": "top" } }] },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "kept2"
+                }
+              },
+              { "Move": { "what": { "Bound": "kept2" }, "to": { "Library": { "place": "Top" } } } },
+              { "Move": { "what": { "Bound": "top" }, "to": "Graveyard" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

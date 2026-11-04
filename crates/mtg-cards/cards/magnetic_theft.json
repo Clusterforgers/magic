@@ -1,0 +1,22 @@
+{
+  "oracle_id": "9b22cc97-003f-4227-acdc-7a0857674b67",
+  "name": "Magnetic Theft",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Magnetic Theft",
+      "oracle_fingerprint": "c440f02826176822403953b2645b15ee",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Subtype": "Equipment" }] } },
+              { "what": { "Object": [{ "Type": "Creature" }] } }
+            ],
+            "effects": [{ "Attach": { "what": { "Target": 0 }, "to": { "Target": 1 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

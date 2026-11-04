@@ -1,0 +1,34 @@
+{
+  "oracle_id": "88600bd4-4dcc-4788-bba4-78b6cf5ad8f8",
+  "name": "Peema Trailblazer",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Peema Trailblazer",
+      "oracle_fingerprint": "4dfd216d805666c9a30c9a7b42187c0b",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": "You",
+                  "counter": { "Other": "energy" },
+                  "count": "Triggering"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 105, "end": 284 }
+          }
+        }
+      ]
+    }
+  ]
+}

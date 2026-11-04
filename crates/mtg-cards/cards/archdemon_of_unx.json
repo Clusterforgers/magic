@@ -1,0 +1,41 @@
+{
+  "oracle_id": "41e250e6-8e38-4cbc-ae66-98800a5feba8",
+  "name": "Archdemon of Unx",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Archdemon of Unx",
+      "oracle_fingerprint": "2b06083eadb0eb21099922b7fc9e6efb",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "Sacrifice": {
+                  "filter": [{ "Type": "Creature" }, { "Not": { "Subtype": "Zombie" } }]
+                }
+              },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Zombie",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Zombie"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

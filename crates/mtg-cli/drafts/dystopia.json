@@ -1,0 +1,27 @@
+{
+  "oracle_id": "d0e6203b-cef2-470f-8c79-7b139290e2d5",
+  "name": "Dystopia",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dystopia",
+      "oracle_fingerprint": "87bcca7e10844c437b1516b0a13b118f",
+      "abilities": [
+        { "Keyword": { "CumulativeUpkeep": [{ "PayLife": 1 }] } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "effects": [
+              {
+                "Sacrifice": {
+                  "who": "Triggering",
+                  "filter": [{ "AnyOf": [{ "Color": "Green" }, { "Color": "White" }] }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

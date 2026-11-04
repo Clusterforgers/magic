@@ -1,0 +1,40 @@
+{
+  "oracle_id": "7130d063-fc1b-408b-97f2-14cb6b55d9cd",
+  "name": "Diversion Specialist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Diversion Specialist",
+      "oracle_fingerprint": "bab04cd87680fb91982f884f34d92f97",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{1}" },
+              {
+                "Sacrifice": {
+                  "filter": [
+                    { "AnyOf": [{ "Type": "Creature" }, { "Type": "Enchantment" }] },
+                    "Other"
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "ExileTop": { "as": "exiled" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": { "from": "Exile", "only": { "Bound": "exiled" }, "play": true }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

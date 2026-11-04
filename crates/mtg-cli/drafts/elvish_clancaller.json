@@ -1,0 +1,29 @@
+{
+  "oracle_id": "a8f5440e-5d4b-420a-8cfd-27a3c72be0d2",
+  "name": "Elvish Clancaller",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Elvish Clancaller",
+      "oracle_fingerprint": "6b0980a50b0502230f7ce8592b68017e",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Elf" }, { "ControlledBy": "You" }, "Other"] },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{4}{G}{G}" }, "Tap"],
+            "effects": [
+              { "Search": { "filter": [{ "Named": "Elvish Clancaller" }], "as": "found" } },
+              { "Move": { "what": { "Bound": "found" }, "to": { "Battlefield": {} } } },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

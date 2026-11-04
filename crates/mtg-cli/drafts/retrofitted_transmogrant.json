@@ -1,0 +1,27 @@
+{
+  "oracle_id": "058dae67-807e-4542-ae51-f2b1216ffaed",
+  "name": "Retrofitted Transmogrant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Retrofitted Transmogrant",
+      "oracle_fingerprint": "8a896b713ef04a0d1159b1681c7a7637",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{3}{B}",
+            "from": "Graveyard",
+            "effects": [
+              {
+                "Move": {
+                  "what": "This",
+                  "to": { "Battlefield": { "tapped": true, "counters": [["+1/+1", 2]] } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,54 @@
+{
+  "oracle_id": "2160c837-342b-409f-a1db-0ec5ac023ccf",
+  "name": "Vrondiss, Rage of Ancients",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Vrondiss, Rage of Ancients",
+      "oracle_fingerprint": "eef8cc01932e5871274db566b8a4d3b8",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Batch": { "DealsDamage": { "source": [], "to": "This" } } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Dragon Spirit",
+                            "colors": ["Red", "Green"],
+                            "types": ["Creature"],
+                            "subtypes": ["Dragon", "Spirit"],
+                            "power": 5,
+                            "toughness": 4,
+                            "abilities": [
+                              {
+                                "Triggered": {
+                                  "when": { "Batch": { "DealsDamage": { "source": ["This"] } } },
+                                  "effects": [{ "Sacrifice": { "filter": ["This"] } }]
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 159, "end": 241 }
+          }
+        }
+      ]
+    }
+  ]
+}

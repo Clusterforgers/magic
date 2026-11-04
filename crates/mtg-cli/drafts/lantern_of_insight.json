@@ -1,0 +1,21 @@
+{
+  "oracle_id": "e4d9c9c9-90e4-4397-9a88-9457fc6854fa",
+  "name": "Lantern of Insight",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lantern of Insight",
+      "oracle_fingerprint": "9dd7f2030b8d987d385d75c9ba5127c7",
+      "abilities": [
+        { "Rule": { "rule": { "RevealTop": "EachPlayer" } } },
+        {
+          "Activated": {
+            "cost": ["Tap", "SacrificeSelf"],
+            "targets": [{ "what": "Player" }],
+            "effects": [{ "Shuffle": { "who": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "oracle_id": "b51d2c70-204b-4321-a589-f00a3e49fab4",
+  "name": "Crag Puca",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Crag Puca",
+      "oracle_fingerprint": "375a9f3a827d6390d7e7b0bb74005e81",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{U/R}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": ["SwitchPT"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "oracle_id": "fa3335be-80b1-49d7-9809-5bef13be79f4",
+  "name": "Armory Automaton",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Armory Automaton",
+      "oracle_fingerprint": "6cc4270ac9e24522f7d1279528f474d5",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "Attacks": { "what": ["This"] } }
+              ]
+            },
+            "targets": [
+              {
+                "what": { "Object": [{ "Subtype": "Equipment" }] },
+                "bounds": { "min": 0, "max": { "Count": [{ "Subtype": "Equipment" }] } }
+              }
+            ],
+            "effects": [
+              { "May": { "effects": [{ "Attach": { "what": { "Target": 0 }, "to": "This" } }] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

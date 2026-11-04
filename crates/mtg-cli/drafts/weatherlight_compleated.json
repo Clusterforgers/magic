@@ -1,0 +1,74 @@
+{
+  "oracle_id": "060a7d77-61a8-4964-8fb6-35bd9a999517",
+  "name": "Weatherlight Compleated",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Weatherlight Compleated",
+      "oracle_fingerprint": "9186746da83564cc23f1dc77fadbbb86",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddType": "Creature" }, { "AddSubtype": "Phyrexian" }],
+            "condition": {
+              "Matches": {
+                "subject": "This",
+                "selector": [
+                  { "CounterCount": { "kind": { "Other": "phyresis" }, "op": "Ge", "to": 4 } }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": { "Other": "phyresis" } } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": "This",
+                      "selector": [
+                        "This",
+                        { "CounterCount": { "kind": { "Other": "phyresis" }, "op": "Ge", "to": 7 } }
+                      ],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Draw": {} }]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": "This",
+                      "selector": [
+                        "This",
+                        { "CounterCount": { "kind": { "Other": "phyresis" }, "op": "Le", "to": 6 } }
+                      ],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Scry": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

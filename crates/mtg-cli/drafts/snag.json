@@ -1,0 +1,29 @@
+{
+  "oracle_id": "feb5e9a9-500a-4f20-881d-c97d052953ce",
+  "name": "Snag",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Snag",
+      "oracle_fingerprint": "169981fa0a7a0a663fdf19b7db27e552",
+      "abilities": [
+        { "FreeCast": { "cost": [{ "Discard": { "filter": [{ "Subtype": "Forest" }] } }] } },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Shield": {
+                  "when": {
+                    "Damage": { "source": [{ "Type": "Creature" }, "Unblocked"], "combat": true }
+                  },
+                  "by": "Prevent",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

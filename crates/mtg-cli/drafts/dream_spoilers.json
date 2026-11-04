@@ -1,0 +1,35 @@
+{
+  "oracle_id": "07c3e91c-3593-4797-b7be-ef4fb2913cef",
+  "name": "Dream Spoilers",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dream Spoilers",
+      "oracle_fingerprint": "517e7b51b36d2466516e4c15fe3abbfa",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "by": "You" } },
+            "if": { "AtTrigger": { "Not": "YourTurn" } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": -1, "toughness": -1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

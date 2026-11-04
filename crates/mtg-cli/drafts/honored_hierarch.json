@@ -1,0 +1,31 @@
+{
+  "oracle_id": "ae42fa8a-b0f6-43dc-a4c6-e2531890ca3a",
+  "name": "Honored Hierarch",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Honored Hierarch",
+      "oracle_fingerprint": "05433ef640a58c84ceacbc8642b6350f",
+      "abilities": [
+        { "Keyword": { "Renown": 1 } },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              { "AddKeyword": "Vigilance" },
+              {
+                "GrantAbility": {
+                  "Activated": {
+                    "cost": ["Tap"],
+                    "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+                  }
+                }
+              }
+            ],
+            "condition": { "Matches": { "subject": "This", "selector": ["Renowned"] } }
+          }
+        }
+      ]
+    }
+  ]
+}

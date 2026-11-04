@@ -1,0 +1,64 @@
+{
+  "oracle_id": "59bfeacc-f80b-49fc-8a35-f7e1ad905161",
+  "name": "Graceful Restoration",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Graceful Restoration",
+      "oracle_fingerprint": "dd1c6e76698a18e0a0af9420de31705e",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [
+                              { "Type": "Creature" },
+                              { "OwnedBy": "You" },
+                              { "In": "Graveyard" }
+                            ]
+                          }
+                        }
+                      ],
+                      "effects": [
+                        {
+                          "Move": {
+                            "what": { "Target": 0 },
+                            "to": { "Battlefield": { "counters": [["+1/+1", 1]] } }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [
+                              { "Type": "Creature" },
+                              { "OwnedBy": "You" },
+                              { "Compare": { "stat": "Power", "op": "Le", "to": 2 } },
+                              { "In": "Graveyard" }
+                            ]
+                          },
+                          "bounds": { "min": 0, "max": 2 }
+                        }
+                      ],
+                      "effects": [
+                        { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

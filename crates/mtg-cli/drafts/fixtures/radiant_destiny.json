@@ -1,0 +1,151 @@
+{
+  "object": "card",
+  "id": "d1d03bfb-c3bf-4837-b4df-e6339997dedb",
+  "oracle_id": "068cbbe3-43c3-425e-80ec-d1ce5c02ea9b",
+  "multiverse_ids": [
+    640431
+  ],
+  "mtgo_id": 118666,
+  "tcgplayer_id": 525750,
+  "cardmarket_id": 743488,
+  "name": "Radiant Destiny",
+  "lang": "en",
+  "released_at": "2023-11-17",
+  "uri": "https://api.scryfall.com/cards/d1d03bfb-c3bf-4837-b4df-e6339997dedb",
+  "scryfall_uri": "https://scryfall.com/card/lcc/135/radiant-destiny?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:38:13Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/d/1/d1d03bfb-c3bf-4837-b4df-e6339997dedb.jpg?1783913893",
+    "normal": "https://cards.scryfall.io/normal/front/d/1/d1d03bfb-c3bf-4837-b4df-e6339997dedb.jpg?1783913893",
+    "large": "https://cards.scryfall.io/large/front/d/1/d1d03bfb-c3bf-4837-b4df-e6339997dedb.jpg?1783913893",
+    "png": "https://cards.scryfall.io/png/front/d/1/d1d03bfb-c3bf-4837-b4df-e6339997dedb.png?1783913893",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/d/1/d1d03bfb-c3bf-4837-b4df-e6339997dedb.jpg?1783913893",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/d/1/d1d03bfb-c3bf-4837-b4df-e6339997dedb.jpg?1783913893",
+    "thumb": "https://cards.scryfall.io/thumb/front/d/1/d1d03bfb-c3bf-4837-b4df-e6339997dedb.webp?1783913893",
+    "grid": "https://cards.scryfall.io/grid/front/d/1/d1d03bfb-c3bf-4837-b4df-e6339997dedb.webp?1783913893",
+    "display": "https://cards.scryfall.io/display/front/d/1/d1d03bfb-c3bf-4837-b4df-e6339997dedb.webp?1783913893",
+    "art": "https://cards.scryfall.io/art/front/d/1/d1d03bfb-c3bf-4837-b4df-e6339997dedb.webp?1783913893",
+    "crop": "https://cards.scryfall.io/crop/front/d/1/d1d03bfb-c3bf-4837-b4df-e6339997dedb.webp?1783913893",
+    "jpeg": "https://cards.scryfall.io/normal/front/d/1/d1d03bfb-c3bf-4837-b4df-e6339997dedb.jpg?1783913893"
+  },
+  "mana_cost": "{2}{W}",
+  "cmc": 3.0,
+  "type_line": "Enchantment",
+  "oracle_text": "Ascend (If you control ten or more permanents, you get the city's blessing for the rest of the game.)\nAs this enchantment enters, choose a creature type.\nCreatures you control of the chosen type get +1/+1. As long as you have the city's blessing, they also have vigilance.",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Ascend"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "d1d03bfb-c3bf-4837-b4df-e6339997dedb",
+      "component": "combo_piece",
+      "name": "Radiant Destiny",
+      "type_line": "Enchantment",
+      "uri": "https://api.scryfall.com/cards/d1d03bfb-c3bf-4837-b4df-e6339997dedb"
+    },
+    {
+      "object": "related_card",
+      "id": "9c3a8c98-e189-4cd2-b2fd-b5a591658eaa",
+      "component": "combo_piece",
+      "name": "City's Blessing",
+      "type_line": "Card",
+      "uri": "https://api.scryfall.com/cards/9c3a8c98-e189-4cd2-b2fd-b5a591658eaa"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "d253edc3-5bc7-4cf1-9446-a8540dedffa5",
+  "set": "lcc",
+  "set_name": "The Lost Caverns of Ixalan Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/d253edc3-5bc7-4cf1-9446-a8540dedffa5",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Alcc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/lcc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/d1d03bfb-c3bf-4837-b4df-e6339997dedb/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A068cbbe3-43c3-425e-80ec-d1ce5c02ea9b&unique=prints",
+  "collector_number": "135",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Emrah Elmasli",
+  "artist_ids": [
+    "433083c3-8a6c-43d9-8030-c9fcbd2477a2"
+  ],
+  "illustration_id": "13a7e860-b1fd-4ffb-afb5-51b59c13f156",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 5646,
+  "penny_rank": 7327,
+  "prices": {
+    "usd": "0.28",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.36",
+    "eur_foil": null,
+    "tix": "0.15"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=640431&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DRadiant%2BDestiny",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DRadiant%2BDestiny",
+    "edhrec": "https://edhrec.com/route/?cc=Radiant+Destiny"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F525750%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=743488&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/118666?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

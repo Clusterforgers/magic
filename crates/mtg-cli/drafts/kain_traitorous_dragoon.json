@@ -1,0 +1,66 @@
+{
+  "oracle_id": "70fbb378-d905-47cf-8c54-cc166a7867b3",
+  "name": "Kain, Traitorous Dragoon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kain, Traitorous Dragoon",
+      "oracle_fingerprint": "7462f9c30b3a99424d2c35624d0d04ab",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Flying" }],
+            "condition": "YourTurn"
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "SetController": "Triggering" }],
+                  "duration": "Forever"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": { "subject": "This", "selector": [], "op": "Ge", "right": 1 }
+                  },
+                  "then": [{ "Draw": { "count": "Triggering" } }]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": { "subject": "This", "selector": [], "op": "Ge", "right": 1 }
+                  },
+                  "then": [
+                    {
+                      "CreateToken": {
+                        "token": { "Named": "treasure" },
+                        "count": "Triggering",
+                        "tapped": true
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": { "subject": "This", "selector": [], "op": "Ge", "right": 1 }
+                  },
+                  "then": [{ "LoseLife": { "amount": "Triggering" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "oracle_id": "cce3dcc3-57bb-4b95-8b70-337c67bb3c4e",
+  "name": "Extinguisher Battleship",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Extinguisher Battleship",
+      "oracle_fingerprint": "01cafbc8db9a4187655f115911ab9366",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": { "Object": [{ "Not": { "Type": "Creature" } }] } }],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              { "DealDamage": { "to": { "Each": [{ "Type": "Creature" }] }, "amount": 4 } }
+            ]
+          }
+        },
+        { "Keyword": "Station" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              { "AddKeyword": "Flying" },
+              { "AddKeyword": "Trample" },
+              { "AddType": "Creature" }
+            ],
+            "condition": {
+              "Matches": {
+                "subject": "This",
+                "selector": [{ "CounterCount": { "kind": "charge", "op": "Ge", "to": 5 } }]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

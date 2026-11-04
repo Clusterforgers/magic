@@ -1,0 +1,42 @@
+{
+  "oracle_id": "d8c16a3a-dd9d-410c-a5d5-06339a89970f",
+  "name": "Zinnia, Valley's Voice",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Zinnia, Valley's Voice",
+      "oracle_fingerprint": "33e88c2ac1ff8be3a2cd6e61718d15f7",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": {
+                    "Count": [
+                      { "Type": "Creature" },
+                      { "Compare": { "stat": "BasePower", "op": "Eq", "to": 1 } },
+                      { "ControlledBy": "You" },
+                      "Other"
+                    ]
+                  },
+                  "toughness": 0
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": {
+              "Each": [{ "Type": "Creature" }, { "WasCast": { "by": "You" } }, { "In": "Stack" }]
+            },
+            "mods": [{ "AddKeyword": { "Offspring": "{2}" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

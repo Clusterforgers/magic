@@ -1,0 +1,24 @@
+{
+  "oracle_id": "49491601-e272-4603-9348-185a2953bd4b",
+  "name": "Browse",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Browse",
+      "oracle_fingerprint": "2764889a07a240b867253451e05f57eb",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{2}{U}{U}",
+            "effects": [
+              { "LookAtTop": { "count": 5, "as": "top" } },
+              { "Choose": { "from": { "Bound": "top" }, "as": "kept2", "rest_as": "rest3" } },
+              { "Move": { "what": { "Bound": "kept2" }, "to": "Hand" } },
+              { "Exile": { "what": { "Bound": "rest3" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

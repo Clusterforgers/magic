@@ -1,0 +1,139 @@
+{
+  "object": "card",
+  "id": "f4a9d636-6720-4d7e-8b81-12c20bce6495",
+  "oracle_id": "5f089ac6-9e92-4ec2-bf46-a0b08d1e2979",
+  "multiverse_ids": [
+    466871
+  ],
+  "mtgo_id": 73133,
+  "arena_id": 69902,
+  "tcgplayer_id": 192531,
+  "cardmarket_id": 378351,
+  "name": "Thought Distortion",
+  "lang": "en",
+  "released_at": "2019-07-12",
+  "uri": "https://api.scryfall.com/cards/f4a9d636-6720-4d7e-8b81-12c20bce6495",
+  "scryfall_uri": "https://scryfall.com/card/m20/117/thought-distortion?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T08:56:27Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/f/4/f4a9d636-6720-4d7e-8b81-12c20bce6495.jpg?1783932987",
+    "normal": "https://cards.scryfall.io/normal/front/f/4/f4a9d636-6720-4d7e-8b81-12c20bce6495.jpg?1783932987",
+    "large": "https://cards.scryfall.io/large/front/f/4/f4a9d636-6720-4d7e-8b81-12c20bce6495.jpg?1783932987",
+    "png": "https://cards.scryfall.io/png/front/f/4/f4a9d636-6720-4d7e-8b81-12c20bce6495.png?1783932987",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/f/4/f4a9d636-6720-4d7e-8b81-12c20bce6495.jpg?1783932987",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/f/4/f4a9d636-6720-4d7e-8b81-12c20bce6495.jpg?1783932987",
+    "thumb": "https://cards.scryfall.io/thumb/front/f/4/f4a9d636-6720-4d7e-8b81-12c20bce6495.webp?1783932987",
+    "grid": "https://cards.scryfall.io/grid/front/f/4/f4a9d636-6720-4d7e-8b81-12c20bce6495.webp?1783932987",
+    "display": "https://cards.scryfall.io/display/front/f/4/f4a9d636-6720-4d7e-8b81-12c20bce6495.webp?1783932987",
+    "art": "https://cards.scryfall.io/art/front/f/4/f4a9d636-6720-4d7e-8b81-12c20bce6495.webp?1783932987",
+    "crop": "https://cards.scryfall.io/crop/front/f/4/f4a9d636-6720-4d7e-8b81-12c20bce6495.webp?1783932987",
+    "jpeg": "https://cards.scryfall.io/normal/front/f/4/f4a9d636-6720-4d7e-8b81-12c20bce6495.jpg?1783932987"
+  },
+  "mana_cost": "{4}{B}{B}",
+  "cmc": 6.0,
+  "type_line": "Sorcery",
+  "oracle_text": "This spell can't be countered.\nTarget opponent reveals their hand. Exile all noncreature, nonland cards from that player's hand and graveyard.",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "arena",
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "4a787360-9767-4f44-80b1-2405dc5e39c7",
+  "set": "m20",
+  "set_name": "Core Set 2020",
+  "set_type": "core",
+  "set_uri": "https://api.scryfall.com/sets/4a787360-9767-4f44-80b1-2405dc5e39c7",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Am20&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/m20?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/f4a9d636-6720-4d7e-8b81-12c20bce6495/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A5f089ac6-9e92-4ec2-bf46-a0b08d1e2979&unique=prints",
+  "collector_number": "117",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "\"The skull is rigid, but the mind is so deliciously supple.\"\n—Eromena the Mind Render",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "David Palumbo",
+  "artist_ids": [
+    "04ce1c75-e30c-4b7a-8cb0-b53e4ecc2f39"
+  ],
+  "illustration_id": "75057c30-936b-417e-837e-8df68b270c66",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 22978,
+  "penny_rank": 1857,
+  "preview": {
+    "source": "Seth Manfield",
+    "source_uri": "https://twitter.com/SethManfield/status/1140684022655283201",
+    "previewed_at": "2019-06-17"
+  },
+  "prices": {
+    "usd": "0.23",
+    "usd_foil": "0.45",
+    "usd_etched": null,
+    "eur": "0.06",
+    "eur_foil": "0.97",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=466871&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DThought%2BDistortion",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DThought%2BDistortion",
+    "edhrec": "https://edhrec.com/route/?cc=Thought+Distortion"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F192531%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=378351&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/73133?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "oracle_id": "15f2085f-d5e6-4bc6-870f-00fcaccd981b",
+  "name": "Savior of the Small",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Savior of the Small",
+      "oracle_fingerprint": "6c145e880d0e93aba00f0b204ebf35ab",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Main2", "whose": "You" } },
+            "if": {
+              "CountOf": { "subject": "This", "selector": ["Tapped"], "op": "Ge", "right": 1 }
+            },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "OwnedBy": "You" },
+                    { "Compare": { "stat": "ManaValue", "op": "Le", "to": 3 } },
+                    { "In": "Graveyard" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

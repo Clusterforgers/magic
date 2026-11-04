@@ -1,0 +1,32 @@
+{
+  "oracle_id": "264f944b-386b-4378-9764-4a8bde246809",
+  "name": "Evil Reawakened",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Evil Reawakened",
+      "oracle_fingerprint": "0b4a0d8efcd7f2f30c3ef3d229cc7b3e",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Target": 0 },
+                  "to": { "Battlefield": { "counters": [["+1/+1", 2]] } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

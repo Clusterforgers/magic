@@ -1,0 +1,47 @@
+{
+  "oracle_id": "d6a837d0-d4f9-45ed-bbd7-5e37a9ca3b56",
+  "name": "Ruin Raider",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ruin Raider",
+      "oracle_fingerprint": "1b0d665212b9ab8e15274c2631863a4e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "Attackers" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              { "LookAtTop": { "as": "top" } },
+              { "Reveal": { "what": { "Bound": "top" } } },
+              {
+                "Move": {
+                  "what": { "Each": [{ "In": "Library" }, { "Is": { "Bound": "top" } }] },
+                  "to": "Hand",
+                  "as": "moved4"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Bottom", "order": "Chosen" } }
+                }
+              },
+              {
+                "LoseLife": {
+                  "amount": { "Stat": { "of": { "Bound": "moved4" }, "stat": "ManaValue" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
