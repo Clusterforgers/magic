@@ -8,6 +8,7 @@ mod common;
 mod compile;
 mod coverage;
 mod coverage_all;
+mod coverage_decks;
 mod coverage_read;
 mod draft_store;
 mod drafts;
