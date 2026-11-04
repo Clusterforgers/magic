@@ -285,3 +285,37 @@ fn a_library_position_of_a_dig(#[case] places: &str, #[case] maps: bool) {
         assert_eq!(gaps(&script), ["key:Dig.LibraryPosition"]);
     }
 }
+
+#[rstest]
+#[case::the_revealed_cards_go_together(
+    "A:SP$ DigUntil | Valid$ Card.nonLand | RevealedDestination$ Library | RevealedLibraryPosition$ -1",
+    1
+)]
+#[case::a_found_card_goes_apart(
+    "A:SP$ DigUntil | Valid$ Card.nonLand | FoundDestination$ Hand | RevealedDestination$ Graveyard",
+    2
+)]
+fn a_dig_until_moves_the_found_card_only_when_it_has_a_destination(
+    #[case] lines: &str,
+    #[case] moves: usize,
+) {
+    let script = card("Sorcery", lines);
+    let found = abilities(&script);
+    assert_eq!(found.len(), 1, "{:?}", gaps(&script));
+    assert_eq!(
+        found[0].to_string().matches(r#""Move""#).count(),
+        moves,
+        "{}",
+        found[0]
+    );
+}
+
+#[test]
+fn a_found_destination_it_does_not_know_stays_a_named_gap() {
+    let script = card(
+        "Sorcery",
+        "A:SP$ DigUntil | Valid$ Card | FoundDestination$ Command | RevealedDestination$ Graveyard",
+    );
+    assert_eq!(abilities(&script), Vec::<serde_json::Value>::new());
+    assert_eq!(gaps(&script), ["key:DigUntil.FoundDestination=Command"]);
+}

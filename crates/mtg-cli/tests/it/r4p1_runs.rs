@@ -353,3 +353,45 @@ fn a_dig_to_the_library_without_a_position_goes_to_the_bottom() {
         "the two not looked at stay on top: {library:?}"
     );
 }
+
+const EXPLOSION: &str = "Name:Boom\nManaCost:R\nTypes:Sorcery\nA:SP$ DigUntil | Valid$ Card.nonLand | ValidDescription$ nonland | RevealedDestination$ Library | RevealedLibraryPosition$ -1 | RememberFound$ True | SubAbility$ Damage | SpellDescription$ Reveal cards from the top of your library until you reveal a nonland card. Boom deals damage equal to that card's mana value to target player. Put the revealed cards on the bottom of your library in any order.\nSVar:Damage:DB$ DealDamage | ValidTgts$ Player | NumDmg$ X | SubAbility$ DBCleanup\nSVar:DBCleanup:DB$ Cleanup | ClearRemembered$ True\nSVar:X:Remembered$CardManaCost\n";
+
+#[rstest]
+#[case::two_lands_then_a_three_drop(&[false, false, true], 17, 3)]
+#[case::the_first_card_is_the_nonland(&[true, false], 17, 2)]
+fn the_card_found_without_a_destination_is_read_after_it_moves_with_the_revealed(
+    #[case] order: &[bool],
+    #[case] life: i32,
+    #[case] expected_library: usize,
+) {
+    use mtg_testkit::cards::{creature, mountain};
+    // Top first: `true` is the three-mana creature, `false` a land.
+    let mut cards = Vec::new();
+    for spell in order {
+        cards.push(if *spell {
+            creature("Three", 3, &[], 1, 1)
+        } else {
+            forest()
+        });
+    }
+    cards.push(forest());
+    let scenario = Scenario::new(2)
+        .hand(0, [translated(EXPLOSION, "Boom", "Sorcery", "{R}")])
+        .library(0, cards)
+        .library(1, [forest()])
+        .battlefield(0, [ready(mountain())]);
+    let mut driver = Driver::from_scenario(scenario).unwrap();
+    let target = driver.target_player(1);
+    driver.cast_at("Boom", &[target]).unwrap();
+    crate::r3p3_runs::settle(&mut driver);
+    let state = driver.state();
+    let foe = state.player(PlayerId::from_index(1)).unwrap().life();
+    assert_eq!(
+        foe, life,
+        "damage equal to the mana value of the card found"
+    );
+    assert_eq!(
+        state.zone(Zone::Library(PlayerId::from_index(0))).len(),
+        expected_library + 1
+    );
+}

@@ -1066,15 +1066,17 @@ pub fn dig_until(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         find["count"] = amount(ctx, n)?;
     }
     let tapped = p.get("Tapped") == Some("True");
+    // Without a destination the card found stays among the revealed ones, which move together.
     let found_to = match p.get("FoundDestination") {
-        Some("Exile") => Goes::Exile,
-        Some("Hand") => Goes::To(json!("Hand")),
-        Some("Graveyard") => Goes::To(json!("Graveyard")),
-        Some("Battlefield") if p.get("GainControl") == Some("True") => {
-            Goes::To(json!({"Battlefield": {"tapped": tapped, "under": "You"}}))
-        }
-        Some("Battlefield") => Goes::To(json!({"Battlefield": {"tapped": tapped}})),
-        other => return unmapped(format!("key:DigUntil.FoundDestination={other:?}")),
+        None => None,
+        Some("Exile") => Some(Goes::Exile),
+        Some("Hand") => Some(Goes::To(json!("Hand"))),
+        Some("Graveyard") => Some(Goes::To(json!("Graveyard"))),
+        Some("Battlefield") if p.get("GainControl") == Some("True") => Some(Goes::To(
+            json!({"Battlefield": {"tapped": tapped, "under": "You"}}),
+        )),
+        Some("Battlefield") => Some(Goes::To(json!({"Battlefield": {"tapped": tapped}}))),
+        Some(other) => return unmapped(format!("key:DigUntil.FoundDestination={other}")),
     };
     if p.get("RememberFound") == Some("True") {
         ctx.remembered = Some(json!({ "Bound": found }));
@@ -1096,11 +1098,11 @@ pub fn dig_until(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         (Some("Exile"), _) => Goes::Exile,
         (other, _) => return unmapped(format!("key:DigUntil.RevealedDestination={other:?}")),
     };
-    let mut effects = vec![
-        json!({ "RevealUntil": find }),
-        moves(&json!({"Bound": found}), found_to),
-        moves(&json!({"Bound": revealed}), rest_to),
-    ];
+    let mut effects = vec![json!({ "RevealUntil": find })];
+    if let Some(found_to) = found_to {
+        effects.push(moves(&json!({"Bound": found}), found_to));
+    }
+    effects.push(moves(&json!({"Bound": revealed}), rest_to));
     if p.get("Shuffle") == Some("True") {
         effects.push(json!({"Shuffle": {}}));
     }
