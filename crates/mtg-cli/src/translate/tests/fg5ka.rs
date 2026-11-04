@@ -95,6 +95,43 @@ fn a_defined_player_owns_the_cards_a_chooser_picks(#[case] line: &str, #[case] b
     assert_eq!(normal(found[0].clone()), normal(json!({ "Spell": body })));
 }
 
+#[rstest]
+#[case::top_without_a_position("", json!({"Library": {"place": "Top"}}))]
+#[case::top_by_position(" | LibraryPosition$ 0", json!({"Library": {"place": "Top"}}))]
+#[case::bottom(" | LibraryPosition$ -1", json!({"Library": {"place": "Bottom"}}))]
+#[case::shuffled_in(" | Shuffle$ True", json!({"Library": {"place": "Shuffled"}}))]
+#[case::shuffled_in_whatever_the_position(
+    " | LibraryPosition$ 0 | Shuffle$ True",
+    json!({"Library": {"place": "Shuffled"}})
+)]
+fn a_card_put_into_a_library_goes_where_the_script_says(#[case] extra: &str, #[case] to: Value) {
+    let script = spell(&format!(
+        "ChangeZone | ValidTgts$ Creature | Origin$ Battlefield | Destination$ Library{extra}"
+    ));
+    let found = abilities(&script);
+    assert_eq!(found.len(), 1, "{:?}", gaps(&script));
+    let want = json!({"Spell": {"targets": [{"what": {"Object": [{"Type": "Creature"}]}}],
+        "effects": [{"Move": {"what": {"Target": 0}, "to": to}}]}});
+    assert_eq!(normal(found[0].clone()), normal(want));
+}
+
+#[rstest]
+#[case::third_from_top(" | LibraryPosition$ 2")]
+#[case::counted(" | LibraryPosition$ X")]
+fn a_library_position_beyond_top_and_bottom_stays_a_gap(#[case] extra: &str) {
+    let script = spell(&format!(
+        "ChangeZone | ValidTgts$ Creature | Origin$ Battlefield | Destination$ Library{extra}"
+    ));
+    assert_eq!(abilities(&script), Vec::<Value>::new(), "{script}");
+    assert!(
+        gaps(&script)
+            .iter()
+            .any(|found| found == "key:ChangeZone.LibraryPosition"),
+        "{:?}",
+        gaps(&script)
+    );
+}
+
 const TAP: &str = "SVar:ETBTapped:DB$ Tap | ETB$ True | Defined$ ReplacedCard\n";
 const EXILE: &str = "SVar:Exile:DB$ ChangeZone | Hidden$ True | Origin$ All | Destination$ Exile | Defined$ ReplacedCard\n";
 

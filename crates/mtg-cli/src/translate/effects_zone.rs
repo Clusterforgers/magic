@@ -40,7 +40,18 @@ enum Goes {
     To(Value),
 }
 
+/// Where the moved objects go; a library placement follows `LibraryPosition$` (the top without one, as Forge) and a
+/// `Shuffle$ True` puts them in shuffled.
 fn goes(p: &Params, destination: &str) -> Tr<Goes> {
+    goes_in(p, destination, false)
+}
+
+/// Where what a search found goes: a library placement there is the search's own shuffle and position, never a default.
+fn goes_found(p: &Params, destination: &str) -> Tr<Goes> {
+    goes_in(p, destination, true)
+}
+
+fn goes_in(p: &Params, destination: &str, searched: bool) -> Tr<Goes> {
     let tapped = p.get("Tapped") == Some("True");
     Ok(match destination {
         "Exile" => Goes::Exile,
@@ -48,10 +59,10 @@ fn goes(p: &Params, destination: &str) -> Tr<Goes> {
         "Graveyard" => Goes::To(json!("Graveyard")),
         "Battlefield" => Goes::To(json!({"Battlefield": {"tapped": tapped}})),
         "Library" => {
-            let place = match (p.get("LibraryPosition"), p.get("Shuffle")) {
-                (Some("0"), _) => "Top",
-                (Some("-1"), _) => "Bottom",
-                (None, Some("True")) => "Shuffled",
+            let place = match (p.get("LibraryPosition"), p.get("Shuffle"), searched) {
+                (_, Some("True"), false) | (None, Some("True"), _) => "Shuffled",
+                (Some("0"), ..) | (None, Some("False") | None, false) => "Top",
+                (Some("-1"), ..) => "Bottom",
                 _ => return unmapped("key:ChangeZone.LibraryPosition"),
             };
             Goes::To(json!({"Library": {"place": place}}))
@@ -218,7 +229,7 @@ fn search(ctx: &mut Ctx, p: &Params, destination: &str) -> Tr<Vec<Value>> {
         ctx.remembered = Some(found.clone());
     }
     let search = json!({ "Search": find });
-    let put = moves(&found, goes(p, destination)?);
+    let put = moves(&found, goes_found(p, destination)?);
     let shuffle = json!({"Shuffle": {}});
     let mut effects = match (destination, p.get("Shuffle")) {
         // The shuffle comes first when the card goes back on top: "then shuffle and put that card on top".
