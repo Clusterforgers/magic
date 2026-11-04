@@ -90,6 +90,9 @@ fn single(ctx: &mut Ctx, body: &str) -> Tr<Value> {
     if p.get("ValidCard") != Some("Card.Self") && !kicked_self {
         return super::replacements_moved::others(ctx, &p, line_condition.as_ref());
     }
+    if p.get("Destination") == Some("Graveyard") && !p.has("ActiveZones") {
+        return super::replacements_moved::self_to_graveyard(ctx, &p, line_condition.as_ref());
+    }
     if p.has("ActiveZones") {
         return unmapped("key:Replacement.Moved.ActiveZones");
     }

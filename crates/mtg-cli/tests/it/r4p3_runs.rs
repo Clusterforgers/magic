@@ -32,3 +32,31 @@ fn a_defender_attacks_only_the_turn_its_ability_was_used(
     driver.pass_until(Step::DeclareAttackers).unwrap();
     assert_eq!(driver.attack(&[("Cuts Wall", 1)]).is_ok(), attacks);
 }
+
+const DISTURBED: &str = "Name:Spirit Side\nManaCost:1 W\nTypes:Creature Spirit\nPT:1/1\nR:Event$ Moved | ValidCard$ Card.Self | Destination$ Graveyard | ReplaceWith$ Exile | Description$ x\nSVar:Exile:DB$ ChangeZone | Hidden$ True | Origin$ All | Destination$ Exile | Defined$ ReplacedCard\n";
+const PLAIN: &str = "Name:Spirit Side\nManaCost:1 W\nTypes:Creature Spirit\nPT:1/1\n";
+
+#[rstest]
+#[case::exiled_instead(DISTURBED, mtg_engine::zones::Zone::Exile)]
+#[case::an_ordinary_creature(
+    PLAIN,
+    mtg_engine::zones::Zone::Graveyard(mtg_core::ids::PlayerId::from_index(0))
+)]
+fn a_creature_that_dies_goes_where_its_replacement_sends_it(
+    #[case] script: &str,
+    #[case] zone: mtg_engine::zones::Zone,
+) {
+    let card = translated(script, "Spirit Side", "Creature — Spirit", "{1}{W}");
+    let scenario = Scenario::new(2)
+        .at(1, 0, Step::Main1)
+        .battlefield(0, [mtg_testkit::damaged(card, 1)]);
+    let mut driver = Driver::from_scenario(scenario).unwrap();
+    driver.pass().unwrap();
+    let found = driver.state().zone(zone).iter().any(|id| {
+        driver
+            .state()
+            .object(*id)
+            .is_some_and(|o| o.card().name == "Spirit Side")
+    });
+    assert!(found);
+}

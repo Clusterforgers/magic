@@ -40,3 +40,39 @@ fn shapes_the_nodes_cannot_carry_stay_gaps(#[case] rest: &str, #[case] gap: &str
     assert!(abilities(&text).is_empty(), "{:?}", abilities(&text));
     assert_eq!(gaps(&text), [gap]);
 }
+
+const EXILE: &str = "SVar:Exile:DB$ ChangeZone | Hidden$ True | Origin$ All | Destination$ Exile | Defined$ ReplacedCard";
+
+#[rstest]
+#[case::from_anywhere(
+    "R:Event$ Moved | ValidCard$ Card.Self | Destination$ Graveyard | ReplaceWith$ Exile",
+    r#"{"Replacement":{"by":{"MoveTo":"Exile"},"when":{"ZoneChange":{"to":"Graveyard","what":["This"]}}}}"#
+)]
+fn a_card_that_is_exiled_instead_of_going_to_a_graveyard(
+    #[case] line: &str,
+    #[case] expected: &str,
+) {
+    let text = creature(&format!("{line}\n{EXILE}"));
+    let found = abilities(&text);
+    assert_eq!(found.len(), 1, "{:?}", gaps(&text));
+    assert_eq!(found[0].to_string(), expected);
+}
+
+#[rstest]
+#[case::only_from_the_battlefield(
+    "R:Event$ Moved | ValidCard$ Card.Self | Origin$ Battlefield | Destination$ Graveyard | ReplaceWith$ Exile",
+    "key:Replacement.Moved.Origin"
+)]
+#[case::shuffled_into_the_library_instead(
+    "R:Event$ Moved | ValidCard$ Card.Self | Destination$ Graveyard | ReplaceWith$ Shuffle\nSVar:Shuffle:DB$ ChangeZone | Hidden$ True | Origin$ All | Destination$ Library | Defined$ ReplacedCard | Reveal$ True | Shuffle$ True",
+    "key:Replacement.Reveal"
+)]
+fn a_move_to_a_graveyard_of_another_shape_stays_a_gap(#[case] line: &str, #[case] gap: &str) {
+    let text = creature(&format!("{line}\n{EXILE}"));
+    assert!(abilities(&text).is_empty());
+    assert!(
+        gaps(&text).iter().any(|g| g.starts_with(gap)),
+        "{:?}",
+        gaps(&text)
+    );
+}
