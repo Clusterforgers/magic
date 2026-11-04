@@ -187,7 +187,16 @@ fn event_amount(ctx: &Ctx, expression: &str) -> Tr<Option<Value>> {
                 None => unmapped(format!("amount:{head}${what}")),
             };
         }
-        "TriggeredCard" => super::triggered::resolve(ctx.trigger.as_ref(), "TriggeredCard")?,
+        "TriggeredCard"
+        | "TriggeredCardLKICopy"
+        | "TriggeredNewCardLKICopy"
+        | "TriggeredAttacker"
+        | "TriggeredAttackerLKICopy"
+        | "TriggeredBlocker"
+        | "TriggeredBlockerLKICopy"
+        | "TriggeredSource"
+        | "TriggeredSourceLKICopy" => super::triggered::resolve(ctx.trigger.as_ref(), head)?,
+        "Enchanted" | "Equipped" => json!("Attached"),
         "Sacrificed" => json!("Paid"),
         "Remembered" | "RememberedLKI" if what != "Amount" => match &ctx.remembered {
             Some(remembered) => remembered.clone(),
@@ -200,10 +209,20 @@ fn event_amount(ctx: &Ctx, expression: &str) -> Tr<Option<Value>> {
 
 /// A stat of the latest target.
 fn targeted_amount(what: &str, of: &Value) -> Tr<Value> {
+    // A stat of an object that left its zone is read as the object last was: `LKI` says so.
+    let what = what.strip_suffix("LKI").unwrap_or(what);
+    if let Some(kind) = what.strip_prefix("CardCounters.") {
+        return match counter_kind(kind) {
+            Some(counter) => Ok(json!({"Counters": {"on": of, "counter": counter}})),
+            None => unmapped(format!("amount:Targeted$CardCounters.{kind}")),
+        };
+    }
     let stat = match what {
         "CardPower" => "Power",
         "CardToughness" => "Toughness",
         "CardManaCost" => "ManaValue",
+        "CardNumColors" => "Colors",
+        "CastTotalManaSpent" => "ManaSpent",
         other => return unmapped(format!("amount:Targeted${other}")),
     };
     Ok(json!({"Stat": {"of": of, "stat": stat}}))
