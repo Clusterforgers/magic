@@ -1173,10 +1173,63 @@ Regeneration, with the Forge clone read as data: `orch/forge-matrix/run.sh` unde
 
 ### Translator rules
 
-- A construct the translator cannot express makes the script a gap and is never approximated; a partial translation records its gaps in its meta (`"gaps"`), and `promote --draft` never drafts a card with one.
+- A construct the translator cannot express makes the script a gap and is never approximated; a partial translation records its gaps in its meta (`"gaps"`), and `promote --draft` drafts a card with one only through the proof of Partial translations.
 - A key a mapper lists as understood must be read: `ctx::check_keys` records the listed keys of each line and `forge::script::audit` makes the line a gap `key:<api>.<Key>-unread` when one was never read. The few keys that change nothing the translation keeps are named in `ctx::INERT`. No mapper checks keys on its own.
 - A `Triggered*` word names what the engine holds for the trigger's mode (`translate/triggered.rs`): `Triggering` is the subjects of the event and `Dealer` the object that did it (the blocker of a block, the source of damage); a word the mode does not hold is a gap.
 - `Permanent` as a card filter outside the battlefield is a card of a permanent type, never an instant or sorcery. `NoResolvingCheck` with a condition is a gap, because the engine checks the condition again as the ability resolves (CR 603.4).
+
+### Partial translations
+
+A Forge translation with gaps runs the lines it proves and leaves the others to the players, and no printed clause is lost. The card plays in state `Partial`: its automatic lines run as a `Forge` card's do (fail-soft included) and `Verified`, `Read` and `Forge` counts do not change. A card that cannot be proved keeps what it had: its compiled `Partial` row, else by hand.
+
+**The proof.** `mtg_cards::proposal::partial::prove(&Report, &[LedgerLine]) -> Result<PartialProof, Vec<Refusal>>` is pure and gives each printed clause one row, `Auto` or `ByHand`, or refuses the card.
+
+- The ledger: `translate-forge` writes `lines` in the meta, one `LedgerLine {face, tag, text, abilities, gap}` for each `K:`, `A:`, `T:`, `S:` and `R:` line of the script, with `text` its `SpellDescription$`, `TriggerDescription$` or `Description$` and `gap` the construct that stopped it. The pairing alone cannot see a lost clause: Aether Web's `Static` pairs with a line it only partly covers, so the proof takes the script's own words as a second witness. The translation file holds a `Manual {reason, span}` for each by-hand line.
+- Totality: a property over every stored card says the spans of `compile(printed).clauses` and the reminder text cover the whole oracle text, so a clause cannot fall between rows.
+- `ByHand`: a `Manual` ability whose span equals the clause's span; `validate` already checks that span against the printed text, and `ManualClause.text` is that text.
+- `Auto`: the clause is `Reads` (the renderer writes it back whole), or `Unwritten` or `Differs` with a witness: `oracle_matches`, every content word of the clause in the `text` of the translated lines of its abilities, and no gap line in it. A gap line belongs to a clause when at least seven tenths of the words of the shorter of the two are shared. A `Reads` clause needs no witness, since a read-back cannot drop a clause.
+- Refusals, named in the promote report: `InvalidRules`, `OracleDiffers`, `Stray` (an ability with no clause), `GapInsideLine` (Banefire, Aether Web, Bogardan Phoenix), `UncoveredLine` (a word of an automatic clause has no witness), `UnmappedGap` and `UntextedGap` (a gap line that names no clause, or has no description), `OpenWithoutGap` (a by-hand clause no gap line explains: the pairing lost an ability), `UnsafeLine` (the table below), `NothingRuns`, `NoGain`.
+
+**When a by-hand line is safe.** A whole line is safe only when the automatic lines behave the same with or without it. The test is on the line's `ClauseKind` and words, and anything not listed as safe is refused.
+
+| By-hand line | Safe | Why |
+|---|---|---|
+| Activated or loyalty ability | Yes | The player uses it when they choose; nothing automatic waits on it |
+| Triggered ability, whole | Yes | Its effect is one act of the players, its own "otherwise" and "if you do" included |
+| The whole text of a spell, with only keywords or other faces automatic | Yes | The spell resolves with nothing automatic in it, then the by-hand window |
+| A spell line beside a spell line that runs | No | One resolution: order and "if" cross the line |
+| Static ability, anthems included | No | The engine's combat, targeting and costs run without it |
+| Restriction: "can't", "must", "as though", "unless", "only" | No | The engine enforces the opposite (Banefire's "can't be countered") |
+| Replacement or self-replacement: "instead", "would", "prevent", "skip" | No | The event has already happened when players could act |
+| Cost: alternative, additional, "without paying", cost changes | No | A cast by hand does not run the spell's automatic lines |
+| Keyword | No | A keyword is a rule of combat or casting that the engine would need to run |
+| Entering: "as ~ enters", "enters with", "enters tapped" | No | The rest of the card reads what it sets |
+| Crossing clauses: "chosen", "named", "noted", "exiled with", "the exiled", "imprint", "remembered", "secret" in a by-hand line, or in an automatic line beside one | No | Lines share a memory the players cannot fill in |
+
+**Measure.** All 6,731 partial translations of `forge6` that are not Verified, checked with `check` and the ledger above by a throwaway program (each script line translated alone, the witness taken over the face's translated lines):
+
+| Outcome | Cards |
+|---|---|
+| Safe | 3,320 |
+| Of those, more automatic lines than today and none fewer: drafted | 263 |
+| Of those, the same lines as the compiled row today: nothing changes (`NoGain`) | 2,918 |
+| Of those, fewer than the compiled row in some line: `NoGain` until `fg3a` merges the two | 139 |
+| Refused | 3,411 |
+
+Refusals overlap: `OracleDiffers` 723, `OpenWithoutGap` 713, `UncoveredLine` 644, static 560 (121 cards more whose only unsafe line is an anthem), keyword 528, unmapped keyword gap 443, restriction 431, crossing clauses 354, `GapInsideLine` 311, replacement 245, cost 201, entering 185, `UntextedGap` 143.
+
+**Admission.** `promote --draft` takes a proposal with gaps only with `oracle_matches`, a proof and the smoke gate, and writes the rows to `drafts/meta/<slug>.json` as `proof`. `Library::with_drafts` admits a `Partial` draft of source `forge` whose `Manual` abilities match that proof; `Caps` must cover every automatic line, so no line turns by-hand behind the proof. No-loss rule: the draft beats a compiled `Partial` row only when its by-hand spans are a strict subset of the row's; a pinned draft plays as pinned. A test proves every committed partial draft again from its stored ledger.
+
+**In play.** A by-hand line is a `ManualClause`, as on a compiled `Partial` card, and the engine asks nothing about it, so it cannot hold a game.
+
+- Trigger: when the compiler's event reader reads the event half of the line, `ManualClause.when` holds its `TriggerPattern`, left out of the recipe fingerprint. As the pattern fires for a source on the battlefield, the engine logs a public `ByHandDue {source, text}` (boxed), no stack object and no decision, and the server holds the controller at its by-hand window ([server.md](server.md), Stops). A line whose event does not read is only reminded by its mark and the log's by-hand line.
+- Static and replacement lines are refused above, so none runs beside automatic lines on a translated card.
+- A failed automatic line is `AbilityLeftToTable` and the server's `wrong` (Correction).
+- The Commands panel is where the player acts: `Engine::manual` works whoever holds the decision, so a line is never out of reach. Nothing in a by-hand line reaches a seat that cannot already see its card: `ByHandDue` names only a public source and its printed text, fires only on an event every seat saw, and holds the seat on public facts alone.
+
+**What players see** ([web.md](web.md), Line marks). "Runs automatically" and "You do this by hand" on each line of the card preview, a card-level sentence, and deck counts; a Verified deck holds no `Partial` card, so its marker and `coverage_hash` do not move.
+
+**Correction.** A partial draft is an ordinary draft with a `read_hash`, so the Read tier's loop holds. `pin_of` and the fix mark follow the draft a card plays (`Library::plays_draft`), not the states `Read` and `Forge`: a fix mark or a `wrong` verdict ends the draft from the next game and the card returns to its compiled row or to by hand; the recipe pins the hash at game start, so a verdict never changes a running game or its resume. A new translation has a new `read_hash` and runs again.
 
 ## Tasks
 
