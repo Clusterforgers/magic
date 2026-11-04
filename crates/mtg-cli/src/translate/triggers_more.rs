@@ -22,7 +22,7 @@ pub fn pattern(ctx: &Ctx, p: &Params, mode: &str) -> Option<Tr<Value>> {
 }
 
 /// One or more events together trigger the ability once.
-fn batch(inner: &Value) -> Value {
+pub(super) fn batch(inner: &Value) -> Value {
     json!({ "Batch": inner })
 }
 
@@ -105,7 +105,7 @@ fn becomes_target(ctx: &Ctx, p: &Params) -> Tr<Value> {
 }
 
 /// `CounterAdded` and `CounterRemoved` of the kind `CounterType$` names.
-fn counters(ctx: &Ctx, p: &Params, variant: &str) -> Tr<Value> {
+pub(super) fn counters(ctx: &Ctx, p: &Params, variant: &str) -> Tr<Value> {
     keys(p, "Counter", &["ValidCard", "CounterType"])?;
     let what = selector_any(ctx, p.get("ValidCard").unwrap_or("Permanent"))?;
     let mut pattern = json!({ "what": what });
