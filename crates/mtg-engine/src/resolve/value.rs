@@ -1248,6 +1248,7 @@ impl<'a> Scope<'a> {
             | Pred::BlockedBy(_)
             | Pred::Blocks(_)
             | Pred::TargetedBy(_)
+            | Pred::SingleTarget
             | Pred::GreatestAmong { .. }
             | Pred::Suspended => self.fe1a_pred(pred, reference, seen)?,
             Pred::Not(inner) => !self.pred(inner, reference, seen)?,

@@ -544,6 +544,9 @@ fn layer_of(wanted: &Wanted, defining: bool) -> Option<Layer> {
         | Wanted::RemoveType(_)
         | Wanted::SetTypes(_)
         | Wanted::RemoveSupertype(_)
+        | Wanted::AddSupertype(_)
+        | Wanted::SetName(_)
+        | Wanted::ThisAbility
         | Wanted::AddSubtype(_)
         | Wanted::SetCreatureTypes(_)
         | Wanted::SetLandTypes(_)

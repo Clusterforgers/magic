@@ -11,13 +11,12 @@ Open card, compiler and wording items by code area; the rules of `docs/ROADMAP.m
 - [ ] (gn1i) Zone statics: `Static.affected` on the stack, hand, graveyard or exile for cast keywords, `uses` for "the next spell" and `Shield.uses` for "the next time"; frees about 11 ledger cards (Imoti, Lier, Archway of Innovation, Words of Worship); `ability.rs`, `effect.rs`, engine casting
 - [ ] (gn1j) Writer composition: a frame writes with parts that write alone, for the combinations gn1a names (after gn1a); frees about 27 ledger cards (Sylvan Library, Vanquisher's Banner, Emry, Lurker of the Loch); `compile/read/render`
 - [ ] (gn1k) Activated-ability modifiers: `CostModifier.applies_to` an ability kind with `change: Instead(cost)`, activate as though haste, loyalty twice; frees about 10 ledger cards (Thousand-Year Elixir, Fluctuator, Forge Anew); `ability.rs`, engine announcement
-- [ ] (gn1l) Copy exceptions: `BecomeCopy.except` keeps the source's ability and sets name and supertype, types added on a return (with o2fb); frees about 5 ledger cards (Thespian's Stage, Enduring Vitality, Sarkhan, Soul Aflame); `effect.rs`, `become_copy.rs`
+- [ ] (gn1la) A permanent that returns to the battlefield with its card types set ("it's an enchantment", Enduring Vitality); `Destination::Battlefield`
 - [ ] (gn1o) Mana abilities whose cost puts counters on the source, exerts it or untaps permanents run as mana abilities (after gn1e); frees Devoted Druid and Arena of Glory; `assemble.rs` `pays_with_activation`
-- [ ] (gn1n) `Effect::ChangeTargets { what, to }` on the copy retarget path; frees about 4 ledger cards (Misdirection, Redirect Lightning, Bolt Bend); `effect.rs`, `prim/retarget.rs`
 
 ## Forge coverage
 
-Ordered by scripts freed per piece (`docs/cards-dsl.md`, Forge coverage). `gn1a` and `gn1j` are writer items beside this list; `gn1c`, `gn1e`, `gn1f`, `gn1i`, `gn1l` and `gn1m` free 280, 164, 117, 97, 158 and 104 scripts and stay as they are; a new decision comes with its web prompt in the same piece.
+Ordered by scripts freed per piece (`docs/cards-dsl.md`, Forge coverage). `gn1a` and `gn1j` are writer items beside this list; `gn1c`, `gn1e`, `gn1f`, `gn1i` and `gn1m` free 280, 164, 117, 97 and 104 scripts and stay as they are; a new decision comes with its web prompt in the same piece.
 
 - [ ] (gn1p) `RemoveCountersAmong` lets the payer distribute the removed counters instead of taking them in play order (a new decision with web support); `mtg-engine/src/parts/among.rs`
 - [ ] (fe1s) Actions of `Did` that need an event first (`Fought`, `Investigated`, `Evolved`, `Voted`, `Discovered`, `Sought`, `CollectedEvidence`, `AbilityResolved`, `Stationed`, `Trained`, `Mentored`, `PaidUpkeep`, `GameStarted`) with web support, and the reader and writer wordings of `Did`; `detect/did.rs`

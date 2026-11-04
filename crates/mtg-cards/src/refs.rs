@@ -303,6 +303,8 @@ pub enum Pred {
     Blocks(Ref),
     /// Is a target of one of the spells or abilities on the stack the reference names.
     TargetedBy(Ref),
+    /// Is a spell or ability on the stack with exactly one target (CR 115.7: "a spell with a single target").
+    SingleTarget,
     /// Has the greatest value of the characteristic among the objects the group selector matches (a tie counts for each).
     GreatestAmong {
         /// The characteristic compared.

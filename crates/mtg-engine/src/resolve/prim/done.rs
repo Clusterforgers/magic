@@ -88,6 +88,7 @@ fn reports(effect: &Effect) -> Reports {
         | Effect::ExtraTurn { .. }
         | Effect::AddPhase { .. }
         | Effect::WinGame { .. }
+        | Effect::ChangeTargets { .. }
         | Effect::CopySpell { .. }
         | Effect::CopyAbility { .. }
         | Effect::CopyCard { .. }

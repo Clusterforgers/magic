@@ -18,6 +18,7 @@ use crate::manual::{ManualAction, ManualRoll};
 use crate::object::{Chosen, FaceDown, ObjectRef};
 use crate::player::LossReason;
 use crate::resolve::LeftToTable;
+use crate::retargeted::TargetsChanged;
 use crate::rules::RuleEffect;
 use crate::snapshot::Snapshot;
 use crate::spend::Restricted;
@@ -678,6 +679,8 @@ pub enum Event {
     },
     /// An activated or triggered ability was copied (CR 707.10): the copy is put on the stack above it, not activated or triggered.
     AbilityCopied(Box<AbilityCopy>),
+    /// The targets of a spell or ability on the stack changed (CR 115.7).
+    TargetsChanged(Box<TargetsChanged>),
     /// A source remembered objects, or forgot a slot (`Effect::Remember`, `Effect::Forget`; the exiles of a permanent too).
     Remembered(Box<crate::memory::Remembered>),
     /// A permanent's copy effect that lasted until end of turn, or until a player's next turn, ended.
@@ -1135,6 +1138,7 @@ impl Event {
             Event::SpellCopied(copy) => vec![copy.object],
             Event::CardCopied(copy) => vec![copy.object],
             Event::AbilityCopied(copy) => vec![copy.object],
+            Event::TargetsChanged(change) => vec![change.object.id],
             Event::Remembered(change) => vec![change.source.id],
             Event::AbilityPutOnStack(put) => vec![put.object],
             Event::LandPlayed { object, .. }

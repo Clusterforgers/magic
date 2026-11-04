@@ -501,6 +501,7 @@ impl<'a> Walker<'a> {
             }
             Pred::CastWith(_) => self.uses("Pred", "CastWith"),
             Pred::TopOfLibrary => self.uses("Pred", "TopOfLibrary"),
+            Pred::SingleTarget => self.uses("Pred", "SingleTarget"),
             Pred::BottomOfLibrary => self.uses("Pred", "BottomOfLibrary"),
             Pred::BlockedBy(who) => {
                 self.uses("Pred", "BlockedBy");
@@ -583,6 +584,7 @@ impl<'a> Walker<'a> {
             | Pred::BlockedBy(_)
             | Pred::Blocks(_)
             | Pred::TargetedBy(_)
+            | Pred::SingleTarget
             | Pred::GreatestAmong { .. }
             | Pred::Suspended => self.fe1a_pred(pred),
             Pred::Not(inner) => self.pred(inner),
@@ -1575,6 +1577,9 @@ impl<'a> Walker<'a> {
             | Modification::RemoveType(_)
             | Modification::SetTypes(_)
             | Modification::RemoveSupertype(_)
+            | Modification::AddSupertype(_)
+            | Modification::SetName(_)
+            | Modification::ThisAbility
             | Modification::AddSubtype(_)
             | Modification::SetCreatureTypes(_)
             | Modification::SetLandTypes(_)
@@ -1675,8 +1680,14 @@ impl<'a> Walker<'a> {
         for (i, modification) in mods.iter().enumerate() {
             self.at(format!("[{i}]"), |w| {
                 w.modification(modification);
-                if matches!(modification, Modification::RemoveSupertype(_)) {
-                    w.problem("a supertype is taken away only from the copiable values of a copy (`except`)");
+                if matches!(
+                    modification,
+                    Modification::RemoveSupertype(_)
+                        | Modification::AddSupertype(_)
+                        | Modification::SetName(_)
+                        | Modification::ThisAbility
+                ) {
+                    w.problem("a supertype, a name or this ability changes only the copiable values of a copy (`except`)");
                 }
             });
         }
@@ -2845,6 +2856,9 @@ impl Walker<'_> {
                 w.at("what", |w| w.reference(what, Kind::Object));
                 w.at("count", |w| w.amount(count));
                 w.copy_exceptions(except);
+            }
+            Effect::ChangeTargets { what, .. } => {
+                w.at("what", |w| w.reference(what, Kind::Object));
             }
             Effect::CopyAbility { what, count, .. } => {
                 w.at("what", |w| w.reference(what, Kind::Object));
@@ -4610,7 +4624,7 @@ mod tests {
     )]
     #[case::a_supertype_goes_with_a_copy_only(
         r#"{"Static":{"affected":"This","mods":[{"RemoveSupertype":"Legendary"}]}}"#,
-        "a supertype is taken away only from the copiable values of a copy (`except`)"
+        "a supertype, a name or this ability changes only the copiable values of a copy (`except`)"
     )]
     #[case::a_player_takes_only_the_keywords_players_have(
         r#"{"Static":{"affected":"You","mods":[{"AddKeyword":"Flying"}]}}"#,

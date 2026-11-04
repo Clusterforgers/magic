@@ -3,7 +3,7 @@
 use std::sync::Arc;
 
 use mtg_cards::effect::Effect;
-use mtg_cards::modify::Duration;
+use mtg_cards::modify::{Duration, Modification};
 
 use super::wrong_effect;
 use crate::copies::{BecameCopy, copiable_values};
@@ -38,7 +38,17 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     {
         let mut definition = values;
         for modification in except {
-            if !definition.except(modification) {
+            let applied = match modification {
+                Modification::ThisAbility => cx
+                    .state()
+                    .object(cx.resolving.object())
+                    .and_then(|object| object.ability())
+                    .is_some_and(|ability| {
+                        definition.except(&Modification::GrantAbility(ability.shared_rules()))
+                    }),
+                other => definition.except(other),
+            };
+            if !applied {
                 return Err(ResolveError::Unsupported("Effect.BecomeCopy.Except"));
             }
         }

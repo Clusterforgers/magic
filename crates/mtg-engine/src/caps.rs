@@ -272,8 +272,10 @@ const RUNS: &[&str] = &[
     "Effect.CreateToken.Copy",
     "Effect.CopySpell",
     "Effect.CopyAbility",
+    "Effect.ChangeTargets",
     "Effect.BecomeCopy",
     "Copy.Duration.UntilYourNextTurn",
+    "Copy.Except.ThisAbility",
     "Effect.Continuous",
     "Effect.ExchangeControl",
     "Duration.WhileYouControlSource",
@@ -344,6 +346,8 @@ const RUNS: &[&str] = &[
     "Mod.RemoveType",
     "Mod.SetTypes",
     "Mod.RemoveSupertype",
+    "Mod.AddSupertype",
+    "Mod.SetName",
     "Mod.AddSubtype",
     "Mod.SetCreatureTypes",
     "Mod.SetLandTypes",
@@ -626,6 +630,7 @@ const RUNS: &[&str] = &[
     "Pred.BlockedBy",
     "Pred.Blocks",
     "Pred.TargetedBy",
+    "Pred.SingleTarget",
     "Pred.GreatestAmong",
     "Pred.Suspended",
 ];
@@ -786,6 +791,9 @@ mod tests {
     #[case::removed_types("Mod.RemoveType", true)]
     #[case::set_types("Mod.SetTypes", true)]
     #[case::removed_supertypes("Mod.RemoveSupertype", true)]
+    #[case::added_supertypes("Mod.AddSupertype", true)]
+    #[case::copy_names("Mod.SetName", true)]
+    #[case::copy_keeps_this_ability("Copy.Except.ThisAbility", true)]
     #[case::subtypes("Mod.AddSubtype", true)]
     #[case::colours("Mod.SetColors", true)]
     #[case::granted_abilities("Mod.GrantAbility", true)]
@@ -879,6 +887,7 @@ mod tests {
     #[case::an_exception_the_copy_cannot_hold("Copy.Except.SwitchPT", false)]
     #[case::copying_spells("Effect.CopySpell", true)]
     #[case::copying_abilities("Effect.CopyAbility", true)]
+    #[case::changing_targets("Effect.ChangeTargets", true)]
     #[case::becoming_a_copy("Effect.BecomeCopy", true)]
     #[case::a_copy_until_your_next_turn("Copy.Duration.UntilYourNextTurn", true)]
     #[case::a_copy_that_ends_with_another_duration("Copy.Duration.UntilEndOfCombat", false)]

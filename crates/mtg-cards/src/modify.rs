@@ -45,6 +45,15 @@ pub enum Modification {
     /// Takes a supertype away from the copiable values of a copy: "except it isn't legendary". Only the exceptions of a
     /// copy have it, never a static ability or the effect of a spell.
     RemoveSupertype(Supertype),
+    /// Adds a supertype to the copiable values of a copy: "except it is legendary in addition to its other types". Only the
+    /// exceptions of a copy have it.
+    AddSupertype(Supertype),
+    /// Names the copiable values of a copy: "except its name is Lazav, Dimir Mastermind". Only the exceptions of a copy
+    /// have it.
+    SetName(String),
+    /// Gives the copiable values of a copy the ability that is resolving: "except it has this ability". Only the
+    /// exceptions of a `BecomeCopy` have it.
+    ThisAbility,
     /// Adds a subtype (layer 4).
     AddSubtype(Subtype),
     /// Replaces the creature types with these (layer 4): "becomes a red Weird" (CR 205.1b).
@@ -116,6 +125,9 @@ impl Modification {
     /// The layer of CR 613 this applies in, or `None` for a restriction that changes no characteristic.
     pub const fn layer(&self) -> Option<&'static str> {
         match self {
+            Modification::AddSupertype(_)
+            | Modification::SetName(_)
+            | Modification::ThisAbility => Some("1"),
             Modification::SetController(_) => Some("2"),
             Modification::AddType(_)
             | Modification::RemoveType(_)

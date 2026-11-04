@@ -217,6 +217,9 @@ fn the_table_of_modifications_has_every_variant_of_the_dsl() {
             | mtg_cards::modify::Modification::SetTypes(_)
             // Only the exceptions of a copy have it, which `CardDefinition::except` applies; it is not a row of the table.
             | mtg_cards::modify::Modification::RemoveSupertype(_)
+            | mtg_cards::modify::Modification::AddSupertype(_)
+            | mtg_cards::modify::Modification::SetName(_)
+            | mtg_cards::modify::Modification::ThisAbility
             | mtg_cards::modify::Modification::AddSubtype(_)
             | mtg_cards::modify::Modification::SetCreatureTypes(_)
             | mtg_cards::modify::Modification::SetLandTypes(_)
