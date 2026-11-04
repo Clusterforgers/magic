@@ -125,6 +125,8 @@ pub fn split_charm(name: &str) -> Arc<CardDefinition> {
                 once_each_turn: false,
                 once_ever: false,
                 all_if: None,
+                mode_costs: Vec::new(),
+                extra_mode_cost: None,
                 modes: vec![
                     Mode {
                         label: Some("Split".to_owned()),

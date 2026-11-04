@@ -6,7 +6,7 @@
 //! chooses among the modes that could be chosen with the next substream of the game's random source, and no player is
 //! asked; one that chooses a mode not yet chosen this turn, or ever, leaves out the modes its tally holds.
 
-use super::{Ctx, Next, What, Work, optional};
+use super::{Ctx, Next, What, Work, optional, price};
 use mtg_core::ids::PlayerId;
 
 use crate::choose::{Modal, ModeOptions, modal_of, mode_options};
@@ -31,7 +31,7 @@ pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
             }
         }
         modal.used = chosen_before(ctx, modal.once == crate::choose::C11dOnce::Ever);
-        let Some(options) = mode_options(
+        let Some(mut options) = mode_options(
             ctx.state,
             ctx.source,
             ctx.player,
@@ -41,6 +41,9 @@ pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
         ) else {
             return Some(Next::Drop);
         };
+        if !price::restrict(ctx, work.choices, &mut options) {
+            return Some(Next::Drop);
+        }
         if modal.at_random {
             return pick(ctx, work, &modal, &options);
         }

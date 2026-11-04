@@ -1138,6 +1138,8 @@ fn effect() -> impl Strategy<Value = Effect> {
                     once_each_turn: false,
                     once_ever: false,
                     all_if: None,
+                    mode_costs: Vec::new(),
+                    extra_mode_cost: None,
                     modes: modes
                         .into_iter()
                         .map(|(label, targets, effects)| Mode {

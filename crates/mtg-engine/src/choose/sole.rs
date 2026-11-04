@@ -149,6 +149,7 @@ mod tests {
                 .map(|at| ModeOption {
                     index: at * 2,
                     label: None,
+                    cost: None,
                 })
                 .collect(),
             min,

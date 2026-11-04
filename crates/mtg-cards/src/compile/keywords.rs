@@ -677,6 +677,8 @@ fn plain(name: &str) -> Option<Keyword> {
         "gravestorm" => Keyword::Gravestorm,
         "sunburst" => Keyword::Sunburst,
         "demonstrate" => Keyword::Demonstrate,
+        "bargain" => Keyword::Bargain,
+        "conspire" => Keyword::Conspire,
         "read ahead" => Keyword::ReadAhead,
         "partner" => Keyword::Partner,
         "battle cry" => Keyword::BattleCry,
@@ -1180,6 +1182,8 @@ mod tests {
     #[case::gift_an_extra_turn("Gift an extra turn", Keyword::Gift(GiftKind::ExtraTurn))]
     #[case::hideaway_five("hideaway 5", Keyword::Hideaway(5))]
     #[case::demonstrate("Demonstrate", Keyword::Demonstrate)]
+    #[case::bargain("Bargain", Keyword::Bargain)]
+    #[case::conspire("Conspire", Keyword::Conspire)]
     #[case::read_ahead("Read ahead", Keyword::ReadAhead)]
     #[case::devour("Devour 2", Keyword::Devour { counters: 2, of: creature() })]
     #[case::devour_artifact("Devour artifact 1", Keyword::Devour { counters: 1, of: Selector(vec![Pred::Type(CardType::Artifact)]) })]
@@ -1700,6 +1704,8 @@ mod tests {
             "Phasing",
             "Spectacle {B}",
             "Demonstrate",
+            "Bargain",
+            "Conspire",
             "Hideaway 4",
             "Gift a card",
             "For Mirrodin!",

@@ -21,6 +21,7 @@ mod modifiers;
 mod optional;
 mod parts;
 mod payment;
+mod price;
 pub(crate) mod required;
 pub(crate) mod suspend;
 mod targets;
@@ -176,6 +177,8 @@ pub(crate) struct Needs {
     pub(crate) x: Option<XCost>,
     /// The price of an activated ability whose cost has parts the player picks objects for.
     pub(crate) price: Option<Box<Price>>,
+    /// The costs of the modes of a modal spell (Spree, Tiered, Escalate).
+    pub(crate) modes: Option<price::ModeCosts>,
 }
 
 /// What a resolution lets a player cast (CR 608.2g): the spell goes on the stack as part of the resolution, with no
@@ -204,6 +207,11 @@ impl Needs {
             optional: optional::read(state, what),
             x: XCost::of(state, player, what, rules),
             price: parts::read(state, player, what, rules),
+            modes: if matches!(what, What::Spell(_)) {
+                price::ModeCosts::of(rules)
+            } else {
+                None
+            },
         }
     }
 
@@ -226,6 +234,9 @@ impl Needs {
             .map(|way| way.parts.clone())
             .unwrap_or_default();
         parts.extend(optional::parts_paid(&self.optional, choices));
+        if let Some(costs) = &self.modes {
+            parts.extend(costs.parts(&choices.modes));
+        }
         parts
     }
 }
@@ -388,6 +399,43 @@ impl Pending {
         match weak {
             Some((needed, got)) => Err(IllegalAnswer::TooLittlePower { needed, got }),
             None => Ok(()),
+        }
+    }
+
+    /// Whether the spell can be paid for with the modes chosen: the answer is refused when their costs cannot be paid.
+    pub(crate) fn check_modes(
+        &self,
+        state: &GameState,
+        modes: &[usize],
+    ) -> Result<(), IllegalAnswer> {
+        let (What::Spell(card), Some(needs)) = (&self.what, &self.needs) else {
+            return Ok(());
+        };
+        if needs.modes.is_none() {
+            return Ok(());
+        }
+        let faced;
+        let state = if faces::is_multi_face(state, *card) {
+            faced = state.with_face(*card, self.choices.face);
+            &*faced
+        } else {
+            state
+        };
+        let held = rules_of(state, &self.what);
+        let ctx = Ctx {
+            state,
+            player: self.player,
+            what: &self.what,
+            source: *card,
+            ability: held.as_deref(),
+            triggered: None,
+            granted: self.granted,
+            needs,
+        };
+        if price::affordable_set(&ctx, &self.choices, modes) {
+            Ok(())
+        } else {
+            Err(IllegalAnswer::Unaffordable("the modes"))
         }
     }
 
@@ -677,6 +725,12 @@ mod through_engine;
 
 #[cfg(test)]
 mod kicks;
+
+#[cfg(test)]
+mod cost_keywords;
+
+#[cfg(test)]
+mod mode_costs;
 
 #[cfg(test)]
 mod x_after;

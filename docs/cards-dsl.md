@@ -149,7 +149,7 @@ Effect (one variant per engine primitive)
   DelayedTrigger{when,once,effects} Reflexive{targets,effects}
   If{condition,then,otherwise} May{who,effects} Pay{who,cost,times,paid,unpaid}
   Let{as, amount: Amount}
-  Modal{who?: Ref, choose: Bounds, repeat, at_random, once_each_turn, once_ever, all_if?: Condition, modes: [Mode{label?,targets,effects}]}
+  Modal{who?: Ref, choose: Bounds, repeat, at_random, once_each_turn, once_ever, all_if?: Condition, mode_costs?: [Cost], extra_mode_cost?: Cost, modes: [Mode{label?,targets,effects}]}
 SpendOn   Spell(SpendFilter) | Ability(SpendFilter) | CostWithX | When(WhenSpent)   a use of restricted mana; `AddMana.only` lists the allowed ones, none means anything; `When` restricts nothing (the engine keeps `AddMana.when_spent` there)
 WhenSpent{spell: SpendFilter,effects,source?}   what mana sets off when it is spent to cast a spell the filter holds for; `source` is the permanent that made the mana, filled in by the engine
 SpendFilter{types?,without?,supertypes?,subtypes?,colors?,multicolored?,chosen_type?,min_value?,facts?}   each listed part must hold, one of a list of types, subtypes or colors is enough; `facts` are XInCost, NotOwned, FromGraveyard, SharesCommanderType

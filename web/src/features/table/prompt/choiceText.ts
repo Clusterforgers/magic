@@ -61,9 +61,10 @@ export function optionLabel(
   return 'Secret' in option ? option.Secret : option.Label
 }
 
-/** One mode as its button names it: the card's name for it, else its place on the card. */
+/** One mode as its button names it: the card's name for it, else its place on the card, with the cost it adds. */
 export function modeLabel(mode: ModeOption): string {
-  return mode.label ?? `Mode ${mode.index + 1}`
+  const name = mode.label ?? `Mode ${mode.index + 1}`
+  return mode.cost ? `${name} (${mode.cost})` : name
 }
 
 const WORDS = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten']

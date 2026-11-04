@@ -220,6 +220,9 @@ pub enum IllegalAnswer {
     /// The chosen item is not among the offered options.
     #[error("{0} is not among the legal options")]
     NotOffered(&'static str),
+    /// The choice adds a cost that its player cannot pay with the rest of the cost.
+    #[error("{0} cannot be paid for with the rest of the cost")]
+    Unaffordable(&'static str),
     /// An item was chosen more than once.
     #[error("{0} was chosen more than once")]
     Duplicate(&'static str),

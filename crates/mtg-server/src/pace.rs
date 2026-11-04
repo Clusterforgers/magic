@@ -742,6 +742,7 @@ mod tests {
                 .map(|n| ModeOption {
                     index: 2 * n + 1,
                     label: None,
+                    cost: None,
                 })
                 .collect(),
             min,

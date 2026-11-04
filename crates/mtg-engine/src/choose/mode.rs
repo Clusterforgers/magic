@@ -7,6 +7,7 @@
 
 use mtg_cards::ability::Ability;
 use mtg_cards::compile::render_mode;
+use mtg_cards::cost::Cost;
 use mtg_cards::effect::{Effect, Mode};
 use mtg_cards::refs::{Bounds, Ref, TargetSpec};
 use mtg_cards::value::{Amount, Condition};
@@ -29,6 +30,9 @@ pub struct ModeOption {
     pub index: usize,
     /// A short name, when the card gives one.
     pub label: Option<String>,
+    /// What choosing the mode adds to the cost, when it has a cost of its own (Spree, Tiered).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cost: Option<String>,
 }
 
 /// The modes a player may choose and how many.
@@ -115,6 +119,10 @@ pub(crate) struct Modal<'a> {
     pub(crate) once: C11dOnce,
     /// Every mode may be chosen when this holds as the ability is announced.
     pub(crate) all_if: Option<&'a Condition>,
+    /// The cost each mode adds when chosen, parallel to `modes`; empty for none.
+    pub(crate) mode_costs: &'a [Cost],
+    /// The cost added for each mode chosen beyond the first.
+    pub(crate) extra_mode_cost: Option<&'a Cost>,
     /// The modes this ability chose earlier in the turn, or in any turn (read from the tally by the announcement).
     pub(crate) used: Vec<usize>,
 }
@@ -156,6 +164,8 @@ pub(crate) fn modal_of(rules: &Ability) -> Option<Modal<'_>> {
                 once_each_turn,
                 once_ever,
                 all_if,
+                mode_costs,
+                extra_mode_cost,
             },
         ] => Some(Modal {
             who,
@@ -165,6 +175,8 @@ pub(crate) fn modal_of(rules: &Ability) -> Option<Modal<'_>> {
             at_random: *at_random,
             once: C11dOnce::c11d_of(*once_each_turn, *once_ever),
             all_if: all_if.as_ref(),
+            mode_costs,
+            extra_mode_cost: extra_mode_cost.as_ref(),
             used: Vec::new(),
         }),
         _ => None,
@@ -268,6 +280,7 @@ pub(crate) fn mode_options(
         .map(|(index, mode)| ModeOption {
             index,
             label: label_of(mode, card),
+            cost: None,
         })
         .collect();
     let available = u32::try_from(modes.len()).unwrap_or(u32::MAX);
@@ -395,6 +408,7 @@ mod tests {
                 .map(|index| ModeOption {
                     index: *index,
                     label: None,
+                    cost: None,
                 })
                 .collect(),
             min,
