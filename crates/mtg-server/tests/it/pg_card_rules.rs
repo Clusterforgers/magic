@@ -1,4 +1,4 @@
-//! Goal: the rules the compiler stored in `card_rules` reach the server without a restart: a card with no rules file is played by hand until its row is stored, then it is verified in the card list, the deck check, a saved deck's marker and the precon list, and a changed or removed row moves them back; a rules file wins over a row for the same card; bots play whole games with a compiled card; and a game never changes under new rows: a running game keeps its definitions, and a restart that finds the rows changed fails the game with the deck named, as it does for any changed rules.
+//! Goal: the rules the compiler stored in `card_rules` reach the server without a restart: a card with no rules file is played by hand until its row is stored, then it is verified in the card list, the deck check, a saved deck's state and the precon list, and a changed or removed row moves them back; a rules file wins over a row for the same card; bots play whole games with a compiled card; and a game never changes under new rows: a running game keeps its definitions, and a restart that finds the rows changed fails the game with the deck named, as it does for any changed rules.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::common;
@@ -185,7 +185,7 @@ async fn a_stored_row_moves_a_card_from_played_by_hand_to_verified_in_the_card_l
 }
 
 #[sqlx::test(migrations = false)]
-async fn a_saved_deck_is_marked_changed_when_the_rules_of_a_card_in_it_change(pool: PgPool) {
+async fn a_saved_deck_shows_the_state_of_the_rules_in_force_without_a_save(pool: PgPool) {
     let (server, db, ann) = serve(&pool).await;
     let hand_written = without(&[GROWTH]);
     store(&db, &hand_written, GROWTH).await;
@@ -205,8 +205,14 @@ async fn a_saved_deck_is_marked_changed_when_the_rules_of_a_card_in_it_change(po
 
     make_it_plus_four(&pool).await;
     let after = ann.get(server.addr, &path).await.json();
-    assert_eq!(after["state"], "unchecked", "other rules, another deck");
-    assert_eq!(after["changed"], true);
+    assert_eq!(
+        after["state"], after["report"]["summary"]["state"],
+        "the state is the check of now"
+    );
+    assert_eq!(
+        after["changed"], false,
+        "a rule change is never reported as changed"
+    );
     assert!(after["check"]["coverage_hash"].as_str().is_some());
     assert_ne!(
         after["check"]["coverage_hash"],
@@ -217,7 +223,8 @@ async fn a_saved_deck_is_marked_changed_when_the_rules_of_a_card_in_it_change(po
     let gone = ann.get(server.addr, &path).await.json();
     assert_eq!(
         (gone["state"].as_str(), gone["changed"].as_bool()),
-        (Some("unchecked"), Some(true))
+        (Some("manual_play"), Some(false)),
+        "without its row the card is played by hand at once"
     );
 
     let again = ann

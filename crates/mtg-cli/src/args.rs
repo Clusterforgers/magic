@@ -50,6 +50,8 @@ pub enum Command {
     Compile(CompileArgs),
     /// Check proposed rules files (written by hand or by a model) against stored cards: valid, read back as the printed text, and their support state.
     CheckRules(CheckRulesArgs),
+    /// List the cards of every saved deck that the game does not play whole, the most used first, with the deck check's support state, the decks and the owners; read-only.
+    CoverageDecks(CoverageDecksArgs),
     /// List the cards players marked as important to fix, the most marked first, with each card's support state and newest note.
     FixMarks(FixMarksArgs),
     /// List the verdicts players gave the drafts of the read tier, newest first; `--wrong` keeps the wrong ones and `--quick` the accounts that judged different cards less than 4 seconds apart.
@@ -231,6 +233,14 @@ pub struct CheckRulesArgs {
     /// The rules files (JSON); with `--card`, exactly one.
     #[arg(value_name = "FILE", required = true)]
     pub files: Vec<PathBuf>,
+}
+
+/// Options of `coverage-decks`.
+#[derive(Debug, Args)]
+pub struct CoverageDecksArgs {
+    /// Print JSON instead of the table.
+    #[arg(long)]
+    pub json: bool,
 }
 
 /// Options of `fix-marks`.

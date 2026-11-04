@@ -1,4 +1,4 @@
-// Goal: the marker beside a deck's name says the badge's word for a clean saved check, a deck that runs on reads, a deck played by hand, a blocked deck and one never checked, and "Changed since the last check" for a draft that differs from the saved deck or a stored check that is stale, whatever state the saved deck had, so a Verified marker never outlives the deck it was earned by.
+// Goal: the marker beside a deck's name says the badge's word for the state of the check of the moment (verified, runs on reads, played by hand, blocked), and "Unsaved draft" for a draft that differs from the saved deck whatever state the saved deck had, so a Verified marker never outlives the deck it was earned by; the words "Unsaved draft" are gone.
 import { render } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import type { DeckState } from '@/protocol/generated'
@@ -10,19 +10,12 @@ const CASES: ReadonlyArray<readonly [string, DeckState, MarkerChange, MarkerKind
   ['a deck on reads', 'read', {}, 'read', 'Runs on reads'],
   ['a deck played by hand', 'manual_play', {}, 'manual_play', 'Played by hand'],
   ['a blocked deck', 'blocked', {}, 'blocked', 'Blocked'],
-  ['a deck never checked', 'unchecked', { changed: false }, 'unchecked', 'Unchecked'],
-  ['a stale stored check', 'unchecked', { changed: true }, 'changed', 'Changed since the last check'],
-  ['a draft of a verified deck', 'verified', { dirty: true }, 'changed', 'Changed since the last check'],
-  [
-    'a draft of a deck played by hand',
-    'manual_play',
-    { dirty: true },
-    'changed',
-    'Changed since the last check',
-  ],
-  ['a draft of a deck on reads', 'read', { dirty: true }, 'changed', 'Changed since the last check'],
-  ['a draft of a blocked deck', 'blocked', { dirty: true }, 'changed', 'Changed since the last check'],
-  ['a draft of an unchecked deck', 'unchecked', { dirty: true }, 'changed', 'Changed since the last check'],
+  ['a state never stored by a check', 'unchecked', {}, 'unchecked', 'Unchecked'],
+  ['a draft of a verified deck', 'verified', { dirty: true }, 'changed', 'Unsaved draft'],
+  ['a draft of a deck played by hand', 'manual_play', { dirty: true }, 'changed', 'Unsaved draft'],
+  ['a draft of a deck on reads', 'read', { dirty: true }, 'changed', 'Unsaved draft'],
+  ['a draft of a blocked deck', 'blocked', { dirty: true }, 'changed', 'Unsaved draft'],
+  ['a draft of an unchecked deck', 'unchecked', { dirty: true }, 'changed', 'Unsaved draft'],
 ]
 
 describe('markerKind', () => {
@@ -59,7 +52,7 @@ describe('DeckMarker', () => {
     ['a blocked deck', 'blocked', {}, 'Cannot be taken to a game until its issues are fixed'],
     ['a verified deck', 'verified', {}, null],
     ['a deck played by hand', 'manual_play', {}, null],
-    ['a deck never checked', 'unchecked', { changed: false }, null],
+    ['a deck with a state of no check', 'unchecked', {}, null],
     ['a draft of a blocked deck', 'blocked', { dirty: true }, null],
   ])('describes what %s means in the lobby’s words', (_what, state, change, meaning) => {
     const { container } = render(<DeckMarker state={state} {...change} />)

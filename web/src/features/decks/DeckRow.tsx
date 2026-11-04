@@ -43,7 +43,7 @@ export function DeckRow({ deck, api, now, onDelete }: DeckRowProps) {
               {deck.name}
             </Link>
           </p>
-          <DeckMarker state={deck.state} changed={deck.changed} />
+          <DeckMarker state={deck.state} />
         </div>
         {deck.commanders.length === 0 ? null : (
           <ul aria-label="Commanders" data-slot="commanders" className="flex flex-wrap gap-x-4 gap-y-2 py-1">

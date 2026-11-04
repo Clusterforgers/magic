@@ -24,7 +24,9 @@ pub use cards::{
     PrintingPictures, SortKey, TokenPictures,
 };
 pub use database::{Database, RowCounts};
-pub use decks::{CreateDeckError, DeckDraft, DeckId, DeckLine, DeckRepo, DeckZone, StoredDeck};
+pub use decks::{
+    CardDemand, CreateDeckError, DeckDraft, DeckId, DeckLine, DeckRepo, DeckZone, StoredDeck,
+};
 pub use drafts::{
     DraftKey, DraftRepo, DraftsVersion, NewDraft, SOURCE_FORGE, SOURCE_SWEEP, StoredDraft,
 };

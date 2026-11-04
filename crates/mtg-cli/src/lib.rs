@@ -14,6 +14,7 @@ pub mod compile;
 pub mod coverage;
 pub mod coverage_all;
 pub mod coverage_deck;
+pub mod coverage_decks;
 pub mod drafts;
 pub mod error;
 pub mod fetch;
@@ -110,6 +111,9 @@ pub async fn run(cli: Cli, progress: Progress) -> Result<String, CliError> {
             Ok(compile::compile(&db, &args).await?.render())
         }
         Command::CheckRules(args) => check_rules_command(cli.database_url, &cache, &args).await,
+        Command::CoverageDecks(args) => {
+            coverage_decks::coverage_decks(&connect(cli.database_url).await?, &args).await
+        }
         Command::FixMarks(args) => {
             fix_marks::fix_marks(&connect(cli.database_url).await?, &args).await
         }

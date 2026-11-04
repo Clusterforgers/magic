@@ -1,4 +1,4 @@
-// Goal: the words of the decks page and the builder are right in every case: a format key becomes its name, a check that found a card the game does not run whole is told from one that did not, the check state of a deck and the support state of a card become words, the counts of a check become one line ("96 of 100 verified, 4 played by hand"), a deck's note counts what is played by hand or what blocks it and leaves a changed deck to its marker, and an import summary counts cards per zone; the format list is the one the server checks.
+// Goal: the words of the decks page and the builder are right in every case: a format key becomes its name, a check that found a card the game does not run whole is told from one that did not, the check state of a deck and the support state of a card become words, the counts of a check become one line ("96 of 100 verified, 4 played by hand"), a deck's note counts what is played by hand or what blocks it, and an import summary counts cards per zone; the format list is the one the server checks.
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
@@ -201,15 +201,10 @@ describe('checkNote', () => {
     expect(checkNote(deck)).toBe(`${what}${BLOCKED_MEANING}.`)
   })
 
-  it.each([
-    [true, null],
-    [false, 'Not checked yet'],
-  ])(
-    'for an unchecked deck with changed=%s says %j (a changed deck says it in its marker)',
-    (changed, note) => {
-      expect(checkNote(deckIn('unchecked', { changed }))).toBe(note)
-    },
-  )
+  it('says "Not checked yet" for an unchecked deck, whatever its changed flag holds', () => {
+    expect(checkNote(deckIn('unchecked', { changed: true }))).toBe('Not checked yet')
+    expect(checkNote(deckIn('unchecked', { changed: false }))).toBe('Not checked yet')
+  })
 })
 
 describe('importSummary', () => {
