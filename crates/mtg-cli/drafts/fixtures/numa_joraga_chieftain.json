@@ -1,0 +1,137 @@
+{
+  "object": "card",
+  "id": "6ac36353-6bf7-46b1-85cb-87d389138d32",
+  "oracle_id": "7f4aa98d-3572-4637-9b0d-3c12f63a96ec",
+  "multiverse_ids": [
+    508361
+  ],
+  "mtgo_id": 88047,
+  "tcgplayer_id": 231245,
+  "cardmarket_id": 535353,
+  "name": "Numa, Joraga Chieftain",
+  "lang": "en",
+  "released_at": "2021-02-05",
+  "uri": "https://api.scryfall.com/cards/6ac36353-6bf7-46b1-85cb-87d389138d32",
+  "scryfall_uri": "https://scryfall.com/card/khc/71/numa-joraga-chieftain?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T07:38:31Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/6/a/6ac36353-6bf7-46b1-85cb-87d389138d32.jpg?1783928311",
+    "normal": "https://cards.scryfall.io/normal/front/6/a/6ac36353-6bf7-46b1-85cb-87d389138d32.jpg?1783928311",
+    "large": "https://cards.scryfall.io/large/front/6/a/6ac36353-6bf7-46b1-85cb-87d389138d32.jpg?1783928311",
+    "png": "https://cards.scryfall.io/png/front/6/a/6ac36353-6bf7-46b1-85cb-87d389138d32.png?1783928311",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/6/a/6ac36353-6bf7-46b1-85cb-87d389138d32.jpg?1783928311",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/6/a/6ac36353-6bf7-46b1-85cb-87d389138d32.jpg?1783928311",
+    "thumb": "https://cards.scryfall.io/thumb/front/6/a/6ac36353-6bf7-46b1-85cb-87d389138d32.webp?1783928311",
+    "grid": "https://cards.scryfall.io/grid/front/6/a/6ac36353-6bf7-46b1-85cb-87d389138d32.webp?1783928311",
+    "display": "https://cards.scryfall.io/display/front/6/a/6ac36353-6bf7-46b1-85cb-87d389138d32.webp?1783928311",
+    "art": "https://cards.scryfall.io/art/front/6/a/6ac36353-6bf7-46b1-85cb-87d389138d32.webp?1783928311",
+    "crop": "https://cards.scryfall.io/crop/front/6/a/6ac36353-6bf7-46b1-85cb-87d389138d32.webp?1783928311",
+    "jpeg": "https://cards.scryfall.io/normal/front/6/a/6ac36353-6bf7-46b1-85cb-87d389138d32.jpg?1783928311"
+  },
+  "mana_cost": "{2}{G}",
+  "cmc": 3.0,
+  "type_line": "Legendary Creature — Elf Warrior",
+  "oracle_text": "At the beginning of combat on your turn, you may pay {X}{X}. When you do, distribute X +1/+1 counters among any number of target Elves.\nPartner (You can have two commanders if both have partner.)",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Partner"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "d532ef25-e52b-4276-941a-3a1c095544b0",
+  "set": "khc",
+  "set_name": "Kaldheim Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/d532ef25-e52b-4276-941a-3a1c095544b0",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Akhc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/khc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/6ac36353-6bf7-46b1-85cb-87d389138d32/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A7f4aa98d-3572-4637-9b0d-3c12f63a96ec&unique=prints",
+  "collector_number": "71",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "His blade carves a path for his people. His words guide them along it.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Kieran Yanner",
+  "artist_ids": [
+    "aa7e89ed-d294-4633-9057-ce04dacfcfa4"
+  ],
+  "illustration_id": "26446e28-3dd7-4611-852c-32fe8b97189d",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 13461,
+  "prices": {
+    "usd": "0.25",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.19",
+    "eur_foil": null,
+    "tix": "0.04"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=508361&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DNuma%252C%2BJoraga%2BChieftain",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DNuma%252C%2BJoraga%2BChieftain",
+    "edhrec": "https://edhrec.com/route/?cc=Numa%2C+Joraga+Chieftain"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F231245%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=535353&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/88047?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

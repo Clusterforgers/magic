@@ -1,0 +1,24 @@
+{
+  "oracle_id": "1efd6082-15a8-4322-892d-02d01e381e2a",
+  "name": "Growth Curve",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Growth Curve",
+      "oracle_fingerprint": "6407acee9ae9c77a5645bd6f18a251d4",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } },
+              { "MultiplyCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

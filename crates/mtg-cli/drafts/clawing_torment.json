@@ -1,0 +1,37 @@
+{
+  "oracle_id": "0ac5c149-f6af-46b6-974e-14689e9a583d",
+  "name": "Clawing Torment",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Clawing Torment",
+      "oracle_fingerprint": "c702a53f2b8fd9749b9c2f9f07ba26cb",
+      "abilities": [
+        {
+          "Keyword": { "Enchant": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Artifact" }] }] }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": -1, "toughness": -1 } }, "CantBlock"]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Triggered": {
+                    "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+                    "effects": [{ "LoseLife": { "amount": 1 } }]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

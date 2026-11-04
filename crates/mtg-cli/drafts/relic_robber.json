@@ -1,0 +1,44 @@
+{
+  "oracle_id": "85eafa00-51df-4070-9b2d-247457ba3364",
+  "name": "Relic Robber",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Relic Robber",
+      "oracle_fingerprint": "c5c09b93cc2a2bdd9c52a2d2890f10f2",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "who": "Triggering",
+                  "token": {
+                    "Custom": {
+                      "name": "Goblin Construct",
+                      "types": ["Artifact", "Creature"],
+                      "subtypes": ["Goblin", "Construct"],
+                      "power": 0,
+                      "toughness": 1,
+                      "abilities": [
+                        {
+                          "Triggered": {
+                            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+                            "effects": [{ "DealDamage": { "to": "You", "amount": 1 } }]
+                          }
+                        },
+                        { "Static": { "affected": "This", "mods": ["CantBlock"] } }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

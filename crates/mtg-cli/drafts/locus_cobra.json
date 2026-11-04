@@ -1,0 +1,39 @@
+{
+  "oracle_id": "21c66372-8ae8-447c-92df-b56c9ffebd43",
+  "name": "Locus Cobra",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Locus Cobra",
+      "oracle_fingerprint": "5bd736fcf180931e037521cb2a3c0128",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              { "AddMana": { "mana": { "AnyColor": 1 } } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": "Triggering",
+                      "selector": [{ "AnyOf": [{ "Subtype": "Locus" }, { "Subtype": "Sphere" }] }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

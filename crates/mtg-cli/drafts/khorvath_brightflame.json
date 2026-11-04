@@ -1,0 +1,22 @@
+{
+  "oracle_id": "b96b1341-0c15-4816-be2d-5cc98b2afb63",
+  "name": "Khorvath Brightflame",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Khorvath Brightflame",
+      "oracle_fingerprint": "03d36c85cd8b657cecf64d8a2f4cb305",
+      "abilities": [
+        { "Keyword": { "PartnerWith": "Sylvia Brightspear" } },
+        { "Keyword": "Flying" },
+        { "Keyword": "Haste" },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Knight" }, { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": "Flying" }, { "AddKeyword": "Haste" }]
+          }
+        }
+      ]
+    }
+  ]
+}

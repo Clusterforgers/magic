@@ -1,0 +1,33 @@
+{
+  "oracle_id": "665f3e52-c536-481b-8b29-fe68f08d1fdf",
+  "name": "Crypt Angel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Crypt Angel",
+      "oracle_fingerprint": "787da0e034ed97cee101645f17e8e1e4",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": { "Protection": [{ "Color": "White" }] } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "AnyOf": [{ "Color": "Blue" }, { "Color": "Red" }] },
+                    { "OwnedBy": "You" },
+                    { "In": "Graveyard" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "oracle_id": "2445fb97-a9c9-4078-8a8e-64b8c3951c4a",
+  "name": "Nath's Elite",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nath's Elite",
+      "oracle_fingerprint": "ad5e0fc0a3e27f290cda4ee2a205f594",
+      "abilities": [
+        {
+          "Rule": { "rule": { "Combat": { "who": "This", "quirk": { "MustBeBlocked": "Every" } } } }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "Clash": { "win": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

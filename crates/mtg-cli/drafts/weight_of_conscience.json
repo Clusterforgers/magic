@@ -1,0 +1,28 @@
+{
+  "oracle_id": "42989c6d-75d9-4ddd-bb9f-f18c0eb005fe",
+  "name": "Weight of Conscience",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Weight of Conscience",
+      "oracle_fingerprint": "54c92800c7a922c4f3e24c038db5f49c",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        { "Static": { "affected": "Attached", "mods": ["CantAttack"] } },
+        {
+          "Activated": {
+            "cost": [
+              {
+                "TapPermanents": {
+                  "filter": [{ "Type": "Creature" }, { "SharesSubtype": "This" }],
+                  "count": 2
+                }
+              }
+            ],
+            "effects": [{ "Exile": { "what": "Attached" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

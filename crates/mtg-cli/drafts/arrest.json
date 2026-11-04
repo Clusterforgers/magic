@@ -1,0 +1,25 @@
+{
+  "oracle_id": "81728b98-8cf9-4734-a318-69184bb4d15c",
+  "name": "Arrest",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Arrest",
+      "oracle_fingerprint": "9193c80a02805cbd5d0f19a146baf55c",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        { "Static": { "affected": "Attached", "mods": ["CantAttack", "CantBlock"] } },
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": { "Each": [{ "Type": "Creature" }, { "Is": "Attached" }] },
+                "action": { "Activate": [] }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "oracle_id": "5e11386f-4667-47f7-b280-eabd927e4a46",
+  "name": "Waterspout Warden",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Waterspout Warden",
+      "oracle_fingerprint": "f965eec78a9bc8d119b1ef8ee0e29d8d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": [{ "Type": "Creature" }, "This"] } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "Entered",
+                    "who": "EachPlayer",
+                    "filter": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "Other"]
+                  }
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddKeyword": "Flying" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

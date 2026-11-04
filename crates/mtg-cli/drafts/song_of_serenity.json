@@ -10,11 +10,7 @@
         {
           "Static": {
             "affected": {
-              "Each": [
-                { "Type": "Creature" },
-                { "HasAttached": [{ "HasKeyword": { "Enchant": [{ "Type": "Creature" }] } }] },
-                "DamagedThisTurn"
-              ]
+              "Each": [{ "Type": "Creature" }, { "HasAttached": [{ "Subtype": "Aura" }] }]
             },
             "mods": ["CantAttack", "CantBlock"]
           }

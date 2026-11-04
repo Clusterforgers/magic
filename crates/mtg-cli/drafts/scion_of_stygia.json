@@ -1,0 +1,46 @@
+{
+  "oracle_id": "a73e1f0a-8895-4eb2-9780-94951a8f227b",
+  "name": "Scion of Stygia",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Scion of Stygia",
+      "oracle_fingerprint": "561720c28486629db97e9533fa1dc4b0",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              {
+                "RollDice": {
+                  "sides": 20,
+                  "results": [
+                    { "from": 1, "to": 9, "effects": [{ "Tap": { "what": { "Target": 0 } } }] },
+                    {
+                      "from": 10,
+                      "to": 20,
+                      "effects": [
+                        { "Tap": { "what": { "Target": 0 } } },
+                        {
+                          "Continuous": {
+                            "affected": { "Target": 0 },
+                            "mods": ["DoesntUntap"],
+                            "duration": "NextUntapStep"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

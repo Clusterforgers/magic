@@ -1,0 +1,29 @@
+{
+  "oracle_id": "62ca69ed-ebd3-4e84-b17a-4bcc9488f8b3",
+  "name": "Krond the Dawn-Clad",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Krond the Dawn-Clad",
+      "oracle_fingerprint": "7bdbc72e55cb72d7db954a7362ea2556",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "if": {
+              "Compare": {
+                "left": { "Count": ["This", { "HasAttached": [{ "Subtype": "Aura" }] }] },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "targets": [{ "what": { "Object": [] } }],
+            "effects": [{ "Exile": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

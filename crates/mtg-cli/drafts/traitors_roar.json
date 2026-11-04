@@ -1,0 +1,29 @@
+{
+  "oracle_id": "04e9ac31-3377-4a4c-9337-53ee0ada882a",
+  "name": "Traitor's Roar",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Traitor's Roar",
+      "oracle_fingerprint": "0c589b5975f2d1484319c54c171b093c",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Untapped"] } }],
+            "effects": [
+              { "Tap": { "what": { "Target": 0 } } },
+              {
+                "DealDamage": {
+                  "source": { "Target": 0 },
+                  "to": { "ControllerOf": { "Target": 0 } },
+                  "amount": { "Stat": { "of": { "Target": 0 }, "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "Conspire" }
+      ]
+    }
+  ]
+}

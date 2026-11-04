@@ -1,0 +1,53 @@
+{
+  "oracle_id": "eabcbaca-6df9-455a-85e5-32d6ad4d1b44",
+  "name": "Triumph of Ferocity",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Triumph of Ferocity",
+      "oracle_fingerprint": "b150992f7be4d98d8b475966395d5383",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "All": [
+                      {
+                        "Compare": {
+                          "left": { "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                          "op": "Ge",
+                          "right": 1
+                        }
+                      },
+                      {
+                        "Compare": {
+                          "left": {
+                            "Greatest": {
+                              "of": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                              "stat": "Power"
+                            }
+                          },
+                          "op": "Ge",
+                          "right": {
+                            "Greatest": {
+                              "of": [{ "Type": "Creature" }, { "Not": { "ControlledBy": "You" } }],
+                              "stat": "Power"
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  "then": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

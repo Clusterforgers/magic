@@ -1,0 +1,41 @@
+{
+  "oracle_id": "e0c21b32-f672-4496-91ed-7b7f351eb539",
+  "name": "Body of Research",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Body of Research",
+      "oracle_fingerprint": "5222187ac5b3661393b450472a1d5587",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Fractal",
+                      "colors": ["Green", "Blue"],
+                      "types": ["Creature"],
+                      "subtypes": ["Fractal"],
+                      "power": 0,
+                      "toughness": 0
+                    }
+                  },
+                  "as": "token"
+                }
+              },
+              {
+                "PutCounters": {
+                  "on": { "Bound": "token" },
+                  "counter": "+1/+1",
+                  "count": { "Count": [{ "OwnedBy": "You" }, { "In": "Library" }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

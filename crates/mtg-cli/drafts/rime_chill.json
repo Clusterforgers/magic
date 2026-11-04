@@ -1,0 +1,33 @@
+{
+  "oracle_id": "bad84deb-3f2c-46fd-9dcb-4e3ba9732769",
+  "name": "Rime Chill",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rime Chill",
+      "oracle_fingerprint": "247c8d0fb951854a2e7cd99dfaea5a91",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{1}",
+            "per": { "Distinct": { "of": [{ "ControlledBy": "You" }], "stat": "Colors" } }
+          }
+        },
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 0, "max": 2 } }
+            ],
+            "effects": [
+              { "Tap": { "what": { "Target": 0 } } },
+              { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "stun" } } },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

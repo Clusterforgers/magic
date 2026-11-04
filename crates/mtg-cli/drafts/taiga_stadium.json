@@ -1,0 +1,39 @@
+{
+  "oracle_id": "905925ed-2faa-4423-a273-e59edcd98b92",
+  "name": "Taiga Stadium",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Taiga Stadium",
+      "oracle_fingerprint": "aa536b7049ea5204701094856721c664",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": "Tapped",
+            "condition": {
+              "Not": {
+                "Compare": {
+                  "left": {
+                    "Count": [
+                      { "AnyOf": [{ "Color": "White" }, { "Color": "Blue" }, { "Color": "Black" }] },
+                      { "ControlledBy": "You" }
+                    ]
+                  },
+                  "op": "Ge",
+                  "right": 1
+                }
+              }
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "OneOf": ["Red", "Green"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

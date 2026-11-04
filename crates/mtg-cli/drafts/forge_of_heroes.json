@@ -1,0 +1,53 @@
+{
+  "oracle_id": "77807103-bcd5-479f-bedd-f5d97aa6d3d2",
+  "name": "Forge of Heroes",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Forge of Heroes",
+      "oracle_fingerprint": "a57738f2fff253d501133aab80ef55be",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": { "Object": ["Commander", "EnteredThisTurn"] } }],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Target": 0 },
+                      "selector": [{ "Type": "Creature" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Target": 0 },
+                      "selector": [{ "Type": "Planeswalker" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "loyalty" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "oracle_id": "fc80380c-7d75-4556-aaf2-bf7b2c757e75",
+  "name": "Besmirch",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Besmirch",
+      "oracle_fingerprint": "21f9fa239547aae16530ccdac3820c8c",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Untap": { "what": { "Target": 0 } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Goad": { "what": { "Target": 0 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

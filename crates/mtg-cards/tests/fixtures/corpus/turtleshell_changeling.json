@@ -1,0 +1,136 @@
+{
+  "object": "card",
+  "id": "a72b078e-e324-4775-9d38-08943017a48e",
+  "oracle_id": "87f8b403-765c-4a2a-8b21-edaaaa889234",
+  "multiverse_ids": [
+    145807
+  ],
+  "mtgo_id": 28633,
+  "mtgo_foil_id": 28634,
+  "tcgplayer_id": 15663,
+  "cardmarket_id": 17835,
+  "name": "Turtleshell Changeling",
+  "lang": "en",
+  "released_at": "2007-10-12",
+  "uri": "https://api.scryfall.com/cards/a72b078e-e324-4775-9d38-08943017a48e",
+  "scryfall_uri": "https://scryfall.com/card/lrw/94/turtleshell-changeling?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T11:41:35Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/a/7/a72b078e-e324-4775-9d38-08943017a48e.jpg?1783942895",
+    "normal": "https://cards.scryfall.io/normal/front/a/7/a72b078e-e324-4775-9d38-08943017a48e.jpg?1783942895",
+    "large": "https://cards.scryfall.io/large/front/a/7/a72b078e-e324-4775-9d38-08943017a48e.jpg?1783942895",
+    "png": "https://cards.scryfall.io/png/front/a/7/a72b078e-e324-4775-9d38-08943017a48e.png?1783942895",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/a/7/a72b078e-e324-4775-9d38-08943017a48e.jpg?1783942895",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/a/7/a72b078e-e324-4775-9d38-08943017a48e.jpg?1783942895",
+    "thumb": "https://cards.scryfall.io/thumb/front/a/7/a72b078e-e324-4775-9d38-08943017a48e.webp?1783942895",
+    "grid": "https://cards.scryfall.io/grid/front/a/7/a72b078e-e324-4775-9d38-08943017a48e.webp?1783942895",
+    "display": "https://cards.scryfall.io/display/front/a/7/a72b078e-e324-4775-9d38-08943017a48e.webp?1783942895",
+    "art": "https://cards.scryfall.io/art/front/a/7/a72b078e-e324-4775-9d38-08943017a48e.webp?1783942895",
+    "crop": "https://cards.scryfall.io/crop/front/a/7/a72b078e-e324-4775-9d38-08943017a48e.webp?1783942895",
+    "jpeg": "https://cards.scryfall.io/normal/front/a/7/a72b078e-e324-4775-9d38-08943017a48e.jpg?1783942895"
+  },
+  "mana_cost": "{3}{U}",
+  "cmc": 4.0,
+  "type_line": "Creature — Shapeshifter",
+  "oracle_text": "Changeling (This card is every creature type.)\n{1}{U}: Switch this creature's power and toughness until end of turn.",
+  "power": "1",
+  "toughness": "4",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Changeling"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "30ec97cb-dca9-4bf4-a98b-310f9d8ceaff",
+  "set": "lrw",
+  "set_name": "Lorwyn",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/30ec97cb-dca9-4bf4-a98b-310f9d8ceaff",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Alrw&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/lrw?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/a72b078e-e324-4775-9d38-08943017a48e/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A87f8b403-765c-4a2a-8b21-edaaaa889234&unique=prints",
+  "collector_number": "94",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "A changeling involuntarily mimics the nearest being at hand, sometimes trading a borrowed shell for borrowed claws.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Ron Spencer",
+  "artist_ids": [
+    "dab52c11-0564-4207-a4a1-c1735c946a65"
+  ],
+  "illustration_id": "97c08063-68ce-4166-a488-c3e195f4a0bb",
+  "border_color": "black",
+  "frame": "2003",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 21530,
+  "prices": {
+    "usd": "0.35",
+    "usd_foil": "4.61",
+    "usd_etched": null,
+    "eur": "0.14",
+    "eur_foil": "1.38",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=145807&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DTurtleshell%2BChangeling",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DTurtleshell%2BChangeling",
+    "edhrec": "https://edhrec.com/route/?cc=Turtleshell+Changeling"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F15663%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=17835&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/28633?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "oracle_id": "aba1d01e-c340-47a3-8432-9d8c4a5cdfe0",
+  "name": "Myojin of Infinite Rage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Myojin of Infinite Rage",
+      "oracle_fingerprint": "0030be817adb6dc4ea671a24b85e2704",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Indestructible" }],
+            "condition": {
+              "Matches": {
+                "subject": "This",
+                "selector": [{ "HasCounter": { "Other": "divinity" } }]
+              }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Indestructible" }],
+            "condition": {
+              "Compare": {
+                "left": { "Counters": { "on": "This", "counter": { "Other": "divinity" } } },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "RemoveCounters": { "counter": { "Other": "divinity" } } }],
+            "effects": [{ "Destroy": { "what": { "Each": [{ "Type": "Land" }] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

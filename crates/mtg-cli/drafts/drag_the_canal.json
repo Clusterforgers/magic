@@ -1,0 +1,87 @@
+{
+  "oracle_id": "0c0ffb66-94db-4ba9-afde-c5b4fbf09578",
+  "name": "Drag the Canal",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Drag the Canal",
+      "oracle_fingerprint": "d080ecd2d4ee80c744ef99c6fde04e56",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Detective",
+                      "colors": ["White", "Blue"],
+                      "types": ["Creature"],
+                      "subtypes": ["Detective"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  }
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Tally": {
+                          "event": "Died",
+                          "who": "EachPlayer",
+                          "filter": [{ "Type": "Creature" }]
+                        }
+                      },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "GainLife": { "amount": 2 } }]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Tally": {
+                          "event": "Died",
+                          "who": "EachPlayer",
+                          "filter": [{ "Type": "Creature" }]
+                        }
+                      },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Surveil": { "count": 2 } }]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Tally": {
+                          "event": "Died",
+                          "who": "EachPlayer",
+                          "filter": [{ "Type": "Creature" }]
+                        }
+                      },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "CreateToken": { "token": { "Named": "clue" } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

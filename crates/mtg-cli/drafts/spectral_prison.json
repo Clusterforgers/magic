@@ -1,0 +1,21 @@
+{
+  "oracle_id": "b5991a13-5fcd-4d2d-9db2-d3d5af7259f5",
+  "name": "Spectral Prison",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spectral Prison",
+      "oracle_fingerprint": "b84a3442758ac0ebec66351000603753",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        { "Static": { "affected": "Attached", "mods": ["DoesntUntap"] } },
+        {
+          "Triggered": {
+            "when": { "BecomesTarget": { "what": [{ "Is": "Attached" }], "by": ["Spell"] } },
+            "effects": [{ "Sacrifice": { "filter": ["This"] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

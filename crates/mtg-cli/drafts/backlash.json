@@ -1,0 +1,28 @@
+{
+  "oracle_id": "3db9bf7b-da4e-428f-aa5d-a0cd1afeb16c",
+  "name": "Backlash",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Backlash",
+      "oracle_fingerprint": "98304e232d97eccf003c4e8de0eafd48",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Untapped"] } }],
+            "effects": [
+              { "Tap": { "what": { "Target": 0 } } },
+              {
+                "DealDamage": {
+                  "source": { "Target": 0 },
+                  "to": { "ControllerOf": { "Target": 0 } },
+                  "amount": { "Stat": { "of": { "Target": 0 }, "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

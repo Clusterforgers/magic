@@ -1,0 +1,21 @@
+{
+  "oracle_id": "d8599f06-f030-4575-8497-307a4d7ec182",
+  "name": "Spiral into Solitude",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spiral into Solitude",
+      "oracle_fingerprint": "1a0718345ebd71f1056a8940abf80d6c",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        { "Static": { "affected": "Attached", "mods": ["CantAttack", "CantBlock"] } },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{W}" }, { "Blight": 1 }, "SacrificeSelf"],
+            "effects": [{ "Exile": { "what": "Attached" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

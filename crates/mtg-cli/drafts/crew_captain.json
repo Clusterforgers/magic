@@ -1,0 +1,21 @@
+{
+  "oracle_id": "0cca60c3-f0be-494d-8c2c-9b135ef83165",
+  "name": "Crew Captain",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Crew Captain",
+      "oracle_fingerprint": "8a7647bca66fb2ce502da558fdf6d667",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Indestructible" }],
+            "condition": { "Matches": { "subject": "This", "selector": ["EnteredThisTurn"] } }
+          }
+        }
+      ]
+    }
+  ]
+}

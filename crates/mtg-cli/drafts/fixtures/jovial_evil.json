@@ -1,0 +1,128 @@
+{
+  "object": "card",
+  "id": "c993c74c-a574-423b-81c8-96b0a7a6e529",
+  "oracle_id": "274c5367-f02e-44a0-be8a-5ed03c831bda",
+  "multiverse_ids": [
+    1449
+  ],
+  "tcgplayer_id": 3923,
+  "cardmarket_id": 6995,
+  "name": "Jovial Evil",
+  "lang": "en",
+  "released_at": "1994-06-01",
+  "uri": "https://api.scryfall.com/cards/c993c74c-a574-423b-81c8-96b0a7a6e529",
+  "scryfall_uri": "https://scryfall.com/card/leg/109/jovial-evil?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T13:07:44Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/c/9/c993c74c-a574-423b-81c8-96b0a7a6e529.jpg?1783948064",
+    "normal": "https://cards.scryfall.io/normal/front/c/9/c993c74c-a574-423b-81c8-96b0a7a6e529.jpg?1783948064",
+    "large": "https://cards.scryfall.io/large/front/c/9/c993c74c-a574-423b-81c8-96b0a7a6e529.jpg?1783948064",
+    "png": "https://cards.scryfall.io/png/front/c/9/c993c74c-a574-423b-81c8-96b0a7a6e529.png?1783948064",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/c/9/c993c74c-a574-423b-81c8-96b0a7a6e529.jpg?1783948064",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/c/9/c993c74c-a574-423b-81c8-96b0a7a6e529.jpg?1783948064",
+    "thumb": "https://cards.scryfall.io/thumb/front/c/9/c993c74c-a574-423b-81c8-96b0a7a6e529.webp?1783948064",
+    "grid": "https://cards.scryfall.io/grid/front/c/9/c993c74c-a574-423b-81c8-96b0a7a6e529.webp?1783948064",
+    "display": "https://cards.scryfall.io/display/front/c/9/c993c74c-a574-423b-81c8-96b0a7a6e529.webp?1783948064",
+    "art": "https://cards.scryfall.io/art/front/c/9/c993c74c-a574-423b-81c8-96b0a7a6e529.webp?1783948064",
+    "crop": "https://cards.scryfall.io/crop/front/c/9/c993c74c-a574-423b-81c8-96b0a7a6e529.webp?1783948064",
+    "jpeg": "https://cards.scryfall.io/normal/front/c/9/c993c74c-a574-423b-81c8-96b0a7a6e529.jpg?1783948064"
+  },
+  "mana_cost": "{2}{B}",
+  "cmc": 3.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Jovial Evil deals X damage to target opponent, where X is twice the number of white creatures that player controls.",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "legal",
+    "premodern": "not_legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": true,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "78c50b4b-b220-455b-a2d5-cee458fa56f3",
+  "set": "leg",
+  "set_name": "Legends",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/78c50b4b-b220-455b-a2d5-cee458fa56f3",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aleg&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/leg?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/c993c74c-a574-423b-81c8-96b0a7a6e529/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A274c5367-f02e-44a0-be8a-5ed03c831bda&unique=prints",
+  "collector_number": "109",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "\"Today, for a lark, let's visit the plains. I'm sure we'll find something to entertain us.\"",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Christopher Rush",
+  "artist_ids": [
+    "c96773f0-346c-4f7d-9271-2d98cc5d86e1"
+  ],
+  "illustration_id": "20ee7529-5418-46b9-94ad-dfb764c1aa0b",
+  "border_color": "black",
+  "frame": "1993",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 31786,
+  "prices": {
+    "usd": "29.88",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "24.47",
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=1449&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DJovial%2BEvil",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DJovial%2BEvil",
+    "edhrec": "https://edhrec.com/route/?cc=Jovial+Evil"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F3923%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=6995&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Jovial+Evil&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "oracle_id": "8f98806e-c6b7-44af-b436-88acf36d25ec",
+  "name": "Gríma Wormtongue",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gríma Wormtongue",
+      "oracle_fingerprint": "74eff1237b024570245027bdc33df00c",
+      "abilities": [
+        { "Rule": { "rule": { "CantGainLife": "Opponents" } } },
+        {
+          "Activated": {
+            "cost": ["Tap", { "Sacrifice": { "filter": [{ "Type": "Creature" }, "Other"] } }],
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              { "LoseLife": { "who": { "Target": 0 }, "amount": 1 } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": "Paid",
+                      "selector": [{ "Type": "Creature" }, { "Supertype": "Legendary" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Amass": { "subtype": "Orc", "count": 2 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

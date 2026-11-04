@@ -1,0 +1,21 @@
+{
+  "oracle_id": "cf127842-5fb1-44df-8d91-8cc0f48c559a",
+  "name": "Sakashima's Protege",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sakashima's Protege",
+      "oracle_fingerprint": "2e8898e8a670eab7e632d34d1880828d",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": "Cascade" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "AsCopy": { "of": ["EnteredThisTurn", "Other"] } }
+          }
+        }
+      ]
+    }
+  ]
+}

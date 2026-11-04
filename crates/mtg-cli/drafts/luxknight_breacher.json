@@ -1,0 +1,30 @@
+{
+  "oracle_id": "e0a508b5-0896-4620-a93e-60b958829703",
+  "name": "Luxknight Breacher",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Luxknight Breacher",
+      "oracle_fingerprint": "b32392cb73db9518a1f3b2341992d469",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "WithCounters": {
+                "counter": "+1/+1",
+                "count": {
+                  "Count": [
+                    { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] },
+                    "Other",
+                    { "ControlledBy": "You" }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

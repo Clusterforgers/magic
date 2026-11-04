@@ -1,0 +1,33 @@
+{
+  "oracle_id": "16c99713-f19e-4b25-9b03-6a8d8203adfe",
+  "name": "Crawl from the Cellar",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Crawl from the Cellar",
+      "oracle_fingerprint": "d227155647f8c7e42aed2c88ca3dbdf1",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                }
+              },
+              {
+                "what": { "Object": [{ "Subtype": "Zombie" }, { "ControlledBy": "You" }] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": "Hand" } },
+              { "PutCounters": { "on": { "Target": 1 }, "counter": "+1/+1" } }
+            ]
+          }
+        },
+        { "Keyword": { "Flashback": "{3}{B}" } }
+      ]
+    }
+  ]
+}

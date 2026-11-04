@@ -1,0 +1,23 @@
+{
+  "oracle_id": "10403a8c-2534-421e-8809-5fc019623452",
+  "name": "Damping Matrix",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Damping Matrix",
+      "oracle_fingerprint": "dfe62e6ee2fcbf2d00f4a435c26ab33f",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": { "Each": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] }] },
+                "action": { "Activate": [] }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

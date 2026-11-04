@@ -1,0 +1,30 @@
+{
+  "oracle_id": "f1136a22-b202-4688-a44c-a9979c91261a",
+  "name": "Spring Splasher",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spring Splasher",
+      "oracle_fingerprint": "3829cc956bfebf6dead4d4c565f27871",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Defending" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": -3, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

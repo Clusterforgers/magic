@@ -1,0 +1,22 @@
+{
+  "oracle_id": "d6608efe-b014-4b4d-a995-0be5047567c5",
+  "name": "Urborg Syphon-Mage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Urborg Syphon-Mage",
+      "oracle_fingerprint": "f848d428899808a3f73ecf79636b28b4",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{B}" }, "Tap", { "Discard": {} }],
+            "effects": [
+              { "LoseLife": { "who": "Opponents", "amount": 2 } },
+              { "GainLife": { "amount": 0 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

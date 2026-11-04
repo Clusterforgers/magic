@@ -20,8 +20,16 @@
         },
         {
           "Spell": {
-            "targets": [{ "what": { "Object": ["Spell", "Other"] } }],
-            "effects": [{ "Choose": { "from": { "Target": 0 }, "as": "new_target" } }]
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": ["Spell", { "Ability": "Activated" }, { "Ability": "Triggered" }] }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "ChangeTargets": { "what": { "Target": 0 }, "to": "Choose" } }]
           }
         }
       ]

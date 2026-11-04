@@ -1,0 +1,32 @@
+{
+  "oracle_id": "0b0fdb28-f7b1-4c30-9f2c-14a9074da22d",
+  "name": "Grand Ball Guest",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Grand Ball Guest",
+      "oracle_fingerprint": "30f8fa04551a5d7557ec96f334f68910",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }, { "AddKeyword": "Trample" }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "Entered",
+                    "who": "EachPlayer",
+                    "filter": [{ "Not": { "Type": "Land" } }, { "ControlledBy": "You" }]
+                  }
+                },
+                "op": "Ge",
+                "right": 2
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

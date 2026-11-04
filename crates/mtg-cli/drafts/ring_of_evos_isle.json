@@ -1,0 +1,48 @@
+{
+  "oracle_id": "4548f379-2647-4446-9e56-e7ef0662793a",
+  "name": "Ring of Evos Isle",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ring of Evos Isle",
+      "oracle_fingerprint": "d811f07e41ae365481ab99ded3feaa93",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{2}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Attached",
+                  "mods": [{ "AddKeyword": "Hexproof" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": "Attached",
+                      "selector": [{ "Type": "Creature" }, { "Color": "Blue" }],
+                      "op": "Eq",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "PutCounters": { "on": "Attached", "counter": "+1/+1" } }]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{1}" } }
+      ]
+    }
+  ]
+}

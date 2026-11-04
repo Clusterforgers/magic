@@ -1,0 +1,42 @@
+{
+  "oracle_id": "fc04bfa9-a8f9-478d-8164-34b1e6c85417",
+  "name": "Path of Bravery",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Path of Bravery",
+      "oracle_fingerprint": "f1acc81aa42683c32507f700af83277e",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+            "condition": {
+              "Compare": {
+                "left": { "Life": "You" },
+                "op": "Ge",
+                "right": { "StartingLife": "You" }
+              }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+            },
+            "effects": [
+              {
+                "GainLife": {
+                  "amount": {
+                    "Count": [{ "Type": "Creature" }, "Attacking", { "ControlledBy": "You" }]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

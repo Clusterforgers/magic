@@ -1,0 +1,19 @@
+{
+  "oracle_id": "de8ccd32-f537-4a11-8dc4-e48836a0b139",
+  "name": "Sidewinder Sliver",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sidewinder Sliver",
+      "oracle_fingerprint": "e251596827c13b8cf91ffd8d8b01a299",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "Subtype": "Sliver" }] },
+            "mods": [{ "AddKeyword": { "Macro": { "name": "flanking", "amount": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

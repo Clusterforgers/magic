@@ -1,0 +1,148 @@
+{
+  "object": "card",
+  "id": "ad304c9c-943f-442f-bb82-ff378ad7d7ba",
+  "oracle_id": "3b7120a6-700b-4c61-bea4-a835f0cc0bcb",
+  "multiverse_ids": [],
+  "resource_id": "E0DA3B2863ACAD950A6F3C7B864D2C576AE0BF2A5B2A16FB605353CD59250B1F",
+  "mtgo_id": 141035,
+  "arena_id": 95911,
+  "tcgplayer_id": 633061,
+  "cardmarket_id": 826187,
+  "name": "Ice Flan",
+  "lang": "en",
+  "released_at": "2025-06-13",
+  "uri": "https://api.scryfall.com/cards/ad304c9c-943f-442f-bb82-ff378ad7d7ba",
+  "scryfall_uri": "https://scryfall.com/card/fin/55/ice-flan?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T01:37:16Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/a/d/ad304c9c-943f-442f-bb82-ff378ad7d7ba.jpg?1783906636",
+    "normal": "https://cards.scryfall.io/normal/front/a/d/ad304c9c-943f-442f-bb82-ff378ad7d7ba.jpg?1783906636",
+    "large": "https://cards.scryfall.io/large/front/a/d/ad304c9c-943f-442f-bb82-ff378ad7d7ba.jpg?1783906636",
+    "png": "https://cards.scryfall.io/png/front/a/d/ad304c9c-943f-442f-bb82-ff378ad7d7ba.png?1783906636",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/a/d/ad304c9c-943f-442f-bb82-ff378ad7d7ba.jpg?1783906636",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/a/d/ad304c9c-943f-442f-bb82-ff378ad7d7ba.jpg?1783906636",
+    "thumb": "https://cards.scryfall.io/thumb/front/a/d/ad304c9c-943f-442f-bb82-ff378ad7d7ba.webp?1783906636",
+    "grid": "https://cards.scryfall.io/grid/front/a/d/ad304c9c-943f-442f-bb82-ff378ad7d7ba.webp?1783906636",
+    "display": "https://cards.scryfall.io/display/front/a/d/ad304c9c-943f-442f-bb82-ff378ad7d7ba.webp?1783906636",
+    "art": "https://cards.scryfall.io/art/front/a/d/ad304c9c-943f-442f-bb82-ff378ad7d7ba.webp?1783906636",
+    "crop": "https://cards.scryfall.io/crop/front/a/d/ad304c9c-943f-442f-bb82-ff378ad7d7ba.webp?1783906636",
+    "jpeg": "https://cards.scryfall.io/normal/front/a/d/ad304c9c-943f-442f-bb82-ff378ad7d7ba.jpg?1783906636"
+  },
+  "mana_cost": "{4}{U}{U}",
+  "cmc": 6.0,
+  "type_line": "Creature — Elemental Ooze",
+  "oracle_text": "When this creature enters, tap target artifact or creature an opponent controls. Put a stun counter on it. (If a permanent with a stun counter would become untapped, remove one from it instead.)\nIslandcycling {2} ({2}, Discard this card: Search your library for an Island card, reveal it, put it into your hand, then shuffle.)",
+  "power": "5",
+  "toughness": "4",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Islandcycling",
+    "Landcycling",
+    "Typecycling",
+    "Cycling"
+  ],
+  "legalities": {
+    "standard": "legal",
+    "future": "legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "arena",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "d7beb4b7-e1ff-4d35-ab07-5700f17ea1ea",
+  "set": "fin",
+  "set_name": "Final Fantasy",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/d7beb4b7-e1ff-4d35-ab07-5700f17ea1ea",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Afin&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/fin?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/ad304c9c-943f-442f-bb82-ff378ad7d7ba/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A3b7120a6-700b-4c61-bea4-a835f0cc0bcb&unique=prints",
+  "collector_number": "55",
+  "digital": false,
+  "rarity": "common",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "SHOSUKE",
+  "artist_ids": [
+    "0e3e290b-e700-4c35-a5e7-7025424734b1"
+  ],
+  "illustration_id": "ef7d4c38-364d-41e6-ad58-a00762f86fdf",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "promo_types": [
+    "ffx",
+    "universesbeyond"
+  ],
+  "edhrec_rank": 14981,
+  "penny_rank": 13715,
+  "preview": {
+    "source": "Good Games Morley",
+    "source_uri": "https://www.facebook.com/reel/3959571487707040/?s=fb_shorts_tab&stack_idx=0",
+    "previewed_at": "2025-05-18"
+  },
+  "prices": {
+    "usd": "0.14",
+    "usd_foil": "0.25",
+    "usd_etched": null,
+    "eur": "0.02",
+    "eur_foil": "0.14",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DIce%2BFlan",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DIce%2BFlan",
+    "edhrec": "https://edhrec.com/route/?cc=Ice+Flan"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F633061%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=826187&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/141035?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

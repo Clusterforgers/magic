@@ -1,0 +1,27 @@
+{
+  "oracle_id": "5810c1e2-5a36-4a87-be4e-890ba1627b46",
+  "name": "Lead Golem",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lead Golem",
+      "oracle_fingerprint": "92bbccdb9ae0418459f8deb4de2a5b44",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": ["DoesntUntap"],
+                  "duration": "NextUntapStep"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

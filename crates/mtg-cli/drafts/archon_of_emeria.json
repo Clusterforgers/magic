@@ -1,0 +1,33 @@
+{
+  "oracle_id": "ceef2d5a-77ea-4e56-9806-fd1a2d5be400",
+  "name": "Archon of Emeria",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Archon of Emeria",
+      "oracle_fingerprint": "f2953e874153a6d54adcf9092b51a625",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Rule": {
+            "rule": { "Cant": { "who": "EachPlayer", "action": { "Cast": { "more_than": 1 } } } }
+          }
+        },
+        {
+          "Replacement": {
+            "when": {
+              "Enters": {
+                "what": [
+                  { "Type": "Land" },
+                  { "Not": { "Supertype": "Basic" } },
+                  { "ControlledBy": "Opponents" }
+                ]
+              }
+            },
+            "by": "Tapped"
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "oracle_id": "d0be5969-0442-4557-a5fc-bee56e1835c2",
+  "name": "Thundertrap Trainer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thundertrap Trainer",
+      "oracle_fingerprint": "159fad54e032f0254a65c189e002a136",
+      "abilities": [
+        { "Keyword": { "Offspring": "{4}" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "LookAtTop": { "count": 4, "as": "top" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "Not": { "Type": "Creature" } },
+                      { "Not": { "Type": "Land" } }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "kept2"
+                }
+              },
+              { "Move": { "what": { "Bound": "kept2" }, "to": "Hand" } },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

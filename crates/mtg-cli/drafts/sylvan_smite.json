@@ -1,0 +1,48 @@
+{
+  "oracle_id": "ebcd03ea-04b2-415f-a2d1-afe442e4d014",
+  "name": "Sylvan Smite",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sylvan Smite",
+      "oracle_fingerprint": "084c5b6ab08ace2e7b3c7449ea61efa0",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "When": {
+                          "condition": { "StartingPlayer": "You" },
+                          "then": 1,
+                          "otherwise": 0
+                        }
+                      },
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+                }
+              },
+              {
+                "DealDamage": {
+                  "source": { "Target": 0 },
+                  "to": { "Target": 1 },
+                  "amount": { "Stat": { "of": { "Target": 0 }, "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

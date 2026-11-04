@@ -1,0 +1,45 @@
+{
+  "oracle_id": "d870948e-721a-46fd-86b6-ecd42e3aa9bd",
+  "name": "Root Manipulation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Root Manipulation",
+      "oracle_fingerprint": "d2249866d134404cb93a2991ae42c486",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [
+                    { "ModifyPT": { "power": 2, "toughness": 2 } },
+                    { "AddKeyword": "Menace" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [
+                    {
+                      "GrantAbility": {
+                        "Triggered": {
+                          "when": { "Attacks": { "what": ["This"] } },
+                          "effects": [{ "GainLife": { "amount": 1 } }]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "oracle_id": "fa131186-d730-460b-b9e5-b97d89857e24",
+  "name": "Caught in the Brights",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Caught in the Brights",
+      "oracle_fingerprint": "d8e7a445aa3fc8e9aa1130855cddfd39",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        { "Static": { "affected": "Attached", "mods": ["CantAttack", "CantBlock"] } },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": [{ "Subtype": "Vehicle" }, { "ControlledBy": "You" }] } },
+            "effects": [{ "Exile": { "what": "Attached" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "oracle_id": "019d0013-52fd-4261-9cc8-7efcee5a4616",
+  "name": "Dwarven Thaumaturgist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dwarven Thaumaturgist",
+      "oracle_fingerprint": "f957b7b11a10949ab5031012d008ede5",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["SwitchPT"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

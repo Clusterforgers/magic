@@ -1,0 +1,45 @@
+{
+  "oracle_id": "b39d98c3-0173-4d7c-83d0-f80db82fc9ba",
+  "name": "Magus of the Mind",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Magus of the Mind",
+      "oracle_fingerprint": "a055bfe92cf373410047fa1b789ff5a8",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{U}" }, "Tap", "SacrificeSelf"],
+            "effects": [
+              { "Shuffle": {} },
+              {
+                "ExileTop": {
+                  "count": {
+                    "Sum": [
+                      { "Tally": { "event": "SpellCast", "who": "EachPlayer", "filter": [] } },
+                      1
+                    ]
+                  },
+                  "as": "exiled"
+                }
+              },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "from": "Exile",
+                      "free": true,
+                      "only": { "Bound": "exiled" },
+                      "play": true
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

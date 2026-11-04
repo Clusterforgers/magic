@@ -1,0 +1,59 @@
+{
+  "oracle_id": "fe348f31-4530-4c59-9ee2-6839eab973da",
+  "name": "Orah, Skyclave Hierophant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Orah, Skyclave Hierophant",
+      "oracle_fingerprint": "51c51bc348052382104e265d003cfb76",
+      "abilities": [
+        { "Keyword": "Lifelink" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  {
+                    "AnyOf": [
+                      "This",
+                      {
+                        "Not": {
+                          "AnyOf": [
+                            { "Not": { "Subtype": "Cleric" } },
+                            { "Not": { "ControlledBy": "You" } },
+                            { "Not": "Other" }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                ],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Subtype": "Cleric" },
+                    {
+                      "Compare": {
+                        "stat": "ManaValue",
+                        "op": "Lt",
+                        "to": { "Stat": { "of": "Triggering", "stat": "ManaValue" } }
+                      }
+                    },
+                    { "OwnedBy": "You" },
+                    { "In": "Graveyard" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

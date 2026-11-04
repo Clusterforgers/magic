@@ -1,0 +1,35 @@
+{
+  "oracle_id": "ceddad0d-94ad-459a-b109-f979ffc26283",
+  "name": "Ring of Xathrid",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ring of Xathrid",
+      "oracle_fingerprint": "23b96049316b02c5eb7c0969e3b8adc4",
+      "abilities": [
+        { "Activated": { "cost": "{2}", "effects": [{ "Regenerate": { "what": "Attached" } }] } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": "Attached",
+                      "selector": [{ "Type": "Creature" }, { "Color": "Black" }],
+                      "op": "Eq",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "PutCounters": { "on": "Attached", "counter": "+1/+1" } }]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{1}" } }
+      ]
+    }
+  ]
+}

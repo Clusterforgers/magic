@@ -1,0 +1,63 @@
+{
+  "oracle_id": "3d92f2e6-27df-4329-b552-cf905f7616ba",
+  "name": "Flood of Tears",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Flood of Tears",
+      "oracle_fingerprint": "1b6e7dcac0d93683311b85b2bddcc89b",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Each": [{ "Not": { "Type": "Land" } }] },
+                  "to": "Hand",
+                  "as": "moved"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "moved" },
+                      "selector": [{ "Not": "Token" }, { "ControlledBy": "You" }],
+                      "op": "Ge",
+                      "right": 4
+                    }
+                  },
+                  "then": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "OwnedBy": "You" },
+                            {
+                              "AnyOf": [
+                                { "Type": "Artifact" },
+                                { "Type": "Battle" },
+                                { "Type": "Creature" },
+                                { "Type": "Enchantment" },
+                                { "Type": "Land" },
+                                { "Type": "Planeswalker" }
+                              ]
+                            },
+                            { "In": "Hand" }
+                          ]
+                        },
+                        "count": { "min": 0, "max": 1 },
+                        "as": "picked2"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "picked2" }, "to": { "Battlefield": {} } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

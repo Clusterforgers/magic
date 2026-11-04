@@ -1,0 +1,33 @@
+{
+  "oracle_id": "c8981af1-b0aa-4c19-8520-a7fb59018bc8",
+  "name": "Ghostway",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ghostway",
+      "oracle_fingerprint": "256bf170a6c489258c626a2d560ce9bd",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Exile": {
+                  "what": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "as": "exiled"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    { "Move": { "what": { "Bound": "exiled" }, "to": { "Battlefield": {} } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,64 @@
+{
+  "oracle_id": "f3031397-c2d5-40c6-8eca-88faed00a5ea",
+  "name": "Alex Wilder, Runaway",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Alex Wilder, Runaway",
+      "oracle_fingerprint": "94d6e484f4bcdab2f8a9bb43b04d268a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  {
+                    "AnyOf": [
+                      "This",
+                      {
+                        "Not": {
+                          "AnyOf": [
+                            { "Not": { "Type": "Creature" } },
+                            { "Not": { "ControlledBy": "You" } }
+                          ]
+                        }
+                      }
+                    ]
+                  },
+                  { "WasCast": { "by": "You" } },
+                  {
+                    "AnyOf": [
+                      { "Not": { "WasCast": { "from": "Hand" } } },
+                      { "Not": { "OwnedBy": "You" } }
+                    ]
+                  }
+                ],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Triggering",
+                  "mods": [
+                    { "ModifyPT": { "power": 2, "toughness": 0 } },
+                    { "AddKeyword": "Haste" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Keyword": {
+            "Escape": [
+              { "Mana": "{2}{R}" },
+              { "ExileFromGraveyard": { "filter": ["Other"], "count": 3 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

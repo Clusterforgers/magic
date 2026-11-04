@@ -1,0 +1,38 @@
+{
+  "oracle_id": "fb683e18-50b8-4821-9a1a-86c6dea63ac9",
+  "name": "Temur War Shaman",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Temur War Shaman",
+      "oracle_fingerprint": "30a895069ccd7aae9ac67dd1035f9044",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Manifest": {} }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "TurnedFaceUp": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+            },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "Not": { "ControlledBy": "You" } }] }
+              }
+            ],
+            "effects": [
+              {
+                "May": {
+                  "effects": [{ "Fight": { "what": "Triggering", "with": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

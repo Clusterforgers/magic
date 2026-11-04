@@ -1,0 +1,55 @@
+{
+  "oracle_id": "e7441404-71ff-449e-812b-18cd52eabb98",
+  "name": "Gimbal, Gremlin Prodigy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gimbal, Gremlin Prodigy",
+      "oracle_fingerprint": "3dc34d2d3bef350782ca45d284013c59",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [{ "Type": "Creature" }, { "Type": "Artifact" }, { "ControlledBy": "You" }]
+            },
+            "mods": [{ "AddKeyword": "Trample" }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Gremlin",
+                      "colors": ["Red"],
+                      "types": ["Artifact", "Creature"],
+                      "subtypes": ["Gremlin"],
+                      "power": 0,
+                      "toughness": 0
+                    }
+                  },
+                  "as": "token"
+                }
+              },
+              {
+                "PutCounters": {
+                  "on": { "Bound": "token" },
+                  "counter": "+1/+1",
+                  "count": {
+                    "Distinct": {
+                      "of": [{ "Type": "Artifact" }, { "ControlledBy": "You" }, "Token"],
+                      "stat": "Name"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

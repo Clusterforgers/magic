@@ -1,0 +1,16 @@
+{
+  "oracle_id": "766787ef-654a-4544-b5d7-d2f96949edf1",
+  "name": "Prized Unicorn",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Prized Unicorn",
+      "oracle_fingerprint": "d086d94bff869ad621ee566034e4e5a7",
+      "abilities": [
+        {
+          "Rule": { "rule": { "Combat": { "who": "This", "quirk": { "MustBeBlocked": "Every" } } } }
+        }
+      ]
+    }
+  ]
+}

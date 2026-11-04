@@ -1,0 +1,15 @@
+{
+  "oracle_id": "9494c499-6ead-491f-aeb0-6dbfac4d960c",
+  "name": "Hungry Graffalon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hungry Graffalon",
+      "oracle_fingerprint": "bf07fe5e9e0cec9f31a5537ff319809e",
+      "abilities": [
+        { "Keyword": "Reach" },
+        { "Keyword": { "Macro": { "name": "increment", "amount": 0 } } }
+      ]
+    }
+  ]
+}

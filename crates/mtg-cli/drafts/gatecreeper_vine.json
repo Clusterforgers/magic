@@ -1,0 +1,50 @@
+{
+  "oracle_id": "0f539127-535f-4e0d-abaa-e884521098d2",
+  "name": "Gatecreeper Vine",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gatecreeper Vine",
+      "oracle_fingerprint": "deb5a688c1e171e98614545ea1708160",
+      "abilities": [
+        { "Keyword": "Defender" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Search": {
+                        "filter": [
+                          {
+                            "AnyOf": [
+                              {
+                                "Not": {
+                                  "AnyOf": [
+                                    { "Not": { "Type": "Land" } },
+                                    { "Not": { "Supertype": "Basic" } }
+                                  ]
+                                }
+                              },
+                              { "Subtype": "Gate" }
+                            ]
+                          }
+                        ],
+                        "reveal": true,
+                        "as": "found"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+                    { "Shuffle": {} }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

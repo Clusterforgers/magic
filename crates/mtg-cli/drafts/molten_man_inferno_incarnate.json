@@ -1,0 +1,52 @@
+{
+  "oracle_id": "c6fcf3c1-0626-4d53-92c0-caa22fa61e9a",
+  "name": "Molten Man, Inferno Incarnate",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Molten Man, Inferno Incarnate",
+      "oracle_fingerprint": "9ba4d4828e183c198040945832c52284",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Search": {
+                  "filter": [{ "Subtype": "Mountain" }, { "Supertype": "Basic" }],
+                  "as": "found"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "found" },
+                  "to": { "Battlefield": { "tapped": true } }
+                }
+              },
+              { "Shuffle": {} }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": { "Count": [{ "Subtype": "Mountain" }, { "ControlledBy": "You" }] },
+                  "toughness": { "Count": [{ "Subtype": "Mountain" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield" } },
+            "effects": [{ "Sacrifice": { "filter": [{ "Type": "Land" }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

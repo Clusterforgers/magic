@@ -1,0 +1,36 @@
+{
+  "oracle_id": "93c6554f-096d-4556-81ca-e87e29265887",
+  "name": "Blood Price",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Blood Price",
+      "oracle_fingerprint": "3529e3577b691273bb983d024af810da",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "LookAtTop": { "count": 4, "as": "top" } },
+              {
+                "Choose": {
+                  "from": { "Bound": "top" },
+                  "count": { "min": 2, "max": 2 },
+                  "as": "kept2",
+                  "rest_as": "rest3"
+                }
+              },
+              { "Move": { "what": { "Bound": "kept2" }, "to": "Hand" } },
+              {
+                "Move": {
+                  "what": { "Bound": "rest3" },
+                  "to": { "Library": { "place": "Bottom", "order": "Chosen" } }
+                }
+              },
+              { "LoseLife": { "amount": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

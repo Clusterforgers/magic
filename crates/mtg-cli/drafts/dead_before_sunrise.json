@@ -1,0 +1,78 @@
+{
+  "oracle_id": "949a02ad-7530-4b2b-a1e3-0c70324e23d6",
+  "name": "Dead Before Sunrise",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dead Before Sunrise",
+      "oracle_fingerprint": "976e0eb27b80bc6d326f78fd0d235e16",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "ControlledBy": "You" },
+                      {
+                        "AnyOf": [
+                          { "Subtype": "Assassin" },
+                          { "Subtype": "Mercenary" },
+                          { "Subtype": "Pirate" },
+                          { "Subtype": "Rogue" },
+                          { "Subtype": "Warlock" }
+                        ]
+                      }
+                    ]
+                  },
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "ControlledBy": "You" },
+                      {
+                        "AnyOf": [
+                          { "Subtype": "Assassin" },
+                          { "Subtype": "Mercenary" },
+                          { "Subtype": "Pirate" },
+                          { "Subtype": "Rogue" },
+                          { "Subtype": "Warlock" }
+                        ]
+                      }
+                    ]
+                  },
+                  "mods": [
+                    {
+                      "GrantAbility": {
+                        "Activated": {
+                          "cost": ["Tap"],
+                          "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                          "effects": [
+                            {
+                              "DealDamage": {
+                                "to": { "Target": 0 },
+                                "amount": { "Stat": { "of": "This", "stat": "Power" } }
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

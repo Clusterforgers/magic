@@ -1,0 +1,33 @@
+{
+  "oracle_id": "2e728381-6db0-4c66-883d-82d718fef833",
+  "name": "My Precious // Allure of Power",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "My Precious",
+      "oracle_fingerprint": "462d50becaf64869943d123f3a319b30",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "AddKeyword": "Hexproof" }, "CantBeBlocked"]
+          }
+        },
+        { "Keyword": { "Equip": [{ "Mana": "{2}" }, { "PayLife": 2 }] } }
+      ]
+    },
+    {
+      "name": "Allure of Power",
+      "oracle_fingerprint": "c35fcea4edc49b0a5e42bbaec5073eb2",
+      "abilities": [
+        {
+          "AdditionalCost": {
+            "cost": [{ "Sacrifice": { "filter": [{ "Type": "Creature" }] } }],
+            "required": true
+          }
+        },
+        { "Spell": { "effects": [{ "Draw": { "count": 2 } }] } }
+      ]
+    }
+  ]
+}

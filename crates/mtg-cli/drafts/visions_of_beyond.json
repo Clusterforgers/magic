@@ -1,0 +1,41 @@
+{
+  "oracle_id": "c68964df-51ae-43b0-abea-74735016c13f",
+  "name": "Visions of Beyond",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Visions of Beyond",
+      "oracle_fingerprint": "73422e07d0fba57f00258a50edaf22fb",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Draw": {
+                  "count": {
+                    "When": {
+                      "condition": {
+                        "Compare": {
+                          "left": {
+                            "Largest": {
+                              "who": "EachPlayer",
+                              "of": [{ "OwnedBy": "You" }, { "In": "Graveyard" }]
+                            }
+                          },
+                          "op": "Ge",
+                          "right": 20
+                        }
+                      },
+                      "then": 3,
+                      "otherwise": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

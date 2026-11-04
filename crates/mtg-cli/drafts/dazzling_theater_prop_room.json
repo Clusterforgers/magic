@@ -1,0 +1,42 @@
+{
+  "oracle_id": "c46a02db-13d6-477f-9da0-822599470168",
+  "name": "Dazzling Theater // Prop Room",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dazzling Theater",
+      "oracle_fingerprint": "88dc481649ed8f96f60be3d73189cead",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                { "ControlledBy": "You" },
+                { "WasCast": {} },
+                { "In": "Stack" }
+              ]
+            },
+            "mods": [{ "AddKeyword": "Convoke" }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Prop Room",
+      "oracle_fingerprint": "763e72e87ea97db175cc4b2f513a381c",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "UntapDuring": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                "whose": "Opponents"
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

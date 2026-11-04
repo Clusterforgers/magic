@@ -1,0 +1,33 @@
+{
+  "oracle_id": "60654004-7d9a-47ac-a70d-b246dd1728d3",
+  "name": "Valley Flamecaller",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Valley Flamecaller",
+      "oracle_fingerprint": "5dd087c17f9cf39bcb7485cbf6b2fb3d",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": {
+              "Damage": {
+                "source": [
+                  {
+                    "AnyOf": [
+                      { "Subtype": "Lizard" },
+                      { "Subtype": "Mouse" },
+                      { "Subtype": "Otter" },
+                      { "Subtype": "Raccoon" }
+                    ]
+                  },
+                  { "ControlledBy": "You" }
+                ]
+              }
+            },
+            "by": { "Add": 1 }
+          }
+        }
+      ]
+    }
+  ]
+}

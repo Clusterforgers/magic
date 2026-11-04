@@ -1,0 +1,23 @@
+{
+  "oracle_id": "572b1aeb-d2a0-433d-b167-86e683c2127d",
+  "name": "Sentinel of the Eternal Watch",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sentinel of the Eternal Watch",
+      "oracle_fingerprint": "b40cb584510e2584e477f60f845e2aee",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "Opponents" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "ActivePlayer" }] } }
+            ],
+            "effects": [{ "Tap": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "oracle_id": "a2375a23-a1f0-4514-87a0-e699f91acd7d",
+  "name": "Zagras, Thief of Heartbeats",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Zagras, Thief of Heartbeats",
+      "oracle_fingerprint": "d1080ad8c81f68a4498e53118070d74c",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{1}",
+            "per": { "Party": "You" }
+          }
+        },
+        { "Keyword": "Flying" },
+        { "Keyword": "Deathtouch" },
+        { "Keyword": "Haste" },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": "Deathtouch" }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                "to": { "Each": [{ "Type": "Planeswalker" }] },
+                "combat": true
+              }
+            },
+            "effects": [{ "Destroy": { "what": "Triggering" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

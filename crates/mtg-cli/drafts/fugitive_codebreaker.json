@@ -1,0 +1,25 @@
+{
+  "oracle_id": "af2b36ee-2945-41d3-a186-8fd28f3cde16",
+  "name": "Fugitive Codebreaker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fugitive Codebreaker",
+      "oracle_fingerprint": "005694a657736adbb5256382cff62c0f",
+      "abilities": [
+        { "Keyword": "Prowess" },
+        { "Keyword": "Haste" },
+        { "Keyword": { "Disguise": "{5}{R}" } },
+        {
+          "Triggered": {
+            "when": { "TurnedFaceUp": { "what": ["This"] } },
+            "effects": [
+              { "Discard": { "count": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] } } },
+              { "Draw": { "count": 3 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

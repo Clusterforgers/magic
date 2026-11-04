@@ -1,0 +1,25 @@
+{
+  "oracle_id": "7d08d128-863c-4cca-837f-847ff44acef5",
+  "name": "Wall of Vapor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wall of Vapor",
+      "oracle_fingerprint": "cb7d066d599d65a2bebc1c05ba85a31b",
+      "abilities": [
+        { "Keyword": "Defender" },
+        {
+          "Replacement": {
+            "when": {
+              "Damage": {
+                "to": "This",
+                "source": [{ "Type": "Creature" }, { "BlockedBy": "This" }]
+              }
+            },
+            "by": "Prevent"
+          }
+        }
+      ]
+    }
+  ]
+}

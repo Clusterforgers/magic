@@ -1,0 +1,45 @@
+{
+  "oracle_id": "7cf5c3dd-5c07-4eaf-8227-6f4e7f9b134d",
+  "name": "Drownyard Lurker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Drownyard Lurker",
+      "oracle_fingerprint": "51b4701c48828a0bf3ee33cc92916901",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [{ "SpellCast": { "what": ["This"] } }, { "Cycled": { "what": ["This"] } }]
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Eldrazi Spawn",
+                      "types": ["Creature"],
+                      "subtypes": ["Eldrazi", "Spawn"],
+                      "power": 0,
+                      "toughness": 1,
+                      "abilities": [
+                        {
+                          "Activated": {
+                            "cost": ["SacrificeSelf"],
+                            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Cycling": "{2}{U}" } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "oracle_id": "55a277b4-575f-463b-913c-7857acad20be",
+  "name": "Tazeem Roilmage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tazeem Roilmage",
+      "oracle_fingerprint": "6ee543c580ff17171c2418f1a40f93df",
+      "abilities": [
+        { "Keyword": { "Kicker": "{4}" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This", "Kicked"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                    { "OwnedBy": "You" },
+                    { "In": "Graveyard" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

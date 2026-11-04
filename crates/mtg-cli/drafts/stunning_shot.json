@@ -1,0 +1,32 @@
+{
+  "oracle_id": "0c0bb9b0-e7e0-465e-826b-2e56032aed1b",
+  "name": "Stunning Shot",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stunning Shot",
+      "oracle_fingerprint": "4097d200ea2b2ce2fd488b7dd42e8e16",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                "bounds": { "min": 0, "max": 1 }
+              },
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1", "count": 2 } },
+              { "Tap": { "what": { "Target": 1 } } },
+              { "PutCounters": { "on": { "Target": 1 }, "counter": { "Other": "stun" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

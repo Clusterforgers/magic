@@ -1,0 +1,47 @@
+{
+  "oracle_id": "bbef4d8e-5861-4d50-9589-14b46c71e9af",
+  "name": "Ghoulcaller's Harvest",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ghoulcaller's Harvest",
+      "oracle_fingerprint": "456485e5c9f97d0f3bb74a93ff8d3098",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Zombie",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Zombie"],
+                      "power": 2,
+                      "toughness": 2,
+                      "abilities": [{ "Keyword": "Decayed" }]
+                    }
+                  },
+                  "count": {
+                    "Half": {
+                      "of": {
+                        "Count": [
+                          { "Type": "Creature" },
+                          { "OwnedBy": "You" },
+                          { "In": "Graveyard" }
+                        ]
+                      },
+                      "up": true
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Flashback": "{3}{B}{G}" } }
+      ]
+    }
+  ]
+}

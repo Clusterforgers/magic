@@ -1,0 +1,27 @@
+{
+  "oracle_id": "93088b0c-d158-473a-9c06-aa2f344a9868",
+  "name": "Bloodtithe Collector",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bloodtithe Collector",
+      "oracle_fingerprint": "ff9331589de0e3d1e607ad54b6ea2d92",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "Opponents", "what": "LifeLost" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "Discard": { "who": "Opponents" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

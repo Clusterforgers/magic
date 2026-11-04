@@ -1,0 +1,44 @@
+{
+  "oracle_id": "f17b9356-a329-4f89-b690-afc2eaff4977",
+  "name": "Sunpearl Kirin",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sunpearl Kirin",
+      "oracle_fingerprint": "96367d3df02ccbb406633d8533196cc9",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Not": { "Type": "Land" } }, { "ControlledBy": "You" }, "Other"]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": "Hand", "as": "moved" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "moved" },
+                      "selector": ["Token"],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

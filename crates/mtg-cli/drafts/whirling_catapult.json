@@ -1,0 +1,27 @@
+{
+  "oracle_id": "0987b5e9-0012-4189-8745-45f10e9557f3",
+  "name": "Whirling Catapult",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Whirling Catapult",
+      "oracle_fingerprint": "d98acf291c1b703c701d8ea7129b4a2e",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, { "ExileTop": 2 }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Each": [{ "Type": "Creature" }, { "HasKeyword": "Flying" }] },
+                  "amount": 1
+                }
+              },
+              { "DealDamage": { "to": "EachPlayer", "amount": 1 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

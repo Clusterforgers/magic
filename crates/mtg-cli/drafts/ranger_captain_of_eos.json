@@ -21,10 +21,10 @@
                           { "Compare": { "stat": "ManaValue", "op": "Le", "to": 1 } }
                         ],
                         "reveal": true,
-                        "as": "card"
+                        "as": "found"
                       }
                     },
-                    { "Move": { "what": { "Bound": "card" }, "to": "Hand" } },
+                    { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
                     { "Shuffle": {} }
                   ]
                 }
@@ -34,11 +34,16 @@
         },
         {
           "Activated": {
-            "cost": [{ "Sacrifice": { "filter": [{ "Type": "Creature" }, { "Is": "This" }] } }],
+            "cost": ["SacrificeSelf"],
             "effects": [
               {
                 "Rule": {
-                  "rule": { "CantCastSpells": { "who": "Opponents" } },
+                  "rule": {
+                    "Cant": {
+                      "who": "Opponents",
+                      "action": { "Cast": { "filter": [{ "Not": { "Type": "Creature" } }] } }
+                    }
+                  },
                   "duration": "UntilEndOfTurn"
                 }
               }

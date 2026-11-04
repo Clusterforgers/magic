@@ -1,0 +1,60 @@
+{
+  "oracle_id": "b96399f9-c0ba-4507-be13-65cf716b7757",
+  "name": "Sphere of Annihilation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sphere of Annihilation",
+      "oracle_fingerprint": "b5d80b2a1ed638f8019efce55897d284",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": { "Other": "void" }, "count": "X" } }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              { "Exile": { "what": "This" } },
+              {
+                "Exile": {
+                  "what": {
+                    "Each": [
+                      { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] },
+                      {
+                        "Compare": {
+                          "stat": "ManaValue",
+                          "op": "Le",
+                          "to": { "Counters": { "on": "This", "counter": { "Other": "void" } } }
+                        }
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "Exile": {
+                  "what": {
+                    "Each": [
+                      { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] },
+                      {
+                        "Compare": {
+                          "stat": "ManaValue",
+                          "op": "Le",
+                          "to": { "Counters": { "on": "This", "counter": { "Other": "void" } } }
+                        }
+                      },
+                      { "In": "Graveyard" }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "oracle_id": "7b3d364d-6581-43de-a80a-d5b07f5d21ed",
+  "name": "Venus, Torn Between Worlds",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Venus, Torn Between Worlds",
+      "oracle_fingerprint": "ccaa727d2e3929ee60f21f6fc33ff68b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Batch": { "DealsDamage": { "source": [], "to": "This" } } },
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": "+1/+1", "count": "Triggering" } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "HasAnyCounter"],
+                "to": "EachPlayer",
+                "combat": true
+              }
+            },
+            "effects": [{ "Pay": { "cost": "{U}", "paid": [{ "Draw": {} }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

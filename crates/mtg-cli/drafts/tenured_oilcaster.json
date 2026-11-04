@@ -1,0 +1,40 @@
+{
+  "oracle_id": "7fb837d7-e2c9-40f8-8a7d-156b3aa86830",
+  "name": "Tenured Oilcaster",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tenured Oilcaster",
+      "oracle_fingerprint": "d0d153bcd2c147400bddba4586120c48",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": 3, "toughness": 0 } }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Largest": {
+                    "who": "Opponents",
+                    "of": [{ "In": "Graveyard" }, { "OwnedBy": "You" }]
+                  }
+                },
+                "op": "Ge",
+                "right": 8
+              }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [{ "Attacks": { "what": ["This"] } }, { "Blocks": { "what": ["This"] } }]
+            },
+            "effects": [{ "Mill": { "who": "EachPlayer" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

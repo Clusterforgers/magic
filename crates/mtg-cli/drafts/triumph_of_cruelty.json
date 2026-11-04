@@ -1,0 +1,54 @@
+{
+  "oracle_id": "87e88311-dbd2-42f7-a166-138f1d271686",
+  "name": "Triumph of Cruelty",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Triumph of Cruelty",
+      "oracle_fingerprint": "ddada21608ccc2fbf920c7e95ac29ed1",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "All": [
+                      {
+                        "Compare": {
+                          "left": { "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                          "op": "Ge",
+                          "right": 1
+                        }
+                      },
+                      {
+                        "Compare": {
+                          "left": {
+                            "Greatest": {
+                              "of": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                              "stat": "Power"
+                            }
+                          },
+                          "op": "Ge",
+                          "right": {
+                            "Greatest": {
+                              "of": [{ "Type": "Creature" }, { "Not": { "ControlledBy": "You" } }],
+                              "stat": "Power"
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  "then": [{ "Discard": { "who": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

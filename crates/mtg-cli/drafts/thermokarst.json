@@ -1,0 +1,34 @@
+{
+  "oracle_id": "f3b071a1-7501-4424-979a-780fa90eecb8",
+  "name": "Thermokarst",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thermokarst",
+      "oracle_fingerprint": "b1a4d349051d85c6f52d3ff67c316cd4",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Land" }] } }],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Target": 0 },
+                      "selector": [{ "Type": "Land" }, { "Supertype": "Snow" }],
+                      "op": "Eq",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "GainLife": { "amount": 1 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

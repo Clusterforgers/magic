@@ -1,0 +1,37 @@
+{
+  "oracle_id": "faa0055b-c1d2-4ce7-875f-41b4be8030bd",
+  "name": "Synchronized Charge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Synchronized Charge",
+      "oracle_fingerprint": "6a48d55a80a75aa1973cff0cf3a9a4b8",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                "bounds": { "min": 1, "max": 2 },
+                "divide": 2
+              }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1", "count": "Divided" } },
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "HasAnyCounter"]
+                  },
+                  "mods": [{ "AddKeyword": "Vigilance" }, { "AddKeyword": "Trample" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Harmonize": "{4}{G}" } }
+      ]
+    }
+  ]
+}

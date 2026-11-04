@@ -1,0 +1,29 @@
+{
+  "oracle_id": "ee7f698d-55c5-4a7a-803d-304febe6a758",
+  "name": "Lichenthrope",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lichenthrope",
+      "oracle_fingerprint": "bd75c096a38422b1e5cda130c3d5c8bf",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Damage": { "to": "This" } },
+            "by": {
+              "Instead": [
+                { "PutCounters": { "on": "This", "counter": "-1/-1", "count": "Triggering" } }
+              ]
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [{ "RemoveCounters": { "from": "This", "counter": "-1/-1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

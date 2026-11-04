@@ -1,0 +1,45 @@
+{
+  "oracle_id": "992ddd9f-e0db-4383-909c-6dacca41d188",
+  "name": "The Fifth Doctor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Fifth Doctor",
+      "oracle_fingerprint": "7597d068480ade9a2b8e24f6f1625268",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "ControlledBy": "You" },
+                      { "Not": "EnteredThisTurn" },
+                      { "Not": "AttackedThisTurn" }
+                    ]
+                  },
+                  "counter": "+1/+1"
+                }
+              },
+              {
+                "Untap": {
+                  "what": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "ControlledBy": "You" },
+                      { "Not": "EnteredThisTurn" },
+                      { "Not": "AttackedThisTurn" }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

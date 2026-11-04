@@ -1,0 +1,51 @@
+{
+  "oracle_id": "77e319da-d782-4258-bf0e-626755e5adc9",
+  "name": "Kalastria Highborn",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kalastria Highborn",
+      "oracle_fingerprint": "633d93a6e0661b4037e260b79b7139b7",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  {
+                    "AnyOf": [
+                      {
+                        "Not": {
+                          "AnyOf": [
+                            { "Not": { "Subtype": "Vampire" } },
+                            { "Not": "Other" },
+                            { "Not": { "ControlledBy": "You" } }
+                          ]
+                        }
+                      },
+                      "This"
+                    ]
+                  }
+                ],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{B}",
+                  "paid": [
+                    { "LoseLife": { "who": { "Target": 0 }, "amount": 2 } },
+                    { "GainLife": { "amount": 2 } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

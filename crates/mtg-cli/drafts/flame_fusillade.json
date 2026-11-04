@@ -1,0 +1,36 @@
+{
+  "oracle_id": "b45cb1b8-091a-40d2-a53a-2fa95845f4fa",
+  "name": "Flame Fusillade",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Flame Fusillade",
+      "oracle_fingerprint": "1ca89aed81e969dbc812c46a9f97457c",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "ControlledBy": "You" }] },
+                  "mods": [
+                    {
+                      "GrantAbility": {
+                        "Activated": {
+                          "cost": ["Tap"],
+                          "targets": [{ "what": "AnyTarget" }],
+                          "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "oracle_id": "c2398875-0912-4210-90bd-b2d568a580cf",
+  "name": "Hobble",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hobble",
+      "oracle_fingerprint": "52ee13af9ce85ba76ae488dac410850b",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Draw": {} }]
+          }
+        },
+        { "Static": { "affected": "Attached", "mods": ["CantAttack"] } },
+        {
+          "Static": {
+            "affected": {
+              "Each": [{ "Type": "Creature" }, { "Is": "Attached" }, { "Color": "Black" }]
+            },
+            "mods": ["CantBlock"]
+          }
+        }
+      ]
+    }
+  ]
+}

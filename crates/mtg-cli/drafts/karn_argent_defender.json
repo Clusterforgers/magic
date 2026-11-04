@@ -1,0 +1,30 @@
+{
+  "oracle_id": "aecc621f-67da-41a7-9d47-05ded302ae35",
+  "name": "Karn, Argent Defender",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Karn, Argent Defender",
+      "oracle_fingerprint": "51bbb004980168f9732a6721d438ba14",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "EachPlayer",
+                "action": {
+                  "Trigger": {
+                    "ZoneChange": {
+                      "what": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] }],
+                      "to": "Battlefield"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "oracle_id": "230e0bf3-3f17-4968-8723-3fb6a0909816",
+  "name": "Mephitic Ooze",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mephitic Ooze",
+      "oracle_fingerprint": "7a6acaa855bb1f3a581336d6d91b4734",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": { "Count": [{ "Type": "Artifact" }, { "ControlledBy": "You" }] },
+                  "toughness": 0
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": ["This"],
+                "to": { "Each": [{ "Type": "Creature" }] },
+                "combat": true
+              }
+            },
+            "effects": [{ "Destroy": { "what": "Triggering", "regenerate": false } }]
+          }
+        }
+      ]
+    }
+  ]
+}

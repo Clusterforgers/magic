@@ -1,0 +1,25 @@
+{
+  "oracle_id": "c0239ff1-6ae6-431a-806e-7321d8272a1d",
+  "name": "Impede Momentum",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Impede Momentum",
+      "oracle_fingerprint": "7830233526752deb764236a0175bf055",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Tap": { "what": { "Target": 0 } } },
+              {
+                "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "stun" }, "count": 3 }
+              },
+              { "Scry": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

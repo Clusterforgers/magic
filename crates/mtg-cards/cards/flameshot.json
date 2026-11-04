@@ -1,0 +1,26 @@
+{
+  "oracle_id": "26640648-6400-4b80-a78b-f519ab9cd09e",
+  "name": "Flameshot",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Flameshot",
+      "oracle_fingerprint": "40e300d303e16da81c267670d6216cc3",
+      "abilities": [
+        { "FreeCast": { "cost": [{ "Discard": { "filter": [{ "Subtype": "Mountain" }] } }] } },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }] },
+                "bounds": { "min": 1, "max": 3 },
+                "divide": 3
+              }
+            ],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": "Divided" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

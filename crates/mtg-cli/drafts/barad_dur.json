@@ -14,7 +14,13 @@
             "condition": {
               "Not": {
                 "Compare": {
-                  "left": { "Count": [{ "Type": "Creature" }, { "Supertype": "Legendary" }] },
+                  "left": {
+                    "Count": [
+                      { "Type": "Creature" },
+                      { "Supertype": "Legendary" },
+                      { "ControlledBy": "You" }
+                    ]
+                  },
                   "op": "Ge",
                   "right": 1
                 }
@@ -33,7 +39,19 @@
             "cost": [{ "Mana": "{X}{X}{B}" }, "Tap"],
             "condition": {
               "Compare": {
-                "left": { "Tallied": { "who": "EachPlayer", "what": "CreaturesDied" } },
+                "left": {
+                  "When": {
+                    "condition": {
+                      "Compare": {
+                        "left": { "Tallied": { "who": "EachPlayer", "what": "CreaturesDied" } },
+                        "op": "Ge",
+                        "right": 1
+                      }
+                    },
+                    "then": 1,
+                    "otherwise": 0
+                  }
+                },
                 "op": "Ge",
                 "right": 1
               }

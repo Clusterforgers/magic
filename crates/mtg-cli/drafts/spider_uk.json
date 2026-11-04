@@ -1,0 +1,45 @@
+{
+  "oracle_id": "ebf8d006-2997-431b-b4cb-9692741b45ca",
+  "name": "Spider-UK",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spider-UK",
+      "oracle_fingerprint": "9ce56e69b9dc0a69e707e92c525e498e",
+      "abilities": [
+        {
+          "AltCast": {
+            "way": "WebSlinging",
+            "cost": [
+              { "Mana": "{2}{W}" },
+              {
+                "ReturnToHand": {
+                  "filter": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "Tapped"]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "Entered",
+                    "who": "EachPlayer",
+                    "filter": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                  }
+                },
+                "op": "Ge",
+                "right": 2
+              }
+            },
+            "effects": [{ "Draw": {} }, { "GainLife": { "amount": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

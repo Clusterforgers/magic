@@ -15,14 +15,8 @@
               {
                 "CreateToken": {
                   "who": "EachPlayer",
-                  "token": {
-                    "Custom": {
-                      "name": "Treasure",
-                      "types": ["Artifact"],
-                      "subtypes": ["Treasure"],
-                      "toughness": 0
-                    }
-                  }
+                  "token": { "Named": "treasure" },
+                  "count": { "Counters": { "on": "This", "counter": { "Other": "descent" } } }
                 }
               },
               {

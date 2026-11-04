@@ -1,0 +1,34 @@
+{
+  "oracle_id": "ff132d04-c3a9-4949-83ba-d80bcbcd7b9b",
+  "name": "Tetsuo Umezawa",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tetsuo Umezawa",
+      "oracle_fingerprint": "71dd348e5476148ad62b3b1a120fd5ac",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "This",
+                "action": { "BeTargeted": [{ "Subtype": "Aura" }, "Spell"] }
+              }
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{U}{B}{B}{R}" }, "Tap"],
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "AnyOf": ["Tapped", "Blocking"] }] }
+              }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

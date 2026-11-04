@@ -1,0 +1,40 @@
+{
+  "oracle_id": "ba771caa-2cfb-4373-bbd9-6160b0543010",
+  "name": "Vengeful Devil",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vengeful Devil",
+      "oracle_fingerprint": "bbc18641039cf5b48dd16ae01c753753",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "When": {
+                    "condition": {
+                      "Compare": {
+                        "left": { "Tallied": { "who": "EachPlayer", "what": "CreaturesDied" } },
+                        "op": "Ge",
+                        "right": 1
+                      }
+                    },
+                    "then": 1,
+                    "otherwise": 0
+                  }
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

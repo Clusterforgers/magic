@@ -1,0 +1,46 @@
+{
+  "oracle_id": "481c3e14-b670-4fab-aa9f-6ce5b514096d",
+  "name": "Aang and Katara",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Aang and Katara",
+      "oracle_fingerprint": "4c25218fda67cf90b781c20bd8c480e6",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "Attacks": { "what": ["This"] } }
+              ]
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Ally",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Ally"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": {
+                    "Count": [
+                      { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] },
+                      { "ControlledBy": "You" },
+                      "Tapped"
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

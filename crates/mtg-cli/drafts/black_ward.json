@@ -1,0 +1,20 @@
+{
+  "oracle_id": "7861ac9b-3024-4935-804c-2ca4c5a46bf4",
+  "name": "Black Ward",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Black Ward",
+      "oracle_fingerprint": "30709737b03dd5081cc843538e9dbbe5",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "AddKeyword": { "Protection": [{ "Color": "Black" }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

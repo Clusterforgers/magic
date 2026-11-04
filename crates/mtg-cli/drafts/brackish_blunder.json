@@ -1,0 +1,34 @@
+{
+  "oracle_id": "4ad34f85-a185-458a-a7a1-eb60f7efce5b",
+  "name": "Brackish Blunder",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Brackish Blunder",
+      "oracle_fingerprint": "6c81f3108c80b1fd5c6d1b7ef2621471",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": "Hand" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Target": 0 },
+                      "selector": ["Tapped"],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "CreateToken": { "token": { "Named": "map" } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

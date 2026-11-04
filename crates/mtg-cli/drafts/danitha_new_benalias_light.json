@@ -1,0 +1,28 @@
+{
+  "oracle_id": "971b30a8-4ab4-4e96-9d50-597da4d52994",
+  "name": "Danitha, New Benalia's Light",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Danitha, New Benalia's Light",
+      "oracle_fingerprint": "c9e39ee291276d9c369af93df056a20c",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        { "Keyword": "Trample" },
+        { "Keyword": "Lifelink" },
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": {
+                "what": [{ "AnyOf": [{ "Subtype": "Aura" }, { "Subtype": "Equipment" }] }],
+                "from": "Graveyard",
+                "once": true
+              }
+            },
+            "condition": "YourTurn"
+          }
+        }
+      ]
+    }
+  ]
+}

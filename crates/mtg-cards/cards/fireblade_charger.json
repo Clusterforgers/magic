@@ -1,0 +1,39 @@
+{
+  "oracle_id": "4d83ad77-dbac-4a03-8034-43d950d0a18c",
+  "name": "Fireblade Charger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fireblade Charger",
+      "oracle_fingerprint": "76d7f6ff75f0462be298c0b605ddb9fc",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Haste" }],
+            "condition": {
+              "Matches": {
+                "subject": "This",
+                "selector": [{ "HasAttached": [{ "Subtype": "Equipment" }] }]
+              }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": { "Stat": { "of": "This", "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

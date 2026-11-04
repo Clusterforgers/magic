@@ -1,0 +1,29 @@
+{
+  "oracle_id": "85ef10fd-4a48-4a37-baad-f663fb5439e0",
+  "name": "Rebel Informer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rebel Informer",
+      "oracle_fingerprint": "14948460e4b9240680369c7c9119815c",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "Cant": { "who": "This", "action": { "BeTargeted": [{ "Color": "White" }] } }
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{3}",
+            "targets": [{ "what": { "Object": [{ "Subtype": "Rebel" }, { "Not": "Token" }] } }],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Library": { "place": "Bottom" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

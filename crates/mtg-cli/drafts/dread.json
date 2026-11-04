@@ -1,0 +1,33 @@
+{
+  "oracle_id": "09f41fac-8285-457a-bb71-8c6a93af2df9",
+  "name": "Dread",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dread",
+      "oracle_fingerprint": "a783aee8aa60152982b22d7c2e88e2af",
+      "abilities": [
+        { "Keyword": "Fear" },
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [{ "Type": "Creature" }, { "In": "Battlefield" }],
+                "to": "You"
+              }
+            },
+            "effects": [{ "Destroy": { "what": "Dealer" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Graveyard" } },
+            "effects": [
+              { "Move": { "what": "This", "to": { "Library": { "place": "Shuffled" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

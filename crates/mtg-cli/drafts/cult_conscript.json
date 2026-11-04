@@ -1,0 +1,38 @@
+{
+  "oracle_id": "e5762815-5fc3-4ae7-abee-69f27c5e4e90",
+  "name": "Cult Conscript",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cult Conscript",
+      "oracle_fingerprint": "aafbfe305236998426729134ea30a41f",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Activated": {
+            "cost": "{1}{B}",
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "Died",
+                    "who": "EachPlayer",
+                    "filter": [
+                      { "Type": "Creature" },
+                      { "ControlledBy": "You" },
+                      { "Not": { "Subtype": "Skeleton" } }
+                    ]
+                  }
+                },
+                "op": "Gt",
+                "right": 0
+              }
+            },
+            "from": "Graveyard",
+            "effects": [{ "Move": { "what": "This", "to": { "Battlefield": {} } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

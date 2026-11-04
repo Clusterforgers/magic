@@ -1,0 +1,58 @@
+{
+  "oracle_id": "b36c66d3-24ae-4291-8f8b-8716e354975e",
+  "name": "Greater Stone Spirit",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Greater Stone Spirit",
+      "oracle_fingerprint": "6b52ea13fdf2085ae3ccf7aebee8efd7",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "CantBeBlockedBy": [{ "Type": "Creature" }, { "HasKeyword": "Flying" }] }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{2}{R}",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 0, "toughness": 2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "GrantAbility": {
+                        "Activated": {
+                          "cost": "{R}",
+                          "effects": [
+                            {
+                              "Continuous": {
+                                "affected": "This",
+                                "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+                                "duration": "UntilEndOfTurn"
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

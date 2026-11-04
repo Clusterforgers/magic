@@ -1,0 +1,50 @@
+{
+  "oracle_id": "24a691f3-88dc-47a5-b5cd-e02bb8026470",
+  "name": "Cruel Administrator",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cruel Administrator",
+      "oracle_fingerprint": "14198353d4be151ed9a966ca801f8894",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": 1 } },
+            "condition": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "Attackers" } },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Soldier",
+                      "colors": ["Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Soldier"],
+                      "power": 2,
+                      "toughness": 2,
+                      "abilities": [
+                        { "Keyword": { "Macro": { "name": "firebending", "amount": 1 } } }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

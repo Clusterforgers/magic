@@ -1,0 +1,42 @@
+{
+  "oracle_id": "c3c87292-2fc8-4759-b7b6-18a8b539b5d1",
+  "name": "Grip of the Roil",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Grip of the Roil",
+      "oracle_fingerprint": "8d48f9e18f167e5101fbd01818df0970",
+      "abilities": [
+        {
+          "AltCast": {
+            "way": "Surge",
+            "cost": "{1}{U}",
+            "condition": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "SpellsCast" } },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Tap": { "what": { "Target": 0 } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["DoesntUntap"],
+                  "duration": "NextUntapStep"
+                }
+              },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

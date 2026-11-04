@@ -1,0 +1,55 @@
+{
+  "oracle_id": "37b7f044-f57b-4d13-82be-46fd01f1dba6",
+  "name": "Witherscale Wurm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Witherscale Wurm",
+      "oracle_fingerprint": "583167ac7a14d43d928aa556deaa4a2f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "BecomesBlocked": { "what": [{ "Type": "Creature" }], "by": ["This"] } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Triggering",
+                  "mods": [{ "AddKeyword": "Wither" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "BecomesBlocked": { "what": ["This"], "by": [{ "Type": "Creature" }] } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Dealer",
+                  "mods": [{ "AddKeyword": "Wither" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "Opponents" } },
+            "effects": [
+              {
+                "RemoveCounters": {
+                  "from": "This",
+                  "counter": "-1/-1",
+                  "count": { "Counters": { "on": "This", "counter": "-1/-1" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

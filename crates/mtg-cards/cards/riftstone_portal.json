@@ -1,0 +1,35 @@
+{
+  "oracle_id": "8d7e05ba-5406-4d5e-bb8f-a4a6f3b0eaa7",
+  "name": "Riftstone Portal",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Riftstone Portal",
+      "oracle_fingerprint": "d93b477212a8f0a17f014e836a3425b0",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Land" }, { "ControlledBy": "You" }] },
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Activated": {
+                    "cost": ["Tap"],
+                    "effects": [{ "AddMana": { "mana": { "OneOf": ["Green", "White"] } } }]
+                  }
+                }
+              }
+            ],
+            "from": "Graveyard"
+          }
+        }
+      ]
+    }
+  ]
+}

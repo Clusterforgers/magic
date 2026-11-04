@@ -1,0 +1,60 @@
+{
+  "oracle_id": "fb777610-7562-4d9d-8497-62c562e6d7cb",
+  "name": "Sisay, Weatherlight Captain",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sisay, Weatherlight Captain",
+      "oracle_fingerprint": "f4ffd1b36264314e1abda7858de2ee22",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": {
+                    "Distinct": {
+                      "of": [{ "ControlledBy": "You" }, "Other", { "Supertype": "Legendary" }],
+                      "stat": "Colors"
+                    }
+                  },
+                  "toughness": {
+                    "Distinct": {
+                      "of": [{ "ControlledBy": "You" }, "Other", { "Supertype": "Legendary" }],
+                      "stat": "Colors"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{W}{U}{B}{R}{G}",
+            "effects": [
+              {
+                "Search": {
+                  "filter": [
+                    { "Supertype": "Legendary" },
+                    {
+                      "Compare": {
+                        "stat": "ManaValue",
+                        "op": "Lt",
+                        "to": { "Stat": { "of": "This", "stat": "Power" } }
+                      }
+                    }
+                  ],
+                  "as": "found"
+                }
+              },
+              { "Move": { "what": { "Bound": "found" }, "to": { "Battlefield": {} } } },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

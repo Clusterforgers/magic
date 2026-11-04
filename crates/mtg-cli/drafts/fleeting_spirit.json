@@ -1,0 +1,57 @@
+{
+  "oracle_id": "bc79eb3c-33e2-4820-a59c-92a6271fd725",
+  "name": "Fleeting Spirit",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fleeting Spirit",
+      "oracle_fingerprint": "e6ad6f947f7899a0dc60abafd49a193e",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{W}" }, { "ExileFromGraveyard": { "filter": [], "count": 3 } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddKeyword": "FirstStrike" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Discard": {} }],
+            "effects": [
+              { "Exile": { "what": "This", "as": "exiled" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "exiled" },
+                      "selector": [],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "DelayedTrigger": {
+                        "when": { "StepBegins": { "step": "End" } },
+                        "effects": [
+                          { "Move": { "what": { "Bound": "exiled" }, "to": { "Battlefield": {} } } }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

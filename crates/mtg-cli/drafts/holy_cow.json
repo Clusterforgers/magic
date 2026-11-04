@@ -1,0 +1,21 @@
+{
+  "oracle_id": "748003fd-84c5-4c99-b146-d7d382eef64d",
+  "name": "Holy Cow",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Holy Cow",
+      "oracle_fingerprint": "62ef9e6c034033b2e7574703062e1d01",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "GainLife": { "amount": 2 } }, { "Scry": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

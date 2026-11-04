@@ -1,0 +1,40 @@
+{
+  "oracle_id": "942d550d-4823-4db8-8197-cbf15045f4f5",
+  "name": "Uncovered Clues",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Uncovered Clues",
+      "oracle_fingerprint": "d66c1689dbfe05dc92eb417434ad2b21",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "LookAtTop": { "count": 4, "as": "top" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 2 },
+                  "as": "kept2"
+                }
+              },
+              { "Move": { "what": { "Bound": "kept2" }, "to": "Hand" } },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Bottom", "order": "Chosen" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

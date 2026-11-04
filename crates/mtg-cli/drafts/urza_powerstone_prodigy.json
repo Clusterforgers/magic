@@ -1,0 +1,27 @@
+{
+  "oracle_id": "8ad7fdd2-bff5-4434-a3f9-1f5ce0ed573b",
+  "name": "Urza, Powerstone Prodigy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Urza, Powerstone Prodigy",
+      "oracle_fingerprint": "525fe913aaa17a9694f759a11ccad76b",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap"],
+            "effects": [{ "Draw": {} }, { "Discard": {} }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Batch": { "Discarded": { "what": [{ "Type": "Artifact" }], "by": "You" } } },
+            "limit": "OncePerTurn",
+            "effects": [{ "CreateToken": { "token": { "Named": "powerstone" }, "tapped": true } }]
+          }
+        }
+      ]
+    }
+  ]
+}

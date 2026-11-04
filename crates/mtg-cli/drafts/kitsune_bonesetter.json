@@ -1,0 +1,37 @@
+{
+  "oracle_id": "a64684bc-61b2-4261-8749-fc8cae9e2fd5",
+  "name": "Kitsune Bonesetter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kitsune Bonesetter",
+      "oracle_fingerprint": "db681cbbc24edc4af81fc89c2409fbf0",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "OwnedBy": "You" }, { "In": "Hand" }] },
+                "op": "Gt",
+                "right": {
+                  "Largest": { "who": "Opponents", "of": [{ "In": "Hand" }, { "OwnedBy": "You" }] }
+                }
+              }
+            },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": { "Target": 0 } } },
+                  "by": { "PreventUpTo": 3 },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

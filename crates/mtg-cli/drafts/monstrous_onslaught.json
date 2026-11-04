@@ -1,0 +1,38 @@
+{
+  "oracle_id": "52be3da7-1e55-44c4-88bc-fb578a635ec0",
+  "name": "Monstrous Onslaught",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Monstrous Onslaught",
+      "oracle_fingerprint": "76936c2909a1843f7770f1146ce82cb7",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }] },
+                "bounds": {
+                  "min": 0,
+                  "max": {
+                    "Greatest": {
+                      "of": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                      "stat": "Power"
+                    }
+                  }
+                },
+                "divide": {
+                  "Greatest": {
+                    "of": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                    "stat": "Power"
+                  }
+                }
+              }
+            ],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": "Divided" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

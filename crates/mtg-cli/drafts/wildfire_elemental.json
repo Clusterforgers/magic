@@ -1,0 +1,27 @@
+{
+  "oracle_id": "76ff6653-f9b9-4bfe-92a9-52bda275b340",
+  "name": "Wildfire Elemental",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wildfire Elemental",
+      "oracle_fingerprint": "3d0fac41b61da1bcdee73d092d2bb9e2",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Batch": { "DealsDamage": { "source": [], "to": "Opponents" } } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

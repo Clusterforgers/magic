@@ -1,0 +1,50 @@
+{
+  "oracle_id": "cac993d5-28a1-48b6-9c2f-f216cb5f521d",
+  "name": "Reduce // Rubble",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Reduce",
+      "oracle_fingerprint": "d9c333febe909c6242ca125c47507735",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [
+              {
+                "Pay": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "cost": "{3}",
+                  "unpaid": [{ "Counter": { "what": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Rubble",
+      "oracle_fingerprint": "f9313777e7194d90bede6cca31750112",
+      "abilities": [
+        { "Keyword": "Aftermath" },
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Land" }] }, "bounds": { "min": 0, "max": 3 } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["DoesntUntap"],
+                  "duration": "NextUntapStep"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "oracle_id": "4b5806fa-430f-4b78-b874-63d01a8a9de5",
+  "name": "Arcane Subtraction",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Arcane Subtraction",
+      "oracle_fingerprint": "dbf765b53c6afd0b6bdabbe052521715",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": -4, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Learn": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

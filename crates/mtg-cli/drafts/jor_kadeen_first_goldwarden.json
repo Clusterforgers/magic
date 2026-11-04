@@ -1,0 +1,60 @@
+{
+  "oracle_id": "967897db-a34b-493c-bd48-04e2650902d2",
+  "name": "Jor Kadeen, First Goldwarden",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jor Kadeen, First Goldwarden",
+      "oracle_fingerprint": "4a98d37ac9893e707cccff935e4d9c32",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": {
+                          "Count": [
+                            { "Type": "Creature" },
+                            { "ControlledBy": "You" },
+                            { "HasAttached": [{ "Subtype": "Equipment" }] }
+                          ]
+                        },
+                        "toughness": {
+                          "Count": [
+                            { "Type": "Creature" },
+                            { "ControlledBy": "You" },
+                            { "HasAttached": [{ "Subtype": "Equipment" }] }
+                          ]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": "This",
+                      "selector": [{ "Compare": { "stat": "Power", "op": "Ge", "to": 4 } }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "oracle_id": "dc0bc051-2d5c-4b7f-9902-4f9d5ef8f19d",
+  "name": "Evangel of Synthesis",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Evangel of Synthesis",
+      "oracle_fingerprint": "bd94de1c3cba8e3d79741b7573b7a3f6",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Draw": {} }, { "Discard": {} }]
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }, { "AddKeyword": "Menace" }],
+            "condition": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "Drawn" } },
+                "op": "Ge",
+                "right": 2
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

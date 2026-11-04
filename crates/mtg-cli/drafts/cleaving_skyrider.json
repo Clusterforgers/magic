@@ -1,0 +1,30 @@
+{
+  "oracle_id": "eb1ab332-5549-4ff4-8afa-b385a236fb9b",
+  "name": "Cleaving Skyrider",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cleaving Skyrider",
+      "oracle_fingerprint": "ab51cc7f752e7b7d092bfe6c2b5ca46a",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": { "Kicker": "{2}{R}" } },
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This", "Kicked"], "to": "Battlefield" } },
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": { "Count": [{ "Type": "Creature" }, "Attacking"] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "oracle_id": "42c77495-5cdb-4140-827c-b1e017640c3d",
+  "name": "Sandstone Deadfall",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sandstone Deadfall",
+      "oracle_fingerprint": "7bb454cc421c5e7b0b74a13b2363cbfe",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              "Tap",
+              "SacrificeSelf",
+              { "Sacrifice": { "filter": [{ "Type": "Land" }], "count": 2 } }
+            ],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Attacking"] } }],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,133 @@
+{
+  "object": "card",
+  "id": "df6e8844-3736-4fb1-bedb-6a6bfa6ccdc8",
+  "oracle_id": "7fb7c848-377c-4476-9b3f-d95d145137f1",
+  "multiverse_ids": [
+    44401
+  ],
+  "mtgo_id": 18768,
+  "mtgo_foil_id": 18769,
+  "tcgplayer_id": 10850,
+  "cardmarket_id": 1015,
+  "name": "Reward the Faithful",
+  "lang": "en",
+  "released_at": "2003-05-26",
+  "uri": "https://api.scryfall.com/cards/df6e8844-3736-4fb1-bedb-6a6bfa6ccdc8",
+  "scryfall_uri": "https://scryfall.com/card/scg/22/reward-the-faithful?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T12:14:50Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/d/f/df6e8844-3736-4fb1-bedb-6a6bfa6ccdc8.jpg?1783944890",
+    "normal": "https://cards.scryfall.io/normal/front/d/f/df6e8844-3736-4fb1-bedb-6a6bfa6ccdc8.jpg?1783944890",
+    "large": "https://cards.scryfall.io/large/front/d/f/df6e8844-3736-4fb1-bedb-6a6bfa6ccdc8.jpg?1783944890",
+    "png": "https://cards.scryfall.io/png/front/d/f/df6e8844-3736-4fb1-bedb-6a6bfa6ccdc8.png?1783944890",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/d/f/df6e8844-3736-4fb1-bedb-6a6bfa6ccdc8.jpg?1783944890",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/d/f/df6e8844-3736-4fb1-bedb-6a6bfa6ccdc8.jpg?1783944890",
+    "thumb": "https://cards.scryfall.io/thumb/front/d/f/df6e8844-3736-4fb1-bedb-6a6bfa6ccdc8.webp?1783944890",
+    "grid": "https://cards.scryfall.io/grid/front/d/f/df6e8844-3736-4fb1-bedb-6a6bfa6ccdc8.webp?1783944890",
+    "display": "https://cards.scryfall.io/display/front/d/f/df6e8844-3736-4fb1-bedb-6a6bfa6ccdc8.webp?1783944890",
+    "art": "https://cards.scryfall.io/art/front/d/f/df6e8844-3736-4fb1-bedb-6a6bfa6ccdc8.webp?1783944890",
+    "crop": "https://cards.scryfall.io/crop/front/d/f/df6e8844-3736-4fb1-bedb-6a6bfa6ccdc8.webp?1783944890",
+    "jpeg": "https://cards.scryfall.io/normal/front/d/f/df6e8844-3736-4fb1-bedb-6a6bfa6ccdc8.jpg?1783944890"
+  },
+  "mana_cost": "{W}",
+  "cmc": 1.0,
+  "type_line": "Instant",
+  "oracle_text": "Any number of target players each gain life equal to the greatest mana value among permanents you control.",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "5133c3a1-1412-4ce6-a1f0-73b695966ded",
+  "set": "scg",
+  "set_name": "Scourge",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/5133c3a1-1412-4ce6-a1f0-73b695966ded",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ascg&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/scg?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/df6e8844-3736-4fb1-bedb-6a6bfa6ccdc8/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A7fb7c848-377c-4476-9b3f-d95d145137f1&unique=prints",
+  "collector_number": "22",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "\"When you have drunk your fill, pass the cup to others who thirst.\"",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Matt Cavotta",
+  "artist_ids": [
+    "2e6a0611-9411-4ba4-98e3-c0e18cbf9f83"
+  ],
+  "illustration_id": "b328dde7-07be-4138-9af4-3fe9c5f55033",
+  "border_color": "black",
+  "frame": "1997",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 23264,
+  "penny_rank": 17797,
+  "prices": {
+    "usd": "0.24",
+    "usd_foil": "4.24",
+    "usd_etched": null,
+    "eur": "0.24",
+    "eur_foil": "2.00",
+    "tix": "0.05"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=44401&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DReward%2Bthe%2BFaithful",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DReward%2Bthe%2BFaithful",
+    "edhrec": "https://edhrec.com/route/?cc=Reward+the+Faithful"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F10850%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=1015&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/18768?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

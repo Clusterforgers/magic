@@ -1,0 +1,43 @@
+{
+  "oracle_id": "20b8911e-6701-485c-ac62-2b3cc79ec288",
+  "name": "Coral Net",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Coral Net",
+      "oracle_fingerprint": "12a5e4b3ed6d8e89e0c7f6440ea0b26b",
+      "abilities": [
+        {
+          "Keyword": {
+            "Enchant": [
+              { "Type": "Creature" },
+              { "AnyOf": [{ "Color": "Green" }, { "Color": "White" }] }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Triggered": {
+                    "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+                    "effects": [
+                      {
+                        "Pay": {
+                          "cost": [{ "Discard": {} }],
+                          "unpaid": [{ "Sacrifice": { "filter": ["This"] } }]
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

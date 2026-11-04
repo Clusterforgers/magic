@@ -1,0 +1,23 @@
+{
+  "oracle_id": "7ef3f240-05a5-4fc9-a977-a729010a53c2",
+  "name": "Blitz Hellion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Blitz Hellion",
+      "oracle_fingerprint": "1332d5f298ad784aef6366750ea1b318",
+      "abilities": [
+        { "Keyword": "Trample" },
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "effects": [
+              { "Move": { "what": "This", "to": { "Library": { "place": "Shuffled" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

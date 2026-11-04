@@ -1,0 +1,27 @@
+{
+  "oracle_id": "73992788-8084-459c-8375-9ccc8579c5d7",
+  "name": "Succumb to the Cold",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Succumb to the Cold",
+      "oracle_fingerprint": "78d6b45a39155c375dfed7b325f1d670",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] },
+                "bounds": { "min": 1, "max": 2 }
+              }
+            ],
+            "effects": [
+              { "Tap": { "what": { "Target": 0 } } },
+              { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "stun" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

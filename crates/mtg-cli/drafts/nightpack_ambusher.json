@@ -1,0 +1,60 @@
+{
+  "oracle_id": "4d67357c-5939-45c8-a656-aaf76728a5a6",
+  "name": "Nightpack Ambusher",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nightpack Ambusher",
+      "oracle_fingerprint": "f7a754f7c5aef9a482602dde238c4e39",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "AnyOf": [{ "Subtype": "Wolf" }, { "Subtype": "Werewolf" }] },
+                "Other",
+                { "ControlledBy": "You" }
+              ]
+            },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "SpellCast",
+                    "who": "EachPlayer",
+                    "filter": [{ "ControlledBy": "You" }]
+                  }
+                },
+                "op": "Eq",
+                "right": 0
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Wolf",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Wolf"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

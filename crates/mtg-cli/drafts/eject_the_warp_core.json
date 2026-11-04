@@ -1,0 +1,55 @@
+{
+  "oracle_id": "c06c17c2-203c-4b4a-8564-f29bc41c9eb5",
+  "name": "Eject the Warp Core",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Eject the Warp Core",
+      "oracle_fingerprint": "e2beb14aa514b84cc7a6bc799c626fe7",
+      "abilities": [
+        {
+          "Keyword": {
+            "Kicker": [
+              {
+                "Sacrifice": {
+                  "filter": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": {
+                          "Times": {
+                            "by": -1,
+                            "of": { "When": { "condition": "Kicked", "then": 6, "otherwise": 2 } }
+                          }
+                        },
+                        "toughness": {
+                          "Times": {
+                            "by": -1,
+                            "of": { "When": { "condition": "Kicked", "then": 6, "otherwise": 2 } }
+                          }
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

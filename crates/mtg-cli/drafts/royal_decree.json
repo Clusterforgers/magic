@@ -1,0 +1,33 @@
+{
+  "oracle_id": "fca14cbd-5ffc-441f-bccb-7ec22b03acbb",
+  "name": "Royal Decree",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Royal Decree",
+      "oracle_fingerprint": "bdbee8a9bcda70ab414a97c248a4647d",
+      "abilities": [
+        { "Keyword": { "CumulativeUpkeep": "{W}" } },
+        {
+          "Triggered": {
+            "when": {
+              "Tapped": {
+                "what": [
+                  {
+                    "AnyOf": [
+                      { "Subtype": "Swamp" },
+                      { "Subtype": "Mountain" },
+                      { "Color": "Black" },
+                      { "Color": "Red" }
+                    ]
+                  }
+                ]
+              }
+            },
+            "effects": [{ "DealDamage": { "to": { "ControllerOf": "Triggering" }, "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

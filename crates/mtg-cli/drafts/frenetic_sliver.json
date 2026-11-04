@@ -1,0 +1,59 @@
+{
+  "oracle_id": "b1af4207-e546-4bde-950b-3234dfffe278",
+  "name": "Frenetic Sliver",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Frenetic Sliver",
+      "oracle_fingerprint": "71c0ffb28ec0b76b16c3c98dcfdf4535",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Sliver" }] },
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Activated": {
+                    "cost": "{0}",
+                    "effects": [
+                      {
+                        "If": {
+                          "condition": {
+                            "Compare": { "left": { "Count": ["This"] }, "op": "Eq", "right": 1 }
+                          },
+                          "then": [
+                            {
+                              "FlipCoin": {
+                                "win": [
+                                  { "Exile": { "what": "This", "as": "exiled" } },
+                                  {
+                                    "DelayedTrigger": {
+                                      "when": { "StepBegins": { "step": "End" } },
+                                      "effects": [
+                                        {
+                                          "Move": {
+                                            "what": { "Bound": "exiled" },
+                                            "to": { "Battlefield": {} }
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ],
+                                "lose": [{ "Sacrifice": { "filter": ["This"] } }]
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

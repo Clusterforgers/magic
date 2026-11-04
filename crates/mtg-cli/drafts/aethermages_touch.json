@@ -1,0 +1,57 @@
+{
+  "oracle_id": "15692698-ef57-4672-bf76-5fe4a00c693a",
+  "name": "Aethermage's Touch",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Aethermage's Touch",
+      "oracle_fingerprint": "ab6578c9c273575459e7659c679062d4",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "LookAtTop": { "count": 4, "as": "top" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "Type": "Creature" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "kept2"
+                }
+              },
+              { "Reveal": { "what": { "Bound": "kept2" } } },
+              { "Move": { "what": { "Bound": "kept2" }, "to": { "Battlefield": {} } } },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Bottom", "order": "Chosen" } }
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "kept2" },
+                  "mods": [
+                    {
+                      "GrantAbility": {
+                        "Triggered": {
+                          "when": { "StepBegins": { "step": "End", "whose": "You" } },
+                          "effects": [{ "Move": { "what": "This", "to": "Hand" } }]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

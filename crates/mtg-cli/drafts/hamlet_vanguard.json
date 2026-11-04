@@ -1,0 +1,36 @@
+{
+  "oracle_id": "fa0bff4f-af97-4733-b9d3-a0bc9ef1e2ca",
+  "name": "Hamlet Vanguard",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hamlet Vanguard",
+      "oracle_fingerprint": "517044203ecc413846c1315f237f860e",
+      "abilities": [
+        { "Keyword": { "Ward": "{2}" } },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "WithCounters": {
+                "counter": "+1/+1",
+                "count": {
+                  "Times": {
+                    "by": 2,
+                    "of": {
+                      "Count": [
+                        { "Subtype": "Human" },
+                        { "Not": "Token" },
+                        { "ControlledBy": "You" }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

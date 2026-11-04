@@ -1,0 +1,27 @@
+{
+  "oracle_id": "372351fd-58f7-4cb8-8644-5fbc94ccb145",
+  "name": "Prophet of Kruphix",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Prophet of Kruphix",
+      "oracle_fingerprint": "d7b4573d79de554af515e8d882197eda",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "UntapDuring": {
+                "what": [
+                  { "AnyOf": [{ "Type": "Creature" }, { "Type": "Land" }] },
+                  { "ControlledBy": "You" }
+                ],
+                "whose": "Opponents"
+              }
+            }
+          }
+        },
+        { "Rule": { "rule": { "MayCast": { "what": [{ "Type": "Creature" }], "flash": true } } } }
+      ]
+    }
+  ]
+}

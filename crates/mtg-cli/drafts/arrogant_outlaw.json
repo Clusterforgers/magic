@@ -1,0 +1,29 @@
+{
+  "oracle_id": "f202712d-7cd1-47aa-9664-526a884a1be2",
+  "name": "Arrogant Outlaw",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Arrogant Outlaw",
+      "oracle_fingerprint": "745e4a5041d2312a63084e9f8ed49603",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "Opponents", "what": "LifeLost" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              { "LoseLife": { "who": "Opponents", "amount": 2 } },
+              { "GainLife": { "amount": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

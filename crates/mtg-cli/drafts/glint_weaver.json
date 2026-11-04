@@ -1,0 +1,39 @@
+{
+  "oracle_id": "eebe3fd6-afd0-4bb3-9e8f-c737497dae33",
+  "name": "Glint Weaver",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Glint Weaver",
+      "oracle_fingerprint": "8345c56209c965491528cb3932f5ac35",
+      "abilities": [
+        { "Keyword": "Reach" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }] },
+                "bounds": { "min": 1, "max": 3 },
+                "divide": 3
+              }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1", "count": "Divided" } },
+              {
+                "GainLife": {
+                  "amount": {
+                    "Greatest": {
+                      "of": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                      "stat": "Toughness"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

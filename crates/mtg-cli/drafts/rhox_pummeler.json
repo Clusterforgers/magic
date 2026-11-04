@@ -1,0 +1,31 @@
+{
+  "oracle_id": "898c8415-8769-48c4-ad16-a4ba8c3d5d7d",
+  "name": "Rhox Pummeler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rhox Pummeler",
+      "oracle_fingerprint": "d56f1912dc6dc3a92e7bc1b17e1338e3",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": { "Other": "shield" }, "count": 1 } }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Trample" }],
+            "condition": {
+              "Matches": {
+                "subject": "This",
+                "selector": [{ "HasCounter": { "Other": "shield" } }]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

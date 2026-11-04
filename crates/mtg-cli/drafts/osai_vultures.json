@@ -1,0 +1,47 @@
+{
+  "oracle_id": "65b7a7ca-0e39-4612-9bcd-743bf903544a",
+  "name": "Osai Vultures",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Osai Vultures",
+      "oracle_fingerprint": "ff9c8978502acdfa43eceac5adbdfe9d",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "Died",
+                    "who": "EachPlayer",
+                    "filter": [{ "Type": "Creature" }]
+                  }
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": { "Other": "carrion" } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "RemoveCounters": { "counter": { "Other": "carrion" }, "count": 2 } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

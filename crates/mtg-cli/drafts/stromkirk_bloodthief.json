@@ -1,0 +1,29 @@
+{
+  "oracle_id": "c85987b4-090e-472e-b9af-1114cce56ffb",
+  "name": "Stromkirk Bloodthief",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stromkirk Bloodthief",
+      "oracle_fingerprint": "bdff7fad432a08a9e3f97e3b7ea42f3a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "Opponents", "what": "LifeLost" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "targets": [
+              { "what": { "Object": [{ "Subtype": "Vampire" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

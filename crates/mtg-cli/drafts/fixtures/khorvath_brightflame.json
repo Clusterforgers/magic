@@ -1,0 +1,159 @@
+{
+  "object": "card",
+  "id": "5fa0404b-757a-4aee-bcd8-6150938d0fba",
+  "oracle_id": "b96b1341-0c15-4816-be2d-5cc98b2afb63",
+  "multiverse_ids": [
+    445977
+  ],
+  "mtgo_id": 68746,
+  "tcgplayer_id": 167798,
+  "cardmarket_id": 358607,
+  "name": "Khorvath Brightflame",
+  "lang": "en",
+  "released_at": "2018-06-08",
+  "uri": "https://api.scryfall.com/cards/5fa0404b-757a-4aee-bcd8-6150938d0fba",
+  "scryfall_uri": "https://scryfall.com/card/bbd/9/khorvath-brightflame?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T09:27:57Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/5/f/5fa0404b-757a-4aee-bcd8-6150938d0fba.jpg?1783934877",
+    "normal": "https://cards.scryfall.io/normal/front/5/f/5fa0404b-757a-4aee-bcd8-6150938d0fba.jpg?1783934877",
+    "large": "https://cards.scryfall.io/large/front/5/f/5fa0404b-757a-4aee-bcd8-6150938d0fba.jpg?1783934877",
+    "png": "https://cards.scryfall.io/png/front/5/f/5fa0404b-757a-4aee-bcd8-6150938d0fba.png?1783934877",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/5/f/5fa0404b-757a-4aee-bcd8-6150938d0fba.jpg?1783934877",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/5/f/5fa0404b-757a-4aee-bcd8-6150938d0fba.jpg?1783934877",
+    "thumb": "https://cards.scryfall.io/thumb/front/5/f/5fa0404b-757a-4aee-bcd8-6150938d0fba.webp?1783934877",
+    "grid": "https://cards.scryfall.io/grid/front/5/f/5fa0404b-757a-4aee-bcd8-6150938d0fba.webp?1783934877",
+    "display": "https://cards.scryfall.io/display/front/5/f/5fa0404b-757a-4aee-bcd8-6150938d0fba.webp?1783934877",
+    "art": "https://cards.scryfall.io/art/front/5/f/5fa0404b-757a-4aee-bcd8-6150938d0fba.webp?1783934877",
+    "crop": "https://cards.scryfall.io/crop/front/5/f/5fa0404b-757a-4aee-bcd8-6150938d0fba.webp?1783934877",
+    "jpeg": "https://cards.scryfall.io/normal/front/5/f/5fa0404b-757a-4aee-bcd8-6150938d0fba.jpg?1783934877"
+  },
+  "mana_cost": "{5}{R}",
+  "cmc": 6.0,
+  "type_line": "Legendary Creature — Dragon",
+  "oracle_text": "Partner with Sylvia Brightspear (When this creature enters, target player may put Sylvia into their hand from their library, then shuffle.)\nFlying, haste\nKnights your team controls have flying and haste.",
+  "power": "3",
+  "toughness": "4",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Flying",
+    "Partner with",
+    "Haste",
+    "Partner"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "ab2b349a-1555-4aaa-8302-28667404e630",
+      "component": "combo_piece",
+      "name": "Sylvia Brightspear",
+      "type_line": "Legendary Creature — Human Knight",
+      "uri": "https://api.scryfall.com/cards/ab2b349a-1555-4aaa-8302-28667404e630"
+    },
+    {
+      "object": "related_card",
+      "id": "5fa0404b-757a-4aee-bcd8-6150938d0fba",
+      "component": "combo_piece",
+      "name": "Khorvath Brightflame",
+      "type_line": "Legendary Creature — Dragon",
+      "uri": "https://api.scryfall.com/cards/5fa0404b-757a-4aee-bcd8-6150938d0fba"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "95f97fbc-58ef-4645-982e-43e2db6f1124",
+  "set": "bbd",
+  "set_name": "Battlebond",
+  "set_type": "draft_innovation",
+  "set_uri": "https://api.scryfall.com/sets/95f97fbc-58ef-4645-982e-43e2db6f1124",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Abbd&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/bbd?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/5fa0404b-757a-4aee-bcd8-6150938d0fba/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ab96b1341-0c15-4816-be2d-5cc98b2afb63&unique=prints",
+  "collector_number": "9",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Carmen Sinek",
+  "artist_ids": [
+    "5297be65-a0a7-4dd3-9f02-2ae751884e87"
+  ],
+  "illustration_id": "dcac3da0-8fd8-4e7c-9ff8-dd1f0ea93f6a",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 17292,
+  "prices": {
+    "usd": "0.51",
+    "usd_foil": "2.31",
+    "usd_etched": null,
+    "eur": "0.33",
+    "eur_foil": "1.57",
+    "tix": "0.15"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=445977&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DKhorvath%2BBrightflame",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DKhorvath%2BBrightflame",
+    "edhrec": "https://edhrec.com/route/?cc=Khorvath+Brightflame"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F167798%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=358607&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/68746?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "oracle_id": "897f666e-0dda-4577-a3d7-792e3ac2f460",
+  "name": "Voldaren Ambusher",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Voldaren Ambusher",
+      "oracle_fingerprint": "7bcbe4d5a63cb3cd8999733b6be51c16",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "Opponents", "what": "LifeLost" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": { "Count": [{ "Subtype": "Vampire" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

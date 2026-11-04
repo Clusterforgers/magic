@@ -1,0 +1,38 @@
+{
+  "oracle_id": "7356319d-1485-426b-80a7-9700d6684ac9",
+  "name": "Lethargy Trap",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lethargy Trap",
+      "oracle_fingerprint": "b7ddda25f3ec02d9ea6380a9ac5dfb02",
+      "abilities": [
+        {
+          "FreeCast": {
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Type": "Creature" }, "Attacking"] },
+                "op": "Ge",
+                "right": 3
+              }
+            },
+            "cost": "{U}"
+          }
+        },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, "Attacking"] },
+                  "mods": [{ "ModifyPT": { "power": -3, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

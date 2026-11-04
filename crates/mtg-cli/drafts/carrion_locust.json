@@ -1,0 +1,38 @@
+{
+  "oracle_id": "04e5ecda-9646-4bc3-addf-cca471553fbe",
+  "name": "Carrion Locust",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Carrion Locust",
+      "oracle_fingerprint": "9244842974b0a51ec7a61d8ba04263b0",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              { "what": { "Object": [{ "OwnedBy": "Opponents" }, { "In": "Graveyard" }] } }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "exiled" },
+                      "selector": [{ "Type": "Creature" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "LoseLife": { "who": { "OwnerOf": { "Target": 0 } }, "amount": 1 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

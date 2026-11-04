@@ -1,0 +1,42 @@
+{
+  "oracle_id": "4eb67ba3-35e3-47c3-820f-62814cf202a7",
+  "name": "Ebony Horse",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ebony Horse",
+      "oracle_fingerprint": "1683e0f1798b7152d45844fd66935a23",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap"],
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, "Attacking", { "ControlledBy": "You" }]
+                }
+              }
+            ],
+            "effects": [
+              { "Untap": { "what": { "Target": 0 } } },
+              {
+                "Shield": {
+                  "when": { "Damage": { "source": [{ "Is": { "Target": 0 } }], "combat": true } },
+                  "by": "Prevent",
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": { "Target": 0 }, "combat": true } },
+                  "by": "Prevent",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

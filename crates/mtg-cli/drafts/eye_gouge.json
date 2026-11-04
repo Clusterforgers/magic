@@ -1,0 +1,40 @@
+{
+  "oracle_id": "89661ef9-cb42-401a-ae45-b57bb8dac033",
+  "name": "Eye Gouge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Eye Gouge",
+      "oracle_fingerprint": "0a7ef3c2668421e0ee9afaac2ab75ca6",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": -1, "toughness": -1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Target": 0 },
+                      "selector": [{ "Subtype": "Cyclops" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Destroy": { "what": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

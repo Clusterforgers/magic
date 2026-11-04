@@ -1,0 +1,49 @@
+{
+  "oracle_id": "f8ad2f88-72ae-4e47-beb5-25a6dacc709b",
+  "name": "Expedition Lookout",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Expedition Lookout",
+      "oracle_fingerprint": "e01bdeeeea3acf2a40ebe1abdec00af9",
+      "abilities": [
+        { "Keyword": "Defender" },
+        {
+          "Rule": {
+            "rule": { "Combat": { "who": "This", "quirk": "AttackDespiteDefender" } },
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Largest": {
+                    "who": "Opponents",
+                    "of": [{ "In": "Graveyard" }, { "OwnedBy": "You" }]
+                  }
+                },
+                "op": "Ge",
+                "right": 8
+              }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": ["CantBeBlocked"],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Largest": {
+                    "who": "Opponents",
+                    "of": [{ "In": "Graveyard" }, { "OwnedBy": "You" }]
+                  }
+                },
+                "op": "Ge",
+                "right": 8
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

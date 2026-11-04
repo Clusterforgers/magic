@@ -1,0 +1,49 @@
+{
+  "oracle_id": "5be7a4d5-33b7-464b-8851-d4ad35302e62",
+  "name": "Dragon-Cursed Halls",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dragon-Cursed Halls",
+      "oracle_fingerprint": "ded104b8bbcce41b897d11a55240a9de",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "GrantAbility": {
+                        "Triggered": {
+                          "when": {
+                            "DealsDamage": {
+                              "source": ["This"],
+                              "to": "EachPlayer",
+                              "combat": true
+                            }
+                          },
+                          "effects": [{ "CreateToken": { "token": { "Named": "treasure" } } }]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

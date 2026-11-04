@@ -1,0 +1,27 @@
+{
+  "oracle_id": "0bfa4512-e35a-4c93-b324-80ec659f5a97",
+  "name": "Ulamog, the Ceaseless Hunger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ulamog, the Ceaseless Hunger",
+      "oracle_fingerprint": "1f46e9dbfe6faf92988c033d15a67235",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": ["This"] } },
+            "targets": [{ "what": { "Object": [] }, "bounds": { "min": 2, "max": 2 } }],
+            "effects": [{ "Exile": { "what": { "Target": 0 } } }]
+          }
+        },
+        { "Keyword": "Indestructible" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [{ "ExileTop": { "who": "Defending", "count": 20, "as": "exiled" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,47 @@
+{
+  "oracle_id": "24547885-2e2c-4118-9d5e-4058471f289b",
+  "name": "Predatory Advantage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Predatory Advantage",
+      "oracle_fingerprint": "7ab48b0a2045db8992985fa6cec25070",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "Opponents" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "SpellCast",
+                    "who": "EachPlayer",
+                    "filter": [{ "Type": "Creature" }, { "ControlledBy": "ActivePlayer" }]
+                  }
+                },
+                "op": "Eq",
+                "right": 0
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Lizard",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Lizard"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

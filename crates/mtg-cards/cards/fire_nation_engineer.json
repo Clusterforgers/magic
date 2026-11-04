@@ -1,0 +1,37 @@
+{
+  "oracle_id": "9a983666-376b-48a8-9f82-8d041d32ae93",
+  "name": "Fire Nation Engineer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fire Nation Engineer",
+      "oracle_fingerprint": "4ec73ecbe08164bf08ae2a7a741fcf95",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "Attackers" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Creature" }, { "Subtype": "Vehicle" }] },
+                    "Other",
+                    { "ControlledBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

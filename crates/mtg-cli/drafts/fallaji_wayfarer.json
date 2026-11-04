@@ -1,0 +1,38 @@
+{
+  "oracle_id": "01de1f9d-3b63-49b9-b2c6-929c2a69ef54",
+  "name": "Fallaji Wayfarer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fallaji Wayfarer",
+      "oracle_fingerprint": "5aa0c397deb4fb7d132b5e476fd40a1e",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "ControlledBy": "You" },
+                { "Compare": { "stat": "Colors", "op": "Ge", "to": 2 } },
+                { "WasCast": {} },
+                { "In": "Stack" }
+              ]
+            },
+            "mods": [{ "AddKeyword": "Convoke" }]
+          }
+        },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                "Spell",
+                { "Compare": { "stat": "Colors", "op": "Ge", "to": 2 } },
+                { "ControlledBy": "You" }
+              ]
+            },
+            "mods": [{ "AddKeyword": "Convoke" }]
+          }
+        }
+      ]
+    }
+  ]
+}

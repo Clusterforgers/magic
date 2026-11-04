@@ -1,0 +1,68 @@
+{
+  "oracle_id": "3492cee8-b854-449a-ada4-a4e8a4333d87",
+  "name": "Nyla, Shirshu Sleuth",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nyla, Shirshu Sleuth",
+      "oracle_fingerprint": "de9d521fa0d6b9d814a55ab69d61fd1d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "exiled" },
+                      "selector": [{ "Type": "Creature" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "LoseLife": {
+                        "amount": { "Stat": { "of": { "Bound": "exiled" }, "stat": "ManaValue" } }
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "CreateToken": {
+                  "token": { "Named": "clue" },
+                  "count": { "Stat": { "of": { "Bound": "exiled" }, "stat": "ManaValue" } }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": [{ "Subtype": "Clue" }, { "ControlledBy": "You" }] },
+                "op": "Eq",
+                "right": 0
+              }
+            },
+            "targets": [{ "what": { "Object": [{ "ExiledWith": "This" }, { "In": "Exile" }] } }],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

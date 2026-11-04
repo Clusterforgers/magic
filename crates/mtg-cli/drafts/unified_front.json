@@ -1,0 +1,34 @@
+{
+  "oracle_id": "1f514b02-7827-4087-a6b7-bd6a3f520a64",
+  "name": "Unified Front",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Unified Front",
+      "oracle_fingerprint": "8993215c0cda0f140024b6acb60ce011",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Kor Ally",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Kor", "Ally"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": "ColorsSpent"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

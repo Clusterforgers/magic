@@ -10,16 +10,20 @@
         {
           "Triggered": {
             "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
-            "if": {
-              "Not": {
-                "Compare": {
-                  "left": { "Tallied": { "who": "You", "what": "Attackers" } },
-                  "op": "Ge",
-                  "right": 1
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Tallied": { "who": "You", "what": "Attackers" } },
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [{ "LoseLife": { "amount": 4 } }]
                 }
               }
-            },
-            "effects": [{ "LoseLife": { "amount": 4 } }]
+            ]
           }
         }
       ]

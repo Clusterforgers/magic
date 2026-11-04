@@ -1,0 +1,45 @@
+{
+  "oracle_id": "cdaffb13-c2a4-4bc5-a9d6-c1a0d1686a81",
+  "name": "Ninja's Blades",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ninja's Blades",
+      "oracle_fingerprint": "1d5b7fe8c08b859c3e33ab4fb8aae261",
+      "abilities": [
+        { "Keyword": "JobSelect" },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "ModifyPT": { "power": 1, "toughness": 1 } },
+              { "AddSubtype": "Ninja" },
+              {
+                "GrantAbility": {
+                  "Triggered": {
+                    "when": {
+                      "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true }
+                    },
+                    "effects": [
+                      { "Draw": {} },
+                      { "Discard": { "as": "discarded" } },
+                      {
+                        "LoseLife": {
+                          "who": "Triggering",
+                          "amount": {
+                            "Stat": { "of": { "Bound": "discarded" }, "stat": "ManaValue" }
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{2}" } }
+      ]
+    }
+  ]
+}

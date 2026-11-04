@@ -1,0 +1,32 @@
+{
+  "oracle_id": "92bd7fe2-bb70-40fb-984b-26e461347c56",
+  "name": "Divine Sacrament",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Divine Sacrament",
+      "oracle_fingerprint": "314bbad0b7ed824ed34657006fd485c9",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "Color": "White" }] },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "Color": "White" }] },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                "op": "Ge",
+                "right": 7
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

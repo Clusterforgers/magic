@@ -1,0 +1,51 @@
+{
+  "oracle_id": "83abf1d0-04e4-49e5-bf63-59f77829ffd1",
+  "name": "Dragonfly Swarm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dragonfly Swarm",
+      "oracle_fingerprint": "0d9246641c03bd57069efb8a73b85fc0",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": { "Ward": "{1}" } },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "SetPT": {
+                  "power": {
+                    "Count": [
+                      { "Not": { "Type": "Creature" } },
+                      { "Not": { "Type": "Land" } },
+                      { "In": "Graveyard" },
+                      { "OwnedBy": "You" }
+                    ]
+                  },
+                  "toughness": 3
+                }
+              }
+            ],
+            "defining": true
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Count": [{ "Subtype": "Lesson" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

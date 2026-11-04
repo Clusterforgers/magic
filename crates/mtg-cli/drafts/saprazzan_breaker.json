@@ -11,11 +11,16 @@
           "Activated": {
             "cost": "{U}",
             "effects": [
-              { "Mill": {} },
+              { "Mill": { "as": "milled" } },
               {
                 "If": {
                   "condition": {
-                    "Matches": { "subject": "This", "selector": [{ "Type": "Land" }] }
+                    "CountOf": {
+                      "subject": { "Bound": "milled" },
+                      "selector": [{ "Type": "Land" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
                   },
                   "then": [
                     {

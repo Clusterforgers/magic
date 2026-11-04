@@ -1,0 +1,35 @@
+{
+  "oracle_id": "43e7b834-d3a9-4297-bf79-2dab5507bebe",
+  "name": "Urgoros, the Empty One",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Urgoros, the Empty One",
+      "oracle_fingerprint": "ddb1ca90be56a328f508013c80d014af",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              { "Discard": { "who": "Triggering", "random": true, "as": "discarded" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "discarded" },
+                      "selector": [],
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

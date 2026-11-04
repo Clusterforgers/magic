@@ -1,0 +1,39 @@
+{
+  "oracle_id": "296dee6b-6ec1-4ea4-8dc3-23080dd37646",
+  "name": "Hunger of the Howlpack",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hunger of the Howlpack",
+      "oracle_fingerprint": "129bcf018dee3eef40b408d07200fd78",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": { "Target": 0 },
+                  "counter": "+1/+1",
+                  "count": {
+                    "When": {
+                      "condition": {
+                        "Compare": {
+                          "left": { "Tallied": { "who": "EachPlayer", "what": "CreaturesDied" } },
+                          "op": "Ge",
+                          "right": 1
+                        }
+                      },
+                      "then": 3,
+                      "otherwise": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

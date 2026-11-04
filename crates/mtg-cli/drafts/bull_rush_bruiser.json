@@ -1,0 +1,34 @@
+{
+  "oracle_id": "d5a7412a-2258-4d3e-9e0f-a150cc69081e",
+  "name": "Bull-Rush Bruiser",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bull-Rush Bruiser",
+      "oracle_fingerprint": "13e78190f97aec8027b71b8f3d32b637",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "if": {
+              "Compare": {
+                "left": { "Count": [{ "Subtype": "Warrior" }, "Other", { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddKeyword": "FirstStrike" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "oracle_id": "c234d2ab-21d5-41a9-9ab8-47a8bd53a686",
+  "name": "Forge Boss",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Forge Boss",
+      "oracle_fingerprint": "5533e3e1e2552d94705617f89d1acc1c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Sacrificed": { "what": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }] }
+            },
+            "limit": "OncePerTurn",
+            "effects": [{ "DealDamage": { "to": "Opponents", "amount": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

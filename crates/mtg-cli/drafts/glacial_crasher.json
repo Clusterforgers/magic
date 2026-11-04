@@ -1,0 +1,27 @@
+{
+  "oracle_id": "42441362-d638-423a-8928-ab3fd9b2d4f2",
+  "name": "Glacial Crasher",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Glacial Crasher",
+      "oracle_fingerprint": "8370d81f7277bfce19a91e4f7a440ea0",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": ["CantAttack"],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Subtype": "Mountain" }] },
+                "op": "Eq",
+                "right": 0
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

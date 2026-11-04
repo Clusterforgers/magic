@@ -1,0 +1,134 @@
+{
+  "object": "card",
+  "id": "c241fd76-f52d-48fc-864c-57caffa700f6",
+  "oracle_id": "40155cfb-078a-4359-9551-9c71266d8a1c",
+  "multiverse_ids": [
+    24552
+  ],
+  "mtgo_id": 14257,
+  "mtgo_foil_id": 14258,
+  "tcgplayer_id": 7305,
+  "cardmarket_id": 3903,
+  "name": "Flowering Field",
+  "lang": "en",
+  "released_at": "2000-06-05",
+  "uri": "https://api.scryfall.com/cards/c241fd76-f52d-48fc-864c-57caffa700f6",
+  "scryfall_uri": "https://scryfall.com/card/pcy/9/flowering-field?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T12:29:58Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/c/2/c241fd76-f52d-48fc-864c-57caffa700f6.jpg?1783945798",
+    "normal": "https://cards.scryfall.io/normal/front/c/2/c241fd76-f52d-48fc-864c-57caffa700f6.jpg?1783945798",
+    "large": "https://cards.scryfall.io/large/front/c/2/c241fd76-f52d-48fc-864c-57caffa700f6.jpg?1783945798",
+    "png": "https://cards.scryfall.io/png/front/c/2/c241fd76-f52d-48fc-864c-57caffa700f6.png?1783945798",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/c/2/c241fd76-f52d-48fc-864c-57caffa700f6.jpg?1783945798",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/c/2/c241fd76-f52d-48fc-864c-57caffa700f6.jpg?1783945798",
+    "thumb": "https://cards.scryfall.io/thumb/front/c/2/c241fd76-f52d-48fc-864c-57caffa700f6.webp?1783945798",
+    "grid": "https://cards.scryfall.io/grid/front/c/2/c241fd76-f52d-48fc-864c-57caffa700f6.webp?1783945798",
+    "display": "https://cards.scryfall.io/display/front/c/2/c241fd76-f52d-48fc-864c-57caffa700f6.webp?1783945798",
+    "art": "https://cards.scryfall.io/art/front/c/2/c241fd76-f52d-48fc-864c-57caffa700f6.webp?1783945798",
+    "crop": "https://cards.scryfall.io/crop/front/c/2/c241fd76-f52d-48fc-864c-57caffa700f6.webp?1783945798",
+    "jpeg": "https://cards.scryfall.io/normal/front/c/2/c241fd76-f52d-48fc-864c-57caffa700f6.jpg?1783945798"
+  },
+  "mana_cost": "{1}{W}",
+  "cmc": 2.0,
+  "type_line": "Enchantment — Aura",
+  "oracle_text": "Enchant land\nEnchanted land has \"{T}: Prevent the next 1 damage that would be dealt to any target this turn.\"",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Enchant"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "c233bd36-57c0-4aa2-ae6c-7aeabfb4e3ce",
+  "set": "pcy",
+  "set_name": "Prophecy",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/c233bd36-57c0-4aa2-ae6c-7aeabfb4e3ce",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Apcy&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/pcy?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/c241fd76-f52d-48fc-864c-57caffa700f6/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A40155cfb-078a-4359-9551-9c71266d8a1c&unique=prints",
+  "collector_number": "9",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "Some lands are soothing, and their peace can be felt in the soul.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Jeff Miracola",
+  "artist_ids": [
+    "9b465bde-3656-4495-ace4-af4ce29999ed"
+  ],
+  "illustration_id": "b0793c7e-36a0-4ec0-8aab-e0349c55ee57",
+  "border_color": "black",
+  "frame": "1997",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 30325,
+  "prices": {
+    "usd": "0.12",
+    "usd_foil": "6.38",
+    "usd_etched": null,
+    "eur": "0.14",
+    "eur_foil": "2.15",
+    "tix": "0.12"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=24552&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DFlowering%2BField",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DFlowering%2BField",
+    "edhrec": "https://edhrec.com/route/?cc=Flowering+Field"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F7305%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=3903&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/14257?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

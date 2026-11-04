@@ -1,0 +1,39 @@
+{
+  "oracle_id": "99bba323-b5a4-4ff3-8ad1-2a19ed119069",
+  "name": "Fluxcharger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fluxcharger",
+      "oracle_fingerprint": "f4f832bf68e13a94515033231b70a226",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                "by": "You"
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Continuous": {
+                        "affected": "This",
+                        "mods": ["SwitchPT"],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "oracle_id": "c8110200-209e-423a-96b7-81a3ac32447c",
+  "name": "The Destined White Mage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Destined White Mage",
+      "oracle_fingerprint": "66766548583af800b977434fddff7dfd",
+      "abilities": [
+        { "Keyword": "Lifelink" },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{W}" }, "Tap"],
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Lifelink" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "LifeGained": { "who": "You" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": { "Target": 0 },
+                  "counter": "+1/+1",
+                  "count": {
+                    "When": {
+                      "condition": {
+                        "Compare": { "left": { "Party": "You" }, "op": "Eq", "right": 4 }
+                      },
+                      "then": 3,
+                      "otherwise": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

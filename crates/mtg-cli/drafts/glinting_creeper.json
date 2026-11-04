@@ -1,0 +1,37 @@
+{
+  "oracle_id": "0e252f94-7731-45e1-bdbb-1bd11441577e",
+  "name": "Glinting Creeper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Glinting Creeper",
+      "oracle_fingerprint": "cd71bea2285fbc918bd9ec511ee389dd",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "WithCounters": {
+                "counter": "+1/+1",
+                "count": { "Times": { "by": 2, "of": "ColorsSpent" } }
+              }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "CantBeBlockedBy": [
+                  { "Type": "Creature" },
+                  { "Compare": { "stat": "Power", "op": "Le", "to": 2 } }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

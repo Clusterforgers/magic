@@ -1,0 +1,20 @@
+{
+  "oracle_id": "e62c943e-03ac-4a8a-ad3d-faa76b79824c",
+  "name": "Caligo Skin-Witch",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Caligo Skin-Witch",
+      "oracle_fingerprint": "2c0ef92dd4f53f643e99cffe018d0948",
+      "abilities": [
+        { "Keyword": { "Kicker": "{3}{B}" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This", "Kicked"], "to": "Battlefield" } },
+            "effects": [{ "Discard": { "who": "Opponents", "count": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

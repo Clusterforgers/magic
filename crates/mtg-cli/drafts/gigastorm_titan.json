@@ -1,0 +1,33 @@
+{
+  "oracle_id": "ef06e10c-553b-45b8-abf0-1d2e87c22128",
+  "name": "Gigastorm Titan",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gigastorm Titan",
+      "oracle_fingerprint": "9b64352a9ccd8eb7506c6fc9ce764202",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{3}",
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "SpellCast",
+                    "who": "EachPlayer",
+                    "filter": [{ "ControlledBy": "You" }]
+                  }
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

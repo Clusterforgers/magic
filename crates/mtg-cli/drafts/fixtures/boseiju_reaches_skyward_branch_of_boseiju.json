@@ -1,0 +1,187 @@
+{
+  "object": "card",
+  "id": "1144014b-f13b-4397-97ed-a8de46371a2c",
+  "oracle_id": "ec08aeb3-bba7-4982-9160-68d25bd411d6",
+  "multiverse_ids": [
+    548483,
+    548484
+  ],
+  "mtgo_id": 97290,
+  "arena_id": 79610,
+  "tcgplayer_id": 262007,
+  "cardmarket_id": 607013,
+  "name": "Boseiju Reaches Skyward // Branch of Boseiju",
+  "lang": "en",
+  "released_at": "2022-02-18",
+  "uri": "https://api.scryfall.com/cards/1144014b-f13b-4397-97ed-a8de46371a2c",
+  "scryfall_uri": "https://scryfall.com/card/neo/177/boseiju-reaches-skyward-branch-of-boseiju?utm_source=api",
+  "layout": "transform",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T06:24:18Z",
+  "cmc": 4.0,
+  "type_line": "Enchantment — Saga // Enchantment Creature — Plant",
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Reach",
+    "Transform"
+  ],
+  "card_faces": [
+    {
+      "object": "card_face",
+      "name": "Boseiju Reaches Skyward",
+      "mana_cost": "{3}{G}",
+      "type_line": "Enchantment — Saga",
+      "oracle_text": "(As this Saga enters and after your draw step, add a lore counter.)\nI — Search your library for up to two basic Forest cards, reveal them, put them into your hand, then shuffle.\nII — Put up to one target land card from your graveyard on top of your library.\nIII — Exile this Saga, then return it to the battlefield transformed under your control.",
+      "colors": [
+        "G"
+      ],
+      "artist": "Zezhou Chen",
+      "artist_id": "810677e5-a502-4c03-b726-78cd808a75d4",
+      "illustration_id": "f2a7914d-a42f-46ae-9bda-e3b82c293eab",
+      "image_uris": {
+        "small": "https://cards.scryfall.io/small/front/1/1/1144014b-f13b-4397-97ed-a8de46371a2c.jpg?1783923858",
+        "normal": "https://cards.scryfall.io/normal/front/1/1/1144014b-f13b-4397-97ed-a8de46371a2c.jpg?1783923858",
+        "large": "https://cards.scryfall.io/large/front/1/1/1144014b-f13b-4397-97ed-a8de46371a2c.jpg?1783923858",
+        "png": "https://cards.scryfall.io/png/front/1/1/1144014b-f13b-4397-97ed-a8de46371a2c.png?1783923858",
+        "art_crop": "https://cards.scryfall.io/art_crop/front/1/1/1144014b-f13b-4397-97ed-a8de46371a2c.jpg?1783923858",
+        "border_crop": "https://cards.scryfall.io/border_crop/front/1/1/1144014b-f13b-4397-97ed-a8de46371a2c.jpg?1783923858",
+        "thumb": "https://cards.scryfall.io/thumb/front/1/1/1144014b-f13b-4397-97ed-a8de46371a2c.webp?1783923858",
+        "grid": "https://cards.scryfall.io/grid/front/1/1/1144014b-f13b-4397-97ed-a8de46371a2c.webp?1783923858",
+        "display": "https://cards.scryfall.io/display/front/1/1/1144014b-f13b-4397-97ed-a8de46371a2c.webp?1783923858",
+        "art": "https://cards.scryfall.io/art/front/1/1/1144014b-f13b-4397-97ed-a8de46371a2c.webp?1783923858",
+        "crop": "https://cards.scryfall.io/crop/front/1/1/1144014b-f13b-4397-97ed-a8de46371a2c.webp?1783923858",
+        "jpeg": "https://cards.scryfall.io/normal/front/1/1/1144014b-f13b-4397-97ed-a8de46371a2c.jpg?1783923858"
+      }
+    },
+    {
+      "object": "card_face",
+      "name": "Branch of Boseiju",
+      "mana_cost": "",
+      "type_line": "Enchantment Creature — Plant",
+      "oracle_text": "Reach\nThis creature gets +1/+1 for each land you control.",
+      "colors": [
+        "G"
+      ],
+      "color_indicator": [
+        "G"
+      ],
+      "power": "0",
+      "toughness": "0",
+      "flavor_text": "Though they razed the surrounding forest, the builders of Towashi left Boseiju unscathed, shaping the city around the ancient tree.",
+      "artist": "Zezhou Chen",
+      "artist_id": "810677e5-a502-4c03-b726-78cd808a75d4",
+      "illustration_id": "fc65ba73-c7d7-4490-ad56-f04e4474e527",
+      "image_uris": {
+        "small": "https://cards.scryfall.io/small/back/1/1/1144014b-f13b-4397-97ed-a8de46371a2c.jpg?1783923858",
+        "normal": "https://cards.scryfall.io/normal/back/1/1/1144014b-f13b-4397-97ed-a8de46371a2c.jpg?1783923858",
+        "large": "https://cards.scryfall.io/large/back/1/1/1144014b-f13b-4397-97ed-a8de46371a2c.jpg?1783923858",
+        "png": "https://cards.scryfall.io/png/back/1/1/1144014b-f13b-4397-97ed-a8de46371a2c.png?1783923858",
+        "art_crop": "https://cards.scryfall.io/art_crop/back/1/1/1144014b-f13b-4397-97ed-a8de46371a2c.jpg?1783923858",
+        "border_crop": "https://cards.scryfall.io/border_crop/back/1/1/1144014b-f13b-4397-97ed-a8de46371a2c.jpg?1783923858",
+        "thumb": "https://cards.scryfall.io/thumb/back/1/1/1144014b-f13b-4397-97ed-a8de46371a2c.webp?1783923858",
+        "grid": "https://cards.scryfall.io/grid/back/1/1/1144014b-f13b-4397-97ed-a8de46371a2c.webp?1783923858",
+        "display": "https://cards.scryfall.io/display/back/1/1/1144014b-f13b-4397-97ed-a8de46371a2c.webp?1783923858",
+        "art": "https://cards.scryfall.io/art/back/1/1/1144014b-f13b-4397-97ed-a8de46371a2c.webp?1783923858",
+        "crop": "https://cards.scryfall.io/crop/back/1/1/1144014b-f13b-4397-97ed-a8de46371a2c.webp?1783923858",
+        "jpeg": "https://cards.scryfall.io/normal/back/1/1/1144014b-f13b-4397-97ed-a8de46371a2c.jpg?1783923858"
+      }
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo",
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "59a2059f-5482-433f-8761-eb2e17859b71",
+  "set": "neo",
+  "set_name": "Kamigawa: Neon Dynasty",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/59a2059f-5482-433f-8761-eb2e17859b71",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aneo&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/neo?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/1144014b-f13b-4397-97ed-a8de46371a2c/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Aec08aeb3-bba7-4982-9160-68d25bd411d6&unique=prints",
+  "collector_number": "177",
+  "digital": false,
+  "rarity": "uncommon",
+  "artist": "Zezhou Chen",
+  "artist_ids": [
+    "810677e5-a502-4c03-b726-78cd808a75d4"
+  ],
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "fandfc",
+    "enchantment"
+  ],
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 6208,
+  "penny_rank": 11062,
+  "preview": {
+    "source": "Wizards of the Coast",
+    "source_uri": "https://www.twitch.tv/videos/1277767538",
+    "previewed_at": "2022-01-27"
+  },
+  "prices": {
+    "usd": "0.24",
+    "usd_foil": "0.32",
+    "usd_etched": null,
+    "eur": "0.08",
+    "eur_foil": "0.25",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=548483&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DBoseiju%2BReaches%2BSkyward%2B%252F%252F%2BBranch%2Bof%2BBoseiju",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DBoseiju%2BReaches%2BSkyward%2B%252F%252F%2BBranch%2Bof%2BBoseiju",
+    "edhrec": "https://edhrec.com/route/?cc=Boseiju+Reaches+Skyward"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F262007%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=607013&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/97290?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

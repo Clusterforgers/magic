@@ -1,0 +1,38 @@
+{
+  "oracle_id": "991fab9c-8554-4e64-a933-6cc2ffa4edb1",
+  "name": "Kurbis, Harvest Celebrant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kurbis, Harvest Celebrant",
+      "oracle_fingerprint": "608aecbdce56868c389c239e63c3a64b",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "WithCounters": { "counter": "+1/+1", "count": { "ManaSpent": { "of": null } } }
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "RemoveCounters": { "counter": "+1/+1" } }],
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, "Other", { "HasCounter": "+1/+1" }] } }
+            ],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": { "Target": 0 } } },
+                  "by": "Prevent",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

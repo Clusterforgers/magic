@@ -1,0 +1,53 @@
+{
+  "oracle_id": "5f532b7f-cb76-4be7-b361-0106c561dcb2",
+  "name": "Sami's Curiosity",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sami's Curiosity",
+      "oracle_fingerprint": "1dca20a45463ee83e652f459f62a5532",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "GainLife": { "amount": 2 } },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Lander",
+                      "types": ["Artifact"],
+                      "subtypes": ["Lander"],
+                      "abilities": [
+                        {
+                          "Activated": {
+                            "cost": [{ "Mana": "{2}" }, "Tap", "SacrificeSelf"],
+                            "effects": [
+                              {
+                                "Search": {
+                                  "filter": [{ "Type": "Land" }, { "Supertype": "Basic" }],
+                                  "as": "found"
+                                }
+                              },
+                              {
+                                "Move": {
+                                  "what": { "Bound": "found" },
+                                  "to": { "Battlefield": { "tapped": true } }
+                                }
+                              },
+                              { "Shuffle": {} }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "oracle_id": "33a6d78a-a3c7-44f1-8ce9-d6632123fec1",
+  "name": "Insolence",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Insolence",
+      "oracle_fingerprint": "568c65352f9399428c42b34bae78d182",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": { "Tapped": { "what": [{ "Is": "Attached" }] } },
+            "effects": [{ "DealDamage": { "to": { "ControllerOf": "Triggering" }, "amount": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "oracle_id": "10733767-1c97-4e2e-b02b-54bf346f6583",
+  "name": "Abyssal Nightstalker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Abyssal Nightstalker",
+      "oracle_fingerprint": "73a2d54965e54c1d097436c999e0fd29",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Unblocked": { "what": ["This"] } },
+            "effects": [{ "Discard": { "who": "Defending" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

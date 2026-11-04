@@ -1,0 +1,66 @@
+{
+  "oracle_id": "f69e9629-a7f7-4241-bf0c-c8def7d19d66",
+  "name": "Kithkin Zephyrnaut",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kithkin Zephyrnaut",
+      "oracle_fingerprint": "728a335cedb48e2062bafb29553789a8",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "LookAtTop": { "as": "top" } },
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "In": "Library" },
+                            { "Is": { "Bound": "top" } },
+                            { "SharesSubtype": "This" }
+                          ]
+                        },
+                        "count": { "min": 0, "max": 1 },
+                        "as": "revealed2"
+                      }
+                    },
+                    { "Reveal": { "what": { "Bound": "revealed2" } } },
+                    {
+                      "If": {
+                        "condition": {
+                          "CountOf": {
+                            "subject": { "Bound": "revealed2" },
+                            "selector": [],
+                            "op": "Eq",
+                            "right": 1
+                          }
+                        },
+                        "then": [
+                          {
+                            "Continuous": {
+                              "affected": "This",
+                              "mods": [
+                                { "ModifyPT": { "power": 2, "toughness": 2 } },
+                                { "AddKeyword": "Flying" },
+                                { "AddKeyword": "Vigilance" }
+                              ],
+                              "duration": "UntilEndOfTurn"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

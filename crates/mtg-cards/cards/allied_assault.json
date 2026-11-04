@@ -1,0 +1,31 @@
+{
+  "oracle_id": "31d8c2c4-3309-4eee-a704-f760f381f080",
+  "name": "Allied Assault",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Allied Assault",
+      "oracle_fingerprint": "df61856f56470f970c2b2fa17562dd59",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 0, "max": 2 } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "ModifyPT": { "power": { "Party": "You" }, "toughness": { "Party": "You" } } }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

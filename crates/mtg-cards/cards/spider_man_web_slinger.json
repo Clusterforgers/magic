@@ -1,0 +1,26 @@
+{
+  "oracle_id": "505231d8-714f-4c5b-a635-d1662bd18a78",
+  "name": "Spider-Man, Web-Slinger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spider-Man, Web-Slinger",
+      "oracle_fingerprint": "5c52ade82e2ac5b92d6df556943c4788",
+      "abilities": [
+        {
+          "AltCast": {
+            "way": "WebSlinging",
+            "cost": [
+              { "Mana": "{W}" },
+              {
+                "ReturnToHand": {
+                  "filter": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "Tapped"]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

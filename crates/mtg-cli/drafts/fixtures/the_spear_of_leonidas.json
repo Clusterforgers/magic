@@ -1,0 +1,174 @@
+{
+  "object": "card",
+  "id": "160d6ce7-2452-41a2-aa70-41e1b8045c54",
+  "oracle_id": "dac3a263-cc02-446a-88ec-882a21096b6c",
+  "multiverse_ids": [
+    667628
+  ],
+  "mtgo_id": 128042,
+  "tcgplayer_id": 555431,
+  "cardmarket_id": 774521,
+  "name": "The Spear of Leonidas",
+  "lang": "en",
+  "released_at": "2024-07-05",
+  "uri": "https://api.scryfall.com/cards/160d6ce7-2452-41a2-aa70-41e1b8045c54",
+  "scryfall_uri": "https://scryfall.com/card/acr/38/the-spear-of-leonidas?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T02:49:37Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/1/6/160d6ce7-2452-41a2-aa70-41e1b8045c54.jpg?1783910977",
+    "normal": "https://cards.scryfall.io/normal/front/1/6/160d6ce7-2452-41a2-aa70-41e1b8045c54.jpg?1783910977",
+    "large": "https://cards.scryfall.io/large/front/1/6/160d6ce7-2452-41a2-aa70-41e1b8045c54.jpg?1783910977",
+    "png": "https://cards.scryfall.io/png/front/1/6/160d6ce7-2452-41a2-aa70-41e1b8045c54.png?1783910977",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/1/6/160d6ce7-2452-41a2-aa70-41e1b8045c54.jpg?1783910977",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/1/6/160d6ce7-2452-41a2-aa70-41e1b8045c54.jpg?1783910977",
+    "thumb": "https://cards.scryfall.io/thumb/front/1/6/160d6ce7-2452-41a2-aa70-41e1b8045c54.webp?1783910977",
+    "grid": "https://cards.scryfall.io/grid/front/1/6/160d6ce7-2452-41a2-aa70-41e1b8045c54.webp?1783910977",
+    "display": "https://cards.scryfall.io/display/front/1/6/160d6ce7-2452-41a2-aa70-41e1b8045c54.webp?1783910977",
+    "art": "https://cards.scryfall.io/art/front/1/6/160d6ce7-2452-41a2-aa70-41e1b8045c54.webp?1783910977",
+    "crop": "https://cards.scryfall.io/crop/front/1/6/160d6ce7-2452-41a2-aa70-41e1b8045c54.webp?1783910977",
+    "jpeg": "https://cards.scryfall.io/normal/front/1/6/160d6ce7-2452-41a2-aa70-41e1b8045c54.jpg?1783910977"
+  },
+  "mana_cost": "{2}{R}",
+  "cmc": 3.0,
+  "type_line": "Legendary Artifact — Equipment",
+  "oracle_text": "Whenever equipped creature attacks, choose one —\n• Bull Rush — It gains double strike until end of turn.\n• Summon — Create Phobos, a legendary 3/2 red Horse creature token.\n• Revelation — Discard two cards, then draw two cards.\nEquip {2}",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Bull Rush",
+    "Summon",
+    "Equip",
+    "Revelation"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "1f053676-de35-4465-b3b2-ce6050055e85",
+      "component": "combo_piece",
+      "name": "Kassandra, Eagle Bearer",
+      "type_line": "Legendary Creature — Human Assassin Warrior",
+      "uri": "https://api.scryfall.com/cards/1f053676-de35-4465-b3b2-ce6050055e85"
+    },
+    {
+      "object": "related_card",
+      "id": "447bd736-6b47-440c-86ed-db54bd655274",
+      "component": "token",
+      "name": "Phobos",
+      "type_line": "Token Legendary Creature — Horse",
+      "uri": "https://api.scryfall.com/cards/447bd736-6b47-440c-86ed-db54bd655274"
+    },
+    {
+      "object": "related_card",
+      "id": "4a71cfd0-0e24-4ae4-9a7e-a5ab5fea46c8",
+      "component": "combo_piece",
+      "name": "The Spear of Leonidas",
+      "type_line": "Legendary Artifact — Equipment",
+      "uri": "https://api.scryfall.com/cards/4a71cfd0-0e24-4ae4-9a7e-a5ab5fea46c8"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "54b67b0b-cd3f-4e0d-ac25-fef5d966409b",
+  "set": "acr",
+  "set_name": "Assassin's Creed",
+  "set_type": "draft_innovation",
+  "set_uri": "https://api.scryfall.com/sets/54b67b0b-cd3f-4e0d-ac25-fef5d966409b",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aacr&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/acr?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/160d6ce7-2452-41a2-aa70-41e1b8045c54/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Adac3a263-cc02-446a-88ec-882a21096b6c&unique=prints",
+  "collector_number": "38",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Narendra Bintara Adi",
+  "artist_ids": [
+    "1be2b84d-99c5-4a51-b741-105cbeb53078"
+  ],
+  "illustration_id": "93cbf99a-4e0a-4fa8-a14c-a45d573d35fe",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 3658,
+  "penny_rank": 5157,
+  "preview": {
+    "source": "IGN",
+    "source_uri": "https://www.ign.com/videos/assassins-creed-is-coming-to-magic-the-gathering-ign-live-2024",
+    "previewed_at": "2024-06-09"
+  },
+  "prices": {
+    "usd": "2.42",
+    "usd_foil": "1.54",
+    "usd_etched": null,
+    "eur": "0.95",
+    "eur_foil": "1.19",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=667628&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DThe%2BSpear%2Bof%2BLeonidas",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DThe%2BSpear%2Bof%2BLeonidas",
+    "edhrec": "https://edhrec.com/route/?cc=The+Spear+of+Leonidas"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F555431%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=774521&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/128042?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

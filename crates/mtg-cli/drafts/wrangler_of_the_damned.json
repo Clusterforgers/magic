@@ -1,0 +1,49 @@
+{
+  "oracle_id": "0d8fded4-0393-43c2-82a1-383f29de65ce",
+  "name": "Wrangler of the Damned",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wrangler of the Damned",
+      "oracle_fingerprint": "c3182a90915d4dda03f748f8610f4eaf",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "SpellCast",
+                    "who": "EachPlayer",
+                    "filter": [{ "WasCast": { "by": "You", "from": "Hand" } }, { "OwnedBy": "You" }]
+                  }
+                },
+                "op": "Lt",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Spirit",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Spirit"],
+                      "power": 2,
+                      "toughness": 2,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "oracle_id": "6a70e571-6932-45d8-9f14-ede4a561cc49",
+  "name": "Kirk, Enterprising Captain",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kirk, Enterprising Captain",
+      "oracle_fingerprint": "c82001605d76418ab09659709d57fbcf",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "if": {
+              "AtTrigger": {
+                "Compare": {
+                  "left": {
+                    "Total": {
+                      "of": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                      "stat": "Power"
+                    }
+                  },
+                  "op": "Ge",
+                  "right": 8
+                }
+              }
+            },
+            "effects": [
+              { "ExileTop": { "as": "exiled" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": { "from": "Exile", "only": { "Bound": "exiled" }, "play": true }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

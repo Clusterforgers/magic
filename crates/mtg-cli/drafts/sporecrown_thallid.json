@@ -1,0 +1,25 @@
+{
+  "oracle_id": "d0c2ca8a-c5d4-4684-bacb-46c04f47c276",
+  "name": "Sporecrown Thallid",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sporecrown Thallid",
+      "oracle_fingerprint": "b06a285758093c5303ad9e11727a083c",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "AnyOf": [{ "Subtype": "Fungus" }, { "Subtype": "Saproling" }] },
+                "Other",
+                { "ControlledBy": "You" }
+              ]
+            },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

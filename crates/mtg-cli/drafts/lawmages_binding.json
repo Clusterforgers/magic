@@ -1,0 +1,26 @@
+{
+  "oracle_id": "10f0e797-3887-4c2b-9cff-80f110b952e1",
+  "name": "Lawmage's Binding",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lawmage's Binding",
+      "oracle_fingerprint": "f8a9349a832841de189930cd2c63c09b",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        { "Static": { "affected": "Attached", "mods": ["CantAttack", "CantBlock"] } },
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": { "Each": [{ "Type": "Creature" }, { "Is": "Attached" }] },
+                "action": { "Activate": [] }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

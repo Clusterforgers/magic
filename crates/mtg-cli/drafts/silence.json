@@ -1,0 +1,25 @@
+{
+  "oracle_id": "8aed54cb-d1bb-45ad-adbe-38e55d84ff31",
+  "name": "Silence",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Silence",
+      "oracle_fingerprint": "cd9d1f522791042b2d0f475b8753158a",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Rule": {
+                  "rule": { "Cant": { "who": "Opponents", "action": { "Cast": {} } } },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

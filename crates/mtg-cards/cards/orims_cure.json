@@ -1,0 +1,39 @@
+{
+  "oracle_id": "61eacaab-625b-499c-8602-f37ad5dda138",
+  "name": "Orim's Cure",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Orim's Cure",
+      "oracle_fingerprint": "c4daab11be744de90cb3720bce93385e",
+      "abilities": [
+        {
+          "FreeCast": {
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Subtype": "Plains" }, { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "cost": [{ "TapPermanents": { "filter": [{ "Type": "Creature" }] } }]
+          }
+        },
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": { "Target": 0 } } },
+                  "by": { "PreventUpTo": 4 },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

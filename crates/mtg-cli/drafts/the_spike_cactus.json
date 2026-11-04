@@ -1,0 +1,28 @@
+{
+  "oracle_id": "ab9cba15-4393-4cc5-8324-dae98a9e7642",
+  "name": "The Spike Cactus",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Spike Cactus",
+      "oracle_fingerprint": "85956cb4974d695dc30dc1cdee1f0d0d",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "WithCounters": { "counter": "+1/+1", "count": { "ManaSpent": { "of": null } } }
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, { "RemoveCounters": { "counter": "+1/+1" } }],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

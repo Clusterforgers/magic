@@ -1,0 +1,35 @@
+{
+  "oracle_id": "c5829bff-9687-42b2-8bba-1f036e592cdd",
+  "name": "Fylamarid",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fylamarid",
+      "oracle_fingerprint": "f08b1dc0a6deea2e75183a0fb8b94898",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "CantBeBlockedBy": [{ "Type": "Creature" }, { "Color": "Blue" }] }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{U}",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetColors": ["Blue"] }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

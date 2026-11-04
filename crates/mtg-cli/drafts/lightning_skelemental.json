@@ -1,0 +1,27 @@
+{
+  "oracle_id": "7c3f2b3d-1517-4818-9675-189949175623",
+  "name": "Lightning Skelemental",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lightning Skelemental",
+      "oracle_fingerprint": "5f592dcb5bd2632ef0a9b4dea3177ebc",
+      "abilities": [
+        { "Keyword": "Trample" },
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [{ "Discard": { "who": "Triggering", "count": 2 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "effects": [{ "Sacrifice": { "filter": ["This"] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

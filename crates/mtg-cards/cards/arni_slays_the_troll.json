@@ -1,0 +1,58 @@
+{
+  "oracle_id": "7cb47a7e-fe60-45a2-9c07-bd5c6ddca82d",
+  "name": "Arni Slays the Troll",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Arni Slays the Troll",
+      "oracle_fingerprint": "fa84f818eece514f60aa667218a3a635",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "Not": { "ControlledBy": "You" } }] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [{ "Fight": { "what": { "Target": 0 }, "with": { "Target": 1 } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "AddMana": { "mana": { "Fixed": ["Red"] } } },
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1", "count": 2 } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "effects": [
+              {
+                "GainLife": {
+                  "amount": {
+                    "Greatest": {
+                      "of": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                      "stat": "Power"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

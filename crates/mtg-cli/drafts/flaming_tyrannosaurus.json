@@ -1,0 +1,49 @@
+{
+  "oracle_id": "89505f24-6c96-4062-8171-1851f7e7395b",
+  "name": "Flaming Tyrannosaurus",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Flaming Tyrannosaurus",
+      "oracle_fingerprint": "9ffd69b2e068a6486dc892eba4bd1a4e",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [
+                  {
+                    "AnyOf": [
+                      { "Not": { "WasCast": { "from": "Hand" } } },
+                      { "Not": { "OwnedBy": "You" } }
+                    ]
+                  }
+                ],
+                "by": "You"
+              }
+            },
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 3 } },
+              { "PutCounters": { "on": "This", "counter": "+1/+1" } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": "Opponents",
+                  "amount": { "Stat": { "of": "This", "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

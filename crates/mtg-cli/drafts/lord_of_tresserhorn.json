@@ -1,0 +1,25 @@
+{
+  "oracle_id": "283e7a23-ae25-48d1-abb5-cd021f66cc29",
+  "name": "Lord of Tresserhorn",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lord of Tresserhorn",
+      "oracle_fingerprint": "0490c40b62efbc0105a744e31e31fafa",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              { "LoseLife": { "amount": 2 } },
+              { "Sacrifice": { "filter": [{ "Type": "Creature" }], "count": 2 } },
+              { "Draw": { "who": { "Target": 0 }, "count": 2 } }
+            ]
+          }
+        },
+        { "Activated": { "cost": "{B}", "effects": [{ "Regenerate": { "what": "This" } }] } }
+      ]
+    }
+  ]
+}

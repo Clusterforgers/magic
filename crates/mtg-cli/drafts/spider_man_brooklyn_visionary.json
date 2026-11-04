@@ -1,0 +1,46 @@
+{
+  "oracle_id": "2ca85872-9436-4515-af50-c13e59605627",
+  "name": "Spider-Man, Brooklyn Visionary",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spider-Man, Brooklyn Visionary",
+      "oracle_fingerprint": "7e19881a5f38595e16557f1b00ec0ea4",
+      "abilities": [
+        {
+          "AltCast": {
+            "way": "WebSlinging",
+            "cost": [
+              { "Mana": "{2}{G}" },
+              {
+                "ReturnToHand": {
+                  "filter": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "Tapped"]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Search": {
+                  "filter": [{ "Type": "Land" }, { "Supertype": "Basic" }],
+                  "as": "found"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "found" },
+                  "to": { "Battlefield": { "tapped": true } }
+                }
+              },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

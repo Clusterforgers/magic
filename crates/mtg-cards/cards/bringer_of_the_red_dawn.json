@@ -1,0 +1,44 @@
+{
+  "oracle_id": "2ac11645-1290-4026-af19-e47e59c277b2",
+  "name": "Bringer of the Red Dawn",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bringer of the Red Dawn",
+      "oracle_fingerprint": "e1e9bcc08d99f111243af35a403ebf8e",
+      "abilities": [
+        { "FreeCast": { "cost": "{W}{U}{B}{R}{G}" } },
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "Untap": { "what": { "Target": 0 } } },
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [{ "SetController": "You" }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    },
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [{ "AddKeyword": "Haste" }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

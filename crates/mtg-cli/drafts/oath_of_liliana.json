@@ -1,0 +1,53 @@
+{
+  "oracle_id": "0bd7fd12-a0b7-4b4e-8a33-cace6e6bd6d1",
+  "name": "Oath of Liliana",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Oath of Liliana",
+      "oracle_fingerprint": "3716af9c3385db2f0d55aec2c2b31c2f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Sacrifice": { "who": "Opponents", "filter": [{ "Type": "Creature" }] } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "Entered",
+                    "who": "EachPlayer",
+                    "filter": [{ "Type": "Planeswalker" }, { "ControlledBy": "You" }]
+                  }
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Zombie",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Zombie"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

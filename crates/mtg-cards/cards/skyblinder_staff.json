@@ -1,0 +1,23 @@
+{
+  "oracle_id": "3fea3d1a-067b-4eae-8433-f7e1e7b724a3",
+  "name": "Skyblinder Staff",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Skyblinder Staff",
+      "oracle_fingerprint": "cddecc12e4e1347013186500b98c75f6",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "ModifyPT": { "power": 1, "toughness": 0 } },
+              { "CantBeBlockedBy": [{ "Type": "Creature" }, { "HasKeyword": "Flying" }] }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{3}" } }
+      ]
+    }
+  ]
+}

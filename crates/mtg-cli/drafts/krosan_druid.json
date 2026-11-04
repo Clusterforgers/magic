@@ -1,0 +1,20 @@
+{
+  "oracle_id": "1fbed9e4-86f6-4115-8468-8593e340701f",
+  "name": "Krosan Druid",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Krosan Druid",
+      "oracle_fingerprint": "63f1e17f636ac4e0d966e490181870f1",
+      "abilities": [
+        { "Keyword": { "Kicker": "{4}{G}" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This", "Kicked"], "to": "Battlefield" } },
+            "effects": [{ "GainLife": { "amount": 10 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

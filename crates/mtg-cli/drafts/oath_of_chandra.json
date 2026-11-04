@@ -1,0 +1,41 @@
+{
+  "oracle_id": "53a0923f-7da8-4e31-a231-9b275916e2a2",
+  "name": "Oath of Chandra",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Oath of Chandra",
+      "oracle_fingerprint": "2f30490fc0ce37477ceea0e05f0f7d73",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 3 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "Entered",
+                    "who": "EachPlayer",
+                    "filter": [{ "Type": "Planeswalker" }, { "ControlledBy": "You" }]
+                  }
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "DealDamage": { "to": "Opponents", "amount": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

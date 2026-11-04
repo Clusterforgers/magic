@@ -1,0 +1,38 @@
+{
+  "oracle_id": "a18e6468-b8a2-4681-b8fa-223ab5f3061a",
+  "name": "Phyrexian Boon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Phyrexian Boon",
+      "oracle_fingerprint": "63e754e425c46ad29e8c7d3940487abb",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 1 } }],
+            "condition": {
+              "Matches": {
+                "subject": "Attached",
+                "selector": [{ "Type": "Creature" }, { "Color": "Black" }]
+              }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": -1, "toughness": -2 } }],
+            "condition": {
+              "Matches": {
+                "subject": "Attached",
+                "selector": [{ "Type": "Creature" }, { "Not": { "Color": "Black" } }]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "oracle_id": "aa9bde06-098c-41b3-b816-49daacc02c50",
+  "name": "Gitaxian Anatomist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gitaxian Anatomist",
+      "oracle_fingerprint": "b457a4df769dd567216c4fcb711faf13",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "TapPermanents": { "filter": ["This"] } }],
+                  "paid": [{ "Proliferate": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

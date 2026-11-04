@@ -1,0 +1,35 @@
+{
+  "oracle_id": "dd283473-6423-4a1f-b5a3-77234cdce643",
+  "name": "Tornado",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tornado",
+      "oracle_fingerprint": "a539bc1fa2e0ad268d534ed8b2f1c22e",
+      "abilities": [
+        { "Keyword": { "CumulativeUpkeep": "{G}" } },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{2}{G}" },
+              {
+                "PayLife": {
+                  "Times": {
+                    "by": 3,
+                    "of": { "Counters": { "on": "This", "counter": { "Other": "velocity" } } }
+                  }
+                }
+              }
+            ],
+            "limit": "OncePerTurn",
+            "targets": [{ "what": { "Object": [] } }],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              { "PutCounters": { "on": "This", "counter": { "Other": "velocity" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "oracle_id": "b9bb1b0e-38ce-40f1-882b-85f6c95610ff",
+  "name": "Thallid Omnivore",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thallid Omnivore",
+      "oracle_fingerprint": "b2e780ae892c7c984b5720928224183d",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{1}" },
+              { "Sacrifice": { "filter": [{ "Type": "Creature" }, "Other"] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": "Paid",
+                      "selector": [{ "Subtype": "Saproling" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "GainLife": { "amount": 2 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

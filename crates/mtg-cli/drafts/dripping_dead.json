@@ -1,0 +1,26 @@
+{
+  "oracle_id": "bf0c85d7-16a0-46a5-a3a6-5591849bef60",
+  "name": "Dripping Dead",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dripping Dead",
+      "oracle_fingerprint": "a425ebc4ef30ee1b91ae468319175bff",
+      "abilities": [
+        { "Static": { "affected": "This", "mods": ["CantBlock"] } },
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": ["This"],
+                "to": { "Each": [{ "Type": "Creature" }] },
+                "combat": true
+              }
+            },
+            "effects": [{ "Destroy": { "what": "Triggering", "regenerate": false } }]
+          }
+        }
+      ]
+    }
+  ]
+}

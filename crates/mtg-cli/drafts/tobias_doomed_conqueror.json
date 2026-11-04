@@ -1,0 +1,46 @@
+{
+  "oracle_id": "e4544369-910a-41b4-b835-eee341bb48c6",
+  "name": "Tobias, Doomed Conqueror",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tobias, Doomed Conqueror",
+      "oracle_fingerprint": "c883372312152c14a32c5838614e132a",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Zombie",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Zombie"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  },
+                  "count": {
+                    "Tally": {
+                      "event": "Died",
+                      "who": "EachPlayer",
+                      "filter": [
+                        { "Type": "Creature" },
+                        { "Not": "Token" },
+                        { "ControlledBy": "You" }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

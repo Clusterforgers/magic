@@ -1,0 +1,23 @@
+{
+  "oracle_id": "ae0b8c13-0a71-4a60-bf9f-6e2da9503e9c",
+  "name": "Worldfire",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Worldfire",
+      "oracle_fingerprint": "5a7e2db662875bfcee47bf335ee60953",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Exile": { "what": { "Each": [] } } },
+              { "Exile": { "what": { "Each": [{ "In": "Hand" }] } } },
+              { "Exile": { "what": { "Each": [{ "In": "Graveyard" }] } } },
+              { "SetLife": { "who": "EachPlayer", "amount": 1 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

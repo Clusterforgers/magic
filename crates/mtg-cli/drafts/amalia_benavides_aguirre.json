@@ -1,0 +1,38 @@
+{
+  "oracle_id": "85eefda9-4aab-467d-a08c-be026cb8ff42",
+  "name": "Amalia Benavides Aguirre",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Amalia Benavides Aguirre",
+      "oracle_fingerprint": "1e404cd99daccdaa717225cf33b1db57",
+      "abilities": [
+        { "Keyword": { "Ward": [{ "PayLife": 3 }] } },
+        {
+          "Triggered": {
+            "when": { "LifeGained": { "who": "You" } },
+            "effects": [
+              { "Explore": { "what": "This" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": "This",
+                      "selector": [
+                        { "Type": "Creature" },
+                        { "Compare": { "stat": "Power", "op": "Eq", "to": 20 } }
+                      ],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Destroy": { "what": { "Each": [{ "Type": "Creature" }, "Other"] } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

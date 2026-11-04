@@ -1,0 +1,28 @@
+{
+  "oracle_id": "bc1c9ca8-2f00-4761-bd85-1329287ae7ac",
+  "name": "Siren Reaver",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Siren Reaver",
+      "oracle_fingerprint": "249d8c13cddcce35715b3ac5940cae0d",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{1}",
+            "condition": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "Attackers" } },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        },
+        { "Keyword": "Flying" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "oracle_id": "bb2cc0f4-6abd-48d6-b442-76eafbfd2309",
+  "name": "Briber's Purse",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Briber's Purse",
+      "oracle_fingerprint": "6c6e6c9f2e9239b29bcd2a8e5722483d",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": { "Other": "gem" }, "count": "X" } }
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{1}" },
+              "Tap",
+              { "RemoveCounters": { "counter": { "Other": "gem" } } }
+            ],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["CantAttack", "CantBlock"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

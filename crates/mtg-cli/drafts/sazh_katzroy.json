@@ -1,0 +1,59 @@
+{
+  "oracle_id": "0e5b40dc-debf-48a1-8398-5ea00b5a5166",
+  "name": "Sazh Katzroy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sazh Katzroy",
+      "oracle_fingerprint": "2039acdafbf7ec797bac6020954bd9ca",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Search": {
+                        "filter": [
+                          {
+                            "AnyOf": [
+                              { "Subtype": "Bird" },
+                              {
+                                "Not": {
+                                  "AnyOf": [
+                                    { "Not": { "Type": "Land" } },
+                                    { "Not": { "Supertype": "Basic" } }
+                                  ]
+                                }
+                              }
+                            ]
+                          }
+                        ],
+                        "reveal": true,
+                        "as": "found"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+                    { "Shuffle": {} }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } },
+              { "MultiplyCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

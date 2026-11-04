@@ -1,0 +1,27 @@
+{
+  "oracle_id": "de83b1a4-0ce0-4cc1-aff3-6d0239d92302",
+  "name": "Hostile Investigator",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hostile Investigator",
+      "oracle_fingerprint": "1c93d7fcb98e5a91c981b0d1e2fef8ca",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [{ "Discard": { "who": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Batch": { "Discarded": {} } },
+            "limit": "OncePerTurn",
+            "effects": [{ "CreateToken": { "token": { "Named": "clue" } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "oracle_id": "7f4b0233-a2b0-41a2-8448-2df1f845148c",
+  "name": "Yisan, the Wanderer Bard",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Yisan, the Wanderer Bard",
+      "oracle_fingerprint": "1103e79700c4ff76cd74faa48a64d572",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{2}{G}" },
+              "Tap",
+              { "PutCounters": { "counter": { "Other": "verse" } } }
+            ],
+            "effects": [
+              {
+                "Search": {
+                  "filter": [
+                    { "Type": "Creature" },
+                    {
+                      "Compare": {
+                        "stat": "ManaValue",
+                        "op": "Eq",
+                        "to": { "Counters": { "on": "This", "counter": { "Other": "verse" } } }
+                      }
+                    }
+                  ],
+                  "as": "found"
+                }
+              },
+              { "Move": { "what": { "Bound": "found" }, "to": { "Battlefield": {} } } },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

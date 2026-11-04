@@ -1,0 +1,22 @@
+{
+  "oracle_id": "b6b4c459-9c8b-4b95-8706-05d972b8daea",
+  "name": "Stalwart Valkyrie",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stalwart Valkyrie",
+      "oracle_fingerprint": "43b5dc4de49159494a7beaad875dc073",
+      "abilities": [
+        {
+          "FreeCast": {
+            "cost": [
+              { "Mana": "{1}{W}" },
+              { "ExileFromGraveyard": { "filter": [{ "Type": "Creature" }] } }
+            ]
+          }
+        },
+        { "Keyword": "Flying" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "oracle_id": "3c98c925-f380-4520-970d-4c1abbebefe3",
+  "name": "Dominator Drone",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dominator Drone",
+      "oracle_fingerprint": "88374927e0af2895206356aed4bcbbaa",
+      "abilities": [
+        { "Keyword": "Devoid" },
+        { "Keyword": { "Macro": { "name": "ingest", "amount": 0 } } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Count": [{ "Type": "Creature" }, "Colorless", "Other", { "ControlledBy": "You" }]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "LoseLife": { "who": "Opponents", "amount": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

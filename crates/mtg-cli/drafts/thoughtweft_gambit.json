@@ -1,0 +1,27 @@
+{
+  "oracle_id": "ddf8d3d2-b0f9-43bc-9c9e-cb08fdedcc72",
+  "name": "Thoughtweft Gambit",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thoughtweft Gambit",
+      "oracle_fingerprint": "f21d4842de2711310ad769a62f95b278",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Tap": {
+                  "what": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] }
+                }
+              },
+              {
+                "Untap": { "what": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

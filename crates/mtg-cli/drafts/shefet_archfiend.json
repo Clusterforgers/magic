@@ -1,0 +1,29 @@
+{
+  "oracle_id": "06355d3f-a82d-4f12-a399-016a12824795",
+  "name": "Shefet Archfiend",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shefet Archfiend",
+      "oracle_fingerprint": "f702e8974e75d5386d0991b41954308c",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, "Other"] },
+                  "mods": [{ "ModifyPT": { "power": -2, "toughness": -2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Cycling": "{2}" } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "oracle_id": "6b4a4de7-ec26-45ab-a460-e6c005000bf0",
+  "name": "Shade's Breath",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shade's Breath",
+      "oracle_fingerprint": "542fd90c64474f2b2c0c9421dfcf9998",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [
+                    { "SetColors": ["Black"] },
+                    { "SetCreatureTypes": ["Shade"] },
+                    {
+                      "GrantAbility": {
+                        "Activated": {
+                          "cost": "{B}",
+                          "effects": [
+                            {
+                              "Continuous": {
+                                "affected": "This",
+                                "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                                "duration": "UntilEndOfTurn"
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

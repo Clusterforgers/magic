@@ -1,0 +1,29 @@
+{
+  "oracle_id": "93e9b0d6-97a8-4357-bcd4-f82d81bad232",
+  "name": "Silver-Inlaid Dagger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Silver-Inlaid Dagger",
+      "oracle_fingerprint": "05a76661bdd76124ca1c6a60c5b2dda2",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+            "condition": {
+              "Matches": { "subject": "Attached", "selector": [{ "Subtype": "Human" }] }
+            }
+          }
+        },
+        { "Keyword": { "Equip": "{2}" } }
+      ]
+    }
+  ]
+}

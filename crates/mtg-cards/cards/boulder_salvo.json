@@ -1,0 +1,32 @@
+{
+  "oracle_id": "16df20e2-5228-4543-84b7-74a3170d9d31",
+  "name": "Boulder Salvo",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Boulder Salvo",
+      "oracle_fingerprint": "f14112fc8393b4a1315488b9f7f53503",
+      "abilities": [
+        {
+          "AltCast": {
+            "way": "Surge",
+            "cost": "{1}{R}",
+            "condition": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "SpellsCast" } },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 4 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "oracle_id": "2a249c4b-beaa-4e7f-b4f7-496d282327bd",
+  "name": "Voracious Wurm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Voracious Wurm",
+      "oracle_fingerprint": "5fa16c29a9714b509d74debd9fa7f4c3",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "WithCounters": {
+                "counter": "+1/+1",
+                "count": { "Tallied": { "who": "You", "what": "LifeGainedTotal" } }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

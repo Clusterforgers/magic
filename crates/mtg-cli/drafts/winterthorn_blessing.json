@@ -1,0 +1,39 @@
+{
+  "oracle_id": "4b4bdbdc-3934-471b-9027-31277e7765ab",
+  "name": "Winterthorn Blessing",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Winterthorn Blessing",
+      "oracle_fingerprint": "e9f3c6452f02c0df4d201a09d6b7de3a",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                "bounds": { "min": 0, "max": 1 }
+              },
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "Not": { "ControlledBy": "You" } }] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } },
+              { "Tap": { "what": { "Target": 1 } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 1 },
+                  "mods": ["DoesntUntap"],
+                  "duration": "NextUntapStep"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Flashback": "{1}{U}{G}" } }
+      ]
+    }
+  ]
+}

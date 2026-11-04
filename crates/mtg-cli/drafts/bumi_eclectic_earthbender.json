@@ -1,0 +1,45 @@
+{
+  "oracle_id": "301af2b2-e2f7-4220-a3f5-7702fb62664a",
+  "name": "Bumi, Eclectic Earthbender",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bumi, Eclectic Earthbender",
+      "oracle_fingerprint": "055d72b94fb9350b045c99cedf992e5e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": {
+                    "Each": [{ "Type": "Creature" }, { "Type": "Land" }, { "ControlledBy": "You" }]
+                  },
+                  "counter": "+1/+1",
+                  "count": 2
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": {
+                    "Each": [{ "Type": "Land" }, { "Type": "Creature" }, { "ControlledBy": "You" }]
+                  },
+                  "counter": "+1/+1",
+                  "count": 2
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

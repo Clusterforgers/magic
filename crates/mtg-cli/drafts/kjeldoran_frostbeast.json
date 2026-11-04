@@ -1,0 +1,30 @@
+{
+  "oracle_id": "39050823-ccda-43c0-818d-d5db15d82b99",
+  "name": "Kjeldoran Frostbeast",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kjeldoran Frostbeast",
+      "oracle_fingerprint": "89fbf136cb7cf274b42beea326a99170",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "EndCombat" } },
+            "effects": [
+              {
+                "Destroy": {
+                  "what": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "AnyOf": [{ "Blocks": "This" }, { "BlockedBy": "This" }] }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

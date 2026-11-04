@@ -1,0 +1,26 @@
+{
+  "oracle_id": "633a0919-9ac3-4645-8f0b-3f00c198db79",
+  "name": "Hellfire Mongrel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hellfire Mongrel",
+      "oracle_fingerprint": "ccd119b3ae1a95b545a20b1fe1bcf3aa",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "Opponents" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": [{ "OwnedBy": "ActivePlayer" }, { "In": "Hand" }] },
+                "op": "Le",
+                "right": 2
+              }
+            },
+            "effects": [{ "DealDamage": { "to": "Triggering", "amount": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

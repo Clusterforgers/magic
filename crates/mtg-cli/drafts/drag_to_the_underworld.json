@@ -1,0 +1,27 @@
+{
+  "oracle_id": "746dc1d8-f245-47be-abd5-50ca6ac0d1af",
+  "name": "Drag to the Underworld",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Drag to the Underworld",
+      "oracle_fingerprint": "637ef8857bd21de8ff5b985204cfc23d",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{1}",
+            "per": { "Devotion": ["Black"] }
+          }
+        },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

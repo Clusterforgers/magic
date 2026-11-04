@@ -1,0 +1,23 @@
+{
+  "oracle_id": "ba71eb8a-f9f8-4608-88d8-963a1770d8d4",
+  "name": "Treetop Bracers",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Treetop Bracers",
+      "oracle_fingerprint": "a9cb6411e55a0806fa4cc0a71b3ee413",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "ModifyPT": { "power": 1, "toughness": 1 } },
+              { "CantBeBlockedBy": [{ "Type": "Creature" }, { "Not": { "HasKeyword": "Flying" } }] }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

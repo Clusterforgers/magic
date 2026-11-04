@@ -1,0 +1,133 @@
+{
+  "object": "card",
+  "id": "fb6f872f-adfa-4d29-87df-9d39fb06b5be",
+  "oracle_id": "c6cd6934-b661-455a-8de5-ceb920664bbe",
+  "multiverse_ids": [
+    509502
+  ],
+  "mtgo_id": 86637,
+  "tcgplayer_id": 234347,
+  "cardmarket_id": 548166,
+  "name": "Skittering Monstrosity",
+  "lang": "en",
+  "released_at": "2021-03-19",
+  "uri": "https://api.scryfall.com/cards/fb6f872f-adfa-4d29-87df-9d39fb06b5be",
+  "scryfall_uri": "https://scryfall.com/card/tsr/137/skittering-monstrosity?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T07:30:11Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/f/b/fb6f872f-adfa-4d29-87df-9d39fb06b5be.jpg?1783927811",
+    "normal": "https://cards.scryfall.io/normal/front/f/b/fb6f872f-adfa-4d29-87df-9d39fb06b5be.jpg?1783927811",
+    "large": "https://cards.scryfall.io/large/front/f/b/fb6f872f-adfa-4d29-87df-9d39fb06b5be.jpg?1783927811",
+    "png": "https://cards.scryfall.io/png/front/f/b/fb6f872f-adfa-4d29-87df-9d39fb06b5be.png?1783927811",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/f/b/fb6f872f-adfa-4d29-87df-9d39fb06b5be.jpg?1783927811",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/f/b/fb6f872f-adfa-4d29-87df-9d39fb06b5be.jpg?1783927811",
+    "thumb": "https://cards.scryfall.io/thumb/front/f/b/fb6f872f-adfa-4d29-87df-9d39fb06b5be.webp?1783927811",
+    "grid": "https://cards.scryfall.io/grid/front/f/b/fb6f872f-adfa-4d29-87df-9d39fb06b5be.webp?1783927811",
+    "display": "https://cards.scryfall.io/display/front/f/b/fb6f872f-adfa-4d29-87df-9d39fb06b5be.webp?1783927811",
+    "art": "https://cards.scryfall.io/art/front/f/b/fb6f872f-adfa-4d29-87df-9d39fb06b5be.webp?1783927811",
+    "crop": "https://cards.scryfall.io/crop/front/f/b/fb6f872f-adfa-4d29-87df-9d39fb06b5be.webp?1783927811",
+    "jpeg": "https://cards.scryfall.io/normal/front/f/b/fb6f872f-adfa-4d29-87df-9d39fb06b5be.jpg?1783927811"
+  },
+  "mana_cost": "{3}{B}{B}",
+  "cmc": 5.0,
+  "type_line": "Creature — Horror",
+  "oracle_text": "When you cast a creature spell, sacrifice this creature.",
+  "power": "5",
+  "toughness": "5",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "11e90d1b-0502-43e6-b056-e24836523c13",
+  "set": "tsr",
+  "set_name": "Time Spiral Remastered",
+  "set_type": "masters",
+  "set_uri": "https://api.scryfall.com/sets/11e90d1b-0502-43e6-b056-e24836523c13",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Atsr&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/tsr?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/fb6f872f-adfa-4d29-87df-9d39fb06b5be/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ac6cd6934-b661-455a-8de5-ceb920664bbe&unique=prints",
+  "collector_number": "137",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "Most living things were weakened and stunted in the ruinous aftermath of the Phyrexian invasion, but a few grew more horrid than ever.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "rk post",
+  "artist_ids": [
+    "81ae0f3f-1d88-4125-9aeb-b15b4c734c82"
+  ],
+  "illustration_id": "fd5705f4-4237-4bf3-bf0a-f453e68a83b0",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 32219,
+  "prices": {
+    "usd": "0.14",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.03",
+    "eur_foil": "0.13",
+    "tix": "0.04"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=509502&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DSkittering%2BMonstrosity",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DSkittering%2BMonstrosity",
+    "edhrec": "https://edhrec.com/route/?cc=Skittering+Monstrosity"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F234347%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=548166&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/86637?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

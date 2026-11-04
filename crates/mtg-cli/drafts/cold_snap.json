@@ -1,0 +1,33 @@
+{
+  "oracle_id": "3dcbcf5e-bdbe-46b3-881e-5ac4030c6e38",
+  "name": "Cold Snap",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cold Snap",
+      "oracle_fingerprint": "dd5286451c35cc9c18f860c0c9b2b026",
+      "abilities": [
+        { "Keyword": { "CumulativeUpkeep": "{2}" } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": "Triggering",
+                  "amount": {
+                    "Count": [
+                      { "Type": "Land" },
+                      { "Supertype": "Snow" },
+                      { "ControlledBy": "ActivePlayer" }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "oracle_id": "900b9409-9c16-414d-8674-2ea42c2415a1",
+  "name": "Magmakin Artillerist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Magmakin Artillerist",
+      "oracle_fingerprint": "fa2dd8b7debb5c7222296de8ed2e22dc",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Batch": { "Discarded": { "by": "You" } } },
+            "effects": [{ "DealDamage": { "to": "Opponents", "amount": "Triggering" } }]
+          }
+        },
+        { "Keyword": { "Cycling": "{1}{R}" } },
+        {
+          "Triggered": {
+            "when": { "Cycled": { "what": ["This"] } },
+            "effects": [{ "DealDamage": { "to": "Opponents", "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

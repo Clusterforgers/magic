@@ -1,0 +1,47 @@
+{
+  "oracle_id": "f3073e4f-ca7e-4fde-88a4-bd7b6ebfbc8c",
+  "name": "Grizzly Fate",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Grizzly Fate",
+      "oracle_fingerprint": "2980a69d1d5873f01b0d3d825593eca3",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Bear",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Bear"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  },
+                  "count": {
+                    "When": {
+                      "condition": {
+                        "Compare": {
+                          "left": { "Count": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                          "op": "Ge",
+                          "right": 7
+                        }
+                      },
+                      "then": 4,
+                      "otherwise": 2
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Flashback": "{5}{G}{G}" } }
+      ]
+    }
+  ]
+}

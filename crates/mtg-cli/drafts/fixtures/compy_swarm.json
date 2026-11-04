@@ -1,0 +1,161 @@
+{
+  "object": "card",
+  "id": "800871ee-7394-4a31-98a7-4b92860208a1",
+  "oracle_id": "f5bd96dd-0d1f-4923-a014-6c8dcb3b2266",
+  "multiverse_ids": [
+    642681
+  ],
+  "mtgo_id": 117426,
+  "tcgplayer_id": 524342,
+  "cardmarket_id": 741069,
+  "name": "Compy Swarm",
+  "lang": "en",
+  "released_at": "2023-11-17",
+  "uri": "https://api.scryfall.com/cards/800871ee-7394-4a31-98a7-4b92860208a1",
+  "scryfall_uri": "https://scryfall.com/card/rex/9/compy-swarm?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:33:58Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/8/0/800871ee-7394-4a31-98a7-4b92860208a1.jpg?1783913638",
+    "normal": "https://cards.scryfall.io/normal/front/8/0/800871ee-7394-4a31-98a7-4b92860208a1.jpg?1783913638",
+    "large": "https://cards.scryfall.io/large/front/8/0/800871ee-7394-4a31-98a7-4b92860208a1.jpg?1783913638",
+    "png": "https://cards.scryfall.io/png/front/8/0/800871ee-7394-4a31-98a7-4b92860208a1.png?1783913638",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/8/0/800871ee-7394-4a31-98a7-4b92860208a1.jpg?1783913638",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/8/0/800871ee-7394-4a31-98a7-4b92860208a1.jpg?1783913638",
+    "thumb": "https://cards.scryfall.io/thumb/front/8/0/800871ee-7394-4a31-98a7-4b92860208a1.webp?1783913638",
+    "grid": "https://cards.scryfall.io/grid/front/8/0/800871ee-7394-4a31-98a7-4b92860208a1.webp?1783913638",
+    "display": "https://cards.scryfall.io/display/front/8/0/800871ee-7394-4a31-98a7-4b92860208a1.webp?1783913638",
+    "art": "https://cards.scryfall.io/art/front/8/0/800871ee-7394-4a31-98a7-4b92860208a1.webp?1783913638",
+    "crop": "https://cards.scryfall.io/crop/front/8/0/800871ee-7394-4a31-98a7-4b92860208a1.webp?1783913638",
+    "jpeg": "https://cards.scryfall.io/normal/front/8/0/800871ee-7394-4a31-98a7-4b92860208a1.jpg?1783913638"
+  },
+  "mana_cost": "{1}{B}{G}",
+  "cmc": 3.0,
+  "type_line": "Creature — Dinosaur",
+  "oracle_text": "At the beginning of your end step, if a creature died this turn, create a tapped token that's a copy of this creature.",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "B",
+    "G"
+  ],
+  "color_identity": [
+    "B",
+    "G"
+  ],
+  "keywords": [],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "01c3b739-89b3-4ad8-aab9-76e8f87cf123",
+      "component": "token",
+      "name": "Copy",
+      "type_line": "Token",
+      "uri": "https://api.scryfall.com/cards/01c3b739-89b3-4ad8-aab9-76e8f87cf123"
+    },
+    {
+      "object": "related_card",
+      "id": "801b3fc9-722d-497a-a1ae-c3a158d5ca64",
+      "component": "combo_piece",
+      "name": "Compy Swarm",
+      "type_line": "Creature — Dinosaur",
+      "uri": "https://api.scryfall.com/cards/801b3fc9-722d-497a-a1ae-c3a158d5ca64"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "647b6fd3-6935-4b96-85a4-d0191487ea5a",
+  "set": "rex",
+  "set_name": "Jurassic World Collection",
+  "set_type": "eternal",
+  "set_uri": "https://api.scryfall.com/sets/647b6fd3-6935-4b96-85a4-d0191487ea5a",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Arex&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/rex?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/800871ee-7394-4a31-98a7-4b92860208a1/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Af5bd96dd-0d1f-4923-a014-6c8dcb3b2266&unique=prints",
+  "collector_number": "9",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "\"There's no reason for it to fear man.\"\n—Robert Burke",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Izzy",
+  "artist_ids": [
+    "2c3d2473-ff5d-4309-8194-e0b2def2ab65"
+  ],
+  "illustration_id": "88132924-9d4e-4e8d-b4c7-9433d66190db",
+  "border_color": "borderless",
+  "frame": "2015",
+  "frame_effects": [
+    "inverted"
+  ],
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond",
+    "boosterfun"
+  ],
+  "edhrec_rank": 8794,
+  "prices": {
+    "usd": "7.36",
+    "usd_foil": "13.76",
+    "usd_etched": null,
+    "eur": "7.89",
+    "eur_foil": "9.80",
+    "tix": "2.62"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=642681&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DCompy%2BSwarm",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DCompy%2BSwarm",
+    "edhrec": "https://edhrec.com/route/?cc=Compy+Swarm"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F524342%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=741069&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/117426?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

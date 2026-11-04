@@ -1,0 +1,59 @@
+{
+  "oracle_id": "0f5f6f3e-1b3c-43e2-b11d-bd454366845c",
+  "name": "Bronzebeak Foragers",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bronzebeak Foragers",
+      "oracle_fingerprint": "9951d569fa69d0f8ce0b83c7676b5e1b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "PerPlayer": { "players": "Opponents", "what": [{ "Not": { "Type": "Land" } }] }
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "duration": "WhileSourceOnBattlefield" } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{X}{W}",
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "ExiledWith": "This" },
+                    { "Compare": { "stat": "ManaValue", "op": "Eq", "to": "X" } },
+                    {
+                      "AnyOf": [
+                        { "Type": "Artifact" },
+                        { "Type": "Battle" },
+                        { "Type": "Creature" },
+                        { "Type": "Enchantment" },
+                        { "Type": "Land" },
+                        { "Type": "Planeswalker" }
+                      ]
+                    },
+                    { "In": "Exile" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": "Graveyard" } },
+              { "GainLife": { "amount": "X" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "oracle_id": "1b70d7fa-ba2c-4945-b8fd-23623b88c036",
+  "name": "Blessed Sanctuary",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Blessed Sanctuary",
+      "oracle_fingerprint": "2408328e05b114e77fde1881a6eb8c8b",
+      "abilities": [
+        {
+          "Replacement": { "when": { "Damage": { "to": "You", "combat": false } }, "by": "Prevent" }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }, { "Not": "Token" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Unicorn",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Unicorn"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Replacement": {
+            "when": {
+              "Damage": {
+                "to": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                "combat": false
+              }
+            },
+            "by": "Prevent"
+          }
+        }
+      ]
+    }
+  ]
+}

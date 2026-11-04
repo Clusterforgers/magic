@@ -1,0 +1,28 @@
+{
+  "oracle_id": "6de20c2c-b8a8-4f12-897b-a2f55d7eed87",
+  "name": "Horror of the Broken Lands",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Horror of the Broken Lands",
+      "oracle_fingerprint": "5bb11121fdb4ed31ae0a5fca87e1bd91",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Discarded": { "what": ["Other"], "by": "You" } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Cycling": "{B}" } }
+      ]
+    }
+  ]
+}

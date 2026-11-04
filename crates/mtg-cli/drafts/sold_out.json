@@ -1,0 +1,34 @@
+{
+  "oracle_id": "6a69d4b1-72dd-4599-a16d-32299de5b0b9",
+  "name": "Sold Out",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sold Out",
+      "oracle_fingerprint": "b4acd73954cd5f81b5c9fc0a610fe9c5",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 } } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Target": 0 },
+                      "selector": [{ "Type": "Creature" }, "DamagedThisTurn"],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "CreateToken": { "token": { "Named": "clue" } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "oracle_id": "d5b33c1a-6e15-4a08-b834-38b0465b0cfb",
+  "name": "Pattern Matcher",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pattern Matcher",
+      "oracle_fingerprint": "8a21ebeb9b80469d05625cdee4ffff9e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Search": {
+                        "filter": [
+                          {
+                            "SharesName": {
+                              "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                            }
+                          },
+                          "Other"
+                        ],
+                        "reveal": true,
+                        "as": "found"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+                    { "Shuffle": {} }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

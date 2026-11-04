@@ -1,0 +1,27 @@
+{
+  "oracle_id": "3e80481e-06ed-425a-8991-0557e49aba6a",
+  "name": "Geist of the Lonely Vigil",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Geist of the Lonely Vigil",
+      "oracle_fingerprint": "823aba0596a9b1294f129adde495fcd1",
+      "abilities": [
+        { "Keyword": "Defender" },
+        { "Keyword": "Flying" },
+        {
+          "Rule": {
+            "rule": { "Combat": { "who": "This", "quirk": "AttackDespiteDefender" } },
+            "condition": {
+              "Compare": {
+                "left": { "CardTypes": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                "op": "Ge",
+                "right": 4
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

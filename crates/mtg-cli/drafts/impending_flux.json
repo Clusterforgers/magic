@@ -1,0 +1,70 @@
+{
+  "oracle_id": "7089512e-f9b6-4d8e-bccc-29e6785cc041",
+  "name": "Impending Flux",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Impending Flux",
+      "oracle_fingerprint": "59d2ba44c3a1c4cc0871554f9f40e196",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] },
+                  "amount": {
+                    "Sum": [
+                      {
+                        "Tally": {
+                          "event": "SpellCast",
+                          "who": "EachPlayer",
+                          "filter": [
+                            { "ControlledBy": "You" },
+                            {
+                              "AnyOf": [
+                                { "Not": { "WasCast": { "from": "Hand" } } },
+                                { "Not": { "OwnedBy": "You" } }
+                              ]
+                            }
+                          ]
+                        }
+                      },
+                      1
+                    ]
+                  }
+                }
+              },
+              {
+                "DealDamage": {
+                  "to": "Opponents",
+                  "amount": {
+                    "Sum": [
+                      {
+                        "Tally": {
+                          "event": "SpellCast",
+                          "who": "EachPlayer",
+                          "filter": [
+                            { "ControlledBy": "You" },
+                            {
+                              "AnyOf": [
+                                { "Not": { "WasCast": { "from": "Hand" } } },
+                                { "Not": { "OwnedBy": "You" } }
+                              ]
+                            }
+                          ]
+                        }
+                      },
+                      1
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Foretell": "{1}{R}{R}" } }
+      ]
+    }
+  ]
+}

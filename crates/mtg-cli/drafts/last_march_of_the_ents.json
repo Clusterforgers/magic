@@ -1,0 +1,45 @@
+{
+  "oracle_id": "3999cd64-ff5c-4e2c-8aa6-d14f9f8a2b4c",
+  "name": "Last March of the Ents",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Last March of the Ents",
+      "oracle_fingerprint": "007fe355a395396168fc3daa711cb7a0",
+      "abilities": [
+        { "Rule": { "rule": { "CantBeCountered": "This" }, "from": "Stack" } },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Draw": {
+                  "count": {
+                    "Greatest": {
+                      "of": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                      "stat": "Toughness"
+                    }
+                  }
+                }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [{ "Type": "Creature" }, { "In": "Hand" }, { "OwnedBy": "You" }]
+                  },
+                  "count": {
+                    "min": 0,
+                    "max": {
+                      "Count": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Hand" }]
+                    }
+                  },
+                  "as": "picked"
+                }
+              },
+              { "Move": { "what": { "Bound": "picked" }, "to": { "Battlefield": {} } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,92 @@
+{
+  "oracle_id": "844c1024-db80-4287-9770-3b10e53d0fc8",
+  "name": "Glorious Sunrise",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Glorious Sunrise",
+      "oracle_fingerprint": "ea84b3e0f799775d38417efb6a3df202",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": {
+                              "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                            },
+                            "mods": [
+                              { "ModifyPT": { "power": 1, "toughness": 1 } },
+                              { "AddKeyword": "Trample" }
+                            ],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Land" }] } }],
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": { "Target": 0 },
+                            "mods": [
+                              {
+                                "GrantAbility": {
+                                  "Activated": {
+                                    "cost": ["Tap"],
+                                    "effects": [
+                                      {
+                                        "AddMana": {
+                                          "mana": { "Fixed": ["Green", "Green", "Green"] }
+                                        }
+                                      }
+                                    ]
+                                  }
+                                }
+                              }
+                            ],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "If": {
+                            "condition": {
+                              "Compare": {
+                                "left": {
+                                  "Count": [
+                                    { "Type": "Creature" },
+                                    { "ControlledBy": "You" },
+                                    { "Compare": { "stat": "Power", "op": "Ge", "to": 3 } }
+                                  ]
+                                },
+                                "op": "Ge",
+                                "right": 1
+                              }
+                            },
+                            "then": [{ "Draw": {} }]
+                          }
+                        }
+                      ]
+                    },
+                    { "effects": [{ "GainLife": { "amount": 3 } }] }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "oracle_id": "1779869a-5e54-4ab5-86b8-d4d20e2e1ba4",
+  "name": "June, Bounty Hunter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "June, Bounty Hunter",
+      "oracle_fingerprint": "3ed24c499ce5b3e8cf8d39f725310917",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": ["This", "Attacking"] },
+            "mods": ["CantBeBlocked"],
+            "condition": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "Drawn" } },
+                "op": "Ge",
+                "right": 2
+              }
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{1}" },
+              { "Sacrifice": { "filter": [{ "Type": "Creature" }, "Other"] } }
+            ],
+            "condition": "YourTurn",
+            "effects": [{ "CreateToken": { "token": { "Named": "clue" } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

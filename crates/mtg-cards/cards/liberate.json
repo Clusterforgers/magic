@@ -1,0 +1,31 @@
+{
+  "oracle_id": "f17e6c85-4813-4b0f-a0e9-d295822e9bb5",
+  "name": "Liberate",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Liberate",
+      "oracle_fingerprint": "c6c9c6477bffc486c050ca1ab95416f3",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    { "Move": { "what": { "Bound": "exiled" }, "to": { "Battlefield": {} } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

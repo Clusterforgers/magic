@@ -1,0 +1,35 @@
+{
+  "oracle_id": "6614dbe5-d7c7-4a51-91db-912764050269",
+  "name": "Leapfrog",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Leapfrog",
+      "oracle_fingerprint": "42704d469873790045c88c757584a9d6",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Flying" }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "SpellCast",
+                    "who": "EachPlayer",
+                    "filter": [
+                      { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                      { "ControlledBy": "You" }
+                    ]
+                  }
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

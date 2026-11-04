@@ -1,0 +1,72 @@
+{
+  "oracle_id": "fd547632-a29a-4dad-a9da-155882391815",
+  "name": "Scion of Draco",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Scion of Draco",
+      "oracle_fingerprint": "ccf7ea4b29772d30ec8972f028840424",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{1}",
+            "per": {
+              "Times": {
+                "by": 2,
+                "of": {
+                  "Distinct": {
+                    "of": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                    "stat": "BasicLandTypes"
+                  }
+                }
+              }
+            }
+          }
+        },
+        { "Keyword": "Flying" },
+        {
+          "Static": {
+            "affected": {
+              "Each": [{ "Type": "Creature" }, { "Color": "White" }, { "ControlledBy": "You" }]
+            },
+            "mods": [{ "AddKeyword": "Vigilance" }]
+          }
+        },
+        {
+          "Static": {
+            "affected": {
+              "Each": [{ "Type": "Creature" }, { "Color": "Blue" }, { "ControlledBy": "You" }]
+            },
+            "mods": [{ "AddKeyword": "Hexproof" }]
+          }
+        },
+        {
+          "Static": {
+            "affected": {
+              "Each": [{ "Type": "Creature" }, { "Color": "Black" }, { "ControlledBy": "You" }]
+            },
+            "mods": [{ "AddKeyword": "Lifelink" }]
+          }
+        },
+        {
+          "Static": {
+            "affected": {
+              "Each": [{ "Type": "Creature" }, { "Color": "Red" }, { "ControlledBy": "You" }]
+            },
+            "mods": [{ "AddKeyword": "FirstStrike" }]
+          }
+        },
+        {
+          "Static": {
+            "affected": {
+              "Each": [{ "Type": "Creature" }, { "Color": "Green" }, { "ControlledBy": "You" }]
+            },
+            "mods": [{ "AddKeyword": "Trample" }]
+          }
+        }
+      ]
+    }
+  ]
+}

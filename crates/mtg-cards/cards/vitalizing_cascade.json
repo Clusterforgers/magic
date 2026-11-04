@@ -1,0 +1,12 @@
+{
+  "oracle_id": "aaf176ff-646f-4182-a546-fe648498587d",
+  "name": "Vitalizing Cascade",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vitalizing Cascade",
+      "oracle_fingerprint": "ebc4884c70fdd6f1aa4c718fe8dbebf7",
+      "abilities": [{ "Spell": { "effects": [{ "GainLife": { "amount": { "Sum": ["X", 3] } } }] } }]
+    }
+  ]
+}

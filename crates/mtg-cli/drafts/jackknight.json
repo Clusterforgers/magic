@@ -1,0 +1,47 @@
+{
+  "oracle_id": "81025603-f62b-4635-bbf1-5814cc60d615",
+  "name": "Jackknight",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jackknight",
+      "oracle_fingerprint": "301b0c02c85fc4bd1d647788ff56cca9",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Artifact" }, { "ControlledBy": "You" }, "Other"],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": "+1/+1" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": "Triggering",
+                      "selector": [{ "Subtype": "Contraption" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": "This",
+                        "mods": [{ "AddKeyword": "Lifelink" }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

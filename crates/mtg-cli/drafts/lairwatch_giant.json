@@ -1,0 +1,37 @@
+{
+  "oracle_id": "dac0dc4c-acf3-40de-b6b5-963ff4176d3a",
+  "name": "Lairwatch Giant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lairwatch Giant",
+      "oracle_fingerprint": "fa473ac2afe31e2f52cc963a2a533e7a",
+      "abilities": [
+        { "Static": { "affected": "This", "mods": [{ "BlocksAdditional": 1 }] } },
+        {
+          "Triggered": {
+            "when": { "Blocks": { "what": ["This"] } },
+            "if": {
+              "AtTrigger": {
+                "Compare": {
+                  "left": { "Count": [{ "Type": "Creature" }, { "BlockedBy": "This" }] },
+                  "op": "Ge",
+                  "right": 2
+                }
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddKeyword": "FirstStrike" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

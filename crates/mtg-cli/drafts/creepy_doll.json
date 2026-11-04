@@ -1,0 +1,26 @@
+{
+  "oracle_id": "f9c8f9e1-a3a8-47f7-8d29-f954d14ad37b",
+  "name": "Creepy Doll",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Creepy Doll",
+      "oracle_fingerprint": "e09644cbbf86973af018dc98c45d84f4",
+      "abilities": [
+        { "Keyword": "Indestructible" },
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": ["This"],
+                "to": { "Each": [{ "Type": "Creature" }] },
+                "combat": true
+              }
+            },
+            "effects": [{ "FlipCoin": { "win": [{ "Destroy": { "what": "Triggering" } }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

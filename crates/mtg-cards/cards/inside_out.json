@@ -1,0 +1,28 @@
+{
+  "oracle_id": "623d9db1-a3af-4a1c-9643-975de364e073",
+  "name": "Inside Out",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Inside Out",
+      "oracle_fingerprint": "fbdea7910f625380148aa620e80e0635",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["SwitchPT"],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

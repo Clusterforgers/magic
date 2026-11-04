@@ -1,0 +1,144 @@
+{
+  "object": "card",
+  "id": "73468f53-7de5-4a64-8f83-c0376f1d1f3f",
+  "oracle_id": "ee6a9bac-cf5b-4edd-8cb2-874d8dd0e62a",
+  "multiverse_ids": [
+    667647
+  ],
+  "mtgo_id": 128080,
+  "tcgplayer_id": 555872,
+  "cardmarket_id": 774652,
+  "name": "Haytham Kenway",
+  "lang": "en",
+  "released_at": "2024-07-05",
+  "uri": "https://api.scryfall.com/cards/73468f53-7de5-4a64-8f83-c0376f1d1f3f",
+  "scryfall_uri": "https://scryfall.com/card/acr/57/haytham-kenway?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T02:49:31Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/7/3/73468f53-7de5-4a64-8f83-c0376f1d1f3f.jpg?1783910971",
+    "normal": "https://cards.scryfall.io/normal/front/7/3/73468f53-7de5-4a64-8f83-c0376f1d1f3f.jpg?1783910971",
+    "large": "https://cards.scryfall.io/large/front/7/3/73468f53-7de5-4a64-8f83-c0376f1d1f3f.jpg?1783910971",
+    "png": "https://cards.scryfall.io/png/front/7/3/73468f53-7de5-4a64-8f83-c0376f1d1f3f.png?1783910971",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/7/3/73468f53-7de5-4a64-8f83-c0376f1d1f3f.jpg?1783910971",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/7/3/73468f53-7de5-4a64-8f83-c0376f1d1f3f.jpg?1783910971",
+    "thumb": "https://cards.scryfall.io/thumb/front/7/3/73468f53-7de5-4a64-8f83-c0376f1d1f3f.webp?1783910971",
+    "grid": "https://cards.scryfall.io/grid/front/7/3/73468f53-7de5-4a64-8f83-c0376f1d1f3f.webp?1783910971",
+    "display": "https://cards.scryfall.io/display/front/7/3/73468f53-7de5-4a64-8f83-c0376f1d1f3f.webp?1783910971",
+    "art": "https://cards.scryfall.io/art/front/7/3/73468f53-7de5-4a64-8f83-c0376f1d1f3f.webp?1783910971",
+    "crop": "https://cards.scryfall.io/crop/front/7/3/73468f53-7de5-4a64-8f83-c0376f1d1f3f.webp?1783910971",
+    "jpeg": "https://cards.scryfall.io/normal/front/7/3/73468f53-7de5-4a64-8f83-c0376f1d1f3f.jpg?1783910971"
+  },
+  "mana_cost": "{2}{W}{U}",
+  "cmc": 4.0,
+  "type_line": "Legendary Creature — Human Knight",
+  "oracle_text": "Protection from Assassins\nOther Knights you control get +2/+2 and have protection from Assassins.\nWhen Haytham Kenway enters, for each opponent, exile up to one target creature that player controls until Haytham Kenway leaves the battlefield.",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "U",
+    "W"
+  ],
+  "color_identity": [
+    "U",
+    "W"
+  ],
+  "keywords": [
+    "Protection"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "54b67b0b-cd3f-4e0d-ac25-fef5d966409b",
+  "set": "acr",
+  "set_name": "Assassin's Creed",
+  "set_type": "draft_innovation",
+  "set_uri": "https://api.scryfall.com/sets/54b67b0b-cd3f-4e0d-ac25-fef5d966409b",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aacr&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/acr?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/73468f53-7de5-4a64-8f83-c0376f1d1f3f/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Aee6a9bac-cf5b-4edd-8cb2-874d8dd0e62a&unique=prints",
+  "collector_number": "57",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Vilhelmas Banys",
+  "artist_ids": [
+    "020fbe69-3549-4d96-bb71-c1688925b1fb"
+  ],
+  "illustration_id": "d3ceaa05-4873-4868-8967-e3a4c73ef085",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 8947,
+  "penny_rank": 7048,
+  "prices": {
+    "usd": "0.31",
+    "usd_foil": "0.36",
+    "usd_etched": null,
+    "eur": "0.41",
+    "eur_foil": "0.41",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=667647&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DHaytham%2BKenway",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DHaytham%2BKenway",
+    "edhrec": "https://edhrec.com/route/?cc=Haytham+Kenway"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F555872%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=774652&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/128080?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

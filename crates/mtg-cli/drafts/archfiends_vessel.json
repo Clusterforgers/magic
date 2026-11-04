@@ -1,0 +1,71 @@
+{
+  "oracle_id": "62c240ac-f2dd-4e39-9e82-50307efa833e",
+  "name": "Archfiend's Vessel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Archfiend's Vessel",
+      "oracle_fingerprint": "3bffe4d337e059373babe7d37fa2370a",
+      "abilities": [
+        { "Keyword": "Lifelink" },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                {
+                  "ZoneChange": {
+                    "what": ["This", { "OwnedBy": "You" }],
+                    "from": "Graveyard",
+                    "to": "Battlefield"
+                  }
+                },
+                {
+                  "ZoneChange": {
+                    "what": [
+                      "This",
+                      { "WasCast": { "by": "You", "from": "Graveyard" } },
+                      { "OwnedBy": "You" }
+                    ],
+                    "to": "Battlefield"
+                  }
+                }
+              ]
+            },
+            "effects": [
+              { "Exile": { "what": "This", "as": "exiled" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "exiled" },
+                      "selector": ["This"],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Demon",
+                            "colors": ["Black"],
+                            "types": ["Creature"],
+                            "subtypes": ["Demon"],
+                            "power": 5,
+                            "toughness": 5,
+                            "abilities": [{ "Keyword": "Flying" }]
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

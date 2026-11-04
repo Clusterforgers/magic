@@ -1,0 +1,59 @@
+{
+  "oracle_id": "5a242eab-204c-4411-860f-c0f3582a8f38",
+  "name": "Tyvar, the Pummeler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tyvar, the Pummeler",
+      "oracle_fingerprint": "7fd55ab2697a6abbc448f62adfb594bb",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "TapPermanents": { "filter": [{ "Type": "Creature" }, "Other"] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddKeyword": "Indestructible" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Tap": { "what": "This" } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{3}{G}{G}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": {
+                          "Greatest": {
+                            "of": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                            "stat": "Power"
+                          }
+                        },
+                        "toughness": {
+                          "Greatest": {
+                            "of": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                            "stat": "Power"
+                          }
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

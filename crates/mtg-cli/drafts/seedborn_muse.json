@@ -1,0 +1,18 @@
+{
+  "oracle_id": "463865bc-087e-477b-9e86-84e77f1ad931",
+  "name": "Seedborn Muse",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Seedborn Muse",
+      "oracle_fingerprint": "84ce2101743f49d48b84d11795a02ab4",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": { "UntapDuring": { "what": [{ "ControlledBy": "You" }], "whose": "Opponents" } }
+          }
+        }
+      ]
+    }
+  ]
+}

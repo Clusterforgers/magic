@@ -1,0 +1,163 @@
+{
+  "object": "card",
+  "id": "e85a82bc-49f3-4694-b688-808a541146db",
+  "oracle_id": "fde2653f-5270-4b8f-9642-0835dbb076c2",
+  "multiverse_ids": [
+    616979
+  ],
+  "mtgo_id": 112208,
+  "arena_id": 84841,
+  "tcgplayer_id": 499311,
+  "cardmarket_id": 716275,
+  "name": "Spiteful Banditry",
+  "lang": "en",
+  "released_at": "2023-06-23",
+  "uri": "https://api.scryfall.com/cards/e85a82bc-49f3-4694-b688-808a541146db",
+  "scryfall_uri": "https://scryfall.com/card/ltr/149/spiteful-banditry?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T04:17:56Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/e/8/e85a82bc-49f3-4694-b688-808a541146db.jpg?1783916276",
+    "normal": "https://cards.scryfall.io/normal/front/e/8/e85a82bc-49f3-4694-b688-808a541146db.jpg?1783916276",
+    "large": "https://cards.scryfall.io/large/front/e/8/e85a82bc-49f3-4694-b688-808a541146db.jpg?1783916276",
+    "png": "https://cards.scryfall.io/png/front/e/8/e85a82bc-49f3-4694-b688-808a541146db.png?1783916276",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/e/8/e85a82bc-49f3-4694-b688-808a541146db.jpg?1783916276",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/e/8/e85a82bc-49f3-4694-b688-808a541146db.jpg?1783916276",
+    "thumb": "https://cards.scryfall.io/thumb/front/e/8/e85a82bc-49f3-4694-b688-808a541146db.webp?1783916276",
+    "grid": "https://cards.scryfall.io/grid/front/e/8/e85a82bc-49f3-4694-b688-808a541146db.webp?1783916276",
+    "display": "https://cards.scryfall.io/display/front/e/8/e85a82bc-49f3-4694-b688-808a541146db.webp?1783916276",
+    "art": "https://cards.scryfall.io/art/front/e/8/e85a82bc-49f3-4694-b688-808a541146db.webp?1783916276",
+    "crop": "https://cards.scryfall.io/crop/front/e/8/e85a82bc-49f3-4694-b688-808a541146db.webp?1783916276",
+    "jpeg": "https://cards.scryfall.io/normal/front/e/8/e85a82bc-49f3-4694-b688-808a541146db.jpg?1783916276"
+  },
+  "mana_cost": "{X}{R}{R}",
+  "cmc": 2.0,
+  "type_line": "Enchantment",
+  "oracle_text": "When this enchantment enters, it deals X damage to each creature.\nWhenever one or more creatures your opponents control die, you create a Treasure token. This ability triggers only once each turn.",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Treasure"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "b29d7556-9051-4451-812e-91513ef10e62",
+      "component": "token",
+      "name": "Treasure",
+      "type_line": "Token Artifact — Treasure",
+      "uri": "https://api.scryfall.com/cards/b29d7556-9051-4451-812e-91513ef10e62"
+    },
+    {
+      "object": "related_card",
+      "id": "a6975ed0-b2f0-4820-9649-6bc5594af19a",
+      "component": "combo_piece",
+      "name": "Spiteful Banditry",
+      "type_line": "Enchantment",
+      "uri": "https://api.scryfall.com/cards/a6975ed0-b2f0-4820-9649-6bc5594af19a"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "arena",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "08078706-ac5d-439b-8f01-894d38751367",
+  "set": "ltr",
+  "set_name": "The Lord of the Rings: Tales of Middle-earth",
+  "set_type": "draft_innovation",
+  "set_uri": "https://api.scryfall.com/sets/08078706-ac5d-439b-8f01-894d38751367",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Altr&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/ltr?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/e85a82bc-49f3-4694-b688-808a541146db/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Afde2653f-5270-4b8f-9642-0835dbb076c2&unique=prints",
+  "collector_number": "149",
+  "digital": false,
+  "rarity": "mythic",
+  "flavor_text": "\"One ill turn deserves another.\"\n—Saruman",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Manuel Castañón",
+  "artist_ids": [
+    "35f11eeb-36ff-4059-bb70-d1274f5bd858"
+  ],
+  "illustration_id": "28f86f19-6cfa-4f98-9062-d3e8c64c85cc",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 2282,
+  "penny_rank": 4992,
+  "preview": {
+    "source": "Wizards of the Coast",
+    "source_uri": "https://www.twitch.tv/videos/1839333853",
+    "previewed_at": "2023-06-06"
+  },
+  "prices": {
+    "usd": "7.81",
+    "usd_foil": "9.65",
+    "usd_etched": null,
+    "eur": "8.34",
+    "eur_foil": "9.12",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=616979&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DSpiteful%2BBanditry",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DSpiteful%2BBanditry",
+    "edhrec": "https://edhrec.com/route/?cc=Spiteful+Banditry"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F499311%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=716275&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/112208?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

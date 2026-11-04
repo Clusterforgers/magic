@@ -1,0 +1,30 @@
+{
+  "oracle_id": "9e445336-8b1e-4642-b8bc-aa460ad79a3f",
+  "name": "Gnoll Hunter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gnoll Hunter",
+      "oracle_fingerprint": "a859746770f8cf09268bbbc06f81177b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "if": {
+              "AtTrigger": {
+                "Compare": {
+                  "left": {
+                    "Total": { "of": [{ "Type": "Creature" }, "Attacking"], "stat": "Power" }
+                  },
+                  "op": "Ge",
+                  "right": 6
+                }
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

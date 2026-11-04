@@ -1,0 +1,24 @@
+{
+  "oracle_id": "9beccf09-c024-408b-9f84-fe2c7462babb",
+  "name": "Bartel Runeaxe",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bartel Runeaxe",
+      "oracle_fingerprint": "aa1c85562dc28b9df2cef557c76f7a6e",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "This",
+                "action": { "BeTargeted": [{ "Subtype": "Aura" }, "Spell"] }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

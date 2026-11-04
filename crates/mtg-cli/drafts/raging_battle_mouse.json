@@ -1,0 +1,63 @@
+{
+  "oracle_id": "9ffe4d90-b46c-4606-89cb-1b724104f6ea",
+  "name": "Raging Battle Mouse",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Raging Battle Mouse",
+      "oracle_fingerprint": "822fc12664f44089251859409d7166a6",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["Spell", { "ControlledBy": "You" }],
+            "change": "Reduce",
+            "mana": "{1}",
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "SpellCast",
+                    "who": "EachPlayer",
+                    "filter": [{ "ControlledBy": "You" }]
+                  }
+                },
+                "op": "Eq",
+                "right": 1
+              }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "Entered",
+                    "who": "EachPlayer",
+                    "filter": [{ "Not": { "Type": "Land" } }, { "ControlledBy": "You" }]
+                  }
+                },
+                "op": "Ge",
+                "right": 2
+              }
+            },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

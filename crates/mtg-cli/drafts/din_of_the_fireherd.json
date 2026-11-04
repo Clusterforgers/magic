@@ -1,0 +1,56 @@
+{
+  "oracle_id": "6480ab32-3a29-4449-8ff7-c8e43c320ed3",
+  "name": "Din of the Fireherd",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Din of the Fireherd",
+      "oracle_fingerprint": "64980614d5f33f9fc732a7e2eabada35",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Elemental",
+                      "colors": ["Black", "Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Elemental"],
+                      "power": 5,
+                      "toughness": 5
+                    }
+                  }
+                }
+              },
+              {
+                "Sacrifice": {
+                  "who": { "Target": 0 },
+                  "filter": [{ "Type": "Creature" }],
+                  "count": {
+                    "Count": [
+                      { "Type": "Creature" },
+                      { "Color": "Black" },
+                      { "ControlledBy": "You" }
+                    ]
+                  }
+                }
+              },
+              {
+                "Sacrifice": {
+                  "who": { "Target": 0 },
+                  "filter": [{ "Type": "Land" }],
+                  "count": {
+                    "Count": [{ "Type": "Creature" }, { "Color": "Red" }, { "ControlledBy": "You" }]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "oracle_id": "bae41d41-9dbe-4d6b-bf5d-8a7d7041462c",
+  "name": "Vampire Slayer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vampire Slayer",
+      "oracle_fingerprint": "bd61dd80077e30c9da6351fedeec4eb1",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": { "source": ["This"], "to": { "Each": [{ "Subtype": "Vampire" }] } }
+            },
+            "effects": [{ "Destroy": { "what": "Triggering" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

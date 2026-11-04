@@ -1,0 +1,31 @@
+{
+  "oracle_id": "e980e565-2612-467e-aff1-e0a9ec1b80e9",
+  "name": "Samite Censer-Bearer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Samite Censer-Bearer",
+      "oracle_fingerprint": "d55bc519acc67eaae6603edc47770aec",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{W}" }, "SacrificeSelf"],
+            "effects": [
+              {
+                "Shield": {
+                  "when": {
+                    "Damage": {
+                      "to": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+                    }
+                  },
+                  "by": { "PreventUpTo": 1 },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "oracle_id": "5daac63a-1534-4194-8cb7-506508e364f4",
+  "name": "Invigorating Surge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Invigorating Surge",
+      "oracle_fingerprint": "6407acee9ae9c77a5645bd6f18a251d4",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } },
+              { "MultiplyCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "oracle_id": "ed8d8eb5-fbc8-4b7f-9b75-53ab118e72de",
+  "name": "Unholy Hunger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Unholy Hunger",
+      "oracle_fingerprint": "cb3335a1949d6bdb7ba5ff62d23a6b8f",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Count": [
+                          { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                          { "OwnedBy": "You" },
+                          { "In": "Graveyard" }
+                        ]
+                      },
+                      "op": "Ge",
+                      "right": 2
+                    }
+                  },
+                  "then": [{ "GainLife": { "amount": 2 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

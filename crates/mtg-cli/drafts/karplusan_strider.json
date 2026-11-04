@@ -1,0 +1,25 @@
+{
+  "oracle_id": "f2074c37-6e76-4460-9666-010c7f38ae66",
+  "name": "Karplusan Strider",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Karplusan Strider",
+      "oracle_fingerprint": "e8dc732cbb729309b999d38b4661f19c",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "This",
+                "action": {
+                  "BeTargeted": [{ "AnyOf": [{ "Color": "Blue" }, { "Color": "Black" }] }, "Spell"]
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "oracle_id": "cff1b9bb-2a4c-4522-94a4-a674f942e376",
+  "name": "Words of Wisdom",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Words of Wisdom",
+      "oracle_fingerprint": "188d1f910c3046d3fced6c85caee037e",
+      "abilities": [
+        { "Spell": { "effects": [{ "Draw": { "count": 2 } }, { "Draw": { "who": "Opponents" } }] } }
+      ]
+    }
+  ]
+}

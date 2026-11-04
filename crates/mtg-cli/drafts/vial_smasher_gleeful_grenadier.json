@@ -1,0 +1,37 @@
+{
+  "oracle_id": "a66d8dc6-ced4-4b24-b0c2-3557b2a851be",
+  "name": "Vial Smasher, Gleeful Grenadier",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vial Smasher, Gleeful Grenadier",
+      "oracle_fingerprint": "79b6720cab415b7049321ff18a8dddb0",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  {
+                    "AnyOf": [
+                      { "Subtype": "Assassin" },
+                      { "Subtype": "Mercenary" },
+                      { "Subtype": "Pirate" },
+                      { "Subtype": "Rogue" },
+                      { "Subtype": "Warlock" }
+                    ]
+                  },
+                  { "ControlledBy": "You" },
+                  "Other"
+                ],
+                "to": "Battlefield"
+              }
+            },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

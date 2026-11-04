@@ -1,0 +1,33 @@
+{
+  "oracle_id": "686f4a37-b5e4-46d4-9e0e-11794b2d12cd",
+  "name": "Golgari Grave-Troll",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Golgari Grave-Troll",
+      "oracle_fingerprint": "9b966c05383024cb13986a8545065844",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "WithCounters": {
+                "counter": "+1/+1",
+                "count": {
+                  "Count": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                }
+              }
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, { "RemoveCounters": { "counter": "+1/+1" } }],
+            "effects": [{ "Regenerate": { "what": "This" } }]
+          }
+        },
+        { "Keyword": { "Dredge": 6 } }
+      ]
+    }
+  ]
+}

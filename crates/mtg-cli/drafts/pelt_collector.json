@@ -1,0 +1,83 @@
+{
+  "oracle_id": "2348f3d4-02cc-4611-a7e0-b77604d5f2e8",
+  "name": "Pelt Collector",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pelt Collector",
+      "oracle_fingerprint": "0b65880aa6a36a17480502af39fcb63b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                {
+                  "ZoneChange": {
+                    "what": [
+                      { "Type": "Creature" },
+                      { "ControlledBy": "You" },
+                      {
+                        "Compare": {
+                          "stat": "Power",
+                          "op": "Gt",
+                          "to": { "Stat": { "of": "This", "stat": "Power" } }
+                        }
+                      },
+                      "Other"
+                    ],
+                    "to": "Battlefield"
+                  }
+                },
+                {
+                  "ZoneChange": {
+                    "what": [
+                      { "Type": "Creature" },
+                      { "ControlledBy": "You" },
+                      {
+                        "Compare": {
+                          "stat": "Power",
+                          "op": "Gt",
+                          "to": { "Stat": { "of": "This", "stat": "Power" } }
+                        }
+                      },
+                      "Other"
+                    ],
+                    "from": "Battlefield",
+                    "to": "Graveyard"
+                  }
+                }
+              ]
+            },
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Stat": { "of": "This", "stat": "Power" } },
+                      "op": "Lt",
+                      "right": { "Stat": { "of": "Triggering", "stat": "Power" } }
+                    }
+                  },
+                  "then": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Trample" }],
+            "condition": {
+              "Compare": {
+                "left": { "Counters": { "on": "This", "counter": "+1/+1" } },
+                "op": "Ge",
+                "right": 3
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,55 @@
+{
+  "oracle_id": "e24916ff-7566-4f27-8e31-732311a4a88c",
+  "name": "Stormshriek Feral // Flush Out",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stormshriek Feral",
+      "oracle_fingerprint": "e4dffdd9b9b31f021ba6b3cdaba8c6ff",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Haste" },
+        {
+          "Activated": {
+            "cost": "{1}{R}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Flush Out",
+      "oracle_fingerprint": "d6865784cf03f72338243a0819e39004",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Discard": { "as": "discarded" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "discarded" },
+                      "selector": [],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Draw": { "count": 2 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

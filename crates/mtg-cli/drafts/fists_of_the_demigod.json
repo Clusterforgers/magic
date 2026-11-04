@@ -1,0 +1,41 @@
+{
+  "oracle_id": "0e6f9fc3-5cc7-42cc-ae83-9be875a1579f",
+  "name": "Fists of the Demigod",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fists of the Demigod",
+      "oracle_fingerprint": "50324e2351d3f44aef81303a5a06597f",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }, { "AddKeyword": "Wither" }],
+            "condition": {
+              "Matches": {
+                "subject": "Attached",
+                "selector": [{ "Type": "Creature" }, { "Color": "Black" }]
+              }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "ModifyPT": { "power": 1, "toughness": 1 } },
+              { "AddKeyword": "FirstStrike" }
+            ],
+            "condition": {
+              "Matches": {
+                "subject": "Attached",
+                "selector": [{ "Type": "Creature" }, { "Color": "Red" }]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

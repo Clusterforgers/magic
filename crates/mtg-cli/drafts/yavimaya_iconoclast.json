@@ -1,0 +1,32 @@
+{
+  "oracle_id": "9900c771-ab81-415e-90a7-123c1bacfa83",
+  "name": "Yavimaya Iconoclast",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Yavimaya Iconoclast",
+      "oracle_fingerprint": "903abf5e891ac9e88272b3ab8e6ff088",
+      "abilities": [
+        { "Keyword": { "Kicker": "{R}" } },
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This", "Kicked"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "ModifyPT": { "power": 1, "toughness": 1 } },
+                    { "AddKeyword": "Haste" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

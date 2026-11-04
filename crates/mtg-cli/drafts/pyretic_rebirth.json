@@ -1,0 +1,43 @@
+{
+  "oracle_id": "a38ace5b-34f5-4105-b6ee-dedb86037729",
+  "name": "Pyretic Rebirth",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pyretic Rebirth",
+      "oracle_fingerprint": "069b386f3b461a19a44c0e14c3b5fb7e",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Creature" }, { "Type": "Artifact" }] },
+                    { "OwnedBy": "You" },
+                    { "In": "Graveyard" }
+                  ]
+                }
+              },
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": "Hand", "as": "moved" } },
+              {
+                "DealDamage": {
+                  "to": { "Target": 1 },
+                  "amount": { "Stat": { "of": { "Bound": "moved" }, "stat": "ManaValue" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

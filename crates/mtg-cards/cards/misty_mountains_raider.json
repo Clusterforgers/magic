@@ -1,0 +1,21 @@
+{
+  "oracle_id": "c394b767-620c-4310-b78f-ece312259e46",
+  "name": "Misty Mountains Raider",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Misty Mountains Raider",
+      "oracle_fingerprint": "240e485cc3c68868c0eb5aa03db94f3c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+            },
+            "effects": [{ "Amass": { "subtype": "Goblin", "count": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

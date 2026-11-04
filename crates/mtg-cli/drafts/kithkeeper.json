@@ -1,0 +1,52 @@
+{
+  "oracle_id": "5c5766f9-befd-4426-9527-d50af0699ca1",
+  "name": "Kithkeeper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kithkeeper",
+      "oracle_fingerprint": "c495430dfc61e86602783f8bcc70fb1a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Kithkin",
+                      "colors": ["Green", "White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Kithkin"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": { "Distinct": { "of": [{ "ControlledBy": "You" }], "stat": "Colors" } }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "TapPermanents": { "filter": [{ "Type": "Creature" }], "count": 3 } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "ModifyPT": { "power": 3, "toughness": 0 } },
+                    { "AddKeyword": "Flying" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

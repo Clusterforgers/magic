@@ -1,0 +1,41 @@
+{
+  "oracle_id": "8c45bf9d-a017-43bf-9e32-67810a8a217b",
+  "name": "Talon Gates of Madara",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Talon Gates of Madara",
+      "oracle_fingerprint": "80b069921860de6e9de3d686b777e012",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 0, "max": 1 } }
+            ],
+            "effects": [{ "PhaseOut": { "what": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap"],
+            "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{4}",
+            "from": "Hand",
+            "effects": [{ "Move": { "what": "This", "to": { "Battlefield": {} } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

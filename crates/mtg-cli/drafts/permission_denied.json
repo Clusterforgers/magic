@@ -1,0 +1,32 @@
+{
+  "oracle_id": "95aae5ba-7634-4cad-a0be-496c3398fa3c",
+  "name": "Permission Denied",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Permission Denied",
+      "oracle_fingerprint": "c9377d265ca01a33c455052c29cd6386",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell", { "Not": { "Type": "Creature" } }] } }],
+            "effects": [
+              { "Counter": { "what": { "Target": 0 } } },
+              {
+                "Rule": {
+                  "rule": {
+                    "Cant": {
+                      "who": "Opponents",
+                      "action": { "Cast": { "filter": [{ "Not": { "Type": "Creature" } }] } }
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

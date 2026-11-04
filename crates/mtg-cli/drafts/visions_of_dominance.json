@@ -1,0 +1,23 @@
+{
+  "oracle_id": "14290772-ca17-4a55-86b2-7a638929b12d",
+  "name": "Visions of Dominance",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Visions of Dominance",
+      "oracle_fingerprint": "296929e55b88c29c9ce2507b860687e1",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } },
+              { "MultiplyCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }
+            ]
+          }
+        },
+        { "Keyword": { "Flashback": "{8}{G}{G}" } }
+      ]
+    }
+  ]
+}

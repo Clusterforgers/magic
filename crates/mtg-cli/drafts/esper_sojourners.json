@@ -1,0 +1,26 @@
+{
+  "oracle_id": "0c59db70-9cb4-4edf-ba6e-12ffa7c06b7b",
+  "name": "Esper Sojourners",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Esper Sojourners",
+      "oracle_fingerprint": "82f14bc0323492e2322b61dcaafc3525",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "Cycled": { "what": ["This"] } },
+                { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } }
+              ]
+            },
+            "targets": [{ "what": { "Object": [] } }],
+            "effects": [{ "May": { "effects": [{ "TapOrUntap": { "what": { "Target": 0 } } }] } }]
+          }
+        },
+        { "Keyword": { "Cycling": "{2}{U}" } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,133 @@
+{
+  "object": "card",
+  "id": "c175e50f-3858-43d7-8d4b-359ece106ccf",
+  "oracle_id": "17da3654-7517-473b-89e7-0303f6f030cb",
+  "multiverse_ids": [
+    640532
+  ],
+  "mtgo_id": 118872,
+  "tcgplayer_id": 525778,
+  "cardmarket_id": 743588,
+  "name": "Deathgorge Scavenger",
+  "lang": "en",
+  "released_at": "2023-11-17",
+  "uri": "https://api.scryfall.com/cards/c175e50f-3858-43d7-8d4b-359ece106ccf",
+  "scryfall_uri": "https://scryfall.com/card/lcc/236/deathgorge-scavenger?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:37:41Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/c/1/c175e50f-3858-43d7-8d4b-359ece106ccf.jpg?1783913861",
+    "normal": "https://cards.scryfall.io/normal/front/c/1/c175e50f-3858-43d7-8d4b-359ece106ccf.jpg?1783913861",
+    "large": "https://cards.scryfall.io/large/front/c/1/c175e50f-3858-43d7-8d4b-359ece106ccf.jpg?1783913861",
+    "png": "https://cards.scryfall.io/png/front/c/1/c175e50f-3858-43d7-8d4b-359ece106ccf.png?1783913861",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/c/1/c175e50f-3858-43d7-8d4b-359ece106ccf.jpg?1783913861",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/c/1/c175e50f-3858-43d7-8d4b-359ece106ccf.jpg?1783913861",
+    "thumb": "https://cards.scryfall.io/thumb/front/c/1/c175e50f-3858-43d7-8d4b-359ece106ccf.webp?1783913861",
+    "grid": "https://cards.scryfall.io/grid/front/c/1/c175e50f-3858-43d7-8d4b-359ece106ccf.webp?1783913861",
+    "display": "https://cards.scryfall.io/display/front/c/1/c175e50f-3858-43d7-8d4b-359ece106ccf.webp?1783913861",
+    "art": "https://cards.scryfall.io/art/front/c/1/c175e50f-3858-43d7-8d4b-359ece106ccf.webp?1783913861",
+    "crop": "https://cards.scryfall.io/crop/front/c/1/c175e50f-3858-43d7-8d4b-359ece106ccf.webp?1783913861",
+    "jpeg": "https://cards.scryfall.io/normal/front/c/1/c175e50f-3858-43d7-8d4b-359ece106ccf.jpg?1783913861"
+  },
+  "mana_cost": "{2}{G}",
+  "cmc": 3.0,
+  "type_line": "Creature — Dinosaur",
+  "oracle_text": "Whenever this creature enters or attacks, you may exile target card from a graveyard. If a creature card is exiled this way, you gain 2 life. If a noncreature card is exiled this way, this creature gets +1/+1 until end of turn.",
+  "power": "3",
+  "toughness": "2",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "d253edc3-5bc7-4cf1-9446-a8540dedffa5",
+  "set": "lcc",
+  "set_name": "The Lost Caverns of Ixalan Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/d253edc3-5bc7-4cf1-9446-a8540dedffa5",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Alcc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/lcc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/c175e50f-3858-43d7-8d4b-359ece106ccf/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A17da3654-7517-473b-89e7-0303f6f030cb&unique=prints",
+  "collector_number": "236",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Tyler Jacobson",
+  "artist_ids": [
+    "522af130-8db4-4b4b-950c-6e2b246339cf"
+  ],
+  "illustration_id": "df6429fc-ceb6-4e3e-bcb8-8019d7a99955",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 12085,
+  "penny_rank": 4228,
+  "prices": {
+    "usd": "0.25",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.29",
+    "eur_foil": null,
+    "tix": "0.31"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=640532&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DDeathgorge%2BScavenger",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DDeathgorge%2BScavenger",
+    "edhrec": "https://edhrec.com/route/?cc=Deathgorge+Scavenger"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F525778%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=743588&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/118872?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

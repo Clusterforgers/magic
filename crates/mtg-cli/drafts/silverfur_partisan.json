@@ -1,0 +1,44 @@
+{
+  "oracle_id": "dfeb239b-8904-4ef0-9a91-edc901b0c49a",
+  "name": "Silverfur Partisan",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Silverfur Partisan",
+      "oracle_fingerprint": "682c1c4eb2a22df5785a469cb07d45b2",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": {
+              "BecomesTarget": {
+                "what": [
+                  { "AnyOf": [{ "Subtype": "Wolf" }, { "Subtype": "Werewolf" }] },
+                  { "ControlledBy": "You" },
+                  { "In": "Battlefield" }
+                ],
+                "by": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }]
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Wolf",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Wolf"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

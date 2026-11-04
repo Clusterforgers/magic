@@ -1,0 +1,25 @@
+{
+  "oracle_id": "287cb63c-d52d-4871-83d1-792a41ae7adc",
+  "name": "Inferno Elemental",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Inferno Elemental",
+      "oracle_fingerprint": "cf4b3e322e54d9a0df8a7c418459901e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "BecomesBlocked": { "what": [{ "Type": "Creature" }], "by": ["This"] } },
+            "effects": [{ "DealDamage": { "to": "Triggering", "amount": 3 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "BecomesBlocked": { "what": ["This"], "by": [{ "Type": "Creature" }] } },
+            "effects": [{ "DealDamage": { "to": "Dealer", "amount": 3 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "oracle_id": "c7b088d6-031b-4e50-aa07-69f4fd26df79",
+  "name": "Myojin of Cleansing Fire",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Myojin of Cleansing Fire",
+      "oracle_fingerprint": "74a65bd81806c235ce794e95163c527c",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Indestructible" }],
+            "condition": {
+              "Matches": {
+                "subject": "This",
+                "selector": [{ "HasCounter": { "Other": "divinity" } }]
+              }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Indestructible" }],
+            "condition": {
+              "Compare": {
+                "left": { "Counters": { "on": "This", "counter": { "Other": "divinity" } } },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "RemoveCounters": { "counter": { "Other": "divinity" } } }],
+            "effects": [{ "Destroy": { "what": { "Each": [{ "Type": "Creature" }, "Other"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

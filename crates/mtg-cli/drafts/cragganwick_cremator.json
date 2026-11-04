@@ -1,0 +1,44 @@
+{
+  "oracle_id": "f8ea46e2-84ca-4dcb-b675-a2374bc967bc",
+  "name": "Cragganwick Cremator",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cragganwick Cremator",
+      "oracle_fingerprint": "34ccfb4d5197acd5a2e639403a154d9b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              { "what": { "Either": ["Player", { "Object": [{ "Type": "Planeswalker" }] }] } }
+            ],
+            "effects": [
+              { "Discard": { "random": true, "as": "discarded" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "discarded" },
+                      "selector": [{ "Type": "Creature" }],
+                      "op": "Eq",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "DealDamage": {
+                        "to": { "Target": 0 },
+                        "amount": { "Stat": { "of": { "Bound": "discarded" }, "stat": "Power" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

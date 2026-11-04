@@ -1,0 +1,38 @@
+{
+  "oracle_id": "eb933723-b879-44c8-bbc8-d8c84ce5ab12",
+  "name": "Ith, High Arcanist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ith, High Arcanist",
+      "oracle_fingerprint": "82aef986ea8c9e7c663640048ca5bf0a",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Attacking"] } }],
+            "effects": [
+              { "Untap": { "what": { "Target": 0 } } },
+              {
+                "Shield": {
+                  "when": { "Damage": { "source": [{ "Is": { "Target": 0 } }], "combat": true } },
+                  "by": "Prevent",
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": { "Target": 0 }, "combat": true } },
+                  "by": "Prevent",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Suspend": { "time": 4, "cost": "{W}{U}" } } }
+      ]
+    }
+  ]
+}

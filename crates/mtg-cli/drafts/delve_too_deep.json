@@ -1,0 +1,56 @@
+{
+  "oracle_id": "3ace4689-c822-4434-bb6f-64e56b167a44",
+  "name": "Delve too Deep",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Delve too Deep",
+      "oracle_fingerprint": "6220ff6a3ba8490ea6ba565e04fb683e",
+      "abilities": [
+        { "Keyword": "Delve" },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": { "Times": { "by": -1, "of": "X" } },
+                        "toughness": { "Times": { "by": -1, "of": "X" } }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "If": {
+                  "condition": { "Compare": { "left": "X", "op": "Ge", "right": 7 } },
+                  "then": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Demon",
+                            "colors": ["Black", "Red"],
+                            "types": ["Creature"],
+                            "subtypes": ["Demon"],
+                            "power": 7,
+                            "toughness": 7
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

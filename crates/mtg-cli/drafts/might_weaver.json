@@ -1,0 +1,37 @@
+{
+  "oracle_id": "c2cfbc1a-ae73-409c-b73a-5c8625365905",
+  "name": "Might Weaver",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Might Weaver",
+      "oracle_fingerprint": "89de91d283be0b3e743494a33a1c04fe",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{2}",
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "AnyOf": [{ "Color": "Red" }, { "Color": "White" }] }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Trample" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

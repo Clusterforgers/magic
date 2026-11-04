@@ -1,0 +1,46 @@
+{
+  "oracle_id": "c2db05e0-879b-43e4-9009-37a95fd848dc",
+  "name": "Overlord of the Boilerbilges",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Overlord of the Boilerbilges",
+      "oracle_fingerprint": "bfa0288bf9a99164e10cae6b708b8cdb",
+      "abilities": [
+        { "AltCast": { "way": "Impending", "cost": "{2}{R}{R}" } },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": { "Other": "time" }, "count": 4 } },
+            "condition": { "CastWith": "Impending" }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "RemoveType": "Creature" }],
+            "condition": {
+              "Compare": {
+                "left": { "Counters": { "on": "This", "counter": { "Other": "time" } } },
+                "op": "Gt",
+                "right": 0
+              }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "Attacks": { "what": ["This"] } }
+              ]
+            },
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 4 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

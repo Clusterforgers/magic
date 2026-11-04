@@ -1,0 +1,32 @@
+{
+  "oracle_id": "52d349e7-4bd2-468a-ab26-df8cd262f6f6",
+  "name": "Fleet Swallower",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fleet Swallower",
+      "oracle_fingerprint": "4abb66ec6cc56b504fd5d6c57dc6e3f7",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Mill": {
+                  "who": { "Target": 0 },
+                  "count": {
+                    "Half": {
+                      "of": { "Count": [{ "In": "Library" }, { "OwnedBy": { "Target": 0 } }] },
+                      "up": true
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

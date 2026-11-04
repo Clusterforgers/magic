@@ -1,0 +1,33 @@
+{
+  "oracle_id": "52a98d1c-602b-4893-870c-190317294181",
+  "name": "Ember-Fist Zubera",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ember-Fist Zubera",
+      "oracle_fingerprint": "b5df96e5b1494a0dc3625ef9458d88c9",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": {
+                    "Tally": {
+                      "event": "Died",
+                      "who": "EachPlayer",
+                      "filter": [{ "Subtype": "Zubera" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

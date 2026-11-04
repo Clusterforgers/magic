@@ -1,0 +1,39 @@
+{
+  "oracle_id": "097bce84-22b1-4d7b-b566-e7c23eb626b9",
+  "name": "Mad Dog",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mad Dog",
+      "oracle_fingerprint": "6606a75079b506c4687b768aec66768f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Sum": [
+                          {
+                            "Tally": { "event": "Entered", "who": "EachPlayer", "filter": ["This"] }
+                          },
+                          { "Count": ["This", "AttackedThisTurn"] }
+                        ]
+                      },
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

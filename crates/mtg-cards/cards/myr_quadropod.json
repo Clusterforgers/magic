@@ -1,0 +1,27 @@
+{
+  "oracle_id": "f53732d3-d317-4042-a0ad-1a99c7ffc94f",
+  "name": "Myr Quadropod",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Myr Quadropod",
+      "oracle_fingerprint": "b5af4383749bd2f934e6d3ba3fbf3d04",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{3}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": ["SwitchPT"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

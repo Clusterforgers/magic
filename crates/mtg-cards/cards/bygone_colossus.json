@@ -1,0 +1,39 @@
+{
+  "oracle_id": "1bd584d5-4e11-428c-b51e-462e4292b07f",
+  "name": "Bygone Colossus",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bygone Colossus",
+      "oracle_fingerprint": "6a0f0a3a3dde4e8aec56127e0223651c",
+      "abilities": [
+        { "AltCast": { "way": "Warp", "cost": "{3}" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": { "CastWith": "Warp" },
+            "effects": [
+              { "Choose": { "from": "This", "as": "warped" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    { "Exile": { "what": { "Bound": "warped" }, "as": "warped_card" } },
+                    {
+                      "Rule": {
+                        "rule": {
+                          "MayCast": { "from": "Exile", "only": { "Bound": "warped_card" } }
+                        },
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

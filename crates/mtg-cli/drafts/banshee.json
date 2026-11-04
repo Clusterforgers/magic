@@ -1,0 +1,28 @@
+{
+  "oracle_id": "438546b8-0b67-4bec-a43b-f2fc7449c90e",
+  "name": "Banshee",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Banshee",
+      "oracle_fingerprint": "1182a6366c23acaf9ee2e1c1abba17f6",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{X}" }, "Tap"],
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": { "Half": { "of": "X", "up": false } }
+                }
+              },
+              { "DealDamage": { "to": "You", "amount": { "Half": { "of": "X", "up": true } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

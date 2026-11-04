@@ -1,0 +1,53 @@
+{
+  "oracle_id": "fb16c4b0-9ac4-4664-9b57-97bfc22e5de9",
+  "name": "Dragonrage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dragonrage",
+      "oracle_fingerprint": "6adaa3e0445e04d822000cdae67b3517",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["Red"] },
+                  "times": {
+                    "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "Attacking"]
+                  }
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "Attacking"]
+                  },
+                  "mods": [
+                    {
+                      "GrantAbility": {
+                        "Activated": {
+                          "cost": "{R}",
+                          "effects": [
+                            {
+                              "Continuous": {
+                                "affected": "This",
+                                "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+                                "duration": "UntilEndOfTurn"
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "oracle_id": "790e3c9e-7d94-43f7-bc14-d83c7d4c889e",
+  "name": "Piston-Fist Cyclops",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Piston-Fist Cyclops",
+      "oracle_fingerprint": "12e801ace362c4ca1802883c5e3fde37",
+      "abilities": [
+        { "Keyword": "Defender" },
+        {
+          "Rule": {
+            "rule": { "Combat": { "who": "This", "quirk": "AttackDespiteDefender" } },
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "SpellCast",
+                    "who": "EachPlayer",
+                    "filter": [
+                      { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                      { "ControlledBy": "You" }
+                    ]
+                  }
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

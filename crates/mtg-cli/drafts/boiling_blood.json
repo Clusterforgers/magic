@@ -1,0 +1,24 @@
+{
+  "oracle_id": "cd55a003-da0d-4522-b08a-d0731b1050c6",
+  "name": "Boiling Blood",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Boiling Blood",
+      "oracle_fingerprint": "963a0f5304ce5801994ae9e00cd63ac5",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Rule": { "rule": { "MustAttack": { "Target": 0 } }, "duration": "UntilEndOfTurn" }
+              },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "oracle_id": "a2aa2c8f-7058-4020-9881-663b104ea051",
+  "name": "Grimgrin, Corpse-Born",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Grimgrin, Corpse-Born",
+      "oracle_fingerprint": "3d7a1c97e15e199dec43f944d2c836dd",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        { "Static": { "affected": "This", "mods": ["DoesntUntap"] } },
+        {
+          "Activated": {
+            "cost": [{ "Sacrifice": { "filter": [{ "Type": "Creature" }, "Other"] } }],
+            "effects": [
+              { "Untap": { "what": "This" } },
+              { "PutCounters": { "on": "This", "counter": "+1/+1" } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Defending" }] } }
+            ],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              { "PutCounters": { "on": "This", "counter": "+1/+1" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

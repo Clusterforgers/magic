@@ -1,0 +1,21 @@
+{
+  "oracle_id": "a14dc46f-b790-458e-8821-0c5646188680",
+  "name": "Groundbreaker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Groundbreaker",
+      "oracle_fingerprint": "e4811bc21fb2eb7ab195f2ae971c5e2d",
+      "abilities": [
+        { "Keyword": "Trample" },
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "effects": [{ "Sacrifice": { "filter": ["This"] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "oracle_id": "2e66dc2f-44f3-44f1-8ed7-7f991b3718be",
+  "name": "Sea Legs",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sea Legs",
+      "oracle_fingerprint": "ab5cea7551af6fbe5c9a6e0a058002fe",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 0, "toughness": 2 } }],
+            "condition": {
+              "Matches": { "subject": "Attached", "selector": [{ "Subtype": "Pirate" }] }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": -2, "toughness": 0 } }],
+            "condition": {
+              "Matches": {
+                "subject": "Attached",
+                "selector": [{ "Type": "Creature" }, { "Not": { "Subtype": "Pirate" } }]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

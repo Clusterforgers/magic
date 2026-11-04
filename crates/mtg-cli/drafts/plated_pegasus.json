@@ -1,0 +1,21 @@
+{
+  "oracle_id": "30b99bee-c16e-4936-b688-1a256dd0c196",
+  "name": "Plated Pegasus",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Plated Pegasus",
+      "oracle_fingerprint": "281e20a92bb7d7bf4384f7f8c7955ac5",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": "Flying" },
+        {
+          "Replacement": {
+            "when": { "Damage": { "source": ["Spell"] } },
+            "by": { "PreventUpTo": 1 }
+          }
+        }
+      ]
+    }
+  ]
+}

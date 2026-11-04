@@ -1,0 +1,34 @@
+{
+  "oracle_id": "dd257eb3-4112-41e5-9c7d-00d1f683dbdb",
+  "name": "Saproling Infestation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Saproling Infestation",
+      "oracle_fingerprint": "4491e0873071464cce685e49c1987131",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "ControlledBy": "You" }, "Kicked"] } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Saproling",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Saproling"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "oracle_id": "e403fadb-537c-41ac-924a-450f0eabe2c4",
+  "name": "Ohabi Caleria",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ohabi Caleria",
+      "oracle_fingerprint": "6f0a407d15328879106962e42ba2bbe9",
+      "abilities": [
+        { "Keyword": "Reach" },
+        {
+          "Rule": {
+            "rule": {
+              "UntapDuring": {
+                "what": [{ "Subtype": "Archer" }, { "ControlledBy": "You" }],
+                "whose": "Opponents"
+              }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [
+                  { "Subtype": "Archer" },
+                  { "ControlledBy": "You" },
+                  { "In": "Battlefield" }
+                ],
+                "to": { "Each": [{ "Type": "Creature" }] }
+              }
+            },
+            "effects": [{ "Pay": { "cost": "{2}", "paid": [{ "Draw": {} }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

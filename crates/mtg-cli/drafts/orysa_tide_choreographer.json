@@ -1,0 +1,38 @@
+{
+  "oracle_id": "cf56a5b4-48fa-4d53-a4b9-14afe079c1d3",
+  "name": "Orysa, Tide Choreographer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Orysa, Tide Choreographer",
+      "oracle_fingerprint": "2500a765edd1a2aabaf215e244a86afd",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{3}",
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Total": {
+                    "of": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                    "stat": "Toughness"
+                  }
+                },
+                "op": "Ge",
+                "right": 10
+              }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Draw": { "count": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

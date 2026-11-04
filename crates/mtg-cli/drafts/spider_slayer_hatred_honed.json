@@ -1,0 +1,45 @@
+{
+  "oracle_id": "ca68f436-2522-4007-87bf-2669c7743db0",
+  "name": "Spider-Slayer, Hatred Honed",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spider-Slayer, Hatred Honed",
+      "oracle_fingerprint": "bc03615bdbc323791fb2ff66ccd5c436",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": { "source": ["This"], "to": { "Each": [{ "Subtype": "Spider" }] } }
+            },
+            "effects": [{ "Destroy": { "what": "Triggering" } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{6}" }, "ExileSelf"],
+            "from": "Graveyard",
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Robot",
+                      "types": ["Artifact", "Creature"],
+                      "subtypes": ["Robot"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  },
+                  "count": 2,
+                  "tapped": true
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

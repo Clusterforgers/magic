@@ -1,0 +1,20 @@
+{
+  "oracle_id": "c71f19be-aabc-44ef-a62b-57522b3a2c98",
+  "name": "Skyrider Elf",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Skyrider Elf",
+      "oracle_fingerprint": "610e325d3fdcd20e3f7399e8fc38607e",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": "ColorsSpent" } }
+          }
+        }
+      ]
+    }
+  ]
+}

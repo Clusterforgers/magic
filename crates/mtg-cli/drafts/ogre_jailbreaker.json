@@ -1,0 +1,26 @@
+{
+  "oracle_id": "08d27af8-7178-4694-8621-fabac54c8f0a",
+  "name": "Ogre Jailbreaker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ogre Jailbreaker",
+      "oracle_fingerprint": "1fc8b582c612ba87b3b8b7bdbd436f44",
+      "abilities": [
+        { "Keyword": "Defender" },
+        {
+          "Rule": {
+            "rule": { "Combat": { "who": "This", "quirk": "AttackDespiteDefender" } },
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Subtype": "Gate" }, { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

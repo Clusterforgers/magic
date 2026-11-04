@@ -1,0 +1,37 @@
+{
+  "oracle_id": "affdf41e-c851-4f5d-bd3a-7ca7ada4416a",
+  "name": "Nav Squad Commandos",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nav Squad Commandos",
+      "oracle_fingerprint": "aeaabcddc42aea7ecdff2df257eb8f27",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "if": {
+              "AtTrigger": {
+                "Compare": {
+                  "left": { "Count": [{ "Type": "Creature" }, "Attacking", "Other"] },
+                  "op": "Ge",
+                  "right": 2
+                }
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Untap": { "what": "This" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

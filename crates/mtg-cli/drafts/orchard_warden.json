@@ -1,0 +1,36 @@
+{
+  "oracle_id": "8afc6147-80b4-4296-a5aa-ce892cefb1a7",
+  "name": "Orchard Warden",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Orchard Warden",
+      "oracle_fingerprint": "701bf79fafd8b78aab96d2b22b031cb2",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Subtype": "Treefolk" }, { "ControlledBy": "You" }, "Other"],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "GainLife": {
+                        "amount": { "Stat": { "of": "Triggering", "stat": "Toughness" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

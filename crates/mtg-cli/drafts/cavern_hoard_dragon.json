@@ -1,0 +1,42 @@
+{
+  "oracle_id": "939e8448-013a-4aef-9a92-7c883a77a1a0",
+  "name": "Cavern-Hoard Dragon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cavern-Hoard Dragon",
+      "oracle_fingerprint": "f92d08794190e7561c5e3ffe64562c7b",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{1}",
+            "per": {
+              "Largest": {
+                "who": "Opponents",
+                "of": [{ "Type": "Artifact" }, { "ControlledBy": "You" }]
+              }
+            }
+          }
+        },
+        { "Keyword": "Flying" },
+        { "Keyword": "Trample" },
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": { "Named": "treasure" },
+                  "count": { "Count": [{ "Type": "Artifact" }, { "ControlledBy": "Triggering" }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

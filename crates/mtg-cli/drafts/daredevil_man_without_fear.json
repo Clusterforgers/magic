@@ -1,0 +1,65 @@
+{
+  "oracle_id": "88aadf60-91f9-4932-a2bc-63365a139d36",
+  "name": "Daredevil, Man Without Fear",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Daredevil, Man Without Fear",
+      "oracle_fingerprint": "2882b9a1af624e160906b5164a7dd396",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        { "Keyword": "Haste" },
+        { "Rule": { "rule": { "LookAtTopAnyTime": "You" } } },
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "ExileTop": { "as": "exiled" } },
+                    {
+                      "If": {
+                        "condition": {
+                          "CountOf": {
+                            "subject": { "Bound": "exiled" },
+                            "selector": [{ "Subtype": "Hero" }],
+                            "op": "Gt",
+                            "right": 0
+                          }
+                        },
+                        "then": [
+                          {
+                            "Continuous": {
+                              "affected": "This",
+                              "mods": [{ "ModifyPT": { "power": 2, "toughness": 1 } }],
+                              "duration": "UntilEndOfTurn"
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "Rule": {
+                        "rule": {
+                          "MayCast": {
+                            "from": "Exile",
+                            "only": { "Bound": "exiled" },
+                            "play": true
+                          }
+                        },
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,84 @@
+{
+  "oracle_id": "da522912-1bc2-4d70-b426-94d10edb2afe",
+  "name": "Vona's Hunger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vona's Hunger",
+      "oracle_fingerprint": "ffbfa9adcc9ac934dceaedce0a2aee65",
+      "abilities": [
+        { "Keyword": "Ascend" },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "When": {
+                          "condition": { "CitysBlessing": "You" },
+                          "then": 1,
+                          "otherwise": 0
+                        }
+                      },
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [
+                    { "Sacrifice": { "who": "Opponents", "filter": [{ "Type": "Creature" }] } }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "When": {
+                          "condition": { "CitysBlessing": "You" },
+                          "then": 1,
+                          "otherwise": 0
+                        }
+                      },
+                      "op": "Eq",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "RepeatEach": {
+                        "over": "Opponents",
+                        "as": "each",
+                        "effects": [
+                          {
+                            "Sacrifice": {
+                              "who": { "Bound": "each" },
+                              "filter": [{ "Type": "Creature" }],
+                              "count": {
+                                "Half": {
+                                  "of": {
+                                    "Count": [
+                                      { "Type": "Creature" },
+                                      { "ControlledBy": { "Bound": "each" } }
+                                    ]
+                                  },
+                                  "up": true
+                                }
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

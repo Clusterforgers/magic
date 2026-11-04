@@ -1,0 +1,33 @@
+{
+  "oracle_id": "d8e2dea9-0e96-4ce4-a070-9893f44cf0cc",
+  "name": "Urborg Justice",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Urborg Justice",
+      "oracle_fingerprint": "a3024abde38f435f9ecc0e05d7a39ebe",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Sacrifice": {
+                  "who": { "Target": 0 },
+                  "filter": [{ "Type": "Creature" }],
+                  "count": {
+                    "Tally": {
+                      "event": "Died",
+                      "who": "EachPlayer",
+                      "filter": [{ "Type": "Creature" }, { "OwnedBy": "You" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

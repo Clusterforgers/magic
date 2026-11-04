@@ -1,0 +1,47 @@
+{
+  "oracle_id": "3d21f710-6bbc-41ae-a8e5-02debe3e02bd",
+  "name": "Hushbringer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hushbringer",
+      "oracle_fingerprint": "564d3a3f83aad52561c6decf3d6eebf9",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Lifelink" },
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "EachPlayer",
+                "action": {
+                  "Trigger": {
+                    "ZoneChange": { "what": [{ "Type": "Creature" }], "to": "Battlefield" }
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "EachPlayer",
+                "action": {
+                  "Trigger": {
+                    "ZoneChange": {
+                      "what": [{ "Type": "Creature" }],
+                      "from": "Battlefield",
+                      "to": "Graveyard"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

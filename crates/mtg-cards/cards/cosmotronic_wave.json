@@ -1,0 +1,32 @@
+{
+  "oracle_id": "079ac521-9414-46c1-acd9-2ff2ff047d22",
+  "name": "Cosmotronic Wave",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cosmotronic Wave",
+      "oracle_fingerprint": "0024d5a67d444b894feada8515786319",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] },
+                  "amount": 1
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] },
+                  "mods": ["CantBlock"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "oracle_id": "67a10da3-76f2-4f4a-90d1-e77abb5842fe",
+  "name": "Experiment Twelve",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Experiment Twelve",
+      "oracle_fingerprint": "c582db21b2c98e6b77cd98ddfba9892e",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": {
+              "TurnedFaceUp": {
+                "what": [
+                  {
+                    "AnyOf": [
+                      "This",
+                      {
+                        "Not": {
+                          "AnyOf": [
+                            { "Not": { "Type": "Creature" } },
+                            { "Not": "Other" },
+                            { "Not": { "ControlledBy": "You" } }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": "Triggering",
+                  "counter": "+1/+1",
+                  "count": { "Stat": { "of": "Triggering", "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Disguise": "{4}{G}" } }
+      ]
+    }
+  ]
+}

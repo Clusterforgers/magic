@@ -1,0 +1,41 @@
+{
+  "oracle_id": "5d575b78-3d7b-4860-abc3-e99e429279a1",
+  "name": "Mine Raider",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mine Raider",
+      "oracle_fingerprint": "8e767152ccca59555ef099628eddf1b8",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    {
+                      "AnyOf": [
+                        { "Subtype": "Assassin" },
+                        { "Subtype": "Mercenary" },
+                        { "Subtype": "Pirate" },
+                        { "Subtype": "Rogue" },
+                        { "Subtype": "Warlock" }
+                      ]
+                    },
+                    "Other",
+                    { "ControlledBy": "You" }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "CreateToken": { "token": { "Named": "treasure" } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

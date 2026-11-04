@@ -1,0 +1,49 @@
+{
+  "oracle_id": "9ca64b8e-e9d2-41b3-b229-6fcdc48a8371",
+  "name": "Blademane Baku",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Blademane Baku",
+      "oracle_fingerprint": "2c666a075db39d5a3bc77eca5d80b228",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [{ "AnyOf": [{ "Subtype": "Spirit" }, { "Subtype": "Arcane" }] }],
+                "by": "You"
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [{ "PutCounters": { "on": "This", "counter": { "Other": "ki" } } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{1}" },
+              { "RemoveCounters": { "counter": { "Other": "ki" }, "count": "X" } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "ModifyPT": { "power": { "Times": { "by": 2, "of": "X" } }, "toughness": 0 } }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

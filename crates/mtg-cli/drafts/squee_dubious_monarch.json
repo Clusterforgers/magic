@@ -1,0 +1,47 @@
+{
+  "oracle_id": "124a5dd7-c4f8-479c-9eb0-669aca01d045",
+  "name": "Squee, Dubious Monarch",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Squee, Dubious Monarch",
+      "oracle_fingerprint": "bd38033165581504c138ece824327a97",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Goblin",
+                      "colors": ["Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Goblin"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "tapped": true,
+                  "attacking": true
+                }
+              }
+            ]
+          }
+        },
+        {
+          "AltCast": {
+            "way": "Alternative",
+            "cost": [
+              { "Mana": "{3}{R}" },
+              { "ExileFromGraveyard": { "filter": ["Other"], "count": 4 } }
+            ],
+            "from": "Graveyard"
+          }
+        }
+      ]
+    }
+  ]
+}

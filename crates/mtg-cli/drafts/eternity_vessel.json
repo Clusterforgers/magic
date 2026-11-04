@@ -1,0 +1,40 @@
+{
+  "oracle_id": "c8fa1319-6623-4999-acb5-a5e15e6d868c",
+  "name": "Eternity Vessel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Eternity Vessel",
+      "oracle_fingerprint": "297350eb75720084860928539bf3ccc0",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "charge", "count": { "Life": "You" } } }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "SetLife": { "amount": { "Counters": { "on": "This", "counter": "charge" } } }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

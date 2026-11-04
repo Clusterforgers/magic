@@ -1,0 +1,50 @@
+{
+  "oracle_id": "33a11c01-89a6-446b-84da-e48fd1f27446",
+  "name": "Monkey Cage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Monkey Cage",
+      "oracle_fingerprint": "d70da73086772f5fb00a14dddd7c0c2c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": [{ "Type": "Creature" }], "to": "Battlefield" } },
+            "effects": [
+              { "Sacrifice": { "filter": ["This"], "as": "sacrificed" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "sacrificed" },
+                      "selector": ["This"],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Monkey",
+                            "colors": ["Green"],
+                            "types": ["Creature"],
+                            "subtypes": ["Monkey"],
+                            "power": 2,
+                            "toughness": 2
+                          }
+                        },
+                        "count": { "Stat": { "of": "Triggering", "stat": "ManaValue" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

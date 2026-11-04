@@ -1,0 +1,48 @@
+{
+  "oracle_id": "5303b3f6-970c-47d8-977e-2d6679206ba5",
+  "name": "Nico Minoru, Runaway",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nico Minoru, Runaway",
+      "oracle_fingerprint": "a91b29f75e5cfefc69fa5380e08b91bc",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [
+                  {
+                    "AnyOf": [
+                      { "Not": { "WasCast": { "from": "Hand" } } },
+                      { "Not": { "OwnedBy": "You" } }
+                    ]
+                  }
+                ],
+                "by": "You"
+              }
+            },
+            "effects": [{ "DealDamage": { "to": "Opponents", "amount": 2 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{R}" }, "Tap", { "Discard": {} }],
+            "effects": [
+              {
+                "RevealUntil": {
+                  "filter": [{ "Not": { "Type": "Land" } }],
+                  "as": "found",
+                  "revealed_as": "revealed2"
+                }
+              },
+              { "Exile": { "what": { "Bound": "found" } } },
+              { "Exile": { "what": { "Bound": "revealed2" } } },
+              { "CastFromZone": { "what": { "Bound": "found" }, "free": true } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

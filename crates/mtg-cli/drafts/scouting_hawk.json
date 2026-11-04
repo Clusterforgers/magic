@@ -1,0 +1,46 @@
+{
+  "oracle_id": "0f96c48f-aceb-4554-8b06-cca162151a64",
+  "name": "Scouting Hawk",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Scouting Hawk",
+      "oracle_fingerprint": "9e85459a2bcde1a0dc53fe374efe5f03",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Largest": {
+                    "who": "Opponents",
+                    "of": [{ "Type": "Land" }, { "ControlledBy": "You" }]
+                  }
+                },
+                "op": "Gt",
+                "right": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] }
+              }
+            },
+            "effects": [
+              {
+                "Search": {
+                  "filter": [{ "Subtype": "Plains" }, { "Supertype": "Basic" }],
+                  "as": "found"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "found" },
+                  "to": { "Battlefield": { "tapped": true } }
+                }
+              },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

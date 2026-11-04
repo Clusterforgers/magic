@@ -1,0 +1,35 @@
+{
+  "oracle_id": "e0209690-71f1-41f3-860a-a0737edaf1f9",
+  "name": "Stormcloud Djinn",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stormcloud Djinn",
+      "oracle_fingerprint": "506a98f005900a4234489a5de1ea8375",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "CanBlockOnly": [{ "Type": "Creature" }, { "HasKeyword": "Flying" }] }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{R}{R}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "DealDamage": { "to": "You", "amount": 1 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

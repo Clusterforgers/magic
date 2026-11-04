@@ -1,0 +1,20 @@
+{
+  "oracle_id": "4b8736e2-fc41-4a25-bb6c-7351afc40981",
+  "name": "Pensive Professor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pensive Professor",
+      "oracle_fingerprint": "418a5095b7781e7c7f8b734d0cf1d0a2",
+      "abilities": [
+        { "Keyword": { "Macro": { "name": "increment", "amount": 0 } } },
+        {
+          "Triggered": {
+            "when": { "Batch": { "CountersPut": { "what": ["This"], "counter": "+1/+1" } } },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

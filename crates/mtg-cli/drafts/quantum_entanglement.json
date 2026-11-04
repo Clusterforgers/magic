@@ -1,0 +1,48 @@
+{
+  "oracle_id": "4b072fbb-5e61-4009-bcb1-d493eb4a1be4",
+  "name": "Quantum Entanglement",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Quantum Entanglement",
+      "oracle_fingerprint": "364b7e676166b18583d6b7adee0c235d",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "StepBegins": { "step": "End", "whose": "You" } }
+              ]
+            },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{1}{W}",
+                  "paid": [
+                    {
+                      "Reflexive": {
+                        "targets": [
+                          {
+                            "what": {
+                              "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                            }
+                          }
+                        ],
+                        "effects": [
+                          { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+                          { "Move": { "what": { "Bound": "exiled" }, "to": { "Battlefield": {} } } }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

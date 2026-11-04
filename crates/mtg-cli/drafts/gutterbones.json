@@ -1,0 +1,33 @@
+{
+  "oracle_id": "76ae3779-c821-4cd3-8d0f-8c42d1206ce4",
+  "name": "Gutterbones",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gutterbones",
+      "oracle_fingerprint": "9e92817e84a44ae11df133c2d67993ac",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Activated": {
+            "cost": "{1}{B}",
+            "condition": {
+              "All": [
+                "YourTurn",
+                {
+                  "Compare": {
+                    "left": { "Tallied": { "who": "Opponents", "what": "LifeLost" } },
+                    "op": "Ge",
+                    "right": 1
+                  }
+                }
+              ]
+            },
+            "from": "Graveyard",
+            "effects": [{ "Move": { "what": "This", "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

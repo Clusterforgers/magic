@@ -1,0 +1,57 @@
+{
+  "oracle_id": "bcd48403-7c4b-4b57-8a28-4007b36fe4d7",
+  "name": "Redemptor Dreadnought",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Redemptor Dreadnought",
+      "oracle_fingerprint": "a92845021d3c65a088aa1be94f312496",
+      "abilities": [
+        {
+          "AdditionalCost": {
+            "cost": [{ "ExileFromGraveyard": { "filter": [{ "Type": "Creature" }] } }]
+          }
+        },
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "if": {
+              "Compare": {
+                "left": { "Count": [{ "ExiledWith": "This" }, { "In": "Exile" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": {
+                          "Total": {
+                            "of": [{ "ExiledWith": "This" }, { "In": "Exile" }],
+                            "stat": "Power"
+                          }
+                        },
+                        "toughness": {
+                          "Total": {
+                            "of": [{ "ExiledWith": "This" }, { "In": "Exile" }],
+                            "stat": "Power"
+                          }
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

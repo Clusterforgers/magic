@@ -1,0 +1,17 @@
+{
+  "oracle_id": "ef6ecb67-7e49-4d40-84f2-1e7c02960a0d",
+  "name": "Ochran Assassin",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ochran Assassin",
+      "oracle_fingerprint": "77597318482423685b2a0024c6172d02",
+      "abilities": [
+        { "Keyword": "Deathtouch" },
+        {
+          "Rule": { "rule": { "Combat": { "who": "This", "quirk": { "MustBeBlocked": "Every" } } } }
+        }
+      ]
+    }
+  ]
+}

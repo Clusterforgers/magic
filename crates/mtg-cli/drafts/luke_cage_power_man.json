@@ -1,0 +1,30 @@
+{
+  "oracle_id": "c95d1558-09a4-4dbc-b08a-fe21b47bc5d2",
+  "name": "Luke Cage, Power Man",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Luke Cage, Power Man",
+      "oracle_fingerprint": "bdcdfb68650a4007bc4ff33665931e3c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "AttacksAlone": { "what": ["This"] } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "ModifyPT": { "power": 2, "toughness": 0 } },
+                    { "AddKeyword": "Indestructible" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

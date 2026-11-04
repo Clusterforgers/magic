@@ -1,0 +1,129 @@
+{
+  "object": "card",
+  "id": "b423bb5a-eaac-4c1d-981a-1c635001fc5a",
+  "oracle_id": "47c12d2f-b458-4848-9a01-0fc37ef3d942",
+  "multiverse_ids": [
+    2669
+  ],
+  "tcgplayer_id": 4609,
+  "cardmarket_id": 6445,
+  "name": "Blue Scarab",
+  "lang": "en",
+  "released_at": "1995-06-03",
+  "uri": "https://api.scryfall.com/cards/b423bb5a-eaac-4c1d-981a-1c635001fc5a",
+  "scryfall_uri": "https://scryfall.com/card/ice/9/blue-scarab?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T12:58:48Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/b/4/b423bb5a-eaac-4c1d-981a-1c635001fc5a.jpg?1783947528",
+    "normal": "https://cards.scryfall.io/normal/front/b/4/b423bb5a-eaac-4c1d-981a-1c635001fc5a.jpg?1783947528",
+    "large": "https://cards.scryfall.io/large/front/b/4/b423bb5a-eaac-4c1d-981a-1c635001fc5a.jpg?1783947528",
+    "png": "https://cards.scryfall.io/png/front/b/4/b423bb5a-eaac-4c1d-981a-1c635001fc5a.png?1783947528",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/b/4/b423bb5a-eaac-4c1d-981a-1c635001fc5a.jpg?1783947528",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/b/4/b423bb5a-eaac-4c1d-981a-1c635001fc5a.jpg?1783947528",
+    "thumb": "https://cards.scryfall.io/thumb/front/b/4/b423bb5a-eaac-4c1d-981a-1c635001fc5a.webp?1783947528",
+    "grid": "https://cards.scryfall.io/grid/front/b/4/b423bb5a-eaac-4c1d-981a-1c635001fc5a.webp?1783947528",
+    "display": "https://cards.scryfall.io/display/front/b/4/b423bb5a-eaac-4c1d-981a-1c635001fc5a.webp?1783947528",
+    "art": "https://cards.scryfall.io/art/front/b/4/b423bb5a-eaac-4c1d-981a-1c635001fc5a.webp?1783947528",
+    "crop": "https://cards.scryfall.io/crop/front/b/4/b423bb5a-eaac-4c1d-981a-1c635001fc5a.webp?1783947528",
+    "jpeg": "https://cards.scryfall.io/normal/front/b/4/b423bb5a-eaac-4c1d-981a-1c635001fc5a.jpg?1783947528"
+  },
+  "mana_cost": "{W}",
+  "cmc": 1.0,
+  "type_line": "Enchantment — Aura",
+  "oracle_text": "Enchant creature\nEnchanted creature can't be blocked by blue creatures.\nEnchanted creature gets +2/+2 as long as an opponent controls a blue permanent.",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Enchant"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "b0e08eea-5c01-4406-a6e2-dcd09c5e5b67",
+  "set": "ice",
+  "set_name": "Ice Age",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/b0e08eea-5c01-4406-a6e2-dcd09c5e5b67",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aice&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/ice?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/b423bb5a-eaac-4c1d-981a-1c635001fc5a/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A47c12d2f-b458-4848-9a01-0fc37ef3d942&unique=prints",
+  "collector_number": "9",
+  "digital": false,
+  "rarity": "uncommon",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Amy Weber",
+  "artist_ids": [
+    "c1160787-e72e-4f89-b361-c6864f7a4e3a"
+  ],
+  "illustration_id": "2f7f24cc-4262-4c7d-9cf5-f8db9c395736",
+  "border_color": "black",
+  "frame": "1993",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 25239,
+  "prices": {
+    "usd": "0.24",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.29",
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=2669&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DBlue%2BScarab",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DBlue%2BScarab",
+    "edhrec": "https://edhrec.com/route/?cc=Blue+Scarab"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F4609%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=6445&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Blue+Scarab&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

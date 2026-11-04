@@ -1,0 +1,59 @@
+{
+  "oracle_id": "c21fafaf-4510-4752-a501-606ae68e6699",
+  "name": "Primal Witchstalker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Primal Witchstalker",
+      "oracle_fingerprint": "0cd8e8f5f0d3d941ba6e7c00828ef11b",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "Mill": { "count": 4, "as": "milled" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "milled" },
+                      "selector": [],
+                      "op": "Eq",
+                      "right": 4
+                    }
+                  },
+                  "then": [
+                    {
+                      "Reflexive": {
+                        "targets": [
+                          {
+                            "what": {
+                              "Object": [
+                                { "Type": "Land" },
+                                { "OwnedBy": "You" },
+                                { "In": "Graveyard" }
+                              ]
+                            }
+                          }
+                        ],
+                        "effects": [
+                          {
+                            "Move": {
+                              "what": { "Target": 0 },
+                              "to": { "Battlefield": { "tapped": true } }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

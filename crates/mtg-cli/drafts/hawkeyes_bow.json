@@ -1,0 +1,28 @@
+{
+  "oracle_id": "83798eb8-b14f-4620-bce2-1a6804a24dc7",
+  "name": "Hawkeye's Bow",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hawkeye's Bow",
+      "oracle_fingerprint": "79ad47a0d5f1017f693e938609b3e4fe",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }, { "AddKeyword": "Reach" }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Tapped": { "what": [{ "Type": "Creature" }, { "Is": "Attached" }] } },
+            "effects": [
+              { "DealDamage": { "source": "Triggering", "to": "Opponents", "amount": 1 } }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{1}" } }
+      ]
+    }
+  ]
+}

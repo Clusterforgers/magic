@@ -1,0 +1,25 @@
+{
+  "oracle_id": "afcc68e2-3634-43ce-ae99-dd2ec735d146",
+  "name": "Sakashima's Student",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sakashima's Student",
+      "oracle_fingerprint": "732cf29e02b5829827048ee11d90254f",
+      "abilities": [
+        { "Keyword": { "Ninjutsu": "{1}{U}" } },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "AsCopy": {
+                "of": [{ "Type": "Creature" }, "Other"],
+                "except": [{ "AddSubtype": "Ninja" }]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

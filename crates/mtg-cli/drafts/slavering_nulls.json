@@ -1,0 +1,26 @@
+{
+  "oracle_id": "c6d39445-dfc2-42c3-afd2-016fdf008f0e",
+  "name": "Slavering Nulls",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Slavering Nulls",
+      "oracle_fingerprint": "371a4ae0659fc209cee2a0f52d5ab3a6",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "if": {
+              "Compare": {
+                "left": { "Count": [{ "Subtype": "Swamp" }, { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "May": { "effects": [{ "Discard": { "who": "Triggering" } }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

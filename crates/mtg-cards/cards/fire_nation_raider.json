@@ -1,0 +1,26 @@
+{
+  "oracle_id": "b37e9bc5-6a2c-4f08-b856-3f8d0d16defb",
+  "name": "Fire Nation Raider",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fire Nation Raider",
+      "oracle_fingerprint": "e8d90e8525bc2947add5018d6a0bc0cd",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "Attackers" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "CreateToken": { "token": { "Named": "clue" } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "oracle_id": "7a8bfc6b-0a24-42ad-a2c5-ac8d29d4c1b9",
+  "name": "Mogis's Marauder",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mogis's Marauder",
+      "oracle_fingerprint": "8239aa30a991e16670d948276924d3b5",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }] },
+                "bounds": { "min": 0, "max": { "Devotion": ["Black"] } }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Intimidate" }, { "AddKeyword": "Haste" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

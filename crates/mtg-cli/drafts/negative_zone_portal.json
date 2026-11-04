@@ -1,0 +1,73 @@
+{
+  "oracle_id": "8430ae03-2d4c-4031-aa29-4d53815ded78",
+  "name": "Negative Zone Portal",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Negative Zone Portal",
+      "oracle_fingerprint": "1ecca642066206ef4b15b3390bea5ede",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap"],
+            "targets": [
+              { "what": { "Object": [{ "OwnedBy": "Opponents" }, { "In": "Graveyard" }] } }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 } } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Target": 0 },
+                      "selector": [{ "Type": "Creature" }],
+                      "op": "Eq",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Count": [{ "Type": "Creature" }, { "ExiledWith": "This" }, { "In": "Exile" }]
+                },
+                "op": "Ge",
+                "right": 4
+              }
+            },
+            "effects": [
+              {
+                "FlipCoin": {
+                  "lose": [
+                    { "Sacrifice": { "filter": ["This"] } },
+                    {
+                      "ChooseAtRandom": {
+                        "from": {
+                          "Each": [
+                            { "ExiledWith": "This" },
+                            { "In": "Exile" },
+                            { "OwnedBy": "You" }
+                          ]
+                        },
+                        "as": "picked"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "picked" }, "to": "Hand" } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -14,11 +14,23 @@
               "Batch": {
                 "DealsDamage": {
                   "source": [
-                    { "Type": "Creature" },
-                    { "AnyOf": [{ "Subtype": "Ninja" }, { "Subtype": "Rogue" }] },
+                    {
+                      "AnyOf": [
+                        { "Subtype": "Ninja" },
+                        {
+                          "Not": {
+                            "AnyOf": [
+                              { "Not": { "Type": "Creature" } },
+                              { "Not": { "Subtype": "Rogue" } }
+                            ]
+                          }
+                        }
+                      ]
+                    },
                     { "ControlledBy": "You" }
                   ],
-                  "to": "EachPlayer"
+                  "to": "EachPlayer",
+                  "combat": true
                 }
               }
             },

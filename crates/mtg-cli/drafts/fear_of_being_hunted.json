@@ -1,0 +1,19 @@
+{
+  "oracle_id": "a23293cf-4352-4ce6-8a68-3b30f908e137",
+  "name": "Fear of Being Hunted",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fear of Being Hunted",
+      "oracle_fingerprint": "c0c389e8de72f0f7a61929156274c0a3",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Rule": {
+            "rule": { "Combat": { "who": "This", "quirk": { "MustBeBlocked": "AtLeastOne" } } }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,132 @@
+{
+  "object": "card",
+  "id": "b95cc841-4e4f-4896-a073-f2e246ca62e4",
+  "oracle_id": "e6331b3a-81a8-48e8-8a28-237d381f9062",
+  "multiverse_ids": [
+    522133
+  ],
+  "mtgo_id": 90483,
+  "tcgplayer_id": 240391,
+  "cardmarket_id": 566897,
+  "name": "Recalibrate",
+  "lang": "en",
+  "released_at": "2021-06-18",
+  "uri": "https://api.scryfall.com/cards/b95cc841-4e4f-4896-a073-f2e246ca62e4",
+  "scryfall_uri": "https://scryfall.com/card/mh2/57/recalibrate?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T07:14:32Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/b/9/b95cc841-4e4f-4896-a073-f2e246ca62e4.jpg?1783926872",
+    "normal": "https://cards.scryfall.io/normal/front/b/9/b95cc841-4e4f-4896-a073-f2e246ca62e4.jpg?1783926872",
+    "large": "https://cards.scryfall.io/large/front/b/9/b95cc841-4e4f-4896-a073-f2e246ca62e4.jpg?1783926872",
+    "png": "https://cards.scryfall.io/png/front/b/9/b95cc841-4e4f-4896-a073-f2e246ca62e4.png?1783926872",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/b/9/b95cc841-4e4f-4896-a073-f2e246ca62e4.jpg?1783926872",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/b/9/b95cc841-4e4f-4896-a073-f2e246ca62e4.jpg?1783926872",
+    "thumb": "https://cards.scryfall.io/thumb/front/b/9/b95cc841-4e4f-4896-a073-f2e246ca62e4.webp?1783926872",
+    "grid": "https://cards.scryfall.io/grid/front/b/9/b95cc841-4e4f-4896-a073-f2e246ca62e4.webp?1783926872",
+    "display": "https://cards.scryfall.io/display/front/b/9/b95cc841-4e4f-4896-a073-f2e246ca62e4.webp?1783926872",
+    "art": "https://cards.scryfall.io/art/front/b/9/b95cc841-4e4f-4896-a073-f2e246ca62e4.webp?1783926872",
+    "crop": "https://cards.scryfall.io/crop/front/b/9/b95cc841-4e4f-4896-a073-f2e246ca62e4.webp?1783926872",
+    "jpeg": "https://cards.scryfall.io/normal/front/b/9/b95cc841-4e4f-4896-a073-f2e246ca62e4.jpg?1783926872"
+  },
+  "mana_cost": "{1}{U}",
+  "cmc": 2.0,
+  "type_line": "Instant",
+  "oracle_text": "Return target creature to its owner's hand. If you've discarded a card this turn, draw a card.",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "c1c7eb8c-f205-40ab-a609-767cb296544e",
+  "set": "mh2",
+  "set_name": "Modern Horizons 2",
+  "set_type": "draft_innovation",
+  "set_uri": "https://api.scryfall.com/sets/c1c7eb8c-f205-40ab-a609-767cb296544e",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Amh2&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/mh2?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/b95cc841-4e4f-4896-a073-f2e246ca62e4/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ae6331b3a-81a8-48e8-8a28-237d381f9062&unique=prints",
+  "collector_number": "57",
+  "digital": false,
+  "rarity": "common",
+  "flavor_text": "\"Trial 991: Still encountering issues with accidental aetherization. Maybe if we widen the dimensional matrix to 0.7?\"\n—Izzet research notes",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Volkan Baǵa",
+  "artist_ids": [
+    "93bec3c0-0260-4d31-8064-5d01efb4153f"
+  ],
+  "illustration_id": "48a1a0fe-88c7-4e62-b717-fd0544b1cc16",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 22335,
+  "penny_rank": 16223,
+  "prices": {
+    "usd": "0.13",
+    "usd_foil": "0.39",
+    "usd_etched": null,
+    "eur": "0.02",
+    "eur_foil": "0.08",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=522133&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DRecalibrate",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DRecalibrate",
+    "edhrec": "https://edhrec.com/route/?cc=Recalibrate"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F240391%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=566897&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/90483?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

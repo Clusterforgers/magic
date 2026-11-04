@@ -1,0 +1,45 @@
+{
+  "oracle_id": "48f7217e-ae11-44bd-ac42-7c8d9dd5dc36",
+  "name": "Bristlebane Outrider",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bristlebane Outrider",
+      "oracle_fingerprint": "94dd6e0cb78b3182ac27c5b6aa63afbf",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "CantBeBlockedBy": [
+                  { "Type": "Creature" },
+                  { "Compare": { "stat": "Power", "op": "Le", "to": 2 } }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "Entered",
+                    "who": "EachPlayer",
+                    "filter": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "Other"]
+                  }
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

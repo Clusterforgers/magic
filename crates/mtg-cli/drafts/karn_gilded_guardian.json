@@ -1,0 +1,32 @@
+{
+  "oracle_id": "20b90a18-ff62-4995-b0d6-fbef44dca357",
+  "name": "Karn, Gilded Guardian",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Karn, Gilded Guardian",
+      "oracle_fingerprint": "209d61036abee81fa56d99b0eda71774",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Draw": {
+                  "count": {
+                    "Distinct": {
+                      "of": [{ "Type": "Artifact" }, "Other", { "ControlledBy": "You" }],
+                      "stat": "Colors"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

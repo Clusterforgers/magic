@@ -1,0 +1,42 @@
+{
+  "oracle_id": "b6294891-79e6-4f2a-a82d-6cffce968356",
+  "name": "Kefnet's Monument",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kefnet's Monument",
+      "oracle_fingerprint": "ec0c020b3d51b4f0729becd89fe83eb2",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": [
+              "Spell",
+              { "Type": "Creature" },
+              { "Color": "Blue" },
+              { "ControlledBy": "You" }
+            ],
+            "change": "Reduce",
+            "mana": "{1}"
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Type": "Creature" }], "by": "You" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["DoesntUntap"],
+                  "duration": "NextUntapStep"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

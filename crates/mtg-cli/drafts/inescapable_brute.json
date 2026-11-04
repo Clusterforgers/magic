@@ -1,0 +1,19 @@
+{
+  "oracle_id": "cb69e07c-c831-4992-8089-3a3a1278c45b",
+  "name": "Inescapable Brute",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Inescapable Brute",
+      "oracle_fingerprint": "f8e4a9e746cd2bae51a1abe16bafe6df",
+      "abilities": [
+        { "Keyword": "Wither" },
+        {
+          "Rule": {
+            "rule": { "Combat": { "who": "This", "quirk": { "MustBeBlocked": "AtLeastOne" } } }
+          }
+        }
+      ]
+    }
+  ]
+}

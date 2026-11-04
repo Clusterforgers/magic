@@ -1,0 +1,30 @@
+{
+  "oracle_id": "448e0cf2-c97c-4dc0-96ef-91f1eb75d97c",
+  "name": "Ion Storm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ion Storm",
+      "oracle_fingerprint": "0509c125c26e1ec4273d5c554d1bfd17",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{R}" }, { "RemoveCounters": { "counter": "+1/+1", "from": [] } }],
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 2 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{1}{R}" },
+              { "RemoveCounters": { "counter": "charge", "from": [] } }
+            ],
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

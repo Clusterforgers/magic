@@ -1,0 +1,24 @@
+{
+  "oracle_id": "d99fa026-6347-450a-9011-1fd79070a55c",
+  "name": "Goblin Ruinblaster",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Goblin Ruinblaster",
+      "oracle_fingerprint": "43064df662f1b5ec8b8efdd5f279fc6f",
+      "abilities": [
+        { "Keyword": { "Kicker": "{R}" } },
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This", "Kicked"], "to": "Battlefield" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Land" }, { "Not": { "Supertype": "Basic" } }] } }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

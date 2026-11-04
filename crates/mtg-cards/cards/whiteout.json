@@ -1,0 +1,33 @@
+{
+  "oracle_id": "9e8de3e1-1159-460f-99b7-1043e5814597",
+  "name": "Whiteout",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Whiteout",
+      "oracle_fingerprint": "6530c28973168ef43174de9e1613ea8b",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }] },
+                  "mods": [{ "RemoveKeyword": "Flying" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Sacrifice": { "filter": [{ "Type": "Land" }, { "Supertype": "Snow" }] } }],
+            "from": "Graveyard",
+            "effects": [{ "Move": { "what": "This", "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

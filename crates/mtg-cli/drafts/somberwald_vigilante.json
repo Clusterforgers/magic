@@ -1,0 +1,19 @@
+{
+  "oracle_id": "31c77036-8627-476a-996b-2a6b005c9e12",
+  "name": "Somberwald Vigilante",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Somberwald Vigilante",
+      "oracle_fingerprint": "c7cb92edd19b2b7f16d17336458c9eed",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "BecomesBlocked": { "what": ["This"], "by": [{ "Type": "Creature" }] } },
+            "effects": [{ "DealDamage": { "to": "Dealer", "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

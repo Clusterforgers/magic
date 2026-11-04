@@ -1,0 +1,57 @@
+{
+  "oracle_id": "a8c44bd9-6470-47d7-934f-77c76a44a984",
+  "name": "Sanar, Unfinished Genius // Wild Idea",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sanar, Unfinished Genius",
+      "oracle_fingerprint": "b0d9c1972aaafce5272323bb4616deb5",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "EntersPrepared" } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "SpellCast",
+                    "who": "EachPlayer",
+                    "filter": [
+                      { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                      { "ControlledBy": "You" }
+                    ]
+                  }
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "CreateToken": { "token": { "Named": "treasure" } } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Wild Idea",
+      "oracle_fingerprint": "e2129284aa47575a50786643af3c842b",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Search": {
+                  "filter": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                  "reveal": true,
+                  "as": "card"
+                }
+              },
+              { "Move": { "what": { "Bound": "card" }, "to": "Hand" } },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "oracle_id": "0dc9acfb-3f8b-4a34-b44c-5cc62689904b",
+  "name": "Patrician's Scorn",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Patrician's Scorn",
+      "oracle_fingerprint": "29fdd1a6a1988c1ed7c8b8d163d2a7b6",
+      "abilities": [
+        {
+          "FreeCast": {
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "SpellCast",
+                    "who": "EachPlayer",
+                    "filter": [{ "Color": "White" }, { "ControlledBy": "You" }]
+                  }
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        },
+        {
+          "Spell": {
+            "effects": [{ "Destroy": { "what": { "Each": [{ "Type": "Enchantment" }] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,90 @@
+{
+  "oracle_id": "7d723a6f-854f-43df-9401-a4eb0c0f639f",
+  "name": "The Weatherseed Treaty",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Weatherseed Treaty",
+      "oracle_fingerprint": "4168c940b397f56e3c5cdb494ecbdf66",
+      "abilities": [
+        { "Keyword": "ReadAhead" },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "effects": [
+              {
+                "Search": {
+                  "filter": [{ "Type": "Land" }, { "Supertype": "Basic" }],
+                  "as": "found"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "found" },
+                  "to": { "Battlefield": { "tapped": true } }
+                }
+              },
+              { "Shuffle": {} }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Saproling",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Saproling"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": {
+                          "Distinct": {
+                            "of": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                            "stat": "BasicLandTypes"
+                          }
+                        },
+                        "toughness": {
+                          "Distinct": {
+                            "of": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                            "stat": "BasicLandTypes"
+                          }
+                        }
+                      }
+                    },
+                    { "AddKeyword": "Trample" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

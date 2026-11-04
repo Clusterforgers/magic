@@ -1,0 +1,32 @@
+{
+  "oracle_id": "952083c5-9ffa-4cd9-915f-b7de7f3e5326",
+  "name": "Ticket Tortoise",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ticket Tortoise",
+      "oracle_fingerprint": "973b4a0b23f052c20383159f96f218ab",
+      "abilities": [
+        { "Keyword": "Defender" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Largest": {
+                    "who": "Opponents",
+                    "of": [{ "Type": "Land" }, { "ControlledBy": "You" }]
+                  }
+                },
+                "op": "Gt",
+                "right": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] }
+              }
+            },
+            "effects": [{ "CreateToken": { "token": { "Named": "treasure" } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

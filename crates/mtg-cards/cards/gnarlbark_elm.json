@@ -1,0 +1,35 @@
+{
+  "oracle_id": "a848ea46-347d-49c7-85c8-023cf836d0b3",
+  "name": "Gnarlbark Elm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gnarlbark Elm",
+      "oracle_fingerprint": "38a5fe0d928f77cc08ec167f6d60b216",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "-1/-1", "count": 2 } }
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{B}" }, { "RemoveCounters": { "count": 2 } }],
+            "timing": "Sorcery",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": -2, "toughness": -2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

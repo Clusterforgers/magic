@@ -1,0 +1,21 @@
+{
+  "oracle_id": "8ba0e831-054a-4e01-92ed-2845bd2fa12f",
+  "name": "Skirk Marauder",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Skirk Marauder",
+      "oracle_fingerprint": "0218385d3f77c477aa3e32f73a8395b9",
+      "abilities": [
+        { "Keyword": { "Morph": "{2}{R}" } },
+        {
+          "Triggered": {
+            "when": { "TurnedFaceUp": { "what": ["This"] } },
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

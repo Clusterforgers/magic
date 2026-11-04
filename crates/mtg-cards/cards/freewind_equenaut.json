@@ -1,0 +1,42 @@
+{
+  "oracle_id": "028335db-58f6-47fe-8c6a-f336d0d91fb1",
+  "name": "Freewind Equenaut",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Freewind Equenaut",
+      "oracle_fingerprint": "6db82b69a9e308c878142d9620572d65",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Activated": {
+                    "cost": ["Tap"],
+                    "targets": [
+                      {
+                        "what": {
+                          "Object": [{ "Type": "Creature" }, { "AnyOf": ["Attacking", "Blocking"] }]
+                        }
+                      }
+                    ],
+                    "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 2 } }]
+                  }
+                }
+              }
+            ],
+            "condition": {
+              "Matches": {
+                "subject": "This",
+                "selector": [{ "HasAttached": [{ "Subtype": "Aura" }] }]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "oracle_id": "9bd3a4bb-cc12-4e5f-a33f-77ab0c7788db",
+  "name": "Artifact Ward",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Artifact Ward",
+      "oracle_fingerprint": "940ad618af47ab3866f862c0bc64a6af",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "CantBeBlockedBy": [{ "Type": "Creature" }, { "Type": "Artifact" }] }]
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "Cant": { "who": "Attached", "action": { "BeTargeted": [{ "Type": "Artifact" }] } }
+            }
+          }
+        },
+        {
+          "Replacement": {
+            "when": { "Damage": { "to": "Attached", "source": [{ "Type": "Artifact" }] } },
+            "by": "Prevent"
+          }
+        }
+      ]
+    }
+  ]
+}

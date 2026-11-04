@@ -1,0 +1,50 @@
+{
+  "oracle_id": "8afe3d28-be3e-416c-9457-8a2af85b2eec",
+  "name": "Ritual of Hope",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ritual of Hope",
+      "oracle_fingerprint": "548f8d0468e6daecd1de7b193476ecb6",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": {
+                          "When": {
+                            "condition": {
+                              "Compare": {
+                                "left": {
+                                  "Distinct": {
+                                    "of": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                                    "stat": "Power"
+                                  }
+                                },
+                                "op": "Ge",
+                                "right": 3
+                              }
+                            },
+                            "then": 2,
+                            "otherwise": 1
+                          }
+                        },
+                        "toughness": 1
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

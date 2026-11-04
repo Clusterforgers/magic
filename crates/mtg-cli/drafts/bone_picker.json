@@ -1,0 +1,41 @@
+{
+  "oracle_id": "2edf106d-f504-430e-ad9c-50fc95b0ad9c",
+  "name": "Bone Picker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bone Picker",
+      "oracle_fingerprint": "7574cd724989b52e7fcd04ac3d9b3e94",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{3}",
+            "condition": {
+              "Compare": {
+                "left": {
+                  "When": {
+                    "condition": {
+                      "Compare": {
+                        "left": { "Tallied": { "who": "EachPlayer", "what": "CreaturesDied" } },
+                        "op": "Ge",
+                        "right": 1
+                      }
+                    },
+                    "then": 1,
+                    "otherwise": 0
+                  }
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        },
+        { "Keyword": "Flying" },
+        { "Keyword": "Deathtouch" }
+      ]
+    }
+  ]
+}

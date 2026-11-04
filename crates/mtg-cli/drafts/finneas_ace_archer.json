@@ -1,0 +1,60 @@
+{
+  "oracle_id": "69924636-138e-4baa-a378-0fd7df5b847d",
+  "name": "Finneas, Ace Archer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Finneas, Ace Archer",
+      "oracle_fingerprint": "d35f498983bb134c63fd3edf8e0f5f4f",
+      "abilities": [
+        { "Keyword": "Reach" },
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": {
+                    "Each": [
+                      {
+                        "AnyOf": [
+                          {
+                            "Not": {
+                              "AnyOf": [{ "Not": { "Type": "Creature" } }, { "Not": "Token" }]
+                            }
+                          },
+                          { "Subtype": "Rabbit" }
+                        ]
+                      },
+                      { "ControlledBy": "You" },
+                      "Other"
+                    ]
+                  },
+                  "counter": "+1/+1"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Total": {
+                          "of": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                          "stat": "Power"
+                        }
+                      },
+                      "op": "Ge",
+                      "right": 10
+                    }
+                  },
+                  "then": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

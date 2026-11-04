@@ -1,0 +1,41 @@
+{
+  "oracle_id": "839fb071-6585-4f3e-a13e-1c14779b401a",
+  "name": "Alpha Status",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Alpha Status",
+      "oracle_fingerprint": "5653e4861b73860badd66dc03d99865d",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": {
+                    "Times": {
+                      "by": 2,
+                      "of": {
+                        "Count": [{ "Type": "Creature" }, { "SharesSubtype": "This" }, "Other"]
+                      }
+                    }
+                  },
+                  "toughness": {
+                    "Times": {
+                      "by": 2,
+                      "of": {
+                        "Count": [{ "Type": "Creature" }, { "SharesSubtype": "This" }, "Other"]
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

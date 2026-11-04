@@ -1,0 +1,28 @@
+{
+  "oracle_id": "36896550-151d-472c-bfc1-1d9bbf7cc04d",
+  "name": "Viashino Heretic",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Viashino Heretic",
+      "oracle_fingerprint": "629430da9b0f0c66e03c5a43aed106b3",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{R}" }, "Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Artifact" }] } }],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              {
+                "DealDamage": {
+                  "to": { "ControllerOf": { "Target": 0 } },
+                  "amount": { "Stat": { "of": { "Target": 0 }, "stat": "ManaValue" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

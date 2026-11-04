@@ -1,0 +1,24 @@
+{
+  "oracle_id": "c7d8beb6-472c-4758-9876-e8cbf98f4f72",
+  "name": "Faerie Macabre",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Faerie Macabre",
+      "oracle_fingerprint": "75b518ac7aeaea14358393390c9fa5e8",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": ["DiscardSelf"],
+            "from": "Hand",
+            "targets": [
+              { "what": { "Object": [{ "In": "Graveyard" }] }, "bounds": { "min": 0, "max": 2 } }
+            ],
+            "effects": [{ "Exile": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

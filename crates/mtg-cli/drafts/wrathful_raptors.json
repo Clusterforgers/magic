@@ -10,11 +10,15 @@
         { "Keyword": "Trample" },
         {
           "Triggered": {
-            "when": { "DealsDamage": { "source": [], "to": "This" } },
-            "if": {
-              "Not": { "Matches": { "subject": "This", "selector": [{ "Subtype": "Dinosaur" }] } }
+            "when": {
+              "Batch": {
+                "DealsDamage": {
+                  "source": [],
+                  "to": { "Each": [{ "Subtype": "Dinosaur" }, { "ControlledBy": "You" }] }
+                }
+              }
             },
-            "targets": [{ "what": "AnyTarget" }],
+            "targets": [{ "what": { "Object": [{ "Not": { "Subtype": "Dinosaur" } }] } }],
             "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": "Triggering" } }]
           }
         }

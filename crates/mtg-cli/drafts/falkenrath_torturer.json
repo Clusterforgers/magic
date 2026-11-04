@@ -1,0 +1,40 @@
+{
+  "oracle_id": "f578a5e0-77e2-4c35-90b2-6628ed9b218e",
+  "name": "Falkenrath Torturer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Falkenrath Torturer",
+      "oracle_fingerprint": "3269b6a0da408a7311a54658c01e78b1",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Sacrifice": { "filter": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddKeyword": "Flying" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": "Paid",
+                      "selector": [{ "Subtype": "Human" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

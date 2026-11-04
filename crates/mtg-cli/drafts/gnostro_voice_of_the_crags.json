@@ -1,0 +1,73 @@
+{
+  "oracle_id": "bff55e1a-730c-4349-9ccb-18c97f46496d",
+  "name": "Gnostro, Voice of the Crags",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gnostro, Voice of the Crags",
+      "oracle_fingerprint": "7772e81350ca33b2a6fa5d3b0cd34e9b",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "effects": [
+                        {
+                          "Scry": {
+                            "count": {
+                              "Tally": {
+                                "event": "SpellCast",
+                                "who": "EachPlayer",
+                                "filter": [{ "ControlledBy": "You" }]
+                              }
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                      "effects": [
+                        {
+                          "DealDamage": {
+                            "to": { "Target": 0 },
+                            "amount": {
+                              "Tally": {
+                                "event": "SpellCast",
+                                "who": "EachPlayer",
+                                "filter": [{ "ControlledBy": "You" }]
+                              }
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "GainLife": {
+                            "amount": {
+                              "Tally": {
+                                "event": "SpellCast",
+                                "who": "EachPlayer",
+                                "filter": [{ "ControlledBy": "You" }]
+                              }
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

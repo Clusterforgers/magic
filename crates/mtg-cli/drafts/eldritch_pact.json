@@ -1,0 +1,32 @@
+{
+  "oracle_id": "281ea9b6-055a-4274-90b3-c74311a6f863",
+  "name": "Eldritch Pact",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Eldritch Pact",
+      "oracle_fingerprint": "18f47b1dc24b6da9d05c6a350cbd872c",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Draw": {
+                  "who": { "Target": 0 },
+                  "count": { "Count": [{ "In": "Graveyard" }, { "OwnedBy": { "Target": 0 } }] }
+                }
+              },
+              {
+                "LoseLife": {
+                  "who": { "Target": 0 },
+                  "amount": { "Count": [{ "In": "Graveyard" }, { "OwnedBy": { "Target": 0 } }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

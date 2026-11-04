@@ -1,0 +1,36 @@
+{
+  "oracle_id": "e9774695-b2f1-4014-8504-04b2339be568",
+  "name": "Molten Rain",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Molten Rain",
+      "oracle_fingerprint": "ca6bb2bb300242234ab8594b84d3dd27",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Land" }] } }],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Target": 0 },
+                      "selector": [{ "Type": "Land" }, { "Supertype": "Basic" }],
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [
+                    { "DealDamage": { "to": { "ControllerOf": { "Target": 0 } }, "amount": 2 } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

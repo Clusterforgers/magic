@@ -1,0 +1,40 @@
+{
+  "oracle_id": "329fcb1e-7066-46c5-ba27-20ed2b18c1ba",
+  "name": "Invasion of Eldraine // Prickle Faeries",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Invasion of Eldraine",
+      "oracle_fingerprint": "980c5f51b9bc956da683c7e6db58a230",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [{ "Discard": { "who": { "Target": 0 }, "count": 2 } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Prickle Faeries",
+      "oracle_fingerprint": "05858d866937fc6d8aff33dc6d8978e2",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "Opponents" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": [{ "OwnedBy": "ActivePlayer" }, { "In": "Hand" }] },
+                "op": "Le",
+                "right": 2
+              }
+            },
+            "effects": [{ "DealDamage": { "to": "Triggering", "amount": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

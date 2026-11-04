@@ -1,0 +1,27 @@
+{
+  "oracle_id": "b128d0cf-77d9-4751-99c6-0f3bc3660318",
+  "name": "Storm Fleet Aerialist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Storm Fleet Aerialist",
+      "oracle_fingerprint": "b09119ca36da904ecad32366e53ba337",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": 1 } },
+            "condition": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "Attackers" } },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

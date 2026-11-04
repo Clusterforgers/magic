@@ -1,0 +1,40 @@
+{
+  "oracle_id": "854278bc-2bcf-45dd-abd5-6aca7a1e5fc9",
+  "name": "Aang, A Lot to Learn",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Aang, A Lot to Learn",
+      "oracle_fingerprint": "566d447cd82e8c06b6471d753b4de88e",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Vigilance" }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [{ "Subtype": "Lesson" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

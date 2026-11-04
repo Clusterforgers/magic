@@ -1,0 +1,44 @@
+{
+  "oracle_id": "8b25f353-0798-4a03-a928-6a701a919468",
+  "name": "Arachnus Web",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Arachnus Web",
+      "oracle_fingerprint": "33a43e6cd74a52868dc146df92ee445a",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        { "Static": { "affected": "Attached", "mods": ["CantAttack", "CantBlock"] } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "Type": "Creature" },
+                    { "Is": "Attached" },
+                    { "Compare": { "stat": "Power", "op": "Ge", "to": 4 } }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "Destroy": { "what": "This" } }]
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": { "Each": [{ "Type": "Creature" }, { "Is": "Attached" }] },
+                "action": { "Activate": [] }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

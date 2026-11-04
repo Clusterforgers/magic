@@ -1,0 +1,36 @@
+{
+  "oracle_id": "25597913-aa17-4e3b-a4e9-371ce1459160",
+  "name": "Sphinx of Lost Truths",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sphinx of Lost Truths",
+      "oracle_fingerprint": "9ae8dab422017b8f611bd48859a2a3d2",
+      "abilities": [
+        { "Keyword": { "Kicker": "{1}{U}" } },
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "Draw": { "count": 3 } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": "This",
+                      "selector": [{ "Not": "Kicked" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Discard": { "count": 3 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

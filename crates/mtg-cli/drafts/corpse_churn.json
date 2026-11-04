@@ -1,0 +1,30 @@
+{
+  "oracle_id": "e2aeac0b-af74-4c47-9ac1-51fbf869c95f",
+  "name": "Corpse Churn",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Corpse Churn",
+      "oracle_fingerprint": "c9bc30fb2a6af36388c5d9377667c594",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Mill": { "count": 3 } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked"
+                }
+              },
+              { "Move": { "what": { "Bound": "picked" }, "to": "Hand" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

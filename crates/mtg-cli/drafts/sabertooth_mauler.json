@@ -1,0 +1,41 @@
+{
+  "oracle_id": "da4f4094-b0ce-4b5b-8ac3-8c0a5159220f",
+  "name": "Sabertooth Mauler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sabertooth Mauler",
+      "oracle_fingerprint": "7e9060f47f5d7072c25b637a063b1937",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "When": {
+                    "condition": {
+                      "Compare": {
+                        "left": { "Tallied": { "who": "EachPlayer", "what": "CreaturesDied" } },
+                        "op": "Ge",
+                        "right": 1
+                      }
+                    },
+                    "then": 1,
+                    "otherwise": 0
+                  }
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": "+1/+1" } },
+              { "Untap": { "what": "This" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

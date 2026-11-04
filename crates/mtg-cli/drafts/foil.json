@@ -1,0 +1,27 @@
+{
+  "oracle_id": "7dde4eb6-e9d7-4259-abc2-3af738e0f00f",
+  "name": "Foil",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Foil",
+      "oracle_fingerprint": "20b6e5e2145cc5ec64c3855f891dc6d8",
+      "abilities": [
+        {
+          "FreeCast": {
+            "cost": [
+              { "Discard": { "filter": [{ "Subtype": "Island" }] } },
+              { "Discard": { "filter": ["Other"] } }
+            ]
+          }
+        },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [{ "Counter": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

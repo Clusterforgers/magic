@@ -1,0 +1,28 @@
+{
+  "oracle_id": "4280191f-e2cb-4cee-a3b4-660b3efd62e9",
+  "name": "Flitterstep Eidolon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Flitterstep Eidolon",
+      "oracle_fingerprint": "f9385b0a37dcbed1869dda7e2488f925",
+      "abilities": [
+        { "Keyword": { "Bestow": "{5}{U}" } },
+        {
+          "Static": {
+            "affected": {
+              "Each": [{ "Type": "Creature" }, { "AnyOf": ["This", { "Is": "Attached" }] }]
+            },
+            "mods": ["CantBeBlocked"]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

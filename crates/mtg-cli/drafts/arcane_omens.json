@@ -1,0 +1,19 @@
+{
+  "oracle_id": "863cbd12-da20-456e-8698-06fba4d9bd5c",
+  "name": "Arcane Omens",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Arcane Omens",
+      "oracle_fingerprint": "f284d5fcd2ab71c3353734657ef5152b",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [{ "Discard": { "who": { "Target": 0 }, "count": "ColorsSpent" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

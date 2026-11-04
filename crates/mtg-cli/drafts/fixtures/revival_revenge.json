@@ -1,0 +1,157 @@
+{
+  "object": "card",
+  "id": "e33b265d-1956-48d0-91d5-036f06dd816a",
+  "oracle_id": "836ecd67-6487-4f3d-9e08-013746be829a",
+  "multiverse_ids": [
+    643248
+  ],
+  "mtgo_id": 121013,
+  "tcgplayer_id": 531137,
+  "cardmarket_id": 748594,
+  "name": "Revival // Revenge",
+  "lang": "en",
+  "released_at": "2024-01-12",
+  "uri": "https://api.scryfall.com/cards/e33b265d-1956-48d0-91d5-036f06dd816a",
+  "scryfall_uri": "https://scryfall.com/card/rvr/241/revival-revenge?utm_source=api",
+  "layout": "split",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:27:49Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/e/3/e33b265d-1956-48d0-91d5-036f06dd816a.jpg?1783913269",
+    "normal": "https://cards.scryfall.io/normal/front/e/3/e33b265d-1956-48d0-91d5-036f06dd816a.jpg?1783913269",
+    "large": "https://cards.scryfall.io/large/front/e/3/e33b265d-1956-48d0-91d5-036f06dd816a.jpg?1783913269",
+    "png": "https://cards.scryfall.io/png/front/e/3/e33b265d-1956-48d0-91d5-036f06dd816a.png?1783913269",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/e/3/e33b265d-1956-48d0-91d5-036f06dd816a.jpg?1783913269",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/e/3/e33b265d-1956-48d0-91d5-036f06dd816a.jpg?1783913269",
+    "thumb": "https://cards.scryfall.io/thumb/front/e/3/e33b265d-1956-48d0-91d5-036f06dd816a.webp?1783913269",
+    "grid": "https://cards.scryfall.io/grid/front/e/3/e33b265d-1956-48d0-91d5-036f06dd816a.webp?1783913269",
+    "display": "https://cards.scryfall.io/display/front/e/3/e33b265d-1956-48d0-91d5-036f06dd816a.webp?1783913269",
+    "art": "https://cards.scryfall.io/art/front/e/3/e33b265d-1956-48d0-91d5-036f06dd816a.webp?1783913269",
+    "crop": "https://cards.scryfall.io/crop/front/e/3/e33b265d-1956-48d0-91d5-036f06dd816a.webp?1783913269",
+    "jpeg": "https://cards.scryfall.io/normal/front/e/3/e33b265d-1956-48d0-91d5-036f06dd816a.jpg?1783913269"
+  },
+  "mana_cost": "{W/B}{W/B} // {4}{W}{B}",
+  "cmc": 8.0,
+  "type_line": "Sorcery // Sorcery",
+  "colors": [
+    "B",
+    "W"
+  ],
+  "color_identity": [
+    "B",
+    "W"
+  ],
+  "keywords": [
+    "Double"
+  ],
+  "card_faces": [
+    {
+      "object": "card_face",
+      "name": "Revival",
+      "mana_cost": "{W/B}{W/B}",
+      "type_line": "Sorcery",
+      "oracle_text": "Return target creature card with mana value 3 or less from your graveyard to the battlefield.",
+      "watermark": "orzhov",
+      "artist": "Paul Scott Canavan",
+      "artist_id": "c19bfb77-5099-4f7c-8585-6eaf367712c9",
+      "illustration_id": "dea9132c-b75f-4ff9-b53e-2009e3b2311e"
+    },
+    {
+      "object": "card_face",
+      "name": "Revenge",
+      "mana_cost": "{4}{W}{B}",
+      "type_line": "Sorcery",
+      "oracle_text": "Double your life total. Target opponent loses half their life, rounded up.",
+      "artist": "Paul Scott Canavan",
+      "artist_id": "c19bfb77-5099-4f7c-8585-6eaf367712c9"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "fed2c8cd-ab92-44f6-808a-41e7809bcfe2",
+  "set": "rvr",
+  "set_name": "Ravnica Remastered",
+  "set_type": "masters",
+  "set_uri": "https://api.scryfall.com/sets/fed2c8cd-ab92-44f6-808a-41e7809bcfe2",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Arvr&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/rvr?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/e33b265d-1956-48d0-91d5-036f06dd816a/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A836ecd67-6487-4f3d-9e08-013746be829a&unique=prints",
+  "collector_number": "241",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Paul Scott Canavan",
+  "artist_ids": [
+    "c19bfb77-5099-4f7c-8585-6eaf367712c9"
+  ],
+  "illustration_id": "dea9132c-b75f-4ff9-b53e-2009e3b2311e",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 6238,
+  "penny_rank": 8746,
+  "prices": {
+    "usd": "0.55",
+    "usd_foil": "1.02",
+    "usd_etched": null,
+    "eur": "0.35",
+    "eur_foil": "0.50",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=643248&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DRevival%2B%252F%252F%2BRevenge",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DRevival%2B%252F%252F%2BRevenge",
+    "edhrec": "https://edhrec.com/route/?cc=Revival+%2F%2F+Revenge"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F531137%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=748594&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/121013?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

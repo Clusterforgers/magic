@@ -1,0 +1,28 @@
+{
+  "oracle_id": "05079cee-b190-42d7-b59f-130cb545cab7",
+  "name": "Outbreak",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Outbreak",
+      "oracle_fingerprint": "0aef3381dcdcf134f3847cded1f59c4b",
+      "abilities": [
+        { "FreeCast": { "cost": [{ "Discard": { "filter": [{ "Subtype": "Swamp" }] } }] } },
+        {
+          "Spell": {
+            "effects": [
+              { "ChooseValue": { "kind": "CreatureType", "as": "chosen" } },
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ChosenAs": "chosen" }] },
+                  "mods": [{ "ModifyPT": { "power": -1, "toughness": -1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

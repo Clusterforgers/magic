@@ -1,0 +1,30 @@
+{
+  "oracle_id": "c8714939-aaf9-4ede-a04f-61f0df5ea4d4",
+  "name": "Bolshack Dragon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bolshack Dragon",
+      "oracle_fingerprint": "6229f68476156e2b59569bf732420f7f",
+      "abilities": [
+        { "Keyword": "DoubleStrike" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": {
+                    "Count": [{ "Color": "Red" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                  },
+                  "toughness": 0
+                }
+              }
+            ],
+            "condition": { "Matches": { "subject": "This", "selector": ["Attacking"] } }
+          }
+        }
+      ]
+    }
+  ]
+}

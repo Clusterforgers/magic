@@ -1,0 +1,31 @@
+{
+  "oracle_id": "752b5a97-e2f7-43c0-b8c8-2c1efbbfbd2a",
+  "name": "Evil Eye of Urborg",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Evil Eye of Urborg",
+      "oracle_fingerprint": "e65aa8efe592cbbfc65e2901c02debab",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                { "Not": { "Subtype": "Eye" } },
+                { "ControlledBy": "You" }
+              ]
+            },
+            "mods": ["CantAttack"]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "BecomesBlocked": { "what": ["This"], "by": [{ "Type": "Creature" }] } },
+            "effects": [{ "Destroy": { "what": "Dealer" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

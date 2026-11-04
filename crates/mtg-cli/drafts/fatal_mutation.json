@@ -1,0 +1,20 @@
+{
+  "oracle_id": "26d3077f-ad1f-47fb-a96d-8aac4bdef8a3",
+  "name": "Fatal Mutation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fatal Mutation",
+      "oracle_fingerprint": "689a8a7da8e0280e25ad263ec3844ef8",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": { "TurnedFaceUp": { "what": [{ "Is": "Attached" }] } },
+            "effects": [{ "Destroy": { "what": "Triggering", "regenerate": false } }]
+          }
+        }
+      ]
+    }
+  ]
+}

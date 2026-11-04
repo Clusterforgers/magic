@@ -1,0 +1,39 @@
+{
+  "oracle_id": "6148fcf5-466a-43aa-a0f3-d3d9fae4d883",
+  "name": "Funnel-Web Recluse",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Funnel-Web Recluse",
+      "oracle_fingerprint": "760ddd8a62a2204a8fed1281585b2adc",
+      "abilities": [
+        { "Keyword": "Reach" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "When": {
+                    "condition": {
+                      "Compare": {
+                        "left": { "Tallied": { "who": "EachPlayer", "what": "CreaturesDied" } },
+                        "op": "Ge",
+                        "right": 1
+                      }
+                    },
+                    "then": 1,
+                    "otherwise": 0
+                  }
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "CreateToken": { "token": { "Named": "clue" } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

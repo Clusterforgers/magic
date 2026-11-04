@@ -1,0 +1,27 @@
+{
+  "oracle_id": "e8d18dc7-f44b-47f6-8400-3f563c2f19b7",
+  "name": "Revered Elder",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Revered Elder",
+      "oracle_fingerprint": "58aaa5cbcb83e8c260da7acc0a4785c7",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{1}",
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": "This" } },
+                  "by": { "PreventUpTo": 1 },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,61 @@
+{
+  "oracle_id": "e468f1fe-d99c-4034-a94f-91c41a129092",
+  "name": "Squirming Emergence",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Squirming Emergence",
+      "oracle_fingerprint": "32085c720091861c8fba74833a667c2b",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Not": { "Type": "Land" } },
+                    {
+                      "Compare": {
+                        "stat": "ManaValue",
+                        "op": "Le",
+                        "to": {
+                          "Count": [
+                            { "OwnedBy": "You" },
+                            {
+                              "AnyOf": [
+                                { "Type": "Artifact" },
+                                { "Type": "Battle" },
+                                { "Type": "Creature" },
+                                { "Type": "Enchantment" },
+                                { "Type": "Land" },
+                                { "Type": "Planeswalker" }
+                              ]
+                            },
+                            { "In": "Graveyard" }
+                          ]
+                        }
+                      }
+                    },
+                    { "OwnedBy": "You" },
+                    {
+                      "AnyOf": [
+                        { "Type": "Artifact" },
+                        { "Type": "Battle" },
+                        { "Type": "Creature" },
+                        { "Type": "Enchantment" },
+                        { "Type": "Land" },
+                        { "Type": "Planeswalker" }
+                      ]
+                    },
+                    { "In": "Graveyard" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

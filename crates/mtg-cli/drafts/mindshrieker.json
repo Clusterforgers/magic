@@ -1,0 +1,39 @@
+{
+  "oracle_id": "f638ceaf-6b44-4d99-95f3-0aa97b1738fe",
+  "name": "Mindshrieker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mindshrieker",
+      "oracle_fingerprint": "3ca70aeb98ba6fd1884da07db7b9e999",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": "{2}",
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              { "Mill": { "who": { "Target": 0 }, "as": "milled" } },
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": { "Stat": { "of": { "Bound": "milled" }, "stat": "ManaValue" } },
+                        "toughness": {
+                          "Stat": { "of": { "Bound": "milled" }, "stat": "ManaValue" }
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

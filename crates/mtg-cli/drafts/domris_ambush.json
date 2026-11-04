@@ -1,0 +1,38 @@
+{
+  "oracle_id": "a481f910-59a8-48b0-a8e4-c24675e1a67d",
+  "name": "Domri's Ambush",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Domri's Ambush",
+      "oracle_fingerprint": "4df14ad4b67c198d17bdd60e866b8cba",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] },
+                    { "Not": { "ControlledBy": "You" } }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } },
+              {
+                "DealDamage": {
+                  "source": { "Target": 0 },
+                  "to": { "Target": 1 },
+                  "amount": { "Stat": { "of": { "Target": 0 }, "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

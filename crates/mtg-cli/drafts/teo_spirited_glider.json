@@ -1,0 +1,59 @@
+{
+  "oracle_id": "ea74940f-01de-4804-92ed-b273fddf6d62",
+  "name": "Teo, Spirited Glider",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Teo, Spirited Glider",
+      "oracle_fingerprint": "4acd5bceba46b89b24c916c9cde3ef68",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "HasKeyword": "Flying" },
+                  { "ControlledBy": "You" }
+                ]
+              }
+            },
+            "effects": [
+              { "Draw": {} },
+              { "Discard": { "as": "discarded" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "discarded" },
+                      "selector": [{ "Not": { "Type": "Land" } }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Reflexive": {
+                        "targets": [
+                          {
+                            "what": {
+                              "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                            }
+                          }
+                        ],
+                        "effects": [
+                          { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

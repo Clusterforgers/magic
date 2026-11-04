@@ -1,0 +1,42 @@
+{
+  "oracle_id": "5ebfa3f5-f80a-4845-bba7-75c4ddb88682",
+  "name": "Fire Nation Cadets",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fire Nation Cadets",
+      "oracle_fingerprint": "c2fdc4c00e5a32d91c485424a17dbf22",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": { "Macro": { "name": "firebending", "amount": 2 } } }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [{ "Subtype": "Lesson" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{2}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

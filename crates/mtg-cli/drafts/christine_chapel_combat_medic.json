@@ -1,0 +1,36 @@
+{
+  "oracle_id": "330e8a18-d224-4416-b59d-02b749c3a674",
+  "name": "Christine Chapel, Combat Medic",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Christine Chapel, Combat Medic",
+      "oracle_fingerprint": "4a780b37ed984af743235e5d5c7039a3",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "GainLife": {
+                  "amount": {
+                    "Distinct": {
+                      "of": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                      "stat": "Name"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "LifeGained": { "who": "You" } },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1", "count": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

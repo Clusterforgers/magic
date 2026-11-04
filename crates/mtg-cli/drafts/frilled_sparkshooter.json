@@ -1,0 +1,28 @@
+{
+  "oracle_id": "69038520-7156-48d9-aae8-ba3cc76a5993",
+  "name": "Frilled Sparkshooter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Frilled Sparkshooter",
+      "oracle_fingerprint": "b0647b877e2074f27185328bf651a650",
+      "abilities": [
+        { "Keyword": "Reach" },
+        { "Keyword": "Menace" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": 1 } },
+            "condition": {
+              "Compare": {
+                "left": { "Tallied": { "who": "Opponents", "what": "LifeLost" } },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

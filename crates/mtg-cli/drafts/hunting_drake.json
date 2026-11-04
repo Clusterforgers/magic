@@ -1,0 +1,32 @@
+{
+  "oracle_id": "d5978943-52fc-4b57-9c1c-d802ade1b014",
+  "name": "Hunting Drake",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hunting Drake",
+      "oracle_fingerprint": "068acb2f6e85ae4138ab89a6a9db0d86",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "AnyOf": [{ "Color": "Red" }, { "Color": "Green" }] }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Library": { "place": "Top" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

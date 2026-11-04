@@ -1,0 +1,42 @@
+{
+  "oracle_id": "517be4da-9aa0-4a83-a559-962df0450f2c",
+  "name": "Oblivion's Hunger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Oblivion's Hunger",
+      "oracle_fingerprint": "fac5dc214e5788a31072ba60b5df433e",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Indestructible" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Target": 0 },
+                      "selector": [{ "HasCounter": "+1/+1" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

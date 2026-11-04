@@ -1,0 +1,28 @@
+{
+  "oracle_id": "885c47cb-64fb-4c83-a9ca-4f2eecb7d3e5",
+  "name": "Fungus Sliver",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fungus Sliver",
+      "oracle_fingerprint": "84ad1c7776f574f2a81de2fcc2089036",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "Subtype": "Sliver" }] },
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Triggered": {
+                    "when": { "Batch": { "DealsDamage": { "source": [], "to": "This" } } },
+                    "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

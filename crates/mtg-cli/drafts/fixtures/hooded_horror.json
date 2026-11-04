@@ -1,0 +1,133 @@
+{
+  "object": "card",
+  "id": "15414338-506b-458f-a067-1a2053373594",
+  "oracle_id": "8267561e-bc25-4aaa-8242-f6d7ec88143e",
+  "multiverse_ids": [
+    376365
+  ],
+  "mtgo_id": 51406,
+  "mtgo_foil_id": 51407,
+  "tcgplayer_id": 71877,
+  "cardmarket_id": 264739,
+  "name": "Hooded Horror",
+  "lang": "en",
+  "released_at": "2013-11-01",
+  "uri": "https://api.scryfall.com/cards/15414338-506b-458f-a067-1a2053373594",
+  "scryfall_uri": "https://scryfall.com/card/c13/80/hooded-horror?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T10:47:55Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/1/5/15414338-506b-458f-a067-1a2053373594.jpg?1783939675",
+    "normal": "https://cards.scryfall.io/normal/front/1/5/15414338-506b-458f-a067-1a2053373594.jpg?1783939675",
+    "large": "https://cards.scryfall.io/large/front/1/5/15414338-506b-458f-a067-1a2053373594.jpg?1783939675",
+    "png": "https://cards.scryfall.io/png/front/1/5/15414338-506b-458f-a067-1a2053373594.png?1783939675",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/1/5/15414338-506b-458f-a067-1a2053373594.jpg?1783939675",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/1/5/15414338-506b-458f-a067-1a2053373594.jpg?1783939675",
+    "thumb": "https://cards.scryfall.io/thumb/front/1/5/15414338-506b-458f-a067-1a2053373594.webp?1783939675",
+    "grid": "https://cards.scryfall.io/grid/front/1/5/15414338-506b-458f-a067-1a2053373594.webp?1783939675",
+    "display": "https://cards.scryfall.io/display/front/1/5/15414338-506b-458f-a067-1a2053373594.webp?1783939675",
+    "art": "https://cards.scryfall.io/art/front/1/5/15414338-506b-458f-a067-1a2053373594.webp?1783939675",
+    "crop": "https://cards.scryfall.io/crop/front/1/5/15414338-506b-458f-a067-1a2053373594.webp?1783939675",
+    "jpeg": "https://cards.scryfall.io/normal/front/1/5/15414338-506b-458f-a067-1a2053373594.jpg?1783939675"
+  },
+  "mana_cost": "{4}{B}",
+  "cmc": 5.0,
+  "type_line": "Creature — Horror",
+  "oracle_text": "This creature can't be blocked as long as defending player controls the most creatures or is tied for the most.",
+  "power": "4",
+  "toughness": "4",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "c62e6d4f-af8c-4f27-9bc8-361291890146",
+  "set": "c13",
+  "set_name": "Commander 2013",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/c62e6d4f-af8c-4f27-9bc8-361291890146",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ac13&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/c13?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/15414338-506b-458f-a067-1a2053373594/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A8267561e-bc25-4aaa-8242-f6d7ec88143e&unique=prints",
+  "collector_number": "80",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "Insidious fear can be the undoing of the greatest of armies.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Allen Williams",
+  "artist_ids": [
+    "8a56d854-b424-45ec-9262-e993a382a961"
+  ],
+  "illustration_id": "92e9e6a4-dc8e-4ad7-999b-9f4762fe57e7",
+  "border_color": "black",
+  "frame": "2003",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 27889,
+  "prices": {
+    "usd": "0.26",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.11",
+    "eur_foil": null,
+    "tix": "0.04"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=376365&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DHooded%2BHorror",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DHooded%2BHorror",
+    "edhrec": "https://edhrec.com/route/?cc=Hooded+Horror"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F71877%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=264739&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/51406?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

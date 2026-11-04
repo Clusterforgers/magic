@@ -1,0 +1,41 @@
+{
+  "oracle_id": "f9ea5b9e-a23d-48cf-8601-56e79ca844f9",
+  "name": "Mardu Hordechief",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mardu Hordechief",
+      "oracle_fingerprint": "e4fae9cf9850f842c5b20e387e1f5a14",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "Attackers" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Warrior",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Warrior"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

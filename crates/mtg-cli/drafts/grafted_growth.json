@@ -1,0 +1,46 @@
+{
+  "oracle_id": "c4525b1c-5c3d-494e-b660-ba5a5a28f621",
+  "name": "Grafted Growth",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Grafted Growth",
+      "oracle_fingerprint": "27c77fb216f2b7f5704c0b16fed8929f",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Land" }] } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Creature" }, { "Subtype": "Vehicle" }] },
+                    { "ControlledBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Activated": {
+                    "cost": ["Tap"],
+                    "effects": [{ "AddMana": { "mana": { "AnyColor": 2 } } }]
+                  }
+                }
+              }
+            ],
+            "condition": { "Matches": { "subject": "Attached", "selector": [{ "Type": "Land" }] } }
+          }
+        }
+      ]
+    }
+  ]
+}

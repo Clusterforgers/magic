@@ -1,0 +1,42 @@
+{
+  "oracle_id": "93b6a170-a816-4556-aa27-a729231715e7",
+  "name": "Flailing Drake",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Flailing Drake",
+      "oracle_fingerprint": "4dfac364447dec5e696c52552a60cc72",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "BecomesBlocked": { "what": [{ "Type": "Creature" }], "by": ["This"] } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Triggering",
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "BecomesBlocked": { "what": ["This"], "by": [{ "Type": "Creature" }] } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Dealer",
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

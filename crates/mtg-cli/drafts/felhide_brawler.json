@@ -12,18 +12,10 @@
             "affected": "This",
             "mods": ["CantBlock"],
             "condition": {
-              "Not": {
-                "Compare": {
-                  "left": {
-                    "Count": [
-                      { "Subtype": "Minotaur" },
-                      { "ControlledBy": "You" },
-                      { "Not": { "Targeting": ["This"] } }
-                    ]
-                  },
-                  "op": "Ge",
-                  "right": 1
-                }
+              "Compare": {
+                "left": { "Count": [{ "Subtype": "Minotaur" }, "Other", { "ControlledBy": "You" }] },
+                "op": "Eq",
+                "right": 0
               }
             }
           }

@@ -1,0 +1,135 @@
+{
+  "object": "card",
+  "id": "907b49ff-2020-4203-b93e-4b3306afc337",
+  "oracle_id": "f3bf22cf-0a6f-4fb6-ba82-63ce290308d6",
+  "multiverse_ids": [
+    106556
+  ],
+  "mtgo_id": 27118,
+  "mtgo_foil_id": 27119,
+  "tcgplayer_id": 15327,
+  "cardmarket_id": 16522,
+  "name": "Spawning Pool",
+  "lang": "en",
+  "released_at": "2007-07-13",
+  "uri": "https://api.scryfall.com/cards/907b49ff-2020-4203-b93e-4b3306afc337",
+  "scryfall_uri": "https://scryfall.com/card/10e/358/spawning-pool?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T11:42:55Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/9/0/907b49ff-2020-4203-b93e-4b3306afc337.jpg?1783942975",
+    "normal": "https://cards.scryfall.io/normal/front/9/0/907b49ff-2020-4203-b93e-4b3306afc337.jpg?1783942975",
+    "large": "https://cards.scryfall.io/large/front/9/0/907b49ff-2020-4203-b93e-4b3306afc337.jpg?1783942975",
+    "png": "https://cards.scryfall.io/png/front/9/0/907b49ff-2020-4203-b93e-4b3306afc337.png?1783942975",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/9/0/907b49ff-2020-4203-b93e-4b3306afc337.jpg?1783942975",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/9/0/907b49ff-2020-4203-b93e-4b3306afc337.jpg?1783942975",
+    "thumb": "https://cards.scryfall.io/thumb/front/9/0/907b49ff-2020-4203-b93e-4b3306afc337.webp?1783942975",
+    "grid": "https://cards.scryfall.io/grid/front/9/0/907b49ff-2020-4203-b93e-4b3306afc337.webp?1783942975",
+    "display": "https://cards.scryfall.io/display/front/9/0/907b49ff-2020-4203-b93e-4b3306afc337.webp?1783942975",
+    "art": "https://cards.scryfall.io/art/front/9/0/907b49ff-2020-4203-b93e-4b3306afc337.webp?1783942975",
+    "crop": "https://cards.scryfall.io/crop/front/9/0/907b49ff-2020-4203-b93e-4b3306afc337.webp?1783942975",
+    "jpeg": "https://cards.scryfall.io/normal/front/9/0/907b49ff-2020-4203-b93e-4b3306afc337.jpg?1783942975"
+  },
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land",
+  "oracle_text": "This land enters tapped.\n{T}: Add {B}.\n{1}{B}: This land becomes a 1/1 black Skeleton creature with \"{B}: Regenerate this creature\" until end of turn. It's still a land. (If it regenerates, the next time it would be destroyed this turn, instead tap it, remove it from combat, and heal all damage on it.)",
+  "colors": [],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Heal",
+    "Regenerate"
+  ],
+  "produced_mana": [
+    "B"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "a66a6124-0d81-488d-b080-91f5ba7fbad0",
+  "set": "10e",
+  "set_name": "Tenth Edition",
+  "set_type": "core",
+  "set_uri": "https://api.scryfall.com/sets/a66a6124-0d81-488d-b080-91f5ba7fbad0",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3A10e&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/10e?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/907b49ff-2020-4203-b93e-4b3306afc337/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Af3bf22cf-0a6f-4fb6-ba82-63ce290308d6&unique=prints",
+  "collector_number": "358",
+  "digital": false,
+  "rarity": "uncommon",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Nils Hamm",
+  "artist_ids": [
+    "c540d1fc-1500-457f-93cf-d6069ee66546"
+  ],
+  "illustration_id": "9e25174e-ac62-4992-b0fc-3dd2577d0cfb",
+  "border_color": "black",
+  "frame": "2003",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 14941,
+  "penny_rank": 1207,
+  "prices": {
+    "usd": "0.38",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.28",
+    "eur_foil": null,
+    "tix": "0.04"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=106556&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DSpawning%2BPool",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DSpawning%2BPool",
+    "edhrec": "https://edhrec.com/route/?cc=Spawning+Pool"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F15327%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=16522&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/27118?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

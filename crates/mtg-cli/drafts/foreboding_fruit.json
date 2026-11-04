@@ -1,0 +1,40 @@
+{
+  "oracle_id": "33a162f3-e781-494f-ab8f-12a84801a694",
+  "name": "Foreboding Fruit",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Foreboding Fruit",
+      "oracle_fingerprint": "f16314dd9a3f8afcbfe4e03f7605f683",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              { "Draw": { "who": { "Target": 0 }, "count": 2 } },
+              { "LoseLife": { "who": { "Target": 0 }, "amount": 2 } },
+              {
+                "CreateToken": {
+                  "token": { "Named": "food" },
+                  "count": {
+                    "When": {
+                      "condition": {
+                        "Compare": {
+                          "left": { "ManaSpent": { "of": "Black" } },
+                          "op": "Ge",
+                          "right": 3
+                        }
+                      },
+                      "then": 1,
+                      "otherwise": 0
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

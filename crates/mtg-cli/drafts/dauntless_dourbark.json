@@ -1,0 +1,50 @@
+{
+  "oracle_id": "3fd25479-b65c-48f7-bb74-95d49af65ac1",
+  "name": "Dauntless Dourbark",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dauntless Dourbark",
+      "oracle_fingerprint": "9fb1020208a00adbd01ab99210928403",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "SetPT": {
+                  "power": {
+                    "Sum": [
+                      { "Count": [{ "Subtype": "Treefolk" }, { "ControlledBy": "You" }] },
+                      { "Count": [{ "Subtype": "Forest" }, { "ControlledBy": "You" }] }
+                    ]
+                  },
+                  "toughness": {
+                    "Sum": [
+                      { "Count": [{ "Subtype": "Treefolk" }, { "ControlledBy": "You" }] },
+                      { "Count": [{ "Subtype": "Forest" }, { "ControlledBy": "You" }] }
+                    ]
+                  }
+                }
+              }
+            ],
+            "defining": true
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Trample" }],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Subtype": "Treefolk" }, { "ControlledBy": "You" }, "Other"] },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

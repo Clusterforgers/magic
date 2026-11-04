@@ -1,0 +1,28 @@
+{
+  "oracle_id": "e8c36337-135c-460d-a1da-cc01743dda71",
+  "name": "Master of Barbs",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Master of Barbs",
+      "oracle_fingerprint": "b9d8c206249be9ccaf5b044f554a13e8",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": { "Batch": { "DealsDamage": { "source": [], "to": "Opponents" } } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

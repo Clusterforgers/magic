@@ -1,0 +1,22 @@
+{
+  "oracle_id": "b56c5b39-2465-4a25-b806-bb84866e576f",
+  "name": "Dream Prowler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dream Prowler",
+      "oracle_fingerprint": "bbde19e20330e2619016f32f2e07d4df",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": ["This", "Attacking"] },
+            "mods": ["CantBeBlocked"],
+            "condition": {
+              "Compare": { "left": { "Count": ["Other", "Attacking"] }, "op": "Eq", "right": 0 }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

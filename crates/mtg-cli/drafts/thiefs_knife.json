@@ -1,0 +1,34 @@
+{
+  "oracle_id": "4bf589ed-58f8-40ad-bcee-50cb99da02ca",
+  "name": "Thief's Knife",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thief's Knife",
+      "oracle_fingerprint": "c1bf9e05f974d8ce0eb56c73261886e9",
+      "abilities": [
+        { "Keyword": "JobSelect" },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "ModifyPT": { "power": 1, "toughness": 1 } },
+              { "AddSubtype": "Rogue" },
+              {
+                "GrantAbility": {
+                  "Triggered": {
+                    "when": {
+                      "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true }
+                    },
+                    "effects": [{ "Draw": {} }]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{4}" } }
+      ]
+    }
+  ]
+}

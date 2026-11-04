@@ -1,0 +1,51 @@
+{
+  "oracle_id": "06432957-decc-4ba2-95b1-cc9536a576d4",
+  "name": "Guardian of Tazeem",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Guardian of Tazeem",
+      "oracle_fingerprint": "641b56579172c7b12a9f13c64d9ea3c6",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              { "Tap": { "what": { "Target": 0 } } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": "Triggering",
+                      "selector": [{ "Subtype": "Island" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": ["DoesntUntap"],
+                        "duration": "NextUntapStep"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

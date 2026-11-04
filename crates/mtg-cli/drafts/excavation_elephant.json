@@ -1,0 +1,27 @@
+{
+  "oracle_id": "45fa04ee-3b5c-45b3-8c09-bda08cca3630",
+  "name": "Excavation Elephant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Excavation Elephant",
+      "oracle_fingerprint": "1cbad60763d150fa15645492aaf8d3ad",
+      "abilities": [
+        { "Keyword": { "Kicker": "{1}{W}" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This", "Kicked"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Artifact" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "oracle_id": "bd6bc87d-fc75-43bc-a7d7-49d89dabcd3a",
+  "name": "Expedition Diviner",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Expedition Diviner",
+      "oracle_fingerprint": "5f670b513f6a43e4fe88cb51089d4135",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Triggered": {
+                    "when": {
+                      "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" }
+                    },
+                    "effects": [{ "Draw": {} }]
+                  }
+                }
+              }
+            ],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Subtype": "Wizard" }, { "ControlledBy": "You" }, "Other"] },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

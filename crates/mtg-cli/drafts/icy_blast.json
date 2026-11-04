@@ -1,0 +1,52 @@
+{
+  "oracle_id": "f49302c5-8510-4360-841c-a59f53f87e0b",
+  "name": "Icy Blast",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Icy Blast",
+      "oracle_fingerprint": "72dbdac6e528fa120efb05ed57613248",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }] },
+                "bounds": { "min": "X", "max": "X" }
+              }
+            ],
+            "effects": [
+              { "Tap": { "what": { "Target": 0 } } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Count": [
+                          { "Type": "Creature" },
+                          { "ControlledBy": "You" },
+                          { "Compare": { "stat": "Power", "op": "Ge", "to": 4 } }
+                        ]
+                      },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": ["DoesntUntap"],
+                        "duration": "NextUntapStep"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

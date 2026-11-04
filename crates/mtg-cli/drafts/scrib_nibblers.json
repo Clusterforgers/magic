@@ -1,0 +1,46 @@
+{
+  "oracle_id": "458800d3-47b7-4f28-8371-25c8d1e60011",
+  "name": "Scrib Nibblers",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Scrib Nibblers",
+      "oracle_fingerprint": "489cd3ccb0ebaa78410f11a90dc6c46c",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              { "ExileTop": { "who": { "Target": 0 }, "as": "exiled" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "exiled" },
+                      "selector": [{ "Type": "Land" }],
+                      "op": "Eq",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "GainLife": { "amount": 1 } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [{ "May": { "effects": [{ "Untap": { "what": "This" } }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

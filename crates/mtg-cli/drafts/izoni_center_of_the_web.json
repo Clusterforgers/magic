@@ -1,0 +1,59 @@
+{
+  "oracle_id": "8074afbf-190b-4a24-b939-cc559bdffe38",
+  "name": "Izoni, Center of the Web",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Izoni, Center of the Web",
+      "oracle_fingerprint": "29a5be6a0cbd4c5a16367fb8e900f20c",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "Attacks": { "what": ["This"] } }
+              ]
+            },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "CollectEvidence": 4 }],
+                  "paid": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Spider",
+                            "colors": ["Black", "Green"],
+                            "types": ["Creature"],
+                            "subtypes": ["Spider"],
+                            "power": 2,
+                            "toughness": 1,
+                            "abilities": [{ "Keyword": "Menace" }, { "Keyword": "Reach" }]
+                          }
+                        },
+                        "count": 2
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Sacrifice": { "filter": ["Token"], "count": 4 } }],
+            "effects": [
+              { "Surveil": { "count": 2 } },
+              { "Draw": { "count": 2 } },
+              { "GainLife": { "amount": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

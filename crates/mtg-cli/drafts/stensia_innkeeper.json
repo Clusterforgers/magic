@@ -1,0 +1,31 @@
+{
+  "oracle_id": "8a7f446b-557a-41cc-b9ef-369e220a0eeb",
+  "name": "Stensia Innkeeper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stensia Innkeeper",
+      "oracle_fingerprint": "8c2edffb60456f20106564488eb834b2",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Land" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              { "Tap": { "what": { "Target": 0 } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["DoesntUntap"],
+                  "duration": "NextUntapStep"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

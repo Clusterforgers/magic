@@ -1,0 +1,48 @@
+{
+  "oracle_id": "8f167e2f-7b89-4ae2-8332-7c978f71522e",
+  "name": "Ventifact Bottle",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ventifact Bottle",
+      "oracle_fingerprint": "611c6f1ace2ad1b293644f09ab98ffaa",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{X}{1}" }, "Tap"],
+            "timing": "Sorcery",
+            "effects": [{ "PutCounters": { "on": "This", "counter": "charge", "count": "X" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Main1", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Counters": { "on": "This", "counter": "charge" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["Colorless"] },
+                  "times": { "Counters": { "on": "This", "counter": "charge" } }
+                }
+              },
+              {
+                "RemoveCounters": {
+                  "from": "This",
+                  "counter": "charge",
+                  "count": { "Counters": { "on": "This", "counter": "charge" } }
+                }
+              },
+              { "Tap": { "what": "This" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

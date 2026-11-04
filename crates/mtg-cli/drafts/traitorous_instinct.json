@@ -1,0 +1,38 @@
+{
+  "oracle_id": "92d2df7e-9f5c-4c28-a891-b69010bc0001",
+  "name": "Traitorous Instinct",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Traitorous Instinct",
+      "oracle_fingerprint": "17041afb6a54e4e3dad20bbb7be92a01",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Untap": { "what": { "Target": 0 } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "ModifyPT": { "power": 2, "toughness": 0 } },
+                    { "AddKeyword": "Haste" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

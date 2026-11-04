@@ -1,0 +1,35 @@
+{
+  "oracle_id": "0123b162-0413-4022-acc0-e5bd061d3fb4",
+  "name": "Divergent Growth",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Divergent Growth",
+      "oracle_fingerprint": "93d8d8d5c5b76080915a6975eea82db4",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Land" }, { "ControlledBy": "You" }] },
+                  "mods": [
+                    {
+                      "GrantAbility": {
+                        "Activated": {
+                          "cost": ["Tap"],
+                          "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

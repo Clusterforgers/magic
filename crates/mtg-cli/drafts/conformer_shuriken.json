@@ -1,0 +1,55 @@
+{
+  "oracle_id": "8e7681ba-6412-4165-b374-5636feec216d",
+  "name": "Conformer Shuriken",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Conformer Shuriken",
+      "oracle_fingerprint": "3d4c53188acee786af81d1822381da1a",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Triggered": {
+                    "when": { "Attacks": { "what": ["This"] } },
+                    "targets": [
+                      {
+                        "what": {
+                          "Object": [{ "Type": "Creature" }, { "ControlledBy": "Defending" }]
+                        }
+                      }
+                    ],
+                    "effects": [
+                      { "Tap": { "what": { "Target": 0 } } },
+                      {
+                        "PutCounters": {
+                          "on": "This",
+                          "counter": "+1/+1",
+                          "count": {
+                            "Sum": [
+                              { "Stat": { "of": { "Target": 0 }, "stat": "Power" } },
+                              {
+                                "Times": {
+                                  "by": -1,
+                                  "of": { "Stat": { "of": "This", "stat": "Power" } }
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{2}" } }
+      ]
+    }
+  ]
+}

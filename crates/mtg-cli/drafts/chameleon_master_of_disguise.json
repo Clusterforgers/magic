@@ -1,0 +1,25 @@
+{
+  "oracle_id": "1ce239f2-79ad-4a30-8e8f-f985045f78dc",
+  "name": "Chameleon, Master of Disguise",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Chameleon, Master of Disguise",
+      "oracle_fingerprint": "121ff225ec6d46307dd4aa422f9f75f5",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "AsCopy": {
+                "of": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "Other"],
+                "except": [{ "SetName": "Chameleon, Master of Disguise" }]
+              }
+            }
+          }
+        },
+        { "Keyword": { "Mayhem": "{2}{U}" } }
+      ]
+    }
+  ]
+}

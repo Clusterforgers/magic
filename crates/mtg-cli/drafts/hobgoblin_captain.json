@@ -1,0 +1,38 @@
+{
+  "oracle_id": "4d92b3d3-d34b-430f-af6a-db512d204d06",
+  "name": "Hobgoblin Captain",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hobgoblin Captain",
+      "oracle_fingerprint": "ae367e66589fdb57ccb4111bf931afd8",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "if": {
+              "AtTrigger": {
+                "Compare": {
+                  "left": {
+                    "Total": { "of": [{ "Type": "Creature" }, "Attacking"], "stat": "Power" }
+                  },
+                  "op": "Ge",
+                  "right": 6
+                }
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddKeyword": "FirstStrike" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

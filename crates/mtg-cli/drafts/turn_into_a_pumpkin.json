@@ -1,0 +1,40 @@
+{
+  "oracle_id": "cfda6f65-3755-40e5-8061-a21941c4b1bd",
+  "name": "Turn into a Pumpkin",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Turn into a Pumpkin",
+      "oracle_fingerprint": "a24c634daa226440adca7aa4a9e3f4bc",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Not": { "Type": "Land" } }] } }],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": "Hand" } },
+              { "Draw": {} },
+              {
+                "CreateToken": {
+                  "token": { "Named": "food" },
+                  "count": {
+                    "When": {
+                      "condition": {
+                        "Compare": {
+                          "left": { "ManaSpent": { "of": "Blue" } },
+                          "op": "Ge",
+                          "right": 3
+                        }
+                      },
+                      "then": 1,
+                      "otherwise": 0
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

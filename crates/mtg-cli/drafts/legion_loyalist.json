@@ -1,0 +1,44 @@
+{
+  "oracle_id": "560a5452-0dc3-421d-bf16-8843a35dae6f",
+  "name": "Legion Loyalist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Legion Loyalist",
+      "oracle_fingerprint": "5b79750f9cf2cbce31a6a10c555246f5",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "if": {
+              "AtTrigger": {
+                "Compare": {
+                  "left": { "Count": [{ "Type": "Creature" }, "Attacking", "Other"] },
+                  "op": "Ge",
+                  "right": 2
+                }
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [{ "AddKeyword": "FirstStrike" }, { "AddKeyword": "Trample" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [{ "CantBeBlockedBy": [{ "Type": "Creature" }, "Token"] }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "oracle_id": "88ed66fc-7068-44a7-b00f-3be22fb500cb",
+  "name": "Brilliant Spectrum",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Brilliant Spectrum",
+      "oracle_fingerprint": "88fe4e49ec7b959b12957ab25c9c2666",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [{ "Draw": { "count": "ColorsSpent" } }, { "Discard": { "count": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "oracle_id": "fb1369aa-25a2-4e2a-9cbe-6cfe7e238b1b",
+  "name": "Dense Foliage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dense Foliage",
+      "oracle_fingerprint": "568671db82e4714a7383f98c7af78ca1",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": { "Each": [{ "Type": "Creature" }] },
+                "action": { "BeTargeted": ["Spell"] }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

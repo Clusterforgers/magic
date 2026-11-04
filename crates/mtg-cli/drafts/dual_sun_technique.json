@@ -1,0 +1,42 @@
+{
+  "oracle_id": "89ec0f03-47d0-4657-8987-95e680404f24",
+  "name": "Dual-Sun Technique",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dual-Sun Technique",
+      "oracle_fingerprint": "89a7f1ad4579ff854a84341491f5f7a5",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "DoubleStrike" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Target": 0 },
+                      "selector": [{ "HasCounter": "+1/+1" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

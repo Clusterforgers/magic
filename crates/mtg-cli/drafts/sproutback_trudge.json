@@ -1,0 +1,36 @@
+{
+  "oracle_id": "d9826660-0f34-4d82-8915-cf2796ab8d9a",
+  "name": "Sproutback Trudge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sproutback Trudge",
+      "oracle_fingerprint": "c9fcebc4c19a7ebad719d1556ee15fa1",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{1}",
+            "per": { "Tallied": { "who": "You", "what": "LifeGainedTotal" } }
+          }
+        },
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "LifeGainedTotal" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "from": "Graveyard",
+            "effects": [{ "CastFromZone": { "what": "This", "play": true } }]
+          }
+        }
+      ]
+    }
+  ]
+}

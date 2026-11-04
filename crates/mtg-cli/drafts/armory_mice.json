@@ -1,0 +1,32 @@
+{
+  "oracle_id": "68f7d1bf-48c7-483e-b17f-a60008854b46",
+  "name": "Armory Mice",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Armory Mice",
+      "oracle_fingerprint": "11562423e457e193256608569aa68bb4",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": 0, "toughness": 2 } }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "Entered",
+                    "who": "EachPlayer",
+                    "filter": [{ "Not": { "Type": "Land" } }, { "ControlledBy": "You" }]
+                  }
+                },
+                "op": "Ge",
+                "right": 2
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

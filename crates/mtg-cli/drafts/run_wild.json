@@ -1,0 +1,43 @@
+{
+  "oracle_id": "91d69d6a-3832-4d20-a02b-1e83c08ac723",
+  "name": "Run Wild",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Run Wild",
+      "oracle_fingerprint": "cd7276d4994efb9971d2dc47e65aff1e",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Trample" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "GrantAbility": {
+                        "Activated": {
+                          "cost": "{G}",
+                          "effects": [{ "Regenerate": { "what": "This" } }]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

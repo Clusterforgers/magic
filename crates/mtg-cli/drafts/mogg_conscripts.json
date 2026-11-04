@@ -1,0 +1,32 @@
+{
+  "oracle_id": "b015686d-07e1-46c7-8e51-2bec646860d6",
+  "name": "Mogg Conscripts",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mogg Conscripts",
+      "oracle_fingerprint": "80565782745ce8fe9e2ed20885c86744",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": ["CantAttack"],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "SpellCast",
+                    "who": "EachPlayer",
+                    "filter": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                  }
+                },
+                "op": "Eq",
+                "right": 0
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

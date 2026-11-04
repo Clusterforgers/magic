@@ -9,7 +9,7 @@
       "abilities": [
         {
           "Spell": {
-            "targets": [{ "what": "AnyTarget" }],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
             "effects": [
               {
                 "Shield": {

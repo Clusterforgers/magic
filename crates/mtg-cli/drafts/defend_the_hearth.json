@@ -1,0 +1,26 @@
+{
+  "oracle_id": "1dd64972-5713-4c25-b7a5-a35a56886ef4",
+  "name": "Defend the Hearth",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Defend the Hearth",
+      "oracle_fingerprint": "39f1b2789c75c3cd94f467c96ef7be58",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": "EachPlayer", "combat": true } },
+                  "by": "Prevent",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

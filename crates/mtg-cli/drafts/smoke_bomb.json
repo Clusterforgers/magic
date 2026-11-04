@@ -1,0 +1,62 @@
+{
+  "oracle_id": "c262e015-f379-484f-894f-1a1deb3c75cc",
+  "name": "Smoke Bomb",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Smoke Bomb",
+      "oracle_fingerprint": "bf5b090d29e9a1f0a9c499781caca1ff",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }] },
+            "mods": [{ "AddKeyword": "Shroud" }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              { "Sacrifice": { "filter": ["This"], "as": "sacrificed" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "sacrificed" },
+                      "selector": [],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Reflexive": {
+                        "targets": [
+                          {
+                            "what": {
+                              "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                            }
+                          }
+                        ],
+                        "effects": [
+                          {
+                            "Continuous": {
+                              "affected": { "Target": 0 },
+                              "mods": ["CantBeBlocked"],
+                              "duration": "UntilEndOfTurn"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

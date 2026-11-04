@@ -10,8 +10,23 @@
         {
           "Spell": {
             "effects": [
-              { "Search": { "filter": [{ "Not": { "Type": "Land" } }], "as": "card" } },
-              { "Exile": { "what": { "Bound": "card" } } },
+              {
+                "Search": {
+                  "filter": [{ "Not": { "Type": "Land" } }],
+                  "count": {
+                    "min": 0,
+                    "max": {
+                      "Count": [
+                        { "Not": { "Type": "Land" } },
+                        { "OwnedBy": "You" },
+                        { "In": "Library" }
+                      ]
+                    }
+                  },
+                  "as": "found"
+                }
+              },
+              { "Exile": { "what": { "Bound": "found" } } },
               { "Shuffle": {} }
             ]
           }

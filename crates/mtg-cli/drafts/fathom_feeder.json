@@ -1,0 +1,22 @@
+{
+  "oracle_id": "0767fb65-a621-494b-97a4-f23a4c8b4bec",
+  "name": "Fathom Feeder",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fathom Feeder",
+      "oracle_fingerprint": "c0018b7a379e4327e0c3d7643d7634ee",
+      "abilities": [
+        { "Keyword": "Devoid" },
+        { "Keyword": "Deathtouch" },
+        { "Keyword": { "Macro": { "name": "ingest", "amount": 0 } } },
+        {
+          "Activated": {
+            "cost": "{3}{U}{B}",
+            "effects": [{ "Draw": {} }, { "ExileTop": { "who": "Opponents", "as": "exiled" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

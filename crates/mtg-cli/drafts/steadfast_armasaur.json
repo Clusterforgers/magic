@@ -1,0 +1,37 @@
+{
+  "oracle_id": "dc0bd3a3-f34e-4d81-b9e8-b172b005d671",
+  "name": "Steadfast Armasaur",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Steadfast Armasaur",
+      "oracle_fingerprint": "e5aea017c2c6defe60b1de57dd4d58e9",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{W}" }, "Tap"],
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "AnyOf": [{ "Blocks": "This" }, { "BlockedBy": "This" }] }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": { "Stat": { "of": "This", "stat": "Toughness" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

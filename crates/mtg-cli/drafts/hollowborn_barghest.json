@@ -1,0 +1,39 @@
+{
+  "oracle_id": "6b08f344-1ff5-4d04-a435-d3a1c5e4211b",
+  "name": "Hollowborn Barghest",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hollowborn Barghest",
+      "oracle_fingerprint": "cba19d95ebbb76b64fc930bc3f4383d8",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": [{ "OwnedBy": "You" }, { "In": "Hand" }] },
+                "op": "Eq",
+                "right": 0
+              }
+            },
+            "effects": [{ "LoseLife": { "who": "Opponents", "amount": 2 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "Opponents" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": [{ "OwnedBy": "ActivePlayer" }, { "In": "Hand" }] },
+                "op": "Eq",
+                "right": 0
+              }
+            },
+            "effects": [{ "LoseLife": { "who": "Triggering", "amount": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

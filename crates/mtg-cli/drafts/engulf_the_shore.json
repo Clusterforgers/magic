@@ -1,0 +1,36 @@
+{
+  "oracle_id": "a3d4ed7c-c586-4581-96dc-977636d27583",
+  "name": "Engulf the Shore",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Engulf the Shore",
+      "oracle_fingerprint": "c30befb85151720b9358ea73857b088c",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      {
+                        "Compare": {
+                          "stat": "Toughness",
+                          "op": "Le",
+                          "to": { "Count": [{ "Subtype": "Island" }, { "ControlledBy": "You" }] }
+                        }
+                      }
+                    ]
+                  },
+                  "to": "Hand"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "oracle_id": "d40e5a76-6c9a-47eb-b412-d3056cf36b3f",
+  "name": "Reaper of Night // Harvest Fear",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Reaper of Night",
+      "oracle_fingerprint": "f357c15cc3099247d4ec3066a54484d6",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "if": {
+              "Compare": {
+                "left": { "Count": [{ "OwnedBy": "Defending" }, { "In": "Hand" }] },
+                "op": "Le",
+                "right": 2
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddKeyword": "Flying" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Harvest Fear",
+      "oracle_fingerprint": "dcbaf95d4124be3c56cf1664c81dbc88",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [{ "Discard": { "who": { "Target": 0 }, "count": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

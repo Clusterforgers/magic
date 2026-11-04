@@ -1,0 +1,46 @@
+{
+  "oracle_id": "342eb666-838c-43d0-bf52-2f704f2a80e3",
+  "name": "Hooded Blightfang",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hooded Blightfang",
+      "oracle_fingerprint": "328f4531e507eaaa0ab4ab0b667a2529",
+      "abilities": [
+        { "Keyword": "Deathtouch" },
+        {
+          "Triggered": {
+            "when": {
+              "Attacks": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "ControlledBy": "You" },
+                  { "HasKeyword": "Deathtouch" }
+                ]
+              }
+            },
+            "effects": [
+              { "LoseLife": { "who": "Opponents", "amount": 1 } },
+              { "GainLife": { "amount": 1 } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [
+                  { "Type": "Creature" },
+                  { "ControlledBy": "You" },
+                  { "HasKeyword": "Deathtouch" }
+                ],
+                "to": { "Each": [{ "Type": "Planeswalker" }] }
+              }
+            },
+            "effects": [{ "Destroy": { "what": "Triggering" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

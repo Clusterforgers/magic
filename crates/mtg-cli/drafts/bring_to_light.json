@@ -1,0 +1,37 @@
+{
+  "oracle_id": "67183256-23cc-4af5-991e-d7148e942c63",
+  "name": "Bring to Light",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bring to Light",
+      "oracle_fingerprint": "e20f521c01cd037993c5c9e8b0bd2ed8",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Search": {
+                  "filter": [
+                    {
+                      "AnyOf": [
+                        { "Type": "Creature" },
+                        { "Type": "Instant" },
+                        { "Type": "Sorcery" }
+                      ]
+                    },
+                    { "Compare": { "stat": "ManaValue", "op": "Le", "to": "ColorsSpent" } }
+                  ],
+                  "as": "found"
+                }
+              },
+              { "Exile": { "what": { "Bound": "found" } } },
+              { "Shuffle": {} },
+              { "CastFromZone": { "what": { "Bound": "found" }, "free": true } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

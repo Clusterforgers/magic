@@ -1,0 +1,34 @@
+{
+  "oracle_id": "867379cb-a084-4c84-97ee-557fb60814cd",
+  "name": "Pendelhaven Elder",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pendelhaven Elder",
+      "oracle_fingerprint": "daaa717a92a8299afa30a1e1e0916ce2",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "ControlledBy": "You" },
+                      { "Compare": { "stat": "Power", "op": "Eq", "to": 1 } },
+                      { "Compare": { "stat": "Toughness", "op": "Eq", "to": 1 } }
+                    ]
+                  },
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

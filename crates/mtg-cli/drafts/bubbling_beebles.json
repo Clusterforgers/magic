@@ -1,0 +1,26 @@
+{
+  "oracle_id": "75903c3b-2dbe-4662-b6a8-39599e49adde",
+  "name": "Bubbling Beebles",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bubbling Beebles",
+      "oracle_fingerprint": "03d978e10a0fd77b6006c03924f109a3",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": ["CantBeBlocked"],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Type": "Enchantment" }, { "ControlledBy": "Defending" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "oracle_id": "b7163800-41fc-410a-9650-50ae90842170",
+  "name": "Gristle Glutton",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gristle Glutton",
+      "oracle_fingerprint": "e055815d7d63e2b8636ec88c55c38951",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap", { "Blight": 1 }],
+            "effects": [
+              { "Discard": { "as": "discarded" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "discarded" },
+                      "selector": [],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

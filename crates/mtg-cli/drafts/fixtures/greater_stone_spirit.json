@@ -1,0 +1,133 @@
+{
+  "object": "card",
+  "id": "4d8755f9-9fc2-46e7-b837-315ad78a91aa",
+  "oracle_id": "b36c66d3-24ae-4291-8f8b-8716e354975e",
+  "multiverse_ids": [
+    279857
+  ],
+  "mtgo_id": 43799,
+  "mtgo_foil_id": 43800,
+  "tcgplayer_id": 58081,
+  "cardmarket_id": 253603,
+  "name": "Greater Stone Spirit",
+  "lang": "en",
+  "released_at": "2012-03-30",
+  "uri": "https://api.scryfall.com/cards/4d8755f9-9fc2-46e7-b837-315ad78a91aa",
+  "scryfall_uri": "https://scryfall.com/card/ddi/61/greater-stone-spirit?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T11:06:01Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/4/d/4d8755f9-9fc2-46e7-b837-315ad78a91aa.jpg?1783940761",
+    "normal": "https://cards.scryfall.io/normal/front/4/d/4d8755f9-9fc2-46e7-b837-315ad78a91aa.jpg?1783940761",
+    "large": "https://cards.scryfall.io/large/front/4/d/4d8755f9-9fc2-46e7-b837-315ad78a91aa.jpg?1783940761",
+    "png": "https://cards.scryfall.io/png/front/4/d/4d8755f9-9fc2-46e7-b837-315ad78a91aa.png?1783940761",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/4/d/4d8755f9-9fc2-46e7-b837-315ad78a91aa.jpg?1783940761",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/4/d/4d8755f9-9fc2-46e7-b837-315ad78a91aa.jpg?1783940761",
+    "thumb": "https://cards.scryfall.io/thumb/front/4/d/4d8755f9-9fc2-46e7-b837-315ad78a91aa.webp?1783940761",
+    "grid": "https://cards.scryfall.io/grid/front/4/d/4d8755f9-9fc2-46e7-b837-315ad78a91aa.webp?1783940761",
+    "display": "https://cards.scryfall.io/display/front/4/d/4d8755f9-9fc2-46e7-b837-315ad78a91aa.webp?1783940761",
+    "art": "https://cards.scryfall.io/art/front/4/d/4d8755f9-9fc2-46e7-b837-315ad78a91aa.webp?1783940761",
+    "crop": "https://cards.scryfall.io/crop/front/4/d/4d8755f9-9fc2-46e7-b837-315ad78a91aa.webp?1783940761",
+    "jpeg": "https://cards.scryfall.io/normal/front/4/d/4d8755f9-9fc2-46e7-b837-315ad78a91aa.jpg?1783940761"
+  },
+  "mana_cost": "{4}{R}{R}",
+  "cmc": 6.0,
+  "type_line": "Creature — Elemental Spirit",
+  "oracle_text": "This creature can't be blocked by creatures with flying.\n{2}{R}: Until end of turn, target creature gets +0/+2 and gains \"{R}: This creature gets +1/+0 until end of turn.\"",
+  "power": "4",
+  "toughness": "4",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "a29e8ace-bbcd-4507-b159-7ec77d28f792",
+  "set": "ddi",
+  "set_name": "Duel Decks: Venser vs. Koth",
+  "set_type": "duel_deck",
+  "set_uri": "https://api.scryfall.com/sets/a29e8ace-bbcd-4507-b159-7ec77d28f792",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Addi&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/ddi?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/4d8755f9-9fc2-46e7-b837-315ad78a91aa/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ab36c66d3-24ae-4291-8f8b-8716e354975e&unique=prints",
+  "collector_number": "61",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "Having charted their way up the difficult face, the two mountaineers had to contend with the mountain's decision to stand up.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Yokota Katsumi",
+  "artist_ids": [
+    "6e559d7a-8d5a-45f9-9434-aa25e7729bd5"
+  ],
+  "illustration_id": "992a4631-9a7a-4b96-b838-8dd8f1a93bb1",
+  "border_color": "black",
+  "frame": "2003",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 30822,
+  "prices": {
+    "usd": "0.05",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.04",
+    "eur_foil": null,
+    "tix": "0.04"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=279857&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DGreater%2BStone%2BSpirit",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DGreater%2BStone%2BSpirit",
+    "edhrec": "https://edhrec.com/route/?cc=Greater+Stone+Spirit"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F58081%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=253603&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/43799?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

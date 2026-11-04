@@ -1,0 +1,34 @@
+{
+  "oracle_id": "0c4277ec-aa12-41f5-8896-c83cfc754d6e",
+  "name": "Tragedy Feaster",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tragedy Feaster",
+      "oracle_fingerprint": "f2f3d2a3a16248c5f9bf15822a2c4c60",
+      "abilities": [
+        { "Keyword": "Trample" },
+        { "Keyword": { "Ward": [{ "Discard": {} }] } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Tallied": { "who": "You", "what": "LifeGainedTotal" } },
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [{ "Sacrifice": { "filter": [] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -14,14 +14,8 @@
                 "Shield": {
                   "when": {
                     "Damage": {
-                      "to": {
-                        "Each": [
-                          { "Type": "Planeswalker" },
-                          { "Type": "Creature" },
-                          { "Type": "Sorcery" }
-                        ]
-                      },
-                      "source": [{ "Type": "Creature" }]
+                      "to": "EachPlayer",
+                      "source": [{ "Type": "Creature" }, { "In": "Battlefield" }]
                     }
                   },
                   "by": "Prevent",

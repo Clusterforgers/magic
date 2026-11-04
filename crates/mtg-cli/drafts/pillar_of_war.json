@@ -1,0 +1,24 @@
+{
+  "oracle_id": "50b931f9-f843-4129-a4c8-2bb7a051c063",
+  "name": "Pillar of War",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pillar of War",
+      "oracle_fingerprint": "bcd870371bdfc54a0fa8f4166f98b750",
+      "abilities": [
+        { "Keyword": "Defender" },
+        {
+          "Rule": {
+            "rule": {
+              "Combat": {
+                "who": { "Each": ["This", { "HasAttached": [{ "Subtype": "Aura" }] }] },
+                "quirk": "AttackDespiteDefender"
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

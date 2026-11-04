@@ -1,0 +1,140 @@
+{
+  "object": "card",
+  "id": "8b52f14c-e6b9-4ad0-8515-6644b201e2ea",
+  "oracle_id": "c8110200-209e-423a-96b7-81a3ac32447c",
+  "multiverse_ids": [],
+  "resource_id": "1401FE60E8235D3E613999BD3100C7C0B2053A5FCA75B272BD83627BB993005D",
+  "tcgplayer_id": 656768,
+  "cardmarket_id": 851619,
+  "name": "The Destined White Mage",
+  "lang": "en",
+  "released_at": "2025-12-05",
+  "uri": "https://api.scryfall.com/cards/8b52f14c-e6b9-4ad0-8515-6644b201e2ea",
+  "scryfall_uri": "https://scryfall.com/card/fic/444/the-destined-white-mage?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T01:04:17Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/8/b/8b52f14c-e6b9-4ad0-8515-6644b201e2ea.jpg?1783904657",
+    "normal": "https://cards.scryfall.io/normal/front/8/b/8b52f14c-e6b9-4ad0-8515-6644b201e2ea.jpg?1783904657",
+    "large": "https://cards.scryfall.io/large/front/8/b/8b52f14c-e6b9-4ad0-8515-6644b201e2ea.jpg?1783904657",
+    "png": "https://cards.scryfall.io/png/front/8/b/8b52f14c-e6b9-4ad0-8515-6644b201e2ea.png?1783904657",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/8/b/8b52f14c-e6b9-4ad0-8515-6644b201e2ea.jpg?1783904657",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/8/b/8b52f14c-e6b9-4ad0-8515-6644b201e2ea.jpg?1783904657",
+    "thumb": "https://cards.scryfall.io/thumb/front/8/b/8b52f14c-e6b9-4ad0-8515-6644b201e2ea.webp?1783904657",
+    "grid": "https://cards.scryfall.io/grid/front/8/b/8b52f14c-e6b9-4ad0-8515-6644b201e2ea.webp?1783904657",
+    "display": "https://cards.scryfall.io/display/front/8/b/8b52f14c-e6b9-4ad0-8515-6644b201e2ea.webp?1783904657",
+    "art": "https://cards.scryfall.io/art/front/8/b/8b52f14c-e6b9-4ad0-8515-6644b201e2ea.webp?1783904657",
+    "crop": "https://cards.scryfall.io/crop/front/8/b/8b52f14c-e6b9-4ad0-8515-6644b201e2ea.webp?1783904657",
+    "jpeg": "https://cards.scryfall.io/normal/front/8/b/8b52f14c-e6b9-4ad0-8515-6644b201e2ea.jpg?1783904657"
+  },
+  "mana_cost": "{2}{W}",
+  "cmc": 3.0,
+  "type_line": "Legendary Creature — Human Cleric",
+  "oracle_text": "Lifelink\n{W}, {T}: Another target creature you control gains lifelink until end of turn.\nWhenever you gain life, put a +1/+1 counter on target creature you control. If you have a full party, put three +1/+1 counters on that creature instead.",
+  "power": "2",
+  "toughness": "3",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Lifelink"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "mtgo",
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "30659956-4558-4cbf-a65f-34cd00c89579",
+  "set": "fic",
+  "set_name": "Final Fantasy Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/30659956-4558-4cbf-a65f-34cd00c89579",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Afic&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/fic?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/8b52f14c-e6b9-4ad0-8515-6644b201e2ea/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ac8110200-209e-423a-96b7-81a3ac32447c&unique=prints",
+  "collector_number": "444",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "David Rapoza",
+  "artist_ids": [
+    "c5a2318d-5d04-499f-b121-57dee5a9dfe6"
+  ],
+  "illustration_id": "83d8dbda-e566-4cc2-a93d-3cba1243da31",
+  "border_color": "borderless",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary",
+    "inverted"
+  ],
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "ffi",
+    "universesbeyond"
+  ],
+  "edhrec_rank": 9627,
+  "prices": {
+    "usd": "13.66",
+    "usd_foil": "14.87",
+    "usd_etched": null,
+    "eur": "14.07",
+    "eur_foil": "16.93",
+    "tix": null
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DThe%2BDestined%2BWhite%2BMage",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DThe%2BDestined%2BWhite%2BMage",
+    "edhrec": "https://edhrec.com/route/?cc=The+Destined+White+Mage"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F656768%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=851619&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=The+Destined+White+Mage&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "oracle_id": "38ec5b13-b143-4818-9243-b1715dab3bef",
+  "name": "Paupers' Cage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Paupers' Cage",
+      "oracle_fingerprint": "94bb44cc23ee59d4416df26635f4f5f0",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "Opponents" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": [{ "OwnedBy": "ActivePlayer" }, { "In": "Hand" }] },
+                "op": "Le",
+                "right": 2
+              }
+            },
+            "effects": [{ "DealDamage": { "to": "Triggering", "amount": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

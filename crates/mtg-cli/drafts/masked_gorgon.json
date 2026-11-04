@@ -1,0 +1,40 @@
+{
+  "oracle_id": "f41b1a5b-bc99-4c51-9665-e251f04ad83f",
+  "name": "Masked Gorgon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Masked Gorgon",
+      "oracle_fingerprint": "64a163c09534a2d14ff61a6738483890",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                { "AnyOf": [{ "Color": "Green" }, { "Color": "White" }] }
+              ]
+            },
+            "mods": [{ "AddKeyword": { "Protection": [{ "Subtype": "Gorgon" }] } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              { "AddKeyword": { "Protection": [{ "Color": "Green" }] } },
+              { "AddKeyword": { "Protection": [{ "Color": "White" }] } }
+            ],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                "op": "Ge",
+                "right": 7
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

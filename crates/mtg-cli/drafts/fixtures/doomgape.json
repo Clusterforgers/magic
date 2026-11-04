@@ -1,0 +1,138 @@
+{
+  "object": "card",
+  "id": "702da51f-c4ec-4073-bee8-f8423f70b163",
+  "oracle_id": "ab94d8f7-f811-436a-9a22-9a12bd929e98",
+  "multiverse_ids": [
+    292979
+  ],
+  "mtgo_id": 46045,
+  "mtgo_foil_id": 46046,
+  "tcgplayer_id": 66349,
+  "cardmarket_id": 258149,
+  "name": "Doomgape",
+  "lang": "en",
+  "released_at": "2012-09-07",
+  "uri": "https://api.scryfall.com/cards/702da51f-c4ec-4073-bee8-f8423f70b163",
+  "scryfall_uri": "https://scryfall.com/card/ddj/65/doomgape?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T10:59:56Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/7/0/702da51f-c4ec-4073-bee8-f8423f70b163.jpg?1783940396",
+    "normal": "https://cards.scryfall.io/normal/front/7/0/702da51f-c4ec-4073-bee8-f8423f70b163.jpg?1783940396",
+    "large": "https://cards.scryfall.io/large/front/7/0/702da51f-c4ec-4073-bee8-f8423f70b163.jpg?1783940396",
+    "png": "https://cards.scryfall.io/png/front/7/0/702da51f-c4ec-4073-bee8-f8423f70b163.png?1783940396",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/7/0/702da51f-c4ec-4073-bee8-f8423f70b163.jpg?1783940396",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/7/0/702da51f-c4ec-4073-bee8-f8423f70b163.jpg?1783940396",
+    "thumb": "https://cards.scryfall.io/thumb/front/7/0/702da51f-c4ec-4073-bee8-f8423f70b163.webp?1783940396",
+    "grid": "https://cards.scryfall.io/grid/front/7/0/702da51f-c4ec-4073-bee8-f8423f70b163.webp?1783940396",
+    "display": "https://cards.scryfall.io/display/front/7/0/702da51f-c4ec-4073-bee8-f8423f70b163.webp?1783940396",
+    "art": "https://cards.scryfall.io/art/front/7/0/702da51f-c4ec-4073-bee8-f8423f70b163.webp?1783940396",
+    "crop": "https://cards.scryfall.io/crop/front/7/0/702da51f-c4ec-4073-bee8-f8423f70b163.webp?1783940396",
+    "jpeg": "https://cards.scryfall.io/normal/front/7/0/702da51f-c4ec-4073-bee8-f8423f70b163.jpg?1783940396"
+  },
+  "mana_cost": "{4}{B/G}{B/G}{B/G}",
+  "cmc": 7.0,
+  "type_line": "Creature — Elemental",
+  "oracle_text": "Trample\nAt the beginning of your upkeep, sacrifice a creature. You gain life equal to that creature's toughness.",
+  "power": "10",
+  "toughness": "10",
+  "colors": [
+    "B",
+    "G"
+  ],
+  "color_identity": [
+    "B",
+    "G"
+  ],
+  "keywords": [
+    "Trample"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "2dfea68b-b0c4-4f63-ba6c-36c9a6e3030f",
+  "set": "ddj",
+  "set_name": "Duel Decks: Izzet vs. Golgari",
+  "set_type": "duel_deck",
+  "set_uri": "https://api.scryfall.com/sets/2dfea68b-b0c4-4f63-ba6c-36c9a6e3030f",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Addj&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/ddj?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/702da51f-c4ec-4073-bee8-f8423f70b163/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Aab94d8f7-f811-436a-9a22-9a12bd929e98&unique=prints",
+  "collector_number": "65",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "It eats and eats until the juiciest morsel it can find is itself.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Dave Allsop",
+  "artist_ids": [
+    "99b8310a-4fd6-4ded-8ab7-3b5185821cbe"
+  ],
+  "illustration_id": "db30c008-5daa-42e0-a46f-9fb11d3dcfd7",
+  "border_color": "black",
+  "frame": "2003",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 19594,
+  "penny_rank": 13169,
+  "prices": {
+    "usd": "0.21",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.27",
+    "eur_foil": null,
+    "tix": "0.19"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=292979&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DDoomgape",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DDoomgape",
+    "edhrec": "https://edhrec.com/route/?cc=Doomgape"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F66349%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=258149&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/46045?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

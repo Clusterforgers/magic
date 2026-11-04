@@ -1,0 +1,31 @@
+{
+  "oracle_id": "e0e3feb8-2add-41c9-839c-587af6ca8f93",
+  "name": "Michelangelo, On the Scene",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Michelangelo, On the Scene",
+      "oracle_fingerprint": "3448d046eb0d1005d0e4e3beeb4e6746",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "WithCounters": {
+                "counter": "+1/+1",
+                "count": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] }
+              }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [{ "Move": { "what": "This", "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

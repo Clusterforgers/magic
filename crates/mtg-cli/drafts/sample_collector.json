@@ -1,0 +1,41 @@
+{
+  "oracle_id": "566b65bb-fa5d-4da6-a766-b08128ee0049",
+  "name": "Sample Collector",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sample Collector",
+      "oracle_fingerprint": "3e5c0c49390c17bc2c5c8f383dd6db4b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "CollectEvidence": 3 }],
+                  "paid": [
+                    {
+                      "Reflexive": {
+                        "targets": [
+                          {
+                            "what": {
+                              "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                            }
+                          }
+                        ],
+                        "effects": [
+                          { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

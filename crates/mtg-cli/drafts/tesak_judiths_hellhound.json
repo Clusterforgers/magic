@@ -1,0 +1,41 @@
+{
+  "oracle_id": "4117e428-0c78-4dea-9019-dd1836fbb03e",
+  "name": "Tesak, Judith's Hellhound",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tesak, Judith's Hellhound",
+      "oracle_fingerprint": "e199128090047a827a1587d771ca39ce",
+      "abilities": [
+        { "Keyword": { "Macro": { "name": "unleash", "amount": 0 } } },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Dog" }, "Other", { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": { "Macro": { "name": "unleash", "amount": 0 } } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": {
+              "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "HasAnyCounter"]
+            },
+            "mods": [{ "AddKeyword": "Haste" }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["Red"] },
+                  "times": { "Count": [{ "Type": "Creature" }, "Attacking"] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

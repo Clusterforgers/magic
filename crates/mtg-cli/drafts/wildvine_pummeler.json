@@ -1,0 +1,23 @@
+{
+  "oracle_id": "6c34674f-856b-4062-87d5-6ed73d9a9855",
+  "name": "Wildvine Pummeler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wildvine Pummeler",
+      "oracle_fingerprint": "75b1326ed79a810cba0b25f194570b5c",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{1}",
+            "per": { "Distinct": { "of": [{ "ControlledBy": "You" }], "stat": "Colors" } }
+          }
+        },
+        { "Keyword": "Reach" },
+        { "Keyword": "Trample" }
+      ]
+    }
+  ]
+}

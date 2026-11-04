@@ -1,0 +1,21 @@
+{
+  "oracle_id": "f30943f1-473f-4fa4-b6a7-3dfbd1995ba9",
+  "name": "Urborg Emissary",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Urborg Emissary",
+      "oracle_fingerprint": "79e9298cd02fc877d3433ccc2c34e8c0",
+      "abilities": [
+        { "Keyword": { "Kicker": "{1}{U}" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This", "Kicked"], "to": "Battlefield" } },
+            "targets": [{ "what": { "Object": [] } }],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

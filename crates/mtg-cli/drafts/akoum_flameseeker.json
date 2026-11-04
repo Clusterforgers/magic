@@ -1,0 +1,34 @@
+{
+  "oracle_id": "efae637f-3232-46f2-9839-f3386e2f447d",
+  "name": "Akoum Flameseeker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Akoum Flameseeker",
+      "oracle_fingerprint": "03126b71a42f6b71843a7a7e65586948",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap", { "TapPermanents": { "filter": [{ "Subtype": "Ally" }] } }],
+            "effects": [
+              { "Discard": { "as": "discarded" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "discarded" },
+                      "selector": [],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

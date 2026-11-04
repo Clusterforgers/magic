@@ -1,0 +1,54 @@
+{
+  "oracle_id": "2feca0cd-6bd3-4e19-8cfd-81d7bd1118ee",
+  "name": "Ichorplate Golem",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ichorplate Golem",
+      "oracle_fingerprint": "14580e7ce98b081f25b241edbb2766c8",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "ControlledBy": "You" },
+                  { "HasCounter": { "Other": "oil" } }
+                ],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": "Triggering",
+                      "selector": [{ "Type": "Creature" }, { "HasCounter": { "Other": "oil" } }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "PutCounters": { "on": "Triggering", "counter": { "Other": "oil" } } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                { "ControlledBy": "You" },
+                { "HasCounter": { "Other": "oil" } }
+              ]
+            },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

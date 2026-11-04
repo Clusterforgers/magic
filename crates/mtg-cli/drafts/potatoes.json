@@ -1,0 +1,32 @@
+{
+  "oracle_id": "7fc7ceb0-5846-491b-8e6e-8f9f655250f1",
+  "name": "Potatoes",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Potatoes",
+      "oracle_fingerprint": "0cce96a68107dfba2f20b233a25442cf",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap", "SacrificeSelf"],
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [{ "what": "AnyTarget" }],
+                      "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }]
+                    },
+                    { "effects": [{ "CreateToken": { "token": { "Named": "food" }, "count": 2 } }] },
+                    { "effects": [{ "GainLife": { "amount": 3 } }, { "Draw": {} }] }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

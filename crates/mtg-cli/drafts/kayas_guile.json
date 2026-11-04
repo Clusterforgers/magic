@@ -1,0 +1,61 @@
+{
+  "oracle_id": "a6becd5f-d279-4df8-81d9-deeb1b513c95",
+  "name": "Kaya's Guile",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kaya's Guile",
+      "oracle_fingerprint": "b3fd5ff13f333b9c736bdc4e76b7d4ac",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "choose": { "min": 2, "max": 2 },
+                  "modes": [
+                    {
+                      "effects": [
+                        { "Sacrifice": { "who": "Opponents", "filter": [{ "Type": "Creature" }] } }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "Exile": {
+                            "what": { "Each": [{ "OwnedBy": "Opponents" }, { "In": "Graveyard" }] }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "CreateToken": {
+                            "token": {
+                              "Custom": {
+                                "name": "Spirit",
+                                "colors": ["White", "Black"],
+                                "types": ["Creature"],
+                                "subtypes": ["Spirit"],
+                                "power": 1,
+                                "toughness": 1,
+                                "abilities": [{ "Keyword": "Flying" }]
+                              }
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    { "effects": [{ "GainLife": { "amount": 4 } }] }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Entwine": "{3}" } }
+      ]
+    }
+  ]
+}

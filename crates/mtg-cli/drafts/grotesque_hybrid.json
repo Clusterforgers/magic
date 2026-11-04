@@ -1,0 +1,43 @@
+{
+  "oracle_id": "c37e69a7-5596-4dce-a3c9-41f899e05f24",
+  "name": "Grotesque Hybrid",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Grotesque Hybrid",
+      "oracle_fingerprint": "6f4ece9e3edc91785ab0c22f488b70ab",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": ["This"],
+                "to": { "Each": [{ "Type": "Creature" }] },
+                "combat": true
+              }
+            },
+            "effects": [{ "Destroy": { "what": "Triggering", "regenerate": false } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Discard": {} }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "AddKeyword": "Flying" },
+                    { "AddKeyword": { "Protection": [{ "Color": "Green" }] } },
+                    { "AddKeyword": { "Protection": [{ "Color": "White" }] } }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "oracle_id": "6591f243-f94c-4a83-bb16-1fb838d9eb14",
+  "name": "Altanak, the Thrice-Called",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Altanak, the Thrice-Called",
+      "oracle_fingerprint": "d3f1ec1457c3a4ce2344cb7b201c9b50",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": {
+              "BecomesTarget": { "what": ["This"], "by": [{ "ControlledBy": "Opponents" }] }
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{G}" }, "DiscardSelf"],
+            "from": "Hand",
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Land" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": { "tapped": true } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

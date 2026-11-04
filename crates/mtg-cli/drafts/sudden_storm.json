@@ -1,0 +1,31 @@
+{
+  "oracle_id": "32e915fb-3836-4bed-93b1-61c9c3951ad1",
+  "name": "Sudden Storm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sudden Storm",
+      "oracle_fingerprint": "c0e7aaa82d36af35a5e71af3d72d4e03",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 0, "max": 2 } }
+            ],
+            "effects": [
+              { "Tap": { "what": { "Target": 0 } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["DoesntUntap"],
+                  "duration": "NextUntapStep"
+                }
+              },
+              { "Scry": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

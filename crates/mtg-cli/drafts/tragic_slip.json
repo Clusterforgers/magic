@@ -1,0 +1,72 @@
+{
+  "oracle_id": "fa6e2a47-a8cb-4224-ae3e-f61c90477285",
+  "name": "Tragic Slip",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tragic Slip",
+      "oracle_fingerprint": "f246f92d4d18f7a68b1bf0876f804151",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": {
+                          "Times": {
+                            "by": -1,
+                            "of": {
+                              "When": {
+                                "condition": {
+                                  "Compare": {
+                                    "left": {
+                                      "Tallied": { "who": "EachPlayer", "what": "CreaturesDied" }
+                                    },
+                                    "op": "Ge",
+                                    "right": 1
+                                  }
+                                },
+                                "then": 13,
+                                "otherwise": 1
+                              }
+                            }
+                          }
+                        },
+                        "toughness": {
+                          "Times": {
+                            "by": -1,
+                            "of": {
+                              "When": {
+                                "condition": {
+                                  "Compare": {
+                                    "left": {
+                                      "Tallied": { "who": "EachPlayer", "what": "CreaturesDied" }
+                                    },
+                                    "op": "Ge",
+                                    "right": 1
+                                  }
+                                },
+                                "then": 13,
+                                "otherwise": 1
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
