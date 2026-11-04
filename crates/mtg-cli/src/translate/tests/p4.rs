@@ -219,6 +219,53 @@ fn an_ability_used_once_a_game_has_that_limit(#[case] keys: &str, #[case] limit:
     assert_eq!(activated(keys)["Activated"]["limit"].as_str(), limit);
 }
 
+fn each_player(valid: &str, bounds: &str) -> String {
+    spell(&format!(
+        "SP$ Destroy | ValidTgts$ {valid} | {bounds} | TargetsForEachPlayer$ True"
+    ))
+}
+
+#[rstest]
+#[case::each_opponent(
+    "Artifact.OppCtrl",
+    json!({"PerPlayer": {"players": "Opponents", "what": [{"Type": "Artifact"}]}})
+)]
+#[case::kept_property(
+    "Creature.OppCtrl+nonToken",
+    json!({"PerPlayer": {"players": "Opponents", "what": [{"Type": "Creature"}, {"Not": "Token"}]}})
+)]
+#[case::each_player(
+    "Creature",
+    json!({"PerPlayer": {"players": "EachPlayer", "what": [{"Type": "Creature"}]}})
+)]
+fn up_to_one_target_for_each_player_is_a_per_player_target(
+    #[case] valid: &str,
+    #[case] expected: Value,
+) {
+    let text = each_player(valid, "TargetMin$ 0 | TargetMax$ OneEach");
+    assert_eq!(gaps(&text), Vec::<String>::new());
+    let found = first_of(&text);
+    assert_eq!(found["Spell"]["targets"][0]["what"], expected);
+}
+
+#[rstest]
+#[case::exactly_one_each("Artifact.OppCtrl", "TargetMin$ OneEach | TargetMax$ OneEach")]
+#[case::two_at_most("Artifact.OppCtrl", "TargetMin$ 0 | TargetMax$ 2")]
+#[case::no_bounds("Artifact.OppCtrl", "Defined$ You")]
+#[case::you_control("Artifact.YouCtrl", "TargetMin$ 0 | TargetMax$ OneEach")]
+#[case::mixed_control("Artifact.OppCtrl,Creature", "TargetMin$ 0 | TargetMax$ OneEach")]
+fn for_each_player_bounds_the_table_does_not_know_stay_a_gap(
+    #[case] valid: &str,
+    #[case] bounds: &str,
+) {
+    assert!(
+        gaps(&each_player(valid, bounds))
+            .into_iter()
+            .next()
+            .is_some()
+    );
+}
+
 /// A spell that pumps `first`, then pumps `second` (a `ValidTgts$` plus extra keys) in a sub-ability.
 fn two_pumps(first: &str, second: &str) -> String {
     format!(

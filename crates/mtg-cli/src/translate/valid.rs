@@ -455,6 +455,14 @@ fn bound(ctx: &Ctx, text: &str) -> Tr<Value> {
 }
 
 fn target_what(ctx: &Ctx, valid: &str, zone: Option<&str>) -> Tr<Value> {
+    // "Up to one target of each player" (`header::per_player_targets`).
+    if let Some(rest) = valid.strip_prefix(super::header::FOR_EACH) {
+        let Some((players, objects)) = rest.split_once('>') else {
+            return unmapped("key:TargetsForEachPlayer=shape");
+        };
+        let what = selector_in(ctx, objects, zone)?;
+        return Ok(json!({"PerPlayer": {"players": players, "what": what}}));
+    }
     let alternatives: Vec<&str> = valid.split(',').collect();
     let players = |word: &str| matches!(word, "Any" | "Player" | "Opponent" | "Player.Opponent");
     if alternatives.iter().all(|word| !players(word)) {
