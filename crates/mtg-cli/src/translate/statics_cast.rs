@@ -57,7 +57,7 @@ pub fn cast_with_flash(ctx: &Ctx, p: &Params) -> Tr<Value> {
 /// `CantBeCast` of every spell: the `Caster$` players cast none, always or only (with `Condition$ PlayerTurn`) on the
 /// turns of the rule's controller. A limit on the cards or the number, and a spell's own casting condition, stay gaps.
 pub fn cant_be_cast(p: &Params) -> Tr<Value> {
-    only_keys(p, "CantBeCast", &["ValidCard", "Caster", "Condition"])?;
+    only_keys(p, "CantBeCast", &["ValidCard", "Caster"])?;
     if p.get("ValidCard") != Some("Card") {
         return unmapped("static:CantBeCast-of-some-cards");
     }

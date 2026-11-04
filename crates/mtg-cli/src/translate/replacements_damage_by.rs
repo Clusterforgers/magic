@@ -90,6 +90,9 @@ pub fn by(ctx: &Ctx, p: &Params, name: &str, recipient_is_you: bool, shield: boo
         return unmapped("svar:missing");
     };
     let part = Params::parse(text);
+    if p.has("DamageTarget") && part.get("VarName") != Some("Affected") {
+        return unmapped("key:Replacement.DamageDone.DamageTarget");
+    }
     let prevents = p.get("PreventionEffect") == Some("True");
     match (part.get("DB").unwrap_or_default(), prevents) {
         ("ReplaceDamage", true) => {

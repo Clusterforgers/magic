@@ -18,7 +18,7 @@ fn shown(script: &str) -> String {
     &["PreventUpTo\":1"], 1
 )]
 #[case::prevent_and_lose_a_counter(
-    "Name:T\nTypes:Creature Spirit\nR:Event$ DamageDone | ActiveZones$ Battlefield | ValidTarget$ Card.Self | ReplaceWith$ Rm | PreventionEffect$ True | AlwaysReplace$ True\nSVar:Rm:DB$ RemoveCounter | Defined$ Self | CounterType$ P1P1 | CounterNum$ 1\n",
+    "Name:T\nTypes:Creature Spirit\nR:Event$ DamageDone | ActiveZones$ Battlefield | ValidTarget$ Card.Self | ReplaceWith$ Rm | PreventionEffect$ True\nSVar:Rm:DB$ RemoveCounter | Defined$ Self | CounterType$ P1P1 | CounterNum$ 1\n",
     &["PreventRemovingCounter\":\"+1/+1\""], 1
 )]
 #[case::prevent_and_gain_life(
@@ -90,6 +90,10 @@ fn effect_objects_with_several_parts_map(
 }
 
 #[rstest]
+#[case::an_unread_always_replace(
+    "ValidTarget$ Card.Self | ReplaceWith$ D | PreventionEffect$ True | AlwaysReplace$ True\nSVar:D:DB$ RemoveCounter | Defined$ Self | CounterType$ P1P1 | CounterNum$ 1"
+)]
+#[case::an_unread_damage_target("ValidTarget$ You | Prevent$ True | DamageTarget$ Self")]
 #[case::two_players_in_a_list("ValidTarget$ You,Opponent | Prevent$ True")]
 #[case::redirect_to_another_target(
     "ValidTarget$ You | ReplaceWith$ D | DamageTarget$ Self\nSVar:D:DB$ ReplaceEffect | VarName$ Affected | VarValue$ Enchanted | VarType$ Card"

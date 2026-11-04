@@ -8,10 +8,8 @@ use super::effects_obj::duration;
 use super::valid::{selector_any, subject};
 use crate::forge::script::Params;
 
-const KEYS: [&str; 12] = [
+const KEYS: [&str; 10] = [
     "PreventionEffect",
-    "AlwaysReplace",
-    "ExecuteMode",
     "DamageTarget",
     "ReplaceWith",
     "Event",
@@ -39,6 +37,9 @@ fn read_keys(p: &Params, static_line: bool) -> Tr<()> {
         if !KEYS.contains(&key) && !is_hint(key) {
             return unmapped(format!("key:Replacement.DamageDone.{key}"));
         }
+    }
+    if p.has("DamageTarget") && !p.has("ReplaceWith") {
+        return unmapped("key:Replacement.DamageDone.DamageTarget");
     }
     let prevents = p.get("Prevent") == Some("True");
     let replaces = p.has("ReplaceWith");

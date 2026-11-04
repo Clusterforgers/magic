@@ -32,6 +32,7 @@ thiserror.workspace = true
 tokio = { workspace = true, features = ["fs", "io-util"] }
 
 [dev-dependencies]
+mtg-core.workspace = true
 proptest.workspace = true
 rstest.workspace = true
 tempfile.workspace = true
