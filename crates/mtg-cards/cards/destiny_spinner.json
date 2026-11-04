@@ -1,0 +1,54 @@
+{
+  "oracle_id": "7dd189f8-a23f-4b43-b0ef-fb174a9664ba",
+  "name": "Destiny Spinner",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Destiny Spinner",
+      "oracle_fingerprint": "d38b5bf05c30eb5d3b3c0ce217205c4c",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "CantBeCountered": {
+                "Each": [
+                  "Spell",
+                  { "AnyOf": [{ "Type": "Creature" }, { "Type": "Enchantment" }] },
+                  { "ControlledBy": "You" }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{3}{G}",
+            "targets": [{ "what": { "Object": [{ "Type": "Land" }, { "ControlledBy": "You" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "SetPT": {
+                        "power": { "Count": [{ "Type": "Enchantment" }, { "ControlledBy": "You" }] },
+                        "toughness": {
+                          "Count": [{ "Type": "Enchantment" }, { "ControlledBy": "You" }]
+                        }
+                      }
+                    },
+                    { "AddSubtype": "Elemental" },
+                    { "AddType": "Creature" },
+                    { "AddKeyword": "Trample" },
+                    { "AddKeyword": "Haste" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

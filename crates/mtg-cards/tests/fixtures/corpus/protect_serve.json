@@ -1,0 +1,156 @@
+{
+  "object": "card",
+  "id": "9b8acd7d-f3e2-4358-91ab-40901b68d64c",
+  "oracle_id": "2e0cd5a5-3aee-4b32-873a-e5a40bfba3e9",
+  "multiverse_ids": [
+    369024
+  ],
+  "mtgo_id": 48518,
+  "tcgplayer_id": 67991,
+  "cardmarket_id": 261578,
+  "name": "Protect // Serve",
+  "lang": "en",
+  "released_at": "2013-05-03",
+  "uri": "https://api.scryfall.com/cards/9b8acd7d-f3e2-4358-91ab-40901b68d64c",
+  "scryfall_uri": "https://scryfall.com/card/dgm/131/protect-serve?utm_source=api",
+  "layout": "split",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T10:53:36Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/9/b/9b8acd7d-f3e2-4358-91ab-40901b68d64c.jpg?1783940016",
+    "normal": "https://cards.scryfall.io/normal/front/9/b/9b8acd7d-f3e2-4358-91ab-40901b68d64c.jpg?1783940016",
+    "large": "https://cards.scryfall.io/large/front/9/b/9b8acd7d-f3e2-4358-91ab-40901b68d64c.jpg?1783940016",
+    "png": "https://cards.scryfall.io/png/front/9/b/9b8acd7d-f3e2-4358-91ab-40901b68d64c.png?1783940016",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/9/b/9b8acd7d-f3e2-4358-91ab-40901b68d64c.jpg?1783940016",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/9/b/9b8acd7d-f3e2-4358-91ab-40901b68d64c.jpg?1783940016",
+    "thumb": "https://cards.scryfall.io/thumb/front/9/b/9b8acd7d-f3e2-4358-91ab-40901b68d64c.webp?1783940016",
+    "grid": "https://cards.scryfall.io/grid/front/9/b/9b8acd7d-f3e2-4358-91ab-40901b68d64c.webp?1783940016",
+    "display": "https://cards.scryfall.io/display/front/9/b/9b8acd7d-f3e2-4358-91ab-40901b68d64c.webp?1783940016",
+    "art": "https://cards.scryfall.io/art/front/9/b/9b8acd7d-f3e2-4358-91ab-40901b68d64c.webp?1783940016",
+    "crop": "https://cards.scryfall.io/crop/front/9/b/9b8acd7d-f3e2-4358-91ab-40901b68d64c.webp?1783940016",
+    "jpeg": "https://cards.scryfall.io/normal/front/9/b/9b8acd7d-f3e2-4358-91ab-40901b68d64c.jpg?1783940016"
+  },
+  "mana_cost": "{2}{W} // {1}{U}",
+  "cmc": 5.0,
+  "type_line": "Instant // Instant",
+  "colors": [
+    "U",
+    "W"
+  ],
+  "color_identity": [
+    "U",
+    "W"
+  ],
+  "keywords": [
+    "Fuse"
+  ],
+  "card_faces": [
+    {
+      "object": "card_face",
+      "name": "Protect",
+      "mana_cost": "{2}{W}",
+      "type_line": "Instant",
+      "oracle_text": "Target creature gets +2/+4 until end of turn.\nFuse (You may cast one or both halves of this card from your hand.)",
+      "watermark": "azorius",
+      "artist": "Ryan Barger",
+      "artist_id": "a4e0102e-bbeb-497c-babc-1c0741fea914",
+      "illustration_id": "16e6fded-d1c0-451f-862d-c89b99de4563"
+    },
+    {
+      "object": "card_face",
+      "name": "Serve",
+      "mana_cost": "{1}{U}",
+      "type_line": "Instant",
+      "oracle_text": "Target creature gets -6/-0 until end of turn.\nFuse (You may cast one or both halves of this card from your hand.)",
+      "watermark": "azorius",
+      "artist": "Ryan Barger",
+      "artist_id": "a4e0102e-bbeb-497c-babc-1c0741fea914"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "c8bd8520-cd98-45cd-b533-8d40c2087426",
+  "set": "dgm",
+  "set_name": "Dragon's Maze",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/c8bd8520-cd98-45cd-b533-8d40c2087426",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Adgm&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/dgm?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/9b8acd7d-f3e2-4358-91ab-40901b68d64c/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A2e0cd5a5-3aee-4b32-873a-e5a40bfba3e9&unique=prints",
+  "collector_number": "131",
+  "digital": false,
+  "rarity": "uncommon",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Ryan Barger",
+  "artist_ids": [
+    "a4e0102e-bbeb-497c-babc-1c0741fea914"
+  ],
+  "illustration_id": "16e6fded-d1c0-451f-862d-c89b99de4563",
+  "border_color": "black",
+  "frame": "2003",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 28720,
+  "prices": {
+    "usd": "0.08",
+    "usd_foil": "0.31",
+    "usd_etched": null,
+    "eur": "0.08",
+    "eur_foil": "0.27",
+    "tix": "0.04"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=369024&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DProtect%2B%252F%252F%2BServe",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DProtect%2B%252F%252F%2BServe",
+    "edhrec": "https://edhrec.com/route/?cc=Protect+%2F%2F+Serve"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F67991%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=261578&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/48518?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

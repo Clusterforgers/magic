@@ -1,0 +1,27 @@
+{
+  "oracle_id": "30d3645f-307d-4164-a8f0-336d484b5020",
+  "name": "Vexing Beetle",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vexing Beetle",
+      "oracle_fingerprint": "09bb5ee0e8a11a7cf98cb7496eda24fc",
+      "abilities": [
+        { "Rule": { "rule": { "CantBeCountered": "This" }, "from": "Stack" } },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": 3, "toughness": 3 } }],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] },
+                "op": "Eq",
+                "right": 0
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

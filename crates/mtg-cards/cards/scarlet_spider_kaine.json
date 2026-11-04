@@ -1,0 +1,28 @@
+{
+  "oracle_id": "4ec8a5ea-b750-4711-8843-2bc98f4ce060",
+  "name": "Scarlet Spider, Kaine",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Scarlet Spider, Kaine",
+      "oracle_fingerprint": "836d3d183a6dec3452528eaf5613cdb7",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "Discard": {} }],
+                  "paid": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Mayhem": "{B/R}" } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "oracle_id": "046ccc8a-ec0d-4dc5-b41d-5e8a6d86812a",
+  "name": "Phenax, God of Deception",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Phenax, God of Deception",
+      "oracle_fingerprint": "298d57db8814210c536084835c691484",
+      "abilities": [
+        { "Keyword": "Indestructible" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "RemoveType": "Creature" }],
+            "condition": {
+              "Compare": { "left": { "Devotion": ["Blue", "Black"] }, "op": "Lt", "right": 7 }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Activated": {
+                    "cost": ["Tap"],
+                    "targets": [{ "what": "Player" }],
+                    "effects": [
+                      {
+                        "Mill": {
+                          "who": { "Target": 0 },
+                          "count": { "Stat": { "of": "This", "stat": "Toughness" } }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

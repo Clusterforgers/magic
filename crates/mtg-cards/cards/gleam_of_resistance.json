@@ -1,0 +1,37 @@
+{
+  "oracle_id": "c4c0a391-4549-4041-bc6d-09f8b756868e",
+  "name": "Gleam of Resistance",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gleam of Resistance",
+      "oracle_fingerprint": "50404f1d3b1e20fc7d60f568e9ce1e23",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Untap": { "what": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+              }
+            ]
+          }
+        },
+        {
+          "Keyword": {
+            "Typecycling": {
+              "find": [{ "Type": "Land" }, { "Supertype": "Basic" }],
+              "cost": "{1}{W}"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

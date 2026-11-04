@@ -28,10 +28,10 @@
         },
         {
           "Triggered": {
-            "when": { "SpellCast": { "by": "You" } },
+            "when": { "SpellCast": { "what": [{ "Not": { "Type": "Creature" } }], "by": "You" } },
             "effects": [
-              { "PutCounters": { "on": "This", "counter": { "Other": "+1/+1" } } },
-              { "DealDamage": { "source": "This", "to": "Opponents", "amount": 1 } }
+              { "PutCounters": { "on": "This", "counter": "+1/+1" } },
+              { "DealDamage": { "to": "Opponents", "amount": 1 } }
             ]
           }
         }

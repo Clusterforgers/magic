@@ -1,0 +1,46 @@
+{
+  "oracle_id": "3bafc004-1c90-4939-9dcb-72667c170e39",
+  "name": "Gnottvold Hermit // Chrome Host Hulk",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gnottvold Hermit",
+      "oracle_fingerprint": "8fa1302588ff2fdde5b6de8d1f246361",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{5}{U/P}",
+            "timing": "Sorcery",
+            "effects": [{ "Transform": { "what": "This" } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Chrome Host Hulk",
+      "oracle_fingerprint": "47ae21064b0d698ced97e0a75f342eee",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, "Other"] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetPT": { "power": 5, "toughness": 5 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

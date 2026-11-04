@@ -1,0 +1,33 @@
+{
+  "oracle_id": "45aa8bdb-54da-4069-bd6c-c63396154464",
+  "name": "Overwhelming Denial",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Overwhelming Denial",
+      "oracle_fingerprint": "059d4e1f0ec395ec033d587c89bf0f7c",
+      "abilities": [
+        {
+          "AltCast": {
+            "way": "Surge",
+            "cost": "{U}{U}",
+            "condition": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "SpellsCast" } },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        },
+        { "Rule": { "rule": { "CantBeCountered": "This" }, "from": "Stack" } },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [{ "Counter": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}
