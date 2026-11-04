@@ -14,6 +14,7 @@ mod become_copy;
 mod become_day_night;
 mod become_level;
 mod become_monarch;
+mod bind_ref;
 mod bolster;
 mod c10_vp_planechase;
 mod cast_from_zone;
@@ -157,6 +158,7 @@ fn fe1n(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::RepeatWhile { .. } => fe1n_repeat_while::run(cx, effect),
         Effect::SeparatePiles { .. } => fe1n_piles::run(cx, effect),
         Effect::Let { .. } => let_amount::run(cx, effect),
+        Effect::Bind { .. } => bind_ref::run(cx, effect),
         Effect::CopySpell { .. } => copy_spell::run(cx, effect),
         Effect::ChangeTargets { .. } => change_targets::run(cx, effect),
         Effect::CopyAbility { .. } => copy_ability::run(cx, effect),

@@ -246,7 +246,7 @@ fn api_line(ctx: &mut Ctx, p: &Params, api: &str) -> Tr<Vec<Value>> {
     }
     match api {
         "DealDamage" => one(deal_damage(ctx, p)),
-        "Draw" => one(draw(ctx, p)),
+        "Draw" => draw(ctx, p),
         "GainLife" => one(life(ctx, p, "GainLife")),
         "LoseLife" => one(life(ctx, p, "LoseLife")),
         "Discard" => one(discard(ctx, p)),
@@ -266,7 +266,7 @@ fn api_line(ctx: &mut Ctx, p: &Params, api: &str) -> Tr<Vec<Value>> {
         "AddPhase" => one(effects_loop::add_phase(p)),
         "TwoPiles" => effects_loop::two_piles(ctx, p),
         "Charm" => one(charm(ctx, p)),
-        "DelayedTrigger" => one(delayed(ctx, p)),
+        "DelayedTrigger" => delayed(ctx, p),
         "Dig" => effects_zone::dig(ctx, p),
         "DigUntil" => effects_zone::dig_until(ctx, p),
         "ManifestDread" => effects_zone::manifest_dread(ctx, p),
@@ -340,15 +340,36 @@ fn player(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     subject(ctx, p, "You", None)
 }
 
-fn draw(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
+/// `Draw`; with `Upto$ True` the drawer first picks how many, from none to `NumCards$` (CR 121.2), and draws that many.
+fn draw(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     only(
         p,
         "Draw",
-        &["NumCards", "Defined", "ValidTgts", "TargetMin", "TargetMax"],
+        &[
+            "NumCards",
+            "Defined",
+            "ValidTgts",
+            "TargetMin",
+            "TargetMax",
+            "Upto",
+        ],
     )?;
     let who = player(ctx, p)?;
     let count = amount(ctx, p.get("NumCards").unwrap_or("1"))?;
-    Ok(json!({"Draw": {"who": who, "count": count}}))
+    match p.get("Upto") {
+        None => Ok(vec![json!({"Draw": {"who": who, "count": count}})]),
+        Some("True") => {
+            if matches!(who.as_str(), Some("Opponents" | "EachPlayer")) {
+                return unmapped("key:Draw.Upto.group");
+            }
+            let bind = ctx.fresh("number");
+            Ok(vec![
+                json!({"ChooseValue": {"who": who, "kind": {"Number": [0, count]}, "as": bind}}),
+                json!({"Draw": {"who": who, "count": {"ChosenAs": bind}}}),
+            ])
+        }
+        Some(other) => unmapped(format!("key:Draw.Upto={other}")),
+    }
 }
 
 fn life(ctx: &mut Ctx, p: &Params, verb: &str) -> Tr<Value> {
@@ -472,7 +493,23 @@ fn charm(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
 }
 
 /// `DelayedTrigger` at a step ("at the beginning of the next end step, ..."): the part named by `Execute$` happens then.
-fn delayed(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
+fn delayed(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
+    // "Its controller" is named before the trigger is set up: the spell it is about is gone when the trigger fires.
+    let mut out = Vec::new();
+    let outer = ctx.delayed_remembered.take();
+    if p.get("RememberObjects") == Some("RememberedController") {
+        let who = super::memory::remembered_controller(ctx)?;
+        let name = ctx.fresh("controller");
+        out.push(json!({"Bind": {"what": who, "as": name}}));
+        ctx.delayed_remembered = Some(json!({ "Bound": name }));
+    }
+    let node = delayed_node(ctx, p);
+    ctx.delayed_remembered = outer;
+    out.push(node?);
+    Ok(out)
+}
+
+fn delayed_node(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     let Some(execute) = p.get("Execute") else {
         return unmapped("key:DelayedTrigger.no-Execute");
     };
@@ -483,14 +520,17 @@ fn delayed(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
         Some("Targeted") => Some(objects(ctx.last_target()?)?),
         Some("ParentTarget") => Some(objects(ctx.parent()?)?),
         Some("Self") => Some(json!("This")),
+        Some("RememberedController") if p.get("Mode") == Some("Phase") => None,
         Some(other) => return unmapped(format!("key:DelayedTrigger.RememberObjects={other}")),
     };
     let (when, this_turn) = if p.get("Mode") == Some("Phase") {
         // A step has no event to name the objects in; the lines after it read them as remembered.
-        if let Some(other) = p
-            .get("RememberObjects")
-            .filter(|word| !matches!(*word, "Remembered" | "RememberedLKI"))
-        {
+        if let Some(other) = p.get("RememberObjects").filter(|word| {
+            !matches!(
+                *word,
+                "Remembered" | "RememberedLKI" | "RememberedController"
+            )
+        }) {
             return unmapped(format!("key:DelayedTrigger.RememberObjects={other}"));
         }
         (delayed_step(p)?, false)

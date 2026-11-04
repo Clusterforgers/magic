@@ -117,7 +117,7 @@ fn reports(effect: &Effect) -> Reports {
         | Effect::Remember { .. } | Effect::Forget { .. } | Effect::DelayedTrigger { .. } | Effect::Reflexive { .. }
         | Effect::If { .. } | Effect::Modal { .. } | Effect::RepeatEach { .. } | Effect::RollDice { .. }
         | Effect::FlipCoin { .. } | Effect::Clash { .. } | Effect::Vote { .. } | Effect::VillainousChoice { .. }
-        | Effect::ChooseValue { .. } | Effect::Let { .. } | Effect::RepeatWhile { .. } | Effect::SeparatePiles { .. }
+        | Effect::ChooseValue { .. } | Effect::Let { .. } | Effect::Bind { .. } | Effect::RepeatWhile { .. } | Effect::SeparatePiles { .. }
         | Effect::Either { .. } => Reports::Nothing,
     }
 }

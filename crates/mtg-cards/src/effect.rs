@@ -1346,6 +1346,15 @@ pub enum Effect {
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         unpaid: Vec<Effect>,
     },
+    /// Binds the players or objects `what` names now under the name, so the steps after it (and a delayed trigger this
+    /// resolution sets up) read the same ones however the game changes ("its controller" of a spell about to be countered).
+    Bind {
+        /// What is named.
+        what: Ref,
+        /// The name they are kept under.
+        #[serde(rename = "as")]
+        bind: String,
+    },
     /// Fixes the amount as it is when this step runs and keeps it under the name, so `Amount::Bound` reads the same number
     /// in the steps after it however the game changes ("X is the number of cards in your hand", "that many").
     Let {
