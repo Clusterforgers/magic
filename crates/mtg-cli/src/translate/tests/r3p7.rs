@@ -387,10 +387,16 @@ fn what_a_permanent_is_attached_to_is_the_attached_object(
 fn an_aura_that_boosts_what_it_is_attached_to_boosts_that_creature_in_a_game() {
     let line =
         "S:Mode$ Continuous | AffectedDefined$ AttachedBy Self | AddPower$ 4 | AddToughness$ 4";
-    let aura = card_with(
-        &[CardType::Enchantment],
-        "Wolf",
-        &format!("Name:Wolf\nTypes:Enchantment Aura\n{line}\n"),
+    let aura = Arc::new(
+        CardDefinition::new("Wolf")
+            .with_type(CardType::Enchantment)
+            .with_subtype("Aura")
+            .with_rules(
+                serde_json::from_value::<Ability>(
+                    abilities(&format!("Name:Wolf\nTypes:Enchantment Aura\n{line}\n")).remove(0),
+                )
+                .unwrap(),
+            ),
     );
     let scenario = Scenario::new(2).at(1, 0, Step::Main1).battlefield(
         0,
