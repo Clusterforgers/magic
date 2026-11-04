@@ -8,17 +8,19 @@
 mod blame;
 mod blocks;
 mod complete;
+mod merge;
 mod pairing;
 mod render;
 mod repair;
 
+pub use merge::merge;
 pub(crate) use pairing::pair_card;
 pub use repair::{Repair, RepairClass};
 
 use std::collections::BTreeSet;
 
 use crate::card::{Card, Span};
-use crate::compile::{ClauseKind, compile};
+use crate::compile::{Clause, ClauseKind, compile};
 use crate::load::{Library, LoadError, slug};
 use crate::support::{Caps, PrintedCard, SupportRecord, support};
 
@@ -214,7 +216,24 @@ fn check_with(
         }
     };
     let clauses = compile(printed).clauses;
-    let paired = pairing::pair_card(&proposed, &clauses, printed);
+    judge(
+        report,
+        proposed,
+        &clauses,
+        printed,
+        (hand_written, names, caps),
+    )
+}
+
+/// Pairs, completes and judges parsed rules; `report` carries the card and the repairs.
+fn judge(
+    mut report: Report,
+    proposed: Card,
+    clauses: &[Clause],
+    printed: &PrintedCard,
+    (hand_written, names, caps): (&Library, &BTreeSet<String>, &Caps),
+) -> Report {
+    let paired = pairing::pair_card(&proposed, clauses, printed);
     let card = complete::finish(proposed, &paired, printed);
     report.problems = hand_written.check_generated(&card, printed, names);
     if report.problems.is_empty() {
