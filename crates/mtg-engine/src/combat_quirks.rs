@@ -205,33 +205,29 @@ pub(crate) enum Holder {
     Player(PlayerId),
 }
 
-/// Refuses a declaration whose only attacker can't attack alone.
-pub(crate) fn check_attack_alone(
-    state: &GameState,
-    attackers: &[ObjectId],
-) -> Result<(), IllegalAnswer> {
-    match attackers {
-        [only] if cant_attack_alone(state, *only) => Err(IllegalAnswer::NotAlone("attacker")),
-        _ => Ok(()),
-    }
-}
-
-/// Refuses a declaration whose only blocker can't block alone.
-pub(crate) fn check_block_alone(
-    state: &GameState,
-    blocks: &[(ObjectId, ObjectId)],
-) -> Result<(), IllegalAnswer> {
-    let mut blockers: Vec<ObjectId> = blocks.iter().map(|(blocker, _)| *blocker).collect();
-    blockers.dedup();
-    blockers.sort_unstable();
-    blockers.dedup();
-    match blockers.as_slice() {
-        [only] if cant_block_alone(state, *only) => Err(IllegalAnswer::NotAlone("blocker")),
-        _ => Ok(()),
+impl crate::decision::AttackOptions {
+    /// Refuses a declaration whose only attacker can't attack alone.
+    pub(crate) fn check_attack_alone(&self, attackers: &[ObjectId]) -> Result<(), IllegalAnswer> {
+        match attackers {
+            [only] if self.cant_alone.contains(only) => Err(IllegalAnswer::NotAlone("attacker")),
+            _ => Ok(()),
+        }
     }
 }
 
 impl BlockOptions {
+    /// Refuses a declaration whose only blocker can't block alone.
+    pub(crate) fn check_block_alone(
+        &self,
+        blocks: &[(ObjectId, ObjectId)],
+    ) -> Result<(), IllegalAnswer> {
+        let blockers = crate::w14c_block_capacity::w14c_distinct_blockers(blocks);
+        match blockers.as_slice() {
+            [only] if self.cant_alone.contains(only) => Err(IllegalAnswer::NotAlone("blocker")),
+            _ => Ok(()),
+        }
+    }
+
     /// The attackers among `blockers` that something could still block: they are blocked by none in `blocks`, and a
     /// creature could be added to or moved into their block without leaving another requirement unmet.
     pub fn unmet_must_be_blocked(&self, blocks: &[(ObjectId, ObjectId)]) -> bool {
@@ -266,6 +262,25 @@ impl BlockOptions {
             if self.most.is_some_and(|most| blocking >= most) {
                 return false;
             }
+            // A creature that can't block alone serves only beside another blocker, one already declared or one more
+            // that fits under the limit.
+            if self.cant_alone.contains(&option.object) {
+                let partner = blocking > 0
+                    || self.blockers.iter().any(|other| {
+                        other.object != option.object
+                            && other.can_block.iter().any(|held| {
+                                let needed = self.needed_for(*held);
+                                needed <= 1 || (*held == attacker && needed == 2)
+                            })
+                    });
+                if !partner
+                    || self
+                        .most
+                        .is_some_and(|most| blocking + 2 > most && blocking == 0)
+                {
+                    return false;
+                }
+            }
             let free = self
                 .blockers
                 .iter()
@@ -275,17 +290,22 @@ impl BlockOptions {
                         && !blocks.iter().any(|(held, _)| *held == other.object)
                 })
                 .count();
-            return free + 1 >= needed;
+            // The creatures it takes to block the attacker must fit under the limit on the declaration too.
+            let fits = self.most.is_none_or(|most| blocking + needed <= most);
+            return fits && free + 1 >= needed;
         }
         // Moving a creature that blocks only because it must, or the only blocker of an attacker that must be blocked,
         // trades one requirement for another.
         needed <= 1
             && !self.required.contains(&option.object)
             && busy.iter().all(|held| {
-                !self.must_be_blocked.contains(held)
-                    || blocks
-                        .iter()
-                        .any(|(blocker, at)| at == held && *blocker != option.object)
+                let others = blocks
+                    .iter()
+                    .filter(|(blocker, at)| at == held && *blocker != option.object)
+                    .count();
+                // Leaving must not strand the others short of the blockers the attacker needs.
+                (others == 0 || others >= self.needed_for(*held))
+                    && (others > 0 || !self.must_be_blocked.contains(held))
             })
     }
 
@@ -454,7 +474,7 @@ mod tests {
         }
         all.into_iter()
             .map(|blocks| {
-                let ok = check_blockers(game, &options, &blocks).is_ok();
+                let ok = check_blockers(&options, &blocks).is_ok();
                 let words = blocks
                     .iter()
                     .map(|(b, a)| format!("{}>{}", name_of(game, *b), name_of(game, *a)))
@@ -474,12 +494,8 @@ mod tests {
     /// The default answer is legal, and some answer is.
     fn assert_playable(game: &GameState) {
         let options = block_options(game, FOE);
-        let default = options.required_blocks();
-        assert_eq!(
-            check_blockers(game, &options, &default),
-            Ok(()),
-            "{default:?}"
-        );
+        let default = options.legal_blocks();
+        assert_eq!(check_blockers(&options, &default), Ok(()), "{default:?}");
         assert_ne!(legal(game), Vec::<BTreeSet<String>>::new());
     }
 
@@ -534,6 +550,37 @@ mod tests {
         };
         assert_eq!(find("Bear").can_block, [id(&game, "Wolf")]);
         assert_eq!(find("Cub").can_block.len(), 2);
+    }
+
+    /// Provoke, "must be blocked" and "can't block alone" together, whichever creatures they bind.
+    #[rstest]
+    #[case::alone_and_provoked(&["Bear"], &["Bear"], &[])]
+    #[case::alone_and_must_be_blocked(&[], &["Bear", "Cub", "Boar"], &["Wolf"])]
+    #[case::alone_provoked_and_must_be_blocked(&["Bear"], &["Bear"], &["Wolf", "Fox"])]
+    #[case::two_provoked_one_alone(&["Bear", "Cub"], &["Cub"], &["Fox"])]
+    #[case::all_alone(&["Bear", "Cub", "Boar"], &["Bear", "Cub", "Boar"], &["Wolf", "Fox"])]
+    fn the_automatic_blocks_are_accepted_when_the_requirements_clash(
+        #[case] provoked: &[&str],
+        #[case] alone: &[&str],
+        #[case] must_be_blocked: &[&str],
+    ) {
+        let mut game = game();
+        attacked(&mut game);
+        if !provoked.is_empty() {
+            provoke(&mut game, provoked, "Wolf");
+        }
+        quirk(&mut game, CombatQuirk::CantBlockAlone, alone);
+        if !must_be_blocked.is_empty() {
+            quirk(
+                &mut game,
+                CombatQuirk::MustBeBlocked(Blocking::AtLeastOne),
+                must_be_blocked,
+            );
+        }
+        let options = block_options(&game, FOE);
+        let chosen = options.legal_blocks();
+        assert_eq!(check_blockers(&options, &chosen), Ok(()), "{chosen:?}");
+        assert_playable(&game);
     }
 
     #[test]
@@ -651,7 +698,7 @@ mod tests {
             .iter()
             .map(|(b, a)| (id(&game, b), id(&game, a)))
             .collect();
-        assert_eq!(check_blockers(&game, &options, &blocks).is_ok(), ok);
+        assert_eq!(check_blockers(&options, &blocks).is_ok(), ok);
     }
 
     #[test]
@@ -681,8 +728,7 @@ mod tests {
             .iter()
             .map(|o| (*o, AttackTarget::Player(FOE)))
             .collect();
-        assert_eq!(check_attackers(&options, &answer), Ok(()));
-        assert_eq!(check_attack_alone(&game, &ids).is_ok(), ok);
+        assert_eq!(check_attackers(&options, &answer).is_ok(), ok);
     }
 
     #[test]

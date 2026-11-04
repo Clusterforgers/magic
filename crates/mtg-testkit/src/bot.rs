@@ -509,14 +509,10 @@ impl RandomBot {
                         blocks.retain(|(_, a)| a != attacker);
                     }
                 }
-                // A creature a rule requires to block that the random choice left out: the bot blocks as the rules
-                // require and no more.
-                if options
-                    .required
-                    .iter()
-                    .any(|required| !blocks.iter().any(|(blocker, _)| blocker == required))
-                {
-                    blocks = options.required_blocks();
+                // A random choice the rules refuse (a requirement left out, a creature alone that cannot block alone):
+                // the bot blocks as the rules require and no more.
+                if !options.accepts(&blocks) {
+                    blocks = options.legal_blocks();
                 }
                 Answer::DeclareBlockers(blocks)
             }
@@ -664,7 +660,11 @@ impl RandomBot {
     /// backing out ends the step.
     /// A declaration of attackers chosen at random, with the attackers it exerts.
     fn w11a_attack_answer(&mut self, options: &AttackOptions) -> Answer {
-        let attackers = self.attack(options);
+        let mut attackers = self.attack(options);
+        if !options.accepts(&attackers) {
+            self.taxed = Taxed::Idle;
+            attackers = options.legal_attack();
+        }
         let exert = self.w11a_exert(options, &attackers);
         w11a_declaration(attackers, exert)
     }
@@ -688,7 +688,7 @@ impl RandomBot {
     fn attack(&mut self, options: &AttackOptions) -> Attack {
         if self.taxed == Taxed::BackedOut {
             self.taxed = Taxed::Idle;
-            return options.required_attack();
+            return options.legal_attack();
         }
         let mut picks = Vec::new();
         for option in &options.attackers {

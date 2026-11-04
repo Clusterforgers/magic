@@ -375,6 +375,11 @@ pub struct AttackOptions {
         ts(as = "Option<Vec<(AttackTarget, usize)>>", optional)
     )]
     pub most_at: Vec<(AttackTarget, usize)>,
+    /// The creatures among `attackers` that can't attack unless another creature attacks too (CR 508.1d); a declaration
+    /// of one of them alone is refused. Left out while there are none.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<Vec<ObjectId>>", optional))]
+    pub cant_alone: Vec<ObjectId>,
 }
 
 impl AttackOptions {
@@ -463,6 +468,11 @@ pub struct BlockOptions {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[cfg_attr(feature = "ts", ts(optional))]
     pub most: Option<usize>,
+    /// The creatures among `blockers` that can't block unless another creature blocks too; a declaration with one of them
+    /// as the only blocker is refused. Left out while there are none.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<Vec<ObjectId>>", optional))]
+    pub cant_alone: Vec<ObjectId>,
 }
 
 impl BlockOptions {
@@ -543,8 +553,10 @@ impl BlockOptions {
                 return false;
             }
             let needed = self.needed_for(*attacker);
+            let blocking = crate::w14c_block_capacity::w14c_distinct_blockers(blocks).len();
+            let room = |more: usize| self.most.is_none_or(|most| blocking + more <= most);
             if held > 0 || needed <= 1 {
-                return true;
+                return room(1);
             }
             let free = self
                 .blockers
@@ -555,7 +567,7 @@ impl BlockOptions {
                         && !blocks.iter().any(|(held, _)| *held == other.object)
                 })
                 .count();
-            free + 1 >= needed
+            free + 1 >= needed && room(needed)
         })
     }
 }
@@ -767,6 +779,7 @@ mod tests {
                 })
                 .collect(),
             must_be_blocked: Vec::new(),
+            cant_alone: Vec::new(),
             min_blockers: menace.iter().map(|(a, n)| (id(*a), *n)).collect(),
             max_blockers: Vec::new(),
             required: required.iter().map(|object| id(*object)).collect(),
@@ -879,6 +892,7 @@ mod tests {
         let options = AttackOptions {
             most: None,
             most_at: Vec::new(),
+            cant_alone: Vec::new(),
             attackers: vec![attack(1, &[2, 3]), attack(2, &[3]), attack(3, &[])],
             required: vec![id(1), id(3)],
             mana: 0,
@@ -895,6 +909,7 @@ mod tests {
         let plain = AttackOptions {
             most: None,
             most_at: Vec::new(),
+            cant_alone: Vec::new(),
             attackers: Vec::new(),
             required: Vec::new(),
             mana: 0,
