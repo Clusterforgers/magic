@@ -4596,7 +4596,7 @@ mod tests {
     )]
     #[case::a_supertype_goes_with_a_copy_only(
         r#"{"Static":{"affected":"This","mods":[{"RemoveSupertype":"Legendary"}]}}"#,
-        "a supertype is taken away only from the copiable values of a copy (`except`)"
+        "a supertype, a name or this ability changes only the copiable values of a copy (`except`)"
     )]
     #[case::a_player_takes_only_the_keywords_players_have(
         r#"{"Static":{"affected":"You","mods":[{"AddKeyword":"Flying"}]}}"#,
