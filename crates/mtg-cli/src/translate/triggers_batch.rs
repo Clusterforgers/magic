@@ -3,7 +3,7 @@
 
 use serde_json::{Value, json};
 
-use super::ctx::{Ctx, Tr};
+use super::ctx::{Ctx, Tr, unmapped};
 use super::triggers::{keys, player_ref};
 use super::triggers_more::{batch, counters, damage};
 use super::valid::selector_any;
@@ -18,6 +18,12 @@ pub fn pattern(ctx: &Ctx, p: &Params, mode: &str) -> Option<Tr<Value>> {
         "LifeLostAll" => life_lost(p).map(|inner| batch(&inner)),
         "SacrificedOnce" => sacrificed(ctx, p).map(|inner| batch(&inner)),
         "DamageAll" => damage(ctx, p, "DamageAll").map(|inner| batch(&inner)),
+        "DamageDealtOnce" => damage(ctx, p, "DamageDealtOnce").map(|inner| batch(&inner)),
+        "UnlockDoor" => unlock_door(p),
+        "CommitCrime" => player_event(p, "CommitCrime", "W11cCrime"),
+        "DungeonCompleted" => player_event(p, "DungeonCompleted", "CompletedDungeon"),
+        "BecomesCrewed" => becomes_crewed(ctx, p),
+        "Attached" => attached(ctx, p),
         "CounterAddedOnce" => counters(ctx, p, "CountersPut").map(|inner| batch(&inner)),
         _ => return None,
     })
@@ -68,4 +74,45 @@ fn sacrificed(ctx: &Ctx, p: &Params) -> Tr<Value> {
     let what = selector_any(ctx, p.get("ValidCard").unwrap_or("Card"))?;
     let by = player_ref(p.get("ValidPlayer"))?;
     Ok(json!({"Sacrificed": {"what": what, "by": by}}))
+}
+
+/// "When you unlock this door": the door of the card the ability is printed on, set as the card is compiled.
+fn unlock_door(p: &Params) -> Tr<Value> {
+    keys(p, "UnlockDoor", &["ValidPlayer", "ValidCard", "ThisDoor"])?;
+    if p.get("ThisDoor") != Some("True") || p.get("ValidCard") != Some("Card.Self") {
+        return unmapped("key:Trigger.UnlockDoor.ThisDoor");
+    }
+    let who = player_ref(p.get("ValidPlayer"))?;
+    Ok(json!({"DoorUnlocked": {"who": who, "door": 0}}))
+}
+
+/// A player does something no object is part of: the mode's `ValidPlayer` is the player.
+fn player_event(p: &Params, mode: &str, variant: &str) -> Tr<Value> {
+    keys(p, mode, &["ValidPlayer"])?;
+    let who = player_ref(p.get("ValidPlayer"))?;
+    Ok(json!({ variant: {"who": who} }))
+}
+
+/// A Vehicle becomes crewed, the first time in a turn when the line says so.
+fn becomes_crewed(ctx: &Ctx, p: &Params) -> Tr<Value> {
+    keys(p, "BecomesCrewed", &["ValidCard", "FirstTimeCrewed"])?;
+    let what = selector_any(ctx, p.get("ValidCard").unwrap_or("Vehicle"))?;
+    let event = json!({"BecomesCrewed": {"what": what}});
+    match p.get("FirstTimeCrewed") {
+        None => Ok(event),
+        Some("True") => Ok(json!({"Nth": {"event": event, "nth": 1}})),
+        Some(other) => unmapped(format!("key:Trigger.BecomesCrewed.FirstTimeCrewed={other}")),
+    }
+}
+
+/// An Aura, Equipment or Fortification becomes attached: `ValidSource` is the attachment, `ValidTarget` what it joins.
+fn attached(ctx: &Ctx, p: &Params) -> Tr<Value> {
+    keys(p, "Attached", &["ValidSource", "ValidTarget"])?;
+    let mut pattern = json!({});
+    for (key, field) in [("ValidSource", "what"), ("ValidTarget", "to")] {
+        if let Some(valid) = p.get(key) {
+            pattern[field] = json!(selector_any(ctx, valid)?);
+        }
+    }
+    Ok(json!({ "Attached": pattern }))
 }
