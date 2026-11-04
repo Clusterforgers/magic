@@ -10,7 +10,10 @@ use mtg_cards::effect::Effect;
 use mtg_cards::refs::{TargetSpec, ZoneKind};
 use mtg_engine::choose::{TargetChoice, YesNoChoice};
 use mtg_engine::decision::{Answer, DecisionKind};
+use mtg_engine::zones::Zone;
 use mtg_engine::{Event, replay};
+
+use crate::common::pid;
 use mtg_testkit::cards::free_creature;
 use mtg_testkit::trigger_cards::artifact_with;
 use mtg_testkit::{Driver, Scenario, ScriptError, ready};
@@ -138,6 +141,33 @@ fn a_target_with_no_legal_choice_removes_the_trigger_and_nothing_sticks() -> Res
         "only the activation"
     );
     Ok(())
+}
+
+const GRAVEYARD_CREATURE: &str =
+    r#"[{"what":{"Object":[{"Type":"Creature"},{"In":"Graveyard"}]}}]"#;
+const TO_HAND: &str = r#"[{"Move":{"what":{"Target":0},"to":"Hand"}}]"#;
+
+/// "Discard a card. When you do, return target creature card from your graveyard to your hand.": the target is chosen after
+/// the discard, so the discarded card is a legal choice and an empty graveyard before it does not remove the trigger.
+#[rstest]
+#[case::discarded_card_returns(&["Card"], &[], &["Card"], &[])]
+#[case::nothing_to_discard_nothing_returns(&[], &["Old"], &[], &["Old"])]
+fn a_discard_then_a_target_in_the_graveyard(
+    #[case] hand: &[&str],
+    #[case] graveyard: &[&str],
+    #[case] hand_after: &[&str],
+    #[case] graveyard_after: &[&str],
+) -> Result<(), ScriptError> {
+    let card = |name: &&str| free_creature(name, 1, 1);
+    let mut driver = Driver::from_scenario(
+        Scenario::new(2)
+            .battlefield(0, [ready(rig(DISCARD, GRAVEYARD_CREATURE, TO_HAND))])
+            .hand(0, hand.iter().map(card))
+            .graveyard(0, graveyard.iter().map(card)),
+    )?;
+    play(&mut driver, true)?;
+    driver.expect_zone(Zone::Hand(pid(0)), hand_after)?;
+    driver.expect_zone(Zone::Graveyard(pid(0)), graveyard_after)
 }
 
 #[test]

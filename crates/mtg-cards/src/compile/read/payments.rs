@@ -69,13 +69,17 @@ pub fn may_pay(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     // The X the payer announces is the X of the sentence after "if you do".
     let x_free = r.x_free;
     r.x_free |= x_paid;
+    let from = r.targets.len();
     let paid = one_sentence(r);
     r.x_free = x_free;
     let mut paid = paid?;
     // Only a "When you do" whose steps choose a target reads here; the other reflexive wordings stay unread.
-    (!reflexive || super::w20b_reflexive::w20b_uses_target(&paid)).then_some(())?;
+    (!reflexive || r.targets.len() > from).then_some(())?;
     if let Some(amount) = &counted {
         paid = super::c10_pa_pay_x::c10_pa_put_in(r, paid, amount);
+    }
+    if reflexive {
+        paid = vec![super::w20b_reflexive::w20b_trigger(r, from, &paid)?];
     }
     Some(vec![Effect::Pay {
         who: Ref::You,

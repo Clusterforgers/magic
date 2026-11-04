@@ -80,6 +80,35 @@ fn rampage_grows_for_each_blocker_beyond_the_first(
     Ok(())
 }
 
+/// A blocker that sacrifices itself as it blocks is gone before the rampage trigger resolves: the rampager keeps its size
+/// (the bonus never goes below nothing).
+#[rstest]
+fn rampage_never_shrinks_when_the_only_blocker_is_removed(
+    #[values(2, 3, 4)] seats: usize,
+    #[values(1, 2, 3)] number: u32,
+) -> Result<(), ScriptError> {
+    let rampager = keyworded("Rampager", 3, 20, &[macro_keyword("rampage", number)]);
+    let vanisher = mtg_testkit::trigger_cards::watcher(
+        "Vanisher",
+        serde_json::from_str(r#"{"Blocks":{"what":["This"]}}"#).unwrap(),
+        serde_json::from_str(r#"[{"Sacrifice":{"filter":["This"]}}]"#).unwrap(),
+    );
+    let mut driver = Driver::from_scenario(scenario(
+        seats,
+        vec![ready(rampager)],
+        vec![ready(vanisher)],
+    ))?;
+    play(
+        &mut driver,
+        &["Rampager"],
+        &[("Vanisher", "Rampager")],
+        &|_, _| None,
+        Step::EndCombat,
+    )?;
+    assert_eq!(size(&driver, "Rampager"), (3, 20));
+    Ok(())
+}
+
 /// Plays until seat 1 declares blockers; `says_yes` answers the provoke question and `pick` is the target.
 fn until_blocks(
     driver: &mut Driver,
