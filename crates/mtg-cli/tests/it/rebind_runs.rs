@@ -9,7 +9,7 @@ use mtg_cards::builtin;
 use mtg_core::ids::ObjectId;
 use mtg_engine::decision::{Answer, DecisionKind, PriorityAction};
 use mtg_engine::zones::Zone;
-use mtg_testkit::cards::{bear, forest, island, mountain, swamp};
+use mtg_testkit::cards::{bear, forest, island, mountain, plains, swamp};
 use mtg_testkit::{Driver, Scenario, ready};
 
 use crate::drafts::items;
@@ -118,5 +118,29 @@ fn hoarding_dragon_remembers_the_artifact_it_exiled() {
         .len(),
         1,
         "the exiled artifact returns to hand"
+    );
+}
+
+#[test]
+fn razias_purification_keeps_exactly_the_chosen_lands() {
+    let spell = draft("razias_purification");
+    let name = spell.name.clone();
+    let scenario = Scenario::new(2)
+        .hand(0, [spell])
+        .battlefield(
+            0,
+            (0..5).map(|_| ready(mountain())).chain([ready(plains())]),
+        )
+        .battlefield(1, (0..5).map(|_| ready(forest())));
+    let mut driver = Driver::from_scenario(scenario).unwrap();
+
+    driver.cast(&name).unwrap();
+    settle(&mut driver);
+
+    let kept = named(&driver, Zone::Battlefield, "Forest");
+    assert_eq!(
+        kept.len(),
+        3,
+        "the player with five lands keeps the three chosen"
     );
 }

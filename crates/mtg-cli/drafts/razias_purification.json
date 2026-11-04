@@ -27,7 +27,8 @@
                     {
                       "Sacrifice": {
                         "who": { "Bound": "player" },
-                        "filter": [{ "Is": { "Bound": "rest" } }]
+                        "filter": [{ "Is": { "Bound": "rest" } }],
+                        "count": { "Count": [{ "Is": { "Bound": "rest" } }] }
                       }
                     }
                   ]

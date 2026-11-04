@@ -72,6 +72,18 @@ fn exile_of_a_found_card_rebinds_it(#[case] script: &str, #[case] step: &str) {
     json!([{"Exile": {"what": {"Bound": "a"}, "as": "b"}}, {"Draw": {"count": {"Count": [{"Is": {"Bound": "a"}}]}}}]),
     json!([{"Exile": {"what": {"Bound": "a"}, "as": "b"}}, {"Draw": {"count": {"Count": [{"Is": {"Bound": "a"}}]}}}])
 )]
+#[case::sacrifice_of_bound_takes_all(
+    json!([{"Sacrifice": {"who": {"Bound": "p"}, "filter": [{"Is": {"Bound": "rest"}}]}}]),
+    json!([{"Sacrifice": {"who": {"Bound": "p"}, "filter": [{"Is": {"Bound": "rest"}}], "count": {"Count": [{"Is": {"Bound": "rest"}}]}}}])
+)]
+#[case::sacrifice_with_count_is_left_alone(
+    json!([{"Sacrifice": {"filter": [{"Is": {"Bound": "x"}}], "count": 2}}]),
+    json!([{"Sacrifice": {"filter": [{"Is": {"Bound": "x"}}], "count": 2}}])
+)]
+#[case::sacrifice_of_a_type_is_left_alone(
+    json!([{"Sacrifice": {"filter": [{"Type": "Land"}]}}]),
+    json!([{"Sacrifice": {"filter": [{"Type": "Land"}]}}])
+)]
 fn rebind_marks_only_moves_read_later(#[case] mut before: Value, #[case] after: Value) {
     rebind(&mut before);
     assert_eq!(before, after);

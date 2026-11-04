@@ -1,4 +1,4 @@
-//! An exile of a bound object names the exiled object again afterwards, as the object it became (CR 400.7).
+//! An exile of a bound object names the exiled object again afterwards, as the object it became (CR 400.7); a sacrifice of a bound object takes all of it.
 
 use serde_json::{Value, json};
 
@@ -18,9 +18,35 @@ pub fn rebind(ability: &mut Value) {
             }
             items.iter_mut().for_each(rebind);
         }
-        Value::Object(map) => map.values_mut().for_each(rebind),
+        Value::Object(map) => {
+            if let Some(body) = map.get_mut("Sacrifice") {
+                sacrifice_all_of_bound(body);
+            }
+            map.values_mut().for_each(rebind);
+        }
         _ => {}
     }
+}
+
+/// A `Sacrifice` filtered by `Is` one bound name, without a count, takes every object of that name.
+fn sacrifice_all_of_bound(body: &mut Value) {
+    let Some(map) = body.as_object_mut() else {
+        return;
+    };
+    if map.contains_key("count") {
+        return;
+    }
+    let Some(object) = map
+        .get("filter")
+        .and_then(Value::as_array)
+        .filter(|filter| filter.len() == 1)
+        .and_then(|filter| filter[0].get("Is"))
+        .filter(|object| object.get("Bound").is_some())
+        .cloned()
+    else {
+        return;
+    };
+    map.insert("count".to_owned(), json!({"Count": [{"Is": object}]}));
 }
 
 /// Names the objects an `Exile` of a bound name exiles when `later` reads the old name; the old and the new name.
