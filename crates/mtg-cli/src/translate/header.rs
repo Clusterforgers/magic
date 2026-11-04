@@ -76,6 +76,102 @@ pub fn gate_conditions(ctx: &Ctx, p: &Params) -> Tr<Vec<Value>> {
     Ok(all)
 }
 
+/// The turn structure, in order, as Forge names a phase and the DSL names its step.
+const PHASES: [(&str, &str); 13] = [
+    ("Untap", "Untap"),
+    ("Upkeep", "Upkeep"),
+    ("Draw", "Draw"),
+    ("Main1", "Main1"),
+    ("BeginCombat", "BeginCombat"),
+    ("Declare Attackers", "DeclareAttackers"),
+    ("Declare Blockers", "DeclareBlockers"),
+    ("First Strike Damage", "FirstStrikeDamage"),
+    ("Combat Damage", "CombatDamage"),
+    ("EndCombat", "EndCombat"),
+    ("Main2", "Main2"),
+    ("End of Turn", "End"),
+    ("Cleanup", "Cleanup"),
+];
+
+/// The place of a phase word in the turn.
+fn phase_index(word: &str) -> Option<usize> {
+    PHASES.iter().position(|(name, _)| *name == word.trim())
+}
+
+/// The condition that the turn is in one of the phases `ActivationPhases$` lists (`Upkeep`, `BeginCombat->EndCombat`, or
+/// several joined with commas); any turn, as the word says nothing of whose it is.
+fn in_phases(text: &str) -> Tr<Value> {
+    let mut steps: Vec<usize> = Vec::new();
+    let mut whole_combat = false;
+    for part in text.split(',') {
+        let (from, to) = part.split_once("->").unwrap_or((part, part));
+        let (Some(from), Some(to)) = (phase_index(from), phase_index(to)) else {
+            return unmapped(format!("key:ActivationPhases={text}"));
+        };
+        if from > to {
+            return unmapped(format!("key:ActivationPhases={text}"));
+        }
+        whole_combat |= (from, to) == (4, 9);
+        steps.extend(from..=to);
+    }
+    steps.sort_unstable();
+    steps.dedup();
+    if whole_combat && steps == [4, 5, 6, 7, 8, 9] {
+        return Ok(json!("InCombat"));
+    }
+    let named: Vec<Value> = steps
+        .iter()
+        .map(|index| json!({ "Step": PHASES[*index].1 }))
+        .collect();
+    Ok(match named.as_slice() {
+        [only] => only.clone(),
+        _ => json!({ "Any": named }),
+    })
+}
+
+/// What the words about when an ability can be activated state.
+#[derive(Debug, Default)]
+pub struct Activation {
+    /// What must hold as it is activated.
+    pub conditions: Vec<Value>,
+    /// How often, when a word limits it.
+    pub once_per_turn: bool,
+    /// The zone it is activated from, when a word moves it.
+    pub from: Option<&'static str>,
+}
+
+/// The keys of [`activation_words`].
+pub const ACTIVATION_WORDS: [&str; 3] = ["ActivationPhases", "Boast", "Forecast"];
+
+/// The phases of an activation (`ActivationPhases$`), boast ("only if this creature attacked this turn and only once each
+/// turn") and forecast ("from your hand, during your upkeep, once each turn").
+pub fn activation_words(p: &Params) -> Tr<Activation> {
+    let mut out = Activation::default();
+    if let Some(text) = p.get("ActivationPhases") {
+        out.conditions.push(in_phases(text)?);
+    }
+    match p.get("Boast") {
+        None => {}
+        Some("True") => {
+            out.conditions
+                .push(json!({"Matches": {"subject": "This", "selector": ["AttackedThisTurn"]}}));
+            out.once_per_turn = true;
+        }
+        Some(other) => return unmapped(format!("key:Boast={other}")),
+    }
+    match p.get("Forecast") {
+        None => {}
+        Some("True") => {
+            out.conditions.push(json!("YourTurn"));
+            out.conditions.push(json!({"Step": "Upkeep"}));
+            out.once_per_turn = true;
+            out.from = Some("Hand");
+        }
+        Some(other) => return unmapped(format!("key:Forecast={other}")),
+    }
+    Ok(out)
+}
+
 /// The gating words of a trigger line (`PlayerTurn$ True`, `Delirium$ True`).
 const TRIGGER_GATES: [&str; 7] = [
     "PlayerTurn",

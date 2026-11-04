@@ -103,6 +103,74 @@ fn first_of(text: &str) -> Value {
     abilities(text).into_iter().next().unwrap_or_default()
 }
 
+/// An activated ability of a creature under extra keys.
+fn activated(extra: &str) -> Value {
+    let text =
+        format!("Name:T\nTypes:Creature Elf\nA:AB$ Draw | Cost$ 1 | NumCards$ 1 | {extra}\n");
+    first_of(&text)
+}
+
+#[rstest]
+#[case::upkeep("ActivationPhases$ Upkeep", json!({"Step": "Upkeep"}))]
+#[case::range(
+    "ActivationPhases$ Declare Blockers->EndCombat",
+    json!({"Any": [{"Step": "DeclareBlockers"}, {"Step": "FirstStrikeDamage"}, {"Step": "CombatDamage"}, {"Step": "EndCombat"}]})
+)]
+#[case::combat("ActivationPhases$ BeginCombat->EndCombat", json!("InCombat"))]
+#[case::your_end_step(
+    "ActivationPhases$ End of Turn | PlayerTurn$ True",
+    json!({"All": ["YourTurn", {"Step": "End"}]})
+)]
+#[case::boast(
+    "Boast$ True",
+    json!({"Matches": {"subject": "This", "selector": ["AttackedThisTurn"]}})
+)]
+#[case::forecast("Forecast$ True", json!({"All": ["YourTurn", {"Step": "Upkeep"}]}))]
+fn activation_words_are_a_condition_of_the_ability(#[case] keys: &str, #[case] expected: Value) {
+    assert_eq!(activated(keys)["Activated"]["condition"], expected);
+}
+
+#[rstest]
+#[case::boast("Boast$ True", Some("OncePerTurn"), None)]
+#[case::forecast("Forecast$ True", Some("OncePerTurn"), Some("Hand"))]
+fn boast_and_forecast_limit_the_ability(
+    #[case] keys: &str,
+    #[case] limit: Option<&str>,
+    #[case] from: Option<&str>,
+) {
+    let found = activated(keys);
+    assert_eq!(found["Activated"]["limit"].as_str(), limit);
+    assert_eq!(found["Activated"]["from"].as_str(), from);
+}
+
+#[rstest]
+#[case::unknown_phase("ActivationPhases$ Dusk")]
+#[case::backwards("ActivationPhases$ EndCombat->Upkeep")]
+#[case::boast_false("Boast$ False")]
+#[case::forecast_elsewhere("Forecast$ True | ActivationZone$ Graveyard")]
+fn an_activation_word_the_table_does_not_know_stays_a_gap(#[case] keys: &str) {
+    let text = format!("Name:T\nTypes:Creature Elf\nA:AB$ Draw | Cost$ 1 | NumCards$ 1 | {keys}\n");
+    assert!(!gaps(&text).is_empty());
+}
+
+#[rstest]
+#[case::your_turn(
+    "PlayerTurn$ True",
+    json!({"CastOnly": {"condition": "YourTurn"}})
+)]
+#[case::combat_on_your_turn(
+    "PlayerTurn$ True | ActivationPhases$ BeginCombat->EndCombat",
+    json!({"CastOnly": {"condition": {"All": ["YourTurn", "InCombat"]}}})
+)]
+fn a_spell_that_can_only_be_cast_at_some_times_says_so(
+    #[case] keys: &str,
+    #[case] expected: Value,
+) {
+    let found = abilities(&spell(&format!("SP$ Draw | NumCards$ 1 | {keys}")));
+    assert_eq!(found[0], expected);
+    assert!(found[1].get("Spell").is_some());
+}
+
 /// A trigger of the card entering, under extra keys.
 fn trigger(extra: &str) -> String {
     format!(
