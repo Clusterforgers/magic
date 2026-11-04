@@ -1042,10 +1042,9 @@ fn written(
             [effect] => {
                 sentences.push(writer.effect(effect)?);
                 if let Effect::Destroy {
-                    what,
-                    regenerate: false,
-                    ..
+                    what, regenerate, ..
                 } = effect
+                    && !regenerate
                 {
                     let pronoun = if writer.single(what) { "it" } else { "they" };
                     sentences.push(format!("{pronoun} can't be regenerated"));

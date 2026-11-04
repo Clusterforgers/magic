@@ -77,6 +77,6 @@ fn remembered_targets_without_a_target_stay_a_gap() {
     let text = "Name:T\nTypes:Sorcery\nA:SP$ Draw | NumCards$ 1 | RememberTargets$ True\n";
     assert_eq!(
         gaps(text),
-        vec!["defined:Targeted-without-target".to_owned()]
+        vec!["key:RememberTargets-without-targets".to_owned()]
     );
 }

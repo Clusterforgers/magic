@@ -1,7 +1,7 @@
 //! The constructs a mapper cannot read because the language or the engine lacks a node, with the node that is missing.
 
 /// Gap names (prefixes) and the node or primitive their cards need.
-pub const NEEDS: [(&str, &str); 15] = [
+pub const NEEDS: [(&str, &str); 10] = [
     (
         "key:Static.Continuous.AffectedZone",
         "Static.affected on cards outside the battlefield (stack, hand, graveyard, exile)",

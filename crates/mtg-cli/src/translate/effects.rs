@@ -94,6 +94,9 @@ fn line(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     if p.get("RememberTargets") != Some("True") || matches!(api, "ChangeZone" | "Destroy") {
         return api_line(ctx, p, api);
     }
+    if !p.has("ValidTgts") {
+        return unmapped("key:RememberTargets-without-targets");
+    }
     let effects = api_line(ctx, &p.without(&["RememberTargets"]), api)?;
     ctx.remembered = Some(ctx.last_target()?);
     Ok(effects)

@@ -64,6 +64,7 @@ mod tests {
     use crate::fixtures::{creature, setup};
     use crate::resolve::{Resolving, Scope, prim};
     use crate::state::GameState;
+    use crate::zones::Zone;
 
     const ME: PlayerId = PlayerId(0);
 
@@ -75,7 +76,10 @@ mod tests {
         GameState::from_setup(&table).unwrap()
     }
 
-    fn bound_by(json: &str) -> (GameState, Vec<Event>, Vec<(String, Vec<Target>)>) {
+    /// The game, the events of a step and the names it bound.
+    type Ran = (GameState, Vec<Event>, Vec<(String, Vec<Target>)>);
+
+    fn bound_by(json: &str) -> Ran {
         let game = game();
         let effect: Effect = serde_json::from_str(json).unwrap();
         let source = game.objects().find(|o| o.card().name == "Source").unwrap();
@@ -116,6 +120,41 @@ mod tests {
             };
             assert_eq!(*target, Target::Object(renewed));
         }
+    }
+
+    #[rstest]
+    #[case::sacrifice(r#"{"Sacrifice":{"filter":[],"as":"it"}}"#, Zone::Battlefield)]
+    #[case::destroy(r#"{"Destroy":{"what":"This","as":"it"}}"#, Zone::Battlefield)]
+    #[case::mill(r#"{"Mill":{"count":1,"as":"it"}}"#, Zone::Library(ME))]
+    fn a_later_step_moves_the_object_the_name_holds(#[case] json: &str, #[case] from: Zone) {
+        let (mut game, events, bound) = bound_by(json);
+        let moved = match events.first() {
+            Some(Event::ZoneChanged { object, .. }) => *object,
+            other => panic!("expected a zone change, got {other:?}"),
+        };
+        assert_eq!(game.object(moved).unwrap().zone(), from);
+        for event in &events {
+            crate::fold::apply_event(&mut game, event).unwrap();
+        }
+        let next: Effect =
+            serde_json::from_str(r#"{"Move":{"what":{"Bound":"it"},"to":"Hand"}}"#).unwrap();
+        let source = game.objects().find(|o| o.card().name == "Source").unwrap();
+        let resolving = Resolving::begin(source.id());
+        let bindings: crate::resolve::Bindings = bound.into_iter().collect();
+        let mut scope = Scope::announcing(&game, ME, source.reference());
+        scope.bindings = &bindings;
+        let cx = Cx {
+            scope,
+            resolving: &resolving,
+        };
+        let run = prim::run(&cx, &next);
+        let Ok(Run::Done { events, .. }) = run else {
+            panic!("the move needs no answer: {run:?}");
+        };
+        let hand = Zone::Hand(game.object(moved).unwrap().owner());
+        assert!(
+            matches!(events.as_slice(), [Event::ZoneChanged { object, to, .. }] if *object == moved && *to == hand)
+        );
     }
 
     #[rstest]
