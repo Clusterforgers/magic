@@ -271,6 +271,10 @@ pub struct PayOptions {
     pub auto_available: bool,
     /// Whether the cast may be backed out of; nothing has been paid yet, so it rolls back (CR 601.2).
     pub can_cancel: bool,
+    /// Whether the payment is the tax on an attack being declared (CR 508.1h); cancelling returns to the declaration.
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
+    pub attack: bool,
     /// The payer's life total.
     pub life: i32,
     /// The most life this payment may take: 2 for each Phyrexian symbol in the cost, within the life total (CR 119.4).

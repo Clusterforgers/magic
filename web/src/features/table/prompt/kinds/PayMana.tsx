@@ -298,6 +298,7 @@ export const PayManaPrompt: PromptComponent<'PayMana'> = ({ options }) => {
     canAdd,
     auto: options.auto_available,
     cancel: options.can_cancel,
+    attack: options.attack === true,
     note,
     life: hasLife ? { paid: paidLife, after: options.life - paidLife, may: lifeCanPay } : undefined,
   })
@@ -391,7 +392,7 @@ export const PayManaPrompt: PromptComponent<'PayMana'> = ({ options }) => {
           data-slot="pay-cancel"
           onClick={() => answer({ PayMana: 'Cancel' })}
         >
-          Cancel casting
+          {options.attack === true ? 'Back to attackers' : 'Cancel casting'}
         </Button>
       ) : null}
     </PromptLayout>

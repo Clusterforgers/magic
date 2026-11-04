@@ -727,6 +727,27 @@ describe('a land with several kinds of mana', () => {
   })
 })
 
+describe('the tax of an attack', () => {
+  it.each([
+    [false, 'Pay 2 generic for Selesnya Evangel.', 'Cancel casting'],
+    [true, 'Pay 2 generic for the attack.', 'Back to attackers'],
+  ])('with attack %s the prompt says %s and offers %s', async (attack, words, back) => {
+    const { answer, user, text } = renderPay(
+      payOptions(
+        '{2}',
+        [
+          [0, 'G'],
+          [1, 'U'],
+        ],
+        { attack },
+      ),
+    )
+    expect(text()).toContain(words)
+    await user.click(screen.getByRole('button', { name: back }))
+    expect(answer.mock.calls).toEqual([[{ PayMana: 'Cancel' }]])
+  })
+})
+
 describe('Pay automatically, Cancel and Confirm', () => {
   it('Pay automatically answers Auto while nothing is chosen', async () => {
     const { answer, user } = renderPay(

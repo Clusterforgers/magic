@@ -320,18 +320,19 @@ export function TextFace({
         {handNote === undefined ? null : (
           <NoteMark note={handNote} compact={size === 'compact'} text={classes.text} />
         )}
-        {note?.label === undefined ? null : (
-          <span
-            data-slot="card-note"
-            className={cn(
-              'h-fit max-w-full rounded-sm bg-primary px-1 leading-snug font-medium break-words text-primary-foreground',
-              classes.text,
-            )}
-          >
-            {note.label}
-          </span>
-        )}
       </span>
+      {/* A corner badge: the art slot shrinks to nothing on a small card, which would hide the label. */}
+      {note?.label === undefined ? null : (
+        <span
+          data-slot="card-note"
+          className={cn(
+            'absolute top-0.5 right-0.5 z-10 max-w-[90%] truncate rounded-sm bg-primary px-1 leading-snug font-medium text-primary-foreground shadow-sm',
+            classes.text,
+          )}
+        >
+          {size === 'compact' ? note.label.replace(/^Pay /, '') : note.label}
+        </span>
+      )}
       {full ? (
         <span
           data-slot="card-type-line"

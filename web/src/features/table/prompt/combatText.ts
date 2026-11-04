@@ -1,6 +1,57 @@
 /** The combat prompts in plain words: who is attacked, how many attack where, who blocks what. */
-import type { AttackerOption, AttackTarget, ObjectId, PlayerId } from '@/protocol/generated'
+import type { AttackerOption, AttackTarget, ManaCost, ObjectId, PlayerId } from '@/protocol/generated'
 import { battleWords } from '../cardModel'
+import { symbolText } from '../manaSymbols'
+import { manaValue } from './payment'
+import { andList, costWords } from './payText'
+
+/** What `option` costs to attack `target` in mana (CR 508.1h): the tax the view names, else nothing. */
+export function attackTaxOf(option: AttackerOption, target: AttackTarget): ManaCost {
+  return option.tax?.find(([to]) => sameTarget(to, target))?.[1] ?? []
+}
+
+/** What `option` costs to attack `target` in life. */
+export function attackLifeOf(option: AttackerOption, target: AttackTarget): number {
+  return option.life?.find(([to]) => sameTarget(to, target))?.[1] ?? 0
+}
+
+/** The short words on a card: "Pay 2", "Pay 1W", "Pay 2 + 2 life". */
+export function costLabel(cost: ManaCost, life: number, verb: 'Pay'): string {
+  const parts = [
+    ...(cost.length === 0 ? [] : [cost.map(symbolText).join('')]),
+    ...(life > 0 ? [`${life} life`] : []),
+  ]
+  return `${verb} ${parts.join(' + ')}`
+}
+
+/** "costs 2 generic","costs 1 white and 2 life", or '' while attacking is free. */
+export function costPhrase(cost: ManaCost, life: number): string {
+  const parts = [...(cost.length === 0 ? [] : [costWords(cost)]), ...(life > 0 ? [`${life} life`] : [])]
+  return parts.length === 0 ? '' : `costs ${andList(parts)}`
+}
+
+/**
+ * The cost line of the attack screen: the total of the chosen attackers against the mana the player surely has, in
+ * words. '' when nothing is taxed.
+ */
+export function costLine(
+  declared: readonly { cost: ManaCost; life: number }[],
+  taxed: boolean,
+  mana: number | undefined,
+): string {
+  if (!taxed) return ''
+  const available = mana === undefined ? '' : ` You have ${mana} mana available.`
+  if (declared.length === 0)
+    return `Some creatures cost mana to attack. Choose attackers to see the total.${available}`
+  const total = declared.flatMap((entry) => entry.cost)
+  const owed = costPhrase(
+    total,
+    declared.reduce((sum, entry) => sum + entry.life, 0),
+  )
+  if (owed === '') return 'These attackers cost nothing.'
+  const over = mana !== undefined && manaValue(total) > mana ? ' That is more than you surely have.' : ''
+  return `The attack ${owed}.${available}${over} You pay after you confirm.`
+}
 
 /** How a defender is called: a short name for cards and sums, a longer one where it must be told apart. */
 export interface TargetNames {

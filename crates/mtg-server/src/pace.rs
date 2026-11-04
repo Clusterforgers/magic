@@ -615,6 +615,7 @@ mod tests {
             sources: Vec::new(),
             auto_available,
             can_cancel,
+            attack: false,
             life: 20,
             max_life: 0,
             help: Box::default(),
