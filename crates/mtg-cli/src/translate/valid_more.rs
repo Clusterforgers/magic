@@ -36,6 +36,12 @@ pub fn property(ctx: &Ctx, prop: &str) -> Tr<Option<Vec<Value>>> {
         "sharesCreatureTypeWith" => return one(json!({"SharesSubtype": "This"})),
         "Outlaw" => return outlaw(ctx).map(Some),
         "IsRemembered" => return memory::is_in(ctx, Slot::Remembered).map(Some),
+        "IsTriggerRemembered" => {
+            return match &ctx.pinned {
+                Some(who) => one(json!({"Is": who})),
+                None => unmapped("valid:IsTriggerRemembered"),
+            };
+        }
         "IsImprinted" => return memory::is_in(ctx, Slot::Imprinted).map(Some),
         "NamedCard" => return one(memory::entered_with(ctx, prop)?),
         "IsNotChosenType" => {
@@ -71,6 +77,9 @@ pub fn property(ctx: &Ctx, prop: &str) -> Tr<Option<Vec<Value>>> {
 
 /// `sharesNameWith Targeted`: the object has the name, card type, color or creature type of the objects the word names.
 fn shares(ctx: &Ctx, prop: &str) -> Tr<Option<Value>> {
+    if let Some(word) = prop.strip_prefix("doesNotShareNameWith ") {
+        return Ok(Some(json!({"Not": {"SharesName": name_pool(ctx, word)?}})));
+    }
     for (head, pred) in [
         ("sharesNameWith ", "SharesName"),
         ("sharesCardTypeWith ", "SharesType"),
@@ -82,6 +91,23 @@ fn shares(ctx: &Ctx, prop: &str) -> Tr<Option<Value>> {
         }
     }
     Ok(None)
+}
+
+/// The objects whose names `doesNotShareNameWith` compares with: your graveyard, or the objects a valid-string or a
+/// `Defined$` word names. "Another" permanent (`OtherYourBattlefield`) is another than the object tested, which a
+/// selector cannot say, so it stays a gap.
+fn name_pool(ctx: &Ctx, word: &str) -> Tr<Value> {
+    let word = word.trim();
+    if word == "YourGraveyard" {
+        return Ok(json!({"Each": [{"In": "Graveyard"}, {"OwnedBy": "You"}]}));
+    }
+    if word.contains('.') {
+        return objects(defined(ctx, &format!("Valid {word}"))?);
+    }
+    if word.starts_with("Other") {
+        return unmapped(format!("valid:doesNotShareNameWith {word}"));
+    }
+    objects(defined(ctx, word)?)
 }
 
 /// An outlaw: a creature of one of the outlaw types.
@@ -105,6 +131,10 @@ fn player_word(ctx: &Ctx, word: &str) -> Tr<Value> {
         "You" => Ok(json!("You")),
         "DefendingPlayer" | "TriggeredDefendingPlayer" => Ok(json!("Defending")),
         "TargetedPlayer" => ctx.player_target(),
+        // The player a damage trigger names (`ValidTarget$ Player`): the one the creatures are read for.
+        other if super::triggered::is_word(other) => {
+            super::triggered::resolve(ctx.trigger.as_ref(), other)
+        }
         other => unmapped(format!("valid:ControlledBy {other}")),
     }
 }

@@ -270,15 +270,16 @@ fn pump(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             "IsCurse",
             "TargetMin",
             "TargetMax",
+            "RememberObjects",
         ],
     )?;
     let duration = pump_duration(p)?;
     let affected = objects(subject(ctx, p, "Self", None)?)?;
-    // A pump that only chooses a target ("target creature you control deals damage ... to target creature") changes
-    // nothing itself; the part after it uses the target.
+    remember_objects(ctx, p)?;
+    // A pump that only chooses a target ("target creature you control deals damage ... to target creature") or only
+    // remembers objects changes nothing itself; the part after it uses them.
     if !(p.has("NumAtt") || p.has("NumDef") || p.has("KW"))
-        && p.has("ValidTgts")
-        && p.has("SubAbility")
+        && ((p.has("ValidTgts") && p.has("SubAbility")) || p.has("RememberObjects"))
     {
         return Ok(Vec::new());
     }
@@ -286,6 +287,23 @@ fn pump(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     Ok(vec![
         json!({"Continuous": {"affected": affected, "mods": mods, "duration": duration}}),
     ])
+}
+
+/// `RememberObjects$` of a `Pump`: what the line names is what `Remembered` stands for in the lines after it.
+fn remember_objects(ctx: &mut Ctx, p: &Params) -> Tr<()> {
+    let Some(word) = p.get("RememberObjects") else {
+        return Ok(());
+    };
+    let what = match word {
+        "ThisTargetedCard" if p.has("ValidTgts") => ctx.last_target()?,
+        "Targeted" | "TargetedController" | "TargetedOwner" | "ParentTarget" | "Self" => {
+            defined(ctx, word)?
+        }
+        word if super::triggered::is_word(word) => defined(ctx, word)?,
+        other => return unmapped(format!("key:Pump.RememberObjects={other}")),
+    };
+    ctx.remembered = Some(what);
+    Ok(())
 }
 
 fn pump_all(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {

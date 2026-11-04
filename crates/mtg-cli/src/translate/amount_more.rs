@@ -168,3 +168,26 @@ pub fn highest(ctx: &Ctx, who: &str, what: &str) -> Option<Tr<Value>> {
         Ok(json!({"Largest": {"who": who, "of": of}}))
     }))
 }
+
+/// `PlayerCountRemembered$LifeTotal`: a number about the player the loop is on (`RepeatEach` binds it as the remembered
+/// object), read for that player alone.
+pub fn remembered_player(ctx: &Ctx, what: &str) -> Tr<Value> {
+    let Some(who) = super::memory::slot_ref(ctx, super::memory::Slot::Remembered) else {
+        return unmapped("amount:PlayerCountRemembered-without-a-player");
+    };
+    if let Some(spec) = what.strip_prefix("Valid ") {
+        let of = selector_in(ctx, spec, None)?;
+        if of.iter().any(|pred| pred.to_string().contains("Opponents")) {
+            return unmapped("amount:PlayerCountRemembered-of-the-opponents");
+        }
+        return Ok(json!({"Largest": {"who": who, "of": of}}));
+    }
+    let head = match what {
+        "LifeTotal" | "CardsInHand" | "CardsInLibrary" | "CardsInGraveyard" => "TargetedPlayer",
+        _ => "PlayerCountPropertyYou",
+    };
+    match player_amount(head, what, &who) {
+        Some(found) => found,
+        None => unmapped(format!("amount:PlayerCountRemembered${what}")),
+    }
+}

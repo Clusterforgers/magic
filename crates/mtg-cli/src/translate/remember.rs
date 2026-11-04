@@ -15,5 +15,14 @@ pub fn wanted(p: &Params, keys: &[&str]) -> bool {
 pub fn bind_moved(ctx: &mut Ctx, effect: &mut Value, verb: &str, stem: &str) {
     let name = ctx.fresh(stem);
     ctx.remembered = Some(json!({ "Bound": name }));
+    // A destroy can fail on an indestructible permanent, so what it named is not what it moved.
+    if verb != "Destroy"
+        && let Some(what) = effect[verb]
+            .get("what")
+            .filter(|what| what.get("Target").is_some())
+            .cloned()
+    {
+        ctx.moved_from.insert(name.clone(), what);
+    }
     effect[verb]["as"] = json!(name);
 }

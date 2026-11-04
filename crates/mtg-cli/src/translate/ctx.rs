@@ -100,11 +100,16 @@ pub struct Ctx<'a> {
     pub remembered: Option<Value>,
     /// The objects the latest `Imprint*` step moved, which `Defined$ Imprinted` names later.
     pub imprinted: Option<Value>,
+    /// For a name a step bound to what it moved, the reference the step named them by: they are other objects now (CR 400.7)
+    /// and `RememberedController` is read on those named before the move.
+    pub moved_from: BTreeMap<String, Value>,
     /// The memories the card reads on a line other than the one that wrote them.
     pub memory: super::memory::Plan,
     /// The objects an `Effect` object remembers, which a trigger or static it carries reads as `IsRemembered`; kept across
     /// `reset` because the carried lines are translated as lines of their own.
     pub pinned: Option<Value>,
+    /// The index of the target the line being translated is about to declare, for the condition it states ahead of its effect.
+    pub coming: Option<u8>,
     /// The latest target the ability had declared before the line being translated (`Defined$ ParentTarget`).
     pub parent_target: Option<u8>,
     /// The name the latest value chosen by the ability is bound to (`ChosenColor`, `ChosenType` after it).
@@ -132,6 +137,8 @@ impl<'a> Ctx<'a> {
             targets: Vec::new(),
             remembered: None,
             imprinted: None,
+            moved_from: BTreeMap::new(),
+            coming: None,
             memory: super::memory::plan(face),
             pinned: None,
             parent_target: None,
@@ -148,6 +155,8 @@ impl<'a> Ctx<'a> {
         self.targets.clear();
         self.remembered = None;
         self.imprinted = None;
+        self.moved_from.clear();
+        self.coming = None;
         self.parent_target = None;
         self.chosen = None;
         self.chosen_card = None;
@@ -163,6 +172,7 @@ impl<'a> Ctx<'a> {
         let saved = (
             self.remembered.take(),
             self.imprinted.take(),
+            std::mem::take(&mut self.moved_from),
             self.parent_target,
             self.chosen.take(),
             self.chosen_card.take(),
@@ -176,6 +186,7 @@ impl<'a> Ctx<'a> {
         (
             self.remembered,
             self.imprinted,
+            self.moved_from,
             self.parent_target,
             self.chosen,
             self.chosen_card,
@@ -215,6 +226,9 @@ impl<'a> Ctx<'a> {
 
     /// The reference to the latest declared target ("Targeted" in a sub-ability).
     pub fn last_target(&self) -> Tr<Value> {
+        if let Some(index) = self.coming {
+            return Ok(json!({ "Target": index }));
+        }
         match u8::try_from(self.targets.len().saturating_sub(1)) {
             Ok(index) if !self.targets.is_empty() => Ok(json!({ "Target": index })),
             _ => unmapped("defined:Targeted-without-target"),
