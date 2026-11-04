@@ -49,6 +49,10 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
     { LibraryBottomed: { player: 0, cards: [1, 2], random: false } },
     'Ana puts 2 cards on the bottom of their library',
   ],
+  LibraryInserted: [
+    { LibraryInserted: { player: 0, cards: [1], below: 2 } },
+    'Ana puts 1 card beneath the top 2 cards of their library',
+  ],
   ChosenAtRandom: [{ ChosenAtRandom: { cards: [3] } }, 'Forest is picked at random'],
   Entered: [
     { Entered: { object: 3, tapped: true, controller: 1 } },
@@ -462,6 +466,10 @@ const HIDDEN: Record<VariantName<HiddenEvent>, [HiddenEvent, string]> = {
   CardsBottomed: [
     { CardsBottomed: { player: 1, count: 1 } },
     'Bo puts 1 card on the bottom of their library',
+  ],
+  CardsInserted: [
+    { CardsInserted: { player: 1, count: 1, below: 1 } },
+    'Bo puts 1 card beneath the top 1 card of their library',
   ],
   ObjectLeftGame: ['ObjectLeftGame', 'A card leaves the game'],
   Remembered: [{ Remembered: { count: 1 } }, 'A source remembers objects'],

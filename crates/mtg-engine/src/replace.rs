@@ -1222,7 +1222,9 @@ impl Pass<'_> {
     fn out_of_library_batches(&mut self, gone: &[ObjectId]) {
         for slot in &mut self.slots {
             match &mut slot.item {
-                Item::One(Event::LibraryBottomed { cards, .. }) => {
+                Item::One(
+                    Event::LibraryBottomed { cards, .. } | Event::LibraryInserted { cards, .. },
+                ) => {
                     cards.retain(|id| !gone.contains(id));
                 }
                 Item::One(Event::LibraryShuffled { order, .. }) => {

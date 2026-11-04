@@ -750,6 +750,12 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
     const { player, cards: bottomed } = event.LibraryBottomed
     return line(`${n.seat(player)} puts ${cards(bottomed.length)} on the bottom of their library`)
   }
+  if ('LibraryInserted' in event) {
+    const { player, cards: inserted, below } = event.LibraryInserted
+    return line(
+      `${n.seat(player)} puts ${cards(inserted.length)} beneath the top ${cards(below)} of their library`,
+    )
+  }
   if ('ChosenAtRandom' in event) {
     return line(`${event.ChosenAtRandom.cards.map((id) => n.card(id)).join(', ')} is picked at random`)
   }
@@ -1016,6 +1022,10 @@ function describeHidden(event: HiddenEvent, n: EventNames): LogLine {
   if ('CardsBottomed' in event) {
     const { player, count } = event.CardsBottomed
     return line(`${n.seat(player)} puts ${cards(count)} on the bottom of their library`)
+  }
+  if ('CardsInserted' in event) {
+    const { player, count, below } = event.CardsInserted
+    return line(`${n.seat(player)} puts ${cards(count)} beneath the top ${cards(below)} of their library`)
   }
   if ('LibraryLooked' in event) {
     const { player, count } = event.LibraryLooked

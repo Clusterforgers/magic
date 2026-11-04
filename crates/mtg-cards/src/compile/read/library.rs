@@ -514,11 +514,13 @@ pub fn put_on_library(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         .0
         .iter()
         .any(|pred| matches!(pred, Pred::In(_) | Pred::Spell));
-    let place = if r.words("on top of") {
+    let mut place = if r.words("on top of") {
         Place::Top
-    } else {
-        r.need("on the bottom of")?;
+    } else if r.words("on the bottom of") {
         Place::Bottom
+    } else {
+        r.need("into")?;
+        Place::Shuffled
     };
     if yours {
         r.need("your library")?;
@@ -527,6 +529,9 @@ pub fn put_on_library(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         r.it = Some(what.clone());
     } else {
         return None;
+    }
+    if place == Place::Shuffled {
+        place = below_place(r)?;
     }
     Some(vec![Effect::Move {
         what,
@@ -943,6 +948,25 @@ pub fn place_text(place: Place) -> Option<&'static str> {
     match place {
         Place::Top => Some("on top of"),
         Place::Bottom => Some("on the bottom of"),
-        Place::Shuffled => None,
+        Place::Below(_) | Place::Shuffled => None,
     }
+}
+
+/// The ordinals a card gives its place in a library, from the second.
+const NTH: [&str; 9] = [
+    "second", "third", "fourth", "fifth", "sixth", "seventh", "eighth", "ninth", "tenth",
+];
+
+/// "second from the top", "third from the top": where a card put beneath `below` cards lies.
+pub fn below_text(below: u32) -> Option<String> {
+    let word = NTH.get(usize::try_from(below.checked_sub(1)?).ok()?)?;
+    Some(format!("{word} from the top"))
+}
+
+/// "second from the top" to "tenth from the top", as the cards beneath it.
+fn below_place(r: &mut Reader<'_>) -> Option<Place> {
+    (1..=9u32).find_map(|below| {
+        let text = below_text(below)?;
+        r.words(&text).then_some(Place::Below(below))
+    })
 }

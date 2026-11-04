@@ -207,6 +207,11 @@ fn fold_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
             state.rng_index += u64::from(*random);
             Ok(())
         }
+        Event::LibraryInserted {
+            player,
+            cards,
+            below,
+        } => zones::insert(state, *player, cards, *below),
         Event::LibraryLooked(_) | Event::CardsFound(_) | Event::Revealed(_) => {
             show_learned(state, event);
             Ok(())

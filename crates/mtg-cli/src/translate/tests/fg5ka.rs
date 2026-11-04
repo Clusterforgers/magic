@@ -99,6 +99,8 @@ fn a_defined_player_owns_the_cards_a_chooser_picks(#[case] line: &str, #[case] b
 #[case::top_without_a_position("", json!({"Library": {"place": "Top"}}))]
 #[case::top_by_position(" | LibraryPosition$ 0", json!({"Library": {"place": "Top"}}))]
 #[case::bottom(" | LibraryPosition$ -1", json!({"Library": {"place": "Bottom"}}))]
+#[case::second_from_the_top(" | LibraryPosition$ 1", json!({"Library": {"place": {"Below": 1}}}))]
+#[case::third_from_the_top(" | LibraryPosition$ 2", json!({"Library": {"place": {"Below": 2}}}))]
 #[case::shuffled_in(" | Shuffle$ True", json!({"Library": {"place": "Shuffled"}}))]
 #[case::shuffled_in_whatever_the_position(
     " | LibraryPosition$ 0 | Shuffle$ True",
@@ -116,7 +118,7 @@ fn a_card_put_into_a_library_goes_where_the_script_says(#[case] extra: &str, #[c
 }
 
 #[rstest]
-#[case::third_from_top(" | LibraryPosition$ 2")]
+#[case::fractional(" | LibraryPosition$ 1.5")]
 #[case::counted(" | LibraryPosition$ X")]
 fn a_library_position_beyond_top_and_bottom_stays_a_gap(#[case] extra: &str) {
     let script = spell(&format!(

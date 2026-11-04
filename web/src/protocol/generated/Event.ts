@@ -563,7 +563,19 @@ cards: Array<ObjectId>,
 /**
  * The order was drawn at random, with the next substream of the generator (CR 702.85a).
  */
-random: boolean, } } | { "Entered": { 
+random: boolean, } } | { "LibraryInserted": { 
+/**
+ * Whose library.
+ */
+player: PlayerId, 
+/**
+ * The cards, top to bottom as they lie after the move.
+ */
+cards: Array<ObjectId>, 
+/**
+ * How many cards of the library stay above them.
+ */
+below: number, } } | { "Entered": { 
 /**
  * The permanent.
  */

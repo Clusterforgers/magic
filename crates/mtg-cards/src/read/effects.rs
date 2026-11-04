@@ -255,9 +255,10 @@ fn moved(ctx: &Ctx, what: &Ref, to: &Destination) -> String {
         }
         Destination::Library { place, order } => {
             let place = match place {
-                Place::Top => "on top of",
-                Place::Bottom => "on the bottom of",
-                Place::Shuffled => "into",
+                Place::Top => "on top of".to_owned(),
+                Place::Bottom => "on the bottom of".to_owned(),
+                Place::Below(below) => format!("beneath the top {below} cards of"),
+                Place::Shuffled => "into".to_owned(),
             };
             let order = match order {
                 Some(Order::Random) => " in a random order",

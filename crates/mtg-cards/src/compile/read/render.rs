@@ -1818,6 +1818,28 @@ impl Writer<'_> {
             } => library::look_text(count, bind)?,
             Effect::Move {
                 what,
+                to:
+                    Destination::Library {
+                        place: Place::Below(below),
+                        order: None,
+                    },
+                ..
+            } => {
+                let whose = if self.in_your_graveyard(what) {
+                    "your"
+                } else if self.is_a_permanent(what) || self.in_another_graveyard(what) {
+                    "its owner's"
+                } else {
+                    return None;
+                };
+                format!(
+                    "put {} into {whose} library {}",
+                    self.object(what)?,
+                    library::below_text(*below)?
+                )
+            }
+            Effect::Move {
+                what,
                 to: Destination::Library { place, order: None },
                 ..
             } => {
