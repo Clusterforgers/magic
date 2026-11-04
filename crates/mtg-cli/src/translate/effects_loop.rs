@@ -22,6 +22,7 @@ pub fn choose_card(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             "Mandatory",
             "AtRandom",
             "ControlledByPlayer",
+            "Reveal",
         ],
     )?;
     let mut filter = selector_in(ctx, p.get("Choices").unwrap_or("Card"), p.get("ChoiceZone"))?;
@@ -50,8 +51,12 @@ pub fn choose_card(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         };
         json!({"Choose": {"who": who, "from": from, "count": {"min": min, "max": count}, "as": bind}})
     };
-    ctx.chosen_card = Some(bind);
-    Ok(vec![effect])
+    ctx.chosen_card = Some(bind.clone());
+    let mut effects = vec![effect];
+    if p.get("Reveal") == Some("True") {
+        effects.push(json!({"Reveal": {"what": {"Bound": bind}}}));
+    }
+    Ok(effects)
 }
 
 /// `RepeatEach` over players: the sub-ability once for each, with the player bound as `Remembered`.
@@ -61,17 +66,23 @@ pub fn repeat_each(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         "RepeatEach",
         &[
             "RepeatPlayers",
+            "RepeatCards",
+            "Zone",
             "RepeatSubAbility",
             "DamageMap",
             "ChangeZoneTable",
         ],
     )?;
-    let over = match p.get("RepeatPlayers") {
-        Some("Player") => json!("EachPlayer"),
-        Some("Player.Opponent" | "Opponent") => json!("Opponents"),
-        Some("Targeted") => ctx.last_target()?,
-        Some(other) => return unmapped(format!("key:RepeatEach.RepeatPlayers={other}")),
-        None => return unmapped("key:RepeatEach.no-RepeatPlayers"),
+    let over = match (p.get("RepeatPlayers"), p.get("RepeatCards")) {
+        (None, Some(valid)) => json!({"Each": selector_in(ctx, valid, p.get("Zone"))?}),
+        (Some(_), Some(_)) => return unmapped("key:RepeatEach.RepeatPlayers+RepeatCards"),
+        (players, None) => match players {
+            Some("Player") => json!("EachPlayer"),
+            Some("Player.Opponent" | "Opponent") => json!("Opponents"),
+            Some("Targeted") => ctx.last_target()?,
+            Some(other) => return unmapped(format!("key:RepeatEach.RepeatPlayers={other}")),
+            None => return unmapped("key:RepeatEach.no-RepeatPlayers"),
+        },
     };
     let Some(sub) = p.get("RepeatSubAbility") else {
         return unmapped("key:RepeatEach.no-RepeatSubAbility");

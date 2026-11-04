@@ -187,3 +187,36 @@ fn a_choice_by_its_target_is_a_gap() {
     let script = "Name:T\nTypes:Sorcery\nA:SP$ GenericChoice | ValidTgts$ Opponent | Choices$ Win,Lose\nSVar:Win:DB$ Draw\nSVar:Lose:DB$ Draw\n";
     assert_eq!(gaps(script), ["key:GenericChoice.ValidTgts-chooser"]);
 }
+
+/// `RepeatEach` over cards runs the part for each card that matches, bound as `Remembered`.
+#[test]
+fn a_repeat_over_cards_runs_for_each_card() {
+    let script = "Name:T\nTypes:Sorcery\nA:SP$ RepeatEach | RepeatCards$ Creature.OppCtrl | Zone$ Battlefield | RepeatSubAbility$ Hit\nSVar:Hit:DB$ Tap | Defined$ Remembered\n";
+    let found = abilities(script);
+    assert_eq!(found.len(), 1, "{:?}", gaps(script));
+    let each = &found[0]["Spell"]["effects"][0]["RepeatEach"];
+    assert!(each["over"]["Each"].is_array(), "{each}");
+    assert_eq!(
+        each["effects"][0],
+        json!({"Tap": {"what": {"Bound": each["as"]}}})
+    );
+}
+
+#[test]
+fn a_repeat_over_players_and_cards_is_a_gap() {
+    let script = "Name:T\nTypes:Sorcery\nA:SP$ RepeatEach | RepeatCards$ Creature | RepeatPlayers$ Player | RepeatSubAbility$ Hit\nSVar:Hit:DB$ Tap | Defined$ Remembered\n";
+    assert_eq!(gaps(script), ["key:RepeatEach.RepeatPlayers+RepeatCards"]);
+}
+
+/// A revealed choice reveals the cards chosen.
+#[test]
+fn a_revealed_card_choice_reveals_the_choice() {
+    let script = spell("ChooseCard | Choices$ Creature | Reveal$ True");
+    let found = abilities(&script);
+    assert_eq!(found.len(), 1, "{:?}", gaps(&script));
+    let effects = &found[0]["Spell"]["effects"];
+    assert_eq!(
+        effects[1],
+        json!({"Reveal": {"what": {"Bound": effects[0]["Choose"]["as"]}}})
+    );
+}
