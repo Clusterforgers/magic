@@ -158,6 +158,17 @@ pub fn revolt() -> Value {
     json!({"Compare": {"left": {"Tallied": {"who": "You", "what": "PermanentsLeftUnder"}}, "op": "Ge", "right": 1}})
 }
 
+/// Adamant: at least three mana of the color (`Any`: of one color, whichever) was spent to cast the spell.
+pub fn adamant(color: &str) -> Tr<Value> {
+    const COLORS: [&str; 5] = ["White", "Blue", "Black", "Red", "Green"];
+    let three = |color: &str| json!({"Compare": {"left": {"ManaSpent": {"of": color}}, "op": "Ge", "right": 3}});
+    match color {
+        "Any" => Ok(json!({"Any": COLORS.map(three)})),
+        known if COLORS.contains(&known) => Ok(three(known)),
+        _ => unmapped("keyword:etbCounter-adamant-color"),
+    }
+}
+
 /// The permanent itself has the way it was cast (`Card.Self+wasCastFromYourHandByYou`): a `Matches` on `This`.
 pub fn self_was_cast(ctx: &Ctx, spec: &str) -> Tr<Value> {
     let selector = selector_any(ctx, spec)?;

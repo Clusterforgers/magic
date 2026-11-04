@@ -21,6 +21,12 @@ fn creature(lines: &str) -> String {
     json!("+1/+1"),
     1
 )]
+#[case::adamant_white(
+    "K:etbCounter:P1P1:1:Adamant$ White:x\n",
+    json!({"Compare": {"left": {"ManaSpent": {"of": "White"}}, "op": "Ge", "right": 3}}),
+    json!("+1/+1"),
+    1
+)]
 #[case::cast_by_you(
     "K:etbCounter:REVIVAL:8:ValidCard$ Card.Self+wasCastByYou:x\n",
     json!({"Matches": {"subject": "This", "selector": ["This", {"WasCast": {"by": "You"}}]}}),
@@ -79,6 +85,44 @@ fn an_etb_condition_the_node_cannot_say_stays_a_gap(#[case] lines: &str, #[case]
     let script = creature(lines);
     assert_eq!(gaps(&script), vec![gap.to_owned()]);
     assert_eq!(abilities(&script), Vec::<Value>::new());
+}
+
+const CLASS: &str = "Name:T\nTypes:Enchantment Class\nK:Class:2:3 W:AddTrigger$ Trig\nSVar:Trig:Mode$ LifeGained | ValidPlayer$ You | TriggerZones$ Battlefield | Execute$ Put | Secondary$ True | TriggerDescription$ Whenever you gain life, put a +1/+1 counter on target creature you control.\nSVar:Put:DB$ PutCounter | ValidTgts$ Creature.YouCtrl | CounterType$ P1P1 | CounterNum$ 1\n";
+
+#[test]
+fn a_class_level_is_a_sorcery_speed_step_and_an_ability_that_is_off_below_it() {
+    let level_up = json!({"Activated": {
+        "cost": "{3}{W}", "timing": "Sorcery",
+        "condition": {"Level": {"of": "This", "op": "Eq", "level": 1}},
+        "effects": [{"BecomeLevel": {"level": 2}}]}});
+    let added = json!({"Triggered": {
+        "when": {"LifeGained": {"who": "You"}},
+        "if": {"Level": {"of": "This", "op": "Ge", "level": 2}},
+        "targets": [{"what": {"Object": [{"Type": "Creature"}, {"ControlledBy": "You"}]}}],
+        "effects": [{"PutCounters": {"on": {"Target": 0}, "counter": "+1/+1"}}]}});
+    assert_eq!(abilities(CLASS), vec![normal(level_up), normal(added)]);
+}
+
+#[test]
+fn a_class_static_ability_holds_only_at_its_level() {
+    let script = "Name:T\nTypes:Enchantment Class\nK:Class:3:2 G:AddStaticAbility$ Pump\nSVar:Pump:Mode$ Continuous | Affected$ Creature.YouCtrl | AddPower$ 1 | Secondary$ True | Description$ Creatures you control get +1/+0.\n";
+    let found = abilities(script);
+    let held = json!({"Level": {"of": "This", "op": "Ge", "level": 3}});
+    assert_eq!(found.len(), 2);
+    assert_eq!(found[1]["Static"]["condition"], held);
+}
+
+#[rstest]
+#[case::first_level("K:Class:1:2 G:AddTrigger$ Trig\n", "keyword:Class-level")]
+#[case::unknown_add("K:Class:2:2 G:AddSVar$ Trig\nSVar:Trig:X\n", "keyword:Class-AddSVar")]
+#[case::no_price("K:Class:2\n", "keyword:Class-shape")]
+fn a_class_line_the_node_cannot_say_stays_a_gap(#[case] line: &str, #[case] gap: &str) {
+    let script = format!("Name:T\nTypes:Enchantment Class\n{line}");
+    assert!(
+        gaps(&script).contains(&gap.to_owned()),
+        "{:?}",
+        gaps(&script)
+    );
 }
 
 const KICKED: &str = "R:Event$ Moved | ValidCard$ Card.Self+kicked | Destination$ Battlefield | ReplaceWith$ Pump | ReplacementResult$ Updated\n";

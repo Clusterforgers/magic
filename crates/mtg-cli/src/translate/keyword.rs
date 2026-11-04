@@ -237,6 +237,9 @@ pub fn keyword_abilities(ctx: &mut Ctx, body: &str) -> Vec<Tr<Value>> {
     if let Some(rules) = super::keyword_prevent::prevent_keyword(body) {
         return rules.into_iter().map(Ok).collect();
     }
+    if let Some(levels) = super::keyword_class::class_level(ctx, body) {
+        return levels;
+    }
     match body.strip_prefix("Chapter:") {
         Some(rest) => chapters(ctx, rest),
         None => super::keyword_alt::alt_keyword(body)
@@ -369,6 +372,9 @@ fn etb_condition(ctx: &Ctx, field: Option<&str>) -> Tr<Option<Value>> {
         "ValidCard$ Card.Self+escaped" => return Ok(Some(json!({"CastWith": "Escape"}))),
         "Revolt$ True" => return Ok(Some(super::condition::revolt())),
         _ => {}
+    }
+    if let Some(color) = field.strip_prefix("Adamant$ ") {
+        return super::condition::adamant(color).map(Some);
     }
     if let Some(spec) = field.strip_prefix("ValidCard$ Card.Self+") {
         if spec.starts_with("wasCast") {

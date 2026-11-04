@@ -29,6 +29,7 @@ mod effects_verbs3;
 pub mod effects_zone;
 pub mod keyword;
 pub mod keyword_alt;
+pub mod keyword_class;
 pub mod keyword_prevent;
 mod ledger;
 pub mod mayplay;
