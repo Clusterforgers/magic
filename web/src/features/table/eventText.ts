@@ -752,7 +752,9 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
   }
   if ('LibraryInserted' in event) {
     const { player, cards: inserted, below } = event.LibraryInserted
-    return line(`${n.seat(player)} puts ${cards(inserted.length)} beneath the top ${cards(below)} of their library`)
+    return line(
+      `${n.seat(player)} puts ${cards(inserted.length)} beneath the top ${cards(below)} of their library`,
+    )
   }
   if ('ChosenAtRandom' in event) {
     return line(`${event.ChosenAtRandom.cards.map((id) => n.card(id)).join(', ')} is picked at random`)
