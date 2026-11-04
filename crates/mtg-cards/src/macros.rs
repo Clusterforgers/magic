@@ -91,8 +91,8 @@ pub const KEYWORDS: &[Entry] = &[
     },
     Entry {
         name: "rampage",
-        template: r#"[{"Triggered":{"when":{"BecomesBlocked":{"what":["This"]}},"effects":[{"Continuous":{"affected":"This",
-             "mods":[{"ModifyPT":{"power":{"Times":{"by":$N,"of":{"Sum":[{"Count":[{"Blocks":"This"}]},-1]}}},"toughness":{"Times":{"by":$N,"of":{"Sum":[{"Count":[{"Blocks":"This"}]},-1]}}}}}],"duration":"UntilEndOfTurn"}}]}}]"#,
+        template: r#"[{"Triggered":{"when":{"BecomesBlocked":{"what":["This"]}},"effects":[{"If":{"condition":{"Compare":{"left":{"Count":[{"Blocks":"This"}]},"op":"Ge","right":2}},"then":[{"Continuous":{"affected":"This",
+             "mods":[{"ModifyPT":{"power":{"Times":{"by":$N,"of":{"Sum":[{"Count":[{"Blocks":"This"}]},-1]}}},"toughness":{"Times":{"by":$N,"of":{"Sum":[{"Count":[{"Blocks":"This"}]},-1]}}}}}],"duration":"UntilEndOfTurn"}}]}}]}}]"#,
     },
     Entry {
         name: "enlist",
