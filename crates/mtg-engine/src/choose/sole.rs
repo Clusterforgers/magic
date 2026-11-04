@@ -156,6 +156,7 @@ mod tests {
             max,
             repeat,
             can_cancel,
+            cheapest: Vec::new(),
         })
     }
 

@@ -530,24 +530,7 @@ impl RandomBot {
                     self.pick(options.c10_dice_choosable(), wanted),
                 ))
             }
-            DecisionKind::ChooseMode(options) => {
-                // Any number of the modes offered between the bounds, in no particular order, a mode more than
-                // once only where it may repeat; a bot never backs out of a cast it began.
-                let offered: Vec<usize> = options.modes.iter().map(|mode| mode.index).collect();
-                let spread =
-                    usize::try_from(options.max.saturating_sub(options.min)).unwrap_or(0) + 1;
-                let wanted = options.min as usize + self.rng.index(spread);
-                let chosen = if offered.is_empty() {
-                    Vec::new()
-                } else if options.repeat {
-                    (0..wanted)
-                        .map(|_| offered[self.rng.index(offered.len())])
-                        .collect()
-                } else {
-                    self.pick(&offered, wanted)
-                };
-                Answer::ChooseMode(ModeChoice::Modes(chosen))
-            }
+            DecisionKind::ChooseMode(options) => self.modes(options),
             DecisionKind::ChooseNumber(options) => self.number(options),
             DecisionKind::ChooseName(_) => no_name(),
             DecisionKind::DivideAmount(options) => {
@@ -1022,6 +1005,27 @@ impl RandomBot {
         let spread = usize::try_from(options.max.saturating_sub(options.min)).unwrap_or(0) + 1;
         let wanted = options.min as usize + self.rng.index(spread);
         Answer::ChooseCards(CardsChoice(self.subset(&options.from, wanted)))
+    }
+
+    /// Any number of the modes offered between the bounds, in no particular order, a mode more than once only where it
+    /// may repeat; modes with costs take the cheapest set, the one that can be paid for. A bot never backs out of a cast.
+    fn modes(&mut self, options: &mtg_engine::choose::ModeOptions) -> Answer {
+        let offered: Vec<usize> = options.modes.iter().map(|mode| mode.index).collect();
+        let spread = usize::try_from(options.max.saturating_sub(options.min)).unwrap_or(0) + 1;
+        let wanted = options.min as usize + self.rng.index(spread);
+        let chosen = if offered.is_empty() {
+            Vec::new()
+        } else if !options.cheapest.is_empty() {
+            let fewest = options.min.max(1) as usize;
+            options.cheapest.iter().copied().take(fewest).collect()
+        } else if options.repeat {
+            (0..wanted)
+                .map(|_| offered[self.rng.index(offered.len())])
+                .collect()
+        } else {
+            self.pick(&offered, wanted)
+        };
+        Answer::ChooseMode(ModeChoice::Modes(chosen))
     }
 
     /// Any number in range that is allowed; with no upper bound, a few above the lowest. A bot never backs out of a

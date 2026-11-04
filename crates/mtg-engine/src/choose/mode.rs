@@ -52,6 +52,10 @@ pub struct ModeOptions {
     /// Whether the cast or activation may still be backed out of: nothing is logged until it is paid for. A triggered
     /// ability that chooses its modes as it goes on the stack cannot (CR 603.3c).
     pub can_cancel: bool,
+    /// The modes in the order the cheapest are paid first, as many as can be paid for together; empty when no mode has a
+    /// cost. The first `min` are a set the player can afford, which an automatic answer takes.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub cheapest: Vec<usize>,
 }
 
 /// The answer to a mode decision.
@@ -309,6 +313,7 @@ pub(crate) fn mode_options(
         max: max.max(min),
         repeat: modal.repeat,
         can_cancel,
+        cheapest: Vec::new(),
     })
 }
 
@@ -415,6 +420,7 @@ mod tests {
             max,
             repeat,
             can_cancel,
+            cheapest: Vec::new(),
         }
     }
 

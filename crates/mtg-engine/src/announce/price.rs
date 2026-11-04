@@ -174,6 +174,7 @@ pub(super) fn restrict(ctx: &Ctx<'_>, choices: &Choices, options: &mut ModeOptio
     while most < order.len().min(costs.at_most()) && fits(ctx, choices, &order[..=most]) {
         most += 1;
     }
+    options.cheapest = order[..most].to_vec();
     let most = u32::try_from(most).unwrap_or(u32::MAX);
     options.max = options.max.min(most);
     options.min <= options.max

@@ -689,13 +689,17 @@ impl Driver {
                 o.legal.iter().copied().take(o.min as usize).collect(),
             )),
             DecisionKind::ChooseMode(o) if o.can_cancel => Answer::ChooseMode(ModeChoice::Cancel),
-            DecisionKind::ChooseMode(o) => Answer::ChooseMode(ModeChoice::Modes(
-                o.modes
-                    .iter()
-                    .take(o.min as usize)
-                    .map(|m| m.index)
-                    .collect(),
-            )),
+            DecisionKind::ChooseMode(o) => {
+                Answer::ChooseMode(ModeChoice::Modes(if o.cheapest.is_empty() {
+                    o.modes
+                        .iter()
+                        .take(o.min as usize)
+                        .map(|m| m.index)
+                        .collect()
+                } else {
+                    o.cheapest.iter().copied().take(o.min as usize).collect()
+                }))
+            }
             // Backing out of a cast is the passive way through an announcement.
             DecisionKind::ChooseNumber(o) if o.can_cancel => {
                 Answer::ChooseNumber(NumberChoice::Cancel)

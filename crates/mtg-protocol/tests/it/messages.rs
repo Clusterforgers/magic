@@ -379,6 +379,7 @@ fn pipeline_decision_kinds() -> Vec<DecisionKind> {
             max: 2,
             repeat: false,
             can_cancel: true,
+            cheapest: Vec::new(),
         }),
         DecisionKind::ChooseNumber(NumberOptions {
             source: b,
@@ -1641,6 +1642,7 @@ fn the_question_of_a_yes_no_or_option_decision_is_left_out_while_empty_and_a_mod
             max: 1,
             repeat: false,
             can_cancel: false,
+            cheapest: Vec::new(),
         })),
         json!({"ChooseMode": {
             "source": 4, "modes": [{"index": 1, "label": null}],

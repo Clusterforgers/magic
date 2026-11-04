@@ -327,7 +327,8 @@ fn even_division(options: &DivideOptions) -> Option<DivideChoice> {
     Some(DivideChoice::Division(shares))
 }
 
-/// Backing out of the cast when the options allow it, else the first modes of the list: one, or as many as the
+/// Backing out of the cast when the options allow it, else the cheapest modes when they cost something, else the first
+/// modes of the list: one, or as many as the
 /// choice has to have at least. When the list is shorter than that, a choice that may repeat a mode repeats the first.
 fn first_modes(options: &ModeOptions) -> Option<ModeChoice> {
     if options.can_cancel {
@@ -335,6 +336,11 @@ fn first_modes(options: &ModeOptions) -> Option<ModeChoice> {
     }
     let first = options.modes.first()?;
     let wanted = usize::try_from(options.min.max(1)).unwrap_or(1);
+    if !options.cheapest.is_empty() {
+        return Some(ModeChoice::Modes(
+            options.cheapest.iter().copied().take(wanted).collect(),
+        ));
+    }
     let mut chosen: Vec<usize> = options
         .modes
         .iter()
@@ -749,7 +755,17 @@ mod tests {
             max,
             repeat,
             can_cancel,
+            cheapest: Vec::new(),
         })
+    }
+
+    /// `count` modes on offer with costs, of which the modes `cheapest` (by index) are the ones the player can pay for together.
+    fn costed(count: usize, min: u32, cheapest: Vec<usize>) -> DecisionKind {
+        let DecisionKind::ChooseMode(mut options) = modes(count, min, min, false, false) else {
+            unreachable!("modes() builds a mode decision");
+        };
+        options.cheapest = cheapest;
+        DecisionKind::ChooseMode(options)
     }
 
     fn number(min: u32, max: Option<u32>, can_cancel: bool) -> DecisionKind {
@@ -1057,6 +1073,7 @@ mod tests {
         modes(4, 2, 2, false, true),
         Some(Answer::ChooseMode(ModeChoice::Cancel))
     )]
+    #[case::costed_modes_take_the_cheapest_set(costed(4, 2, vec![3, 1]), Some(Answer::ChooseMode(ModeChoice::Modes(vec![3, 1]))))]
     #[case::a_trigger_takes_the_first_mode(modes(3, 1, 1, false, false), Some(Answer::ChooseMode(ModeChoice::Modes(vec![1]))))]
     #[case::the_index_of_the_mode_and_not_its_place(modes(1, 1, 1, false, false), Some(Answer::ChooseMode(ModeChoice::Modes(vec![1]))))]
     #[case::a_choice_of_two_takes_the_first_two(modes(4, 2, 2, false, false), Some(Answer::ChooseMode(ModeChoice::Modes(vec![1, 3]))))]

@@ -243,3 +243,35 @@ fn a_cast_with_modes_that_cost_nothing_extra_asks_no_more_than_before() {
         (vec![named(0, None), named(1, None), named(2, None)], 3)
     );
 }
+
+#[test]
+fn the_cheapest_modes_are_an_answer_the_player_can_pay_when_the_first_ones_are_not() {
+    let spell = Spell {
+        costs: vec![mana("{3}"), mana("{2}"), mana("{G}")],
+        extra: None,
+        min: 2,
+        max: Some(2),
+    };
+    // Four Forests pay {1} and the modes {G} and {2}, but not the first two modes in the list.
+    let (mut engine, card) = spell.engine(4, 0);
+    let options = cast(&mut engine, card).expect("modes to choose");
+    assert_eq!(options.cheapest, vec![2, 1]);
+    let first_two: Vec<usize> = options
+        .modes
+        .iter()
+        .take(2)
+        .map(|mode| mode.index)
+        .collect();
+    let refused = engine
+        .apply(Answer::ChooseMode(ModeChoice::Modes(first_two)))
+        .unwrap_err();
+    assert_eq!(
+        refused,
+        EngineError::Illegal(IllegalAnswer::Unaffordable("the modes"))
+    );
+    let cheapest = options.cheapest.iter().copied().take(2).collect();
+    engine
+        .apply(Answer::ChooseMode(ModeChoice::Modes(cheapest)))
+        .unwrap();
+    assert_eq!(engine.decision().unwrap().kind.name(), "pay-mana");
+}
