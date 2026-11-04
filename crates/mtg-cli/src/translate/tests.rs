@@ -620,6 +620,7 @@ mod fg4ba;
 mod fg4d_amounts;
 mod fg5s;
 mod fg5s_block;
+mod fg5s_hidden;
 mod fg5s_play;
 mod gn2;
 mod gn2_cant;
