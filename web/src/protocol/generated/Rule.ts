@@ -10,7 +10,39 @@ import type { Target } from "./Target";
  * A rule of the game as the engine plays it: the players or objects the data's references named, found when the rule
  * began (an effect) or whenever the state changes (a static ability).
  */
-export type Rule = { "MustAttack": Array<ObjectRef> } | { "MustAttackPlayers": Array<[ObjectRef, PlayerId]> } | { "MustBlock": Array<ObjectRef> } | { "AttackTax": AttackTax } | { "AttackLimit": number } | { "AttackLimitAt": { 
+export type Rule = { "MustAttack": Array<ObjectRef> } | { "MustAttackPlayers": Array<[ObjectRef, PlayerId]> } | { "MustBlock": Array<ObjectRef> } | { "MustBlockAttacker": { 
+/**
+ * The creatures that must block it.
+ */
+blockers: Array<ObjectRef>, 
+/**
+ * The attacking creature.
+ */
+attacker: ObjectRef, } } | { "Combat": { 
+/**
+ * What the rule says of them.
+ */
+quirk: unknown, 
+/**
+ * The creatures.
+ */
+creatures: Array<ObjectRef>, } } | { "IgnoreHexproof": { 
+/**
+ * The players whose spells and abilities may.
+ */
+by: Array<PlayerId>, 
+/**
+ * The permanents covered.
+ */
+what: Array<ObjectRef>, 
+/**
+ * The players covered.
+ */
+players: Array<PlayerId>, 
+/**
+ * Shroud is ignored too.
+ */
+shroud: boolean, } } | { "AttackTax": AttackTax } | { "AttackLimit": number } | { "AttackLimitAt": { 
 /**
  * The most creatures that can attack each of them.
  */

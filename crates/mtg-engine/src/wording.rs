@@ -89,6 +89,7 @@ fn phrase(selector: &Selector) -> (String, String) {
                 adjectives.push("unpaired".to_owned());
             }
             Pred::EnteredThisTurn => tail.push("that entered this turn".to_owned()),
+            Pred::SummoningSick => tail.push("with summoning sickness".to_owned()),
             Pred::MilledThisTurn => tail.push("that was milled this turn".to_owned()),
             Pred::Attacking => adjectives.push("attacking".to_owned()),
             Pred::AttackingPlayer(Ref::AttachedPlayer) => {

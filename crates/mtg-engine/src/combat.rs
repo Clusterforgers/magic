@@ -2,6 +2,7 @@
 
 use std::collections::{BTreeMap, BTreeSet};
 
+use mtg_cards::modify::Blocking;
 use mtg_core::card::CardType;
 use mtg_core::ids::{ObjectId, PlayerId};
 use serde::{Deserialize, Serialize};
@@ -10,6 +11,10 @@ use crate::attack_tax;
 use crate::characteristics::{
     blocker_limits, cant_attack, cant_attack_defender, cant_be_blocked_by, cant_block,
     cant_block_attacker, characteristics, controller_of, goaded_by,
+};
+use crate::combat_quirks::{
+    attacks_despite_defender, blocks_while_tapped, cant_attack_alone, cant_block_alone,
+    must_be_blocked, provoked_attackers,
 };
 use crate::decision::{AttackOptions, AttackerOption, BlockOptions, BlockerOption};
 use crate::error::IllegalAnswer;
@@ -247,6 +252,18 @@ pub fn defending_player(state: &GameState, target: AttackTarget) -> Option<Playe
     }
 }
 
+/// Whether `id` is a creature that may block now: untapped, or allowed to block while tapped.
+fn may_block_body(state: &GameState, id: ObjectId) -> bool {
+    let Some(object) = state.object(id) else {
+        return false;
+    };
+    object.zone() == Zone::Battlefield
+        && object
+            .permanent()
+            .is_some_and(|p| !p.tapped() || blocks_while_tapped(state, id))
+        && characteristics(state, id).is_some_and(|c| c.is_creature())
+}
+
 fn is_untapped_creature(state: &GameState, id: ObjectId) -> bool {
     let Some(object) = state.object(id) else {
         return false;
@@ -261,7 +278,7 @@ pub(crate) fn can_attack(state: &GameState, id: ObjectId, player: PlayerId) -> b
     controller_of(state, id) == Some(player)
         && !cant_attack(state, id)
         && !keywords::summoning_sick(state, id)
-        && !keywords::forbids_attacking(state, id)
+        && (!keywords::forbids_attacking(state, id) || attacks_despite_defender(state, id))
         && is_untapped_creature(state, id)
 }
 
@@ -407,6 +424,7 @@ pub(crate) fn attack_options(state: &GameState, player: PlayerId) -> AttackOptio
         .iter()
         .filter(|option| {
             option.free_defender().is_some()
+                && !cant_attack_alone(state, option.object)
                 && (must_attack(state, option.object)
                     || !goaded_by(state, option.object).is_empty()
                     || paired_defender(state, option.object, &defenders).is_some())
@@ -459,7 +477,7 @@ pub(crate) fn block_options(state: &GameState, player: PlayerId) -> BlockOptions
         .copied()
         .filter(|id| {
             controller_of(state, *id) == Some(player)
-                && is_untapped_creature(state, *id)
+                && may_block_body(state, *id)
                 && !cant_block(state, *id)
         })
         .map(|object| {
@@ -497,7 +515,7 @@ pub(crate) fn block_options(state: &GameState, player: PlayerId) -> BlockOptions
         })
         .collect();
     let blockable_together = |attacker: ObjectId| together.contains(&attacker);
-    let blockers: Vec<BlockerOption> = candidates
+    let mut blockers: Vec<BlockerOption> = candidates
         .iter()
         .filter_map(|(object, can_block)| {
             let can_block: Vec<ObjectId> = can_block
@@ -526,18 +544,65 @@ pub(crate) fn block_options(state: &GameState, player: PlayerId) -> BlockOptions
         .filter(|attacker| blockable_together(*attacker))
         .filter_map(|attacker| Some((attacker, blocker_limits(state, attacker).1?)))
         .collect();
+    let (must_be_blocked, forced) = name_requirements(state, &mut blockers);
     let required = blockers
         .iter()
         .map(|option| option.object)
-        .filter(|object| must_block(state, *object))
+        .filter(|object| {
+            forced.contains(object)
+                || (must_block(state, *object) && !cant_block_alone(state, *object))
+        })
         .collect();
     BlockOptions {
         blockers,
         min_blockers,
         max_blockers,
         required,
+        must_be_blocked,
         most,
     }
+}
+
+/// Applies the requirements that name attackers to the blockers: a creature that must block an attacker it could block
+/// is offered that attacker (or those) only, and the attackers that must be blocked by some creature are listed.
+/// Returns those attackers and the creatures so bound. A creature that can't block alone is bound by nothing.
+fn name_requirements(
+    state: &GameState,
+    blockers: &mut [BlockerOption],
+) -> (Vec<ObjectId>, Vec<ObjectId>) {
+    let offered: BTreeSet<ObjectId> = blockers
+        .iter()
+        .flat_map(|option| option.can_block.iter().copied())
+        .collect();
+    let (mut some, mut every) = (Vec::new(), Vec::new());
+    for attacker in offered {
+        match must_be_blocked(state, attacker) {
+            Some(Blocking::Every) => every.push(attacker),
+            Some(Blocking::AtLeastOne) => some.push(attacker),
+            None => {}
+        }
+    }
+    let mut forced = Vec::new();
+    for option in blockers.iter_mut() {
+        if cant_block_alone(state, option.object) {
+            continue;
+        }
+        let mut named = provoked_attackers(state, option.object);
+        named.extend(every.iter().copied());
+        named.retain(|attacker| option.can_block.contains(attacker));
+        if named.is_empty() {
+            continue;
+        }
+        option.can_block.retain(|attacker| named.contains(attacker));
+        option.extra = option.extra.min(option.can_block.len().saturating_sub(1));
+        forced.push(option.object);
+    }
+    some.retain(|attacker| {
+        blockers
+            .iter()
+            .any(|option| option.can_block.contains(attacker))
+    });
+    (some, forced)
 }
 
 /// Checks a declared attack against the options.
@@ -580,6 +645,7 @@ pub(crate) fn check_blockers(
     answer: &[(ObjectId, ObjectId)],
 ) -> Result<(), IllegalAnswer> {
     w14c_check_pairs(options, answer)?;
+    crate::combat_quirks::check_block_alone(state, answer)?;
     for (_, attacker) in answer {
         let got = answer.iter().filter(|(_, a)| a == attacker).count();
         let needed = keywords::min_blockers(state, *attacker);
@@ -602,6 +668,9 @@ pub(crate) fn check_blockers(
         })
     {
         return Err(IllegalAnswer::Required("blocker"));
+    }
+    if options.unmet_must_be_blocked(answer) {
+        return Err(IllegalAnswer::Required("blocked attacker"));
     }
     Ok(())
 }

@@ -158,7 +158,33 @@ pub fn keyword_value(ctx: &Ctx, text: &str) -> Tr<Value> {
     {
         return Ok(json!({ variant: number }));
     }
-    other_keyword(ctx, name, first, fields.next())
+    let second = fields.next();
+    if mtg_cards::macros::is_keyword(name) {
+        return macro_keyword(name, first, second, fields.next());
+    }
+    other_keyword(ctx, name, first, second)
+}
+
+/// A keyword of the macro table (`mtg_cards::macros`): its number when it prints one. A number that is not a plain
+/// count (`X`, `Sunburst`), a word after it or a number the keyword does not take stays a gap.
+fn macro_keyword(
+    name: &str,
+    first: Option<&str>,
+    second: Option<&str>,
+    third: Option<&str>,
+) -> Tr<Value> {
+    let lower = name.to_lowercase();
+    let amount = match (mtg_cards::macros::takes_number(&lower), first) {
+        (true, Some(number)) => number.parse::<u32>().ok().filter(|number| *number > 0),
+        (false, None) => Some(0),
+        _ => None,
+    };
+    match amount {
+        Some(amount) if second.is_none() && third.is_none() => {
+            Ok(json!({"Macro": {"name": lower, "amount": amount}}))
+        }
+        _ => unmapped(format!("keyword:{name}-shape")),
+    }
 }
 
 /// A keyword with a cost; a second field (a restriction or a description) is not read.
@@ -205,11 +231,37 @@ fn landwalk(word: &str) -> Tr<Value> {
 
 /// The abilities a `K:` line stands for: those of `keyword_ability`, or the chapters of a Saga.
 pub fn keyword_abilities(ctx: &mut Ctx, body: &str) -> Vec<Tr<Value>> {
+    if let Some(quirks) = combat_quirks(body.trim()) {
+        return quirks.iter().map(|quirk| Ok(combat_rule(quirk))).collect();
+    }
     match body.strip_prefix("Chapter:") {
         Some(rest) => chapters(ctx, rest),
         None => super::keyword_alt::alt_keyword(body)
             .unwrap_or_else(|| vec![super::card::audited_one(|| keyword_ability(ctx, body))]),
     }
+}
+
+/// The combat rules a keyword line in words stands for: the creature itself, in the words Forge prints.
+fn combat_quirks(body: &str) -> Option<Vec<Value>> {
+    Some(match body {
+        "CARDNAME can't attack alone." => vec![json!("CantAttackAlone")],
+        "CARDNAME can't block alone." => vec![json!("CantBlockAlone")],
+        "CARDNAME can't attack or block alone." => {
+            vec![json!("CantAttackAlone"), json!("CantBlockAlone")]
+        }
+        "CARDNAME must be blocked if able." => {
+            vec![json!({"MustBeBlocked": "AtLeastOne"})]
+        }
+        "All creatures able to block CARDNAME do so." | "MustBeBlockedByAll" => {
+            vec![json!({"MustBeBlocked": "Every"})]
+        }
+        _ => return None,
+    })
+}
+
+/// The static ability that gives the creature itself a combat rule.
+fn combat_rule(quirk: &Value) -> Value {
+    json!({"Rule": {"rule": {"Combat": {"who": "This", "quirk": quirk}}}})
 }
 
 /// `Chapter:3:First,Second,Third`: a triggered ability for each chapter, from the part the chapter names.

@@ -361,6 +361,19 @@ mod tests {
         &[Modification::RemoveKeyword(Keyword::Haste)],
         &[Keyword::Flying, Keyword::Lifelink]
     )]
+    #[case::locked_away(&[Modification::LockKeyword(Keyword::Flying)], &[Keyword::Lifelink])]
+    #[case::locked_before_it_is_given(
+        &[Modification::LockKeyword(Keyword::Haste), Modification::AddKeyword(Keyword::Haste)],
+        &[Keyword::Flying, Keyword::Lifelink]
+    )]
+    #[case::locked_after_it_is_given(
+        &[Modification::AddKeyword(Keyword::Haste), Modification::LockKeyword(Keyword::Haste)],
+        &[Keyword::Flying, Keyword::Lifelink]
+    )]
+    #[case::locked_one_of_two_given(
+        &[Modification::LockKeyword(Keyword::Haste), Modification::AddKeyword(Keyword::Flying), Modification::AddKeyword(Keyword::Haste)],
+        &[Keyword::Flying, Keyword::Lifelink]
+    )]
     #[case::every_ability_taken_away(&[Modification::LoseAbilities], &[])]
     #[case::given_after_the_loss(
         &[Modification::LoseAbilities, Modification::AddKeyword(Keyword::Haste)],

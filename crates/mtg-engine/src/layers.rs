@@ -158,6 +158,8 @@ pub(crate) struct Held {
     /// The keywords its keyword counters give with the timestamp each held since: an effect older than the counter does not
     /// take it away (CR 613.7).
     counter_keywords: Vec<(Keyword, u64)>,
+    /// The keywords it can't have or gain any more (a lock): a later effect that adds one adds nothing.
+    locked: Vec<Keyword>,
     /// The effects that changed it.
     pub(crate) applied: Vec<Applied>,
 }
@@ -195,6 +197,7 @@ impl Held {
             abilities,
             keywords,
             counter_keywords: Vec::new(),
+            locked: Vec::new(),
             applied: Vec::new(),
         }
     }
@@ -232,7 +235,11 @@ impl Held {
     /// Gives back the keywords of the keyword counters put on after the effect with the timestamp `stamp` that `named` selects.
     fn keep_newer_counter_keywords(&mut self, stamp: u64, named: impl Fn(&Keyword) -> bool) {
         for (keyword, since) in &self.counter_keywords {
-            if *since > stamp && named(keyword) && !self.keywords.contains(keyword) {
+            if *since > stamp
+                && named(keyword)
+                && !self.locked.contains(keyword)
+                && !self.keywords.contains(keyword)
+            {
                 self.keywords.push(keyword.clone());
             }
         }
@@ -251,6 +258,9 @@ impl Held {
         match modification {
             Modification::SetController(player) => self.controller = *player,
             Modification::AddKeyword(keyword) => {
+                if self.locked.contains(keyword) {
+                    return;
+                }
                 if !self.keywords.contains(keyword) {
                     self.keywords.push(keyword.clone());
                 }
@@ -267,7 +277,12 @@ impl Held {
                         },
                     ));
             }
-            Modification::RemoveKeyword(keyword) => {
+            Modification::RemoveKeyword(keyword) | Modification::LockKeyword(keyword) => {
+                if matches!(modification, Modification::LockKeyword(_))
+                    && !self.locked.contains(keyword)
+                {
+                    self.locked.push(keyword.clone());
+                }
                 self.keywords.retain(|held| held != keyword);
                 self.keep_newer_counter_keywords(stamp, |held| held == keyword);
                 self.abilities.retain(|held| {
@@ -556,6 +571,7 @@ fn layer_of(wanted: &Wanted, defining: bool) -> Option<Layer> {
         | Wanted::AddProtectionFromChosenColor
         | Wanted::AddProtectionFromChosenCardType
         | Wanted::RemoveKeyword(_)
+        | Wanted::LockKeyword(_)
         | Wanted::GrantAbility(_)
         | Wanted::LoseAbilities => Layer::Ability,
         Wanted::SetPT { .. } if defining => Layer::PtCharacteristicDefining,
@@ -1170,7 +1186,7 @@ impl<'a> Pass<'a> {
                     held.push(keyword.clone());
                 }
             }
-            Modification::RemoveKeyword(keyword) => {
+            Modification::RemoveKeyword(keyword) | Modification::LockKeyword(keyword) => {
                 if let Some(held) = self.players.get_mut(&player) {
                     held.keywords.retain(|kept| kept != keyword);
                 }

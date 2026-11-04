@@ -617,6 +617,7 @@ impl<'a> Walker<'a> {
             | Pred::Renowned
             | Pred::Paired
             | Pred::EnteredThisTurn
+            | Pred::SummoningSick
             | Pred::MilledThisTurn
             | Pred::DamagedThisTurn
             | Pred::AttackedThisTurn
@@ -1558,7 +1559,9 @@ impl<'a> Walker<'a> {
                 self.at("power", |w| w.amount(power));
                 self.at("toughness", |w| w.amount(toughness));
             }
-            Modification::AddKeyword(keyword) | Modification::RemoveKeyword(keyword) => {
+            Modification::AddKeyword(keyword)
+            | Modification::RemoveKeyword(keyword)
+            | Modification::LockKeyword(keyword) => {
                 if matches!(modification, Modification::AddKeyword(_)) {
                     self.granted.push(keyword.clone());
                 }
@@ -3472,6 +3475,32 @@ impl Walker<'_> {
         self.x_now = saved_now;
     }
 
+    /// A rule that makes creatures block an attacker names both; one that ignores hexproof names who targets, and the
+    /// permanents, the players or both it covers.
+    fn targeting_rule(&mut self, rule: &GameRule) {
+        let (by, what, players) = match rule {
+            GameRule::MustBlockAttacker { who, attacker } => {
+                self.at("who", |w| w.reference(who, Kind::Object));
+                self.at("attacker", |w| w.reference(attacker, Kind::Object));
+                return;
+            }
+            GameRule::IgnoreHexproof {
+                by, what, players, ..
+            } => (by, what.as_ref(), players.as_ref()),
+            _ => return,
+        };
+        self.at("by", |w| w.reference(by, Kind::Player));
+        if let Some(what) = what {
+            self.at("what", |w| w.reference(what, Kind::Object));
+        }
+        if let Some(players) = players {
+            self.at("players", |w| w.reference(players, Kind::Player));
+        }
+        if what.is_none() && players.is_none() {
+            self.problem("a rule that ignores hexproof names permanents, players or both");
+        }
+    }
+
     /// A rule of the game names what it is about: players or objects, and for the one that triggers again the event that
     /// causes the trigger, which is judged without a target, a triggering event or a name bound earlier.
     fn rule(&mut self, rule: &GameRule) {
@@ -3483,7 +3512,11 @@ impl Walker<'_> {
             }
             GameRule::MustAttack(who)
             | GameRule::MustBlock(who)
-            | GameRule::CantBeCountered(who) => self.at(tag, |w| w.reference(who, Kind::Object)),
+            | GameRule::CantBeCountered(who)
+            | GameRule::Combat { who, .. } => self.at(tag, |w| w.reference(who, Kind::Object)),
+            GameRule::MustBlockAttacker { .. } | GameRule::IgnoreHexproof { .. } => {
+                self.at(tag, |w| w.targeting_rule(rule));
+            }
             GameRule::MustAttackPlayers { who, players } => self.at(tag, |w| {
                 w.at("who", |w| w.reference(who, Kind::Object));
                 w.at("players", |w| w.reference(players, Kind::Player));
@@ -4693,6 +4726,15 @@ mod tests {
     #[rstest]
     #[case::must_attack(r#"{"MustAttack":"This"}"#, "MustAttack")]
     #[case::must_block(r#"{"MustBlock":{"Each":[{"Type":"Creature"}]}}"#, "MustBlock")]
+    #[case::provoke(
+        r#"{"MustBlockAttacker":{"who":"This","attacker":"This"}}"#,
+        "MustBlockAttacker"
+    )]
+    #[case::combat(r#"{"Combat":{"who":"This","quirk":"CantBlockAlone"}}"#, "Combat")]
+    #[case::hexproof_ignored(
+        r#"{"IgnoreHexproof":{"by":"You","players":"Opponents"}}"#,
+        "IgnoreHexproof"
+    )]
     #[case::not_countered(
         r#"{"CantBeCountered":{"Each":["Spell",{"ControlledBy":"You"}]}}"#,
         "CantBeCountered"

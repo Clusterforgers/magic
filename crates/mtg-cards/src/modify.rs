@@ -75,6 +75,9 @@ pub enum Modification {
     AddProtectionFromChosenCardType,
     /// Removes a keyword ability (layer 6).
     RemoveKeyword(Keyword),
+    /// Removes a keyword ability and the object can't have or gain it afterwards, whichever effect is newer (layer 6):
+    /// "lose flying and can't have or gain flying".
+    LockKeyword(Keyword),
     /// Gives the object an activated or a triggered ability (layer 6); a keyword is `AddKeyword`.
     GrantAbility(Arc<Ability>),
     /// The object loses all its abilities (layer 6); abilities granted after it still count.
@@ -117,7 +120,9 @@ impl Modification {
     pub fn is_player_keyword(&self) -> bool {
         matches!(
             self,
-            Modification::AddKeyword(keyword) | Modification::RemoveKeyword(keyword)
+            Modification::AddKeyword(keyword)
+            | Modification::RemoveKeyword(keyword)
+            | Modification::LockKeyword(keyword)
                 if matches!(keyword, Keyword::Hexproof | Keyword::Shroud | Keyword::Protection(_))
         )
     }
@@ -141,6 +146,7 @@ impl Modification {
             Modification::AddKeyword(_)
             | Modification::AddProtectionFromChosenColor
             | Modification::AddProtectionFromChosenCardType
+            | Modification::LockKeyword(_)
             | Modification::RemoveKeyword(_)
             | Modification::GrantAbility(_)
             | Modification::LoseAbilities => Some("6"),
@@ -247,6 +253,31 @@ pub enum Attacked {
     Both,
 }
 
+/// How many creatures must block an attacker that "must be blocked".
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+pub enum Blocking {
+    /// At least one creature blocks it if any creature is able to (CR 509.1c).
+    AtLeastOne,
+    /// Every creature able to block it does.
+    Every,
+}
+
+/// What a `GameRule::Combat` says of creatures: a permission, or a limit on a declaration that is not a plain
+/// requirement.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+pub enum CombatQuirk {
+    /// They can't attack unless another creature attacks too (CR 506.5).
+    CantAttackAlone,
+    /// They can't block unless another creature blocks too.
+    CantBlockAlone,
+    /// They can attack as though they did not have defender.
+    AttackDespiteDefender,
+    /// They can block as though they were untapped.
+    BlockWhileTapped,
+    /// They must be blocked if able: a requirement on the block declaration (CR 509.1c).
+    MustBeBlocked(Blocking),
+}
+
 /// What a `GameRule::Cant` forbids its subjects. A subject is covered when it is the object an action is about or the
 /// player who does it (or owns the object). Adding a prohibition is one entry here and one check where the engine does
 /// the action.
@@ -317,6 +348,36 @@ pub enum GameRule {
     },
     /// The creatures block each combat if able: a requirement on the declaration (CR 509.1c).
     MustBlock(Ref),
+    /// Each creature `who` names blocks the attacker `attacker` names if able (Provoke): a requirement on the block
+    /// declaration (CR 509.1c). The creatures and the attacker are named when the rule begins.
+    MustBlockAttacker {
+        /// The creatures that must block it.
+        who: Ref,
+        /// The attacking creature.
+        attacker: Ref,
+    },
+    /// A permission or a limit on how the creatures take part in combat (`CombatQuirk`).
+    Combat {
+        /// The creatures.
+        who: Ref,
+        /// What the rule says of them.
+        quirk: CombatQuirk,
+    },
+    /// Spells and abilities the players `by` name may target what the rule names as though it did not have hexproof (and
+    /// shroud when `shroud`): the permanents `what` names and the players `players` names.
+    IgnoreHexproof {
+        /// The players whose spells and abilities may target them.
+        by: Ref,
+        /// The permanents it covers; none when absent.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        what: Option<Ref>,
+        /// The players it covers; none when absent.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        players: Option<Ref>,
+        /// Shroud is ignored too.
+        #[serde(default, skip_serializing_if = "crate::effect::is_false")]
+        shroud: bool,
+    },
     /// Creatures can't attack the players (or their planeswalkers) unless their controller pays the mana for each of them
     /// as the attack is declared (CR 508.1h): the declaration is made only with the payment.
     AttackTax {
@@ -499,6 +560,7 @@ mod tests {
     #[case(Modification::SetColors(vec![Color::Blue]), Some("5"))]
     #[case(Modification::AddKeyword(Keyword::Flying), Some("6"))]
     #[case(Modification::RemoveKeyword(Keyword::Flying), Some("6"))]
+    #[case(Modification::LockKeyword(Keyword::Flying), Some("6"))]
     #[case(Modification::SetPT { power: Amount::Fixed(1), toughness: Amount::Fixed(1) }, Some("7b"))]
     #[case(Modification::ModifyPT { power: Amount::Fixed(1), toughness: Amount::Fixed(1) }, Some("7c"))]
     #[case(Modification::SwitchPT, Some("7d"))]
@@ -570,6 +632,22 @@ mod tests {
         r#"{"MustAttackPlayers":{"who":{"Bound":"tokens"},"players":"Opponents"}}"#
     )]
     #[case(GameRule::MustBlock(Ref::This), r#"{"MustBlock":"This"}"#)]
+    #[case(
+        GameRule::MustBlockAttacker { who: Ref::Target(0), attacker: Ref::This },
+        r#"{"MustBlockAttacker":{"who":{"Target":0},"attacker":"This"}}"#
+    )]
+    #[case(
+        GameRule::Combat { who: Ref::This, quirk: CombatQuirk::CantAttackAlone },
+        r#"{"Combat":{"who":"This","quirk":"CantAttackAlone"}}"#
+    )]
+    #[case(
+        GameRule::Combat { who: Ref::This, quirk: CombatQuirk::MustBeBlocked(Blocking::Every) },
+        r#"{"Combat":{"who":"This","quirk":{"MustBeBlocked":"Every"}}}"#
+    )]
+    #[case(
+        GameRule::IgnoreHexproof { by: Ref::You, what: None, players: Some(Ref::Opponents), shroud: true },
+        r#"{"IgnoreHexproof":{"by":"You","players":"Opponents","shroud":true}}"#
+    )]
     #[case(GameRule::CantBeCountered(Ref::This), r#"{"CantBeCountered":"This"}"#)]
     #[case(GameRule::AttackLimit(1), r#"{"AttackLimit":1}"#)]
     #[case(

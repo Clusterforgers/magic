@@ -453,6 +453,11 @@ pub struct BlockOptions {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     #[cfg_attr(feature = "ts", ts(as = "Option<Vec<ObjectId>>", optional))]
     pub required: Vec<ObjectId>,
+    /// The attackers a rule requires some creature to block (CR 509.1c: "must be blocked if able"); the declaration blocks
+    /// each of them unless every creature that could is busy with a requirement of its own. Left out while there are none.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<Vec<ObjectId>>", optional))]
+    pub must_be_blocked: Vec<ObjectId>,
     /// The most creatures that may block together (CR 509.1b: "no more than one creature can block each combat"). Left
     /// out while no rule limits the declaration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -501,6 +506,7 @@ impl BlockOptions {
                 blocks.push((option.object, attacker));
             }
         }
+        self.serve_must_be_blocked(&mut blocks);
         let mut attackers: Vec<ObjectId> = Vec::new();
         for (_, attacker) in &blocks {
             if !attackers.contains(attacker) {
@@ -760,6 +766,7 @@ mod tests {
                     extra: 0,
                 })
                 .collect(),
+            must_be_blocked: Vec::new(),
             min_blockers: menace.iter().map(|(a, n)| (id(*a), *n)).collect(),
             max_blockers: Vec::new(),
             required: required.iter().map(|object| id(*object)).collect(),

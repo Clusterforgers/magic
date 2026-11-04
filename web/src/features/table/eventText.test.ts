@@ -756,6 +756,10 @@ describe('events with more than one shape', () => {
       effect(objects(2), { RemoveKeyword: 'Flying' }, 'UntilEndOfTurn'),
       'Hill Giant loses flying until end of turn',
     ],
+    [
+      effect(objects(2), { LockKeyword: 'Flying' }, 'UntilEndOfTurn'),
+      "Hill Giant loses flying and can't have or gain it until end of turn",
+    ],
     [effect('AllCreatures', 'LoseAbilities', 'Forever'), 'All creatures lose all abilities'],
     [
       effect(objects(2), 'SwitchPowerToughness', 'UntilEndOfTurn'),

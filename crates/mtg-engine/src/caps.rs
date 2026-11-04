@@ -296,6 +296,9 @@ const RUNS: &[&str] = &[
     "Rule.BlockLimit",
     "Rule.BlockLimitEach",
     "Rule.MustBlock",
+    "Rule.MustBlockAttacker",
+    "Rule.Combat",
+    "Rule.IgnoreHexproof",
     "Rule.CantBeCountered",
     "Rule.CantGainLife",
     "Rule.NoLifeLossFromDamage",
@@ -354,6 +357,7 @@ const RUNS: &[&str] = &[
     "Mod.AddAllCreatureTypes",
     "Mod.SetColors",
     "Mod.RemoveKeyword",
+    "Mod.LockKeyword",
     "Mod.GrantAbility",
     "Mod.LoseAbilities",
     "Mod.SetController",
@@ -810,6 +814,9 @@ mod tests {
     #[case::rules_as_static_abilities("Ability.Rule", true)]
     #[case::attack_requirements("Rule.MustAttack", true)]
     #[case::block_requirements("Rule.MustBlock", true)]
+    #[case::provoke("Rule.MustBlockAttacker", true)]
+    #[case::combat_quirks("Rule.Combat", true)]
+    #[case::ignored_hexproof("Rule.IgnoreHexproof", true)]
     #[case::spells_that_cant_be_countered("Rule.CantBeCountered", true)]
     #[case::no_life_gain("Rule.CantGainLife", true)]
     #[case::no_life_loss_from_damage("Rule.NoLifeLossFromDamage", true)]
@@ -830,6 +837,7 @@ mod tests {
     #[case::preventing("ReplaceBy.Prevent", true)]
     #[case::preventing_in_part("ReplaceBy.PreventUpTo", true)]
     #[case::removed_keywords("Mod.RemoveKeyword", true)]
+    #[case::locked_keywords("Mod.LockKeyword", true)]
     #[case::conditions("Effect.If", true)]
     #[case::putting_counters("Effect.PutCounters", true)]
     #[case::removing_counters("Effect.RemoveCounters", true)]
