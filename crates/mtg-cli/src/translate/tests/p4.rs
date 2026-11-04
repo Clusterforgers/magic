@@ -219,6 +219,62 @@ fn an_ability_used_once_a_game_has_that_limit(#[case] keys: &str, #[case] limit:
     assert_eq!(activated(keys)["Activated"]["limit"].as_str(), limit);
 }
 
+/// A spell that pumps `first`, then pumps `second` (a `ValidTgts$` plus extra keys) in a sub-ability.
+fn two_pumps(first: &str, second: &str) -> String {
+    format!(
+        "Name:T\nTypes:Sorcery\nA:SP$ Pump | ValidTgts$ {first} | NumAtt$ +1 | SubAbility$ B\nSVar:B:DB$ Pump | ValidTgts$ {second} | KW$ Flying\n"
+    )
+}
+
+#[rstest]
+#[case::one_earlier(
+    "Creature",
+    "Creature | TargetUnique$ True",
+    json!([{"Type": "Creature"}, {"Not": {"Is": {"Target": 0}}}])
+)]
+#[case::with_properties(
+    "Creature.YouCtrl",
+    "Creature.OppCtrl | TargetUnique$ True",
+    json!([{"Type": "Creature"}, {"ControlledBy": "Opponents"}, {"Not": {"Is": {"Target": 0}}}])
+)]
+#[case::player_before_is_no_object(
+    "Player",
+    "Creature | TargetUnique$ True",
+    json!([{"Type": "Creature"}])
+)]
+#[case::not_unique("Creature", "Creature | TargetUnique$ False", json!([{"Type": "Creature"}]))]
+fn a_unique_target_is_none_of_the_earlier_ones(
+    #[case] first: &str,
+    #[case] second: &str,
+    #[case] selector: Value,
+) {
+    let found = first_of(&two_pumps(first, second));
+    assert_eq!(
+        found["Spell"]["targets"][1]["what"],
+        json!({"Object": selector})
+    );
+}
+
+#[test]
+fn a_unique_target_with_nothing_before_it_adds_nothing() {
+    let found = first_of(&spell(
+        "SP$ Pump | ValidTgts$ Creature | NumAtt$ +1 | TargetUnique$ True",
+    ));
+    assert_eq!(
+        found["Spell"]["targets"][0]["what"],
+        json!({"Object": [{"Type": "Creature"}]})
+    );
+}
+
+#[rstest]
+#[case::player_after_player("Player", "Player | TargetUnique$ True")]
+#[case::any_after_any("Any", "Any | TargetUnique$ True")]
+#[case::player_alternative_after_any("Any", "Creature,Player | TargetUnique$ True")]
+#[case::unknown_value("Creature", "Creature | TargetUnique$ Maybe")]
+fn a_unique_target_that_could_be_a_player_stays_a_gap(#[case] first: &str, #[case] second: &str) {
+    assert!(gaps(&two_pumps(first, second)).into_iter().next().is_some());
+}
+
 #[rstest]
 #[case::twice_a_game("GameActivationLimit$ 2")]
 #[case::exhaust_false("Exhaust$ False")]

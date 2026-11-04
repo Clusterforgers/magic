@@ -309,3 +309,56 @@ pub fn zone_targets(p: &Params) -> Option<Params> {
         &["TgtZone", "TargetType"],
     ))
 }
+
+/// The kinds of things a declared target can be, from its `what`: `(objects, players)`.
+fn target_kinds(spec: &Value) -> (bool, bool) {
+    match &spec["what"] {
+        Value::Object(map) if map.contains_key("Object") => (true, false),
+        Value::String(word) if word == "Player" || word == "Opponent" => (false, true),
+        _ => (true, true),
+    }
+}
+
+/// `TargetUnique$ True`: the targets of the line are none of those the earlier lines of the chain declared (CR 115.3 lets
+/// one object be chosen for two targets unless the card says "another"). Each object alternative of `ValidTgts$` gains a
+/// `NotTarget<n>` property for every earlier target that can be an object; a player alternative after a target that can
+/// be a player is not stated, so the line stays a gap. `None` leaves the line as it is.
+pub fn unique_targets(ctx: &Ctx, p: &Params) -> Tr<Option<Params>> {
+    match peek(p, "TargetUnique") {
+        None => return Ok(None),
+        Some("True") => {}
+        Some("False") => return Ok(Some(rebuilt(p, &[], &["TargetUnique"]))),
+        Some(other) => return unmapped(format!("key:TargetUnique={other}")),
+    }
+    let kinds: Vec<(bool, bool)> = ctx.targets.iter().map(target_kinds).collect();
+    let valid = peek(p, "ValidTgts").filter(|_| !kinds.is_empty());
+    let Some(valid) = valid else {
+        return Ok(Some(rebuilt(p, &[], &["TargetUnique"])));
+    };
+    let nots: Vec<String> = kinds
+        .iter()
+        .enumerate()
+        .filter(|(_, (objects, _))| *objects)
+        .map(|(at, _)| format!("NotTarget{at}"))
+        .collect();
+    let mut out = Vec::new();
+    for alternative in valid.split(',') {
+        let base = alternative.split_once('.').map_or(alternative, |(b, _)| b);
+        if matches!(base.trim(), "Any" | "Player" | "Opponent") {
+            if kinds.iter().any(|(_, players)| *players) {
+                return unmapped("key:TargetUnique=players");
+            }
+            out.push(alternative.to_owned());
+        } else if nots.is_empty() {
+            out.push(alternative.to_owned());
+        } else {
+            let join = if alternative.contains('.') { "+" } else { "." };
+            out.push(format!("{}{join}{}", alternative.trim(), nots.join("+")));
+        }
+    }
+    Ok(Some(rebuilt(
+        p,
+        &[("ValidTgts", out.join(","))],
+        &["TargetUnique"],
+    )))
+}
