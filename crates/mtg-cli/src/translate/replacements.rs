@@ -45,6 +45,16 @@ fn single(ctx: &mut Ctx, body: &str) -> Tr<Value> {
         }
         return super::replacements_counter::counter(ctx, &p);
     }
+    if matches!(event, "Draw" | "GainLife" | "AddCounter") {
+        if line_condition.is_some() {
+            return unmapped(format!("key:Replacement.{event}.condition"));
+        }
+        return match event {
+            "Draw" => super::replacements_counter::draw(ctx, &p),
+            "GainLife" => super::replacements_counter::gain_life(ctx, &p),
+            _ => super::replacements_counter::add_counter(ctx, &p),
+        };
+    }
     if event == "CreateToken" {
         if line_condition.is_some() {
             return unmapped("key:Replacement.CreateToken.condition");

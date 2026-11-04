@@ -124,6 +124,92 @@ fn a_word_the_table_does_not_know_stays_a_named_gap(#[case] trigger: &str, #[cas
     assert_eq!(gap_of(trigger), [name]);
 }
 
+/// The card text of an enchantment holding the replacement line `line` and the given `SVar` lines.
+fn replacement(line: &str, svars: &str) -> String {
+    format!("Name:T\nTypes:Enchantment\nR:{line}\n{svars}")
+}
+
+#[rstest]
+#[case::double_life(
+    "Event$ GainLife | ActiveZones$ Battlefield | ValidPlayer$ You | ReplaceWith$ Twice | Description$ x",
+    "SVar:Twice:DB$ ReplaceEffect | VarName$ LifeGained | VarValue$ X\nSVar:X:ReplaceCount$LifeGained/Twice\n",
+    json!({"Replacement": {"when": {"LifeGain": {}}, "by": {"Multiply": 2}}})
+)]
+#[case::one_more_life(
+    "Event$ GainLife | ActiveZones$ Battlefield | ValidPlayer$ You | ReplaceWith$ More | AILogic$ DoubleLife",
+    "SVar:More:DB$ ReplaceEffect | VarName$ LifeGained | VarValue$ X\nSVar:X:ReplaceCount$LifeGained/Plus.1\n",
+    json!({"Replacement": {"when": {"LifeGain": {}}, "by": {"Add": 1}}})
+)]
+#[case::draw_two(
+    "Event$ Draw | ActiveZones$ Battlefield | ValidPlayer$ You | NotFirstCardInDrawStep$ True | ReplaceWith$ DrawTwo",
+    "SVar:DrawTwo:DB$ Draw | Defined$ You | NumCards$ 2\n",
+    json!({"Replacement": {"when": {"Draw": {"except_draw_step": 1}}, "by": {"Multiply": 2}}})
+)]
+#[case::skip_draws(
+    "Event$ Draw | ActiveZones$ Battlefield | ValidPlayer$ Player | Prevent$ True",
+    "",
+    json!({"Replacement": {"when": {"Draw": {"who": "EachPlayer"}}, "by": "Prevent"}})
+)]
+#[case::double_p1p1(
+    "Event$ AddCounter | ActiveZones$ Battlefield | ValidCard$ Creature.YouCtrl | ValidCounterType$ P1P1 | ReplaceWith$ Double",
+    "SVar:Double:DB$ ReplaceCounter | ValidCounterType$ P1P1 | Amount$ X\nSVar:X:ReplaceCount$CounterNum/Twice\n",
+    json!({"Replacement": {"when": {"CountersPut": {"on": {"Each": [{"Type": "Creature"}, {"ControlledBy": "You"}]},
+        "counter": "+1/+1"}}, "by": {"Multiply": 2}}})
+)]
+#[case::one_more_energy(
+    "Event$ AddCounter | ActiveZones$ Battlefield | ValidPlayer$ You | ValidCounterType$ ENERGY | ReplaceWith$ One",
+    "SVar:One:DB$ ReplaceCounter | ValidCounterType$ ENERGY | ChooseCounter$ True | Amount$ X\nSVar:X:ReplaceCount$CounterNum/Plus.1\n",
+    json!({"Replacement": {"when": {"CountersPut": {"on": "You", "counter": {"Other": "energy"}}}, "by": {"Add": 1}}})
+)]
+fn amount_replacements_read_as_the_change_they_print(
+    #[case] line: &str,
+    #[case] svars: &str,
+    #[case] expected: Value,
+) {
+    let mut found = abilities(&replacement(line, svars));
+    assert_eq!(found.len(), 1, "{:?}", gaps(&replacement(line, svars)));
+    assert_eq!(found.remove(0), expected);
+}
+
+#[rstest]
+#[case::life_lost_instead(
+    "Event$ GainLife | ActiveZones$ Battlefield | ValidPlayer$ Opponent | ReplaceWith$ Lose",
+    "SVar:Lose:DB$ LoseLife | LifeAmount$ X | Defined$ ReplacedPlayer\nSVar:X:ReplaceCount$LifeGained\n",
+    "key:Replacement.GainLife.LifeAmount"
+)]
+#[case::life_halved_is_unknown(
+    "Event$ GainLife | ActiveZones$ Battlefield | ValidPlayer$ You | ReplaceWith$ Half",
+    "SVar:Half:DB$ ReplaceEffect | VarName$ LifeGained | VarValue$ X\nSVar:X:ReplaceCount$LifeGained/HalfDown\n",
+    "amount:ReplaceCount$LifeGained/HalfDown"
+)]
+#[case::draw_while_hellbent(
+    "Event$ Draw | ActiveZones$ Battlefield | ValidPlayer$ You | Hellbent$ True | ReplaceWith$ DrawTwo",
+    "SVar:DrawTwo:DB$ Draw | Defined$ You | NumCards$ 2\n",
+    "key:Replacement.Draw.Hellbent"
+)]
+#[case::opponent_draw_doubled_is_not_yours(
+    "Event$ Draw | ActiveZones$ Battlefield | ValidPlayer$ Opponent | ReplaceWith$ DrawTwo",
+    "SVar:DrawTwo:DB$ Draw | Defined$ You | NumCards$ 2\n",
+    "replacement:Draw-instead"
+)]
+#[case::counters_put_by_a_source(
+    "Event$ AddCounter | ActiveZones$ Battlefield | ValidSource$ You | ValidObject$ Permanent,Player | ReplaceWith$ Double",
+    "SVar:Double:DB$ ReplaceCounter | Amount$ X\nSVar:X:ReplaceCount$CounterNum/Twice\n",
+    "key:Replacement.AddCounter.ValidSource"
+)]
+#[case::one_more_of_any_kind(
+    "Event$ AddCounter | ActiveZones$ Battlefield | ValidCard$ Creature.YouCtrl | ReplaceWith$ More",
+    "SVar:More:DB$ ReplaceCounter | ChooseCounter$ True | Amount$ X\nSVar:X:ReplaceCount$CounterNum/Plus.1\n",
+    "replacement:AddCounter-plus-without-a-kind"
+)]
+fn an_amount_replacement_that_is_not_known_stays_a_named_gap(
+    #[case] line: &str,
+    #[case] svars: &str,
+    #[case] name: &str,
+) {
+    assert_eq!(gaps(&replacement(line, svars)), [name]);
+}
+
 /// The gaps of a permanent whose only ability is the static line `line`.
 fn static_gaps(line: &str) -> Vec<String> {
     gaps(&format!("Name:T\nTypes:Enchantment\nS:{line}\n"))
