@@ -299,7 +299,14 @@ fn cant_block_by(ctx: &Ctx, p: &Params) -> Tr<Value> {
             only.push(inner);
             Ok(json!({"Static": {"affected": "This", "mods": [{"CanBlockOnly": only}]}}))
         }
-        _ => unmapped("static:CantBlockBy-shape"),
+        (valid, None) => Ok(json!({"Static": {
+            "affected": affected_valid(ctx, valid)?,
+            "mods": ["CantBeBlocked"],
+        }})),
+        (valid, Some(blockers)) => Ok(json!({"Static": {
+            "affected": affected_valid(ctx, valid)?,
+            "mods": [{"CantBeBlockedBy": selector_any(ctx, blockers)?}],
+        }})),
     }
 }
 
