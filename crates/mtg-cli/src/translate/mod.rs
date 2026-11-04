@@ -50,6 +50,7 @@ mod replacements_moved;
 mod replacements_token;
 pub mod report;
 pub mod statics;
+pub mod statics_again;
 pub mod statics_alt;
 pub mod statics_cant;
 pub mod statics_cast;

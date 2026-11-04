@@ -26,6 +26,7 @@ pub fn rule(ctx: &Ctx, p: &Params) -> Option<Tr<Value>> {
             objects(ctx, p, mode, "ValidCard").map(|who| cant(&who, &json!("Transform")))
         }
         "CantTarget" => cant_target(ctx, p),
+        "Panharmonicon" => super::statics_again::again(ctx, p),
         "CastWithFlash" => super::statics_cast::cast_with_flash(ctx, p),
         "CanAttackDefender" => {
             objects(ctx, p, mode, "ValidCard").map(|who| combat(&who, "AttackDespiteDefender"))
