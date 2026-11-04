@@ -69,6 +69,7 @@ fn kinds_of(ability: &Ability) -> &'static [ClauseKind] {
         | Ability::Static { .. }
         | Ability::AdditionalCost { .. }
         | Ability::FreeCast { .. }
+        | Ability::AltCast { .. }
         | Ability::CastOnly { .. }
         | Ability::OpeningHand
         | Ability::CostModifier { .. } => &[ClauseKind::Static],

@@ -1150,6 +1150,29 @@ impl<'a> Walker<'a> {
         }
     }
 
+    /// An alternative cost of the table: the cast of `w14c_free_cast`, from a zone a card can be cast from, by a way that replaces the mana cost.
+    fn alt_cast(&mut self, ability: &Ability) {
+        let Ability::AltCast {
+            way,
+            condition,
+            cost,
+            from,
+            ..
+        } = ability
+        else {
+            return;
+        };
+        self.w14c_free_cast(condition.as_ref(), cost.as_ref());
+        if matches!(from, ZoneKind::Battlefield | ZoneKind::Stack) {
+            self.problem(
+                "a card is cast from a hand, a library, a graveyard, exile or the command zone",
+            );
+        }
+        if !way.replaces_cost() {
+            self.problem("this way adds a cost to the mana cost; an alternative cost replaces it");
+        }
+    }
+
     /// "Cast this spell only ...": the condition is judged for the caster as the spell is announced.
     fn w17c_cast_only(&mut self, condition: &Condition) {
         self.uses("Ability", "CastOnly");
@@ -3342,6 +3365,7 @@ impl Walker<'_> {
             Ability::FreeCast { condition, cost } => {
                 w.w14c_free_cast(condition.as_ref(), cost.as_ref());
             }
+            alt @ Ability::AltCast { .. } => w.alt_cast(alt),
             Ability::CastOnly { condition } => w.w17c_cast_only(condition),
             Ability::OpeningHand => {}
             Ability::Keyword(keyword) => w.keyword_ability(keyword),
@@ -4244,6 +4268,20 @@ mod tests {
     #[case::a_zone_nobody_searches(
         r#"{"Spell":{"effects":[{"Search":{"also":["Battlefield"],"filter":[],"as":"card"}}]}}"#.to_owned(),
         &["faces[0].abilities[0].Spell.effects[0].Search: a search of several zones names a library, hand, graveyard or exile, each once"]
+    )]
+    #[case::a_table_cost(r#"{"AltCast":{"way":"Surge","cost":[{"Mana":"{R}"}]}}"#.to_owned(), &[])]
+    #[case::a_free_cast_from_exile(r#"{"AltCast":{"way":"Warp","from":"Exile"}}"#.to_owned(), &[])]
+    #[case::from_the_battlefield(
+        r#"{"AltCast":{"way":"Warp","from":"Battlefield","cost":[{"Mana":"{R}"}]}}"#.to_owned(),
+        &["faces[0].abilities[0].AltCast: a card is cast from a hand, a library, a graveyard, exile or the command zone"]
+    )]
+    #[case::a_way_that_adds_a_cost(
+        r#"{"AltCast":{"way":"Retrace","cost":[{"Mana":"{R}"}]}}"#.to_owned(),
+        &["faces[0].abilities[0].AltCast: this way adds a cost to the mana cost; an alternative cost replaces it"]
+    )]
+    #[case::an_empty_cost(
+        r#"{"AltCast":{"way":"Warp","cost":[]}}"#.to_owned(),
+        &["faces[0].abilities[0].AltCast: an alternative cost names what is paid; leave it out for a free cast"]
     )]
     fn a_counter_duration_and_a_search_of_several_zones_are_checked(
         #[case] ability: String,

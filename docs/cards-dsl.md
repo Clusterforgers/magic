@@ -112,6 +112,7 @@ Replacement{ when: ReplaceWhen, by: ReplaceBy, condition?, from = Battlefield }
 CostModifier{ applies_to: Selector, change: Increase|Reduce, mana: ManaCostX, per = 1, condition? }
 AdditionalCost{ cost: Cost, required = false }                    "As an additional cost to cast this spell, [you may] ..."; an optional one is read as Condition AdditionalCostPaid
 FreeCast{ condition? }                                             "If [condition], you may cast this spell without paying its mana cost"; an alternative cost of no mana (`CastWay.Free`) while the condition holds
+AltCast{ way, cost?, from?, condition?, flash? }                  An alternative cost of the table (warp, surge, web-slinging, impending): cast from `from` (a hand by default) for `cost` (free when absent) while the condition holds; the spell and permanent remember `way` for `CastWith`
 CastOnly{ condition }                                              "Cast this spell only during combat[ on an opponent's turn]"; the spell is cast only while the condition holds for the caster
 Keyword(Keyword)
 Manual     { reason: String, span: Span }                        an unmodelled clause

@@ -36,6 +36,16 @@ impl ZoneKind {
         matches!(self, ZoneKind::Battlefield)
     }
 
+    /// The default zone a cast comes from.
+    pub const fn hand() -> ZoneKind {
+        ZoneKind::Hand
+    }
+
+    /// Whether this is a hand, the default zone of a cast.
+    pub const fn is_hand(&self) -> bool {
+        matches!(self, ZoneKind::Hand)
+    }
+
     /// The default zone a search looks in.
     pub const fn library() -> ZoneKind {
         ZoneKind::Library

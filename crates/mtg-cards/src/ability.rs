@@ -10,7 +10,7 @@ use crate::mana::ManaCostX;
 use crate::modify::{GameRule, Modification};
 use crate::refs::{Ref, Selector, TargetSpec, ZoneKind};
 use crate::trigger::{ReplaceBy, ReplaceWhen, TriggerPattern};
-use crate::value::{Amount, Condition};
+use crate::value::{Amount, CastWay, Condition};
 
 /// When an activated ability may be activated.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Default, Serialize, Deserialize)]
@@ -217,6 +217,26 @@ pub enum Ability {
         /// CR 118.9); nothing when absent.
         #[serde(default, skip_serializing_if = "Option::is_none")]
         cost: Option<Cost>,
+    },
+    /// An alternative cost to cast this card for (CR 118.9) with the zone it is cast from, the condition that opens it and
+    /// the timing: one row of the table of alternative costs (warp, surge, web-slinging, impending). The spell remembers the
+    /// way it was cast (`Condition::CastWith`), and what the permanent does because of it is written as abilities that read
+    /// that condition.
+    AltCast {
+        /// The tag the spell and the permanent remember.
+        way: CastWay,
+        /// What is paid in place of the mana cost; nothing when absent (a free cast).
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        cost: Option<Cost>,
+        /// The zone the card is cast from.
+        #[serde(default = "ZoneKind::hand", skip_serializing_if = "ZoneKind::is_hand")]
+        from: ZoneKind,
+        /// The cast is open only while this holds for the caster; always when absent.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        condition: Option<Condition>,
+        /// The card is cast as though it had flash.
+        #[serde(default, skip_serializing_if = "is_false")]
+        flash: bool,
     },
     /// "Cast this spell only during combat." (CR 601.3): the spell is cast only while the condition holds for the caster,
     /// in every way it can be cast.

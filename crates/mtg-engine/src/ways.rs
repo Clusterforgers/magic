@@ -9,7 +9,7 @@ use mtg_cards::ability::Ability;
 use mtg_cards::cost::{Cost, CostItem};
 use mtg_cards::definition::Layout;
 use mtg_cards::keyword::Keyword;
-use mtg_cards::refs::{Pred, Selector};
+use mtg_cards::refs::{Pred, Selector, ZoneKind};
 use mtg_cards::value::{Amount, CastWay};
 use mtg_core::card::CardType;
 use mtg_core::ids::{ObjectId, PlayerId};
@@ -295,7 +295,69 @@ fn listed(state: &GameState, player: PlayerId, id: ObjectId) -> Vec<Way> {
     }
     // The back face of a card with disturb is cast from its graveyard (CR 702.146a).
     ways.extend(keywords::disturb::way(state, id, instant));
+    ways.extend(alt_cast_ways(state, player, card, instant));
     ways
+}
+
+/// The ways the `AltCast` rules printed on the card give `player` now (CR 118.9): each names the zone the card is cast
+/// from, a condition that holds for the caster, and what is paid in place of the mana cost. The list of castable cards and
+/// the announcement both read this, so a card is offered exactly when its cost can be announced.
+fn alt_cast_ways(
+    state: &GameState,
+    player: PlayerId,
+    card: &GameObject,
+    instant: bool,
+) -> Vec<Way> {
+    let zone = zone_kind(card.zone());
+    let scope = Scope::announcing(state, player, card.reference());
+    let mut found: Vec<Way> = Vec::new();
+    for rule in ability_reader::printed_rules(card.card()) {
+        let Ability::AltCast {
+            way,
+            cost,
+            from,
+            condition,
+            flash,
+        } = &**rule
+        else {
+            continue;
+        };
+        let here = *from == zone && (zone == ZoneKind::Hand || card.owner() == player);
+        let open = condition
+            .as_ref()
+            .is_none_or(|held| scope.holds(held).unwrap_or(false));
+        if !here || !open || found.iter().any(|seen| seen.alternative == Some(*way)) {
+            continue;
+        }
+        let instant = instant || *flash;
+        let (mana, parts) = match cost {
+            None => (ManaCost::default(), Vec::new()),
+            Some(cost) => match cast_cost(cost) {
+                Some(paid) => paid,
+                None => continue,
+            },
+        };
+        found.push(Way {
+            alternative: Some(*way),
+            label: format!("{} {}", way_label(*way), cost_words(&mana, &parts)),
+            mana: Some(mana),
+            instant,
+            variant: 0,
+            parts,
+        });
+    }
+    found
+}
+
+/// The name a way of the `AltCast` table goes by in the list of ways.
+const fn way_label(way: CastWay) -> &'static str {
+    match way {
+        CastWay::Warp => "Warp",
+        CastWay::Surge => "Surge",
+        CastWay::WebSlinging => "Web-slinging",
+        CastWay::Impending => "Impending",
+        _ => "Alternative cost",
+    }
 }
 
 /// The way of casting a card without paying its mana cost (CR 118.9): no mana, and the other parts and the cost increases of
