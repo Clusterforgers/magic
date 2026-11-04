@@ -81,6 +81,68 @@ fn counters_change_power_and_toughness_in_a_game_with_nothing_else_in_play(
     assert_eq!(pump(&game, "Bear"), Some(expected));
 }
 
+fn named_counter(name: &str) -> CounterKind {
+    CounterKind::Other(name.to_owned())
+}
+
+#[rstest]
+#[case::power_only(&[("+1/+0", 1)], (3, 2))]
+#[case::power_only_three(&[("+1/+0", 3)], (5, 2))]
+#[case::plus_two_plus_two(&[("+2/+2", 2)], (6, 6))]
+#[case::toughness_down(&[("+0/-1", 1)], (2, 1))]
+#[case::negative_zero_power(&[("-0/-1", 2)], (2, 0))]
+#[case::a_mix_adds_separately(&[("+1/+0", 2), ("+0/+1", 3)], (4, 5))]
+#[case::cancel_each_other(&[("+2/+2", 1), ("-2/-2", 1)], (2, 2))]
+#[case::beside_the_usual_kinds(&[("+1/+0", 1), ("+1/+1", 2), ("-1/-1", 1)], (4, 3))]
+#[case::below_zero(&[("-3/-3", 1)], (-1, -1))]
+#[case::unsigned_name_changes_nothing(&[("2/2", 1)], (2, 2))]
+fn counters_named_for_their_numbers_change_power_and_toughness_in_layer_seven_c(
+    #[case] counters: &[(&str, u32)],
+    #[case] expected: (i32, i32),
+) {
+    let counters: Vec<(CounterKind, u32)> = counters
+        .iter()
+        .map(|(name, count)| (named_counter(name), *count))
+        .collect();
+    let game = game_with(&counters, vec![]);
+    assert!(game.effects.is_empty() && !game.statics_possible);
+    assert_eq!(pump(&game, "Bear"), Some(expected));
+}
+
+#[rstest]
+#[case::a_set_comes_first(Modification::SetPowerToughness { power: 1, toughness: 1 }, 7, (5, 1))]
+#[case::a_set_with_an_earlier_timestamp(Modification::SetPowerToughness { power: 5, toughness: 1 }, 0, (9, 1))]
+#[case::a_later_pump(Modification::ModifyPowerToughness { power: 2, toughness: -1 }, 9, (8, 1))]
+#[case::an_earlier_pump(Modification::ModifyPowerToughness { power: 2, toughness: -1 }, 0, (8, 1))]
+fn a_power_counter_follows_the_other_layer_seven_effects(
+    #[case] modification: Modification,
+    #[case] timestamp: u64,
+    #[case] expected: (i32, i32),
+) {
+    let mut game = game_with(&[(named_counter("+2/+0"), 2)], vec![]);
+    effect(&mut game, "Bear", modification, timestamp);
+    assert_eq!(pump(&game, "Bear"), Some(expected));
+}
+
+#[test]
+fn a_power_counter_is_applied_before_a_switch() {
+    // The Wall is 0/4 with two +1/+1 counters and a +1/+0 counter: 3/6, switched 6/3.
+    let mut game = game_with(&[], vec![]);
+    put(&mut game, "Wall", named_counter("+1/+0"), 1);
+    assert_eq!(pump(&game, "Wall"), Some((3, 6)));
+    effect(&mut game, "Wall", Modification::SwitchPowerToughness, 1);
+    assert_eq!(pump(&game, "Wall"), Some((6, 3)));
+}
+
+#[test]
+fn a_power_counter_put_and_removed_by_events_shows_at_once() {
+    let mut game = game_with(&[], vec![]);
+    put(&mut game, "Bear", named_counter("+3/+0"), 2);
+    assert_eq!(pump(&game, "Bear"), Some((8, 2)));
+    put(&mut game, "Bear", named_counter("+3/+0"), -1);
+    assert_eq!(pump(&game, "Bear"), Some((5, 2)));
+}
+
 #[test]
 fn a_game_without_such_counters_works_out_nothing() {
     let setup = setup(

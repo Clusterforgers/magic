@@ -24,7 +24,6 @@ use mtg_cards::ability::Ability;
 use mtg_cards::keyword::Keyword;
 use mtg_cards::modify::{Duration, Modification as Wanted};
 use mtg_cards::refs::{Pred, Ref, Selector as Named, ZoneKind};
-use mtg_cards::value::CounterKind;
 use mtg_core::ids::{EffectId, ObjectId, PlayerId};
 
 use crate::abilities::{AbilityRef, AbilitySource, Grant};
@@ -711,7 +710,7 @@ fn compute_with(state: &GameState, registered: &[&ContinuousEffect]) -> Layers {
             .iter()
             .filter_map(|id| state.object(*id)?.permanent())
             .any(|permanent| {
-                power_toughness_from_counters(permanent) != 0 || has_keyword_counter(permanent)
+                power_toughness_from_counters(permanent) != (0, 0) || has_keyword_counter(permanent)
             });
     if registered.is_empty() && !statics_in_play && !counters_in_play {
         return Layers {
@@ -834,14 +833,12 @@ impl<'a> Pass<'a> {
             let Some(permanent) = state.object(*id).and_then(GameObject::permanent) else {
                 continue;
             };
-            let net = power_toughness_from_counters(permanent);
-            if net != 0 {
-                held.chars.power = held.chars.power.map(|power| power.saturating_add(net));
-                held.chars.toughness = held
-                    .chars
-                    .toughness
-                    .map(|toughness| toughness.saturating_add(net));
-            }
+            let (power, toughness) = power_toughness_from_counters(permanent);
+            held.chars.power = held.chars.power.map(|base| base.saturating_add(power));
+            held.chars.toughness = held
+                .chars
+                .toughness
+                .map(|base| base.saturating_add(toughness));
         }
     }
 
@@ -1318,12 +1315,17 @@ fn has_keyword_counter(permanent: &PermanentState) -> bool {
         .any(|(kind, _)| kind.keyword().is_some())
 }
 
-/// What the +1/+1 and -1/-1 counters on a permanent add to its power and to its toughness: one for each +1/+1 counter and
-/// minus one for each -1/-1 counter.
-fn power_toughness_from_counters(permanent: &PermanentState) -> i32 {
-    let plus = i64::from(permanent.counters_of(&CounterKind::PlusOnePlusOne));
-    let minus = i64::from(permanent.counters_of(&CounterKind::MinusOneMinusOne));
-    i32::try_from(plus - minus).unwrap_or(if plus > minus { i32::MAX } else { i32::MIN })
+/// What the counters on a permanent add to its power and to its toughness, summed over every kind that carries numbers
+/// (`+1/+1`, `-1/-1`, `+2/+0`, `-0/-1`): each counter adds its kind's amount, whatever the other kinds do.
+fn power_toughness_from_counters(permanent: &PermanentState) -> (i32, i32) {
+    let (mut power, mut toughness) = (0_i64, 0_i64);
+    for (kind, count) in permanent.counters() {
+        let (p, t) = kind.power_toughness();
+        power += i64::from(p) * i64::from(count);
+        toughness += i64::from(t) * i64::from(count);
+    }
+    let clamp = |n: i64| i32::try_from(n).unwrap_or(if n > 0 { i32::MAX } else { i32::MIN });
+    (clamp(power), clamp(toughness))
 }
 
 /// What the effect changes in the objects it applies to.

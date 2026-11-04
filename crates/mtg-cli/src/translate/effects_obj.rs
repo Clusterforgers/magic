@@ -414,10 +414,13 @@ fn remove_counter(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
             "TargetMax",
         ],
     )?;
+    let from = subject(ctx, p, "Self", None)?;
+    if p.get("CounterType") == Some("ALL") && matches!(p.get("CounterNum"), None | Some("All")) {
+        return Ok(json!({"RemoveAllCounters": {"from": from}}));
+    }
     let Some(kind) = p.get("CounterType").and_then(counter_kind) else {
         return unmapped("key:RemoveCounter.CounterType");
     };
-    let from = subject(ctx, p, "Self", None)?;
     let count = amount(ctx, p.get("CounterNum").unwrap_or("1"))?;
     Ok(json!({"RemoveCounters": {"from": from, "counter": kind, "count": count}}))
 }

@@ -106,6 +106,16 @@ fn gaps(text: &str) -> Vec<String> {
     json!({"Spell": {"targets": [{"what": {"Object": [{"Type": "Creature"}]}}],
         "effects": [{"PutCounters": {"on": {"Target": 0}, "counter": "+1/+1", "count": 2}}]}})
 )]
+#[case::pt_counters(
+    "Name:Test Bloom\nTypes:Sorcery\nA:SP$ PutCounter | ValidTgts$ Creature | CounterType$ P2P0 | CounterNum$ 2\n",
+    json!({"Spell": {"targets": [{"what": {"Object": [{"Type": "Creature"}]}}],
+        "effects": [{"PutCounters": {"on": {"Target": 0}, "counter": {"Other": "+2/+0"}, "count": 2}}]}})
+)]
+#[case::remove_all_counters(
+    "Name:Test Purge\nTypes:Sorcery\nA:SP$ RemoveCounter | ValidTgts$ Creature | CounterType$ ALL\n",
+    json!({"Spell": {"targets": [{"what": {"Object": [{"Type": "Creature"}]}}],
+        "effects": [{"RemoveAllCounters": {"from": {"Target": 0}}}]}})
+)]
 #[case::tokens(
     "Name:Test Muster\nTypes:Sorcery\nA:SP$ Token | TokenAmount$ 2 | TokenScript$ w_1_1_soldier | TokenOwner$ You\n",
     json!({"Spell": {"effects": [{"CreateToken": {"token": {"Custom": {"name": "Soldier",
@@ -650,14 +660,6 @@ mod gn2_play;
 mod ledger;
 mod macro_keywords;
 #[rstest]
-#[case::pt_counter(
-    "Name:T\nTypes:Sorcery\nA:SP$ PutCounter | ValidTgts$ Creature | CounterType$ P2P2\n",
-    "key:PutCounter.CounterType"
-)]
-#[case::all_counters(
-    "Name:T\nTypes:Sorcery\nA:SP$ RemoveCounter | ValidTgts$ Creature | CounterType$ ALL\n",
-    "key:RemoveCounter.CounterType"
-)]
 #[case::if_tapped_on_activation(
     "Name:T\nTypes:Creature Elf\nA:AB$ Draw | Cost$ 0 | IsPresent$ Card.Self+tapped\n",
     "key:AB.IsPresent=Self"

@@ -4,7 +4,7 @@ use mtg_cards::effect::Effect;
 
 use super::put_counters::{holders, whole};
 use super::wrong_effect;
-use crate::counters::{CountersChanged, held_by};
+use crate::counters::{CountersChanged, held_by, kinds_held};
 use crate::events::Event;
 use crate::resolve::{Cx, ResolveError, Run};
 
@@ -42,6 +42,29 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                 events.push(Event::CountersChanged(CountersChanged {
                     on: holder,
                     counter: counter.clone(),
+                    delta: -taken,
+                }));
+            }
+        }
+    }
+    Ok(Run::events(events))
+}
+
+/// `Effect::RemoveAllCounters`: each permanent and player the effect names loses every counter of every kind, all
+/// together in the order the reference lists them and the fixed order of the kinds; what holds none gives no event.
+pub(super) fn run_all(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
+    let Effect::RemoveAllCounters { from } = effect else {
+        return Err(wrong_effect("RemoveAllCounters"));
+    };
+    let mut events = Vec::new();
+    for holder in holders(cx, from)? {
+        for (counter, held) in kinds_held(cx.state(), holder) {
+            if let Ok(taken) = i32::try_from(held)
+                && taken > 0
+            {
+                events.push(Event::CountersChanged(CountersChanged {
+                    on: holder,
+                    counter,
                     delta: -taken,
                 }));
             }
@@ -101,7 +124,12 @@ mod tests {
             resolving: &resolving,
         };
         let effect: Effect = serde_json::from_str(json).unwrap();
-        let Run::Done { events, next, .. } = run(&cx, &effect).unwrap() else {
+        let run = if matches!(effect, Effect::RemoveAllCounters { .. }) {
+            run_all(&cx, &effect)
+        } else {
+            run(&cx, &effect)
+        };
+        let Run::Done { events, next, .. } = run.unwrap() else {
             panic!("the effect asks nothing");
         };
         assert_eq!(next, Next::Sibling);
@@ -164,6 +192,29 @@ mod tests {
     )]
     #[case::a_negative_count(
         r#"{"RemoveCounters":{"from":{"Each":[{"Named":"Wolf"}]},"counter":"+1/+1","count":-1}}"#,
+        vec![]
+    )]
+    #[case::all_counters_of_every_kind(
+        r#"{"RemoveAllCounters":{"from":{"Each":[{"Named":"Wolf"}]}}}"#,
+        vec![
+            on("Wolf", CounterKind::PlusOnePlusOne, -3),
+            on("Wolf", CounterKind::MinusOneMinusOne, -1),
+        ]
+    )]
+    #[case::all_counters_of_a_player(
+        r#"{"RemoveAllCounters":{"from":"You"}}"#,
+        vec![on("seat 0", CounterKind::Poison, -2)]
+    )]
+    #[case::all_counters_of_each_permanent(
+        r#"{"RemoveAllCounters":{"from":{"Each":[{"Type":"Creature"}]}}}"#,
+        vec![
+            on("Wolf", CounterKind::PlusOnePlusOne, -3),
+            on("Wolf", CounterKind::MinusOneMinusOne, -1),
+            on("Bear", CounterKind::Charge, -1),
+        ]
+    )]
+    #[case::all_counters_of_a_holder_with_none(
+        r#"{"RemoveAllCounters":{"from":"This"}}"#,
         vec![]
     )]
     fn it_takes_counters_off_what_it_names(

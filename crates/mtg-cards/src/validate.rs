@@ -2770,6 +2770,7 @@ impl Walker<'_> {
                 w.at("from", |w| w.reference(from, Kind::Either));
                 w.at("count", |w| w.amount(count));
             }
+            Effect::RemoveAllCounters { from } => w.at("from", |w| w.reference(from, Kind::Either)),
             Effect::RepeatEach {
                 over,
                 bind,

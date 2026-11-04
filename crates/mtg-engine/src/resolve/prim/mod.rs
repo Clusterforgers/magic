@@ -193,6 +193,7 @@ fn dispatch(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::AddMana { .. } => add_mana::run(cx, effect),
         Effect::PutCounters { .. } => put_counters::run(cx, effect),
         Effect::RemoveCounters { .. } => remove_counters::run(cx, effect),
+        Effect::RemoveAllCounters { .. } => remove_counters::run_all(cx, effect),
         Effect::MoveCounters { .. } => move_counters::run(cx, effect),
         Effect::MultiplyCounters { .. } => multiply_counters::run(cx, effect),
         Effect::Tap { .. } => tap::run(cx, effect),
