@@ -89,7 +89,7 @@ fn countered_cast_resolves(driver: &mut Driver, name: &str, lands: &[&str]) -> b
         }
         driver.pass().unwrap();
     }
-    assert!(driver.state().stack().is_empty());
+    assert_eq!(driver.state().stack(), []);
     driver
         .state()
         .zone(Zone::Battlefield)

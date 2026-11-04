@@ -32,7 +32,7 @@ fn lines_map_to_nodes_that_parse(#[case] script: &str, #[case] node: &str) {
 )]
 fn shapes_the_nodes_cannot_carry_stay_gaps(#[case] script: &str) {
     assert!(abilities(script).is_empty(), "{:?}", abilities(script));
-    assert!(!gaps(script).is_empty());
+    assert_ne!(gaps(script).len(), 0);
 }
 
 #[rstest]
@@ -76,5 +76,5 @@ fn mana_of_a_chosen_or_reflected_kind(#[case] script: &str, #[case] holds: &str)
 )]
 fn reflections_and_amounts_that_are_not_carried_stay_gaps(#[case] script: &str) {
     assert!(abilities(script).is_empty(), "{:?}", abilities(script));
-    assert!(!gaps(script).is_empty());
+    assert_ne!(gaps(script).len(), 0);
 }

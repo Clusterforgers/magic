@@ -52,6 +52,17 @@ const C7_UNTAP_ONLY: &str =
     "only a permanent that doesn't untap waits for its controller's next untap step";
 
 /// The name of an enum value as serde writes it (`DealDamage`), for naming primitives.
+/// Whether the replacement prevents only part of the damage, or only the next of it.
+fn prevents_in_part(by: &ReplaceBy) -> bool {
+    matches!(
+        by,
+        ReplaceBy::PreventUpTo(_)
+            | ReplaceBy::PreventHalf
+            | ReplaceBy::PreventAllBut(_)
+            | ReplaceBy::PreventNext
+    )
+}
+
 fn tag_of<T: Serialize>(value: &T) -> String {
     match serde_json::to_value(value) {
         Ok(serde_json::Value::String(name)) => name,
@@ -3887,12 +3898,7 @@ impl Walker<'_> {
             {
                 self.problem("a zone change or an entering is not prevented");
             }
-            ReplaceBy::PreventUpTo(_)
-            | ReplaceBy::PreventHalf
-            | ReplaceBy::PreventAllBut(_)
-            | ReplaceBy::PreventNext
-                if !matches!(when, ReplaceWhen::Damage { .. }) =>
-            {
+            by if prevents_in_part(by) && !matches!(when, ReplaceWhen::Damage { .. }) => {
                 self.problem("only damage is prevented in part or once");
             }
             ReplaceBy::PreventRemovingCounter(_) if !matches!(when, ReplaceWhen::Damage { .. }) => {
