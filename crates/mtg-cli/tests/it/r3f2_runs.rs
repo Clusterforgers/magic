@@ -190,7 +190,7 @@ fn urzas_saga_offers_only_artifacts_whose_cost_is_zero_or_one_generic() {
         .library(1, library(20));
     let mut driver = Driver::from_scenario(scenario).unwrap();
     driver.play_land("Urza's Saga").unwrap();
-    driver.idle_until(7, Step::Main1).unwrap();
+    driver.idle_until(5, Step::Main1).unwrap();
     let mut offered: Vec<String> = Vec::new();
     for _ in 0..40 {
         let decision = driver.decision().unwrap().clone();
