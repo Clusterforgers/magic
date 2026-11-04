@@ -1,0 +1,35 @@
+{
+  "oracle_id": "57ffb558-3a1c-43ea-a79c-bcfacad22ca4",
+  "name": "General Thunderbolt Ross",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "General Thunderbolt Ross",
+      "oracle_fingerprint": "1251559e93df8651addf1e775e5d4eb6",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "if": {
+              "Compare": {
+                "left": { "Count": [{ "Type": "Creature" }, "Attacking", "Other"] },
+                "op": "Ge",
+                "right": 2
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, "Attacking"] },
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

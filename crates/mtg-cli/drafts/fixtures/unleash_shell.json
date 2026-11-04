@@ -1,0 +1,138 @@
+{
+  "object": "card",
+  "id": "1be13abf-b717-4122-ab2b-7e597a251d52",
+  "oracle_id": "9eaca93d-6c3d-4489-8652-b575a4cd931f",
+  "multiverse_ids": [
+    583740
+  ],
+  "mtgo_id": 104928,
+  "arena_id": 82639,
+  "tcgplayer_id": 453020,
+  "cardmarket_id": 683418,
+  "name": "Unleash Shell",
+  "lang": "en",
+  "released_at": "2022-11-18",
+  "uri": "https://api.scryfall.com/cards/1be13abf-b717-4122-ab2b-7e597a251d52",
+  "scryfall_uri": "https://scryfall.com/card/bro/155/unleash-shell?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T05:21:00Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/1/b/1be13abf-b717-4122-ab2b-7e597a251d52.jpg?1783920060",
+    "normal": "https://cards.scryfall.io/normal/front/1/b/1be13abf-b717-4122-ab2b-7e597a251d52.jpg?1783920060",
+    "large": "https://cards.scryfall.io/large/front/1/b/1be13abf-b717-4122-ab2b-7e597a251d52.jpg?1783920060",
+    "png": "https://cards.scryfall.io/png/front/1/b/1be13abf-b717-4122-ab2b-7e597a251d52.png?1783920060",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/1/b/1be13abf-b717-4122-ab2b-7e597a251d52.jpg?1783920060",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/1/b/1be13abf-b717-4122-ab2b-7e597a251d52.jpg?1783920060",
+    "thumb": "https://cards.scryfall.io/thumb/front/1/b/1be13abf-b717-4122-ab2b-7e597a251d52.webp?1783920060",
+    "grid": "https://cards.scryfall.io/grid/front/1/b/1be13abf-b717-4122-ab2b-7e597a251d52.webp?1783920060",
+    "display": "https://cards.scryfall.io/display/front/1/b/1be13abf-b717-4122-ab2b-7e597a251d52.webp?1783920060",
+    "art": "https://cards.scryfall.io/art/front/1/b/1be13abf-b717-4122-ab2b-7e597a251d52.webp?1783920060",
+    "crop": "https://cards.scryfall.io/crop/front/1/b/1be13abf-b717-4122-ab2b-7e597a251d52.webp?1783920060",
+    "jpeg": "https://cards.scryfall.io/normal/front/1/b/1be13abf-b717-4122-ab2b-7e597a251d52.jpg?1783920060"
+  },
+  "mana_cost": "{3}{R}{R}",
+  "cmc": 5.0,
+  "type_line": "Instant",
+  "oracle_text": "Unleash Shell deals 5 damage to target creature or planeswalker and 2 damage to that permanent's controller.",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "arena",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "4219a14e-6701-4ddd-a185-21dc054ab19b",
+  "set": "bro",
+  "set_name": "The Brothers' War",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/4219a14e-6701-4ddd-a185-21dc054ab19b",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Abro&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/bro?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/1be13abf-b717-4122-ab2b-7e597a251d52/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A9eaca93d-6c3d-4489-8652-b575a4cd931f&unique=prints",
+  "collector_number": "155",
+  "digital": false,
+  "rarity": "common",
+  "flavor_text": "The new cannon's destructive power more than made up for its unpredictable blast radius.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Campbell White",
+  "artist_ids": [
+    "d281eab4-463a-4ba8-9039-8943737960a0"
+  ],
+  "illustration_id": "801bddc4-2e54-4e60-85ba-266e4a3d2786",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 24941,
+  "preview": {
+    "source": "Wizards of the Coast",
+    "source_uri": "https://www.youtube.com/watch?v=xP8VuVCNkdk",
+    "previewed_at": "2022-11-04"
+  },
+  "prices": {
+    "usd": "0.08",
+    "usd_foil": "0.13",
+    "usd_etched": null,
+    "eur": "0.04",
+    "eur_foil": "0.03",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=583740&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DUnleash%2BShell",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DUnleash%2BShell",
+    "edhrec": "https://edhrec.com/route/?cc=Unleash+Shell"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F453020%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=683418&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/104928?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

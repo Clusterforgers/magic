@@ -1,0 +1,33 @@
+{
+  "oracle_id": "d94ff0b8-5499-4eeb-80f0-20c7fbf07499",
+  "name": "Voja, Jaws of the Conclave",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Voja, Jaws of the Conclave",
+      "oracle_fingerprint": "520c86417c4c097822597d6ecbe5333b",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        { "Keyword": "Trample" },
+        { "Keyword": { "Ward": "{3}" } },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": [{ "Type": "Creature" }, "This"] } },
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "counter": "+1/+1",
+                  "count": { "Count": [{ "Subtype": "Elf" }, { "ControlledBy": "You" }] }
+                }
+              },
+              {
+                "Draw": { "count": { "Count": [{ "Subtype": "Wolf" }, { "ControlledBy": "You" }] } }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

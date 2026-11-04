@@ -1,0 +1,31 @@
+{
+  "oracle_id": "7ea71a36-8fa8-4ba3-9cb1-7fc6917c3ddd",
+  "name": "Firemane Avenger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Firemane Avenger",
+      "oracle_fingerprint": "33c377ab322bde9ca57de80daf22d6a3",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "if": {
+              "Compare": {
+                "left": { "Count": [{ "Type": "Creature" }, "Attacking", "Other"] },
+                "op": "Ge",
+                "right": 2
+              }
+            },
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 3 } },
+              { "GainLife": { "amount": 3 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

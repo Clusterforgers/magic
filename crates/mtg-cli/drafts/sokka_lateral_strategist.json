@@ -1,0 +1,27 @@
+{
+  "oracle_id": "427f8ef9-12b3-4fa0-b303-28153566b6dc",
+  "name": "Sokka, Lateral Strategist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sokka, Lateral Strategist",
+      "oracle_fingerprint": "4bce0b9459fe10b2663810b75c4964cc",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "if": {
+              "Compare": {
+                "left": { "Count": [{ "Type": "Creature" }, "Attacking", "Other"] },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

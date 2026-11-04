@@ -1,0 +1,38 @@
+{
+  "oracle_id": "12d51534-a98d-487b-9ba9-c10861dff992",
+  "name": "S.H.I.E.L.D. Flying Car",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "S.H.I.E.L.D. Flying Car",
+      "oracle_fingerprint": "b9d125ec28284abacffd9021a03f0f47",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    { "Move": { "what": { "Bound": "exiled" }, "to": { "Battlefield": {} } } }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Crew": 1 } }
+      ]
+    }
+  ]
+}

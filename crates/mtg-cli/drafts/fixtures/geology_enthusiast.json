@@ -1,0 +1,161 @@
+{
+  "object": "card",
+  "id": "dbb1f21c-60fa-4fcc-844b-25bf5b47fd1f",
+  "oracle_id": "c7c1352a-0332-4495-a384-8d6fed01f91b",
+  "multiverse_ids": [
+    586144
+  ],
+  "mtgo_id": 104548,
+  "arena_id": 82756,
+  "tcgplayer_id": 453112,
+  "cardmarket_id": 683499,
+  "name": "Geology Enthusiast",
+  "lang": "en",
+  "released_at": "2022-11-18",
+  "uri": "https://api.scryfall.com/cards/dbb1f21c-60fa-4fcc-844b-25bf5b47fd1f",
+  "scryfall_uri": "https://scryfall.com/card/bro/289/geology-enthusiast?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T05:19:55Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/d/b/dbb1f21c-60fa-4fcc-844b-25bf5b47fd1f.jpg?1783919995",
+    "normal": "https://cards.scryfall.io/normal/front/d/b/dbb1f21c-60fa-4fcc-844b-25bf5b47fd1f.jpg?1783919995",
+    "large": "https://cards.scryfall.io/large/front/d/b/dbb1f21c-60fa-4fcc-844b-25bf5b47fd1f.jpg?1783919995",
+    "png": "https://cards.scryfall.io/png/front/d/b/dbb1f21c-60fa-4fcc-844b-25bf5b47fd1f.png?1783919995",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/d/b/dbb1f21c-60fa-4fcc-844b-25bf5b47fd1f.jpg?1783919995",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/d/b/dbb1f21c-60fa-4fcc-844b-25bf5b47fd1f.jpg?1783919995",
+    "thumb": "https://cards.scryfall.io/thumb/front/d/b/dbb1f21c-60fa-4fcc-844b-25bf5b47fd1f.webp?1783919995",
+    "grid": "https://cards.scryfall.io/grid/front/d/b/dbb1f21c-60fa-4fcc-844b-25bf5b47fd1f.webp?1783919995",
+    "display": "https://cards.scryfall.io/display/front/d/b/dbb1f21c-60fa-4fcc-844b-25bf5b47fd1f.webp?1783919995",
+    "art": "https://cards.scryfall.io/art/front/d/b/dbb1f21c-60fa-4fcc-844b-25bf5b47fd1f.webp?1783919995",
+    "crop": "https://cards.scryfall.io/crop/front/d/b/dbb1f21c-60fa-4fcc-844b-25bf5b47fd1f.webp?1783919995",
+    "jpeg": "https://cards.scryfall.io/normal/front/d/b/dbb1f21c-60fa-4fcc-844b-25bf5b47fd1f.jpg?1783919995"
+  },
+  "mana_cost": "{3}{U}{U}",
+  "cmc": 5.0,
+  "type_line": "Creature — Human Artificer",
+  "oracle_text": "At the beginning of your end step, create a tapped Powerstone token. (It's an artifact with \"{T}: Add {C}. This mana can't be spent to cast a nonartifact spell.\")\n{6}: Draw a card and put a +1/+1 counter on this creature.",
+  "power": "2",
+  "toughness": "5",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [],
+  "produced_mana": [
+    "C"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "d45fe4b6-aeaf-4f84-b660-c7b482ed8512",
+      "component": "token",
+      "name": "Powerstone",
+      "type_line": "Token Artifact — Powerstone",
+      "uri": "https://api.scryfall.com/cards/d45fe4b6-aeaf-4f84-b660-c7b482ed8512"
+    },
+    {
+      "object": "related_card",
+      "id": "dae85295-9bad-4f5b-9935-7242632e9008",
+      "component": "combo_piece",
+      "name": "Geology Enthusiast",
+      "type_line": "Creature — Human Artificer",
+      "uri": "https://api.scryfall.com/cards/dae85295-9bad-4f5b-9935-7242632e9008"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "arena",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "4219a14e-6701-4ddd-a185-21dc054ab19b",
+  "set": "bro",
+  "set_name": "The Brothers' War",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/4219a14e-6701-4ddd-a185-21dc054ab19b",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Abro&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/bro?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/dbb1f21c-60fa-4fcc-844b-25bf5b47fd1f/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ac7c1352a-0332-4495-a384-8d6fed01f91b&unique=prints",
+  "collector_number": "289",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Fajareka Setiawan",
+  "artist_ids": [
+    "0cc534e0-be18-4cb1-8521-50fabd0dac6f"
+  ],
+  "illustration_id": "23f6ae85-e8cf-4db2-b017-51301e6ed324",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 16573,
+  "preview": {
+    "source": "Wizards of the Coast",
+    "source_uri": "https://www.youtube.com/watch?v=xP8VuVCNkdk",
+    "previewed_at": "2022-11-03"
+  },
+  "prices": {
+    "usd": "0.31",
+    "usd_foil": "0.50",
+    "usd_etched": null,
+    "eur": "0.16",
+    "eur_foil": "0.26",
+    "tix": "0.31"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=586144&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DGeology%2BEnthusiast",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DGeology%2BEnthusiast",
+    "edhrec": "https://edhrec.com/route/?cc=Geology+Enthusiast"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F453112%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=683499&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/104548?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

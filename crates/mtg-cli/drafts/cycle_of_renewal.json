@@ -13,14 +13,14 @@
               { "Sacrifice": { "filter": [{ "Type": "Land" }] } },
               {
                 "Search": {
-                  "filter": [{ "Supertype": "Basic" }, { "Type": "Land" }],
-                  "count": { "min": 0, "max": 1 },
-                  "as": "lands"
+                  "filter": [{ "Type": "Land" }, { "Supertype": "Basic" }],
+                  "count": { "min": 0, "max": 2 },
+                  "as": "found"
                 }
               },
               {
                 "Move": {
-                  "what": { "Bound": "lands" },
+                  "what": { "Bound": "found" },
                   "to": { "Battlefield": { "tapped": true } }
                 }
               },

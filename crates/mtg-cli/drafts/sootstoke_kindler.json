@@ -1,0 +1,38 @@
+{
+  "oracle_id": "16a96727-c53a-4563-8151-f8b7abb7e534",
+  "name": "Sootstoke Kindler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sootstoke Kindler",
+      "oracle_fingerprint": "cddaa110cfbd0bbe0322829e8e64d673",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "AnyOf": [{ "Color": "Black" }, { "Color": "Red" }] }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

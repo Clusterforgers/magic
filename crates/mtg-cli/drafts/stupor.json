@@ -1,0 +1,22 @@
+{
+  "oracle_id": "c19e3560-d304-4d91-aa2a-463d7dbb35bb",
+  "name": "Stupor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stupor",
+      "oracle_fingerprint": "90a93a365f79613b86cfb8a17479617d",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              { "Discard": { "who": { "Target": 0 }, "random": true } },
+              { "Discard": { "who": { "Target": 0 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

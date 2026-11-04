@@ -13,11 +13,11 @@
               {
                 "RepeatEach": {
                   "over": "EachPlayer",
-                  "as": "player",
+                  "as": "each",
                   "effects": [
                     {
                       "DealDamage": {
-                        "to": { "Bound": "player" },
+                        "to": { "Bound": "each" },
                         "amount": {
                           "Times": {
                             "by": 2,
@@ -25,7 +25,7 @@
                               "Count": [
                                 { "Type": "Land" },
                                 { "Not": { "Supertype": "Basic" } },
-                                { "ControlledBy": { "Bound": "player" } }
+                                { "ControlledBy": { "Bound": "each" } }
                               ]
                             }
                           }

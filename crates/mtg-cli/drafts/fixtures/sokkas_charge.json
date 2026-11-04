@@ -1,0 +1,144 @@
+{
+  "object": "card",
+  "id": "a9dd7fc2-1eab-4f73-a4e8-6d7551c73a3e",
+  "oracle_id": "dcc29e59-341c-4175-aa54-f535e2c3e355",
+  "multiverse_ids": [],
+  "resource_id": "30D4FC25466CF474842411E1A263563E22EC4D150EDFA6CF7C27253403AFCE1F",
+  "mtgo_id": 145708,
+  "arena_id": 98694,
+  "tcgplayer_id": 662075,
+  "cardmarket_id": 857886,
+  "name": "Sokka's Charge",
+  "lang": "en",
+  "released_at": "2025-11-21",
+  "uri": "https://api.scryfall.com/cards/a9dd7fc2-1eab-4f73-a4e8-6d7551c73a3e",
+  "scryfall_uri": "https://scryfall.com/card/tle/66/sokkas-charge?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T01:07:19Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/a/9/a9dd7fc2-1eab-4f73-a4e8-6d7551c73a3e.jpg?1783904839",
+    "normal": "https://cards.scryfall.io/normal/front/a/9/a9dd7fc2-1eab-4f73-a4e8-6d7551c73a3e.jpg?1783904839",
+    "large": "https://cards.scryfall.io/large/front/a/9/a9dd7fc2-1eab-4f73-a4e8-6d7551c73a3e.jpg?1783904839",
+    "png": "https://cards.scryfall.io/png/front/a/9/a9dd7fc2-1eab-4f73-a4e8-6d7551c73a3e.png?1783904839",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/a/9/a9dd7fc2-1eab-4f73-a4e8-6d7551c73a3e.jpg?1783904839",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/a/9/a9dd7fc2-1eab-4f73-a4e8-6d7551c73a3e.jpg?1783904839",
+    "thumb": "https://cards.scryfall.io/thumb/front/a/9/a9dd7fc2-1eab-4f73-a4e8-6d7551c73a3e.webp?1783904839",
+    "grid": "https://cards.scryfall.io/grid/front/a/9/a9dd7fc2-1eab-4f73-a4e8-6d7551c73a3e.webp?1783904839",
+    "display": "https://cards.scryfall.io/display/front/a/9/a9dd7fc2-1eab-4f73-a4e8-6d7551c73a3e.webp?1783904839",
+    "art": "https://cards.scryfall.io/art/front/a/9/a9dd7fc2-1eab-4f73-a4e8-6d7551c73a3e.webp?1783904839",
+    "crop": "https://cards.scryfall.io/crop/front/a/9/a9dd7fc2-1eab-4f73-a4e8-6d7551c73a3e.webp?1783904839",
+    "jpeg": "https://cards.scryfall.io/normal/front/a/9/a9dd7fc2-1eab-4f73-a4e8-6d7551c73a3e.jpg?1783904839"
+  },
+  "mana_cost": "{3}{W}",
+  "cmc": 4.0,
+  "type_line": "Enchantment",
+  "oracle_text": "During your turn, Allies you control have double strike and lifelink.",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "arena",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "a75e6ceb-d62c-4063-8e96-f269e3a0b025",
+  "set": "tle",
+  "set_name": "Avatar: The Last Airbender Eternal",
+  "set_type": "eternal",
+  "set_uri": "https://api.scryfall.com/sets/a75e6ceb-d62c-4063-8e96-f269e3a0b025",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Atle&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/tle?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/a9dd7fc2-1eab-4f73-a4e8-6d7551c73a3e/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Adcc29e59-341c-4175-aa54-f535e2c3e355&unique=prints",
+  "collector_number": "66",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Fahmi Fauzi",
+  "artist_ids": [
+    "71e0cca2-5ded-4a60-91aa-65a131b35987"
+  ],
+  "illustration_id": "1b57ccdc-7a86-4609-91e4-a8cf8843dd92",
+  "border_color": "borderless",
+  "frame": "2015",
+  "frame_effects": [
+    "enchantment",
+    "inverted"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond",
+    "boosterfun"
+  ],
+  "edhrec_rank": 6730,
+  "preview": {
+    "source": "Dexerto",
+    "source_uri": "https://www.dexerto.com/magic-the-gathering/magic-the-gathering-avatar-the-last-airbender-black-sun-invasion-scene-box-3278271/",
+    "previewed_at": "2025-11-03"
+  },
+  "prices": {
+    "usd": "8.87",
+    "usd_foil": "6.21",
+    "usd_etched": null,
+    "eur": "7.80",
+    "eur_foil": "7.11",
+    "tix": "2.55"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DSokka%2527s%2BCharge",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DSokka%2527s%2BCharge",
+    "edhrec": "https://edhrec.com/route/?cc=Sokka%27s+Charge"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F662075%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=857886&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/145708?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

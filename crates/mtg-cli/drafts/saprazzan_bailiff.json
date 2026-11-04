@@ -1,0 +1,48 @@
+{
+  "oracle_id": "1f861517-ac53-4218-b62e-35e971098b6d",
+  "name": "Saprazzan Bailiff",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Saprazzan Bailiff",
+      "oracle_fingerprint": "e2271bbca8f1fe8b8980175f47b406e5",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Exile": {
+                  "what": {
+                    "Each": [
+                      { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Enchantment" }] },
+                      { "In": "Graveyard" }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield" } },
+            "effects": [
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Enchantment" }] },
+                      { "In": "Graveyard" }
+                    ]
+                  },
+                  "to": "Hand"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

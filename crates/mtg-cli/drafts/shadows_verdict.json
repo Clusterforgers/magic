@@ -1,0 +1,40 @@
+{
+  "oracle_id": "83e99691-bc25-4b3e-b828-670ef2027592",
+  "name": "Shadows' Verdict",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shadows' Verdict",
+      "oracle_fingerprint": "9176ea8002d51d34849c400f883790d4",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Exile": {
+                  "what": {
+                    "Each": [
+                      { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] },
+                      { "Compare": { "stat": "ManaValue", "op": "Le", "to": 3 } }
+                    ]
+                  }
+                }
+              },
+              {
+                "Exile": {
+                  "what": {
+                    "Each": [
+                      { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] },
+                      { "Compare": { "stat": "ManaValue", "op": "Le", "to": 3 } },
+                      { "In": "Graveyard" }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

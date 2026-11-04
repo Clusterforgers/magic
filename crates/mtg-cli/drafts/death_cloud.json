@@ -1,0 +1,29 @@
+{
+  "oracle_id": "680f5eca-b98e-4f73-a852-ab629d94297e",
+  "name": "Death Cloud",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Death Cloud",
+      "oracle_fingerprint": "966b301472768e96ac2c7cf315f0f094",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "LoseLife": { "who": "EachPlayer", "amount": "X" } },
+              { "Discard": { "who": "EachPlayer", "count": "X" } },
+              {
+                "Sacrifice": {
+                  "who": "EachPlayer",
+                  "filter": [{ "Type": "Creature" }],
+                  "count": "X"
+                }
+              },
+              { "Sacrifice": { "who": "EachPlayer", "filter": [{ "Type": "Land" }], "count": "X" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

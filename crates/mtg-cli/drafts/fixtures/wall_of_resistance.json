@@ -1,0 +1,137 @@
+{
+  "object": "card",
+  "id": "fd25787d-b90c-4b25-8259-1ac41d4dcd15",
+  "oracle_id": "e6f5f80c-2620-4558-8a5f-8fc36cea4793",
+  "multiverse_ids": [
+    3521
+  ],
+  "mtgo_id": 7425,
+  "mtgo_foil_id": 7426,
+  "tcgplayer_id": 5290,
+  "cardmarket_id": 8301,
+  "name": "Wall of Resistance",
+  "lang": "en",
+  "released_at": "1996-10-08",
+  "uri": "https://api.scryfall.com/cards/fd25787d-b90c-4b25-8259-1ac41d4dcd15",
+  "scryfall_uri": "https://scryfall.com/card/mir/46/wall-of-resistance?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T12:51:55Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/f/d/fd25787d-b90c-4b25-8259-1ac41d4dcd15.jpg?1783947115",
+    "normal": "https://cards.scryfall.io/normal/front/f/d/fd25787d-b90c-4b25-8259-1ac41d4dcd15.jpg?1783947115",
+    "large": "https://cards.scryfall.io/large/front/f/d/fd25787d-b90c-4b25-8259-1ac41d4dcd15.jpg?1783947115",
+    "png": "https://cards.scryfall.io/png/front/f/d/fd25787d-b90c-4b25-8259-1ac41d4dcd15.png?1783947115",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/f/d/fd25787d-b90c-4b25-8259-1ac41d4dcd15.jpg?1783947115",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/f/d/fd25787d-b90c-4b25-8259-1ac41d4dcd15.jpg?1783947115",
+    "thumb": "https://cards.scryfall.io/thumb/front/f/d/fd25787d-b90c-4b25-8259-1ac41d4dcd15.webp?1783947115",
+    "grid": "https://cards.scryfall.io/grid/front/f/d/fd25787d-b90c-4b25-8259-1ac41d4dcd15.webp?1783947115",
+    "display": "https://cards.scryfall.io/display/front/f/d/fd25787d-b90c-4b25-8259-1ac41d4dcd15.webp?1783947115",
+    "art": "https://cards.scryfall.io/art/front/f/d/fd25787d-b90c-4b25-8259-1ac41d4dcd15.webp?1783947115",
+    "crop": "https://cards.scryfall.io/crop/front/f/d/fd25787d-b90c-4b25-8259-1ac41d4dcd15.webp?1783947115",
+    "jpeg": "https://cards.scryfall.io/normal/front/f/d/fd25787d-b90c-4b25-8259-1ac41d4dcd15.jpg?1783947115"
+  },
+  "mana_cost": "{1}{W}",
+  "cmc": 2.0,
+  "type_line": "Creature — Wall",
+  "oracle_text": "Defender (This creature can't attack.)\nFlying\nAt the beginning of each end step, if this creature was dealt damage this turn, put a +0/+1 counter on it.",
+  "power": "0",
+  "toughness": "3",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Flying",
+    "Defender"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "5f06acf3-8123-4a78-b2e7-089b0b775a4a",
+  "set": "mir",
+  "set_name": "Mirage",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/5f06acf3-8123-4a78-b2e7-089b0b775a4a",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Amir&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/mir?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/fd25787d-b90c-4b25-8259-1ac41d4dcd15/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ae6f5f80c-2620-4558-8a5f-8fc36cea4793&unique=prints",
+  "collector_number": "46",
+  "digital": false,
+  "rarity": "common",
+  "flavor_text": "Telim'Tor could no longer recall the exact number of assaults—but his troops could.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Harold McNeill",
+  "artist_ids": [
+    "8aadc8a8-df50-45b3-bd88-449e709df482"
+  ],
+  "illustration_id": "64e696ac-d2d3-4363-8b8f-a774ce3b21e1",
+  "border_color": "black",
+  "frame": "1997",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 21772,
+  "penny_rank": 18268,
+  "prices": {
+    "usd": "0.24",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.21",
+    "eur_foil": null,
+    "tix": "0.04"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=3521&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DWall%2Bof%2BResistance",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DWall%2Bof%2BResistance",
+    "edhrec": "https://edhrec.com/route/?cc=Wall+of+Resistance"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F5290%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=8301&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/7425?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

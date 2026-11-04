@@ -1,0 +1,45 @@
+{
+  "oracle_id": "fd666669-ad23-4e41-b78c-1cd7b82eb8b4",
+  "name": "Felothar, Dawn of the Abzan",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Felothar, Dawn of the Abzan",
+      "oracle_fingerprint": "c15b22f4587e9a233398940031c5e2ac",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "Attacks": { "what": ["This"] } }
+              ]
+            },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "Sacrifice": { "filter": [{ "Not": { "Type": "Land" } }] } }],
+                  "paid": [
+                    {
+                      "Reflexive": {
+                        "effects": [
+                          {
+                            "PutCounters": {
+                              "on": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                              "counter": "+1/+1"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

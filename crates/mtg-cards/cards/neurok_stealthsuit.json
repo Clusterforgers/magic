@@ -1,0 +1,24 @@
+{
+  "oracle_id": "cee06ea6-8bad-4858-b78e-04879a825bbe",
+  "name": "Neurok Stealthsuit",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Neurok Stealthsuit",
+      "oracle_fingerprint": "207feeff6b9d84701f422da8242ab26b",
+      "abilities": [
+        { "Static": { "affected": "Attached", "mods": [{ "AddKeyword": "Shroud" }] } },
+        {
+          "Activated": {
+            "cost": "{U}{U}",
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [{ "Attach": { "what": "This", "to": { "Target": 0 } } }]
+          }
+        },
+        { "Keyword": { "Equip": "{1}" } }
+      ]
+    }
+  ]
+}

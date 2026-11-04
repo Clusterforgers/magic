@@ -1,0 +1,47 @@
+{
+  "oracle_id": "f2e106c6-7666-42cd-9a02-e51327fb80e8",
+  "name": "Mammoth Harness",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mammoth Harness",
+      "oracle_fingerprint": "78d4eb01f2d58153a9d6e4fbd63939a6",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        { "Static": { "affected": "Attached", "mods": [{ "RemoveKeyword": "Flying" }] } },
+        {
+          "Triggered": {
+            "when": {
+              "BecomesBlocked": { "what": [{ "Type": "Creature" }], "by": [{ "Is": "Attached" }] }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Triggering",
+                  "mods": [{ "AddKeyword": "FirstStrike" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "BecomesBlocked": { "what": [{ "Is": "Attached" }], "by": [{ "Type": "Creature" }] }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Triggering",
+                  "mods": [{ "AddKeyword": "FirstStrike" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

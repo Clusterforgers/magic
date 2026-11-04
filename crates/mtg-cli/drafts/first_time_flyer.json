@@ -1,0 +1,29 @@
+{
+  "oracle_id": "cbbea4e2-4b36-4965-89b6-00d2a564f146",
+  "name": "First-Time Flyer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "First-Time Flyer",
+      "oracle_fingerprint": "bc02b7491eaf61a3131b56a0f5105012",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [{ "Subtype": "Lesson" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

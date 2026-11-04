@@ -1,0 +1,33 @@
+{
+  "oracle_id": "a871b03e-0218-4c15-8ad8-c8284b5be45f",
+  "name": "Opaline Sliver",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Opaline Sliver",
+      "oracle_fingerprint": "028ffc2fb44ad84d917cb2ea59d69558",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Sliver" }] },
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Triggered": {
+                    "when": {
+                      "BecomesTarget": {
+                        "what": ["This"],
+                        "by": ["Spell", { "ControlledBy": "Opponents" }]
+                      }
+                    },
+                    "effects": [{ "May": { "effects": [{ "Draw": {} }] } }]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

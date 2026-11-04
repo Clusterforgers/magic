@@ -1,0 +1,39 @@
+{
+  "oracle_id": "15febce7-8320-4591-9535-ef11c8adecc2",
+  "name": "Barbed Bloodletter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Barbed Bloodletter",
+      "oracle_fingerprint": "09ac7ff875dc142cd7340ae2ab753f83",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              { "Attach": { "what": "This", "to": { "Target": 0 } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Wither" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 2 } }]
+          }
+        },
+        { "Keyword": { "Equip": "{2}" } }
+      ]
+    }
+  ]
+}

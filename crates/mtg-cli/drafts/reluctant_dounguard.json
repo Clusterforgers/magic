@@ -1,0 +1,37 @@
+{
+  "oracle_id": "162dcfa0-36e4-41cd-8322-08e810ff04d4",
+  "name": "Reluctant Dounguard",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Reluctant Dounguard",
+      "oracle_fingerprint": "4977e9d3807b20cab5f27a201713cfac",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "-1/-1", "count": 2 } }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "if": {
+              "Compare": {
+                "left": { "Count": ["This", { "HasCounter": "-1/-1" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "RemoveCounters": { "from": "This", "counter": "-1/-1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

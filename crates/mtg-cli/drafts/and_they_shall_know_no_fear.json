@@ -1,0 +1,36 @@
+{
+  "oracle_id": "0ea6d165-2c30-41a4-8829-6d0510afc03f",
+  "name": "And They Shall Know No Fear",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "And They Shall Know No Fear",
+      "oracle_fingerprint": "735f7158ef7f564123bd38a4197c131c",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "ChooseValue": { "kind": "CreatureType", "as": "chosen" } },
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "ControlledBy": "You" },
+                      { "ChosenAs": "chosen" }
+                    ]
+                  },
+                  "mods": [
+                    { "ModifyPT": { "power": 1, "toughness": 0 } },
+                    { "AddKeyword": "Indestructible" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

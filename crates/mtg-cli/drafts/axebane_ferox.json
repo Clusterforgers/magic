@@ -1,0 +1,16 @@
+{
+  "oracle_id": "35b3ae1c-4116-49b0-89a9-7332fe9bbff0",
+  "name": "Axebane Ferox",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Axebane Ferox",
+      "oracle_fingerprint": "3644357c3300e529b664902a33250880",
+      "abilities": [
+        { "Keyword": "Deathtouch" },
+        { "Keyword": "Haste" },
+        { "Keyword": { "Ward": [{ "CollectEvidence": 4 }] } }
+      ]
+    }
+  ]
+}

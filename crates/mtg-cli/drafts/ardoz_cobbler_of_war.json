@@ -1,0 +1,71 @@
+{
+  "oracle_id": "bcd5e175-2ef0-48f4-b9bd-14383dd234e0",
+  "name": "Ardoz, Cobbler of War",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ardoz, Cobbler of War",
+      "oracle_fingerprint": "32dc5e3570207438932efd124cbc44a4",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  {
+                    "AnyOf": [
+                      {
+                        "Not": {
+                          "AnyOf": [
+                            { "Not": { "Type": "Creature" } },
+                            { "Not": "Other" },
+                            { "Not": { "ControlledBy": "You" } }
+                          ]
+                        }
+                      },
+                      "This"
+                    ]
+                  }
+                ],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Triggering",
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{3}{R}",
+            "timing": "Sorcery",
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Goblin",
+                      "colors": ["Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Goblin"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Haste" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

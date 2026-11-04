@@ -1,0 +1,21 @@
+{
+  "oracle_id": "ab9f03b4-eb67-4709-904d-abf4d491f0ee",
+  "name": "Ash Zealot",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ash Zealot",
+      "oracle_fingerprint": "add07a64224fbde732ca4dc9e7571b5a",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "WasCast": { "from": "Graveyard" } }] } },
+            "effects": [{ "DealDamage": { "to": { "ControllerOf": "Triggering" }, "amount": 3 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "oracle_id": "233c6686-ead8-4569-941d-3bfa768ff270",
+  "name": "Aku Djinn",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Aku Djinn",
+      "oracle_fingerprint": "f51f5087fc0bfa65d5b963045018fc3a",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] },
+                  "counter": "+1/+1"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

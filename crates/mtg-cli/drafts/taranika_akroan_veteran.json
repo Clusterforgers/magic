@@ -1,0 +1,35 @@
+{
+  "oracle_id": "1e3c1920-7bf5-44f9-b1ff-b17d6420e69b",
+  "name": "Taranika, Akroan Veteran",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Taranika, Akroan Veteran",
+      "oracle_fingerprint": "17e9f1248932c08530fde2a4174402b8",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              { "Untap": { "what": { "Target": 0 } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "SetPT": { "power": 4, "toughness": 4 } },
+                    { "AddKeyword": "Indestructible" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

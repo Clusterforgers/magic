@@ -1,0 +1,133 @@
+{
+  "object": "card",
+  "id": "bbae1eb8-697d-43e1-b03e-f4246a9f225e",
+  "oracle_id": "bbe3726b-e14d-48d1-8bbf-40d48f1ef8c7",
+  "multiverse_ids": [
+    417708
+  ],
+  "mtgo_id": 61981,
+  "mtgo_foil_id": 61982,
+  "tcgplayer_id": 122673,
+  "cardmarket_id": 292473,
+  "name": "Start Your Engines",
+  "lang": "en",
+  "released_at": "2016-09-30",
+  "uri": "https://api.scryfall.com/cards/bbae1eb8-697d-43e1-b03e-f4246a9f225e",
+  "scryfall_uri": "https://scryfall.com/card/kld/135/start-your-engines?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T10:06:27Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/b/b/bbae1eb8-697d-43e1-b03e-f4246a9f225e.jpg?1783937187",
+    "normal": "https://cards.scryfall.io/normal/front/b/b/bbae1eb8-697d-43e1-b03e-f4246a9f225e.jpg?1783937187",
+    "large": "https://cards.scryfall.io/large/front/b/b/bbae1eb8-697d-43e1-b03e-f4246a9f225e.jpg?1783937187",
+    "png": "https://cards.scryfall.io/png/front/b/b/bbae1eb8-697d-43e1-b03e-f4246a9f225e.png?1783937187",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/b/b/bbae1eb8-697d-43e1-b03e-f4246a9f225e.jpg?1783937187",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/b/b/bbae1eb8-697d-43e1-b03e-f4246a9f225e.jpg?1783937187",
+    "thumb": "https://cards.scryfall.io/thumb/front/b/b/bbae1eb8-697d-43e1-b03e-f4246a9f225e.webp?1783937187",
+    "grid": "https://cards.scryfall.io/grid/front/b/b/bbae1eb8-697d-43e1-b03e-f4246a9f225e.webp?1783937187",
+    "display": "https://cards.scryfall.io/display/front/b/b/bbae1eb8-697d-43e1-b03e-f4246a9f225e.webp?1783937187",
+    "art": "https://cards.scryfall.io/art/front/b/b/bbae1eb8-697d-43e1-b03e-f4246a9f225e.webp?1783937187",
+    "crop": "https://cards.scryfall.io/crop/front/b/b/bbae1eb8-697d-43e1-b03e-f4246a9f225e.webp?1783937187",
+    "jpeg": "https://cards.scryfall.io/normal/front/b/b/bbae1eb8-697d-43e1-b03e-f4246a9f225e.jpg?1783937187"
+  },
+  "mana_cost": "{3}{R}",
+  "cmc": 4.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Vehicles you control become artifact creatures until end of turn. Creatures you control get +2/+0 until end of turn.",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "d667e468-be8f-411f-a030-473d148deb74",
+  "set": "kld",
+  "set_name": "Kaladesh",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/d667e468-be8f-411f-a030-473d148deb74",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Akld&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/kld?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/bbae1eb8-697d-43e1-b03e-f4246a9f225e/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Abbe3726b-e14d-48d1-8bbf-40d48f1ef8c7&unique=prints",
+  "collector_number": "135",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "Inventors from around the world have come to the Fair hoping their creations will fly, drive, or sail their way to a top prize.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Darek Zabrocki",
+  "artist_ids": [
+    "904ed2e7-9850-4472-802f-2657c53dd4d8"
+  ],
+  "illustration_id": "6db2fe33-323f-4ab6-9aec-2dc85ec7db0e",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 12137,
+  "penny_rank": 5823,
+  "prices": {
+    "usd": "0.31",
+    "usd_foil": "1.24",
+    "usd_etched": null,
+    "eur": "0.15",
+    "eur_foil": "0.44",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=417708&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DStart%2BYour%2BEngines",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DStart%2BYour%2BEngines",
+    "edhrec": "https://edhrec.com/route/?cc=Start+Your+Engines"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F122673%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=292473&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/61981?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

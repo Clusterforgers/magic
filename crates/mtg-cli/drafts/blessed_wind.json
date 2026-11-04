@@ -1,0 +1,19 @@
+{
+  "oracle_id": "93da4a35-d2d8-476c-ad03-318101c0118b",
+  "name": "Blessed Wind",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Blessed Wind",
+      "oracle_fingerprint": "a4be8e101076f468ca36635218d169c0",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [{ "SetLife": { "who": { "Target": 0 }, "amount": 20 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "oracle_id": "6b4ee935-4474-4757-9fab-978a2e1e72a0",
+  "name": "Tribal Unity",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tribal Unity",
+      "oracle_fingerprint": "229ed83a371237f74782350bd2818115",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "ChooseValue": { "kind": "CreatureType", "as": "chosen" } },
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ChosenAs": "chosen" }] },
+                  "mods": [{ "ModifyPT": { "power": "X", "toughness": "X" } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "oracle_id": "927d74c4-afe0-4856-9a02-c3fca9535c2f",
+  "name": "Farideh's Fireball",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Farideh's Fireball",
+      "oracle_fingerprint": "640d700d4abf4eb59344ab4fd5a08c20",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }]
+                }
+              }
+            ],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 5 } },
+              {
+                "RollDice": {
+                  "sides": 20,
+                  "results": [
+                    {
+                      "from": 1,
+                      "to": 9,
+                      "effects": [{ "DealDamage": { "to": "EachPlayer", "amount": 2 } }]
+                    },
+                    {
+                      "from": 10,
+                      "to": 20,
+                      "effects": [{ "DealDamage": { "to": "Opponents", "amount": 2 } }]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

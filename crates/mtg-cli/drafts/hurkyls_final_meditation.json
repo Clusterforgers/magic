@@ -1,0 +1,21 @@
+{
+  "oracle_id": "a2099033-42d9-47ac-90c7-b41b55b7dadd",
+  "name": "Hurkyl's Final Meditation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hurkyl's Final Meditation",
+      "oracle_fingerprint": "98b131e3b36f860dcc216c9474d329c1",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Move": { "what": { "Each": [{ "Not": { "Type": "Land" } }] }, "to": "Hand" } },
+              "EndTurn"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

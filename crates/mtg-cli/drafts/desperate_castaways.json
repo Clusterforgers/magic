@@ -1,0 +1,26 @@
+{
+  "oracle_id": "0432e07d-baf6-4c20-8646-08338c7dc950",
+  "name": "Desperate Castaways",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Desperate Castaways",
+      "oracle_fingerprint": "030dabbf835c371f86af418e20a34989",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": ["CantAttack"],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Type": "Artifact" }, { "ControlledBy": "You" }] },
+                "op": "Eq",
+                "right": 0
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

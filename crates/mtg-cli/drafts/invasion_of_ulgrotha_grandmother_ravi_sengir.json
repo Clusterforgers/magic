@@ -1,0 +1,56 @@
+{
+  "oracle_id": "f1acb469-9d02-44e6-8c09-8b4157551b2c",
+  "name": "Invasion of Ulgrotha // Grandmother Ravi Sengir",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Invasion of Ulgrotha",
+      "oracle_fingerprint": "9143cc147cf5a447b1ed1b7451ebc28c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Either": [
+                    { "Object": [{ "Type": "Creature" }, "Other"] },
+                    "Player",
+                    { "Object": [{ "Type": "Planeswalker" }, "Other"] },
+                    { "Object": [{ "Type": "Battle" }, "Other"] }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 3 } },
+              { "GainLife": { "amount": 3 } }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Grandmother Ravi Sengir",
+      "oracle_fingerprint": "0dcb6d444e6591b2e1d103f752df8b38",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": "+1/+1" } },
+              { "GainLife": { "amount": 1 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

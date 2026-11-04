@@ -1,0 +1,41 @@
+{
+  "oracle_id": "fe0fcb4e-92fd-4e64-99d1-043092ea21e3",
+  "name": "Jace, Ingenious Mind-Mage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jace, Ingenious Mind-Mage",
+      "oracle_fingerprint": "fa4c9b925bc334f580a1533ccc81703e",
+      "abilities": [
+        { "Loyalty": { "cost": { "Plus": 1 }, "effects": [{ "Draw": {} }] } },
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "effects": [
+              {
+                "Untap": { "what": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 9 },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 0, "max": 3 } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

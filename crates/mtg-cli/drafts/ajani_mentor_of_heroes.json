@@ -1,0 +1,63 @@
+{
+  "oracle_id": "a612bd38-069f-4bdc-9aa6-c172435e3841",
+  "name": "Ajani, Mentor of Heroes",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ajani, Mentor of Heroes",
+      "oracle_fingerprint": "8cffb00d69c8993b05753a5fea8376e3",
+      "abilities": [
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                "bounds": { "min": 1, "max": 3 },
+                "divide": 3
+              }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1", "count": "Divided" } }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "effects": [
+              { "LookAtTop": { "count": 4, "as": "top" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      {
+                        "AnyOf": [
+                          { "Subtype": "Aura" },
+                          { "Type": "Creature" },
+                          { "Type": "Planeswalker" }
+                        ]
+                      }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "kept2"
+                }
+              },
+              { "Move": { "what": { "Bound": "kept2" }, "to": "Hand" } },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Bottom", "order": "Chosen" } }
+                }
+              }
+            ]
+          }
+        },
+        { "Loyalty": { "cost": { "Minus": 8 }, "effects": [{ "GainLife": { "amount": 100 } }] } }
+      ]
+    }
+  ]
+}

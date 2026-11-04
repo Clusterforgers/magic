@@ -1,0 +1,26 @@
+{
+  "oracle_id": "ce009bd4-5ffb-46a4-a9dd-b9c060926467",
+  "name": "Moonlit Lamenter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Moonlit Lamenter",
+      "oracle_fingerprint": "5754134e4018cf98fc76da5150905201",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "-1/-1", "count": 1 } }
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{W}" }, { "RemoveCounters": {} }],
+            "timing": "Sorcery",
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

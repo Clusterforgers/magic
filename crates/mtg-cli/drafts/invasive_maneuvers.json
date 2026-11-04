@@ -1,0 +1,40 @@
+{
+  "oracle_id": "4c376349-1a50-4215-8a40-f702da81eb7b",
+  "name": "Invasive Maneuvers",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Invasive Maneuvers",
+      "oracle_fingerprint": "a81edf7dbf7e05ad3aae96ccac1d7318",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": {
+                    "When": {
+                      "condition": {
+                        "Compare": {
+                          "left": {
+                            "Count": [{ "Subtype": "Spacecraft" }, { "ControlledBy": "You" }]
+                          },
+                          "op": "Ge",
+                          "right": 1
+                        }
+                      },
+                      "then": 5,
+                      "otherwise": 3
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

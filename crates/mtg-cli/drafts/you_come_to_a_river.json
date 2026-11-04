@@ -1,0 +1,48 @@
+{
+  "oracle_id": "9913da11-07f0-494a-8c47-11629dcb5be2",
+  "name": "You Come to a River",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "You Come to a River",
+      "oracle_fingerprint": "0f2fc12c7febdd8db613faf984e3408d",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [{ "what": { "Object": [{ "Not": { "Type": "Land" } }] } }],
+                      "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+                    },
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": { "Target": 0 },
+                            "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        },
+                        {
+                          "Continuous": {
+                            "affected": { "Target": 0 },
+                            "mods": ["CantBeBlocked"],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

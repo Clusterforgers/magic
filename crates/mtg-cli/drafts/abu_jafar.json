@@ -1,0 +1,31 @@
+{
+  "oracle_id": "a2404d88-0621-49ae-9908-052c23a96ac6",
+  "name": "Abu Ja'far",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Abu Ja'far",
+      "oracle_fingerprint": "74a2040e3cd378c787b9f702ff2be57d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              {
+                "Destroy": {
+                  "what": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "AnyOf": [{ "Blocks": "This" }, { "BlockedBy": "This" }] }
+                    ]
+                  },
+                  "regenerate": false
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

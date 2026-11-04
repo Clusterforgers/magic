@@ -1,0 +1,27 @@
+{
+  "oracle_id": "049d2e18-8fa9-44d9-8618-f675592cb624",
+  "name": "Deglamer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Deglamer",
+      "oracle_fingerprint": "f8b22452a45dda6d0b11d673873645b8",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Enchantment" }] }]
+                }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Library": { "place": "Shuffled" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

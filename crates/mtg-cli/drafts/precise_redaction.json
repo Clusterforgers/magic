@@ -1,0 +1,25 @@
+{
+  "oracle_id": "c251b676-0e98-4047-bed1-d72c83aa8da0",
+  "name": "Precise Redaction",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Precise Redaction",
+      "oracle_fingerprint": "a317a6b4a012bfe9c4eeedf5594f60a9",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": ["Spell", { "AnyOf": [{ "Color": "White" }, { "Color": "Black" }] }]
+                }
+              }
+            ],
+            "effects": [{ "Counter": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

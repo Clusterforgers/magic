@@ -1,0 +1,21 @@
+{
+  "oracle_id": "12971527-aa8e-4517-9b00-71474caebfd0",
+  "name": "Azorius Aethermage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Azorius Aethermage",
+      "oracle_fingerprint": "6283b61cd987b0f6b49bd0f1191e717b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": { "what": [{ "OwnedBy": "You" }], "from": "Battlefield", "to": "Hand" }
+            },
+            "effects": [{ "Pay": { "cost": "{1}", "paid": [{ "Draw": {} }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "oracle_id": "023e26d8-b67d-43dd-89b1-8905b1183094",
+  "name": "Ma Chao, Western Warrior",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ma Chao, Western Warrior",
+      "oracle_fingerprint": "1ae636da189b6af49c2daa4273a9d548",
+      "abilities": [
+        { "Keyword": "Horsemanship" },
+        {
+          "Triggered": {
+            "when": { "AttacksAlone": { "what": ["This"] } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": ["CantBeBlocked"],
+                  "duration": "UntilEndOfCombat"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "oracle_id": "aaa8377e-21de-4c63-a26a-c25d986a272d",
+  "name": "Giant's Skewer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Giant's Skewer",
+      "oracle_fingerprint": "20d09f849c322c6a11d3413c6c8539a2",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 1 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [{ "Type": "Creature" }, { "Is": "Attached" }],
+                "to": { "Each": [{ "Type": "Creature" }] },
+                "combat": true
+              }
+            },
+            "effects": [{ "CreateToken": { "token": { "Named": "food" } } }]
+          }
+        },
+        { "Keyword": { "Equip": "{3}" } }
+      ]
+    }
+  ]
+}

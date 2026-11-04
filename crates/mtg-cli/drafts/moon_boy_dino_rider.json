@@ -1,0 +1,41 @@
+{
+  "oracle_id": "bb7638ce-3802-4198-89d2-6f5b647bd8fb",
+  "name": "Moon-Boy, Dino Rider",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Moon-Boy, Dino Rider",
+      "oracle_fingerprint": "d1046ac74153421b314c86b4e16bbd26",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["Spell", { "Subtype": "Dinosaur" }, { "ControlledBy": "You" }],
+            "change": "Reduce",
+            "mana": "{1}"
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "if": {
+              "Compare": {
+                "left": { "Count": [{ "Subtype": "Dinosaur" }, { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

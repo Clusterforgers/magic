@@ -1,0 +1,35 @@
+{
+  "oracle_id": "30af656a-99ab-4e0a-81fe-3cdb0ea6a0cc",
+  "name": "Curious Forager",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Curious Forager",
+      "oracle_fingerprint": "85a1434c724d52825c4c6fa2b6c809a9",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": ["Forage"],
+                  "paid": [
+                    {
+                      "Reflexive": {
+                        "targets": [
+                          { "what": { "Object": [{ "OwnedBy": "You" }, { "In": "Graveyard" }] } }
+                        ],
+                        "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

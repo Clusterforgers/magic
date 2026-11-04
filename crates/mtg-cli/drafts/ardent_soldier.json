@@ -1,0 +1,22 @@
+{
+  "oracle_id": "a56d301b-8f4c-4f12-8ee0-34c6b66faee0",
+  "name": "Ardent Soldier",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ardent Soldier",
+      "oracle_fingerprint": "be73b738ca7f81f25f74b43d9c70f692",
+      "abilities": [
+        { "Keyword": { "Kicker": "{2}" } },
+        { "Keyword": "Vigilance" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": 1 } },
+            "condition": "Kicked"
+          }
+        }
+      ]
+    }
+  ]
+}

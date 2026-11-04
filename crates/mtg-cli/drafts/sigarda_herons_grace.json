@@ -1,0 +1,57 @@
+{
+  "oracle_id": "79b56cf8-d573-40cf-b797-6b4eef2bed23",
+  "name": "Sigarda, Heron's Grace",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sigarda, Heron's Grace",
+      "oracle_fingerprint": "5ce3aecf21fe07af0dcdd4e0d91e231c",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                {
+                  "AnyOf": [
+                    { "Subtype": "You" },
+                    {
+                      "Not": {
+                        "AnyOf": [
+                          { "Not": { "Subtype": "Human" } },
+                          { "Not": { "ControlledBy": "You" } }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            "mods": [{ "AddKeyword": "Hexproof" }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, { "ExileFromGraveyard": { "filter": [] } }],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Human Soldier",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Human", "Soldier"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

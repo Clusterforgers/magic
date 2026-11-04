@@ -1,0 +1,39 @@
+{
+  "oracle_id": "b8600894-3229-420e-9464-d92cf0a7d0fc",
+  "name": "Orca, Siege Demon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Orca, Siege Demon",
+      "oracle_fingerprint": "120e3128bb3a9ed59255f228a43f2967",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, "Other"],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "targets": [
+              {
+                "what": "AnyTarget",
+                "bounds": { "min": 0, "max": { "Stat": { "of": "Triggering", "stat": "Power" } } },
+                "divide": { "Stat": { "of": "Triggering", "stat": "Power" } }
+              }
+            ],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": "Divided" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

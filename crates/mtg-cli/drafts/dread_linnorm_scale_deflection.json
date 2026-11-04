@@ -1,0 +1,48 @@
+{
+  "oracle_id": "1bf04a2a-7f96-412c-9d91-034bef26e1b6",
+  "name": "Dread Linnorm // Scale Deflection",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dread Linnorm",
+      "oracle_fingerprint": "9f409bd4eab2e431b582952e44ff74f8",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "CantBeBlockedBy": [
+                  { "Type": "Creature" },
+                  { "Compare": { "stat": "Power", "op": "Le", "to": 3 } }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Scale Deflection",
+      "oracle_fingerprint": "040177ecaeedd95eb15d36044cd861a0",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1", "count": 2 } },
+              { "Untap": { "what": { "Target": 0 } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Hexproof" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

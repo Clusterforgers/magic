@@ -1,0 +1,27 @@
+{
+  "oracle_id": "9e5de2ed-e8a1-4d52-832f-c4a1bfdf2ae5",
+  "name": "Forgotten Harvest",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Forgotten Harvest",
+      "oracle_fingerprint": "7f6849a679ac3a79285f3b7e480a7767",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "ExileFromGraveyard": { "filter": [{ "Type": "Land" }] } }],
+                  "paid": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

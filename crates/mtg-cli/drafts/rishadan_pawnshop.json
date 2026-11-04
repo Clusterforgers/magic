@@ -1,0 +1,22 @@
+{
+  "oracle_id": "9eef1d16-4405-40e0-8b8b-008e08aac4ac",
+  "name": "Rishadan Pawnshop",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rishadan Pawnshop",
+      "oracle_fingerprint": "78704ce491c3e87ac76eb6be190a09e9",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap"],
+            "targets": [{ "what": { "Object": [{ "Not": "Token" }, { "ControlledBy": "You" }] } }],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Library": { "place": "Shuffled" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

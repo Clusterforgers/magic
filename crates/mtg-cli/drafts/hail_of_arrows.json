@@ -1,0 +1,25 @@
+{
+  "oracle_id": "37429f88-e29b-4b1b-90fd-23a04d703c0a",
+  "name": "Hail of Arrows",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hail of Arrows",
+      "oracle_fingerprint": "5eb0eacf44ba921b4a827d8b2d43bb3d",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, "Attacking"] },
+                "bounds": { "min": 0, "max": { "Count": [{ "Type": "Creature" }, "Attacking"] } },
+                "divide": "X"
+              }
+            ],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": "Divided" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

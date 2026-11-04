@@ -1,0 +1,22 @@
+{
+  "oracle_id": "bc5a7015-c13b-4d92-8afe-50b7956c14dd",
+  "name": "Dormant Gomazoa",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dormant Gomazoa",
+      "oracle_fingerprint": "14abb41780846c7d7b4bcc38d19237dd",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        { "Static": { "affected": "This", "mods": ["DoesntUntap"] } },
+        {
+          "Triggered": {
+            "when": { "BecomesTarget": { "what": [{ "Subtype": "You" }], "by": ["Spell"] } },
+            "effects": [{ "May": { "effects": [{ "Untap": { "what": "This" } }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "oracle_id": "ce19b337-9266-471d-bec3-49eb7f0e62ac",
+  "name": "Selfless Safewright",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Selfless Safewright",
+      "oracle_fingerprint": "f04f1551aa1e0616f4565ca41e00ef98",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": "Convoke" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "ChooseValue": { "kind": "CreatureType", "as": "chosen" } },
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [{ "ControlledBy": "You" }, "Other", { "ChosenAs": "chosen" }]
+                  },
+                  "mods": [{ "AddKeyword": "Hexproof" }, { "AddKeyword": "Indestructible" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

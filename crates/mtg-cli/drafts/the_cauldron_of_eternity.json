@@ -1,0 +1,56 @@
+{
+  "oracle_id": "a7308a1f-ec46-478e-86ea-33b2ebbd995f",
+  "name": "The Cauldron of Eternity",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Cauldron of Eternity",
+      "oracle_fingerprint": "1868559825266b479f329ab235d475af",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{1}",
+            "per": {
+              "Times": {
+                "by": 2,
+                "of": {
+                  "Count": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                }
+              }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              { "Move": { "what": "Triggering", "to": { "Library": { "place": "Bottom" } } } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{B}" }, "Tap", { "PayLife": 2 }],
+            "timing": "Sorcery",
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

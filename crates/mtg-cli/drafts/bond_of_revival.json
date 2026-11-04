@@ -1,0 +1,34 @@
+{
+  "oracle_id": "62cca25f-3bf7-4b67-97d5-280bf2544722",
+  "name": "Bond of Revival",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bond of Revival",
+      "oracle_fingerprint": "8372d2e3e7cfd84702ada0376114a07b",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "UntilYourNextTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

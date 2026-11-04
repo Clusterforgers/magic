@@ -1,0 +1,27 @@
+{
+  "oracle_id": "eca32dcd-6845-433e-a631-ed1f0ee78f25",
+  "name": "Imoti, Celebrant of Bounty",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Imoti, Celebrant of Bounty",
+      "oracle_fingerprint": "06fe780dcc6172b7cec4f735d538a3c0",
+      "abilities": [
+        { "Keyword": "Cascade" },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "ControlledBy": "You" },
+                { "Compare": { "stat": "ManaValue", "op": "Ge", "to": 6 } },
+                { "WasCast": {} },
+                { "In": "Stack" }
+              ]
+            },
+            "mods": [{ "AddKeyword": "Cascade" }]
+          }
+        }
+      ]
+    }
+  ]
+}

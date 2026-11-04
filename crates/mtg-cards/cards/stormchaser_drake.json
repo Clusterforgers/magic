@@ -1,0 +1,22 @@
+{
+  "oracle_id": "a9530416-d5fb-4ddd-ae6f-0eefb9f276c5",
+  "name": "Stormchaser Drake",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stormchaser Drake",
+      "oracle_fingerprint": "1ee9db8c2cfb48ebb02431e72d3e9289",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "BecomesTarget": { "what": ["This"], "by": ["Spell", { "ControlledBy": "You" }] }
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

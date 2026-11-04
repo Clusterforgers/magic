@@ -1,0 +1,51 @@
+{
+  "oracle_id": "5846718c-7d31-4d2c-80a2-b1534e2aebc1",
+  "name": "Summon: Shiva",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Summon: Shiva",
+      "oracle_fingerprint": "63d04a106bfdbdc51092c461acdca03b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              { "Tap": { "what": { "Target": 0 } } },
+              { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "stun" } } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              { "Tap": { "what": { "Target": 0 } } },
+              { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "stun" } } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "effects": [
+              {
+                "Draw": {
+                  "count": {
+                    "Count": [{ "Type": "Creature" }, "Tapped", { "ControlledBy": "Opponents" }]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "oracle_id": "c593f66d-0e9a-4d46-a9c6-ac7a70bf17ea",
+  "name": "Wing Storm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wing Storm",
+      "oracle_fingerprint": "f4b39a3fd645afe7e52780b8cda9b80b",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "each",
+                  "effects": [
+                    {
+                      "DealDamage": {
+                        "to": { "Bound": "each" },
+                        "amount": {
+                          "Times": {
+                            "by": 2,
+                            "of": {
+                              "Count": [
+                                { "Type": "Creature" },
+                                { "HasKeyword": "Flying" },
+                                { "ControlledBy": { "Bound": "each" } }
+                              ]
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,135 @@
+{
+  "object": "card",
+  "id": "6e38de33-b2f1-40f4-bf3c-2ebc738cf8ad",
+  "oracle_id": "8aae6f84-02ac-4f8f-9721-b12138588b6b",
+  "multiverse_ids": [
+    416963
+  ],
+  "tcgplayer_id": 121905,
+  "cardmarket_id": 291937,
+  "name": "Shipwreck Singer",
+  "lang": "en",
+  "released_at": "2016-08-26",
+  "uri": "https://api.scryfall.com/cards/6e38de33-b2f1-40f4-bf3c-2ebc738cf8ad",
+  "scryfall_uri": "https://scryfall.com/card/cn2/206/shipwreck-singer?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T10:08:06Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/6/e/6e38de33-b2f1-40f4-bf3c-2ebc738cf8ad.jpg?1783937286",
+    "normal": "https://cards.scryfall.io/normal/front/6/e/6e38de33-b2f1-40f4-bf3c-2ebc738cf8ad.jpg?1783937286",
+    "large": "https://cards.scryfall.io/large/front/6/e/6e38de33-b2f1-40f4-bf3c-2ebc738cf8ad.jpg?1783937286",
+    "png": "https://cards.scryfall.io/png/front/6/e/6e38de33-b2f1-40f4-bf3c-2ebc738cf8ad.png?1783937286",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/6/e/6e38de33-b2f1-40f4-bf3c-2ebc738cf8ad.jpg?1783937286",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/6/e/6e38de33-b2f1-40f4-bf3c-2ebc738cf8ad.jpg?1783937286",
+    "thumb": "https://cards.scryfall.io/thumb/front/6/e/6e38de33-b2f1-40f4-bf3c-2ebc738cf8ad.webp?1783937286",
+    "grid": "https://cards.scryfall.io/grid/front/6/e/6e38de33-b2f1-40f4-bf3c-2ebc738cf8ad.webp?1783937286",
+    "display": "https://cards.scryfall.io/display/front/6/e/6e38de33-b2f1-40f4-bf3c-2ebc738cf8ad.webp?1783937286",
+    "art": "https://cards.scryfall.io/art/front/6/e/6e38de33-b2f1-40f4-bf3c-2ebc738cf8ad.webp?1783937286",
+    "crop": "https://cards.scryfall.io/crop/front/6/e/6e38de33-b2f1-40f4-bf3c-2ebc738cf8ad.webp?1783937286",
+    "jpeg": "https://cards.scryfall.io/normal/front/6/e/6e38de33-b2f1-40f4-bf3c-2ebc738cf8ad.jpg?1783937286"
+  },
+  "mana_cost": "{U}{B}",
+  "cmc": 2.0,
+  "type_line": "Creature — Siren",
+  "oracle_text": "Flying\n{1}{U}: Target creature an opponent controls attacks this turn if able.\n{1}{B}, {T}: Attacking creatures get -1/-1 until end of turn.",
+  "power": "1",
+  "toughness": "2",
+  "colors": [
+    "B",
+    "U"
+  ],
+  "color_identity": [
+    "B",
+    "U"
+  ],
+  "keywords": [
+    "Flying"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "ad1b8847-1905-4080-9e26-80691ea7c1ef",
+  "set": "cn2",
+  "set_name": "Conspiracy: Take the Crown",
+  "set_type": "draft_innovation",
+  "set_uri": "https://api.scryfall.com/sets/ad1b8847-1905-4080-9e26-80691ea7c1ef",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Acn2&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/cn2?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/6e38de33-b2f1-40f4-bf3c-2ebc738cf8ad/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A8aae6f84-02ac-4f8f-9721-b12138588b6b&unique=prints",
+  "collector_number": "206",
+  "digital": false,
+  "rarity": "uncommon",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Daarken",
+  "artist_ids": [
+    "e607a0d4-fc12-4c01-9e3f-501f5269b9cb"
+  ],
+  "illustration_id": "a9cc4226-35da-4120-a8d3-5dcbbbbc4581",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 26747,
+  "penny_rank": 12973,
+  "prices": {
+    "usd": "0.06",
+    "usd_foil": "0.25",
+    "usd_etched": null,
+    "eur": "0.02",
+    "eur_foil": "0.26",
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=416963&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DShipwreck%2BSinger",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DShipwreck%2BSinger",
+    "edhrec": "https://edhrec.com/route/?cc=Shipwreck+Singer"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F121905%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=291937&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Shipwreck+Singer&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "oracle_id": "ddb44519-1345-4990-a8a5-30e91d274a35",
+  "name": "Tattoo Ward",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tattoo Ward",
+      "oracle_fingerprint": "fae0d916da6661fdf210f41ee359f88d",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "ModifyPT": { "power": 1, "toughness": 1 } },
+              { "AddKeyword": { "Protection": [{ "Type": "Enchantment" }] } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["SacrificeSelf"],
+            "targets": [{ "what": { "Object": [{ "Type": "Enchantment" }] } }],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

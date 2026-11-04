@@ -1,0 +1,27 @@
+{
+  "oracle_id": "c9a45c28-826e-4e6e-8adc-1368ea1af11a",
+  "name": "Ultima",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ultima",
+      "oracle_fingerprint": "36988f1458422046ab846f2499f75cde",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Destroy": {
+                  "what": {
+                    "Each": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] }]
+                  }
+                }
+              },
+              "EndTurn"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

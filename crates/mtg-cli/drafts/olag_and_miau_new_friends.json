@@ -1,0 +1,58 @@
+{
+  "oracle_id": "d117825e-fb7d-44dc-a17d-71bd610a6078",
+  "name": "Olag and Miau, New Friends",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Olag and Miau, New Friends",
+      "oracle_fingerprint": "59ed046e1ce191b99ba1294c72f0a557",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Subtype": "Zombie" }, "Other", { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "targets": [{ "what": { "Object": [{ "Subtype": "Cat" }, { "ControlledBy": "You" }] } }],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Subtype": "Cat" }, "Other", { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "targets": [
+              { "what": { "Object": [{ "Subtype": "Zombie" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              {
+                "LoseLife": {
+                  "who": "Opponents",
+                  "amount": {
+                    "Count": [
+                      { "AnyOf": [{ "Subtype": "Cat" }, { "Subtype": "Zombie" }] },
+                      { "ControlledBy": "You" },
+                      "Tapped"
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

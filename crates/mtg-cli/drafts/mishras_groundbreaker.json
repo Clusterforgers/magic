@@ -1,0 +1,32 @@
+{
+  "oracle_id": "84fecd54-c08a-4f5a-b2fa-b254069ccadb",
+  "name": "Mishra's Groundbreaker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mishra's Groundbreaker",
+      "oracle_fingerprint": "84dc99ecbfa76ed2ba93fd2e293889c7",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap", "SacrificeSelf"],
+            "targets": [{ "what": { "Object": [{ "Type": "Land" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "SetPT": { "power": 3, "toughness": 3 } },
+                    { "AddType": "Artifact" },
+                    { "AddType": "Creature" }
+                  ],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

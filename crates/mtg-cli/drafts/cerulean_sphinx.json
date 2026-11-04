@@ -1,0 +1,22 @@
+{
+  "oracle_id": "296de325-cc1a-4cfa-a72d-80a2a5e18d10",
+  "name": "Cerulean Sphinx",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cerulean Sphinx",
+      "oracle_fingerprint": "077b9ef15ec026e728704648d6ac3931",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": "{U}",
+            "effects": [
+              { "Move": { "what": "This", "to": { "Library": { "place": "Shuffled" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

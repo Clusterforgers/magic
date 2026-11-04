@@ -1,0 +1,35 @@
+{
+  "oracle_id": "5ebe8de1-aa3d-410d-b43d-1685259c7a97",
+  "name": "The Chief Warg",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Chief Warg",
+      "oracle_fingerprint": "fe2776ac07112499c2a47fbcc3b2cd6b",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+            },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "Type": "Creature" },
+                    { "ControlledBy": "You" },
+                    { "Compare": { "stat": "Power", "op": "Ge", "to": 4 } }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "Draw": {} }, { "LoseLife": { "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

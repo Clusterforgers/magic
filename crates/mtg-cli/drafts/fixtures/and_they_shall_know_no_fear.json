@@ -1,0 +1,139 @@
+{
+  "object": "card",
+  "id": "84d1bcef-907c-4c3a-8b52-6e633fa19667",
+  "oracle_id": "0ea6d165-2c30-41a4-8829-6d0510afc03f",
+  "multiverse_ids": [
+    580831
+  ],
+  "mtgo_id": 108490,
+  "tcgplayer_id": 286461,
+  "cardmarket_id": 675702,
+  "name": "And They Shall Know No Fear",
+  "lang": "en",
+  "released_at": "2022-10-07",
+  "uri": "https://api.scryfall.com/cards/84d1bcef-907c-4c3a-8b52-6e633fa19667",
+  "scryfall_uri": "https://scryfall.com/card/40k/9/and-they-shall-know-no-fear?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T05:35:49Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/8/4/84d1bcef-907c-4c3a-8b52-6e633fa19667.jpg?1783920949",
+    "normal": "https://cards.scryfall.io/normal/front/8/4/84d1bcef-907c-4c3a-8b52-6e633fa19667.jpg?1783920949",
+    "large": "https://cards.scryfall.io/large/front/8/4/84d1bcef-907c-4c3a-8b52-6e633fa19667.jpg?1783920949",
+    "png": "https://cards.scryfall.io/png/front/8/4/84d1bcef-907c-4c3a-8b52-6e633fa19667.png?1783920949",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/8/4/84d1bcef-907c-4c3a-8b52-6e633fa19667.jpg?1783920949",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/8/4/84d1bcef-907c-4c3a-8b52-6e633fa19667.jpg?1783920949",
+    "thumb": "https://cards.scryfall.io/thumb/front/8/4/84d1bcef-907c-4c3a-8b52-6e633fa19667.webp?1783920949",
+    "grid": "https://cards.scryfall.io/grid/front/8/4/84d1bcef-907c-4c3a-8b52-6e633fa19667.webp?1783920949",
+    "display": "https://cards.scryfall.io/display/front/8/4/84d1bcef-907c-4c3a-8b52-6e633fa19667.webp?1783920949",
+    "art": "https://cards.scryfall.io/art/front/8/4/84d1bcef-907c-4c3a-8b52-6e633fa19667.webp?1783920949",
+    "crop": "https://cards.scryfall.io/crop/front/8/4/84d1bcef-907c-4c3a-8b52-6e633fa19667.webp?1783920949",
+    "jpeg": "https://cards.scryfall.io/normal/front/8/4/84d1bcef-907c-4c3a-8b52-6e633fa19667.jpg?1783920949"
+  },
+  "mana_cost": "{1}{W}",
+  "cmc": 2.0,
+  "type_line": "Instant",
+  "oracle_text": "Choose a creature type. Creatures you control of the chosen type get +1/+0 and gain indestructible until end of turn.",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "f35f5dd8-5b95-4f52-bbe7-1c62909a8d08",
+  "set": "40k",
+  "set_name": "Warhammer 40,000 Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/f35f5dd8-5b95-4f52-bbe7-1c62909a8d08",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3A40k&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/40k?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/84d1bcef-907c-4c3a-8b52-6e633fa19667/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A0ea6d165-2c30-41a4-8829-6d0510afc03f&unique=prints",
+  "collector_number": "9",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "\"They are my bulwark against the Terror. They are the Defenders of Humanity. They are my Space Marines.\"\n—The Emperor of Mankind",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Games Workshop",
+  "artist_ids": [
+    "9456da4e-410b-4932-8bf3-a69a2da3cdc9"
+  ],
+  "illustration_id": "275bb019-a883-4303-988e-09b212a5a1e5",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 3783,
+  "preview": {
+    "source": "PC Gamer",
+    "source_uri": "https://www.pcgamer.com/exclusive-magic-the-gathering-warhammer-40000-card-reveal-and-they-shall-know-no-fear/",
+    "previewed_at": "2022-09-16"
+  },
+  "prices": {
+    "usd": "9.10",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "9.52",
+    "eur_foil": null,
+    "tix": "0.40"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=580831&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DAnd%2BThey%2BShall%2BKnow%2BNo%2BFear",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DAnd%2BThey%2BShall%2BKnow%2BNo%2BFear",
+    "edhrec": "https://edhrec.com/route/?cc=And+They+Shall+Know+No+Fear"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F286461%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=675702&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/108490?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

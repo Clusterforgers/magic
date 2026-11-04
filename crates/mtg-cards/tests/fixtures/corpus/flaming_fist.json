@@ -1,0 +1,139 @@
+{
+  "object": "card",
+  "id": "ec122c9f-5513-4ba7-ae04-3c2060121d73",
+  "oracle_id": "cdaefc96-4560-43bb-9514-bf87657bd481",
+  "multiverse_ids": [
+    562901
+  ],
+  "mtgo_id": 100028,
+  "tcgplayer_id": 272698,
+  "cardmarket_id": 659049,
+  "name": "Flaming Fist",
+  "lang": "en",
+  "released_at": "2022-06-10",
+  "uri": "https://api.scryfall.com/cards/ec122c9f-5513-4ba7-ae04-3c2060121d73",
+  "scryfall_uri": "https://scryfall.com/card/clb/18/flaming-fist?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T06:06:57Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/e/c/ec122c9f-5513-4ba7-ae04-3c2060121d73.jpg?1783922817",
+    "normal": "https://cards.scryfall.io/normal/front/e/c/ec122c9f-5513-4ba7-ae04-3c2060121d73.jpg?1783922817",
+    "large": "https://cards.scryfall.io/large/front/e/c/ec122c9f-5513-4ba7-ae04-3c2060121d73.jpg?1783922817",
+    "png": "https://cards.scryfall.io/png/front/e/c/ec122c9f-5513-4ba7-ae04-3c2060121d73.png?1783922817",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/e/c/ec122c9f-5513-4ba7-ae04-3c2060121d73.jpg?1783922817",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/e/c/ec122c9f-5513-4ba7-ae04-3c2060121d73.jpg?1783922817",
+    "thumb": "https://cards.scryfall.io/thumb/front/e/c/ec122c9f-5513-4ba7-ae04-3c2060121d73.webp?1783922817",
+    "grid": "https://cards.scryfall.io/grid/front/e/c/ec122c9f-5513-4ba7-ae04-3c2060121d73.webp?1783922817",
+    "display": "https://cards.scryfall.io/display/front/e/c/ec122c9f-5513-4ba7-ae04-3c2060121d73.webp?1783922817",
+    "art": "https://cards.scryfall.io/art/front/e/c/ec122c9f-5513-4ba7-ae04-3c2060121d73.webp?1783922817",
+    "crop": "https://cards.scryfall.io/crop/front/e/c/ec122c9f-5513-4ba7-ae04-3c2060121d73.webp?1783922817",
+    "jpeg": "https://cards.scryfall.io/normal/front/e/c/ec122c9f-5513-4ba7-ae04-3c2060121d73.jpg?1783922817"
+  },
+  "mana_cost": "{2}{W}",
+  "cmc": 3.0,
+  "type_line": "Legendary Enchantment — Background",
+  "oracle_text": "Commander creatures you own have \"Whenever this creature attacks, it gains double strike until end of turn.\"",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "5e4c3fe8-fd57-4b20-ad56-c03790a16cea",
+  "set": "clb",
+  "set_name": "Commander Legends: Battle for Baldur's Gate",
+  "set_type": "draft_innovation",
+  "set_uri": "https://api.scryfall.com/sets/5e4c3fe8-fd57-4b20-ad56-c03790a16cea",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aclb&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/clb?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/ec122c9f-5513-4ba7-ae04-3c2060121d73/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Acdaefc96-4560-43bb-9514-bf87657bd481&unique=prints",
+  "collector_number": "18",
+  "digital": false,
+  "rarity": "common",
+  "flavor_text": "You carry the security of Baldur's Gate on your shoulders, and you welcome the weight of responsibility.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Diego Gisbert",
+  "artist_ids": [
+    "3f4e975d-092c-40e4-b850-2d582bf4b5cb"
+  ],
+  "illustration_id": "ce9d35cb-1e1b-4cf8-86ba-8ca2da89388c",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 5137,
+  "preview": {
+    "source": "Wizards of the Coast",
+    "source_uri": "https://www.youtube.com/watch?v=j-tXZ1DwYIU",
+    "previewed_at": "2022-05-18"
+  },
+  "prices": {
+    "usd": "0.24",
+    "usd_foil": "0.29",
+    "usd_etched": null,
+    "eur": "0.10",
+    "eur_foil": "0.25",
+    "tix": "0.89"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=562901&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DFlaming%2BFist",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DFlaming%2BFist",
+    "edhrec": "https://edhrec.com/route/?cc=Flaming+Fist"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F272698%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=659049&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/100028?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

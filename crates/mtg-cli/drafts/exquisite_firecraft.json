@@ -1,0 +1,19 @@
+{
+  "oracle_id": "e83c617f-1e07-40db-9b12-ae01122a3e24",
+  "name": "Exquisite Firecraft",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Exquisite Firecraft",
+      "oracle_fingerprint": "52c9c0aa869b2cf759bd39344bc99310",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 4 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

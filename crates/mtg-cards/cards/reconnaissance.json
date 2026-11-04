@@ -1,0 +1,29 @@
+{
+  "oracle_id": "32599d7c-243b-447b-9d5d-e8e29830ac61",
+  "name": "Reconnaissance",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Reconnaissance",
+      "oracle_fingerprint": "c2f05eabb0d24e439f005d3142b37ecc",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{0}",
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, "Attacking", { "ControlledBy": "You" }]
+                }
+              }
+            ],
+            "effects": [
+              { "RemoveFromCombat": { "what": { "Target": 0 } } },
+              { "Untap": { "what": { "Target": 0 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

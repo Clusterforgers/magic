@@ -1,0 +1,28 @@
+{
+  "oracle_id": "6e2a695d-305a-4bbe-b302-11fdc5c2a451",
+  "name": "Rushing River",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rushing River",
+      "oracle_fingerprint": "fe8d2ddfc74c186acad6e884731d534f",
+      "abilities": [
+        { "Keyword": { "Kicker": [{ "Sacrifice": { "filter": [{ "Type": "Land" }] } }] } },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "Not": { "Type": "Land" } }] },
+                "bounds": {
+                  "min": { "When": { "condition": "Kicked", "then": 2, "otherwise": 1 } },
+                  "max": { "When": { "condition": "Kicked", "then": 2, "otherwise": 1 } }
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

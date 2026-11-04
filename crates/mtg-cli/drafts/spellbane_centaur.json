@@ -1,0 +1,23 @@
+{
+  "oracle_id": "81de0cb1-6665-41eb-8dfc-bb30192e1359",
+  "name": "Spellbane Centaur",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spellbane Centaur",
+      "oracle_fingerprint": "5f8055a1884b151c41f72b742393079f",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                "action": { "BeTargeted": [{ "Color": "Blue" }] }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

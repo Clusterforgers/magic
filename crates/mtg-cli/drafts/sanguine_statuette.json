@@ -1,0 +1,47 @@
+{
+  "oracle_id": "35553c2a-0150-49e4-81da-f356c6a17253",
+  "name": "Sanguine Statuette",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sanguine Statuette",
+      "oracle_fingerprint": "712094d04fa15f52744e5d5bb1305ff1",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "CreateToken": { "token": { "Named": "blood" } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "Sacrificed": { "what": [{ "Subtype": "Blood" }, "Token", { "ControlledBy": "You" }] }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Continuous": {
+                        "affected": "This",
+                        "mods": [
+                          { "SetPT": { "power": 3, "toughness": 3 } },
+                          { "SetCreatureTypes": ["Vampire"] },
+                          { "AddType": "Artifact" },
+                          { "AddType": "Creature" },
+                          { "AddKeyword": "Haste" }
+                        ],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

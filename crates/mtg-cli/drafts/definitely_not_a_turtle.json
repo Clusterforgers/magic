@@ -1,0 +1,53 @@
+{
+  "oracle_id": "3d8dfd57-7d26-4a3b-a9c3-33077c85b3db",
+  "name": "Definitely Not a Turtle",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Definitely Not a Turtle",
+      "oracle_fingerprint": "795063fa307049455caca3cd44259926",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              { "LookAtTop": { "count": 6, "as": "top" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      {
+                        "AnyOf": [
+                          { "Type": "Land" },
+                          {
+                            "Not": {
+                              "AnyOf": [
+                                { "Not": { "Subtype": "Turtle" } },
+                                { "Not": { "Supertype": "Legendary" } }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "kept2"
+                }
+              },
+              { "Move": { "what": { "Bound": "kept2" }, "to": "Hand" } },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

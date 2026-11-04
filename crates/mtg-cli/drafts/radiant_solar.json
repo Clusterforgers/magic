@@ -1,0 +1,49 @@
+{
+  "oracle_id": "21a86dcd-03e3-409b-b214-5feed07db584",
+  "name": "Radiant Solar",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Radiant Solar",
+      "oracle_fingerprint": "47c6464d830f388982b69c05e098858b",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Lifelink" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  {
+                    "AnyOf": [
+                      "This",
+                      {
+                        "Not": {
+                          "AnyOf": [
+                            { "Not": { "Type": "Creature" } },
+                            { "Not": "Other" },
+                            { "Not": { "Not": "Token" } },
+                            { "Not": { "ControlledBy": "You" } }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                ],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [{ "Venture": {} }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{W}" }, "DiscardSelf"],
+            "from": "Hand",
+            "effects": [{ "Venture": {} }, { "GainLife": { "amount": 3 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

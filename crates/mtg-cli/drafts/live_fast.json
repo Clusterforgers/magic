@@ -1,0 +1,22 @@
+{
+  "oracle_id": "04d02394-e17f-43cd-932f-f58e8cc56629",
+  "name": "Live Fast",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Live Fast",
+      "oracle_fingerprint": "71d5da2338b4c762ca0aa6f9f8a49167",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Draw": { "count": 2 } },
+              { "LoseLife": { "amount": 2 } },
+              { "PutCounters": { "on": "You", "counter": { "Other": "energy" }, "count": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "oracle_id": "ba5895e1-f12b-43c7-b47c-376588d9d2d2",
+  "name": "Neva, Stalked by Nightmares",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Neva, Stalked by Nightmares",
+      "oracle_fingerprint": "be598cc6d2648ab2cea022f9bb7aa6b1",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Creature" }, { "Type": "Enchantment" }] },
+                    { "OwnedBy": "You" },
+                    { "In": "Graveyard" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Enchantment" }, { "ControlledBy": "You" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }, { "Scry": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

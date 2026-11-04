@@ -1,0 +1,55 @@
+{
+  "oracle_id": "4c0f4a63-586a-4dde-9621-b0dd9118b2e5",
+  "name": "Restless Ridgeline",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Restless Ridgeline",
+      "oracle_fingerprint": "ccbaea7e155c57dea3181eddb3f1548b",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "OneOf": ["Red", "Green"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{2}{R}{G}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "SetPT": { "power": 3, "toughness": 4 } },
+                    { "SetColors": ["Red", "Green"] },
+                    { "AddSubtype": "Dinosaur" },
+                    { "AddType": "Creature" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Attacking", "Other"] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Untap": { "what": { "Target": 0 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

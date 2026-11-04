@@ -1,0 +1,42 @@
+{
+  "oracle_id": "77849657-c872-4d54-9149-a08bbe90f787",
+  "name": "Betrothed of Fire",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Betrothed of Fire",
+      "oracle_fingerprint": "af78ef2ffd8eabba8ba1c0a7959efcec",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Activated": {
+            "cost": [{ "Sacrifice": { "filter": [{ "Type": "Creature" }, "Untapped"] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Attached",
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Sacrifice": { "filter": [{ "Is": "Attached" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

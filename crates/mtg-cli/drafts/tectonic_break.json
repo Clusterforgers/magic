@@ -1,0 +1,20 @@
+{
+  "oracle_id": "4a3c6d0e-6d77-4434-95f4-737879de026f",
+  "name": "Tectonic Break",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tectonic Break",
+      "oracle_fingerprint": "fcfd3a96bc527fab2ff1a09811cf8e5d",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Sacrifice": { "who": "EachPlayer", "filter": [{ "Type": "Land" }], "count": "X" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "oracle_id": "f0fac3bc-a566-448e-a9a2-10927a49f182",
+  "name": "Karplusan Giant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Karplusan Giant",
+      "oracle_fingerprint": "9fbafe0ceac9b7e436f11ebbb2013a1e",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              { "TapPermanents": { "filter": [{ "Type": "Land" }, { "Supertype": "Snow" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

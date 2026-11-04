@@ -1,0 +1,19 @@
+{
+  "oracle_id": "bc6ee33a-4245-4edb-a6b3-0bdcc2883fbc",
+  "name": "Torrent of Stone",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Torrent of Stone",
+      "oracle_fingerprint": "f306ca35c0fda551e495e52502993639",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 4 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

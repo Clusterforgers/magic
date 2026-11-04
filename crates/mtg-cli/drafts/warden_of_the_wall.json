@@ -1,0 +1,32 @@
+{
+  "oracle_id": "5d66c2b9-6011-4168-b468-0bde50bac37e",
+  "name": "Warden of the Wall",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Warden of the Wall",
+      "oracle_fingerprint": "6192084743bd2675a8b559ac847a7a06",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              { "SetPT": { "power": 2, "toughness": 3 } },
+              { "AddKeyword": "Flying" },
+              { "AddType": "Creature" },
+              { "AddSubtype": "Gargoyle" }
+            ],
+            "condition": { "Not": "YourTurn" }
+          }
+        }
+      ]
+    }
+  ]
+}

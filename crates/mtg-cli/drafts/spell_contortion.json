@@ -1,0 +1,29 @@
+{
+  "oracle_id": "01003192-8927-4e55-8dd9-e9e088a3fbe4",
+  "name": "Spell Contortion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spell Contortion",
+      "oracle_fingerprint": "5823798fe676238653b1ca9a706a8fba",
+      "abilities": [
+        { "Keyword": { "Multikicker": "{1}{U}" } },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [
+              {
+                "Pay": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "cost": "{2}",
+                  "unpaid": [{ "Counter": { "what": { "Target": 0 } } }]
+                }
+              },
+              { "Draw": { "count": "Kicks" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

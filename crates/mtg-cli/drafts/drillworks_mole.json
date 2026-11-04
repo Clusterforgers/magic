@@ -1,0 +1,27 @@
+{
+  "oracle_id": "9fa3286b-ee10-4f68-bfc3-974cdc39d986",
+  "name": "Drillworks Mole",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Drillworks Mole",
+      "oracle_fingerprint": "bb195df5a0eb0a1beb26977ffb55451b",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap"],
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, "Commander", { "ControlledBy": "You" }]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

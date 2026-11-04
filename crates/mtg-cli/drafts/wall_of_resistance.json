@@ -1,0 +1,28 @@
+{
+  "oracle_id": "e6f5f80c-2620-4558-8a5f-8fc36cea4793",
+  "name": "Wall of Resistance",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wall of Resistance",
+      "oracle_fingerprint": "086822a979dd789897c5d43441f513a9",
+      "abilities": [
+        { "Keyword": "Defender" },
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": ["This", "DamagedThisTurn"] },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": { "Other": "p0p1" } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

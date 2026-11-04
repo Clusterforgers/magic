@@ -1,0 +1,50 @@
+{
+  "oracle_id": "3113afec-d4ae-46b5-9952-89e2e2c9ae7b",
+  "name": "Finale of Eternity",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Finale of Eternity",
+      "oracle_fingerprint": "4f77db300ea405a32a0520ab8f65844a",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "Compare": { "stat": "Toughness", "op": "Le", "to": "X" } }
+                  ]
+                },
+                "bounds": { "min": 0, "max": 3 }
+              }
+            ],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              {
+                "If": {
+                  "condition": { "Compare": { "left": "X", "op": "Ge", "right": 10 } },
+                  "then": [
+                    {
+                      "Move": {
+                        "what": {
+                          "Each": [
+                            { "Type": "Creature" },
+                            { "OwnedBy": "You" },
+                            { "In": "Graveyard" }
+                          ]
+                        },
+                        "to": { "Battlefield": {} }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

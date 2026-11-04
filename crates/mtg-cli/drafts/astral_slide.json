@@ -1,0 +1,36 @@
+{
+  "oracle_id": "70f14b10-8129-4249-a267-8b4be5d9befa",
+  "name": "Astral Slide",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Astral Slide",
+      "oracle_fingerprint": "9eea04c24e1da91db3fbc2430949a80f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Cycled": {} },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+                    {
+                      "DelayedTrigger": {
+                        "when": { "StepBegins": { "step": "End" } },
+                        "effects": [
+                          { "Move": { "what": { "Bound": "exiled" }, "to": { "Battlefield": {} } } }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

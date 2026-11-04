@@ -1,0 +1,146 @@
+{
+  "object": "card",
+  "id": "c1171899-07d8-4e60-a79b-f162f59dc3ce",
+  "oracle_id": "85eb890e-a5e1-48f8-b813-e8424d18b28a",
+  "multiverse_ids": [
+    602740
+  ],
+  "mtgo_id": 106635,
+  "arena_id": 83910,
+  "tcgplayer_id": 479398,
+  "cardmarket_id": 694779,
+  "name": "Migloz, Maze Crusher",
+  "lang": "en",
+  "released_at": "2023-02-10",
+  "uri": "https://api.scryfall.com/cards/c1171899-07d8-4e60-a79b-f162f59dc3ce",
+  "scryfall_uri": "https://scryfall.com/card/one/210/migloz-maze-crusher?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T04:46:39Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/c/1/c1171899-07d8-4e60-a79b-f162f59dc3ce.jpg?1783917999",
+    "normal": "https://cards.scryfall.io/normal/front/c/1/c1171899-07d8-4e60-a79b-f162f59dc3ce.jpg?1783917999",
+    "large": "https://cards.scryfall.io/large/front/c/1/c1171899-07d8-4e60-a79b-f162f59dc3ce.jpg?1783917999",
+    "png": "https://cards.scryfall.io/png/front/c/1/c1171899-07d8-4e60-a79b-f162f59dc3ce.png?1783917999",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/c/1/c1171899-07d8-4e60-a79b-f162f59dc3ce.jpg?1783917999",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/c/1/c1171899-07d8-4e60-a79b-f162f59dc3ce.jpg?1783917999",
+    "thumb": "https://cards.scryfall.io/thumb/front/c/1/c1171899-07d8-4e60-a79b-f162f59dc3ce.webp?1783917999",
+    "grid": "https://cards.scryfall.io/grid/front/c/1/c1171899-07d8-4e60-a79b-f162f59dc3ce.webp?1783917999",
+    "display": "https://cards.scryfall.io/display/front/c/1/c1171899-07d8-4e60-a79b-f162f59dc3ce.webp?1783917999",
+    "art": "https://cards.scryfall.io/art/front/c/1/c1171899-07d8-4e60-a79b-f162f59dc3ce.webp?1783917999",
+    "crop": "https://cards.scryfall.io/crop/front/c/1/c1171899-07d8-4e60-a79b-f162f59dc3ce.webp?1783917999",
+    "jpeg": "https://cards.scryfall.io/normal/front/c/1/c1171899-07d8-4e60-a79b-f162f59dc3ce.jpg?1783917999"
+  },
+  "mana_cost": "{1}{R}{G}",
+  "cmc": 3.0,
+  "type_line": "Legendary Creature — Phyrexian Beast",
+  "oracle_text": "Migloz enters with five oil counters on it.\n{1}, Remove an oil counter from Migloz: It gains vigilance and menace until end of turn.\n{2}, Remove two oil counters from Migloz: It gets +2/+2 until end of turn.\n{3}, Remove three oil counters from Migloz: Destroy target artifact or enchantment.",
+  "power": "4",
+  "toughness": "4",
+  "colors": [
+    "G",
+    "R"
+  ],
+  "color_identity": [
+    "G",
+    "R"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "arena",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "04bef644-343f-4230-95ee-255f29aa67a2",
+  "set": "one",
+  "set_name": "Phyrexia: All Will Be One",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/04bef644-343f-4230-95ee-255f29aa67a2",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aone&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/one?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/c1171899-07d8-4e60-a79b-f162f59dc3ce/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A85eb890e-a5e1-48f8-b813-e8424d18b28a&unique=prints",
+  "collector_number": "210",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Zezhou Chen",
+  "artist_ids": [
+    "810677e5-a502-4c03-b726-78cd808a75d4"
+  ],
+  "illustration_id": "8d441560-2bd7-4e4e-a3a7-ad1dd796b29f",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 16609,
+  "penny_rank": 1132,
+  "preview": {
+    "source": "TogoresMtg",
+    "source_uri": "https://twitter.com/TogoresTcg/status/1618238063309914112",
+    "previewed_at": "2023-01-25"
+  },
+  "prices": {
+    "usd": "0.24",
+    "usd_foil": "0.28",
+    "usd_etched": null,
+    "eur": "0.18",
+    "eur_foil": "0.36",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=602740&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DMigloz%252C%2BMaze%2BCrusher",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DMigloz%252C%2BMaze%2BCrusher",
+    "edhrec": "https://edhrec.com/route/?cc=Migloz%2C+Maze+Crusher"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F479398%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=694779&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/106635?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

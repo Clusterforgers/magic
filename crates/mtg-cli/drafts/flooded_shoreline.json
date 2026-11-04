@@ -1,0 +1,23 @@
+{
+  "oracle_id": "01fd889f-1839-44b9-b936-0e62c8f8a730",
+  "name": "Flooded Shoreline",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Flooded Shoreline",
+      "oracle_fingerprint": "4a485dc5cdb95537de2e89a11c396f16",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{U}{U}" },
+              { "ReturnToHand": { "filter": [{ "Subtype": "Island" }], "count": 2 } }
+            ],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

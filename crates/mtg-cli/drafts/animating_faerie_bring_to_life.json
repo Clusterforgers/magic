@@ -1,0 +1,47 @@
+{
+  "oracle_id": "db6fbdc9-1c45-416f-a08e-2082f65adb65",
+  "name": "Animating Faerie // Bring to Life",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Animating Faerie",
+      "oracle_fingerprint": "75a4c2fe3b9e4d3cd2bd3d7787c7c138",
+      "abilities": [{ "Keyword": "Flying" }]
+    },
+    {
+      "name": "Bring to Life",
+      "oracle_fingerprint": "7c17793962b7ce33ce589fbbb618a526",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Artifact" },
+                    { "Not": { "Type": "Creature" } },
+                    { "ControlledBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "SetPT": { "power": 0, "toughness": 0 } },
+                    { "AddType": "Artifact" },
+                    { "AddType": "Creature" }
+                  ],
+                  "duration": "Forever"
+                }
+              },
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1", "count": 4 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

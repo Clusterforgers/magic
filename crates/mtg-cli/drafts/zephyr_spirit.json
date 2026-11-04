@@ -1,0 +1,19 @@
+{
+  "oracle_id": "ff640343-6980-4668-a41f-0f01b0bbc0f2",
+  "name": "Zephyr Spirit",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Zephyr Spirit",
+      "oracle_fingerprint": "5d628f82cea01d4cbfa0f812cb609f04",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Blocks": { "what": ["This"] } },
+            "effects": [{ "Move": { "what": "This", "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "oracle_id": "12d617b1-c95b-4b1c-a586-ccfdf5898b03",
+  "name": "Hexhaven Invigorator",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hexhaven Invigorator",
+      "oracle_fingerprint": "63b7540144453ba10a21806acfe97e34",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": { "Batch": { "DealsDamage": { "source": [], "to": "This" } } },
+            "effects": [
+              {
+                "Search": {
+                  "filter": [{ "Type": "Land" }],
+                  "count": { "min": 0, "max": "Triggering" },
+                  "as": "found"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "found" },
+                  "to": { "Battlefield": { "tapped": true } }
+                }
+              },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

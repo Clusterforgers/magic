@@ -1,0 +1,20 @@
+{
+  "oracle_id": "a9be16d1-5e53-4b85-8921-c6fe9473f923",
+  "name": "Kasmina's Transmutation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kasmina's Transmutation",
+      "oracle_fingerprint": "83b4ad9d383da402c23d67bfd3fad1fd",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "SetPT": { "power": 1, "toughness": 1 } }, "LoseAbilities"]
+          }
+        }
+      ]
+    }
+  ]
+}

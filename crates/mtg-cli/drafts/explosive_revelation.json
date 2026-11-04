@@ -1,0 +1,40 @@
+{
+  "oracle_id": "49f01296-7b30-4d84-bfa3-6ed58cd23a33",
+  "name": "Explosive Revelation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Explosive Revelation",
+      "oracle_fingerprint": "5039a347ecb9d710917bdea24618856b",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "RevealUntil": {
+                  "filter": [{ "Not": { "Type": "Land" } }],
+                  "as": "found",
+                  "revealed_as": "revealed2"
+                }
+              },
+              { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+              {
+                "Move": {
+                  "what": { "Bound": "revealed2" },
+                  "to": { "Library": { "place": "Bottom", "order": "Chosen" } }
+                }
+              },
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": { "Stat": { "of": { "Bound": "found" }, "stat": "ManaValue" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

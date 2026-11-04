@@ -1,0 +1,38 @@
+{
+  "oracle_id": "14bc9e20-a6ad-4eca-8c5c-5459ce078d9a",
+  "name": "Sigardian Savior",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sigardian Savior",
+      "oracle_fingerprint": "9c884aa874b46461eb9f4c404ddd5d7e",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": ["This", { "WasCast": { "by": "You" } }],
+                "to": "Battlefield"
+              }
+            },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "OwnedBy": "You" },
+                    { "Compare": { "stat": "ManaValue", "op": "Le", "to": 2 } },
+                    { "In": "Graveyard" }
+                  ]
+                },
+                "bounds": { "min": 0, "max": 2 }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

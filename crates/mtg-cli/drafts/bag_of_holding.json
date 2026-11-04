@@ -1,0 +1,38 @@
+{
+  "oracle_id": "63c04040-e109-494e-baa6-c639a6c9a996",
+  "name": "Bag of Holding",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bag of Holding",
+      "oracle_fingerprint": "bc99682d8819c9fd6eaf4ef6d5784915",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Discarded": { "by": "You" } },
+            "effects": [{ "Exile": { "what": "Triggering" } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap"],
+            "effects": [{ "Draw": {} }, { "Discard": {} }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{4}" }, "Tap", "SacrificeSelf"],
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Each": [{ "ExiledWith": "This" }, { "In": "Exile" }] },
+                  "to": "Hand"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
