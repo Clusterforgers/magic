@@ -216,3 +216,45 @@ fn damage_in_separate_events_removes_a_counter_each() {
     }
     assert_eq!(knight_counters(&dr), 1);
 }
+
+#[test]
+fn the_owner_of_the_cards_orders_them_into_the_library() {
+    let growth = def(
+        "Growth",
+        CardType::Sorcery,
+        None,
+        &[
+            r#"{"Spell":{"targets":[{"what":"Player"}],"effects":[{"Choose":{"who":{"Target":0},"from":{"Each":[{"In":"Hand"},{"OwnedBy":{"Target":0}}]},"count":{"min":3,"max":3},"as":"picked"}},{"Move":{"what":{"Bound":"picked"},"to":{"Library":{"place":"Top"}}}}]}}"#,
+        ],
+    );
+    let hand: Vec<_> = (0..4)
+        .map(|i| def(&format!("H{i}"), CardType::Creature, Some((1, 1)), &[]))
+        .collect();
+    let sc = Scenario::new(2)
+        .hand(0, [growth])
+        .hand(1, hand)
+        .library(0, forest_lib(5))
+        .library(1, forest_lib(5));
+    let mut dr = Driver::from_scenario(sc).unwrap();
+    dr.begin_cast("Growth").unwrap();
+    let target = dr.target_player(1);
+    dr.choose_targets(&[target]).unwrap();
+    let mut orderer = None;
+    for _ in 0..40 {
+        let dec = dr.decision().unwrap().clone();
+        match &dec.kind {
+            DecisionKind::Priority(_) if dr.state().stack().is_empty() => break,
+            DecisionKind::OrderCards(_) => {
+                orderer = Some(dec.player);
+                dr.answer_passively().unwrap();
+            }
+            DecisionKind::PayMana(_) => {
+                dr.answer(Answer::PayMana(PayChoice::Auto)).unwrap();
+            }
+            _ => {
+                dr.answer_passively().unwrap();
+            }
+        }
+    }
+    assert_eq!(orderer, Some(pid(1)));
+}

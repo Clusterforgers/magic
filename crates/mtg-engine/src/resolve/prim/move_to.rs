@@ -106,7 +106,7 @@ fn entering_under(cx: &Cx<'_>, under: Option<&Ref>) -> Result<Option<PlayerId>, 
 
 /// Each object the reference names goes to its owner's hand or graveyard, or into its owner's library on top, on
 /// the bottom or shuffled in, or onto the battlefield. Cards put into one library together are put in the order the
-/// controller chooses ("in any order"), asked as an `OrderCards` per library unless there is one card, and the first
+/// owner of the library chooses (CR 401.4) ("in any order"), asked as an `OrderCards` per library unless there is one card, and the first
 /// of them is nearest the top; a shuffle needs no order.
 /// An object already where it would go stays. Moves from the battlefield carry a snapshot of the object as it was.
 /// A card put onto the battlefield is one `ZoneChanged`, so what triggers on entering sees it, and an `Entered` after
@@ -451,7 +451,8 @@ fn into_libraries(
             ids = shuffled(state, shuffles, ids);
             shuffles += 1;
         } else if place != Place::Shuffled && ids.len() > 1 {
-            let who = cx.controller();
+            // Their owner puts them in any order (CR 401.4), not the controller of the effect.
+            let who = *owner;
             ids = questions.order(who, ids, wording::library_order(place))?;
         }
         let zone_of = |id: ObjectId| {
@@ -921,7 +922,7 @@ mod tests {
     }
 
     #[test]
-    fn the_controller_is_asked_for_the_order_of_the_cards_of_each_library_in_turn() {
+    fn the_owner_is_asked_for_the_order_of_the_cards_of_each_library_in_turn() {
         let game = game();
         let cards = [hand(&game, ME), hand(&game, FOE)].concat();
         let first = asked(run_with(&game, &cards, Vec::new(), &moving(TOP)).unwrap());
@@ -935,9 +936,12 @@ mod tests {
         let DecisionKind::OrderCards(options) = &second.kind else {
             panic!("the cards are ordered");
         };
-        assert_eq!((second.player, options.cards.as_slice()), (ME, &cards[3..]));
+        assert_eq!(
+            (second.player, options.cards.as_slice()),
+            (FOE, &cards[3..])
+        );
         let theirs = vec![cards[4], cards[3]];
-        let journal = [journal, vec![(ME, Choice::Order(theirs))]].concat();
+        let journal = [journal, vec![(FOE, Choice::Order(theirs))]].concat();
         let (events, _) = done(run_with(&game, &cards, journal, &moving(TOP)).unwrap());
         assert_eq!(events.len(), 5);
         let folded = after(&game, &events);
