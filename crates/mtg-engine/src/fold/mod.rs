@@ -6,6 +6,8 @@ mod combat;
 #[cfg(test)]
 mod crew_record;
 #[cfg(test)]
+mod distinct_names;
+#[cfg(test)]
 mod entered;
 #[cfg(test)]
 mod fe1a_atoms;

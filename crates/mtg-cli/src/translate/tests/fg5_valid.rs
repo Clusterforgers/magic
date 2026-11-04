@@ -86,6 +86,10 @@ fn what_the_dsl_cannot_select_is_a_gap(#[case] spec: &str, #[case] gap: &str) {
     "ValidGraveyard Card.YouOwn$DifferentCardManaCost",
     json!({"Distinct": {"of": [{"OwnedBy": "You"}, {"In": "Graveyard"}], "stat": "ManaValue"}})
 )]
+#[case::names(
+    "Valid Land.YouCtrl$DifferentCardNames",
+    json!({"Distinct": {"of": [{"Type": "Land"}, {"ControlledBy": "You"}], "stat": "Name"}})
+)]
 #[case::colors(
     "Valid Permanent.YouCtrl$Colors",
     json!({"Distinct": {"of": [{"ControlledBy": "You"}], "stat": "Colors"}})
@@ -99,6 +103,19 @@ fn a_count_over_a_valid_string_reduces_to_a_characteristic(
     let amount = found[0]["Spell"]["effects"][0]["Draw"]["count"].clone();
     assert_eq!(amount, expected);
     assert!(serde_json::from_value::<Amount>(amount).is_ok());
+}
+
+#[rstest]
+#[case::other_players("LoseLife | Defined$ Player.Other | LifeAmount$ 2", r#""Opponents""#)]
+#[case::every_creature_you_control(
+    "PutCounter | Defined$ Valid Creature.YouCtrl | CounterType$ P1P1 | CounterNum$ 1",
+    r#"{"Each":[{"Type":"Creature"},{"ControlledBy":"You"}]}"#
+)]
+fn defined_words_name_players_and_sets(#[case] effect: &str, #[case] expected: &str) {
+    let script = format!("Name:T\nTypes:Sorcery\nA:SP$ {effect}\n");
+    let found = abilities(&script);
+    assert_eq!(found.len(), 1, "{:?}", gaps(&script));
+    assert!(found[0].to_string().contains(expected), "{}", found[0]);
 }
 
 #[rstest]

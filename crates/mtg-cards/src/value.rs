@@ -32,6 +32,8 @@ pub enum StatKind {
     BasePower,
     /// The mana spent to cast it, while it is a spell or when it was cast.
     ManaSpent,
+    /// Its name: no number, so only `Amount::Distinct` reads it (the different names among the objects).
+    Name,
 }
 
 /// A comparison between two numbers.

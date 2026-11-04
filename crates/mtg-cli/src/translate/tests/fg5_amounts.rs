@@ -51,6 +51,23 @@ fn count(text: &str) -> Value {
     "SVar:X:TargetedPlayer$CardsInHand",
     json!({"Count": [{"In": "Hand"}, {"OwnedBy": {"Target": 0}}]})
 )]
+#[case::devotion("SVar:X:Count$Devotion.Black", json!({"Devotion": ["Black"]}))]
+#[case::devotion_dual(
+    "SVar:X:Count$DevotionDual.White.Black",
+    json!({"Devotion": ["White", "Black"]})
+)]
+#[case::capped(
+    "SVar:X:Count$YourStartingLife/LimitMax.5",
+    json!({"When": {"condition": {"Compare": {"left": {"StartingLife": "You"}, "op": "Gt", "right": 5}}, "then": 5, "otherwise": {"StartingLife": "You"}}})
+)]
+#[case::raised(
+    "SVar:X:Count$Party/LimitMin.1",
+    json!({"When": {"condition": {"Compare": {"left": {"Party": "You"}, "op": "Lt", "right": 1}}, "then": 1, "otherwise": {"Party": "You"}}})
+)]
+#[case::from_a_number(
+    "SVar:X:TargetedPlayer$CardsInHand/NMinus.3",
+    json!({"Sum": [3, {"Times": {"by": -1, "of": {"Count": [{"In": "Hand"}, {"OwnedBy": {"Target": 0}}]}}}]})
+)]
 #[case::their_life("SVar:X:TargetedPlayer$LifeTotal", json!({"Life": {"Target": 0}}))]
 #[case::opponents_hands(
     "SVar:X:PlayerCountOpponents$HighestCardsInHand",
@@ -101,4 +118,16 @@ fn what_the_dsl_cannot_count_is_a_gap(#[case] svars: &str, #[case] gap: &str) {
 fn a_negated_part_names_the_gap_of_the_part() {
     let text = "Name:T\nTypes:Sorcery\nA:SP$ Pump | ValidTgts$ Creature | NumAtt$ -X | NumDef$ -X\nSVar:X:Count$Bogus\n";
     assert_eq!(gaps(text), vec!["amount:Count$Bogus".to_owned()]);
+}
+
+#[test]
+fn the_player_of_a_trigger_names_the_player_of_the_event() {
+    let script = "Name:T\nTypes:Enchantment\nT:Mode$ LifeGained | ValidPlayer$ Player | TriggerZones$ Battlefield | Execute$ TrigDraw\nSVar:TrigDraw:DB$ Draw | NumCards$ X\nSVar:X:TriggeredPlayer$CardsInHand\n";
+    let found = abilities(script);
+    assert_eq!(found.len(), 1, "{:?}", gaps(script));
+    let text = found[0].to_string();
+    assert!(
+        text.contains(r#"{"Count":[{"In":"Hand"},{"OwnedBy":"Triggering"}]}"#),
+        "{text}"
+    );
 }

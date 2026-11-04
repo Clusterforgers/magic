@@ -353,10 +353,14 @@ pub fn selector_in(ctx: &Ctx, spec: &str, zone: Option<&str>) -> Tr<Vec<Value>> 
 
 /// The reference a `Defined$` word stands for.
 pub fn defined(ctx: &Ctx, word: &str) -> Tr<Value> {
+    if let Some(spec) = word.trim().strip_prefix("Valid ") {
+        return Ok(json!({"Each": selector_any(ctx, spec)?}));
+    }
     let controller = |inner: Value| Ok(json!({ "ControllerOf": inner }));
     match word.trim() {
         "You" => Ok(json!("You")),
-        "Opponent" | "Player.Opponent" => Ok(json!("Opponents")),
+        // Teams do not exist at our tables: the other players are the opponents.
+        "Opponent" | "Player.Opponent" | "Player.Other" => Ok(json!("Opponents")),
         "Player" => Ok(json!("EachPlayer")),
         "Self" | "Card.Self" => Ok(json!("This")),
         "Sacrificed" => Ok(json!("Paid")),

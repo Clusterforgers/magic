@@ -144,6 +144,13 @@ fn event_amount(ctx: &Ctx, expression: &str) -> Tr<Option<Value>> {
                 None => unmapped(format!("amount:{head}${what}")),
             };
         }
+        "TriggeredPlayer" => {
+            let who = super::triggered::resolve(ctx.trigger.as_ref(), "TriggeredPlayer")?;
+            return match super::amount_more::player_amount("TargetedPlayer", what, &who) {
+                Some(found) => found.map(Some),
+                None => unmapped(format!("amount:{head}${what}")),
+            };
+        }
         "TriggeredCard" => super::triggered::resolve(ctx.trigger.as_ref(), "TriggeredCard")?,
         "Sacrificed" => json!("Paid"),
         "Remembered" | "RememberedLKI" if what != "Amount" => match &ctx.remembered {
@@ -179,6 +186,9 @@ fn apply_steps(ctx: &Ctx, mut value: Value, steps: &str) -> Tr<Value> {
             Some(("Plus", n)) => plus(ctx, &value, n, false)?,
             Some(("Minus", n)) => plus(ctx, &value, n, true)?,
             Some(("Times", n)) => times(&value, parse_number(n)?),
+            Some(("NMinus", n)) => json!({"Sum": [amount(ctx, n)?, times(&value, -1)]}),
+            Some(("LimitMax", n)) => limit(ctx, &value, n, "Gt")?,
+            Some(("LimitMin", n)) => limit(ctx, &value, n, "Lt")?,
             None if step == "Twice" => times(&value, 2),
             None if step == "HalfUp" => json!({"Half": {"of": value, "up": true}}),
             None if step == "HalfDown" => json!({"Half": {"of": value, "up": false}}),
@@ -186,6 +196,13 @@ fn apply_steps(ctx: &Ctx, mut value: Value, steps: &str) -> Tr<Value> {
         };
     }
     Ok(value)
+}
+
+/// The amount held to the bound: `LimitMax` (`Gt`) caps it, `LimitMin` (`Lt`) raises it.
+fn limit(ctx: &Ctx, value: &Value, bound: &str, beyond: &str) -> Tr<Value> {
+    let bound = amount(ctx, bound)?;
+    let past = json!({"Compare": {"left": value, "op": beyond, "right": bound}});
+    Ok(json!({"When": {"condition": past, "then": bound, "otherwise": value}}))
 }
 
 fn parse_number(text: &str) -> Tr<i32> {

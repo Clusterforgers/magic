@@ -52,10 +52,7 @@ fn turn_counts_and_named_parts(#[case] svars: &str, #[case] expected: Value) {
 
 #[rstest]
 #[case::resolved("SVar:X:Count$ResolvedThisTurn", "amount:Count$ResolvedThisTurn")]
-#[case::limit(
-    "SVar:X:Count$LifeYouGainedThisTurn/LimitMax.1",
-    "amount:Count/LimitMax"
-)]
+#[case::unknown_step("SVar:X:Count$LifeYouGainedThisTurn/Abs", "amount:Count/Abs")]
 #[case::cast_from_exile(
     "SVar:X:Count$ThisTurnCast_Card.YouCtrl+bogusProperty",
     "valid:bogusProperty"

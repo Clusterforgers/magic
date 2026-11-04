@@ -20,6 +20,7 @@ pub fn count(ctx: &Ctx, base: &str) -> Option<Tr<Value>> {
             valid_count(ctx, word, rest)
         }
         _ if word.starts_with("ThisTurnEntered_") => entered_this_turn(ctx, word),
+        _ if word.starts_with("Devotion.") || word.starts_with("DevotionDual.") => devotion(word),
         _ => return None,
     })
 }
@@ -48,6 +49,7 @@ fn valid_count(ctx: &Ctx, word: &str, rest: &str) -> Tr<Value> {
         "DifferentCardPower" => ("Distinct", "Power"),
         "DifferentCardToughness" => ("Distinct", "Toughness"),
         "DifferentCardManaCost" => ("Distinct", "ManaValue"),
+        "DifferentCardNames" => ("Distinct", "Name"),
         other => return unmapped(format!("amount:Count${word}${other}")),
     };
     Ok(json!({kind: {"of": of, "stat": stat}}))
@@ -66,6 +68,16 @@ fn entered_this_turn(ctx: &Ctx, word: &str) -> Tr<Value> {
     };
     let filter = selector_in(ctx, valid, None)?;
     Ok(json!({"Tally": {"event": event, "who": "EachPlayer", "filter": filter}}))
+}
+
+/// `Devotion.Black` and `DevotionDual.White.Black`: the mana symbols of the colors among the permanents you control.
+fn devotion(word: &str) -> Tr<Value> {
+    let colors: Vec<&str> = word.split('.').skip(1).collect();
+    let known = ["White", "Blue", "Black", "Red", "Green"];
+    if colors.is_empty() || !colors.iter().all(|color| known.contains(color)) {
+        return unmapped("amount:Count$Devotion");
+    }
+    Ok(json!({"Devotion": colors}))
 }
 
 fn head(spec: &str) -> &str {
