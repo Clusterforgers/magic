@@ -499,8 +499,10 @@ fn delayed_step(p: &Params) -> Tr<Value> {
         ],
     )?;
     // "Next turn" skips a step still to come this turn. Nobody holds priority before the upkeep has begun, so for an
-    // upkeep the next such step is always the next turn's; a later step could still be this turn's.
-    if p.get("NextTurn").is_some() && p.get("Phase") != Some("Upkeep") {
+    // upkeep of every player the next such step is always the next turn's; a later step could still be this turn's, and
+    // "your" upkeep may not be the next turn's.
+    let every_upkeep = matches!(p.get("ValidPlayer"), None | Some("Player"));
+    if p.get("NextTurn").is_some() && !(p.get("Phase") == Some("Upkeep") && every_upkeep) {
         return unmapped("key:DelayedTrigger.NextTurn");
     }
     let step = super::triggers::step(p.get("Phase").unwrap_or_default())?;

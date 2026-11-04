@@ -85,3 +85,10 @@ fn an_unread_discard_mode_is_a_named_gap(#[case] line: &str, #[case] gap: &str) 
     let script = spell(line);
     assert_eq!(gaps(&script), [gap]);
 }
+
+/// Only the upkeep of every player is the next turn's: "your" upkeep can be a turn later, so it stays a gap.
+#[test]
+fn a_next_turn_upkeep_of_one_player_is_a_gap() {
+    let script = later("Upkeep").replace("ValidPlayer$ Player", "ValidPlayer$ You");
+    assert_eq!(gaps(&script), ["key:DelayedTrigger.NextTurn"]);
+}
