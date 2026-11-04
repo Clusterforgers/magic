@@ -132,6 +132,60 @@ fn a_library_position_beyond_top_and_bottom_stays_a_gap(#[case] extra: &str) {
     );
 }
 
+const BOTTOM: &str = r#"{"Library": {"place": "Bottom", "order": "Chosen"}}"#;
+
+#[rstest]
+#[case::all_matching(
+    "Dig | DigNum$ 3 | ChangeNum$ All | ChangeValid$ Creature | DestinationZone$ Hand",
+    json!([{"LookAtTop": {"count": 3, "as": "top"}},
+        {"Move": {"what": {"Each": [{"In": "Library"}, {"Is": {"Bound": "top"}}, {"Type": "Creature"}]}, "to": "Hand"}},
+        {"Move": {"what": {"Bound": "top"}, "to": serde_json::from_str::<Value>(BOTTOM).unwrap()}}])
+)]
+#[case::all_revealed(
+    "Dig | DigNum$ 3 | ChangeNum$ All | Reveal$ True | DestinationZone$ Graveyard",
+    json!([{"LookAtTop": {"count": 3, "as": "top"}},
+        {"Reveal": {"what": {"Bound": "top"}}},
+        {"Move": {"what": {"Bound": "top"}, "to": "Graveyard"}}])
+)]
+#[case::any_number(
+    "Dig | DigNum$ 3 | ChangeNum$ Any | ChangeValid$ Land | DestinationZone$ Hand",
+    json!([{"LookAtTop": {"count": 3, "as": "top"}},
+        {"Choose": {"from": {"Each": [{"In": "Library"}, {"Is": {"Bound": "top"}}, {"Type": "Land"}]},
+            "count": {"min": 0, "max": null}, "as": "kept2"}},
+        {"Move": {"what": {"Bound": "kept2"}, "to": "Hand"}},
+        {"Move": {"what": {"Bound": "top"}, "to": serde_json::from_str::<Value>(BOTTOM).unwrap()}}])
+)]
+fn a_dig_takes_all_or_any_number_of_the_cards_it_looks_at(
+    #[case] line: &str,
+    #[case] effects: Value,
+) {
+    let script = spell(line);
+    let found = abilities(&script);
+    assert_eq!(found.len(), 1, "{:?}", gaps(&script));
+    assert_eq!(
+        normal(found[0].clone()),
+        normal(json!({"Spell": {"effects": effects}}))
+    );
+}
+
+#[rstest]
+#[case::optional_all("Dig | DigNum$ 3 | ChangeNum$ All | Optional$ True | DestinationZone$ Hand")]
+#[case::remembered_all(
+    "Dig | DigNum$ 3 | ChangeNum$ All | RememberChanged$ True | ChangeValid$ Land | DestinationZone$ Hand"
+)]
+#[case::counted("Dig | DigNum$ 3 | ChangeNum$ X | DestinationZone$ Hand")]
+fn a_dig_that_takes_a_count_beyond_the_node_stays_a_gap(#[case] line: &str) {
+    let script = spell(line);
+    assert_eq!(abilities(&script), Vec::<Value>::new(), "{script}");
+    assert!(
+        gaps(&script)
+            .iter()
+            .any(|found| found == "key:Dig.ChangeNum"),
+        "{:?}",
+        gaps(&script)
+    );
+}
+
 const TAP: &str = "SVar:ETBTapped:DB$ Tap | ETB$ True | Defined$ ReplacedCard\n";
 const EXILE: &str = "SVar:Exile:DB$ ChangeZone | Hidden$ True | Origin$ All | Destination$ Exile | Defined$ ReplacedCard\n";
 
