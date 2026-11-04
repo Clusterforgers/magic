@@ -427,3 +427,60 @@ fn copy_words_that_are_not_read_are_gaps(#[case] words: &str, #[case] gap: &str)
     let line = format!("CopyPermanent | ValidTgts$ Creature | {words}");
     assert_eq!(gaps(&plain(&line)), [gap]);
 }
+
+/// The modifications an animate line gives.
+fn animate_mods(words: &str) -> Vec<Value> {
+    let line = format!("Animate | ValidTgts$ Permanent | Duration$ Permanent | {words}");
+    assert_eq!(gaps(&plain(&line)), Vec::<String>::new(), "{words}");
+    let found = abilities(&plain(&line));
+    let effect = &found[0]["Spell"]["effects"][0];
+    let parsed = serde_json::from_value::<mtg_cards::effect::Effect>(effect.clone());
+    assert!(parsed.is_ok(), "{effect}");
+    effect["Continuous"]["mods"]
+        .as_array()
+        .cloned()
+        .unwrap_or_default()
+}
+
+#[rstest]
+#[case::becomes_only_a_creature(
+    "Power$ 3 | Toughness$ 3 | Types$ Creature,Soldier | RemoveCardTypes$ True | RemoveCreatureTypes$ True",
+    &[json!({"SetTypes": ["Creature"]}), json!({"SetCreatureTypes": ["Soldier"]})]
+)]
+#[case::becomes_an_island(
+    "Types$ Island | RemoveLandTypes$ True",
+    &[json!({"SetLandTypes": ["Island"]})]
+)]
+#[case::all_creature_types("AddAllCreatureTypes$ True", &[json!("AddAllCreatureTypes")])]
+#[case::legendary("Types$ Legendary", &[json!({"AddSupertype": "Legendary"})])]
+fn animate_type_words(#[case] words: &str, #[case] wanted: &[Value]) {
+    let mods = animate_mods(words);
+    for change in wanted {
+        assert!(mods.contains(change), "{change} in {mods:?}");
+    }
+}
+
+#[rstest]
+#[case::no_types(
+    "RemoveCardTypes$ True | Power$ 1 | Toughness$ 1",
+    "key:Animate.RemoveCardTypes"
+)]
+#[case::only_subtypes(
+    "Types$ Soldier | RemoveCardTypes$ True",
+    "key:Animate.RemoveCardTypes"
+)]
+#[case::lands_without_types(
+    "RemoveLandTypes$ True | Power$ 1 | Toughness$ 1",
+    "key:Animate.RemoveLandTypes"
+)]
+#[case::not_a_basic_land_type("Types$ Soldier | RemoveLandTypes$ True", "")]
+fn animate_type_gaps(#[case] words: &str, #[case] gap: &str) {
+    let line = format!("Animate | ValidTgts$ Permanent | {words}");
+    let found = gaps(&plain(&line));
+    if gap.is_empty() {
+        // A creature type with `RemoveLandTypes$` is an added subtype, so nothing is refused.
+        assert!(found.is_empty(), "{found:?}");
+    } else {
+        assert_eq!(found, [gap]);
+    }
+}

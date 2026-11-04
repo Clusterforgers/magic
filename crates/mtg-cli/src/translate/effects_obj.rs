@@ -332,6 +332,9 @@ fn animate(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             "Triggers",
             "Abilities",
             "RemoveCreatureTypes",
+            "RemoveCardTypes",
+            "RemoveLandTypes",
+            "AddAllCreatureTypes",
             "ValidCards",
             "Duration",
             "TargetMin",
@@ -390,27 +393,60 @@ pub fn color_names(colors: &str) -> Tr<Vec<&'static str>> {
 }
 
 /// The type changes of an animate line: the creature types it sets or adds, then the card types it adds.
+///
+/// `RemoveCardTypes$` makes the card types the line names the only ones (it needs `Types$`), `RemoveLandTypes$` the basic
+/// land types it names the only land types, and `AddAllCreatureTypes$` adds every creature type.
 fn type_mods(ctx: &Ctx, p: &Params) -> Tr<Vec<Value>> {
+    const BASIC_LAND_TYPES: [&str; 5] = ["Plains", "Island", "Swamp", "Mountain", "Forest"];
+    let (remove_cards, remove_lands) = (
+        p.get("RemoveCardTypes") == Some("True"),
+        p.get("RemoveLandTypes") == Some("True"),
+    );
+    let mut mods = Vec::new();
+    if p.get("AddAllCreatureTypes") == Some("True") {
+        mods.push(json!("AddAllCreatureTypes"));
+    }
     let Some(types) = p.get("Types") else {
-        return Ok(Vec::new());
+        if remove_cards {
+            return unmapped("key:Animate.RemoveCardTypes");
+        }
+        if remove_lands {
+            return unmapped("key:Animate.RemoveLandTypes");
+        }
+        return Ok(mods);
     };
-    let (mut card_types, mut subtypes) = (Vec::new(), Vec::new());
+    let (mut card_types, mut subtypes, mut lands, mut supertypes) =
+        (Vec::new(), Vec::new(), Vec::new(), Vec::new());
     for word in types.split(',').map(str::trim) {
         if super::ctx::CARD_TYPES.contains(&word) {
             card_types.push(word);
+        } else if remove_lands && BASIC_LAND_TYPES.contains(&word) {
+            lands.push(word);
+        } else if word == "Legendary" {
+            supertypes.push(word);
         } else if ctx.world.subtypes.contains(word) {
             subtypes.push(word);
         } else {
             return unmapped(format!("key:Animate.Types={word}"));
         }
     }
-    let mut mods = Vec::new();
+    if remove_cards && card_types.is_empty() {
+        return unmapped("key:Animate.RemoveCardTypes");
+    }
+    if remove_lands {
+        mods.push(json!({"SetLandTypes": lands}));
+    }
     if p.get("RemoveCreatureTypes") == Some("True") {
         mods.push(json!({"SetCreatureTypes": subtypes}));
     } else {
         mods.extend(subtypes.iter().map(|name| json!({"AddSubtype": name})));
     }
-    mods.extend(card_types.iter().map(|name| json!({"AddType": name})));
+    if remove_cards {
+        mods.push(json!({"SetTypes": card_types}));
+    } else {
+        mods.extend(card_types.iter().map(|name| json!({"AddType": name})));
+    }
+    mods.extend(supertypes.iter().map(|name| json!({"AddSupertype": name})));
     Ok(mods)
 }
 
