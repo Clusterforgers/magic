@@ -410,6 +410,22 @@ fn gaps(text: &str) -> Vec<String> {
     json!({"Activated": {"cost": ["Tap"], "effects": [{"AddMana": {"mana": {"Fixed": ["Red"]},
         "only": [{"Spell": {"types": ["Creature"]}}]}}]}})
 )]
+#[case::cavern_of_souls_mana(
+    "Name:Test Cavern\nTypes:Land\nA:AB$ Mana | Cost$ T | Produced$ Any | RestrictValid$ Spell.Creature+ChosenType | AddsNoCounter$ True\n",
+    json!({"Activated": {"cost": ["Tap"], "effects": [{"AddMana": {"mana": {"AnyColor": 1},
+        "only": [{"Spell": {"types": ["Creature"], "chosen_type": true}},
+                 {"Uncounterable": {"types": ["Creature"], "chosen_type": true}}]}}]}})
+)]
+#[case::delighted_halfling_mana(
+    "Name:Test Halfling\nTypes:Creature Halfling\nA:AB$ Mana | Cost$ T | Produced$ Any | RestrictValid$ Spell.Legendary | AddsNoCounter$ True\n",
+    json!({"Activated": {"cost": ["Tap"], "effects": [{"AddMana": {"mana": {"AnyColor": 1},
+        "only": [{"Spell": {"supertypes": ["Legendary"]}}, {"Uncounterable": {"supertypes": ["Legendary"]}}]}}]}})
+)]
+#[case::boseiju_mana(
+    "Name:Test Boseiju\nTypes:Land\nA:AB$ Mana | Cost$ T | Produced$ C | AddsNoCounter$ !Permanent\n",
+    json!({"Activated": {"cost": ["Tap"], "effects": [{"AddMana": {"mana": {"Fixed": ["Colorless"]},
+        "only": [{"Uncounterable": {"types": ["Instant", "Sorcery"]}}]}}]}})
+)]
 #[case::cannot_be_blocked_by_big_creatures(
     "Name:Test Sneak\nTypes:Creature Elf\nS:Mode$ CantBlockBy | ValidAttacker$ Creature.Self | ValidBlocker$ Creature.powerGE3\n",
     json!({"Static": {"affected": "This", "mods": [{"CantBeBlockedBy": [{"Type": "Creature"},
@@ -710,3 +726,4 @@ mod p6;
 mod p7;
 mod p8;
 mod p8b;
+mod r3p8;

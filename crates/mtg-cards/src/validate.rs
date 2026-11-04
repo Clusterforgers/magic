@@ -2814,11 +2814,14 @@ impl Walker<'_> {
                 when_spent,
             } => {
                 w.at("who", |w| w.reference(who, Kind::Player));
-                if only.iter().any(|on| matches!(on, SpendOn::Spell(f) | SpendOn::Ability(f) if f.types.iter().any(|t| f.without.contains(t)))) {
+                if only.iter().any(|on| matches!(on, SpendOn::Spell(f) | SpendOn::Ability(f) | SpendOn::Uncounterable(f) if f.types.iter().any(|t| f.without.contains(t)))) {
                     w.problem("a restriction names a card type it also excludes");
                 }
-                if !only.is_empty() {
+                if only.iter().any(SpendOn::restricts) {
                     w.uses("Effect", "AddMana.Restricted");
+                }
+                if SpendOn::uncounterable(only).next().is_some() {
+                    w.uses("Effect", "AddMana.Uncounterable");
                 }
                 if !lasts.is_step() {
                     w.uses("Effect", "AddMana.Lasts");
@@ -3884,7 +3887,10 @@ impl Walker<'_> {
             {
                 self.problem("a zone change or an entering is not prevented");
             }
-            ReplaceBy::PreventUpTo(_) | ReplaceBy::PreventAllBut(_) | ReplaceBy::PreventNext
+            ReplaceBy::PreventUpTo(_)
+            | ReplaceBy::PreventHalf
+            | ReplaceBy::PreventAllBut(_)
+            | ReplaceBy::PreventNext
                 if !matches!(when, ReplaceWhen::Damage { .. }) =>
             {
                 self.problem("only damage is prevented in part or once");

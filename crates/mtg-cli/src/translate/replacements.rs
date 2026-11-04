@@ -149,7 +149,7 @@ fn doesnt_untap(ctx: &Ctx, p: &Params) -> Tr<Value> {
         ) => json!("Attached"),
         // A group ("Creatures don't untap during their controllers' untap steps") is each permanent it selects.
         Some(valid)
-            if !valid.contains("Self")
+            if (!valid.contains("Self") || valid.starts_with("Card.Self+counters_"))
                 && !valid.contains("Chosen")
                 && p.get("ActiveZones") == Some("Battlefield") =>
         {

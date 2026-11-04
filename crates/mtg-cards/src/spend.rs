@@ -207,6 +207,9 @@ pub enum SpendOn {
     /// Not a restriction: the mana may be spent on anything, and spending it on a spell of the kind sets off the effects
     /// ("When that mana is spent to cast a creature spell, scry 1").
     When(Box<WhenSpent>),
+    /// Not a restriction: a spell of the kind that this mana helps pay for can't be countered ("Spend this mana only to
+    /// cast a creature spell, and that spell can't be countered").
+    Uncounterable(SpendFilter),
 }
 
 /// What happens when a mana is spent to cast a spell of some kind: a triggered ability of the permanent that added the
@@ -242,13 +245,21 @@ impl WhenSpent {
 impl SpendOn {
     /// Whether the use limits what the mana may be spent on; a rider does not.
     pub const fn restricts(&self) -> bool {
-        !matches!(self, SpendOn::When(_))
+        !matches!(self, SpendOn::When(_) | SpendOn::Uncounterable(_))
     }
 
     /// The riders among `only`: what spending the mana on a spell sets off.
     pub fn riders(only: &[SpendOn]) -> impl Iterator<Item = &WhenSpent> {
         only.iter().filter_map(|on| match on {
             SpendOn::When(rider) => Some(&**rider),
+            _ => None,
+        })
+    }
+
+    /// The filters of the uses that keep a spell from being countered.
+    pub fn uncounterable(only: &[SpendOn]) -> impl Iterator<Item = &SpendFilter> {
+        only.iter().filter_map(|on| match on {
+            SpendOn::Uncounterable(filter) => Some(filter),
             _ => None,
         })
     }
@@ -260,6 +271,7 @@ impl SpendOn {
             SpendOn::Ability(filter) => SpendOn::Ability(filter.resolved(chosen)?),
             SpendOn::CostWithX => SpendOn::CostWithX,
             SpendOn::When(rider) => rider.entry(chosen, rider.source)?,
+            SpendOn::Uncounterable(filter) => SpendOn::Uncounterable(filter.resolved(chosen)?),
         })
     }
 

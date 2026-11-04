@@ -5,7 +5,7 @@ use serde_json::{Value, json};
 use super::amount::amount;
 use super::card::translate_face;
 use super::ctx::{CARD_TYPES, Ctx, SUPERTYPES, Tr, only, unmapped};
-use super::valid::defined;
+use super::valid::{defined, selector_any};
 use crate::forge::script::{Face, Params};
 
 /// The effects of `Token`, `Investigate` and `Mana`.
@@ -16,6 +16,7 @@ pub fn effects(ctx: &mut Ctx, p: &Params, api: &str) -> Tr<Vec<Value>> {
             only(p, "Investigate", &[])?;
             json!({"CreateToken": {"token": {"Named": "clue"}}})
         }
+        "ManaReflected" => reflected(ctx, p)?,
         _ => mana(ctx, p)?,
     };
     Ok(vec![effect])
@@ -180,12 +181,24 @@ fn mana_type(word: &str) -> Option<&'static str> {
 }
 
 fn mana(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
-    only(p, "Mana", &["Produced", "Amount", "RestrictValid"])?;
+    only(
+        p,
+        "Mana",
+        &["Produced", "Amount", "RestrictValid", "AddsNoCounter"],
+    )?;
     let produced = p.get("Produced").unwrap_or_default();
     let times = p.get("Amount").unwrap_or("1");
     let words: Vec<&str> = produced.split_whitespace().collect();
     let mut effect = match words.as_slice() {
         ["Any"] | ["Combo", "Any"] => json!({"mana": {"AnyColor": amount(ctx, times)?}}),
+        ["Chosen" | "ChosenColor"] => match times.parse::<u32>() {
+            Ok(count) if count > 0 => json!({"mana": {"ChosenColor": count}}),
+            _ => return unmapped("key:Mana.Produced=Chosen"),
+        },
+        ["Combo", "ColorIdentity"] if times == "1" => json!({"mana": {"CommanderIdentity": 1}}),
+        ["Combo", color, "Chosen"] if times == "1" && mana_type(color).is_some() => {
+            json!({"mana": {"OrChosenColor": mana_type(color)}})
+        }
         ["Combo", rest @ ..] if times == "1" && rest.len() > 1 => {
             let types: Option<Vec<&str>> = rest.iter().map(|w| mana_type(w)).collect();
             match types {
@@ -198,10 +211,51 @@ fn mana(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
         }
         _ => return unmapped("key:Mana.Produced"),
     };
-    if let Some(restriction) = p.get("RestrictValid") {
-        effect["only"] = json!([spend_on(restriction)?]);
+    let mut only = Vec::new();
+    let restriction = p.get("RestrictValid");
+    if let Some(restriction) = restriction {
+        only.push(json!({ "Spell": spend_filter(restriction)? }));
+    }
+    // "That spell can't be countered": a rider on the spells the mana may pay for (`!Permanent` is the instant or sorcery spells).
+    match p.get("AddsNoCounter") {
+        None => {}
+        Some("True") => {
+            let filter = restriction.map_or_else(|| Ok(json!({})), spend_filter)?;
+            only.push(json!({ "Uncounterable": filter }));
+        }
+        Some("!Permanent") if restriction.is_none() => {
+            only.push(json!({ "Uncounterable": {"types": ["Instant", "Sorcery"]} }));
+        }
+        Some(other) => return unmapped(format!("key:Mana.AddsNoCounter={other}")),
+    }
+    if !only.is_empty() {
+        effect["only"] = json!(only);
     }
     Ok(json!({ "AddMana": effect }))
+}
+
+/// `ManaReflected`: one mana of a type (or colour) that the permanents it names could produce.
+fn reflected(ctx: &Ctx, p: &Params) -> Tr<Value> {
+    only(
+        p,
+        "ManaReflected",
+        &["Valid", "ColorOrType", "ReflectProperty", "Amount"],
+    )?;
+    if p.get("ReflectProperty") != Some("Produce") {
+        return unmapped("effect:ManaReflected-property");
+    }
+    let colorless = match p.get("ColorOrType") {
+        Some("Type") => true,
+        Some("Color") => false,
+        _ => return unmapped("effect:ManaReflected-ColorOrType"),
+    };
+    let Ok(count) = p.get("Amount").unwrap_or("1").parse::<u32>() else {
+        return unmapped("effect:ManaReflected-Amount");
+    };
+    let among = selector_any(ctx, p.get("Valid").unwrap_or_default())?;
+    Ok(
+        json!({"AddMana": {"mana": {"ProducedBy": {"among": among, "count": count, "colorless": colorless}}}}),
+    )
 }
 
 /// Fixed mana: the listed types, repeated `times` times (a number repeats the list, anything else is a count).
@@ -214,11 +268,14 @@ fn fixed_mana(ctx: &Ctx, words: &[&str], times: &str) -> Tr<Value> {
     Ok(json!({"mana": {"Fixed": types}, "times": amount(ctx, times)?}))
 }
 
-/// What mana may be spent on: spells of the card types or supertype a `RestrictValid$` of spells names.
-fn spend_on(restriction: &str) -> Tr<Value> {
+/// The spells a `RestrictValid$` names: card types, a supertype or non-types, and `+ChosenType` for the creature type chosen.
+fn spend_filter(restriction: &str) -> Tr<Value> {
     let mut types = Vec::new();
     let mut without = Vec::new();
     let mut supertypes = Vec::new();
+    let (restriction, chosen) = restriction
+        .strip_suffix("+ChosenType")
+        .map_or((restriction, false), |r| (r, true));
     for alternative in restriction.split(',') {
         let Some(word) = alternative.strip_prefix("Spell.") else {
             return unmapped(format!("key:Mana.RestrictValid={restriction}"));
@@ -229,6 +286,11 @@ fn spend_on(restriction: &str) -> Tr<Value> {
             _ if SUPERTYPES.contains(&word) => supertypes.push(word),
             _ => return unmapped(format!("key:Mana.RestrictValid={restriction}")),
         }
+    }
+    if chosen
+        && (types.is_empty() || supertypes.len() + without.len() > 0 || restriction.contains(','))
+    {
+        return unmapped(format!("key:Mana.RestrictValid={restriction}+ChosenType"));
     }
     let kinds = [
         !types.is_empty(),
@@ -248,5 +310,8 @@ fn spend_on(restriction: &str) -> Tr<Value> {
     if !supertypes.is_empty() {
         filter["supertypes"] = json!(supertypes);
     }
-    Ok(json!({ "Spell": filter }))
+    if chosen {
+        filter["chosen_type"] = json!(true);
+    }
+    Ok(filter)
 }

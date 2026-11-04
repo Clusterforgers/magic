@@ -136,6 +136,14 @@ fn damage(
                 ));
             }
         }
+        ReplaceBy::PreventHalf => {
+            found.push(format!("{head}, prevent half that damage, rounded up"));
+            found.extend(
+                passive
+                    .iter()
+                    .map(|passive| format!("{passive}, prevent half that damage, rounded up")),
+            );
+        }
         ReplaceBy::PreventUpTo(most) if *most > 0 => {
             for number in numbers(*most) {
                 found.push(format!("{head}, prevent {number} of that damage"));
