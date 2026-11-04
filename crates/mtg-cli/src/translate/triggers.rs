@@ -91,7 +91,7 @@ pub fn triggered(ctx: &mut Ctx, body: &str) -> Tr<Value> {
 
 /// Whether a pattern is about the card itself ("when this creature dies"), so that "that creature" is the card and its
 /// controller is "you".
-fn is_about_itself(when: &Value) -> bool {
+pub(super) fn is_about_itself(when: &Value) -> bool {
     when.as_object()
         .and_then(|map| map.values().next())
         .and_then(|inner| inner.get("what"))

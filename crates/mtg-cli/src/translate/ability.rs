@@ -106,9 +106,13 @@ fn activated(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     let Some(text) = p.get("Cost") else {
         return unmapped("line:AB-without-cost");
     };
-    // "If this is tapped / on the battlefield" is checked as the ability resolves; a condition on activation differs.
+    // "If this is tapped / on the battlefield" is checked as the ability resolves; a condition on activation differs. Only
+    // a line that says "Activate only if" is one.
     if p.get("IsPresent")
         .is_some_and(|valid| valid.starts_with("Card.Self"))
+        && !p
+            .get("SpellDescription")
+            .is_some_and(|text| text.contains("Activate only if"))
     {
         return unmapped("key:AB.IsPresent=Self");
     }

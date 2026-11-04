@@ -6,7 +6,7 @@ use super::amount::{amount, counter_kind};
 use super::ctx::{Ctx, Tr, only, unmapped};
 use super::keyword::{keyword_list, keyword_value};
 use super::remember;
-use super::valid::{defined, objects, selector_any, subject};
+use super::valid::{defined, objects, selector_any, selector_in, subject};
 use crate::forge::script::Params;
 
 /// The effects of a verb on objects.
@@ -16,13 +16,14 @@ pub fn effects(ctx: &mut Ctx, p: &Params, api: &str) -> Tr<Vec<Value>> {
         "Destroy" => one(destroy(ctx, p)),
         "DestroyAll" => one(destroy_all(ctx, p)),
         "DamageAll" => damage_all(ctx, p),
+        "DamageResolve" => damage_resolve(p),
         "PutCounterAll" => one(put_counter_all(ctx, p)),
         "Counter" => one(counter(ctx, p)),
         "PreventDamage" => one(prevent_damage(ctx, p)),
         "Pump" => pump(ctx, p),
         "PumpAll" => pump_all(ctx, p),
         "Animate" | "AnimateAll" => animate(ctx, p),
-        "PutCounter" => one(put_counter(ctx, p)),
+        "PutCounter" => put_counter(ctx, p),
         "RemoveCounter" => one(remove_counter(ctx, p)),
         "Tap" => tap(ctx, p),
         "Untap" => one(simple(ctx, p, "Untap", "Untap")),
@@ -125,8 +126,13 @@ fn destroy_all(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     only(
         p,
         "DestroyAll",
-        &["ValidCards", "NoRegen", "RememberDestroyed"],
+        &["ValidCards", "NoRegen", "RememberDestroyed", "Zone"],
     )?;
+    if let Some(zone) = p.get("Zone")
+        && zone != "Battlefield"
+    {
+        return unmapped(format!("key:DestroyAll.Zone={zone}"));
+    }
     let valid = p.get("ValidCards").unwrap_or_default();
     let regenerate = p.get("NoRegen") != Some("True");
     let what = json!({"Each": selector_any(ctx, valid)?});
@@ -137,8 +143,28 @@ fn destroy_all(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     Ok(effect)
 }
 
+/// `DamageMap$ True` collects the damage of a chain of `DealDamage` and `DamageAll` lines, which `DamageResolve` then deals at
+/// once. The steps of one resolution are not separated by state-based actions, so the damage dealt in order is the same.
+pub fn damage_map(p: &Params) -> Tr<()> {
+    match p.get("DamageMap") {
+        None | Some("True") => Ok(()),
+        Some(other) => unmapped(format!("key:DamageMap={other}")),
+    }
+}
+
+/// The `DamageResolve` that ends a damage map: its damage was dealt by the lines before it.
+fn damage_resolve(p: &Params) -> Tr<Vec<Value>> {
+    only(p, "DamageResolve", &[])?;
+    Ok(Vec::new())
+}
+
 fn damage_all(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
-    only(p, "DamageAll", &["NumDmg", "ValidCards", "ValidPlayers"])?;
+    only(
+        p,
+        "DamageAll",
+        &["NumDmg", "ValidCards", "ValidPlayers", "DamageMap"],
+    )?;
+    damage_map(p)?;
     let valid = p.get("ValidCards").unwrap_or_default();
     let amount = amount(ctx, p.get("NumDmg").unwrap_or("1"))?;
     let mut effects =
@@ -174,7 +200,13 @@ fn put_counter_all(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
 }
 
 fn counter(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
-    only(p, "Counter", &["TargetType", "ValidTgts"])?;
+    only(p, "Counter", &["TargetType", "ValidTgts", "Destination"])?;
+    // A countered spell goes to its owner's graveyard; another destination needs a node of the engine.
+    if let Some(zone) = p.get("Destination")
+        && zone != "Graveyard"
+    {
+        return unmapped(format!("key:Counter.Destination={zone}"));
+    }
     if p.get("TargetType") != Some("Spell") {
         return unmapped("key:Counter.TargetType");
     }
@@ -264,28 +296,89 @@ fn pump(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             "NumAtt",
             "NumDef",
             "KW",
+            "KWChoice",
             "Defined",
             "ValidTgts",
             "Duration",
             "IsCurse",
             "TargetMin",
             "TargetMax",
+            "PumpZone",
+            "AtEOT",
         ],
     )?;
     let duration = pump_duration(p)?;
     let affected = objects(subject(ctx, p, "Self", None)?)?;
     // A pump that only chooses a target ("target creature you control deals damage ... to target creature") changes
     // nothing itself; the part after it uses the target.
-    if !(p.has("NumAtt") || p.has("NumDef") || p.has("KW"))
+    let selects_only = !(p.has("NumAtt") || p.has("NumDef") || p.has("KW") || p.has("KWChoice"))
         && p.has("ValidTgts")
-        && p.has("SubAbility")
-    {
+        && p.has("SubAbility");
+    // The pumped object is on the battlefield; a pump of a card in another zone, or of a spell, is only a target choice.
+    match p.get("PumpZone") {
+        None | Some("Battlefield") => {}
+        Some("Stack") if selects_only => {}
+        Some(zone) => return unmapped(format!("key:Pump.PumpZone={zone}")),
+    }
+    if selects_only {
         return Ok(Vec::new());
     }
-    let mods = pump_mods(ctx, p)?;
-    Ok(vec![
-        json!({"Continuous": {"affected": affected, "mods": mods, "duration": duration}}),
-    ])
+    let mut effects = Vec::new();
+    if p.has("NumAtt") || p.has("NumDef") || p.has("KW") {
+        let mods = pump_mods(ctx, p)?;
+        effects.push(
+            json!({"Continuous": {"affected": affected, "mods": mods, "duration": duration}}),
+        );
+    } else if !p.has("KWChoice") {
+        return unmapped("key:Pump.nothing");
+    }
+    if let Some(choice) = p.get("KWChoice") {
+        effects.push(keyword_choice(ctx, choice, &affected, duration)?);
+    }
+    if let Some(word) = p.get("AtEOT") {
+        effects.push(pump_at_eot(ctx, word, &affected)?);
+    }
+    Ok(effects)
+}
+
+/// `KWChoice$`: the controller picks one keyword of the list as the effect resolves and the object gains it. A group of
+/// objects stays a gap: Forge asks once for the group, which this node does not say.
+fn keyword_choice(ctx: &mut Ctx, choice: &str, affected: &Value, duration: &str) -> Tr<Value> {
+    if affected.get("Each").is_some() {
+        return unmapped("key:Pump.KWChoice-for-a-group");
+    }
+    let mut options = Vec::new();
+    for word in choice.split(',').map(str::trim) {
+        let keyword = keyword_value(ctx, word)?;
+        options.push(json!({"Continuous": {
+            "affected": affected, "mods": [{"AddKeyword": keyword}], "duration": duration}}));
+    }
+    either(options)
+}
+
+/// The choice of one of several effects, written as nested `Either`.
+pub fn either(mut options: Vec<Value>) -> Tr<Value> {
+    let Some(mut rest) = options.pop() else {
+        return unmapped("key:Choice.no-options");
+    };
+    while let Some(option) = options.pop() {
+        rest = json!({"Either": {"first": [option], "second": [rest]}});
+    }
+    Ok(rest)
+}
+
+/// `AtEOT$` of a pump: what happens to the pumped object at the next end step. The object is the source itself or a
+/// target, which the delayed trigger holds by a name.
+fn pump_at_eot(ctx: &mut Ctx, word: &str, affected: &Value) -> Tr<Value> {
+    if affected == &json!("This") {
+        return super::tokens_copy::at_eot(word, affected);
+    }
+    if affected.get("Target").is_none() {
+        return unmapped("key:Pump.AtEOT-of-a-group");
+    }
+    let name = ctx.fresh("pumped");
+    let inner = super::tokens_copy::at_eot(word, &json!({ "Bound": name }))?;
+    Ok(json!({"RepeatEach": {"over": affected, "as": name, "effects": [inner]}}))
 }
 
 fn pump_all(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
@@ -328,6 +421,7 @@ fn animate(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             "RemoveAllAbilities",
             "Triggers",
             "Abilities",
+            "staticAbilities",
             "RemoveCreatureTypes",
             "RemoveCardTypes",
             "RemoveLandTypes",
@@ -342,7 +436,7 @@ fn animate(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     // `AnimateAll` names the objects by a valid-string.
     let affected = match p.get("ValidCards") {
         Some(valid) => json!({"Each": selector_any(ctx, valid)?}),
-        None => objects(subject(ctx, p, "", None)?)?,
+        None => objects(subject(ctx, p, "Self", None)?)?,
     };
     let mut mods = Vec::new();
     match (p.get("Power"), p.get("Toughness")) {
@@ -447,7 +541,7 @@ fn type_mods(ctx: &Ctx, p: &Params) -> Tr<Vec<Value>> {
     Ok(mods)
 }
 
-fn put_counter(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
+fn put_counter(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     only(
         p,
         "PutCounter",
@@ -455,22 +549,51 @@ fn put_counter(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
             "CounterType",
             "CounterNum",
             "Defined",
+            "Choices",
             "ValidTgts",
             "TargetMin",
             "TargetMax",
             "DividedAsYouChoose",
         ],
     )?;
-    let Some(kind) = p.get("CounterType").and_then(kind_word) else {
-        return unmapped("key:PutCounter.CounterType");
+    let kinds = counter_choices(p.get("CounterType").unwrap_or_default())?;
+    let mut effects = Vec::new();
+    // `Choices$` is a pick made as the effect resolves, from the objects that match, with no targets.
+    let on = match p.get("Choices") {
+        Some(_) if p.has("ValidTgts") || p.has("Defined") => {
+            return unmapped("key:PutCounter.Choices-with-a-target");
+        }
+        Some(valid) => {
+            let from = json!({"Each": selector_in(ctx, valid, None)?});
+            let bind = ctx.fresh("card");
+            effects.push(json!({"Choose": {
+                "who": "You", "from": from, "count": {"min": 1, "max": 1}, "as": bind}}));
+            json!({ "Bound": bind })
+        }
+        None => subject(ctx, p, "Self", None)?,
     };
-    let on = subject(ctx, p, "Self", None)?;
     let count = if super::effects::divided(p, "CounterNum")? {
         json!("Divided")
     } else {
         amount(ctx, p.get("CounterNum").unwrap_or("1"))?
     };
-    Ok(json!({"PutCounters": {"on": on, "counter": kind, "count": count}}))
+    let puts = kinds
+        .into_iter()
+        .map(|kind| json!({"PutCounters": {"on": on, "counter": kind, "count": count}}))
+        .collect();
+    effects.push(either(puts)?);
+    Ok(effects)
+}
+
+/// The kinds a `CounterType$` lists: one is the counter put, several are the controller's choice of one.
+fn counter_choices(words: &str) -> Tr<Vec<Value>> {
+    words
+        .split(',')
+        .map(|word| match kind_word(word) {
+            Some(kind) => Ok(kind),
+            None => unmapped("key:PutCounter.CounterType"),
+        })
+        .collect()
 }
 
 fn remove_counter(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
@@ -514,9 +637,14 @@ fn kind_word(word: &str) -> Option<Value> {
         "Reach",
         "Hexproof",
     ];
+    // Counters that cards name in words; any other word stays a gap.
+    const NAMED: [&str; 4] = ["Quest", "Exalted", "Decayed", "Verse"];
     let word = word.trim();
     counter_kind(word).or_else(|| {
-        (KEYWORDS.contains(&word) || word == "Haste" || word == "Experience")
+        (KEYWORDS.contains(&word)
+            || NAMED.contains(&word)
+            || word == "Haste"
+            || word == "Experience")
             .then(|| json!({"Other": word.to_lowercase()}))
     })
 }
