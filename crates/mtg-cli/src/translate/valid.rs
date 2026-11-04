@@ -299,6 +299,20 @@ pub fn selector_any(ctx: &Ctx, spec: &str) -> Tr<Vec<Value>> {
 /// A selector over the cards of a zone: the alternatives with `In(zone)` added when the zone is not the battlefield.
 pub fn selector_in(ctx: &Ctx, spec: &str, zone: Option<&str>) -> Tr<Vec<Value>> {
     let mut preds = selector_any(ctx, spec)?;
+    let permanents = spec
+        .split(',')
+        .filter(|alternative| alternative.trim().split('.').next() == Some("Permanent"))
+        .count();
+    let off_battlefield = !matches!(zone, None | Some("Battlefield"));
+    if off_battlefield && permanents > 0 {
+        // Outside the battlefield "permanent" is a card of a permanent type, not an instant or sorcery.
+        if permanents != spec.split(',').count() {
+            return unmapped("valid:Permanent-card-beside-other-alternatives");
+        }
+        let types = ["Artifact", "Battle", "Creature", "Enchantment", "Land", "Planeswalker"];
+        let any: Vec<Value> = types.iter().map(|name| json!({"Type": name})).collect();
+        preds.push(json!({"AnyOf": any}));
+    }
     match zone {
         None | Some("Battlefield") => {}
         Some(zone @ ("Graveyard" | "Hand" | "Library" | "Exile")) => {
@@ -346,15 +360,7 @@ pub fn defined(ctx: &Ctx, word: &str) -> Tr<Value> {
             .remembered
             .clone()
             .map_or_else(|| unmapped("defined:Remembered-without-a-change"), Ok),
-        "TriggeredCard"
-        | "TriggeredPlayer"
-        | "TriggeredAttacker"
-        | "TriggeredBlocker"
-        | "TriggeredCardLKICopy"
-        | "TriggeredAttackerLKICopy"
-        | "TriggeredNewCardLKICopy"
-        | "TriggeredBlockerLKICopy" => Ok(json!("Triggering")),
-        "TriggeredCardController" | "TriggeredSourceController" => controller(json!("Triggering")),
+        word if super::triggered::is_word(word) => super::triggered::resolve(ctx.trigger.as_ref(), word),
         "DefendingPlayer" | "TriggeredDefendingPlayer" => Ok(json!("Defending")),
         other => unmapped(format!("defined:{other}")),
     }

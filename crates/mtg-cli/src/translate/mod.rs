@@ -34,6 +34,7 @@ pub mod stored;
 pub mod tokens;
 pub mod triggers;
 pub mod triggers_did;
+pub mod triggered;
 pub mod triggers_more;
 pub mod valid;
 pub mod valid_atoms;
@@ -167,6 +168,14 @@ fn write_proposal(
         .filter(Value::is_object)
         .unwrap_or_else(|| json!({}));
     record["source"] = json!("forge");
+    let gaps: BTreeSet<&str> = card.gaps().map(|gap| gap.0.as_str()).collect();
+    if gaps.is_empty() {
+        if let Some(map) = record.as_object_mut() {
+            map.remove("gaps");
+        }
+    } else {
+        record["gaps"] = json!(gaps);
+    }
     if let Some(matches) = oracle_matches {
         record["oracle_matches"] = json!(matches);
     }

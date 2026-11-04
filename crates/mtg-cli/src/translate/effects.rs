@@ -136,6 +136,15 @@ fn cleanup(p: &Params) -> Tr<Vec<Value>> {
     Ok(Vec::new())
 }
 
+/// Whether the line divides its amount among targets (`DividedAsYouChoose$`); the total it names must be the amount.
+pub fn divided(p: &Params, amount_key: &str) -> Tr<bool> {
+    match p.get("DividedAsYouChoose") {
+        None => Ok(false),
+        Some(total) if p.get(amount_key).is_none_or(|amount| amount == total) => Ok(true),
+        Some(_) => unmapped(format!("key:{amount_key}-differs-from-DividedAsYouChoose")),
+    }
+}
+
 fn deal_damage(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     only(
         p,
@@ -151,7 +160,7 @@ fn deal_damage(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
         ],
     )?;
     let to = subject(ctx, p, "Self", None)?;
-    let amount = if p.has("DividedAsYouChoose") {
+    let amount = if divided(p, "NumDmg")? {
         json!("Divided")
     } else {
         amount(ctx, p.get("NumDmg").unwrap_or("1"))?
@@ -282,6 +291,10 @@ fn delayed(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     )?;
     if p.get("Mode") != Some("Phase") {
         return unmapped("key:DelayedTrigger.Mode");
+    }
+    // "Next turn" skips a step still to come this turn; a delayed trigger here fires at the next such step.
+    if p.get("NextTurn").is_some() {
+        return unmapped("key:DelayedTrigger.NextTurn");
     }
     let step = super::triggers::step(p.get("Phase").unwrap_or_default())?;
     let whose = match p.get("ValidPlayer") {

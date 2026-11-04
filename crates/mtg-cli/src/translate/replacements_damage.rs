@@ -3,7 +3,7 @@
 
 use serde_json::{Value, json};
 
-use super::ctx::{Ctx, Tr, is_hint, unmapped};
+use super::ctx::{Ctx, Tr, check_keys, unmapped};
 use super::effects_obj::duration;
 use super::valid::{selector_any, subject};
 use crate::forge::script::Params;
@@ -31,11 +31,7 @@ fn is_remembered(word: &str) -> bool {
 
 /// The `Event$ DamageDone` keys all of which are understood, with the zone the line is active in.
 fn read_keys(p: &Params, static_line: bool) -> Tr<()> {
-    for (key, _) in p.iter() {
-        if !KEYS.contains(&key) && !is_hint(key) {
-            return unmapped(format!("key:Replacement.DamageDone.{key}"));
-        }
-    }
+    check_keys(p, "Replacement.DamageDone", &KEYS, |_, _| false)?;
     let prevents = p.get("Prevent") == Some("True");
     let replaces = p.has("ReplaceWith");
     if prevents == replaces || (replaces && !static_line) {
@@ -105,11 +101,7 @@ fn scaled(ctx: &Ctx, name: &str) -> Tr<Value> {
     let Some(part) = ctx.svar(name).map(Params::parse) else {
         return unmapped("svar:missing");
     };
-    for (key, _) in part.iter() {
-        if !["DB", "VarName", "VarValue"].contains(&key) && !is_hint(key) {
-            return unmapped(format!("key:ReplaceEffect.{key}"));
-        }
-    }
+    check_keys(&part, "ReplaceEffect", &["DB", "VarName", "VarValue"], |_, _| false)?;
     if part.get("DB") != Some("ReplaceEffect") || part.get("VarName") != Some("DamageAmount") {
         return unmapped("replacement:DamageDone-ReplaceWith-shape");
     }

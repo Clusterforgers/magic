@@ -4,7 +4,7 @@ use serde_json::{Value, json};
 
 use super::amount::{amount, counter_kind};
 use super::cost::cost;
-use super::ctx::{Ctx, Tr, is_hint, unmapped};
+use super::ctx::{Ctx, Tr, unmapped};
 use super::effects::chain_at;
 use super::valid::selector_any;
 use crate::forge::script::Params;
@@ -207,7 +207,7 @@ fn landwalk(word: &str) -> Tr<Value> {
 pub fn keyword_abilities(ctx: &mut Ctx, body: &str) -> Vec<Tr<Value>> {
     match body.strip_prefix("Chapter:") {
         Some(rest) => chapters(ctx, rest),
-        None => vec![keyword_ability(ctx, body)],
+        None => vec![super::card::audited_one(|| keyword_ability(ctx, body))],
     }
 }
 
@@ -222,7 +222,7 @@ fn chapters(ctx: &mut Ctx, rest: &str) -> Vec<Tr<Value>> {
     names
         .iter()
         .enumerate()
-        .map(|(at, name)| chapter(ctx, at + 1, name))
+        .map(|(at, name)| super::card::audited_one(|| chapter(ctx, at + 1, name)))
         .collect()
 }
 
@@ -274,14 +274,12 @@ fn choice(ctx: &Ctx, name: &str) -> Tr<Value> {
         return unmapped("svar:missing");
     };
     let part = Params::parse(text);
-    let hints_only = |read: &[&str]| -> Tr<()> {
-        for (key, _) in part.iter() {
-            if !read.contains(&key) && !is_hint(key) {
-                return unmapped(format!("key:ETBReplacement.{key}"));
-            }
-        }
-        Ok(())
-    };
+    // The chooser is the controller as the permanent enters.
+    if part.get("Defined").is_some_and(|who| who != "You") {
+        return unmapped("key:ETBReplacement.Defined");
+    }
+    let hints_only =
+        |read: &[&str]| -> Tr<()> { super::ctx::check_keys(&part, "ETBReplacement", read, |_, _| false) };
     match (part.get("DB"), part.get("Type"), part.get("Choices")) {
         (Some("ChooseColor"), None, None) => {
             hints_only(&["DB", "Defined"])?;

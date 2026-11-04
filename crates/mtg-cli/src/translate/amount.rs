@@ -122,7 +122,7 @@ fn event_amount(ctx: &Ctx, expression: &str) -> Tr<Option<Value>> {
             };
             return Ok(Some(json!({ key: who })));
         }
-        "TriggeredCard" => json!("Triggering"),
+        "TriggeredCard" => super::triggered::resolve(ctx.trigger.as_ref(), "TriggeredCard")?,
         "Sacrificed" => json!("Paid"),
         "Remembered" if what != "Amount" => match &ctx.remembered {
             Some(remembered) => remembered.clone(),

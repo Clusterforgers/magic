@@ -5,7 +5,7 @@ use serde_json::{Value, json};
 use super::amount::amount;
 use super::condition::{condition, strip};
 use super::cost::cost;
-use super::ctx::{Ctx, Tr, is_hint, unmapped};
+use super::ctx::{Ctx, Tr, check_keys, unmapped};
 use super::keyword::keyword_list;
 use super::valid::{defined, selector_any, selector_in};
 use crate::forge::script::Params;
@@ -50,12 +50,7 @@ fn by_mode(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
 
 /// Refuses a key the mode does not read.
 fn keys(p: &Params, mode: &str, read: &[&str]) -> Tr<()> {
-    for (key, _) in p.iter() {
-        if key != "Mode" && !read.contains(&key) && !is_hint(key) {
-            return unmapped(format!("key:Static.{mode}.{key}"));
-        }
-    }
-    Ok(())
+    check_keys(p, &format!("Static.{mode}"), read, |key, _| key == "Mode")
 }
 
 /// The objects a static line affects: `Affected$` or `AffectedDefined$`.
@@ -260,6 +255,10 @@ fn cant_block_by(ctx: &Ctx, p: &Params) -> Tr<Value> {
             ) else {
                 return unmapped("static:CantBlockBy-shape");
             };
+            // "Can't block X and not Y" is "blocks only Y" for an attacker that is a creature; any other filter would be lost.
+            if only.iter().enumerate().any(|(i, pred)| i != at && *pred != json!({"Type": "Creature"})) {
+                return unmapped("static:CantBlockBy-extra-filter");
+            }
             let inner = only.remove(at)["Not"].clone();
             only.push(inner);
             Ok(json!({"Static": {"affected": "This", "mods": [{"CanBlockOnly": only}]}}))
@@ -287,6 +286,11 @@ fn cost_modifier(ctx: &Ctx, p: &Params, change: &str) -> Tr<Value> {
     )?;
     if p.get("Type") != Some("Spell") {
         return unmapped("static:CostModifier-Type");
+    }
+    // A spell's own cost applies in hand and on the stack; any other line works on the battlefield.
+    match (p.get("EffectZone"), p.get("ValidCard")) {
+        (None | Some("Battlefield"), _) | (Some(_), Some("Card.Self")) => {}
+        _ => return unmapped("key:Static.CostModifier.EffectZone"),
     }
     let applies = match p.get("ValidCard").unwrap_or("Card") {
         "Card.Self" => {

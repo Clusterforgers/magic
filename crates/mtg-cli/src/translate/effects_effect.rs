@@ -4,7 +4,7 @@
 use serde_json::{Value, json};
 
 use super::amount::amount;
-use super::ctx::{Ctx, Tr, is_hint, only, unmapped};
+use super::ctx::{Ctx, Tr, check_keys, only, unmapped};
 use super::effects_obj::duration;
 use super::keyword::keyword_list;
 use super::valid::{defined, objects, subject};
@@ -31,6 +31,11 @@ pub fn effects(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             "Triggers",
         ],
     )?;
+    // The Forge effect object ends when what it remembers changes zones; our references to remembered objects drop out the
+    // same way, so the keys only matter beside `RememberObjects`.
+    if (p.has("ExileOnMoved") || p.has("ForgetOnMoved")) && !p.has("RememberObjects") {
+        return unmapped("key:Effect.ExileOnMoved-without-RememberObjects");
+    }
     if super::effects_emblem::is_emblem(p) {
         return super::effects_emblem::emblem(ctx, p);
     }
@@ -64,8 +69,7 @@ pub fn effects(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         let rule = super::mayplay::may_cast(ctx, &part, Some(&who))?;
         return Ok(vec![json!({"Rule": {"rule": rule, "duration": duration}})]);
     }
-    for (key, _) in part.iter() {
-        let read = [
+    let read = [
             "Mode",
             "ValidAttacker",
             "ValidCreature",
@@ -74,11 +78,8 @@ pub fn effects(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             "AddKeyword",
             "AddPower",
             "AddToughness",
-        ];
-        if !read.contains(&key) && !is_hint(key) {
-            return unmapped(format!("key:Effect.static.{key}"));
-        }
-    }
+    ];
+    check_keys(&part, "Effect.static", &read, |_, _| false)?;
     let on_remembered = |key: &str| {
         matches!(
             part.get(key),
@@ -119,7 +120,7 @@ fn remembered(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
         "Self" => json!("This"),
         "Targeted" => ctx.last_target()?,
         "Remembered" | "RememberedCard" => defined(ctx, "Remembered")?,
-        "TriggeredCard" => json!("Triggering"),
+        "TriggeredCard" => super::triggered::resolve(ctx.trigger.as_ref(), "TriggeredCard")?,
         "ParentTarget" => ctx.parent()?,
         other => return unmapped(format!("key:Effect.RememberObjects={other}")),
     };

@@ -1,0 +1,118 @@
+//! The objects a trigger's `Defined$` words (`TriggeredCard`, `TriggeredBlocker`, ...) name, read against what the
+//! engine holds for the trigger's mode: `Triggering` is the event's subjects, `Dealer` the object that did it.
+
+use serde_json::{Value, json};
+
+use super::ctx::{Tr, unmapped};
+use super::triggers_did::holds;
+
+/// What a trigger line is about, known once its pattern is read.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct Shape {
+    /// The Forge mode.
+    pub mode: String,
+    /// The pattern is about the card itself ("when this creature dies").
+    pub itself: bool,
+    /// The pattern names the object that did it (`ValidBlocker$` of a block), so the event holds a `Dealer`.
+    pub by: bool,
+}
+
+/// The kind of object a word names.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+enum Word {
+    Card,
+    Attacker,
+    Blocker,
+    Player,
+    Source,
+    Target,
+}
+
+/// The word's kind and whether it names that object's controller; none for a word this module does not know.
+fn kind(word: &str) -> Option<(Word, bool)> {
+    Some(match word {
+        "TriggeredCard" | "TriggeredCardLKICopy" | "TriggeredNewCardLKICopy" => (Word::Card, false),
+        "TriggeredCardController" => (Word::Card, true),
+        "TriggeredAttacker" | "TriggeredAttackerLKICopy" => (Word::Attacker, false),
+        "TriggeredBlocker" | "TriggeredBlockerLKICopy" => (Word::Blocker, false),
+        "TriggeredPlayer" => (Word::Player, false),
+        "TriggeredSource" | "TriggeredSourceLKICopy" => (Word::Source, false),
+        "TriggeredSourceController" => (Word::Source, true),
+        "TriggeredTarget" | "TriggeredTargetLKICopy" => (Word::Target, false),
+        _ => return None,
+    })
+}
+
+/// Whether a word is one this module reads.
+pub fn is_word(word: &str) -> bool {
+    kind(word.trim()).is_some()
+}
+
+/// Modes whose event holds the one object it is about and no player.
+const ONE_OBJECT: [&str; 7] = [
+    "ChangesZone",
+    "Taps",
+    "Untaps",
+    "TurnFaceUp",
+    "CounterAdded",
+    "CounterRemoved",
+    "Attacks",
+];
+
+/// Modes whose event holds a player and one object.
+const PLAYER_AND_OBJECT: [&str; 4] = ["Discarded", "Cycled", "Sacrificed", "SpellCast"];
+
+/// Modes whose event holds one player and no object.
+const ONE_PLAYER: [&str; 4] = ["LifeGained", "LifeLost", "Drawn", "Phase"];
+
+/// The reference a `Triggered*` word names in a trigger of this shape, or the gap when the engine does not hold it.
+pub fn resolve(shape: Option<&Shape>, word: &str) -> Tr<Value> {
+    let gap = || {
+        let mode = shape.map_or("no-trigger", |shape| shape.mode.as_str());
+        unmapped(format!("defined:{word}-in-{mode}"))
+    };
+    let (Some(shape), Some((what, controller))) = (shape, kind(word.trim())) else {
+        return gap();
+    };
+    let mode = shape.mode.as_str();
+    let did = holds(mode);
+    let reference = match what {
+        Word::Card if ONE_OBJECT.contains(&mode) || PLAYER_AND_OBJECT.contains(&mode) => {
+            "Triggering"
+        }
+        Word::Card if did.is_some_and(|(_, object)| object) => "Triggering",
+        Word::Attacker if matches!(mode, "Attacks" | "AttackerBlocked" | "AttackerBlockedByCreature") => {
+            "Triggering"
+        }
+        Word::Blocker if mode == "AttackerBlockedByCreature" && shape.by => "Dealer",
+        // A block holds both creatures; only "this blocks" names one without doubt.
+        Word::Blocker if mode == "Blocks" && shape.itself => "This",
+        Word::Player
+            if ONE_PLAYER.contains(&mode)
+                || PLAYER_AND_OBJECT.contains(&mode)
+                || did.is_some_and(|(player, _)| player) =>
+        {
+            "Triggering"
+        }
+        Word::Source if mode == "DamageDone" => "Dealer",
+        Word::Target if mode == "DamageDone" => "Triggering",
+        _ => return gap(),
+    };
+    let object = matches!(what, Word::Card | Word::Attacker);
+    let reference = if shape.itself && object && reference == "Triggering" {
+        "This"
+    } else {
+        reference
+    };
+    if !controller {
+        return Ok(json!(reference));
+    }
+    match (what, reference) {
+        (Word::Card, "This") if ONE_OBJECT.contains(&mode) => Ok(json!("You")),
+        (Word::Card, "Triggering") if ONE_OBJECT.contains(&mode) => {
+            Ok(json!({"ControllerOf": "Triggering"}))
+        }
+        (Word::Source, "Dealer") => Ok(json!({"ControllerOf": "Dealer"})),
+        _ => gap(),
+    }
+}

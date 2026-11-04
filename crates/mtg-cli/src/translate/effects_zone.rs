@@ -217,6 +217,9 @@ pub fn dig(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             "RememberChanged",
         ],
     )?;
+    if p.get("NoReveal") == Some("True") && p.get("Reveal") == Some("True") {
+        return unmapped("key:Dig.NoReveal-with-Reveal");
+    }
     let who = subject(ctx, p, "You", None)?;
     let count = amount(ctx, p.get("DigNum").unwrap_or("1"))?;
     if p.get("ChangeNum") == Some("All")

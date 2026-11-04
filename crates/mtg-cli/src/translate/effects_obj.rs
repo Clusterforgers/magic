@@ -344,7 +344,7 @@ fn put_counter(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
         return unmapped("key:PutCounter.CounterType");
     };
     let on = subject(ctx, p, "Self", None)?;
-    let count = if p.has("DividedAsYouChoose") {
+    let count = if super::effects::divided(p, "CounterNum")? {
         json!("Divided")
     } else {
         amount(ctx, p.get("CounterNum").unwrap_or("1"))?

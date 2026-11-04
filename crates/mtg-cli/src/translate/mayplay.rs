@@ -2,7 +2,7 @@
 
 use serde_json::{Value, json};
 
-use super::ctx::{Ctx, Tr, is_hint, unmapped};
+use super::ctx::{Ctx, Tr, check_keys, unmapped};
 use super::valid::selector_any;
 use crate::forge::script::Params;
 
@@ -24,11 +24,7 @@ const READ: [&str; 11] = [
 /// The `MayCast` rule of a static line. `only` names the objects it covers (what an `Effect` object remembers); without
 /// it the cards `Affected$` selects are covered.
 pub fn may_cast(ctx: &Ctx, p: &Params, only: Option<&Value>) -> Tr<Value> {
-    for (key, _) in p.iter() {
-        if !READ.contains(&key) && !is_hint(key) {
-            return unmapped(format!("key:Static.MayPlay.{key}"));
-        }
-    }
+    check_keys(p, "Static.MayPlay", &READ, |_, _| false)?;
     let from = match p.get("AffectedZone") {
         Some(zone @ ("Graveyard" | "Exile" | "Library" | "Hand")) => zone,
         Some(other) => return unmapped(format!("zone:MayPlay.AffectedZone={other}")),

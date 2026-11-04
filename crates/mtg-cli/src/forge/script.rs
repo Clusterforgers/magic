@@ -2,15 +2,57 @@
 //!
 //! A script is read at run time from a local checkout and only its API and key names and counts leave this module.
 
+use std::cell::RefCell;
 use std::collections::{BTreeMap, BTreeSet};
 use std::fs;
 use std::path::{Path, PathBuf};
+use std::sync::{Arc, Mutex};
 
 use crate::error::CliError;
 
-/// The `Key$ Value` pairs of one line of a script, in written order.
-#[derive(Debug, Clone, Default, PartialEq, Eq)]
-pub struct Params(Vec<(String, String)>);
+/// The `Key$ Value` pairs of one line of a script, in written order, and which keys a reader has looked at.
+#[derive(Debug, Clone, Default)]
+pub struct Params {
+    pairs: Vec<(String, String)>,
+    reads: Arc<Mutex<Reads>>,
+}
+
+impl PartialEq for Params {
+    fn eq(&self, other: &Params) -> bool {
+        self.pairs == other.pairs
+    }
+}
+
+impl Eq for Params {}
+
+/// What the readers of a line have done: the keys they read and the keys a mapper promised to read.
+#[derive(Debug, Default)]
+struct Reads {
+    read: BTreeSet<String>,
+    promised: BTreeMap<String, String>,
+}
+
+thread_local! {
+    /// The lines parsed since `audit` began; none while no audit runs.
+    static AUDIT: RefCell<Option<Vec<Arc<Mutex<Reads>>>>> = const { RefCell::new(None) };
+}
+
+/// Runs `run` and returns the first key that a mapper accepted (`Params::promise`) and no reader looked at, as
+/// `api.Key`: the translation then dropped what that key says.
+pub fn audit<T>(run: impl FnOnce() -> T) -> (T, Option<String>) {
+    let before = AUDIT.with(|cell| cell.replace(Some(Vec::new())));
+    let out = run();
+    let lines = AUDIT.with(|cell| cell.replace(before)).unwrap_or_default();
+    let unread = lines.iter().find_map(|line| {
+        let reads = line.lock().ok()?;
+        reads
+            .promised
+            .iter()
+            .find(|(key, _)| !reads.read.contains(*key))
+            .map(|(key, api)| format!("{api}.{key}"))
+    });
+    (out, unread)
+}
 
 impl Params {
     /// Splits a line body at its pipes and each part at its first `$`; a part with no `$` is a key with no value.
@@ -24,30 +66,61 @@ impl Params {
                 None => (part.to_owned(), String::new()),
             })
             .collect();
-        Params(pairs)
+        let reads = Arc::new(Mutex::new(Reads::default()));
+        AUDIT.with(|cell| {
+            if let Some(lines) = cell.borrow_mut().as_mut() {
+                lines.push(Arc::clone(&reads));
+            }
+        });
+        Params { pairs, reads }
+    }
+
+    /// Records that the mapper of `api` accepts these keys of the line as understood: each that is present must be read
+    /// before the audit ends, or the line is a gap.
+    pub fn promise(&self, api: &str, read: &[&str]) {
+        let Ok(mut reads) = self.reads.lock() else {
+            return;
+        };
+        for (key, _) in &self.pairs {
+            if read.contains(&key.as_str()) && !matches!(key.as_str(), "Mode" | "Event") {
+                reads.promised.insert(key.clone(), api.to_owned());
+            }
+        }
+    }
+
+    fn mark(&self, key: &str) {
+        if let Ok(mut reads) = self.reads.lock() {
+            reads.read.insert(key.to_owned());
+        }
     }
 
     /// The pairs and one more.
     fn with(mut self, key: &str, value: &str) -> Params {
-        self.0.push((key.to_owned(), value.to_owned()));
+        self.pairs.push((key.to_owned(), value.to_owned()));
         self
     }
 
-    /// The pairs without those that have one of these keys.
+    /// The pairs without those that have one of these keys, which count as read.
     #[must_use]
     pub fn without(&self, keys: &[&str]) -> Params {
-        Params(
-            self.0
+        for key in keys {
+            self.mark(key);
+        }
+        Params {
+            pairs: self
+                .pairs
                 .iter()
                 .filter(|(key, _)| !keys.contains(&key.as_str()))
                 .cloned()
                 .collect(),
-        )
+            reads: Arc::clone(&self.reads),
+        }
     }
 
     /// The value of the first pair with this key.
     pub fn get(&self, key: &str) -> Option<&str> {
-        self.0
+        self.mark(key);
+        self.pairs
             .iter()
             .find(|(k, _)| k == key)
             .map(|(_, v)| v.as_str())
@@ -60,14 +133,14 @@ impl Params {
 
     /// The pairs in written order.
     pub fn iter(&self) -> impl Iterator<Item = (&str, &str)> {
-        self.0.iter().map(|(k, v)| (k.as_str(), v.as_str()))
+        self.pairs.iter().map(|(k, v)| (k.as_str(), v.as_str()))
     }
 
     /// The keys that name a variation of the verb, in written order: descriptions, prompts, hints for the computer
     /// player, references to other lines and bookkeeping of remembered objects are left out.
     pub fn meaningful_keys(&self) -> Vec<String> {
         let mut keys: Vec<String> = Vec::new();
-        for (key, _) in self.0.iter().skip(1).filter(|(key, _)| !is_noise(key)) {
+        for (key, _) in self.pairs.iter().skip(1).filter(|(key, _)| !is_noise(key)) {
             let key = canonical_key(key);
             if !keys.iter().any(|seen| seen == key) {
                 keys.push(key.to_owned());

@@ -23,8 +23,20 @@ pub fn triggered(ctx: &mut Ctx, body: &str) -> Tr<Value> {
     ctx.reset();
     let all = Params::parse(body);
     let intervening = condition(ctx, &all)?;
+    // The engine checks the condition again as the ability resolves (CR 603.4); Forge's line says it does not.
+    if all.get("NoResolvingCheck") == Some("True") && intervening.is_some() {
+        return unmapped("key:Trigger.NoResolvingCheck");
+    }
     let p = strip(&all);
     let when = pattern(ctx, &p)?;
+    let itself = is_about_itself(&when);
+    ctx.trigger = Some(super::triggered::Shape {
+        mode: p.get("Mode").unwrap_or_default().to_owned(),
+        itself,
+        by: when
+            .get("BecomesBlocked")
+            .is_some_and(|node| node.get("by").is_some()),
+    });
     let from = match p.get("TriggerZones") {
         None | Some("Battlefield") => None,
         Some(zone @ ("Graveyard" | "Hand" | "Exile" | "Library")) => Some(zone),
@@ -46,12 +58,6 @@ pub fn triggered(ctx: &mut Ctx, body: &str) -> Tr<Value> {
             .contains("\"affected\":\"Triggering\"")
     {
         return unmapped("trigger:object-effect-on-a-player-event");
-    }
-    let itself = is_about_itself(&when);
-    if itself {
-        for effect in &mut effects {
-            about_this(effect);
-        }
     }
     // Paying a cost is a choice already: no "you may" beside "you may pay".
     let pays = matches!(effects.as_slice(), [only] if only.get("Pay").is_some());
@@ -91,37 +97,11 @@ fn is_about_itself(when: &Value) -> bool {
         .is_some_and(|what| *what == json!(["This"]))
 }
 
-/// Rewrites the references to the triggering object in the effects of a trigger about itself.
-fn about_this(value: &mut Value) {
-    match value {
-        Value::Object(map) => {
-            if map.len() == 1 && map.get("ControllerOf") == Some(&json!("Triggering")) {
-                *value = json!("You");
-                return;
-            }
-            for (key, inner) in map.iter_mut() {
-                // "That much" is an amount of the event, not the card.
-                let is_amount = matches!(key.as_str(), "amount" | "count" | "power" | "toughness");
-                if !(is_amount && *inner == json!("Triggering")) {
-                    about_this(inner);
-                }
-            }
-        }
-        Value::Array(items) => items.iter_mut().for_each(about_this),
-        Value::String(word) if word == "Triggering" => *value = json!("This"),
-        _ => {}
-    }
-}
-
 /// Checks the keys of a trigger line against those a mode reads.
 pub(super) fn keys(p: &Params, mode: &str, read: &[&str]) -> Tr<()> {
-    for (key, _) in p.iter() {
-        if COMMON.contains(&key) || read.contains(&key) || super::ctx::is_hint(key) {
-            continue;
-        }
-        return unmapped(format!("key:Trigger.{mode}.{key}"));
-    }
-    Ok(())
+    super::ctx::check_keys(p, &format!("Trigger.{mode}"), read, |key, _| {
+        COMMON.contains(&key)
+    })
 }
 
 fn pattern(ctx: &Ctx, p: &Params) -> Tr<Value> {

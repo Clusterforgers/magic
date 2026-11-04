@@ -348,6 +348,28 @@ const FORGE_CASES: &[(&str, ForgeCase)] = &[
         "unchecked with no meta",
         ("unchecked", None, None, true, false),
     ),
+    (
+        "unchecked from Forge, with a gap",
+        (
+            "unchecked",
+            Some(r#"{"source":"forge","oracle_matches":true,"gaps":["effect:RollDice"]}"#),
+            None,
+            false,
+            false,
+        ),
+    ),
+    (
+        "mismatch from Forge with a matching text, with a gap",
+        (
+            "mismatch",
+            Some(
+                r#"{"source":"forge","oracle_matches":true,"gaps":["key:Trigger.NoResolvingCheck"]}"#,
+            ),
+            None,
+            false,
+            false,
+        ),
+    ),
 ];
 
 #[sqlx::test]
@@ -386,4 +408,21 @@ async fn only_a_forge_translation_with_a_matching_text_is_drafted_when_it_mismat
             }
         }
     }
+}
+
+#[sqlx::test]
+async fn a_translation_with_a_gap_is_skipped_as_gapped_and_never_drafted(pool: PgPool) {
+    let dir = tempfile::tempdir().unwrap();
+    let stored = loaded(pool, dir.path()).await;
+    let places = dirs(dir.path());
+    let file = proposal(dir.path(), "forge", PYRE, &stored_proposal(PYRE));
+    meta(&file, r#"{"source":"forge","gaps":["effect:MakeCard"]}"#);
+
+    let promoted = promote(&stored, &places, drafting(vec![file])).await;
+
+    assert_eq!(
+        outcomes(&promoted),
+        [("Cathartic Pyre".to_owned(), Some(W2aSkip::Gapped))]
+    );
+    assert!(promoted.written.is_empty());
 }

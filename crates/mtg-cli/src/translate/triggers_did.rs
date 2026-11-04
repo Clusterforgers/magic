@@ -108,3 +108,13 @@ fn did(ctx: &Ctx, p: &Params, mode: &str, action: &str, subject: Subject) -> Tr<
     }
     Ok(json!({ "Did": node }))
 }
+
+/// Whether a mode of this table holds a player and an object among its subjects; none for any other mode.
+pub fn holds(mode: &str) -> Option<(bool, bool)> {
+    let (_, _, subject) = MODES.iter().find(|(name, ..)| *name == mode)?;
+    Some(match subject {
+        Player(_) => (true, false),
+        Object(_) => (false, true),
+        Both(..) => (true, true),
+    })
+}

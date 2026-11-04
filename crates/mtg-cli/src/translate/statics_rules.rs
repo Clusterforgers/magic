@@ -4,7 +4,7 @@
 use serde_json::{Value, json};
 
 use super::amount::amount;
-use super::ctx::{Ctx, Tr, is_hint, unmapped};
+use super::ctx::{Ctx, Tr, check_keys, unmapped};
 use super::valid::selector_any;
 use crate::forge::script::Params;
 
@@ -37,15 +37,9 @@ fn cant(who: &Value, action: &Value) -> Value {
 
 /// Refuses a key the mode does not read; a static in another zone than the battlefield is another ability.
 fn keys(p: &Params, mode: &str, read: &[&str]) -> Tr<()> {
-    for (key, value) in p.iter() {
-        match key {
-            "Mode" => {}
-            "EffectZone" if value == "Battlefield" => {}
-            _ if read.contains(&key) || is_hint(key) => {}
-            _ => return unmapped(format!("key:Static.{mode}.{key}")),
-        }
-    }
-    Ok(())
+    check_keys(p, &format!("Static.{mode}"), read, |key, value| {
+        key == "Mode" || (key == "EffectZone" && value == "Battlefield")
+    })
 }
 
 /// The players a word names, as a reference.

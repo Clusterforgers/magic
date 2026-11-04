@@ -4,7 +4,7 @@ use serde_json::{Value, json};
 
 use super::amount::{amount, counter_kind};
 use super::condition::{prefixed, tapped_when};
-use super::ctx::{Ctx, Tr, is_hint, unmapped};
+use super::ctx::{Ctx, Tr, check_keys, unmapped};
 use super::valid::selector_any;
 use crate::forge::script::Params;
 
@@ -26,17 +26,16 @@ pub fn replacement_line(ctx: &mut Ctx, body: &str) -> Tr<Value> {
     if event != "Moved" {
         return unmapped(format!("replacement:{event}"));
     }
-    for (key, _) in p.iter() {
-        let read = [
+    let read = [
             "Event",
             "ValidCard",
             "Destination",
             "ReplaceWith",
             "ReplacementResult",
-        ];
-        if !read.contains(&key) && !is_hint(key) {
-            return unmapped(format!("key:Replacement.Moved.{key}"));
-        }
+    ];
+    check_keys(&p, "Replacement.Moved", &read, |_, _| false)?;
+    if p.get("ReplacementResult").is_some_and(|result| result != "Updated") {
+        return unmapped("key:Replacement.Moved.ReplacementResult");
     }
     if p.get("ValidCard") != Some("Card.Self") || p.get("Destination") != Some("Battlefield") {
         return unmapped("replacement:Moved-shape");
@@ -138,10 +137,5 @@ fn pay_or_tapped(ctx: &Ctx, unless: &str) -> Tr<Value> {
 }
 
 fn only_keys(part: &Params, read: &[&str]) -> Tr<()> {
-    for (key, _) in part.iter() {
-        if !read.contains(&key) && !is_hint(key) {
-            return unmapped(format!("key:Replacement.{key}"));
-        }
-    }
-    Ok(())
+    check_keys(part, "Replacement", read, |_, _| false)
 }

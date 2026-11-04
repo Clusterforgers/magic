@@ -587,6 +587,7 @@ fn keywords_map_to_the_keyword_set(#[case] line: &str, #[case] expected: Value) 
     assert_eq!(abilities(&script), vec![json!({ "Keyword": expected })]);
 }
 
+mod audit;
 mod fg3;
 mod fg4a;
 mod fg4a_ambient;

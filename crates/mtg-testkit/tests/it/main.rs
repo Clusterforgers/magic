@@ -470,6 +470,7 @@ mod token_sizes;
 mod transform;
 mod trigger_any_of;
 mod trigger_families;
+mod trigger_subjects;
 mod triggered_keywords;
 mod triggered_keywords_fuzz;
 mod triggered_mana;
