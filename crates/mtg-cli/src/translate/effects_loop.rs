@@ -22,6 +22,7 @@ pub fn choose_card(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             "Mandatory",
             "AtRandom",
             "ControlledByPlayer",
+            "Reveal",
         ],
     )?;
     let mut filter = selector_in(ctx, p.get("Choices").unwrap_or("Card"), p.get("ChoiceZone"))?;
@@ -50,8 +51,12 @@ pub fn choose_card(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         };
         json!({"Choose": {"who": who, "from": from, "count": {"min": min, "max": count}, "as": bind}})
     };
-    ctx.chosen_card = Some(bind);
-    Ok(vec![effect])
+    ctx.chosen_card = Some(bind.clone());
+    let mut effects = vec![effect];
+    if p.get("Reveal") == Some("True") {
+        effects.push(json!({"Reveal": {"what": {"Bound": bind}}}));
+    }
+    Ok(effects)
 }
 
 /// `RepeatEach` over players: the sub-ability once for each, with the player bound as `Remembered`.
@@ -61,17 +66,23 @@ pub fn repeat_each(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         "RepeatEach",
         &[
             "RepeatPlayers",
+            "RepeatCards",
+            "Zone",
             "RepeatSubAbility",
             "DamageMap",
             "ChangeZoneTable",
         ],
     )?;
-    let over = match p.get("RepeatPlayers") {
-        Some("Player") => json!("EachPlayer"),
-        Some("Player.Opponent" | "Opponent") => json!("Opponents"),
-        Some("Targeted") => ctx.last_target()?,
-        Some(other) => return unmapped(format!("key:RepeatEach.RepeatPlayers={other}")),
-        None => return unmapped("key:RepeatEach.no-RepeatPlayers"),
+    let over = match (p.get("RepeatPlayers"), p.get("RepeatCards")) {
+        (None, Some(valid)) => json!({"Each": selector_in(ctx, valid, p.get("Zone"))?}),
+        (Some(_), Some(_)) => return unmapped("key:RepeatEach.RepeatPlayers+RepeatCards"),
+        (players, None) => match players {
+            Some("Player") => json!("EachPlayer"),
+            Some("Player.Opponent" | "Opponent") => json!("Opponents"),
+            Some("Targeted") => ctx.last_target()?,
+            Some(other) => return unmapped(format!("key:RepeatEach.RepeatPlayers={other}")),
+            None => return unmapped("key:RepeatEach.no-RepeatPlayers"),
+        },
     };
     let Some(sub) = p.get("RepeatSubAbility") else {
         return unmapped("key:RepeatEach.no-RepeatSubAbility");
@@ -209,4 +220,103 @@ pub fn choose_value(ctx: &mut Ctx, p: &Params, api: &str) -> Tr<Vec<Value>> {
     Ok(vec![
         json!({"ChooseValue": {"who": who, "kind": kind, "as": bind}}),
     ])
+}
+
+/// `ChooseNumber`: one player picks a whole number from `Min$` (0) to `Max$`, read when the choice is made; the later lines
+/// read it as `ChosenNumber`. Without a `Max$` the range is open and stays a gap.
+pub fn choose_number(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
+    only(p, "ChooseNumber", &["Defined", "Min", "Max"])?;
+    let Some(max) = p.get("Max") else {
+        return unmapped("key:ChooseNumber.no-Max");
+    };
+    let who = defined(ctx, p.get("Defined").unwrap_or("You"))?;
+    if matches!(who.as_str(), Some("Opponents" | "EachPlayer")) {
+        return unmapped("key:ChooseNumber.Defined=group");
+    }
+    let (min, max) = (amount(ctx, p.get("Min").unwrap_or("0"))?, amount(ctx, max)?);
+    let bind = ctx.fresh("number");
+    ctx.chosen_number = Some(bind.clone());
+    Ok(vec![
+        json!({"ChooseValue": {"who": who, "kind": {"Number": [min, max]}, "as": bind}}),
+    ])
+}
+
+/// `AddPhase`: extra phases after the current one. An additional combat comes after the combat it is made in
+/// (`AfterPhase$ EndCombat`) or before an additional main phase (`FollowedBy$ Main2`); anything else stays a gap.
+pub fn add_phase(p: &Params) -> Tr<Value> {
+    only(p, "AddPhase", &["ExtraPhase", "AfterPhase", "FollowedBy"])?;
+    let phases = match (
+        p.get("ExtraPhase"),
+        p.get("AfterPhase"),
+        p.get("FollowedBy"),
+    ) {
+        (Some("Combat"), Some("EndCombat"), None) => json!(["Combat"]),
+        (Some("Combat"), None, Some("Main2")) => json!(["Combat", "Main"]),
+        (Some("Beginning"), None, None) => json!(["Beginning"]),
+        (Some(phase), after, followed) => {
+            let tail = format!(
+                "{}{}",
+                after.unwrap_or_default(),
+                followed.unwrap_or_default()
+            );
+            return unmapped(format!("key:AddPhase.{phase}{tail}"));
+        }
+        (None, ..) => return unmapped("key:AddPhase.no-ExtraPhase"),
+    };
+    Ok(json!({"AddPhase": {"phases": phases}}))
+}
+
+/// `TwoPiles`: one player separates the cards into two piles, another chooses one; the parts for the chosen and the other
+/// pile read their pile as `Remembered`.
+pub fn two_piles(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
+    only(
+        p,
+        "TwoPiles",
+        &[
+            "Defined",
+            "DefinedCards",
+            "Separator",
+            "Chooser",
+            "ChosenPile",
+            "UnchosenPile",
+        ],
+    )?;
+    if !matches!(p.get("Defined"), None | Some("You")) {
+        return unmapped("key:TwoPiles.Defined");
+    }
+    let (Some(cards), Some(separator), Some(chooser), Some(chosen)) = (
+        p.get("DefinedCards"),
+        p.get("Separator"),
+        p.get("Chooser"),
+        p.get("ChosenPile"),
+    ) else {
+        return unmapped("key:TwoPiles.shape");
+    };
+    let one_player = |word: &str, key: &str| -> Tr<Value> {
+        let who = defined(ctx, word)?;
+        // The engine takes the first opponent in turn order; everyone at once is no single player.
+        if who.as_str() == Some("EachPlayer") {
+            return unmapped(format!("key:TwoPiles.{key}={word}"));
+        }
+        Ok(who)
+    };
+    let who = one_player(separator, "Separator")?;
+    let chooser = one_player(chooser, "Chooser")?;
+    let what = defined(ctx, cards)?;
+    let (chosen_as, rest_as) = (ctx.fresh("pile"), ctx.fresh("rest"));
+    let mut effects = vec![json!({"SeparatePiles": {
+        "who": who, "what": what, "chooser": chooser, "as": chosen_as, "rest_as": rest_as}})];
+    let outer = ctx.remembered.clone();
+    for (name, bound) in [
+        (Some(chosen), &chosen_as),
+        (p.get("UnchosenPile"), &rest_as),
+    ] {
+        if let Some(name) = name {
+            ctx.remembered = Some(json!({ "Bound": bound }));
+            let part = ctx.sub(name)?;
+            effects.extend(chain_at(ctx, &part, false)?);
+        }
+    }
+    ctx.remembered = outer;
+    Ok(effects)
 }

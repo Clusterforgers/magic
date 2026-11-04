@@ -49,9 +49,16 @@ fn part(ctx: &mut Ctx, name: &str) -> Tr<Vec<Value>> {
 
 /// `GenericChoice` made by the controller between exactly two parts, as `Either`.
 fn generic_choice(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
-    only(p, "GenericChoice", &["Choices", "Defined"])?;
+    only(p, "GenericChoice", &["Choices", "Defined", "ValidTgts"])?;
     if !matches!(p.get("Defined"), None | Some("You")) {
         return unmapped("key:GenericChoice.Defined");
+    }
+    // A target is declared for the parts to read; without `Defined$ You` Forge lets the target choose, which is not read.
+    if p.has("ValidTgts") {
+        if p.get("Defined") != Some("You") {
+            return unmapped("key:GenericChoice.ValidTgts-chooser");
+        }
+        subject(ctx, p, "You", None)?;
     }
     let names: Vec<&str> = p.get("Choices").unwrap_or_default().split(',').collect();
     let [first, second] = names[..] else {
