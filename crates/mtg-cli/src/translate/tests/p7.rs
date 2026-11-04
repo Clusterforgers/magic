@@ -246,6 +246,30 @@ fn an_untap_rule_that_is_not_known_stays_a_named_gap(#[case] line: &str, #[case]
     assert_eq!(gaps(&replacement(line, "")), [name]);
 }
 
+#[rstest]
+#[case::second_main(
+    "Mode$ Phase | Phase$ Main | PhaseCount$ 2 | ValidPlayer$ You",
+    "Main2"
+)]
+#[case::first_main(
+    "Mode$ Phase | Phase$ Main | PhaseCount$ 1 | ValidPlayer$ You",
+    "Main1"
+)]
+fn a_counted_main_phase_is_one_step(#[case] trigger: &str, #[case] step: &str) {
+    assert_eq!(
+        when(trigger),
+        json!({"StepBegins": {"step": step, "whose": "You"}})
+    );
+}
+
+#[rstest]
+#[case::third_main("Mode$ Phase | Phase$ Main | PhaseCount$ 3 | ValidPlayer$ You")]
+#[case::any_main("Mode$ Phase | Phase$ Main | ValidPlayer$ You")]
+#[case::count_on_another_step("Mode$ Phase | Phase$ Upkeep | PhaseCount$ 2 | ValidPlayer$ You")]
+fn a_phase_count_that_is_not_one_or_two_stays_a_gap(#[case] trigger: &str) {
+    assert_eq!(gap_of(trigger), ["key:Trigger.Phase.PhaseCount"]);
+}
+
 /// The gaps of a permanent whose only ability is the static line `line`.
 fn static_gaps(line: &str) -> Vec<String> {
     gaps(&format!("Name:T\nTypes:Enchantment\nS:{line}\n"))

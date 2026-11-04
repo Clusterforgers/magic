@@ -209,8 +209,15 @@ fn prints_every_end_step(p: &Params) -> bool {
 }
 
 fn phase(p: &Params) -> Tr<Value> {
-    keys(p, "Phase", &["Phase", "ValidPlayer"])?;
-    let step = step(p.get("Phase").unwrap_or_default())?;
+    keys(p, "Phase", &["Phase", "ValidPlayer", "PhaseCount"])?;
+    // `Phase$ Main` with a count names the first or the second (postcombat) main phase.
+    let step = match (p.get("Phase"), p.get("PhaseCount")) {
+        (Some("Main"), Some("1")) => "Main1",
+        (Some("Main"), Some("2")) => "Main2",
+        (Some("Main"), _) => return unmapped("key:Trigger.Phase.PhaseCount"),
+        (word, None) => step(word.unwrap_or_default())?,
+        (_, Some(_)) => return unmapped("key:Trigger.Phase.PhaseCount"),
+    };
     let whose = match p.get("ValidPlayer") {
         // Forge scripts "the end step" (every player's) with `ValidPlayer$ You`; the print has no "your".
         Some("You") if prints_every_end_step(p) => json!("EachPlayer"),
