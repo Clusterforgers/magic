@@ -66,6 +66,7 @@ Ordered by scripts freed per piece (`docs/cards-dsl.md`, Forge coverage). `gn1a`
 - [ ] (m4) A Fortification that is also a creature (CR 301.6): the attachment check and a test
 
 ## Mana and costs
+- [ ] (at1) An attack tax (Ghostly Prison) lets the player tap the mana while declaring attackers, and the attack screen shows which creatures can attack and what each costs (`attack_tax.rs`, `mtg-protocol`, `web` combat prompt)
 
 - [ ] (c1j) A mana ability that takes permanents and is used more than once in a payment may take its own source with its last use (Skirk Prospector)
 - [ ] (c1k) The triggered mana abilities of a nonland permanent and with a condition (Kinnan, Bonder Prodigy)
