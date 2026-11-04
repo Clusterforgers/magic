@@ -186,6 +186,50 @@ fn a_dig_that_takes_a_count_beyond_the_node_stays_a_gap(#[case] line: &str) {
     );
 }
 
+fn creature(trigger: &str) -> String {
+    format!(
+        "Name:T\nTypes:Creature Elf\nT:{trigger} | Execute$ Draw1\nSVar:Draw1:DB$ Draw | NumCards$ 1\n"
+    )
+}
+
+#[rstest]
+#[case::targets_this(
+    "Mode$ SpellCast | ValidCard$ Card | ValidActivatingPlayer$ You | TargetsValid$ Card.Self",
+    json!({"SpellCast": {"by": "You", "what": [{"Targeting": ["This"]}]}})
+)]
+#[case::targets_your_creature(
+    "Mode$ SpellCast | ValidCard$ Instant,Sorcery | ValidActivatingPlayer$ Player | TargetsValid$ Creature.YouCtrl+inZoneBattlefield",
+    json!({"SpellCast": {"by": "EachPlayer", "what": [{"AnyOf": [{"Type": "Instant"}, {"Type": "Sorcery"}]},
+        {"Targeting": [{"Type": "Creature"}, {"ControlledBy": "You"}, {"In": "Battlefield"}]}]}})
+)]
+#[case::no_spell_filter(
+    "Mode$ SpellCast | ValidActivatingPlayer$ You | TargetsValid$ Card.Self",
+    json!({"SpellCast": {"by": "You", "what": [{"Targeting": ["This"]}]}})
+)]
+fn a_spell_cast_trigger_names_what_the_spell_targets(#[case] trigger: &str, #[case] when: Value) {
+    let script = creature(trigger);
+    let found = abilities(&script);
+    assert_eq!(found.len(), 1, "{:?}", gaps(&script));
+    let want = json!({"Triggered": {"when": when, "effects": [{"Draw": {}}]}});
+    assert_eq!(normal(found[0].clone()), normal(want));
+}
+
+#[rstest]
+#[case::a_player_among_the_targets(
+    "Mode$ SpellCast | ValidCard$ Card | ValidActivatingPlayer$ You | TargetsValid$ You,Creature.YouCtrl+inZoneBattlefield"
+)]
+fn a_target_beyond_cards_stays_a_gap(#[case] trigger: &str) {
+    let script = creature(trigger);
+    assert_eq!(abilities(&script), Vec::<Value>::new(), "{script}");
+    assert!(
+        gaps(&script)
+            .iter()
+            .any(|found| found.starts_with("defined:") || found.starts_with("valid")),
+        "{:?}",
+        gaps(&script)
+    );
+}
+
 const TAP: &str = "SVar:ETBTapped:DB$ Tap | ETB$ True | Defined$ ReplacedCard\n";
 const EXILE: &str = "SVar:Exile:DB$ ChangeZone | Hidden$ True | Origin$ All | Destination$ Exile | Defined$ ReplacedCard\n";
 
