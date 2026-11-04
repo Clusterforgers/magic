@@ -16,6 +16,7 @@ use crate::decision::{Decision, DecisionKind};
 use crate::events::{Event, ZoneCause};
 use crate::help::Offered;
 use crate::mana::{can_afford, reserve_energy};
+use crate::object::ObjectRef;
 use crate::parts::{Part, Payer};
 use crate::price::{Leaves, Price};
 use crate::priority::mana_options;
@@ -202,10 +203,20 @@ fn leaving_name(leaves: Leaves) -> &'static str {
 
 /// Whether the source is where the payment takes it from and no rule keeps it there: a sacrifice takes a permanent of
 /// the payer's from the battlefield, an exile takes the source from the zone it is in.
-fn source_may_leave(state: &GameState, player: PlayerId, source: ObjectId, leaves: Leaves) -> bool {
-    let Some(object) = state.object(source) else {
+fn source_may_leave(
+    state: &GameState,
+    player: PlayerId,
+    source: ObjectRef,
+    leaves: Leaves,
+) -> bool {
+    let Some(object) = state.object(source.id) else {
         return leaves == Leaves::Stays;
     };
+    // A source that changed zones is a new object (CR 400.7) that no payment of this ability can take.
+    if leaves != Leaves::Stays && object.counter() != source.counter {
+        return false;
+    }
+    let source = source.id;
     match leaves {
         Leaves::Stays => true,
         Leaves::Sacrificed => {
@@ -268,7 +279,7 @@ fn price_of(cost: &Cost) -> Result<Price, ResolveError> {
 /// from the permanents they may tap, other than the ones the other parts take.
 pub(super) fn can_pay(cx: &Cx<'_>, player: PlayerId, price: &Price) -> bool {
     let state = cx.state();
-    if !source_may_leave(state, player, cx.scope.source.id, price.leaves) {
+    if !source_may_leave(state, player, cx.scope.source, price.leaves) {
         return false;
     }
     let Some(claimed) = price.claimed(state, player, cx.scope.source.id) else {
