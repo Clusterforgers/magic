@@ -294,6 +294,9 @@ const RUNS: &[&str] = &[
     "Rule.BlockLimit",
     "Rule.BlockLimitEach",
     "Rule.MustBlock",
+    "Rule.MustBlockAttacker",
+    "Rule.Combat",
+    "Rule.IgnoreHexproof",
     "Rule.CantBeCountered",
     "Rule.CantGainLife",
     "Rule.NoLifeLossFromDamage",
@@ -802,6 +805,9 @@ mod tests {
     #[case::rules_as_static_abilities("Ability.Rule", true)]
     #[case::attack_requirements("Rule.MustAttack", true)]
     #[case::block_requirements("Rule.MustBlock", true)]
+    #[case::provoke("Rule.MustBlockAttacker", true)]
+    #[case::combat_quirks("Rule.Combat", true)]
+    #[case::ignored_hexproof("Rule.IgnoreHexproof", true)]
     #[case::spells_that_cant_be_countered("Rule.CantBeCountered", true)]
     #[case::no_life_gain("Rule.CantGainLife", true)]
     #[case::no_life_loss_from_damage("Rule.NoLifeLossFromDamage", true)]

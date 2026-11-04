@@ -229,6 +229,9 @@ pub enum IllegalAnswer {
     /// A rule requires an item that the answer leaves out.
     #[error("a rule requires the {0}")]
     Required(&'static str),
+    /// A rule keeps the only one of its kind from being declared.
+    #[error("the {0} can't be declared alone")]
+    NotAlone(&'static str),
     /// The wrong number of items was chosen.
     #[error("expected {expected} items but got {got}")]
     WrongCount {

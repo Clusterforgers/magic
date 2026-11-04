@@ -576,6 +576,7 @@ mod tests {
         DecisionKind::DeclareBlockers(BlockOptions {
             most: None,
             blockers: Vec::new(),
+            must_be_blocked: Vec::new(),
             min_blockers: Vec::new(),
             max_blockers: Vec::new(),
             required: Vec::new(),
@@ -1240,6 +1241,7 @@ mod tests {
                     extra: 0,
                 },
             ],
+            must_be_blocked: Vec::new(),
             min_blockers: Vec::new(),
             max_blockers: Vec::new(),
             required: vec![ObjectId(2)],

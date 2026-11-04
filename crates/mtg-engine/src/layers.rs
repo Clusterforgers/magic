@@ -238,7 +238,8 @@ impl Held {
             if *since > stamp
                 && named(keyword)
                 && !self.locked.contains(keyword)
-                && !self.keywords.contains(keyword) {
+                && !self.keywords.contains(keyword)
+            {
                 self.keywords.push(keyword.clone());
             }
         }
@@ -277,7 +278,9 @@ impl Held {
                     ));
             }
             Modification::RemoveKeyword(keyword) | Modification::LockKeyword(keyword) => {
-                if matches!(modification, Modification::LockKeyword(_)) && !self.locked.contains(keyword) {
+                if matches!(modification, Modification::LockKeyword(_))
+                    && !self.locked.contains(keyword)
+                {
                     self.locked.push(keyword.clone());
                 }
                 self.keywords.retain(|held| held != keyword);

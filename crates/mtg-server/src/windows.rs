@@ -467,6 +467,7 @@ mod tests {
             kind: DecisionKind::DeclareBlockers(mtg_engine::decision::BlockOptions {
                 most: None,
                 blockers: Vec::new(),
+                must_be_blocked: Vec::new(),
                 min_blockers: Vec::new(),
                 max_blockers: Vec::new(),
                 required: Vec::new(),
@@ -755,6 +756,7 @@ mod tests {
             kind: DecisionKind::DeclareBlockers(mtg_engine::decision::BlockOptions {
                 most: None,
                 blockers: Vec::new(),
+                must_be_blocked: Vec::new(),
                 min_blockers: Vec::new(),
                 max_blockers: Vec::new(),
                 required: Vec::new(),

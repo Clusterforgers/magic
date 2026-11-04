@@ -6,7 +6,7 @@ use super::{Step, effects, steps};
 use crate::cost::{Cost, CostItem};
 use crate::effect::Produce;
 use crate::keyword::Keyword;
-use crate::modify::{GameRule, Modification};
+use crate::modify::{Blocking, CombatQuirk, GameRule, Modification};
 use crate::refs::{Ref, Selector, ZoneKind};
 use crate::trigger::{ReplaceBy, ReplaceWhen, Step as TurnStep, TriggerPattern};
 use crate::value::Amount;
@@ -257,6 +257,17 @@ pub(super) fn rule(ctx: &Ctx, rule: &GameRule) -> String {
             format!("{} must attack each combat if able", phrase::who(ctx, who))
         }
         GameRule::MustBlock(who) => format!("{} must block if able", phrase::who(ctx, who)),
+        GameRule::MustBlockAttacker { who, attacker } => format!(
+            "{} block{} {} if able",
+            phrase::who(ctx, who),
+            if matches!(who, Ref::This | Ref::Target(_)) {
+                "s"
+            } else {
+                ""
+            },
+            phrase::who(ctx, attacker)
+        ),
+        GameRule::Combat { who, quirk } => combat_quirk(&phrase::who(ctx, who), *quirk),
         GameRule::CantBeCountered(who) => format!("{} can't be countered", phrase::who(ctx, who)),
         GameRule::CantGainLife(who) => format!("{} can't gain life", phrase::who(ctx, who)),
         GameRule::CantDraw(who) => format!("{} can't draw cards", phrase::who(ctx, who)),
@@ -544,5 +555,23 @@ mod tests {
     #[test]
     fn a_free_cost_is_not_blank() {
         assert_eq!(cost(&Ctx::none(), &Cost::default()), "no cost");
+    }
+}
+
+/// The words of a combat rule about the creatures `who`.
+fn combat_quirk(who: &str, quirk: CombatQuirk) -> String {
+    match quirk {
+        CombatQuirk::CantAttackAlone => format!("{who} can't attack alone"),
+        CombatQuirk::CantBlockAlone => format!("{who} can't block alone"),
+        CombatQuirk::AttackDespiteDefender => {
+            format!("{who} can attack as though they didn't have defender")
+        }
+        CombatQuirk::BlockWhileTapped => format!("{who} can block as though they were untapped"),
+        CombatQuirk::MustBeBlocked(Blocking::AtLeastOne) => {
+            format!("{who} must be blocked if able")
+        }
+        CombatQuirk::MustBeBlocked(Blocking::Every) => {
+            format!("all creatures able to block {who} do so")
+        }
     }
 }

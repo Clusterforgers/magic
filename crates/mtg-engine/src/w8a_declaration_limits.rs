@@ -139,6 +139,7 @@ mod tests {
     fn w8a_a_menaced_attacker_is_never_left_short() {
         let options = BlockOptions {
             blockers: Vec::new(),
+            must_be_blocked: Vec::new(),
             min_blockers: vec![(ObjectId(9), 2)],
             max_blockers: Vec::new(),
             required: Vec::new(),

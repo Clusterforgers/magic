@@ -241,6 +241,31 @@ pub enum Attacked {
     Both,
 }
 
+/// How many creatures must block an attacker that "must be blocked".
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+pub enum Blocking {
+    /// At least one creature blocks it if any creature is able to (CR 509.1c).
+    AtLeastOne,
+    /// Every creature able to block it does.
+    Every,
+}
+
+/// What a `GameRule::Combat` says of creatures: a permission, or a limit on a declaration that is not a plain
+/// requirement.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+pub enum CombatQuirk {
+    /// They can't attack unless another creature attacks too (CR 506.5).
+    CantAttackAlone,
+    /// They can't block unless another creature blocks too.
+    CantBlockAlone,
+    /// They can attack as though they did not have defender.
+    AttackDespiteDefender,
+    /// They can block as though they were untapped.
+    BlockWhileTapped,
+    /// They must be blocked if able: a requirement on the block declaration (CR 509.1c).
+    MustBeBlocked(Blocking),
+}
+
 /// What a `GameRule::Cant` forbids its subjects. A subject is covered when it is the object an action is about or the
 /// player who does it (or owns the object). Adding a prohibition is one entry here and one check where the engine does
 /// the action.
@@ -298,6 +323,36 @@ pub enum GameRule {
     },
     /// The creatures block each combat if able: a requirement on the declaration (CR 509.1c).
     MustBlock(Ref),
+    /// Each creature `who` names blocks the attacker `attacker` names if able (Provoke): a requirement on the block
+    /// declaration (CR 509.1c). The creatures and the attacker are named when the rule begins.
+    MustBlockAttacker {
+        /// The creatures that must block it.
+        who: Ref,
+        /// The attacking creature.
+        attacker: Ref,
+    },
+    /// A permission or a limit on how the creatures take part in combat (`CombatQuirk`).
+    Combat {
+        /// The creatures.
+        who: Ref,
+        /// What the rule says of them.
+        quirk: CombatQuirk,
+    },
+    /// Spells and abilities the players `by` name may target what the rule names as though it did not have hexproof (and
+    /// shroud when `shroud`): the permanents `what` names and the players `players` names.
+    IgnoreHexproof {
+        /// The players whose spells and abilities may target them.
+        by: Ref,
+        /// The permanents it covers; none when absent.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        what: Option<Ref>,
+        /// The players it covers; none when absent.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        players: Option<Ref>,
+        /// Shroud is ignored too.
+        #[serde(default, skip_serializing_if = "crate::effect::is_false")]
+        shroud: bool,
+    },
     /// Creatures can't attack the players (or their planeswalkers) unless their controller pays the mana for each of them
     /// as the attack is declared (CR 508.1h): the declaration is made only with the payment.
     AttackTax {
