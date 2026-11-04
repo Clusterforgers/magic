@@ -34,8 +34,16 @@ pub fn replacement_lines(ctx: &mut Ctx, body: &str) -> Tr<Vec<Value>> {
 fn single(ctx: &mut Ctx, body: &str) -> Tr<Value> {
     ctx.reset();
     let all = Params::parse(body);
-    let (line_condition, p) = prefixed(ctx, &all)?;
+    let (mut line_condition, p) = prefixed(ctx, &all)?;
     let event = p.get("Event").unwrap_or_default();
+    // "If it was kicked, it enters with ...": the card itself, and the replacement applies only to a kicked spell.
+    let kicked_self = event == "Moved" && p.get("ValidCard") == Some("Card.Self+kicked");
+    if kicked_self {
+        if line_condition.is_some() {
+            return unmapped("key:Replacement.two-conditions");
+        }
+        line_condition = Some(json!("Kicked"));
+    }
     if event == "Untap" {
         return doesnt_untap(&p);
     }
@@ -63,7 +71,7 @@ fn single(ctx: &mut Ctx, body: &str) -> Tr<Value> {
     {
         return unmapped("key:Replacement.Moved.ReplacementResult");
     }
-    if p.get("ValidCard") != Some("Card.Self") {
+    if p.get("ValidCard") != Some("Card.Self") && !kicked_self {
         return super::replacements_moved::others(ctx, &p, line_condition.as_ref());
     }
     if p.has("ActiveZones") {

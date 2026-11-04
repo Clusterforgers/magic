@@ -80,3 +80,25 @@ fn an_etb_condition_the_node_cannot_say_stays_a_gap(#[case] lines: &str, #[case]
     assert_eq!(gaps(&script), vec![gap.to_owned()]);
     assert_eq!(abilities(&script), Vec::<Value>::new());
 }
+
+const KICKED: &str = "R:Event$ Moved | ValidCard$ Card.Self+kicked | Destination$ Battlefield | ReplaceWith$ Pump | ReplacementResult$ Updated\n";
+
+#[test]
+fn a_kicked_replacement_that_puts_counters_is_conditional_on_the_kick() {
+    let body = "SVar:Pump:DB$ PutCounter | ETB$ True | Defined$ Self | CounterType$ P1P1 | CounterNum$ 3\n";
+    let expected = normal(json!({"Replacement": {
+        "when": {"Enters": {"what": ["This"]}},
+        "by": {"WithCounters": {"counter": "+1/+1", "count": 3}},
+        "condition": "Kicked"}}));
+    assert_eq!(
+        abilities(&creature(&format!("{KICKED}{body}"))),
+        vec![expected]
+    );
+}
+
+#[test]
+fn a_kicked_replacement_with_a_second_body_stays_a_gap() {
+    let body = "SVar:Pump:DB$ PutCounter | ETB$ True | Defined$ Self | CounterType$ P1P1 | CounterNum$ 2 | SubAbility$ Haste\nSVar:Haste:DB$ Animate | Defined$ Self | Keywords$ Haste | Duration$ Permanent\n";
+    let found = gaps(&creature(&format!("{KICKED}{body}")));
+    assert_eq!(found, vec!["key:Replacement.SubAbility".to_owned()]);
+}
