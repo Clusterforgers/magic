@@ -290,6 +290,7 @@ mod lords;
 mod loyalty_fuzz;
 mod macro_combat;
 mod macro_keywords;
+mod macro_keywords_other;
 mod madness;
 mod madness_fuzz;
 mod mana_abilities;

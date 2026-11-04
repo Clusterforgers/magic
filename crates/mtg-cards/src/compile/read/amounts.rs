@@ -116,9 +116,11 @@ pub const fn stat_name(stat: StatKind) -> Option<&'static str> {
         StatKind::Power => Some("power"),
         StatKind::Toughness => Some("toughness"),
         StatKind::ManaValue => Some("mana value"),
-        StatKind::Loyalty | StatKind::Colors | StatKind::BasicLandTypes | StatKind::BasePower => {
-            None
-        }
+        StatKind::Loyalty
+        | StatKind::Colors
+        | StatKind::BasicLandTypes
+        | StatKind::BasePower
+        | StatKind::ManaSpent => None,
     }
 }
 

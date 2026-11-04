@@ -30,6 +30,8 @@ pub enum StatKind {
     BasicLandTypes,
     /// Its printed power, as the card has it before any effect (a face-down or copied object reads what it is now).
     BasePower,
+    /// The mana spent to cast it, while it is a spell or when it was cast.
+    ManaSpent,
 }
 
 /// A comparison between two numbers.

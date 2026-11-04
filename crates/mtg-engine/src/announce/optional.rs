@@ -73,16 +73,30 @@ struct Printed {
 /// The optional costs a card prints, in the order it prints them: the keywords that give one and the abilities that say
 /// "As an additional cost to cast this spell, you may ...".
 fn printed(card: &CardDefinition) -> impl Iterator<Item = Printed> + '_ {
-    ability_reader::printed_rules(card).filter_map(|rule| match &**rule {
+    ability_reader::printed_rules(card).flat_map(|rule| match &**rule {
         Ability::Keyword(keyword) => {
-            let extra = keywords::rules(keyword).additional_cost(keyword)?;
-            Some(Printed {
-                kind: extra.kind,
-                name: extra.name,
-                cost: extra.cost,
-                repeatable: extra.repeatable,
-            })
+            let own = keywords::rules(keyword)
+                .additional_cost(keyword)
+                .map(|extra| Printed {
+                    kind: extra.kind,
+                    name: extra.name,
+                    cost: extra.cost,
+                    repeatable: extra.repeatable,
+                });
+            // A keyword the macro table expands (teamwork) can stand for an optional cost.
+            let expanded = keywords::rules(keyword)
+                .adds_abilities(keyword)
+                .into_iter()
+                .filter_map(|ability| additional(&ability));
+            own.into_iter().chain(expanded).collect::<Vec<_>>()
         }
+        other => additional(other).into_iter().collect(),
+    })
+}
+
+/// The optional cost an "As an additional cost to cast this spell, you may ..." ability states.
+fn additional(ability: &Ability) -> Option<Printed> {
+    match ability {
         Ability::AdditionalCost {
             cost,
             required: false,
@@ -93,7 +107,7 @@ fn printed(card: &CardDefinition) -> impl Iterator<Item = Printed> + '_ {
             repeatable: false,
         }),
         _ => None,
-    })
+    }
 }
 
 /// What `printed` costs: the mana, the parts and whether the engine pays them as a spell is announced.
