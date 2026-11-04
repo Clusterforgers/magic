@@ -187,3 +187,23 @@ fn a_search_that_leaves_the_cards_in_the_library_feeds_the_next_steps() {
     assert_eq!(named(&driver, Zone::Hand(me), "Forest").len(), 1);
     assert_eq!(named(&driver, Zone::Battlefield, "Forest").len(), 4);
 }
+
+const BRAIN: &str = "Name:Think Lore\nManaCost:U\nTypes:Instant\nA:SP$ Draw | NumCards$ 3 | SubAbility$ Back\nSVar:Back:DB$ ChangeZone | Origin$ Hand | Destination$ Library | ChangeNum$ 2 | Mandatory$ True | Reorder$ True\n";
+
+#[test]
+fn two_cards_from_the_hand_go_back_on_top_of_the_library() {
+    let spell = translated(BRAIN, "Think Lore", "Instant", "{U}");
+    let scenario = Scenario::new(2)
+        .hand(0, [spell])
+        .battlefield(0, [ready(mtg_testkit::cards::island())])
+        .library(0, [forest(), forest(), forest(), bear(), bear()]);
+    let mut driver = Driver::from_scenario(scenario).unwrap();
+    driver.cast("Think Lore").unwrap();
+    settle(&mut driver);
+    let me = PlayerId::from_index(0);
+    assert_eq!(
+        driver.state().zone(Zone::Hand(me)).len(),
+        1,
+        "three drawn, two put back"
+    );
+}

@@ -32,6 +32,16 @@ pub fn effects(ctx: &mut Ctx, p: &Params, api: &str) -> Tr<Vec<Value>> {
         {
             choose_and_move(ctx, p, origin, destination)
         }
+        // "Put two cards from your hand on top of your library": the cards are not named, so the player picks.
+        ("ChangeZone", from)
+            if hidden_origin(from)
+                && p.has("ChangeNum")
+                && !["ChangeType", "Defined", "ValidTgts"]
+                    .iter()
+                    .any(|key| p.has(key)) =>
+        {
+            choose_and_move(ctx, p, origin, destination)
+        }
         ("ChangeZone", _) => change_zone(ctx, p, origin, destination),
         _ => change_zone_all(ctx, p, origin, destination),
     }
@@ -413,9 +423,14 @@ fn choose_and_move(ctx: &mut Ctx, p: &Params, origin: &str, destination: &str) -
             "WithCountersAmount",
             "Transformed",
             "AttachedTo",
+            "Reorder",
             "StaticEffect",
         ],
     )?;
+    // Several cards put into one library are ordered by their controller anyway.
+    if p.get("Reorder").is_some_and(|word| word != "True") {
+        return unmapped("key:ChangeZone.Choose.Reorder");
+    }
     let who = defined_player(ctx, p)?;
     let (owner, chooser) = (who.owner.clone(), who.chooser.clone());
     let mut filter = selector_in(ctx, p.get("ChangeType").unwrap_or("Card"), Some(origin))?;

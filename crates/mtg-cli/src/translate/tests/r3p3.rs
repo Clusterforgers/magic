@@ -113,3 +113,22 @@ fn a_search_to_the_library_without_a_place_or_memory_stays_a_gap() {
     let text = "Name:T\nTypes:Sorcery\nA:SP$ ChangeZone | Origin$ Library | Destination$ Library | ChangeType$ Land.Basic | Shuffle$ False\n";
     assert_eq!(gaps(text), ["key:ChangeZone.LibraryPosition"]);
 }
+
+#[rstest]
+#[case::brainstorm_two_on_top("Hand", "Library", " | Mandatory$ True | Reorder$ True", json!({"min": 2, "max": 2}), json!({"Library": {"place": "Top"}}))]
+#[case::up_to_two_to_graveyard("Hand", "Graveyard", "", json!({"min": 0, "max": 2}), json!("Graveyard"))]
+fn cards_of_a_hand_with_no_named_type_are_picked_by_the_player(
+    #[case] origin: &str,
+    #[case] destination: &str,
+    #[case] extra: &str,
+    #[case] count: Value,
+    #[case] to: Value,
+) {
+    let text = format!(
+        "Name:T\nTypes:Sorcery\nA:SP$ Draw | NumCards$ 3 | SubAbility$ M\nSVar:M:DB$ ChangeZone | Origin$ {origin} | Destination$ {destination} | ChangeNum$ 2{extra}\n"
+    );
+    assert_eq!(gaps(&text), Vec::<String>::new());
+    let found = effects(&text);
+    assert_eq!(found[1]["Choose"]["count"], count);
+    assert_eq!(found[2]["Move"]["to"], to);
+}
