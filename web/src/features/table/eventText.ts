@@ -447,6 +447,10 @@ export function describeManual(
     const signed = (value: number): string => (value < 0 ? `${value}` : `+${value}`)
     return `${who} gives ${n.card(object)} ${signed(power)}/${signed(toughness)} until end of turn (by hand)`
   }
+  if ('Transform' in action) return `${who} turns ${n.card(action.Transform.object)} over (by hand)`
+  if ('MoveBack' in action) {
+    return `${who} puts ${n.card(action.MoveBack.object)} onto the battlefield back face up (by hand)`
+  }
   return describeControl(who, action, n, from)
 }
 

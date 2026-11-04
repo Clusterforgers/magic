@@ -130,7 +130,15 @@ power: number,
 /**
  * Toughness change, from -99 to 99.
  */
-toughness: number, } } | { "LookTop": { 
+toughness: number, } } | { "Transform": { 
+/**
+ * The permanent.
+ */
+object: ObjectId, } } | { "MoveBack": { 
+/**
+ * The card.
+ */
+object: ObjectId, } } | { "LookTop": { 
 /**
  * How many, 1 to 10.
  */

@@ -48,6 +48,22 @@ describe('what a control row sends', () => {
       { Sacrifice: { object: 7 } },
     ],
     [
+      'a permanent turned over',
+      SICK,
+      'transform',
+      'Fresh Elf: turned over to its other face',
+      'Turn over Fresh Elf',
+      { Transform: { object: 7 } },
+    ],
+    [
+      'a card put back face up',
+      DEAD,
+      'back',
+      'Old Bear: onto the battlefield, back face up',
+      'Put Old Bear back face up',
+      { MoveBack: { object: 8 } },
+    ],
+    [
       'control given',
       SICK,
       'give',

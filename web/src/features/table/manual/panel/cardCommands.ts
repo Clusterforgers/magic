@@ -30,6 +30,8 @@ export type CardCommandId =
   | 'unsick'
   | 'sacrifice'
   | 'give'
+  | 'transform'
+  | 'back'
 
 /** One command of the picked card. */
 export interface CardCommand {
@@ -214,6 +216,15 @@ export function controlCommands(input: MenuInput): CardCommand[] {
         unavailable: off,
       })
     }
+    if (object.kind !== 'Token') {
+      out.push({
+        id: 'transform',
+        label: 'Transform',
+        effect: 'Turn a double-faced permanent over to its other face.',
+        action: { Transform: { object: object.id } },
+        unavailable: off,
+      })
+    }
     out.push({
       id: 'sacrifice',
       label: 'Sacrifice',
@@ -237,6 +248,15 @@ export function controlCommands(input: MenuInput): CardCommand[] {
       effect: 'Put it onto the battlefield under another seat’s control.',
       seats: others,
       unavailable: off ?? noOne,
+    })
+  }
+  if ((kind === 'hand' || kind === 'graveyard' || kind === 'exile') && object.owner === seat && !spell) {
+    out.push({
+      id: 'back',
+      label: 'Onto the battlefield back face up',
+      effect: 'Put a double-faced card onto the battlefield with its back face up.',
+      action: { MoveBack: { object: object.id } },
+      unavailable: off,
     })
   }
   return out
@@ -345,6 +365,10 @@ export function previewOfCard(command: CardCommand, draft: CardDraft, context: C
       return sends(command, `${name}: no longer summoning sick this turn`, 'Remove summoning sickness')
     case 'sacrifice':
       return sends(command, `${name}: the battlefield → graveyard, sacrificed`, `Sacrifice ${name}`)
+    case 'transform':
+      return sends(command, `${name}: turned over to its other face`, `Turn over ${name}`)
+    case 'back':
+      return sends(command, `${name}: onto the battlefield, back face up`, `Put ${name} back face up`)
     case 'give': {
       const to = command.seats?.find((seat) => String(seat) === draft.giveTo)
       if (to === undefined) return { problem: 'Choose the seat that gains control.' }

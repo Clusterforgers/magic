@@ -8,6 +8,7 @@ import {
   DropletsIcon,
   EyeIcon,
   FlameIcon,
+  FlipHorizontal2Icon,
   HandIcon,
   HandshakeIcon,
   HashIcon,
@@ -62,4 +63,6 @@ export const CARD_COMMAND_ICONS: Record<CardCommandId, LucideIcon> = {
   unsick: HourglassIcon,
   sacrifice: FlameIcon,
   give: HandshakeIcon,
+  transform: FlipHorizontal2Icon,
+  back: FlipHorizontal2Icon,
 }
