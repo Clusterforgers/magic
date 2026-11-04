@@ -365,3 +365,42 @@ fn a_creature_with_a_granted_static_gets_its_modification_in_a_game() {
     let chars = mtg_engine::characteristics::characteristics(driver.state(), id).unwrap();
     assert_eq!((chars.power, chars.toughness), (Some(2), Some(2)));
 }
+
+#[rstest]
+#[case::aspect_of_wolf(
+    "S:Mode$ Continuous | AffectedDefined$ AttachedBy Self | AddPower$ 4 | AddToughness$ 4",
+    json!({"Static": {"affected": "Attached", "mods": [{"ModifyPT": {"power": 4, "toughness": 4}}]}})
+)]
+#[case::with_a_type_word(
+    "S:Mode$ Continuous | AffectedDefined$ AttachedBy Self | Affected$ Creature | AddPower$ 1 | AddToughness$ 1",
+    json!({"Static": {"affected": "Attached", "mods": [{"ModifyPT": {"power": 1, "toughness": 1}}]}})
+)]
+fn what_a_permanent_is_attached_to_is_the_attached_object(
+    #[case] line: &str,
+    #[case] expected: Value,
+) {
+    let found = abilities(&format!("Name:Subject\nTypes:Enchantment Aura\n{line}\n"));
+    assert_eq!(found, vec![expected]);
+}
+
+#[test]
+fn an_aura_that_boosts_what_it_is_attached_to_boosts_that_creature_in_a_game() {
+    let line =
+        "S:Mode$ Continuous | AffectedDefined$ AttachedBy Self | AddPower$ 4 | AddToughness$ 4";
+    let aura = card_with(
+        &[CardType::Enchantment],
+        "Wolf",
+        &format!("Name:Wolf\nTypes:Enchantment Aura\n{line}\n"),
+    );
+    let scenario = Scenario::new(2).at(1, 0, Step::Main1).battlefield(
+        0,
+        [
+            ready(mtg_testkit::cards::free_creature("Pest", 1, 1)),
+            mtg_testkit::scenario::attached_to(ready(aura), 0, 0),
+        ],
+    );
+    let driver = Driver::from_scenario(scenario).unwrap();
+    let id = driver.id_of("Pest").unwrap();
+    let chars = mtg_engine::characteristics::characteristics(driver.state(), id).unwrap();
+    assert_eq!((chars.power, chars.toughness), (Some(5), Some(5)));
+}

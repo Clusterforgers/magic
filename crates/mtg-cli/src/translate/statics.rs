@@ -71,7 +71,9 @@ fn affected(ctx: &Ctx, p: &Params) -> Tr<Value> {
     }
     match (p.get("AffectedDefined"), p.get("Affected")) {
         (Some(word), None | Some("Creature" | "Card" | "Permanent")) => static_defined(ctx, word),
-        (Some(word), Some(_)) if matches!(word, "Self" | "Enchanted" | "Equipped") => {
+        (Some(word), Some(_))
+            if matches!(word, "Self" | "Enchanted" | "Equipped" | "AttachedBy Self") =>
+        {
             static_defined(ctx, word)
         }
         (Some(_), Some(_)) => unmapped("static-affected:Defined+Affected"),
@@ -86,6 +88,8 @@ fn affected(ctx: &Ctx, p: &Params) -> Tr<Value> {
 
 fn static_defined(ctx: &Ctx, word: &str) -> Tr<Value> {
     match word {
+        // What this permanent is attached to: the enchanted or equipped object.
+        "AttachedBy Self" => Ok(json!("Attached")),
         "Self" | "Enchanted" | "Equipped" => defined(ctx, word),
         other => unmapped(format!("static-affected:{other}")),
     }
