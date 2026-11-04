@@ -6,15 +6,19 @@ use std::collections::{BTreeMap, BTreeSet};
 use std::path::Path;
 use std::sync::atomic::{AtomicUsize, Ordering};
 
-use mtg_cards::card::Card;
+use mtg_cards::ability::Ability;
+use mtg_cards::card::{Card, ImplStatus};
 use mtg_cards::load::{canonical, unwhole};
+use mtg_cards::proposal::partial::{Mark, Refusal, prove};
 use mtg_cards::proposal::{Report, Verdict};
 use mtg_cards::support::Support;
 use mtg_cards::{CardDefinition, PrintedCard};
-use mtg_db::SOURCE_SWEEP;
+use mtg_db::{SOURCE_FORGE, SOURCE_SWEEP};
 
 use super::{W2aBasis, W2aDecision, W2aPromotion, W2aSkip};
-use crate::drafts::{DraftMeta, FIXTURES, META_DIR, SmokeKind, read_definitions, smoke};
+use crate::drafts::{
+    DraftItem, DraftMeta, FIXTURES, META_DIR, SmokeKind, read_definitions_proved, smoke,
+};
 use crate::error::CliError;
 
 /// The stack of a thread that plays the smoke gate: as large as the main thread's.
@@ -49,6 +53,71 @@ pub fn decide(
         draft: true,
         source,
         oracle_matches,
+        proof: None,
+        lines: Vec::new(),
+    })
+}
+
+/// The lines of a card left by hand, as (face, start, end).
+fn by_hand(card: &Card) -> BTreeSet<(usize, u32, u32)> {
+    card.abilities()
+        .filter_map(|(face, ability)| match ability {
+            Ability::Manual { span, .. } => Some((face, span.start, span.end)),
+            _ => None,
+        })
+        .collect()
+}
+
+/// The draft of a Forge translation with gaps, or why the proof refuses it: a matching text, a proof that every line
+/// left by hand is safe (`mtg_cards::proposal::partial::prove`) and strictly fewer lines by hand than the compiled
+/// `Partial` row, `compiled` (the card the compiler makes). Every refusal is named in `detail`; the smoke gate comes later.
+pub fn decide_partial(
+    printed: &PrintedCard,
+    slug: String,
+    report: &Report,
+    meta: &DraftMeta,
+    compiled: Option<&Card>,
+    detail: &mut Option<String>,
+) -> Result<W2aPromotion, W2aSkip> {
+    let mut named: Vec<String> = Vec::new();
+    let mut first = None;
+    if !meta.oracle_matches {
+        named.push("OracleDiffers".into());
+        first = Some("OracleDiffers");
+    }
+    let proof = match prove(report, &meta.lines) {
+        Ok(proof) => Some(proof),
+        Err(refusals) => {
+            named.extend(refusals.iter().map(ToString::to_string));
+            first = first.or_else(|| refusals.first().map(Refusal::name));
+            None
+        }
+    };
+    let (Some(proof), Some(rules), None) = (proof, &report.rules, first) else {
+        *detail = Some(named.join("; "));
+        return Err(W2aSkip::Unproved(first.unwrap_or("InvalidRules")));
+    };
+    let hand = by_hand(rules);
+    let marked = proof.marks.iter().any(|mark| mark.mark == Mark::ByHand);
+    let kept = compiled
+        .filter(|row| row.impl_status == ImplStatus::Partial)
+        .map(by_hand);
+    let gain = kept.is_none_or(|before| hand.is_subset(&before) && hand != before);
+    if rules.impl_status != ImplStatus::Partial || hand.is_empty() || !marked || !gain {
+        *detail =
+            Some("NoGain: the draft keeps no more automatic lines than the compiled rules".into());
+        return Err(W2aSkip::Unproved("NoGain"));
+    }
+    Ok(W2aPromotion {
+        slug,
+        oracle_id: printed.oracle_id.clone(),
+        state: Support::Partial,
+        rules: rules.clone(),
+        draft: true,
+        source: SOURCE_FORGE.into(),
+        oracle_matches: true,
+        proof: Some(proof),
+        lines: meta.lines.clone(),
     })
 }
 
@@ -139,15 +208,19 @@ fn play_candidates(basis: &W2aBasis, decisions: &mut [W2aDecision], smoke_gate: 
         .enumerate()
         .filter_map(|(at, d)| matches!(&d.outcome, Ok(p) if p.draft).then_some(at))
         .collect();
-    let items: Vec<(&PrintedCard, &Card)> = candidates
+    let items: Vec<DraftItem> = candidates
         .iter()
         .filter_map(|&at| {
             let promotion = decisions[at].outcome.as_ref().ok()?;
-            Some((*by_id.get(promotion.oracle_id.as_str())?, &promotion.rules))
+            Some((
+                *by_id.get(promotion.oracle_id.as_str())?,
+                &promotion.rules,
+                promotion.proof.as_ref(),
+            ))
         })
         .collect();
     let defined = if items.len() == candidates.len() {
-        read_definitions(basis.library, basis.caps, &items)
+        read_definitions_proved(basis.library, basis.caps, &items)
     } else {
         candidates
             .iter()
@@ -206,6 +279,8 @@ fn write_meta(dir: &Path, promotion: &W2aPromotion) -> Result<(), CliError> {
         source: Some(promotion.source.clone()),
         oracle_matches: promotion.oracle_matches,
         gaps: Vec::new(),
+        lines: promotion.lines.clone(),
+        proof: promotion.proof.clone(),
     };
     let text = serde_json::to_string_pretty(&meta).unwrap_or_default();
     if let Some(parent) = path.parent() {
@@ -353,5 +428,179 @@ mod tests {
         assert!(!dir.path().join("bolt.json").exists());
         assert!(!fixtures.join("bolt.json").exists());
         assert!(dir.path().join("other.json").exists() && fixtures.join("other.json").exists());
+    }
+}
+
+#[cfg(test)]
+mod partial_tests {
+    //! Goal: a Forge translation with a gap is drafted only through the proof, and each refusal is named: a differing
+    //! text, a gap no ledger line explains, and a draft that keeps no more automatic lines than the compiled rules.
+    #![allow(clippy::unwrap_used)]
+
+    use mtg_cards::Caps;
+    use mtg_cards::compile::compile;
+    use mtg_cards::load::Library;
+    use mtg_cards::proposal::check;
+    use mtg_cards::proposal::partial::LedgerLine;
+    use mtg_cards::support::PrintedFace;
+    use rstest::rstest;
+
+    use super::*;
+
+    const ROLL: &str = "{2}, {T}: Roll a six-sided die.";
+
+    fn angel(text: &str) -> PrintedCard {
+        PrintedCard {
+            oracle_id: "00000000-0000-0000-0000-000000000001".into(),
+            name: "Angel".into(),
+            layout: "normal".into(),
+            faces: vec![PrintedFace {
+                name: "Angel".into(),
+                mana_cost: "{2}{W}".into(),
+                type_line: "Creature \u{2014} Angel".into(),
+                oracle_text: text.into(),
+                ..PrintedFace::default()
+            }],
+            ..PrintedCard::default()
+        }
+    }
+
+    fn row(tag: &str, text: &str, abilities: &[usize], gap: Option<&str>) -> LedgerLine {
+        LedgerLine {
+            face: 0,
+            tag: tag.into(),
+            text: text.into(),
+            abilities: abilities.to_vec(),
+            gap: gap.map(str::to_owned),
+        }
+    }
+
+    fn rows(keyword: &str) -> Vec<LedgerLine> {
+        vec![
+            row("K", keyword, &[0], None),
+            row(
+                "A",
+                "{2}, {T}: Roll a six-sided die.",
+                &[],
+                Some("effect:RollDice"),
+            ),
+        ]
+    }
+
+    /// The decision for a card of `keyword` and the roll line, which the translator leaves as a gap.
+    fn decided(
+        keyword: &str,
+        (matches, compiled): (bool, bool),
+        lines: Vec<LedgerLine>,
+    ) -> (Result<W2aPromotion, W2aSkip>, Option<String>) {
+        let printed = angel(&format!("{keyword}\n{ROLL}"));
+        let compiled = compiled.then(|| compile(&printed).card).flatten();
+        let proposal = format!(r#"{{"faces":[{{"abilities":[{{"Keyword":"{keyword}"}}]}}]}}"#);
+        let names = BTreeSet::from(["angel".to_owned()]);
+        let caps = Caps::everything();
+        let report = check(&proposal, &printed, &Library::default(), &names, &caps);
+        let meta = DraftMeta {
+            source: Some("forge".into()),
+            oracle_matches: matches,
+            gaps: vec!["effect:RollDice".into()],
+            lines,
+            proof: None,
+        };
+        let mut detail = None;
+        let out = decide_partial(
+            &printed,
+            "angel".into(),
+            &report,
+            &meta,
+            compiled.as_ref(),
+            &mut detail,
+        );
+        (out, detail)
+    }
+
+    #[test]
+    fn a_proved_partial_translation_is_a_draft_with_its_proof_and_ledger() {
+        let (out, detail) = decided("Flying", (true, false), rows("Flying"));
+
+        let promotion = out.unwrap_or_else(|skip| panic!("{skip:?} {detail:?}"));
+        let proof = promotion.proof.unwrap();
+        let marks: Vec<Mark> = proof.marks.iter().map(|m| m.mark).collect();
+        assert_eq!(marks, [Mark::Auto, Mark::ByHand]);
+        assert_eq!(promotion.lines, rows("Flying"));
+        assert_eq!(promotion.state, Support::Partial);
+        assert!(promotion.draft && promotion.oracle_matches);
+    }
+
+    #[rstest]
+    #[case::text_differs((false, false), rows("Flying"), "OracleDiffers")]
+    #[case::no_ledger((true, false), Vec::new(), "OpenWithoutGap")]
+    #[case::the_compiled_row_has_the_same_line_by_hand((true, true), rows("Flying"), "NoGain")]
+    fn a_refusal_is_named(
+        #[case] (matches, compiled): (bool, bool),
+        #[case] lines: Vec<LedgerLine>,
+        #[case] name: &'static str,
+    ) {
+        let (out, detail) = decided("Flying", (matches, compiled), lines);
+
+        assert_eq!(out.unwrap_err(), W2aSkip::Unproved(name));
+        assert!(detail.unwrap().contains(name));
+    }
+
+    #[test]
+    fn the_meta_of_a_partial_draft_keeps_its_proof_and_a_build_loads_it_only_with_that_proof() {
+        let (out, _) = decided("Flying", (true, false), rows("Flying"));
+        let promotion = out.unwrap();
+        let dir = tempfile::tempdir().unwrap();
+
+        write_meta(dir.path(), &promotion).unwrap();
+
+        let text = std::fs::read_to_string(dir.path().join(META_DIR).join("angel.json")).unwrap();
+        let meta = DraftMeta::parse(&text);
+        assert_eq!(meta.proof, promotion.proof);
+        assert_eq!(meta.lines, rows("Flying"));
+        let printed = angel(&format!("Flying\n{ROLL}"));
+        let caps = Caps::everything();
+        let fits = |proof| {
+            crate::drafts::misfits_proved(
+                &Library::default(),
+                &caps,
+                &[(&printed, &promotion.rules, proof)],
+            )
+        };
+        assert_eq!(fits(meta.proof.as_ref()), [None]);
+        assert!(matches!(
+            fits(None)[..],
+            [Some(crate::drafts::Misfit::Unloadable(_))]
+        ));
+    }
+
+    #[test]
+    fn the_smoke_gate_plays_a_partial_draft_with_its_proof() {
+        let (out, _) = decided("Flying", (true, false), rows("Flying"));
+        let printed = angel(&format!("Flying\n{ROLL}"));
+        let mut decisions = vec![W2aDecision {
+            file: "angel.json".into(),
+            card: "Angel".into(),
+            outcome: out,
+            detail: None,
+        }];
+        let (names, library, caps) = (BTreeSet::new(), Library::default(), mtg_engine::caps());
+        let cards = [printed];
+        let basis = W2aBasis {
+            cards: &cards,
+            library: &library,
+            names: &names,
+            corpus: &names,
+            caps: &caps,
+            out: Path::new("."),
+            partial: false,
+            draft: true,
+            source: None,
+        };
+
+        gate(&basis, &mut decisions, true);
+
+        let outcome = &decisions[0].outcome;
+        assert!(outcome.is_ok(), "{outcome:?} {:?}", decisions[0].detail);
     }
 }

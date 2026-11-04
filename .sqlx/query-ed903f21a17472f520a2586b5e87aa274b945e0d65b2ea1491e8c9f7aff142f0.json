@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "SELECT (SELECT md5(coalesce(string_agg(oracle_id::text || read_hash || coalesce(source, '') || oracle_matches::text, ',' ORDER BY oracle_id), ''))\n                       FROM card_drafts WHERE NOT retired) AS \"current!\",\n                      (SELECT count(*) FROM card_reads) AS \"reads!\",\n                      (SELECT max(id) FROM card_reads) AS last_read",
+  "query": "SELECT (SELECT md5(coalesce(string_agg(oracle_id::text || read_hash || coalesce(source, '') || oracle_matches::text || coalesce(proof::text, ''), ',' ORDER BY oracle_id), ''))\n                       FROM card_drafts WHERE NOT retired) AS \"current!\",\n                      (SELECT count(*) FROM card_reads) AS \"reads!\",\n                      (SELECT max(id) FROM card_reads) AS last_read",
   "describe": {
     "columns": [
       {
@@ -31,5 +31,5 @@
       null
     ]
   },
-  "hash": "99f0117fc4516ded2037c77c3e21e0d66093bdcc8ae5e1ff0412025ee854ed77"
+  "hash": "ed903f21a17472f520a2586b5e87aa274b945e0d65b2ea1491e8c9f7aff142f0"
 }

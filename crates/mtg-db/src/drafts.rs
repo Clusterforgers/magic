@@ -36,6 +36,8 @@ pub struct NewDraft {
     pub source: String,
     /// The source's Oracle text equals the printed text; with [`SOURCE_FORGE`] the draft runs without a human read.
     pub oracle_matches: bool,
+    /// For a partial draft, the proof of its by-hand lines as JSON; none for a whole draft.
+    pub proof: Option<Value>,
 }
 
 /// A stored draft.
@@ -51,6 +53,8 @@ pub struct StoredDraft {
     pub source: String,
     /// The source's Oracle text equals the printed text.
     pub oracle_matches: bool,
+    /// The proof of a partial draft as JSON; none for a whole draft or a row stored before proofs.
+    pub proof: Option<Value>,
     /// Whether a later draft (or the build) replaced it.
     pub retired: bool,
 }
@@ -100,7 +104,7 @@ impl DraftRepo {
 
     /// Makes each draft the current draft of its card, in one transaction: the card's other current draft
     /// is retired, a draft that is stored and retired becomes current again, one that is stored and
-    /// current keeps its rules (the hash covers them) and takes the new `source` and `oracle_matches`, which decide whether Forge meta is trusted; verdicts live apart and are untouched. Returns how many
+    /// current keeps its rules (the hash covers them) and takes the new `source`, `oracle_matches` and `proof`, which decide whether Forge meta is trusted; verdicts live apart and are untouched. Returns how many
     /// drafts became current. When a card appears twice, the last one wins.
     ///
     /// A draft for a card the database does not hold, or with a malformed hash, is an error and nothing
@@ -132,15 +136,17 @@ impl DraftRepo {
             .await?
             .unwrap_or(true);
             sqlx::query!(
-                "INSERT INTO card_drafts (oracle_id, read_hash, rules, source, oracle_matches)
-                 VALUES ($1, $2, $3, $4, $5)
+                "INSERT INTO card_drafts (oracle_id, read_hash, rules, source, oracle_matches, proof)
+                 VALUES ($1, $2, $3, $4, $5, $6)
                  ON CONFLICT (oracle_id, read_hash) DO UPDATE
-                 SET retired = false, source = EXCLUDED.source, oracle_matches = EXCLUDED.oracle_matches",
+                 SET retired = false, source = EXCLUDED.source, oracle_matches = EXCLUDED.oracle_matches,
+                     proof = EXCLUDED.proof",
                 oracle_id,
                 draft.read_hash,
                 draft.rules,
                 draft.source,
-                draft.oracle_matches
+                draft.oracle_matches,
+                draft.proof
             )
             .execute(&mut *tx)
             .await?;
@@ -168,7 +174,7 @@ impl DraftRepo {
     /// The current draft of every card that has one, by oracle id.
     pub async fn current(&self) -> Result<Vec<StoredDraft>, DbError> {
         let rows = sqlx::query!(
-            "SELECT oracle_id, read_hash, rules, retired, source, oracle_matches FROM card_drafts
+            "SELECT oracle_id, read_hash, rules, retired, source, oracle_matches, proof FROM card_drafts
              WHERE NOT retired ORDER BY oracle_id"
         )
         .fetch_all(&self.pool)
@@ -182,6 +188,7 @@ impl DraftRepo {
                 retired: row.retired,
                 source: row.source,
                 oracle_matches: row.oracle_matches,
+                proof: row.proof,
             })
             .collect())
     }
@@ -191,7 +198,7 @@ impl DraftRepo {
     pub async fn get(&self, drafts: &[DraftKey]) -> Result<Vec<StoredDraft>, DbError> {
         let (ids, hashes) = unzip_keys(drafts);
         let rows = sqlx::query!(
-            "SELECT d.oracle_id, d.read_hash, d.rules, d.retired, d.source, d.oracle_matches FROM card_drafts d
+            "SELECT d.oracle_id, d.read_hash, d.rules, d.retired, d.source, d.oracle_matches, d.proof FROM card_drafts d
              JOIN unnest($1::uuid[], $2::text[]) AS k(oracle_id, read_hash)
                ON d.oracle_id = k.oracle_id AND d.read_hash = k.read_hash
              ORDER BY d.oracle_id, d.created_at, d.read_hash",
@@ -209,6 +216,7 @@ impl DraftRepo {
                 retired: row.retired,
                 source: row.source,
                 oracle_matches: row.oracle_matches,
+                proof: row.proof,
             })
             .collect())
     }
@@ -217,7 +225,7 @@ impl DraftRepo {
     /// earlier is still current. A verdict on a retired draft moves it too, which only costs a rebuild.
     pub async fn version(&self) -> Result<DraftsVersion, DbError> {
         let row = sqlx::query!(
-            r#"SELECT (SELECT md5(coalesce(string_agg(oracle_id::text || read_hash || coalesce(source, '') || oracle_matches::text, ',' ORDER BY oracle_id), ''))
+            r#"SELECT (SELECT md5(coalesce(string_agg(oracle_id::text || read_hash || coalesce(source, '') || oracle_matches::text || coalesce(proof::text, ''), ',' ORDER BY oracle_id), ''))
                        FROM card_drafts WHERE NOT retired) AS "current!",
                       (SELECT count(*) FROM card_reads) AS "reads!",
                       (SELECT max(id) FROM card_reads) AS last_read"#

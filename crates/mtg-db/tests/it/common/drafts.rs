@@ -25,5 +25,6 @@ pub fn draft(card: &OracleId, n: u32) -> NewDraft {
         rules: json!({"name": "A card", "n": n}),
         source: "sweep".into(),
         oracle_matches: false,
+        proof: None,
     }
 }

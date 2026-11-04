@@ -270,8 +270,10 @@ fn draft_rules(draft: StoredDraft, read: mtg_db::ReadState, forge: bool) -> Draf
             mtg_db::ReadState::Wrong => ReadState::Wrong,
         },
         forge,
-        // The proof is not stored yet (`promote --draft`), so no partial draft reaches a game from the database.
-        proof: None,
+        // A proof that does not parse is none: a partial draft without one is left out by the library.
+        proof: draft
+            .proof
+            .and_then(|proof| serde_json::from_value(proof).ok()),
     }
 }
 
@@ -806,5 +808,83 @@ mod tests {
         let pin = pin_of(&library, card, read);
 
         assert_eq!(pin.map(|(_, hash)| hash).as_deref(), pinned);
+    }
+
+    const LINE0: &str = "Lightning Bolt deals 3 damage to any target.";
+    const LINE1: &str = "Whenever you cast a spell, scry 1.";
+
+    fn stored_partial(proof_end: usize) -> StoredDraft {
+        let text = format!("{LINE0}\n{LINE1}");
+        let (start, end) = (LINE0.chars().count() + 1, text.chars().count());
+        let bolt = r#"{"Spell":{"targets":[{"what":"AnyTarget"}],"effects":[{"DealDamage":{"to":{"Target":0},"amount":3}}]}}"#;
+        let rules = serde_json::json!({
+            "oracle_id": DRAFTED, "name": "Lightning Bolt", "impl_status": "Partial",
+            "faces": [{"name": "Lightning Bolt", "oracle_fingerprint": mtg_cards::support::oracle_fingerprint(&text),
+                "abilities": [
+                    serde_json::from_str::<serde_json::Value>(bolt).unwrap(),
+                    {"Manual": {"reason": "by hand", "span": {"start": start, "end": end}}}]}]
+        });
+        let mark = |start: usize, end: usize, mark: &str| serde_json::json!({"face": 0, "span": {"start": start, "end": end}, "mark": mark});
+        StoredDraft {
+            oracle_id: OracleId(DRAFTED.to_owned()),
+            read_hash: mtg_cards::support::read_hash(
+                &partial_card(),
+                &serde_json::from_value(rules.clone()).unwrap(),
+            ),
+            rules,
+            source: SOURCE_FORGE.into(),
+            oracle_matches: true,
+            proof: Some(serde_json::json!({"marks": [
+                mark(0, LINE0.chars().count(), "Auto"), mark(start, proof_end, "ByHand")]})),
+            retired: false,
+        }
+    }
+
+    fn partial_card() -> mtg_cards::PrintedCard {
+        mtg_cards::PrintedCard {
+            layout: String::new(),
+            oracle_id: DRAFTED.into(),
+            name: "Lightning Bolt".into(),
+            keywords: vec![],
+            faces: vec![mtg_cards::PrintedFace {
+                name: "Lightning Bolt".into(),
+                oracle_text: format!("{LINE0}\n{LINE1}"),
+                ..mtg_cards::PrintedFace::default()
+            }],
+        }
+    }
+
+    #[test]
+    fn a_stored_proved_partial_draft_plays_as_partial_and_a_tampered_proof_is_left_out() {
+        let end = LINE0.chars().count() + 1 + LINE1.chars().count();
+        let row = draft_rules(stored_partial(end), mtg_db::ReadState::Approved, true);
+        let (library, left_out) = Library::default().with_drafts(&[row]);
+        assert!(left_out.is_empty(), "{left_out:?}");
+        let assembled = library.assemble(&partial_card(), &mtg_cards::Caps::everything());
+        assert_eq!(
+            assembled.support.support,
+            mtg_cards::support::Support::Partial
+        );
+        assert!(assembled.definition.read);
+        assert_eq!(
+            assembled.definition.manual.len(),
+            1,
+            "the by-hand line stays"
+        );
+
+        let tampered = draft_rules(stored_partial(end - 1), mtg_db::ReadState::Approved, true);
+        let (library, left_out) = Library::default().with_drafts(&[tampered]);
+        assert_eq!(left_out.len(), 1, "{left_out:?}");
+        assert!(library.draft(DRAFTED).is_none());
+    }
+
+    #[test]
+    fn a_partial_draft_stored_without_a_proof_is_left_out() {
+        let mut old = stored_partial(0);
+        old.proof = None;
+        let row = draft_rules(old, mtg_db::ReadState::Approved, true);
+        let (library, left_out) = Library::default().with_drafts(&[row]);
+        assert_eq!(left_out.len(), 1, "{left_out:?}");
+        assert!(library.draft(DRAFTED).is_none());
     }
 }

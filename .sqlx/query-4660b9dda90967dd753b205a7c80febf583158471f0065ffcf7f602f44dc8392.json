@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "SELECT oracle_id, read_hash, rules, retired, source, oracle_matches FROM card_drafts\n             WHERE NOT retired ORDER BY oracle_id",
+  "query": "SELECT oracle_id, read_hash, rules, retired, source, oracle_matches, proof FROM card_drafts\n             WHERE NOT retired ORDER BY oracle_id",
   "describe": {
     "columns": [
       {
@@ -68,6 +68,17 @@
             "name": "oracle_matches"
           }
         }
+      },
+      {
+        "ordinal": 6,
+        "name": "proof",
+        "type_info": "Jsonb",
+        "origin": {
+          "Table": {
+            "table": "card_drafts",
+            "name": "proof"
+          }
+        }
       }
     ],
     "parameters": {
@@ -79,8 +90,9 @@
       false,
       false,
       false,
-      false
+      false,
+      true
     ]
   },
-  "hash": "133df1944965a152cc03702a114c7aa8adad2af5fea7ed3e8200708c2ae740c7"
+  "hash": "4660b9dda90967dd753b205a7c80febf583158471f0065ffcf7f602f44dc8392"
 }

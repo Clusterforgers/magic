@@ -8,6 +8,7 @@ use std::fmt::Write as _;
 use mtg_cards::card::Card;
 use mtg_cards::compile::compile;
 use mtg_cards::load::{Library, LoadError};
+use mtg_cards::proposal::partial::{LedgerLine, PartialProof};
 use mtg_cards::support::{Support, read_hash, support};
 use mtg_cards::{Caps, CardDefinition, DraftRules, PrintedCard, ReadState};
 use mtg_db::{Database, DraftKey, NewDraft};
@@ -59,6 +60,12 @@ pub struct DraftMeta {
     /// The constructs a translator could not express; a card with any is never a draft.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub gaps: Vec<String>,
+    /// The script lines of a Forge translation and what became of each, which the proof of a partial draft reads.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub lines: Vec<LedgerLine>,
+    /// The proof that lets the by-hand lines of a partial draft stand; none for a whole draft.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub proof: Option<PartialProof>,
 }
 
 impl DraftMeta {
@@ -99,16 +106,29 @@ impl Misfit {
     }
 }
 
-/// The row a library takes for a draft, with the read state it should have.
-fn row(printed: &PrintedCard, card: &Card, read: ReadState) -> DraftRules {
+/// The row a library takes for a draft, with the read state it should have; a draft with a proof is a trusted Forge
+/// translation.
+fn row(
+    printed: &PrintedCard,
+    card: &Card,
+    proof: Option<&PartialProof>,
+    read: ReadState,
+) -> DraftRules {
     DraftRules {
         oracle_id: printed.oracle_id.clone(),
         read_hash: read_hash(printed, card),
         rules: serde_json::to_value(card).unwrap_or_default(),
         read,
-        forge: false,
-        proof: None,
+        forge: proof.is_some(),
+        proof: proof.cloned(),
     }
+}
+
+/// A draft to check: the card it is for, its rules and the proof of its by-hand lines, if any.
+pub type DraftItem<'a> = (&'a PrintedCard, &'a Card, Option<&'a PartialProof>);
+
+fn unproved<'a>(items: &[(&'a PrintedCard, &'a Card)]) -> Vec<DraftItem<'a>> {
+    items.iter().map(|(p, c)| (*p, *c, None)).collect()
 }
 
 /// The first problem of each row the library left out, by oracle id.
@@ -131,15 +151,20 @@ pub fn misfits(
     caps: &Caps,
     items: &[(&PrintedCard, &Card)],
 ) -> Vec<Option<Misfit>> {
+    misfits_proved(library, caps, &unproved(items))
+}
+
+/// [`misfits`] for drafts that may carry a proof: a partial draft loads when its proof backs its by-hand lines.
+pub fn misfits_proved(library: &Library, caps: &Caps, items: &[DraftItem]) -> Vec<Option<Misfit>> {
     let rows: Vec<DraftRules> = items
         .iter()
-        .map(|(printed, card)| row(printed, card, ReadState::Pending))
+        .map(|(printed, card, proof)| row(printed, card, *proof, ReadState::Pending))
         .collect();
     let (_, left_out) = library.with_drafts(&rows);
     let broken = broken_rows(&left_out);
     items
         .iter()
-        .map(|(printed, card)| {
+        .map(|(printed, card, _)| {
             if let Some(message) = broken.get(printed.oracle_id.as_str()) {
                 return Some(Misfit::Unloadable(message.clone()));
             }
@@ -160,21 +185,33 @@ pub fn read_definitions(
     caps: &Caps,
     items: &[(&PrintedCard, &Card)],
 ) -> Vec<Result<CardDefinition, String>> {
+    read_definitions_proved(library, caps, &unproved(items))
+}
+
+/// [`read_definitions`] for drafts that may carry a proof: a partial draft runs as `Partial` on a read.
+pub fn read_definitions_proved(
+    library: &Library,
+    caps: &Caps,
+    items: &[DraftItem],
+) -> Vec<Result<CardDefinition, String>> {
     let rows: Vec<DraftRules> = items
         .iter()
-        .map(|(printed, card)| row(printed, card, ReadState::Approved))
+        .map(|(printed, card, proof)| row(printed, card, *proof, ReadState::Approved))
         .collect();
     let (library, left_out) = library.with_drafts(&rows);
     let broken = broken_rows(&left_out);
     items
         .iter()
-        .map(|(printed, _)| {
+        .map(|(printed, _, proof)| {
             if let Some(message) = broken.get(printed.oracle_id.as_str()) {
                 return Err(message.clone());
             }
             let assembled = library.assemble(printed, caps);
             match assembled.support.support {
-                Support::Read => Ok(assembled.definition),
+                Support::Read if proof.is_none() => Ok(assembled.definition),
+                Support::Partial if proof.is_some() && assembled.definition.read => {
+                    Ok(assembled.definition)
+                }
                 state => Err(format!("the engine runs it as {state:?}, not Read")),
             }
         })
@@ -319,9 +356,27 @@ fn fitting(
             },
         }
     }
-    let items: Vec<(&PrintedCard, &Card)> = parsed.iter().map(|(p, c, _)| (*p, c)).collect();
+    // Only a trusted Forge translation may carry a proof.
+    let proofs: Vec<Option<&PartialProof>> = parsed
+        .iter()
+        .map(|(_, _, slug)| {
+            let meta = metas.get(slug)?;
+            (meta.source.as_deref() == Some(mtg_db::SOURCE_FORGE) && meta.oracle_matches)
+                .then_some(meta.proof.as_ref())
+                .flatten()
+        })
+        .collect();
+    let items: Vec<DraftItem> = parsed
+        .iter()
+        .zip(&proofs)
+        .map(|((p, c, _), proof)| (*p, c, *proof))
+        .collect();
     let mut put = BTreeMap::new();
-    for ((printed, card, slug), misfit) in parsed.iter().zip(misfits(library, caps, &items)) {
+    for (((printed, card, slug), misfit), proof) in parsed
+        .iter()
+        .zip(misfits_proved(library, caps, &items))
+        .zip(&proofs)
+    {
         match misfit {
             Some(Misfit::Stale) => counts.stale += 1,
             Some(Misfit::Outranked) => counts.outranked += 1,
@@ -337,6 +392,7 @@ fn fitting(
                     rules: serde_json::to_value(card).unwrap_or_default(),
                     source: meta.source_or(None),
                     oracle_matches: meta.oracle_matches,
+                    proof: proof.and_then(|proof| serde_json::to_value(proof).ok()),
                 };
                 put.insert(draft.oracle_id.clone(), draft);
             }
@@ -463,6 +519,7 @@ mod tests {
             rules: json!({}),
             source: "sweep".into(),
             oracle_matches: false,
+            proof: None,
         }
     }
 

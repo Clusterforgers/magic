@@ -66,6 +66,7 @@ async fn the_source_and_the_oracle_match_are_stored_with_the_draft(pool: PgPool)
     let forge = NewDraft {
         source: SOURCE_FORGE.into(),
         oracle_matches: true,
+        proof: None,
         ..draft(&bolt, 1)
     };
     database
