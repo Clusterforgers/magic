@@ -75,6 +75,22 @@ fn object_stat_gap(#[case] expression: &str, #[case] gap: &str) {
     "SVar:X:Count$ValidGraveyard Card.YouOwn$CardTypes",
     json!({"CardTypes": [{"OwnedBy": "You"}, {"In": "Graveyard"}]})
 )]
+#[case::scried(
+    "SVar:X:Count$YouScryThisTurn",
+    json!({"Tallied": {"who": "You", "what": "Scried"}})
+)]
+#[case::surveilled(
+    "SVar:X:Count$YouSurveilThisTurn",
+    json!({"Tallied": {"who": "You", "what": "Surveilled"}})
+)]
+#[case::sacrificed(
+    "SVar:X:PlayerCountPropertyYou$SacrificedThisTurn",
+    json!({"Tallied": {"who": "You", "what": "Sacrificed"}})
+)]
+#[case::life_lost(
+    "SVar:X:Count$LifeYouLostThisTurn",
+    json!({"Tallied": {"who": "You", "what": "LifeLost"}})
+)]
 #[case::battlefield(
     "SVar:X:Count$ValidBattlefield Land.YouCtrl",
     json!({"Count": [{"Type": "Land"}, {"ControlledBy": "You"}]})

@@ -746,6 +746,19 @@ fn from_the_top(game: &GameState, numbers: &[usize]) -> Vec<ObjectId> {
         .collect()
 }
 
+#[test]
+fn a_scry_counts_once_for_the_player_this_turn() {
+    let mut game = game();
+    let event = Event::Scried(Scried {
+        player: PlayerId(0),
+        top: from_the_top(&game, &[0]),
+        bottom: Vec::new(),
+    });
+    fold(&mut game, &[event]);
+    assert_eq!(game.tallied(PlayerId(0), crate::state::Tally::Scried), 1);
+    assert_eq!(game.tallied(PlayerId(1), crate::state::Tally::Scried), 0);
+}
+
 #[rstest]
 #[case::all_stay_in_the_same_order(&[0, 1, 2], &[], &["Library 4", "Library 3", "Library 2", "Library 1", "Library 0"])]
 #[case::two_stay_reversed(&[1, 0], &[], &["Library 4", "Library 3", "Library 2", "Library 0", "Library 1"])]
