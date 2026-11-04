@@ -507,6 +507,7 @@ const RUNS: &[&str] = &[
     "ReplaceBy.Multiply",
     "ReplaceBy.Add",
     "ReplaceBy.Prevent",
+    "ReplaceBy.PreventNext",
     "ReplaceBy.PreventUpTo",
     "ReplaceBy.PreventRemovingCounter",
     "ReplaceBy.MoveTo",
@@ -839,6 +840,7 @@ mod tests {
     #[case::shields("Effect.Shield", true)]
     #[case::preventing("ReplaceBy.Prevent", true)]
     #[case::preventing_in_part("ReplaceBy.PreventUpTo", true)]
+    #[case::preventing_the_next_damage("ReplaceBy.PreventNext", true)]
     #[case::removed_keywords("Mod.RemoveKeyword", true)]
     #[case::locked_keywords("Mod.LockKeyword", true)]
     #[case::conditions("Effect.If", true)]

@@ -173,7 +173,12 @@ fn cleanup(p: &Params) -> Tr<Vec<Value>> {
     only(
         p,
         "Cleanup",
-        &["ClearRemembered", "ClearImprinted", "ClearTriggered"],
+        &[
+            "ClearRemembered",
+            "ClearImprinted",
+            "ClearTriggered",
+            "ClearChosenCard",
+        ],
     )?;
     Ok(Vec::new())
 }

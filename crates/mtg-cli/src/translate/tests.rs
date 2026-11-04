@@ -634,6 +634,7 @@ fn keywords_map_to_the_keyword_set(#[case] line: &str, #[case] expected: Value) 
 mod audit;
 mod en3_discard;
 mod en3_reveal;
+mod en3_source;
 mod fg3;
 mod fg4a;
 mod fg4a_ambient;

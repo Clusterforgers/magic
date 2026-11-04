@@ -31,6 +31,21 @@ fn is_remembered(word: &str) -> bool {
     })
 }
 
+/// Whether a `ValidSource$` word names only the source `ChooseSource` picked: `Card.ChosenCardStrict,Emblem.ChosenCard`,
+/// or a card that is the chosen one and has a colour or type (`Card.ChosenCardStrict+RedSource`), which the choice
+/// already limited to, so the shield holds the chosen object alone (it keeps its choice if it changes colour, CR 609.7).
+fn chosen_source(word: &str) -> bool {
+    word.split(',').all(|alternative| {
+        let alternative = alternative.trim();
+        let tail = alternative
+            .strip_prefix("Card.")
+            .or_else(|| alternative.strip_prefix("Emblem."));
+        let mut parts = tail.unwrap_or_default().split('+');
+        matches!(parts.next(), Some("ChosenCard" | "ChosenCardStrict"))
+            && parts.all(|part| part.ends_with("Source") || matches!(part, "Artifact" | "Land"))
+    })
+}
+
 /// The `Event$ DamageDone` keys all of which are understood, with the zone the line is active in.
 fn read_keys(p: &Params, static_line: bool) -> Tr<()> {
     check_keys(p, "Replacement.DamageDone", &KEYS, |_, _| false)?;
@@ -222,6 +237,12 @@ fn one_shield(
     match (p.get("ValidSource"), remembered) {
         (Some(word), Some(who)) if is_remembered(word) => {
             when.insert("source".into(), json!([{"Is": who}]));
+        }
+        (Some(word), _) if chosen_source(word) => {
+            let Some(name) = &ctx.chosen_card else {
+                return unmapped("valid:ChosenCard-without-a-choice");
+            };
+            when.insert("source".into(), json!([{"Is": {"Bound": name}}]));
         }
         (Some(word), _) if word.contains("Remembered") || word.contains("Chosen") => {
             return unmapped("replacement:DamageDone-shield-source");

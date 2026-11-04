@@ -44,11 +44,15 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     }
     let (
         ReplaceWhen::Damage { to, source, combat },
-        ReplaceBy::Prevent | ReplaceBy::PreventUpTo(_) | ReplaceBy::PreventAnd(_),
+        ReplaceBy::Prevent
+        | ReplaceBy::PreventNext
+        | ReplaceBy::PreventUpTo(_)
+        | ReplaceBy::PreventAnd(_),
     ) = (when, by)
     else {
         return Err(ResolveError::Unsupported("Effect.Shield"));
     };
+    let once = matches!(by, ReplaceBy::PreventNext);
     let (left, then) = match by {
         ReplaceBy::PreventUpTo(most) => (Some(*most), Vec::new()),
         ReplaceBy::PreventAnd(then) => (None, then.clone()),
@@ -66,6 +70,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         combat: *combat,
         left,
         then,
+        once,
     }));
     if left == Some(0) {
         return Ok(Run::events(Vec::new()));
