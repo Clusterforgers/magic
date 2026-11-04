@@ -7,6 +7,7 @@
 
 pub mod ability;
 pub mod amount;
+pub mod amount_when;
 pub mod card;
 pub mod condition;
 pub mod cost;

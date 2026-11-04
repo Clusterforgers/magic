@@ -30,6 +30,16 @@ use super::{abilities, gaps, normal};
     "Name:T\nTypes:Enchantment\nS:Mode$ Continuous | Affected$ Creature.YouCtrl+wasCastFromHand | AffectedZone$ Stack | AddKeyword$ Flash\n",
     json!({"Static": {"affected": {"Each": [{"Type": "Creature"}, {"ControlledBy": "You"}, {"WasCast": {"from": "Hand"}}, {"In": "Stack"}]}, "mods": [{"AddKeyword": "Flash"}]}})
 )]
+#[case::amount_by_comparison(
+    "Name:T\nTypes:Instant\nA:SP$ Draw | NumCards$ X\nSVar:X:Count$Compare Y GE1.3.1\nSVar:Y:Count$Valid Goblin.YouCtrl\n",
+    json!({"Spell": {"effects": [{"Draw": {"count": {"When": {
+        "condition": {"Compare": {"left": {"Count": [{"Subtype": "Goblin"}, {"ControlledBy": "You"}]}, "op": "Ge", "right": 1}},
+        "then": 3, "otherwise": 1}}}}]}})
+)]
+#[case::amount_if_kicked(
+    "Name:T\nTypes:Instant\nA:SP$ Draw | NumCards$ X\nSVar:X:Count$Kicked.2.1\n",
+    json!({"Spell": {"effects": [{"Draw": {"count": {"When": {"condition": "Kicked", "then": 2, "otherwise": 1}}}}]}})
+)]
 fn selector_atoms_map(#[case] script: &str, #[case] expected: Value) {
     let mut found = abilities(script);
     assert_eq!(found.len(), 1, "{:?}", gaps(script));
