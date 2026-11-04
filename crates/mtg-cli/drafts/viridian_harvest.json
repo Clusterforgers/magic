@@ -1,0 +1,26 @@
+{
+  "oracle_id": "48dc8f34-8c73-4155-8a3d-b26a35260e6b",
+  "name": "Viridian Harvest",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Viridian Harvest",
+      "oracle_fingerprint": "510c889244638ce4eef115ec7cdf773c",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Artifact" }] } },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Is": "Attached" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [{ "GainLife": { "amount": 6 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

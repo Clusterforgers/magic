@@ -1,0 +1,40 @@
+{
+  "oracle_id": "6c7e4e51-099a-4398-a4b7-e2f0ddd36429",
+  "name": "The Astonishing Ant-Man",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Astonishing Ant-Man",
+      "oracle_fingerprint": "d87ef559d6af7168752e49faa2536194",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Drew": { "who": "You" } },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{G}" }, "Tap", { "RemoveCounters": { "counter": "+1/+1" } }],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Insect",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Insect"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

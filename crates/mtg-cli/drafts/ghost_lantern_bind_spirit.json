@@ -1,0 +1,44 @@
+{
+  "oracle_id": "4af03564-1d1c-4582-9248-cfe9551bad30",
+  "name": "Ghost Lantern // Bind Spirit",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ghost Lantern",
+      "oracle_fingerprint": "3bc5e99a1b7be28063f7de8cdf3dd22b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "Attached", "counter": "+1/+1" } }]
+          }
+        },
+        { "Keyword": { "Equip": "{1}" } }
+      ]
+    },
+    {
+      "name": "Bind Spirit",
+      "oracle_fingerprint": "efde171ff35e6d6ad186d7b06255f6c0",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

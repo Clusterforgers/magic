@@ -1,0 +1,19 @@
+{
+  "oracle_id": "334178f6-cf4b-4ea6-a24f-c7375d1b38de",
+  "name": "Kolaghan Aspirant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kolaghan Aspirant",
+      "oracle_fingerprint": "c7cb92edd19b2b7f16d17336458c9eed",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "BecomesBlocked": { "what": ["This"], "by": [{ "Type": "Creature" }] } },
+            "effects": [{ "DealDamage": { "to": "This", "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "oracle_id": "22fe038e-033e-4632-a0d7-116492cded83",
+  "name": "Howl of the Hunt",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Howl of the Hunt",
+      "oracle_fingerprint": "c58ba4d7c79f2a1ee296a4a9278ab1cf",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "Is": "Attached" },
+                    { "AnyOf": [{ "Subtype": "Wolf" }, { "Subtype": "Werewolf" }] }
+                  ]
+                },
+                "op": "Eq",
+                "right": 1
+              }
+            },
+            "effects": [{ "Untap": { "what": "Attached" } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }, { "AddKeyword": "Vigilance" }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "oracle_id": "712d7eb4-4044-4852-a5da-57635d3086b0",
+  "name": "Urborg Skeleton",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Urborg Skeleton",
+      "oracle_fingerprint": "69ad4f11af98ddc33c0ca59a9a5c82b5",
+      "abilities": [
+        { "Keyword": { "Kicker": "{3}" } },
+        { "Activated": { "cost": "{B}", "effects": [{ "Regenerate": { "what": "This" } }] } },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": 1 } },
+            "condition": "Kicked"
+          }
+        }
+      ]
+    }
+  ]
+}

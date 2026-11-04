@@ -1,0 +1,25 @@
+{
+  "oracle_id": "69909846-94f9-4b2c-918f-274ba2aa4279",
+  "name": "Wrath of Sod",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wrath of Sod",
+      "oracle_fingerprint": "ba48dcfe71ff388407675a79abc417f4",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": { "Each": [{ "Type": "Creature" }] },
+                  "counter": { "Other": "manabond" }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

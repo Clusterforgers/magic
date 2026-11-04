@@ -1,0 +1,43 @@
+{
+  "oracle_id": "7565c101-a479-4812-9d18-63918084bfca",
+  "name": "Tetzimoc, Primal Death",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tetzimoc, Primal Death",
+      "oracle_fingerprint": "65c921d352655aa19c87ad4742d8513a",
+      "abilities": [
+        { "Keyword": "Deathtouch" },
+        {
+          "Activated": {
+            "cost": "{B}",
+            "condition": "YourTurn",
+            "from": "Hand",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "prey" } } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Destroy": {
+                  "what": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "ControlledBy": "Opponents" },
+                      { "HasCounter": { "Other": "prey" } }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

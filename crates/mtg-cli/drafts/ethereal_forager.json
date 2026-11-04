@@ -1,0 +1,43 @@
+{
+  "oracle_id": "a3f3a5b5-b931-4961-828c-501a33e5a0a0",
+  "name": "Ethereal Forager",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ethereal Forager",
+      "oracle_fingerprint": "7d080b89ad2e552d65e7ee5dbe57dfdf",
+      "abilities": [
+        { "Keyword": "Delve" },
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                            { "ExiledWith": "This" },
+                            { "In": "Exile" },
+                            { "OwnedBy": "You" }
+                          ]
+                        },
+                        "count": { "min": 0, "max": 1 },
+                        "as": "picked"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "picked" }, "to": "Hand" } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

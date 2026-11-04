@@ -1,0 +1,35 @@
+{
+  "oracle_id": "76164af1-275e-4d68-9df5-9801768512ef",
+  "name": "Lingering Phantom",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lingering Phantom",
+      "oracle_fingerprint": "e687b8ab5d141566fae3299f1366c915",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [
+                  {
+                    "AnyOf": [
+                      { "Supertype": "Legendary" },
+                      { "Type": "Artifact" },
+                      { "Subtype": "Saga" }
+                    ]
+                  }
+                ],
+                "by": "You"
+              }
+            },
+            "from": "Graveyard",
+            "effects": [
+              { "Pay": { "cost": "{B}", "paid": [{ "Move": { "what": "This", "to": "Hand" } }] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "oracle_id": "9da7e8b5-887d-4174-b7aa-982fd052fcd1",
+  "name": "Burning Sun Cavalry",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Burning Sun Cavalry",
+      "oracle_fingerprint": "7666733c787ba8a4b955eaf606daddb5",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [{ "Attacks": { "what": ["This"] } }, { "Blocks": { "what": ["This"] } }]
+            },
+            "if": {
+              "Compare": {
+                "left": { "Count": [{ "Subtype": "Dinosaur" }, { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

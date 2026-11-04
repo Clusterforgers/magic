@@ -9,8 +9,21 @@
       "abilities": [
         {
           "Static": {
-            "affected": { "Each": ["This", "Tapped"] },
-            "mods": [{ "AddKeyword": "Haste" }]
+            "affected": { "Each": [{ "Subtype": "Sliver" }] },
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Activated": {
+                    "cost": ["Tap"],
+                    "targets": [{ "what": "AnyTarget" }],
+                    "effects": [
+                      { "DealDamage": { "to": { "Target": 0 }, "amount": 2 } },
+                      { "DealDamage": { "to": "This", "amount": 3 } }
+                    ]
+                  }
+                }
+              }
+            ]
           }
         }
       ]

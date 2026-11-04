@@ -1,0 +1,134 @@
+{
+  "object": "card",
+  "id": "524fd470-e535-47ea-98a0-6187e429dfe1",
+  "oracle_id": "2227bab2-36a0-47f1-a797-7b82323eca9d",
+  "multiverse_ids": [
+    41142
+  ],
+  "mtgo_id": 17961,
+  "mtgo_foil_id": 17962,
+  "tcgplayer_id": 10541,
+  "cardmarket_id": 1768,
+  "name": "Death Pulse",
+  "lang": "en",
+  "released_at": "2002-10-07",
+  "uri": "https://api.scryfall.com/cards/524fd470-e535-47ea-98a0-6187e429dfe1",
+  "scryfall_uri": "https://scryfall.com/card/ons/137/death-pulse?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T12:17:51Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/5/2/524fd470-e535-47ea-98a0-6187e429dfe1.jpg?1783945071",
+    "normal": "https://cards.scryfall.io/normal/front/5/2/524fd470-e535-47ea-98a0-6187e429dfe1.jpg?1783945071",
+    "large": "https://cards.scryfall.io/large/front/5/2/524fd470-e535-47ea-98a0-6187e429dfe1.jpg?1783945071",
+    "png": "https://cards.scryfall.io/png/front/5/2/524fd470-e535-47ea-98a0-6187e429dfe1.png?1783945071",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/5/2/524fd470-e535-47ea-98a0-6187e429dfe1.jpg?1783945071",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/5/2/524fd470-e535-47ea-98a0-6187e429dfe1.jpg?1783945071",
+    "thumb": "https://cards.scryfall.io/thumb/front/5/2/524fd470-e535-47ea-98a0-6187e429dfe1.webp?1783945071",
+    "grid": "https://cards.scryfall.io/grid/front/5/2/524fd470-e535-47ea-98a0-6187e429dfe1.webp?1783945071",
+    "display": "https://cards.scryfall.io/display/front/5/2/524fd470-e535-47ea-98a0-6187e429dfe1.webp?1783945071",
+    "art": "https://cards.scryfall.io/art/front/5/2/524fd470-e535-47ea-98a0-6187e429dfe1.webp?1783945071",
+    "crop": "https://cards.scryfall.io/crop/front/5/2/524fd470-e535-47ea-98a0-6187e429dfe1.webp?1783945071",
+    "jpeg": "https://cards.scryfall.io/normal/front/5/2/524fd470-e535-47ea-98a0-6187e429dfe1.jpg?1783945071"
+  },
+  "mana_cost": "{2}{B}{B}",
+  "cmc": 4.0,
+  "type_line": "Instant",
+  "oracle_text": "Target creature gets -4/-4 until end of turn.\nCycling {1}{B}{B} ({1}{B}{B}, Discard this card: Draw a card.)\nWhen you cycle this card, you may have target creature get -1/-1 until end of turn.",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Cycling"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "914a6c6d-cb3b-45e8-a2db-9978a2339faf",
+  "set": "ons",
+  "set_name": "Onslaught",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/914a6c6d-cb3b-45e8-a2db-9978a2339faf",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aons&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/ons?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/524fd470-e535-47ea-98a0-6187e429dfe1/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A2227bab2-36a0-47f1-a797-7b82323eca9d&unique=prints",
+  "collector_number": "137",
+  "digital": false,
+  "rarity": "uncommon",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Tony Szczudlo",
+  "artist_ids": [
+    "1952c90b-a5a7-4328-9f7c-e11064f59daf"
+  ],
+  "illustration_id": "0b235fc4-9ad6-4518-8e5c-b97128ce4b88",
+  "border_color": "black",
+  "frame": "1997",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 28123,
+  "penny_rank": 13603,
+  "prices": {
+    "usd": "0.20",
+    "usd_foil": "1.04",
+    "usd_etched": null,
+    "eur": "0.19",
+    "eur_foil": "0.68",
+    "tix": "0.05"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=41142&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DDeath%2BPulse",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DDeath%2BPulse",
+    "edhrec": "https://edhrec.com/route/?cc=Death+Pulse"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F10541%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=1768&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/17961?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

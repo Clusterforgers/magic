@@ -1,0 +1,45 @@
+{
+  "oracle_id": "9017da9a-2cd5-42fe-a82d-63c34e952344",
+  "name": "Shrine of Piercing Vision",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shrine of Piercing Vision",
+      "oracle_fingerprint": "433f231c82ba97239eac0d9385adfa92",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "SpellCast": { "what": [{ "Color": "Blue" }], "by": "You" } },
+                { "StepBegins": { "step": "Upkeep", "whose": "You" } }
+              ]
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "charge" } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap", "SacrificeSelf"],
+            "effects": [
+              {
+                "LookAtTop": {
+                  "count": { "Counters": { "on": "This", "counter": "charge" } },
+                  "as": "top"
+                }
+              },
+              { "Choose": { "from": { "Bound": "top" }, "as": "kept2", "rest_as": "rest3" } },
+              { "Move": { "what": { "Bound": "kept2" }, "to": "Hand" } },
+              {
+                "Move": {
+                  "what": { "Bound": "rest3" },
+                  "to": { "Library": { "place": "Bottom", "order": "Chosen" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

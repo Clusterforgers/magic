@@ -1,0 +1,30 @@
+{
+  "oracle_id": "91924536-7a2b-44ec-9835-2efa402c83f9",
+  "name": "Spiritual Asylum",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spiritual Asylum",
+      "oracle_fingerprint": "12dad32061450c2c9be9d457d28ae6d7",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "AnyOf": [{ "Type": "Creature" }, { "Type": "Land" }] },
+                { "ControlledBy": "You" }
+              ]
+            },
+            "mods": [{ "AddKeyword": "Shroud" }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+            "effects": [{ "Sacrifice": { "filter": ["This"] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

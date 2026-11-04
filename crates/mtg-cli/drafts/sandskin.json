@@ -1,0 +1,28 @@
+{
+  "oracle_id": "13628636-7fc1-426e-abac-07fc35caf81b",
+  "name": "Sandskin",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sandskin",
+      "oracle_fingerprint": "b11d3f6f6b349b6ef272e8773c4d2a09",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Replacement": {
+            "when": { "Damage": { "to": "Attached", "combat": true } },
+            "by": "Prevent"
+          }
+        },
+        {
+          "Replacement": {
+            "when": {
+              "Damage": { "source": [{ "Type": "Creature" }, { "Is": "Attached" }], "combat": true }
+            },
+            "by": "Prevent"
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "oracle_id": "a92ae7b0-cbbb-44a8-bfd8-2a68f4c1ce1a",
+  "name": "Flash Photography",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Flash Photography",
+      "oracle_fingerprint": "f0b7dcfcafe5005c360c6cf83e75330f",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [] } }],
+            "effects": [{ "CreateToken": { "token": { "CopyOf": { "of": { "Target": 0 } } } } }]
+          }
+        },
+        { "Keyword": { "Flashback": "{4}{U}{U}" } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,47 @@
+{
+  "oracle_id": "ae3e5c80-6a6a-4781-a7b9-4d63357ffa3b",
+  "name": "Eldrazi Repurposer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Eldrazi Repurposer",
+      "oracle_fingerprint": "18c382496a569acb12e4af2b9dea033a",
+      "abilities": [
+        { "Keyword": "Devoid" },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "SpellCast": { "what": ["This"] } },
+                { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } }
+              ]
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Eldrazi Spawn",
+                      "types": ["Creature"],
+                      "subtypes": ["Eldrazi", "Spawn"],
+                      "power": 0,
+                      "toughness": 1,
+                      "abilities": [
+                        {
+                          "Activated": {
+                            "cost": ["SacrificeSelf"],
+                            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

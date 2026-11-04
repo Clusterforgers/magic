@@ -1,0 +1,26 @@
+{
+  "oracle_id": "31be715f-9ad3-435c-9e52-e108fe96b969",
+  "name": "Worldslayer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Worldslayer",
+      "oracle_fingerprint": "0129aac277bcd1983b7a714b5a17da19",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [{ "Is": "Attached" }],
+                "to": "EachPlayer",
+                "combat": true
+              }
+            },
+            "effects": [{ "Destroy": { "what": { "Each": ["Other"] } } }]
+          }
+        },
+        { "Keyword": { "Equip": "{5}" } }
+      ]
+    }
+  ]
+}

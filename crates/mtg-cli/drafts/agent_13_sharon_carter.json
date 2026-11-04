@@ -1,0 +1,21 @@
+{
+  "oracle_id": "ddf7201a-6672-416d-be6b-202dafbeccab",
+  "name": "Agent 13, Sharon Carter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Agent 13, Sharon Carter",
+      "oracle_fingerprint": "0d246c888224a70cd290541ac3e2e833",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AttacksAlone": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+            },
+            "effects": [{ "CreateToken": { "token": { "Named": "clue" } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

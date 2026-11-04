@@ -1,0 +1,40 @@
+{
+  "oracle_id": "709b9f76-0ea5-456c-b1db-2cf517370fde",
+  "name": "Shattered Wings",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shattered Wings",
+      "oracle_fingerprint": "72ee8327221c9ff48cda6028f131964c",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    {
+                      "AnyOf": [
+                        { "Type": "Artifact" },
+                        { "Type": "Enchantment" },
+                        {
+                          "Not": {
+                            "AnyOf": [
+                              { "Not": { "Type": "Creature" } },
+                              { "Not": { "HasKeyword": "Flying" } }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }, { "Surveil": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

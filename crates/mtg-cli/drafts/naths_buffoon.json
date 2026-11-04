@@ -1,0 +1,12 @@
+{
+  "oracle_id": "da404c9c-3fb0-418c-947f-f42d6aff6899",
+  "name": "Nath's Buffoon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nath's Buffoon",
+      "oracle_fingerprint": "16fc90cd30ce2443ff1415ec8756a1d0",
+      "abilities": [{ "Keyword": { "Protection": [{ "Subtype": "Elf" }] } }]
+    }
+  ]
+}

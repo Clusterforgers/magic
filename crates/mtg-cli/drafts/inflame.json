@@ -1,0 +1,25 @@
+{
+  "oracle_id": "8426bdb6-b002-4d27-9eaf-d7f8353aa7e8",
+  "name": "Inflame",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Inflame",
+      "oracle_fingerprint": "4cd453801a42fe2fb1f3c5c32a0bdbff",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Each": [{ "Type": "Creature" }, "DamagedThisTurn"] },
+                  "amount": 2
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "oracle_id": "68845200-5346-473d-becd-27315879443d",
+  "name": "Verdant Touch",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Verdant Touch",
+      "oracle_fingerprint": "638493c3abb65aa34a7350b03a1cc406",
+      "abilities": [
+        { "Keyword": { "Buyback": "{3}" } },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Land" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetPT": { "power": 2, "toughness": 2 } }, { "AddType": "Creature" }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

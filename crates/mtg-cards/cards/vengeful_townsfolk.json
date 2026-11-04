@@ -1,0 +1,27 @@
+{
+  "oracle_id": "c649d5ae-2f38-4737-8123-8069a2ba0bde",
+  "name": "Vengeful Townsfolk",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vengeful Townsfolk",
+      "oracle_fingerprint": "0843e06da17c73f840c61960cf82b3d1",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "ZoneChange": {
+                  "what": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }],
+                  "from": "Battlefield",
+                  "to": "Graveyard"
+                }
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

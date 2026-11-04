@@ -1,0 +1,26 @@
+{
+  "oracle_id": "0b76bb3b-1ada-4c78-bd13-3464371d4fa0",
+  "name": "Sneaky Homunculus",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sneaky Homunculus",
+      "oracle_fingerprint": "b5c8060fcb587f5701a44746907567c1",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "CantBeBlockedBy": [
+                  { "Type": "Creature" },
+                  { "Compare": { "stat": "Power", "op": "Ge", "to": 2 } }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

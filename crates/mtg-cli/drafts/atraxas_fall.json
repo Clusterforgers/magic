@@ -1,0 +1,41 @@
+{
+  "oracle_id": "22677153-bd87-4ff8-af92-ced4da2aac6c",
+  "name": "Atraxa's Fall",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Atraxa's Fall",
+      "oracle_fingerprint": "ac0a26a78bb840e94763db189ce17f37",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    {
+                      "AnyOf": [
+                        { "Type": "Artifact" },
+                        { "Type": "Battle" },
+                        { "Type": "Enchantment" },
+                        {
+                          "Not": {
+                            "AnyOf": [
+                              { "Not": { "Type": "Creature" } },
+                              { "Not": { "HasKeyword": "Flying" } }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "oracle_id": "15afdd88-05fc-4335-8a55-c6ee702f3bef",
+  "name": "Genesis",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Genesis",
+      "oracle_fingerprint": "63a2d209b345e33f1899cf8d2be12bb8",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": ["This", { "In": "Graveyard" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "from": "Graveyard",
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{2}{G}",
+                  "paid": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

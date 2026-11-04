@@ -1,0 +1,26 @@
+{
+  "oracle_id": "3cd72848-7b99-4d46-96f5-53f297c9d2a0",
+  "name": "An-Havva Inn",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "An-Havva Inn",
+      "oracle_fingerprint": "e86f805db92ec1e05caadf439327787a",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "GainLife": {
+                  "amount": {
+                    "Sum": [{ "Count": [{ "Type": "Creature" }, { "Color": "Green" }] }, 1]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

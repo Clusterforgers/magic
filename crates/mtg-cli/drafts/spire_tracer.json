@@ -1,0 +1,27 @@
+{
+  "oracle_id": "9b38ab81-7ee7-4d89-878b-3507e44836ca",
+  "name": "Spire Tracer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spire Tracer",
+      "oracle_fingerprint": "87ae22a9c772720623654e3793b02449",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "CantBeBlockedBy": [
+                  { "Type": "Creature" },
+                  { "Not": { "HasKeyword": "Flying" } },
+                  { "Not": { "HasKeyword": "Reach" } }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

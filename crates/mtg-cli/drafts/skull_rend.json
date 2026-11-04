@@ -1,0 +1,21 @@
+{
+  "oracle_id": "d29d59f1-e00c-4217-8185-2085a4142e3b",
+  "name": "Skull Rend",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Skull Rend",
+      "oracle_fingerprint": "b61ed1ed08351b1d124ad8dd195e892c",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "DealDamage": { "to": "Opponents", "amount": 2 } },
+              { "Discard": { "who": "Opponents", "count": 2, "random": true } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

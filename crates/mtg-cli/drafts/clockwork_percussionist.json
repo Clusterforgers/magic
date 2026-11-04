@@ -1,0 +1,30 @@
+{
+  "oracle_id": "3b74c8ac-9c19-45b0-935f-8630b8da4543",
+  "name": "Clockwork Percussionist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Clockwork Percussionist",
+      "oracle_fingerprint": "919aa2d67e656168e2978db53336532c",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              { "ExileTop": { "as": "exiled" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": { "from": "Exile", "only": { "Bound": "exiled" }, "play": true }
+                  },
+                  "duration": "UntilEndOfYourNextTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

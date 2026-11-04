@@ -1,0 +1,33 @@
+{
+  "oracle_id": "194e2563-c0bf-4151-bbb0-0d626130b055",
+  "name": "Nether Spirit",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nether Spirit",
+      "oracle_fingerprint": "bc7dbd3a6ed5e13f624871f6e21aaa2c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Count": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                },
+                "op": "Eq",
+                "right": 1
+              }
+            },
+            "from": "Graveyard",
+            "effects": [
+              {
+                "May": { "effects": [{ "Move": { "what": "This", "to": { "Battlefield": {} } } }] }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

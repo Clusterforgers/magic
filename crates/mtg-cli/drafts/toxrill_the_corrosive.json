@@ -1,0 +1,86 @@
+{
+  "oracle_id": "c71b2325-bde6-4364-a93b-8477ffeb25d8",
+  "name": "Toxrill, the Corrosive",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Toxrill, the Corrosive",
+      "oracle_fingerprint": "a63995eebe9ca01b0e14a0dfd57704e6",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": { "Each": [{ "Type": "Creature" }, { "Not": { "ControlledBy": "You" } }] },
+                  "counter": { "Other": "slime" }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "Not": { "ControlledBy": "You" } }] },
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": {
+                    "Times": {
+                      "by": -1,
+                      "of": { "Counters": { "on": "This", "counter": { "Other": "slime" } } }
+                    }
+                  },
+                  "toughness": {
+                    "Times": {
+                      "by": -1,
+                      "of": { "Counters": { "on": "This", "counter": { "Other": "slime" } } }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "Not": { "ControlledBy": "You" } },
+                  { "HasCounter": { "Other": "slime" } }
+                ],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Slug",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Slug"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{U}{B}" }, { "Sacrifice": { "filter": [{ "Subtype": "Slug" }] } }],
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

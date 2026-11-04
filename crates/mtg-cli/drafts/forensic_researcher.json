@@ -1,0 +1,31 @@
+{
+  "oracle_id": "75e7f7c7-fa98-497b-bf5e-8f74571e190c",
+  "name": "Forensic Researcher",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Forensic Researcher",
+      "oracle_fingerprint": "1d367a3d6a87a187a7113557025818e0",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": { "Object": ["Other", { "ControlledBy": "You" }] } }],
+            "effects": [{ "Untap": { "what": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap", { "CollectEvidence": 3 }],
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "Not": { "ControlledBy": "You" } }] }
+              }
+            ],
+            "effects": [{ "Tap": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

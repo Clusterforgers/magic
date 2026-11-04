@@ -1,0 +1,44 @@
+{
+  "oracle_id": "550b8bee-1773-427b-b300-aaceff243e11",
+  "name": "Retribution of the Ancients",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Retribution of the Ancients",
+      "oracle_fingerprint": "111e3c8838d376f9c3cefbd91c83e93d",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{B}" },
+              {
+                "RemoveCountersAmong": {
+                  "counter": "+1/+1",
+                  "count": "X",
+                  "from": [{ "Type": "Creature" }]
+                }
+              }
+            ],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": { "Times": { "by": -1, "of": "X" } },
+                        "toughness": { "Times": { "by": -1, "of": "X" } }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

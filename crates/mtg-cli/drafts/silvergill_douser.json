@@ -1,0 +1,45 @@
+{
+  "oracle_id": "b24f2917-b96c-4348-b033-4926df3bd4b0",
+  "name": "Silvergill Douser",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Silvergill Douser",
+      "oracle_fingerprint": "55fd03ce63144c8ec0b62f0a17d10dcb",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": {
+                          "Times": {
+                            "by": -1,
+                            "of": {
+                              "Count": [
+                                { "AnyOf": [{ "Subtype": "Merfolk" }, { "Subtype": "Faerie" }] },
+                                { "ControlledBy": "You" }
+                              ]
+                            }
+                          }
+                        },
+                        "toughness": 0
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "oracle_id": "7b6b9c5a-d2ba-48b9-8efc-a3003c610130",
+  "name": "Fleetwheel Cruiser",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fleetwheel Cruiser",
+      "oracle_fingerprint": "e9d09caae40058860ecc2a0ab5e451fd",
+      "abilities": [
+        { "Keyword": "Trample" },
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddType": "Creature" }, { "AddType": "Artifact" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Crew": 2 } }
+      ]
+    }
+  ]
+}

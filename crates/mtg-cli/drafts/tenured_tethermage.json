@@ -1,0 +1,57 @@
+{
+  "oracle_id": "571cb06d-55b5-46e4-9678-1f74aca73068",
+  "name": "Tenured Tethermage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tenured Tethermage",
+      "oracle_fingerprint": "141a277a4d8ca325c83ba1d3a6436062",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "Sacrifice": { "filter": [{ "Type": "Land" }] } }],
+                  "paid": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Heartwood",
+                            "colors": ["Red", "Green"],
+                            "types": ["Artifact"],
+                            "subtypes": ["Heartwood"],
+                            "abilities": [
+                              {
+                                "Activated": {
+                                  "cost": ["Tap"],
+                                  "effects": [
+                                    { "AddMana": { "mana": { "OneOf": ["Red", "Green"] } } }
+                                  ]
+                                }
+                              }
+                            ]
+                          }
+                        },
+                        "count": 2,
+                        "tapped": true
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "TapPermanents": { "filter": [{ "Type": "Artifact" }], "count": 2 } }],
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1", "count": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

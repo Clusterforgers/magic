@@ -1,0 +1,42 @@
+{
+  "oracle_id": "a0aa1aa1-f011-4c65-9886-95521947beef",
+  "name": "Spiked Pit Trap",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spiked Pit Trap",
+      "oracle_fingerprint": "8c84c7157a83f308e97cf520716e4829",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{5}" }, "Tap", "SacrificeSelf"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "RollDice": {
+                  "sides": 20,
+                  "results": [
+                    {
+                      "from": 1,
+                      "to": 9,
+                      "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 5 } }]
+                    },
+                    {
+                      "from": 10,
+                      "to": 20,
+                      "effects": [
+                        { "DealDamage": { "to": { "Target": 0 }, "amount": 5 } },
+                        { "CreateToken": { "token": { "Named": "treasure" } } }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

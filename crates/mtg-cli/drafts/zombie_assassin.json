@@ -1,0 +1,22 @@
+{
+  "oracle_id": "7d8af783-e73f-49ce-bcdb-ba55e1650481",
+  "name": "Zombie Assassin",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Zombie Assassin",
+      "oracle_fingerprint": "69cd5ab8c5c4968640565aedf3b163bb",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap", { "ExileFromGraveyard": { "filter": [], "count": 2 } }, "ExileSelf"],
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "Not": { "Color": "Black" } }] } }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 }, "regenerate": false } }]
+          }
+        }
+      ]
+    }
+  ]
+}

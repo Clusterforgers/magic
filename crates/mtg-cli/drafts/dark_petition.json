@@ -1,0 +1,40 @@
+{
+  "oracle_id": "79acdb37-8d52-4bc8-a7be-a7e92b6166e5",
+  "name": "Dark Petition",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dark Petition",
+      "oracle_fingerprint": "60b520d966bf016c3ac16a5c6600d0b8",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Search": { "filter": [], "as": "found" } },
+              { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+              { "Shuffle": {} },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Count": [
+                          { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                          { "OwnedBy": "You" },
+                          { "In": "Graveyard" }
+                        ]
+                      },
+                      "op": "Ge",
+                      "right": 2
+                    }
+                  },
+                  "then": [{ "AddMana": { "mana": { "Fixed": ["Black", "Black", "Black"] } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "oracle_id": "f50f8cac-35bf-4d4d-88c0-1c0c581f862c",
+  "name": "Magistrate's Veto",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Magistrate's Veto",
+      "oracle_fingerprint": "ab6fa8b912db796c5566fcf748d550c8",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                { "AnyOf": [{ "Color": "White" }, { "Color": "Blue" }] }
+              ]
+            },
+            "mods": ["CantBlock"]
+          }
+        }
+      ]
+    }
+  ]
+}

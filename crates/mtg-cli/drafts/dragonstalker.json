@@ -1,0 +1,15 @@
+{
+  "oracle_id": "d9410a82-1b7f-4f3a-a0fd-53099d7594ec",
+  "name": "Dragonstalker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dragonstalker",
+      "oracle_fingerprint": "a4160eb74045c0cd745d3218267999bd",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": { "Protection": [{ "Subtype": "Dragon" }] } }
+      ]
+    }
+  ]
+}

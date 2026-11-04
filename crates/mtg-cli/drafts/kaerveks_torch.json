@@ -1,0 +1,19 @@
+{
+  "oracle_id": "c629feae-084c-452f-9c09-4b9716331498",
+  "name": "Kaervek's Torch",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kaervek's Torch",
+      "oracle_fingerprint": "8bceaa178839370ec6c67560aecfad9c",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": "X" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

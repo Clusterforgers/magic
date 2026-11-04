@@ -1,0 +1,20 @@
+{
+  "oracle_id": "f8d5a65c-382b-4277-9c08-5dec9e395b02",
+  "name": "Viashino Sandscout",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Viashino Sandscout",
+      "oracle_fingerprint": "a59635eb899a5a905311355d1f601d9d",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "effects": [{ "Move": { "what": "This", "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

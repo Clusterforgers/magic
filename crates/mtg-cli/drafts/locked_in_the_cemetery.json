@@ -1,0 +1,28 @@
+{
+  "oracle_id": "035f0aae-9c23-4b22-8c87-0d66b84b7962",
+  "name": "Locked in the Cemetery",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Locked in the Cemetery",
+      "oracle_fingerprint": "8cc99ac71cfe5602f39a92ef5cb205db",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": [{ "OwnedBy": "You" }, { "In": "Graveyard" }] },
+                "op": "Ge",
+                "right": 5
+              }
+            },
+            "effects": [{ "Tap": { "what": "Attached" } }]
+          }
+        },
+        { "Static": { "affected": "Attached", "mods": ["DoesntUntap"] } }
+      ]
+    }
+  ]
+}

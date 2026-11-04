@@ -1,0 +1,20 @@
+{
+  "oracle_id": "860468b3-625a-4663-a5ae-336ae10fc7d0",
+  "name": "White Ward",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "White Ward",
+      "oracle_fingerprint": "a4b85765c20e242ab0cb48b136ba3be9",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "AddKeyword": { "Protection": [{ "Color": "White" }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

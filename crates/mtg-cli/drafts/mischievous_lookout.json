@@ -1,0 +1,29 @@
+{
+  "oracle_id": "e53dfa22-2afb-4cd7-a604-553c4e257c54",
+  "name": "Mischievous Lookout",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mischievous Lookout",
+      "oracle_fingerprint": "307a2a3ff985d1ea9fc7b55b51ff8d65",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": {
+                "what": [
+                  { "Not": { "Type": "Creature" } },
+                  { "Not": { "Subtype": "Aura" } },
+                  { "Not": { "Type": "Land" } }
+                ],
+                "from": "Graveyard",
+                "once": true
+              }
+            },
+            "condition": "YourTurn"
+          }
+        }
+      ]
+    }
+  ]
+}

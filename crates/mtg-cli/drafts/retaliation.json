@@ -1,0 +1,38 @@
+{
+  "oracle_id": "51571fa8-fd52-4439-8331-4eb4f651e764",
+  "name": "Retaliation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Retaliation",
+      "oracle_fingerprint": "e446263b14b516ac09967f45b8a13575",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Triggered": {
+                    "when": {
+                      "BecomesBlocked": { "what": ["This"], "by": [{ "Type": "Creature" }] }
+                    },
+                    "effects": [
+                      {
+                        "Continuous": {
+                          "affected": "This",
+                          "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                          "duration": "UntilEndOfTurn"
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

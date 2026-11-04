@@ -1,0 +1,36 @@
+{
+  "oracle_id": "1b26dbb7-0ae5-4279-87b6-1b722c30a386",
+  "name": "Wooden Stake",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wooden Stake",
+      "oracle_fingerprint": "d77d39dd567aba9a7724be0f85cf16ea",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "BecomesBlocked": { "what": [{ "Subtype": "Vampire" }], "by": [{ "Is": "Attached" }] }
+            },
+            "effects": [{ "Destroy": { "what": "Triggering", "regenerate": false } }]
+          }
+        },
+        { "Keyword": { "Equip": "{1}" } },
+        {
+          "Triggered": {
+            "when": {
+              "BecomesBlocked": { "what": [{ "Is": "Attached" }], "by": [{ "Subtype": "Vampire" }] }
+            },
+            "effects": [{ "Destroy": { "what": "Triggering", "regenerate": false } }]
+          }
+        }
+      ]
+    }
+  ]
+}

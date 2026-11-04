@@ -1,0 +1,24 @@
+{
+  "oracle_id": "b221939c-93e7-4ffc-b995-5b67e173ee15",
+  "name": "Alms Beast",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Alms Beast",
+      "oracle_fingerprint": "11694276cb601b51a40f2dd591d43e47",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                { "AnyOf": [{ "BlockedBy": "This" }, { "Blocks": "This" }] }
+              ]
+            },
+            "mods": [{ "AddKeyword": "Lifelink" }]
+          }
+        }
+      ]
+    }
+  ]
+}

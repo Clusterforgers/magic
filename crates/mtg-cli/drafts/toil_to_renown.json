@@ -1,0 +1,36 @@
+{
+  "oracle_id": "c8323e46-c068-45e2-b6ba-7972b4af728a",
+  "name": "Toil to Renown",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Toil to Renown",
+      "oracle_fingerprint": "cb996e885c5d2d49a6eda4d8942e1f5b",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "GainLife": {
+                  "amount": {
+                    "Count": [
+                      {
+                        "AnyOf": [
+                          { "Type": "Artifact" },
+                          { "Type": "Creature" },
+                          { "Type": "Land" }
+                        ]
+                      },
+                      { "ControlledBy": "You" },
+                      "Tapped"
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "oracle_id": "48ab8ba0-0e85-4656-a798-ceb961fb02ce",
+  "name": "Galvanic Giant // Storm Reading",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Galvanic Giant",
+      "oracle_fingerprint": "fb1cda2dda24d1fb83364eb220fe3168",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [{ "Compare": { "stat": "ManaValue", "op": "Ge", "to": 5 } }],
+                "by": "You"
+              }
+            },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              { "Tap": { "what": { "Target": 0 } } },
+              { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "stun" } } }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Storm Reading",
+      "oracle_fingerprint": "bd26d8ec3b14992b2529a3d999a9859b",
+      "abilities": [
+        { "Spell": { "effects": [{ "Draw": { "count": 4 } }, { "Discard": { "count": 2 } }] } }
+      ]
+    }
+  ]
+}

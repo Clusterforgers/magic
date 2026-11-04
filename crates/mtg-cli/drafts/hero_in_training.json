@@ -1,0 +1,35 @@
+{
+  "oracle_id": "87f1a840-021c-4699-a2c4-f2926daf98eb",
+  "name": "Hero in Training",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hero in Training",
+      "oracle_fingerprint": "5a74ebd15c0eadd128de2dfc007f63f1",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "Draw": {} },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Count": [{ "Subtype": "Hero" }, { "ControlledBy": "You" }, "Other"]
+                      },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "GainLife": { "amount": 2 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

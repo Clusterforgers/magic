@@ -1,0 +1,32 @@
+{
+  "oracle_id": "48e2f2c3-9d99-4535-915f-551fbb59ade5",
+  "name": "Radiant Essence",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Radiant Essence",
+      "oracle_fingerprint": "0ac019d42bf3e44d90168d58e1936282",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 2 } }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "Type": "Creature" },
+                    { "ControlledBy": "Opponents" },
+                    { "Color": "Black" }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

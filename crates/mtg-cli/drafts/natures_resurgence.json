@@ -1,0 +1,39 @@
+{
+  "oracle_id": "276f49ee-7cf3-4a4d-9b14-74aedcbef69f",
+  "name": "Nature's Resurgence",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nature's Resurgence",
+      "oracle_fingerprint": "19fa228aa40ec7021453be2cbccda675",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "each",
+                  "effects": [
+                    {
+                      "Draw": {
+                        "who": { "Bound": "each" },
+                        "count": {
+                          "Count": [
+                            { "Type": "Creature" },
+                            { "OwnedBy": { "Bound": "each" } },
+                            { "In": "Graveyard" }
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

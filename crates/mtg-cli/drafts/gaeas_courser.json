@@ -1,0 +1,28 @@
+{
+  "oracle_id": "5d13aa6a-5a04-45e0-bb33-daa707ffaf9f",
+  "name": "Gaea's Courser",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gaea's Courser",
+      "oracle_fingerprint": "86138fe69f4bf5a00272d51ddb1f6a50",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Count": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                },
+                "op": "Ge",
+                "right": 3
+              }
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

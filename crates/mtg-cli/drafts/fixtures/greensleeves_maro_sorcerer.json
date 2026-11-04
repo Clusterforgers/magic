@@ -1,0 +1,159 @@
+{
+  "object": "card",
+  "id": "0969d7f3-cec5-4118-adb1-ff957eedf6ab",
+  "oracle_id": "2ac2d483-2d2a-4912-8db4-04a5a2080831",
+  "multiverse_ids": [
+    580493
+  ],
+  "mtgo_id": 103036,
+  "arena_id": 100737,
+  "tcgplayer_id": 283692,
+  "cardmarket_id": 672633,
+  "name": "Greensleeves, Maro-Sorcerer",
+  "lang": "en",
+  "released_at": "2022-09-09",
+  "uri": "https://api.scryfall.com/cards/0969d7f3-cec5-4118-adb1-ff957eedf6ab",
+  "scryfall_uri": "https://scryfall.com/card/dmc/27/greensleeves-maro-sorcerer?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T05:44:27Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/0/9/0969d7f3-cec5-4118-adb1-ff957eedf6ab.jpg?1783921467",
+    "normal": "https://cards.scryfall.io/normal/front/0/9/0969d7f3-cec5-4118-adb1-ff957eedf6ab.jpg?1783921467",
+    "large": "https://cards.scryfall.io/large/front/0/9/0969d7f3-cec5-4118-adb1-ff957eedf6ab.jpg?1783921467",
+    "png": "https://cards.scryfall.io/png/front/0/9/0969d7f3-cec5-4118-adb1-ff957eedf6ab.png?1783921467",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/0/9/0969d7f3-cec5-4118-adb1-ff957eedf6ab.jpg?1783921467",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/0/9/0969d7f3-cec5-4118-adb1-ff957eedf6ab.jpg?1783921467",
+    "thumb": "https://cards.scryfall.io/thumb/front/0/9/0969d7f3-cec5-4118-adb1-ff957eedf6ab.webp?1783921467",
+    "grid": "https://cards.scryfall.io/grid/front/0/9/0969d7f3-cec5-4118-adb1-ff957eedf6ab.webp?1783921467",
+    "display": "https://cards.scryfall.io/display/front/0/9/0969d7f3-cec5-4118-adb1-ff957eedf6ab.webp?1783921467",
+    "art": "https://cards.scryfall.io/art/front/0/9/0969d7f3-cec5-4118-adb1-ff957eedf6ab.webp?1783921467",
+    "crop": "https://cards.scryfall.io/crop/front/0/9/0969d7f3-cec5-4118-adb1-ff957eedf6ab.webp?1783921467",
+    "jpeg": "https://cards.scryfall.io/normal/front/0/9/0969d7f3-cec5-4118-adb1-ff957eedf6ab.jpg?1783921467"
+  },
+  "mana_cost": "{3}{G}{G}",
+  "cmc": 5.0,
+  "type_line": "Legendary Creature — Elemental Sorcerer",
+  "oracle_text": "Protection from planeswalkers and from Wizards\nGreensleeves's power and toughness are each equal to the number of lands you control.\nLandfall — Whenever a land you control enters, create a 3/3 green Badger creature token.",
+  "power": "*",
+  "toughness": "*",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Protection",
+    "Landfall"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "162d5e1b-f725-44b1-be82-8e161a370d7c",
+      "component": "combo_piece",
+      "name": "Greensleeves, Maro-Sorcerer",
+      "type_line": "Legendary Creature — Elemental Sorcerer",
+      "uri": "https://api.scryfall.com/cards/162d5e1b-f725-44b1-be82-8e161a370d7c"
+    },
+    {
+      "object": "related_card",
+      "id": "4e42cb2e-578f-4fec-a9a4-33b95b78229c",
+      "component": "token",
+      "name": "Badger",
+      "type_line": "Token Creature — Badger",
+      "uri": "https://api.scryfall.com/cards/4e42cb2e-578f-4fec-a9a4-33b95b78229c"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo",
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "78076b27-f888-4723-b27c-44074accd261",
+  "set": "dmc",
+  "set_name": "Dominaria United Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/78076b27-f888-4723-b27c-44074accd261",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Admc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/dmc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/0969d7f3-cec5-4118-adb1-ff957eedf6ab/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A2ac2d483-2d2a-4912-8db4-04a5a2080831&unique=prints",
+  "collector_number": "27",
+  "digital": false,
+  "rarity": "mythic",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Tuan Duong Chu",
+  "artist_ids": [
+    "d84246f9-a536-485f-a21d-a237302ed100"
+  ],
+  "illustration_id": "d794bce9-b4f0-4d43-b681-f0373ebd8da0",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 2807,
+  "prices": {
+    "usd": "14.80",
+    "usd_foil": "16.88",
+    "usd_etched": null,
+    "eur": "15.18",
+    "eur_foil": "18.41",
+    "tix": "8.28"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=580493&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DGreensleeves%252C%2BMaro-Sorcerer",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DGreensleeves%252C%2BMaro-Sorcerer",
+    "edhrec": "https://edhrec.com/route/?cc=Greensleeves%2C+Maro-Sorcerer"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F283692%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=672633&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/103036?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

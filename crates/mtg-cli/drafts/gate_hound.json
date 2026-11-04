@@ -1,0 +1,26 @@
+{
+  "oracle_id": "762e01d8-c16a-44b8-8ba0-052d1a2f312f",
+  "name": "Gate Hound",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gate Hound",
+      "oracle_fingerprint": "25f0a90604b85fd391fc878f1d659bca",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": "Vigilance" }],
+            "condition": {
+              "Compare": {
+                "left": { "Count": ["This", { "HasAttached": [{ "Subtype": "Aura" }] }] },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

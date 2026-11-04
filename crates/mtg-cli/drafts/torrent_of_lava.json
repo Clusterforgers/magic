@@ -1,0 +1,25 @@
+{
+  "oracle_id": "f467ec85-ffe2-4963-82e0-509a7873fd63",
+  "name": "Torrent of Lava",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Torrent of Lava",
+      "oracle_fingerprint": "e59a65823fad8cf0493b2e514dacc7c0",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Each": [{ "Type": "Creature" }, { "Not": { "HasKeyword": "Flying" } }] },
+                  "amount": "X"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

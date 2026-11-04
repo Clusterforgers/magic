@@ -1,0 +1,27 @@
+{
+  "oracle_id": "33d6f4f0-e1ad-4363-a012-46a1bd9daeb7",
+  "name": "Sleep Magic",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sleep Magic",
+      "oracle_fingerprint": "341df37a62c06bf44948c88da27b3177",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Tap": { "what": "Attached" } }]
+          }
+        },
+        { "Static": { "affected": "Attached", "mods": ["DoesntUntap"] } },
+        {
+          "Triggered": {
+            "when": { "Batch": { "DealsDamage": { "source": [], "to": "Attached" } } },
+            "effects": [{ "Sacrifice": { "filter": ["This"] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

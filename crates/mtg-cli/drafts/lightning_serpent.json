@@ -1,0 +1,27 @@
+{
+  "oracle_id": "d07b4bb6-0c8d-44ea-a5b3-eeb6e36f3631",
+  "name": "Lightning Serpent",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lightning Serpent",
+      "oracle_fingerprint": "cbaa56b5b075a409ee143a82daa83f14",
+      "abilities": [
+        { "Keyword": "Trample" },
+        { "Keyword": "Haste" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": { "Other": "p1p0" }, "count": "X" } }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "effects": [{ "Sacrifice": { "filter": ["This"] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

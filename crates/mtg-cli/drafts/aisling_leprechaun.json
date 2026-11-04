@@ -1,0 +1,41 @@
+{
+  "oracle_id": "5456f00c-0bef-4c14-902f-f5c14475f284",
+  "name": "Aisling Leprechaun",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Aisling Leprechaun",
+      "oracle_fingerprint": "7471a3eead4aee56bc5999276f4aa58c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "BecomesBlocked": { "what": [{ "Type": "Creature" }], "by": ["This"] } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Triggering",
+                  "mods": [{ "SetColors": ["Green"] }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "BecomesBlocked": { "what": ["This"], "by": [{ "Type": "Creature" }] } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "SetColors": ["Green"] }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

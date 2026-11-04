@@ -1,0 +1,29 @@
+{
+  "oracle_id": "c48ce123-bb07-4221-b3b3-0a458e101ca1",
+  "name": "Djeru's Resolve",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Djeru's Resolve",
+      "oracle_fingerprint": "4fbc989ed40d554056b9436c16e303e8",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Untap": { "what": { "Target": 0 } } },
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": { "Target": 0 } } },
+                  "by": "Prevent",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Cycling": "{2}" } }
+      ]
+    }
+  ]
+}

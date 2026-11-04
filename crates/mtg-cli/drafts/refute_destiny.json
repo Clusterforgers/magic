@@ -1,0 +1,62 @@
+{
+  "oracle_id": "2a18b3f0-8a78-46d8-b60f-3cd634062f1b",
+  "name": "Refute Destiny",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Refute Destiny",
+      "oracle_fingerprint": "dd963f23bcf03c1ba2d02659f08f79f4",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    {
+                      "AnyOf": [
+                        {
+                          "Not": {
+                            "AnyOf": [
+                              { "Not": { "Type": "Creature" } },
+                              { "Not": { "Color": "Green" } }
+                            ]
+                          }
+                        },
+                        {
+                          "Not": {
+                            "AnyOf": [
+                              { "Not": { "Type": "Creature" } },
+                              { "Not": { "Color": "Blue" } }
+                            ]
+                          }
+                        },
+                        {
+                          "Not": {
+                            "AnyOf": [
+                              { "Not": { "Type": "Planeswalker" } },
+                              { "Not": { "Color": "Green" } }
+                            ]
+                          }
+                        },
+                        {
+                          "Not": {
+                            "AnyOf": [
+                              { "Not": { "Type": "Planeswalker" } },
+                              { "Not": { "Color": "Blue" } }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Exile": { "what": { "Target": 0 } } }, { "Surveil": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

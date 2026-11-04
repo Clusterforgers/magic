@@ -1,0 +1,37 @@
+{
+  "oracle_id": "cb4414a6-27d0-4922-938b-391283535f24",
+  "name": "Thran Forge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thran Forge",
+      "oracle_fingerprint": "d355f5d9ffe1029de4986afc3b8047f8",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{2}",
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "Not": { "Type": "Artifact" } }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddType": "Artifact" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

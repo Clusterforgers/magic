@@ -1,0 +1,36 @@
+{
+  "oracle_id": "b4fbf91c-8eed-49d5-91fa-9ae1c03966b7",
+  "name": "Stern Judge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stern Judge",
+      "oracle_fingerprint": "bcded23c1532b1c3fc7c00b5d9722188",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "each",
+                  "effects": [
+                    {
+                      "LoseLife": {
+                        "who": { "Bound": "each" },
+                        "amount": {
+                          "Count": [{ "Subtype": "Swamp" }, { "ControlledBy": { "Bound": "each" } }]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

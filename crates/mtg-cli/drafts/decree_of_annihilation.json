@@ -1,0 +1,43 @@
+{
+  "oracle_id": "6679b462-3c90-418c-8727-acd1a61d988b",
+  "name": "Decree of Annihilation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Decree of Annihilation",
+      "oracle_fingerprint": "b45f40b7862cef98a8ccab4dda4259cb",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Exile": {
+                  "what": {
+                    "Each": [
+                      {
+                        "AnyOf": [
+                          { "Type": "Artifact" },
+                          { "Type": "Land" },
+                          { "Type": "Creature" }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              },
+              { "Exile": { "what": { "Each": [{ "In": "Hand" }] } } },
+              { "Exile": { "what": { "Each": [{ "In": "Graveyard" }] } } }
+            ]
+          }
+        },
+        { "Keyword": { "Cycling": "{5}{R}{R}" } },
+        {
+          "Triggered": {
+            "when": { "Cycled": { "what": ["This"] } },
+            "effects": [{ "Destroy": { "what": { "Each": [{ "Type": "Land" }] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

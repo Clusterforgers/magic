@@ -1,0 +1,20 @@
+{
+  "oracle_id": "781c9391-0322-40ad-8050-07151e2e6fc7",
+  "name": "Tui and La, Moon and Ocean",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tui and La, Moon and Ocean",
+      "oracle_fingerprint": "2a5fdf0f14e1bef7c60969d51569186e",
+      "abilities": [
+        { "Triggered": { "when": { "Tapped": { "what": ["This"] } }, "effects": [{ "Draw": {} }] } },
+        {
+          "Triggered": {
+            "when": { "Untapped": { "what": ["This"] } },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

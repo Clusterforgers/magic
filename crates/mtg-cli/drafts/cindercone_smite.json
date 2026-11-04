@@ -1,0 +1,39 @@
+{
+  "oracle_id": "ea2662ce-36dd-44f4-8772-46daaae56b7a",
+  "name": "Cindercone Smite",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cindercone Smite",
+      "oracle_fingerprint": "fbaae9c0ba2128cf346c55590f92d712",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 2 } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "When": {
+                          "condition": { "StartingPlayer": "You" },
+                          "then": 0,
+                          "otherwise": 1
+                        }
+                      },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "CreateToken": { "token": { "Named": "treasure" } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "oracle_id": "4fd493b3-63f9-4633-8f88-8755e489da32",
+  "name": "Conjurer's Bauble",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Conjurer's Bauble",
+      "oracle_fingerprint": "6984f4315dae6d33f7f610ad82e2da87",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap", "SacrificeSelf"],
+            "targets": [
+              {
+                "what": { "Object": [{ "OwnedBy": "You" }, { "In": "Graveyard" }] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Library": { "place": "Bottom" } } } },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

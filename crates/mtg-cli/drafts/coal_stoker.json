@@ -1,0 +1,28 @@
+{
+  "oracle_id": "7f3f7fb0-da18-467b-bf57-2ded458fda4d",
+  "name": "Coal Stoker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Coal Stoker",
+      "oracle_fingerprint": "7d1cce1575256926cb3dbe49ca8bd0be",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "WasCast": { "by": "You", "from": "Hand" } },
+                  { "OwnedBy": "You" },
+                  "This"
+                ],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Red", "Red", "Red"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

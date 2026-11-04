@@ -1,0 +1,12 @@
+{
+  "oracle_id": "5cfd73ab-8509-4e4b-9704-68d8dad3b301",
+  "name": "Discontinuity",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Discontinuity",
+      "oracle_fingerprint": "bd6ac1066607e62cc63139d5c89aca72",
+      "abilities": [{ "Spell": { "effects": ["EndTurn"] } }]
+    }
+  ]
+}

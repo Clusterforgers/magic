@@ -1,0 +1,29 @@
+{
+  "oracle_id": "1de561c7-4ff4-4eb9-8cbe-a29f568e786a",
+  "name": "Bazaar Krovod",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bazaar Krovod",
+      "oracle_fingerprint": "147cab185b0dd64b2e016c0eacf3e860",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Attacking", "Other"] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 0, "toughness": 2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Untap": { "what": { "Target": 0 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

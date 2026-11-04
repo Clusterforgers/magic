@@ -1,0 +1,31 @@
+{
+  "oracle_id": "2f872417-3dbe-40ec-ac91-e3132c0b7514",
+  "name": "Dark Bargain",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dark Bargain",
+      "oracle_fingerprint": "32950042007f2e5b35899b8f52053bdf",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "LookAtTop": { "count": 3, "as": "top" } },
+              {
+                "Choose": {
+                  "from": { "Bound": "top" },
+                  "count": { "min": 2, "max": 2 },
+                  "as": "kept2",
+                  "rest_as": "rest3"
+                }
+              },
+              { "Move": { "what": { "Bound": "kept2" }, "to": "Hand" } },
+              { "Move": { "what": { "Bound": "rest3" }, "to": "Graveyard" } },
+              { "DealDamage": { "to": "You", "amount": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -11,23 +11,21 @@
           "Spell": {
             "effects": [
               {
-                "If": {
-                  "condition": {
-                    "Compare": {
-                      "left": { "Count": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
-                      "op": "Ge",
-                      "right": 7
+                "AddMana": {
+                  "mana": { "Fixed": ["Black"] },
+                  "times": {
+                    "When": {
+                      "condition": {
+                        "Compare": {
+                          "left": { "Count": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                          "op": "Ge",
+                          "right": 7
+                        }
+                      },
+                      "then": 5,
+                      "otherwise": 3
                     }
-                  },
-                  "then": [
-                    {
-                      "AddMana": {
-                        "mana": { "Fixed": ["Black", "Black", "Black", "Black", "Black"] }
-                      }
-                    },
-                    { "Rule": { "rule": "GraveyardCardsUntargetable", "duration": "Forever" } }
-                  ],
-                  "otherwise": [{ "AddMana": { "mana": { "Fixed": ["Black", "Black", "Black"] } } }]
+                  }
                 }
               }
             ]

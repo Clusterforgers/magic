@@ -1,0 +1,55 @@
+{
+  "oracle_id": "d7158101-f6ac-4d61-9570-a3adc3c8b583",
+  "name": "Supply // Demand",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Supply",
+      "oracle_fingerprint": "a42d530e32530b7b5fdaa3da2df1622f",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Saproling",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Saproling"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": "X"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Demand",
+      "oracle_fingerprint": "cafdc74c1391e4e0134f444ee011ff5c",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Search": {
+                  "filter": [{ "Compare": { "stat": "Colors", "op": "Ge", "to": 2 } }],
+                  "reveal": true,
+                  "as": "found"
+                }
+              },
+              { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

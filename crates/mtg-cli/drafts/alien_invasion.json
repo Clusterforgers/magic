@@ -1,0 +1,47 @@
+{
+  "oracle_id": "7c854a07-e031-458e-a335-9c31865020b8",
+  "name": "Alien Invasion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Alien Invasion",
+      "oracle_fingerprint": "10129d850cfae2145dd1a2842acd6b53",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Alien",
+                      "colors": ["Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Alien"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [
+                        { "Keyword": "Haste" },
+                        { "Rule": { "rule": { "MustAttack": "This" } } }
+                      ]
+                    }
+                  },
+                  "as": "token"
+                }
+              },
+              {
+                "PutCounters": {
+                  "on": { "Bound": "token" },
+                  "counter": "+1/+1",
+                  "count": { "Counters": { "on": "This", "counter": { "Other": "invasion" } } }
+                }
+              },
+              { "PutCounters": { "on": "This", "counter": { "Other": "invasion" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

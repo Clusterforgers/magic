@@ -1,0 +1,25 @@
+{
+  "oracle_id": "b7749034-08ae-420f-9259-f6927ef00226",
+  "name": "Shove Aside",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shove Aside",
+      "oracle_fingerprint": "50596e15c1383671b2b39e3a60833b4b",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }]
+                }
+              }
+            ],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 3 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

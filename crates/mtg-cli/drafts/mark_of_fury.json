@@ -1,0 +1,21 @@
+{
+  "oracle_id": "1c350891-8810-4c14-b8ea-84486864637b",
+  "name": "Mark of Fury",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mark of Fury",
+      "oracle_fingerprint": "9b6448f080f59bea941b61ceaa4afc14",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        { "Static": { "affected": "Attached", "mods": [{ "AddKeyword": "Haste" }] } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [{ "Move": { "what": "This", "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

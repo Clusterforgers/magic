@@ -1,0 +1,35 @@
+{
+  "oracle_id": "062ffa63-1985-4409-b3ad-d42407ee755a",
+  "name": "Kingpin, Wilson Fisk",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kingpin, Wilson Fisk",
+      "oracle_fingerprint": "03ede64f1692c2e58f646fca6b44ba27",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": {
+              "Sacrificed": {
+                "what": [
+                  {
+                    "AnyOf": [
+                      "This",
+                      {
+                        "Not": { "AnyOf": [{ "Not": { "Type": "Creature" } }, { "Not": "Other" }] }
+                      }
+                    ]
+                  }
+                ],
+                "by": "You"
+              }
+            },
+            "limit": "OncePerTurn",
+            "effects": [{ "CreateToken": { "token": { "Named": "treasure" }, "count": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "oracle_id": "592689f2-f17c-40d6-b880-431f4b6a6b0c",
+  "name": "Bristlebane Battler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bristlebane Battler",
+      "oracle_fingerprint": "13eefe749aa4b80ba9129b9f81192411",
+      "abilities": [
+        { "Keyword": "Trample" },
+        { "Keyword": { "Ward": "{2}" } },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "-1/-1", "count": 5 } }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "if": {
+              "Compare": {
+                "left": { "Count": ["This", { "HasCounter": "-1/-1" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "RemoveCounters": { "from": "This", "counter": "-1/-1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

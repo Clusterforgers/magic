@@ -1,0 +1,27 @@
+{
+  "oracle_id": "7972d118-c105-4b33-8c3b-ec85da538471",
+  "name": "Jolrael, Empress of Beasts",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jolrael, Empress of Beasts",
+      "oracle_fingerprint": "08b51f3a2d4cc32a9c8fd7ac8fb06f62",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{G}" }, "Tap", { "Discard": { "count": 2 } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Land" }] },
+                  "mods": [{ "SetPT": { "power": 3, "toughness": 3 } }, { "AddType": "Creature" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
