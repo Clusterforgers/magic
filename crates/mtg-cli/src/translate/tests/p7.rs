@@ -461,6 +461,30 @@ fn a_colour_word_that_is_not_known_stays_a_named_gap(#[case] line: &str, #[case]
     assert_eq!(static_gaps(line), [name]);
 }
 
+/// The text of the duration of the first effect of a creature whose only ability is the pump line `pump`.
+fn pump_duration(pump: &str) -> String {
+    let text = format!(
+        "Name:T\nTypes:Artifact\nA:AB$ Pump | Cost$ T | ValidTgts$ Creature | KW$ Indestructible | {pump}\n"
+    );
+    abilities(&text)
+        .first()
+        .and_then(|ability| ability.pointer("/Activated/effects/0/Continuous/duration"))
+        .map_or_else(|| gaps(&text).join(","), ToString::to_string)
+}
+
+#[rstest]
+#[case::as_long_as_control("Duration$ AsLongAsControl", "\"WhileYouControlSource\"")]
+#[case::as_long_as_in_play("Duration$ AsLongAsInPlay", "\"WhileSourceOnBattlefield\"")]
+#[case::end_of_turn("Duration$ EndOfTurn", "\"UntilEndOfTurn\"")]
+#[case::both_ends(
+    "Duration$ UntilHostLeavesPlayOrEOT",
+    "duration:UntilHostLeavesPlayOrEOT"
+)]
+#[case::next_upkeep("Duration$ UntilYourNextUpkeep", "duration:UntilYourNextUpkeep")]
+fn a_duration_word_reads_as_the_end_it_prints(#[case] word: &str, #[case] expected: &str) {
+    assert_eq!(pump_duration(word), expected);
+}
+
 #[test]
 fn an_attack_target_that_is_not_known_stays_a_named_gap() {
     assert_eq!(

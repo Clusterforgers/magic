@@ -39,12 +39,13 @@ pub fn effects(ctx: &mut Ctx, p: &Params, api: &str) -> Tr<Vec<Value>> {
 /// How long an effect lasts: its `Duration$` word, until end of turn when it has none.
 pub fn duration(word: Option<&str>) -> Tr<&'static str> {
     match word {
-        None | Some("EOT") => Ok("UntilEndOfTurn"),
+        None | Some("EOT" | "EndOfTurn") => Ok("UntilEndOfTurn"),
         Some("Permanent") => Ok("Forever"),
         Some("UntilEndOfCombat") => Ok("UntilEndOfCombat"),
         Some("UntilYourNextTurn") => Ok("UntilYourNextTurn"),
         Some("UntilTheEndOfYourNextTurn") => Ok("UntilEndOfYourNextTurn"),
-        Some("UntilHostLeavesPlay") => Ok("WhileSourceOnBattlefield"),
+        Some("UntilHostLeavesPlay" | "AsLongAsInPlay") => Ok("WhileSourceOnBattlefield"),
+        Some("AsLongAsControl") => Ok("WhileYouControlSource"),
         Some(other) => unmapped(format!("duration:{other}")),
     }
 }
