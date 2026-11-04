@@ -1,0 +1,65 @@
+{
+  "oracle_id": "53570a4e-a750-4776-bc52-0025cd510a35",
+  "name": "Insatiable Appetite",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Insatiable Appetite",
+      "oracle_fingerprint": "3ece83953bfbdf794dd79bdfec29f2e3",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "Sacrifice": { "filter": [{ "Subtype": "Food" }], "as": "sacrificed" } }
+                  ]
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": {
+                          "When": {
+                            "condition": {
+                              "Compare": {
+                                "left": { "Bound": "sacrificed~moved" },
+                                "op": "Ge",
+                                "right": 1
+                              }
+                            },
+                            "then": 5,
+                            "otherwise": 3
+                          }
+                        },
+                        "toughness": {
+                          "When": {
+                            "condition": {
+                              "Compare": {
+                                "left": { "Bound": "sacrificed~moved" },
+                                "op": "Ge",
+                                "right": 1
+                              }
+                            },
+                            "then": 5,
+                            "otherwise": 3
+                          }
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

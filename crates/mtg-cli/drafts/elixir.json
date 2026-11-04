@@ -25,25 +25,7 @@
                   "as": "moved"
                 }
               },
-              {
-                "GainLife": {
-                  "amount": {
-                    "Count": [
-                      { "Is": { "Bound": "moved" } },
-                      {
-                        "AnyOf": [
-                          { "In": "Battlefield" },
-                          { "In": "Hand" },
-                          { "In": "Library" },
-                          { "In": "Graveyard" },
-                          { "In": "Exile" },
-                          { "In": "Stack" }
-                        ]
-                      }
-                    ]
-                  }
-                }
-              }
+              { "GainLife": { "amount": { "Bound": "moved~moved" } } }
             ]
           }
         }

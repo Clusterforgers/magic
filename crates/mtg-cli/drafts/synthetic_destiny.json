@@ -23,45 +23,13 @@
                     {
                       "If": {
                         "condition": {
-                          "Compare": {
-                            "left": {
-                              "Count": [
-                                { "Is": { "Bound": "exiled" } },
-                                {
-                                  "AnyOf": [
-                                    { "In": "Battlefield" },
-                                    { "In": "Hand" },
-                                    { "In": "Library" },
-                                    { "In": "Graveyard" },
-                                    { "In": "Exile" },
-                                    { "In": "Stack" }
-                                  ]
-                                }
-                              ]
-                            },
-                            "op": "Gt",
-                            "right": 0
-                          }
+                          "Compare": { "left": { "Bound": "exiled~moved" }, "op": "Gt", "right": 0 }
                         },
                         "then": [
                           {
                             "RevealUntil": {
                               "filter": [{ "Type": "Creature" }, { "OwnedBy": "You" }],
-                              "count": {
-                                "Count": [
-                                  { "Is": { "Bound": "exiled" } },
-                                  {
-                                    "AnyOf": [
-                                      { "In": "Battlefield" },
-                                      { "In": "Hand" },
-                                      { "In": "Library" },
-                                      { "In": "Graveyard" },
-                                      { "In": "Exile" },
-                                      { "In": "Stack" }
-                                    ]
-                                  }
-                                ]
-                              },
+                              "count": { "Bound": "exiled~moved" },
                               "as": "found2",
                               "revealed_as": "revealed3"
                             }
@@ -79,25 +47,7 @@
                     {
                       "If": {
                         "condition": {
-                          "Compare": {
-                            "left": {
-                              "Count": [
-                                { "Is": { "Bound": "exiled" } },
-                                {
-                                  "AnyOf": [
-                                    { "In": "Battlefield" },
-                                    { "In": "Hand" },
-                                    { "In": "Library" },
-                                    { "In": "Graveyard" },
-                                    { "In": "Exile" },
-                                    { "In": "Stack" }
-                                  ]
-                                }
-                              ]
-                            },
-                            "op": "Gt",
-                            "right": 0
-                          }
+                          "Compare": { "left": { "Bound": "exiled~moved" }, "op": "Gt", "right": 0 }
                         },
                         "then": [{ "Shuffle": {} }]
                       }

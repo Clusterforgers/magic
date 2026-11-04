@@ -24,25 +24,7 @@
               {
                 "If": {
                   "condition": {
-                    "Compare": {
-                      "left": {
-                        "Count": [
-                          { "Is": { "Bound": "exiled2" } },
-                          {
-                            "AnyOf": [
-                              { "In": "Battlefield" },
-                              { "In": "Hand" },
-                              { "In": "Library" },
-                              { "In": "Graveyard" },
-                              { "In": "Exile" },
-                              { "In": "Stack" }
-                            ]
-                          }
-                        ]
-                      },
-                      "op": "Ge",
-                      "right": 1
-                    }
+                    "Compare": { "left": { "Bound": "exiled2~moved" }, "op": "Ge", "right": 1 }
                   },
                   "then": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
                 }
@@ -50,25 +32,7 @@
               {
                 "If": {
                   "condition": {
-                    "Compare": {
-                      "left": {
-                        "Count": [
-                          { "Is": { "Bound": "exiled2" } },
-                          {
-                            "AnyOf": [
-                              { "In": "Battlefield" },
-                              { "In": "Hand" },
-                              { "In": "Library" },
-                              { "In": "Graveyard" },
-                              { "In": "Exile" },
-                              { "In": "Stack" }
-                            ]
-                          }
-                        ]
-                      },
-                      "op": "Le",
-                      "right": 0
-                    }
+                    "Compare": { "left": { "Bound": "exiled2~moved" }, "op": "Le", "right": 0 }
                   },
                   "then": [{ "Tap": { "what": "This" } }]
                 }

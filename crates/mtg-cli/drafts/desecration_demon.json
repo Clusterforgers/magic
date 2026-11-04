@@ -1,0 +1,50 @@
+{
+  "oracle_id": "ef75be00-1a88-47a1-a1ae-fe2c9881a798",
+  "name": "Desecration Demon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Desecration Demon",
+      "oracle_fingerprint": "fe7af852cf82fe351df24db2a9413864",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Sacrifice": {
+                        "who": "Opponents",
+                        "filter": [{ "Type": "Creature" }],
+                        "as": "sacrificed"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": { "left": { "Bound": "sacrificed~moved" }, "op": "Ge", "right": 1 }
+                  },
+                  "then": [{ "Tap": { "what": "This" } }]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": { "left": { "Bound": "sacrificed~moved" }, "op": "Ge", "right": 1 }
+                  },
+                  "then": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

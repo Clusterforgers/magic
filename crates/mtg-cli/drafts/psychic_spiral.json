@@ -18,26 +18,7 @@
                   "as": "moved"
                 }
               },
-              {
-                "Mill": {
-                  "who": { "Target": 0 },
-                  "count": {
-                    "Count": [
-                      { "Is": { "Bound": "moved" } },
-                      {
-                        "AnyOf": [
-                          { "In": "Battlefield" },
-                          { "In": "Hand" },
-                          { "In": "Library" },
-                          { "In": "Graveyard" },
-                          { "In": "Exile" },
-                          { "In": "Stack" }
-                        ]
-                      }
-                    ]
-                  }
-                }
-              }
+              { "Mill": { "who": { "Target": 0 }, "count": { "Bound": "moved~moved" } } }
             ]
           }
         }

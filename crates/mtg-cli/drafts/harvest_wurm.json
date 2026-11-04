@@ -29,25 +29,7 @@
               {
                 "If": {
                   "condition": {
-                    "Compare": {
-                      "left": {
-                        "Count": [
-                          { "Is": { "Bound": "moved2" } },
-                          {
-                            "AnyOf": [
-                              { "In": "Battlefield" },
-                              { "In": "Hand" },
-                              { "In": "Library" },
-                              { "In": "Graveyard" },
-                              { "In": "Exile" },
-                              { "In": "Stack" }
-                            ]
-                          }
-                        ]
-                      },
-                      "op": "Lt",
-                      "right": 1
-                    }
+                    "Compare": { "left": { "Bound": "moved2~moved" }, "op": "Lt", "right": 1 }
                   },
                   "then": [{ "Sacrifice": { "filter": ["This"] } }]
                 }

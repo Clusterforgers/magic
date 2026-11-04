@@ -22,26 +22,7 @@
                 }
               },
               { "Exile": { "what": { "Bound": "picked" }, "as": "exiled2" } },
-              {
-                "LookAtTop": {
-                  "count": {
-                    "Count": [
-                      { "Is": { "Bound": "exiled2" } },
-                      {
-                        "AnyOf": [
-                          { "In": "Battlefield" },
-                          { "In": "Hand" },
-                          { "In": "Library" },
-                          { "In": "Graveyard" },
-                          { "In": "Exile" },
-                          { "In": "Stack" }
-                        ]
-                      }
-                    ]
-                  },
-                  "as": "top3"
-                }
-              },
+              { "LookAtTop": { "count": { "Bound": "exiled2~moved" }, "as": "top3" } },
               {
                 "Move": {
                   "what": { "Each": [{ "In": "Library" }, { "Is": { "Bound": "top3" } }] },

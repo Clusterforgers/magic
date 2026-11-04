@@ -40,21 +40,7 @@
                             "toughness": 1
                           }
                         },
-                        "count": {
-                          "Count": [
-                            { "Is": { "Bound": "moved" } },
-                            {
-                              "AnyOf": [
-                                { "In": "Battlefield" },
-                                { "In": "Hand" },
-                                { "In": "Library" },
-                                { "In": "Graveyard" },
-                                { "In": "Exile" },
-                                { "In": "Stack" }
-                              ]
-                            }
-                          ]
-                        }
+                        "count": { "Bound": "moved~moved" }
                       }
                     }
                   ]

@@ -16,25 +16,7 @@
                   "as": "exiled"
                 }
               },
-              {
-                "Draw": {
-                  "count": {
-                    "Count": [
-                      { "Is": { "Bound": "exiled" } },
-                      {
-                        "AnyOf": [
-                          { "In": "Battlefield" },
-                          { "In": "Hand" },
-                          { "In": "Library" },
-                          { "In": "Graveyard" },
-                          { "In": "Exile" },
-                          { "In": "Stack" }
-                        ]
-                      }
-                    ]
-                  }
-                }
-              },
+              { "Draw": { "count": { "Bound": "exiled~moved" } } },
               {
                 "Rule": {
                   "rule": {

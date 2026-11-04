@@ -28,36 +28,8 @@
                   "mods": [
                     {
                       "ModifyPT": {
-                        "power": {
-                          "Count": [
-                            { "Is": { "Bound": "moved2" } },
-                            {
-                              "AnyOf": [
-                                { "In": "Battlefield" },
-                                { "In": "Hand" },
-                                { "In": "Library" },
-                                { "In": "Graveyard" },
-                                { "In": "Exile" },
-                                { "In": "Stack" }
-                              ]
-                            }
-                          ]
-                        },
-                        "toughness": {
-                          "Count": [
-                            { "Is": { "Bound": "moved2" } },
-                            {
-                              "AnyOf": [
-                                { "In": "Battlefield" },
-                                { "In": "Hand" },
-                                { "In": "Library" },
-                                { "In": "Graveyard" },
-                                { "In": "Exile" },
-                                { "In": "Stack" }
-                              ]
-                            }
-                          ]
-                        }
+                        "power": { "Bound": "moved2~moved" },
+                        "toughness": { "Bound": "moved2~moved" }
                       }
                     }
                   ],

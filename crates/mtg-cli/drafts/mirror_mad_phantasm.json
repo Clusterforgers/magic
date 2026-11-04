@@ -22,25 +22,7 @@
               {
                 "If": {
                   "condition": {
-                    "Compare": {
-                      "left": {
-                        "Count": [
-                          { "Is": { "Bound": "moved" } },
-                          {
-                            "AnyOf": [
-                              { "In": "Battlefield" },
-                              { "In": "Hand" },
-                              { "In": "Library" },
-                              { "In": "Graveyard" },
-                              { "In": "Exile" },
-                              { "In": "Stack" }
-                            ]
-                          }
-                        ]
-                      },
-                      "op": "Ge",
-                      "right": 1
-                    }
+                    "Compare": { "left": { "Bound": "moved~moved" }, "op": "Ge", "right": 1 }
                   },
                   "then": [
                     {

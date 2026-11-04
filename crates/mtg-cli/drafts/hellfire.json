@@ -19,26 +19,7 @@
               {
                 "DealDamage": {
                   "to": "You",
-                  "amount": {
-                    "Sum": [
-                      {
-                        "Count": [
-                          { "Is": { "Bound": "destroyed" } },
-                          {
-                            "AnyOf": [
-                              { "In": "Battlefield" },
-                              { "In": "Hand" },
-                              { "In": "Library" },
-                              { "In": "Graveyard" },
-                              { "In": "Exile" },
-                              { "In": "Stack" }
-                            ]
-                          }
-                        ]
-                      },
-                      3
-                    ]
-                  }
+                  "amount": { "Sum": [{ "Bound": "destroyed~moved" }, 3] }
                 }
               }
             ]

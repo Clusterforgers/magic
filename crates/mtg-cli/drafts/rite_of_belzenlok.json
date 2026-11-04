@@ -82,21 +82,7 @@
                                 "If": {
                                   "condition": {
                                     "Compare": {
-                                      "left": {
-                                        "Count": [
-                                          { "Is": { "Bound": "sacrificed" } },
-                                          {
-                                            "AnyOf": [
-                                              { "In": "Battlefield" },
-                                              { "In": "Hand" },
-                                              { "In": "Library" },
-                                              { "In": "Graveyard" },
-                                              { "In": "Exile" },
-                                              { "In": "Stack" }
-                                            ]
-                                          }
-                                        ]
-                                      },
+                                      "left": { "Bound": "sacrificed~moved" },
                                       "op": "Lt",
                                       "right": 1
                                     }

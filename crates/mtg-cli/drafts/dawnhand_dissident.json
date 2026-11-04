@@ -19,7 +19,7 @@
           "Rule": {
             "rule": {
               "MayCast": {
-                "what": [{ "Type": "Creature" }, { "ExiledWith": "This" }],
+                "what": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "ExiledWith": "This" }],
                 "from": "Exile",
                 "additional": [
                   { "RemoveCountersAmong": { "count": 3, "from": [{ "Type": "Creature" }] } }

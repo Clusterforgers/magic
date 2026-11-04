@@ -28,25 +28,7 @@
                   "as": "moved2"
                 }
               },
-              {
-                "Draw": {
-                  "count": {
-                    "Count": [
-                      { "Is": { "Bound": "moved2" } },
-                      {
-                        "AnyOf": [
-                          { "In": "Battlefield" },
-                          { "In": "Hand" },
-                          { "In": "Library" },
-                          { "In": "Graveyard" },
-                          { "In": "Exile" },
-                          { "In": "Stack" }
-                        ]
-                      }
-                    ]
-                  }
-                }
-              }
+              { "Draw": { "count": { "Bound": "moved2~moved" } } }
             ]
           }
         }

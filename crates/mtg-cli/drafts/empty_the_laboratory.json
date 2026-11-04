@@ -20,21 +20,7 @@
               {
                 "RevealUntil": {
                   "filter": [{ "Type": "Creature" }, { "Subtype": "Zombie" }],
-                  "count": {
-                    "Count": [
-                      { "Is": { "Bound": "sacrificed" } },
-                      {
-                        "AnyOf": [
-                          { "In": "Battlefield" },
-                          { "In": "Hand" },
-                          { "In": "Library" },
-                          { "In": "Graveyard" },
-                          { "In": "Exile" },
-                          { "In": "Stack" }
-                        ]
-                      }
-                    ]
-                  },
+                  "count": { "Bound": "sacrificed~moved" },
                   "as": "found2",
                   "revealed_as": "revealed3"
                 }

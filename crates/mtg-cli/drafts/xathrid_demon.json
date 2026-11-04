@@ -23,25 +23,7 @@
               {
                 "If": {
                   "condition": {
-                    "Compare": {
-                      "left": {
-                        "Count": [
-                          { "Is": { "Bound": "sacrificed" } },
-                          {
-                            "AnyOf": [
-                              { "In": "Battlefield" },
-                              { "In": "Hand" },
-                              { "In": "Library" },
-                              { "In": "Graveyard" },
-                              { "In": "Exile" },
-                              { "In": "Stack" }
-                            ]
-                          }
-                        ]
-                      },
-                      "op": "Lt",
-                      "right": 1
-                    }
+                    "Compare": { "left": { "Bound": "sacrificed~moved" }, "op": "Lt", "right": 1 }
                   },
                   "then": [{ "LoseLife": { "amount": 7 } }]
                 }
@@ -49,25 +31,7 @@
               {
                 "If": {
                   "condition": {
-                    "Compare": {
-                      "left": {
-                        "Count": [
-                          { "Is": { "Bound": "sacrificed" } },
-                          {
-                            "AnyOf": [
-                              { "In": "Battlefield" },
-                              { "In": "Hand" },
-                              { "In": "Library" },
-                              { "In": "Graveyard" },
-                              { "In": "Exile" },
-                              { "In": "Stack" }
-                            ]
-                          }
-                        ]
-                      },
-                      "op": "Lt",
-                      "right": 1
-                    }
+                    "Compare": { "left": { "Bound": "sacrificed~moved" }, "op": "Lt", "right": 1 }
                   },
                   "then": [{ "Tap": { "what": "This" } }]
                 }

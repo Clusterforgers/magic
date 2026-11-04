@@ -100,21 +100,7 @@
                 "Search": {
                   "filter": [
                     { "Type": "Artifact" },
-                    {
-                      "AnyOf": [
-                        {
-                          "Not": {
-                            "AnyOf": [
-                              { "Not": { "Compare": { "stat": "ManaValue", "op": "Eq", "to": 0 } } },
-                              { "Not": { "Not": { "Type": "Land" } } },
-                              { "Not": { "Not": { "HasKeywordNamed": "Suspend" } } }
-                            ]
-                          }
-                        },
-                        { "Compare": { "stat": "ManaValue", "op": "Eq", "to": 1 } }
-                      ]
-                    },
-                    { "Not": "XInCost" }
+                    { "AnyOf": [{ "GenericCost": 0 }, { "GenericCost": 1 }] }
                   ],
                   "as": "found"
                 }

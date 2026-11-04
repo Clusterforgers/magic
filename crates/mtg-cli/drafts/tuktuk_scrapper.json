@@ -40,21 +40,7 @@
                       "If": {
                         "condition": {
                           "Compare": {
-                            "left": {
-                              "Count": [
-                                { "Is": { "Bound": "destroyed" } },
-                                {
-                                  "AnyOf": [
-                                    { "In": "Battlefield" },
-                                    { "In": "Hand" },
-                                    { "In": "Library" },
-                                    { "In": "Graveyard" },
-                                    { "In": "Exile" },
-                                    { "In": "Stack" }
-                                  ]
-                                }
-                              ]
-                            },
+                            "left": { "Bound": "destroyed~moved" },
                             "op": "Ge",
                             "right": 1
                           }

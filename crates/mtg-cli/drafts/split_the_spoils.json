@@ -31,10 +31,10 @@
               }
             ],
             "effects": [
-              { "Exile": { "what": { "Target": 0 } } },
+              { "Exile": { "what": { "Target": 0 }, "as": "target0_exiled" } },
               {
                 "SeparatePiles": {
-                  "what": { "Target": 0 },
+                  "what": { "Bound": "target0_exiled" },
                   "chooser": "Opponents",
                   "as": "pile",
                   "rest_as": "rest2"

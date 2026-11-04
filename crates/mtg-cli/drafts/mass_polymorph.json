@@ -19,21 +19,7 @@
               {
                 "RevealUntil": {
                   "filter": [{ "Type": "Creature" }, { "OwnedBy": "You" }],
-                  "count": {
-                    "Count": [
-                      { "Is": { "Bound": "exiled" } },
-                      {
-                        "AnyOf": [
-                          { "In": "Battlefield" },
-                          { "In": "Hand" },
-                          { "In": "Library" },
-                          { "In": "Graveyard" },
-                          { "In": "Exile" },
-                          { "In": "Stack" }
-                        ]
-                      }
-                    ]
-                  },
+                  "count": { "Bound": "exiled~moved" },
                   "as": "found2",
                   "revealed_as": "revealed3"
                 }

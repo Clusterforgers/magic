@@ -25,26 +25,7 @@
               {
                 "DealDamage": {
                   "to": { "Target": 0 },
-                  "amount": {
-                    "Times": {
-                      "by": 2,
-                      "of": {
-                        "Count": [
-                          { "Is": { "Bound": "moved2" } },
-                          {
-                            "AnyOf": [
-                              { "In": "Battlefield" },
-                              { "In": "Hand" },
-                              { "In": "Library" },
-                              { "In": "Graveyard" },
-                              { "In": "Exile" },
-                              { "In": "Stack" }
-                            ]
-                          }
-                        ]
-                      }
-                    }
-                  }
+                  "amount": { "Times": { "by": 2, "of": { "Bound": "moved2~moved" } } }
                 }
               }
             ]
