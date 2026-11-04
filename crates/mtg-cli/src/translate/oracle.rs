@@ -53,10 +53,60 @@ pub fn normalise(text: &str, name: &str) -> String {
     }
     plain
         .lines()
-        .map(|line| line.split_whitespace().collect::<Vec<_>>().join(" "))
+        .map(spell_line)
         .filter(|line| !line.is_empty())
         .collect::<Vec<_>>()
         .join("\n")
+}
+
+/// One line with the spelling differences of its punctuation removed: Forge's `[+1]:` for Scryfall's `+1:`, no space
+/// after a colon or before a comma, `, and/or` for `and/or`, and a line of keywords in any order.
+fn spell_line(line: &str) -> String {
+    let mut line = line.trim().to_owned();
+    if let Some(rest) = line.strip_prefix('[')
+        && let Some((cost, rest)) = rest.split_once("]:")
+        && !cost.is_empty()
+        && cost
+            .chars()
+            .all(|c| c.is_ascii_alphanumeric() || c == '+' || c == '-')
+    {
+        line = format!("{cost}:{rest}");
+    }
+    let mut spaced = String::new();
+    let mut chars = line.chars().peekable();
+    while let Some(c) = chars.next() {
+        spaced.push(c);
+        if c == ':' && chars.peek().is_some_and(|next| !next.is_whitespace()) {
+            spaced.push(' ');
+        }
+    }
+    let words = spaced
+        .replace(", and/or ", " and/or ")
+        .split_whitespace()
+        .collect::<Vec<_>>()
+        .join(" ")
+        .replace(" ,", ",");
+    sorted_keywords(&words)
+}
+
+/// A keyword with its parameters: at most three words and none that makes a sentence.
+fn is_keyword(part: &str) -> bool {
+    const SENTENCE: [&str; 9] = [
+        "a", "an", "the", "target", "you", "your", "each", "card", "cards",
+    ];
+    part.split(' ').count() <= 3 && !part.split(' ').any(|w| SENTENCE.contains(&w))
+}
+
+/// A line of comma-separated keywords (no sentence, cost or quotation) in alphabetical order.
+fn sorted_keywords(line: &str) -> String {
+    let plain = !line.contains(['.', ':', '"', '\u{2022}']);
+    let parts: Vec<&str> = line.split(", ").collect();
+    if !plain || parts.len() < 2 || parts.iter().any(|p| !is_keyword(p)) {
+        return line.to_owned();
+    }
+    let mut parts = parts;
+    parts.sort_unstable();
+    parts.join(", ")
 }
 
 /// Whether the Forge text of a card (its faces' `Oracle:` lines) equals the printed text of the faces.
@@ -85,6 +135,36 @@ mod tests {
     #[case::oxford("A, B, or C", "A, B or C", true)]
     #[case::rebalanced("Draw two cards.", "Draw a card.", false)]
     fn compares_text(#[case] forge: &str, #[case] printed: &str, #[case] same: bool) {
+        assert_eq!(matches("Quartz Spark", [forge], [printed]), same);
+    }
+
+    #[rstest]
+    #[case::loyalty_brackets(
+        "[+1]: Draw a card.\n[-2]: Scry 2.\n[0]: Mill 1.",
+        "+1: Draw a card.\n\u{2212}2: Scry 2.\n0: Mill 1.",
+        true
+    )]
+    #[case::loyalty_rebalanced("[+1]: Draw two cards.", "+1: Draw a card.", false)]
+    #[case::loyalty_cost_changed("[-3]: Draw a card.", "\u{2212}2: Draw a card.", false)]
+    #[case::colon_without_space("{T}:Draw a card.", "{T}: Draw a card.", true)]
+    #[case::space_before_comma("You get {E} , then draw.", "You get {E}, then draw.", true)]
+    #[case::and_or(
+        "Search your hand, and/or library.",
+        "Search your hand and/or library.",
+        true
+    )]
+    #[case::keyword_order("Vigilance, reach, trample", "Reach, vigilance, trample", true)]
+    #[case::keyword_rebalanced("Vigilance, reach", "Reach, vigilance, trample", false)]
+    #[case::sentence_order_matters(
+        "Draw a card, then discard a card",
+        "Then discard a card, draw a card",
+        false
+    )]
+    fn punctuation_and_loyalty_spelling(
+        #[case] forge: &str,
+        #[case] printed: &str,
+        #[case] same: bool,
+    ) {
         assert_eq!(matches("Quartz Spark", [forge], [printed]), same);
     }
 
