@@ -1,0 +1,32 @@
+{
+  "oracle_id": "20194297-f2a4-4473-95bc-7c6835e5b6b3",
+  "name": "Lilysplash Mentor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lilysplash Mentor",
+      "oracle_fingerprint": "14c00116ff3635817f14e30a82864853",
+      "abilities": [
+        { "Keyword": "Reach" },
+        {
+          "Activated": {
+            "cost": "{1}{U}{G}",
+            "timing": "Sorcery",
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              {
+                "Move": {
+                  "what": { "Bound": "exiled" },
+                  "to": { "Battlefield": { "counters": [["+1/+1", 1]] } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

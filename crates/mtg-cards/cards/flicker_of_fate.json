@@ -1,0 +1,28 @@
+{
+  "oracle_id": "d5b9d250-92f5-40d8-b962-4ae4adb466c8",
+  "name": "Flicker of Fate",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Flicker of Fate",
+      "oracle_fingerprint": "ef100c874b5e4b09508164acca0a3c9f",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Enchantment" }] }]
+                }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              { "Move": { "what": { "Bound": "exiled" }, "to": { "Battlefield": {} } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

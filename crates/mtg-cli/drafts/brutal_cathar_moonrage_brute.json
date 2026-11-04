@@ -1,0 +1,39 @@
+{
+  "oracle_id": "1ed2d8e0-462b-468e-8fd3-1f3c6d99fb8a",
+  "name": "Brutal Cathar // Moonrage Brute",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Brutal Cathar",
+      "oracle_fingerprint": "99c7d767232331525c88bd2fcba60ed0",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "Did": { "action": "Transformed", "what": ["This"] } }
+              ]
+            },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "duration": "WhileSourceOnBattlefield" } }
+            ]
+          }
+        },
+        { "Keyword": "Daybound" }
+      ]
+    },
+    {
+      "name": "Moonrage Brute",
+      "oracle_fingerprint": "cf48c85da5d1efc5c4af81ce3e165426",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        { "Keyword": { "Ward": [{ "PayLife": 3 }] } },
+        { "Keyword": "Nightbound" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "oracle_id": "78c1d6fe-38e4-40c4-9252-87ff272247ad",
+  "name": "Noble Benefactor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Noble Benefactor",
+      "oracle_fingerprint": "83ed060d64b894c41ab4993e069bb214",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "player",
+                  "effects": [
+                    {
+                      "May": {
+                        "who": { "Bound": "player" },
+                        "effects": [
+                          {
+                            "Search": { "who": { "Bound": "player" }, "filter": [], "as": "found2" }
+                          },
+                          { "Move": { "what": { "Bound": "found2" }, "to": "Hand" } },
+                          { "Shuffle": { "who": { "Bound": "player" } } }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

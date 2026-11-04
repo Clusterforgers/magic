@@ -1,0 +1,42 @@
+{
+  "oracle_id": "70d6cd9c-6311-4d8e-b74a-8edc11d1c05e",
+  "name": "Into the Wilds",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Into the Wilds",
+      "oracle_fingerprint": "4626f68b1567a86362a0335842ba6c20",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              { "LookAtTop": { "as": "top" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "top" },
+                      "selector": [{ "Type": "Land" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "May": {
+                        "effects": [
+                          { "Move": { "what": { "Bound": "top" }, "to": { "Battlefield": {} } } }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

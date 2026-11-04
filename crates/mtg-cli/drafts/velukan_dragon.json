@@ -1,0 +1,49 @@
+{
+  "oracle_id": "667aef37-a47a-4593-a252-807c02416863",
+  "name": "Velukan Dragon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Velukan Dragon",
+      "oracle_fingerprint": "b7257f9ad593ec2d2075dd7b40ed2f92",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [{ "Attacks": { "what": ["This"] } }, { "Blocks": { "what": ["This"] } }]
+            },
+            "effects": [
+              {
+                "RollDice": {
+                  "sides": 6,
+                  "results": [
+                    {
+                      "from": 1,
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": "This",
+                            "mods": [
+                              {
+                                "ModifyPT": {
+                                  "power": { "Sum": [{ "DieResult": "Only" }, -1] },
+                                  "toughness": 0
+                                }
+                              }
+                            ],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

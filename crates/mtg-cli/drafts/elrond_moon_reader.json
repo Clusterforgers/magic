@@ -1,16 +1,23 @@
 {
   "oracle_id": "3f4d6f91-95ad-4687-8899-5a21a0abb49e",
   "name": "Elrond, Moon-Reader",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Elrond, Moon-Reader",
       "oracle_fingerprint": "612dd9724fda43e1ef10603002485e08",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 0, "end": 103 }
+          "Triggered": {
+            "when": {
+              "Did": {
+                "action": "Activated",
+                "who": "You",
+                "what": [{ "Type": "Creature" }, { "In": "Battlefield" }]
+              }
+            },
+            "limit": "OncePerTurn",
+            "effects": [{ "Draw": {} }]
           }
         },
         {

@@ -1,7 +1,7 @@
 {
   "oracle_id": "b015ec84-95b9-4010-afef-d9d0cacb98dd",
   "name": "Neerdiv, Devious Diver",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Neerdiv, Devious Diver",
@@ -22,9 +22,19 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 79, "end": 224 }
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                {
+                  "SpellCast": {
+                    "what": [{ "WasCast": { "from": "Graveyard" } }, { "OwnedBy": "You" }],
+                    "by": "You"
+                  }
+                },
+                { "Did": { "action": "Activated", "who": "You", "what": [{ "In": "Graveyard" }] } }
+              ]
+            },
+            "effects": [{ "Draw": {} }, { "PutCounters": { "on": "This", "counter": "+1/+1" } }]
           }
         }
       ]

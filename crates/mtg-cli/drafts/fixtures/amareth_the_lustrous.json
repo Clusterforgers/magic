@@ -1,0 +1,148 @@
+{
+  "object": "card",
+  "id": "2fbea010-de77-468e-be39-1717070c9303",
+  "oracle_id": "8cccc8d0-bdd8-4853-8330-6f6a57695d11",
+  "multiverse_ids": [
+    497786
+  ],
+  "mtgo_id": 85314,
+  "tcgplayer_id": 226477,
+  "cardmarket_id": 510410,
+  "name": "Amareth, the Lustrous",
+  "lang": "en",
+  "released_at": "2020-11-20",
+  "uri": "https://api.scryfall.com/cards/2fbea010-de77-468e-be39-1717070c9303",
+  "scryfall_uri": "https://scryfall.com/card/cmr/266/amareth-the-lustrous?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T07:46:19Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/2/f/2fbea010-de77-468e-be39-1717070c9303.jpg?1783928779",
+    "normal": "https://cards.scryfall.io/normal/front/2/f/2fbea010-de77-468e-be39-1717070c9303.jpg?1783928779",
+    "large": "https://cards.scryfall.io/large/front/2/f/2fbea010-de77-468e-be39-1717070c9303.jpg?1783928779",
+    "png": "https://cards.scryfall.io/png/front/2/f/2fbea010-de77-468e-be39-1717070c9303.png?1783928779",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/2/f/2fbea010-de77-468e-be39-1717070c9303.jpg?1783928779",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/2/f/2fbea010-de77-468e-be39-1717070c9303.jpg?1783928779",
+    "thumb": "https://cards.scryfall.io/thumb/front/2/f/2fbea010-de77-468e-be39-1717070c9303.webp?1783928779",
+    "grid": "https://cards.scryfall.io/grid/front/2/f/2fbea010-de77-468e-be39-1717070c9303.webp?1783928779",
+    "display": "https://cards.scryfall.io/display/front/2/f/2fbea010-de77-468e-be39-1717070c9303.webp?1783928779",
+    "art": "https://cards.scryfall.io/art/front/2/f/2fbea010-de77-468e-be39-1717070c9303.webp?1783928779",
+    "crop": "https://cards.scryfall.io/crop/front/2/f/2fbea010-de77-468e-be39-1717070c9303.webp?1783928779",
+    "jpeg": "https://cards.scryfall.io/normal/front/2/f/2fbea010-de77-468e-be39-1717070c9303.jpg?1783928779"
+  },
+  "mana_cost": "{3}{G}{W}{U}",
+  "cmc": 6.0,
+  "type_line": "Legendary Creature — Dragon",
+  "oracle_text": "Flying\nWhenever another permanent you control enters, look at the top card of your library. If it shares a card type with that permanent, you may reveal that card and put it into your hand.",
+  "power": "6",
+  "toughness": "6",
+  "colors": [
+    "G",
+    "U",
+    "W"
+  ],
+  "color_identity": [
+    "G",
+    "U",
+    "W"
+  ],
+  "keywords": [
+    "Flying"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "39de6fbf-1f11-48d0-8f04-f0407f6a0732",
+  "set": "cmr",
+  "set_name": "Commander Legends",
+  "set_type": "draft_innovation",
+  "set_uri": "https://api.scryfall.com/sets/39de6fbf-1f11-48d0-8f04-f0407f6a0732",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Acmr&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/cmr?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/2fbea010-de77-468e-be39-1717070c9303/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A8cccc8d0-bdd8-4853-8330-6f6a57695d11&unique=prints",
+  "collector_number": "266",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "\"Come closer, dear, and let me see that bauble. I've got a match for it somewhere...\"",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Lie Setiawan",
+  "artist_ids": [
+    "6f771d3f-310e-4aa4-841f-5ba4ba9f025a"
+  ],
+  "illustration_id": "0640d50e-6c28-45d5-a3ab-d69719608c25",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 12014,
+  "preview": {
+    "source": "LoadingReadyRun",
+    "source_uri": "https://www.youtube.com/watch?v=e6_G8pkJ3eQ",
+    "previewed_at": "2020-10-28"
+  },
+  "prices": {
+    "usd": "0.33",
+    "usd_foil": "0.59",
+    "usd_etched": null,
+    "eur": "0.22",
+    "eur_foil": "0.52",
+    "tix": "0.18"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=497786&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DAmareth%252C%2Bthe%2BLustrous",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DAmareth%252C%2Bthe%2BLustrous",
+    "edhrec": "https://edhrec.com/route/?cc=Amareth%2C+the+Lustrous"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F226477%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=510410&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/85314?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

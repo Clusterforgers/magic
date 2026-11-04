@@ -1,0 +1,49 @@
+{
+  "oracle_id": "44cb725a-72fc-4e0d-b966-f0b6d33f6b79",
+  "name": "Ancient Gold Dragon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ancient Gold Dragon",
+      "oracle_fingerprint": "843fdbb2f34076a5ad0dd8d6ad981dba",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              {
+                "RollDice": {
+                  "sides": 20,
+                  "results": [
+                    {
+                      "from": 1,
+                      "effects": [
+                        {
+                          "CreateToken": {
+                            "token": {
+                              "Custom": {
+                                "name": "Faerie Dragon",
+                                "colors": ["Blue"],
+                                "types": ["Creature"],
+                                "subtypes": ["Faerie", "Dragon"],
+                                "power": 1,
+                                "toughness": 1,
+                                "abilities": [{ "Keyword": "Flying" }]
+                              }
+                            },
+                            "count": { "DieResult": "Only" }
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "oracle_id": "48daee9d-ddaf-410f-8c3a-12fa1064ab56",
+  "name": "Ancient Copper Dragon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ancient Copper Dragon",
+      "oracle_fingerprint": "60645d6bc69105cd783b91f01fa67873",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              {
+                "RollDice": {
+                  "sides": 20,
+                  "results": [
+                    {
+                      "from": 1,
+                      "effects": [
+                        {
+                          "CreateToken": {
+                            "token": { "Named": "treasure" },
+                            "count": { "DieResult": "Only" }
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

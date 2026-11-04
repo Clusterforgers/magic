@@ -1,0 +1,49 @@
+{
+  "oracle_id": "aa125d1c-ab8f-48ff-a6eb-d8fc2154322c",
+  "name": "Old-Growth Dryads",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Old-Growth Dryads",
+      "oracle_fingerprint": "e67d90546e6dfa308ae0c4a507c3190e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "Opponents",
+                  "as": "player",
+                  "effects": [
+                    {
+                      "May": {
+                        "who": { "Bound": "player" },
+                        "effects": [
+                          {
+                            "Search": {
+                              "who": { "Bound": "player" },
+                              "filter": [{ "Type": "Land" }, { "Supertype": "Basic" }],
+                              "as": "found2"
+                            }
+                          },
+                          {
+                            "Move": {
+                              "what": { "Bound": "found2" },
+                              "to": { "Battlefield": { "tapped": true } }
+                            }
+                          },
+                          { "Shuffle": { "who": { "Bound": "player" } } }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

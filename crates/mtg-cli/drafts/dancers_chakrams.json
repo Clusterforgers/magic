@@ -1,0 +1,36 @@
+{
+  "oracle_id": "7465d02f-3eee-483c-8de3-404381aa21eb",
+  "name": "Dancer's Chakrams",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dancer's Chakrams",
+      "oracle_fingerprint": "e58fe6b669d95d4cc4792245fb1dd529",
+      "abilities": [
+        { "Keyword": "JobSelect" },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "ModifyPT": { "power": 2, "toughness": 2 } },
+              { "AddKeyword": "Lifelink" },
+              { "AddSubtype": "Performer" },
+              {
+                "GrantAbility": {
+                  "Static": {
+                    "affected": { "Each": ["Other", "Commander", { "ControlledBy": "You" }] },
+                    "mods": [
+                      { "ModifyPT": { "power": 2, "toughness": 2 } },
+                      { "AddKeyword": "Lifelink" }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{3}" } }
+      ]
+    }
+  ]
+}

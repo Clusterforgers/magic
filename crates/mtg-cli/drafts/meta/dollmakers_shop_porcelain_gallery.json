@@ -1,42 +1,4 @@
 {
   "source": "forge",
-  "oracle_matches": true,
-  "lines": [
-    {
-      "face": 0,
-      "tag": "T",
-      "text": "Whenever one or more non-Toy creatures you control attack a player, create a 1/1 white Toy artifact creature token.",
-      "abilities": [],
-      "gap": "trigger:AttackersDeclaredOneTarget"
-    },
-    {
-      "face": 1,
-      "tag": "S",
-      "text": "Creatures you control have base power and toughness each equal to the number of creatures you control.",
-      "abilities": [
-        0
-      ],
-      "gap": null
-    }
-  ],
-  "proof": {
-    "marks": [
-      {
-        "face": 0,
-        "span": {
-          "start": 0,
-          "end": 115
-        },
-        "mark": "ByHand"
-      },
-      {
-        "face": 1,
-        "span": {
-          "start": 0,
-          "end": 102
-        },
-        "mark": "Auto"
-      }
-    ]
-  }
+  "oracle_matches": true
 }

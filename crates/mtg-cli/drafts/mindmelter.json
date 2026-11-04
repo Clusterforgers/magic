@@ -1,0 +1,32 @@
+{
+  "oracle_id": "dbcceed6-51a9-4ab4-b9a8-d65140661195",
+  "name": "Mindmelter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mindmelter",
+      "oracle_fingerprint": "8662f895fc6770e2196bc2db2ca75680",
+      "abilities": [
+        { "Keyword": "Devoid" },
+        { "Static": { "affected": "This", "mods": ["CantBeBlocked"] } },
+        {
+          "Activated": {
+            "cost": "{3}{C}",
+            "timing": "Sorcery",
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Choose": {
+                  "who": { "Target": 0 },
+                  "from": { "Each": [{ "In": "Hand" }, { "OwnedBy": { "Target": 0 } }] },
+                  "as": "picked"
+                }
+              },
+              { "Exile": { "what": { "Bound": "picked" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

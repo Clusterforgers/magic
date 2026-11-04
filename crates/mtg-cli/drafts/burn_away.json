@@ -1,0 +1,45 @@
+{
+  "oracle_id": "65dcad6b-9a87-4313-bc71-682e1de262d0",
+  "name": "Burn Away",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Burn Away",
+      "oracle_fingerprint": "cdca65c014236f3b27bbeaa8eab06e3d",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 6 } },
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "ZoneChange": {
+                      "what": [{ "Is": { "Target": 0 } }],
+                      "from": "Battlefield",
+                      "to": "Graveyard"
+                    }
+                  },
+                  "this_turn": true,
+                  "effects": [
+                    {
+                      "Exile": {
+                        "what": {
+                          "Each": [
+                            { "In": "Graveyard" },
+                            { "OwnedBy": { "ControllerOf": "Triggering" } }
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

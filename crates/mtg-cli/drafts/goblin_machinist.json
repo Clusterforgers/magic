@@ -1,0 +1,47 @@
+{
+  "oracle_id": "c6c4cc65-6ccb-437b-ae97-3201be95b6df",
+  "name": "Goblin Machinist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Goblin Machinist",
+      "oracle_fingerprint": "c5e3d2eee2695b6a4a97f27ecf251d61",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{2}{R}",
+            "effects": [
+              {
+                "RevealUntil": {
+                  "filter": [{ "Not": { "Type": "Land" } }],
+                  "as": "found",
+                  "revealed_as": "revealed2"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "revealed2" },
+                  "to": { "Library": { "place": "Bottom", "order": "Chosen" } }
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": { "Stat": { "of": { "Bound": "found" }, "stat": "ManaValue" } },
+                        "toughness": 0
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

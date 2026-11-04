@@ -1,0 +1,30 @@
+{
+  "oracle_id": "ccf5a0d4-69e8-4607-a76c-cfca336899e4",
+  "name": "Undercity Informer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Undercity Informer",
+      "oracle_fingerprint": "278083a978d906b4faee2e3fae989a5d",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, { "Sacrifice": { "filter": [{ "Type": "Creature" }] } }],
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "RevealUntil": {
+                  "who": { "Target": 0 },
+                  "filter": [{ "Type": "Land" }],
+                  "as": "found",
+                  "revealed_as": "revealed2"
+                }
+              },
+              { "Move": { "what": { "Bound": "revealed2" }, "to": "Graveyard" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

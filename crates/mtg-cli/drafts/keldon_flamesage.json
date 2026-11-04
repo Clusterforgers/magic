@@ -1,0 +1,59 @@
+{
+  "oracle_id": "0efedec3-b57c-4395-ad72-19d79560c99f",
+  "name": "Keldon Flamesage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Keldon Flamesage",
+      "oracle_fingerprint": "86a76238a6b6bcb4619d7904325ff02f",
+      "abilities": [
+        { "Keyword": { "Macro": { "name": "enlist", "amount": 0 } } },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "LookAtTop": { "count": { "Stat": { "of": "This", "stat": "Power" } }, "as": "top" }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                      {
+                        "Compare": {
+                          "stat": "ManaValue",
+                          "op": "Le",
+                          "to": { "Stat": { "of": "This", "stat": "Power" } }
+                        }
+                      }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "kept2"
+                }
+              },
+              { "Exile": { "what": { "Bound": "kept2" }, "as": "kept2_exiled" } },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              },
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Is": { "Bound": "kept2_exiled" } }, { "In": "Exile" }] },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked4"
+                }
+              },
+              { "CastFromZone": { "what": { "Bound": "picked4" }, "free": true } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

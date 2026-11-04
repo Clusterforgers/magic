@@ -1,0 +1,40 @@
+{
+  "oracle_id": "8095ca78-db19-4724-a6ff-eacc85fa2274",
+  "name": "Another Round",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Another Round",
+      "oracle_fingerprint": "3476081a601f3365003ef919aaa0b114",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RepeatWhile": {
+                  "condition": { "Compare": { "left": 0, "op": "Eq", "right": 0 } },
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                        "count": {
+                          "min": 0,
+                          "max": { "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+                        },
+                        "as": "picked"
+                      }
+                    },
+                    { "Exile": { "what": { "Bound": "picked" }, "as": "exiled2" } },
+                    { "Move": { "what": { "Bound": "exiled2" }, "to": { "Battlefield": {} } } }
+                  ],
+                  "most": 1000,
+                  "times": { "Sum": ["X", 1] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

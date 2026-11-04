@@ -1,0 +1,140 @@
+{
+  "object": "card",
+  "id": "4f8dc511-e307-4412-bb79-375a6077312d",
+  "oracle_id": "8095ca78-db19-4724-a6ff-eacc85fa2274",
+  "multiverse_ids": [
+    654942
+  ],
+  "mtgo_id": 123913,
+  "arena_id": 90347,
+  "tcgplayer_id": 544488,
+  "cardmarket_id": 764241,
+  "name": "Another Round",
+  "lang": "en",
+  "released_at": "2024-04-19",
+  "uri": "https://api.scryfall.com/cards/4f8dc511-e307-4412-bb79-375a6077312d",
+  "scryfall_uri": "https://scryfall.com/card/otj/1/another-round?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:04:22Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/4/f/4f8dc511-e307-4412-bb79-375a6077312d.jpg?1783911862",
+    "normal": "https://cards.scryfall.io/normal/front/4/f/4f8dc511-e307-4412-bb79-375a6077312d.jpg?1783911862",
+    "large": "https://cards.scryfall.io/large/front/4/f/4f8dc511-e307-4412-bb79-375a6077312d.jpg?1783911862",
+    "png": "https://cards.scryfall.io/png/front/4/f/4f8dc511-e307-4412-bb79-375a6077312d.png?1783911862",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/4/f/4f8dc511-e307-4412-bb79-375a6077312d.jpg?1783911862",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/4/f/4f8dc511-e307-4412-bb79-375a6077312d.jpg?1783911862",
+    "thumb": "https://cards.scryfall.io/thumb/front/4/f/4f8dc511-e307-4412-bb79-375a6077312d.webp?1783911862",
+    "grid": "https://cards.scryfall.io/grid/front/4/f/4f8dc511-e307-4412-bb79-375a6077312d.webp?1783911862",
+    "display": "https://cards.scryfall.io/display/front/4/f/4f8dc511-e307-4412-bb79-375a6077312d.webp?1783911862",
+    "art": "https://cards.scryfall.io/art/front/4/f/4f8dc511-e307-4412-bb79-375a6077312d.webp?1783911862",
+    "crop": "https://cards.scryfall.io/crop/front/4/f/4f8dc511-e307-4412-bb79-375a6077312d.webp?1783911862",
+    "jpeg": "https://cards.scryfall.io/normal/front/4/f/4f8dc511-e307-4412-bb79-375a6077312d.jpg?1783911862"
+  },
+  "mana_cost": "{X}{X}{2}{W}",
+  "cmc": 3.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Exile any number of creatures you control, then return them to the battlefield under their owner's control. Then repeat this process X more times.",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "legal",
+    "future": "legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo",
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "55a85ebe-644e-4bef-8be8-5290408be3d1",
+  "set": "otj",
+  "set_name": "Outlaws of Thunder Junction",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/55a85ebe-644e-4bef-8be8-5290408be3d1",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aotj&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/otj?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/4f8dc511-e307-4412-bb79-375a6077312d/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A8095ca78-db19-4724-a6ff-eacc85fa2274&unique=prints",
+  "collector_number": "1",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "Weary travelers trade stories of the Eversaloon, an extraplanar respite that appears at the moment it is most needed.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Darrell Riche",
+  "artist_ids": [
+    "262c8e55-4efc-467b-a042-6f734b9d2e01"
+  ],
+  "illustration_id": "32f15077-3ed4-4b89-9966-0f8650b2942f",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 3775,
+  "penny_rank": 11256,
+  "preview": {
+    "source": "Clotaka",
+    "source_uri": "https://clotaka.com/outlaws_of_thunder_junction_preview",
+    "previewed_at": "2024-03-28"
+  },
+  "prices": {
+    "usd": "0.38",
+    "usd_foil": "0.48",
+    "usd_etched": null,
+    "eur": "0.28",
+    "eur_foil": "0.29",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=654942&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DAnother%2BRound",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DAnother%2BRound",
+    "edhrec": "https://edhrec.com/route/?cc=Another+Round"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F544488%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=764241&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/123913?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

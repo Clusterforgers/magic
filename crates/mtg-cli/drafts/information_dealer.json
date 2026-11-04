@@ -1,0 +1,27 @@
+{
+  "oracle_id": "52d10e81-c8ae-44bb-bb83-f4fe737f30d7",
+  "name": "Information Dealer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Information Dealer",
+      "oracle_fingerprint": "4f56b3a6aaae40fefa673736824896bf",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              { "LookAtTop": { "count": { "Count": [{ "Subtype": "Wizard" }] }, "as": "top" } },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Top", "order": "Chosen" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

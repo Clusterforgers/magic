@@ -1,0 +1,91 @@
+{
+  "oracle_id": "ebc9ff52-c914-4c48-9d35-0e4cd07741cb",
+  "name": "Ashiok, Nightmare Muse",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ashiok, Nightmare Muse",
+      "oracle_fingerprint": "4dd2b30cfbacc1cdc581fc8d4d3170d4",
+      "abilities": [
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Nightmare",
+                      "colors": ["Blue", "Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Nightmare"],
+                      "power": 2,
+                      "toughness": 3,
+                      "abilities": [
+                        {
+                          "Triggered": {
+                            "when": {
+                              "AnyOf": [
+                                { "Attacks": { "what": ["This"] } },
+                                { "Blocks": { "what": ["This"] } }
+                              ]
+                            },
+                            "effects": [
+                              { "ExileTop": { "who": "Opponents", "count": 2, "as": "exiled" } }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 3 },
+            "targets": [{ "what": { "Object": [{ "Not": { "Type": "Land" } }] } }],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": "Hand" } },
+              {
+                "Choose": {
+                  "who": { "OwnerOf": { "Target": 0 } },
+                  "from": {
+                    "Each": [{ "In": "Hand" }, { "OwnedBy": { "OwnerOf": { "Target": 0 } } }]
+                  },
+                  "as": "picked"
+                }
+              },
+              { "Exile": { "what": { "Bound": "picked" } } }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 7 },
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [{ "Not": "FaceDown" }, { "OwnedBy": "Opponents" }, { "In": "Exile" }]
+                  },
+                  "count": { "min": 0, "max": 3 },
+                  "as": "picked"
+                }
+              },
+              {
+                "RepeatEach": {
+                  "over": { "Bound": "picked" },
+                  "as": "card2",
+                  "effects": [{ "CastFromZone": { "what": { "Bound": "card2" }, "free": true } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

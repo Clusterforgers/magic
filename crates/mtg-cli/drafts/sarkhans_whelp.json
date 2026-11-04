@@ -1,0 +1,27 @@
+{
+  "oracle_id": "482f5fc8-ca3b-4280-8cf7-a1c55f8b9f12",
+  "name": "Sarkhan's Whelp",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sarkhan's Whelp",
+      "oracle_fingerprint": "2d2b495b95568f9611bf72155d9cd65d",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "Did": {
+                "action": "Activated",
+                "who": "You",
+                "what": [{ "Type": "Planeswalker" }, { "Subtype": "Sarkhan" }]
+              }
+            },
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

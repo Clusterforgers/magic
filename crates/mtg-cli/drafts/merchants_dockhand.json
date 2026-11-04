@@ -1,0 +1,33 @@
+{
+  "oracle_id": "7cd95b92-8828-4b84-be58-4ce3e948dc8c",
+  "name": "Merchant's Dockhand",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Merchant's Dockhand",
+      "oracle_fingerprint": "77d207debdd6fa6880fd4122dbf0456a",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{3}{U}" },
+              "Tap",
+              { "TapPermanents": { "filter": [{ "Type": "Artifact" }], "count": "X" } }
+            ],
+            "effects": [
+              { "LookAtTop": { "count": "X", "as": "top" } },
+              { "Choose": { "from": { "Bound": "top" }, "as": "kept2", "rest_as": "rest3" } },
+              { "Move": { "what": { "Bound": "kept2" }, "to": "Hand" } },
+              {
+                "Move": {
+                  "what": { "Bound": "rest3" },
+                  "to": { "Library": { "place": "Bottom", "order": "Chosen" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

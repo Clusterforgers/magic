@@ -1,0 +1,34 @@
+{
+  "oracle_id": "d4f3d013-d9e3-47bc-a615-b25f2c932b7c",
+  "name": "Non-Human Cannonball",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Non-Human Cannonball",
+      "oracle_fingerprint": "fe6b500cfa3800050209afcdc60a43a5",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              {
+                "RollDice": {
+                  "sides": 6,
+                  "results": [
+                    {
+                      "from": 1,
+                      "to": 4,
+                      "effects": [
+                        { "DealDamage": { "to": "You", "amount": { "DieResult": "Only" } } }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

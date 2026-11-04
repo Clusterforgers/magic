@@ -1,0 +1,57 @@
+{
+  "oracle_id": "ac2dd694-d2f1-4025-8400-12332bdc882a",
+  "name": "Takenuma, Abandoned Mire",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Takenuma, Abandoned Mire",
+      "oracle_fingerprint": "bfb6a58c47c94ced432a935dc0aacf6b",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Black"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{3}{B}" },
+              "DiscardSelf",
+              {
+                "Changed": {
+                  "change": "Reduce",
+                  "mana": "{1}",
+                  "per": {
+                    "Count": [
+                      { "Type": "Creature" },
+                      { "Supertype": "Legendary" },
+                      { "ControlledBy": "You" }
+                    ]
+                  }
+                }
+              }
+            ],
+            "from": "Hand",
+            "effects": [
+              { "Mill": { "count": 3 } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] },
+                      { "OwnedBy": "You" },
+                      { "In": "Graveyard" }
+                    ]
+                  },
+                  "as": "picked"
+                }
+              },
+              { "Move": { "what": { "Bound": "picked" }, "to": "Hand" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

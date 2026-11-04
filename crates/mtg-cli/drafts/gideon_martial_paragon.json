@@ -1,0 +1,76 @@
+{
+  "oracle_id": "4cbce730-7b70-41bd-b463-bfec46afe3b0",
+  "name": "Gideon, Martial Paragon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gideon, Martial Paragon",
+      "oracle_fingerprint": "c13d4aae37177a30920a67a08e82d9f8",
+      "abilities": [
+        {
+          "Loyalty": {
+            "cost": { "Plus": 2 },
+            "effects": [
+              {
+                "Untap": { "what": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": "Zero",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "SetPT": { "power": 5, "toughness": 5 } },
+                    { "AddSubtype": "Human" },
+                    { "AddSubtype": "Soldier" },
+                    { "AddType": "Creature" },
+                    { "AddKeyword": "Indestructible" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": "This" } },
+                  "by": "Prevent",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 10 },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Tap": {
+                  "what": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

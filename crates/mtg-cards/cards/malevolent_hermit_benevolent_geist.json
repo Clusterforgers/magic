@@ -1,0 +1,51 @@
+{
+  "oracle_id": "51233ade-70cd-4539-9f41-5ffab761da54",
+  "name": "Malevolent Hermit // Benevolent Geist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Malevolent Hermit",
+      "oracle_fingerprint": "46be064dc68183a9ecd543ad176842f7",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{U}" }, "SacrificeSelf"],
+            "targets": [{ "what": { "Object": ["Spell", { "Not": { "Type": "Creature" } }] } }],
+            "effects": [
+              {
+                "Pay": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "cost": "{3}",
+                  "unpaid": [{ "Counter": { "what": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Disturb": "{2}{U}" } }
+      ]
+    },
+    {
+      "name": "Benevolent Geist",
+      "oracle_fingerprint": "b93410760e30d6d4604e0c218ebe0fd3",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Rule": {
+            "rule": {
+              "CantBeCountered": {
+                "Each": ["Spell", { "Not": { "Type": "Creature" } }, { "ControlledBy": "You" }]
+              }
+            }
+          }
+        },
+        {
+          "Replacement": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Graveyard" } },
+            "by": { "MoveTo": "Exile" }
+          }
+        }
+      ]
+    }
+  ]
+}

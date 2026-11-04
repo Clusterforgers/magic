@@ -1,0 +1,43 @@
+{
+  "oracle_id": "9b55fb72-237d-4935-b645-8ebc6eb4140e",
+  "name": "Consuming Aberration",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Consuming Aberration",
+      "oracle_fingerprint": "df01ae119269bb9cc6faf5101125a236",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "SetPT": {
+                  "power": { "Count": [{ "OwnedBy": "Opponents" }, { "In": "Graveyard" }] },
+                  "toughness": { "Count": [{ "OwnedBy": "Opponents" }, { "In": "Graveyard" }] }
+                }
+              }
+            ],
+            "defining": true
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "by": "You" } },
+            "effects": [
+              {
+                "RevealUntil": {
+                  "who": "Opponents",
+                  "filter": [{ "Type": "Land" }],
+                  "as": "found",
+                  "revealed_as": "revealed2"
+                }
+              },
+              { "Move": { "what": { "Bound": "revealed2" }, "to": "Graveyard" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

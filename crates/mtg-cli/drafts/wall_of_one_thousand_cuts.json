@@ -1,0 +1,28 @@
+{
+  "oracle_id": "b97341a7-fc96-4281-b875-fb81065e0157",
+  "name": "Wall of One Thousand Cuts",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wall of One Thousand Cuts",
+      "oracle_fingerprint": "78d4a65b37027103c98b4b1b0cdd9e83",
+      "abilities": [
+        { "Keyword": "Defender" },
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": "{W}",
+            "effects": [
+              {
+                "Rule": {
+                  "rule": { "Combat": { "who": "This", "quirk": "AttackDespiteDefender" } },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

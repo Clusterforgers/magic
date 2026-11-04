@@ -1,0 +1,54 @@
+{
+  "oracle_id": "65ea7eb1-751b-4ecd-83cb-e9b6015ec194",
+  "name": "Soaring Lightbringer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Soaring Lightbringer",
+      "oracle_fingerprint": "275795db5dc5546d3798356fa7fc2b4a",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Enchantment" },
+                { "Type": "Creature" },
+                "Other",
+                { "ControlledBy": "You" }
+              ]
+            },
+            "mods": [{ "AddKeyword": "Flying" }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacksAt": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                "at": "EachPlayer"
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Glimmer",
+                      "colors": ["White"],
+                      "types": ["Enchantment", "Creature"],
+                      "subtypes": ["Glimmer"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "tapped": true
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

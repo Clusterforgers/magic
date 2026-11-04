@@ -1,0 +1,26 @@
+{
+  "oracle_id": "c823e687-6311-4c99-974b-fd77d204141a",
+  "name": "Timetwister",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Timetwister",
+      "oracle_fingerprint": "b5d4d421c7f4b0978ab5ee7273cba81a",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Each": [{ "AnyOf": [{ "In": "Hand" }, { "In": "Graveyard" }] }] },
+                  "to": { "Library": { "place": "Shuffled" } }
+                }
+              },
+              { "Draw": { "who": "EachPlayer", "count": 7 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

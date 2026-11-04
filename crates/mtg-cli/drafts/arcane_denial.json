@@ -1,0 +1,48 @@
+{
+  "oracle_id": "ab1cc360-b9de-48d9-9983-4dfe4a7d2a37",
+  "name": "Arcane Denial",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Arcane Denial",
+      "oracle_fingerprint": "ea93b2df18767cae5d6029529bf77b54",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [
+              { "Counter": { "what": { "Target": 0 } } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "Upkeep" } },
+                  "effects": [{ "Draw": {} }]
+                }
+              },
+              { "Bind": { "what": { "ControllerOf": { "Target": 0 } }, "as": "controller" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "Upkeep" } },
+                  "effects": [
+                    {
+                      "ChooseValue": {
+                        "who": { "Bound": "controller" },
+                        "kind": { "Number": [0, 2] },
+                        "as": "number2"
+                      }
+                    },
+                    {
+                      "Draw": {
+                        "who": { "Bound": "controller" },
+                        "count": { "ChosenAs": "number2" }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

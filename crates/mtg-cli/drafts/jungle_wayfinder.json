@@ -1,0 +1,45 @@
+{
+  "oracle_id": "794ad296-4718-45b7-ab85-6ae45903ada7",
+  "name": "Jungle Wayfinder",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jungle Wayfinder",
+      "oracle_fingerprint": "df91eabe68e8f66c5305b960357e30c6",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "player",
+                  "effects": [
+                    {
+                      "May": {
+                        "who": { "Bound": "player" },
+                        "effects": [
+                          {
+                            "Search": {
+                              "who": { "Bound": "player" },
+                              "filter": [{ "Type": "Land" }, { "Supertype": "Basic" }],
+                              "reveal": true,
+                              "as": "found2"
+                            }
+                          },
+                          { "Move": { "what": { "Bound": "found2" }, "to": "Hand" } },
+                          { "Shuffle": { "who": { "Bound": "player" } } }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

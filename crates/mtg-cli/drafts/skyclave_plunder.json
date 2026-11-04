@@ -1,0 +1,35 @@
+{
+  "oracle_id": "d2d5f9b8-7caf-42c8-934b-3f4b81468914",
+  "name": "Skyclave Plunder",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Skyclave Plunder",
+      "oracle_fingerprint": "c7c1f1f7dc5e66bcae990f1bce278a22",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "LookAtTop": { "count": { "Sum": [{ "Party": "You" }, 3] }, "as": "top" } },
+              {
+                "Choose": {
+                  "from": { "Bound": "top" },
+                  "count": { "min": 3, "max": 3 },
+                  "as": "kept2",
+                  "rest_as": "rest3"
+                }
+              },
+              { "Move": { "what": { "Bound": "kept2" }, "to": "Hand" } },
+              {
+                "Move": {
+                  "what": { "Bound": "rest3" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

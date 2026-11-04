@@ -1,0 +1,144 @@
+{
+  "object": "card",
+  "id": "64de7b1f-a03e-4407-91f1-e108a2f26735",
+  "oracle_id": "20194297-f2a4-4473-95bc-7c6835e5b6b3",
+  "multiverse_ids": [
+    669136
+  ],
+  "mtgo_id": 129689,
+  "arena_id": 91758,
+  "tcgplayer_id": 558339,
+  "cardmarket_id": 777693,
+  "name": "Lilysplash Mentor",
+  "lang": "en",
+  "released_at": "2024-08-02",
+  "uri": "https://api.scryfall.com/cards/64de7b1f-a03e-4407-91f1-e108a2f26735",
+  "scryfall_uri": "https://scryfall.com/card/blb/222/lilysplash-mentor?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T02:46:35Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/6/4/64de7b1f-a03e-4407-91f1-e108a2f26735.jpg?1783910795",
+    "normal": "https://cards.scryfall.io/normal/front/6/4/64de7b1f-a03e-4407-91f1-e108a2f26735.jpg?1783910795",
+    "large": "https://cards.scryfall.io/large/front/6/4/64de7b1f-a03e-4407-91f1-e108a2f26735.jpg?1783910795",
+    "png": "https://cards.scryfall.io/png/front/6/4/64de7b1f-a03e-4407-91f1-e108a2f26735.png?1783910795",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/6/4/64de7b1f-a03e-4407-91f1-e108a2f26735.jpg?1783910795",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/6/4/64de7b1f-a03e-4407-91f1-e108a2f26735.jpg?1783910795",
+    "thumb": "https://cards.scryfall.io/thumb/front/6/4/64de7b1f-a03e-4407-91f1-e108a2f26735.webp?1783910795",
+    "grid": "https://cards.scryfall.io/grid/front/6/4/64de7b1f-a03e-4407-91f1-e108a2f26735.webp?1783910795",
+    "display": "https://cards.scryfall.io/display/front/6/4/64de7b1f-a03e-4407-91f1-e108a2f26735.webp?1783910795",
+    "art": "https://cards.scryfall.io/art/front/6/4/64de7b1f-a03e-4407-91f1-e108a2f26735.webp?1783910795",
+    "crop": "https://cards.scryfall.io/crop/front/6/4/64de7b1f-a03e-4407-91f1-e108a2f26735.webp?1783910795",
+    "jpeg": "https://cards.scryfall.io/normal/front/6/4/64de7b1f-a03e-4407-91f1-e108a2f26735.jpg?1783910795"
+  },
+  "mana_cost": "{2}{G}{U}",
+  "cmc": 4.0,
+  "type_line": "Creature — Frog Druid",
+  "oracle_text": "Reach\n{1}{G}{U}: Exile another target creature you control, then return it to the battlefield under its owner's control with a +1/+1 counter on it. Activate only as a sorcery.",
+  "power": "4",
+  "toughness": "4",
+  "colors": [
+    "G",
+    "U"
+  ],
+  "color_identity": [
+    "G",
+    "U"
+  ],
+  "keywords": [
+    "Reach"
+  ],
+  "legalities": {
+    "standard": "legal",
+    "future": "legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo",
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "a2f58272-bba6-439d-871e-7a46686ac018",
+  "set": "blb",
+  "set_name": "Bloomburrow",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/a2f58272-bba6-439d-871e-7a46686ac018",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ablb&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/blb?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/64de7b1f-a03e-4407-91f1-e108a2f26735/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A20194297-f2a4-4473-95bc-7c6835e5b6b3&unique=prints",
+  "collector_number": "222",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "\"Splashy entrances are my specialty. And they can be yours too. Try again!\"",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Aldo Domínguez",
+  "artist_ids": [
+    "b701136e-c578-4a48-9383-1c2a5381ecb2"
+  ],
+  "illustration_id": "ee3dafa1-c10a-4c52-a8a1-68ca259ed401",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 4874,
+  "preview": {
+    "source": "Wizards of the Coast",
+    "source_uri": "https://magic.wizards.com/en/products/bloomburrow/card-image-gallery",
+    "previewed_at": "2024-07-09"
+  },
+  "prices": {
+    "usd": "0.27",
+    "usd_foil": "0.34",
+    "usd_etched": null,
+    "eur": "0.07",
+    "eur_foil": "0.23",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=669136&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DLilysplash%2BMentor",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DLilysplash%2BMentor",
+    "edhrec": "https://edhrec.com/route/?cc=Lilysplash+Mentor"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F558339%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=777693&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/129689?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

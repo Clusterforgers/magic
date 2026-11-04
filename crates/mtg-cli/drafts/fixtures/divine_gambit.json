@@ -1,0 +1,133 @@
+{
+  "object": "card",
+  "id": "696a8c12-4a1f-4b96-a921-538fa1a2de43",
+  "oracle_id": "25fcf381-6f0a-49ef-9c41-f202be7d8368",
+  "multiverse_ids": [
+    503612
+  ],
+  "mtgo_id": 87335,
+  "arena_id": 75043,
+  "tcgplayer_id": 230198,
+  "cardmarket_id": 530507,
+  "name": "Divine Gambit",
+  "lang": "en",
+  "released_at": "2021-02-05",
+  "uri": "https://api.scryfall.com/cards/696a8c12-4a1f-4b96-a921-538fa1a2de43",
+  "scryfall_uri": "https://scryfall.com/card/khm/8/divine-gambit?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T07:38:05Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/6/9/696a8c12-4a1f-4b96-a921-538fa1a2de43.jpg?1783928285",
+    "normal": "https://cards.scryfall.io/normal/front/6/9/696a8c12-4a1f-4b96-a921-538fa1a2de43.jpg?1783928285",
+    "large": "https://cards.scryfall.io/large/front/6/9/696a8c12-4a1f-4b96-a921-538fa1a2de43.jpg?1783928285",
+    "png": "https://cards.scryfall.io/png/front/6/9/696a8c12-4a1f-4b96-a921-538fa1a2de43.png?1783928285",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/6/9/696a8c12-4a1f-4b96-a921-538fa1a2de43.jpg?1783928285",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/6/9/696a8c12-4a1f-4b96-a921-538fa1a2de43.jpg?1783928285",
+    "thumb": "https://cards.scryfall.io/thumb/front/6/9/696a8c12-4a1f-4b96-a921-538fa1a2de43.webp?1783928285",
+    "grid": "https://cards.scryfall.io/grid/front/6/9/696a8c12-4a1f-4b96-a921-538fa1a2de43.webp?1783928285",
+    "display": "https://cards.scryfall.io/display/front/6/9/696a8c12-4a1f-4b96-a921-538fa1a2de43.webp?1783928285",
+    "art": "https://cards.scryfall.io/art/front/6/9/696a8c12-4a1f-4b96-a921-538fa1a2de43.webp?1783928285",
+    "crop": "https://cards.scryfall.io/crop/front/6/9/696a8c12-4a1f-4b96-a921-538fa1a2de43.webp?1783928285",
+    "jpeg": "https://cards.scryfall.io/normal/front/6/9/696a8c12-4a1f-4b96-a921-538fa1a2de43.jpg?1783928285"
+  },
+  "mana_cost": "{W}{W}",
+  "cmc": 2.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Exile target artifact, creature, or enchantment an opponent controls. That player may put a permanent card from their hand onto the battlefield.",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "arena",
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "43057fad-b1c1-437f-bc48-0045bce6d8c9",
+  "set": "khm",
+  "set_name": "Kaldheim",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/43057fad-b1c1-437f-bc48-0045bce6d8c9",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Akhm&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/khm?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/696a8c12-4a1f-4b96-a921-538fa1a2de43/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A25fcf381-6f0a-49ef-9c41-f202be7d8368&unique=prints",
+  "collector_number": "8",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "There are rules, and then there are gods.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Joe Slucher",
+  "artist_ids": [
+    "13b6c9ee-f7a8-46a4-934f-ea6b4a1b14b2"
+  ],
+  "illustration_id": "44f2cef2-1be4-46be-a0b8-d75a86b1a722",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 17763,
+  "prices": {
+    "usd": "0.23",
+    "usd_foil": "0.26",
+    "usd_etched": null,
+    "eur": "0.07",
+    "eur_foil": "0.09",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=503612&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DDivine%2BGambit",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DDivine%2BGambit",
+    "edhrec": "https://edhrec.com/route/?cc=Divine+Gambit"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F230198%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=530507&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/87335?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

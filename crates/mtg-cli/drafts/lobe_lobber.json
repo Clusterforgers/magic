@@ -1,0 +1,44 @@
+{
+  "oracle_id": "7671f563-dca5-480e-8454-211907e8e809",
+  "name": "Lobe Lobber",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lobe Lobber",
+      "oracle_fingerprint": "0f287df93086a9a725fe64380115270a",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Activated": {
+                    "cost": ["Tap"],
+                    "targets": [
+                      {
+                        "what": { "Either": [{ "Object": [{ "Type": "Planeswalker" }] }, "Player"] }
+                      }
+                    ],
+                    "effects": [
+                      { "DealDamage": { "to": { "Target": 0 }, "amount": 1 } },
+                      {
+                        "RollDice": {
+                          "sides": 6,
+                          "results": [
+                            { "from": 5, "to": 6, "effects": [{ "Untap": { "what": "This" } }] }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{2}" } }
+      ]
+    }
+  ]
+}

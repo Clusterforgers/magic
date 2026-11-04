@@ -1,0 +1,33 @@
+{
+  "oracle_id": "7f89c0ee-b914-406c-8a3f-98424a52ae14",
+  "name": "Mirri's Guile",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mirri's Guile",
+      "oracle_fingerprint": "4c5dbf58214f922085c8598980c04012",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "LookAtTop": { "count": 3, "as": "top" } },
+                    {
+                      "Move": {
+                        "what": { "Bound": "top" },
+                        "to": { "Library": { "place": "Top", "order": "Chosen" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

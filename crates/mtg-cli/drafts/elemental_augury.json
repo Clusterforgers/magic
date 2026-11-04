@@ -1,0 +1,28 @@
+{
+  "oracle_id": "42cffe5d-6e6b-4ac4-b539-36a7b3bc9a65",
+  "name": "Elemental Augury",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Elemental Augury",
+      "oracle_fingerprint": "1481271d4c81eea441eb0a9fdd19e021",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{3}",
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              { "LookAtTop": { "who": { "Target": 0 }, "count": 3, "as": "top" } },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Top", "order": "Chosen" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "oracle_id": "5915039b-3dbd-4a49-8bd3-23ff0fd9c90a",
+  "name": "Intimidation Campaign",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Intimidation Campaign",
+      "oracle_fingerprint": "2771974e3108aac342c9da9e82338319",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "LoseLife": { "who": "Opponents", "amount": 1 } },
+              { "GainLife": { "amount": 1 } },
+              { "Draw": {} }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "W11cCrime": { "who": "You" } },
+            "effects": [{ "May": { "effects": [{ "Move": { "what": "This", "to": "Hand" } }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

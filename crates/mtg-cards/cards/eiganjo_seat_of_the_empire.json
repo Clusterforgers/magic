@@ -1,0 +1,49 @@
+{
+  "oracle_id": "7edb3d15-4f70-4ebe-8c5e-caf6a225076d",
+  "name": "Eiganjo, Seat of the Empire",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Eiganjo, Seat of the Empire",
+      "oracle_fingerprint": "79dd3a3e6faa38f9c2a8022382d8687e",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["White"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{2}{W}" },
+              "DiscardSelf",
+              {
+                "Changed": {
+                  "change": "Reduce",
+                  "mana": "{1}",
+                  "per": {
+                    "Count": [
+                      { "Type": "Creature" },
+                      { "Supertype": "Legendary" },
+                      { "ControlledBy": "You" }
+                    ]
+                  }
+                }
+              }
+            ],
+            "from": "Hand",
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "AnyOf": ["Attacking", "Blocking"] }]
+                }
+              }
+            ],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 4 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

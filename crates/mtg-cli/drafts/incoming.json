@@ -1,0 +1,46 @@
+{
+  "oracle_id": "35caa378-440d-41a1-8ce4-174bfb7c16ac",
+  "name": "Incoming!",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Incoming!",
+      "oracle_fingerprint": "c1957e7d17ff49c728ffd4a7a9900c1b",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "player",
+                  "effects": [
+                    {
+                      "Search": {
+                        "who": { "Bound": "player" },
+                        "filter": [
+                          {
+                            "AnyOf": [
+                              { "Type": "Artifact" },
+                              { "Type": "Creature" },
+                              { "Type": "Enchantment" },
+                              { "Type": "Land" }
+                            ]
+                          }
+                        ],
+                        "count": { "min": 0, "max": { "Count": [{ "In": "Library" }] } },
+                        "as": "found2"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "found2" }, "to": { "Battlefield": {} } } },
+                    { "Shuffle": { "who": { "Bound": "player" } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

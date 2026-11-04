@@ -1,0 +1,31 @@
+{
+  "oracle_id": "c518f551-112c-4504-a905-e6cb42423638",
+  "name": "Phyrexian Chimney Imp",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Phyrexian Chimney Imp",
+      "oracle_fingerprint": "c250942a449536bfb8fde88ad4732a88",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Choose": {
+                  "who": { "Target": 0 },
+                  "from": { "Each": [{ "In": "Hand" }, { "OwnedBy": { "Target": 0 } }] },
+                  "count": { "min": 2, "max": 2 },
+                  "as": "picked"
+                }
+              },
+              { "Move": { "what": { "Bound": "picked" }, "to": { "Library": { "place": "Top" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

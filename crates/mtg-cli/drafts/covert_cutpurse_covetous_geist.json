@@ -1,0 +1,45 @@
+{
+  "oracle_id": "5d0b8dc6-f4b6-4650-805d-4240d4a4ab82",
+  "name": "Covert Cutpurse // Covetous Geist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Covert Cutpurse",
+      "oracle_fingerprint": "ed81ccbb4460cc799c02cb33ed07ff38",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "Not": { "ControlledBy": "You" } },
+                    "DamagedThisTurn"
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        },
+        { "Keyword": { "Disturb": "{4}{B}" } }
+      ]
+    },
+    {
+      "name": "Covetous Geist",
+      "oracle_fingerprint": "82d37f6e5a8599fbb70203b397ed0634",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Deathtouch" },
+        {
+          "Replacement": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Graveyard" } },
+            "by": { "MoveTo": "Exile" }
+          }
+        }
+      ]
+    }
+  ]
+}

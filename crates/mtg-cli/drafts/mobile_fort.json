@@ -1,0 +1,35 @@
+{
+  "oracle_id": "0547e426-e23e-4c60-ba6b-cfd4b5ff8485",
+  "name": "Mobile Fort",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mobile Fort",
+      "oracle_fingerprint": "140b4958df9f0859ee8cbde494cf7f20",
+      "abilities": [
+        { "Keyword": "Defender" },
+        {
+          "Activated": {
+            "cost": "{3}",
+            "limit": "OncePerTurn",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 3, "toughness": -1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Rule": {
+                  "rule": { "Combat": { "who": "This", "quirk": "AttackDespiteDefender" } },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

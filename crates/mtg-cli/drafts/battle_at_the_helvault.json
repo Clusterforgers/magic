@@ -1,0 +1,76 @@
+{
+  "oracle_id": "076584c8-ec58-4711-8f59-4839a4fa88ad",
+  "name": "Battle at the Helvault",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Battle at the Helvault",
+      "oracle_fingerprint": "9d216ffccf6c34c06bf1b89aa9af3028",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "targets": [
+              {
+                "what": {
+                  "PerPlayer": {
+                    "players": "EachPlayer",
+                    "what": [{ "Not": { "Type": "Land" } }, { "Not": { "Subtype": "Saga" } }]
+                  }
+                }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "duration": "WhileSourceOnBattlefield" } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Avacyn",
+                      "colors": ["White"],
+                      "supertypes": ["Legendary"],
+                      "types": ["Creature"],
+                      "subtypes": ["Angel"],
+                      "power": 8,
+                      "toughness": 8,
+                      "abilities": [
+                        { "Keyword": "Flying" },
+                        { "Keyword": "Vigilance" },
+                        { "Keyword": "Indestructible" }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "targets": [
+              {
+                "what": {
+                  "PerPlayer": {
+                    "players": "EachPlayer",
+                    "what": [{ "Not": { "Type": "Land" } }, { "Not": { "Subtype": "Saga" } }]
+                  }
+                }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "duration": "WhileSourceOnBattlefield" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

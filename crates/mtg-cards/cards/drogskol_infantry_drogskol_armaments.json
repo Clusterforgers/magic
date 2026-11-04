@@ -1,0 +1,31 @@
+{
+  "oracle_id": "389bcb9f-4e66-4704-9968-a1c1574ec2c8",
+  "name": "Drogskol Infantry // Drogskol Armaments",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Drogskol Infantry",
+      "oracle_fingerprint": "be85c3fd458656a87d16ade6843d195b",
+      "abilities": [{ "Keyword": { "Disturb": "{3}{W}" } }]
+    },
+    {
+      "name": "Drogskol Armaments",
+      "oracle_fingerprint": "ec256df488798750af60e734c148b590",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }]
+          }
+        },
+        {
+          "Replacement": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Graveyard" } },
+            "by": { "MoveTo": "Exile" }
+          }
+        }
+      ]
+    }
+  ]
+}

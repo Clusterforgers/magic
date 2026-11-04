@@ -1,0 +1,28 @@
+{
+  "oracle_id": "1225bee2-c829-4a93-9f75-3495277c23bc",
+  "name": "Illusionist's Stratagem",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Illusionist's Stratagem",
+      "oracle_fingerprint": "6d9eff9e4872b7dfad8af6c5accd8c48",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                "bounds": { "min": 0, "max": 2 }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              { "Move": { "what": { "Bound": "exiled" }, "to": { "Battlefield": {} } } },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

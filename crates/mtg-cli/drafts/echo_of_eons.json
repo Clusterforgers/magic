@@ -12,13 +12,11 @@
             "effects": [
               {
                 "Move": {
-                  "what": {
-                    "Each": [{ "In": "Hand" }, { "In": "Graveyard" }, { "OwnedBy": "EachPlayer" }]
-                  },
+                  "what": { "Each": [{ "AnyOf": [{ "In": "Hand" }, { "In": "Graveyard" }] }] },
                   "to": { "Library": { "place": "Shuffled" } }
                 }
               },
-              { "Draw": { "who": "EachPlayer" } }
+              { "Draw": { "who": "EachPlayer", "count": 7 } }
             ]
           }
         },

@@ -1,0 +1,77 @@
+{
+  "oracle_id": "e9a24ed8-e844-4c50-b386-bc28da9989b1",
+  "name": "Bitter Work",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bitter Work",
+      "oracle_fingerprint": "45096954d936c54d720905f73475a286",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacksAt": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "ControlledBy": "You" },
+                  { "Compare": { "stat": "Power", "op": "Ge", "to": 4 } }
+                ],
+                "at": "EachPlayer"
+              }
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{4}",
+            "condition": "YourTurn",
+            "limit": "OncePerGame",
+            "targets": [{ "what": { "Object": [{ "Type": "Land" }, { "ControlledBy": "You" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "AddType": "Creature" },
+                    { "SetPT": { "power": 0, "toughness": 0 } },
+                    { "AddKeyword": "Haste" }
+                  ],
+                  "duration": "Forever"
+                }
+              },
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1", "count": 4 } },
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "AnyOf": [
+                      {
+                        "ZoneChange": {
+                          "what": [{ "Is": { "Target": 0 } }],
+                          "from": "Battlefield",
+                          "to": "Graveyard"
+                        }
+                      },
+                      {
+                        "ZoneChange": {
+                          "what": [{ "Is": { "Target": 0 } }],
+                          "from": "Battlefield",
+                          "to": "Exile"
+                        }
+                      }
+                    ]
+                  },
+                  "effects": [
+                    {
+                      "Move": { "what": "Triggering", "to": { "Battlefield": { "tapped": true } } }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

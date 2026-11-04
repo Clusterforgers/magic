@@ -1,0 +1,37 @@
+{
+  "oracle_id": "d3ee7f5d-56b4-4d87-9642-dcd8449dfb45",
+  "name": "Seafloor Stalker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Seafloor Stalker",
+      "oracle_fingerprint": "b9fe934e922726fb0127906cc55e3bc2",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{4}{U}" },
+              { "Changed": { "change": "Reduce", "mana": "{1}", "per": { "Party": "You" } } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": ["CantBeBlocked"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

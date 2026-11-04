@@ -1,0 +1,30 @@
+{
+  "oracle_id": "cf5103c1-2590-4aed-b3ae-8a570f797738",
+  "name": "Mind Funeral",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mind Funeral",
+      "oracle_fingerprint": "c9c2730fb1756057c4588a021ed3f8dc",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "RevealUntil": {
+                  "who": { "Target": 0 },
+                  "filter": [{ "Type": "Land" }],
+                  "count": 4,
+                  "as": "found",
+                  "revealed_as": "revealed2"
+                }
+              },
+              { "Move": { "what": { "Bound": "revealed2" }, "to": "Graveyard" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

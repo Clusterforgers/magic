@@ -1,0 +1,29 @@
+{
+  "oracle_id": "ab5f6e83-a151-48b6-8cc5-3b2dae94079c",
+  "name": "Saheeli's Silverwing",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Saheeli's Silverwing",
+      "oracle_fingerprint": "243bdf9980087ecce9ee6f5089660618",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              { "LookAtTop": { "who": { "Target": 0 }, "as": "top" } },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Top", "order": "Chosen" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

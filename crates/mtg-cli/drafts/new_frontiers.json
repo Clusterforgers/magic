@@ -1,0 +1,49 @@
+{
+  "oracle_id": "71362163-2ac3-4f8b-86b9-34fe083e2095",
+  "name": "New Frontiers",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "New Frontiers",
+      "oracle_fingerprint": "909c1cba3d99eb2152e9071899e90435",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "player",
+                  "effects": [
+                    {
+                      "May": {
+                        "who": { "Bound": "player" },
+                        "effects": [
+                          {
+                            "Search": {
+                              "who": { "Bound": "player" },
+                              "filter": [{ "Type": "Land" }, { "Supertype": "Basic" }],
+                              "count": { "min": 0, "max": "X" },
+                              "as": "found2"
+                            }
+                          },
+                          {
+                            "Move": {
+                              "what": { "Bound": "found2" },
+                              "to": { "Battlefield": { "tapped": true } }
+                            }
+                          },
+                          { "Shuffle": { "who": { "Bound": "player" } } }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

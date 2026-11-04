@@ -1,0 +1,46 @@
+{
+  "oracle_id": "40fbcf4b-d79e-4e6b-bcec-1d1544b3c4a2",
+  "name": "Parallax Nexus",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Parallax Nexus",
+      "oracle_fingerprint": "eb15a44c90cffa1986e0233277fe4362",
+      "abilities": [
+        { "Keyword": { "Fading": 5 } },
+        {
+          "Activated": {
+            "cost": [{ "RemoveCounters": { "counter": { "Other": "fade" } } }],
+            "timing": "Sorcery",
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Choose": {
+                  "who": { "Target": 0 },
+                  "from": { "Each": [{ "In": "Hand" }, { "OwnedBy": { "Target": 0 } }] },
+                  "as": "picked"
+                }
+              },
+              { "Exile": { "what": { "Bound": "picked" }, "as": "exiled2" } },
+              { "Remember": { "what": { "Bound": "exiled2" }, "slot": "imprinted" } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield" } },
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Remembered": { "on": "This", "slot": "imprinted" } },
+                  "to": "Hand"
+                }
+              },
+              { "Forget": { "slot": "imprinted" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "oracle_id": "5d03188b-fbc4-4e16-9fe6-db98dbdb7f68",
+  "name": "Storm the Festival",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Storm the Festival",
+      "oracle_fingerprint": "12b7bf49b397c53a925fe9151718d76a",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "LookAtTop": { "count": 5, "as": "top" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "Compare": { "stat": "ManaValue", "op": "Le", "to": 5 } }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 2 },
+                  "as": "kept2"
+                }
+              },
+              { "Move": { "what": { "Bound": "kept2" }, "to": { "Battlefield": {} } } },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Flashback": "{7}{G}{G}{G}" } }
+      ]
+    }
+  ]
+}

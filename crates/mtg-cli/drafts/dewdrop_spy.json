@@ -1,0 +1,30 @@
+{
+  "oracle_id": "14bee98b-6dd8-48f3-8043-06f03cc93aa7",
+  "name": "Dewdrop Spy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dewdrop Spy",
+      "oracle_fingerprint": "eaa43385098afd63c98643382c80eea5",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              { "LookAtTop": { "who": { "Target": 0 }, "as": "top" } },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Top", "order": "Chosen" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

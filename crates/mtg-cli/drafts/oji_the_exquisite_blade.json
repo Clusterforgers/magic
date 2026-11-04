@@ -1,7 +1,7 @@
 {
   "oracle_id": "7c4c556c-b5e3-493a-a7b0-38c55b7809ac",
   "name": "Oji, the Exquisite Blade",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Oji, the Exquisite Blade",
@@ -14,9 +14,23 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 45, "end": 197 }
+          "Triggered": {
+            "when": {
+              "Nth": {
+                "event": { "SpellCast": { "what": [{ "ControlledBy": "You" }], "by": "You" } },
+                "nth": 2
+              }
+            },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              { "Move": { "what": { "Bound": "exiled" }, "to": { "Battlefield": {} } } }
+            ]
           }
         }
       ]

@@ -1,0 +1,57 @@
+{
+  "oracle_id": "c6861c50-d336-4352-a76d-ec22a86ec09e",
+  "name": "Amplifire",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Amplifire",
+      "oracle_fingerprint": "5c0f95c72b603ebd62973b2bd9ce6589",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "RevealUntil": {
+                  "filter": [{ "Type": "Creature" }],
+                  "as": "found",
+                  "revealed_as": "revealed2"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "revealed2" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    {
+                      "SetPT": {
+                        "power": {
+                          "Times": {
+                            "by": 2,
+                            "of": { "Stat": { "of": { "Bound": "found" }, "stat": "Power" } }
+                          }
+                        },
+                        "toughness": {
+                          "Times": {
+                            "by": 2,
+                            "of": { "Stat": { "of": { "Bound": "found" }, "stat": "Toughness" } }
+                          }
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilYourNextTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

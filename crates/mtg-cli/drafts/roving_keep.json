@@ -1,0 +1,37 @@
+{
+  "oracle_id": "6a88784c-d3be-4076-83eb-895cc1b50947",
+  "name": "Roving Keep",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Roving Keep",
+      "oracle_fingerprint": "42dfa1b892d3d3b06c013a0bd48536a6",
+      "abilities": [
+        { "Keyword": "Defender" },
+        {
+          "Activated": {
+            "cost": "{7}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "ModifyPT": { "power": 2, "toughness": 0 } },
+                    { "AddKeyword": "Trample" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Rule": {
+                  "rule": { "Combat": { "who": "This", "quirk": "AttackDespiteDefender" } },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

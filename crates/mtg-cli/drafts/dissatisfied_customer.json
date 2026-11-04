@@ -1,0 +1,34 @@
+{
+  "oracle_id": "15cea1c7-2c11-4e33-9b71-9ed94091bcac",
+  "name": "Dissatisfied Customer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dissatisfied Customer",
+      "oracle_fingerprint": "2eebbbdade006cf41fc8432e0567a811",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "RollDice": {
+                  "sides": 6,
+                  "results": [
+                    {
+                      "from": 1,
+                      "to": 3,
+                      "effects": [{ "LoseLife": { "amount": { "DieResult": "Only" } } }]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

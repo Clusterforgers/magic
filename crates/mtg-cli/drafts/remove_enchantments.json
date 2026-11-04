@@ -1,0 +1,103 @@
+{
+  "oracle_id": "fa879d99-3d2b-4a9a-a17f-d5ac109f8f44",
+  "name": "Remove Enchantments",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Remove Enchantments",
+      "oracle_fingerprint": "d5767ea8cdfa037b27202d688b26393c",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      {
+                        "AnyOf": [
+                          {
+                            "Not": {
+                              "AnyOf": [
+                                { "Not": { "Type": "Enchantment" } },
+                                { "Not": { "ControlledBy": "You" } }
+                              ]
+                            }
+                          },
+                          {
+                            "Not": {
+                              "AnyOf": [
+                                { "Not": { "Subtype": "Aura" } },
+                                { "Not": { "AttachedTo": { "Each": [{ "ControlledBy": "You" }] } } }
+                              ]
+                            }
+                          },
+                          {
+                            "Not": {
+                              "AnyOf": [
+                                { "Not": { "Subtype": "Aura" } },
+                                {
+                                  "Not": {
+                                    "AttachedTo": { "Each": [{ "Type": "Creature" }, "Attacking"] }
+                                  }
+                                },
+                                { "Not": { "ControlledBy": "Opponents" } }
+                              ]
+                            }
+                          }
+                        ]
+                      },
+                      { "OwnedBy": "You" }
+                    ]
+                  },
+                  "to": "Hand"
+                }
+              },
+              {
+                "Destroy": {
+                  "what": {
+                    "Each": [
+                      {
+                        "AnyOf": [
+                          {
+                            "Not": {
+                              "AnyOf": [
+                                { "Not": { "Type": "Enchantment" } },
+                                { "Not": { "ControlledBy": "You" } }
+                              ]
+                            }
+                          },
+                          {
+                            "Not": {
+                              "AnyOf": [
+                                { "Not": { "Subtype": "Aura" } },
+                                { "Not": { "AttachedTo": { "Each": [{ "ControlledBy": "You" }] } } }
+                              ]
+                            }
+                          },
+                          {
+                            "Not": {
+                              "AnyOf": [
+                                { "Not": { "Subtype": "Aura" } },
+                                {
+                                  "Not": {
+                                    "AttachedTo": { "Each": [{ "Type": "Creature" }, "Attacking"] }
+                                  }
+                                },
+                                { "Not": { "ControlledBy": "Opponents" } }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

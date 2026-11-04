@@ -1,0 +1,27 @@
+{
+  "oracle_id": "334e2147-5944-4558-b2bc-2f2bfb96dfa5",
+  "name": "Displace",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Displace",
+      "oracle_fingerprint": "a1ce26dcf3f37d337aa6661c2f777120",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                "bounds": { "min": 0, "max": 2 }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              { "Move": { "what": { "Bound": "exiled" }, "to": { "Battlefield": {} } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

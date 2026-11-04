@@ -1,0 +1,28 @@
+{
+  "oracle_id": "2ac9d397-10ca-43ce-bff9-45d631553486",
+  "name": "Agonizing Memories",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Agonizing Memories",
+      "oracle_fingerprint": "7f33aacd217fe42df6cbc11919fc9141",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Choose": {
+                  "from": { "Each": [{ "In": "Hand" }, { "OwnedBy": { "Target": 0 } }] },
+                  "count": { "min": 2, "max": 2 },
+                  "as": "picked"
+                }
+              },
+              { "Move": { "what": { "Bound": "picked" }, "to": { "Library": { "place": "Top" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "oracle_id": "d47fc902-51f7-4ad1-8ee4-c973e32192b8",
+  "name": "Sage Owl",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sage Owl",
+      "oracle_fingerprint": "21fb05a99dbf7d3abfd0be86e4a493c9",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "LookAtTop": { "count": 4, "as": "top" } },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Top", "order": "Chosen" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

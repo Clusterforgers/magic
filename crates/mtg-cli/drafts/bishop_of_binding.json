@@ -1,0 +1,56 @@
+{
+  "oracle_id": "c2dd6c78-e482-4a3c-ad9c-7dd71b3e34d2",
+  "name": "Bishop of Binding",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bishop of Binding",
+      "oracle_fingerprint": "6034560c94385ce054bef683fd611541",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "duration": "WhileSourceOnBattlefield" } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [{ "what": { "Object": [{ "Subtype": "Vampire" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": {
+                          "Total": {
+                            "of": [{ "ExiledWith": "This" }, { "In": "Exile" }],
+                            "stat": "Power"
+                          }
+                        },
+                        "toughness": {
+                          "Total": {
+                            "of": [{ "ExiledWith": "This" }, { "In": "Exile" }],
+                            "stat": "Power"
+                          }
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

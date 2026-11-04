@@ -1,0 +1,33 @@
+{
+  "oracle_id": "bbed284c-987a-4765-b3a8-4f18a228ad0e",
+  "name": "Ceaseless Searblades",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ceaseless Searblades",
+      "oracle_fingerprint": "7eacfd2af3d542d76d2f04b8faf1a54b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Did": {
+                "action": "Activated",
+                "who": "You",
+                "what": [{ "Subtype": "Elemental" }, { "In": "Battlefield" }]
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

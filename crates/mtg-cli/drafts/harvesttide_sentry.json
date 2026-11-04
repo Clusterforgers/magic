@@ -1,0 +1,46 @@
+{
+  "oracle_id": "6cd6b56d-d69e-4144-a6c7-8c066629435b",
+  "name": "Harvesttide Sentry",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Harvesttide Sentry",
+      "oracle_fingerprint": "3a309fe0dbf2b125cb2f63506891f4ee",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Distinct": {
+                    "of": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                    "stat": "Power"
+                  }
+                },
+                "op": "Ge",
+                "right": 3
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    {
+                      "CantBeBlockedBy": [
+                        { "Type": "Creature" },
+                        { "Compare": { "stat": "Power", "op": "Le", "to": 2 } }
+                      ]
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

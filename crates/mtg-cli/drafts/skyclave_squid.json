@@ -1,0 +1,32 @@
+{
+  "oracle_id": "301d36e7-06ff-48ed-a7e8-c7d3c72e1e2f",
+  "name": "Skyclave Squid",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Skyclave Squid",
+      "oracle_fingerprint": "3965dd0ad7d4bc789a114b951efecdc1",
+      "abilities": [
+        { "Keyword": "Defender" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "Rule": {
+                  "rule": { "Combat": { "who": "This", "quirk": "AttackDespiteDefender" } },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

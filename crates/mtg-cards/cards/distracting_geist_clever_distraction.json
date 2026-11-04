@@ -1,0 +1,58 @@
+{
+  "oracle_id": "2fcd5779-7234-49e3-b3c5-ebc07db74462",
+  "name": "Distracting Geist // Clever Distraction",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Distracting Geist",
+      "oracle_fingerprint": "1dc7dcde7c0d5face0c16a192778ad69",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Defending" }] } }
+            ],
+            "effects": [{ "Tap": { "what": { "Target": 0 } } }]
+          }
+        },
+        { "Keyword": { "Disturb": "{4}{W}" } }
+      ]
+    },
+    {
+      "name": "Clever Distraction",
+      "oracle_fingerprint": "7f6ae0d14b2ef55daaf67051882e2066",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Triggered": {
+                    "when": { "Attacks": { "what": ["This"] } },
+                    "targets": [
+                      {
+                        "what": {
+                          "Object": [{ "Type": "Creature" }, { "ControlledBy": "Defending" }]
+                        }
+                      }
+                    ],
+                    "effects": [{ "Tap": { "what": { "Target": 0 } } }]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Replacement": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Graveyard" } },
+            "by": { "MoveTo": "Exile" }
+          }
+        }
+      ]
+    }
+  ]
+}

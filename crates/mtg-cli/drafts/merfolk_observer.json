@@ -1,0 +1,28 @@
+{
+  "oracle_id": "0b5d49ce-7e02-4de6-8a65-bfc88ac0cf72",
+  "name": "Merfolk Observer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Merfolk Observer",
+      "oracle_fingerprint": "4244a66da1926bddaf0bd8e1ee71a4bd",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              { "LookAtTop": { "who": { "Target": 0 }, "as": "top" } },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Top", "order": "Chosen" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

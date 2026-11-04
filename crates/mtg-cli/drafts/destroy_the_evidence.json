@@ -1,0 +1,30 @@
+{
+  "oracle_id": "79aa86f5-bee4-498c-a0cd-719c05b136b2",
+  "name": "Destroy the Evidence",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Destroy the Evidence",
+      "oracle_fingerprint": "c921a2e48e4db616a1986cabd3cedbdc",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Land" }] } }],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              {
+                "RevealUntil": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "filter": [{ "Type": "Land" }],
+                  "as": "found",
+                  "revealed_as": "revealed2"
+                }
+              },
+              { "Move": { "what": { "Bound": "revealed2" }, "to": "Graveyard" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

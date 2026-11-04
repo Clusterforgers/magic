@@ -1,0 +1,48 @@
+{
+  "oracle_id": "9356aee1-3d2b-4d17-8863-663e1ddf56f3",
+  "name": "70,000 Light-Years from Home",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "70,000 Light-Years from Home",
+      "oracle_fingerprint": "fc5f8fe65e4e5d1cc08c80be38f66c7c",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Creature" }, { "Subtype": "Spacecraft" }] }]
+                }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 } } },
+              {
+                "May": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "effects": [
+                    {
+                      "Search": {
+                        "who": { "ControllerOf": { "Target": 0 } },
+                        "filter": [{ "Type": "Land" }, { "Supertype": "Basic" }],
+                        "as": "found"
+                      }
+                    },
+                    {
+                      "Move": {
+                        "what": { "Bound": "found" },
+                        "to": { "Battlefield": { "tapped": true } }
+                      }
+                    },
+                    { "Shuffle": { "who": { "ControllerOf": { "Target": 0 } } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

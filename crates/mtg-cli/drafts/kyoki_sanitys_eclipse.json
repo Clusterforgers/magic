@@ -1,0 +1,34 @@
+{
+  "oracle_id": "f5240f9a-597b-43e7-9876-74559df1354e",
+  "name": "Kyoki, Sanity's Eclipse",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kyoki, Sanity's Eclipse",
+      "oracle_fingerprint": "0cea2a49eb60dd3ca9a1036dcf6a97f5",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [{ "AnyOf": [{ "Subtype": "Spirit" }, { "Subtype": "Arcane" }] }],
+                "by": "You"
+              }
+            },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Choose": {
+                  "who": { "Target": 0 },
+                  "from": { "Each": [{ "In": "Hand" }, { "OwnedBy": { "Target": 0 } }] },
+                  "as": "picked"
+                }
+              },
+              { "Exile": { "what": { "Bound": "picked" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

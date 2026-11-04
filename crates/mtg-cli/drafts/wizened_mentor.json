@@ -1,0 +1,41 @@
+{
+  "oracle_id": "6eb5193b-5ef0-4261-acdc-958e161c8118",
+  "name": "Wizened Mentor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wizened Mentor",
+      "oracle_fingerprint": "fdca46fd28a4c154a91b6705064dfcd7",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Did": {
+                "action": "Activated",
+                "who": "Opponents",
+                "what": [{ "In": "Battlefield" }]
+              }
+            },
+            "limit": "OncePerTurn",
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Zombie",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Zombie"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

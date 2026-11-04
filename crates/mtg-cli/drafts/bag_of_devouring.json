@@ -1,0 +1,75 @@
+{
+  "oracle_id": "4443345d-a292-4394-97dd-0e6f4d9aedf7",
+  "name": "Bag of Devouring",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bag of Devouring",
+      "oracle_fingerprint": "95aafd960aec079169e7bb29cb07c60c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Sacrificed": {
+                "what": [
+                  { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] },
+                  { "Not": "Token" },
+                  "Other"
+                ],
+                "by": "You"
+              }
+            },
+            "effects": [{ "Exile": { "what": "Triggering" } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{2}" },
+              "Tap",
+              {
+                "Sacrifice": {
+                  "filter": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] }, "Other"]
+                }
+              }
+            ],
+            "effects": [{ "Draw": {} }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}" }, "Tap", "SacrificeSelf"],
+            "effects": [
+              {
+                "RollDice": {
+                  "sides": 10,
+                  "results": [
+                    {
+                      "from": 1,
+                      "effects": [
+                        {
+                          "Choose": {
+                            "from": {
+                              "Each": [
+                                { "ExiledWith": "This" },
+                                { "In": "Exile" },
+                                { "OwnedBy": "You" }
+                              ]
+                            },
+                            "count": { "min": 0, "max": { "DieResult": "Only" } },
+                            "as": "picked"
+                          }
+                        },
+                        { "Move": { "what": { "Bound": "picked" }, "to": "Hand" } }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

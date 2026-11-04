@@ -1,0 +1,28 @@
+{
+  "oracle_id": "48e8ae59-a234-498e-9dae-bac8d1424ea5",
+  "name": "Runic Armasaur",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Runic Armasaur",
+      "oracle_fingerprint": "05adb3e9350bd15e4c14c0ad81b34196",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Did": {
+                "action": "Activated",
+                "who": "Opponents",
+                "what": [
+                  { "AnyOf": [{ "Type": "Creature" }, { "Type": "Land" }] },
+                  { "In": "Battlefield" }
+                ]
+              }
+            },
+            "effects": [{ "May": { "effects": [{ "Draw": {} }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

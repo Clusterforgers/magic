@@ -1,0 +1,27 @@
+{
+  "oracle_id": "9a63f6fc-dcf8-4529-a598-ca3d511f29e2",
+  "name": "Time Reversal",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Time Reversal",
+      "oracle_fingerprint": "bc6a354cd00a1166984001a2f0b3a702",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Each": [{ "AnyOf": [{ "In": "Hand" }, { "In": "Graveyard" }] }] },
+                  "to": { "Library": { "place": "Shuffled" } }
+                }
+              },
+              { "Draw": { "who": "EachPlayer", "count": 7 } },
+              { "Exile": { "what": "This" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

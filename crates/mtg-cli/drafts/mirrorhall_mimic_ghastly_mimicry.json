@@ -1,0 +1,52 @@
+{
+  "oracle_id": "5768fe50-a134-492c-a725-5ed02610c39f",
+  "name": "Mirrorhall Mimic // Ghastly Mimicry",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mirrorhall Mimic",
+      "oracle_fingerprint": "d25884d40fc952693b25a03ae95f9ad4",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "AsCopy": {
+                "of": [{ "Type": "Creature" }, "Other"],
+                "except": [{ "AddSubtype": "Spirit" }]
+              }
+            }
+          }
+        },
+        { "Keyword": { "Disturb": "{3}{U}{U}" } }
+      ]
+    },
+    {
+      "name": "Ghastly Mimicry",
+      "oracle_fingerprint": "75dda25484d1fe74c636914b603f2e36",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "CopyOf": { "of": "Attached", "except": [{ "AddSubtype": "Spirit" }] }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Replacement": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Graveyard" } },
+            "by": { "MoveTo": "Exile" }
+          }
+        }
+      ]
+    }
+  ]
+}

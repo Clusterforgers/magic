@@ -1,0 +1,43 @@
+{
+  "oracle_id": "77d6c141-5670-4120-9346-dc2fdcb66e50",
+  "name": "Metamorphose",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Metamorphose",
+      "oracle_fingerprint": "e137d3cdd02b93139d237a694192a449",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "ControlledBy": "Opponents" }] } }],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Library": { "place": "Top" } } } },
+              {
+                "Choose": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "from": {
+                    "Each": [
+                      {
+                        "AnyOf": [
+                          { "Type": "Artifact" },
+                          { "Type": "Creature" },
+                          { "Type": "Enchantment" },
+                          { "Type": "Land" }
+                        ]
+                      },
+                      { "In": "Hand" },
+                      { "OwnedBy": { "ControllerOf": { "Target": 0 } } }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked"
+                }
+              },
+              { "Move": { "what": { "Bound": "picked" }, "to": { "Battlefield": {} } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "oracle_id": "8f3e6554-eb8a-4096-81a3-2411186d9cb4",
+  "name": "Covetous Castaway // Ghostly Castigator",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Covetous Castaway",
+      "oracle_fingerprint": "a51a78cf35a561fa846ca4ed35508920",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [{ "Mill": { "count": 3 } }]
+          }
+        },
+        { "Keyword": { "Disturb": "{3}{U}{U}" } }
+      ]
+    },
+    {
+      "name": "Ghostly Castigator",
+      "oracle_fingerprint": "8b3121cb2c2487e352e73a9c1c353dd7",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 7, "end": 113 }
+          }
+        },
+        {
+          "Replacement": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Graveyard" } },
+            "by": { "MoveTo": "Exile" }
+          }
+        }
+      ]
+    }
+  ]
+}

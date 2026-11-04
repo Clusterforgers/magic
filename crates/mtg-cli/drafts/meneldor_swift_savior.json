@@ -1,0 +1,29 @@
+{
+  "oracle_id": "ef9a5bd1-6ce2-4570-9d42-89d997e2fc6f",
+  "name": "Meneldor, Swift Savior",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Meneldor, Swift Savior",
+      "oracle_fingerprint": "2540577d5be63893515ffbc82da79679",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "OwnedBy": "You" }] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              { "Move": { "what": { "Bound": "exiled" }, "to": { "Battlefield": {} } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

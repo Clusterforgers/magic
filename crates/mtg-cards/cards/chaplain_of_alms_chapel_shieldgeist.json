@@ -1,0 +1,36 @@
+{
+  "oracle_id": "c21d1ca3-3d19-4b4d-bbfa-07b5b7bcea4b",
+  "name": "Chaplain of Alms // Chapel Shieldgeist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Chaplain of Alms",
+      "oracle_fingerprint": "361ac65a5243e1879ab21f0ed9b83f4a",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        { "Keyword": { "Ward": "{1}" } },
+        { "Keyword": { "Disturb": "{3}{W}" } }
+      ]
+    },
+    {
+      "name": "Chapel Shieldgeist",
+      "oracle_fingerprint": "f3679d74bb627c313abc3acf9d758d7c",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "FirstStrike" },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": { "Ward": "{1}" } }]
+          }
+        },
+        {
+          "Replacement": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Graveyard" } },
+            "by": { "MoveTo": "Exile" }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,123 @@
+{
+  "oracle_id": "96e5d4a1-e59f-4140-823f-a17e15ee5d8d",
+  "name": "Aang, at the Crossroads // Aang, Destined Savior",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Aang, at the Crossroads",
+      "oracle_fingerprint": "60b9e8bf4e1f9467bf79f8208f1b3730",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "LookAtTop": { "count": 5, "as": "top" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "Type": "Creature" },
+                      { "Compare": { "stat": "ManaValue", "op": "Le", "to": 4 } }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "kept2"
+                }
+              },
+              { "Move": { "what": { "Bound": "kept2" }, "to": { "Battlefield": {} } } },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }],
+                "from": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "Upkeep" } },
+                  "effects": [{ "Transform": { "what": "This" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Aang, Destined Savior",
+      "oracle_fingerprint": "ce58fb7d180d17225feeea206590bd02",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Static": {
+            "affected": {
+              "Each": [{ "Type": "Creature" }, { "Type": "Land" }, { "ControlledBy": "You" }]
+            },
+            "mods": [{ "AddKeyword": "Vigilance" }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "targets": [{ "what": { "Object": [{ "Type": "Land" }, { "ControlledBy": "You" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "AddType": "Creature" },
+                    { "SetPT": { "power": 0, "toughness": 0 } },
+                    { "AddKeyword": "Haste" }
+                  ],
+                  "duration": "Forever"
+                }
+              },
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1", "count": 2 } },
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "AnyOf": [
+                      {
+                        "ZoneChange": {
+                          "what": [{ "Is": { "Target": 0 } }],
+                          "from": "Battlefield",
+                          "to": "Graveyard"
+                        }
+                      },
+                      {
+                        "ZoneChange": {
+                          "what": [{ "Is": { "Target": 0 } }],
+                          "from": "Battlefield",
+                          "to": "Exile"
+                        }
+                      }
+                    ]
+                  },
+                  "effects": [
+                    {
+                      "Move": { "what": "Triggering", "to": { "Battlefield": { "tapped": true } } }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

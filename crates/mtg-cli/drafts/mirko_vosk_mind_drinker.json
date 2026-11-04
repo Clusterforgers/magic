@@ -1,0 +1,31 @@
+{
+  "oracle_id": "469da932-8186-4e54-a858-cfc72c4ded96",
+  "name": "Mirko Vosk, Mind Drinker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mirko Vosk, Mind Drinker",
+      "oracle_fingerprint": "557d710193387b6ba755235337745df3",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              {
+                "RevealUntil": {
+                  "who": "Triggering",
+                  "filter": [{ "Type": "Land" }],
+                  "count": 4,
+                  "as": "found",
+                  "revealed_as": "revealed2"
+                }
+              },
+              { "Move": { "what": { "Bound": "revealed2" }, "to": "Graveyard" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

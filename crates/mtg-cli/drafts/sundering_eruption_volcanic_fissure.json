@@ -1,0 +1,69 @@
+{
+  "oracle_id": "c95309e9-5c2f-4518-b2fd-825d3d0a4ae0",
+  "name": "Sundering Eruption // Volcanic Fissure",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sundering Eruption",
+      "oracle_fingerprint": "de2dc2838223af0e5e2eac9562a78d24",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Land" }] } }],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              {
+                "May": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "effects": [
+                    {
+                      "Search": {
+                        "who": { "ControllerOf": { "Target": 0 } },
+                        "filter": [{ "Type": "Land" }, { "Supertype": "Basic" }],
+                        "as": "found"
+                      }
+                    },
+                    {
+                      "Move": {
+                        "what": { "Bound": "found" },
+                        "to": { "Battlefield": { "tapped": true } }
+                      }
+                    },
+                    { "Shuffle": { "who": { "ControllerOf": { "Target": 0 } } } }
+                  ]
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [{ "Type": "Creature" }, { "Not": { "HasKeyword": "Flying" } }]
+                  },
+                  "mods": ["CantBlock"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Volcanic Fissure",
+      "oracle_fingerprint": "75a4089357813fe059553fdac77b768e",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "PayLifeOrTapped": 3 }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Red"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "oracle_id": "393b9d9e-9d71-43e7-aede-eac7f85d2365",
+  "name": "Demonic Covenant",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Demonic Covenant",
+      "oracle_fingerprint": "55377933cb09523ef49dfd609ed67801",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacksAt": {
+                "what": [{ "Type": "Creature" }, { "Subtype": "Demon" }, { "ControlledBy": "You" }],
+                "at": "EachPlayer"
+              }
+            },
+            "effects": [{ "Draw": {} }, { "LoseLife": { "amount": 1 } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 90, "end": 293 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,64 @@
+{
+  "oracle_id": "a7950edb-5670-46fd-a30e-0fe888a5a32b",
+  "name": "Phyrexian Dreadnought",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Phyrexian Dreadnought",
+      "oracle_fingerprint": "00f6c5f0856edf05f31e3c3392e81921",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "count": {
+                    "min": 0,
+                    "max": { "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+                  },
+                  "as": "card"
+                }
+              },
+              { "Reveal": { "what": { "Bound": "card" } } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Stat": { "of": { "Bound": "card" }, "stat": "Power" } },
+                      "op": "Lt",
+                      "right": 12
+                    }
+                  },
+                  "then": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Stat": { "of": { "Bound": "card" }, "stat": "Power" } },
+                      "op": "Ge",
+                      "right": 12
+                    }
+                  },
+                  "then": [
+                    {
+                      "Sacrifice": {
+                        "who": { "ControllerOf": { "Bound": "card" } },
+                        "filter": [{ "Is": { "Bound": "card" } }],
+                        "count": { "Count": [{ "Is": { "Bound": "card" } }] }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

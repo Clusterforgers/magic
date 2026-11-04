@@ -1,0 +1,45 @@
+{
+  "oracle_id": "76587fa5-29eb-480f-a865-480cd39b1da7",
+  "name": "Weird Harvest",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Weird Harvest",
+      "oracle_fingerprint": "dde81f32e5512263fc1dda925d87a793",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "player",
+                  "effects": [
+                    {
+                      "May": {
+                        "who": { "Bound": "player" },
+                        "effects": [
+                          {
+                            "Search": {
+                              "who": { "Bound": "player" },
+                              "filter": [{ "Type": "Creature" }],
+                              "count": { "min": 0, "max": "X" },
+                              "reveal": true,
+                              "as": "found2"
+                            }
+                          },
+                          { "Move": { "what": { "Bound": "found2" }, "to": "Hand" } },
+                          { "Shuffle": { "who": { "Bound": "player" } } }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

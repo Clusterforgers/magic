@@ -1,0 +1,59 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "A",
+      "text": "Put target spell or nonland permanent into its owner's library second from the top.",
+      "abilities": [],
+      "gap": "zone:Origin=Battlefield,Stack"
+    },
+    {
+      "face": 1,
+      "tag": "K",
+      "text": "Aftermath",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    },
+    {
+      "face": 1,
+      "tag": "A",
+      "text": "Each player shuffles their graveyard and hand into their library, then draws seven cards.",
+      "abilities": [
+        1
+      ],
+      "gap": null
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 83
+        },
+        "mark": "ByHand"
+      },
+      {
+        "face": 1,
+        "span": {
+          "start": 0,
+          "end": 68
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 1,
+        "span": {
+          "start": 69,
+          "end": 158
+        },
+        "mark": "Auto"
+      }
+    ]
+  }
+}

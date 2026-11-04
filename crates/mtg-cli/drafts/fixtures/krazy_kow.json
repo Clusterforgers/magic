@@ -1,0 +1,129 @@
+{
+  "object": "card",
+  "id": "e978fdf7-2243-49d0-b265-a3287f19b17d",
+  "oracle_id": "8b0ae835-df89-4b02-9fe6-0ae2f66405bd",
+  "multiverse_ids": [
+    9758
+  ],
+  "tcgplayer_id": 880,
+  "cardmarket_id": 11920,
+  "name": "Krazy Kow",
+  "lang": "en",
+  "released_at": "1998-08-11",
+  "uri": "https://api.scryfall.com/cards/e978fdf7-2243-49d0-b265-a3287f19b17d",
+  "scryfall_uri": "https://scryfall.com/card/ugl/48/krazy-kow?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T12:40:26Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/e/9/e978fdf7-2243-49d0-b265-a3287f19b17d.jpg?1783946426",
+    "normal": "https://cards.scryfall.io/normal/front/e/9/e978fdf7-2243-49d0-b265-a3287f19b17d.jpg?1783946426",
+    "large": "https://cards.scryfall.io/large/front/e/9/e978fdf7-2243-49d0-b265-a3287f19b17d.jpg?1783946426",
+    "png": "https://cards.scryfall.io/png/front/e/9/e978fdf7-2243-49d0-b265-a3287f19b17d.png?1783946426",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/e/9/e978fdf7-2243-49d0-b265-a3287f19b17d.jpg?1783946426",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/e/9/e978fdf7-2243-49d0-b265-a3287f19b17d.jpg?1783946426",
+    "thumb": "https://cards.scryfall.io/thumb/front/e/9/e978fdf7-2243-49d0-b265-a3287f19b17d.webp?1783946426",
+    "grid": "https://cards.scryfall.io/grid/front/e/9/e978fdf7-2243-49d0-b265-a3287f19b17d.webp?1783946426",
+    "display": "https://cards.scryfall.io/display/front/e/9/e978fdf7-2243-49d0-b265-a3287f19b17d.webp?1783946426",
+    "art": "https://cards.scryfall.io/art/front/e/9/e978fdf7-2243-49d0-b265-a3287f19b17d.webp?1783946426",
+    "crop": "https://cards.scryfall.io/crop/front/e/9/e978fdf7-2243-49d0-b265-a3287f19b17d.webp?1783946426",
+    "jpeg": "https://cards.scryfall.io/normal/front/e/9/e978fdf7-2243-49d0-b265-a3287f19b17d.jpg?1783946426"
+  },
+  "mana_cost": "{3}{R}",
+  "cmc": 4.0,
+  "type_line": "Creature — Cow",
+  "oracle_text": "At the beginning of your upkeep, roll a six-sided die. If you a roll a 1, sacrifice this creature and it deals 3 damage to each creature and each player.",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "not_legal",
+    "pauper": "not_legal",
+    "vintage": "not_legal",
+    "penny": "not_legal",
+    "commander": "not_legal",
+    "oathbreaker": "not_legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "not_legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "3404fc78-6678-4cf4-bd39-4c0be3bb7baf",
+  "set": "ugl",
+  "set_name": "Unglued",
+  "set_type": "funny",
+  "set_uri": "https://api.scryfall.com/sets/3404fc78-6678-4cf4-bd39-4c0be3bb7baf",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Augl&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/ugl?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/e978fdf7-2243-49d0-b265-a3287f19b17d/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A8b0ae835-df89-4b02-9fe6-0ae2f66405bd&unique=prints",
+  "collector_number": "48",
+  "digital": false,
+  "rarity": "common",
+  "flavor_text": "\"I got your milk right here!\"",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Ron Spencer",
+  "artist_ids": [
+    "dab52c11-0564-4207-a4a1-c1735c946a65"
+  ],
+  "illustration_id": "4884f134-84a0-465b-b2bd-b72ab6202005",
+  "border_color": "silver",
+  "frame": "1997",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "prices": {
+    "usd": "0.28",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.20",
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=9758&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DKrazy%2BKow",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DKrazy%2BKow",
+    "edhrec": "https://edhrec.com/route/?cc=Krazy+Kow"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F880%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=11920&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Krazy+Kow&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

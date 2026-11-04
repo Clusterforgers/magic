@@ -1,0 +1,55 @@
+{
+  "oracle_id": "0a154fb2-9f23-4c22-baee-728492385d6d",
+  "name": "Devoted Grafkeeper // Departed Soulkeeper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Devoted Grafkeeper",
+      "oracle_fingerprint": "24a77bb7641b03a3c3892184c89d4677",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Mill": { "count": 2 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [{ "WasCast": { "by": "You", "from": "Graveyard" } }, { "OwnedBy": "You" }],
+                "by": "You"
+              }
+            },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "Not": { "ControlledBy": "You" } }] }
+              }
+            ],
+            "effects": [{ "Tap": { "what": { "Target": 0 } } }]
+          }
+        },
+        { "Keyword": { "Disturb": "{1}{W}{U}" } }
+      ]
+    },
+    {
+      "name": "Departed Soulkeeper",
+      "oracle_fingerprint": "d85131a15e00fd015037f0c416bb9edd",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "CanBlockOnly": [{ "Type": "Creature" }, { "HasKeyword": "Flying" }] }]
+          }
+        },
+        {
+          "Replacement": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Graveyard" } },
+            "by": { "MoveTo": "Exile" }
+          }
+        }
+      ]
+    }
+  ]
+}

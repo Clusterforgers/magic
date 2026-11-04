@@ -1,0 +1,50 @@
+{
+  "oracle_id": "fb9d7439-2108-4407-9c85-943efe71b106",
+  "name": "Hammer Helper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hammer Helper",
+      "oracle_fingerprint": "0cbfe4402ef93d4da065e31eb43d15a6",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Untap": { "what": { "Target": 0 } } },
+              {
+                "RollDice": {
+                  "sides": 6,
+                  "results": [
+                    {
+                      "from": 1,
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": { "Target": 0 },
+                            "mods": [
+                              { "ModifyPT": { "power": { "DieResult": "Only" }, "toughness": 0 } },
+                              { "AddKeyword": "Haste" }
+                            ],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "oracle_id": "10889b44-d031-413c-a8c4-d6c13c400e01",
+  "name": "Wall of Wonder",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wall of Wonder",
+      "oracle_fingerprint": "24d32ccfd857ef1802ef6dba9192801b",
+      "abilities": [
+        { "Keyword": "Defender" },
+        {
+          "Activated": {
+            "cost": "{2}{U}{U}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 4, "toughness": -4 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Rule": {
+                  "rule": { "Combat": { "who": "This", "quirk": "AttackDespiteDefender" } },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

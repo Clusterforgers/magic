@@ -1,0 +1,28 @@
+{
+  "oracle_id": "f57c6bfb-8dd4-429d-8ced-65145e2f7adb",
+  "name": "Sage Aven",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sage Aven",
+      "oracle_fingerprint": "cfef035652b6276f18bdad0ed4318c9c",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "LookAtTop": { "count": 4, "as": "top" } },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Top", "order": "Chosen" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

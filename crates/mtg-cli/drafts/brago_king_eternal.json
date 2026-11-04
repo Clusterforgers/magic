@@ -1,0 +1,32 @@
+{
+  "oracle_id": "fcb0c7db-bd07-4c25-b7f8-b6c207e4f6be",
+  "name": "Brago, King Eternal",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Brago, King Eternal",
+      "oracle_fingerprint": "6a4d66d335b497f2b3d113c85edaeec1",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "targets": [
+              {
+                "what": { "Object": [{ "ControlledBy": "You" }, { "Not": { "Type": "Land" } }] },
+                "bounds": {
+                  "min": 0,
+                  "max": { "Count": [{ "ControlledBy": "You" }, { "Not": { "Type": "Land" } }] }
+                }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              { "Move": { "what": { "Bound": "exiled" }, "to": { "Battlefield": {} } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

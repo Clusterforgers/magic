@@ -1,7 +1,7 @@
 {
   "oracle_id": "a74e41b4-6284-453c-a586-d575735dca65",
   "name": "Emergent Woodwurm",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Emergent Woodwurm",
@@ -9,9 +9,39 @@
       "abilities": [
         { "Keyword": { "Backup": { "count": 3 } } },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 161, "end": 410 }
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "LookAtTop": { "count": { "Stat": { "of": "This", "stat": "Power" } }, "as": "top" }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      {
+                        "Compare": {
+                          "stat": "ManaValue",
+                          "op": "Le",
+                          "to": { "Stat": { "of": "This", "stat": "Power" } }
+                        }
+                      }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "kept2"
+                }
+              },
+              { "Move": { "what": { "Bound": "kept2" }, "to": { "Battlefield": {} } } },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
           }
         }
       ]

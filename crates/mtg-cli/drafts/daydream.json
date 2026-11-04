@@ -1,0 +1,30 @@
+{
+  "oracle_id": "094c4486-6cae-4268-850e-ff0082e5ad10",
+  "name": "Daydream",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Daydream",
+      "oracle_fingerprint": "30b32d40af08f695ce649778a30d958e",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              {
+                "Move": {
+                  "what": { "Bound": "exiled" },
+                  "to": { "Battlefield": { "counters": [["+1/+1", 1]] } }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Flashback": "{2}{W}" } }
+      ]
+    }
+  ]
+}

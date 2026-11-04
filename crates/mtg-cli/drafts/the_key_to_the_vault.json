@@ -9,27 +9,43 @@
       "abilities": [
         {
           "Triggered": {
-            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer" } },
+            "when": {
+              "DealsDamage": {
+                "source": [{ "Type": "Creature" }, { "Is": "Attached" }],
+                "to": "EachPlayer",
+                "combat": true
+              }
+            },
             "effects": [
-              {
-                "LookAtTop": { "count": { "Stat": { "of": "This", "stat": "Power" } }, "as": "top" }
-              },
+              { "LookAtTop": { "count": "Triggering", "as": "top" } },
               {
                 "Choose": {
-                  "from": { "Each": [{ "In": "Library" }, { "Is": { "Bound": "top" } }] },
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "Not": { "Type": "Land" } }
+                    ]
+                  },
                   "count": { "min": 0, "max": 1 },
-                  "as": "kept",
-                  "rest_as": "nonland"
+                  "as": "kept2"
                 }
               },
-              { "Exile": { "what": { "Bound": "kept" } } },
+              { "Exile": { "what": { "Bound": "kept2" }, "as": "kept2_exiled" } },
               {
                 "Move": {
                   "what": { "Bound": "top" },
                   "to": { "Library": { "place": "Bottom", "order": "Random" } }
                 }
               },
-              { "Manifest": {} }
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Is": { "Bound": "kept2_exiled" } }, { "In": "Exile" }] },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked4"
+                }
+              },
+              { "CastFromZone": { "what": { "Bound": "picked4" }, "free": true } }
             ]
           }
         },

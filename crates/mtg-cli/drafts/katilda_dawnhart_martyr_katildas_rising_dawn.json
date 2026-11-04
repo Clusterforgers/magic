@@ -1,0 +1,80 @@
+{
+  "oracle_id": "493b2820-c250-48bd-9f3c-e1b5639ee101",
+  "name": "Katilda, Dawnhart Martyr // Katilda's Rising Dawn",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Katilda, Dawnhart Martyr",
+      "oracle_fingerprint": "dddb7bf8512ce5fa130b7e42c98d35a5",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Lifelink" },
+        { "Keyword": { "Protection": [{ "Subtype": "Vampire" }] } },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "SetPT": {
+                  "power": {
+                    "Count": [
+                      { "AnyOf": [{ "Subtype": "Spirit" }, { "Type": "Enchantment" }] },
+                      { "ControlledBy": "You" }
+                    ]
+                  },
+                  "toughness": {
+                    "Count": [
+                      { "AnyOf": [{ "Subtype": "Spirit" }, { "Type": "Enchantment" }] },
+                      { "ControlledBy": "You" }
+                    ]
+                  }
+                }
+              }
+            ],
+            "defining": true
+          }
+        },
+        { "Keyword": { "Disturb": "{3}{W}{W}" } }
+      ]
+    },
+    {
+      "name": "Katilda's Rising Dawn",
+      "oracle_fingerprint": "e17eac211c2d64b9e137abaed5be2265",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": {
+                    "Count": [
+                      { "AnyOf": [{ "Subtype": "Spirit" }, { "Type": "Enchantment" }] },
+                      { "ControlledBy": "You" }
+                    ]
+                  },
+                  "toughness": {
+                    "Count": [
+                      { "AnyOf": [{ "Subtype": "Spirit" }, { "Type": "Enchantment" }] },
+                      { "ControlledBy": "You" }
+                    ]
+                  }
+                }
+              },
+              { "AddKeyword": "Flying" },
+              { "AddKeyword": "Lifelink" },
+              { "AddKeyword": { "Protection": [{ "Subtype": "Vampire" }] } }
+            ]
+          }
+        },
+        {
+          "Replacement": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Graveyard" } },
+            "by": { "MoveTo": "Exile" }
+          }
+        }
+      ]
+    }
+  ]
+}

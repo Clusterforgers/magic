@@ -1,0 +1,31 @@
+{
+  "oracle_id": "39b4a47a-df51-4bd9-9a20-43ac80a5d352",
+  "name": "Balustrade Spy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Balustrade Spy",
+      "oracle_fingerprint": "584114cf015cf1984d2840722bf0aa52",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "RevealUntil": {
+                  "who": { "Target": 0 },
+                  "filter": [{ "Type": "Land" }],
+                  "as": "found",
+                  "revealed_as": "revealed2"
+                }
+              },
+              { "Move": { "what": { "Bound": "revealed2" }, "to": "Graveyard" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

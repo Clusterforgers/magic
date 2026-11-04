@@ -1,0 +1,35 @@
+{
+  "oracle_id": "3689ef94-2573-4424-b52e-379656340345",
+  "name": "Hightide Hermit",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hightide Hermit",
+      "oracle_fingerprint": "57a249d123937852d5d6b921cc08cb31",
+      "abilities": [
+        { "Keyword": "Defender" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "PutCounters": { "on": "You", "counter": { "Other": "energy" }, "count": 4 } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "PayEnergy": 2 }],
+            "effects": [
+              {
+                "Rule": {
+                  "rule": { "Combat": { "who": "This", "quirk": "AttackDespiteDefender" } },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

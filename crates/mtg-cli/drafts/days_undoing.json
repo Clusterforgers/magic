@@ -1,0 +1,27 @@
+{
+  "oracle_id": "810a6cf5-e9f4-48e1-8e06-3e0af85633ce",
+  "name": "Day's Undoing",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Day's Undoing",
+      "oracle_fingerprint": "41c83a3325009d3481480e379ba5758f",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Each": [{ "AnyOf": [{ "In": "Hand" }, { "In": "Graveyard" }] }] },
+                  "to": { "Library": { "place": "Shuffled" } }
+                }
+              },
+              { "Draw": { "who": "EachPlayer", "count": 7 } },
+              { "If": { "condition": "YourTurn", "then": ["EndTurn"] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

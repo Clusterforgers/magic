@@ -1,0 +1,43 @@
+{
+  "oracle_id": "bf9221f5-a4b2-4074-901c-0fa3c2bda80c",
+  "name": "Mistbreath Elder",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mistbreath Elder",
+      "oracle_fingerprint": "1553e702f91679d54e07209358ed3be0",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }] },
+                  "as": "picked"
+                }
+              },
+              { "Move": { "what": { "Bound": "picked" }, "to": "Hand", "as": "moved2" } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": { "left": { "Bound": "moved2~moved" }, "op": "Ge", "right": 1 }
+                  },
+                  "then": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": { "left": { "Bound": "moved2~moved" }, "op": "Le", "right": 0 }
+                  },
+                  "then": [{ "May": { "effects": [{ "Move": { "what": "This", "to": "Hand" } }] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

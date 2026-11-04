@@ -1,0 +1,47 @@
+{
+  "oracle_id": "9b836c32-84f0-41ae-b7d9-67b92c743c60",
+  "name": "Horn of the Mark",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Horn of the Mark",
+      "oracle_fingerprint": "34c0e8d1164c86be547de4a246309f42",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacksAt": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                "at": "EachPlayer",
+                "at_least": 2
+              }
+            },
+            "effects": [
+              { "LookAtTop": { "count": 5, "as": "top" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "Type": "Creature" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "kept2"
+                }
+              },
+              { "Move": { "what": { "Bound": "kept2" }, "to": "Hand" } },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "oracle_id": "017f1f83-18a8-4523-917d-98f6ca7838b7",
+  "name": "Box of Free-Range Goblins",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Box of Free-Range Goblins",
+      "oracle_fingerprint": "3313b78477a8a3f1edb7724156269995",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RollDice": {
+                  "sides": 6,
+                  "results": [
+                    {
+                      "from": 1,
+                      "effects": [
+                        {
+                          "CreateToken": {
+                            "token": {
+                              "Custom": {
+                                "name": "Goblin",
+                                "colors": ["Red"],
+                                "types": ["Creature"],
+                                "subtypes": ["Goblin"],
+                                "power": 1,
+                                "toughness": 1
+                              }
+                            },
+                            "count": { "DieResult": "Only" }
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

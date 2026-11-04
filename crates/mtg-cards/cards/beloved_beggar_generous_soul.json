@@ -1,0 +1,26 @@
+{
+  "oracle_id": "74c9cc13-c03f-4322-82af-b7bce1f2a0d8",
+  "name": "Beloved Beggar // Generous Soul",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Beloved Beggar",
+      "oracle_fingerprint": "0367c8cc35811c445d2bb4c22f6ab2ab",
+      "abilities": [{ "Keyword": { "Disturb": "{4}{W}{W}" } }]
+    },
+    {
+      "name": "Generous Soul",
+      "oracle_fingerprint": "62a359b2c74c3164283229c440c740de",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Vigilance" },
+        {
+          "Replacement": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Graveyard" } },
+            "by": { "MoveTo": "Exile" }
+          }
+        }
+      ]
+    }
+  ]
+}

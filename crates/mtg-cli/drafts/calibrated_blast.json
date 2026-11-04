@@ -1,0 +1,62 @@
+{
+  "oracle_id": "d9f5fc77-40df-4872-b633-6bf5a22a8831",
+  "name": "Calibrated Blast",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Calibrated Blast",
+      "oracle_fingerprint": "0aa1ccdfec149351ae5d817e6e93499e",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RevealUntil": {
+                  "filter": [{ "Not": { "Type": "Land" } }],
+                  "as": "found",
+                  "revealed_as": "revealed2"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "revealed2" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "found" },
+                      "selector": [{ "Not": { "Type": "Land" } }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Reflexive": {
+                        "targets": [{ "what": "AnyTarget" }],
+                        "effects": [
+                          {
+                            "DealDamage": {
+                              "to": { "Target": 0 },
+                              "amount": {
+                                "Stat": { "of": { "Bound": "found" }, "stat": "ManaValue" }
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Flashback": "{3}{R}{R}" } }
+      ]
+    }
+  ]
+}

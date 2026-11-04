@@ -1,0 +1,32 @@
+{
+  "oracle_id": "7f764d09-bfbf-4222-bd73-46d6cce8b470",
+  "name": "Vegetation Abomination",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vegetation Abomination",
+      "oracle_fingerprint": "47ae8ff44342993c1f4f39a59843add1",
+      "abilities": [
+        { "Keyword": "Deathtouch" },
+        {
+          "Activated": {
+            "cost": ["Tap", "SacrificeSelf"],
+            "effects": [
+              {
+                "RollDice": {
+                  "sides": 6,
+                  "results": [
+                    {
+                      "from": 1,
+                      "effects": [{ "GainLife": { "amount": { "DieResult": "Only" } } }]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

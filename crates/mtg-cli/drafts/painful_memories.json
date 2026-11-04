@@ -1,0 +1,27 @@
+{
+  "oracle_id": "27a3faa1-4f1a-4581-9e19-9265faa9c10b",
+  "name": "Painful Memories",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Painful Memories",
+      "oracle_fingerprint": "e412a3f7ada1a512c03a17e192e914fc",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Choose": {
+                  "from": { "Each": [{ "In": "Hand" }, { "OwnedBy": { "Target": 0 } }] },
+                  "as": "picked"
+                }
+              },
+              { "Move": { "what": { "Bound": "picked" }, "to": { "Library": { "place": "Top" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

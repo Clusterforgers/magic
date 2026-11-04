@@ -1,7 +1,7 @@
 {
   "oracle_id": "cc913f28-18ef-485e-8d2b-ae0115523020",
   "name": "Depala, Pilot Exemplar",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Depala, Pilot Exemplar",
@@ -22,9 +22,37 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 101, "end": 331 }
+          "Triggered": {
+            "when": { "Tapped": { "what": ["This"] } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{X}",
+                  "paid": [
+                    { "LookAtTop": { "count": "X", "as": "top" } },
+                    { "Reveal": { "what": { "Bound": "top" } } },
+                    {
+                      "Move": {
+                        "what": {
+                          "Each": [
+                            { "In": "Library" },
+                            { "Is": { "Bound": "top" } },
+                            { "AnyOf": [{ "Subtype": "Dwarf" }, { "Subtype": "Vehicle" }] }
+                          ]
+                        },
+                        "to": "Hand"
+                      }
+                    },
+                    {
+                      "Move": {
+                        "what": { "Bound": "top" },
+                        "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

@@ -1,7 +1,7 @@
 {
   "oracle_id": "5b356a01-900c-4fe5-93bd-45629528c484",
   "name": "Avacynian Missionaries // Lunarch Inquisitors",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Avacynian Missionaries",
@@ -27,9 +27,18 @@
       "oracle_fingerprint": "4ac3c4cc10c287c18bf16e47e5a14a18",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 0, "end": 137 }
+          "Triggered": {
+            "when": { "Did": { "action": "Transformed", "what": ["This"] } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Other"] } }],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "Exile": { "what": { "Target": 0 }, "duration": "WhileSourceOnBattlefield" } }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

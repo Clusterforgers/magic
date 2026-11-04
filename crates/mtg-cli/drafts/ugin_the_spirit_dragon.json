@@ -1,0 +1,69 @@
+{
+  "oracle_id": "eecb3047-a563-441a-9175-200421981ac3",
+  "name": "Ugin, the Spirit Dragon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ugin, the Spirit Dragon",
+      "oracle_fingerprint": "82201572427fcafa1370b903dbaadcb0",
+      "abilities": [
+        {
+          "Loyalty": {
+            "cost": { "Plus": 2 },
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 3 } }]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": "MinusX",
+            "effects": [
+              {
+                "Exile": {
+                  "what": {
+                    "Each": [
+                      { "Not": "Colorless" },
+                      { "Compare": { "stat": "ManaValue", "op": "Le", "to": "X" } }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 10 },
+            "effects": [
+              { "GainLife": { "amount": 7 } },
+              { "Draw": { "count": 7 } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      {
+                        "AnyOf": [
+                          { "Type": "Artifact" },
+                          { "Type": "Battle" },
+                          { "Type": "Creature" },
+                          { "Type": "Enchantment" },
+                          { "Type": "Land" },
+                          { "Type": "Planeswalker" }
+                        ]
+                      },
+                      { "In": "Hand" },
+                      { "OwnedBy": "You" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 7 },
+                  "as": "picked"
+                }
+              },
+              { "Move": { "what": { "Bound": "picked" }, "to": { "Battlefield": {} } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

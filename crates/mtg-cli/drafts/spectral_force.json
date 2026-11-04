@@ -1,0 +1,35 @@
+{
+  "oracle_id": "271bfde0-6a6f-4bc8-ac0e-d2eff6784463",
+  "name": "Spectral Force",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spectral Force",
+      "oracle_fingerprint": "995c2d7143054b41a4500808938af0e1",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "if": {
+              "Compare": {
+                "left": { "Count": [{ "Color": "Black" }, { "ControlledBy": "Defending" }] },
+                "op": "Eq",
+                "right": 0
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": ["DoesntUntap"],
+                  "duration": "NextUntapStep"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

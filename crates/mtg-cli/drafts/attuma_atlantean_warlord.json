@@ -1,0 +1,30 @@
+{
+  "oracle_id": "e3b70a85-4296-411f-a673-7992b0c8a9aa",
+  "name": "Attuma, Atlantean Warlord",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Attuma, Atlantean Warlord",
+      "oracle_fingerprint": "c094868c70666555b21506a634ba1865",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Merfolk" }, "Other", { "ControlledBy": "You" }] },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacksAt": {
+                "what": [{ "Subtype": "Merfolk" }, { "ControlledBy": "You" }],
+                "at": "EachPlayer"
+              }
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

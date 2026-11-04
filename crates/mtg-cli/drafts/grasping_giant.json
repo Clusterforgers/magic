@@ -1,0 +1,20 @@
+{
+  "oracle_id": "d601a28d-a02f-45eb-9dab-a3cf50a87ca4",
+  "name": "Grasping Giant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Grasping Giant",
+      "oracle_fingerprint": "7559f08981d43be555e08562eb530714",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": { "BecomesBlocked": { "what": ["This"], "by": [{ "Type": "Creature" }] } },
+            "effects": [{ "Exile": { "what": "Dealer", "duration": "WhileSourceOnBattlefield" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "oracle_id": "fde3c8df-cc57-4e64-b78b-301e103d8487",
+  "name": "Tin Street Dodger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tin Street Dodger",
+      "oracle_fingerprint": "bf453eaac15c744f2372fe69921a5639",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Activated": {
+            "cost": "{R}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    {
+                      "CantBeBlockedBy": [
+                        { "Type": "Creature" },
+                        { "Not": { "HasKeyword": "Defender" } }
+                      ]
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

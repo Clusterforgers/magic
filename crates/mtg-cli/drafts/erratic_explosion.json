@@ -1,0 +1,39 @@
+{
+  "oracle_id": "8e560a3a-c81b-43b3-b622-5c66ef655647",
+  "name": "Erratic Explosion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Erratic Explosion",
+      "oracle_fingerprint": "6c8cabc1e324dddc9842df96a6185d0c",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "RevealUntil": {
+                  "filter": [{ "Not": { "Type": "Land" } }],
+                  "as": "found",
+                  "revealed_as": "revealed2"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "revealed2" },
+                  "to": { "Library": { "place": "Bottom", "order": "Chosen" } }
+                }
+              },
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": { "Stat": { "of": { "Bound": "found" }, "stat": "ManaValue" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

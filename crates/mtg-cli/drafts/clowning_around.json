@@ -1,0 +1,76 @@
+{
+  "oracle_id": "9ae778b4-f8dd-4dec-b949-5b8c29120512",
+  "name": "Clowning Around",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Clowning Around",
+      "oracle_fingerprint": "641627bfaaf4fbe2e47954d91589d66a",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Clown Robot",
+                      "colors": ["White"],
+                      "types": ["Artifact", "Creature"],
+                      "subtypes": ["Clown", "Robot"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": 2
+                }
+              },
+              {
+                "RollDice": {
+                  "sides": 6,
+                  "results": [
+                    {
+                      "from": 1,
+                      "to": 6,
+                      "effects": [
+                        {
+                          "If": {
+                            "condition": {
+                              "Compare": {
+                                "left": { "DieResult": "Only" },
+                                "op": "Le",
+                                "right": {
+                                  "Count": [{ "Subtype": "Robot" }, { "ControlledBy": "You" }]
+                                }
+                              }
+                            },
+                            "then": [
+                              {
+                                "CreateToken": {
+                                  "token": {
+                                    "Custom": {
+                                      "name": "Clown Robot",
+                                      "colors": ["White"],
+                                      "types": ["Artifact", "Creature"],
+                                      "subtypes": ["Clown", "Robot"],
+                                      "power": 1,
+                                      "toughness": 1
+                                    }
+                                  }
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

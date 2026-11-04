@@ -1,0 +1,50 @@
+{
+  "oracle_id": "5e1bd17d-3825-45c0-9e7c-6887b7e2cb5c",
+  "name": "Binding Geist // Spectral Binding",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Binding Geist",
+      "oracle_fingerprint": "f7763919939f5bd59657e5eb62bcff65",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": -2, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Disturb": "{1}{U}" } }
+      ]
+    },
+    {
+      "name": "Spectral Binding",
+      "oracle_fingerprint": "937fd72bea5f4a1a0251d7530d82cdef",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": -2, "toughness": 0 } }]
+          }
+        },
+        {
+          "Replacement": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Graveyard" } },
+            "by": { "MoveTo": "Exile" }
+          }
+        }
+      ]
+    }
+  ]
+}

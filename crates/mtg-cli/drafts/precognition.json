@@ -1,0 +1,48 @@
+{
+  "oracle_id": "6d1a9d06-028f-487a-b490-27100c128ea3",
+  "name": "Precognition",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Precognition",
+      "oracle_fingerprint": "fad0afb4b60a1fd82b3151db57a1208e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "LookAtTop": { "who": { "Target": 0 }, "as": "top" } },
+                    {
+                      "Choose": {
+                        "from": { "Bound": "top" },
+                        "count": { "min": 0, "max": null },
+                        "as": "kept2",
+                        "rest_as": "rest3"
+                      }
+                    },
+                    {
+                      "Move": {
+                        "what": { "Bound": "kept2" },
+                        "to": { "Library": { "place": "Bottom" } }
+                      }
+                    },
+                    {
+                      "Move": {
+                        "what": { "Bound": "rest3" },
+                        "to": { "Library": { "place": "Top", "order": "Chosen" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

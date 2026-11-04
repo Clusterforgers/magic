@@ -1,0 +1,55 @@
+{
+  "oracle_id": "a43e98d1-684a-4198-bc7e-877b9f6d5357",
+  "name": "Isildur's Fateful Strike",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Isildur's Fateful Strike",
+      "oracle_fingerprint": "005469b8642ae7f9fd2c3580f13ad92f",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              {
+                "Choose": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "from": {
+                    "Each": [{ "In": "Hand" }, { "OwnedBy": { "ControllerOf": { "Target": 0 } } }]
+                  },
+                  "count": {
+                    "min": {
+                      "Sum": [
+                        {
+                          "Count": [
+                            { "In": "Hand" },
+                            { "OwnedBy": { "ControllerOf": { "Target": 0 } } }
+                          ]
+                        },
+                        -4
+                      ]
+                    },
+                    "max": {
+                      "Sum": [
+                        {
+                          "Count": [
+                            { "In": "Hand" },
+                            { "OwnedBy": { "ControllerOf": { "Target": 0 } } }
+                          ]
+                        },
+                        -4
+                      ]
+                    }
+                  },
+                  "as": "picked"
+                }
+              },
+              { "Exile": { "what": { "Bound": "picked" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

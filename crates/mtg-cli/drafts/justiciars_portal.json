@@ -1,0 +1,31 @@
+{
+  "oracle_id": "0214805d-d207-42da-a25f-2a8e1990904e",
+  "name": "Justiciar's Portal",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Justiciar's Portal",
+      "oracle_fingerprint": "e7bca901ade32763b038e5caf0b9dc91",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              { "Move": { "what": { "Bound": "exiled" }, "to": { "Battlefield": {} } } },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "exiled" },
+                  "mods": [{ "AddKeyword": "FirstStrike" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "oracle_id": "56fd8895-3be2-4591-86fa-87567d9cdc14",
+  "name": "Commit // Memory",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Commit",
+      "oracle_fingerprint": "afb1dcf0a1de014f0c5b663714b6d21d",
+      "abilities": [
+        {
+          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 0, "end": 83 } }
+        }
+      ]
+    },
+    {
+      "name": "Memory",
+      "oracle_fingerprint": "f7e2a3a063b607e74727c83def39c53f",
+      "abilities": [
+        { "Keyword": "Aftermath" },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Each": [{ "AnyOf": [{ "In": "Hand" }, { "In": "Graveyard" }] }] },
+                  "to": { "Library": { "place": "Shuffled" } }
+                }
+              },
+              { "Draw": { "who": "EachPlayer", "count": 7 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "oracle_id": "10b8d4c7-7553-4d76-b643-d98b80701e13",
+  "name": "Gingerbrute",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gingerbrute",
+      "oracle_fingerprint": "51d5b586a975be5cc61174a874ec5130",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Activated": {
+            "cost": "{1}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    {
+                      "CantBeBlockedBy": [
+                        { "Type": "Creature" },
+                        { "Not": { "HasKeyword": "Haste" } }
+                      ]
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap", "SacrificeSelf"],
+            "effects": [{ "GainLife": { "amount": 3 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

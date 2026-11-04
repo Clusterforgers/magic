@@ -1,0 +1,33 @@
+{
+  "oracle_id": "5c63a244-75d7-4372-baf4-7a3526f240c8",
+  "name": "Spaceshift",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spaceshift",
+      "oracle_fingerprint": "fdfb87419050aa6ba00f407b58f57932",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] }]
+                }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              {
+                "Move": {
+                  "what": { "Bound": "exiled" },
+                  "to": { "Battlefield": { "counters": [["+1/+1", 1]] } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

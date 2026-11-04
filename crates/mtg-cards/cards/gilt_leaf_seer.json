@@ -1,0 +1,27 @@
+{
+  "oracle_id": "eab27405-f590-40b7-ad7c-0e6c52410c0a",
+  "name": "Gilt-Leaf Seer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gilt-Leaf Seer",
+      "oracle_fingerprint": "f99650e34194b4171d9832e58deb0ea1",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{G}" }, "Tap"],
+            "effects": [
+              { "LookAtTop": { "count": 2, "as": "top" } },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Top", "order": "Chosen" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

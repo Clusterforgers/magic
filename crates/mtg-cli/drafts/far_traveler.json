@@ -1,0 +1,39 @@
+{
+  "oracle_id": "b9432430-df01-497d-b025-7576dce830e4",
+  "name": "Far Traveler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Far Traveler",
+      "oracle_fingerprint": "a9720fdeecd690174def2c9bddb7c46c",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, "Commander", { "OwnedBy": "You" }] },
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Triggered": {
+                    "when": { "StepBegins": { "step": "End", "whose": "You" } },
+                    "targets": [
+                      {
+                        "what": {
+                          "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "Tapped"]
+                        },
+                        "bounds": { "min": 0, "max": 1 }
+                      }
+                    ],
+                    "effects": [
+                      { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+                      { "Move": { "what": { "Bound": "exiled" }, "to": { "Battlefield": {} } } }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

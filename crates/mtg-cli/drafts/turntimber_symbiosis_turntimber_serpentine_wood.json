@@ -1,0 +1,99 @@
+{
+  "oracle_id": "403b59f3-7ade-4bc2-a3e6-de0c3c700f18",
+  "name": "Turntimber Symbiosis // Turntimber, Serpentine Wood",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Turntimber Symbiosis",
+      "oracle_fingerprint": "b036035f9b9d1aa6510e8e03922ba551",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "LookAtTop": { "count": 7, "as": "top" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "Type": "Creature" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "kept2"
+                }
+              },
+              { "Move": { "what": { "Bound": "kept2" }, "to": { "Library": { "place": "Top" } } } },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "kept2" },
+                      "selector": [
+                        { "Type": "Creature" },
+                        { "Compare": { "stat": "ManaValue", "op": "Gt", "to": 3 } }
+                      ],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    { "Move": { "what": { "Bound": "kept2" }, "to": { "Battlefield": {} } } }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "kept2" },
+                      "selector": [
+                        { "Type": "Creature" },
+                        { "Compare": { "stat": "ManaValue", "op": "Le", "to": 3 } }
+                      ],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Move": {
+                        "what": { "Bound": "kept2" },
+                        "to": { "Battlefield": { "counters": [["+1/+1", 3]] } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Turntimber, Serpentine Wood",
+      "oracle_fingerprint": "a69e0f9d579df9b79c91921ee10fdadf",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "PayLifeOrTapped": 3 }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Green"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}
