@@ -12,6 +12,9 @@ use crate::spend::{ManaLasts, SpendOn, WhenSpent};
 use crate::trigger::{ReplaceBy, ReplaceWhen, TriggerPattern};
 use crate::value::{Amount, CastWay, Cmp, Condition, CounterKind, DayNight, StatKind};
 
+/// The most passes any `RepeatWhile` makes, whatever it writes: a loop that never ends cannot hang a game.
+pub const MOST_PASSES: u32 = 1000;
+
 /// The name a clash binds its opponent to.
 pub const W9B_CLASHED: &str = "clashed";
 
@@ -923,6 +926,61 @@ pub enum Effect {
         #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
         who: Ref,
     },
+    /// The player loses the game (CR 104.3).
+    LoseGame {
+        /// Who loses.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        who: Ref,
+    },
+    /// The game is a draw (CR 104.4): every player still in it leaves it at once.
+    DrawGame {},
+    /// A player's life total becomes `amount`: the difference is gained or lost as life (CR 119.5).
+    SetLife {
+        /// Whose life total changes.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        who: Ref,
+        /// The new life total.
+        amount: Amount,
+    },
+    /// Two players exchange life totals (CR 119.7): each gains or loses the difference. Nothing happens when either
+    /// player's life total can't change.
+    ExchangeLife {
+        /// The first player.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        who: Ref,
+        /// The other player.
+        with: Ref,
+    },
+    /// All damage marked on each creature is removed (CR 120.6).
+    RemoveDamage {
+        /// The creatures.
+        what: Ref,
+    },
+    /// Does `effects` again and again while `condition` holds, read before each pass, and at most `most` times.
+    RepeatWhile {
+        /// What must hold for a pass to begin.
+        condition: Condition,
+        /// What each pass does; a name bound inside is bound anew in each pass.
+        effects: Vec<Effect>,
+        /// The most passes, a hard bound ([`MOST_PASSES`] at the highest).
+        most: u32,
+    },
+    /// `who` separates the objects `what` names into two piles (CR 700.3), then `chooser` chooses one pile: that pile is
+    /// bound as `chosen_as`, the other as `rest_as`.
+    SeparatePiles {
+        /// Who separates the objects.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        who: Ref,
+        /// The objects.
+        what: Ref,
+        /// Who chooses a pile.
+        chooser: Ref,
+        /// The name of the pile chosen.
+        #[serde(rename = "as")]
+        chosen_as: String,
+        /// The name of the other pile.
+        rest_as: String,
+    },
     /// Does `effects` once for each player or object `over` names, in the order it lists them, with `bind` naming the one
     /// the pass is for (CR 608.2c: "for each player", "each opponent ... that player"). The list is fixed when the effect
     /// begins; a name bound inside `effects` is bound anew in each pass.
@@ -1506,6 +1564,19 @@ mod tests {
     #[case::clash_and_repeat(
         Effect::Clash { who: Ref::You, win: vec![Effect::Draw { who: Ref::You, count: Amount::one() }], lose: Vec::new(), until: true, with: None },
         r#"{"Clash":{"win":[{"Draw":{}}],"until":true}}"#
+    )]
+    #[case::lose_game(Effect::LoseGame { who: Ref::Opponents }, r#"{"LoseGame":{"who":"Opponents"}}"#)]
+    #[case::draw_game(Effect::DrawGame {}, r#"{"DrawGame":{}}"#)]
+    #[case::set_life(Effect::SetLife { who: Ref::You, amount: Amount::Fixed(1) }, r#"{"SetLife":{"amount":1}}"#)]
+    #[case::exchange_life(Effect::ExchangeLife { who: Ref::You, with: Ref::Opponents }, r#"{"ExchangeLife":{"with":"Opponents"}}"#)]
+    #[case::remove_damage(Effect::RemoveDamage { what: Ref::This }, r#"{"RemoveDamage":{"what":"This"}}"#)]
+    #[case::repeat_while(
+        Effect::RepeatWhile { condition: Condition::YourTurn, effects: vec![Effect::Draw { who: Ref::You, count: Amount::one() }], most: 3 },
+        r#"{"RepeatWhile":{"condition":"YourTurn","effects":[{"Draw":{}}],"most":3}}"#
+    )]
+    #[case::separate_piles(
+        Effect::SeparatePiles { who: Ref::You, what: Ref::This, chooser: Ref::Opponents, chosen_as: "a".to_owned(), rest_as: "b".to_owned() },
+        r#"{"SeparatePiles":{"what":"This","chooser":"Opponents","as":"a","rest_as":"b"}}"#
     )]
     #[case::vote_on_two_names(
         Effect::Vote { options: VoteFor::Named(vec!["time".to_owned(), "knowledge".to_owned()]), secret: true, bind: None },

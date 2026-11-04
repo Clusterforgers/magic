@@ -25,6 +25,7 @@ const fn loops(effect: &Effect) -> bool {
     matches!(
         effect,
         Effect::RepeatEach { .. }
+            | Effect::RepeatWhile { .. }
             | Effect::FlipCoin { until: true, .. }
             | Effect::Clash { until: true, .. }
     )
@@ -43,7 +44,9 @@ fn branches<'a>(effect: &'a Effect, chosen: &[usize]) -> Vec<&'a [Effect]> {
         Effect::If {
             then, otherwise, ..
         } => vec![then, otherwise],
-        Effect::May { effects, .. } | Effect::RepeatEach { effects, .. } => vec![effects],
+        Effect::May { effects, .. }
+        | Effect::RepeatEach { effects, .. }
+        | Effect::RepeatWhile { effects, .. } => vec![effects],
         Effect::Pay { paid, unpaid, .. } => vec![paid, unpaid],
         Effect::CastFromZone { otherwise, .. } => vec![otherwise],
         Effect::Modal { modes, .. } => chosen

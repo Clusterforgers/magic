@@ -100,26 +100,20 @@ fn reports(effect: &Effect) -> Reports {
         | Effect::RemoveFromCombat { .. }
         | Effect::Shield { .. }
         | Effect::EndTurn
+        | Effect::LoseGame { .. }
+        | Effect::DrawGame {}
+        | Effect::SetLife { .. }
+        | Effect::ExchangeLife { .. }
+        | Effect::RemoveDamage { .. }
         | Effect::Planechase { .. } => Reports::Events,
         Effect::Pay { .. } => Reports::Paid,
         Effect::May { .. } | Effect::CastFromZone { .. } => Reports::Itself,
-        Effect::LookAtTop { .. }
-        | Effect::Choose { .. }
-        | Effect::ChooseAtRandom { .. }
-        | Effect::Encode { .. }
-        | Effect::Remember { .. }
-        | Effect::Forget { .. }
-        | Effect::DelayedTrigger { .. }
-        | Effect::Reflexive { .. }
-        | Effect::If { .. }
-        | Effect::Modal { .. }
-        | Effect::RepeatEach { .. }
-        | Effect::RollDice { .. }
-        | Effect::FlipCoin { .. }
-        | Effect::Clash { .. }
-        | Effect::Vote { .. }
-        | Effect::VillainousChoice { .. }
-        | Effect::Let { .. }
+        #[rustfmt::skip]
+        Effect::LookAtTop { .. } | Effect::Choose { .. } | Effect::ChooseAtRandom { .. } | Effect::Encode { .. }
+        | Effect::Remember { .. } | Effect::Forget { .. } | Effect::DelayedTrigger { .. } | Effect::Reflexive { .. }
+        | Effect::If { .. } | Effect::Modal { .. } | Effect::RepeatEach { .. } | Effect::RollDice { .. }
+        | Effect::FlipCoin { .. } | Effect::Clash { .. } | Effect::Vote { .. } | Effect::VillainousChoice { .. }
+        | Effect::Let { .. } | Effect::RepeatWhile { .. } | Effect::SeparatePiles { .. }
         | Effect::Either { .. } => Reports::Nothing,
     }
 }
