@@ -32,6 +32,10 @@ pub(crate) fn changes_characteristics(kind: &CounterKind) -> bool {
 /// Folds the event. Only a permanent on the battlefield, the very object that was named (CR 400.7), and a player who is
 /// still in the game hold counters; a change of nothing, and a removal of more counters than there are, cannot happen.
 pub(crate) fn fold(state: &mut GameState, event: &CountersChanged) -> Result<(), EngineError> {
+    if event.delta > 0 && event.counter == CounterKind::Other("finality".to_owned()) {
+        // The exile in place of the graveyard (CR 122.1g) is a replacement the game must look for.
+        state.possible.replacements = true;
+    }
     match event.on {
         Target::Object(named) => {
             let stamp = state.next_timestamp;

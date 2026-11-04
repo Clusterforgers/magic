@@ -529,6 +529,17 @@ impl GameState {
         Ok(game)
     }
 
+    /// Whether a permanent holds a finality counter, which exiles it in place of a graveyard (CR 122.1g).
+    fn holds_finality(&self) -> bool {
+        let finality = CounterKind::Other("finality".to_owned());
+        self.objects().any(|object| {
+            object
+                .permanent
+                .as_ref()
+                .is_some_and(|held| held.counters_of(&finality) > 0)
+        })
+    }
+
     /// Whether any card of the game can trigger something or has a static ability, which the state then watches for.
     fn note_what_cards_can_do(&mut self) {
         let triggers = self.objects().any(|object| {
@@ -610,7 +621,7 @@ impl GameState {
                 .each_face()
                 .any(crate::ability_reader::definition_has_replacement)
         });
-        self.possible.replacements = replacements;
+        self.possible.replacements = replacements || self.holds_finality();
         // Copies of a card share a name and a definition, so each name is read once.
         let mut read = std::collections::BTreeSet::new();
         let protection = self.objects().any(|object| {

@@ -103,7 +103,7 @@ pub fn process(
                 || returns_by_buyback(state, &item)
                 || exiles_by_adventure(state, &item)
                 || exiles_by_rebound(state, &item)
-                || commander_leaves(state, event)
+                || moves_by_a_rule(state, event)
         })
     {
         return Ok(Processed::Events(proposed));
@@ -256,6 +256,9 @@ enum Origin {
     /// A commander that would be put into a hand or a library, which its owner may put into the command zone instead
     /// (CR 903.9b): the card, which is one card of a merged permanent that moves.
     Commander(ObjectId),
+    /// A permanent with a finality counter that would be put into a graveyard from the battlefield, which is exiled instead
+    /// (CR 122.1g).
+    Finality,
 }
 
 impl Origin {
@@ -305,6 +308,25 @@ fn returns_by_buyback(state: &GameState, item: &Item) -> bool {
             spell.kind() == ObjectKind::Card
                 && payments(spell.card(), spell.paid_costs(), OptionalKind::Buyback) > 0
         })
+}
+
+/// Whether a rule that is no ability sends the object of the event elsewhere: a commander to its command zone or a permanent
+/// with a finality counter to exile.
+fn moves_by_a_rule(state: &GameState, event: &Event) -> bool {
+    commander_leaves(state, event) || exiles_by_finality(state, event)
+}
+
+/// Whether the event puts a permanent with a finality counter into a graveyard from the battlefield (CR 122.1g).
+fn exiles_by_finality(state: &GameState, event: &Event) -> bool {
+    moving(state, event).is_some_and(|(object, from, to)| {
+        from == Zone::Battlefield
+            && matches!(to, Zone::Graveyard(_))
+            && state.object(object).is_some_and(|moved| {
+                moved.permanent.as_ref().is_some_and(|held| {
+                    held.counters_of(&CounterKind::Other("finality".to_owned())) > 0
+                })
+            })
+    })
 }
 
 /// Whether the item is the resolution of an Adventure, which is exiled instead of going to the graveyard (CR 715.4).
@@ -1011,6 +1033,7 @@ impl Pass<'_> {
             self.buyback_candidate(slot),
             self.adventure_candidate(slot),
             self.rebound_candidate(slot),
+            self.finality_candidate(slot),
         ]
         .into_iter()
         .flatten()
@@ -1469,6 +1492,9 @@ impl Pass<'_> {
             Origin::Buyback => "If its buyback cost was paid, put ~ into its owner's hand instead.",
             Origin::Rebound => "If cast from your hand, exile ~ with rebound instead.",
             Origin::Adventure => "Exile ~ instead of putting it into the graveyard.",
+            Origin::Finality => {
+                "If ~ has a finality counter and would be put into a graveyard from the battlefield, exile it instead."
+            }
             Origin::Commander(_) => {
                 "If ~ would be put into a hand or library, its owner may put it into the command zone instead."
             }
@@ -3029,6 +3055,8 @@ mod w13b_tapped_for_counters;
 mod c6_blk_draw_step;
 
 mod c7_untap_dies;
+
+mod finality;
 
 /// The event that keeps how many permanents `object` devoured as it entered, which its abilities read once it is on
 /// the battlefield; none when it devoured nothing.
