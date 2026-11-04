@@ -618,7 +618,7 @@ fn the_end_step_without_your_is_every_players() {
     assert_eq!(
         abilities(script),
         vec![
-            json!({"Triggered": {"when": {"StepBegins": {"step": "End", "whose": "EachPlayer"}}, "effects": [{"Draw": {}}]}})
+            json!({"Triggered": {"when": {"StepBegins": {"step": "End"}}, "effects": [{"Draw": {}}]}})
         ]
     );
 }
