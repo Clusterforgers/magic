@@ -3,6 +3,9 @@ use rstest::rstest;
 use serde_json::{Value, json};
 
 use super::{abilities, gaps};
+use crate::forge::script::{Params, Script};
+use crate::translate::ctx::Ctx;
+use crate::translate::triggers::delayed_when;
 
 /// The event pattern of a card whose only ability is the trigger line `trigger` that draws a card.
 fn when(trigger: &str) -> Value {
@@ -119,4 +122,43 @@ fn event_words_read_as_the_pattern_they_print(#[case] trigger: &str, #[case] exp
 )]
 fn a_word_the_table_does_not_know_stays_a_named_gap(#[case] trigger: &str, #[case] name: &str) {
     assert_eq!(gap_of(trigger), [name]);
+}
+
+/// What a `DelayedTrigger` line reads as its event, and whether it waits for this turn only.
+fn delayed(line: &str) -> Result<(Value, bool), String> {
+    let world = super::world();
+    let script = Script::parse("Name:T\nTypes:Creature Elf\nPT:1/1\n");
+    let face = script.faces.into_iter().next().expect("one face");
+    let ctx = Ctx::new(&face, &world);
+    delayed_when(&ctx, &Params::parse(line)).map_err(|gap| gap.0)
+}
+
+#[rstest]
+#[case::step(
+    "Mode$ Phase | Phase$ End of Turn | ValidPlayer$ You",
+    Ok((json!({"StepBegins": {"step": "End", "whose": "You"}}), false))
+)]
+#[case::this_turn(
+    "Mode$ SpellCast | ValidActivatingPlayer$ You | ThisTurn$ True",
+    Ok((json!({"SpellCast": {"by": "You"}}), true))
+)]
+#[case::a_dying_creature(
+    "Mode$ ChangesZone | ValidCard$ Creature.YouCtrl | Origin$ Battlefield | Destination$ Graveyard",
+    Ok((json!({"ZoneChange": {"what": [{"Type": "Creature"}, {"ControlledBy": "You"}],
+        "from": "Battlefield", "to": "Graveyard"}}), false))
+)]
+#[case::next_turn_is_a_step_apart(
+    "Mode$ Phase | Phase$ Upkeep | ValidPlayer$ You | NextTurn$ True",
+    Err("key:DelayedTrigger.NextTurn".to_owned())
+)]
+#[case::unknown_mode("Mode$ Nonsense", Err("trigger:Nonsense".to_owned()))]
+#[case::unread_key(
+    "Mode$ Phase | Phase$ Upkeep | Odd$ True",
+    Err("key:DelayedTrigger.Phase.Odd".to_owned())
+)]
+fn a_delayed_trigger_reads_the_trigger_pattern(
+    #[case] line: &str,
+    #[case] expected: Result<(Value, bool), String>,
+) {
+    assert_eq!(delayed(line), expected);
 }

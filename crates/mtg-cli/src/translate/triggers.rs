@@ -105,6 +105,26 @@ pub(super) fn keys(p: &Params, mode: &str, read: &[&str]) -> Tr<()> {
     })
 }
 
+/// The event pattern of a `DelayedTrigger` line and whether it waits only for this turn: the line reads its `Mode$` like a
+/// trigger line. "Next turn" is a step apart from "this turn" and stays a gap.
+pub fn delayed_when(ctx: &Ctx, p: &Params) -> Tr<(Value, bool)> {
+    if p.get("NextTurn").is_some() {
+        return unmapped("key:DelayedTrigger.NextTurn");
+    }
+    let this_turn = match p.get("ThisTurn") {
+        None => false,
+        Some("True") => true,
+        Some(other) => return unmapped(format!("key:DelayedTrigger.ThisTurn={other}")),
+    };
+    let line = p.without(&["ThisTurn", "RememberObjects"]);
+    // Valid words of a delayed trigger are the same words a trigger line reads.
+    let when = pattern(ctx, &line).map_err(|gap| match gap.0.strip_prefix("key:Trigger.") {
+        Some(rest) => super::ctx::Unmapped(format!("key:DelayedTrigger.{rest}")),
+        None => gap,
+    })?;
+    Ok((when, this_turn))
+}
+
 fn pattern(ctx: &Ctx, p: &Params) -> Tr<Value> {
     let mode = p.get("Mode").unwrap_or_default();
     if let Some(found) = super::triggers_more::pattern(ctx, p, mode) {
