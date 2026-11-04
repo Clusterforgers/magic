@@ -53,6 +53,11 @@ pub fn effects(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         )?);
         return Ok(out);
     }
+    if let Some(name) = p.get("ReplacementEffects")
+        && ctx.sub(name.trim())?.get("Event") == Some("Untap")
+    {
+        return super::replacements::stays_tapped(ctx, p);
+    }
     if p.has("ReplacementEffects") {
         let remembered = super::replacements_damage::remembered_of(ctx, p)?;
         let mut out = ambient_with(ctx, p)?;

@@ -76,3 +76,50 @@ fn a_move_to_a_graveyard_of_another_shape_stays_a_gap(#[case] line: &str, #[case
         gaps(&text)
     );
 }
+
+fn stays_tapped(remember: &str, valid: &str, duration: &str) -> String {
+    creature(&format!(
+        "A:AB$ GainLife | Cost$ T | LifeAmount$ 1 | SubAbility$ D\nSVar:D:DB$ Effect | ReplacementEffects$ R | RememberObjects$ {remember} | ExileOnMoved$ Battlefield | Duration$ {duration}\nSVar:R:Event$ Untap | ValidCard$ {valid} | ValidStepTurnToController$ Player.Activator | Layer$ CantHappen | Description$ x"
+    ))
+}
+
+#[rstest]
+#[case::the_card_itself("Self", "Card.IsRemembered", "UntilTheEndOfYourNextUntap", "")]
+#[case::a_target_may_not_be_the_activators(
+    "Targeted",
+    "Card.IsRemembered",
+    "UntilTheEndOfYourNextUntap",
+    "replacement:Untap-effect-shape"
+)]
+#[case::a_group(
+    "Self",
+    "Land.YouCtrl",
+    "UntilTheEndOfYourNextUntap",
+    "replacement:Untap-shape"
+)]
+#[case::another_duration(
+    "Self",
+    "Card.IsRemembered",
+    "UntilUntaps",
+    "replacement:Untap-effect-shape"
+)]
+fn doesnt_untap_during_your_next_untap_step(
+    #[case] remember: &str,
+    #[case] valid: &str,
+    #[case] duration: &str,
+    #[case] gap: &str,
+) {
+    let text = stays_tapped(remember, valid, duration);
+    if gap.is_empty() {
+        let found = abilities(&text);
+        assert!(
+            found[0]
+                .to_string()
+                .contains(r#""duration":"NextUntapStep","mods":["DoesntUntap"]"#),
+            "{}",
+            found[0]
+        );
+    } else {
+        assert!(gaps(&text).iter().any(|g| g == gap), "{:?}", gaps(&text));
+    }
+}

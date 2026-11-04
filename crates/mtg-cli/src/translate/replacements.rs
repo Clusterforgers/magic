@@ -217,3 +217,39 @@ fn pay_or_tapped(ctx: &Ctx, unless: &str) -> Tr<Value> {
 fn only_keys(part: &Params, read: &[&str]) -> Tr<()> {
     check_keys(part, "Replacement", read, |_, _| false)
 }
+
+/// An `Effect` line whose replacement is "doesn't untap during your next untap step" for the card itself: the card
+/// holds `DoesntUntap` through the next untap step of its controller.
+pub fn stays_tapped(ctx: &mut Ctx, line: &Params) -> Tr<Vec<Value>> {
+    let Some(name) = line.get("ReplacementEffects") else {
+        return unmapped("key:Effect.no-ReplacementEffects");
+    };
+    let p = ctx.sub(name.trim())?;
+    only_keys(
+        &p,
+        &[
+            "Event",
+            "ValidCard",
+            "ValidStepTurnToController",
+            "Layer",
+            "Description",
+        ],
+    )?;
+    if p.get("Layer") != Some("CantHappen")
+        || p.get("ValidCard") != Some("Card.IsRemembered")
+        || p.get("ValidStepTurnToController") != Some("Player.Activator")
+    {
+        return unmapped("replacement:Untap-shape");
+    }
+    if line.get("RememberObjects") != Some("Self")
+        || line.get("Duration") != Some("UntilTheEndOfYourNextUntap")
+        || line.has("StaticAbilities")
+        || line.has("Triggers")
+        || line.has("ValidTgts")
+    {
+        return unmapped("replacement:Untap-effect-shape");
+    }
+    Ok(vec![
+        json!({"Continuous": {"affected": "This", "mods": ["DoesntUntap"], "duration": "NextUntapStep"}}),
+    ])
+}

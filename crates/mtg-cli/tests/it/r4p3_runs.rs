@@ -60,3 +60,36 @@ fn a_creature_that_dies_goes_where_its_replacement_sends_it(
     });
     assert!(found);
 }
+
+const STAYS: &str = "Name:Stay Tapper\nManaCost:1 W\nTypes:Creature Soldier\nPT:1/1\nA:AB$ GainLife | Cost$ T | LifeAmount$ 1 | SubAbility$ DBStay\nSVar:DBStay:DB$ Effect | ReplacementEffects$ DontUntap | RememberObjects$ Self | ExileOnMoved$ Battlefield | Duration$ UntilTheEndOfYourNextUntap\nSVar:DontUntap:Event$ Untap | ValidCard$ Card.IsRemembered | ValidStepTurnToController$ Player.Activator | Layer$ CantHappen | Description$ It doesn't untap during your next untap step.\n";
+const FREE: &str = "Name:Stay Tapper\nManaCost:1 W\nTypes:Creature Soldier\nPT:1/1\nA:AB$ GainLife | Cost$ T | LifeAmount$ 1\n";
+
+#[rstest]
+#[case::holds_through_the_next_untap_step(STAYS, 3, true)]
+#[case::untaps_the_untap_step_after(STAYS, 5, false)]
+#[case::an_ordinary_tapper_untaps(FREE, 3, false)]
+fn a_card_that_stays_tapped_misses_one_untap_step(
+    #[case] script: &str,
+    #[case] turn: u32,
+    #[case] tapped: bool,
+) {
+    let card = translated(script, "Stay Tapper", "Creature — Soldier", "{1}{W}");
+    let scenario = Scenario::new(2)
+        .at(1, 0, Step::Main1)
+        .battlefield(0, [ready(card)]);
+    let mut driver = Driver::from_scenario(scenario).unwrap();
+    driver.begin_activation("Stay Tapper").unwrap();
+    settle(&mut driver);
+    driver.idle_until(turn, Step::Upkeep).unwrap();
+    let id = driver.id_of("Stay Tapper").unwrap();
+    assert_eq!(
+        driver
+            .state()
+            .object(id)
+            .unwrap()
+            .permanent()
+            .unwrap()
+            .tapped(),
+        tapped
+    );
+}
