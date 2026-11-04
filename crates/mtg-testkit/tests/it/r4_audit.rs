@@ -5,13 +5,16 @@ use std::sync::Arc;
 
 use mtg_cards::CardDefinition;
 use mtg_cards::ability::Ability;
+use mtg_cards::value::CounterKind;
 use mtg_core::card::CardType;
 use mtg_core::mana::ManaCost;
 use mtg_engine::choose::{CostsChoice, YesNoChoice};
 use mtg_engine::decision::{Answer, DecisionKind, PayChoice};
+use mtg_engine::turn::Step;
 use mtg_engine::zones::Zone;
+use mtg_testkit::cards::mountain;
 use mtg_testkit::corpus::card;
-use mtg_testkit::{Driver, Scenario, ready};
+use mtg_testkit::{Driver, Scenario, ready, with_counters};
 
 use crate::common::{names, pid};
 
@@ -123,4 +126,93 @@ fn an_activation_whose_cost_sacrifices_its_source_still_triggers_for_a_creature(
     settle(&mut dr);
     assert!(names(dr.state(), Zone::Graveyard(pid(0))).contains(&"Sacker".to_string()));
     assert_eq!(hand_len(&dr, 0), 1);
+}
+
+const KNIGHT_REPLACEMENT: &str = r#"{"Replacement":{"when":{"Damage":{"to":{"Each":["This",{"HasCounter":"+1/+1"}]}}},"by":{"PreventRemovingCounter":"+1/+1"}}}"#;
+
+fn knight_counters(dr: &Driver) -> u32 {
+    let id = dr.id_of("Knight").unwrap();
+    dr.state()
+        .object(id)
+        .unwrap()
+        .permanent()
+        .unwrap()
+        .counters_of(&CounterKind::PlusOnePlusOne)
+}
+
+#[test]
+fn damage_from_two_blockers_at_once_removes_one_counter() {
+    let knight = def(
+        "Knight",
+        CardType::Creature,
+        Some((0, 0)),
+        &[KNIGHT_REPLACEMENT],
+    );
+    let bear = |n: &str| def(n, CardType::Creature, Some((1, 1)), &[]);
+    let sc = Scenario::new(2)
+        .at(3, 0, Step::Main1)
+        .battlefield(
+            0,
+            [with_counters(ready(knight), CounterKind::PlusOnePlusOne, 3)],
+        )
+        .battlefield(1, [ready(bear("B1")), ready(bear("B2"))])
+        .library(0, forest_lib(9))
+        .library(1, forest_lib(9));
+    let mut dr = Driver::from_scenario(sc).unwrap();
+    dr.pass_until(Step::DeclareAttackers).unwrap();
+    dr.attack(&[("Knight", 1)]).unwrap();
+    for _ in 0..12 {
+        if matches!(
+            dr.decision().unwrap().kind,
+            DecisionKind::DeclareBlockers(_)
+        ) {
+            break;
+        }
+        dr.pass().unwrap();
+    }
+    dr.block(&[("B1", "Knight"), ("B2", "Knight")]).unwrap();
+    for _ in 0..60 {
+        if dr.state().turn().step() == Step::End {
+            break;
+        }
+        dr.answer_passively().unwrap();
+    }
+    assert_eq!(knight_counters(&dr), 2);
+}
+
+#[test]
+fn damage_in_separate_events_removes_a_counter_each() {
+    let knight = def(
+        "Knight",
+        CardType::Creature,
+        Some((0, 0)),
+        &[KNIGHT_REPLACEMENT],
+    );
+    let sc = Scenario::new(2)
+        .battlefield(
+            0,
+            [
+                with_counters(ready(knight), CounterKind::PlusOnePlusOne, 3),
+                ready(mountain()),
+                ready(mountain()),
+            ],
+        )
+        .hand(
+            0,
+            [
+                card("Lightning Bolt").unwrap(),
+                card("Lightning Bolt").unwrap(),
+            ],
+        )
+        .library(0, forest_lib(9))
+        .library(1, forest_lib(9));
+    let mut dr = Driver::from_scenario(sc).unwrap();
+    for _ in 0..2 {
+        dr.begin_cast("Lightning Bolt").unwrap();
+        let t = dr.target_named("Knight").unwrap();
+        dr.choose_targets(&[t]).unwrap();
+        dr.pay_tapping(&["Mountain"], 0).unwrap();
+        settle(&mut dr);
+    }
+    assert_eq!(knight_counters(&dr), 1);
 }
