@@ -64,6 +64,7 @@ pub mod triggers;
 mod triggers_batch;
 pub mod triggers_did;
 pub mod triggers_more;
+pub mod triggers_r4;
 mod triggers_static;
 pub mod valid;
 pub mod valid_atoms;

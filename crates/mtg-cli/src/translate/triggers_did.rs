@@ -66,6 +66,9 @@ const MODES: [(&str, &str, Subject); 24] = [
 
 /// The pattern of a mode this module reads; `None` for any other mode.
 pub fn pattern(ctx: &Ctx, p: &Params, mode: &str) -> Option<Tr<Value>> {
+    if let Some(found) = super::triggers_r4::pattern(ctx, p, mode) {
+        return Some(found);
+    }
     if mode == "AttackerBlockedByCreature" {
         return Some(blocked_by(ctx, p));
     }
@@ -111,6 +114,9 @@ fn did(ctx: &Ctx, p: &Params, mode: &str, action: &str, subject: Subject) -> Tr<
 
 /// Whether a mode of this table holds a player and an object among its subjects; none for any other mode.
 pub fn holds(mode: &str) -> Option<(bool, bool)> {
+    if mode == "AbilityCast" {
+        return Some((true, true));
+    }
     let (_, _, subject) = MODES.iter().find(|(name, ..)| *name == mode)?;
     Some(match subject {
         Player(_) => (true, false),

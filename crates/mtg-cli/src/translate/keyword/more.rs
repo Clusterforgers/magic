@@ -95,8 +95,24 @@ fn station(number: &str) -> Tr<Value> {
 }
 
 /// `Equip:3:Creature.YouCtrl+Legendary:legendary creature`: the creature must also be legendary, a commander, a token or
-/// of a creature type; any other restriction stays a gap.
+/// of a creature type; a flavor name restricts nothing; any other restriction stays a gap.
 fn equip_to(ctx: &Ctx, price: &str, valid: &str) -> Tr<Value> {
+    // A flavor name labels the ability and restricts nothing.
+    if valid.starts_with("Flavor ") {
+        return Ok(json!({"Equip": cost(ctx, price)?}));
+    }
+    // "Elf.YouCtrl" is a creature of that type you control.
+    let spelled = match valid.split_once('.') {
+        Some((word, rest)) if word != "Creature" && ctx.world.subtypes.contains(word) => {
+            Some(format!("Creature.{word}+{rest}"))
+        }
+        _ => None,
+    };
+    let valid = spelled.as_deref().unwrap_or(valid);
+    // Alternatives ("Shaman, Warlock, or Wizard") would need an either-or of selectors.
+    if valid.contains(',') {
+        return unmapped("keyword:Equip-with-restriction");
+    }
     let Some(rest) = valid.strip_prefix("Creature.") else {
         return unmapped("keyword:Equip-with-restriction");
     };

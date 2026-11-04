@@ -1769,6 +1769,7 @@ impl<'a> Walker<'a> {
         self.at("by", |w| w.selector(by));
     }
 
+    #[allow(clippy::too_many_lines)]
     fn trigger_pattern(&mut self, pattern: &TriggerPattern) {
         self.dk1c5_pattern(pattern);
         match pattern {
@@ -1860,7 +1861,9 @@ impl<'a> Walker<'a> {
             }
             TriggerPattern::BecomesBlocked { what, by } => self.becomes_blocked(what, by),
             TriggerPattern::Attached { what, to } => self.w11b_attached(what, to),
-            TriggerPattern::GroupAttacks { .. } | TriggerPattern::Chapter { .. } => {
+            TriggerPattern::GroupAttacks { .. }
+            | TriggerPattern::GroupAttacksAt { .. }
+            | TriggerPattern::Chapter { .. } => {
                 self.w2e_counted(pattern);
             }
             TriggerPattern::State { .. } => {
@@ -1881,6 +1884,13 @@ impl<'a> Walker<'a> {
     /// The patterns that count: the attackers of a `GroupAttacks` and the number of a `Chapter`.
     fn w2e_counted(&mut self, pattern: &TriggerPattern) {
         match pattern {
+            TriggerPattern::GroupAttacksAt { what, at, at_least } => {
+                self.at("at", |w| w.reference(at, Kind::Player));
+                self.at("what", |w| w.selector(what));
+                if *at_least == 0 {
+                    self.at("at_least", |w| w.problem("at least one creature attacks"));
+                }
+            }
             TriggerPattern::GroupAttacks { what, at_least } => {
                 self.at("what", |w| w.selector(what));
                 if *at_least == 0 {
@@ -1950,6 +1960,7 @@ impl<'a> Walker<'a> {
                 | TriggerPattern::SpellCast { .. }
                 | TriggerPattern::BecomesTarget { .. }
                 | TriggerPattern::GroupAttacks { .. }
+                | TriggerPattern::GroupAttacksAt { .. }
                 | TriggerPattern::Chapter { .. }
         ) {
             self.problem("a batch is of one event that can happen to several things at once");

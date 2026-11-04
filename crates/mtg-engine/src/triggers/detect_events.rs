@@ -1113,3 +1113,46 @@ fn a_permanent_becoming_tapped_triggers_what_names_it(
     };
     assert_eq!(fired(&pre, &[tapped]), expected);
 }
+
+#[rstest]
+#[case::at_an_opponent(
+    r#"{"GroupAttacksAt":{"what":[{"ControlledBy":"You"}],"at":"Opponents"}}"#,
+    2,
+    1
+)]
+#[case::not_at_myself(
+    r#"{"GroupAttacksAt":{"what":[{"ControlledBy":"You"}],"at":"You"}}"#,
+    2,
+    0
+)]
+#[case::two_needed(
+    r#"{"GroupAttacksAt":{"what":[{"ControlledBy":"You"}],"at":"Opponents","at_least":2}}"#,
+    1,
+    0
+)]
+#[case::two_got(
+    r#"{"GroupAttacksAt":{"what":[{"ControlledBy":"You"}],"at":"Opponents","at_least":2}}"#,
+    2,
+    1
+)]
+#[case::only_the_matching(
+    r#"{"GroupAttacksAt":{"what":[{"Named":"Bear"}],"at":"Opponents","at_least":2}}"#,
+    2,
+    0
+)]
+fn attackers_at_a_player_trigger_for_the_attackers_of_that_player(
+    #[case] when: &str,
+    #[case] attacking: usize,
+    #[case] expected: usize,
+) {
+    let pre = board(when);
+    let attackers = ["Bear", "Watcher"][..attacking]
+        .iter()
+        .map(|name| (id(&pre, name), AttackTarget::Player(FOE)))
+        .collect();
+    let declared = Event::AttackersDeclared {
+        player: ME,
+        attackers,
+    };
+    assert_eq!(detect(&pre, &[declared], &pre).len(), expected);
+}

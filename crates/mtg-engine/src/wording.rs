@@ -730,6 +730,17 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
                 false,
             )
         }
+        TriggerPattern::GroupAttacksAt { what, at, at_least } => {
+            let (head, tail) = phrase(what);
+            let (whom, _) = who(at);
+            (
+                format!(
+                    "{} attack {whom}",
+                    join(&format!("{at_least} or more {}", plural(&head)), &tail)
+                ),
+                false,
+            )
+        }
         TriggerPattern::CountersPut { what, .. } => {
             let on = if what.is_empty() {
                 "a permanent".to_owned()
