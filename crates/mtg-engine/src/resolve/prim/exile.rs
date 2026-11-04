@@ -4,6 +4,7 @@ use mtg_cards::effect::Effect;
 use mtg_cards::modify::Duration;
 use mtg_cards::refs::Ref;
 
+use super::moved_as::count_entry;
 use super::wrong_effect;
 use crate::choose::Target;
 use crate::events::{Event, ZoneCause};
@@ -39,7 +40,10 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
             if !crate::exile_return::holds(state, cx.scope.source) {
                 return Ok(Run::Done {
                     events: Vec::new(),
-                    bound: bind.iter().map(|name| (name.clone(), Vec::new())).collect(),
+                    bound: bind
+                        .iter()
+                        .flat_map(|name| [(name.clone(), Vec::new()), count_entry(name, 0)])
+                        .collect(),
                     snapshots: Vec::new(),
                     next: Next::Sibling,
                 });
@@ -85,7 +89,12 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         events,
         bound: bind
             .iter()
-            .map(|name| (name.clone(), exiled.clone()))
+            .flat_map(|name| {
+                [
+                    (name.clone(), exiled.clone()),
+                    count_entry(name, exiled.len()),
+                ]
+            })
             .collect(),
         snapshots,
         next: Next::Sibling,
@@ -531,8 +540,9 @@ mod tests {
                 })
             })
             .collect();
-        // The name is bound even when nothing was exiled, so a later step finds it.
-        assert_eq!(bound, [("gone".to_owned(), expected)]);
+        // The name is bound even when nothing was exiled, so a later step finds it, and the number exiled is kept with it.
+        let kept = super::count_entry("gone", names.len());
+        assert_eq!(bound, [("gone".to_owned(), expected), kept]);
     }
 
     #[test]

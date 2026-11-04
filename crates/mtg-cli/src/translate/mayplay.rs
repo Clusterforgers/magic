@@ -39,13 +39,19 @@ pub fn may_cast(ctx: &Ctx, p: &Params, only: Option<&Value>) -> Tr<Value> {
     match (&only, p.get("Affected").unwrap_or("Card")) {
         (Some(objects), "Card.IsRemembered" | "Card.IsRemembered+YouOwn") => {
             permission["only"] = (*objects).clone();
+            // Exile holds anyone's cards: "the card you own" excludes the others among the ones named.
+            if p.get("Affected")
+                .is_some_and(|valid| valid.ends_with("+YouOwn"))
+            {
+                permission["what"] = json!([{"OwnedBy": "You"}]);
+            }
         }
         (Some(_), _) => return unmapped("valid:MayPlay-Affected-with-remembered"),
         (None, valid) => {
-            // The zone is the player's own: the ownership is in `from`.
+            // A graveyard, hand or library is the player's own: the ownership is in `from`. Exile holds anyone's cards.
             let what: Vec<Value> = selector_any(ctx, valid)?
                 .into_iter()
-                .filter(|pred| *pred != json!({"OwnedBy": "You"}))
+                .filter(|pred| from == "Exile" || *pred != json!({"OwnedBy": "You"}))
                 .filter(|pred| *pred != json!({"ControlledBy": "You"}))
                 .collect();
             if !what.is_empty() {

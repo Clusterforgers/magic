@@ -1196,6 +1196,7 @@ impl<'a> Scope<'a> {
         Ok(false)
     }
 
+    #[allow(clippy::too_many_lines)]
     fn pred(
         &self,
         pred: &Pred,
@@ -1212,6 +1213,7 @@ impl<'a> Scope<'a> {
             | Pred::SharesType(_)
             | Pred::SharesColor(_)
             | Pred::XInCost
+            | Pred::GenericCost(_)
             | Pred::Goaded
             | Pred::HasAttached(_)
             | Pred::AttachedTo(_) => self.w6d_pred(pred, seen)?,

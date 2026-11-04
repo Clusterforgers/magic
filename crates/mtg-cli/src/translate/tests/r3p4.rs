@@ -23,8 +23,6 @@ fn creature(lines: &str) -> (String, Vec<String>) {
     )
 }
 
-const EVERY_ZONE: &str = r#"{"AnyOf":[{"In":"Battlefield"},{"In":"Hand"},{"In":"Library"},{"In":"Graveyard"},{"In":"Exile"},{"In":"Stack"}]}"#;
-
 #[rstest]
 #[case::destroyed_all_then_counters(
     "T:Mode$ ChangesZone | Origin$ Any | Destination$ Battlefield | ValidCard$ Card.Self | Execute$ D\nSVar:D:DB$ DestroyAll | ValidCards$ Artifact,Enchantment | RememberDestroyed$ True | SubAbility$ C\nSVar:C:DB$ PutCounter | CounterType$ P1P1 | CounterNum$ X | SubAbility$ Z\nSVar:Z:DB$ Cleanup | ClearRemembered$ True\nSVar:X:Remembered$Amount",
@@ -36,7 +34,7 @@ const EVERY_ZONE: &str = r#"{"AnyOf":[{"In":"Battlefield"},{"In":"Hand"},{"In":"
 )]
 #[case::exiled_twice_over(
     "T:Mode$ ChangesZone | Origin$ Any | Destination$ Battlefield | ValidCard$ Card.Self | Execute$ D\nSVar:D:DB$ ChangeZone | Origin$ Battlefield | Destination$ Hand | ChangeType$ Plains.YouCtrl | ChangeNum$ 3 | Hidden$ True | RememberChanged$ True | SubAbility$ W\nSVar:W:DB$ GainLife | LifeAmount$ Y | SubAbility$ Z\nSVar:Z:DB$ Cleanup | ClearRemembered$ True\nSVar:Y:Remembered$Amount/Twice",
-    "Times"
+    "moved"
 )]
 fn the_amount_of_remembered_objects_counts_them_in_whatever_zone_they_went_to(
     #[case] lines: &str,
@@ -44,8 +42,7 @@ fn the_amount_of_remembered_objects_counts_them_in_whatever_zone_they_went_to(
 ) {
     let (json, found) = creature(lines);
     assert!(found.is_empty(), "{found:?}");
-    assert!(json.contains(r#""Count":[{"Is":{"Bound":"#), "{json}");
-    assert!(json.contains(EVERY_ZONE), "{json}");
+    assert!(json.contains(expected) && json.contains("~moved"), "{json}");
     assert!(json.contains(expected), "{json}");
 }
 
@@ -112,12 +109,12 @@ fn a_condition_on_a_targeted_line_with_nothing_declared_stays_a_gap() {
 }
 
 #[rstest]
-#[case::zero(
-    "ManaCost0",
-    &[r#"{"Compare":{"op":"Eq","stat":"ManaValue","to":0}}"#, r#"{"Not":"XInCost"}"#, r#"{"Not":{"Type":"Land"}}"#, r#"{"Not":{"HasKeywordNamed":"Suspend"}}"#]
-)]
-#[case::one("ManaCost1", &[r#"{"Compare":{"op":"Eq","stat":"ManaValue","to":1}}"#, r#"{"Not":"XInCost"}"#])]
-fn an_exact_mana_cost_is_a_mana_value_without_x(#[case] word: &str, #[case] preds: &[&str]) {
+#[case::zero("ManaCost0", &[r#"{"GenericCost":0}"#])]
+#[case::one("ManaCost1", &[r#"{"GenericCost":1}"#])]
+fn an_exact_mana_cost_is_a_cost_of_exactly_that_generic_mana(
+    #[case] word: &str,
+    #[case] preds: &[&str],
+) {
     let (json, found) = sorcery(&format!(
         "A:SP$ ChangeZone | Origin$ Library | Destination$ Battlefield | ChangeType$ Artifact.{word} | ChangeNum$ 1"
     ));
@@ -125,11 +122,6 @@ fn an_exact_mana_cost_is_a_mana_value_without_x(#[case] word: &str, #[case] pred
     for pred in preds {
         assert!(json.contains(pred), "{pred} in {json}");
     }
-    assert_eq!(
-        json.contains("Suspend"),
-        word == "ManaCost0",
-        "only a cost of {{0}} excludes a card that has no cost: {json}"
-    );
 }
 
 #[rstest]

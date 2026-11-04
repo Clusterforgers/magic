@@ -106,6 +106,7 @@ pub(super) fn w6d_suffix_text(pred: &Pred, form: Form) -> Option<String> {
     Some(match pred {
         Pred::XInCost if form.plural() => "with {X} in their mana costs".to_owned(),
         Pred::XInCost => "with {X} in its mana cost".to_owned(),
+        Pred::GenericCost(n) => format!("with mana cost {{{n}}}"),
         Pred::SharesName(Ref::Target(0) | Ref::Triggering) => {
             "with the same name as that creature".to_owned()
         }
