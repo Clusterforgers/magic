@@ -294,6 +294,7 @@ mod lifelink_combat;
 mod lifted_gates;
 mod living_weapon;
 mod lords;
+mod loses_and_has;
 mod loyalty_fuzz;
 mod macro_combat;
 mod macro_keywords;

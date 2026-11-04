@@ -90,7 +90,12 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Optioned::Done(taken) => taken.into_iter(),
     };
     let mut events = Vec::new();
-    for (made, wanted) in (0u64..).zip(mods) {
+    // The loss of all abilities takes the first timestamp of the effect, so what the same effect gives stays whatever the
+    // order of its list (CR 613.1f).
+    let (lost, kept): (Vec<_>, Vec<_>) = mods
+        .iter()
+        .partition(|wanted| matches!(wanted, Wanted::LoseAbilities));
+    for (made, wanted) in (0u64..).zip(lost.into_iter().chain(kept)) {
         let modification = match wanted {
             Wanted::AddProtectionFromChosenColor => {
                 let color = chosen
