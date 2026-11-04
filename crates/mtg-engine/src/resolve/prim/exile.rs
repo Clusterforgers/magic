@@ -540,8 +540,9 @@ mod tests {
                 })
             })
             .collect();
-        // The name is bound even when nothing was exiled, so a later step finds it.
-        assert_eq!(bound, [("gone".to_owned(), expected)]);
+        // The name is bound even when nothing was exiled, so a later step finds it, and the number exiled is kept with it.
+        let kept = super::count_entry("gone", names.len());
+        assert_eq!(bound, [("gone".to_owned(), expected), kept]);
     }
 
     #[test]

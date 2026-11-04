@@ -1196,6 +1196,7 @@ impl<'a> Scope<'a> {
         Ok(false)
     }
 
+    #[allow(clippy::too_many_lines)]
     fn pred(
         &self,
         pred: &Pred,
