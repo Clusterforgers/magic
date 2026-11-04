@@ -69,7 +69,7 @@ fn a_card_that_is_exiled_instead_of_going_to_a_graveyard(
 )]
 fn a_move_to_a_graveyard_of_another_shape_stays_a_gap(#[case] line: &str, #[case] gap: &str) {
     let text = creature(&format!("{line}\n{EXILE}"));
-    assert!(abilities(&text).is_empty());
+    assert_eq!(abilities(&text).len(), 0);
     assert!(
         gaps(&text).iter().any(|g| g.starts_with(gap)),
         "{:?}",
