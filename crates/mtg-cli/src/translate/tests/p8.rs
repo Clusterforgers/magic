@@ -156,52 +156,55 @@ fn an_alternate_additional_cost_is_one_of_two_costs() {
 #[test]
 fn an_alternate_additional_cost_with_an_unknown_cost_is_a_gap() {
     let script = "Name:T\nTypes:Instant\nK:AlternateAdditionalCost:Quux<1>:2\n";
-    assert!(abilities(script).is_empty());
-    assert!(gaps(script).iter().any(|gap| gap == "cost:Quux"), "{:?}", gaps(script));
+    assert_eq!(abilities(script), Vec::<Value>::new());
+    assert!(
+        gaps(script).iter().any(|gap| gap == "cost:Quux"),
+        "{:?}",
+        gaps(script)
+    );
 }
 
 #[test]
-#[ignore]
-fn scratch_survey() {
-    use std::collections::BTreeMap;
-    let dir = std::path::Path::new(&std::env::var("HOME").unwrap())
-        .join(".cache/mtg-cli/forge/forge-gui/res/cardsfolder");
-    let prefix = std::env::var("SURVEY").unwrap_or_default();
-    let mut lines: BTreeMap<String, usize> = BTreeMap::new();
-    let mut stack = vec![dir];
-    while let Some(d) = stack.pop() {
-        for e in std::fs::read_dir(d).unwrap().flatten() {
-            let p = e.path();
-            if p.is_dir() {
-                stack.push(p);
-            } else if let Ok(t) = std::fs::read_to_string(&p) {
-                for l in t.lines() {
-                    if let Some(k) = l.strip_prefix(&std::env::var("LINE").unwrap_or("K:".into())) {
-                        if k.starts_with(&prefix) {
-                            *lines.entry(k.to_owned()).or_default() += 1;
-                        }
-                    }
-                }
-            }
-        }
-    }
-    let mut tally: BTreeMap<String, (usize, String)> = BTreeMap::new();
-    for (k, n) in &lines {
-        let script = format!(
-            "Name:T\nTypes:Creature Elf\n{}{k}\n",
-            std::env::var("LINE").unwrap_or("K:".into())
-        );
-        for g in super::gaps(&script) {
-            let e = tally.entry(g).or_default();
-            e.0 += n;
-            if e.1.is_empty() {
-                e.1 = k.clone();
-            }
-        }
-    }
-    let mut v: Vec<_> = tally.into_iter().collect();
-    v.sort_by_key(|(_, (n, _))| std::cmp::Reverse(*n));
-    for (g, (n, ex)) in v {
-        println!("{n:5} {g}  e.g. {ex}");
-    }
+fn a_leyline_may_begin_the_game_on_the_battlefield() {
+    let script = "Name:T\nTypes:Enchantment\nK:MayEffectFromOpeningHand:FromHand\nSVar:FromHand:DB$ ChangeZone | Defined$ Self | Origin$ Hand | Destination$ Battlefield | SpellDescription$ x\n";
+    assert_eq!(
+        abilities(script),
+        vec![json!("OpeningHand")],
+        "{:?}",
+        gaps(script)
+    );
+}
+
+#[rstest]
+#[case::exile(
+    "K:MayEffectFromOpeningHand:ExileCard\nSVar:ExileCard:DB$ ChangeZone | Defined$ Self | Origin$ Hand | Destination$ Exile",
+    "keyword:MayEffectFromOpeningHand"
+)]
+#[case::to_graveyard(
+    "K:MayEffectFromOpeningHand:FromHand\nSVar:FromHand:DB$ ChangeZone | Defined$ Self | Origin$ Hand | Destination$ Graveyard",
+    "keyword:MayEffectFromOpeningHand-shape"
+)]
+#[case::hand_size(
+    "K:Your starting hand size is five.",
+    "keyword:Your starting hand size is five."
+)]
+fn an_opening_hand_word_the_node_cannot_say_stays_a_named_gap(
+    #[case] lines: &str,
+    #[case] gap: &str,
+) {
+    let script = creature(lines);
+    assert!(
+        gaps(&script).iter().any(|found| found == gap),
+        "{:?}",
+        gaps(&script)
+    );
+}
+
+#[rstest]
+#[case("A deck can have any number of cards named CARDNAME.")]
+#[case("Your minimum deck size is reduced by five.")]
+fn a_deck_building_rule_adds_no_ability_and_no_gap(#[case] line: &str) {
+    let script = creature(&format!("K:{line}"));
+    assert_eq!(abilities(&script), Vec::<Value>::new());
+    assert_eq!(gaps(&script), Vec::<String>::new());
 }

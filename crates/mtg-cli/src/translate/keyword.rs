@@ -246,8 +246,18 @@ fn landwalk(word: &str) -> Tr<Value> {
     Ok(json!({"Landwalk": [{"Subtype": land}]}))
 }
 
+/// Rules about building a deck: they belong to deck validation and change nothing about play.
+const DECK_RULES: [&str; 3] = [
+    "A deck can have any number of cards named CARDNAME.",
+    "Your minimum deck size is reduced by five.",
+    "Your deck can't have basic land cards.",
+];
+
 /// The abilities a `K:` line stands for: those of `keyword_ability`, or the chapters of a Saga.
 pub fn keyword_abilities(ctx: &mut Ctx, body: &str) -> Vec<Tr<Value>> {
+    if DECK_RULES.contains(&body.trim()) {
+        return Vec::new();
+    }
     if let Some(quirks) = combat_quirks(body.trim()) {
         return quirks.iter().map(|quirk| Ok(combat_rule(quirk))).collect();
     }
@@ -319,6 +329,9 @@ pub fn keyword_ability(ctx: &mut Ctx, body: &str) -> Tr<Value> {
         let costs = [cost(ctx, first)?, cost(ctx, second)?];
         return Ok(json!({"AdditionalCost": {"cost": [{"OneOf": costs}], "required": true}}));
     }
+    if let ["MayEffectFromOpeningHand", "FromHand"] = fields.as_slice() {
+        return opening_hand(ctx);
+    }
     let mut condition = None;
     let by = match fields.as_slice() {
         ["etbCounter", kind, count, rest @ ..] if rest.len() <= 2 => {
@@ -342,6 +355,28 @@ pub fn keyword_ability(ctx: &mut Ctx, body: &str) -> Tr<Value> {
         replacement["condition"] = condition;
     }
     Ok(json!({ "Replacement": replacement }))
+}
+
+/// `MayEffectFromOpeningHand:FromHand`: the card may begin the game on the battlefield, when its part says exactly that.
+fn opening_hand(ctx: &Ctx) -> Tr<Value> {
+    let Some(text) = ctx.svar("FromHand") else {
+        return unmapped("svar:missing");
+    };
+    let part = Params::parse(text);
+    let exact = part.get("DB") == Some("ChangeZone")
+        && part.get("Defined") == Some("Self")
+        && part.get("Origin") == Some("Hand")
+        && part.get("Destination") == Some("Battlefield");
+    if !exact {
+        return unmapped("keyword:MayEffectFromOpeningHand-shape");
+    }
+    super::ctx::check_keys(
+        &part,
+        "MayEffectFromOpeningHand",
+        &["DB", "Defined", "Origin", "Destination"],
+        |_, _| false,
+    )?;
+    Ok(json!("OpeningHand"))
 }
 
 /// What the part named by an `ETBReplacement` makes the permanent's controller choose as it enters.
