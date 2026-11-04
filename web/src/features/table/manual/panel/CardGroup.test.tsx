@@ -240,6 +240,8 @@ describe('the commands of the card picked', () => {
       'card:tap',
       'card:damage',
       'card:pump',
+      'card:blocks',
+      'card:transform',
       'card:sacrifice',
       'card:give',
     ])
@@ -249,7 +251,7 @@ describe('the commands of the card picked', () => {
   it('gives each command row its icon and a chevron that turns down while it is open', async () => {
     const { user } = await pick()
     const rows = [...group().querySelectorAll<HTMLElement>('[data-card-command]')]
-    expect(rows).toHaveLength(7)
+    expect(rows).toHaveLength(9)
     for (const row of rows) {
       expect(row.querySelector('[data-slot="row-icon"]')).not.toBeNull()
       expect(row.querySelector('[data-slot="row-chevron"]')).not.toHaveClass('rotate-90')

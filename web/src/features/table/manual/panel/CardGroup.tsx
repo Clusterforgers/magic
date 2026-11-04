@@ -37,6 +37,7 @@ const COUNTER_SPEC: AmountSpec = {
   start: 0,
 }
 const DAMAGE_SPEC: AmountSpec = { signed: false, min: 1, max: LIMITS.damage, presets: [1, 2, 3, 5], start: 1 }
+const BLOCKS_SPEC: AmountSpec = { signed: false, min: 1, max: LIMITS.blocks, presets: [1, 2, 3], start: 1 }
 const PUMP_SPEC: AmountSpec = {
   signed: true,
   min: -LIMITS.pump,
@@ -353,6 +354,15 @@ function CardFields({ command, draft, set, context }: FieldsProps) {
             onChange={(count) => set({ count })}
           />
         </>
+      )
+    case 'blocks':
+      return (
+        <AmountField
+          label="More creatures"
+          spec={BLOCKS_SPEC}
+          value={draft.count}
+          onChange={(count) => set({ count })}
+        />
       )
     case 'pump':
       return (

@@ -471,6 +471,28 @@ pub enum ManualAction {
         /// Toughness change, from -99 to 99.
         toughness: i32,
     },
+    /// A transforming double-faced permanent of the seat is turned over to its other face.
+    Transform {
+        /// The permanent.
+        object: ObjectId,
+    },
+    /// A double-faced card of the seat, not on the battlefield, is put onto it with its back face up.
+    MoveBack {
+        /// The card.
+        object: ObjectId,
+    },
+    /// A creature of the seat may attack this turn as though it did not have defender.
+    AttackDespiteDefender {
+        /// The creature.
+        object: ObjectId,
+    },
+    /// A creature of the seat can block extra creatures this turn.
+    BlockAdditional {
+        /// The creature.
+        object: ObjectId,
+        /// How many more creatures, 1 to 99.
+        count: u32,
+    },
     /// The seat looks at the top cards of its library, all of a shorter one; only it learns them.
     LookTop {
         /// How many, 1 to 10.
@@ -578,6 +600,12 @@ pub enum ManualRefusal {
     /// The object is not a creature on the battlefield.
     #[error("{0:?} is not a creature on the battlefield")]
     NotACreature(ObjectId),
+    /// The object is not a transforming double-faced permanent on the battlefield.
+    #[error("{0:?} is not a transforming double-faced permanent on the battlefield")]
+    NotTransformable(ObjectId),
+    /// The card is not a double-faced card outside the battlefield.
+    #[error("{0:?} is not a double-faced card outside the battlefield")]
+    NotDoubleFaced(ObjectId),
     /// A replacement choice is being made; the action waits until it is answered.
     #[error("a replacement choice is being made; try again once it is answered")]
     Settling,
@@ -667,6 +695,18 @@ pub(crate) fn events(
             power,
             toughness,
         } => crate::manual_effects::pump(state, player, *object, *power, *toughness)?,
+        ManualAction::Transform { object } => {
+            crate::manual_faces::transform(state, player, *object)?
+        }
+        ManualAction::MoveBack { object } => {
+            crate::manual_faces::move_back(state, player, *object)?
+        }
+        ManualAction::AttackDespiteDefender { object } => {
+            crate::manual_faces::attack_despite_defender(state, player, *object)?
+        }
+        ManualAction::BlockAdditional { object, count } => {
+            crate::manual_faces::block_additional(state, player, *object, *count)?
+        }
         ManualAction::LookTop { count } => crate::manual_library::look_top(state, player, *count)?,
         ManualAction::ArrangeTop {
             top,
@@ -778,7 +818,7 @@ fn own_seat(
         .ok_or(ManualRefusal::NotYours)
 }
 
-fn moves(
+pub(crate) fn moves(
     state: &GameState,
     player: PlayerId,
     id: ObjectId,
