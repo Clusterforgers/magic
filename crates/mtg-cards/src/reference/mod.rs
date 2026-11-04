@@ -254,8 +254,9 @@ mod tests {
 
     use super::*;
 
-    /// The reference in bytes may not grow past this without a decision (about 20 thousand tokens in a prompt).
-    const BUDGET: usize = 80_000;
+    /// The reference in bytes may not grow past this without a decision (about 30 thousand tokens in a prompt). It only
+    /// feeds the local model; the Forge path does not use it.
+    const BUDGET: usize = 120_000;
 
     #[test]
     fn the_reference_stays_under_its_budget() {
