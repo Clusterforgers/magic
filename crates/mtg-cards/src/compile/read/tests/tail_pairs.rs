@@ -119,7 +119,8 @@ fn a_card_returns_to_its_owners_hand_at_the_next_end_step(#[case] text: &str, #[
         effects,
         &[Effect::Move {
             what: later,
-            to: Destination::Hand
+            to: Destination::Hand,
+            bind: None
         }],
         "{text}"
     );

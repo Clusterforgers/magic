@@ -1435,6 +1435,7 @@ dependencies = [
  "clap",
  "flate2",
  "mtg-cards",
+ "mtg-core",
  "mtg-db",
  "mtg-engine",
  "mtg-import",

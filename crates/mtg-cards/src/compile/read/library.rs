@@ -329,10 +329,12 @@ fn split_put(r: &mut Reader<'_>, found: &Ref) -> Option<Vec<Effect>> {
         Effect::Move {
             what: Ref::Bound(KEPT.to_owned()),
             to: first,
+            bind: None,
         },
         Effect::Move {
             what: Ref::Bound(REST.to_owned()),
             to: rest,
+            bind: None,
         },
     ])
 }
@@ -386,6 +388,7 @@ fn searched_by(r: &mut Reader<'_>, who: Ref, optional: bool) -> Option<Vec<Effec
             Effect::Move {
                 what: found[0].clone(),
                 to,
+                bind: None,
             },
         ]);
         searches
@@ -398,6 +401,7 @@ fn searched_by(r: &mut Reader<'_>, who: Ref, optional: bool) -> Option<Vec<Effec
         searches.extend(found.into_iter().map(|what| Effect::Move {
             what,
             to: to.clone(),
+            bind: None,
         }));
         searches.push(shuffle);
         searches
@@ -486,10 +490,12 @@ pub fn look(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         Effect::Move {
             what: Ref::Bound(KEPT.to_owned()),
             to: Destination::Hand,
+            bind: None,
         },
         Effect::Move {
             what: Ref::Bound(REST.to_owned()),
             to: rest,
+            bind: None,
         },
     ])
 }
@@ -525,6 +531,7 @@ pub fn put_on_library(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     Some(vec![Effect::Move {
         what,
         to: Destination::Library { place, order: None },
+        bind: None,
     }])
 }
 
@@ -795,7 +802,7 @@ fn search_sequence(effects: &[Effect], who: &Ref) -> Option<(String, usize)> {
     }
     match rest {
         [
-            Effect::Move { what, to },
+            Effect::Move { what, to, .. },
             Effect::Shuffle { who: shuffler },
             ..,
         ] if count_of == 1 && *what == found && shuffler == who => {
@@ -803,10 +810,11 @@ fn search_sequence(effects: &[Effect], who: &Ref) -> Option<(String, usize)> {
             let _ = write!(text, ", put {pron} {}, then shuffle", destination_text(to)?);
         }
         [
-            Effect::Move { what, to },
+            Effect::Move { what, to, .. },
             Effect::Move {
                 what: other,
                 to: other_to,
+                ..
             },
             Effect::Shuffle { who: shuffler },
             ..,
@@ -827,6 +835,7 @@ fn search_sequence(effects: &[Effect], who: &Ref) -> Option<(String, usize)> {
                         place: Place::Top,
                         order: None,
                     },
+                ..
             },
             ..,
         ] if count_of == 1 && *what == found && !plural && shuffler == who => {
@@ -851,10 +860,12 @@ fn split_put_text(rest: &[Effect], bind: &str, who: &Ref) -> Option<String> {
         Effect::Move {
             what: Ref::Bound(first),
             to,
+            ..
         },
         Effect::Move {
             what: Ref::Bound(others),
             to: rest_to,
+            ..
         },
         Effect::Shuffle { who: shuffler },
         ..,
@@ -891,10 +902,12 @@ fn look_sequence(effects: &[Effect]) -> Option<(String, usize)> {
             Effect::Move {
                 what: Ref::Bound(moved),
                 to: Destination::Hand,
+                ..
             },
             Effect::Move {
                 what: Ref::Bound(left),
                 to: left_to,
+                ..
             },
             ..,
         ] if bind == TOP

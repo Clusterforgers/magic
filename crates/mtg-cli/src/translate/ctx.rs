@@ -86,8 +86,17 @@ pub struct Ctx<'a> {
     pub targets: Vec<Value>,
     /// The objects the latest zone change moved (`RememberChanged$`), which `Defined$ Remembered` names later.
     pub remembered: Option<Value>,
+    /// The objects an `Effect` object remembers, which a trigger or static it carries reads as `IsRemembered`; kept across
+    /// `reset` because the carried lines are translated as lines of their own.
+    pub pinned: Option<Value>,
     /// The latest target the ability had declared before the line being translated (`Defined$ ParentTarget`).
     pub parent_target: Option<u8>,
+    /// The name the latest value chosen by the ability is bound to (`ChosenColor`, `ChosenType` after it).
+    pub chosen: Option<String>,
+    /// The name the cards the latest `ChooseCard` picked are bound to (`ChosenCard` after it).
+    pub chosen_card: Option<String>,
+    /// What the trigger line being translated is about, for its `Triggered*` words.
+    pub trigger: Option<super::triggered::Shape>,
     binds: usize,
     depth: usize,
 }
@@ -106,7 +115,11 @@ impl<'a> Ctx<'a> {
             world,
             targets: Vec::new(),
             remembered: None,
+            pinned: None,
             parent_target: None,
+            chosen: None,
+            chosen_card: None,
+            trigger: None,
             binds: 0,
             depth: 0,
         }
@@ -117,8 +130,39 @@ impl<'a> Ctx<'a> {
         self.targets.clear();
         self.remembered = None;
         self.parent_target = None;
+        self.chosen = None;
+        self.chosen_card = None;
+        self.trigger = None;
         self.binds = 0;
         self.depth = 0;
+    }
+
+    /// Runs a translation of a line of its own (a static, a trigger) and restores the state of the ability around it.
+    pub fn nested<T>(&mut self, pinned: Option<Value>, run: impl FnOnce(&mut Ctx<'a>) -> T) -> T {
+        let before = std::mem::replace(&mut self.pinned, pinned);
+        let targets = std::mem::take(&mut self.targets);
+        let saved = (
+            self.remembered.take(),
+            self.parent_target,
+            self.chosen.take(),
+            self.chosen_card.take(),
+            self.trigger.take(),
+            self.binds,
+            self.depth,
+        );
+        let out = run(self);
+        self.pinned = before;
+        self.targets = targets;
+        (
+            self.remembered,
+            self.parent_target,
+            self.chosen,
+            self.chosen_card,
+            self.trigger,
+            self.binds,
+            self.depth,
+        ) = saved;
+        out
     }
 
     /// The text of a named part.
@@ -228,11 +272,47 @@ pub fn is_hint(key: &str) -> bool {
 /// Refuses a key that the mapper of `api` does not read: a key that changes what the line does and is not understood
 /// must leave the line out, not be ignored.
 pub fn only(params: &Params, api: &str, read: &[&str]) -> Tr<()> {
-    for (key, _) in params.iter() {
-        if read.contains(&key) || COMMON.contains(&key) || is_hint(key) {
+    check_keys(params, api, read, |key, _| COMMON.contains(&key))
+}
+
+/// The one place that checks the keys of a line against those a mapper reads: a key that is neither read, accepted, nor a
+/// hint makes the line a gap `key:<label>.<key>`, and a listed key that the mapper then never reads makes it a gap too
+/// (`audit` in `card.rs`).
+pub fn check_keys(
+    params: &Params,
+    label: &str,
+    read: &[&str],
+    accepted: impl Fn(&str, &str) -> bool,
+) -> Tr<()> {
+    for (key, value) in params.iter() {
+        if read.contains(&key) || accepted(key, value) || is_hint(key) {
             continue;
         }
-        return unmapped(format!("key:{api}.{key}"));
+        return unmapped(format!("key:{label}.{key}"));
     }
+    let promised: Vec<&str> = read
+        .iter()
+        .copied()
+        .filter(|key| !is_hint(key) && !INERT.contains(&(label, *key)))
+        .collect();
+    params.promise(label, &promised);
     Ok(())
 }
+
+/// Keys that a mapper lists and may leave unread because they change nothing the translation keeps: bookkeeping of
+/// remembered objects, the hidden-zone flags of a library search (it may find nothing and always shuffles), and display
+/// flags of a private look.
+const INERT: [(&str, &str); 12] = [
+    ("Cleanup", "ClearRemembered"),
+    ("Cleanup", "ClearImprinted"),
+    ("Cleanup", "ClearTriggered"),
+    ("Effect", "Stackable"),
+    ("ChangeZone.Search", "Hidden"),
+    ("ChangeZone.Search", "Mandatory"),
+    ("ChangeZone.Search", "Optional"),
+    ("ChangeZone.Search", "ShuffleNonMandatory"),
+    ("ChangeZone.Choose", "Hidden"),
+    ("ChangeZone.Choose", "Optional"),
+    ("Static.Continuous", "AddSVar"),
+    ("Dig", "ForceRevealToController"),
+];

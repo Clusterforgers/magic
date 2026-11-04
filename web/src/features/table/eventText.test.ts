@@ -81,6 +81,10 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
     { AbilityCopied: { object: 9, of: { id: 5, counter: 0 }, controller: 0 } },
     'Ana copies the ability of Serra Angel',
   ],
+  TargetsChanged: [
+    { TargetsChanged: { object: { id: 5, counter: 0 }, controller: 0, added: [] } },
+    'The targets of Serra Angel change',
+  ],
   CopyEnded: [{ CopyEnded: { object: 3 } }, 'Forest stops being a copy'],
   CardCopied: [{ CardCopied: { object: 9, of: { id: 5, counter: 0 }, owner: 0 } }, 'Ana copies Serra Angel'],
   CopyCeased: [{ CopyCeased: { object: 3 } }, 'Forest ceases to exist'],
@@ -751,6 +755,10 @@ describe('events with more than one shape', () => {
     [
       effect(objects(2), { RemoveKeyword: 'Flying' }, 'UntilEndOfTurn'),
       'Hill Giant loses flying until end of turn',
+    ],
+    [
+      effect(objects(2), { LockKeyword: 'Flying' }, 'UntilEndOfTurn'),
+      "Hill Giant loses flying and can't have or gain it until end of turn",
     ],
     [effect('AllCreatures', 'LoseAbilities', 'Forever'), 'All creatures lose all abilities'],
     [

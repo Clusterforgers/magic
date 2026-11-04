@@ -65,7 +65,11 @@ pub fn from_graveyard(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
             battlefield(tapped, None, entering)
         }
     };
-    Some(vec![Effect::Move { what, to }])
+    Some(vec![Effect::Move {
+        what,
+        to,
+        bind: None,
+    }])
 }
 
 /// A destination on the battlefield with nothing else said.
@@ -145,6 +149,7 @@ pub fn return_from_graveyard(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         Effect::Move {
             what: Ref::Bound(super::effects::RETURNED.to_owned()),
             to: Destination::Hand,
+            bind: None,
         },
     ])
 }
@@ -177,6 +182,7 @@ pub fn may_put_from_hand(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
             Effect::Move {
                 what: Ref::Bound(CHOSEN.to_owned()),
                 to: battlefield(tapped, None, Vec::new()),
+                bind: None,
             },
         ],
     }])

@@ -56,6 +56,9 @@ pub struct DraftMeta {
     /// The source's Oracle text equals the printed text after normalising; an absent key is false.
     #[serde(default, skip_serializing_if = "std::ops::Not::not")]
     pub oracle_matches: bool,
+    /// The constructs a translator could not express; a card with any is never a draft.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub gaps: Vec<String>,
 }
 
 impl DraftMeta {

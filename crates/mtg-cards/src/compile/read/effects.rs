@@ -314,7 +314,10 @@ pub(super) fn mana_cost(r: &mut Reader<'_>) -> Option<Cost> {
 
 /// "It can't be regenerated." changes the destruction before it.
 fn regeneration(r: &mut Reader<'_>, effects: &mut [Effect]) -> Option<()> {
-    let Some(Effect::Destroy { what, regenerate }) = effects.last_mut() else {
+    let Some(Effect::Destroy {
+        what, regenerate, ..
+    }) = effects.last_mut()
+    else {
         return None;
     };
     let single = matches!(what, Ref::Target(_)) && r.targets.first()?.bounds.is_one();
@@ -447,6 +450,7 @@ fn put_back(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
                 place: Place::Top,
                 order,
             },
+            bind: None,
         },
     ])
 }
@@ -506,6 +510,7 @@ pub(super) fn imperative(r: &mut Reader<'_>) -> Option<Effect> {
         "mill" => Effect::Mill {
             who,
             count: cards_counted(r)?,
+            bind: None,
         },
         "shuffle" => {
             r.need("your library")?;
@@ -535,6 +540,7 @@ fn itself_sacrificed(r: &mut Reader<'_>, who: Ref) -> Option<Effect> {
         who,
         filter: Selector::this(),
         count: Amount::one(),
+        bind: None,
     })
 }
 
@@ -716,6 +722,7 @@ fn predicate(r: &mut Reader<'_>, who: &Ref) -> Option<Effect> {
         "mill" | "mills" => Effect::Mill {
             who,
             count: cards_counted(r)?,
+            bind: None,
         },
         "incubate" | "incubates" => Effect::Incubate {
             who,
@@ -805,7 +812,12 @@ fn sacrifice(r: &mut Reader<'_>, who: Ref) -> Option<Effect> {
     let filter = phrase(r, form)?;
     filter.0.iter().all(describes_a_kind).then_some(())?;
     r.words("of their choice");
-    Some(Effect::Sacrifice { who, filter, count })
+    Some(Effect::Sacrifice {
+        who,
+        filter,
+        count,
+        bind: None,
+    })
 }
 
 /// Whether a predicate says what kind of permanent it is, and nothing of who has it or where.
@@ -853,6 +865,7 @@ fn return_card(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         return Some(vec![Effect::Move {
             what,
             to: Destination::Hand,
+            bind: None,
         }]);
     }
     let what = target_object(r).or_else(|| up_to_one_object(r))?;
@@ -878,6 +891,7 @@ fn return_card(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
                     transformed: false,
                     counters: Vec::new(),
                 },
+                bind: None,
             }]);
         }
         r.need("to your hand")?;
@@ -890,6 +904,7 @@ fn return_card(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     Some(vec![Effect::Move {
         what,
         to: Destination::Hand,
+        bind: None,
     }])
 }
 
@@ -909,6 +924,7 @@ fn itself_to_hand(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         return Some(vec![Effect::Move {
             what: card,
             to: Destination::Hand,
+            bind: None,
         }]);
     }
     Some(vec![
@@ -929,6 +945,7 @@ fn itself_to_hand(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
             effects: vec![Effect::Move {
                 what: Ref::Bound(LATER.to_owned()),
                 to: Destination::Hand,
+                bind: None,
             }],
         },
     ])
@@ -975,6 +992,7 @@ fn return_chosen(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         Effect::Move {
             what: Ref::Bound(RETURNED.to_owned()),
             to: Destination::Hand,
+            bind: None,
         },
     ])
 }
@@ -1006,6 +1024,7 @@ fn return_any_number(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         Effect::Move {
             what: Ref::Bound(RETURNED.to_owned()),
             to: Destination::Hand,
+            bind: None,
         },
     ])
 }
@@ -1021,6 +1040,7 @@ fn return_itself(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         return Some(vec![Effect::Move {
             what: Ref::This,
             to: Destination::Hand,
+            bind: None,
         }]);
     }
     r.need("to the battlefield")?;
@@ -1033,6 +1053,7 @@ fn return_itself(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
             transformed: false,
             counters: Vec::new(),
         },
+        bind: None,
     }])
 }
 
@@ -1047,6 +1068,7 @@ fn shuffle_itself(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
             place: Place::Shuffled,
             order: None,
         },
+        bind: None,
     }])
 }
 
@@ -1093,6 +1115,7 @@ pub fn returns_itself(effects: &[Effect]) -> bool {
                         transformed: false,
                         ..
                     },
+                ..
             },
         ] => true,
         _ => false,
@@ -1213,6 +1236,7 @@ fn removal(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         "destroy" => Effect::Destroy {
             what,
             regenerate: true,
+            bind: None,
         },
         "exile" => Effect::Exile {
             what,

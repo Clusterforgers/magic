@@ -127,6 +127,7 @@ pub fn unsummon(name: &str) -> Arc<CardDefinition> {
         vec![Effect::Move {
             what: Ref::Target(0),
             to: Destination::Hand,
+            bind: None,
         }],
     )
 }

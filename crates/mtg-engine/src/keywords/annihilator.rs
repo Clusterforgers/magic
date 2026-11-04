@@ -30,6 +30,7 @@ impl KeywordRules for Annihilator {
                 who: Ref::Defending,
                 filter: Selector::default(),
                 count: Amount::Fixed(i32::try_from(*count).unwrap_or(i32::MAX)),
+                bind: None,
             }],
         }]
     }

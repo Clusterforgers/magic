@@ -45,6 +45,7 @@ impl Writer<'_> {
                         transformed: false,
                         counters,
                     },
+                ..
             },
         ] = later.as_slice()
         else {
@@ -106,6 +107,7 @@ impl Writer<'_> {
             Effect::Move {
                 what: Ref::Bound(moved),
                 to: Destination::Hand,
+                ..
             },
         ] = later.as_slice()
         else {

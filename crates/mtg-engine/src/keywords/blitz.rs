@@ -64,6 +64,7 @@ fn sacrifice_it() -> Effect {
         who: Ref::ControllerOf(Box::new(blitzed.clone())),
         filter: Selector(vec![Pred::Is(blitzed)]),
         count: Amount::one(),
+        bind: None,
     }
 }
 

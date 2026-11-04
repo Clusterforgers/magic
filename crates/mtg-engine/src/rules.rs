@@ -44,6 +44,32 @@ pub enum Rule {
     MustAttackPlayers(Vec<(ObjectRef, PlayerId)>),
     /// The creatures block each combat if able (CR 509.1c).
     MustBlock(Vec<ObjectRef>),
+    /// The creatures block the attacker if able (Provoke, CR 509.1c).
+    MustBlockAttacker {
+        /// The creatures that must block it.
+        blockers: Vec<ObjectRef>,
+        /// The attacking creature.
+        attacker: ObjectRef,
+    },
+    /// A permission or a limit on how the creatures take part in combat.
+    Combat {
+        /// What the rule says of them.
+        #[cfg_attr(feature = "ts", ts(type = "unknown"))]
+        quirk: mtg_cards::modify::CombatQuirk,
+        /// The creatures.
+        creatures: Vec<ObjectRef>,
+    },
+    /// The players may target the permanents and the players as though they did not have hexproof, and shroud when `shroud`.
+    IgnoreHexproof {
+        /// The players whose spells and abilities may.
+        by: Vec<PlayerId>,
+        /// The permanents covered.
+        what: Vec<ObjectRef>,
+        /// The players covered.
+        players: Vec<PlayerId>,
+        /// Shroud is ignored too.
+        shroud: bool,
+    },
     /// Creatures can't attack the players unless their controller pays for each of them as the attack is declared
     /// (CR 508.1h).
     AttackTax(AttackTax),
@@ -318,6 +344,10 @@ impl RuleEffect {
                 only: Some(named), ..
             } => named.iter().all(gone),
             Rule::MustAttackPlayers(pairs) => pairs.iter().all(|(named, _)| gone(named)),
+            Rule::MustBlockAttacker { blockers, attacker } => {
+                gone(attacker) || blockers.iter().all(gone)
+            }
+            Rule::Combat { creatures, .. } => creatures.iter().all(gone),
             Rule::Regenerate(named) => gone(named),
             Rule::PreventDamage(shield) => shield.spent(state),
             _ => false,
@@ -341,6 +371,8 @@ pub(crate) struct Again {
 /// The rules in force in a state.
 #[derive(Debug, Default)]
 pub(crate) struct RulesInForce {
+    /// The combat permissions and requirements of `combat_quirks`.
+    pub(crate) quirks: crate::combat_quirks::QuirkRules,
     must_attack: BTreeSet<ObjectId>,
     attack_players: Vec<(ObjectId, PlayerId)>,
     must_block: BTreeSet<ObjectId>,
@@ -542,6 +574,9 @@ impl RulesInForce {
                 .attack_players
                 .extend(pairs.iter().map(|(named, player)| (named.id, *player))),
             Rule::MustBlock(named) => self.must_block.extend(ids(named)),
+            Rule::MustBlockAttacker { .. } | Rule::Combat { .. } | Rule::IgnoreHexproof { .. } => {
+                self.quirks.put(rule);
+            }
             Rule::AttackTax(tax) => self.taxes.push(Taxing {
                 controller,
                 source,
@@ -691,6 +726,11 @@ fn w17b_rule_objects(
         .collect())
 }
 
+/// The battlefield objects `who` names in `scope`.
+pub(crate) fn lower_objects(scope: &Scope<'_>, who: &Ref) -> Result<Vec<ObjectRef>, ResolveError> {
+    w17b_rule_objects(scope, who, Zone::Battlefield)
+}
+
 /// What the data's references name in `scope`, as the engine plays the rule: the permanents, the spells or the players.
 /// A rule the engine does not play refuses by name.
 pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, ResolveError> {
@@ -708,6 +748,9 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
                 .collect(),
         ),
         GameRule::MustBlock(who) => Rule::MustBlock(objects(who, Zone::Battlefield)?),
+        GameRule::MustBlockAttacker { .. }
+        | GameRule::Combat { .. }
+        | GameRule::IgnoreHexproof { .. } => crate::combat_quirks::lower(scope, wanted)?,
         GameRule::AttackTax {
             who,
             attacked,
@@ -836,6 +879,11 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
             named.is_empty()
         }
         Rule::MustAttackPlayers(pairs) => pairs.is_empty(),
+        Rule::MustBlockAttacker { blockers, .. } => blockers.is_empty(),
+        Rule::Combat { creatures, .. } => creatures.is_empty(),
+        Rule::IgnoreHexproof {
+            by, what, players, ..
+        } => by.is_empty() || (what.is_empty() && players.is_empty()),
         Rule::CantGainLife(players)
         | Rule::NoLifeLossFromDamage(players)
         | Rule::RadiationGainsLife(players)
@@ -963,6 +1011,7 @@ fn gather(state: &GameState) -> RulesInForce {
 /// The rules of a game in which none can be in force, and of one whose rules are being gathered (the gathering reads
 /// objects, never the rules).
 static NONE: RulesInForce = RulesInForce {
+    quirks: crate::combat_quirks::QuirkRules::NONE,
     must_attack: BTreeSet::new(),
     attack_players: Vec::new(),
     must_block: BTreeSet::new(),

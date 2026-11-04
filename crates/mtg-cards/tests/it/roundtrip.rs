@@ -764,7 +764,11 @@ fn leaf_effect() -> impl Strategy<Value = Effect> {
             random,
             bind: None
         }),
-        (who(), amount()).prop_map(|(who, count)| Effect::Mill { who, count }),
+        (who(), amount()).prop_map(|(who, count)| Effect::Mill {
+            who,
+            count,
+            bind: None
+        }),
         (who(), amount()).prop_map(|(who, count)| Effect::Scry { who, count }),
         (who(), amount(), bound_name()).prop_map(|(who, count, bind)| Effect::LookAtTop {
             who,
@@ -807,9 +811,16 @@ fn leaf_effect() -> impl Strategy<Value = Effect> {
                 rest_as
             }),
         who().prop_map(|who| Effect::Shuffle { who }),
-        (reference(), destination()).prop_map(|(what, to)| Effect::Move { what, to }),
-        (reference(), any::<bool>())
-            .prop_map(|(what, regenerate)| Effect::Destroy { what, regenerate }),
+        (reference(), destination()).prop_map(|(what, to)| Effect::Move {
+            what,
+            to,
+            bind: None
+        }),
+        (reference(), any::<bool>()).prop_map(|(what, regenerate)| Effect::Destroy {
+            what,
+            regenerate,
+            bind: None
+        }),
         (
             reference(),
             proptest::option::of("[a-z]{1,6}"),
@@ -832,7 +843,8 @@ fn leaf_effect() -> impl Strategy<Value = Effect> {
         (who(), selector(), amount()).prop_map(|(who, filter, count)| Effect::Sacrifice {
             who,
             filter,
-            count
+            count,
+            bind: None
         }),
         reference().prop_map(|what| Effect::Counter { what }),
     ];

@@ -357,6 +357,7 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         | Event::CardCopied(_)
         | Event::CopyCeased { .. }
         | Event::AbilityCopied(_)
+        | Event::TargetsChanged(_)
         | Event::CopyEnded { .. }
         | Event::Entered { .. }
         | Event::Attached { .. }

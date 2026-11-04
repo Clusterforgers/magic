@@ -45,20 +45,100 @@ pub(crate) fn fold(state: &mut GameState, change: &Remembered) {
     }
 }
 
-/// An object that changes zones is a new object: what it remembered is gone, and so is its place in any memory.
+/// An object that changes zones is a new object: its place in any memory is gone, and what it remembered goes with it
+/// unless an ability of it can still read the memory: its leaves-the-battlefield trigger (Worldgorger Dragon returns the
+/// permanents it exiled) or a delayed trigger. That memory stays until the last such ability has ended, or, for a source
+/// no ability waits on, until the next step begins.
 pub(crate) fn forget_object(state: &mut GameState, event: &Event) {
     if state.memory.is_empty() {
         return;
     }
-    let Event::ZoneChanged { object, .. } = event else {
-        return;
-    };
-    let id = *object;
-    state.memory.retain(|(source, _), _| source.id != id);
-    for held in state.memory.values_mut() {
-        held.retain(|named| named.id != id);
+    match event {
+        Event::ZoneChanged { object, .. } => {
+            let id = *object;
+            for held in state.memory.values_mut() {
+                held.retain(|named| named.id != id);
+            }
+            let forgotten = state.object(id).and_then(|left| {
+                let me = left.reference();
+                (!crate::ability_reader::has_triggered(left)
+                    && !waiting(state, me, Waiting::default()))
+                .then_some(me)
+            });
+            if let Some(me) = forgotten {
+                state.memory.retain(|(source, _), _| *source != me);
+            }
+        }
+        Event::ResolutionEnded { object, .. } => {
+            let source = state
+                .object(*object)
+                .and_then(|item| item.ability())
+                .map(crate::abilities::AbilityObject::source);
+            if let Some(source) = source {
+                let ending = Waiting {
+                    stacked: Some(*object),
+                    queued: 0,
+                };
+                forget_if_unwaited(state, source, ending);
+            }
+        }
+        Event::TriggerRemoved { source, .. } => {
+            let ending = Waiting {
+                stacked: None,
+                queued: 1,
+            };
+            forget_if_unwaited(state, *source, ending);
+        }
+        Event::StepBegan { .. } => {
+            let sources: Vec<ObjectRef> = state.memory.keys().map(|(source, _)| *source).collect();
+            for source in sources {
+                forget_if_unwaited(state, source, Waiting::default());
+            }
+        }
+        _ => return,
     }
     state.memory.retain(|_, held| !held.is_empty());
+}
+
+/// The abilities that do not count as waiting because they are the one that is ending.
+#[derive(Debug, Clone, Copy, Default)]
+struct Waiting {
+    /// The ability on the stack that is ending.
+    stacked: Option<mtg_core::ids::ObjectId>,
+    /// How many of the queued triggers of the source are ending.
+    queued: usize,
+}
+
+/// Whether an ability of `source` is on the stack, waits to go there, or is a delayed trigger, the ending ones apart.
+fn waiting(state: &GameState, source: ObjectRef, ending: Waiting) -> bool {
+    let on_stack = state.stack().iter().any(|id| {
+        Some(*id) != ending.stacked
+            && state
+                .object(*id)
+                .and_then(|item| item.ability())
+                .is_some_and(|ability| ability.source() == source)
+    });
+    let queued = state
+        .pending_triggers()
+        .iter()
+        .filter(|pending| pending.trigger().source == source)
+        .count();
+    on_stack
+        || queued > ending.queued
+        || state
+            .delayed()
+            .iter()
+            .any(|delayed| delayed.source == source)
+}
+
+/// Drops the memory of a source that has left once no ability waits on it.
+fn forget_if_unwaited(state: &mut GameState, source: ObjectRef, ending: Waiting) {
+    let left = state
+        .object(source.id)
+        .is_none_or(|object| object.counter() != source.counter);
+    if left && !waiting(state, source, ending) {
+        state.memory.retain(|(held, _), _| *held != source);
+    }
 }
 
 /// The event that makes a permanent source remember what its effect exiled in the `exiled` slot, so `Pred::ExiledWith`

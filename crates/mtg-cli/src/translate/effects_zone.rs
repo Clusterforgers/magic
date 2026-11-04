@@ -4,6 +4,7 @@ use serde_json::{Value, json};
 
 use super::amount::amount;
 use super::ctx::{Ctx, Tr, only, unmapped};
+use super::remember;
 use super::valid::{selector_any, selector_in, subject};
 use crate::forge::script::Params;
 
@@ -12,7 +13,13 @@ pub fn effects(ctx: &mut Ctx, p: &Params, api: &str) -> Tr<Vec<Value>> {
     let origin = zone_word(p.get("Origin"), "Origin")?;
     let destination = zone_word(p.get("Destination"), "Destination")?;
     match (api, origin) {
+        ("ChangeZone", "Library") if p.has("Defined") && !p.has("ChangeType") => {
+            change_zone(ctx, p, origin, destination)
+        }
         ("ChangeZone", "Library") => search(ctx, p, destination),
+        ("ChangeZone", "Hand" | "Graveyard" | "Exile") if p.has("ChangeType") => {
+            choose_and_move(ctx, p, origin, destination)
+        }
         ("ChangeZone", _) => change_zone(ctx, p, origin, destination),
         _ => change_zone_all(ctx, p, origin, destination),
     }
@@ -75,20 +82,64 @@ fn change_zone(ctx: &mut Ctx, p: &Params, origin: &str, destination: &str) -> Tr
             "Shuffle",
             "Tapped",
             "RememberChanged",
+            "RememberLKI",
+            "RememberTargets",
         ],
     )?;
     let what = subject(ctx, p, "Self", Some(origin))?;
     let mut effect = moves(&what, goes(p, destination)?);
-    if p.get("RememberChanged") == Some("True") {
-        // Only an exile binds the new objects; a move of a target does not name what it moved.
-        if effect.get("Exile").is_none() {
-            return unmapped("key:ChangeZone.RememberChanged-move");
-        }
-        let name = ctx.fresh("exiled");
-        effect["Exile"]["as"] = json!(name);
-        ctx.remembered = Some(json!({ "Bound": name }));
+    if remember::wanted(p, &["RememberChanged", "RememberLKI", "RememberTargets"]) {
+        let (verb, stem) = if effect.get("Exile").is_some() {
+            ("Exile", "exiled")
+        } else {
+            ("Move", "moved")
+        };
+        remember::bind_moved(ctx, &mut effect, verb, stem);
     }
     Ok(vec![effect])
+}
+
+/// A card of the player's own hand, graveyard or exile that the player picks and moves ("put a creature card from your hand
+/// onto the battlefield"): a choice among the matching cards, then the move.
+fn choose_and_move(ctx: &mut Ctx, p: &Params, origin: &str, destination: &str) -> Tr<Vec<Value>> {
+    only(
+        p,
+        "ChangeZone.Choose",
+        &[
+            "Origin",
+            "Destination",
+            "ChangeType",
+            "ChangeNum",
+            "Hidden",
+            "Mandatory",
+            "Optional",
+            "AtRandom",
+            "Tapped",
+            "LibraryPosition",
+            "Shuffle",
+        ],
+    )?;
+    let mut filter = selector_in(ctx, p.get("ChangeType").unwrap_or("Card"), Some(origin))?;
+    if !filter.iter().any(|pred| pred.get("OwnedBy").is_some()) {
+        filter.push(json!({"OwnedBy": "You"}));
+    }
+    let max = amount(ctx, p.get("ChangeNum").unwrap_or("1"))?;
+    let min = if p.get("Mandatory") == Some("True") && p.get("Optional") != Some("True") {
+        max.clone()
+    } else {
+        json!(0)
+    };
+    let bind = ctx.fresh("picked");
+    let chosen = json!({ "Bound": bind });
+    let choose = if p.get("AtRandom") == Some("True") {
+        if p.get("Optional") == Some("True") {
+            return unmapped("key:ChangeZone.Choose.AtRandom-optional");
+        }
+        json!({"ChooseAtRandom": {"from": {"Each": filter}, "count": max, "as": bind}})
+    } else {
+        json!({"Choose": {"from": {"Each": filter}, "count": {"min": min, "max": max}, "as": bind}})
+    };
+    Ok(vec![choose, moves(&chosen, goes(p, destination)?)])
 }
 
 /// The library search: the search, the move of what was found, then the shuffle.
@@ -167,6 +218,9 @@ pub fn dig(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             "RememberChanged",
         ],
     )?;
+    if p.get("NoReveal") == Some("True") && p.get("Reveal") == Some("True") {
+        return unmapped("key:Dig.NoReveal-with-Reveal");
+    }
     let who = subject(ctx, p, "You", None)?;
     let count = amount(ctx, p.get("DigNum").unwrap_or("1"))?;
     if p.get("ChangeNum") == Some("All")
@@ -330,6 +384,7 @@ fn change_zone_all(ctx: &mut Ctx, p: &Params, origin: &str, destination: &str) -
             "Tapped",
             "LibraryPosition",
             "Shuffle",
+            "RememberChanged",
         ],
     )?;
     if origin == "Library" {
@@ -337,8 +392,14 @@ fn change_zone_all(ctx: &mut Ctx, p: &Params, origin: &str, destination: &str) -
     }
     let zone = (origin != "Battlefield").then_some(origin);
     let filter = selector_in(ctx, p.get("ChangeType").unwrap_or("Card"), zone)?;
-    Ok(vec![moves(
-        &json!({ "Each": filter }),
-        goes(p, destination)?,
-    )])
+    let mut effect = moves(&json!({ "Each": filter }), goes(p, destination)?);
+    if remember::wanted(p, &["RememberChanged"]) {
+        let (verb, stem) = if effect.get("Exile").is_some() {
+            ("Exile", "exiled")
+        } else {
+            ("Move", "moved")
+        };
+        remember::bind_moved(ctx, &mut effect, verb, stem);
+    }
+    Ok(vec![effect])
 }

@@ -421,6 +421,28 @@ fn gaps(text: &str) -> Vec<String> {
         {"Shuffle": {}},
         {"Move": {"what": {"Bound": "found"}, "to": {"Library": {"place": "Top"}}}}]}})
 )]
+#[case::change_the_target(
+    "Name:Test Misdirect\nTypes:Instant\nA:SP$ ChangeTargets | TargetType$ Spell.singleTarget | ValidTgts$ Card | TgtPrompt$ x\n",
+    json!({"Spell": {"targets": [{"what": {"Object": ["Spell", "SingleTarget"]}}],
+        "effects": [{"ChangeTargets": {"what": {"Target": 0}, "to": "Another"}}]}})
+)]
+#[case::new_targets(
+    "Name:Test Deflect\nTypes:Instant\nA:SP$ ChangeTargets | TargetType$ SpellAbility | Optional$ True | ValidTgts$ Card,Emblem\n",
+    json!({"Spell": {"targets": [{"what": {"Object": [{"AnyOf": ["Spell", {"Ability": "Activated"}, {"Ability": "Triggered"}]}]}}],
+        "effects": [{"ChangeTargets": {"what": {"Target": 0}, "to": "Choose"}}]}})
+)]
+#[case::enters_as_a_copy(
+    "Name:Test Clone\nTypes:Creature Shapeshifter\nPT:0/0\nK:ETBReplacement:Copy:DBCopy:Optional\nSVar:DBCopy:DB$ Clone | Choices$ Creature.Other | AddTypes$ Illusion\n",
+    json!({"Replacement": {"when": {"Enters": {"what": ["This"]}},
+        "by": {"AsCopy": {"of": [{"Type": "Creature"}, "Other"], "except": [{"AddSubtype": "Illusion"}]}}}})
+)]
+#[case::becomes_a_copy_of_a_target(
+    "Name:Test Mime\nTypes:Creature Shapeshifter\nPT:1/1\nA:AB$ Clone | Cost$ 1 | ValidTgts$ Creature.Other | Duration$ UntilEndOfTurn | NewName$ Mime | AddTypes$ Legendary | GainThisAbility$ True\n",
+    json!({"Activated": {"cost": "{1}", "targets": [{"what": {"Object": [{"Type": "Creature"}, "Other"]}}],
+        "effects": [{"BecomeCopy": {"what": "This", "of": {"Target": 0},
+            "except": [{"SetName": "Mime"}, {"AddSupertype": "Legendary"}, "ThisAbility"],
+            "duration": "UntilEndOfTurn"}}]}})
+)]
 fn a_line_becomes_the_ability_of_the_dsl(#[case] script: &str, #[case] expected: Value) {
     let mut found = abilities(script);
     assert_eq!(found.len(), 1, "{:?}", gaps(script));
@@ -586,3 +608,17 @@ fn keywords_map_to_the_keyword_set(#[case] line: &str, #[case] expected: Value) 
     let script = format!("Name:T\nTypes:Creature Elf\nK:{line}\n");
     assert_eq!(abilities(&script), vec![json!({ "Keyword": expected })]);
 }
+
+mod audit;
+mod fg3;
+mod fg4a;
+mod fg4a_ambient;
+mod fg4a_emblem;
+mod fg4b;
+mod fg4b_names;
+mod fg4ba;
+mod fg4d_amounts;
+mod gn2;
+mod gn2_cant;
+mod gn2_play;
+mod macro_keywords;

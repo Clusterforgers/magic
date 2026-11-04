@@ -48,6 +48,30 @@ fn property(ctx: &Ctx, prop: &str) -> Tr<Vec<Value>> {
         "IsGoaded" | "Goaded" => return one(json!("Goaded")),
         "HasCounters" => return one(json!("HasAnyCounter")),
         "hasXCost" => return one(json!("XInCost")),
+        "RememberedPlayerCtrl" => {
+            return match &ctx.remembered {
+                Some(who) => one(json!({"ControlledBy": who})),
+                None => unmapped("valid:RememberedPlayerCtrl-without-a-player"),
+            };
+        }
+        "ChosenCard" => {
+            return match &ctx.chosen_card {
+                Some(name) => one(json!({"Is": {"Bound": name}})),
+                None => unmapped("valid:ChosenCard-without-a-choice"),
+            };
+        }
+        "ChosenColor" | "ChosenType" => {
+            return match &ctx.chosen {
+                Some(name) => one(json!({"ChosenAs": name})),
+                None => unmapped(format!("valid:{prop}-without-a-choice")),
+            };
+        }
+        "IsRemembered" => {
+            return match &ctx.pinned {
+                Some(who) => one(json!({"Is": who})),
+                None => unmapped("valid:IsRemembered"),
+            };
+        }
         "ExiledWithSource" => return one(json!({"ExiledWith": "This"})),
         "enchanted" => return one(json!({"HasAttached": [{"Subtype": "Aura"}]})),
         "equipped" => return one(json!({"HasAttached": [{"Subtype": "Equipment"}]})),
@@ -59,6 +83,9 @@ fn property(ctx: &Ctx, prop: &str) -> Tr<Vec<Value>> {
         "inZoneHand" => return one(json!({"In": "Hand"})),
         "inZoneExile" => return one(json!({"In": "Exile"})),
         _ => {}
+    }
+    if let Some(preds) = super::valid_atoms::atom(prop) {
+        return Ok(preds);
     }
     if let Some(preds) = typed_property(prop) {
         return Ok(preds);
@@ -244,18 +271,26 @@ pub fn selector_any(ctx: &Ctx, spec: &str) -> Tr<Vec<Value>> {
         match rest.as_slice() {
             [one] => different.push((*one).clone()),
             [] => return unmapped("valid:or-with-open-alternative"),
-            _ => return unmapped("valid:or-with-different-properties"),
+            // A conjunction as one alternative, by De Morgan: not any of the negations.
+            many => {
+                let negated: Vec<Value> = many.iter().map(|pred| json!({"Not": pred})).collect();
+                different.push(json!({"Not": {"AnyOf": negated}}));
+            }
         }
     }
     // The choice stands where the first alternative has its own predicate.
     let any = json!({"AnyOf": different});
+    let mut placed = false;
     Ok(lists[0]
         .iter()
-        .map(|pred| {
+        .filter_map(|pred| {
             if common.contains(pred) {
-                pred.clone()
+                Some(pred.clone())
+            } else if placed {
+                None
             } else {
-                any.clone()
+                placed = true;
+                Some(any.clone())
             }
         })
         .collect())
@@ -264,6 +299,27 @@ pub fn selector_any(ctx: &Ctx, spec: &str) -> Tr<Vec<Value>> {
 /// A selector over the cards of a zone: the alternatives with `In(zone)` added when the zone is not the battlefield.
 pub fn selector_in(ctx: &Ctx, spec: &str, zone: Option<&str>) -> Tr<Vec<Value>> {
     let mut preds = selector_any(ctx, spec)?;
+    let permanents = spec
+        .split(',')
+        .filter(|alternative| alternative.trim().split('.').next() == Some("Permanent"))
+        .count();
+    let off_battlefield = !matches!(zone, None | Some("Battlefield"));
+    if off_battlefield && permanents > 0 {
+        // Outside the battlefield "permanent" is a card of a permanent type, not an instant or sorcery.
+        if permanents != spec.split(',').count() {
+            return unmapped("valid:Permanent-card-beside-other-alternatives");
+        }
+        let types = [
+            "Artifact",
+            "Battle",
+            "Creature",
+            "Enchantment",
+            "Land",
+            "Planeswalker",
+        ];
+        let any: Vec<Value> = types.iter().map(|name| json!({"Type": name})).collect();
+        preds.push(json!({"AnyOf": any}));
+    }
     match zone {
         None | Some("Battlefield") => {}
         Some(zone @ ("Graveyard" | "Hand" | "Library" | "Exile")) => {
@@ -296,19 +352,24 @@ pub fn defined(ctx: &Ctx, word: &str) -> Tr<Value> {
         "Enchanted" | "Equipped" => Ok(json!("Attached")),
         "EnchantedController" | "EquippedController" => controller(json!("Attached")),
         "EnchantedPlayer" => Ok(json!("AttachedPlayer")),
-        "Remembered" => ctx
+        "ChosenCard" => ctx.chosen_card.as_ref().map_or_else(
+            || unmapped("defined:ChosenCard-without-a-choice"),
+            |name| Ok(json!({"Bound": name})),
+        ),
+        "DelayTriggerRemembered"
+        | "DelayTriggerRememberedLKI"
+        | "DelayedTriggerRemembered"
+        | "RememberedLKI" => ctx
             .remembered
             .clone()
             .map_or_else(|| unmapped("defined:Remembered-without-a-change"), Ok),
-        "TriggeredCard"
-        | "TriggeredPlayer"
-        | "TriggeredAttacker"
-        | "TriggeredBlocker"
-        | "TriggeredCardLKICopy"
-        | "TriggeredAttackerLKICopy"
-        | "TriggeredNewCardLKICopy"
-        | "TriggeredBlockerLKICopy" => Ok(json!("Triggering")),
-        "TriggeredCardController" | "TriggeredSourceController" => controller(json!("Triggering")),
+        "Player.IsRemembered" | "Remembered" => ctx
+            .remembered
+            .clone()
+            .map_or_else(|| unmapped("defined:Remembered-without-a-change"), Ok),
+        word if super::triggered::is_word(word) => {
+            super::triggered::resolve(ctx.trigger.as_ref(), word)
+        }
         "DefendingPlayer" | "TriggeredDefendingPlayer" => Ok(json!("Defending")),
         other => unmapped(format!("defined:{other}")),
     }

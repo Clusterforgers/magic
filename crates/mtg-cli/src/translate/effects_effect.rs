@@ -4,7 +4,7 @@
 use serde_json::{Value, json};
 
 use super::amount::amount;
-use super::ctx::{Ctx, Tr, is_hint, only, unmapped};
+use super::ctx::{Ctx, Tr, check_keys, only, unmapped};
 use super::effects_obj::duration;
 use super::keyword::keyword_list;
 use super::valid::{defined, objects, subject};
@@ -27,36 +27,86 @@ pub fn effects(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             "Name",
             "Stackable",
             "Defined",
+            "ReplacementEffects",
+            "Triggers",
+            "Boon",
         ],
     )?;
-    let Some(name) = p.get("StaticAbilities") else {
+    // The Forge effect object ends when what it remembers changes zones; our references to remembered objects drop out the
+    // same way, so the keys only matter beside `RememberObjects`.
+    if (p.has("ExileOnMoved") || p.has("ForgetOnMoved")) && !p.has("RememberObjects") {
+        return unmapped("key:Effect.ExileOnMoved-without-RememberObjects");
+    }
+    if super::effects_emblem::is_emblem(p) {
+        return super::effects_emblem::emblem(ctx, p);
+    }
+    if p.has("Triggers") {
+        if p.has("ReplacementEffects") {
+            return unmapped("key:Effect.Triggers-and-ReplacementEffects");
+        }
+        let remembered = super::replacements_damage::remembered_of(ctx, p)?;
+        let mut out = ambient_with(ctx, p)?;
+        out.extend(super::effects_ambient::delayed_triggers(
+            ctx,
+            p,
+            remembered.as_ref(),
+        )?);
+        return Ok(out);
+    }
+    if p.has("ReplacementEffects") {
+        let remembered = super::replacements_damage::remembered_of(ctx, p)?;
+        let mut out = ambient_with(ctx, p)?;
+        out.extend(super::replacements_damage::shield(
+            ctx,
+            p,
+            remembered.as_ref(),
+        )?);
+        return Ok(out);
+    }
+    if !p.has("RememberObjects") && !p.has("ValidTgts") {
+        return super::effects_ambient::continuous_statics(ctx, p);
+    }
+    let Some(names) = p.get("StaticAbilities") else {
         return unmapped("key:Effect.no-StaticAbilities");
     };
-    if name.contains(',') {
-        return unmapped("key:Effect.StaticAbilities-list");
-    }
     let duration = duration(p.get("Duration"))?;
     let who = remembered(ctx, p)?;
+    let mut out = Vec::new();
+    for name in names.split(',').map(str::trim) {
+        out.extend(remembered_static(ctx, name, &who, duration)?);
+    }
+    Ok(out)
+}
+
+/// The statics of an `Effect` line that has no remembered objects, when the line also holds a trigger or a replacement.
+fn ambient_with(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
+    if !p.has("StaticAbilities") {
+        return Ok(Vec::new());
+    }
+    if p.has("RememberObjects") || p.has("ValidTgts") {
+        return unmapped("key:Effect.static-with-remembered-and-more");
+    }
+    super::effects_ambient::continuous_statics(ctx, p)
+}
+
+/// One static of an `Effect` line about the objects it remembers.
+fn remembered_static(ctx: &mut Ctx, name: &str, who: &Value, duration: &str) -> Tr<Vec<Value>> {
     let part = ctx.sub(name)?;
     if part.has("MayPlay") {
-        let rule = super::mayplay::may_cast(ctx, &part, Some(&who))?;
+        let rule = super::mayplay::may_cast(ctx, &part, Some(who))?;
         return Ok(vec![json!({"Rule": {"rule": rule, "duration": duration}})]);
     }
-    for (key, _) in part.iter() {
-        let read = [
-            "Mode",
-            "ValidAttacker",
-            "ValidCreature",
-            "ValidCard",
-            "Affected",
-            "AddKeyword",
-            "AddPower",
-            "AddToughness",
-        ];
-        if !read.contains(&key) && !is_hint(key) {
-            return unmapped(format!("key:Effect.static.{key}"));
-        }
-    }
+    let read = [
+        "Mode",
+        "ValidAttacker",
+        "ValidCreature",
+        "ValidCard",
+        "Affected",
+        "AddKeyword",
+        "AddPower",
+        "AddToughness",
+    ];
+    check_keys(&part, "Effect.static", &read, |_, _| false)?;
     let on_remembered = |key: &str| {
         matches!(
             part.get(key),
@@ -65,20 +115,20 @@ pub fn effects(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     };
     match part.get("Mode").unwrap_or_default() {
         "CantBlockBy" if on_remembered("ValidAttacker") && !part.has("ValidBlocker") => {
-            Ok(vec![continuous(&who, &[json!("CantBeBlocked")], duration)])
+            Ok(vec![continuous(who, &[json!("CantBeBlocked")], duration)])
         }
         "CantAttack" if on_remembered("ValidCard") => {
-            Ok(vec![continuous(&who, &[json!("CantAttack")], duration)])
+            Ok(vec![continuous(who, &[json!("CantAttack")], duration)])
         }
         "CantBlock" if on_remembered("ValidCard") => {
-            Ok(vec![continuous(&who, &[json!("CantBlock")], duration)])
+            Ok(vec![continuous(who, &[json!("CantBlock")], duration)])
         }
         "MustAttack" if on_remembered("ValidCreature") => Ok(vec![
             json!({"Rule": {"rule": {"MustAttack": who}, "duration": duration}}),
         ]),
         "Continuous" if on_remembered("Affected") => {
             let mods = pump_like(ctx, &part)?;
-            Ok(vec![continuous(&who, &mods, duration)])
+            Ok(vec![continuous(who, &mods, duration)])
         }
         other => unmapped(format!("effect:Effect-static-{other}")),
     }
@@ -95,7 +145,10 @@ fn remembered(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     let who = match word {
         "Targeted" if p.has("ValidTgts") => subject(ctx, p, "", None)?,
         "Self" => json!("This"),
-        "Remembered" => defined(ctx, "Remembered")?,
+        "Targeted" => ctx.last_target()?,
+        "Remembered" | "RememberedCard" => defined(ctx, "Remembered")?,
+        "TriggeredCard" => super::triggered::resolve(ctx.trigger.as_ref(), "TriggeredCard")?,
+        "ParentTarget" => ctx.parent()?,
         other => return unmapped(format!("key:Effect.RememberObjects={other}")),
     };
     objects(who)

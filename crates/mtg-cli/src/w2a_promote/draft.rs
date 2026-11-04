@@ -205,6 +205,7 @@ fn write_meta(dir: &Path, promotion: &W2aPromotion) -> Result<(), CliError> {
     let meta = DraftMeta {
         source: Some(promotion.source.clone()),
         oracle_matches: promotion.oracle_matches,
+        gaps: Vec::new(),
     };
     let text = serde_json::to_string_pretty(&meta).unwrap_or_default();
     if let Some(parent) = path.parent() {

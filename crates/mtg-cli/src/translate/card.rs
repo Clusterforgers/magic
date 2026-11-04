@@ -6,7 +6,7 @@ use serde_json::{Value, json};
 use super::ability::ability_line;
 use super::ctx::{Ctx, Tr, Unmapped, World, unmapped};
 use super::keyword::keyword_abilities;
-use super::replacements::replacement_line;
+use super::replacements::replacement_lines;
 use super::statics::static_line;
 use super::triggers::triggered;
 use crate::forge::script::{Face, Params, Script};
@@ -88,24 +88,30 @@ pub fn translate_face(world: &World, face: &Face) -> FaceOut {
         }
     }
     for body in &face.abilities {
-        take(&mut out, ability_line(&mut ctx, body));
+        take(&mut out, audited_one(|| ability_line(&mut ctx, body)));
     }
     for group in trigger_groups(&face.triggers) {
         take(
             &mut out,
-            merged_trigger(&mut ctx, &group).map(|ability| vec![ability]),
+            audited_one(|| merged_trigger(&mut ctx, &group).map(|ability| vec![ability])),
         );
     }
     for result in static_abilities(&mut ctx, &face.statics) {
         take(&mut out, result.map(|ability| vec![ability]));
     }
     for body in &face.replacements {
-        take(
-            &mut out,
-            replacement_line(&mut ctx, body).map(|ability| vec![ability]),
-        );
+        take(&mut out, audited_one(|| replacement_lines(&mut ctx, body)));
     }
     out
+}
+
+/// The result of one line, a gap when a mapper accepted a key of the line and never read it.
+pub(super) fn audited_one<T>(run: impl FnOnce() -> Tr<T>) -> Tr<T> {
+    let (result, unread) = crate::forge::script::audit(run);
+    match unread {
+        None => result,
+        Some(key) => result.and_then(|_| unmapped(format!("key:{key}-unread"))),
+    }
 }
 
 /// The trigger lines grouped as the card prints them: lines that run the same part, one of them marked `Secondary$`,
@@ -139,7 +145,7 @@ fn static_abilities(ctx: &mut Ctx, bodies: &[String]) -> Vec<Tr<Value>> {
     let mut out: Vec<Tr<Value>> = Vec::new();
     for body in bodies {
         let secondary = Params::parse(body).get("Secondary") == Some("True");
-        let result = static_line(ctx, body);
+        let result = audited_one(|| static_line(ctx, body));
         if secondary && let Some(previous) = out.last_mut() {
             match (&result, previous.is_ok()) {
                 (Ok(second), true) => {

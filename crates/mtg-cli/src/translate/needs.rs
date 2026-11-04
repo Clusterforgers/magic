@@ -1,7 +1,7 @@
 //! The constructs a mapper cannot read because the language or the engine lacks a node, with the node that is missing.
 
 /// Gap names (prefixes) and the node or primitive their cards need.
-pub const NEEDS: [(&str, &str); 15] = [
+pub const NEEDS: [(&str, &str); 10] = [
     (
         "key:Static.Continuous.AffectedZone",
         "Static.affected on cards outside the battlefield (stack, hand, graveyard, exile)",
@@ -26,24 +26,7 @@ pub const NEEDS: [(&str, &str); 15] = [
         "effect:GenericChoice",
         "a named-option choice (Either with labels) whose branch later steps can read",
     ),
-    ("key:Mill.Remember", "Mill binding the milled cards (`as`)"),
-    (
-        "key:Sacrifice.Remember",
-        "Sacrifice binding the sacrificed objects (`as`)",
-    ),
     ("key:Draw.Remember", "Draw binding the drawn cards (`as`)"),
-    (
-        "key:Destroy.Remember",
-        "Destroy binding the destroyed objects (`as`)",
-    ),
-    (
-        "key:ChangeZone.RememberLKI",
-        "Move binding the moved objects and their last known information",
-    ),
-    (
-        "key:ChangeZoneAll.RememberChanged",
-        "Move of a selector binding the moved objects (`as`)",
-    ),
     (
         "valid:or-with-different-properties",
         "Pred::AllOf: a conjunction as one alternative of an AnyOf",
@@ -54,7 +37,7 @@ pub const NEEDS: [(&str, &str); 15] = [
     ),
     (
         "static:AlternativeCost",
-        "CostModifier change Instead(cost) for an alternative cost",
+        "an alternative cost of other spells or of activated abilities (CostModifier change Instead(cost))",
     ),
 ];
 

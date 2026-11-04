@@ -44,6 +44,15 @@ pub(crate) const fn yes() -> bool {
     true
 }
 
+/// How an effect changes the targets of a spell or ability (CR 115.7).
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+pub enum NewTargets {
+    /// "Change the target": the only target of a spell or ability becomes another legal target, or stays when there is none.
+    Another,
+    /// "You may choose new targets": each target may become any legal target (CR 115.7b).
+    Choose,
+}
+
 /// A phase an effect adds to the turn (CR 500.8).
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub enum PhaseKind {
@@ -301,6 +310,9 @@ pub enum Effect {
         /// How many.
         #[serde(default = "Amount::one", skip_serializing_if = "Amount::is_one")]
         count: Amount,
+        /// The name the objects are bound to, as the objects they become, for the steps after it.
+        #[serde(rename = "as", default, skip_serializing_if = "Option::is_none")]
+        bind: Option<String>,
     },
     /// The player scries (CR 701.22).
     Scry {
@@ -408,6 +420,9 @@ pub enum Effect {
         what: Ref,
         /// Where it goes.
         to: Destination,
+        /// The name the objects are bound to, as the objects they become, for the steps after it.
+        #[serde(rename = "as", default, skip_serializing_if = "Option::is_none")]
+        bind: Option<String>,
     },
     /// Destroys permanents (CR 701.8).
     Destroy {
@@ -416,6 +431,9 @@ pub enum Effect {
         /// They can be regenerated; `false` for "can't be regenerated".
         #[serde(default = "yes", skip_serializing_if = "is_true")]
         regenerate: bool,
+        /// The name the objects are bound to, as the objects they become, for the steps after it.
+        #[serde(rename = "as", default, skip_serializing_if = "Option::is_none")]
+        bind: Option<String>,
     },
     /// Regenerates permanents (CR 701.19): until end of turn, the next time each would be destroyed it is tapped,
     /// loses its damage and leaves combat instead.
@@ -512,6 +530,9 @@ pub enum Effect {
         /// How many.
         #[serde(default = "Amount::one", skip_serializing_if = "Amount::is_one")]
         count: Amount,
+        /// The name the objects are bound to, as the objects they become, for the steps after it.
+        #[serde(rename = "as", default, skip_serializing_if = "Option::is_none")]
+        bind: Option<String>,
     },
     /// Counters spells or abilities (CR 701.6).
     Counter {
@@ -1174,6 +1195,14 @@ pub enum Effect {
         #[serde(default, skip_serializing_if = "is_false")]
         new_targets: bool,
     },
+    /// Changes the targets of spells and abilities on the stack (CR 115.7); the controller of the effect chooses the new
+    /// ones, each judged as a target of the spell or ability for its own controller.
+    ChangeTargets {
+        /// The spells and abilities whose targets change.
+        what: Ref,
+        /// How they change.
+        to: NewTargets,
+    },
     /// The permanents become copies of an object for a while ("becomes a copy of target creature until end of turn",
     /// CR 707.2): the copy effect is the first layer, and the permanent is what it was again when it ends.
     BecomeCopy {
@@ -1413,6 +1442,7 @@ fn exile_cast_bottom(filter: Selector, otherwise: Vec<Effect>) -> Vec<Effect> {
                 place: Place::Bottom,
                 order: Some(Order::Random),
             },
+            bind: None,
         },
     ]
 }
@@ -1432,6 +1462,7 @@ pub fn discover(count: Amount) -> Vec<Effect> {
         vec![Effect::Move {
             what: Ref::Bound(FOUND.to_owned()),
             to: Destination::Hand,
+            bind: None,
         }],
     )
 }
@@ -1519,6 +1550,7 @@ pub fn hideaway(count: Amount) -> Vec<Effect> {
                 place: Place::Bottom,
                 order: Some(Order::Random),
             },
+            bind: None,
         },
     ]
 }
@@ -1540,15 +1572,15 @@ mod tests {
         r#"{"DealDamage":{"to":{"Target":0},"amount":3}}"#
     )]
     #[case::wrath(
-        Effect::Destroy { what: Ref::Each(Selector(vec![Pred::Type(CardType::Creature)])), regenerate: false },
+        Effect::Destroy { what: Ref::Each(Selector(vec![Pred::Type(CardType::Creature)])), regenerate: false, bind: None },
         r#"{"Destroy":{"what":{"Each":[{"Type":"Creature"}]},"regenerate":false}}"#
     )]
     #[case::destroy_default(
-        Effect::Destroy { what: Ref::Target(0), regenerate: true },
+        Effect::Destroy { what: Ref::Target(0), regenerate: true, bind: None },
         r#"{"Destroy":{"what":{"Target":0}}}"#
     )]
     #[case::move_to_battlefield_tapped(
-        Effect::Move { what: Ref::Bound("land".into()), to: Destination::Battlefield { tapped: true, under: None, transformed: false, counters: vec![] } },
+        Effect::Move { what: Ref::Bound("land".into()), to: Destination::Battlefield { tapped: true, under: None, transformed: false, counters: vec![] }, bind: None },
         r#"{"Move":{"what":{"Bound":"land"},"to":{"Battlefield":{"tapped":true}}}}"#
     )]
     #[case::search(

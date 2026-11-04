@@ -166,6 +166,7 @@ fn w5d_combat_damage(r: &mut Reader<'_>) -> Option<Ability> {
             Effect::Mill {
                 who: Ref::Triggering,
                 count: Amount::Triggering,
+                bind: None,
             },
         ],
     ))
@@ -283,7 +284,7 @@ fn w5d_texts(when: &ReplaceWhen, effects: &[Effect]) -> Option<Vec<String>> {
                 count: Amount::Triggering,
             }, Effect::Mill {
                 who: Ref::Triggering,
-                count: Amount::Triggering,
+                count: Amount::Triggering, ..
             }],
         ) if *source == Selector::this() => vec![
             "if ~ would deal combat damage to a player, instead put that many +1/+1 counters on ~ and that player mills that many cards"

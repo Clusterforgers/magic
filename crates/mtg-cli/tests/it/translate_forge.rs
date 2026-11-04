@@ -107,7 +107,7 @@ async fn each_proposal_is_marked_as_from_forge_and_other_meta_is_kept() {
     );
     assert_eq!(
         json_of(&out.join("meta/willow_seer.json")),
-        json!({"source": "forge"})
+        json!({"source": "forge", "gaps": ["effect:RollDice"]})
     );
 }
 

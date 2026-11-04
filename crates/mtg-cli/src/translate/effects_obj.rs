@@ -5,6 +5,7 @@ use serde_json::{Value, json};
 use super::amount::{amount, counter_kind};
 use super::ctx::{Ctx, Tr, only, unmapped};
 use super::keyword::{keyword_list, keyword_value};
+use super::remember;
 use super::valid::{defined, objects, selector_any, subject};
 use crate::forge::script::Params;
 
@@ -65,18 +66,39 @@ fn destroy(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     only(
         p,
         "Destroy",
-        &["ValidTgts", "Defined", "NoRegen", "TargetMin", "TargetMax"],
+        &[
+            "ValidTgts",
+            "Defined",
+            "NoRegen",
+            "TargetMin",
+            "TargetMax",
+            "RememberDestroyed",
+            "RememberTargets",
+        ],
     )?;
     let what = subject(ctx, p, "", None)?;
     let regenerate = p.get("NoRegen") != Some("True");
-    Ok(json!({"Destroy": {"what": what, "regenerate": regenerate}}))
+    let mut effect = json!({"Destroy": {"what": what, "regenerate": regenerate}});
+    if remember::wanted(p, &["RememberDestroyed", "RememberTargets"]) {
+        remember::bind_moved(ctx, &mut effect, "Destroy", "destroyed");
+    }
+    Ok(effect)
 }
 
 fn destroy_all(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
-    only(p, "DestroyAll", &["ValidCards", "NoRegen"])?;
+    only(
+        p,
+        "DestroyAll",
+        &["ValidCards", "NoRegen", "RememberDestroyed"],
+    )?;
     let valid = p.get("ValidCards").unwrap_or_default();
     let regenerate = p.get("NoRegen") != Some("True");
-    Ok(json!({"Destroy": {"what": {"Each": selector_any(ctx, valid)?}, "regenerate": regenerate}}))
+    let what = json!({"Each": selector_any(ctx, valid)?});
+    let mut effect = json!({"Destroy": {"what": what, "regenerate": regenerate}});
+    if remember::wanted(p, &["RememberDestroyed"]) {
+        remember::bind_moved(ctx, &mut effect, "Destroy", "destroyed");
+    }
+    Ok(effect)
 }
 
 fn damage_all(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
@@ -244,6 +266,10 @@ fn animate(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             "Colors",
             "OverwriteColors",
             "Keywords",
+            "RemoveKeywords",
+            "RemoveAllAbilities",
+            "Triggers",
+            "Abilities",
             "RemoveCreatureTypes",
             "ValidCards",
             "Duration",
@@ -278,6 +304,7 @@ fn animate(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             mods.push(json!({ "AddKeyword": keyword }));
         }
     }
+    mods.extend(super::effects_animate::abilities(ctx, p)?);
     if mods.is_empty() {
         return unmapped("key:Animate.nothing");
     }
@@ -344,7 +371,7 @@ fn put_counter(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
         return unmapped("key:PutCounter.CounterType");
     };
     let on = subject(ctx, p, "Self", None)?;
-    let count = if p.has("DividedAsYouChoose") {
+    let count = if super::effects::divided(p, "CounterNum")? {
         json!("Divided")
     } else {
         amount(ctx, p.get("CounterNum").unwrap_or("1"))?
@@ -384,6 +411,7 @@ fn sacrifice(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
             "ValidTgts",
             "TargetMin",
             "TargetMax",
+            "RememberSacrificed",
         ],
     )?;
     if let Some(valid) = p.get("ValidTgts")
@@ -397,7 +425,11 @@ fn sacrifice(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
         valid => selector_any(ctx, valid)?,
     };
     let count = amount(ctx, p.get("Amount").unwrap_or("1"))?;
-    Ok(json!({"Sacrifice": {"who": who, "filter": filter, "count": count}}))
+    let mut effect = json!({"Sacrifice": {"who": who, "filter": filter, "count": count}});
+    if remember::wanted(p, &["RememberSacrificed"]) {
+        remember::bind_moved(ctx, &mut effect, "Sacrifice", "sacrificed");
+    }
+    Ok(effect)
 }
 
 fn fight(ctx: &mut Ctx, p: &Params) -> Tr<Value> {

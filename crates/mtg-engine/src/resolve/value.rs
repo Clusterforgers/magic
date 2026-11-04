@@ -468,7 +468,16 @@ impl<'a> Scope<'a> {
 
     /// The events of the kind this turn that count for the players `who` names and whose object the filter selects.
     fn logged(&self, event: TallyEvent, who: &Ref, filter: &Selector) -> Result<i64, ResolveError> {
-        let players = self.players(who)?;
+        self.logged_for(event, &self.players(who)?, filter)
+    }
+
+    /// [`Self::logged`] for the players themselves.
+    pub(crate) fn logged_for(
+        &self,
+        event: TallyEvent,
+        players: &[PlayerId],
+        filter: &Selector,
+    ) -> Result<i64, ResolveError> {
         let mut scope = self.clone();
         scope
             .snapshots
@@ -1192,6 +1201,7 @@ impl<'a> Scope<'a> {
             Pred::Monstrous => matches!(seen.counters, Counted::Live(held) if held.monstrous()),
             Pred::Renowned => matches!(seen.counters, Counted::Live(held) if held.renowned()),
             Pred::EnteredThisTurn => state.object_tallied(reference, None, Tally::Entered) > 0,
+            Pred::SummoningSick => crate::keywords::summoning_sick(state, reference.id),
             Pred::MilledThisTurn => state.object_tallied(reference, None, Tally::W13bMilled) > 0,
             Pred::DamagedThisTurn => state.object_tallied(reference, None, Tally::Damaged) > 0,
             Pred::AttackedThisTurn => state.object_tallied(reference, None, Tally::Attacked) > 0,
@@ -1239,6 +1249,7 @@ impl<'a> Scope<'a> {
             | Pred::BlockedBy(_)
             | Pred::Blocks(_)
             | Pred::TargetedBy(_)
+            | Pred::SingleTarget
             | Pred::GreatestAmong { .. }
             | Pred::Suspended => self.fe1a_pred(pred, reference, seen)?,
             Pred::Not(inner) => !self.pred(inner, reference, seen)?,

@@ -79,6 +79,7 @@ fn returned(effects: &[Effect], exiled: &str, counted: bool) -> Option<String> {
                     transformed: false,
                     counters: entering,
                 },
+            ..
         },
     ] = effects
     else {

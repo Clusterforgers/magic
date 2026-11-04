@@ -33,10 +33,12 @@ pub(super) fn text(effects: &[Effect]) -> Option<(String, usize)> {
             transformed: false,
             counters: Vec::new(),
         },
+        bind: None,
     };
     let kept = Effect::Move {
         what: held,
         to: Destination::Hand,
+        bind: None,
     };
     (*then == [entered] && *otherwise == [kept]).then_some(())?;
     let kind = kind_text(selector)?;

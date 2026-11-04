@@ -32,6 +32,7 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
             place: Place::Shuffled,
             order: None,
         },
+        bind: None,
     };
     let sentence = match effects.as_slice() {
         [first] if *first == shuffled => format!("{target}'s owner shuffles it into their library"),

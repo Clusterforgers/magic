@@ -5,9 +5,9 @@ use serde_json::{Value, json};
 use super::amount::amount;
 use super::condition::{condition, strip};
 use super::cost::cost;
-use super::ctx::{Ctx, Tr, is_hint, unmapped};
+use super::ctx::{Ctx, Tr, check_keys, unmapped};
 use super::keyword::keyword_list;
-use super::valid::{defined, selector_any};
+use super::valid::{defined, selector_any, selector_in};
 use crate::forge::script::Params;
 
 /// A static line as an ability.
@@ -16,18 +16,9 @@ pub fn static_line(ctx: &mut Ctx, body: &str) -> Tr<Value> {
     let all = Params::parse(body);
     let condition = condition(ctx, &all)?;
     let p = strip(&all);
-    let mut ability = match p.get("Mode").unwrap_or_default() {
-        "Continuous" if p.has("MayPlay") => {
-            json!({"Rule": {"rule": super::mayplay::may_cast(ctx, &p, None)?}})
-        }
-        "Continuous" => continuous(ctx, &p)?,
-        "CantAttack" => restriction(ctx, &p, "CantAttack")?,
-        "CantBlock" => restriction(ctx, &p, "CantBlock")?,
-        "CantBlockBy" => cant_block_by(ctx, &p)?,
-        "MustAttack" => must_attack(ctx, &p)?,
-        "ReduceCost" => cost_modifier(ctx, &p, "Reduce")?,
-        "RaiseCost" => cost_modifier(ctx, &p, "Increase")?,
-        other => return unmapped(format!("static:{other}")),
+    let mut ability = match super::statics_rules::rule(ctx, &p) {
+        Some(found) => found?,
+        None => by_mode(ctx, &p)?,
     };
     if condition.is_some() && ability.pointer("/Static/defining").is_some() {
         return unmapped("key:Static.Continuous.defining-with-condition");
@@ -40,22 +31,41 @@ pub fn static_line(ctx: &mut Ctx, body: &str) -> Tr<Value> {
     Ok(ability)
 }
 
+/// The ability of a static line by its mode.
+fn by_mode(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
+    Ok(match p.get("Mode").unwrap_or_default() {
+        "Continuous" if p.has("MayPlay") => {
+            json!({"Rule": {"rule": super::mayplay::may_cast(ctx, p, None)?}})
+        }
+        "Continuous" => continuous(ctx, p)?,
+        "CantAttack" => restriction(ctx, p, &["CantAttack"])?,
+        "CantBlock" => restriction(ctx, p, &["CantBlock"])?,
+        "CantAttack,CantBlock" | "CantBlock,CantAttack" => {
+            restriction(ctx, p, &["CantAttack", "CantBlock"])?
+        }
+        "CantBlockBy" => cant_block_by(ctx, p)?,
+        "MustAttack" => must_attack(ctx, p)?,
+        "ReduceCost" => cost_modifier(ctx, p, "Reduce")?,
+        "RaiseCost" => cost_modifier(ctx, p, "Increase")?,
+        "AlternativeCost" => super::statics_alt::alternative_cost(ctx, p)?,
+        other => return unmapped(format!("static:{other}")),
+    })
+}
+
 /// Refuses a key the mode does not read.
 fn keys(p: &Params, mode: &str, read: &[&str]) -> Tr<()> {
-    for (key, _) in p.iter() {
-        if key != "Mode" && !read.contains(&key) && !is_hint(key) {
-            return unmapped(format!("key:Static.{mode}.{key}"));
-        }
-    }
-    Ok(())
+    check_keys(p, &format!("Static.{mode}"), read, |key, _| key == "Mode")
 }
 
 /// The objects a static line affects: `Affected$` or `AffectedDefined$`.
 fn affected(ctx: &Ctx, p: &Params) -> Tr<Value> {
+    if p.has("AffectedZone") && (p.has("AffectedDefined") || !p.has("Affected")) {
+        return unmapped("key:Static.Continuous.AffectedZone-without-Affected");
+    }
     match (p.get("AffectedDefined"), p.get("Affected")) {
         (Some(word), None | Some("Creature" | "Card" | "Permanent")) => static_defined(ctx, word),
         (Some(_), Some(_)) => unmapped("static-affected:Defined+Affected"),
-        (None, Some(valid)) => affected_valid(ctx, valid),
+        (None, Some(valid)) => zoned(ctx, valid, p.get("AffectedZone")),
         (None, None) if p.get("CharacteristicDefining") == Some("True") => Ok(json!("This")),
         (None, None) => unmapped("static-affected:none"),
     }
@@ -65,6 +75,23 @@ fn static_defined(ctx: &Ctx, word: &str) -> Tr<Value> {
     match word {
         "Self" | "Enchanted" | "Equipped" => defined(ctx, word),
         other => unmapped(format!("static-affected:{other}")),
+    }
+}
+
+/// The objects of a valid-string in the zone `AffectedZone$` names: a single zone other than the battlefield, whose cards
+/// the layers hold like permanents.
+fn zoned(ctx: &Ctx, valid: &str, zone: Option<&str>) -> Tr<Value> {
+    match zone {
+        None | Some("Battlefield") => affected_valid(ctx, valid),
+        Some(zone @ ("Hand" | "Graveyard" | "Exile" | "Library")) => {
+            Ok(json!({"Each": selector_in(ctx, valid, Some(zone))?}))
+        }
+        Some("Stack") => {
+            let mut preds = selector_any(ctx, valid)?;
+            preds.push(json!({"In": "Stack"}));
+            Ok(json!({"Each": preds}))
+        }
+        Some(other) => unmapped(format!("key:Static.Continuous.AffectedZone={other}")),
     }
 }
 
@@ -80,8 +107,9 @@ fn affected_valid(ctx: &Ctx, word: &str) -> Tr<Value> {
 }
 
 /// The keys a continuous static line reads.
-const CONTINUOUS: [&str; 18] = [
+const CONTINUOUS: [&str; 19] = [
     "AddSVar",
+    "AffectedZone",
     "AddAbility",
     "AddTrigger",
     "AddType",
@@ -203,10 +231,10 @@ fn granted(ctx: &mut Ctx, names: &str, trigger: bool) -> Tr<Vec<Value>> {
 }
 
 /// `CantAttack`, `CantBlock` of the cards named by `ValidCard$`.
-fn restriction(ctx: &Ctx, p: &Params, modification: &str) -> Tr<Value> {
-    keys(p, modification, &["ValidCard"])?;
+fn restriction(ctx: &Ctx, p: &Params, modifications: &[&str]) -> Tr<Value> {
+    keys(p, modifications[0], &["ValidCard"])?;
     let affected = affected_valid(ctx, p.get("ValidCard").unwrap_or_default())?;
-    Ok(json!({"Static": {"affected": affected, "mods": [modification]}}))
+    Ok(json!({"Static": {"affected": affected, "mods": modifications}}))
 }
 
 /// `CantBlockBy`: the attacker named by `ValidAttacker$` is not blocked by the blockers of `ValidBlocker$`, or a blocker
@@ -231,6 +259,14 @@ fn cant_block_by(ctx: &Ctx, p: &Params) -> Tr<Value> {
             ) else {
                 return unmapped("static:CantBlockBy-shape");
             };
+            // "Can't block X and not Y" is "blocks only Y" for an attacker that is a creature; any other filter would be lost.
+            if only
+                .iter()
+                .enumerate()
+                .any(|(i, pred)| i != at && *pred != json!({"Type": "Creature"}))
+            {
+                return unmapped("static:CantBlockBy-extra-filter");
+            }
             let inner = only.remove(at)["Not"].clone();
             only.push(inner);
             Ok(json!({"Static": {"affected": "This", "mods": [{"CanBlockOnly": only}]}}))
@@ -258,6 +294,11 @@ fn cost_modifier(ctx: &Ctx, p: &Params, change: &str) -> Tr<Value> {
     )?;
     if p.get("Type") != Some("Spell") {
         return unmapped("static:CostModifier-Type");
+    }
+    // A spell's own cost applies in hand and on the stack; any other line works on the battlefield.
+    match (p.get("EffectZone"), p.get("ValidCard")) {
+        (None | Some("Battlefield"), _) | (Some(_), Some("Card.Self")) => {}
+        _ => return unmapped("key:Static.CostModifier.EffectZone"),
     }
     let applies = match p.get("ValidCard").unwrap_or("Card") {
         "Card.Self" => {

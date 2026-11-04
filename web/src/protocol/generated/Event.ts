@@ -44,6 +44,7 @@ import type { SpendOn } from "./SpendOn";
 import type { Step } from "./Step";
 import type { Surveilled } from "./Surveilled";
 import type { Target } from "./Target";
+import type { TargetsChanged } from "./TargetsChanged";
 import type { TokenCreated } from "./TokenCreated";
 import type { Triggered } from "./Triggered";
 import type { Unplayable } from "./Unplayable";
@@ -646,7 +647,7 @@ object: ObjectId, } } | { "BecameCopy": BecameCopy } | { "SpellCopied": SpellCop
 /**
  * The copy.
  */
-object: ObjectId, } } | { "AbilityCopied": AbilityCopy } | { "Remembered": Remembered } | { "CopyEnded": { 
+object: ObjectId, } } | { "AbilityCopied": AbilityCopy } | { "TargetsChanged": TargetsChanged } | { "Remembered": Remembered } | { "CopyEnded": { 
 /**
  * The permanent.
  */

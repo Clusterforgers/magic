@@ -53,6 +53,7 @@ impl KeywordRules for Madness {
                     otherwise: vec![Effect::Move {
                         what: Ref::This,
                         to: Destination::Graveyard,
+                        bind: None,
                     }],
                 }],
             },

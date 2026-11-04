@@ -49,6 +49,8 @@ pub enum W2aSkip {
     NotWhole,
     /// The engine would not run the draft as a `Read` card (the loader refuses it or a primitive is missing).
     NotRead,
+    /// The translator left a gap: part of the card is missing, so it is never a draft.
+    Gapped,
     /// The draft fails the smoke gate.
     Smoke(SmokeKind),
 }
@@ -66,6 +68,7 @@ impl W2aSkip {
             W2aSkip::Repeated => "an earlier file promotes it".into(),
             W2aSkip::NoRecord => "no record in the cached Oracle Cards file".into(),
             W2aSkip::NotWhole => "unchecked, and not a whole card".into(),
+            W2aSkip::Gapped => "the translation has a gap".into(),
             W2aSkip::NotRead => "the engine does not run it as a Read card".into(),
             W2aSkip::Smoke(kind) => format!("fails the smoke gate: {}", kind.word()),
         }
@@ -155,6 +158,9 @@ impl W2aBasis<'_> {
             let source = meta.source_or(self.source);
             let trusted = source == SOURCE_FORGE && meta.oracle_matches;
             if verdict == Verdict::Unchecked || (trusted && verdict == Verdict::Mismatch) {
+                if !meta.gaps.is_empty() {
+                    return Err(W2aSkip::Gapped);
+                }
                 return draft::decide(printed, slug, report, source, meta.oracle_matches);
             }
         }

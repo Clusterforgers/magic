@@ -24,6 +24,7 @@ fn c5_af_kept(effects: &[Effect]) -> Option<&'static str> {
         Effect::Move {
             what: Ref::Bound(kept),
             to: Destination::Hand,
+            ..
         },
         Effect::Move {
             what: Ref::Bound(others),
@@ -32,6 +33,7 @@ fn c5_af_kept(effects: &[Effect]) -> Option<&'static str> {
                     place: Place::Bottom,
                     order: Some(Order::Chosen),
                 },
+            ..
         },
     ] = effects
     else {

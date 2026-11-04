@@ -14,6 +14,7 @@ mod c10_xp_copy_ends;
 mod c11a_less;
 mod c7_untap;
 mod cast;
+mod combat_quirks;
 mod commanders;
 mod damage;
 mod encoded;
@@ -111,6 +112,7 @@ pub mod priority;
 pub mod prohibit;
 pub mod replace;
 pub mod resolve;
+pub mod retargeted;
 pub mod rng;
 #[cfg(test)]
 mod rule_options;

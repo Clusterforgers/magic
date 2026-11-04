@@ -4,12 +4,34 @@ use serde_json::{Value, json};
 
 use super::amount::{amount, counter_kind};
 use super::condition::{prefixed, tapped_when};
-use super::ctx::{Ctx, Tr, is_hint, unmapped};
+use super::ctx::{Ctx, Tr, check_keys, unmapped};
 use super::valid::selector_any;
 use crate::forge::script::Params;
 
 /// A replacement line as a `Replacement` ability.
 pub fn replacement_line(ctx: &mut Ctx, body: &str) -> Tr<Value> {
+    let mut found = replacement_lines(ctx, body)?;
+    if found.len() == 1 {
+        return Ok(found.remove(0));
+    }
+    unmapped("replacement:several-abilities")
+}
+
+/// A replacement line as the `Replacement` abilities it stands for (a list of recipients is one for each).
+pub fn replacement_lines(ctx: &mut Ctx, body: &str) -> Tr<Vec<Value>> {
+    let all = Params::parse(body);
+    if all.get("Event") == Some("DamageDone") {
+        ctx.reset();
+        let (line_condition, p) = prefixed(ctx, &all)?;
+        if line_condition.is_some() {
+            return unmapped("key:Replacement.DamageDone.condition");
+        }
+        return super::replacements_damage::static_prevention(ctx, &p);
+    }
+    single(ctx, body).map(|ability| vec![ability])
+}
+
+fn single(ctx: &mut Ctx, body: &str) -> Tr<Value> {
     ctx.reset();
     let all = Params::parse(body);
     let (line_condition, p) = prefixed(ctx, &all)?;
@@ -20,17 +42,18 @@ pub fn replacement_line(ctx: &mut Ctx, body: &str) -> Tr<Value> {
     if event != "Moved" {
         return unmapped(format!("replacement:{event}"));
     }
-    for (key, _) in p.iter() {
-        let read = [
-            "Event",
-            "ValidCard",
-            "Destination",
-            "ReplaceWith",
-            "ReplacementResult",
-        ];
-        if !read.contains(&key) && !is_hint(key) {
-            return unmapped(format!("key:Replacement.Moved.{key}"));
-        }
+    let read = [
+        "Event",
+        "ValidCard",
+        "Destination",
+        "ReplaceWith",
+        "ReplacementResult",
+    ];
+    check_keys(&p, "Replacement.Moved", &read, |_, _| false)?;
+    if p.get("ReplacementResult")
+        .is_some_and(|result| result != "Updated")
+    {
+        return unmapped("key:Replacement.Moved.ReplacementResult");
     }
     if p.get("ValidCard") != Some("Card.Self") || p.get("Destination") != Some("Battlefield") {
         return unmapped("replacement:Moved-shape");
@@ -132,10 +155,5 @@ fn pay_or_tapped(ctx: &Ctx, unless: &str) -> Tr<Value> {
 }
 
 fn only_keys(part: &Params, read: &[&str]) -> Tr<()> {
-    for (key, _) in part.iter() {
-        if !read.contains(&key) && !is_hint(key) {
-            return unmapped(format!("key:Replacement.{key}"));
-        }
-    }
-    Ok(())
+    check_keys(part, "Replacement", read, |_, _| false)
 }

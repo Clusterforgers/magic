@@ -1,7 +1,7 @@
 //! Keyword macros: a keyword or keyword action that expands into existing nodes, so a new one is a table entry and no engine code.
 //!
 //! Design record: `docs/cards-dsl.md`, "Keyword macros". A template is JSON for the abilities (keywords) or effects
-//! (actions) it stands for; `$N` is the keyword's number and `$ON` the object an action works on.
+//! (actions) it stands for; `$N` is the keyword's number, `$ON` the object an action works on.
 
 use crate::ability::Ability;
 use crate::effect::Effect;
@@ -82,6 +82,24 @@ pub const KEYWORDS: &[Entry] = &[
              "if":{"Any":[{"Compare":{"left":{"Stat":{"of":"Triggering","stat":"ManaSpent"}},"op":"Gt","right":{"Stat":{"of":"This","stat":"Power"}}}},
                           {"Compare":{"left":{"Stat":{"of":"Triggering","stat":"ManaSpent"}},"op":"Gt","right":{"Stat":{"of":"This","stat":"Toughness"}}}}]},
              "effects":[{"PutCounters":{"on":"This","counter":"+1/+1","count":1}}]}}]"#,
+    },
+    Entry {
+        name: "provoke",
+        template: r#"[{"Triggered":{"when":{"Attacks":{"what":["This"]}},"targets":[{"what":{"Object":[{"Type":"Creature"},{"ControlledBy":"Defending"}]}}],
+             "effects":[{"May":{"effects":[{"Untap":{"what":{"Target":0}}},
+               {"Rule":{"rule":{"MustBlockAttacker":{"who":{"Target":0},"attacker":"This"}},"duration":"UntilEndOfCombat"}}]}}]}}]"#,
+    },
+    Entry {
+        name: "rampage",
+        template: r#"[{"Triggered":{"when":{"BecomesBlocked":{"what":["This"]}},"effects":[{"Continuous":{"affected":"This",
+             "mods":[{"ModifyPT":{"power":{"Times":{"by":$N,"of":{"Sum":[{"Count":[{"Blocks":"This"}]},-1]}}},"toughness":{"Times":{"by":$N,"of":{"Sum":[{"Count":[{"Blocks":"This"}]},-1]}}}}}],"duration":"UntilEndOfTurn"}}]}}]"#,
+    },
+    Entry {
+        name: "enlist",
+        template: r#"[{"Triggered":{"when":{"Attacks":{"what":["This"]}},"effects":[{"May":{"effects":[
+             {"Choose":{"from":{"Each":[{"Type":"Creature"},{"ControlledBy":"You"},"Untapped",{"Not":"Attacking"},{"Not":{"HasKeyword":{"Macro":{"name":"enlist","amount":0}}}},{"Not":"SummoningSick"}]},"as":"enlisted"}},
+             {"Tap":{"what":{"Bound":"enlisted"}}},
+             {"Reflexive":{"effects":[{"Continuous":{"affected":"This","mods":[{"ModifyPT":{"power":{"Stat":{"of":{"Bound":"enlisted"},"stat":"Power"}},"toughness":0}}],"duration":"UntilEndOfTurn"}}]}}]}}]}}]"#,
     },
 ];
 
@@ -236,7 +254,7 @@ mod tests {
     }
 
     #[rstest]
-    #[case::unknown("rampage")]
+    #[case::unknown("double team")]
     #[case::empty("")]
     fn an_unknown_name_expands_to_nothing(#[case] name: &str) {
         assert!(

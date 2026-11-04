@@ -688,14 +688,26 @@ pub(crate) fn protects(
 ) -> bool {
     keywords_of(state, holder).into_iter().any(|keyword| {
         rules(keyword).restricts_targeting(state, keyword, holder, source, controller)
+            && !crate::combat_quirks::ignores_protection(
+                state,
+                crate::combat_quirks::Holder::Object(holder),
+                keyword,
+                controller,
+            )
     })
 }
 
 /// Whether a keyword of the player `holder` stops `controller`'s spell or ability from targeting them.
 pub(crate) fn protects_player(state: &GameState, holder: PlayerId, controller: PlayerId) -> bool {
-    player_keywords(state, holder)
-        .into_iter()
-        .any(|keyword| rules(keyword).restricts_player_targeting(keyword, holder, controller))
+    player_keywords(state, holder).into_iter().any(|keyword| {
+        rules(keyword).restricts_player_targeting(keyword, holder, controller)
+            && !crate::combat_quirks::ignores_protection(
+                state,
+                crate::combat_quirks::Holder::Player(holder),
+                keyword,
+                controller,
+            )
+    })
 }
 
 /// Whether a keyword of `holder` protects it from `source` (CR 702.16): the one reader of protection for damage,

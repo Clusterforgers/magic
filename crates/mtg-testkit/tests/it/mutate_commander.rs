@@ -43,11 +43,13 @@ impl To {
         let library = |place| Effect::Move {
             what: what.clone(),
             to: Destination::Library { place, order: None },
+            bind: None,
         };
         match self {
             To::Graveyard => Effect::Destroy {
                 what,
                 regenerate: true,
+                bind: None,
             },
             To::Exile => Effect::Exile {
                 what,
@@ -57,6 +59,7 @@ impl To {
             To::Hand => Effect::Move {
                 what,
                 to: Destination::Hand,
+                bind: None,
             },
             To::Top => library(Place::Top),
             To::Bottom => library(Place::Bottom),

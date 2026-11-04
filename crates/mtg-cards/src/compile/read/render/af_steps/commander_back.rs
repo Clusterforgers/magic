@@ -8,6 +8,7 @@ pub(super) fn text(effects: &[Effect]) -> Option<(String, usize)> {
         Effect::Move {
             what: Ref::Each(selector),
             to: Destination::Hand,
+            ..
         },
         ..,
     ] = effects

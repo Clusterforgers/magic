@@ -153,6 +153,10 @@ function modificationWords(modification: Modification, group: boolean, n: EventN
   }
   if ('AddKeyword' in modification) return `${gains} ${keywordWords(modification.AddKeyword)}`
   if ('RemoveKeyword' in modification) return `${loses} ${keywordWords(modification.RemoveKeyword)}`
+  if ('LockKeyword' in modification) {
+    const word = keywordWords(modification.LockKeyword)
+    return `${loses} ${word} and can't have or gain it`
+  }
   if ('GrantAbility' in modification) return `${gains} an ability`
   if ('SetController' in modification) return `${group ? 'change' : 'changes'} controller`
   if ('SetPowerToughness' in modification) {
@@ -763,6 +767,10 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
   if ('AbilityCopied' in event) {
     const { controller, of } = event.AbilityCopied
     return line(`${n.seat(controller)} copies the ability of ${n.card(n.ability?.(of.id) ?? of.id)}`)
+  }
+  if ('TargetsChanged' in event) {
+    const { object } = event.TargetsChanged
+    return line(`The targets of ${n.card(n.ability?.(object.id) ?? object.id)} change`)
   }
   if ('CopyEnded' in event) return line(`${n.card(event.CopyEnded.object)} stops being a copy`)
   if ('CardCopied' in event) {

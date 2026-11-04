@@ -36,6 +36,7 @@ impl KeywordRules for Dash {
                 Effect::Move {
                     what: Ref::Bound(DASHED.to_owned()),
                     to: Destination::Hand,
+                    bind: None,
                 },
             ),
         ]

@@ -186,6 +186,8 @@ pub enum Pred {
     Saddled(Ref),
     /// Entered the battlefield this turn, from anywhere and under any control (a token made this turn included).
     EnteredThisTurn,
+    /// Is a permanent that summoning sickness holds back from attacking and from {T} abilities (CR 302.6).
+    SummoningSick,
     /// Is a card in a graveyard that a mill put there this turn ("a land card in a graveyard that was milled this turn").
     MilledThisTurn,
     /// Has the card type.
@@ -303,6 +305,8 @@ pub enum Pred {
     Blocks(Ref),
     /// Is a target of one of the spells or abilities on the stack the reference names.
     TargetedBy(Ref),
+    /// Is a spell or ability on the stack with exactly one target (CR 115.7: "a spell with a single target").
+    SingleTarget,
     /// Has the greatest value of the characteristic among the objects the group selector matches (a tie counts for each).
     GreatestAmong {
         /// The characteristic compared.

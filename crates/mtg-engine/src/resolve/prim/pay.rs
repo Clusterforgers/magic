@@ -283,27 +283,35 @@ fn settle<'a>(
             source,
             barred: &barred,
         });
-        if candidates.len() < pick.count {
+        // Too few cards, or too little power or mana value among them (a pick by total).
+        if pick.short(state, &candidates) {
             return Err(ResolveError::Invalid(format!(
                 "{player:?} said yes to a cost they cannot pay"
             )));
         }
         // Nothing to choose between: the part takes what there is.
-        if candidates.len() == pick.count {
-            taken.push(candidates);
+        if let Some(all) = pick.unasked(state, &candidates) {
+            taken.push(all);
             continue;
         }
         match journal.next_if(|entry| entry.0 == player) {
-            Some((_, Choice::Cards(cards))) => taken.push(cards.clone()),
+            Some((_, Choice::Cards(cards))) => {
+                if pick.weak(state, cards).is_some() {
+                    return Err(ResolveError::Invalid(format!(
+                        "{player:?} picked too little for the cost"
+                    )));
+                }
+                taken.push(cards.clone());
+            }
             None => {
-                let count = u32::try_from(pick.count).unwrap_or(u32::MAX);
+                let (min, max) = pick.bounds(candidates.len());
                 return Ok(Settled::Ask(Decision {
                     player,
                     kind: DecisionKind::ChooseCards(CardsOptions {
                         source,
                         from: candidates,
-                        min: count,
-                        max: count,
+                        min,
+                        max,
                         text: pick.text(),
                         can_cancel: false,
                     }),

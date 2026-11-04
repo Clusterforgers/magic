@@ -43,6 +43,10 @@ const COUNTER_DURATION_ONLY: &str =
 const W6E_EXCHANGE_PAIR: &str =
     "an exchange of control names its two permanents with one reference or two";
 
+/// A copy of a spell or a token copy has no ability of its own to keep.
+const THIS_ABILITY_BECOMES_ONLY: &str =
+    "only a permanent that becomes a copy keeps its own ability as an exception";
+
 /// Only the rule that a permanent doesn't untap lasts through the next untap step of its controller.
 const C7_UNTAP_ONLY: &str =
     "only a permanent that doesn't untap waits for its controller's next untap step";
@@ -501,6 +505,7 @@ impl<'a> Walker<'a> {
             }
             Pred::CastWith(_) => self.uses("Pred", "CastWith"),
             Pred::TopOfLibrary => self.uses("Pred", "TopOfLibrary"),
+            Pred::SingleTarget => self.uses("Pred", "SingleTarget"),
             Pred::BottomOfLibrary => self.uses("Pred", "BottomOfLibrary"),
             Pred::BlockedBy(who) => {
                 self.uses("Pred", "BlockedBy");
@@ -583,6 +588,7 @@ impl<'a> Walker<'a> {
             | Pred::BlockedBy(_)
             | Pred::Blocks(_)
             | Pred::TargetedBy(_)
+            | Pred::SingleTarget
             | Pred::GreatestAmong { .. }
             | Pred::Suspended => self.fe1a_pred(pred),
             Pred::Not(inner) => self.pred(inner),
@@ -611,6 +617,7 @@ impl<'a> Walker<'a> {
             | Pred::Renowned
             | Pred::Paired
             | Pred::EnteredThisTurn
+            | Pred::SummoningSick
             | Pred::MilledThisTurn
             | Pred::DamagedThisTurn
             | Pred::AttackedThisTurn
@@ -1552,7 +1559,9 @@ impl<'a> Walker<'a> {
                 self.at("power", |w| w.amount(power));
                 self.at("toughness", |w| w.amount(toughness));
             }
-            Modification::AddKeyword(keyword) | Modification::RemoveKeyword(keyword) => {
+            Modification::AddKeyword(keyword)
+            | Modification::RemoveKeyword(keyword)
+            | Modification::LockKeyword(keyword) => {
                 if matches!(modification, Modification::AddKeyword(_)) {
                     self.granted.push(keyword.clone());
                 }
@@ -1575,6 +1584,9 @@ impl<'a> Walker<'a> {
             | Modification::RemoveType(_)
             | Modification::SetTypes(_)
             | Modification::RemoveSupertype(_)
+            | Modification::AddSupertype(_)
+            | Modification::SetName(_)
+            | Modification::ThisAbility
             | Modification::AddSubtype(_)
             | Modification::SetCreatureTypes(_)
             | Modification::SetLandTypes(_)
@@ -1675,8 +1687,14 @@ impl<'a> Walker<'a> {
         for (i, modification) in mods.iter().enumerate() {
             self.at(format!("[{i}]"), |w| {
                 w.modification(modification);
-                if matches!(modification, Modification::RemoveSupertype(_)) {
-                    w.problem("a supertype is taken away only from the copiable values of a copy (`except`)");
+                if matches!(
+                    modification,
+                    Modification::RemoveSupertype(_)
+                        | Modification::AddSupertype(_)
+                        | Modification::SetName(_)
+                        | Modification::ThisAbility
+                ) {
+                    w.problem("a supertype, a name or this ability changes only the copiable values of a copy (`except`)");
                 }
             });
         }
@@ -2029,12 +2047,20 @@ impl Walker<'_> {
             }
             TokenRef::CopyOf { of, except, .. } => {
                 self.at("of", |w| w.reference(of, Kind::Object));
-                self.copy_exceptions(except);
+                self.copy_exceptions_new_object(except);
             }
         }
     }
 
     /// The exceptions of a copy effect are changes to its copiable values; a modification that is not one waits.
+    /// The exceptions of a copy that is not a permanent becoming a copy: keeping its own ability is not played there.
+    fn copy_exceptions_new_object(&mut self, except: &[Modification]) {
+        if except.contains(&Modification::ThisAbility) {
+            self.problem(THIS_ABILITY_BECOMES_ONLY);
+        }
+        self.copy_exceptions(except);
+    }
+
     fn copy_exceptions(&mut self, except: &[Modification]) {
         for (i, modification) in except.iter().enumerate() {
             self.at(format!("except[{i}]"), |w| {
@@ -2406,11 +2432,17 @@ impl Walker<'_> {
         }
         self.at(tag, |w| match effect {
             Effect::Draw { who, count }
-            | Effect::Mill { who, count }
             | Effect::Scry { who, count }
             | Effect::Surveil { who, count } => {
                 w.at("who", |w| w.reference(who, Kind::Player));
                 w.at("count", |w| w.amount(count));
+            }
+            Effect::Mill { who, count, bind } => {
+                w.at("who", |w| w.reference(who, Kind::Player));
+                w.at("count", |w| w.amount(count));
+                if let Some(name) = bind {
+                    w.at("as", |w| w.bind(name, Kind::Object));
+                }
             }
             Effect::Discard {
                 who, count, bind, ..
@@ -2494,7 +2526,13 @@ impl Walker<'_> {
             | Effect::Goad { what }
             | Effect::Explore { what }
             | Effect::Connive { what }
-            | Effect::Destroy { what, .. } => w.at("what", |w| w.reference(what, Kind::Object)),
+            => w.at("what", |w| w.reference(what, Kind::Object)),
+            Effect::Destroy { what, bind, .. } => {
+                w.at("what", |w| w.reference(what, Kind::Object));
+                if let Some(name) = bind {
+                    w.at("as", |w| w.bind(name, Kind::Object));
+                }
+            }
             Effect::Fight { what, with } => {
                 w.at("what", |w| w.reference(what, Kind::Object));
                 w.at("with", |w| w.reference(with, Kind::Object));
@@ -2663,14 +2701,20 @@ impl Walker<'_> {
                     w.problem("an added phase list names no phase");
                 }
             }
-            Effect::Move { what, to } => {
+            Effect::Move { what, to, bind } => {
                 w.at("what", |w| w.reference(what, Kind::Object));
                 w.at("to", |w| w.destination(to));
+                if let Some(name) = bind {
+                    w.at("as", |w| w.bind(name, Kind::Object));
+                }
             }
-            Effect::Sacrifice { who, filter, count } => {
+            Effect::Sacrifice { who, filter, count, bind } => {
                 w.at("who", |w| w.reference(who, Kind::Player));
                 w.at("filter", |w| w.selector(filter));
                 w.at("count", |w| w.amount(count));
+                if let Some(name) = bind {
+                    w.at("as", |w| w.bind(name, Kind::Object));
+                }
             }
             Effect::DealDamage { source, to, amount } => {
                 if let Some(source) = source {
@@ -2826,7 +2870,10 @@ impl Walker<'_> {
             } => {
                 w.at("what", |w| w.reference(what, Kind::Object));
                 w.at("count", |w| w.amount(count));
-                w.copy_exceptions(except);
+                w.copy_exceptions_new_object(except);
+            }
+            Effect::ChangeTargets { what, .. } => {
+                w.at("what", |w| w.reference(what, Kind::Object));
             }
             Effect::CopyAbility { what, count, .. } => {
                 w.at("what", |w| w.reference(what, Kind::Object));
@@ -3428,6 +3475,32 @@ impl Walker<'_> {
         self.x_now = saved_now;
     }
 
+    /// A rule that makes creatures block an attacker names both; one that ignores hexproof names who targets, and the
+    /// permanents, the players or both it covers.
+    fn targeting_rule(&mut self, rule: &GameRule) {
+        let (by, what, players) = match rule {
+            GameRule::MustBlockAttacker { who, attacker } => {
+                self.at("who", |w| w.reference(who, Kind::Object));
+                self.at("attacker", |w| w.reference(attacker, Kind::Object));
+                return;
+            }
+            GameRule::IgnoreHexproof {
+                by, what, players, ..
+            } => (by, what.as_ref(), players.as_ref()),
+            _ => return,
+        };
+        self.at("by", |w| w.reference(by, Kind::Player));
+        if let Some(what) = what {
+            self.at("what", |w| w.reference(what, Kind::Object));
+        }
+        if let Some(players) = players {
+            self.at("players", |w| w.reference(players, Kind::Player));
+        }
+        if what.is_none() && players.is_none() {
+            self.problem("a rule that ignores hexproof names permanents, players or both");
+        }
+    }
+
     /// A rule of the game names what it is about: players or objects, and for the one that triggers again the event that
     /// causes the trigger, which is judged without a target, a triggering event or a name bound earlier.
     fn rule(&mut self, rule: &GameRule) {
@@ -3439,7 +3512,11 @@ impl Walker<'_> {
             }
             GameRule::MustAttack(who)
             | GameRule::MustBlock(who)
-            | GameRule::CantBeCountered(who) => self.at(tag, |w| w.reference(who, Kind::Object)),
+            | GameRule::CantBeCountered(who)
+            | GameRule::Combat { who, .. } => self.at(tag, |w| w.reference(who, Kind::Object)),
+            GameRule::MustBlockAttacker { .. } | GameRule::IgnoreHexproof { .. } => {
+                self.at(tag, |w| w.targeting_rule(rule));
+            }
             GameRule::MustAttackPlayers { who, players } => self.at(tag, |w| {
                 w.at("who", |w| w.reference(who, Kind::Object));
                 w.at("players", |w| w.reference(players, Kind::Player));
@@ -3563,6 +3640,12 @@ impl Walker<'_> {
                 let saved = std::mem::replace(&mut self.scope, Scope::new(&[], false));
                 self.at("action", |w| w.trigger_pattern(cause));
                 self.scope = saved;
+            }
+            Prohibited::Cast { filter, unless, .. } => {
+                self.at("filter", |w| w.selector(filter));
+                if let Some(unless) = unless {
+                    self.at("unless", |w| w.condition(unless));
+                }
             }
             Prohibited::SkipStep(Step::Cleanup) => {
                 self.at("action", |w| w.problem("the cleanup step can't be skipped"));
@@ -4360,6 +4443,26 @@ mod tests {
         assert_eq!(problems(&json).len(), expected, "{json}");
     }
 
+    #[rstest]
+    #[case::a_copy_of_a_spell(r#"{"CopySpell":{"what":"This","except":["ThisAbility"]}}"#, true)]
+    #[case::a_token_copy(
+        r#"{"CreateToken":{"token":{"CopyOf":{"of":"This","except":["ThisAbility"]}}}}"#,
+        true
+    )]
+    #[case::a_permanent_becoming_a_copy(r#"{"BecomeCopy":{"what":"This","of":"This","duration":"Forever","except":["ThisAbility"]}}"#, false)]
+    fn keeping_its_own_ability_is_refused_where_the_engine_does_not_play_it(
+        #[case] effect: &str,
+        #[case] refused: bool,
+    ) {
+        let json = format!(r#"{{"Spell":{{"effects":[{effect}]}}}}"#);
+        let found = problems(&json);
+        assert_eq!(
+            found.iter().any(|p| p.contains(THIS_ABILITY_BECOMES_ONLY)),
+            refused,
+            "{found:?}"
+        );
+    }
+
     #[test]
     fn a_good_ability_passes_and_names_what_it_uses() {
         let json = r#"{"Spell":{"targets":[{"what":"AnyTarget"}],"effects":[{"DealDamage":{"to":{"Target":0},"amount":3}}]}}"#;
@@ -4422,6 +4525,10 @@ mod tests {
     #[case::modular_is_a_macro(r#"{"Keyword":{"Macro":{"name":"modular","amount":2}}}"#, &["Ability.Replacement", "Ability.Triggered", "Effect.May", "Effect.PutCounters", "Keyword.Macro", "ReplaceBy.WithCounters", "ReplaceWhen.Enters", "Trigger.ZoneChange"])]
     #[case::mobilize_is_a_macro(r#"{"Keyword":{"Macro":{"name":"mobilize","amount":2}}}"#, &["Ability.Triggered", "Effect.CreateToken", "Effect.DelayedTrigger", "Effect.Sacrifice", "Keyword.Macro", "Trigger.Attacks", "Trigger.StepBegins"])]
     #[case::a_modal_chosen_by_an_opponent(r#"{"Spell":{"effects":[{"Modal":{"who":"Opponents","modes":[{"effects":[{"Draw":{}}]},{"effects":[{"GainLife":{"amount":1}}]}]}}]}}"#, &["Ability.Spell", "Effect.Draw", "Effect.GainLife", "Effect.Modal", "Effect.Modal.Who"])]
+    #[case::a_milled_card_named(r#"{"Spell":{"effects":[{"Mill":{"count":2,"as":"m"}},{"Move":{"what":{"Bound":"m"},"to":"Hand"}}]}}"#, &["Ability.Spell", "Effect.Mill", "Effect.Move"])]
+    #[case::a_sacrifice_named(r#"{"Spell":{"effects":[{"Sacrifice":{"filter":[],"as":"s"}},{"Move":{"what":{"Bound":"s"},"to":"Hand"}}]}}"#, &["Ability.Spell", "Effect.Move", "Effect.Sacrifice"])]
+    #[case::a_destroy_named(r#"{"Spell":{"effects":[{"Destroy":{"what":"This","as":"d"}},{"Move":{"what":{"Bound":"d"},"to":"Hand"}}]}}"#, &["Ability.Spell", "Effect.Destroy", "Effect.Move"])]
+    #[case::a_move_named(r#"{"Spell":{"effects":[{"Move":{"what":"This","to":"Graveyard","as":"g"}},{"Move":{"what":{"Bound":"g"},"to":"Hand"}}]}}"#, &["Ability.Spell", "Effect.Move"])]
     #[case::a_kept_number(r#"{"Spell":{"effects":[{"Let":{"as":"n","amount":2}},{"GainLife":{"amount":{"Bound":"n"}}}]}}"#, &["Ability.Spell", "Effect.GainLife", "Effect.Let"])]
     #[case::storm_is_a_keyword(r#"{"Keyword":"Storm"}"#, &["Keyword.Storm"])]
     #[case::a_copy_with_the_exceptions_the_values_keep(r#"{"Spell":{"effects":[{"CreateToken":{"token":{"CopyOf":{"of":"This","except":[{"AddKeyword":"Haste"},{"AddSubtype":"Zombie"},{"SetColors":["Blue"]},{"SetPT":{"power":1,"toughness":1}}]}}}}]}}"#, &["Ability.Spell", "Effect.CreateToken", "Effect.CreateToken.Copy", "Keyword.Haste", "Mod.AddKeyword", "Mod.AddSubtype", "Mod.SetColors", "Mod.SetPT"])]
@@ -4582,7 +4689,7 @@ mod tests {
     )]
     #[case::a_supertype_goes_with_a_copy_only(
         r#"{"Static":{"affected":"This","mods":[{"RemoveSupertype":"Legendary"}]}}"#,
-        "a supertype is taken away only from the copiable values of a copy (`except`)"
+        "a supertype, a name or this ability changes only the copiable values of a copy (`except`)"
     )]
     #[case::a_player_takes_only_the_keywords_players_have(
         r#"{"Static":{"affected":"You","mods":[{"AddKeyword":"Flying"}]}}"#,
@@ -4619,6 +4726,15 @@ mod tests {
     #[rstest]
     #[case::must_attack(r#"{"MustAttack":"This"}"#, "MustAttack")]
     #[case::must_block(r#"{"MustBlock":{"Each":[{"Type":"Creature"}]}}"#, "MustBlock")]
+    #[case::provoke(
+        r#"{"MustBlockAttacker":{"who":"This","attacker":"This"}}"#,
+        "MustBlockAttacker"
+    )]
+    #[case::combat(r#"{"Combat":{"who":"This","quirk":"CantBlockAlone"}}"#, "Combat")]
+    #[case::hexproof_ignored(
+        r#"{"IgnoreHexproof":{"by":"You","players":"Opponents"}}"#,
+        "IgnoreHexproof"
+    )]
     #[case::not_countered(
         r#"{"CantBeCountered":{"Each":["Spell",{"ControlledBy":"You"}]}}"#,
         "CantBeCountered"

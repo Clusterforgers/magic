@@ -7,26 +7,45 @@
 
 pub mod ability;
 pub mod amount;
+pub mod amount_when;
 pub mod card;
 pub mod condition;
 pub mod cost;
+pub mod cost_more;
 pub mod ctx;
 pub mod effects;
+pub mod effects_ambient;
+pub mod effects_animate;
+pub mod effects_copy;
 pub mod effects_effect;
+pub mod effects_emblem;
+mod effects_game;
+pub mod effects_loop;
 pub mod effects_obj;
 pub mod effects_zone;
 pub mod keyword;
+pub mod keyword_alt;
 pub mod mayplay;
 pub mod needs;
 pub mod oracle;
+pub mod remember;
 pub mod replacements;
+pub mod replacements_damage;
+pub mod replacements_damage_by;
 pub mod report;
 pub mod statics;
+pub mod statics_alt;
+pub mod statics_cant;
+pub mod statics_cast;
+pub mod statics_rules;
 pub mod stored;
 pub mod tokens;
+pub mod triggered;
 pub mod triggers;
+pub mod triggers_did;
 pub mod triggers_more;
 pub mod valid;
+pub mod valid_atoms;
 
 #[cfg(test)]
 mod tests;
@@ -157,6 +176,14 @@ fn write_proposal(
         .filter(Value::is_object)
         .unwrap_or_else(|| json!({}));
     record["source"] = json!("forge");
+    let gaps: BTreeSet<&str> = card.gaps().map(|gap| gap.0.as_str()).collect();
+    if gaps.is_empty() {
+        if let Some(map) = record.as_object_mut() {
+            map.remove("gaps");
+        }
+    } else {
+        record["gaps"] = json!(gaps);
+    }
     if let Some(matches) = oracle_matches {
         record["oracle_matches"] = json!(matches);
     }
