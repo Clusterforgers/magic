@@ -198,6 +198,7 @@ const RUNS: &[&str] = &[
     "Effect.AddMana.ChosenColor",
     "Effect.AddMana.OrChosenColor",
     "Effect.AddMana.Restricted",
+    "Effect.AddMana.Uncounterable",
     "Effect.AddMana.Lasts",
     "Effect.AddMana.WhenSpent",
     "Effect.AddMana.CommanderIdentity",
@@ -516,6 +517,7 @@ const RUNS: &[&str] = &[
     "ReplaceBy.Prevent",
     "ReplaceBy.PreventNext",
     "ReplaceBy.PreventUpTo",
+    "ReplaceBy.PreventHalf",
     "ReplaceBy.PreventRemovingCounter",
     "ReplaceBy.MoveTo",
     "ReplaceBy.Instead",
@@ -851,6 +853,7 @@ mod tests {
     #[case::shields("Effect.Shield", true)]
     #[case::preventing("ReplaceBy.Prevent", true)]
     #[case::preventing_in_part("ReplaceBy.PreventUpTo", true)]
+    #[case::preventing_half("ReplaceBy.PreventHalf", true)]
     #[case::preventing_the_next_damage("ReplaceBy.PreventNext", true)]
     #[case::removed_keywords("Mod.RemoveKeyword", true)]
     #[case::locked_keywords("Mod.LockKeyword", true)]
@@ -1000,6 +1003,7 @@ mod tests {
     #[case::mana_of_the_chosen_color("Effect.AddMana.ChosenColor", true)]
     #[case::mana_of_a_type_or_the_chosen_color("Effect.AddMana.OrChosenColor", true)]
     #[case::mana_restricted_to_what_it_may_be_spent_on("Effect.AddMana.Restricted", true)]
+    #[case::mana_that_keeps_a_spell_from_being_countered("Effect.AddMana.Uncounterable", true)]
     #[case::mana_kept_past_the_step("Effect.AddMana.Lasts", true)]
     #[case::mana_that_sets_something_off_when_spent("Effect.AddMana.WhenSpent", true)]
     #[case::mana_of_the_commanders_identity("Effect.AddMana.CommanderIdentity", true)]

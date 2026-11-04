@@ -139,7 +139,7 @@ impl Spend {
                 }
                 SpendOn::CostWithX => self.kind != SpendKind::Other && self.has_x,
                 // A rider limits nothing, so it neither allows nor refuses a payment.
-                SpendOn::When(_) => false,
+                SpendOn::When(_) | SpendOn::Uncounterable(_) => false,
             })
     }
 

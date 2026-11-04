@@ -17,6 +17,10 @@ fn shown(script: &str) -> String {
     "Name:T\nTypes:Creature Bird\nR:Event$ DamageDone | ActiveZones$ Battlefield | ValidSource$ Spell | ValidTarget$ Permanent,Player | ReplaceWith$ DBReplace | PreventionEffect$ True\nSVar:DBReplace:DB$ ReplaceDamage | Amount$ 1\n",
     &["PreventUpTo\":1"], 1
 )]
+#[case::prevent_half_rounded_up(
+    "Name:T\nTypes:Creature Angel\nR:Event$ DamageDone | ActiveZones$ Battlefield | ValidTarget$ You,Permanent.YouCtrl | ReplaceWith$ DBReplace | PreventionEffect$ True\nSVar:DBReplace:DB$ ReplaceDamage | Amount$ ShieldAmount\nSVar:ShieldAmount:ReplaceCount$DamageAmount/HalfUp\n",
+    &["PreventHalf"], 2
+)]
 #[case::prevent_and_lose_a_counter(
     "Name:T\nTypes:Creature Spirit\nR:Event$ DamageDone | ActiveZones$ Battlefield | ValidTarget$ Card.Self | ReplaceWith$ Rm | PreventionEffect$ True\nSVar:Rm:DB$ RemoveCounter | Defined$ Self | CounterType$ P1P1 | CounterNum$ 1\n",
     &["PreventRemovingCounter\":\"+1/+1\""], 1

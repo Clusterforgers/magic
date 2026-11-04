@@ -192,6 +192,7 @@ mod tests {
 
     const COUNTERS: &str = r#"{"Replacement":{"when":{"Damage":{"to":{"Each":[{"Type":"Creature"},{"ControlledBy":"You"}]}}},"by":{"PreventAnd":[{"PutCounters":{"on":"Triggering","counter":"+1/+1","count":"Triggering"}}]}}}"#;
     const ALL_BUT: &str = r#"{"Replacement":{"when":{"Damage":{"to":{"Each":[{"Type":"Creature"},{"ControlledBy":"You"}]}}},"by":{"PreventAllBut":1}}}"#;
+    const HALF: &str = r#"{"Replacement":{"when":{"Damage":{"to":{"Each":[{"Type":"Creature"},{"ControlledBy":"You"}]}}},"by":"PreventHalf"}}"#;
     const ANGELS: &str = r#"{"Replacement":{"when":{"TokenCreation":{"what":[{"Type":"Creature"}]}},"by":{"Instead":[{"CreateToken":{"token":{"Custom":{"name":"Angel","colors":["White"],"types":["Creature"],"subtypes":["Angel"],"power":4,"toughness":4}},"count":"Triggering"}}]}}}"#;
     const UNPREVENTABLE: &str = r#"{"Rule":{"rule":{"DamageCantBePrevented":{}}}}"#;
 
@@ -267,8 +268,29 @@ mod tests {
     }
 
     #[rstest]
+    #[case::one(1, 0)]
+    #[case::two(2, 1)]
+    #[case::three(3, 1)]
+    #[case::five(5, 2)]
+    #[case::six(6, 3)]
+    fn half_of_the_damage_rounded_up_is_prevented(#[case] amount: u32, #[case] dealt: u32) {
+        let game = game(2, &[HALF]);
+        let (wall, bear) = (at(&game, 1), at(&game, 2));
+        let out = events(&game, vec![hit(bear, wall, amount)]);
+        if dealt == 0 {
+            assert!(out.is_empty(), "{out:?}");
+        } else {
+            assert!(
+                matches!(&out[..], [Event::DamageDealt { amount: a, .. }] if *a == dealt),
+                "{out:?}"
+            );
+        }
+    }
+
+    #[rstest]
     #[case::counters(COUNTERS)]
     #[case::all_but(ALL_BUT)]
+    #[case::half(HALF)]
     fn damage_that_cant_be_prevented_is_dealt(#[case] rule: &str) {
         let game = game(3, &[rule, UNPREVENTABLE]);
         let (wall, bear) = (at(&game, 1), at(&game, 2));

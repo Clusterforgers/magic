@@ -595,6 +595,7 @@ fn is_self(when: &ReplaceWhen) -> bool {
 fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
     match by {
         ReplaceBy::PreventUpTo(_)
+        | ReplaceBy::PreventHalf
         | ReplaceBy::PreventRemovingCounter(_)
         | ReplaceBy::PreventAnd(_)
         | ReplaceBy::PreventAllBut(_) => {
@@ -655,6 +656,7 @@ impl Action {
             Action::Replace(
                 ReplaceBy::Prevent
                     | ReplaceBy::PreventUpTo(_)
+                    | ReplaceBy::PreventHalf
                     | ReplaceBy::PreventRemovingCounter(_)
                     | ReplaceBy::PreventAnd(_)
                     | ReplaceBy::PreventAllBut(_)
@@ -1786,7 +1788,10 @@ impl Pass<'_> {
             Action::Replace(by) => by,
         };
         match (by, &unit) {
-            (ReplaceBy::Prevent | ReplaceBy::PreventUpTo(_), Unit::Damage { .. }) => {
+            (
+                ReplaceBy::Prevent | ReplaceBy::PreventUpTo(_) | ReplaceBy::PreventHalf,
+                Unit::Damage { .. },
+            ) => {
                 self.prevent(at, candidate, by, applied);
             }
             (ReplaceBy::PreventRemovingCounter(kind), Unit::Damage { .. }) => {
@@ -2002,6 +2007,7 @@ impl Pass<'_> {
         };
         let most = match by {
             ReplaceBy::PreventUpTo(most) => *most,
+            ReplaceBy::PreventHalf => amount.div_ceil(2),
             _ => u32::MAX,
         };
         let taken = most.min(amount);

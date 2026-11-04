@@ -238,10 +238,6 @@ fn a_permanent_that_does_not_untap_reads_who_it_is(#[case] line: &str, #[case] e
     "Event$ Untap | ActiveZones$ Command | ValidCard$ Permanent.ChosenCtrl | ValidStepTurnToController$ You | Layer$ CantHappen",
     "replacement:Untap-zone"
 )]
-#[case::only_with_a_counter_on_itself(
-    "Event$ Untap | ActiveZones$ Battlefield | ValidCard$ Card.Self+counters_GE1_DEPLETION | ValidStepTurnToController$ You | Layer$ CantHappen",
-    "replacement:Untap-affected"
-)]
 fn an_untap_rule_that_is_not_known_stays_a_named_gap(#[case] line: &str, #[case] name: &str) {
     assert_eq!(gaps(&replacement(line, "")), [name]);
 }

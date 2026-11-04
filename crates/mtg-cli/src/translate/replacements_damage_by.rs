@@ -98,6 +98,11 @@ pub fn by(ctx: &Ctx, p: &Params, name: &str, recipient_is_you: bool, shield: boo
         }
         ("ReplaceDamage", true) => {
             keys(&part, &["Amount"])?;
+            // Half the damage, rounded up: only a static line prevents it (a shield keeps a fixed total).
+            let half = part.get("Amount").and_then(|var| ctx.svar(var));
+            if !shield && half == Some("ReplaceCount$DamageAmount/HalfUp") {
+                return Ok(json!("PreventHalf"));
+            }
             match part.get("Amount").map(str::parse::<u32>) {
                 Some(Ok(most)) if most > 0 => Ok(json!({"PreventUpTo": most})),
                 _ => unmapped("replacement:DamageDone-prevented-amount"),

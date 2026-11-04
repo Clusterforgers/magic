@@ -150,7 +150,7 @@ Effect (one variant per engine primitive)
   If{condition,then,otherwise} May{who,effects} Pay{who,cost,times,paid,unpaid}
   Let{as, amount: Amount}
   Modal{who?: Ref, choose: Bounds, repeat, at_random, once_each_turn, once_ever, all_if?: Condition, mode_costs?: [Cost], extra_mode_cost?: Cost, modes: [Mode{label?,targets,effects}]}
-SpendOn   Spell(SpendFilter) | Ability(SpendFilter) | CostWithX | When(WhenSpent)   a use of restricted mana; `AddMana.only` lists the allowed ones, none means anything; `When` restricts nothing (the engine keeps `AddMana.when_spent` there)
+SpendOn   Spell(SpendFilter) | Ability(SpendFilter) | CostWithX | When(WhenSpent) | Uncounterable(SpendFilter)   a use of restricted mana; `AddMana.only` lists the allowed ones, none means anything; `When` restricts nothing (the engine keeps `AddMana.when_spent` there)
 WhenSpent{spell: SpendFilter,effects,source?}   what mana sets off when it is spent to cast a spell the filter holds for; `source` is the permanent that made the mana, filled in by the engine
 SpendFilter{types?,without?,supertypes?,subtypes?,colors?,multicolored?,chosen_type?,min_value?,facts?}   each listed part must hold, one of a list of types, subtypes or colors is enough; `facts` are XInCost, NotOwned, FromGraveyard, SharesCommanderType
 TriggerPattern
@@ -165,7 +165,7 @@ ReplaceWhen = TokenCreation{controller} | Damage{to?,source?,combat?} | ZoneChan
   CountersRemoved{what,counter?} Chapter{number} Attached{what,to} BecomesMonarch{who} DayNightChanges{to?} Proliferated{who} Amassed{who} BecomesMonstrous{what} BecomesCrewed{what} BecomesSaddled{what} BecomesLevel{what,level} TurnedFaceUp{what} Mutates{what} Adapted{what} Bolstered{who} Surveilled{who} Explored{what} Connived{what} Batch(TriggerPattern) Nth{event,nth}
 ReplaceWhen = TokenCreation{controller,what?} | Damage{to?,source?,combat?} | ZoneChange{what,from?,to?} | Destroyed{what} | Discarded{what}
             | CountersPut{on?,counter?} | LifeGain{who} | Draw{who,except_draw_step?} | Enters{what}
-ReplaceBy   = Multiply(n) | Add(n) | Prevent | PreventUpTo(n) | PreventAllBut(n) | PreventRemovingCounter(kind) | Instead([Effect]) | PreventAnd([Effect]) | Dredge(n) | MoveTo(zone)
+ReplaceBy   = Multiply(n) | Add(n) | Prevent | PreventUpTo(n) | PreventAllBut(n) | PreventHalf | PreventRemovingCounter(kind) | Instead([Effect]) | PreventAnd([Effect]) | Dredge(n) | MoveTo(zone)
             | Tapped | WithCounters{counter,count,tapped?} | Choose(Color|ColorOtherThan(c)|CreatureType|Player|Opponent) | PayLifeOrTapped(n) | RevealOrTapped(Selector)
             | AsCopy{of: Selector, except: [Modification]} | UmbraArmor | DayIfNeither | EntersPrepared
 CostItem    = Mana(ManaCostX) | Tap | Untap | PayLife(Amount) | SacrificeSelf | ExileSelf | DiscardSelf
