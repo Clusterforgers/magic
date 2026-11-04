@@ -23,6 +23,13 @@ pub fn rule(ctx: &Ctx, p: &Params) -> Option<Tr<Value>> {
             objects(ctx, p, mode, "ValidCard").map(|who| cant(&who, &json!("Transform")))
         }
         "CantTarget" => cant_target(ctx, p),
+        "CanAttackDefender" => {
+            objects(ctx, p, mode, "ValidCard").map(|who| combat(&who, "AttackDespiteDefender"))
+        }
+        "BlockTapped" => {
+            objects(ctx, p, mode, "ValidCard").map(|who| combat(&who, "BlockWhileTapped"))
+        }
+        "IgnoreHexproof" => ignore_hexproof(ctx, p),
         "IgnoreLegendRule" => keys(p, mode, &[]).map(|()| json!({"NoLegendRule": "EachPlayer"})),
         "UntapOtherPlayer" => untap_other_players(ctx, p),
         "Continuous" if p.has("SetMaxHandSize") => hand_size(ctx, p),
@@ -114,6 +121,45 @@ fn untap_other_players(ctx: &Ctx, p: &Params) -> Tr<Value> {
     keys(p, "UntapOtherPlayer", &["ValidCard"])?;
     let what = selector_any(ctx, p.get("ValidCard").unwrap_or("Permanent"))?;
     Ok(json!({"UntapDuring": {"what": what, "whose": "Opponents"}}))
+}
+
+/// A combat permission for the creatures `who` names.
+fn combat(who: &Value, quirk: &str) -> Value {
+    json!({"Combat": {"who": who, "quirk": quirk}})
+}
+
+/// `IgnoreHexproof`: spells and abilities the `Activator$` players control may target the `ValidEntity$` permanents and
+/// players as though they did not have hexproof. A line that also frees its targets from ward is a gap.
+fn ignore_hexproof(ctx: &Ctx, p: &Params) -> Tr<Value> {
+    keys(p, "IgnoreHexproof", &["Activator", "ValidEntity"])?;
+    if p.get("Description")
+        .is_some_and(|text| text.contains("Ward"))
+    {
+        return unmapped("static:IgnoreHexproof-ward");
+    }
+    let by = match p.get("Activator") {
+        None => json!("EachPlayer"),
+        Some("You") => json!("You"),
+        Some(other) => return unmapped(format!("key:Static.IgnoreHexproof.Activator={other}")),
+    };
+    let Some(entity) = p.get("ValidEntity") else {
+        return unmapped("key:Static.IgnoreHexproof.no-ValidEntity");
+    };
+    let (mut permanents, mut players) = (Vec::new(), false);
+    for word in entity.split(',') {
+        match word {
+            "Opponent" => players = true,
+            other => permanents.extend(selector_any(ctx, other)?),
+        }
+    }
+    let mut rule = json!({"by": by});
+    if !permanents.is_empty() {
+        rule["what"] = json!({"Each": permanents});
+    }
+    if players {
+        rule["players"] = json!("Opponents");
+    }
+    Ok(json!({"IgnoreHexproof": rule}))
 }
 
 /// `SetMaxHandSize$` of the players `Affected$` names.

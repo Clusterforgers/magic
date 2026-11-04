@@ -26,6 +26,11 @@ max_blockers?: Array<[ObjectId, number]>,
  */
 required?: Array<ObjectId>, 
 /**
+ * The attackers a rule requires some creature to block (CR 509.1c: "must be blocked if able"); the declaration blocks
+ * each of them unless every creature that could is busy with a requirement of its own. Left out while there are none.
+ */
+must_be_blocked?: Array<ObjectId>, 
+/**
  * The most creatures that may block together (CR 509.1b: "no more than one creature can block each combat"). Left
  * out while no rule limits the declaration.
  */

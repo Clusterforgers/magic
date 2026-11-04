@@ -535,6 +535,7 @@ mod tests {
     #[case(Modification::SetColors(vec![Color::Blue]), Some("5"))]
     #[case(Modification::AddKeyword(Keyword::Flying), Some("6"))]
     #[case(Modification::RemoveKeyword(Keyword::Flying), Some("6"))]
+    #[case(Modification::LockKeyword(Keyword::Flying), Some("6"))]
     #[case(Modification::SetPT { power: Amount::Fixed(1), toughness: Amount::Fixed(1) }, Some("7b"))]
     #[case(Modification::ModifyPT { power: Amount::Fixed(1), toughness: Amount::Fixed(1) }, Some("7c"))]
     #[case(Modification::SwitchPT, Some("7d"))]
@@ -606,6 +607,22 @@ mod tests {
         r#"{"MustAttackPlayers":{"who":{"Bound":"tokens"},"players":"Opponents"}}"#
     )]
     #[case(GameRule::MustBlock(Ref::This), r#"{"MustBlock":"This"}"#)]
+    #[case(
+        GameRule::MustBlockAttacker { who: Ref::Target(0), attacker: Ref::This },
+        r#"{"MustBlockAttacker":{"who":{"Target":0},"attacker":"This"}}"#
+    )]
+    #[case(
+        GameRule::Combat { who: Ref::This, quirk: CombatQuirk::CantAttackAlone },
+        r#"{"Combat":{"who":"This","quirk":"CantAttackAlone"}}"#
+    )]
+    #[case(
+        GameRule::Combat { who: Ref::This, quirk: CombatQuirk::MustBeBlocked(Blocking::Every) },
+        r#"{"Combat":{"who":"This","quirk":{"MustBeBlocked":"Every"}}}"#
+    )]
+    #[case(
+        GameRule::IgnoreHexproof { by: Ref::You, what: None, players: Some(Ref::Opponents), shroud: true },
+        r#"{"IgnoreHexproof":{"by":"You","players":"Opponents","shroud":true}}"#
+    )]
     #[case(GameRule::CantBeCountered(Ref::This), r#"{"CantBeCountered":"This"}"#)]
     #[case(GameRule::AttackLimit(1), r#"{"AttackLimit":1}"#)]
     #[case(

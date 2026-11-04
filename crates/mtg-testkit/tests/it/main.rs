@@ -383,6 +383,7 @@ mod proliferate;
 mod promise_of_loyalty;
 mod protection;
 mod protection_fuzz;
+mod provoke_rampage;
 mod prowl;
 mod prowl_fuzz;
 mod pump_animate;

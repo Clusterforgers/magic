@@ -592,3 +592,4 @@ mod fg4a;
 mod fg4a_ambient;
 mod fg4a_emblem;
 mod fg4b;
+mod macro_keywords;

@@ -611,6 +611,7 @@ impl<'a> Walker<'a> {
             | Pred::Renowned
             | Pred::Paired
             | Pred::EnteredThisTurn
+            | Pred::SummoningSick
             | Pred::MilledThisTurn
             | Pred::DamagedThisTurn
             | Pred::AttackedThisTurn
@@ -4640,6 +4641,15 @@ mod tests {
     #[rstest]
     #[case::must_attack(r#"{"MustAttack":"This"}"#, "MustAttack")]
     #[case::must_block(r#"{"MustBlock":{"Each":[{"Type":"Creature"}]}}"#, "MustBlock")]
+    #[case::provoke(
+        r#"{"MustBlockAttacker":{"who":"This","attacker":"This"}}"#,
+        "MustBlockAttacker"
+    )]
+    #[case::combat(r#"{"Combat":{"who":"This","quirk":"CantBlockAlone"}}"#, "Combat")]
+    #[case::hexproof_ignored(
+        r#"{"IgnoreHexproof":{"by":"You","players":"Opponents"}}"#,
+        "IgnoreHexproof"
+    )]
     #[case::not_countered(
         r#"{"CantBeCountered":{"Each":["Spell",{"ControlledBy":"You"}]}}"#,
         "CantBeCountered"

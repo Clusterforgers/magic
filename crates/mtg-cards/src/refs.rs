@@ -186,6 +186,8 @@ pub enum Pred {
     Saddled(Ref),
     /// Entered the battlefield this turn, from anywhere and under any control (a token made this turn included).
     EnteredThisTurn,
+    /// Is a permanent that summoning sickness holds back from attacking and from {T} abilities (CR 302.6).
+    SummoningSick,
     /// Is a card in a graveyard that a mill put there this turn ("a land card in a graveyard that was milled this turn").
     MilledThisTurn,
     /// Has the card type.

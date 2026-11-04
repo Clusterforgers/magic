@@ -105,6 +105,17 @@ export const DeclareBlockersPrompt: PromptComponent<'DeclareBlockers'> = ({ opti
       }),
     [minimums, blockerLists],
   )
+  // The attackers a rule says must be blocked, with no blocker yet while a creature that could block them is free.
+  const unserved = useMemo(
+    () =>
+      (options.must_be_blocked ?? []).filter(
+        (attacker) =>
+          attackers.includes(attacker) &&
+          !blockerLists.has(attacker) &&
+          [...offered].some(([blocker, can]) => can.includes(attacker) && !pairs.has(blocker)),
+      ),
+    [options.must_be_blocked, attackers, blockerLists, offered, pairs],
+  )
   // The engine is asked what the blocks would do each time they change; its forecast comes back through the seam.
   const blocksMade = useMemo(() => blocksAnswer(pairs), [pairs])
   const previewStatus = usePreviewRequest(id, blocksMade)
@@ -144,6 +155,9 @@ export const DeclareBlockersPrompt: PromptComponent<'DeclareBlockers'> = ({ opti
     for (const blocker of unblocking) {
       written.set(blocker, { label: 'Must block', words: 'must block an attacker if able' })
     }
+    for (const attacker of unserved) {
+      written.set(attacker, { label: 'Must be blocked', words: 'must be blocked if able' })
+    }
     for (const [attacker, blockers] of blockerLists) {
       const names = blockers.map((id) => byId.get(id)?.name ?? 'a creature')
       const lacking = (minimums.get(attacker) ?? 0) - blockers.length
@@ -166,7 +180,7 @@ export const DeclareBlockersPrompt: PromptComponent<'DeclareBlockers'> = ({ opti
       written.set(choosing, { words: 'choose the attacker it blocks', cue: 'active' })
     }
     return written
-  }, [pairs, blockerLists, minimums, byId, choosing, controllerOf, required, unblocking])
+  }, [pairs, blockerLists, minimums, byId, choosing, controllerOf, required, unblocking, unserved])
 
   const pair = (blocker: ObjectId, attacker: ObjectId): void => {
     setPairs((current) => new Map(current).set(blocker, attacker))
@@ -209,7 +223,7 @@ export const DeclareBlockersPrompt: PromptComponent<'DeclareBlockers'> = ({ opti
     return () => window.removeEventListener('keydown', onKey)
   }, [choosing, selection])
 
-  const ready = pairs.size > 0 && short.length === 0 && unblocking.length === 0
+  const ready = pairs.size > 0 && short.length === 0 && unblocking.length === 0 && unserved.length === 0
   const confirm = (): void => {
     if (ready) answer({ DeclareBlockers: [...pairs] })
   }
@@ -224,7 +238,9 @@ export const DeclareBlockersPrompt: PromptComponent<'DeclareBlockers'> = ({ opti
         ? `Click the attacker ${blockerName(choosing)} blocks.`
         : unblocking.length > 0
           ? `${unblockingCreatures.map((object) => object?.name ?? 'A creature').join(', ')} must block if able.`
-          : firstShort !== undefined
+          : unserved.length > 0 && pairs.size === 0
+            ? `${unserved.map(attackerName).join(', ')} must be blocked if able.`
+            : firstShort !== undefined
             ? `${attackerName(firstShort[0])} needs ${blockersNeeded(firstShort[1])}. Choose another creature to block it, or take its block back.`
             : pairs.size === 0
               ? 'Click a blocker, then the attacker it blocks.'
@@ -270,7 +286,7 @@ export const DeclareBlockersPrompt: PromptComponent<'DeclareBlockers'> = ({ opti
         icon={Shield}
         label="No blocks"
         word="No blocks"
-        disabled={required.length > 0}
+        disabled={required.length > 0 || unserved.length > 0}
         onClick={() => answer({ DeclareBlockers: [] })}
       />
       {minimums.size === 0 ? null : (
