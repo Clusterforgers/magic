@@ -208,3 +208,125 @@ fn a_gating_word_the_table_does_not_know_stays_a_gap(#[case] keys: &str) {
 fn a_condition_value_the_table_does_not_know_stays_a_gap(#[case] keys: &str) {
     assert!(gaps(&chain(keys)).into_iter().next().is_some());
 }
+
+#[rstest]
+#[case::exhaust("Exhaust$ True", Some("OncePerGame"))]
+#[case::once_a_game("GameActivationLimit$ 1", Some("OncePerGame"))]
+#[case::beside_once_a_turn("ActivationLimit$ 1 | GameActivationLimit$ 1", Some("OncePerGame"))]
+#[case::once_a_turn("ActivationLimit$ 1", Some("OncePerTurn"))]
+#[case::unlimited("Defined$ You", None)]
+fn an_ability_used_once_a_game_has_that_limit(#[case] keys: &str, #[case] limit: Option<&str>) {
+    assert_eq!(activated(keys)["Activated"]["limit"].as_str(), limit);
+}
+
+fn each_player(valid: &str, bounds: &str) -> String {
+    spell(&format!(
+        "SP$ Destroy | ValidTgts$ {valid} | {bounds} | TargetsForEachPlayer$ True"
+    ))
+}
+
+#[rstest]
+#[case::each_opponent(
+    "Artifact.OppCtrl",
+    json!({"PerPlayer": {"players": "Opponents", "what": [{"Type": "Artifact"}]}})
+)]
+#[case::kept_property(
+    "Creature.OppCtrl+nonToken",
+    json!({"PerPlayer": {"players": "Opponents", "what": [{"Type": "Creature"}, {"Not": "Token"}]}})
+)]
+#[case::each_player(
+    "Creature",
+    json!({"PerPlayer": {"players": "EachPlayer", "what": [{"Type": "Creature"}]}})
+)]
+fn up_to_one_target_for_each_player_is_a_per_player_target(
+    #[case] valid: &str,
+    #[case] expected: Value,
+) {
+    let text = each_player(valid, "TargetMin$ 0 | TargetMax$ OneEach");
+    assert_eq!(gaps(&text), Vec::<String>::new());
+    let found = first_of(&text);
+    assert_eq!(found["Spell"]["targets"][0]["what"], expected);
+}
+
+#[rstest]
+#[case::exactly_one_each("Artifact.OppCtrl", "TargetMin$ OneEach | TargetMax$ OneEach")]
+#[case::two_at_most("Artifact.OppCtrl", "TargetMin$ 0 | TargetMax$ 2")]
+#[case::no_bounds("Artifact.OppCtrl", "Defined$ You")]
+#[case::you_control("Artifact.YouCtrl", "TargetMin$ 0 | TargetMax$ OneEach")]
+#[case::mixed_control("Artifact.OppCtrl,Creature", "TargetMin$ 0 | TargetMax$ OneEach")]
+fn for_each_player_bounds_the_table_does_not_know_stay_a_gap(
+    #[case] valid: &str,
+    #[case] bounds: &str,
+) {
+    assert!(
+        gaps(&each_player(valid, bounds))
+            .into_iter()
+            .next()
+            .is_some()
+    );
+}
+
+/// A spell that pumps `first`, then pumps `second` (a `ValidTgts$` plus extra keys) in a sub-ability.
+fn two_pumps(first: &str, second: &str) -> String {
+    format!(
+        "Name:T\nTypes:Sorcery\nA:SP$ Pump | ValidTgts$ {first} | NumAtt$ +1 | SubAbility$ B\nSVar:B:DB$ Pump | ValidTgts$ {second} | KW$ Flying\n"
+    )
+}
+
+#[rstest]
+#[case::one_earlier(
+    "Creature",
+    "Creature | TargetUnique$ True",
+    json!([{"Type": "Creature"}, {"Not": {"Is": {"Target": 0}}}])
+)]
+#[case::with_properties(
+    "Creature.YouCtrl",
+    "Creature.OppCtrl | TargetUnique$ True",
+    json!([{"Type": "Creature"}, {"ControlledBy": "Opponents"}, {"Not": {"Is": {"Target": 0}}}])
+)]
+#[case::player_before_is_no_object(
+    "Player",
+    "Creature | TargetUnique$ True",
+    json!([{"Type": "Creature"}])
+)]
+#[case::not_unique("Creature", "Creature | TargetUnique$ False", json!([{"Type": "Creature"}]))]
+fn a_unique_target_is_none_of_the_earlier_ones(
+    #[case] first: &str,
+    #[case] second: &str,
+    #[case] selector: Value,
+) {
+    let found = first_of(&two_pumps(first, second));
+    assert_eq!(
+        found["Spell"]["targets"][1]["what"],
+        json!({"Object": selector})
+    );
+}
+
+#[test]
+fn a_unique_target_with_nothing_before_it_adds_nothing() {
+    let found = first_of(&spell(
+        "SP$ Pump | ValidTgts$ Creature | NumAtt$ +1 | TargetUnique$ True",
+    ));
+    assert_eq!(
+        found["Spell"]["targets"][0]["what"],
+        json!({"Object": [{"Type": "Creature"}]})
+    );
+}
+
+#[rstest]
+#[case::player_after_player("Player", "Player | TargetUnique$ True")]
+#[case::any_after_any("Any", "Any | TargetUnique$ True")]
+#[case::player_alternative_after_any("Any", "Creature,Player | TargetUnique$ True")]
+#[case::unknown_value("Creature", "Creature | TargetUnique$ Maybe")]
+fn a_unique_target_that_could_be_a_player_stays_a_gap(#[case] first: &str, #[case] second: &str) {
+    assert!(gaps(&two_pumps(first, second)).into_iter().next().is_some());
+}
+
+#[rstest]
+#[case::twice_a_game("GameActivationLimit$ 2")]
+#[case::exhaust_false("Exhaust$ False")]
+#[case::exhaust_beside_two_a_turn("Exhaust$ True | ActivationLimit$ 2")]
+fn a_game_limit_the_table_does_not_know_stays_a_gap(#[case] keys: &str) {
+    let text = format!("Name:T\nTypes:Creature Elf\nA:AB$ Draw | Cost$ 1 | NumCards$ 1 | {keys}\n");
+    assert!(gaps(&text).into_iter().next().is_some());
+}

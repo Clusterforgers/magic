@@ -1562,6 +1562,11 @@ fn restriction_texts(timing: Timing, limit: Option<Limit>) -> Vec<String> {
         (Timing::Instant, None) => words(""),
         (Timing::Sorcery, None) => words("Activate only as a sorcery."),
         (Timing::Instant, Some(Limit::OncePerTurn)) => words("Activate only once each turn."),
+        (Timing::Instant, Some(Limit::OncePerGame)) => words("Activate only once."),
+        (Timing::Sorcery, Some(Limit::OncePerGame)) => vec![
+            "Activate only as a sorcery and only once.".to_owned(),
+            "Activate only once and only as a sorcery.".to_owned(),
+        ],
         (Timing::Sorcery, Some(Limit::OncePerTurn)) => vec![
             "Activate only as a sorcery and only once each turn.".to_owned(),
             "Activate only once each turn and only as a sorcery.".to_owned(),

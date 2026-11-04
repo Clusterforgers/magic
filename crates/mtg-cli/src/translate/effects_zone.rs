@@ -3,7 +3,8 @@
 use serde_json::{Value, json};
 
 use super::amount::{amount, counter_kind};
-use super::ctx::{Ctx, Tr, only, unmapped};
+use super::ctx::{Ctx, Tr, check_keys, only, unmapped};
+use super::keyword::keyword_list;
 use super::remember;
 use super::valid::{defined, selector_any, selector_in, subject};
 use crate::forge::script::Params;
@@ -169,6 +170,148 @@ fn with_counters(p: &Params) -> Tr<Value> {
     }
 }
 
+/// `ManifestDread` (CR 701.62a): look at the top two cards of the library, put one of them onto the battlefield face down as
+/// a 2/2 creature and the rest into the graveyard. The player picks the card to manifest; the other goes to the graveyard
+/// first, so the card kept is the top of the library the manifest takes (a library of one or none still works). Once
+/// only: "manifest dread X times" is a gap.
+pub fn manifest_dread(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
+    only(
+        p,
+        "ManifestDread",
+        &["Amount", "DefinedPlayer", "RememberManifested"],
+    )?;
+    if !matches!(p.get("Amount"), None | Some("1")) {
+        return unmapped("key:ManifestDread.Amount");
+    }
+    let who = defined(ctx, p.get("DefinedPlayer").unwrap_or("You"))?;
+    let looked = ctx.fresh("looked");
+    let kept = ctx.fresh("kept");
+    let rest = ctx.fresh("rest");
+    let mut manifest = json!({"Manifest": {"who": who}});
+    if p.get("RememberManifested") == Some("True") {
+        let name = ctx.fresh("manifested");
+        manifest["Manifest"]["as"] = json!(name);
+        ctx.remembered = Some(json!({ "Bound": name }));
+    }
+    Ok(vec![
+        json!({"LookAtTop": {"who": who, "count": 2, "as": looked}}),
+        json!({"Choose": {"who": who, "from": {"Bound": looked}, "as": kept, "rest_as": rest}}),
+        json!({"Move": {"what": {"Bound": rest}, "to": "Graveyard"}}),
+        manifest,
+    ])
+}
+
+/// The card types an `AddType$` word may name; any other word is a supertype or a subtype.
+const STATIC_CARD_TYPES: [&str; 8] = [
+    "Creature",
+    "Artifact",
+    "Enchantment",
+    "Land",
+    "Planeswalker",
+    "Instant",
+    "Sorcery",
+    "Battle",
+];
+
+/// The modifications of the static the `StaticEffect$` `SVar` names ("It's a 1/1 Spirit creature with flying in addition to
+/// its other types"): types added, a fixed power and toughness, a color and keywords. A word that takes something away or
+/// adds a color stays a gap.
+fn static_effect_mods(ctx: &mut Ctx, name: &str) -> Tr<Vec<Value>> {
+    let part = ctx.sub(name)?;
+    check_keys(
+        &part,
+        "ChangeZone.StaticEffect",
+        &[
+            "Mode",
+            "Affected",
+            "AddType",
+            "SetPower",
+            "SetToughness",
+            "AddKeyword",
+            "SetColor",
+        ],
+        |_, _| false,
+    )?;
+    if part.get("Mode") != Some("Continuous") {
+        return unmapped("key:ChangeZone.StaticEffect=mode");
+    }
+    if !matches!(part.get("Affected"), None | Some("Card.IsRemembered")) {
+        return unmapped("key:ChangeZone.StaticEffect=affected");
+    }
+    let mut mods = Vec::new();
+    match (part.get("SetPower"), part.get("SetToughness")) {
+        (None, None) => {}
+        (Some(power), Some(toughness)) => {
+            let (Ok(power), Ok(toughness)) = (power.parse::<i32>(), toughness.parse::<i32>())
+            else {
+                return unmapped("key:ChangeZone.StaticEffect=power");
+            };
+            mods.push(json!({"SetPT": {"power": power, "toughness": toughness}}));
+        }
+        _ => return unmapped("key:ChangeZone.StaticEffect=power-alone"),
+    }
+    for word in part.get("AddType").unwrap_or_default().split('&') {
+        let word = word.trim();
+        if word.is_empty() {
+            continue;
+        }
+        mods.push(match word {
+            "Legendary" | "Snow" | "Basic" => json!({ "AddSupertype": word }),
+            _ if STATIC_CARD_TYPES.contains(&word) => json!({ "AddType": word }),
+            _ => json!({ "AddSubtype": word }),
+        });
+    }
+    if let Some(color) = part.get("SetColor") {
+        if !matches!(color, "White" | "Blue" | "Black" | "Red" | "Green") {
+            return unmapped("key:ChangeZone.StaticEffect=color");
+        }
+        mods.push(json!({ "SetColors": [color] }));
+    }
+    if let Some(words) = part.get("AddKeyword") {
+        for keyword in keyword_list(ctx, words)? {
+            mods.push(json!({ "AddKeyword": keyword }));
+        }
+    }
+    if mods.is_empty() {
+        return unmapped("key:ChangeZone.StaticEffect=nothing");
+    }
+    Ok(mods)
+}
+
+/// `StaticEffect$` on a move to the battlefield: the moved objects get the modifications of the named static for as long as
+/// they stay there (a new object after they leave is not affected, CR 400.7). The move names what it moved.
+fn with_static_effect(
+    ctx: &mut Ctx,
+    p: &Params,
+    destination: &str,
+    effects: &mut Vec<Value>,
+) -> Tr<()> {
+    let Some(name) = p.get("StaticEffect") else {
+        return Ok(());
+    };
+    if destination != "Battlefield" {
+        return unmapped("key:ChangeZone.StaticEffect=destination");
+    }
+    let mods = static_effect_mods(ctx, name)?;
+    let Some(step) = effects.iter_mut().find(|step| step.get("Move").is_some()) else {
+        return unmapped("key:ChangeZone.StaticEffect=move");
+    };
+    let named = step["Move"].get("as").and_then(Value::as_str);
+    let moved = if let Some(name) = named {
+        name.to_owned()
+    } else {
+        let name = ctx.fresh("moved");
+        step["Move"]["as"] = json!(name);
+        name
+    };
+    effects.push(json!({"Continuous": {
+        "affected": {"Bound": moved},
+        "mods": mods,
+        "duration": "Forever",
+    }}));
+    Ok(())
+}
+
 fn moves(what: &Value, goes: Goes) -> Value {
     match goes {
         Goes::Exile => json!({"Exile": {"what": what}}),
@@ -198,6 +341,7 @@ fn change_zone(ctx: &mut Ctx, p: &Params, origin: &str, destination: &str) -> Tr
             "RememberTargets",
             "Transformed",
             "AttachedTo",
+            "StaticEffect",
         ],
     )?;
     let what = subject(ctx, p, "Self", Some(origin))?;
@@ -210,7 +354,9 @@ fn change_zone(ctx: &mut Ctx, p: &Params, origin: &str, destination: &str) -> Tr
         };
         remember::bind_moved(ctx, &mut effect, verb, stem);
     }
-    Ok(vec![effect])
+    let mut effects = vec![effect];
+    with_static_effect(ctx, p, destination, &mut effects)?;
+    Ok(effects)
 }
 
 /// A card of the player's own hand, graveyard or exile that the player picks and moves ("put a creature card from your hand
@@ -240,6 +386,7 @@ fn choose_and_move(ctx: &mut Ctx, p: &Params, origin: &str, destination: &str) -
             "WithCountersAmount",
             "Transformed",
             "AttachedTo",
+            "StaticEffect",
         ],
     )?;
     let who = defined_player(ctx, p)?;
@@ -285,16 +432,17 @@ fn choose_and_move(ctx: &mut Ctx, p: &Params, origin: &str, destination: &str) -
         };
         remember::bind_moved(ctx, &mut moved, verb, stem);
     }
-    match who.each {
-        Some((over, name)) => {
-            if remember::wanted(p, &["RememberChanged"]) {
-                return unmapped("key:ChangeZone.Choose.RememberChanged-for-each-player");
-            }
-            Ok(vec![
-                json!({"RepeatEach": {"over": over, "as": name, "effects": [choose, moved]}}),
-            ])
+    if let Some((over, name)) = who.each {
+        if remember::wanted(p, &["RememberChanged"]) || p.has("StaticEffect") {
+            return unmapped("key:ChangeZone.Choose.RememberChanged-for-each-player");
         }
-        None => Ok(vec![choose, moved]),
+        Ok(vec![
+            json!({"RepeatEach": {"over": over, "as": name, "effects": [choose, moved]}}),
+        ])
+    } else {
+        let mut steps = vec![choose, moved];
+        with_static_effect(ctx, p, destination, &mut steps)?;
+        Ok(steps)
     }
 }
 

@@ -51,6 +51,12 @@ pub fn property(ctx: &Ctx, prop: &str) -> Tr<Option<Vec<Value>>> {
     if let Some(found) = shares(ctx, prop)? {
         return Ok(Some(vec![found]));
     }
+    if let Some(at) = prop.strip_prefix("NotTarget")
+        && let Ok(at) = at.parse::<usize>()
+        && at < ctx.targets.len()
+    {
+        return one(json!({"Not": {"Is": {"Target": at}}}));
+    }
     if prop == "NotDefinedTargeted" {
         return one(json!({"Not": {"Is": objects(ctx.last_target()?)?}}));
     }

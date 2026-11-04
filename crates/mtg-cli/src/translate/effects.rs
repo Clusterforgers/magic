@@ -249,6 +249,7 @@ fn api_line(ctx: &mut Ctx, p: &Params, api: &str) -> Tr<Vec<Value>> {
         "DelayedTrigger" => one(delayed(ctx, p)),
         "Dig" => effects_zone::dig(ctx, p),
         "DigUntil" => effects_zone::dig_until(ctx, p),
+        "ManifestDread" => effects_zone::manifest_dread(ctx, p),
         "Attach" => effects_obj::attach(ctx, p),
         "CopyPermanent" => super::tokens_copy::copy_permanent(ctx, p),
         "Destroy" | "DestroyAll" | "Counter" | "Pump" | "PumpAll" | "PutCounter"

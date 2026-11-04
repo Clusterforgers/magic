@@ -229,3 +229,83 @@ fn zones_without_a_node_stay_gaps(#[case] origin: &str, #[case] gap: &str) {
     ));
     assert_eq!(found, [gap]);
 }
+
+const MOVE_BACK: &str = "A:SP$ ChangeZone | Origin$ Graveyard | Destination$ Battlefield | ValidTgts$ Artifact.YouOwn | StaticEffect$ Animate | WithCountersType$ P1P1 | WithCountersAmount$ 2";
+
+#[rstest]
+#[case::spirit_with_flying(
+    "SVar:Animate:Mode$ Continuous | Affected$ Card.IsRemembered | AddType$ Creature & Spirit | SetPower$ 1 | SetToughness$ 1 | AddKeyword$ Flying",
+    &["\"as\":\"moved\"", "\"Continuous\":{\"affected\":{\"Bound\":\"moved\"}", "{\"AddType\":\"Creature\"}", "{\"AddSubtype\":\"Spirit\"}", "{\"SetPT\":{\"power\":1,\"toughness\":1}}", "\"AddKeyword\"", "\"duration\":\"Forever\""]
+)]
+#[case::one_type_without_affected(
+    "SVar:Animate:Mode$ Continuous | AddType$ Artifact",
+    &["{\"AddType\":\"Artifact\"}", "\"duration\":\"Forever\""]
+)]
+#[case::color_and_type(
+    "SVar:Animate:Mode$ Continuous | AddType$ Nightmare | SetColor$ Black",
+    &["{\"AddSubtype\":\"Nightmare\"}", "{\"SetColors\":[\"Black\"]}"]
+)]
+fn a_static_effect_is_a_forever_continuous_over_the_moved_object(
+    #[case] svar: &str,
+    #[case] has: &[&str],
+) {
+    let (json, found) = sorcery(&format!("{MOVE_BACK}\n{svar}"));
+    assert!(found.is_empty(), "{found:?} {json}");
+    for word in has {
+        assert!(json.contains(word), "{word} missing in {json}");
+    }
+}
+
+#[rstest]
+#[case::adds_a_color("SVar:Animate:Mode$ Continuous | AddType$ Zombie | AddColor$ Black")]
+#[case::takes_types_away(
+    "SVar:Animate:Mode$ Continuous | AddType$ Artifact | RemoveCardTypes$ True"
+)]
+#[case::power_alone("SVar:Animate:Mode$ Continuous | SetPower$ 4")]
+#[case::affects_creatures_only(
+    "SVar:Animate:Mode$ Continuous | Affected$ Creature.IsRemembered | AddType$ Zombie"
+)]
+#[case::another_mode("SVar:Animate:Mode$ CantAttack | ValidCard$ Card.IsRemembered")]
+#[case::missing_svar("SVar:Other:Mode$ Continuous | AddType$ Hero")]
+fn a_static_effect_that_means_more_stays_a_gap(#[case] svar: &str) {
+    let (_, found) = sorcery(&format!("{MOVE_BACK}\n{svar}"));
+    assert_ne!(found.len(), 0);
+}
+
+#[test]
+fn manifest_dread_looks_at_two_keeps_one_and_buries_the_rest() {
+    let (json, found) = sorcery(
+        "A:SP$ ManifestDread | RememberManifested$ True | SubAbility$ P\nSVar:P:DB$ PutCounter | Defined$ Remembered | CounterType$ P1P1 | CounterNum$ 1",
+    );
+    assert!(found.is_empty(), "{found:?} {json}");
+    let order = [
+        "\"LookAtTop\":{\"as\":\"looked\",\"count\":2",
+        "\"Choose\":{\"as\":\"kept2\",\"from\":{\"Bound\":\"looked\"}",
+        "\"rest_as\":\"rest3\"",
+        "\"Move\":{\"to\":\"Graveyard\",\"what\":{\"Bound\":\"rest3\"}}",
+        "\"Manifest\":{\"as\":\"manifested4\"}",
+    ];
+    let mut at = 0;
+    for word in order {
+        let Some(found) = json[at..].find(word) else {
+            panic!("{word} missing or out of order in {json}");
+        };
+        at += found;
+    }
+}
+
+#[rstest]
+#[case::many_times("A:SP$ ManifestDread | Amount$ X\nSVar:X:Count$xPaid")]
+#[case::unknown_key("A:SP$ ManifestDread | Mandatory$ False")]
+fn manifest_dread_beyond_once_stays_a_gap(#[case] line: &str) {
+    let (_, found) = sorcery(line);
+    assert_ne!(found.len(), 0);
+}
+
+#[test]
+fn a_static_effect_on_a_move_elsewhere_stays_a_gap() {
+    let (_, found) = sorcery(
+        "A:SP$ ChangeZone | Origin$ Graveyard | Destination$ Hand | ValidTgts$ Artifact.YouOwn | StaticEffect$ Animate\nSVar:Animate:Mode$ Continuous | AddType$ Hero",
+    );
+    assert_ne!(found.len(), 0);
+}

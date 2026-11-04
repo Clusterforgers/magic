@@ -1,6 +1,6 @@
 //! Folding abilities on the stack and the journal of a resolution.
 
-use mtg_cards::ability::{Ability, Limit};
+use mtg_cards::ability::Ability;
 use mtg_core::ids::ObjectId;
 
 use super::zones::move_object;
@@ -41,16 +41,13 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
             };
             let rules = ability_reader::ability(state, address)
                 .ok_or_else(|| invalid(format!("{source:?} has no ability {ability}")))?;
-            let once = matches!(
-                &*rules,
-                Ability::Activated {
-                    limit: Some(Limit::OncePerTurn),
-                    ..
-                }
-            );
-            if once && !state.limits_spent.insert((*source, *origin, *ability)) {
+            if let Ability::Activated {
+                limit: Some(limit), ..
+            } = &*rules
+                && !state.spend_limit(*limit, *source, *origin, *ability)
+            {
                 return Err(invalid(format!(
-                    "ability {ability} of {source:?} was already used this turn"
+                    "ability {ability} of {source:?} was already used"
                 )));
             }
             // A planeswalker has one loyalty ability activated each turn, whichever it is (CR 606.3).
