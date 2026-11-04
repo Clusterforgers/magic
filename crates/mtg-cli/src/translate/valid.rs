@@ -311,6 +311,15 @@ pub fn selector_any(ctx: &Ctx, spec: &str) -> Tr<Vec<Value>> {
         .collect())
 }
 
+/// A card outside the battlefield is its owner's: control in a valid-string becomes ownership.
+fn owned_outside(preds: &mut [Value]) {
+    for pred in preds {
+        if let Some(who) = pred.get("ControlledBy").cloned() {
+            *pred = json!({ "OwnedBy": who });
+        }
+    }
+}
+
 /// A selector over the cards of a zone: the alternatives with `In(zone)` added when the zone is not the battlefield.
 pub fn selector_in(ctx: &Ctx, spec: &str, zone: Option<&str>) -> Tr<Vec<Value>> {
     let mut preds = selector_any(ctx, spec)?;
@@ -338,13 +347,21 @@ pub fn selector_in(ctx: &Ctx, spec: &str, zone: Option<&str>) -> Tr<Vec<Value>> 
     match zone {
         None | Some("Battlefield") => {}
         Some(zone @ ("Graveyard" | "Hand" | "Library" | "Exile")) => {
-            // A card outside the battlefield is its owner's.
-            for pred in &mut preds {
-                if let Some(who) = pred.get("ControlledBy").cloned() {
-                    *pred = json!({ "OwnedBy": who });
-                }
-            }
+            owned_outside(&mut preds);
             preds.push(json!({ "In": zone }));
+        }
+        // A list of zones (`Graveyard,Exile`): a card in any of them.
+        Some(list) if list.split(',').count() > 1 => {
+            let zones: Vec<&str> = list.split(',').collect();
+            if !zones
+                .iter()
+                .all(|zone| matches!(*zone, "Graveyard" | "Hand" | "Exile"))
+            {
+                return unmapped(format!("zone:{list}"));
+            }
+            owned_outside(&mut preds);
+            let any: Vec<Value> = zones.iter().map(|zone| json!({ "In": zone })).collect();
+            preds.push(json!({ "AnyOf": any }));
         }
         Some(other) => return unmapped(format!("zone:{other}")),
     }
