@@ -177,7 +177,10 @@ fn continuous(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
             mods.push(json!({"SetPT": {"power": power, "toughness": toughness}}));
         }
         (None, None) => {}
-        _ => return unmapped("key:Static.Continuous.half-SetPT"),
+        (power, toughness) => {
+            let (power, toughness) = half_stats(ctx, p, power, toughness)?;
+            mods.push(json!({"SetPT": {"power": power, "toughness": toughness}}));
+        }
     }
     for (key, variant) in [
         ("AddKeyword", "AddKeyword"),
@@ -445,4 +448,37 @@ fn cost_modifier(ctx: &Ctx, p: &Params, change: &str) -> Tr<Value> {
         return unmapped("static:CostModifier-X");
     }
     Ok(json!({"CostModifier": {"applies_to": applies, "change": change, "mana": mana}}))
+}
+
+/// A characteristic-defining line that sets only one of power and toughness (`*/4` and `SetPower$ X`): the other half is the
+/// number the card prints. Any other line with one half would lose the half it leaves, so it stays a gap.
+fn half_stats(
+    ctx: &Ctx,
+    p: &Params,
+    power: Option<&str>,
+    toughness: Option<&str>,
+) -> Tr<(Value, Value)> {
+    let gap = || unmapped("key:Static.Continuous.half-SetPT");
+    let (Some(printed), Some("True")) = (ctx.pt, p.get("CharacteristicDefining")) else {
+        return gap();
+    };
+    let Some((left, right)) = printed.split_once('/') else {
+        return gap();
+    };
+    let fixed = |text: &str| text.parse::<u32>().ok().map(|n| json!(n));
+    match (power, toughness) {
+        (Some(set), None) if left == "*" => {
+            let Some(other) = fixed(right) else {
+                return gap();
+            };
+            Ok((amount(ctx, set)?, other))
+        }
+        (None, Some(set)) if right == "*" => {
+            let Some(other) = fixed(left) else {
+                return gap();
+            };
+            Ok((other, amount(ctx, set)?))
+        }
+        _ => gap(),
+    }
 }

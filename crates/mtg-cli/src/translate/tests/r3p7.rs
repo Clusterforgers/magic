@@ -143,3 +143,63 @@ fn the_translated_rule_doubles_only_the_triggers_its_cause_names(
 ) {
     assert_eq!(life_after_casting(cause), gained);
 }
+
+fn stats_card(pt: &str, line: &str) -> String {
+    format!(
+        "Name:Subject\nTypes:Artifact Creature Construct\nPT:{pt}\n{line}\nSVar:X:Count$Valid Artifact.YouCtrl\n"
+    )
+}
+
+#[rstest]
+#[case::bronze_guardian_power("*/5", "SetPower$ X", json!({"power": {"Count": [{"Type": "Artifact"}, {"ControlledBy": "You"}]}, "toughness": 5}))]
+#[case::aven_trailblazer_toughness("2/*", "SetToughness$ X", json!({"power": 2, "toughness": {"Count": [{"Type": "Artifact"}, {"ControlledBy": "You"}]}}))]
+fn a_defining_line_that_sets_one_half_keeps_the_printed_other_half(
+    #[case] pt: &str,
+    #[case] set: &str,
+    #[case] stats: Value,
+) {
+    let line = format!("S:Mode$ Continuous | CharacteristicDefining$ True | {set}");
+    assert_eq!(
+        abilities(&stats_card(pt, &line)),
+        vec![json!({"Static": {"affected": "This", "mods": [{"SetPT": stats}], "defining": true}})]
+    );
+}
+
+#[rstest]
+#[case::plus_star("1+*/2", "CharacteristicDefining$ True | SetPower$ X")]
+#[case::both_stars("*/*", "CharacteristicDefining$ True | SetPower$ X")]
+#[case::wrong_half("*/3", "CharacteristicDefining$ True | SetToughness$ X")]
+#[case::not_defining("6/5", "Affected$ Creature.OppCtrl | SetToughness$ 1")]
+fn a_line_with_one_half_it_cannot_complete_stays_a_gap(#[case] pt: &str, #[case] set: &str) {
+    let text = stats_card(pt, &format!("S:Mode$ Continuous | {set}"));
+    assert!(
+        gaps(&text).contains(&"key:Static.Continuous.half-SetPT".to_owned()),
+        "{:?}",
+        gaps(&text)
+    );
+}
+
+#[rstest]
+#[case::no_other_artifact(0, (1, 5))]
+#[case::two_other_artifacts(2, (3, 5))]
+fn a_half_set_defining_power_follows_the_count_in_a_game(
+    #[case] others: usize,
+    #[case] stats: (i32, i32),
+) {
+    let line = "S:Mode$ Continuous | CharacteristicDefining$ True | SetPower$ X";
+    let mut card = CardDefinition::new("Guardian")
+        .with_type(CardType::Artifact)
+        .with_type(CardType::Creature)
+        .with_power_toughness(0, 5);
+    for value in abilities(&stats_card("*/5", line)) {
+        card = card.with_rules(serde_json::from_value::<Ability>(value).unwrap());
+    }
+    let rock = || card_with(&[CardType::Artifact], "Rock", "Name:Rock\nTypes:Artifact\n");
+    let mut seat = vec![ready(Arc::new(card))];
+    seat.extend((0..others).map(|_| ready(rock())));
+    let driver = Driver::from_scenario(Scenario::new(2).at(1, 0, Step::Main1).battlefield(0, seat))
+        .unwrap();
+    let id = driver.id_of("Guardian").unwrap();
+    let chars = mtg_engine::characteristics::characteristics(driver.state(), id).unwrap();
+    assert_eq!((chars.power.unwrap(), chars.toughness.unwrap()), stats);
+}
