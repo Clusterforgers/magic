@@ -143,6 +143,24 @@ fn a_word_that_changes_who_decides_stays_a_named_gap(#[case] lines: &str, #[case
 }
 
 #[test]
+fn an_alternate_additional_cost_is_one_of_two_costs() {
+    let script = "Name:T\nTypes:Instant\nK:AlternateAdditionalCost:PayLife<3>:Discard<1/Card>\n";
+    let found = abilities(script);
+    let expected = json!({"AdditionalCost": {
+        "cost": [{"OneOf": [[{"PayLife": 3}], [{"Discard": {}}]]}], "required": true}});
+    assert_eq!(found, vec![expected.clone()], "{:?}", gaps(script));
+    let ability: mtg_cards::ability::Ability = serde_json::from_value(expected.clone()).unwrap();
+    assert_eq!(serde_json::to_value(ability).unwrap(), expected);
+}
+
+#[test]
+fn an_alternate_additional_cost_with_an_unknown_cost_is_a_gap() {
+    let script = "Name:T\nTypes:Instant\nK:AlternateAdditionalCost:Quux<1>:2\n";
+    assert!(abilities(script).is_empty());
+    assert!(gaps(script).iter().any(|gap| gap == "cost:Quux"), "{:?}", gaps(script));
+}
+
+#[test]
 #[ignore]
 fn scratch_survey() {
     use std::collections::BTreeMap;

@@ -315,6 +315,10 @@ fn chapter(ctx: &mut Ctx, number: usize, name: &str) -> Tr<Value> {
 pub fn keyword_ability(ctx: &mut Ctx, body: &str) -> Tr<Value> {
     ctx.reset();
     let fields: Vec<&str> = body.split(':').collect();
+    if let ["AlternateAdditionalCost", first, second] = fields.as_slice() {
+        let costs = [cost(ctx, first)?, cost(ctx, second)?];
+        return Ok(json!({"AdditionalCost": {"cost": [{"OneOf": costs}], "required": true}}));
+    }
     let mut condition = None;
     let by = match fields.as_slice() {
         ["etbCounter", kind, count, rest @ ..] if rest.len() <= 2 => {
