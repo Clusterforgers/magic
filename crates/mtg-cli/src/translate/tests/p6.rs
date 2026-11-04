@@ -180,6 +180,45 @@ fn change_zone_unknowns_stay_gaps(#[case] line: &str, #[case] gap: &str) {
 }
 
 #[rstest]
+#[case::each_player_from_own_hand(
+    "A:SP$ ChangeZone | Origin$ Hand | Destination$ Library | ChangeType$ Card | DefinedPlayer$ Player | Hidden$ True | Mandatory$ True",
+    &["RepeatEach", "EachPlayer", "\"who\":{\"Bound\":\"player"]
+)]
+#[case::each_opponent_chosen_by_you(
+    "A:SP$ ChangeZone | Origin$ Graveyard | Destination$ Exile | ChangeType$ Card | DefinedPlayer$ Player.Opponent | Chooser$ You | Hidden$ True",
+    &["RepeatEach", "Opponents"]
+)]
+#[case::chooser_you_without_player(
+    "A:SP$ ChangeZone | Origin$ Hand | Destination$ Battlefield | ChangeType$ Creature | Chooser$ You | Hidden$ True",
+    &["\"Choose\"", "\"OwnedBy\":\"You\""]
+)]
+fn who_picks_in_a_hidden_move(#[case] line: &str, #[case] has: &[&str]) {
+    let (json, gaps) = sorcery(line);
+    assert!(gaps.is_empty(), "{gaps:?} {json}");
+    for word in has {
+        assert!(json.contains(word), "{word} missing in {json}");
+    }
+}
+
+#[rstest]
+#[case::chooser_opponent(
+    "A:SP$ ChangeZone | Origin$ Hand | Destination$ Exile | ChangeType$ Card | Chooser$ Opponent | Hidden$ True",
+    "key:ChangeZone.Choose.Chooser"
+)]
+#[case::each_player_remembered(
+    "A:SP$ ChangeZone | Origin$ Hand | Destination$ Exile | ChangeType$ Card | DefinedPlayer$ Player | RememberChanged$ True | Hidden$ True",
+    "key:ChangeZone.Choose.RememberChanged-for-each-player"
+)]
+#[case::targeted_controller_with_target(
+    "A:SP$ ChangeZone | Origin$ Hand | Destination$ Exile | ChangeType$ Card | ValidTgts$ Creature | DefinedPlayer$ TargetedController | Hidden$ True",
+    "key:ChangeZone.Choose.DefinedPlayer"
+)]
+fn who_picks_unknowns_stay_gaps(#[case] line: &str, #[case] gap: &str) {
+    let (_, found) = sorcery(line);
+    assert_eq!(found, [gap]);
+}
+
+#[rstest]
 #[case::stack("Stack", "zone:Origin=Stack")]
 #[case::stack_with_battlefield("Battlefield,Stack", "zone:Origin=Battlefield,Stack")]
 #[case::command("Command", "zone:Origin=Command")]

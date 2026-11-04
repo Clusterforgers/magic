@@ -47,10 +47,6 @@ fn an_unless_cost_of_items_is_paid_by_the_payer(#[case] line: &str, #[case] node
     "GainLife | LifeAmount$ 2 | UnlessCost$ X | UnlessPayer$ You",
     "key:Unless.UnlessCost-X"
 )]
-#[case::each_player(
-    "ChangeZone | DefinedPlayer$ Player | Origin$ Hand | Destination$ Exile | ChangeType$ Card | ChangeNum$ 2 | Mandatory$ True",
-    "key:ChangeZone.Choose.DefinedPlayer"
-)]
 #[case::their_chooser_without_target(
     "ChangeZone | DefinedPlayer$ You | Chooser$ Targeted | Origin$ Hand | Destination$ Exile | ChangeType$ Card",
     "key:ChangeZone.Choose.Chooser"

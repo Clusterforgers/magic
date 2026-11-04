@@ -242,7 +242,8 @@ fn choose_and_move(ctx: &mut Ctx, p: &Params, origin: &str, destination: &str) -
             "AttachedTo",
         ],
     )?;
-    let (owner, chooser) = defined_player(ctx, p)?;
+    let who = defined_player(ctx, p)?;
+    let (owner, chooser) = (who.owner.clone(), who.chooser.clone());
     let mut filter = selector_in(ctx, p.get("ChangeType").unwrap_or("Card"), Some(origin))?;
     if origin == "Battlefield" {
         // On the battlefield the line's own words say whose permanents: an unstated owner is not assumed.
@@ -284,38 +285,75 @@ fn choose_and_move(ctx: &mut Ctx, p: &Params, origin: &str, destination: &str) -
         };
         remember::bind_moved(ctx, &mut moved, verb, stem);
     }
-    Ok(vec![choose, moved])
+    match who.each {
+        Some((over, name)) => {
+            if remember::wanted(p, &["RememberChanged"]) {
+                return unmapped("key:ChangeZone.Choose.RememberChanged-for-each-player");
+            }
+            Ok(vec![
+                json!({"RepeatEach": {"over": over, "as": name, "effects": [choose, moved]}}),
+            ])
+        }
+        None => Ok(vec![choose, moved]),
+    }
 }
 
-/// `DefinedPlayer$` and `Chooser$` of a choice from a hidden zone: whose cards are chosen from (you, or the one player the
-/// line targets with `ValidTgts$ Player` or `Opponent`) and who chooses (the same player unless `Chooser$ You`).
-fn defined_player(ctx: &mut Ctx, p: &Params) -> Tr<(Value, Value)> {
-    let targeted = match (p.get("DefinedPlayer"), p.has("ValidTgts")) {
-        (None, false) if !p.has("Chooser") => return Ok((json!("You"), json!("You"))),
-        (Some("You"), false) => false,
-        (Some("Targeted"), true)
-            if matches!(p.get("ValidTgts"), Some("Player" | "Opponent"))
-                && !p.has("TargetMin")
-                && !p.has("TargetMax") =>
-        {
-            true
+/// Whose cards a choice from a hidden zone is among and who chooses.
+struct Who {
+    owner: Value,
+    chooser: Value,
+    /// The players the choice is made for in turn, and the name the player of each pass is bound to.
+    each: Option<(Value, String)>,
+}
+
+/// The player words a `DefinedPlayer$` or `Chooser$` may be when the line has no target.
+const PLAYER_WORDS: [&str; 6] = [
+    "TriggeredPlayer",
+    "TriggeredTarget",
+    "TriggeredCardController",
+    "RememberedController",
+    "ChosenPlayer",
+    "Remembered",
+];
+
+/// `DefinedPlayer$` and `Chooser$` of a choice from a hidden zone: whose cards are chosen from (you, the one player the
+/// line targets with `ValidTgts$ Player` or `Opponent`, a player a word names, or each of them in turn) and who chooses
+/// (the same player unless `Chooser$` says otherwise).
+fn defined_player(ctx: &mut Ctx, p: &Params) -> Tr<Who> {
+    let targets = p.has("ValidTgts");
+    let one_target = matches!(p.get("ValidTgts"), Some("Player" | "Opponent"))
+        && !p.has("TargetMin")
+        && !p.has("TargetMax");
+    let mut each = None;
+    let (owner, targeted) = match (p.get("DefinedPlayer"), targets) {
+        (None | Some("You"), false) => (json!("You"), false),
+        (Some("Targeted" | "TargetedPlayer"), true) if one_target => {
+            (subject(ctx, p, "You", None)?, true)
         }
+        (Some(word @ ("Player" | "Player.Opponent")), false) => {
+            let name = ctx.fresh("player");
+            let owner = json!({ "Bound": name });
+            each = Some((defined(ctx, word)?, name));
+            (owner, false)
+        }
+        (Some(word), false) if PLAYER_WORDS.contains(&word) => (defined(ctx, word)?, false),
         (None, true) => return unmapped("key:ChangeZone.Choose.ValidTgts"),
-        (None, false) => return unmapped("key:ChangeZone.Choose.Chooser"),
         _ => return unmapped("key:ChangeZone.Choose.DefinedPlayer"),
-    };
-    let owner = if targeted {
-        subject(ctx, p, "You", None)?
-    } else {
-        json!("You")
     };
     let chooser = match p.get("Chooser") {
         None => owner.clone(),
         Some("You") => json!("You"),
         Some("Targeted") if targeted => owner.clone(),
+        Some(word) if PLAYER_WORDS.contains(&word) && !targets && each.is_none() => {
+            defined(ctx, word)?
+        }
         Some(_) => return unmapped("key:ChangeZone.Choose.Chooser"),
     };
-    Ok((owner, chooser))
+    Ok(Who {
+        owner,
+        chooser,
+        each,
+    })
 }
 
 /// The library search: the search, the move of what was found, then the shuffle.
