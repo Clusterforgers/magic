@@ -9,8 +9,8 @@ use std::fmt::Write as _;
 use std::path::{Path, PathBuf};
 
 use mtg_cards::compile::compile;
-use mtg_cards::load::{Library, canonical, slug};
-use mtg_cards::proposal::{Verdict, check};
+use mtg_cards::load::{Library, canonical, slug, unwhole};
+use mtg_cards::proposal::{Report, Verdict, check, merge};
 use mtg_cards::support::{Caps, PrintedCard, Support, support};
 use mtg_cards::{builtin, card::Card};
 use mtg_db::{Database, SOURCE_FORGE, SOURCE_SWEEP};
@@ -138,6 +138,11 @@ impl W2aBasis<'_> {
             || self.out.join(W2A_FIXTURES).join(&file).is_file()
     }
 
+    /// The proposal merged with the compiler's reading, when the compiler reads a clause the proposal lacks.
+    fn merged(&self, report: &Report, printed: &PrintedCard) -> Option<Report> {
+        merge(report, printed, self.library, self.names, self.caps)
+    }
+
     fn decide_one(
         &self,
         printed: &PrintedCard,
@@ -157,11 +162,38 @@ impl W2aBasis<'_> {
         if self.draft {
             let source = meta.source_or(self.source);
             let trusted = source == SOURCE_FORGE && meta.oracle_matches;
+            let mut direct = None;
             if verdict == Verdict::Unchecked || (trusted && verdict == Verdict::Mismatch) {
-                if !meta.gaps.is_empty() {
-                    return Err(W2aSkip::Gapped);
-                }
-                return draft::decide(printed, slug, report, source, meta.oracle_matches);
+                direct = Some(if meta.gaps.is_empty() {
+                    draft::decide(
+                        printed,
+                        slug.clone(),
+                        report.clone(),
+                        source.clone(),
+                        meta.oracle_matches,
+                    )
+                } else {
+                    Err(W2aSkip::Gapped)
+                });
+            }
+            let direct = match direct {
+                Some(Ok(promotion)) => return Ok(promotion),
+                other => other,
+            };
+            if trusted
+                && report
+                    .rules
+                    .as_ref()
+                    .is_some_and(|rules| unwhole(rules).is_some())
+                && let Some(merged) = self.merged(&report, printed)
+                && merged.verdict() != Verdict::Invalid
+                && let Ok(promotion) =
+                    draft::decide(printed, slug.clone(), merged, source, meta.oracle_matches)
+            {
+                return Ok(promotion);
+            }
+            if let Some(direct) = direct {
+                return direct;
             }
         }
         let (Verdict::Accepted, Some(record), Some(rules)) =
