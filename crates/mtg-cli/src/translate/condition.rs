@@ -4,12 +4,13 @@ use serde_json::{Value, json};
 
 use super::amount::amount;
 use super::ctx::{Ctx, Tr, unmapped};
-use super::valid::{cmp, selector_in};
+use super::valid::{cmp, defined, selector_in};
 use crate::forge::script::Params;
 
 /// The keys this module reads.
-pub const KEYS: [&str; 6] = [
+pub const KEYS: [&str; 7] = [
     "IsPresent",
+    "PresentDefined",
     "PresentZone",
     "PresentCompare",
     "CheckSVar",
@@ -30,10 +31,14 @@ pub fn condition(ctx: &Ctx, p: &Params) -> Tr<Option<Value>> {
     let mut all = Vec::new();
     if let Some(valid) = p.get("IsPresent") {
         let zone = p.get("PresentZone");
+        if let Some(word) = p.get("PresentDefined") {
+            all.push(of_defined(ctx, word, valid, p.get("PresentCompare"), zone)?);
+            return Ok(single(all));
+        }
         let selector = selector_in(ctx, valid, zone)?;
         let (op, right) = comparison(ctx, p.get("PresentCompare").unwrap_or("GE1"))?;
         all.push(json!({"Compare": {"left": {"Count": selector}, "op": op, "right": right}}));
-    } else if p.has("PresentZone") || p.has("PresentCompare") {
+    } else if p.has("PresentZone") || p.has("PresentCompare") || p.has("PresentDefined") {
         return unmapped("key:Condition.PresentWithoutIsPresent");
     }
     if let Some(name) = p.get("CheckSVar") {
@@ -45,15 +50,38 @@ pub fn condition(ctx: &Ctx, p: &Params) -> Tr<Option<Value>> {
     if let Some(name) = p.get("Condition") {
         all.push(named(name)?);
     }
-    Ok(match all.len() {
+    Ok(single(all))
+}
+
+/// The conditions together: none, the one, or all of them.
+fn single(mut all: Vec<Value>) -> Option<Value> {
+    match all.len() {
         0 => None,
         1 => all.pop(),
         _ => Some(json!({ "All": all })),
-    })
+    }
+}
+
+/// "How many of the objects `word` names are `valid`", compared (`ConditionDefined$ Remembered`): their zone is ignored.
+fn of_defined(
+    ctx: &Ctx,
+    word: &str,
+    valid: &str,
+    compare: Option<&str>,
+    zone: Option<&str>,
+) -> Tr<Value> {
+    if zone.is_some() {
+        return unmapped("key:Condition.PresentZoneWithDefined");
+    }
+    let (op, right) = comparison(ctx, compare.unwrap_or("GE1"))?;
+    let selector = selector_in(ctx, valid, None)?;
+    let subject = defined(ctx, word)?;
+    Ok(json!({"CountOf": {"subject": subject, "selector": selector, "op": op, "right": right}}))
 }
 
 /// The keys of a condition on one line of an ability chain and the keys of [`condition`] they stand for.
-const PREFIXED: [(&str, &str); 5] = [
+const PREFIXED: [(&str, &str); 6] = [
+    ("ConditionDefined", "PresentDefined"),
     ("ConditionPresent", "IsPresent"),
     ("ConditionZone", "PresentZone"),
     ("ConditionCompare", "PresentCompare"),

@@ -363,6 +363,14 @@ pub(crate) fn reads_of_condition(condition: &Condition) -> Traits {
         Condition::Matches { subject, selector } => {
             reads_of_ref(subject).or(reads_of_selector(selector))
         }
+        Condition::CountOf {
+            subject,
+            selector,
+            right,
+            ..
+        } => reads_of_ref(subject)
+            .or(reads_of_selector(selector))
+            .or(reads_of_amount(right)),
         Condition::YourTurn => Traits::CONTROL,
         Condition::NewlyControlled(what) => reads_of_ref(what).or(Traits::CONTROL),
         Condition::Kicked

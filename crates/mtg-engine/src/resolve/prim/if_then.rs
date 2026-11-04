@@ -154,6 +154,21 @@ mod tests {
         ME,
         1
     )]
+    #[case::count_of_the_source_at_least_one(
+        r#"{"CountOf":{"subject":"This","selector":[{"Type":"Creature"}],"op":"Ge","right":1}}"#,
+        ME,
+        0
+    )]
+    #[case::count_of_the_source_none_wanted(
+        r#"{"CountOf":{"subject":"This","selector":[{"Type":"Creature"}],"op":"Eq","right":0}}"#,
+        ME,
+        1
+    )]
+    #[case::count_of_a_mismatch_is_zero(
+        r#"{"CountOf":{"subject":"This","selector":[{"Color":"Green"}],"op":"Eq","right":0}}"#,
+        ME,
+        0
+    )]
     #[case::a_power_read(
         r#"{"Compare":{"left":{"Stat":{"of":"This","stat":"Power"}},"op":"Lt","right":2}}"#,
         ME,

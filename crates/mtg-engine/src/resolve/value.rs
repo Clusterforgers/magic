@@ -1073,6 +1073,17 @@ impl<'a> Scope<'a> {
         Ok(found)
     }
 
+    /// How many of the objects the reference names satisfy the selector.
+    fn count_of(&self, subject: &Ref, selector: &Selector) -> Result<i64, ResolveError> {
+        let mut count = 0;
+        for object in self.objects(subject)? {
+            if self.selects(selector, object)? {
+                count += 1;
+            }
+        }
+        Ok(count)
+    }
+
     /// Whether the object satisfies every predicate of the selector.
     pub fn selects(&self, selector: &Selector, reference: ObjectRef) -> Result<bool, ResolveError> {
         let Some(seen) = self.seen(reference) else {
@@ -1896,15 +1907,15 @@ impl<'a> Scope<'a> {
                 op.holds(self.amount(left)?, self.amount(right)?)
             }
             Condition::Matches { subject, selector } => {
-                let mut holds = true;
-                for object in self.objects(subject)? {
-                    if !self.selects(selector, object)? {
-                        holds = false;
-                        break;
-                    }
-                }
-                holds
+                self.count_of(subject, selector)?
+                    == i64::try_from(self.objects(subject)?.len()).unwrap_or(i64::MAX)
             }
+            Condition::CountOf {
+                subject,
+                selector,
+                op,
+                right,
+            } => op.holds(self.count_of(subject, selector)?, self.amount(right)?),
             Condition::Kicked => self.payments(OptionalKind::Kicker) > 0,
             Condition::KickedWith(cost) => self
                 .state

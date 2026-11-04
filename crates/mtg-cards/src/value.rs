@@ -965,6 +965,17 @@ pub enum Condition {
         /// The predicates it must satisfy.
         selector: Selector,
     },
+    /// The number of referenced objects that have the selector's characteristics (zone ignored) compares this way.
+    CountOf {
+        /// The objects counted.
+        subject: Ref,
+        /// The predicates each must satisfy.
+        selector: Selector,
+        /// The comparison.
+        op: Cmp,
+        /// The amount compared with.
+        right: Amount,
+    },
     /// The spell was kicked (any kicker cost was paid); a permanent and its abilities read the spell it came from.
     Kicked,
     /// The spell was kicked with this one of its kicker costs ('Kicker {W} and/or {2}{B}'): "if it was kicked with its {W}
