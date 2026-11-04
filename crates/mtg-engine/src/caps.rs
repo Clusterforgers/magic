@@ -159,6 +159,7 @@ const RUNS: &[&str] = &[
     "Effect.Draw",
     "Effect.Discard",
     "Effect.Discard.Random",
+    "Effect.Discard.Filter",
     "Effect.Mill",
     "Effect.Scry",
     "Effect.LookAtTop",
@@ -693,6 +694,7 @@ mod tests {
     #[case::drawing("Effect.Draw", true)]
     #[case::discarding("Effect.Discard", true)]
     #[case::discarding_at_random("Effect.Discard.Random", true)]
+    #[case::discarding_matching_cards("Effect.Discard.Filter", true)]
     #[case::milling("Effect.Mill", true)]
     #[case::scrying("Effect.Scry", true)]
     #[case::looking_at_the_top("Effect.LookAtTop", true)]

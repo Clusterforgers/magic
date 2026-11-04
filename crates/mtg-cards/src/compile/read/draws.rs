@@ -50,6 +50,7 @@ pub(super) fn wheel(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
             who: Ref::EachPlayer,
             count: hand_of(&Ref::EachPlayer),
             random: false,
+            filter: None,
             bind,
         },
         Effect::Draw {
@@ -89,6 +90,27 @@ pub(super) fn discarded_text(who: &Ref, count: &Amount) -> Option<String> {
         return Some(format!("{own} hand"));
     }
     cards_text(count)
+}
+
+/// What a player discards from the cards the filter allows: "a creature card", "two nonland cards".
+pub(super) fn discarded_filtered_text(
+    who: &Ref,
+    count: &Amount,
+    filter: Option<&Selector>,
+) -> Option<String> {
+    let Some(filter) = filter else {
+        return discarded_text(who, count);
+    };
+    let kind = super::selectors::phrase_text(filter, super::selectors::Form::Count)?;
+    let kind = kind.strip_suffix(" card").unwrap_or(&kind);
+    match count {
+        Amount::Fixed(1) => Some(format!("a {kind} card")),
+        Amount::Fixed(number) => Some(format!(
+            "{} {kind} cards",
+            count_word(u32::try_from(*number).ok()?)?
+        )),
+        _ => None,
+    }
 }
 
 /// "an additional card", "three additional cards": the cards a draw step gives beyond the one it always draws.

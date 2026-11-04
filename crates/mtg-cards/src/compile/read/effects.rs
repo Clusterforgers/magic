@@ -523,6 +523,7 @@ pub(super) fn imperative(r: &mut Reader<'_>) -> Option<Effect> {
                 who,
                 count,
                 random,
+                filter: None,
                 bind: None,
             }
         }
@@ -735,6 +736,7 @@ fn predicate(r: &mut Reader<'_>, who: &Ref) -> Option<Effect> {
                 who,
                 count,
                 random,
+                filter: None,
                 bind: None,
             }
         }

@@ -6,7 +6,7 @@ use super::amount::amount;
 use super::condition::prefixed;
 use super::ctx::{Ctx, Tr, only, unmapped};
 use super::remember;
-use super::valid::{defined, subject};
+use super::valid::{defined, selector_any, subject};
 use super::{effects_effect, effects_loop, effects_obj, effects_zone, tokens};
 use crate::forge::script::Params;
 
@@ -256,6 +256,8 @@ fn discard(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
             "TargetMin",
             "TargetMax",
             "RememberDiscarded",
+            "DiscardValid",
+            "DiscardValidDesc",
         ],
     )?;
     let random = match p.get("Mode") {
@@ -263,9 +265,18 @@ fn discard(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
         Some("Random") => true,
         Some(other) => return unmapped(format!("key:Discard.Mode={other}")),
     };
+    let filter = match p.get("DiscardValid") {
+        None | Some("Card") => None,
+        // A random pick among the cards that match is not a discard the engine makes.
+        Some(_) if random => return unmapped("key:Discard.DiscardValid+Random"),
+        Some(spec) => Some(selector_any(ctx, spec)?),
+    };
     let who = player(ctx, p)?;
     let count = amount(ctx, p.get("NumCards").unwrap_or("1"))?;
     let mut discard = json!({"who": who, "count": count, "random": random});
+    if let Some(filter) = filter {
+        discard["filter"] = json!(filter);
+    }
     if p.get("RememberDiscarded") == Some("True") {
         let name = ctx.fresh("discarded");
         ctx.remembered = Some(json!({ "Bound": name }));

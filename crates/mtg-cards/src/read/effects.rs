@@ -71,20 +71,32 @@ fn bounds(ctx: &Ctx, bounds: &Bounds) -> String {
     }
 }
 
+/// The cards a discard takes: "a card", or "a creature card" when a filter limits them.
+fn discarded(ctx: &Ctx, count: &Amount, filter: Option<&Selector>) -> String {
+    let Some(filter) = filter else {
+        return phrase::counted(ctx, count, "card");
+    };
+    let what = phrase::selector(ctx, filter);
+    match count {
+        Amount::Fixed(1) => format!("a {what} card"),
+        other => format!("{} {what} cards", phrase::amount(ctx, other)),
+    }
+}
+
 /// The effects about cards in hands and libraries, and about life and damage.
 fn cards(ctx: &Ctx, effect: &Effect) -> Option<String> {
     Some(match effect {
         Effect::Draw { who, count } => act(ctx, who, "draw", &phrase::counted(ctx, count, "card")),
         Effect::Discard {
-            who, count, random, ..
+            who,
+            count,
+            random,
+            filter,
+            ..
         } => {
             let at_random = if *random { " at random" } else { "" };
-            act(
-                ctx,
-                who,
-                "discard",
-                &format!("{}{at_random}", phrase::counted(ctx, count, "card")),
-            )
+            let cards = discarded(ctx, count, filter.as_ref());
+            act(ctx, who, "discard", &format!("{cards}{at_random}"))
         }
         Effect::Mill { who, count, .. } => {
             act(ctx, who, "mill", &phrase::counted(ctx, count, "card"))

@@ -2393,6 +2393,15 @@ impl Walker<'_> {
         if matches!(effect, Effect::Discard { random: true, .. }) {
             self.uses("Effect", "Discard.Random");
         }
+        if matches!(
+            effect,
+            Effect::Discard {
+                filter: Some(_),
+                ..
+            }
+        ) {
+            self.uses("Effect", "Discard.Filter");
+        }
         // A move onto the battlefield needs entering permanents and a random order needs the engine's randomness;
         // a move to a hand, a graveyard or a library in the owner's order needs neither.
         if matches!(
@@ -2453,10 +2462,17 @@ impl Walker<'_> {
                 }
             }
             Effect::Discard {
-                who, count, bind, ..
+                who,
+                count,
+                filter,
+                bind,
+                ..
             } => {
                 w.at("who", |w| w.reference(who, Kind::Player));
                 w.at("count", |w| w.amount(count));
+                if let Some(filter) = filter {
+                    w.at("filter", |w| w.selector(filter));
+                }
                 if let Some(name) = bind {
                     w.at("as", |w| w.bind(name, Kind::Object));
                 }
@@ -4511,6 +4527,7 @@ mod tests {
     #[case::affinity_given_to_spells(r#"{"Static":{"affected":{"Each":["Spell",{"Type":"Enchantment"}]},"mods":[{"AddKeyword":{"Affinity":[{"Subtype":"Aura"}]}}]}}"#, &["Ability.Static", "Ability.Static.SpellKeywords", "Keyword.Affinity", "Mod.AddKeyword"])]
     #[case::a_discard_of_your_choice(r#"{"Spell":{"effects":[{"Discard":{"count":2}}]}}"#, &["Ability.Spell", "Effect.Discard"])]
     #[case::a_discard_at_random(r#"{"Spell":{"effects":[{"Discard":{"random":true}}]}}"#, &["Ability.Spell", "Effect.Discard", "Effect.Discard.Random"])]
+    #[case::a_discard_of_matching_cards(r#"{"Spell":{"effects":[{"Discard":{"filter":[{"Type":"Creature"}]}}]}}"#, &["Ability.Spell", "Effect.Discard", "Effect.Discard.Filter"])]
     #[case::a_move_to_the_hand(r#"{"Spell":{"effects":[{"Move":{"what":"This","to":"Hand"}}]}}"#, &["Ability.Spell", "Effect.Move"])]
     #[case::a_move_to_the_top_of_a_library(r#"{"Spell":{"effects":[{"Move":{"what":"This","to":{"Library":{"place":"Top","order":"Chosen"}}}}]}}"#, &["Ability.Spell", "Effect.Move"])]
     #[case::a_move_shuffled_in(r#"{"Spell":{"effects":[{"Move":{"what":"This","to":{"Library":{"place":"Shuffled","order":"Random"}}}}]}}"#, &["Ability.Spell", "Effect.Move"])]
