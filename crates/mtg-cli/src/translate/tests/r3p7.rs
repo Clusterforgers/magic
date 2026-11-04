@@ -197,9 +197,116 @@ fn a_half_set_defining_power_follows_the_count_in_a_game(
     let rock = || card_with(&[CardType::Artifact], "Rock", "Name:Rock\nTypes:Artifact\n");
     let mut seat = vec![ready(Arc::new(card))];
     seat.extend((0..others).map(|_| ready(rock())));
-    let driver = Driver::from_scenario(Scenario::new(2).at(1, 0, Step::Main1).battlefield(0, seat))
-        .unwrap();
+    let driver =
+        Driver::from_scenario(Scenario::new(2).at(1, 0, Step::Main1).battlefield(0, seat)).unwrap();
     let id = driver.id_of("Guardian").unwrap();
     let chars = mtg_engine::characteristics::characteristics(driver.state(), id).unwrap();
     assert_eq!((chars.power.unwrap(), chars.toughness.unwrap()), stats);
+}
+
+fn continuous(line: &str) -> Vec<Value> {
+    abilities(&format!("Name:Subject\nTypes:Enchantment Aura\n{line}\n"))
+}
+
+#[rstest]
+#[case::darkest_hour(
+    "S:Mode$ Continuous | Affected$ Creature | SetColor$ Black",
+    json!({"Static": {"affected": {"Each": [{"Type": "Creature"}]}, "mods": [{"SetColors": ["Black"]}]}})
+)]
+#[case::all_slivers_colorless(
+    "S:Mode$ Continuous | Affected$ Goblin | SetColor$ Colorless",
+    json!({"Static": {"affected": {"Each": [{"Subtype": "Goblin"}]}, "mods": [{"SetColors": []}]}})
+)]
+#[case::every_color(
+    "S:Mode$ Continuous | AffectedDefined$ Self | SetColor$ All",
+    json!({"Static": {"affected": "This", "mods": [{"SetColors": ["White", "Blue", "Black", "Red", "Green"]}]}})
+)]
+#[case::enchanted_creature_is_a_wizard_elf(
+    "S:Mode$ Continuous | AffectedDefined$ Enchanted | Affected$ Creature | AddType$ Wizard & Elf | RemoveCreatureTypes$ True",
+    json!({"Static": {"affected": "Attached", "mods": [{"SetCreatureTypes": ["Wizard", "Elf"]}]}})
+)]
+#[case::types_join_without_the_removal(
+    "S:Mode$ Continuous | AffectedDefined$ Enchanted | Affected$ Creature | AddType$ Wizard",
+    json!({"Static": {"affected": "Attached", "mods": [{"AddSubtype": "Wizard"}]}})
+)]
+#[case::equipped_creature_is_every_type(
+    "S:Mode$ Continuous | AffectedDefined$ Enchanted | Affected$ Creature | AddPower$ 1 | AddToughness$ 1 | AddAllCreatureTypes$ True",
+    json!({"Static": {"affected": "Attached", "mods": [{"ModifyPT": {"power": 1, "toughness": 1}}, "AddAllCreatureTypes"]}})
+)]
+fn a_continuous_line_changes_colours_and_creature_types(
+    #[case] line: &str,
+    #[case] expected: Value,
+) {
+    assert_eq!(continuous(line), vec![expected]);
+}
+
+#[rstest]
+#[case::chosen_colour(
+    "S:Mode$ Continuous | AffectedDefined$ Self | SetColor$ ChosenColor",
+    "key:Static.Continuous.SetColor=ChosenColor"
+)]
+#[case::chosen_type(
+    "S:Mode$ Continuous | AffectedDefined$ Enchanted | AddType$ ChosenType | RemoveCreatureTypes$ True",
+    "key:Static.Continuous.AddType=ChosenType"
+)]
+#[case::defining_every_type(
+    "S:Mode$ Continuous | Affected$ Card.Self | CharacteristicDefining$ True | AddAllCreatureTypes$ True",
+    "key:Static.Continuous.defining-other-than-stats"
+)]
+fn a_colour_or_type_word_it_cannot_read_stays_a_gap_by_name(#[case] line: &str, #[case] gap: &str) {
+    let text = format!("Name:Subject\nTypes:Enchantment Aura\n{line}\n");
+    assert!(
+        gaps(&text).iter().any(|found| found == gap),
+        "{:?}",
+        gaps(&text)
+    );
+}
+
+#[rstest]
+#[case::black(
+    "S:Mode$ Continuous | Affected$ Creature | SetColor$ Black",
+    "Black",
+    ""
+)]
+#[case::colorless(
+    "S:Mode$ Continuous | Affected$ Creature | SetColor$ Colorless",
+    "",
+    ""
+)]
+#[case::creature_types_replaced(
+    "S:Mode$ Continuous | Affected$ Creature | AddType$ Wizard | RemoveCreatureTypes$ True",
+    "Red",
+    "Wizard"
+)]
+fn a_translated_static_recolours_and_retypes_a_creature_in_a_game(
+    #[case] line: &str,
+    #[case] colors: &str,
+    #[case] types: &str,
+) {
+    let field = card_with(
+        &[CardType::Enchantment],
+        "Field",
+        &format!("Name:Field\nTypes:Enchantment\n{line}\n"),
+    );
+    let goblin = CardDefinition::new("Pest")
+        .with_type(CardType::Creature)
+        .with_subtype("Goblin")
+        .with_mana_cost(mtg_testkit::cards::cost(0, &[mtg_core::color::Color::Red]))
+        .with_power_toughness(1, 1);
+    let scenario = Scenario::new(2)
+        .at(1, 0, Step::Main1)
+        .battlefield(0, [ready(field), ready(Arc::new(goblin))]);
+    let driver = Driver::from_scenario(scenario).unwrap();
+    let id = driver.id_of("Pest").unwrap();
+    let chars = mtg_engine::characteristics::characteristics(driver.state(), id).unwrap();
+    let subtypes: Vec<String> = chars.subtypes.iter().map(|s| s.0.clone()).collect();
+    let shown: String = chars
+        .colors
+        .iter()
+        .map(|color| format!("{color:?}"))
+        .collect();
+    assert_eq!(
+        (shown.as_str(), subtypes.join(" ")),
+        (colors, types.to_owned())
+    );
 }

@@ -138,7 +138,9 @@ fn affected_valid(ctx: &Ctx, word: &str) -> Tr<Value> {
 }
 
 /// The keys a continuous static line reads.
-const CONTINUOUS: [&str; 20] = [
+const CONTINUOUS: [&str; 22] = [
+    "RemoveCreatureTypes",
+    "AddAllCreatureTypes",
     "AddHiddenKeyword",
     "AddSVar",
     "AffectedZone",
@@ -211,11 +213,17 @@ fn continuous(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
         Some("You") => mods.push(json!({"SetController": "You"})),
         Some(other) => return unmapped(format!("key:Static.Continuous.GainControl={other}")),
     }
-    if p.has("SetColor") {
-        return unmapped("key:Static.Continuous.SetColor");
+    if let Some(colors) = p.get("SetColor") {
+        mods.push(json!({"SetColors": color_set(colors)?}));
     }
-    if let Some(types) = p.get("AddType") {
-        mods.extend(added_types(ctx, types)?);
+    let remove = p.get("RemoveCreatureTypes") == Some("True");
+    match p.get("AddType") {
+        Some(types) => mods.extend(added_types(ctx, types, remove)?),
+        None if remove => mods.push(json!({"SetCreatureTypes": []})),
+        None => {}
+    }
+    if p.get("AddAllCreatureTypes") == Some("True") {
+        mods.push(json!("AddAllCreatureTypes"));
     }
     for (key, trigger) in [("AddAbility", false), ("AddTrigger", true)] {
         if let Some(names) = p.get(key) {
@@ -260,19 +268,46 @@ fn continuous(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
 }
 
 /// `AddType$ Artifact & Zombie`: the card types and subtypes a static line adds.
-fn added_types(ctx: &Ctx, text: &str) -> Tr<Vec<Value>> {
-    text.split('&')
-        .map(str::trim)
-        .map(|word| {
-            if super::ctx::CARD_TYPES.contains(&word) {
-                Ok(json!({"AddType": word}))
-            } else if ctx.world.subtypes.contains(word) {
-                Ok(json!({"AddSubtype": word}))
-            } else {
-                unmapped(format!("key:Static.Continuous.AddType={word}"))
-            }
-        })
-        .collect()
+fn added_types(ctx: &Ctx, text: &str, replacing: bool) -> Tr<Vec<Value>> {
+    let (mut mods, mut subtypes) = (Vec::new(), Vec::new());
+    for word in text.split('&').map(str::trim) {
+        if super::ctx::CARD_TYPES.contains(&word) {
+            mods.push(json!({"AddType": word}));
+        } else if ctx.world.subtypes.contains(word) {
+            subtypes.push(word);
+        } else {
+            return unmapped(format!("key:Static.Continuous.AddType={word}"));
+        }
+    }
+    // "Is a Spirit" with `RemoveCreatureTypes$` replaces the creature types; without it the subtypes join them.
+    if replacing {
+        mods.push(json!({"SetCreatureTypes": subtypes}));
+    } else {
+        mods.extend(subtypes.iter().map(|name| json!({"AddSubtype": name})));
+    }
+    Ok(mods)
+}
+
+/// `SetColor$`: the colours the objects become; `Colorless` and `All` are the empty and the full set. A chosen colour is a gap.
+fn color_set(text: &str) -> Tr<Vec<&str>> {
+    const COLORS: [&str; 5] = ["White", "Blue", "Black", "Red", "Green"];
+    match text {
+        "Colorless" => Ok(Vec::new()),
+        "All" => Ok(COLORS.to_vec()),
+        list => list
+            .split(',')
+            .map(|word| {
+                COLORS
+                    .iter()
+                    .copied()
+                    .find(|color| *color == word)
+                    .map_or_else(
+                        || unmapped(format!("key:Static.Continuous.SetColor={word}")),
+                        Ok,
+                    )
+            })
+            .collect(),
+    }
 }
 
 /// `AddAbility$` and `AddTrigger$`: the named parts, translated, as abilities the affected objects gain.
