@@ -355,7 +355,7 @@ pub(crate) fn reads_of_amount(amount: &Amount) -> Traits {
 /// What a condition reads when it is checked.
 pub(crate) fn reads_of_condition(condition: &Condition) -> Traits {
     match condition {
-        Condition::Not(inner) => reads_of_condition(inner),
+        Condition::Not(inner) | Condition::AtTrigger(inner) => reads_of_condition(inner),
         Condition::All(all) | Condition::Any(all) => all
             .iter()
             .fold(Traits::NONE, |sum, inner| sum.or(reads_of_condition(inner))),

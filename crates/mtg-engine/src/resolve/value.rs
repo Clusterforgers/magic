@@ -1910,6 +1910,7 @@ impl<'a> Scope<'a> {
                 self.count_of(subject, selector)?
                     == i64::try_from(self.objects(subject)?.len()).unwrap_or(i64::MAX)
             }
+            Condition::AtTrigger(inner) => self.holds(inner)?,
             Condition::CountOf {
                 subject,
                 selector,

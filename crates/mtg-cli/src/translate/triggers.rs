@@ -23,10 +23,11 @@ pub fn triggered(ctx: &mut Ctx, body: &str) -> Tr<Value> {
     ctx.reset();
     let all = Params::parse(body);
     let intervening = condition(ctx, &all)?;
-    // The engine checks the condition again as the ability resolves (CR 603.4); Forge's line says it does not.
-    if all.get("NoResolvingCheck") == Some("True") && intervening.is_some() {
-        return unmapped("key:Trigger.NoResolvingCheck");
-    }
+    // The engine checks the condition again as the ability resolves (CR 603.4) unless the line says it does not.
+    let intervening = match (all.get("NoResolvingCheck"), intervening) {
+        (Some("True"), Some(condition)) => Some(json!({ "AtTrigger": condition })),
+        (_, other) => other,
+    };
     let p = strip(&all);
     let when = pattern(ctx, &p)?;
     let itself = is_about_itself(&when);

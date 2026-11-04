@@ -965,6 +965,9 @@ pub enum Condition {
         /// The predicates it must satisfy.
         selector: Selector,
     },
+    /// The inner condition is checked as the ability triggers and not again as it resolves (an "if" that is no intervening
+    /// "if", Forge's `NoResolvingCheck`).
+    AtTrigger(Box<Condition>),
     /// The number of referenced objects that have the selector's characteristics (zone ignored) compares this way.
     CountOf {
         /// The objects counted.

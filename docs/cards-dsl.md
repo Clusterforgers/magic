@@ -205,7 +205,7 @@ Amount    = n | X | Kicks | Count(Selector) | Stat{of,stat} | Life(Ref) | Comman
           | Divided | EvenShare(Amount) | TargetCount(i) | Devotion([Color]) | Greatest{of,stat} | Total{of,stat}
           | CardTypes(Selector) | Players(Ref) | LowestLife(Ref) | HighestLife(Ref) | LowestHand(Ref) | LifeLostThisWay | Party(Ref) | Triggering | Tally{event, who, filter} | CommanderColors(Ref) | TurnNumber | TriggeringTargets
           | When{condition,then,otherwise} | ManaSpent{of?} | ManaColors(Ref) | MostCommon{of,stat} | Random{min,max} | ManaInPool(Ref) | Doors(Selector)
-Condition = Not | All | Any | Compare{left,op,right} | Matches{subject,selector} | Kicked | KickedWith(Cost) | AdditionalCostPaid | CastWith(Flashback|Evoke|Overload|Madness|Suspend|Foretold|Escape|Dash|Bestow|Blitz|Prowl|Awaken|Free) | ManaSpent(ManaType) | YourTurn | Performed | Searched{who?,zone}
+Condition = Not | All | Any | Compare{left,op,right} | Matches{subject,selector} | CountOf{subject,selector,op,right} (how many referenced objects match) | AtTrigger(Condition) (an intervening "if" checked only as the ability triggers) | Kicked | KickedWith(Cost) | AdditionalCostPaid | CastWith(Flashback|Evoke|Overload|Madness|Suspend|Foretold|Escape|Dash|Bestow|Blitz|Prowl|Awaken|Free) | ManaSpent(ManaType) | YourTurn | Performed | Searched{who?,zone}
           | Monarch(Ref) | MonarchAtTurnStart(Ref) | CitysBlessing(Ref) | IsDay | IsNight | NeitherDayNorNight | NewlyControlled(Ref) | Step(Step) | BeforeAttackers | InCombat | FirstCombat | Level{of,op,level}
 ```
 

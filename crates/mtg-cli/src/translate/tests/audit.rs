@@ -122,18 +122,15 @@ fn a_permanent_card_outside_the_battlefield_is_not_an_instant(
 }
 
 #[rstest]
-#[case::checked_again_by_the_engine(
+#[case::checked_as_it_triggers_only(
     "Mode$ ChangesZone | Origin$ Any | Destination$ Battlefield | ValidCard$ Card.Self | IsPresent$ Elf.Other+YouCtrl | NoResolvingCheck$ True",
-    &["key:Trigger.NoResolvingCheck"]
+    &[]
 )]
 #[case::without_a_condition_it_changes_nothing(
     "Mode$ ChangesZone | Origin$ Any | Destination$ Battlefield | ValidCard$ Card.Self | NoResolvingCheck$ True",
     &[]
 )]
-fn a_condition_the_engine_rechecks_is_not_translated_as_unchecked(
-    #[case] line: &str,
-    #[case] expected: &[&str],
-) {
+fn a_condition_without_a_resolving_check_translates(#[case] line: &str, #[case] expected: &[&str]) {
     let found = gaps(&trigger(line, "Self"));
     assert_eq!(found, expected);
 }
@@ -204,4 +201,18 @@ fn the_audit_names_a_promised_key_that_is_never_read() {
         let _ = line.get("NumCards");
     });
     assert_eq!(none, None);
+}
+
+#[rstest]
+#[case::no_resolving_check("NoResolvingCheck$ True | ", true)]
+#[case::the_default("", false)]
+fn a_trigger_condition_is_rechecked_unless_the_line_says_not(
+    #[case] flag: &str,
+    #[case] at_trigger: bool,
+) {
+    let line = format!(
+        "Mode$ ChangesZone | Origin$ Any | Destination$ Battlefield | ValidCard$ Card.Self | {flag}IsPresent$ Elf.Other+YouCtrl"
+    );
+    let shown = serde_json::to_string(&abilities(&trigger(&line, "Self"))).unwrap_or_default();
+    assert_eq!(shown.contains("\"AtTrigger\""), at_trigger, "{shown}");
 }
