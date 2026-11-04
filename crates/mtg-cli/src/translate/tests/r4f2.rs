@@ -28,3 +28,21 @@ fn a_per_player_target_is_up_to_one_each(#[case] bounds: &str) {
         json!({"min": 0, "max": 1})
     );
 }
+
+#[rstest]
+#[case::attacked_target(
+    "TokenAttacking$ TriggeredAttackedTarget",
+    "key:TokenAttacking=TriggeredAttackedTarget"
+)]
+#[case::defender(
+    "TokenAttacking$ TriggeredDefender",
+    "key:TokenAttacking=TriggeredDefender"
+)]
+#[case::remembered("TokenAttacking$ Remembered", "key:TokenAttacking=Remembered")]
+#[case::tapped_word("TokenTapped$ Yes", "key:TokenTapped=Yes")]
+fn a_token_flag_the_table_does_not_know_stays_a_gap(#[case] keys: &str, #[case] gap: &str) {
+    let text = format!(
+        "Name:T\nTypes:Sorcery\nA:SP$ Token | TokenAmount$ 1 | TokenScript$ w_1_1_soldier | {keys}\n"
+    );
+    assert!(gaps(&text).iter().any(|g| g == gap), "{:?}", gaps(&text));
+}

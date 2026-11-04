@@ -389,3 +389,12 @@ const INERT: [(&str, &str); 15] = [
     ("Static.Continuous", "AddSVar"),
     ("Dig", "ForceRevealToController"),
 ];
+
+/// A `True`/`False` key of a line: absent is false; any other word is a gap, never a silent false.
+pub fn flag(p: &Params, key: &str) -> Tr<bool> {
+    match p.get(key) {
+        None | Some("False") => Ok(false),
+        Some("True") => Ok(true),
+        Some(other) => unmapped(format!("key:{key}={other}")),
+    }
+}
