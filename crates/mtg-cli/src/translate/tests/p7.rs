@@ -472,10 +472,7 @@ fn pump_duration(pump: &str) -> String {
 #[case::as_long_as_control("Duration$ AsLongAsControl", "\"WhileYouControlSource\"")]
 #[case::as_long_as_in_play("Duration$ AsLongAsInPlay", "\"WhileSourceOnBattlefield\"")]
 #[case::end_of_turn("Duration$ EndOfTurn", "\"UntilEndOfTurn\"")]
-#[case::both_ends(
-    "Duration$ UntilHostLeavesPlayOrEOT",
-    "duration:UntilHostLeavesPlayOrEOT"
-)]
+#[case::both_ends("Duration$ UntilHostLeavesPlayOrEOT", "\"UntilEndOfTurn\"")]
 #[case::next_upkeep("Duration$ UntilYourNextUpkeep", "duration:UntilYourNextUpkeep")]
 fn a_duration_word_reads_as_the_end_it_prints(#[case] word: &str, #[case] expected: &str) {
     assert_eq!(pump_duration(word), expected);

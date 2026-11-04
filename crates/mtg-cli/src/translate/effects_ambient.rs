@@ -20,7 +20,9 @@ pub fn continuous_statics(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         let Some(text) = ctx.svar(name) else {
             return unmapped("svar:missing");
         };
-        let line = ctx.nested(None, |ctx| static_line(ctx, text))?;
+        // The effect belongs to the card whose ability made it, which is `This` here; Forge's `Self` is the effect object.
+        let text = text.replace(".EffectSource", ".Self");
+        let line = ctx.nested(None, |ctx| static_line(ctx, &text))?;
         if let Some(rule) = line.get("Rule").and_then(|rule| rule.get("rule")) {
             if line.pointer("/Rule/condition").is_some() {
                 return unmapped("effect:Effect-rule-with-condition");

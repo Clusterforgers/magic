@@ -47,6 +47,8 @@ pub fn duration(word: Option<&str>) -> Tr<&'static str> {
         Some("UntilTheEndOfYourNextTurn") => Ok("UntilEndOfYourNextTurn"),
         Some("UntilHostLeavesPlay" | "AsLongAsInPlay") => Ok("WhileSourceOnBattlefield"),
         Some("AsLongAsControl") => Ok("WhileYouControlSource"),
+        // The effect is about its host; once the host leaves it is a new object (CR 400.7) and nothing is left to apply to.
+        Some("UntilHostLeavesPlayOrEOT") => Ok("UntilEndOfTurn"),
         Some(other) => unmapped(format!("duration:{other}")),
     }
 }
