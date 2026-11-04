@@ -78,7 +78,7 @@ fn a_backup_keeps_its_number() {
     "keyword:Gift-kind"
 )]
 #[case::protection_everything("K:Protection from everything", "keyword:Protection from everything")]
-#[case::hexproof_from("K:Hexproof:Black", "keyword:Hexproof")]
+#[case::hexproof_from_activated("K:Hexproof:Activated:activated abilities", "keyword:Hexproof")]
 #[case::equip_planeswalker(
     "K:Equip:2:Planeswalker.YouCtrl:planeswalker",
     "keyword:Equip-with-restriction"

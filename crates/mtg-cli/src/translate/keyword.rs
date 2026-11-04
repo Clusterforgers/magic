@@ -215,7 +215,8 @@ fn other_keyword(ctx: &Ctx, name: &str, first: Option<&str>, second: Option<&str
     match (name, first) {
         ("Protection", Some(valid)) => Ok(json!({"Protection": selector_any(ctx, valid)?})),
         // "Hexproof from triggered abilities" is not a quality of the source.
-        ("Hexproof", Some(valid)) if valid != "Triggered" => {
+        ("Hexproof", Some("Activated" | "Triggered")) => unmapped("keyword:Hexproof"),
+        ("Hexproof", Some(valid)) => {
             let colored = ["White", "Blue", "Black", "Red", "Green"].contains(&valid);
             let spec = if colored {
                 format!("Card.{valid}")
