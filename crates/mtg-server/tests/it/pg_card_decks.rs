@@ -31,8 +31,7 @@ fn records() -> Vec<CardRecord> {
 }
 
 fn id_of(name: &str) -> String {
-    let record = records().into_iter().find(|record| record.name == name);
-    record.unwrap().oracle_id.to_string()
+    common::oracle_id_of(name)
 }
 
 /// Forty Forests and four each of four cards a Forest can pay for and Fireball, which it cannot.
