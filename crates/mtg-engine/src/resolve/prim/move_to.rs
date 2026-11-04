@@ -106,7 +106,7 @@ fn entering_under(cx: &Cx<'_>, under: Option<&Ref>) -> Result<Option<PlayerId>, 
 
 /// Each object the reference names goes to its owner's hand or graveyard, or into its owner's library on top, on
 /// the bottom or shuffled in, or onto the battlefield. Cards put into one library together are put in the order the
-/// owner of the library chooses (CR 401.4) ("in any order"), asked as an `OrderCards` per library unless there is one card, and the first
+/// owner of the library chooses (CR 401.4), or the controller when the move says `Order::Chosen` ("in any order"), asked as an `OrderCards` per library unless there is one card, and the first
 /// of them is nearest the top; a shuffle needs no order.
 /// An object already where it would go stays. Moves from the battlefield carry a snapshot of the object as it was.
 /// A card put onto the battlefield is one `ZoneChanged`, so what triggers on entering sees it, and an `Entered` after
@@ -163,7 +163,8 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                 }
             }
             let random = *order == Some(Order::Random);
-            return Stop::settle(into_libraries(cx, *place, random, &owners));
+            let by_controller = *order == Some(Order::Chosen);
+            return Stop::settle(into_libraries(cx, *place, random, by_controller, &owners));
         }
         Destination::Battlefield {
             tapped,
@@ -424,6 +425,7 @@ fn into_libraries(
     cx: &Cx<'_>,
     place: Place,
     random: bool,
+    by_controller: bool,
     owners: &[(PlayerId, Vec<&GameObject>)],
 ) -> Result<Run, Stop> {
     let state = cx.state();
@@ -451,8 +453,12 @@ fn into_libraries(
             ids = shuffled(state, shuffles, ids);
             shuffles += 1;
         } else if place != Place::Shuffled && ids.len() > 1 {
-            // Their owner puts them in any order (CR 401.4), not the controller of the effect.
-            let who = *owner;
+            // Their owner puts them in any order (CR 401.4) unless the effect names the player who puts them.
+            let who = if by_controller {
+                cx.controller()
+            } else {
+                *owner
+            };
             ids = questions.order(who, ids, wording::library_order(place))?;
         }
         let zone_of = |id: ObjectId| {
