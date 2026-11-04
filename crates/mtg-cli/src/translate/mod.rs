@@ -29,6 +29,7 @@ pub mod replacements;
 pub mod replacements_damage;
 pub mod report;
 pub mod statics;
+pub mod statics_cant;
 pub mod statics_rules;
 pub mod stored;
 pub mod tokens;
