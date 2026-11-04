@@ -76,7 +76,13 @@ fn property(ctx: &Ctx, prop: &str) -> Tr<Vec<Value>> {
         }
         _ => {}
     }
+    if let Some(preds) = super::valid_atoms::argument(ctx, prop)? {
+        return Ok(preds);
+    }
     if let Some(preds) = super::valid_more::property(ctx, prop)? {
+        return Ok(preds);
+    }
+    if let Some(preds) = super::valid_atoms::suffixed(ctx, prop) {
         return Ok(preds);
     }
     if let Some(preds) = super::valid_atoms::atom(prop) {
@@ -97,12 +103,6 @@ fn property(ctx: &Ctx, prop: &str) -> Tr<Vec<Value>> {
         && let Some(keyword) = keyword_name(&spaced(word))
     {
         return one(json!({"Not": {"HasKeyword": keyword}}));
-    }
-    if let Some(kind) = prop
-        .strip_prefix("counters_GE1_")
-        .and_then(super::amount::counter_kind)
-    {
-        return one(json!({"HasCounter": kind}));
     }
     if let Some(rest) = prop.strip_prefix("non")
         && ctx.world.subtypes.contains(&capitalize(rest))
@@ -258,9 +258,20 @@ const NOT_CREATURE_TYPES: [&str; 22] = [
     "Trap",
 ];
 
+/// A cost selector writes its alternatives with `;` (`Creature.Other;Artifact`), each with its own properties; a name keeps
+/// its `;` (it stands for a comma).
+fn commas(spec: &str) -> String {
+    if spec.contains("named") {
+        spec.to_owned()
+    } else {
+        spec.replace(';', ",")
+    }
+}
+
 /// A comma-separated list of alternatives as a selector: one alternative, or alternatives that share their predicates but
 /// one each (`Instant.YouCtrl,Sorcery.YouCtrl`, `Creature.attacking,Creature.blocking`).
 pub fn selector_any(ctx: &Ctx, spec: &str) -> Tr<Vec<Value>> {
+    let spec = &commas(spec);
     let alternatives: Vec<&str> = spec.split(',').collect();
     if let [only] = alternatives.as_slice() {
         return selector(ctx, only);
@@ -316,6 +327,7 @@ fn owned_outside(preds: &mut [Value]) {
 
 /// A selector over the cards of a zone: the alternatives with `In(zone)` added when the zone is not the battlefield.
 pub fn selector_in(ctx: &Ctx, spec: &str, zone: Option<&str>) -> Tr<Vec<Value>> {
+    let spec = &commas(spec);
     let mut preds = selector_any(ctx, spec)?;
     let permanents = spec
         .split(',')

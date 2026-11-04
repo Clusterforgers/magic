@@ -244,6 +244,15 @@ pub enum Pred {
     HasCounter(CounterKind),
     /// Has at least one counter of any kind on it (CR 122.1).
     HasAnyCounter,
+    /// The number of counters of the kind on it compares to `to` ("three or more +1/+1 counters"); none at all counts as zero.
+    CounterCount {
+        /// The kind of counter counted.
+        kind: CounterKind,
+        /// The comparison of the number held with `to`.
+        op: Cmp,
+        /// The number compared with.
+        to: u32,
+    },
     /// Has exactly this card name.
     Named(String),
     /// Is the colour the controller of the source chose as the source entered the battlefield.
