@@ -125,6 +125,35 @@ fn rule_static_extras_stay_gaps(#[case] line: &str, #[case] gap: &str) {
 }
 
 #[rstest]
+#[case::cast_the_chosen_card(
+    "SP$ ChooseCard | Choices$ Instant.YouOwn | ChoiceZone$ Graveyard | SubAbility$ Cast\nSVar:Cast:DB$ Play | Defined$ ChosenCard | Optional$ True | WithoutManaCost$ True | ValidSA$ Spell",
+    json!({"CastFromZone": {"what": {"Bound": "card"}, "free": true}})
+)]
+fn play_effects(#[case] line: &str, #[case] effect: Value) {
+    let script = format!("Name:T\nTypes:Sorcery\nA:{line}\n");
+    let spell = &abilities(&script)[0]["Spell"];
+    assert_eq!(spell["effects"][1], effect, "{spell}");
+}
+
+#[rstest]
+#[case::mandatory(
+    "SP$ Play | Defined$ Self | WithoutManaCost$ True",
+    "key:Play.Optional"
+)]
+#[case::all(
+    "SP$ Play | Defined$ Self | Optional$ True | Amount$ All",
+    "key:Play.Amount"
+)]
+#[case::copy(
+    "SP$ Play | Defined$ Self | Optional$ True | CopyCard$ True",
+    "key:Play.CopyCard"
+)]
+fn play_extras_stay_gaps(#[case] line: &str, #[case] gap: &str) {
+    let script = format!("Name:T\nTypes:Sorcery\nA:{line}\n");
+    assert_eq!(gaps(&script), vec![gap.to_owned()]);
+}
+
+#[rstest]
 #[case::goad_duration(
     "SP$ Goad | ValidTgts$ Creature | Duration$ Permanent",
     "key:Goad.Duration"

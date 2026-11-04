@@ -18,6 +18,7 @@ pub fn effects(ctx: &mut Ctx, p: &Params, api: &str) -> Option<Tr<Vec<Value>>> {
         "Venture" => venture(p),
         "EndTurn" => end_turn(p),
         "Amass" => amass(ctx, p),
+        "Play" => play(ctx, p),
         "Connive" => object_verb(ctx, p, api, "Connive"),
         "Goad" => object_verb(ctx, p, api, "Goad"),
         "RemoveFromCombat" => object_verb(ctx, p, api, "RemoveFromCombat"),
@@ -62,6 +63,48 @@ fn venture(p: &Params) -> Tr<Value> {
 fn end_turn(p: &Params) -> Tr<Value> {
     only(p, "EndTurn", &[])?;
     Ok(json!("EndTurn"))
+}
+
+/// `Play`: the player may cast (or play) the card `Defined$` names, for free when `WithoutManaCost$` says so.
+fn play(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
+    only(
+        p,
+        "Play",
+        &[
+            "Defined",
+            "Optional",
+            "WithoutManaCost",
+            "ValidSA",
+            "Amount",
+            "Controller",
+        ],
+    )?;
+    if p.get("Optional") != Some("True") {
+        return super::ctx::unmapped("key:Play.Optional");
+    }
+    if !matches!(p.get("Amount"), None | Some("1")) {
+        return super::ctx::unmapped("key:Play.Amount");
+    }
+    if !matches!(p.get("Controller"), None | Some("You")) {
+        return super::ctx::unmapped("key:Play.Controller");
+    }
+    let Some(word) = p.get("Defined") else {
+        return super::ctx::unmapped("key:Play.no-Defined");
+    };
+    let spell_only = match p.get("ValidSA") {
+        None => false,
+        Some("Spell") => true,
+        Some(_) => return super::ctx::unmapped("key:Play.ValidSA"),
+    };
+    let what = super::valid::defined(ctx, word)?;
+    let mut effect = json!({"what": what});
+    if p.get("WithoutManaCost") == Some("True") {
+        effect["free"] = json!(true);
+    }
+    if !spell_only {
+        effect["play"] = json!(true);
+    }
+    Ok(json!({ "CastFromZone": effect }))
 }
 
 fn amass(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
