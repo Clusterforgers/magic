@@ -217,3 +217,67 @@ fn urzas_saga_offers_only_artifacts_whose_cost_is_zero_or_one_generic() {
     offered.sort();
     assert_eq!(offered, ["Cost 0", "Cost 1"]);
 }
+
+const DAWNHAND: &str = "Name:Dawnhand Dissident\nManaCost:B\nTypes:Creature Elf Warlock\nPT:1/2\nA:AB$ ChangeZone | Cost$ T Blight<2> | Origin$ Graveyard | Destination$ Exile | TgtPrompt$ Choose target card in a graveyard | ValidTgts$ Card | SpellDescription$ Exile target card from a graveyard.\nS:Mode$ Continuous | Affected$ Creature.YouOwn+ExiledWithSource | Condition$ PlayerTurn | MayPlay$ True | EffectZone$ Battlefield | AffectedZone$ Exile | RaiseCost$ RemoveAnyCounter<3/Any/Creature> | Description$ During your turn, you may cast creature spells from among cards you own exiled with this creature by removing three counters from among creatures you control in addition to paying their other costs.\n";
+
+#[rstest]
+#[case::an_opponents_card(1, false)]
+#[case::your_own_card(0, true)]
+fn dawnhand_dissident_casts_only_the_exiled_creatures_its_controller_owns(
+    #[case] owner: usize,
+    #[case] castable: bool,
+) {
+    use mtg_engine::choose::{CardsChoice, TargetChoice};
+    use mtg_engine::decision::{Answer, DecisionKind};
+    let dissident = translated(
+        DAWNHAND,
+        "Dawnhand Dissident",
+        "Creature — Elf Warlock",
+        "{B}",
+    );
+    let big = mtg_testkit::with_counters(
+        ready(mtg_testkit::cards::free_creature("Big", 5, 5)),
+        mtg_cards::value::CounterKind::PlusOnePlusOne,
+        8,
+    );
+    let mut scenario = Scenario::new(2)
+        .battlefield(0, [ready(dissident), big])
+        .library(0, library(9))
+        .library(1, library(9));
+    let bear = mtg_testkit::cards::free_creature("Exiled Bear", 2, 2);
+    scenario = scenario.graveyard(owner, [bear]);
+    let mut driver = Driver::from_scenario(scenario).unwrap();
+    driver.begin_ability("Dawnhand Dissident", 0).unwrap();
+    for _ in 0..30 {
+        let decision = driver.decision().unwrap().clone();
+        match &decision.kind {
+            DecisionKind::ChooseTargets(o) => {
+                let pick = o.legal.iter().copied().take(1).collect();
+                driver
+                    .answer(Answer::ChooseTargets(TargetChoice::Targets(pick)))
+                    .unwrap();
+            }
+            DecisionKind::ChooseCards(o) => {
+                let big: Vec<_> = o
+                    .from
+                    .iter()
+                    .copied()
+                    .filter(|i| driver.state().object(*i).unwrap().card().name == "Big")
+                    .take(o.max as usize)
+                    .collect();
+                driver
+                    .answer(Answer::ChooseCards(CardsChoice(big)))
+                    .unwrap();
+            }
+            DecisionKind::Priority(_) if driver.state().stack().is_empty() => break,
+            _ => {
+                driver.answer_passively().unwrap();
+            }
+        }
+    }
+    assert_eq!(driver.state().zone(Zone::Exile).len(), 1);
+    let DecisionKind::Priority(options) = &driver.decision().unwrap().kind else {
+        panic!("priority")
+    };
+    assert_eq!(!options.castable.is_empty(), castable);
+}
