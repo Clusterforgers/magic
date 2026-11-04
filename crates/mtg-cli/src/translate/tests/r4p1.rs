@@ -226,3 +226,38 @@ fn an_exile_with_a_duration_names_it_or_stays_a_gap(#[case] lines: &str, #[case]
         assert_eq!(gaps(&script), ["key:ChangeZone.Duration"]);
     }
 }
+
+#[rstest]
+#[case::the_flag_on_a_list(
+    "A:SP$ ChangeZoneAll | ChangeType$ Card | Origin$ Hand,Graveyard | Destination$ Library | Shuffle$ True | UseAllOriginZones$ True",
+    true
+)]
+#[case::an_opponents_graveyard(
+    "A:SP$ ChangeZoneAll | Origin$ Graveyard | Destination$ Exile | Defined$ Opponent | ChangeType$ Card",
+    true
+)]
+#[case::the_player_a_parent_targeted(
+    "A:SP$ LoseLife | ValidTgts$ Player | LifeAmount$ 1 | SubAbility$ S\nSVar:S:DB$ ChangeZoneAll | Origin$ Hand | Destination$ Exile | Defined$ Targeted | ChangeType$ Card",
+    true
+)]
+#[case::battlefield_by_player(
+    "A:SP$ ChangeZoneAll | Origin$ Battlefield | Destination$ Exile | Defined$ Opponent | ChangeType$ Card",
+    false
+)]
+#[case::an_unknown_player(
+    "A:SP$ ChangeZoneAll | Origin$ Graveyard | Destination$ Exile | Defined$ Banana | ChangeType$ Card",
+    false
+)]
+#[case::an_unknown_flag(
+    "A:SP$ ChangeZoneAll | Origin$ Graveyard | Destination$ Exile | UseAllOriginZones$ Maybe",
+    false
+)]
+fn a_move_of_all_cards_maps_or_stays_a_gap(#[case] lines: &str, #[case] maps: bool) {
+    let script = card("Sorcery", lines);
+    assert_eq!(
+        abilities(&script).len(),
+        usize::from(maps),
+        "{:?}",
+        gaps(&script)
+    );
+}

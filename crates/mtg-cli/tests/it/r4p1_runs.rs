@@ -256,3 +256,49 @@ fn an_exile_until_the_source_leaves_returns_the_creature_when_it_goes() {
     assert_eq!(count(&driver, Zone::Exile), 0, "back once Warden is gone");
     assert_eq!(count(&driver, Zone::Battlefield), 1);
 }
+
+const TWIST: &str = "Name:Twist\nManaCost:U\nTypes:Sorcery\nA:SP$ ChangeZoneAll | ChangeType$ Card | Origin$ Hand,Graveyard | Destination$ Library | Shuffle$ True | UseAllOriginZones$ True | SpellDescription$ Each player shuffles their hand and graveyard into their library.\n";
+const HAG: &str = "Name:Hag\nManaCost:U\nTypes:Sorcery\nA:SP$ ChangeZoneAll | Origin$ Graveyard | Destination$ Exile | Defined$ Opponent | ChangeType$ Card | SpellDescription$ Exile each opponent's graveyard.\n";
+
+/// Cards by seat in (hand, graveyard, library, exile) after `script` resolves with two cards in each hand and graveyard.
+fn zones_after(script: &str, name: &str) -> Vec<[usize; 4]> {
+    use mtg_testkit::cards::island;
+    let scenario = Scenario::new(2)
+        .hand(0, [translated(script, name, "Sorcery", "{U}"), bear()])
+        .graveyard(0, [bear(), bear()])
+        .hand(1, [bear(), bear()])
+        .graveyard(1, [bear(), bear()])
+        .library(0, [forest()])
+        .library(1, [forest()])
+        .battlefield(0, [ready(island())]);
+    let mut driver = Driver::from_scenario(scenario).unwrap();
+    driver.cast(name).unwrap();
+    crate::r3p3_runs::settle(&mut driver);
+    let state = driver.state();
+    (0..2)
+        .map(|seat| {
+            let me = PlayerId::from_index(seat);
+            [
+                state.zone(Zone::Hand(me)).len(),
+                state.zone(Zone::Graveyard(me)).len(),
+                state.zone(Zone::Library(me)).len(),
+                state
+                    .zone(Zone::Exile)
+                    .iter()
+                    .filter(|id| state.object(**id).unwrap().owner() == me)
+                    .count(),
+            ]
+        })
+        .collect()
+}
+
+#[rstest]
+#[case::every_hand_and_graveyard_goes_into_its_owners_library(TWIST, "Twist", [[0, 1, 4, 0], [0, 0, 5, 0]])]
+#[case::only_the_opponents_graveyard_is_exiled(HAG, "Hag", [[1, 3, 1, 0], [2, 0, 1, 2]])]
+fn a_move_of_all_cards_takes_the_zones_and_players_the_card_names(
+    #[case] script: &str,
+    #[case] name: &str,
+    #[case] expected: [[usize; 4]; 2],
+) {
+    assert_eq!(zones_after(script, name), expected);
+}

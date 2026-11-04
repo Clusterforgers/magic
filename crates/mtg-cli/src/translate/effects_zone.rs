@@ -778,6 +778,27 @@ fn searcher(ctx: &mut Ctx, p: &Params) -> Tr<Seat> {
     }
 }
 
+/// The player whose cards a `ChangeZoneAll` takes (`Defined$`): a player word, the player a parent line targeted, or the
+/// controller or owner of its target.
+fn zone_owner(ctx: &Ctx, word: &str) -> Tr<Value> {
+    match word {
+        "Targeted" | "TargetedPlayer" => ctx.player_target(),
+        "ParentTarget" if parent_is_player(ctx) => ctx.parent(),
+        "You"
+        | "Opponent"
+        | "Player"
+        | "Player.Opponent"
+        | "Player.Other"
+        | "TriggeredCardController"
+        | "TriggeredCardOwner"
+        | "TriggeredDefendingPlayer"
+        | "TriggeredPlayer"
+        | "TargetedController"
+        | "TargetedOwner" => defined(ctx, word),
+        _ => unmapped("key:ChangeZoneAll.Defined"),
+    }
+}
+
 /// Whether the target the parent line declared is one player.
 fn parent_is_player(ctx: &Ctx) -> bool {
     ctx.parent_target
@@ -1099,10 +1120,17 @@ fn change_zone_all(ctx: &mut Ctx, p: &Params, origin: &str, destination: &str) -
             "Shuffle",
             "RememberChanged",
             "ValidTgts",
+            "Defined",
+            "UseAllOriginZones",
         ],
     )?;
     if origin == "Library" {
         return unmapped("key:ChangeZoneAll.Origin=Library");
+    }
+    // Every zone of the origin is emptied, which is what a move of all of them does anyway.
+    match p.get("UseAllOriginZones") {
+        None | Some("True") => {}
+        Some(_) => return unmapped("key:ChangeZoneAll.UseAllOriginZones"),
     }
     let zone = (origin != "Battlefield").then_some(origin);
     let mut filter = selector_in(ctx, p.get("ChangeType").unwrap_or("Card"), zone)?;
@@ -1115,6 +1143,12 @@ fn change_zone_all(ctx: &mut Ctx, p: &Params, origin: &str, destination: &str) -
         }
         let owner = subject(ctx, p, "", Some(origin))?;
         filter.push(json!({"OwnedBy": owner}));
+    }
+    if p.has("Defined") {
+        if p.has("ValidTgts") || !matches!(origin, "Graveyard" | "Hand" | "Exile") {
+            return unmapped("key:ChangeZoneAll.Defined");
+        }
+        filter.push(json!({"OwnedBy": zone_owner(ctx, p.get("Defined").unwrap_or_default())?}));
     }
     let mut effect = moves(&json!({ "Each": filter }), goes(ctx, p, destination)?);
     if remember::wanted(p, &["RememberChanged"]) {
