@@ -139,7 +139,8 @@ impl Action {
     pub const fn looks_back(self) -> bool {
         matches!(
             self,
-            Action::Destroyed
+            Action::Activated
+                | Action::Destroyed
                 | Action::Exiled
                 | Action::Sacrificed
                 | Action::Exploited

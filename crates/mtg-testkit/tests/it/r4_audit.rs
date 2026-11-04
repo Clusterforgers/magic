@@ -89,3 +89,38 @@ fn exile_of_the_triggering_card_after_it_died_exiles_the_card() {
             .all(|n| n != "Own Bear")
     );
 }
+
+fn hand_len(dr: &Driver, seat: usize) -> usize {
+    names(dr.state(), Zone::Hand(pid(seat))).len()
+}
+
+/// A watcher that draws when its controller activates an ability of a creature.
+fn activation_watcher() -> Arc<CardDefinition> {
+    def(
+        "Watcher",
+        CardType::Artifact,
+        None,
+        &[
+            r#"{"Triggered":{"when":{"Did":{"action":"Activated","who":"You","what":[{"Type":"Creature"},{"In":"Battlefield"}]}},"effects":[{"Draw":{}}]}}"#,
+        ],
+    )
+}
+
+#[test]
+fn an_activation_whose_cost_sacrifices_its_source_still_triggers_for_a_creature() {
+    let sacker = def(
+        "Sacker",
+        CardType::Creature,
+        Some((1, 1)),
+        &[r#"{"Activated":{"cost":["SacrificeSelf"],"effects":[{"GainLife":{"amount":1}}]}}"#],
+    );
+    let sc = Scenario::new(2)
+        .battlefield(0, [ready(activation_watcher()), ready(sacker)])
+        .library(0, forest_lib(9))
+        .library(1, forest_lib(9));
+    let mut dr = Driver::from_scenario(sc).unwrap();
+    dr.begin_activation("Sacker").unwrap();
+    settle(&mut dr);
+    assert!(names(dr.state(), Zone::Graveyard(pid(0))).contains(&"Sacker".to_string()));
+    assert_eq!(hand_len(&dr, 0), 1);
+}
