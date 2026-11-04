@@ -89,6 +89,9 @@ fn api_of(params: &Params) -> Tr<&str> {
 fn line(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     let api = api_of(p)?;
     let one = |value: Tr<Value>| value.map(|value| vec![value]);
+    if let Some(found) = super::effects_game::effects(ctx, p, api) {
+        return found;
+    }
     match api {
         "DealDamage" => one(deal_damage(ctx, p)),
         "Draw" => one(draw(ctx, p)),
