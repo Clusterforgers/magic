@@ -81,7 +81,7 @@ pub fn keyword_name(word: &str) -> Option<&'static str> {
 }
 
 /// Keywords with one cost: the Forge word and the DSL variant.
-const COSTED: [(&str, &str); 36] = [
+const COSTED: [(&str, &str); 37] = [
     ("Equip", "Equip"),
     ("Ward", "Ward"),
     ("Reconfigure", "Reconfigure"),
@@ -109,6 +109,7 @@ const COSTED: [(&str, &str); 36] = [
     ("Prowl", "Prowl"),
     ("Ninjutsu", "Ninjutsu"),
     ("Echo", "Echo"),
+    ("Cumulative upkeep", "CumulativeUpkeep"),
     ("Level up", "LevelUp"),
     ("Outlast", "Outlast"),
     ("Scavenge", "Scavenge"),
