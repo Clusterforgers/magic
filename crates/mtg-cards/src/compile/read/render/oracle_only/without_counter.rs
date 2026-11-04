@@ -16,6 +16,7 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
         Effect::Move {
             what: Ref::Each(selector),
             to: Destination::Hand,
+            ..
         },
     ] = effects.as_slice()
     else {

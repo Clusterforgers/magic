@@ -31,6 +31,7 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
         Effect::Move {
             what: Ref::Bound(moved_kept),
             to: Destination::Hand,
+            ..
         },
         Effect::Choose {
             who: Ref::You,
@@ -46,6 +47,7 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
                     place: Place::Bottom,
                     order: None,
                 },
+            ..
         },
         Effect::Exile {
             what: Ref::Bound(taken),

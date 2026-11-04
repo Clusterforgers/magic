@@ -16,7 +16,10 @@ use crate::zones::Zone;
 /// more match, those are sacrificed, and with none nothing happens. Every sacrifice is chosen before any is made, then
 /// the permanents go to their owners' graveyards together (`ZoneCause::Sacrificed`) and the step carries what they were.
 pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
-    let Effect::Sacrifice { who, filter, count } = effect else {
+    let Effect::Sacrifice {
+        who, filter, count, ..
+    } = effect
+    else {
         return Err(wrong_effect("Sacrifice"));
     };
     let take = usize::try_from(cx.scope.amount(count)?.max(0)).unwrap_or(usize::MAX);

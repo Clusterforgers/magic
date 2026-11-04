@@ -72,6 +72,7 @@ pub fn unless_text(effect: &Effect) -> Option<String> {
             who: Ref::You,
             filter,
             count,
+            ..
         },
     ] = then.as_slice()
     else {

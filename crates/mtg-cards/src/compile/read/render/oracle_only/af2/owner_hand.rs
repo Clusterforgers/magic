@@ -15,7 +15,8 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
             effect,
             Effect::Move {
                 what: Ref::Each(_),
-                to: Destination::Hand
+                to: Destination::Hand,
+                ..
             }
         )
     });

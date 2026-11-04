@@ -73,6 +73,7 @@ mod mill;
 mod modal;
 mod monstrosity;
 mod move_counters;
+mod moved_as;
 mod pair;
 mod reflexive;
 mod remember;
@@ -138,7 +139,8 @@ fn wrong_effect(name: &str) -> ResolveError {
 
 /// Runs one effect; a sacrifice or a removal of counters also reports whether it did anything (`done::report`).
 pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
-    Ok(done::report(cx, effect, dispatch(cx, effect)?))
+    let run = moved_as::bind(cx, effect, dispatch(cx, effect)?);
+    Ok(done::report(cx, effect, run))
 }
 
 /// The game, life, damage, repeat, pile and kept-number effects.

@@ -2406,11 +2406,17 @@ impl Walker<'_> {
         }
         self.at(tag, |w| match effect {
             Effect::Draw { who, count }
-            | Effect::Mill { who, count }
             | Effect::Scry { who, count }
             | Effect::Surveil { who, count } => {
                 w.at("who", |w| w.reference(who, Kind::Player));
                 w.at("count", |w| w.amount(count));
+            }
+            Effect::Mill { who, count, bind } => {
+                w.at("who", |w| w.reference(who, Kind::Player));
+                w.at("count", |w| w.amount(count));
+                if let Some(name) = bind {
+                    w.at("as", |w| w.bind(name, Kind::Object));
+                }
             }
             Effect::Discard {
                 who, count, bind, ..
@@ -2494,7 +2500,13 @@ impl Walker<'_> {
             | Effect::Goad { what }
             | Effect::Explore { what }
             | Effect::Connive { what }
-            | Effect::Destroy { what, .. } => w.at("what", |w| w.reference(what, Kind::Object)),
+            => w.at("what", |w| w.reference(what, Kind::Object)),
+            Effect::Destroy { what, bind, .. } => {
+                w.at("what", |w| w.reference(what, Kind::Object));
+                if let Some(name) = bind {
+                    w.at("as", |w| w.bind(name, Kind::Object));
+                }
+            }
             Effect::Fight { what, with } => {
                 w.at("what", |w| w.reference(what, Kind::Object));
                 w.at("with", |w| w.reference(with, Kind::Object));
@@ -2663,14 +2675,20 @@ impl Walker<'_> {
                     w.problem("an added phase list names no phase");
                 }
             }
-            Effect::Move { what, to } => {
+            Effect::Move { what, to, bind } => {
                 w.at("what", |w| w.reference(what, Kind::Object));
                 w.at("to", |w| w.destination(to));
+                if let Some(name) = bind {
+                    w.at("as", |w| w.bind(name, Kind::Object));
+                }
             }
-            Effect::Sacrifice { who, filter, count } => {
+            Effect::Sacrifice { who, filter, count, bind } => {
                 w.at("who", |w| w.reference(who, Kind::Player));
                 w.at("filter", |w| w.selector(filter));
                 w.at("count", |w| w.amount(count));
+                if let Some(name) = bind {
+                    w.at("as", |w| w.bind(name, Kind::Object));
+                }
             }
             Effect::DealDamage { source, to, amount } => {
                 if let Some(source) = source {

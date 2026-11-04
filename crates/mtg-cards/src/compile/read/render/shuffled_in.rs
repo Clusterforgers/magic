@@ -18,6 +18,7 @@ pub(super) fn text(targets: &[TargetSpec], effects: &[Effect]) -> Option<String>
                     place: Place::Shuffled,
                     order: None,
                 },
+            ..
         },
     ] = effects
     else {

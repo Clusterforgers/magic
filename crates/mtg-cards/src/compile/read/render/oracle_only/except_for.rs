@@ -17,6 +17,7 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
         Effect::Move {
             what: Ref::Each(selector),
             to: Destination::Hand,
+            ..
         },
     ] = effects.as_slice()
     else {
@@ -45,6 +46,7 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
         effects: vec![Effect::Move {
             what: Ref::Each(Selector(vec![Pred::Type(CardType::Creature)])),
             to: Destination::Hand,
+            bind: None,
         }],
     };
     let said: Vec<String> = variants(&plain)

@@ -21,6 +21,7 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
                     place: Place::Top,
                     order: Some(Order::Chosen),
                 },
+            ..
         },
     ] = ability.effects()
     else {

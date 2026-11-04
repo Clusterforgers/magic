@@ -91,6 +91,7 @@ fn put_from_zone(ability: &Ability, steps: &[Effect]) -> Option<String> {
                 transformed: false,
                 counters,
             },
+        ..
     } = moved
     else {
         return None;
@@ -171,6 +172,7 @@ fn flicker(target: &str, steps: &[Effect]) -> Option<String> {
                     transformed: false,
                     counters,
                 },
+            ..
         },
     ] = steps
     else {

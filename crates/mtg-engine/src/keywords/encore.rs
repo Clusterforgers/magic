@@ -95,6 +95,7 @@ fn sacrifice_them() -> Effect {
         who: Ref::You,
         count: Amount::Count(them.clone()),
         filter: them,
+        bind: None,
     }
 }
 

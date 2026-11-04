@@ -40,6 +40,7 @@ impl Writer<'_> {
                 place: Place::Bottom,
                 order: Some(Order::Random),
             },
+            bind: None,
         };
         (bind == FOUND && exiled_as == EXILED && *cast == cast_it && *moved == to_the_bottom)
             .then_some(())?;

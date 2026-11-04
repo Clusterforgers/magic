@@ -54,6 +54,7 @@ impl KeywordRules for Decayed {
                     who: Ref::ControllerOf(Box::new(Ref::This)),
                     filter: Selector(vec![Pred::Is(Ref::This)]),
                     count: Amount::one(),
+                    bind: None,
                 }],
             }],
         }]

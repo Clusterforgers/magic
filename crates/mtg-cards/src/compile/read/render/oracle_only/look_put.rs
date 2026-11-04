@@ -43,10 +43,12 @@ fn sentence(effects: &[Effect]) -> Option<&'static str> {
             Effect::Move {
                 what: Ref::Bound(moved),
                 to: Destination::Hand,
+                ..
             },
             Effect::Move {
                 what: Ref::Bound(others),
                 to,
+                ..
             },
         ] if looked == top_name && moved == kept && others == rest && *to == bottom => {
             Some(" Put one of them into your hand and the other on the bottom of your library.")
@@ -63,6 +65,7 @@ fn sentence(effects: &[Effect]) -> Option<&'static str> {
             Effect::Move {
                 what: Ref::Bound(moved),
                 to: Destination::Hand,
+                ..
             },
             Effect::Choose {
                 who: Ref::You,
@@ -74,10 +77,12 @@ fn sentence(effects: &[Effect]) -> Option<&'static str> {
             Effect::Move {
                 what: Ref::Bound(on_top),
                 to: first,
+                ..
             },
             Effect::Move {
                 what: Ref::Bound(on_bottom),
                 to: second,
+                ..
             },
         ] if looked == top_name
             && moved == kept

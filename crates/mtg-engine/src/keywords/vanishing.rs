@@ -88,6 +88,7 @@ impl KeywordRules for Vanishing {
                 who: Ref::You,
                 filter: Selector::this(),
                 count: Amount::one(),
+                bind: None,
             }],
         });
         abilities

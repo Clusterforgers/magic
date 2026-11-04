@@ -32,9 +32,10 @@ fn steps(effects: &[Effect], held: &Ref) -> Option<String> {
                         transformed: false,
                         counters,
                     },
+                ..
             },
         ] if what == held && counters.is_empty() => Some("put it onto the battlefield".to_owned()),
-        [Effect::Move { what, to }] if what == held && bottom(to) => {
+        [Effect::Move { what, to, .. }] if what == held && bottom(to) => {
             Some("put it on the bottom of your library".to_owned())
         }
         [
@@ -43,7 +44,7 @@ fn steps(effects: &[Effect], held: &Ref) -> Option<String> {
                 effects,
             },
         ] => match effects.as_slice() {
-            [Effect::Move { what, to }] if what == held && bottom(to) => {
+            [Effect::Move { what, to, .. }] if what == held && bottom(to) => {
                 Some("you may put that card on the bottom of your library".to_owned())
             }
             _ => None,
@@ -60,7 +61,7 @@ fn steps(effects: &[Effect], held: &Ref) -> Option<String> {
                 otherwise,
             },
         ] if what == held => {
-            let [Effect::Move { what, to }] = otherwise.as_slice() else {
+            let [Effect::Move { what, to, .. }] = otherwise.as_slice() else {
                 return None;
             };
             (what == held && bottom(to)).then(|| {
@@ -109,6 +110,7 @@ impl Writer<'_> {
                         place: Place::Shuffled,
                         order: None,
                     },
+                ..
             },
             Effect::LookAtTop { who, count, bind },
             Effect::Reveal { what },
@@ -136,6 +138,7 @@ impl Writer<'_> {
                 == [Effect::Move {
                     what: held,
                     to: entered,
+                    bind: None,
                 }])
         .then_some(())?;
         self.is_a_permanent(&Ref::Target(0)).then_some(())?;
@@ -183,7 +186,7 @@ pub(super) fn text(effects: &[Effect]) -> Option<(String, usize)> {
     ];
     // "If you don't cast it, put it on the bottom" also covers a card that fails the test.
     let covered = matches!(then.as_slice(), [Effect::CastFromZone { .. }])
-        && matches!(otherwise.as_slice(), [Effect::Move { what, to }] if *what == held && bottom(to));
+        && matches!(otherwise.as_slice(), [Effect::Move { what, to, .. }] if *what == held && bottom(to));
     if !otherwise.is_empty() && !covered {
         sentences.push(format!("Otherwise, {}", steps(otherwise, &held)?));
     }

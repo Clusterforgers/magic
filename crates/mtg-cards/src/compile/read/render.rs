@@ -1044,6 +1044,7 @@ fn written(
                 if let Effect::Destroy {
                     what,
                     regenerate: false,
+                    ..
                 } = effect
                 {
                     let pronoun = if writer.single(what) { "it" } else { "they" };
@@ -1090,6 +1091,7 @@ fn put_back_text(choose: &Effect, moved: &Effect) -> Option<String> {
                     place: Place::Top,
                     order,
                 },
+            ..
         },
     ) = (choose, moved)
     else {
@@ -1134,6 +1136,7 @@ fn returned_text(choose: &Effect, moved: &Effect) -> Option<String> {
         Effect::Move {
             what: Ref::Bound(name),
             to: Destination::Hand,
+            ..
         },
     ) = (choose, moved)
     else {
@@ -1231,6 +1234,7 @@ fn your_cards(effect: &Effect) -> Option<String> {
         Effect::Mill {
             who: Ref::You,
             count,
+            ..
         } => format!("mill {}", cards_text(count)?),
         Effect::Discard {
             who: Ref::You,
@@ -1810,6 +1814,7 @@ impl Writer<'_> {
             Effect::Move {
                 what,
                 to: Destination::Library { place, order: None },
+                ..
             } => {
                 let whose = if self.in_your_graveyard(what) {
                     "your"
@@ -2089,6 +2094,7 @@ impl Writer<'_> {
                 who: Ref::You,
                 filter,
                 count,
+                ..
             } if filter.0 == [Pred::This] && count.is_one() => "sacrifice ~".to_owned(),
             Effect::Draw { who, .. }
             | Effect::Mill { who, .. }
@@ -2103,6 +2109,7 @@ impl Writer<'_> {
             Effect::Move {
                 what,
                 to: Destination::Hand,
+                ..
             } => self.returned_to_hand(what).or_else(|| self.moved(effect))?,
             Effect::AddMana { .. } => self.mana_added_by(effect)?,
             // "you get {E}{E}": energy is a counter on the player, written with its symbol.
@@ -2266,6 +2273,7 @@ impl Writer<'_> {
                     transformed: false,
                     counters,
                 },
+            ..
         } = effect
         else {
             return None;
@@ -2483,6 +2491,7 @@ impl Writer<'_> {
                         transformed: false,
                         counters,
                     },
+                ..
             } if counters.is_empty() => Some(format!(
                 "return ~ from your graveyard to the battlefield{}",
                 if *tapped { " tapped" } else { "" }
@@ -2494,6 +2503,7 @@ impl Writer<'_> {
                         place: Place::Shuffled,
                         order: None,
                     },
+                ..
             } if *what == Ref::This || *what == dead_card() => {
                 Some("shuffle ~ into its owner's library".to_owned())
             }

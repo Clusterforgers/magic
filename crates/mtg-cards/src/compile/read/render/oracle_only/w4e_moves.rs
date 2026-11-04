@@ -39,6 +39,7 @@ fn returned_many(targets: &[TargetSpec], effects: &[Effect]) -> Option<String> {
                     transformed: false,
                     counters,
                 },
+            ..
         },
     ] = effects
     else {
@@ -82,6 +83,7 @@ fn rest_sacrificed(targets: &[TargetSpec], effects: &[Effect]) -> Option<String>
             who: Ref::Triggering,
             filter: Selector(filter),
             count: Amount::Count(Selector(counted)),
+            ..
         },
     ] = effects
     else {
@@ -149,6 +151,7 @@ fn spell_returned(targets: &[TargetSpec], effects: &[Effect]) -> Option<String> 
         Effect::Move {
             what: Ref::Target(0),
             to: Destination::Hand,
+            ..
         },
     ] = effects
     else {

@@ -127,6 +127,7 @@ fn purge() -> Arc<CardDefinition> {
                     who: Ref::EachPlayer,
                     filter: Selector(vec![Pred::Type(CardType::Creature)]),
                     count: Amount::Fixed(1),
+                    bind: None,
                 }],
             }),
     )

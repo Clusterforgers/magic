@@ -100,7 +100,7 @@ fn entering_under(cx: &Cx<'_>, under: Option<&Ref>) -> Result<Option<PlayerId>, 
 /// it when the card comes in tapped or under a player other than its owner; an instant or a sorcery card stays where it
 /// is (CR 304.4, 307.4). A random order is not played yet; `Caps` keeps those cards out.
 pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
-    let Effect::Move { what, to } = effect else {
+    let Effect::Move { what, to, .. } = effect else {
         return Err(wrong_effect("Move"));
     };
     let state = cx.state();

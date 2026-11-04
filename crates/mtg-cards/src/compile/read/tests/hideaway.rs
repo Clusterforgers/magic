@@ -158,7 +158,8 @@ fn the_card_returns_to_its_owners_hand_when_the_cast_was_made() {
                 condition: Condition::Performed,
                 then: vec![Effect::Move {
                     what: Ref::This,
-                    to: crate::effect::Destination::Hand
+                    to: crate::effect::Destination::Hand,
+                    bind: None
                 }],
                 otherwise: Vec::new()
             }
