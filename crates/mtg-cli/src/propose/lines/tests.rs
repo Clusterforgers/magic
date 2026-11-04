@@ -313,7 +313,7 @@ fn a_card_with_several_gaps_is_skipped_without_a_request() {
     let env = env();
     let client = ScriptedClient::new().answer("Test Wyvern", TRIGGER);
     let (summary, client) = run(&env, client, &["Test Wyvern", "Nobody"], false);
-    assert!(client.requests().is_empty());
+    assert_eq!(client.requests().len(), 0);
     assert!(summary.contains("skipped: 2"), "{summary}");
     let rows = read_results(&env.out.join(RESULTS));
     assert_eq!(rows[0].note, "2 gapped lines");
@@ -329,7 +329,7 @@ fn a_resumed_run_skips_the_names_it_has_and_keeps_the_order() {
     run(&env, first, &["Test Drake"], false);
     let second = ScriptedClient::new().answer("Test Drake", TRIGGER);
     let (summary, client) = run(&env, second, &["Test Drake", "Nobody"], true);
-    assert!(client.requests().is_empty());
+    assert_eq!(client.requests().len(), 0);
     let names: Vec<String> = read_results(&env.out.join(RESULTS))
         .into_iter()
         .map(|row| row.name)
