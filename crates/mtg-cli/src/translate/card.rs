@@ -111,6 +111,9 @@ pub fn translate_face(world: &World, face: &Face) -> FaceOut {
         record(&mut out, "A", &[body], &before);
     }
     for group in trigger_groups(&face.triggers) {
+        if super::triggers_static::is_bookkeeping(&ctx, &group) {
+            continue;
+        }
         let before = Before::of(&out);
         take(
             &mut out,
