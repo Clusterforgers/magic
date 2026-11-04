@@ -24,7 +24,7 @@ pub fn effects(ctx: &mut Ctx, p: &Params, api: &str) -> Tr<Vec<Value>> {
         "Animate" | "AnimateAll" => animate(ctx, p),
         "PutCounter" => one(put_counter(ctx, p)),
         "RemoveCounter" => one(remove_counter(ctx, p)),
-        "Tap" => one(simple(ctx, p, "Tap", "Tap")),
+        "Tap" => tap(ctx, p),
         "Untap" => one(simple(ctx, p, "Untap", "Untap")),
         "Regenerate" => one(simple(ctx, p, "Regenerate", "Regenerate")),
         "TapAll" => one(all_of(ctx, p, "Tap")),
@@ -54,6 +54,41 @@ fn simple(ctx: &mut Ctx, p: &Params, api: &str, verb: &str) -> Tr<Value> {
     only(p, api, &["ValidTgts", "Defined", "TargetMin", "TargetMax"])?;
     let what = subject(ctx, p, "Self", None)?;
     Ok(json!({ verb: {"what": what} }))
+}
+
+/// `Tap`: the target or `Defined$` object, or "tap any number of" the objects `CardChoices$` allows, which the controller
+/// picks on resolution. `RememberTapped$` binds the permanents that became tapped. A cap other than "all that match"
+/// stays a gap.
+fn tap(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
+    let remember = remember::wanted(p, &["RememberTapped"]);
+    let Some(choices) = p.get("CardChoices") else {
+        return Ok(vec![simple(ctx, p, "Tap", "Tap")?]);
+    };
+    only(
+        p,
+        "Tap",
+        &[
+            "CardChoices",
+            "AnyNumber",
+            "ChoiceAmount",
+            "ChoicePrompt",
+            "RememberTapped",
+        ],
+    )?;
+    let all = format!("Count$Valid {choices}");
+    if p.get("AnyNumber") != Some("True") || p.get("ChoiceAmount") != Some(all.as_str()) {
+        return unmapped("key:Tap.CardChoices-amount");
+    }
+    let filter = selector_any(ctx, choices)?;
+    let max = json!({"Count": filter});
+    let from = json!({"Each": filter});
+    let bind = ctx.fresh("tap");
+    let mut effect = json!({"Tap": {"what": {"Bound": bind}}});
+    if remember {
+        remember::bind_moved(ctx, &mut effect, "Tap", "tapped");
+    }
+    let pick = json!({"Choose": {"from": from, "count": {"min": 0, "max": max}, "as": bind}});
+    Ok(vec![pick, effect])
 }
 
 /// `TapAll`, `UntapAll`: the verb on every object the valid-string names.
@@ -294,6 +329,9 @@ fn animate(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             "Triggers",
             "Abilities",
             "RemoveCreatureTypes",
+            "RemoveCardTypes",
+            "RemoveLandTypes",
+            "AddAllCreatureTypes",
             "ValidCards",
             "Duration",
             "TargetMin",
@@ -337,7 +375,7 @@ fn animate(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
 }
 
 /// Colours as the DSL names them.
-fn color_names(colors: &str) -> Tr<Vec<&'static str>> {
+pub fn color_names(colors: &str) -> Tr<Vec<&'static str>> {
     colors
         .split(',')
         .map(|word| match word.trim() {
@@ -352,27 +390,60 @@ fn color_names(colors: &str) -> Tr<Vec<&'static str>> {
 }
 
 /// The type changes of an animate line: the creature types it sets or adds, then the card types it adds.
+///
+/// `RemoveCardTypes$` makes the card types the line names the only ones (it needs `Types$`), `RemoveLandTypes$` the basic
+/// land types it names the only land types, and `AddAllCreatureTypes$` adds every creature type.
 fn type_mods(ctx: &Ctx, p: &Params) -> Tr<Vec<Value>> {
+    const BASIC_LAND_TYPES: [&str; 5] = ["Plains", "Island", "Swamp", "Mountain", "Forest"];
+    let (remove_cards, remove_lands) = (
+        p.get("RemoveCardTypes") == Some("True"),
+        p.get("RemoveLandTypes") == Some("True"),
+    );
+    let mut mods = Vec::new();
+    if p.get("AddAllCreatureTypes") == Some("True") {
+        mods.push(json!("AddAllCreatureTypes"));
+    }
     let Some(types) = p.get("Types") else {
-        return Ok(Vec::new());
+        if remove_cards {
+            return unmapped("key:Animate.RemoveCardTypes");
+        }
+        if remove_lands {
+            return unmapped("key:Animate.RemoveLandTypes");
+        }
+        return Ok(mods);
     };
-    let (mut card_types, mut subtypes) = (Vec::new(), Vec::new());
+    let (mut card_types, mut subtypes, mut lands, mut supertypes) =
+        (Vec::new(), Vec::new(), Vec::new(), Vec::new());
     for word in types.split(',').map(str::trim) {
         if super::ctx::CARD_TYPES.contains(&word) {
             card_types.push(word);
+        } else if remove_lands && BASIC_LAND_TYPES.contains(&word) {
+            lands.push(word);
+        } else if word == "Legendary" {
+            supertypes.push(word);
         } else if ctx.world.subtypes.contains(word) {
             subtypes.push(word);
         } else {
             return unmapped(format!("key:Animate.Types={word}"));
         }
     }
-    let mut mods = Vec::new();
+    if remove_cards && card_types.is_empty() {
+        return unmapped("key:Animate.RemoveCardTypes");
+    }
+    if remove_lands {
+        mods.push(json!({"SetLandTypes": lands}));
+    }
     if p.get("RemoveCreatureTypes") == Some("True") {
         mods.push(json!({"SetCreatureTypes": subtypes}));
     } else {
         mods.extend(subtypes.iter().map(|name| json!({"AddSubtype": name})));
     }
-    mods.extend(card_types.iter().map(|name| json!({"AddType": name})));
+    if remove_cards {
+        mods.push(json!({"SetTypes": card_types}));
+    } else {
+        mods.extend(card_types.iter().map(|name| json!({"AddType": name})));
+    }
+    mods.extend(supertypes.iter().map(|name| json!({"AddSupertype": name})));
     Ok(mods)
 }
 

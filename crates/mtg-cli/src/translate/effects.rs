@@ -224,6 +224,9 @@ fn api_line(ctx: &mut Ctx, p: &Params, api: &str) -> Tr<Vec<Value>> {
     if let Some(found) = super::effects_verbs4::effects(ctx, p, api) {
         return found;
     }
+    if let Some(found) = super::effects_verbs5::effects(ctx, p, api) {
+        return found;
+    }
     match api {
         "DealDamage" => one(deal_damage(ctx, p)),
         "Draw" => one(draw(ctx, p)),
@@ -247,7 +250,7 @@ fn api_line(ctx: &mut Ctx, p: &Params, api: &str) -> Tr<Vec<Value>> {
         "Dig" => effects_zone::dig(ctx, p),
         "DigUntil" => effects_zone::dig_until(ctx, p),
         "Attach" => effects_obj::attach(ctx, p),
-        "CopyPermanent" => tokens::copy_permanent(ctx, p),
+        "CopyPermanent" => super::tokens_copy::copy_permanent(ctx, p),
         "Destroy" | "DestroyAll" | "Counter" | "Pump" | "PumpAll" | "PutCounter"
         | "RemoveCounter" | "Tap" | "Untap" | "TapAll" | "UntapAll" | "Sacrifice"
         | "Regenerate" | "Fight" | "GainControl" | "DamageAll" | "Animate" | "PreventDamage"
@@ -435,6 +438,40 @@ fn charm(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
 
 /// `DelayedTrigger` at a step ("at the beginning of the next end step, ..."): the part named by `Execute$` happens then.
 fn delayed(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
+    let Some(execute) = p.get("Execute") else {
+        return unmapped("key:DelayedTrigger.no-Execute");
+    };
+    let (when, this_turn) = if p.get("Mode") == Some("Phase") {
+        (delayed_step(p)?, false)
+    } else {
+        // The ability's own keys are not part of the event.
+        let event = p.without(&[
+            "SP",
+            "AB",
+            "DB",
+            "Cost",
+            "SubAbility",
+            "SorcerySpeed",
+            "PlayerTurn",
+        ]);
+        super::triggers::delayed_when(ctx, &event)?
+    };
+    match p.get("RememberObjects") {
+        None => {}
+        Some("Remembered" | "RememberedLKI") if ctx.remembered.is_some() => {}
+        Some(other) => return unmapped(format!("key:DelayedTrigger.RememberObjects={other}")),
+    }
+    let part = ctx.sub(execute)?;
+    let effects = chain_at(ctx, &part, false)?;
+    let mut node = json!({"DelayedTrigger": {"when": when, "effects": effects}});
+    if this_turn {
+        node["DelayedTrigger"]["this_turn"] = json!(true);
+    }
+    Ok(node)
+}
+
+/// The pattern of a delayed trigger at a step: the step and whose it is.
+fn delayed_step(p: &Params) -> Tr<Value> {
     only(
         p,
         "DelayedTrigger",
@@ -447,9 +484,6 @@ fn delayed(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
             "RememberObjects",
         ],
     )?;
-    if p.get("Mode") != Some("Phase") {
-        return unmapped("key:DelayedTrigger.Mode");
-    }
     // "Next turn" skips a step still to come this turn; a delayed trigger here fires at the next such step.
     if p.get("NextTurn").is_some() {
         return unmapped("key:DelayedTrigger.NextTurn");
@@ -460,18 +494,7 @@ fn delayed(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
         Some("You") => "You",
         Some(other) => return unmapped(format!("key:DelayedTrigger.ValidPlayer={other}")),
     };
-    let Some(execute) = p.get("Execute") else {
-        return unmapped("key:DelayedTrigger.no-Execute");
-    };
-    match p.get("RememberObjects") {
-        None => {}
-        Some("Remembered" | "RememberedLKI") if ctx.remembered.is_some() => {}
-        Some(other) => return unmapped(format!("key:DelayedTrigger.RememberObjects={other}")),
-    }
-    let part = ctx.sub(execute)?;
-    let effects = chain_at(ctx, &part, false)?;
-    let when = json!({"StepBegins": {"step": step, "whose": whose}});
-    Ok(json!({"DelayedTrigger": {"when": when, "effects": effects}}))
+    Ok(json!({"StepBegins": {"step": step, "whose": whose}}))
 }
 
 fn proliferate(p: &Params) -> Tr<Value> {

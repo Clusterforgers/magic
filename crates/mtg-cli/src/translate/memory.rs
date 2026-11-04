@@ -261,7 +261,7 @@ pub fn line(
             }
             line = rename(&line, key, own);
             moved.push(*slot);
-        } else if ACTED_ON.contains(&(api, key.as_str())) {
+        } else if ACTED_ON.contains(&(api, key.as_str())) && !p.has("CardChoices") {
             line = line.without(&[key]);
             acted.push(*slot);
         } else if key == "RememberTargets" && !matches!(api, "ChangeZone" | "Destroy") {
