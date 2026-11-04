@@ -5,7 +5,7 @@ use serde_json::{Value, json};
 use super::amount::{amount, counter_kind};
 use super::ctx::{Ctx, Tr, only, unmapped};
 use super::remember;
-use super::valid::{selector_any, selector_in, subject};
+use super::valid::{defined, selector_any, selector_in, subject};
 use crate::forge::script::Params;
 
 /// The effects of `ChangeZone` and `ChangeZoneAll`.
@@ -20,7 +20,11 @@ pub fn effects(ctx: &mut Ctx, p: &Params, api: &str) -> Tr<Vec<Value>> {
         ("ChangeZone", from) if searches_library(from) && p.has("ChangeType") => {
             search(ctx, p, destination)
         }
-        ("ChangeZone", from) if hidden_origin(from) && p.has("ChangeType") => {
+        ("ChangeZone", from)
+            if (hidden_origin(from)
+                || (from == "Battlefield" && p.get("Hidden") == Some("True")))
+                && p.has("ChangeType") =>
+        {
             choose_and_move(ctx, p, origin, destination)
         }
         ("ChangeZone", _) => change_zone(ctx, p, origin, destination),
@@ -80,19 +84,24 @@ enum Goes {
 
 /// Where the moved objects go; a library placement follows `LibraryPosition$` (the top without one, as Forge) and a
 /// `Shuffle$ True` puts them in shuffled.
-fn goes(p: &Params, destination: &str) -> Tr<Goes> {
-    goes_in(p, destination, false)
+fn goes(ctx: &Ctx, p: &Params, destination: &str) -> Tr<Goes> {
+    goes_in(ctx, p, destination, false)
 }
 
 /// Where what a search found goes: a library placement there is the search's own shuffle and position, never a default.
-fn goes_found(p: &Params, destination: &str) -> Tr<Goes> {
-    goes_in(p, destination, true)
+fn goes_found(ctx: &Ctx, p: &Params, destination: &str) -> Tr<Goes> {
+    goes_in(ctx, p, destination, true)
 }
 
-fn goes_in(p: &Params, destination: &str, searched: bool) -> Tr<Goes> {
+fn goes_in(ctx: &Ctx, p: &Params, destination: &str, searched: bool) -> Tr<Goes> {
     let tapped = p.get("Tapped") == Some("True");
     if destination != "Battlefield" {
-        for key in ["GainControl", "WithCountersType"] {
+        for key in [
+            "GainControl",
+            "WithCountersType",
+            "Transformed",
+            "AttachedTo",
+        ] {
             if p.has(key) {
                 return unmapped(format!("key:ChangeZone.{key}"));
             }
@@ -102,8 +111,23 @@ fn goes_in(p: &Params, destination: &str, searched: bool) -> Tr<Goes> {
         "Exile" => Goes::Exile,
         "Hand" => Goes::To(json!("Hand")),
         "Graveyard" => Goes::To(json!("Graveyard")),
+        "Battlefield" if p.has("AttachedTo") => {
+            // The attached placement carries only the host: any other way of entering is a gap, not a drop.
+            for key in ["Tapped", "GainControl", "WithCountersType", "Transformed"] {
+                if p.has(key) {
+                    return unmapped(format!("key:ChangeZone.AttachedTo-with-{key}"));
+                }
+            }
+            let host = defined(ctx, p.get("AttachedTo").unwrap_or_default())?;
+            Goes::To(json!({"BattlefieldAttached": {"to": host}}))
+        }
         "Battlefield" => {
             let mut enters = json!({"tapped": tapped});
+            match p.get("Transformed") {
+                None | Some("False") => {}
+                Some("True") => enters["transformed"] = json!(true),
+                Some(_) => return unmapped("key:ChangeZone.Transformed"),
+            }
             if p.get("GainControl") == Some("True") {
                 enters["under"] = json!("You");
             }
@@ -172,10 +196,12 @@ fn change_zone(ctx: &mut Ctx, p: &Params, origin: &str, destination: &str) -> Tr
             "WithCountersType",
             "WithCountersAmount",
             "RememberTargets",
+            "Transformed",
+            "AttachedTo",
         ],
     )?;
     let what = subject(ctx, p, "Self", Some(origin))?;
-    let mut effect = moves(&what, goes(p, destination)?);
+    let mut effect = moves(&what, goes(ctx, p, destination)?);
     if remember::wanted(p, &["RememberChanged", "RememberLKI", "RememberTargets"]) {
         let (verb, stem) = if effect.get("Exile").is_some() {
             ("Exile", "exiled")
@@ -212,11 +238,21 @@ fn choose_and_move(ctx: &mut Ctx, p: &Params, origin: &str, destination: &str) -
             "GainControl",
             "WithCountersType",
             "WithCountersAmount",
+            "Transformed",
+            "AttachedTo",
         ],
     )?;
     let (owner, chooser) = defined_player(ctx, p)?;
     let mut filter = selector_in(ctx, p.get("ChangeType").unwrap_or("Card"), Some(origin))?;
-    if filter.iter().any(|pred| pred.get("OwnedBy").is_some()) {
+    if origin == "Battlefield" {
+        // On the battlefield the line's own words say whose permanents: an unstated owner is not assumed.
+        let says_whose = filter
+            .iter()
+            .any(|pred| pred.get("ControlledBy").is_some() || pred.get("OwnedBy").is_some());
+        if !says_whose || owner != json!("You") {
+            return unmapped("key:ChangeZone.Choose.Battlefield-owner");
+        }
+    } else if filter.iter().any(|pred| pred.get("OwnedBy").is_some()) {
         if owner != json!("You") {
             return unmapped("key:ChangeZone.Choose.DefinedPlayer");
         }
@@ -239,7 +275,7 @@ fn choose_and_move(ctx: &mut Ctx, p: &Params, origin: &str, destination: &str) -
     } else {
         json!({"Choose": {"who": chooser, "from": {"Each": filter}, "count": {"min": min, "max": max}, "as": bind}})
     };
-    let mut moved = moves(&chosen, goes(p, destination)?);
+    let mut moved = moves(&chosen, goes(ctx, p, destination)?);
     if remember::wanted(p, &["RememberChanged"]) {
         let (verb, stem) = if moved.get("Exile").is_some() {
             ("Exile", "exiled")
@@ -351,7 +387,7 @@ fn search(ctx: &mut Ctx, p: &Params, destination: &str) -> Tr<Vec<Value>> {
         ctx.remembered = Some(found.clone());
     }
     let search = json!({ "Search": find });
-    let put = moves(&found, goes_found(p, destination)?);
+    let put = moves(&found, goes_found(ctx, p, destination)?);
     // Searching only another zone leaves the library as it was: "if you search your library this way, shuffle".
     let shuffle = if alternative.is_some() {
         json!({"If": {"condition": {"Searched": {"zone": "Library"}}, "then": [{"Shuffle": {}}]}})
@@ -665,7 +701,7 @@ fn change_zone_all(ctx: &mut Ctx, p: &Params, origin: &str, destination: &str) -
     }
     let zone = (origin != "Battlefield").then_some(origin);
     let filter = selector_in(ctx, p.get("ChangeType").unwrap_or("Card"), zone)?;
-    let mut effect = moves(&json!({ "Each": filter }), goes(p, destination)?);
+    let mut effect = moves(&json!({ "Each": filter }), goes(ctx, p, destination)?);
     if remember::wanted(p, &["RememberChanged"]) {
         let (verb, stem) = if effect.get("Exile").is_some() {
             ("Exile", "exiled")

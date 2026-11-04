@@ -141,6 +141,45 @@ fn dig_unknowns_stay_gaps(#[case] line: &str, #[case] gap: &str) {
 }
 
 #[rstest]
+#[case::hidden_battlefield_choice(
+    "A:SP$ ChangeZone | Origin$ Battlefield | Destination$ Hand | Hidden$ True | ChangeType$ Land.YouCtrl | ChangeNum$ 1",
+    &["\"Choose\"", "\"ControlledBy\":\"You\"", "\"to\":\"Hand\""]
+)]
+#[case::transformed_return(
+    "A:SP$ ChangeZone | Origin$ Exile | Destination$ Battlefield | Defined$ Self | Transformed$ True",
+    &["\"transformed\":true"]
+)]
+#[case::attached_to_host(
+    "A:SP$ ChangeZone | Origin$ Graveyard | Destination$ Battlefield | Defined$ Self | AttachedTo$ Self",
+    &["BattlefieldAttached"]
+)]
+fn change_zone_words(#[case] line: &str, #[case] has: &[&str]) {
+    let (json, gaps) = sorcery(line);
+    assert!(gaps.is_empty(), "{gaps:?} {json}");
+    for word in has {
+        assert!(json.contains(word), "{word} missing in {json}");
+    }
+}
+
+#[rstest]
+#[case::battlefield_without_owner(
+    "A:SP$ ChangeZone | Origin$ Battlefield | Destination$ Hand | Hidden$ True | ChangeType$ Land",
+    "key:ChangeZone.Choose.Battlefield-owner"
+)]
+#[case::transformed_to_hand(
+    "A:SP$ ChangeZone | Origin$ Battlefield | Destination$ Hand | Defined$ Self | Transformed$ True",
+    "key:ChangeZone.Transformed"
+)]
+#[case::attached_and_tapped(
+    "A:SP$ ChangeZone | Origin$ Graveyard | Destination$ Battlefield | Defined$ Self | AttachedTo$ Self | Tapped$ True",
+    "key:ChangeZone.AttachedTo-with-Tapped"
+)]
+fn change_zone_unknowns_stay_gaps(#[case] line: &str, #[case] gap: &str) {
+    let (_, found) = sorcery(line);
+    assert_eq!(found, [gap]);
+}
+
+#[rstest]
 #[case::stack("Stack", "zone:Origin=Stack")]
 #[case::stack_with_battlefield("Battlefield,Stack", "zone:Origin=Battlefield,Stack")]
 #[case::command("Command", "zone:Origin=Command")]
