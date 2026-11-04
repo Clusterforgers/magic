@@ -7,7 +7,8 @@ use super::valid::{defined, selector_any, selector_in};
 use crate::forge::script::Params;
 
 /// The keys of a `MayPlay` static line.
-const READ: [&str; 12] = [
+const READ: [&str; 13] = [
+    "RaiseCost",
     "Mode",
     "MayPlay",
     "Affected",
@@ -57,6 +58,10 @@ pub fn may_cast(ctx: &Ctx, p: &Params, only: Option<&Value>) -> Tr<Value> {
     }
     if p.get("MayPlayWithFlash") == Some("True") {
         permission["flash"] = json!(true);
+    }
+    // What the caster pays in addition to the other costs of the cast.
+    if let Some(extra) = p.get("RaiseCost") {
+        permission["additional"] = super::cost::cost(ctx, extra)?;
     }
     match p.get("MayPlayLimit") {
         None => {}

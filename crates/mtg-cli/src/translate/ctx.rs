@@ -92,6 +92,8 @@ pub struct Ctx<'a> {
     pub oracle: &'a str,
     /// The `ManaCost:` line of the face.
     pub mana_cost: &'a str,
+    /// The `PT:` line of the face.
+    pub pt: Option<&'a str>,
     /// The checkout's subtypes and tokens.
     pub world: &'a World,
     /// The target specifications of the ability being translated, in order.
@@ -135,6 +137,7 @@ impl<'a> Ctx<'a> {
             types: &face.types,
             oracle: &face.oracle,
             mana_cost: &face.mana_cost,
+            pt: face.pt.as_deref(),
             world,
             targets: Vec::new(),
             remembered: None,

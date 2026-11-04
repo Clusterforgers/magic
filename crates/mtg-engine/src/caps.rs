@@ -365,6 +365,7 @@ const RUNS: &[&str] = &[
     "Mod.RemoveKeyword",
     "Mod.LockKeyword",
     "Mod.GrantAbility",
+    "Mod.GainAbilitiesOf",
     "Mod.LoseAbilities",
     "Mod.SetController",
     "Mod.CantAttack",
@@ -818,6 +819,7 @@ mod tests {
     #[case::subtypes("Mod.AddSubtype", true)]
     #[case::colours("Mod.SetColors", true)]
     #[case::granted_abilities("Mod.GrantAbility", true)]
+    #[case::abilities_of_other_cards("Mod.GainAbilitiesOf", true)]
     #[case::lost_abilities("Mod.LoseAbilities", true)]
     #[case::changes_of_control("Mod.SetController", true)]
     #[case::attack_restrictions("Mod.CantAttack", true)]

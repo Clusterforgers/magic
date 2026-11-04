@@ -170,7 +170,7 @@ pub fn delayed_when(ctx: &Ctx, p: &Params) -> Tr<(Value, bool)> {
     Ok((when, this_turn))
 }
 
-fn pattern(ctx: &Ctx, p: &Params) -> Tr<Value> {
+pub(super) fn pattern(ctx: &Ctx, p: &Params) -> Tr<Value> {
     let mode = p.get("Mode").unwrap_or_default();
     if let Some(found) = super::triggers_more::pattern(ctx, p, mode) {
         return found;

@@ -71,7 +71,9 @@ fn affected(ctx: &Ctx, p: &Params) -> Tr<Value> {
     }
     match (p.get("AffectedDefined"), p.get("Affected")) {
         (Some(word), None | Some("Creature" | "Card" | "Permanent")) => static_defined(ctx, word),
-        (Some(word), Some(_)) if matches!(word, "Self" | "Enchanted" | "Equipped") => {
+        (Some(word), Some(_))
+            if matches!(word, "Self" | "Enchanted" | "Equipped" | "AttachedBy Self") =>
+        {
             static_defined(ctx, word)
         }
         (Some(_), Some(_)) => unmapped("static-affected:Defined+Affected"),
@@ -86,6 +88,8 @@ fn affected(ctx: &Ctx, p: &Params) -> Tr<Value> {
 
 fn static_defined(ctx: &Ctx, word: &str) -> Tr<Value> {
     match word {
+        // What this permanent is attached to: the enchanted or equipped object.
+        "AttachedBy Self" => Ok(json!("Attached")),
         "Self" | "Enchanted" | "Equipped" => defined(ctx, word),
         other => unmapped(format!("static-affected:{other}")),
     }
@@ -138,7 +142,12 @@ fn affected_valid(ctx: &Ctx, word: &str) -> Tr<Value> {
 }
 
 /// The keys a continuous static line reads.
-const CONTINUOUS: [&str; 20] = [
+const CONTINUOUS: [&str; 25] = [
+    "GainsAbilitiesOf",
+    "GainsAbilitiesOfZones",
+    "AddStaticAbility",
+    "RemoveCreatureTypes",
+    "AddAllCreatureTypes",
     "AddHiddenKeyword",
     "AddSVar",
     "AffectedZone",
@@ -161,6 +170,7 @@ const CONTINUOUS: [&str; 20] = [
     "SetColor",
 ];
 
+#[allow(clippy::too_many_lines)]
 fn continuous(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     keys(p, "Continuous", &CONTINUOUS)?;
     let affected = affected(ctx, p)?;
@@ -177,7 +187,10 @@ fn continuous(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
             mods.push(json!({"SetPT": {"power": power, "toughness": toughness}}));
         }
         (None, None) => {}
-        _ => return unmapped("key:Static.Continuous.half-SetPT"),
+        (power, toughness) => {
+            let (power, toughness) = half_stats(ctx, p, power, toughness)?;
+            mods.push(json!({"SetPT": {"power": power, "toughness": toughness}}));
+        }
     }
     for (key, variant) in [
         ("AddKeyword", "AddKeyword"),
@@ -208,16 +221,28 @@ fn continuous(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
         Some("You") => mods.push(json!({"SetController": "You"})),
         Some(other) => return unmapped(format!("key:Static.Continuous.GainControl={other}")),
     }
-    if p.has("SetColor") {
-        return unmapped("key:Static.Continuous.SetColor");
+    if let Some(colors) = p.get("SetColor") {
+        mods.push(json!({"SetColors": color_set(colors)?}));
     }
-    if let Some(types) = p.get("AddType") {
-        mods.extend(added_types(ctx, types)?);
+    let remove = p.get("RemoveCreatureTypes") == Some("True");
+    match p.get("AddType") {
+        Some(types) => mods.extend(added_types(ctx, types, remove)?),
+        None if remove => mods.push(json!({"SetCreatureTypes": []})),
+        None => {}
+    }
+    if p.get("AddAllCreatureTypes") == Some("True") {
+        mods.push(json!("AddAllCreatureTypes"));
     }
     for (key, trigger) in [("AddAbility", false), ("AddTrigger", true)] {
         if let Some(names) = p.get(key) {
             mods.extend(granted(ctx, names, trigger)?);
         }
+    }
+    if let Some(valid) = p.get("GainsAbilitiesOf") {
+        mods.push(gains_abilities(ctx, p, valid)?);
+    }
+    if let Some(names) = p.get("AddStaticAbility") {
+        mods.extend(granted_statics(ctx, names)?);
     }
     if mods.is_empty() {
         return unmapped("static:Continuous-nothing");
@@ -257,19 +282,46 @@ fn continuous(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
 }
 
 /// `AddType$ Artifact & Zombie`: the card types and subtypes a static line adds.
-fn added_types(ctx: &Ctx, text: &str) -> Tr<Vec<Value>> {
-    text.split('&')
-        .map(str::trim)
-        .map(|word| {
-            if super::ctx::CARD_TYPES.contains(&word) {
-                Ok(json!({"AddType": word}))
-            } else if ctx.world.subtypes.contains(word) {
-                Ok(json!({"AddSubtype": word}))
-            } else {
-                unmapped(format!("key:Static.Continuous.AddType={word}"))
-            }
-        })
-        .collect()
+fn added_types(ctx: &Ctx, text: &str, replacing: bool) -> Tr<Vec<Value>> {
+    let (mut mods, mut subtypes) = (Vec::new(), Vec::new());
+    for word in text.split('&').map(str::trim) {
+        if super::ctx::CARD_TYPES.contains(&word) {
+            mods.push(json!({"AddType": word}));
+        } else if ctx.world.subtypes.contains(word) {
+            subtypes.push(word);
+        } else {
+            return unmapped(format!("key:Static.Continuous.AddType={word}"));
+        }
+    }
+    // "Is a Spirit" with `RemoveCreatureTypes$` replaces the creature types; without it the subtypes join them.
+    if replacing {
+        mods.push(json!({"SetCreatureTypes": subtypes}));
+    } else {
+        mods.extend(subtypes.iter().map(|name| json!({"AddSubtype": name})));
+    }
+    Ok(mods)
+}
+
+/// `SetColor$`: the colours the objects become; `Colorless` and `All` are the empty and the full set. A chosen colour is a gap.
+fn color_set(text: &str) -> Tr<Vec<&str>> {
+    const COLORS: [&str; 5] = ["White", "Blue", "Black", "Red", "Green"];
+    match text {
+        "Colorless" => Ok(Vec::new()),
+        "All" => Ok(COLORS.to_vec()),
+        list => list
+            .split(',')
+            .map(|word| {
+                COLORS
+                    .iter()
+                    .copied()
+                    .find(|color| *color == word)
+                    .map_or_else(
+                        || unmapped(format!("key:Static.Continuous.SetColor={word}")),
+                        Ok,
+                    )
+            })
+            .collect(),
+    }
 }
 
 /// `AddAbility$` and `AddTrigger$`: the named parts, translated, as abilities the affected objects gain.
@@ -327,6 +379,17 @@ fn cant_block_by(ctx: &Ctx, p: &Params) -> Tr<Value> {
         }})),
         (valid, Some("Creature.Self" | "Card.Self")) => {
             let mut only = selector_any(ctx, valid)?;
+            if !only.iter().any(|pred| pred.get("Not").is_some()) {
+                // "Can't block X" is "blocks only what is not X"; not (a and b) is (not a) or (not b).
+                let negated: Vec<Value> = only.iter().map(|pred| json!({"Not": pred})).collect();
+                let outside = match negated.as_slice() {
+                    [single] => single.clone(),
+                    _ => json!({"AnyOf": negated}),
+                };
+                return Ok(
+                    json!({"Static": {"affected": "This", "mods": [{"CanBlockOnly": [outside]}]}}),
+                );
+            }
             let (Some(at), 1) = (
                 only.iter().position(|pred| pred.get("Not").is_some()),
                 only.iter().filter(|pred| pred.get("Not").is_some()).count(),
@@ -445,4 +508,86 @@ fn cost_modifier(ctx: &Ctx, p: &Params, change: &str) -> Tr<Value> {
         return unmapped("static:CostModifier-X");
     }
     Ok(json!({"CostModifier": {"applies_to": applies, "change": change, "mana": mana}}))
+}
+
+/// A characteristic-defining line that sets only one of power and toughness (`*/4` and `SetPower$ X`): the other half is the
+/// number the card prints. Any other line with one half would lose the half it leaves, so it stays a gap.
+fn half_stats(
+    ctx: &Ctx,
+    p: &Params,
+    power: Option<&str>,
+    toughness: Option<&str>,
+) -> Tr<(Value, Value)> {
+    let gap = || unmapped("key:Static.Continuous.half-SetPT");
+    let (Some(printed), Some("True")) = (ctx.pt, p.get("CharacteristicDefining")) else {
+        return gap();
+    };
+    let Some((left, right)) = printed.split_once('/') else {
+        return gap();
+    };
+    let fixed = |text: &str| text.parse::<u32>().ok().map(|n| json!(n));
+    match (power, toughness) {
+        (Some(set), None) if left == "*" => {
+            let Some(other) = fixed(right) else {
+                return gap();
+            };
+            Ok((amount(ctx, set)?, other))
+        }
+        (None, Some(set)) if right == "*" => {
+            let Some(other) = fixed(left) else {
+                return gap();
+            };
+            Ok((other, amount(ctx, set)?))
+        }
+        _ => gap(),
+    }
+}
+
+/// `AddStaticAbility$`: the named `S:` parts as static abilities the affected objects gain. Only a static (not a rule or a
+/// cost modifier) and one that gives nothing in turn can be granted.
+fn granted_statics(ctx: &mut Ctx, names: &str) -> Tr<Vec<Value>> {
+    let mut mods = Vec::new();
+    for name in names.split('&').map(str::trim) {
+        let Some(text) = ctx.svar(name) else {
+            return unmapped("key:Static.Continuous.AddStaticAbility-not-a-part");
+        };
+        // A granted static grants nothing in turn; reading it first also stops a part that names itself.
+        if text.contains("AddStaticAbility")
+            || text.contains("AddAbility")
+            || text.contains("AddTrigger")
+        {
+            return unmapped("key:Static.Continuous.AddStaticAbility-shape");
+        }
+        let ability = static_line(ctx, text)?;
+        let Some(inner) = ability.get("Static") else {
+            return unmapped("key:Static.Continuous.AddStaticAbility-not-a-static");
+        };
+        if inner.get("defining").is_some()
+            || inner.to_string().contains("\"GrantAbility\"")
+            || inner.get("from").is_some()
+        {
+            return unmapped("key:Static.Continuous.AddStaticAbility-shape");
+        }
+        mods.push(json!({"GrantAbility": ability}));
+    }
+    Ok(mods)
+}
+
+/// `GainsAbilitiesOf$`: the object has the activated abilities printed on the cards of a valid-string in a graveyard,
+/// in exile or on top of a library. A card on the battlefield may have other abilities than it prints, which the node
+/// does not read, so that stays a gap.
+fn gains_abilities(ctx: &Ctx, p: &Params, valid: &str) -> Tr<Value> {
+    if p.has("GainsValidAbilities") {
+        return unmapped("key:Static.Continuous.GainsValidAbilities");
+    }
+    let zone = match p.get("GainsAbilitiesOfZones") {
+        Some(zone @ ("Graveyard" | "Exile" | "Library")) => zone,
+        Some(other) => {
+            return unmapped(format!(
+                "key:Static.Continuous.GainsAbilitiesOfZones={other}"
+            ));
+        }
+        None => return unmapped("key:Static.Continuous.GainsAbilitiesOf-battlefield"),
+    };
+    Ok(json!({"GainAbilitiesOf": {"Each": selector_in(ctx, valid, Some(zone))?}}))
 }

@@ -13,7 +13,7 @@ use mtg_core::ids::EffectId;
 
 use super::wrong_effect;
 use crate::choose::{ChoiceOption, OptionChooser, Optioned, pick_options};
-use crate::effects::{ContinuousEffect, Modification, Selector};
+use crate::effects::{Borrowed, ContinuousEffect, Modification, Selector};
 use crate::events::Event;
 use crate::object::{Chosen, GameObject, ObjectRef};
 use crate::resolve::{Cx, ResolveError, Run, Scope};
@@ -159,6 +159,27 @@ fn chosen_in(scope: &Scope<'_>, keyword: &Keyword) -> Keyword {
     }
 }
 
+/// The activated abilities printed on the cards `from` names now, each with the card it is printed on: what a static ability
+/// that gives the abilities of other cards gives while the layers are worked out.
+fn borrowed(scope: &Scope<'_>, from: &mtg_cards::refs::Ref) -> Result<Vec<Borrowed>, ResolveError> {
+    let mut found = Vec::new();
+    for donor in scope.objects(from)? {
+        let Some(object) = scope.state.object(donor.id) else {
+            continue;
+        };
+        for (address, rules) in crate::ability_reader::printed(object) {
+            if matches!(**rules, mtg_cards::ability::Ability::Activated { .. }) {
+                found.push(Borrowed {
+                    donor: donor.id,
+                    index: address.ability,
+                    body: Arc::clone(rules),
+                });
+            }
+        }
+    }
+    Ok(found)
+}
+
 /// What the engine applies for a modification of the card: its amounts worked out and the player it names found in
 /// `scope`. An effect of a spell or ability does this as it begins and a static ability whenever the state changes, so
 /// both run the same modification.
@@ -199,6 +220,7 @@ pub(crate) fn lower(scope: &Scope<'_>, wanted: &Wanted) -> Result<Modification, 
         Wanted::RemoveKeyword(keyword) => Modification::RemoveKeyword(keyword.clone()),
         Wanted::GrantAbility(granted) => Modification::GrantAbility(Arc::clone(granted)),
         Wanted::LoseAbilities => Modification::LoseAbilities,
+        Wanted::GainAbilitiesOf(from) => Modification::GainAbilities(borrowed(scope, from)?),
         // A reference that names several players names the first in turn order from the active player.
         Wanted::SetController(who) => {
             Modification::SetController(*scope.players(who)?.first().ok_or_else(|| {

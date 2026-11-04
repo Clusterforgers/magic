@@ -22,6 +22,7 @@ export type { AutoChoices } from "./AutoChoices";
 export type { BecameCopy } from "./BecameCopy";
 export type { BlockOptions } from "./BlockOptions";
 export type { BlockerOption } from "./BlockerOption";
+export type { Borrowed } from "./Borrowed";
 export type { BottomOptions } from "./BottomOptions";
 export type { CardColor } from "./CardColor";
 export type { CardConjured } from "./CardConjured";

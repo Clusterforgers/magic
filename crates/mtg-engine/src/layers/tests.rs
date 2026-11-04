@@ -163,7 +163,7 @@ fn leaves(game: &mut GameState, name: &str) {
 }
 
 /// The modifications the engine runs.
-const MODIFICATIONS: [&str; 27] = [
+const MODIFICATIONS: [&str; 28] = [
     r#"{"ModifyPT":{"power":2,"toughness":-1}}"#,
     r#"{"SetPT":{"power":5,"toughness":1}}"#,
     r#""SwitchPT""#,
@@ -191,6 +191,7 @@ const MODIFICATIONS: [&str; 27] = [
     r#""Goaded""#,
     r#"{"SetLandTypes":["Mountain"]}"#,
     r#"{"LockKeyword":"Flying"}"#,
+    r#"{"GainAbilitiesOf":{"Each":[{"Type":"Creature"},{"In":"Graveyard"}]}}"#,
 ];
 
 #[test]
@@ -233,6 +234,7 @@ fn the_table_of_modifications_has_every_variant_of_the_dsl() {
             | mtg_cards::modify::Modification::RemoveKeyword(_)
             | mtg_cards::modify::Modification::LockKeyword(_)
             | mtg_cards::modify::Modification::GrantAbility(_)
+            | mtg_cards::modify::Modification::GainAbilitiesOf(_)
             | mtg_cards::modify::Modification::LoseAbilities
             | mtg_cards::modify::Modification::SetController(_)
             | mtg_cards::modify::Modification::CantAttack

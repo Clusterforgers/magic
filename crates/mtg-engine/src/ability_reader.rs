@@ -487,6 +487,13 @@ fn granted_ability(state: &GameState, grant: Grant) -> Option<Arc<Ability>> {
             WantedModification::GrantAbility(granted) => Some(granted),
             _ => None,
         },
+        // The ability is printed on the donor, and it is only an ability of the object while the donor is the same object.
+        Grant::Borrowed { donor, ability } => {
+            match card_of(state, donor, None)?.rules.get(ability)? {
+                rules if matches!(**rules, Ability::Activated { .. }) => Some(Arc::clone(rules)),
+                _ => None,
+            }
+        }
     }
 }
 
@@ -509,6 +516,7 @@ fn granted_keyword(state: &GameState, grant: Grant) -> Option<Keyword> {
             WantedModification::AddKeyword(keyword) => Some(keyword),
             _ => None,
         },
+        Grant::Borrowed { .. } => None,
     }
 }
 

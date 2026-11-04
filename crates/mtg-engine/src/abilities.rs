@@ -22,6 +22,14 @@ use crate::triggers::DelayedId;
 pub enum Grant {
     /// A continuous effect that a resolved spell or ability began (`Effect::Continuous`), named by its id.
     Effect(EffectId),
+    /// The ability `ability` among the rules printed on the card of `donor`, which an object has because a static ability
+    /// says it has the abilities of that card (`Modification::GainAbilitiesOf`).
+    Borrowed {
+        /// The card the ability is printed on.
+        donor: ObjectId,
+        /// The ability's index among the rules of that card.
+        ability: usize,
+    },
     /// The modification `index` of the static ability `rule` printed on the card of `source`, where `rule` is the
     /// static's index among the rules of that card.
     Static {

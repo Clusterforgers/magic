@@ -26,6 +26,8 @@ pub fn rule(ctx: &Ctx, p: &Params) -> Option<Tr<Value>> {
             objects(ctx, p, mode, "ValidCard").map(|who| cant(&who, &json!("Transform")))
         }
         "CantTarget" => cant_target(ctx, p),
+        "Panharmonicon" => super::statics_again::again(ctx, p),
+        "CombatDamageToughness" => toughness_damage(p),
         "CastWithFlash" => super::statics_cast::cast_with_flash(ctx, p),
         "CanAttackDefender" => {
             objects(ctx, p, mode, "ValidCard").map(|who| combat(&who, "AttackDespiteDefender"))
@@ -175,4 +177,21 @@ fn hand_size(ctx: &Ctx, p: &Params) -> Tr<Value> {
         Some(size) => Ok(json!({"MaxHandSize": {"who": who, "size": amount(ctx, size)?}})),
         None => unmapped("key:Static.Continuous.SetMaxHandSize"),
     }
+}
+
+/// `CombatDamageToughness`: every creature of the players assigns combat damage equal to its toughness. A line that
+/// limits it to some creatures (those with toughness above power, with defender) would change more than it prints.
+fn toughness_damage(p: &Params) -> Tr<Value> {
+    keys(p, "CombatDamageToughness", &["ValidCard"])?;
+    let who = match p.get("ValidCard") {
+        Some("Creature.YouCtrl") => "You",
+        Some("Creature") => "EachPlayer",
+        Some(other) => {
+            return unmapped(format!(
+                "key:Static.CombatDamageToughness.ValidCard={other}"
+            ));
+        }
+        None => return unmapped("key:Static.CombatDamageToughness.no-ValidCard"),
+    };
+    Ok(json!({"ToughnessAssignsDamage": who}))
 }

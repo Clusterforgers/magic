@@ -301,6 +301,25 @@ impl Held {
                 since: stamp,
                 keyword: None,
             }),
+            Modification::GainAbilities(borrowed) => {
+                for ability in borrowed {
+                    if ability.donor == self.id {
+                        continue;
+                    }
+                    self.abilities.push(HeldAbility {
+                        address: AbilityRef::granted(
+                            self.id,
+                            Grant::Borrowed {
+                                donor: ability.donor,
+                                ability: ability.index,
+                            },
+                        ),
+                        body: Arc::clone(&ability.body),
+                        since: stamp,
+                        keyword: None,
+                    });
+                }
+            }
             Modification::AddType(_)
             | Modification::RemoveType(_)
             | Modification::SetTypes(_)
@@ -572,6 +591,7 @@ fn layer_of(wanted: &Wanted, defining: bool) -> Option<Layer> {
         | Wanted::RemoveKeyword(_)
         | Wanted::LockKeyword(_)
         | Wanted::GrantAbility(_)
+        | Wanted::GainAbilitiesOf(_)
         | Wanted::LoseAbilities => Layer::Ability,
         Wanted::SetPT { .. } if defining => Layer::PtCharacteristicDefining,
         Wanted::SetPT { .. } => Layer::PtSet,
