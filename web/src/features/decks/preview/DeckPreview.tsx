@@ -6,7 +6,7 @@ import { IdentityPips } from '@/features/builder/IdentityPips'
 import { CardPicture } from '@/features/cards/CardPicture'
 import { cardsText, formatLabel } from '@/features/decks/format'
 import { ToRead } from '@/features/decks/ToRead'
-import { BY_HAND, byHandCopies } from '@/lib/byHand'
+import { BY_HAND, byHandCopies, linesByHand, linesText } from '@/lib/byHand'
 import { cardsFromForge, cardsOnReads } from '@/lib/toRead'
 import { cn } from '@/lib/utils'
 import { copiesOf, groupByKind, identityOfDeck, manaCurve, supportCounts, typeCounts } from './model'
@@ -92,6 +92,7 @@ export function DeckPreview({ deck, legality, notValidated, actions, body, class
       curve: manaCurve(cards),
       types: typeCounts(cards),
       support: supportCounts(played),
+      lines: linesByHand(played),
       size: copiesOf(played),
       sideGroups: groupByKind(sideboard),
     }
@@ -160,7 +161,7 @@ export function DeckPreview({ deck, legality, notValidated, actions, body, class
                 ? 'No cards to count.'
                 : hand === 0
                   ? `The whole deck runs${stats.support.read === 0 ? '' : `, ${cardsOnReads(stats.support.read)}`}${stats.support.forge === 0 ? '' : `, ${cardsFromForge(stats.support.forge)}`}.`
-                  : `${hand} of ${total} cards are ${BY_HAND}.`}
+                  : `${hand} of ${total} cards are ${BY_HAND}${stats.lines === 0 ? '' : `, ${linesText(stats.lines)}`}.`}
             </p>
             <SupportBar counts={stats.support} />
             {deck.toRead === undefined || deck.toRead === 0 ? null : (

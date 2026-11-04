@@ -4,9 +4,11 @@ import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@/compone
 import { CardPicture, HoverPicture } from '@/features/cards/CardPicture'
 import { SupportMark } from '@/features/decks/SupportMark'
 import { BY_HAND, BY_HAND_TITLE, ON_A_READ, PARTLY_BY_HAND, runsWhole } from '@/lib/byHand'
+import { cardWords } from '@/lib/lineMarks'
 import { FROM_FORGE } from '@/lib/toRead'
 import { cn } from '@/lib/utils'
 import type { Support } from '@/protocol/generated'
+import { LineMarks } from './LineMarks'
 import { copiesOf } from './model'
 import type { CardGroup, PreviewCard } from './model'
 
@@ -49,6 +51,10 @@ export function CardZoom({ card, onClose }: { card: PreviewCard | null; onClose:
               </DialogTitle>
               <DialogDescription>{card.typeLine}</DialogDescription>
               <SupportMark support={card.support} />
+              <p data-slot="card-words" className="text-sm font-medium">
+                {cardWords(card.support)}
+              </p>
+              {card.support === 'partial' ? <LineMarks card={card} /> : null}
               {card.reasons.length === 0 ? null : (
                 <ul aria-label={BY_HAND_TITLE} className="grid gap-1 text-left text-xs text-muted-foreground">
                   {[...new Set(card.reasons)].map((reason) => (

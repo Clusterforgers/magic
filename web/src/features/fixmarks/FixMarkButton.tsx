@@ -3,6 +3,7 @@ import { useId, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Popover, PopoverContent, PopoverTitle, PopoverTrigger } from '@/components/ui/popover'
 import { cn } from '@/lib/utils'
+import type { Support } from '@/protocol/generated'
 import type { FixMarksApi } from '@/net/fixMarks'
 import { describeMarkError } from './errors'
 import { useFixMarks } from './useFixMarks'
@@ -21,8 +22,15 @@ interface FixMarkButtonProps {
   emphasis?: 'prominent' | 'quiet'
   /** An icon alone for a row of a list: no words, no note; a refusal floats under the icon. */
   compact?: boolean
+  /** The card's support; a partly automatic or from-Forge card says that a press plays it all by hand. */
+  support?: Support
   className?: string
 }
+
+/** What a press does to a card the game runs in part or from Forge: the mark plays the whole card by hand. */
+export const DEMOTES = 'Marks it important to fix and plays the whole card by hand until it is fixed'
+
+const demotes = (support: Support | undefined): boolean => support === 'partial' || support === 'forge'
 
 /** The popover that takes the note of a mark: what is wrong with the card, up to 280 characters, optional. */
 function NoteEditor({
@@ -99,6 +107,7 @@ export function FixMarkButton({
   api,
   emphasis = 'prominent',
   compact = false,
+  support,
   className,
 }: FixMarkButtonProps) {
   const marks = useFixMarks(api)
@@ -116,7 +125,7 @@ export function FixMarkButton({
           aria-label={`Mark ${name} important to fix`}
           aria-pressed={marked}
           aria-disabled={busy}
-          title={marked ? 'Marked important to fix' : 'Mark important to fix'}
+          title={marked ? 'Marked important to fix' : demotes(support) ? DEMOTES : 'Mark important to fix'}
           className={marked ? undefined : 'text-muted-foreground'}
           onClick={() => {
             if (busy) return
@@ -146,6 +155,7 @@ export function FixMarkButton({
           variant={marked ? 'secondary' : emphasis === 'prominent' ? 'outline' : 'ghost'}
           aria-pressed={marked}
           aria-disabled={busy}
+          title={!marked && demotes(support) ? DEMOTES : undefined}
           className={emphasis === 'quiet' && !marked ? 'text-muted-foreground' : undefined}
           onClick={() => {
             if (busy) return
@@ -156,6 +166,11 @@ export function FixMarkButton({
           <FlagIcon aria-hidden="true" className={marked ? 'fill-current' : undefined} />
           Mark important to fix
         </Button>
+        {!marked && demotes(support) ? (
+          <span data-slot="fix-mark-demotes" className="text-xs text-muted-foreground">
+            Plays the whole card by hand until fixed
+          </span>
+        ) : null}
         {marked ? (
           <NoteEditor
             note={mark.note}
