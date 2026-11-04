@@ -34,6 +34,7 @@ fn library(read: ReadState, forge: bool) -> (Library, PrintedCard) {
         rules: serde_json::to_value(&card).unwrap(),
         read,
         forge,
+        proof: None,
     };
     let (library, left_out) = Library::default().with_drafts(&[row]);
     assert!(left_out.is_empty(), "{left_out:?}");

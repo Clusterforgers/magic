@@ -7,7 +7,6 @@ use axum::Json;
 use axum::extract::rejection::PathRejection;
 use axum::extract::{Path, Request, State};
 use axum::http::{HeaderMap, StatusCode};
-use mtg_cards::support::Support;
 use mtg_db::{DraftKey, FixMark, FixMarkRepo, ReadRepo, Verdict};
 use mtg_import::ids::OracleId;
 use mtg_protocol::rest::{
@@ -53,7 +52,7 @@ async fn session(app: &AppState, headers: &HeaderMap) -> Result<Session, ApiErro
 }
 
 impl Session {
-    /// A card that runs on a read (a player's or Forge's) is played by hand from the next game once an account marks
+    /// A card that plays on a draft (a read of a player or Forge, or a proved partial draft) is played by hand from the next game once an account marks
     /// it to fix: its draft gets this account's `wrong` verdict with the mark's note. A card in another state, or a
     /// failure, changes nothing; the mark itself stands.
     async fn read_wrong(&self, card: &OracleId, note: Option<&str>) {
@@ -73,10 +72,8 @@ impl Session {
                 .rules()
                 .await
                 .map_err(|error| error.to_string())?;
-            let support = rules.support_of(stored).support;
             let draft = rules.library().draft(card.as_str());
-            let (true, Some(draft)) = (matches!(support, Support::Read | Support::Forge), draft)
-            else {
+            let (true, Some(draft)) = (rules.plays_draft(stored), draft) else {
                 return Ok(());
             };
             let key = DraftKey {

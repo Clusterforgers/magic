@@ -22,6 +22,7 @@ mod generated;
 mod hand_written;
 mod linked_exile;
 mod partial;
+mod partial_draft;
 mod player_words;
 mod printed;
 mod proposal;

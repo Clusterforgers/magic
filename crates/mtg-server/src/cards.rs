@@ -12,7 +12,7 @@ use std::sync::Arc;
 use mtg_cards::assemble::Assembled;
 use mtg_cards::deck::{CardFacts, Legality};
 use mtg_cards::load::{GeneratedRules, Library};
-use mtg_cards::support::{Support, SupportRecord};
+use mtg_cards::support::SupportRecord;
 use mtg_cards::{
     Caps, CardDefinition, CardIdentity, DraftRules, PrintedCard, PrintedFace, ReadState, builtin,
 };
@@ -168,14 +168,10 @@ pub(crate) fn canonical(id: &str) -> String {
     Uuid::parse_str(id).map_or_else(|_| id.to_owned(), |uuid| uuid.to_string())
 }
 
-/// The draft `oracle_id` plays on in `library` when its `support` is a read (`Read` or `Forge`).
-pub(crate) fn pin_of(
-    library: &Library,
-    oracle_id: &str,
-    support: Support,
-) -> Option<(String, String)> {
-    matches!(support, Support::Read | Support::Forge)
-        .then(|| library.draft(oracle_id))
+/// The draft `oracle_id` plays on in `library` when the card plays on a draft (`read`: its definition fails soft, which
+/// holds for `Read`, `Forge` and a proved partial draft).
+pub(crate) fn pin_of(library: &Library, oracle_id: &str, read: bool) -> Option<(String, String)> {
+    read.then(|| library.draft(oracle_id))
         .flatten()
         .map(|draft| (oracle_id.to_owned(), draft.read_hash.clone()))
 }
@@ -219,6 +215,14 @@ impl Rules {
     /// How far the game plays a stored card: the pure lookup the deck check calls.
     pub(crate) fn support_of(&self, card: &Card) -> SupportRecord {
         self.library.support(&printed_card(card), &self.caps)
+    }
+
+    /// Whether a stored card plays on a draft today: a read (`Read` or `Forge`) or a proved partial draft.
+    pub(crate) fn plays_draft(&self, card: &Card) -> bool {
+        self.library
+            .assemble(&printed_card(card), &self.caps)
+            .definition
+            .read
     }
 }
 
@@ -266,6 +270,8 @@ fn draft_rules(draft: StoredDraft, read: mtg_db::ReadState, forge: bool) -> Draf
             mtg_db::ReadState::Wrong => ReadState::Wrong,
         },
         forge,
+        // The proof is not stored yet (`promote --draft`), so no partial draft reaches a game from the database.
+        proof: None,
     }
 }
 
@@ -600,7 +606,7 @@ impl CardSource {
             match by_id.get(&canonical(id)) {
                 Some(card) => {
                     if let Some((card_id, hash)) =
-                        pin_of(rules, &canonical(id), card.support.support)
+                        pin_of(rules, &canonical(id), card.definition.read)
                     {
                         reads.insert(card_id, hash);
                     }
@@ -757,5 +763,48 @@ mod tests {
         let printed = with_printings(std::slice::from_ref(&bare), &[Some("p".to_owned())]);
         assert!(Arc::ptr_eq(&printed[0], &bare));
         assert_eq!(printed[0].identity, None);
+    }
+
+    const DRAFTED: &str = "4457ed35-7c10-48c8-9776-456485fdf070";
+
+    fn library_with_draft() -> Library {
+        let card = mtg_cards::card::Card {
+            oracle_id: DRAFTED.into(),
+            name: "Vanilla".into(),
+            impl_status: mtg_cards::card::ImplStatus::Full,
+            faces: vec![mtg_cards::card::Face {
+                name: "Vanilla".into(),
+                oracle_fingerprint: mtg_cards::support::oracle_fingerprint(""),
+                abilities: vec![],
+            }],
+            notes: None,
+        };
+        let row = DraftRules {
+            oracle_id: DRAFTED.into(),
+            read_hash: "h1".into(),
+            rules: serde_json::to_value(card).unwrap(),
+            read: ReadState::Approved,
+            forge: true,
+            proof: None,
+        };
+        let (library, left_out) = Library::default().with_drafts(&[row]);
+        assert!(left_out.is_empty(), "{left_out:?}");
+        library
+    }
+
+    #[rstest]
+    #[case::plays_on_a_draft(DRAFTED, true, Some("h1"))]
+    #[case::plays_on_no_draft(DRAFTED, false, None)]
+    #[case::has_no_draft("other", true, None)]
+    fn a_card_pins_the_draft_it_plays_on_whatever_its_state(
+        #[case] card: &str,
+        #[case] read: bool,
+        #[case] pinned: Option<&str>,
+    ) {
+        let library = library_with_draft();
+
+        let pin = pin_of(&library, card, read);
+
+        assert_eq!(pin.map(|(_, hash)| hash).as_deref(), pinned);
     }
 }

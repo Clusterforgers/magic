@@ -276,6 +276,7 @@ pub(crate) async fn draft_library(db: &Database) -> Result<(Library, usize), Cli
                 .map_or(CardsReadState::Pending, |state| cards_state(state.state));
             DraftRules {
                 forge: false,
+                proof: None,
                 oracle_id: draft.oracle_id.as_str().to_owned(),
                 read_hash: draft.read_hash,
                 rules: draft.rules,

@@ -436,6 +436,25 @@ pub(crate) fn read_support(
     })
 }
 
+/// The `Partial` record of a proved partial draft: its lines left by hand are the `Manual` abilities, and the engine must
+/// run every other one, so no line turns by hand behind the proof. `None` while the draft is not `partial`, its text
+/// drifted, or a primitive of an automatic line is missing from `caps`.
+pub(crate) fn partial_support(
+    draft: &Card,
+    printed: &PrintedCard,
+    caps: &Caps,
+) -> Option<SupportRecord> {
+    if draft.impl_status != ImplStatus::Partial {
+        return None;
+    }
+    let runs = draft
+        .abilities()
+        .filter(|(_, ability)| !ability.is_manual())
+        .all(|(_, ability)| caps.missing(&used_primitives(ability)).is_empty());
+    let record = support(Some(draft), printed, caps);
+    (runs && record.support == Support::Partial).then_some(record)
+}
+
 #[cfg(test)]
 mod tests {
     //! Goal: fingerprints ignore layout but not wording, and the support state follows the declared status, the oracle text and what the engine runs.

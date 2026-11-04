@@ -12,7 +12,8 @@ use crate::assemble::{Assembled, assemble_record};
 use crate::card::{Card, ImplStatus, TokenFile};
 use crate::draft::{Draft, DraftRules, ReadState};
 use crate::pretty::pretty;
-use crate::support::{Caps, PrintedCard, Support, SupportRecord, read_support, support};
+use crate::proposal::partial::{Mark, PartialProof};
+use crate::support::{Caps, PrintedCard, Support, SupportRecord, support};
 use crate::validate::{Problem, check_card, check_printed, check_token};
 
 /// A problem in a file: which file, where inside it, and what.
@@ -416,7 +417,8 @@ impl Library {
 
     /// This library with the current draft of each card added, with the state of its read (Read tier). A later row
     /// for an oracle id replaces an earlier one. A row that does not parse, fails a check of the structure or is not
-    /// whole (a status other than `full`, or a `Manual` ability) is left out and reported.
+    /// whole (a status other than `full`, or a `Manual` ability) is left out and reported, unless it is a proved partial
+    /// draft (`docs/cards-dsl.md`, Partial translations), which a compiled `Partial` row outranks unless the draft keeps strictly less by hand.
     pub fn with_drafts(&self, rows: &[DraftRules]) -> (Library, Vec<LoadError>) {
         let mut library = self.clone();
         let mut left_out = Vec::new();
@@ -430,19 +432,25 @@ impl Library {
                     continue;
                 }
             };
-            if let Some(message) = unwhole(&card) {
-                left_out.push(LoadError {
-                    file,
-                    path: "impl_status".into(),
-                    message,
-                });
-                continue;
-            }
+            let proof = match admission(&library, row, &card) {
+                Admission::Whole => None,
+                Admission::Partial(proof) => Some(proof),
+                Admission::Keeps => continue,
+                Admission::Refused(message) => {
+                    left_out.push(LoadError {
+                        file,
+                        path: "impl_status".into(),
+                        message,
+                    });
+                    continue;
+                }
+            };
             let draft = Draft {
                 card,
                 read_hash: row.read_hash.clone(),
                 read: row.read,
                 forge: row.forge,
+                proof,
             };
             library.drafts.insert(row.oracle_id.clone(), draft);
         }
@@ -471,14 +479,14 @@ impl Library {
         if self.outranks_drafts(id, rules, &support(rules, printed, caps)) {
             return None;
         }
-        read_support(&draft.card, printed, caps, Support::Read)?;
+        draft.runs(printed, caps)?;
         Some(draft.state_for(printed))
     }
 
     /// The rules that decide an imported card and their support record, by the precedence of the Read tier: a rules
     /// file, then a `Verified` compiled row, then a draft in state `Read`, then a compiled row of any other state, then
     /// nothing (a card with no rules text plays as printed).
-    fn decide(&self, printed: &PrintedCard, caps: &Caps) -> (Option<&Card>, SupportRecord) {
+    fn decide(&self, printed: &PrintedCard, caps: &Caps) -> (Option<&Card>, SupportRecord, bool) {
         let id = printed.oracle_id.as_str();
         let rules = self.card(id);
         let record = support(rules, printed, caps);
@@ -486,9 +494,9 @@ impl Library {
             && let Some(draft) = self.drafts.get(id)
             && let Some(read) = draft.record(printed, caps)
         {
-            return (Some(&draft.card), read);
+            return (Some(&draft.card), read, true);
         }
-        (rules, record)
+        (rules, record, false)
     }
 
     /// The support of an imported card by the precedence of the Read tier: a rules file, a `Verified` compiled row, an
@@ -499,8 +507,8 @@ impl Library {
 
     /// The definition of an imported card with the rules that decide it (see [`Library::support`]), if any.
     pub fn assemble(&self, printed: &PrintedCard, caps: &Caps) -> Assembled {
-        let (rules, record) = self.decide(printed, caps);
-        assemble_record(printed, rules, record, caps)
+        let (rules, record, from_draft) = self.decide(printed, caps);
+        assemble_record(printed, rules, record, caps, from_draft)
     }
 }
 
@@ -538,6 +546,65 @@ pub fn unwhole(card: &Card) -> Option<String> {
     card.abilities()
         .any(|(_, ability)| matches!(ability, Ability::Manual { .. }))
         .then(|| "a draft is a whole rules file: it has a `Manual` ability".into())
+}
+
+/// What `with_drafts` makes of a row.
+enum Admission {
+    /// A whole draft.
+    Whole,
+    /// A proved partial draft that plays.
+    Partial(PartialProof),
+    /// A proved partial draft that keeps less than the compiled row: the row keeps what it had.
+    Keeps,
+    /// Not admitted, and why.
+    Refused(String),
+}
+
+/// The manual spans of a card as (face, start, end).
+fn by_hand(card: &Card) -> BTreeSet<(usize, u32, u32)> {
+    card.abilities()
+        .filter_map(|(face, ability)| match ability {
+            Ability::Manual { span, .. } => Some((face, span.start, span.end)),
+            _ => None,
+        })
+        .collect()
+}
+
+/// Whether a draft is whole, or a partial draft that a proof backs and that keeps strictly less by hand than the
+/// compiled `Partial` row of the card, if it has one (the no-loss rule).
+fn admission(library: &Library, row: &DraftRules, card: &Card) -> Admission {
+    let Some(message) = unwhole(card) else {
+        return Admission::Whole;
+    };
+    let hand = by_hand(card);
+    if hand.is_empty() || card.impl_status != ImplStatus::Partial {
+        return Admission::Refused(message);
+    }
+    let Some(proof) = row.proof.clone().filter(|_| row.forge) else {
+        return Admission::Refused(
+            "a partial draft is a trusted Forge translation with a proof".into(),
+        );
+    };
+    let proved: BTreeSet<(usize, u32, u32)> = proof
+        .marks
+        .iter()
+        .filter(|mark| mark.mark == Mark::ByHand)
+        .map(|mark| (mark.face, mark.span.start, mark.span.end))
+        .collect();
+    if proved != hand {
+        return Admission::Refused(
+            "the lines of a partial draft left by hand are not those its proof leaves".into(),
+        );
+    }
+    let kept = library
+        .cards
+        .get(&row.oracle_id)
+        .filter(|row| row.impl_status == ImplStatus::Partial)
+        .map(by_hand);
+    match kept {
+        Some(before) if !(hand.is_subset(&before) && hand != before) => Admission::Keeps,
+        _ => Admission::Partial(proof),
+    }
 }
 
 fn collect(
