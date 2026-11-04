@@ -54,7 +54,7 @@ pub const NEEDS: [(&str, &str); 15] = [
     ),
     (
         "static:AlternativeCost",
-        "CostModifier change Instead(cost) for an alternative cost",
+        "an alternative cost of other spells or of activated abilities (CostModifier change Instead(cost))",
     ),
 ];
 

@@ -123,6 +123,8 @@ pub enum CastWay {
     Emerge,
     /// Harmonize (CR 702.180): from a graveyard for its harmonize cost, reduced by the power of a creature tapped for it; exiled when it leaves the stack.
     Harmonize,
+    /// An alternative cost the card prints in a static line, chosen per card (CR 118.9): cast from where `AltCast` names for the cost it gives.
+    Alternative,
 }
 
 impl CastWay {

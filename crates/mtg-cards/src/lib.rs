@@ -5,6 +5,7 @@
 //! files in `cards/` hold only rules, keyed by oracle id.
 
 pub mod ability;
+pub mod alt_riders;
 pub mod assemble;
 pub mod builtin;
 pub mod card;

@@ -194,6 +194,7 @@ impl<'a> Pairer<'a> {
     fn run(mut self) -> Paired {
         self.manual();
         self.keywords();
+        self.alt_keywords();
         self.static_pairs();
         self.exact();
         self.blocks();
@@ -292,6 +293,31 @@ impl<'a> Pairer<'a> {
                     self.slot_of[later] = Some(slot);
                     self.places[later] = Some(self.slots[slot].clause.span.start);
                 }
+            }
+        }
+    }
+
+    /// The alternative-cost keywords (warp, surge, web-slinging, impending): an `AltCast` and its riders stand for the line.
+    fn alt_keywords(&mut self) {
+        let abilities = self.abilities;
+        for at in 0..abilities.len() {
+            if self.taken[at] {
+                continue;
+            }
+            let Some((line, count)) = crate::alt_riders::keyword_line(&abilities[at..]) else {
+                continue;
+            };
+            if (at..at + count).any(|each| self.taken[each]) {
+                continue;
+            }
+            let Some(slot) = self.find_text(&[ClauseKind::Keyword], &[line], false) else {
+                continue;
+            };
+            self.settle(at, slot, ClauseState::Reads { ability: at });
+            for later in at + 1..at + count {
+                self.taken[later] = true;
+                self.slot_of[later] = Some(slot);
+                self.places[later] = Some(self.slots[slot].clause.span.start);
             }
         }
     }
