@@ -76,3 +76,22 @@ fn exiled_instead(p: &Params, part: &Params, what: &[Value]) -> Tr<Value> {
     }
     Ok(json!({"Replacement": {"when": {"ZoneChange": pattern}, "by": {"MoveTo": "Exile"}}}))
 }
+
+/// "If this would be put into a graveyard from anywhere, exile it instead": the card itself, in every zone.
+pub fn self_to_graveyard(ctx: &mut Ctx, p: &Params, line_condition: Option<&Value>) -> Tr<Value> {
+    if line_condition.is_some() {
+        return unmapped("key:Replacement.Moved.condition");
+    }
+    if p.has("Origin") {
+        return unmapped("key:Replacement.Moved.Origin");
+    }
+    let Some(name) = p.get("ReplaceWith") else {
+        return unmapped("replacement:Moved-without-ReplaceWith");
+    };
+    let raw = ctx.sub(name)?;
+    let (part_condition, part) = prefixed(ctx, &raw)?;
+    if part_condition.is_some() {
+        return unmapped("key:Replacement.Moved.condition");
+    }
+    exiled_instead(p, &part, &[json!("This")])
+}
