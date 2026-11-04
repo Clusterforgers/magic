@@ -1,5 +1,6 @@
 //! Goal: the reflexive "When you do," reads into the steps that exist (an `If` of `Performed` after a sacrifice, the next steps after a surveil or a scry when they choose no target, the `paid` steps of a payment that choose a target), a counter and a fight read as one sentence, each reads back as the printed text, and a link with no step to depend on, a reflexive target after a step that is no payment, a follow-up that is no sentence or a fight of another creature stays with the table.
 use super::*;
+use crate::effect::Effect;
 
 /// The sentences of the reflexive family, each written back as the card prints it.
 #[rstest]
@@ -71,16 +72,67 @@ fn w20b_existing_links_still_read(#[case] text: &str) {
 #[case::counter_on_another(
     "Whenever ~ attacks, put a +1/+1 counter on target creature you control, then it fights up to one target creature defending player controls."
 )]
-#[case::surveil_then_a_target(
-    "When ~ enters, surveil 4. When you do, you may return target nonland permanent an opponent controls to its owner's hand."
-)]
-#[case::scry_then_a_target("When ~ enters, scry 2. When you do, ~ deals 3 damage to any target.")]
-#[case::sacrifice_then_a_target(
-    "Whenever ~ attacks, sacrifice it. When you do, ~ deals 3 damage to any target."
-)]
 #[case::sacrifice_then_when_without_comma("When ~ enters, sacrifice it. When you do draw a card.")]
 fn w20b_other_links_stay_with_the_table(#[case] text: &str) {
     assert_eq!(clause(text, ClauseKind::Triggered, false), None, "{text}");
+}
+
+/// The follow-up that chooses a target is a reflexive trigger: the ability asks for no target, and the trigger has its
+/// own (CR 603.12).
+#[rstest]
+#[case::surveil(
+    "When ~ enters, surveil 4. When you do, you may return target nonland permanent an opponent controls to its owner's hand."
+)]
+#[case::scry("When ~ enters, scry 2. When you do, ~ deals 3 damage to any target.")]
+#[case::sacrifice("Whenever ~ attacks, sacrifice it. When you do, ~ deals 3 damage to any target.")]
+#[case::payment(
+    "Whenever ~ attacks, you may pay {2}. When you do, ~ deals 3 damage to any target."
+)]
+#[case::sacrificed_artifact(
+    "Whenever ~ attacks, you may sacrifice an artifact. When you do, ~ deals 3 damage to any target."
+)]
+#[case::mandatory_discard(
+    "When ~ enters, discard a card. When you do, return target creature card from your graveyard to your hand."
+)]
+#[case::discard(
+    "When ~ enters, you may discard a card. When you do, return target creature card from your graveyard to your hand."
+)]
+fn w20b_a_target_after_the_step_belongs_to_the_reflexive_trigger(#[case] text: &str) {
+    let read = golden(text, ClauseKind::Triggered, false);
+    assert!(read.targets().is_empty(), "{text}");
+    let json = serde_json::to_string(&read).unwrap();
+    assert!(
+        json.contains(r#""Reflexive":{"targets":"#),
+        "{text}: {json}"
+    );
+}
+
+/// Moving the targets of the steps read since the reader held some into the trigger renumbers them from 0.
+#[rstest]
+fn w20b_the_trigger_counts_its_targets_from_zero(
+    #[values(0, 1, 2, 3)] before: usize,
+    #[values(1, 2)] own: usize,
+) {
+    let spec: crate::refs::TargetSpec =
+        serde_json::from_str(r#"{"what":{"Object":[{"Type":"Creature"}]}}"#).unwrap();
+    let mut reader = Reader::new(&[], false);
+    reader.targets = vec![spec; before + own];
+    let steps: Vec<Effect> = (before..before + own)
+        .map(|index| {
+            let json = format!(r#"{{"LoseLife":{{"who":{{"Target":{index}}},"amount":1}}}}"#);
+            serde_json::from_str(&json).unwrap()
+        })
+        .collect();
+    let Some(Effect::Reflexive { targets, effects }) =
+        super::super::w20b_reflexive::w20b_trigger(&mut reader, before, &steps)
+    else {
+        panic!("no trigger");
+    };
+    assert_eq!((targets.len(), reader.targets.len()), (own, before));
+    for (index, effect) in effects.iter().enumerate() {
+        let json = serde_json::to_string(effect).unwrap();
+        assert!(json.contains(&format!(r#""Target":{index}"#)), "{json}");
+    }
 }
 
 /// An ability word with a digit after its hyphen is flavor like any other; a digit anywhere else is not a word.

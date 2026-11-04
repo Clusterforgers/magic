@@ -274,7 +274,7 @@ fn fused_spell(halves: &[CardDefinition]) -> Option<Ability> {
         return None;
     }
     let mut effects = serde_json::to_value(right_effects).ok()?;
-    shift_targets(&mut effects, u8::try_from(left_targets.len()).ok()?);
+    shift_targets(&mut effects, i64::try_from(left_targets.len()).ok()?).then_some(())?;
     let mut fused = left_effects.clone();
     fused.extend(serde_json::from_value::<Vec<Effect>>(effects).ok()?);
     Some(Ability::Spell {
@@ -283,26 +283,37 @@ fn fused_spell(halves: &[CardDefinition]) -> Option<Ability> {
     })
 }
 
-/// Adds `by` to every target index a reference or an amount names in the JSON of some effects.
-fn shift_targets(value: &mut serde_json::Value, by: u8) {
+/// Adds `by` to every target index a reference or an amount names in the JSON of some effects; false when an index
+/// would go below 0.
+pub(crate) fn shift_targets(value: &mut serde_json::Value, by: i64) -> bool {
     match value {
         serde_json::Value::Object(map) => {
             for (key, inner) in map.iter_mut() {
                 match (key.as_str(), inner.as_u64()) {
                     ("Target" | "TargetCount", Some(index)) => {
-                        *inner = serde_json::Value::from(index + u64::from(by));
+                        let Some(moved) = index.checked_add_signed(by) else {
+                            return false;
+                        };
+                        *inner = serde_json::Value::from(moved);
                     }
-                    _ => shift_targets(inner, by),
+                    _ => {
+                        if !shift_targets(inner, by) {
+                            return false;
+                        }
+                    }
                 }
             }
         }
         serde_json::Value::Array(items) => {
             for item in items.iter_mut() {
-                shift_targets(item, by);
+                if !shift_targets(item, by) {
+                    return false;
+                }
             }
         }
         _ => {}
     }
+    true
 }
 
 /// What a bare `{T}: Add ...` adds: no targets, no limit, usable at instant speed from the battlefield, cost exactly

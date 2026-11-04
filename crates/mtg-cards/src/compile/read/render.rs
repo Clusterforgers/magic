@@ -172,6 +172,9 @@ fn w7c_then_incubate(texts: &[String]) -> Vec<String> {
 /// the data does not say which a card used, so each way is written. Empty for any other ability.
 #[allow(clippy::too_many_lines)]
 pub fn variants(ability: &Ability) -> Vec<String> {
+    if let Some(texts) = super::w20b_reflexive::w20b_variants(ability, variants) {
+        return texts;
+    }
     if let Some(texts) = super::c11a_ability_less::c11a_variants(ability) {
         return texts;
     }
@@ -467,6 +470,9 @@ fn produced_wordings(texts: &mut Vec<String>) {
 /// and the wordings of the oracle text that no template reads ("you" after another player's event, "Then" opening a
 /// sentence, "deals damage equal to its power").
 pub fn written_variants(ability: &Ability) -> Vec<String> {
+    if let Some(texts) = super::w20b_reflexive::w20b_variants(ability, written_variants) {
+        return texts;
+    }
     let mut texts = variants(ability);
     texts.extend(where_x::equal_to_wordings(ability));
     event_wordings::add(ability, &mut texts);
