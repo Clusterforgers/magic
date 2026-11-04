@@ -156,6 +156,11 @@ fn w21a_tally_graveyards(
     if from == Zone::Battlefield && matches!(to, Zone::Graveyard(_)) {
         state.tally_object(card, None, Tally::W21aGraved);
     }
+    state.tally_object(
+        card,
+        None,
+        Tally::ArrivedFrom(crate::resolve::zone_kind(from)),
+    );
 }
 
 /// Logs a permanent put into a graveyard from the battlefield as it last existed there (`TallyEvent::Died`).

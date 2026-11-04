@@ -230,13 +230,16 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         | Pred::ChosenName
         | Pred::FaceDown
         | Pred::GravedThisTurn
+        | Pred::ArrivedFrom(_)
         | Pred::CastWith(_)
         | Pred::TopOfLibrary
         | Pred::BottomOfLibrary
         | Pred::Kicked
         | Pred::Suspended => Traits::NONE,
         Pred::WasCast { by, .. } => by.as_ref().map_or(Traits::NONE, reads_of_ref),
-        Pred::GreatestAmong { stat, group } => reads_of_stat(*stat).or(reads_of_selector(group)),
+        Pred::GreatestAmong { stat, group } | Pred::LeastAmong { stat, group } => {
+            reads_of_stat(*stat).or(reads_of_selector(group))
+        }
         Pred::Modified => Traits::CONTROL,
         Pred::Goaded => Traits::GOADED,
         Pred::Is(who)
@@ -263,7 +266,7 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         Pred::SharesSubtype(who) => Traits::SUBTYPES.or(reads_of_ref(who)),
         Pred::Color(_) | Pred::Colorless | Pred::ChosenColor => Traits::COLORS,
         Pred::ControlledBy(who) => Traits::CONTROL.or(reads_of_ref(who)),
-        Pred::HasKeyword(_) => Traits::KEYWORDS,
+        Pred::HasKeyword(_) | Pred::HasKeywordNamed(_) => Traits::KEYWORDS,
         Pred::Compare { stat, to, .. } => reads_of_stat(*stat).or(reads_of_amount(to)),
         Pred::Not(inner) => reads_of_pred(inner),
         Pred::Targeting(inner) | Pred::HasAttached(inner) => reads_of_selector(inner),
@@ -326,6 +329,7 @@ pub(crate) fn reads_of_amount(amount: &Amount) -> Traits {
         | Amount::Tallied { who, .. }
         | Amount::CommanderColors(who)
         | Amount::StartingLife(who)
+        | Amount::HighestCounters { who, .. }
         | Amount::LowestLife(who)
         | Amount::LowestHand(who)
         | Amount::HighestLife(who) => reads_of_ref(who),

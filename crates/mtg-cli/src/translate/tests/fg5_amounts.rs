@@ -104,10 +104,6 @@ fn game_facts_and_player_counts(#[case] svars: &str, #[case] expected: Value) {
     "SVar:X:PlayerCountOpponents$HighestValid Land.OppCtrl",
     "amount:Highest-of-the-opponents"
 )]
-#[case::highest_poison(
-    "SVar:X:PlayerCountOpponents$HighestCounters.Poison",
-    "amount:PlayerCountOpponents$HighestCounters.Poison"
-)]
 #[case::adamant_color("SVar:X:Count$Adamant.Purple.1.0", "amount:Count$Adamant-color")]
 #[case::unknown_player_word("SVar:X:TargetedPlayer$Handsize", "amount:TargetedPlayer$Handsize")]
 fn what_the_dsl_cannot_count_is_a_gap(#[case] svars: &str, #[case] gap: &str) {

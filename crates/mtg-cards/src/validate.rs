@@ -524,6 +524,16 @@ impl<'a> Walker<'a> {
                 self.uses("Pred", "GreatestAmong");
                 self.at("group", |w| w.selector(group));
             }
+            Pred::HasKeywordNamed(name) => {
+                self.uses("Pred", "HasKeywordNamed");
+                if !Keyword::NAMES.contains(&name.as_str()) {
+                    self.problem(format!("`{name}` is not a keyword"));
+                }
+            }
+            Pred::LeastAmong { group, .. } => {
+                self.uses("Pred", "LeastAmong");
+                self.at("group", |w| w.selector(group));
+            }
             Pred::Kicked => self.uses("Pred", "Kicked"),
             Pred::CounterCount { .. } => self.uses("Pred", "CounterCount"),
             _ => self.uses("Pred", "Suspended"),
@@ -539,6 +549,7 @@ impl<'a> Walker<'a> {
                 self.uses("Pred", "TargetsPlayer");
                 self.at("TargetsPlayer", |w| w.reference(who, Kind::Player));
             }
+            Pred::ArrivedFrom(_) => self.uses("Pred", "ArrivedFrom"),
             _ => self.uses("Pred", "GravedThisTurn"),
         }
     }
@@ -581,7 +592,11 @@ impl<'a> Walker<'a> {
                 }
             }
             Pred::Targeting(inner) | Pred::HasAttached(inner) => self.selector(inner),
-            Pred::Modified | Pred::FaceDown | Pred::TargetsPlayer(_) | Pred::GravedThisTurn => {
+            Pred::Modified
+            | Pred::FaceDown
+            | Pred::TargetsPlayer(_)
+            | Pred::GravedThisTurn
+            | Pred::ArrivedFrom(_) => {
                 self.w21a_pred(pred);
             }
             Pred::WasCast { .. }
@@ -593,6 +608,8 @@ impl<'a> Walker<'a> {
             | Pred::TargetedBy(_)
             | Pred::SingleTarget
             | Pred::GreatestAmong { .. }
+            | Pred::LeastAmong { .. }
+            | Pred::HasKeywordNamed(_)
             | Pred::Kicked
             | Pred::CounterCount { .. }
             | Pred::Suspended => self.fe1a_pred(pred),
@@ -801,6 +818,7 @@ impl<'a> Walker<'a> {
                 self.player_amount("Largest", who);
                 self.at("of", |w| w.selector(of));
             }
+            Amount::HighestCounters { who, .. } => self.player_amount("HighestCounters", who),
             Amount::StartingLife(who) => self.player_amount("StartingLife", who),
             Amount::Party(who) => self.player_amount("Party", who),
             Amount::CastWith(_) => self.uses("Amount", "CastWith"),

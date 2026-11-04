@@ -72,7 +72,17 @@ impl Scope<'_> {
             Pred::Kicked => Self::fe1a_cast_object(seen).is_some_and(|card| {
                 payments(card.card(), card.paid_costs(), OptionalKind::Kicker) > 0
             }),
-            Pred::GreatestAmong { stat, group } => self.fe1a_greatest(*stat, group, seen)?,
+            Pred::GreatestAmong { stat, group } => self.fe1a_greatest(*stat, group, seen, false)?,
+            // Like `HasKeyword`, an object that changed zones has the keywords its snapshot holds.
+            Pred::HasKeywordNamed(name) => match seen.keywords {
+                Some(held) => held.iter().any(|keyword| keyword.name() == name),
+                None => seen.card.is_some_and(|card| {
+                    keywords_of(self.state, card.id())
+                        .into_iter()
+                        .any(|keyword| keyword.name() == name)
+                }),
+            },
+            Pred::LeastAmong { stat, group } => self.fe1a_greatest(*stat, group, seen, true)?,
             Pred::Suspended => {
                 seen.zone == Zone::Exile
                     && seen.card.is_some_and(|card| {
@@ -141,19 +151,20 @@ impl Scope<'_> {
         }))
     }
 
-    /// Whether no object the group selector matches has more of the characteristic than the object.
+    /// Whether no object the group selector matches has more (or, with `least`, less) of the characteristic than the object.
     fn fe1a_greatest(
         &self,
         stat: StatKind,
         group: &Selector,
         seen: &Seen<'_>,
+        least: bool,
     ) -> Result<bool, ResolveError> {
         let Some(mine) = Self::stat(seen, stat) else {
             return Ok(false);
         };
         for other in self.matching(group)? {
             let theirs = self.seen(other).and_then(|held| Self::stat(&held, stat));
-            if theirs.is_some_and(|value| value > mine) {
+            if theirs.is_some_and(|value| if least { value < mine } else { value > mine }) {
                 return Ok(false);
             }
         }

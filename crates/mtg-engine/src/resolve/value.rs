@@ -369,6 +369,19 @@ impl<'a> Scope<'a> {
             .unwrap_or(0))
     }
 
+    /// The most counters of the kind any one of the players `who` names holds.
+    fn highest_counters(&self, who: &Ref, counter: &CounterKind) -> Result<i64, ResolveError> {
+        let mut most = 0;
+        for player in self.players(who)? {
+            let held = self
+                .state
+                .player(player)
+                .map_or(0, |held| held.counters_of(counter));
+            most = most.max(i64::from(held));
+        }
+        Ok(most)
+    }
+
     /// The most objects `of` names for any one of the players `who` names, each taken as the controller of the scope.
     fn largest(&self, who: &Ref, of: &Selector) -> Result<i64, ResolveError> {
         let counted = Amount::Count(of.clone());
@@ -1263,9 +1276,11 @@ impl<'a> Scope<'a> {
                 Some(value) => op.holds(value, self.amount(to)?),
                 None => false,
             },
-            Pred::Modified | Pred::FaceDown | Pred::TargetsPlayer(_) | Pred::GravedThisTurn => {
-                self.w21a_pred(pred, reference, seen)?
-            }
+            Pred::Modified
+            | Pred::FaceDown
+            | Pred::TargetsPlayer(_)
+            | Pred::GravedThisTurn
+            | Pred::ArrivedFrom(_) => self.w21a_pred(pred, reference, seen)?,
             Pred::Attacking
             | Pred::AttackingPlayer(_)
             | Pred::Blocking
@@ -1279,6 +1294,8 @@ impl<'a> Scope<'a> {
             | Pred::TargetedBy(_)
             | Pred::SingleTarget
             | Pred::GreatestAmong { .. }
+            | Pred::LeastAmong { .. }
+            | Pred::HasKeywordNamed(_)
             | Pred::Kicked
             | Pred::Suspended => self.fe1a_pred(pred, reference, seen)?,
             Pred::Not(inner) => !self.pred(inner, reference, seen)?,
@@ -1444,6 +1461,7 @@ impl<'a> Scope<'a> {
             Amount::PermanentsGraved => i64::from(self.state.graved_this_turn()),
             Amount::Tallied { who, what } => self.tallied(who, *what)?,
             Amount::Largest { who, of } => self.largest(who, of)?,
+            Amount::HighestCounters { who, counter } => self.highest_counters(who, counter)?,
             Amount::Party(who) => self.party(who)?,
             Amount::StartingLife(who) => self.w14b_starting_life(who)?,
             Amount::Mutations(of) => self.mutations(of)?,

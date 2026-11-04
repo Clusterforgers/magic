@@ -104,6 +104,12 @@ fn phrase(selector: &Selector) -> (String, String) {
             Pred::EnteredThisTurn => tail.push("that entered this turn".to_owned()),
             Pred::SummoningSick => tail.push("with summoning sickness".to_owned()),
             Pred::MilledThisTurn => tail.push("that was milled this turn".to_owned()),
+            Pred::ArrivedFrom(origin) => tail.push(format!(
+                "that was put there from {} this turn",
+                zone_phrase(*origin, false)
+                    .trim_start_matches("in ")
+                    .trim_start_matches("on ")
+            )),
             Pred::Attacking => adjectives.push("attacking".to_owned()),
             Pred::AttackingPlayer(Ref::AttachedPlayer) => {
                 tail.push("attacking enchanted player".to_owned());
@@ -120,6 +126,7 @@ fn phrase(selector: &Selector) -> (String, String) {
             Pred::HasKeyword(keyword) => {
                 tail.push(format!("with {}", keyword.shown_name().to_lowercase()));
             }
+            Pred::HasKeywordNamed(name) => tail.push(format!("with {}", name.to_lowercase())),
             Pred::HasCounter(kind) => tail.push(format!("with a {} counter on it", kind.name())),
             Pred::HasAnyCounter => tail.push("with a counter on it".to_owned()),
             Pred::CounterCount { kind, op, to } => {

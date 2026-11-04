@@ -42,6 +42,28 @@ fn refuses(spec: &str, gap: &str) {
 #[case::unblocked("Creature.attacking+unblocked", json!([{"Type": "Creature"}, "Attacking", "Unblocked"]))]
 #[case::paired("Creature.PairedWith", json!([{"Type": "Creature"}, {"PairedWith": "This"}]))]
 #[case::milled("Card.milledThisTurn", json!(["MilledThisTurn"]))]
+#[case::blocked("Creature.blocked", json!([{"Type": "Creature"}, "Attacking", {"Not": "Unblocked"}]))]
+#[case::arrived_from_the_battlefield(
+    "Creature.YouOwn+ThisTurnEnteredFrom_Battlefield",
+    json!([{"Type": "Creature"}, {"OwnedBy": "You"}, {"ArrivedFrom": "Battlefield"}])
+)]
+#[case::toxic_at_any_value("Creature.withToxic", json!([{"Type": "Creature"}, {"HasKeywordNamed": "Toxic"}]))]
+#[case::cycling_at_any_cost("Card.withCycling", json!([{"HasKeywordNamed": "Cycling"}]))]
+#[case::spaced_keyword("Creature.withFirst Strike", json!([{"Type": "Creature"}, {"HasKeyword": "FirstStrike"}]))]
+#[case::greatest_power(
+    "Creature.greatestPower",
+    json!([{"Type": "Creature"}, {"GreatestAmong": {"stat": "Power", "group": [{"Type": "Creature"}]}}])
+)]
+#[case::least_toughness_of_a_players(
+    "Creature.leastToughnessControlledByOpponent",
+    json!([{"Type": "Creature"}, {"LeastAmong": {"stat": "Toughness",
+        "group": [{"Type": "Creature"}, {"ControlledBy": "Opponents"}]}}])
+)]
+#[case::greatest_value_of_artifacts(
+    "Artifact.greatestCMC",
+    json!([{"Type": "Artifact"}, {"GreatestAmong": {"stat": "ManaValue", "group": [{"Type": "Artifact"}]}}])
+)]
+#[case::arrived_from_the_library("Card.ThisTurnEnteredFrom_Library", json!([{"ArrivedFrom": "Library"}]))]
 #[case::mono("Creature.MonoColor", json!([{"Type": "Creature"}, {"Compare": {"stat": "Colors", "op": "Eq", "to": 1}}]))]
 #[case::colors("Card.numColorsEQ2", json!([{"Compare": {"stat": "Colors", "op": "Eq", "to": 2}}]))]
 #[case::base_power("Creature.basePowerEQ1", json!([{"Type": "Creature"}, {"Compare": {"stat": "BasePower", "op": "Eq", "to": 1}}]))]
@@ -172,7 +194,17 @@ fn unknown_words_stay_gaps(#[case] spec: &str, #[case] gap: &str) {
 }
 
 #[rstest]
-#[case::blocked_is_not_unblocked("Creature.blocked", "valid:blocked")]
+#[case::not_a_keyword("Creature.withQuux", "valid:withQuux")]
+#[case::group_without_a_kind("Card.greatestPower", "valid:greatestPower-without-a-kind")]
+#[case::unknown_controller(
+    "Creature.leastPowerControlledByBogus",
+    "valid:leastPowerControlledByBogus"
+)]
+#[case::remembered_stat("Card.greatestRememberedCMC", "valid:greatestRememberedCMC")]
+#[case::arrival_from_nowhere(
+    "Creature.ThisTurnEnteredFrom_Nowhere",
+    "valid:ThisTurnEnteredFrom_Nowhere"
+)]
 #[case::colors_bound_unknown("Card.numColorsEQX", "valid:numColorsEQX")]
 #[case::kicked_option("Card.kicked 1", "valid:kicked 1")]
 fn state_atoms_that_differ_stay_gaps(#[case] spec: &str, #[case] gap: &str) {

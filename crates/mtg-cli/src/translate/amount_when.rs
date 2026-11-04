@@ -26,6 +26,11 @@ pub fn when(ctx: &Ctx, base: &str) -> Option<Tr<Value>> {
         "Blessing" => json!({"CitysBlessing": "You"}),
         "StartingPlayer" => json!({"StartingPlayer": "You"}),
         "Night" => json!("IsNight"),
+        // How this card was cast (`wasCastFromGraveyard.2.1`): the cast-way atoms of a valid-string, asked of the source.
+        _ if word.starts_with("wasCast") => {
+            let selector = super::valid_atoms::atom(word)?;
+            json!({"Matches": {"subject": "This", "selector": selector}})
+        }
         "Threshold" | "Delirium" | "Hellbent" | "Metalcraft" => match named(word) {
             Ok(condition) => condition,
             Err(gap) => return Some(Err(gap)),

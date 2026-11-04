@@ -266,6 +266,24 @@ fn greatest_among_takes_every_object_tied_for_the_most(
     }
 }
 
+#[rstest]
+#[case::power(StatKind::Power)]
+#[case::toughness(StatKind::Toughness)]
+fn least_among_takes_only_the_smallest_and_not_the_greatest(
+    #[values(2, 3, 4)] seats: usize,
+    #[case] stat: StatKind,
+) {
+    let game = table(seats);
+    let group = Selector(vec![
+        Pred::Type(CardType::Creature),
+        Pred::ControlledBy(Ref::You),
+    ]);
+    let pred = Pred::LeastAmong { stat, group };
+    assert!(holds(&game, pred.clone(), "Owl"));
+    assert!(!holds(&game, pred.clone(), "Guest 0"));
+    assert!(!holds(&game, pred, "Bear"));
+}
+
 #[test]
 fn greatest_among_follows_a_growing_creature() {
     let mut game = table(2);
@@ -286,6 +304,49 @@ fn greatest_among_follows_a_growing_creature() {
     fold(&mut game, &[grown]);
     assert!(holds(&game, pred.clone(), "Owl"));
     assert!(!holds(&game, pred, "Bear"));
+}
+
+#[rstest]
+#[case::any_value_of_the_keyword("Toxic", &["Toxic 1", "Toxic 3"])]
+#[case::another_keyword("Flying", &[])]
+#[case::unspoken("Cycling", &[])]
+fn has_keyword_named_holds_at_any_value_of_the_parameter(
+    #[values(2, 3, 4)] seats: usize,
+    #[case] name: &str,
+    #[case] holders: &[&str],
+) {
+    let toxic = |label: &str, n: u32| {
+        Arc::new(
+            CardDefinition::new(label)
+                .with_type(CardType::Creature)
+                .with_power_toughness(1, 1)
+                .with_rules(Ability::Keyword(Keyword::Toxic(n))),
+        )
+    };
+    let game = state(
+        (0..seats).map(|_| Vec::new()).collect(),
+        (0..seats)
+            .map(|s| {
+                if s == 0 {
+                    vec![
+                        toxic("Toxic 1", 1),
+                        toxic("Toxic 3", 3),
+                        creature("Plain", 1, 1),
+                        creature("Guest 0", 2, 2),
+                    ]
+                } else {
+                    vec![creature(&format!("Guest {s}"), 2, 2)]
+                }
+            })
+            .collect(),
+    );
+    for label in ["Toxic 1", "Toxic 3", "Plain"] {
+        assert_eq!(
+            holds(&game, Pred::HasKeywordNamed(name.to_owned()), label),
+            holders.contains(&label),
+            "{label}"
+        );
+    }
 }
 
 #[rstest]

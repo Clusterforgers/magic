@@ -11,7 +11,9 @@ use crate::value::{Amount, CastWay, Cmp, CounterKind, StatKind};
 pub const EXILED_SLOT: &str = "exiled";
 
 /// A zone a selector or a pattern can name.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Default, Serialize, Deserialize)]
+#[derive(
+    Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Default, Serialize, Deserialize,
+)]
 pub enum ZoneKind {
     /// The battlefield (the default place to look).
     #[default]
@@ -240,6 +242,9 @@ pub enum Pred {
     CastFrom(ZoneKind),
     /// Has the keyword.
     HasKeyword(Keyword),
+    /// Has the keyword at any value of its parameter ("with toxic", "with cycling"); the name is Scryfall's spelling
+    /// (`Keyword::NAMES`).
+    HasKeywordNamed(String),
     /// Has at least one counter of the kind on it.
     HasCounter(CounterKind),
     /// Has at least one counter of any kind on it (CR 122.1).
@@ -294,6 +299,9 @@ pub enum Pred {
     /// Is a card in a graveyard that was put there from the battlefield this turn ("creature cards in your graveyard that were
     /// put there from the battlefield this turn").
     GravedThisTurn,
+    /// Went into the zone it is in now this turn from a zone of the kind ("creature cards put into your graveyard from your
+    /// library this turn"); an object that moved again counts only for its latest move, and a token made there came from nowhere.
+    ArrivedFrom(ZoneKind),
     /// Is a spell cast, or a permanent that entered as a spell cast, by one of the players `by` names (anyone when absent)
     /// from the kind of zone `from` (anywhere when absent); a copy or a token was never cast.
     WasCast {
@@ -320,6 +328,13 @@ pub enum Pred {
     SingleTarget,
     /// Has the greatest value of the characteristic among the objects the group selector matches (a tie counts for each).
     GreatestAmong {
+        /// The characteristic compared.
+        stat: StatKind,
+        /// The objects compared; the object itself counts when it matches.
+        group: Selector,
+    },
+    /// Has the least value of the characteristic among the objects the group selector matches (a tie counts for each).
+    LeastAmong {
         /// The characteristic compared.
         stat: StatKind,
         /// The objects compared; the object itself counts when it matches.

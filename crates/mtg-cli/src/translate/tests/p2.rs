@@ -95,6 +95,29 @@ fn object_stat_gap(#[case] expression: &str, #[case] gap: &str) {
     "SVar:X:Count$ValidBattlefield Land.YouCtrl",
     json!({"Count": [{"Type": "Land"}, {"ControlledBy": "You"}]})
 )]
+#[case::most_poison(
+    "SVar:X:PlayerCountOpponents$HighestCounters.Poison",
+    json!({"HighestCounters": {"who": "Opponents", "counter": "poison"}})
+)]
+#[case::most_poison_of_all(
+    "SVar:X:PlayerCountPlayers$HighestCounters.Poison",
+    json!({"HighestCounters": {"who": "EachPlayer", "counter": "poison"}})
+)]
+#[case::all_poison_is_a_sum(
+    "SVar:X:Count$TotalOppPoisonCounters",
+    json!({"Counters": {"on": "Opponents", "counter": "poison"}})
+)]
+#[case::mana_pool("SVar:X:Count$ManaPool:All", json!({"ManaInPool": "You"}))]
+#[case::left_graveyard(
+    "SVar:X:Count$LeftGraveyardThisTurn Card.YouOwn",
+    json!({"Tallied": {"who": "You", "what": "CardsLeftGraveyard"}})
+)]
+#[case::chroma("SVar:X:Count$Chroma.Red", json!({"Devotion": ["Red"]}))]
+#[case::cast_from_graveyard(
+    "SVar:X:Count$wasCastFromGraveyard.2.1",
+    json!({"When": {"condition": {"Matches": {"subject": "This",
+        "selector": [{"WasCast": {"from": "Graveyard"}}]}}, "then": 2, "otherwise": 1}})
+)]
 fn game_counts(#[case] svars: &str, #[case] expected: Value) {
     assert_eq!(drawn(&drawing(svars)), expected);
 }
@@ -111,9 +134,19 @@ fn a_value_written_in_place_is_the_expression() {
 #[rstest]
 #[case("SVar:X:Count$Void.1.0", "amount:Count$Void")]
 #[case("SVar:X:Count$YourCountersBogus", "amount:Count$YourCountersBogus")]
+#[case("SVar:X:Count$ManaPool:green", "amount:Count$ManaPool:green")]
 #[case(
-    "SVar:X:PlayerCountOpponents$HighestCounters.Poison",
-    "amount:PlayerCountOpponents$HighestCounters.Poison"
+    "SVar:X:Count$LeftGraveyardThisTurn Creature.YouOwn",
+    "amount:Count$LeftGraveyardThisTurn"
+)]
+#[case("SVar:X:Count$Chroma.Bogus", "amount:Count$Devotion")]
+#[case(
+    "SVar:X:Count$wasCastFromTheirHand.2.1",
+    "amount:Count$wasCastFromTheirHand"
+)]
+#[case(
+    "SVar:X:PlayerCountOpponents$HighestCounters.Bogus kind",
+    "amount:HighestCounters.Bogus kind"
 )]
 #[case(
     "SVar:X:Count$ValidGraveyard Card.YouOwn$LeastCardPower",

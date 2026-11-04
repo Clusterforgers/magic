@@ -16,11 +16,25 @@ pub fn count(ctx: &Ctx, base: &str) -> Option<Tr<Value>> {
         "Converge" if rest.is_empty() => Ok(json!("ColorsSpent")),
         "CastTotalManaSpent" if rest.is_empty() => Ok(json!({"ManaSpent": {"of": null}})),
         "YourStartingLife" if rest.is_empty() => Ok(json!({"StartingLife": "You"})),
+        // The sum over the opponents: all their poison counters together.
+        "TotalOppPoisonCounters" if rest.is_empty() => {
+            Ok(json!({"Counters": {"on": "Opponents", "counter": "poison"}}))
+        }
         "CardsInYourHand" if rest.is_empty() => {
             Ok(json!({"Count": [{"In": "Hand"}, {"OwnedBy": "You"}]}))
         }
         "TotalCommanderCastFromCommandZone" if rest.is_empty() => {
             Ok(json!({"CommanderCasts": "You"}))
+        }
+        // All the mana in your pool; the mana of one color is a different count and stays a gap.
+        "ManaPool:All" if rest.is_empty() => Ok(json!({"ManaInPool": "You"})),
+        // The cards that left your graveyard this turn; another filter would count other cards.
+        "LeftGraveyardThisTurn" if rest == "Card.YouOwn" => {
+            Ok(json!({"Tallied": {"who": "You", "what": "CardsLeftGraveyard"}}))
+        }
+        // The mana symbols of the color among the permanents you control: the devotion to the color.
+        _ if word.starts_with("Chroma.") && rest.is_empty() => {
+            devotion(&word.replacen("Chroma.", "Devotion.", 1))
         }
         _ if word.starts_with("YourCounters") && rest.is_empty() => your_counters(word),
         "Valid" | "ValidGraveyard" | "ValidHand" | "ValidExile" | "ValidLibrary"
@@ -126,6 +140,15 @@ pub fn player_amount(head: &str, what: &str, who: &Value) -> Option<Tr<Value>> {
 /// selector names, each player taken as "you"; `None` for any other word.
 pub fn highest(ctx: &Ctx, who: &str, what: &str) -> Option<Tr<Value>> {
     let mine = |zone: &str| Ok(vec![json!({"In": zone}), json!({"OwnedBy": "You"})]);
+    // The most of one kind any single player holds: a maximum over the players, never their sum.
+    if let Some(kind) = what.strip_prefix("HighestCounters.") {
+        let Some(counter) = super::amount::counter_kind(&kind.to_uppercase()) else {
+            return Some(unmapped(format!("amount:HighestCounters.{kind}")));
+        };
+        return Some(Ok(
+            json!({"HighestCounters": {"who": who, "counter": counter}}),
+        ));
+    }
     let of = if let Some(spec) = what.strip_prefix("HighestValid ") {
         selector_in(ctx, spec, None)
     } else if let Some(spec) = what.strip_prefix("HighestValidGraveyard ") {
