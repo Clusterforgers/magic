@@ -1,0 +1,30 @@
+{
+  "oracle_id": "37420ccd-c6c6-4f15-a696-d8986934afb5",
+  "name": "Gladewalker Ritualist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gladewalker Ritualist",
+      "oracle_fingerprint": "e2c583952e9a30846e253c02f5e0b9d9",
+      "abilities": [
+        { "Keyword": "Changeling" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "ControlledBy": "You" },
+                  "Other",
+                  { "Named": "Gladewalker Ritualist" }
+                ],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

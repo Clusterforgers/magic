@@ -1,0 +1,48 @@
+{
+  "oracle_id": "a500b724-bf28-47a3-b434-6efdebbcc04c",
+  "name": "Strata Scythe",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Strata Scythe",
+      "oracle_fingerprint": "ed90e78492ab28ce45a5804a5f7cfb32",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "Search": { "filter": [{ "Type": "Land" }], "as": "found" } },
+              { "Exile": { "what": { "Bound": "found" } } },
+              { "Shuffle": {} },
+              { "Remember": { "what": { "Bound": "found" }, "slot": "imprinted" } }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": {
+                    "Count": [
+                      { "Type": "Land" },
+                      { "SharesName": { "Remembered": { "on": "This", "slot": "imprinted" } } }
+                    ]
+                  },
+                  "toughness": {
+                    "Count": [
+                      { "Type": "Land" },
+                      { "SharesName": { "Remembered": { "on": "This", "slot": "imprinted" } } }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{3}" } }
+      ]
+    }
+  ]
+}

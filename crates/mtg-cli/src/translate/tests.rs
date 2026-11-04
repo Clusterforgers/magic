@@ -32,6 +32,11 @@ fn world() -> World {
     })
     .collect();
     let mut world = World::new(&[], tokens);
+    world.stored = Some(
+        ["lightning_bolt", "ponder", "mox_opal"]
+            .map(str::to_owned)
+            .into(),
+    );
     world.subtypes.extend(
         [
             "Elf",
@@ -658,6 +663,7 @@ mod fg5s_block;
 mod fg5s_hidden;
 mod fg5s_play;
 mod fg5s_prevent;
+mod fg_digital;
 mod gn2;
 mod gn2_cant;
 mod gn2_play;

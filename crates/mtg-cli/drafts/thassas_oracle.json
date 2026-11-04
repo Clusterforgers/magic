@@ -1,0 +1,48 @@
+{
+  "oracle_id": "1de1b591-a73f-4974-b507-8c63e07a0868",
+  "name": "Thassa's Oracle",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thassa's Oracle",
+      "oracle_fingerprint": "82cfc8bf46425931d5e11657af31b5b8",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "LookAtTop": { "count": { "Devotion": ["Blue"] }, "as": "top" } },
+              {
+                "Choose": {
+                  "from": { "Bound": "top" },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "kept2",
+                  "rest_as": "rest3"
+                }
+              },
+              { "Move": { "what": { "Bound": "kept2" }, "to": { "Library": { "place": "Top" } } } },
+              {
+                "Move": {
+                  "what": { "Bound": "rest3" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "OwnedBy": "You" }, { "In": "Library" }] },
+                      "op": "Le",
+                      "right": { "Devotion": ["Blue"] }
+                    }
+                  },
+                  "then": [{ "WinGame": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

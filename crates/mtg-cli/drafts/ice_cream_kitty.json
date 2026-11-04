@@ -1,0 +1,31 @@
+{
+  "oracle_id": "f8131dca-ba6e-4ca4-943e-a3d26c75b8b8",
+  "name": "Ice Cream Kitty",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ice Cream Kitty",
+      "oracle_fingerprint": "05c93fab949f22a293b51c9bdbb23eea",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{2}" },
+              {
+                "Sacrifice": { "filter": [{ "AnyOf": [{ "Type": "Creature" }, "Token"] }, "Other"] }
+              }
+            ],
+            "timing": "Sorcery",
+            "effects": [{ "Draw": {} }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap", "SacrificeSelf"],
+            "effects": [{ "GainLife": { "amount": 3 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

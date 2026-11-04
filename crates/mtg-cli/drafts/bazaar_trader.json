@@ -1,0 +1,40 @@
+{
+  "oracle_id": "21ad7067-3210-42d6-9009-0784b2834227",
+  "name": "Bazaar Trader",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bazaar Trader",
+      "oracle_fingerprint": "9d0bad8382ba015e186181a3d47e055d",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [
+              { "what": "Player" },
+              {
+                "what": {
+                  "Object": [
+                    {
+                      "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }, { "Type": "Land" }]
+                    },
+                    { "ControlledBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 1 },
+                  "mods": [{ "SetController": { "Target": 0 } }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

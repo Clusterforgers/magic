@@ -1,0 +1,40 @@
+{
+  "oracle_id": "92e45a8f-c582-45e1-9b7f-def219023ebf",
+  "name": "West Wind Avatar",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "West Wind Avatar",
+      "oracle_fingerprint": "7a89d60a934e4968ca0438ec83239c78",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "Attacks": { "what": ["This"] } }
+              ]
+            },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [
+                    { "Sacrifice": { "filter": [{ "AnyOf": ["Token", { "Type": "Land" }] }] } }
+                  ],
+                  "paid": [{ "GainLife": { "amount": 3 } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 115, "end": 240 }
+          }
+        }
+      ]
+    }
+  ]
+}

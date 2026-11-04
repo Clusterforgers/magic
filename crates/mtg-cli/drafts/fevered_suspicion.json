@@ -1,0 +1,37 @@
+{
+  "oracle_id": "51545f6e-d0e3-4b4c-bc73-c731f85e26b0",
+  "name": "Fevered Suspicion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fevered Suspicion",
+      "oracle_fingerprint": "1bdce0dc0ab0c56caa34bb053c71342f",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RevealUntil": {
+                  "who": "Opponents",
+                  "filter": [{ "Not": { "Type": "Land" } }],
+                  "as": "found",
+                  "revealed_as": "revealed2"
+                }
+              },
+              { "Exile": { "what": { "Bound": "found" } } },
+              { "Exile": { "what": { "Bound": "revealed2" } } },
+              {
+                "RepeatEach": {
+                  "over": { "Bound": "found" },
+                  "as": "card3",
+                  "effects": [{ "CastFromZone": { "what": { "Bound": "card3" }, "free": true } }]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "Rebound" }
+      ]
+    }
+  ]
+}

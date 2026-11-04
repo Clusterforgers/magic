@@ -1,0 +1,34 @@
+{
+  "oracle_id": "7b31ecf8-5266-4376-ace0-8b873706c4ea",
+  "name": "Saproling Burst",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Saproling Burst",
+      "oracle_fingerprint": "d11f2a526964f019b0f80bc8fb24d373",
+      "abilities": [
+        { "Keyword": { "Fading": 7 } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 159, "end": 352 }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield" } },
+            "effects": [
+              {
+                "Destroy": {
+                  "what": { "Remembered": { "on": "This", "slot": "imprinted" } },
+                  "regenerate": false
+                }
+              },
+              { "Forget": { "slot": "imprinted" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

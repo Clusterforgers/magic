@@ -1,0 +1,28 @@
+{
+  "oracle_id": "0fb70b94-0847-4155-8953-cb53fef82ef1",
+  "name": "Curse of Hospitality",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Curse of Hospitality",
+      "oracle_fingerprint": "c88418241b5751fb7874d96748f77494",
+      "abilities": [
+        { "Keyword": { "EnchantPlayer": {} } },
+        {
+          "Static": {
+            "affected": {
+              "Each": [{ "Type": "Creature" }, { "AttackingPlayer": "AttachedPlayer" }]
+            },
+            "mods": [{ "AddKeyword": "Trample" }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 66, "end": 321 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "oracle_id": "ce2e564d-8b5f-48a0-ae71-777c066de244",
+  "name": "Kami of Bamboo Groves",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kami of Bamboo Groves",
+      "oracle_fingerprint": "3d07a7bd5503254925682c8846447b53",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [{ "Type": "Land" }, { "OwnedBy": "You" }, { "In": "Hand" }]
+                        },
+                        "count": { "min": 0, "max": 1 },
+                        "as": "picked"
+                      }
+                    },
+                    {
+                      "Move": {
+                        "what": { "Bound": "picked" },
+                        "to": { "Battlefield": { "tapped": true } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{G}" }, "DiscardSelf"],
+            "from": "Hand",
+            "effects": [{ "Conjure": { "name": "Forest", "zone": "Hand", "count": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

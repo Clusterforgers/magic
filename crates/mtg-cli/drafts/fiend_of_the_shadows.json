@@ -1,0 +1,43 @@
+{
+  "oracle_id": "3891a3b6-d8ac-4cd3-b2f6-d6d786e89a67",
+  "name": "Fiend of the Shadows",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fiend of the Shadows",
+      "oracle_fingerprint": "c83b632f895e1914cf0bdc24f6cb14ce",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              {
+                "Choose": {
+                  "who": "Triggering",
+                  "from": { "Each": [{ "In": "Hand" }, { "OwnedBy": "Triggering" }] },
+                  "as": "picked"
+                }
+              },
+              { "Exile": { "what": { "Bound": "picked" }, "as": "exiled2" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": { "from": "Exile", "only": { "Bound": "exiled2" }, "play": true }
+                  },
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Sacrifice": { "filter": [{ "Subtype": "Human" }] } }],
+            "effects": [{ "Regenerate": { "what": "This" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

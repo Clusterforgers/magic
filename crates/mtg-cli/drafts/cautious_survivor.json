@@ -1,0 +1,22 @@
+{
+  "oracle_id": "28eb696f-a42c-4444-8139-dfd62029e020",
+  "name": "Cautious Survivor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cautious Survivor",
+      "oracle_fingerprint": "d83f3ed794dc28ed126267c5d17dbfae",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Main2", "whose": "You" } },
+            "if": {
+              "CountOf": { "subject": "This", "selector": ["Tapped"], "op": "Ge", "right": 1 }
+            },
+            "effects": [{ "GainLife": { "amount": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

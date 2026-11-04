@@ -1,0 +1,42 @@
+{
+  "oracle_id": "84c912e8-6a92-47f7-88b6-e777bd0bb424",
+  "name": "Sparkcaster",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sparkcaster",
+      "oracle_fingerprint": "40939182f2464cbb43a21a2706fae0a7",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "AnyOf": [{ "Color": "Red" }, { "Color": "Green" }] },
+                      { "ControlledBy": "You" }
+                    ]
+                  },
+                  "as": "picked"
+                }
+              },
+              { "Move": { "what": { "Bound": "picked" }, "to": "Hand" } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              { "what": { "Either": ["Player", { "Object": [{ "Type": "Planeswalker" }] }] } }
+            ],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

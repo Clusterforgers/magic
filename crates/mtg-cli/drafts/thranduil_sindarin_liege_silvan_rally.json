@@ -1,0 +1,73 @@
+{
+  "oracle_id": "f6771d32-395e-4832-b33d-cbc12dff1516",
+  "name": "Thranduil, Sindarin Liege // Silvan Rally",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thranduil, Sindarin Liege",
+      "oracle_fingerprint": "98b903d583c828aeb3579d43f37fc73f",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Elf" }, "Other", { "ControlledBy": "You" }] },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Elf",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Elf"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Silvan Rally",
+      "oracle_fingerprint": "dbd3dbcf1c25195396b986cf1927bee6",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Mill": { "count": 4, "as": "milled" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Type": "Land" },
+                      { "Is": { "Bound": "milled" } },
+                      { "AnyOf": [{ "In": "Graveyard" }, { "In": "Exile" }] },
+                      { "OwnedBy": "You" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 2 },
+                  "as": "picked2"
+                }
+              },
+              { "Move": { "what": { "Bound": "picked2" }, "to": "Hand" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

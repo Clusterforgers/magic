@@ -1,0 +1,29 @@
+{
+  "oracle_id": "e199e183-e857-4dc7-87f4-36b32c4dac96",
+  "name": "Cruel Fate",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cruel Fate",
+      "oracle_fingerprint": "6468e1aa594c9ea9af0bd412db85fc7c",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              { "LookAtTop": { "who": { "Target": 0 }, "count": 5, "as": "top" } },
+              { "Choose": { "from": { "Bound": "top" }, "as": "kept2", "rest_as": "rest3" } },
+              { "Move": { "what": { "Bound": "kept2" }, "to": "Graveyard" } },
+              {
+                "Move": {
+                  "what": { "Bound": "rest3" },
+                  "to": { "Library": { "place": "Top", "order": "Chosen" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

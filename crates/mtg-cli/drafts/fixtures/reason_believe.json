@@ -1,0 +1,157 @@
+{
+  "object": "card",
+  "id": "1ca644e3-4fb3-4d38-b714-e3d7459bd8b9",
+  "oracle_id": "e2b152ea-82d5-465e-8e13-3d62aacd6692",
+  "multiverse_ids": [
+    430843
+  ],
+  "mtgo_id": 64820,
+  "tcgplayer_id": 135052,
+  "cardmarket_id": 298685,
+  "name": "Reason // Believe",
+  "lang": "en",
+  "released_at": "2017-07-14",
+  "uri": "https://api.scryfall.com/cards/1ca644e3-4fb3-4d38-b714-e3d7459bd8b9",
+  "scryfall_uri": "https://scryfall.com/card/hou/154/reason-believe?utm_source=api",
+  "layout": "split",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T09:46:46Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/1/c/1ca644e3-4fb3-4d38-b714-e3d7459bd8b9.jpg?1783936006",
+    "normal": "https://cards.scryfall.io/normal/front/1/c/1ca644e3-4fb3-4d38-b714-e3d7459bd8b9.jpg?1783936006",
+    "large": "https://cards.scryfall.io/large/front/1/c/1ca644e3-4fb3-4d38-b714-e3d7459bd8b9.jpg?1783936006",
+    "png": "https://cards.scryfall.io/png/front/1/c/1ca644e3-4fb3-4d38-b714-e3d7459bd8b9.png?1783936006",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/1/c/1ca644e3-4fb3-4d38-b714-e3d7459bd8b9.jpg?1783936006",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/1/c/1ca644e3-4fb3-4d38-b714-e3d7459bd8b9.jpg?1783936006",
+    "thumb": "https://cards.scryfall.io/thumb/front/1/c/1ca644e3-4fb3-4d38-b714-e3d7459bd8b9.webp?1783936006",
+    "grid": "https://cards.scryfall.io/grid/front/1/c/1ca644e3-4fb3-4d38-b714-e3d7459bd8b9.webp?1783936006",
+    "display": "https://cards.scryfall.io/display/front/1/c/1ca644e3-4fb3-4d38-b714-e3d7459bd8b9.webp?1783936006",
+    "art": "https://cards.scryfall.io/art/front/1/c/1ca644e3-4fb3-4d38-b714-e3d7459bd8b9.webp?1783936006",
+    "crop": "https://cards.scryfall.io/crop/front/1/c/1ca644e3-4fb3-4d38-b714-e3d7459bd8b9.webp?1783936006",
+    "jpeg": "https://cards.scryfall.io/normal/front/1/c/1ca644e3-4fb3-4d38-b714-e3d7459bd8b9.jpg?1783936006"
+  },
+  "mana_cost": "{U} // {4}{G}",
+  "cmc": 6.0,
+  "type_line": "Sorcery // Sorcery",
+  "colors": [
+    "G",
+    "U"
+  ],
+  "color_identity": [
+    "G",
+    "U"
+  ],
+  "keywords": [
+    "Aftermath",
+    "Scry"
+  ],
+  "card_faces": [
+    {
+      "object": "card_face",
+      "name": "Reason",
+      "mana_cost": "{U}",
+      "type_line": "Sorcery",
+      "oracle_text": "Scry 3.",
+      "artist": "Daarken",
+      "artist_id": "e607a0d4-fc12-4c01-9e3f-501f5269b9cb",
+      "illustration_id": "e2feab71-6a93-4041-9208-4a17c7c4b376"
+    },
+    {
+      "object": "card_face",
+      "name": "Believe",
+      "mana_cost": "{4}{G}",
+      "type_line": "Sorcery",
+      "oracle_text": "Aftermath (Cast this spell only from your graveyard. Then exile it.)\nLook at the top card of your library. You may put it onto the battlefield if it's a creature card. If you don't, put it into your hand.",
+      "artist": "Daarken",
+      "artist_id": "e607a0d4-fc12-4c01-9e3f-501f5269b9cb"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "65ff168b-bb94-47a5-a8f9-4ec6c213e768",
+  "set": "hou",
+  "set_name": "Hour of Devastation",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/65ff168b-bb94-47a5-a8f9-4ec6c213e768",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ahou&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/hou?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/1ca644e3-4fb3-4d38-b714-e3d7459bd8b9/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ae2b152ea-82d5-465e-8e13-3d62aacd6692&unique=prints",
+  "collector_number": "154",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Daarken",
+  "artist_ids": [
+    "e607a0d4-fc12-4c01-9e3f-501f5269b9cb"
+  ],
+  "illustration_id": "e2feab71-6a93-4041-9208-4a17c7c4b376",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 15712,
+  "penny_rank": 6493,
+  "prices": {
+    "usd": "0.20",
+    "usd_foil": "0.30",
+    "usd_etched": null,
+    "eur": "0.09",
+    "eur_foil": "0.34",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=430843&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DReason%2B%252F%252F%2BBelieve",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DReason%2B%252F%252F%2BBelieve",
+    "edhrec": "https://edhrec.com/route/?cc=Reason+%2F%2F+Believe"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F135052%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=298685&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/64820?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

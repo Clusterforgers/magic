@@ -1,0 +1,40 @@
+{
+  "oracle_id": "a0657586-0404-4bb0-a92d-25f040d560c1",
+  "name": "Aberrant Manawurm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Aberrant Manawurm",
+      "oracle_fingerprint": "231bc194f652cfb84acf0f596eee235b",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                "by": "You"
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": { "Stat": { "of": "Triggering", "stat": "ManaSpent" } },
+                        "toughness": 0
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

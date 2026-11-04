@@ -1,0 +1,38 @@
+{
+  "oracle_id": "31265357-5ecb-4d83-80ff-1795b1dfdecb",
+  "name": "Gutless Plunderer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gutless Plunderer",
+      "oracle_fingerprint": "2efbefaff9d9bbcd17a222f01f582e72",
+      "abilities": [
+        { "Keyword": "Deathtouch" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "Attackers" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              { "LookAtTop": { "count": 3, "as": "top" } },
+              {
+                "Choose": {
+                  "from": { "Each": [{ "In": "Library" }, { "Is": { "Bound": "top" } }] },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "kept2"
+                }
+              },
+              { "Move": { "what": { "Bound": "kept2" }, "to": { "Library": { "place": "Top" } } } },
+              { "Move": { "what": { "Bound": "top" }, "to": "Graveyard" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

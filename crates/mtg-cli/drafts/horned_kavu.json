@@ -1,0 +1,33 @@
+{
+  "oracle_id": "14817050-9f2d-453f-b36b-e6429fa29165",
+  "name": "Horned Kavu",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Horned Kavu",
+      "oracle_fingerprint": "c70e415fe2e6861c5177149ebd74755e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "AnyOf": [{ "Color": "Red" }, { "Color": "Green" }] },
+                      { "ControlledBy": "You" }
+                    ]
+                  },
+                  "as": "picked"
+                }
+              },
+              { "Move": { "what": { "Bound": "picked" }, "to": "Hand" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

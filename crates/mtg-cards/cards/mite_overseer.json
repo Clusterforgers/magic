@@ -1,0 +1,48 @@
+{
+  "oracle_id": "d92411b3-cb25-4123-a78e-4f785dfdae0c",
+  "name": "Mite Overseer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mite Overseer",
+      "oracle_fingerprint": "05ff20fe813267d97bb111dfb6b517b0",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, "Token", { "ControlledBy": "You" }] },
+            "mods": [
+              { "ModifyPT": { "power": 1, "toughness": 0 } },
+              { "AddKeyword": "FirstStrike" }
+            ],
+            "condition": "YourTurn"
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{3}{W/P}",
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Phyrexian Mite",
+                      "types": ["Artifact", "Creature"],
+                      "subtypes": ["Phyrexian", "Mite"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [
+                        { "Keyword": { "Toxic": 1 } },
+                        { "Static": { "affected": "This", "mods": ["CantBlock"] } }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

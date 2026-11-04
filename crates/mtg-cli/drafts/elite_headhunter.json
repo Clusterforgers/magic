@@ -1,0 +1,45 @@
+{
+  "oracle_id": "fad0118b-d046-4ee7-87d9-e6799f70a7a8",
+  "name": "Elite Headhunter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Elite Headhunter",
+      "oracle_fingerprint": "b03d1f9ee823b3f071b707d14a5ce029",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{B/R}{B/R}{B/R}" },
+              {
+                "Sacrifice": {
+                  "filter": [
+                    {
+                      "AnyOf": [
+                        {
+                          "Not": {
+                            "AnyOf": [{ "Not": { "Type": "Creature" } }, { "Not": "Other" }]
+                          }
+                        },
+                        { "Type": "Artifact" }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ],
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }]
+                }
+              }
+            ],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

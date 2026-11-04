@@ -1,0 +1,33 @@
+{
+  "oracle_id": "d499e473-aed8-4c8b-8cf0-a43bcc5f40cf",
+  "name": "Aurora Shifter",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Aurora Shifter",
+      "oracle_fingerprint": "81bb14303723e5379ef8feda148e0b4e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": "You",
+                  "counter": { "Other": "energy" },
+                  "count": "Triggering"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 79, "end": 333 }
+          }
+        }
+      ]
+    }
+  ]
+}

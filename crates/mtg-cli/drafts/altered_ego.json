@@ -1,0 +1,20 @@
+{
+  "oracle_id": "7c35f3fd-c64e-4944-a4d5-37ce916d23c3",
+  "name": "Altered Ego",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Altered Ego",
+      "oracle_fingerprint": "0186e54f2c1c4d4a54b20cc3b53e5de7",
+      "abilities": [
+        { "Rule": { "rule": { "CantBeCountered": "This" }, "from": "Stack" } },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "AsCopy": { "of": [{ "Type": "Creature" }, "Other"] } }
+          }
+        }
+      ]
+    }
+  ]
+}

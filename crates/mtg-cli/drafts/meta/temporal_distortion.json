@@ -1,0 +1,59 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "Whenever a creature or land becomes tapped, put an hourglass counter on it.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "At the beginning of each player's upkeep, remove all hourglass counters from permanents that player controls.",
+      "abilities": [],
+      "gap": "effect:RemoveCounterAll"
+    },
+    {
+      "face": 0,
+      "tag": "R",
+      "text": "Each permanent with an hourglass counter on it doesn't untap during its controller's untap step.",
+      "abilities": [
+        1
+      ],
+      "gap": null
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 75
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 76,
+          "end": 172
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 173,
+          "end": 282
+        },
+        "mark": "ByHand"
+      }
+    ]
+  }
+}

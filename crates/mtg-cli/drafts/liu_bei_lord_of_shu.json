@@ -1,0 +1,36 @@
+{
+  "oracle_id": "f46416cc-0c3d-4d90-bdcb-910c5d4a2014",
+  "name": "Liu Bei, Lord of Shu",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Liu Bei, Lord of Shu",
+      "oracle_fingerprint": "df167e0a37db2c84b7569adc4e26e523",
+      "abilities": [
+        { "Keyword": "Horsemanship" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Sum": [
+                    {
+                      "Count": [{ "Named": "Guan Yu, Sainted Warrior" }, { "ControlledBy": "You" }]
+                    },
+                    {
+                      "Count": [{ "Named": "Zhang Fei, Fierce Warrior" }, { "ControlledBy": "You" }]
+                    }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

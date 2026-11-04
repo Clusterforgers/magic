@@ -249,6 +249,7 @@ mod damage_wordings;
 mod day_night;
 mod defining;
 mod died_under;
+mod digital_wordings;
 mod dk1b_attached_writers;
 mod dk1c5_rooms;
 mod draws;

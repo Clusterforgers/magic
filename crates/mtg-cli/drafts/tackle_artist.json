@@ -1,0 +1,45 @@
+{
+  "oracle_id": "2e80d632-cf84-4562-8c93-5850cceb5bec",
+  "name": "Tackle Artist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tackle Artist",
+      "oracle_fingerprint": "14648001821aeb9b1379afb0166eb1f8",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                "by": "You"
+              }
+            },
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": "This",
+                  "counter": "+1/+1",
+                  "count": {
+                    "When": {
+                      "condition": {
+                        "Compare": {
+                          "left": { "Stat": { "of": "Triggering", "stat": "ManaSpent" } },
+                          "op": "Ge",
+                          "right": 5
+                        }
+                      },
+                      "then": 2,
+                      "otherwise": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

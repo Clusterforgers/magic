@@ -1,0 +1,37 @@
+{
+  "oracle_id": "4ad09b75-6d7a-46c7-95a2-d7f90995fdd1",
+  "name": "Lurking Informant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lurking Informant",
+      "oracle_fingerprint": "c48bdc514395517463e278377df47c88",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap"],
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              { "LookAtTop": { "who": { "Target": 0 }, "as": "top" } },
+              {
+                "Choose": {
+                  "from": { "Bound": "top" },
+                  "count": { "min": 0, "max": null },
+                  "as": "kept2",
+                  "rest_as": "rest3"
+                }
+              },
+              { "Move": { "what": { "Bound": "kept2" }, "to": "Graveyard" } },
+              {
+                "Move": {
+                  "what": { "Bound": "rest3" },
+                  "to": { "Library": { "place": "Top", "order": "Chosen" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

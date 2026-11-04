@@ -1,0 +1,48 @@
+{
+  "oracle_id": "4af20f8c-2ba0-49d5-a64e-d3668cec30cd",
+  "name": "Mind Swords",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mind Swords",
+      "oracle_fingerprint": "a808a619b50b34e983ad317b4e364386",
+      "abilities": [
+        {
+          "FreeCast": {
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Subtype": "Swamp" }, { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "cost": [{ "Sacrifice": { "filter": [{ "Type": "Creature" }] } }]
+          }
+        },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "player",
+                  "effects": [
+                    {
+                      "Choose": {
+                        "who": { "Bound": "player" },
+                        "from": { "Each": [{ "In": "Hand" }, { "OwnedBy": { "Bound": "player" } }] },
+                        "count": { "min": 2, "max": 2 },
+                        "as": "picked2"
+                      }
+                    },
+                    { "Exile": { "what": { "Bound": "picked2" } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

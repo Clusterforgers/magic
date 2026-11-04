@@ -1,0 +1,58 @@
+{
+  "oracle_id": "152bbb62-195b-4de1-90c6-10dd953f8c4b",
+  "name": "Cauldron's Gift",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cauldron's Gift",
+      "oracle_fingerprint": "a05b58506e1c9afefe43b149a579ea3a",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "When": {
+                          "condition": {
+                            "Compare": {
+                              "left": { "ManaSpent": { "of": "Black" } },
+                              "op": "Ge",
+                              "right": 3
+                            }
+                          },
+                          "then": 1,
+                          "otherwise": 0
+                        }
+                      },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Mill": { "count": 4 } }]
+                }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "picked" },
+                  "to": { "Battlefield": { "counters": [["+1/+1", 1]] } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

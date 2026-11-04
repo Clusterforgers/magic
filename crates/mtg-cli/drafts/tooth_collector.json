@@ -1,0 +1,54 @@
+{
+  "oracle_id": "b7c165a4-53a2-4117-a452-b9a8fe309c09",
+  "name": "Tooth Collector",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tooth Collector",
+      "oracle_fingerprint": "aa3992d9308a4772b51b83173d1751cb",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": -1, "toughness": -1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "Opponents" } },
+            "if": {
+              "Compare": {
+                "left": { "CardTypes": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                "op": "Ge",
+                "right": 4
+              }
+            },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "ActivePlayer" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": -1, "toughness": -1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

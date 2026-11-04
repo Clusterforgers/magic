@@ -49,6 +49,18 @@ fn comparison(stat: StatKind, op: Cmp, to: i32) -> String {
     }
 }
 
+fn counter_count(kind: &str, op: Cmp, to: u32) -> String {
+    let number = match op {
+        Cmp::Eq => format!("exactly {to}"),
+        Cmp::Ne => format!("other than {to}"),
+        Cmp::Lt => format!("fewer than {to}"),
+        Cmp::Le => format!("{to} or fewer"),
+        Cmp::Gt => format!("more than {to}"),
+        Cmp::Ge => format!("{to} or more"),
+    };
+    format!("with {number} {kind} counters on it")
+}
+
 fn zone_phrase(kind: ZoneKind, yours: bool) -> String {
     let (place, owner) = match kind {
         ZoneKind::Battlefield => return "on the battlefield".to_owned(),
@@ -110,6 +122,9 @@ fn phrase(selector: &Selector) -> (String, String) {
             }
             Pred::HasCounter(kind) => tail.push(format!("with a {} counter on it", kind.name())),
             Pred::HasAnyCounter => tail.push("with a counter on it".to_owned()),
+            Pred::CounterCount { kind, op, to } => {
+                tail.push(counter_count(kind.name(), *op, *to));
+            }
             Pred::Compare {
                 stat,
                 op,

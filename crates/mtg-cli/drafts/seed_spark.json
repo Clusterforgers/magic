@@ -1,0 +1,49 @@
+{
+  "oracle_id": "fc2e441c-bc0b-439f-af71-daba3b033381",
+  "name": "Seed Spark",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Seed Spark",
+      "oracle_fingerprint": "2846ad505eac44d9a82fdb125a74eecd",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Enchantment" }] }]
+                }
+              }
+            ],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              {
+                "If": {
+                  "condition": { "ManaSpent": "Green" },
+                  "then": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Saproling",
+                            "colors": ["Green"],
+                            "types": ["Creature"],
+                            "subtypes": ["Saproling"],
+                            "power": 1,
+                            "toughness": 1
+                          }
+                        },
+                        "count": 2
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

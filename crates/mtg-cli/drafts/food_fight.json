@@ -1,0 +1,41 @@
+{
+  "oracle_id": "00571e7f-4e40-4a07-a529-34580e942338",
+  "name": "Food Fight",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Food Fight",
+      "oracle_fingerprint": "e0839899c144b88f07d8e874d25eb8ef",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Artifact" }, { "ControlledBy": "You" }] },
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Activated": {
+                    "cost": [{ "Mana": "{2}" }, "SacrificeSelf"],
+                    "targets": [{ "what": "AnyTarget" }],
+                    "effects": [
+                      {
+                        "DealDamage": {
+                          "to": { "Target": 0 },
+                          "amount": {
+                            "Sum": [
+                              { "Count": [{ "ControlledBy": "You" }, { "Named": "Food Fight" }] },
+                              1
+                            ]
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

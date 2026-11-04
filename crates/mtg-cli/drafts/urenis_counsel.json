@@ -1,0 +1,23 @@
+{
+  "oracle_id": "91617de2-4aab-4efc-94a1-053dfaac3ae5",
+  "name": "Ureni's Counsel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ureni's Counsel",
+      "oracle_fingerprint": "ab9f8788354681c1f7c928b523a41a49",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{1}",
+            "per": { "Count": [{ "Subtype": "Dragon" }, { "OwnedBy": "You" }, { "In": "Library" }] }
+          }
+        },
+        { "Spell": { "effects": [{ "Seek": { "filter": [{ "Subtype": "Dragon" }] } }] } },
+        { "Keyword": { "Harmonize": "{8}{R}{R}" } }
+      ]
+    }
+  ]
+}

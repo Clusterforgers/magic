@@ -1,0 +1,26 @@
+{
+  "oracle_id": "ca4b4bf2-ed34-444c-9088-dd1ea488ec4e",
+  "name": "Curse of Obsession",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Curse of Obsession",
+      "oracle_fingerprint": "2e1352c263cd3b2893d0ac6fd5482511",
+      "abilities": [
+        { "Keyword": { "EnchantPlayer": {} } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Draw", "whose": "AttachedPlayer" } },
+            "effects": [{ "Draw": { "who": "Triggering", "count": 2 } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 105, "end": 186 }
+          }
+        }
+      ]
+    }
+  ]
+}

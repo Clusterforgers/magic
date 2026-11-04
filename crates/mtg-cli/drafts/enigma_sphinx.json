@@ -1,0 +1,29 @@
+{
+  "oracle_id": "6fb84ecd-ab60-4c2c-987d-8a0749db5777",
+  "name": "Enigma Sphinx",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Enigma Sphinx",
+      "oracle_fingerprint": "c90e9cc53defce2829c123a17fa1b0cb",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": ["This", { "OwnedBy": "You" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              { "Move": { "what": "Triggering", "to": { "Library": { "place": { "Below": 2 } } } } }
+            ]
+          }
+        },
+        { "Keyword": "Cascade" }
+      ]
+    }
+  ]
+}

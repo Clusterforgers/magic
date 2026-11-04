@@ -1,0 +1,49 @@
+{
+  "oracle_id": "9a63f950-2e8a-4617-896c-1d0af538dbc7",
+  "name": "Szarekh, the Silent King",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Szarekh, the Silent King",
+      "oracle_fingerprint": "b24e23d429612d92014503eeda8d67aa",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              { "Mill": { "count": 3, "as": "milled" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      {
+                        "AnyOf": [
+                          {
+                            "Not": {
+                              "AnyOf": [
+                                { "Not": { "Type": "Creature" } },
+                                { "Not": { "Type": "Artifact" } }
+                              ]
+                            }
+                          },
+                          { "Subtype": "Vehicle" }
+                        ]
+                      },
+                      { "Is": { "Bound": "milled" } },
+                      { "AnyOf": [{ "In": "Graveyard" }, { "In": "Exile" }] },
+                      { "OwnedBy": "You" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked2"
+                }
+              },
+              { "Move": { "what": { "Bound": "picked2" }, "to": "Hand" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

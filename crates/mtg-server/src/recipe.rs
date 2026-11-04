@@ -149,6 +149,7 @@ impl fmt::Display for DeckRef {
 #[derive(Debug, Clone, Default, PartialEq, Eq)]
 pub struct Catalog {
     cards: BTreeMap<String, Arc<CardDefinition>>,
+    conjured: BTreeMap<String, Arc<CardDefinition>>,
 }
 
 impl Catalog {
@@ -156,7 +157,23 @@ impl Catalog {
     pub fn new(cards: impl IntoIterator<Item = (String, Arc<CardDefinition>)>) -> Catalog {
         Catalog {
             cards: cards.into_iter().collect(),
+            conjured: BTreeMap::new(),
         }
+    }
+
+    /// The catalog with the cards that the decks' cards can conjure, by the name a conjure asks for.
+    #[must_use]
+    pub fn with_conjured(
+        mut self,
+        conjured: impl IntoIterator<Item = (String, Arc<CardDefinition>)>,
+    ) -> Catalog {
+        self.conjured = conjured.into_iter().collect();
+        self
+    }
+
+    /// The cards that can be conjured, by name.
+    pub fn conjured(&self) -> &BTreeMap<String, Arc<CardDefinition>> {
+        &self.conjured
     }
 
     /// The card with this oracle id.
@@ -231,6 +248,25 @@ pub struct GameRecipe {
     /// left out of the stored form while empty, which is also how a recipe stored before the read tier reads.
     #[serde(default, skip_serializing_if = "BTreeMap::is_empty")]
     pub reads: BTreeMap<String, String>,
+    /// The cards that the decks' cards can conjure, by name, with the fingerprint of each as it was when the game was
+    /// created; a replay builds exactly these and refuses a game whose card changed. Left out while empty.
+    #[serde(default, skip_serializing_if = "BTreeMap::is_empty")]
+    pub conjured: BTreeMap<String, DeckFingerprint>,
+}
+
+/// The fingerprint of each conjurable card, by name.
+pub(crate) fn fingerprints_of(
+    cards: &BTreeMap<String, Arc<CardDefinition>>,
+) -> Result<BTreeMap<String, DeckFingerprint>, FingerprintError> {
+    cards
+        .iter()
+        .map(|(name, card)| {
+            Ok((
+                name.clone(),
+                DeckFingerprint::of(std::slice::from_ref(card))?,
+            ))
+        })
+        .collect()
 }
 
 /// The pinned reads of several decks as one map; where two decks pin the same card the first wins.
@@ -290,6 +326,18 @@ pub enum RecipeError {
     /// A deck could not be fingerprinted.
     #[error(transparent)]
     Fingerprint(#[from] FingerprintError),
+    /// A card that a deck's card conjures is not what it was when the game was created.
+    #[error(
+        "the conjured card {name:?} changed: it was {stored} when the game was created and is {current} now"
+    )]
+    ConjuredChanged {
+        /// The card's name.
+        name: String,
+        /// The fingerprint stored with the recipe.
+        stored: DeckFingerprint,
+        /// The fingerprint as it is now, or of no card when it is gone.
+        current: DeckFingerprint,
+    },
     /// The decks and seats do not make a valid game for the format.
     #[error("invalid game setup: {0}")]
     Setup(#[from] SetupError),
@@ -320,6 +368,7 @@ impl GameRecipe {
             decks: decks.into_iter().collect(),
             fingerprints: Vec::new(),
             reads: BTreeMap::new(),
+            conjured: BTreeMap::new(),
         }
     }
 
@@ -344,6 +393,7 @@ impl GameRecipe {
             .iter()
             .map(SeatCards::fingerprint)
             .collect::<Result<_, _>>()?;
+        self.conjured = fingerprints_of(catalog.conjured())?;
         Ok(self)
     }
 
@@ -416,6 +466,7 @@ impl GameRecipe {
     pub fn build_with(&self, catalog: &Catalog) -> Result<GameSetup, RecipeError> {
         let seats = self.resolve(catalog)?;
         self.check(&seats)?;
+        let conjured = self.conjured_cards(catalog)?;
         let mut libraries = Vec::with_capacity(seats.len());
         let mut commanders = Vec::with_capacity(seats.len());
         let mut companions = Vec::with_capacity(seats.len());
@@ -427,9 +478,44 @@ impl GameRecipe {
         let setup = GameSetup::new(self.format.rules(), self.seed, libraries)
             .with_commanders(commanders)
             .with_companions(companions)
-            .with_house_rules(self.house_rules.clone());
+            .with_house_rules(self.house_rules.clone())
+            .with_conjurable(conjured);
         setup.validate()?;
         Ok(setup)
+    }
+
+    /// The cards the game may conjure: a fingerprinted recipe takes exactly the cards it stored, each still as it
+    /// was, and a recipe without fingerprints takes what the catalog holds.
+    fn conjured_cards(
+        &self,
+        catalog: &Catalog,
+    ) -> Result<Vec<(String, Arc<CardDefinition>)>, RecipeError> {
+        if !self.is_fingerprinted() {
+            return Ok(catalog
+                .conjured()
+                .iter()
+                .map(|(name, card)| (name.clone(), Arc::clone(card)))
+                .collect());
+        }
+        let mut cards = Vec::with_capacity(self.conjured.len());
+        for (name, stored) in &self.conjured {
+            let found = catalog.conjured().get(name);
+            let current = match found {
+                Some(card) => DeckFingerprint::of(std::slice::from_ref(card))?,
+                None => DeckFingerprint::of(&[])?,
+            };
+            match found {
+                Some(card) if current == *stored => cards.push((name.clone(), Arc::clone(card))),
+                _ => {
+                    return Err(RecipeError::ConjuredChanged {
+                        name: name.clone(),
+                        stored: *stored,
+                        current,
+                    });
+                }
+            }
+        }
+        Ok(cards)
     }
 
     /// The library, the commanders and the companion of every seat, in deck order.

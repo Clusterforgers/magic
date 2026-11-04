@@ -1,0 +1,76 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "K",
+      "text": "Flying",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    },
+    {
+      "face": 0,
+      "tag": "K",
+      "text": "Crew:1",
+      "abilities": [
+        1
+      ],
+      "gap": null
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "At the beginning of your end step, if you sacrificed a permanent this turn, create a token that's a copy of this Vehicle.",
+      "abilities": [],
+      "gap": "amount:PlayerCountPropertyYou$SacrificedThisTurn Permanent"
+    },
+    {
+      "face": 0,
+      "tag": "S",
+      "text": "As long as you control eight or more permanents named Phoenix Fleet Airship, this Vehicle is an artifact creature.",
+      "abilities": [
+        2
+      ],
+      "gap": null
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 6
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 7,
+          "end": 128
+        },
+        "mark": "ByHand"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 129,
+          "end": 243
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 244,
+          "end": 250
+        },
+        "mark": "Auto"
+      }
+    ]
+  }
+}

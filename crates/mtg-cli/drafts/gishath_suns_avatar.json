@@ -1,0 +1,46 @@
+{
+  "oracle_id": "a311daab-40dc-4433-9ed8-feab7c558bbf",
+  "name": "Gishath, Sun's Avatar",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gishath, Sun's Avatar",
+      "oracle_fingerprint": "a7b079d9f297c551fb852398f7169262",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        { "Keyword": "Trample" },
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              { "LookAtTop": { "count": "Triggering", "as": "top" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "Type": "Creature" },
+                      { "Subtype": "Dinosaur" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": null },
+                  "as": "kept2"
+                }
+              },
+              { "Reveal": { "what": { "Bound": "kept2" } } },
+              { "Move": { "what": { "Bound": "kept2" }, "to": { "Battlefield": {} } } },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

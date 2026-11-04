@@ -1,0 +1,41 @@
+{
+  "oracle_id": "9fa75b3c-a512-4318-9c03-e2d958acb6ef",
+  "name": "Mazzy, Truesword Paladin",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Mazzy, Truesword Paladin",
+      "oracle_fingerprint": "888dfbdc29ee90d4365b1f775b129506",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AttacksPlayer": {
+                "what": [{ "Type": "Creature" }, { "HasAttached": [{ "Subtype": "Aura" }] }],
+                "at": "Opponents"
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Triggering",
+                  "mods": [
+                    { "ModifyPT": { "power": 2, "toughness": 0 } },
+                    { "AddKeyword": "Trample" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 113, "end": 257 }
+          }
+        }
+      ]
+    }
+  ]
+}

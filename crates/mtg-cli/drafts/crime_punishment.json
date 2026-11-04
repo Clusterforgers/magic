@@ -1,0 +1,59 @@
+{
+  "oracle_id": "c3df3574-c4da-415f-a56b-807ed8e41d73",
+  "name": "Crime // Punishment",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Crime",
+      "oracle_fingerprint": "faa2165f33f42c9b07bf8f452ec593d2",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Creature" }, { "Type": "Enchantment" }] },
+                    { "OwnedBy": "Opponents" },
+                    { "In": "Graveyard" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": { "under": "You" } } } }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Punishment",
+      "oracle_fingerprint": "4f5d9a4d5fd02c546aa84f249d23deb2",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Destroy": {
+                  "what": {
+                    "Each": [
+                      {
+                        "AnyOf": [
+                          { "Type": "Artifact" },
+                          { "Type": "Creature" },
+                          { "Type": "Enchantment" }
+                        ]
+                      },
+                      { "Compare": { "stat": "ManaValue", "op": "Eq", "to": "X" } }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

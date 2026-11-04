@@ -1,0 +1,42 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "Enrage — Whenever CARDNAME is dealt damage, you may create a 5/4 red and green Dragon Spirit creature token with \"When this token deals damage, sacrifice it.\"",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "Whenever you roll one or more dice, you may have NICKNAME deal 1 damage to itself.",
+      "abilities": [],
+      "gap": "trigger:RolledDieOnce"
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 158
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 159,
+          "end": 241
+        },
+        "mark": "ByHand"
+      }
+    ]
+  }
+}

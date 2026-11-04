@@ -1,0 +1,53 @@
+{
+  "oracle_id": "ea9b2e3d-2de4-4cde-b233-6d0ba5797c20",
+  "name": "Brass Herald",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Brass Herald",
+      "oracle_fingerprint": "8bc81a3a39622cdb85fad31d09283816",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "Choose": "CreatureType" }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "LookAtTop": { "count": 4, "as": "top" } },
+              { "Reveal": { "what": { "Bound": "top" } } },
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "Type": "Creature" },
+                      "ChosenSubtype"
+                    ]
+                  },
+                  "to": "Hand"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Bottom", "order": "Chosen" } }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, "ChosenSubtype"] },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

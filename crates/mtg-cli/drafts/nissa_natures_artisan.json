@@ -1,0 +1,49 @@
+{
+  "oracle_id": "5e2aff26-c9f0-4e4b-bc5e-b2cb46e04293",
+  "name": "Nissa, Nature's Artisan",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nissa, Nature's Artisan",
+      "oracle_fingerprint": "e9e5227475c0147c499d00a989b413d5",
+      "abilities": [
+        { "Loyalty": { "cost": { "Plus": 3 }, "effects": [{ "GainLife": { "amount": 3 } }] } },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 4 },
+            "effects": [
+              { "LookAtTop": { "count": 2, "as": "top" } },
+              { "Reveal": { "what": { "Bound": "top" } } },
+              {
+                "Move": {
+                  "what": {
+                    "Each": [{ "In": "Library" }, { "Is": { "Bound": "top" } }, { "Type": "Land" }]
+                  },
+                  "to": { "Battlefield": {} }
+                }
+              },
+              { "Move": { "what": { "Bound": "top" }, "to": "Hand" } }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 12 },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [
+                    { "ModifyPT": { "power": 5, "toughness": 5 } },
+                    { "AddKeyword": "Trample" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

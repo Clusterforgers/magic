@@ -1,0 +1,56 @@
+{
+  "oracle_id": "7f65178e-dd2e-44aa-a68f-f8694e0b250a",
+  "name": "Quest for the Nihil Stone",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Quest for the Nihil Stone",
+      "oracle_fingerprint": "42439335d4f4f2fedc6539520f70f919",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Discarded": { "by": "Opponents" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [{ "PutCounters": { "on": "This", "counter": { "Other": "quest" } } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "Opponents" } },
+            "if": {
+              "All": [
+                {
+                  "Compare": {
+                    "left": {
+                      "Count": [
+                        "This",
+                        { "CounterCount": { "kind": { "Other": "quest" }, "op": "Ge", "to": 2 } }
+                      ]
+                    },
+                    "op": "Ge",
+                    "right": 1
+                  }
+                },
+                {
+                  "Compare": {
+                    "left": { "Count": [{ "OwnedBy": "ActivePlayer" }, { "In": "Hand" }] },
+                    "op": "Eq",
+                    "right": 0
+                  }
+                }
+              ]
+            },
+            "effects": [
+              { "May": { "effects": [{ "LoseLife": { "who": "Triggering", "amount": 5 } }] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

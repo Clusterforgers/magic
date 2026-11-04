@@ -1,0 +1,150 @@
+{
+  "object": "card",
+  "id": "dd9ac0f2-2d8f-40fc-97fb-d6e05633405d",
+  "oracle_id": "775617cd-7264-4365-94c4-ffae4eb9ec8b",
+  "multiverse_ids": [
+    692178
+  ],
+  "mtgo_id": 137231,
+  "tcgplayer_id": 615162,
+  "cardmarket_id": 807937,
+  "name": "Aetherflux Conduit",
+  "lang": "en",
+  "released_at": "2025-02-14",
+  "uri": "https://api.scryfall.com/cards/dd9ac0f2-2d8f-40fc-97fb-d6e05633405d",
+  "scryfall_uri": "https://scryfall.com/card/drc/17/aetherflux-conduit?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T01:55:49Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/d/d/dd9ac0f2-2d8f-40fc-97fb-d6e05633405d.jpg?1783907749",
+    "normal": "https://cards.scryfall.io/normal/front/d/d/dd9ac0f2-2d8f-40fc-97fb-d6e05633405d.jpg?1783907749",
+    "large": "https://cards.scryfall.io/large/front/d/d/dd9ac0f2-2d8f-40fc-97fb-d6e05633405d.jpg?1783907749",
+    "png": "https://cards.scryfall.io/png/front/d/d/dd9ac0f2-2d8f-40fc-97fb-d6e05633405d.png?1783907749",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/d/d/dd9ac0f2-2d8f-40fc-97fb-d6e05633405d.jpg?1783907749",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/d/d/dd9ac0f2-2d8f-40fc-97fb-d6e05633405d.jpg?1783907749",
+    "thumb": "https://cards.scryfall.io/thumb/front/d/d/dd9ac0f2-2d8f-40fc-97fb-d6e05633405d.webp?1783907749",
+    "grid": "https://cards.scryfall.io/grid/front/d/d/dd9ac0f2-2d8f-40fc-97fb-d6e05633405d.webp?1783907749",
+    "display": "https://cards.scryfall.io/display/front/d/d/dd9ac0f2-2d8f-40fc-97fb-d6e05633405d.webp?1783907749",
+    "art": "https://cards.scryfall.io/art/front/d/d/dd9ac0f2-2d8f-40fc-97fb-d6e05633405d.webp?1783907749",
+    "crop": "https://cards.scryfall.io/crop/front/d/d/dd9ac0f2-2d8f-40fc-97fb-d6e05633405d.webp?1783907749",
+    "jpeg": "https://cards.scryfall.io/normal/front/d/d/dd9ac0f2-2d8f-40fc-97fb-d6e05633405d.jpg?1783907749"
+  },
+  "mana_cost": "{6}",
+  "cmc": 6.0,
+  "type_line": "Artifact",
+  "oracle_text": "Whenever you cast a spell, you get an amount of {E} (energy counters) equal to the amount of mana spent to cast that spell.\n{T}, Pay fifty {E}: Draw seven cards. You may cast any number of spells from your hand without paying their mana costs.",
+  "colors": [],
+  "color_identity": [],
+  "keywords": [],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "f7628e13-9cf1-4bd4-9d01-e4961677dd12",
+      "component": "combo_piece",
+      "name": "Aetherflux Conduit",
+      "type_line": "Artifact",
+      "uri": "https://api.scryfall.com/cards/f7628e13-9cf1-4bd4-9d01-e4961677dd12"
+    },
+    {
+      "object": "related_card",
+      "id": "6a2c1fa5-deed-48ba-afe4-6c8ea8d9135e",
+      "component": "combo_piece",
+      "name": "Energy Reserve",
+      "type_line": "Card",
+      "uri": "https://api.scryfall.com/cards/6a2c1fa5-deed-48ba-afe4-6c8ea8d9135e"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "d33ef7a4-41bb-4f16-bad3-b3ee13c257e6",
+  "set": "drc",
+  "set_name": "Aetherdrift Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/d33ef7a4-41bb-4f16-bad3-b3ee13c257e6",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Adrc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/drc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/dd9ac0f2-2d8f-40fc-97fb-d6e05633405d/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A775617cd-7264-4365-94c4-ffae4eb9ec8b&unique=prints",
+  "collector_number": "17",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "As Kaladesh became Avishkar, aether finally started flowing freely to all.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Michael Phillippi",
+  "artist_ids": [
+    "3bda7dbe-1d9f-47c6-95ce-d283859ffab1"
+  ],
+  "illustration_id": "841dd356-a15e-4a38-bfe7-4371fce19fe3",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 5519,
+  "preview": {
+    "source": "The Command Zone",
+    "source_uri": "https://www.youtube.com/watch?v=km1f1W0Tl6k",
+    "previewed_at": "2025-01-23"
+  },
+  "prices": {
+    "usd": "0.26",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.20",
+    "eur_foil": null,
+    "tix": "2.24"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=692178&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DAetherflux%2BConduit",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DAetherflux%2BConduit",
+    "edhrec": "https://edhrec.com/route/?cc=Aetherflux+Conduit"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F615162%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=807937&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/137231?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

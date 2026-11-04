@@ -1,0 +1,61 @@
+{
+  "oracle_id": "9c77eb0a-543a-41db-ba1f-aa0163837ae0",
+  "name": "Ajani's Chosen",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ajani's Chosen",
+      "oracle_fingerprint": "384fcfc4316426a800bb3ecd847eebcb",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Enchantment" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Cat",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Cat"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  },
+                  "as": "token"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": "Triggering",
+                      "selector": [{ "Subtype": "Aura" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "May": {
+                        "effects": [
+                          { "Attach": { "what": "Triggering", "to": { "Bound": "token" } } }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

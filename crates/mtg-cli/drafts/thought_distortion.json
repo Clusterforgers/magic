@@ -1,0 +1,36 @@
+{
+  "oracle_id": "5f089ac6-9e92-4ec2-bf46-a0b08d1e2979",
+  "name": "Thought Distortion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thought Distortion",
+      "oracle_fingerprint": "308768777488ae442bcc379ce680c0b6",
+      "abilities": [
+        { "Rule": { "rule": { "CantBeCountered": "This" }, "from": "Stack" } },
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Reveal": { "what": { "Each": [{ "OwnedBy": { "Target": 0 } }, { "In": "Hand" }] } }
+              },
+              {
+                "Exile": {
+                  "what": {
+                    "Each": [
+                      { "Not": { "Type": "Creature" } },
+                      { "Not": { "Type": "Land" } },
+                      { "OwnedBy": { "Target": 0 } },
+                      { "AnyOf": [{ "In": "Hand" }, { "In": "Graveyard" }] }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

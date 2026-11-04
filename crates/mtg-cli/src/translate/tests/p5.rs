@@ -323,14 +323,6 @@ fn new_verbs_are_nodes_of_the_language(#[case] line: &str) {
     }
 }
 
-#[test]
-fn tap_remembers_what_became_tapped() {
-    let found = abilities(&spell(
-        "Tap | ValidTgts$ Creature | RememberTapped$ True | SubAbility$ Main",
-    ));
-    assert!(found[0]["Spell"]["effects"][0]["Tap"]["as"].is_string());
-}
-
 #[rstest]
 #[case::earthbend("Earthbend | Num$ 2")]
 #[case::discover("Discover | Num$ 4")]

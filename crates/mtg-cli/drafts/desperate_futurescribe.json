@@ -1,0 +1,66 @@
+{
+  "oracle_id": "83c12f50-e5a1-479d-afab-edb0b40412f2",
+  "name": "Desperate Futurescribe",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Desperate Futurescribe",
+      "oracle_fingerprint": "15350e3987ffe55c6284f20604bf0611",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Sum": [
+                          { "Tallied": { "who": "You", "what": "Scried" } },
+                          { "Tallied": { "who": "You", "what": "Surveilled" } }
+                        ]
+                      },
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Sum": [
+                          { "Tallied": { "who": "You", "what": "Scried" } },
+                          { "Tallied": { "who": "You", "what": "Surveilled" } }
+                        ]
+                      },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

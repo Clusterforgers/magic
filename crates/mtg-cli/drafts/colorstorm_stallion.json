@@ -1,0 +1,46 @@
+{
+  "oracle_id": "47ee6837-2e2f-4344-ab9f-6b8887874f77",
+  "name": "Colorstorm Stallion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Colorstorm Stallion",
+      "oracle_fingerprint": "93f3c4b0f137db832949c9efbab7763a",
+      "abilities": [
+        { "Keyword": { "Ward": "{1}" } },
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                "by": "You"
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Stat": { "of": "Triggering", "stat": "ManaSpent" } },
+                      "op": "Ge",
+                      "right": 5
+                    }
+                  },
+                  "then": [{ "CreateToken": { "token": { "CopyOf": { "of": "This" } } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

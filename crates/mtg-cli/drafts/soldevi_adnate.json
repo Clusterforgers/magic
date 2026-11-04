@@ -1,0 +1,36 @@
+{
+  "oracle_id": "e3174070-542f-429e-9149-b572f6614537",
+  "name": "Soldevi Adnate",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Soldevi Adnate",
+      "oracle_fingerprint": "7551cb818da3dc0f1b6b6c4d38566903",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              "Tap",
+              {
+                "Sacrifice": {
+                  "filter": [
+                    { "Type": "Creature" },
+                    { "AnyOf": [{ "Color": "Black" }, { "Type": "Artifact" }] }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["Black"] },
+                  "times": { "Stat": { "of": "Paid", "stat": "ManaValue" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

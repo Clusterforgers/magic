@@ -3,6 +3,7 @@ import type { AbilityCopy } from "./AbilityCopy";
 import type { AbilitySource } from "./AbilitySource";
 import type { AttackTarget } from "./AttackTarget";
 import type { BecameCopy } from "./BecameCopy";
+import type { CardConjured } from "./CardConjured";
 import type { CardCopy } from "./CardCopy";
 import type { CardsFound } from "./CardsFound";
 import type { Cause } from "./Cause";
@@ -551,7 +552,15 @@ amount: number, } } | { "CountersChanged": CountersChanged } | { "TokenCreated":
 /**
  * The cards picked.
  */
-cards: Array<ObjectId>, } } | { "LibraryBottomed": { 
+cards: Array<ObjectId>, } } | { "CardConjured": CardConjured } | { "Sought": { 
+/**
+ * Who seeks.
+ */
+player: PlayerId, 
+/**
+ * How many cards were picked.
+ */
+count: number, } } | { "LibraryBottomed": { 
 /**
  * Whose library.
  */

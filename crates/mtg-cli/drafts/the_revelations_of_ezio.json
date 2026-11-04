@@ -1,0 +1,68 @@
+{
+  "oracle_id": "c7fe1f05-f412-4991-98bd-f6a4b8b62501",
+  "name": "The Revelations of Ezio",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Revelations of Ezio",
+      "oracle_fingerprint": "6b07f13db2047f3b28126d5028c7aae6",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }, "Tapped"]
+                }
+              }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "Attacks": { "what": [{ "Subtype": "Assassin" }, { "ControlledBy": "You" }] }
+                  },
+                  "once": false,
+                  "this_turn": true,
+                  "effects": [{ "PutCounters": { "on": "Triggering", "counter": "+1/+1" } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "Subtype": "Assassin" },
+                    { "OwnedBy": "You" },
+                    { "In": "Graveyard" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Target": 0 },
+                  "to": { "Battlefield": { "counters": [["+1/+1", 1]] } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

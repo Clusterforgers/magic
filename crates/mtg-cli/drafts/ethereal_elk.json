@@ -1,0 +1,51 @@
+{
+  "oracle_id": "82d643ef-8380-4fdc-a88d-ed205324dbd9",
+  "name": "Ethereal Elk",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ethereal Elk",
+      "oracle_fingerprint": "71a414787075c5cbc72d4f18103822b8",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "May": {
+                        "effects": [
+                          {
+                            "Search": {
+                              "also": ["Graveyard"],
+                              "filter": [
+                                { "OwnedBy": "You" },
+                                { "Named": "Vivien, Nature's Avenger" }
+                              ],
+                              "reveal": true,
+                              "as": "found"
+                            }
+                          },
+                          { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+                          {
+                            "If": {
+                              "condition": { "Searched": { "zone": "Library" } },
+                              "then": [{ "Shuffle": {} }]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,82 @@
+{
+  "oracle_id": "981298e6-ddee-49c0-9377-f47f019b4138",
+  "name": "Currency Converter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Currency Converter",
+      "oracle_fingerprint": "7b83625ee13ee4bc62928f1afcc64cbf",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Discarded": { "by": "You" } },
+            "effects": [{ "May": { "effects": [{ "Exile": { "what": "Triggering" } }] } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap"],
+            "effects": [{ "Draw": {} }, { "Discard": {} }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [{ "ExiledWith": "This" }, { "In": "Exile" }, { "OwnedBy": "You" }]
+                  },
+                  "as": "picked"
+                }
+              },
+              { "Move": { "what": { "Bound": "picked" }, "to": "Graveyard", "as": "moved2" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "moved2" },
+                      "selector": [{ "Type": "Land" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "CreateToken": { "token": { "Named": "treasure" } } }]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "moved2" },
+                      "selector": [{ "Not": { "Type": "Land" } }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Rogue",
+                            "colors": ["Black"],
+                            "types": ["Creature"],
+                            "subtypes": ["Rogue"],
+                            "power": 2,
+                            "toughness": 2
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

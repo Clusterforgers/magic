@@ -1,0 +1,40 @@
+{
+  "oracle_id": "0c6ce7c9-316b-4171-a8fa-ca26af1eecb7",
+  "name": "Dark Tutelage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dark Tutelage",
+      "oracle_fingerprint": "20982e5e2be24c7d531aded6a97a1a70",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              { "LookAtTop": { "as": "top" } },
+              { "Reveal": { "what": { "Bound": "top" } } },
+              {
+                "Move": {
+                  "what": { "Each": [{ "In": "Library" }, { "Is": { "Bound": "top" } }] },
+                  "to": "Hand",
+                  "as": "moved4"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Bottom", "order": "Chosen" } }
+                }
+              },
+              {
+                "LoseLife": {
+                  "amount": { "Stat": { "of": { "Bound": "moved4" }, "stat": "ManaValue" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "oracle_id": "9aace0d3-89e6-4254-b96f-ee3a878f2f91",
+  "name": "Conqueror's Flail",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Conqueror's Flail",
+      "oracle_fingerprint": "88ad21c41904c22a3b213fae26498246",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": { "Distinct": { "of": [{ "ControlledBy": "You" }], "stat": "Colors" } },
+                  "toughness": {
+                    "Distinct": { "of": [{ "ControlledBy": "You" }], "stat": "Colors" }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Rule": {
+            "rule": { "Cant": { "who": "Opponents", "action": { "Cast": {} } } },
+            "condition": {
+              "All": [
+                {
+                  "Compare": {
+                    "left": {
+                      "Count": ["This", { "AttachedTo": { "Each": [{ "Type": "Creature" }] } }]
+                    },
+                    "op": "Ge",
+                    "right": 1
+                  }
+                },
+                "YourTurn"
+              ]
+            }
+          }
+        },
+        { "Keyword": { "Equip": "{2}" } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "oracle_id": "33345c43-3e77-4d9c-a9b5-5d723e1e5c69",
+  "name": "Possessed Portal",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Possessed Portal",
+      "oracle_fingerprint": "4b2e4e51ab461b309d377cee668ba118",
+      "abilities": [
+        { "Replacement": { "when": { "Draw": { "who": "EachPlayer" } }, "by": "Prevent" } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "each",
+                  "effects": [
+                    {
+                      "Pay": {
+                        "who": { "Bound": "each" },
+                        "cost": [{ "Discard": {} }],
+                        "unpaid": [{ "Sacrifice": { "who": { "Bound": "each" }, "filter": [] } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

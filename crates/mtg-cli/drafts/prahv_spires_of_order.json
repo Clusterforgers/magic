@@ -1,0 +1,43 @@
+{
+  "oracle_id": "37ff5ba6-0763-4c73-85bf-66856e67b8f3",
+  "name": "Prahv, Spires of Order",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Prahv, Spires of Order",
+      "oracle_fingerprint": "defaf19de8e49a1ac0f2b2cb9cff4dc3",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{4}{W}{U}" }, "Tap"],
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "AnyOf": [{ "In": "Battlefield" }, { "In": "Stack" }, { "In": "Command" }] }
+                    ]
+                  },
+                  "as": "source"
+                }
+              },
+              {
+                "Shield": {
+                  "when": { "Damage": { "source": [{ "Is": { "Bound": "source" } }] } },
+                  "by": "Prevent",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

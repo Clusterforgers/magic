@@ -1,0 +1,51 @@
+{
+  "oracle_id": "f718e507-296b-4f22-842b-5fb91322069b",
+  "name": "Feign Death",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Feign Death",
+      "oracle_fingerprint": "9b624c29e179644709ae5ddc6069fcf3",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "GrantAbility": {
+                        "Triggered": {
+                          "when": {
+                            "ZoneChange": {
+                              "what": ["This"],
+                              "from": "Battlefield",
+                              "to": "Graveyard"
+                            }
+                          },
+                          "effects": [
+                            {
+                              "Move": {
+                                "what": "This",
+                                "to": {
+                                  "Battlefield": { "tapped": true, "counters": [["+1/+1", 1]] }
+                                }
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

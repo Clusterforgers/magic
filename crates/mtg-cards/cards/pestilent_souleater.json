@@ -1,0 +1,27 @@
+{
+  "oracle_id": "c4779671-2a01-4eef-847c-ede36091fc4a",
+  "name": "Pestilent Souleater",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pestilent Souleater",
+      "oracle_fingerprint": "e654f4fd326aabdd5d367ad52cc0fa5e",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{B/P}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddKeyword": "Infect" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

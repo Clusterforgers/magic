@@ -61,11 +61,7 @@ fn simple(ctx: &mut Ctx, p: &Params, api: &str, verb: &str) -> Tr<Value> {
 fn tap(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     let remember = remember::wanted(p, &["RememberTapped"]);
     let Some(choices) = p.get("CardChoices") else {
-        let mut effect = simple(ctx, &p.without(&["RememberTapped"]), "Tap", "Tap")?;
-        if remember {
-            remember::bind_moved(ctx, &mut effect, "Tap", "tapped");
-        }
-        return Ok(vec![effect]);
+        return Ok(vec![simple(ctx, p, "Tap", "Tap")?]);
     };
     only(
         p,

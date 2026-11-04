@@ -1,0 +1,43 @@
+{
+  "oracle_id": "d74a2cbf-4d13-401d-9b3f-bfbde4942afd",
+  "name": "Florian, Voldaren Scion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Florian, Voldaren Scion",
+      "oracle_fingerprint": "43cd8390af9f44a92e538bc680f65713",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Main2", "whose": "You" } },
+            "effects": [
+              {
+                "LookAtTop": {
+                  "count": { "Tallied": { "who": "Opponents", "what": "LifeLost" } },
+                  "as": "top"
+                }
+              },
+              { "Choose": { "from": { "Bound": "top" }, "as": "kept2", "rest_as": "rest3" } },
+              { "Exile": { "what": { "Bound": "kept2" } } },
+              {
+                "Move": {
+                  "what": { "Bound": "rest3" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": { "from": "Exile", "only": { "Bound": "kept2" }, "play": true }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

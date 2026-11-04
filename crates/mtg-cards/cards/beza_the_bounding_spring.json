@@ -1,0 +1,99 @@
+{
+  "oracle_id": "020de6d7-f5a2-4036-ad25-451e5977b4d4",
+  "name": "Beza, the Bounding Spring",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Beza, the Bounding Spring",
+      "oracle_fingerprint": "0c2f7916da846702ba10221a3bab3506",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Largest": {
+                          "who": "Opponents",
+                          "of": [{ "Type": "Land" }, { "ControlledBy": "You" }]
+                        }
+                      },
+                      "op": "Gt",
+                      "right": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] }
+                    }
+                  },
+                  "then": [{ "CreateToken": { "token": { "Named": "treasure" } } }]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "HighestLife": "Opponents" },
+                      "op": "Gt",
+                      "right": { "Life": "You" }
+                    }
+                  },
+                  "then": [{ "GainLife": { "amount": 4 } }]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Largest": {
+                          "who": "Opponents",
+                          "of": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                        }
+                      },
+                      "op": "Gt",
+                      "right": { "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+                    }
+                  },
+                  "then": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Fish",
+                            "colors": ["Blue"],
+                            "types": ["Creature"],
+                            "subtypes": ["Fish"],
+                            "power": 1,
+                            "toughness": 1
+                          }
+                        },
+                        "count": 2
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Largest": {
+                          "who": "Opponents",
+                          "of": [{ "In": "Hand" }, { "OwnedBy": "You" }]
+                        }
+                      },
+                      "op": "Gt",
+                      "right": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] }
+                    }
+                  },
+                  "then": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

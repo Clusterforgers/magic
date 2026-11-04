@@ -1,0 +1,38 @@
+{
+  "oracle_id": "845d80ee-1cd5-437a-90a5-40dcc657d3aa",
+  "name": "Kinsbaile Aspirant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kinsbaile Aspirant",
+      "oracle_fingerprint": "a563dcd33028b97218c02a39888d3c86",
+      "abilities": [
+        {
+          "AdditionalCost": {
+            "cost": [{ "OneOf": [[{ "Behold": { "filter": [{ "Subtype": "Kithkin" }] } }], "{2}"] }],
+            "required": true
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

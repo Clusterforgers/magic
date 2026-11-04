@@ -1,0 +1,92 @@
+{
+  "oracle_id": "4a46ea59-6c5d-4bed-9951-b5590f9a1bdb",
+  "name": "Tony Stark // The Invincible Iron Man",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tony Stark",
+      "oracle_fingerprint": "6e5481ac314cbc857b960ed17a40ce1a",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap"],
+            "effects": [
+              { "LookAtTop": { "count": 4, "as": "top" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "Type": "Artifact" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "kept2"
+                }
+              },
+              { "Move": { "what": { "Bound": "kept2" }, "to": "Hand" } },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{4}{U}{R}",
+            "timing": "Sorcery",
+            "effects": [{ "Transform": { "what": "This" } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "The Invincible Iron Man",
+      "oracle_fingerprint": "1d95224be8de9bda7eca9ea839aa6649",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [{ "Type": "Artifact" }, { "In": "Hand" }, { "OwnedBy": "You" }]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "picked" },
+                  "to": { "Battlefield": {} },
+                  "as": "moved2"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "moved2" },
+                      "selector": [{ "Subtype": "Equipment" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Attach": { "what": { "Bound": "moved2" }, "to": "This" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

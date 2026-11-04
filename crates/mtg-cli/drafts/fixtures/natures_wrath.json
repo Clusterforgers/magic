@@ -1,0 +1,129 @@
+{
+  "object": "card",
+  "id": "91a05306-f3f7-436d-8d8c-58217f04610b",
+  "oracle_id": "5a647f28-6e26-4262-8593-d582e0a691f7",
+  "multiverse_ids": [
+    184561
+  ],
+  "mtgo_id": 30700,
+  "mtgo_foil_id": 30701,
+  "name": "Nature's Wrath",
+  "lang": "en",
+  "released_at": "2008-09-22",
+  "uri": "https://api.scryfall.com/cards/91a05306-f3f7-436d-8d8c-58217f04610b",
+  "scryfall_uri": "https://scryfall.com/card/me2/172/natures-wrath?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T11:36:43Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/9/1/91a05306-f3f7-436d-8d8c-58217f04610b.jpg?1783942603",
+    "normal": "https://cards.scryfall.io/normal/front/9/1/91a05306-f3f7-436d-8d8c-58217f04610b.jpg?1783942603",
+    "large": "https://cards.scryfall.io/large/front/9/1/91a05306-f3f7-436d-8d8c-58217f04610b.jpg?1783942603",
+    "png": "https://cards.scryfall.io/png/front/9/1/91a05306-f3f7-436d-8d8c-58217f04610b.png?1783942603",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/9/1/91a05306-f3f7-436d-8d8c-58217f04610b.jpg?1783942603",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/9/1/91a05306-f3f7-436d-8d8c-58217f04610b.jpg?1783942603",
+    "thumb": "https://cards.scryfall.io/thumb/front/9/1/91a05306-f3f7-436d-8d8c-58217f04610b.webp?1783942603",
+    "grid": "https://cards.scryfall.io/grid/front/9/1/91a05306-f3f7-436d-8d8c-58217f04610b.webp?1783942603",
+    "display": "https://cards.scryfall.io/display/front/9/1/91a05306-f3f7-436d-8d8c-58217f04610b.webp?1783942603",
+    "art": "https://cards.scryfall.io/art/front/9/1/91a05306-f3f7-436d-8d8c-58217f04610b.webp?1783942603",
+    "crop": "https://cards.scryfall.io/crop/front/9/1/91a05306-f3f7-436d-8d8c-58217f04610b.webp?1783942603",
+    "jpeg": "https://cards.scryfall.io/normal/front/9/1/91a05306-f3f7-436d-8d8c-58217f04610b.jpg?1783942603"
+  },
+  "mana_cost": "{4}{G}{G}",
+  "cmc": 6.0,
+  "type_line": "Enchantment",
+  "oracle_text": "At the beginning of your upkeep, sacrifice this enchantment unless you pay {G}.\nWhenever a player puts an Island or blue permanent onto the battlefield, that player sacrifices an Island or blue permanent of their choice.\nWhenever a player puts a Swamp or black permanent onto the battlefield, that player sacrifices a Swamp or black permanent of their choice.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "mtgo"
+  ],
+  "reserved": true,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "7d51a13b-dcd2-4ec2-b3a7-c89288e00b4e",
+  "set": "me2",
+  "set_name": "Masters Edition II",
+  "set_type": "masters",
+  "set_uri": "https://api.scryfall.com/sets/7d51a13b-dcd2-4ec2-b3a7-c89288e00b4e",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ame2&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/me2?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/91a05306-f3f7-436d-8d8c-58217f04610b/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A5a647f28-6e26-4262-8593-d582e0a691f7&unique=prints",
+  "collector_number": "172",
+  "digital": true,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Liz Danforth",
+  "artist_ids": [
+    "5a5ee217-9d28-419a-b92a-a2376c7d18b3"
+  ],
+  "illustration_id": "4173a9ae-452d-4cde-9cd8-ca080e6cd45a",
+  "border_color": "black",
+  "frame": "1997",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 24040,
+  "penny_rank": 12904,
+  "prices": {
+    "usd": null,
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": null,
+    "eur_foil": null,
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=184561&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DNature%2527s%2BWrath",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DNature%2527s%2BWrath",
+    "edhrec": "https://edhrec.com/route/?cc=Nature%27s+Wrath"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fmagic%2Fproduct%3FproductLineName%3Dmagic%26q%3DNature%2527s%2BWrath%26view%3Dgrid",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products/Search?referrer=scryfall&searchString=Nature%27s+Wrath&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/30700?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

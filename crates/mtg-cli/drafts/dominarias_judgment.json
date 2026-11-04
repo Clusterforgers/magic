@@ -1,0 +1,119 @@
+{
+  "oracle_id": "41998d4d-ca01-4a9c-8bd6-399e4c3e25b1",
+  "name": "Dominaria's Judgment",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dominaria's Judgment",
+      "oracle_fingerprint": "62d0ba60bd85ccd80c7e5ea7fba26075",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "Subtype": "Plains" }, { "ControlledBy": "You" }] },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                        "mods": [{ "AddKeyword": { "Protection": [{ "Color": "White" }] } }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "Subtype": "Island" }, { "ControlledBy": "You" }] },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                        "mods": [{ "AddKeyword": { "Protection": [{ "Color": "Blue" }] } }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "Subtype": "Swamp" }, { "ControlledBy": "You" }] },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                        "mods": [{ "AddKeyword": { "Protection": [{ "Color": "Black" }] } }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "Subtype": "Mountain" }, { "ControlledBy": "You" }] },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                        "mods": [{ "AddKeyword": { "Protection": [{ "Color": "Red" }] } }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "Subtype": "Forest" }, { "ControlledBy": "You" }] },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                        "mods": [{ "AddKeyword": { "Protection": [{ "Color": "Green" }] } }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "oracle_id": "8d1a3935-8a8c-4754-b474-189611188bc5",
+  "name": "Bind the Monster",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bind the Monster",
+      "oracle_fingerprint": "feda00185e548eb5017e5a3b435d1f0c",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "Tap": { "what": "Attached" } },
+              {
+                "DealDamage": {
+                  "source": "Attached",
+                  "to": "You",
+                  "amount": { "Stat": { "of": "Attached", "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        },
+        { "Static": { "affected": "Attached", "mods": ["DoesntUntap"] } }
+      ]
+    }
+  ]
+}

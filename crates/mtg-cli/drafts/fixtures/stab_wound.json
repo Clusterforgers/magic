@@ -1,0 +1,151 @@
+{
+  "object": "card",
+  "id": "cbe656e7-ae71-45c2-a263-588b73f70d73",
+  "oracle_id": "aad212b2-57ba-4e70-869b-636842eb7a88",
+  "multiverse_ids": [
+    643100
+  ],
+  "mtgo_id": 120713,
+  "tcgplayer_id": 531069,
+  "cardmarket_id": 748441,
+  "name": "Stab Wound",
+  "lang": "en",
+  "released_at": "2024-01-12",
+  "uri": "https://api.scryfall.com/cards/cbe656e7-ae71-45c2-a263-588b73f70d73",
+  "scryfall_uri": "https://scryfall.com/card/rvr/93/stab-wound?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:28:40Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/c/b/cbe656e7-ae71-45c2-a263-588b73f70d73.jpg?1783913320",
+    "normal": "https://cards.scryfall.io/normal/front/c/b/cbe656e7-ae71-45c2-a263-588b73f70d73.jpg?1783913320",
+    "large": "https://cards.scryfall.io/large/front/c/b/cbe656e7-ae71-45c2-a263-588b73f70d73.jpg?1783913320",
+    "png": "https://cards.scryfall.io/png/front/c/b/cbe656e7-ae71-45c2-a263-588b73f70d73.png?1783913320",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/c/b/cbe656e7-ae71-45c2-a263-588b73f70d73.jpg?1783913320",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/c/b/cbe656e7-ae71-45c2-a263-588b73f70d73.jpg?1783913320",
+    "thumb": "https://cards.scryfall.io/thumb/front/c/b/cbe656e7-ae71-45c2-a263-588b73f70d73.webp?1783913320",
+    "grid": "https://cards.scryfall.io/grid/front/c/b/cbe656e7-ae71-45c2-a263-588b73f70d73.webp?1783913320",
+    "display": "https://cards.scryfall.io/display/front/c/b/cbe656e7-ae71-45c2-a263-588b73f70d73.webp?1783913320",
+    "art": "https://cards.scryfall.io/art/front/c/b/cbe656e7-ae71-45c2-a263-588b73f70d73.webp?1783913320",
+    "crop": "https://cards.scryfall.io/crop/front/c/b/cbe656e7-ae71-45c2-a263-588b73f70d73.webp?1783913320",
+    "jpeg": "https://cards.scryfall.io/normal/front/c/b/cbe656e7-ae71-45c2-a263-588b73f70d73.jpg?1783913320"
+  },
+  "mana_cost": "{2}{B}",
+  "cmc": 3.0,
+  "type_line": "Enchantment — Aura",
+  "oracle_text": "Enchant creature\nEnchanted creature gets -2/-2.\nAt the beginning of the upkeep of enchanted creature's controller, that player loses 2 life.",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Enchant"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "cbe656e7-ae71-45c2-a263-588b73f70d73",
+      "component": "combo_piece",
+      "name": "Stab Wound",
+      "type_line": "Enchantment — Aura",
+      "uri": "https://api.scryfall.com/cards/cbe656e7-ae71-45c2-a263-588b73f70d73"
+    },
+    {
+      "object": "related_card",
+      "id": "b21ff8d7-4c3e-4634-bb6b-835ded25a6c7",
+      "component": "combo_piece",
+      "name": "Perforator Crocodile",
+      "type_line": "Creature — Crocodile",
+      "uri": "https://api.scryfall.com/cards/b21ff8d7-4c3e-4634-bb6b-835ded25a6c7"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "fed2c8cd-ab92-44f6-808a-41e7809bcfe2",
+  "set": "rvr",
+  "set_name": "Ravnica Remastered",
+  "set_type": "masters",
+  "set_uri": "https://api.scryfall.com/sets/fed2c8cd-ab92-44f6-808a-41e7809bcfe2",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Arvr&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/rvr?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/cbe656e7-ae71-45c2-a263-588b73f70d73/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Aaad212b2-57ba-4e70-869b-636842eb7a88&unique=prints",
+  "collector_number": "93",
+  "digital": false,
+  "rarity": "uncommon",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Scott Chou",
+  "artist_ids": [
+    "9e048547-f9c3-4958-9c2c-91e45df7c6ae"
+  ],
+  "illustration_id": "c00b1b20-0292-45d7-8c15-362e825b25e6",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 9169,
+  "penny_rank": 12631,
+  "prices": {
+    "usd": "0.23",
+    "usd_foil": "0.22",
+    "usd_etched": null,
+    "eur": "0.15",
+    "eur_foil": "0.22",
+    "tix": "0.04"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=643100&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DStab%2BWound",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DStab%2BWound",
+    "edhrec": "https://edhrec.com/route/?cc=Stab+Wound"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F531069%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=748441&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/120713?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

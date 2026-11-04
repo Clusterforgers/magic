@@ -1,0 +1,29 @@
+{
+  "oracle_id": "585a1c82-8a6c-4770-be9c-3a4916b74a9f",
+  "name": "Power Taint",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Power Taint",
+      "oracle_fingerprint": "cdabe66ae68ca13f4ae3229fd5329ffb",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Enchantment" }] } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": { "ControllerOf": "Attached" } } },
+            "effects": [
+              {
+                "Pay": {
+                  "who": { "ControllerOf": "Attached" },
+                  "cost": "{2}",
+                  "unpaid": [{ "LoseLife": { "who": "Triggering", "amount": 2 } }]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Cycling": "{2}" } }
+      ]
+    }
+  ]
+}

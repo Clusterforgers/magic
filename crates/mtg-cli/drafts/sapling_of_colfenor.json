@@ -1,0 +1,52 @@
+{
+  "oracle_id": "0c1e2bb8-0629-466c-b435-c4c71cdc755d",
+  "name": "Sapling of Colfenor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sapling of Colfenor",
+      "oracle_fingerprint": "e0c73e8aa4b6c15ca09c4c48f99c2d30",
+      "abilities": [
+        { "Keyword": "Indestructible" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              { "LookAtTop": { "as": "top" } },
+              { "Reveal": { "what": { "Bound": "top" } } },
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "Type": "Creature" }
+                    ]
+                  },
+                  "to": "Hand",
+                  "as": "moved4"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Top", "order": "Chosen" } }
+                }
+              },
+              {
+                "GainLife": {
+                  "amount": { "Stat": { "of": { "Bound": "moved4" }, "stat": "Toughness" } }
+                }
+              },
+              {
+                "LoseLife": {
+                  "amount": { "Stat": { "of": { "Bound": "moved4" }, "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "oracle_id": "0131d2ac-d677-45fd-9729-a5428139cb5b",
+  "name": "Dragon Fangs",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dragon Fangs",
+      "oracle_fingerprint": "e269784e25553961d3282d3e84861221",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }, { "AddKeyword": "Trample" }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "Compare": { "stat": "ManaValue", "op": "Ge", "to": 6 } }
+                ],
+                "to": "Battlefield"
+              }
+            },
+            "from": "Graveyard",
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Move": {
+                        "what": "This",
+                        "to": { "BattlefieldAttached": { "to": "Triggering" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

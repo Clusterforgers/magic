@@ -1,0 +1,49 @@
+{
+  "oracle_id": "9cd8ca01-e8a9-47ea-8899-b016a2dcaea8",
+  "name": "Infectious Bloodlust",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Infectious Bloodlust",
+      "oracle_fingerprint": "b218bc194181223c92c548b7929ba98d",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 1 } }, { "AddKeyword": "Haste" }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Is": "Attached" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Search": {
+                        "filter": [{ "Named": "Infectious Bloodlust" }],
+                        "reveal": true,
+                        "as": "found"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+                    { "Shuffle": {} }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Rule": { "rule": { "MustAttack": "Attached" } } }
+      ]
+    }
+  ]
+}

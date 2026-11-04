@@ -1,0 +1,29 @@
+{
+  "oracle_id": "be58eb0f-97c9-4b16-af86-d76bf85996d8",
+  "name": "Puresteel Angel",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Puresteel Angel",
+      "oracle_fingerprint": "ec6e4fb5d1b3dd02cde094de1939b021",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Indestructible" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "Exile": { "what": { "Each": [{ "Type": "Artifact" }, { "Not": "Colorless" }] } } }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 95, "end": 339 }
+          }
+        }
+      ]
+    }
+  ]
+}

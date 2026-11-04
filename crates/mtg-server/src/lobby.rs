@@ -290,6 +290,7 @@ impl<S: EventStore> GameActor<S> {
                         player.companion = deck.companion().cloned();
                     }
                 }
+                self.setup.conjurable = std::sync::Arc::new(decks.conjured());
                 true
             }
             Err(error) => {

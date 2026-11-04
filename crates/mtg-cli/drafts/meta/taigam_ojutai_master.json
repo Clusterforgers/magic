@@ -1,0 +1,42 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "Whenever you cast an instant or sorcery spell from your hand, if CARDNAME attacked this turn, that spell gains rebound.",
+      "abilities": [],
+      "gap": "key:Pump.PumpZone"
+    },
+    {
+      "face": 0,
+      "tag": "R",
+      "text": "Instant, sorcery, and Dragon spells you control can't be countered.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 67
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 68,
+          "end": 321
+        },
+        "mark": "ByHand"
+      }
+    ]
+  }
+}

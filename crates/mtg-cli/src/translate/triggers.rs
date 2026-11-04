@@ -105,6 +105,26 @@ pub(super) fn keys(p: &Params, mode: &str, read: &[&str]) -> Tr<()> {
     })
 }
 
+/// The event pattern of a `DelayedTrigger` line and whether it waits only for this turn: the line reads its `Mode$` like a
+/// trigger line. "Next turn" is a step apart from "this turn" and stays a gap.
+pub fn delayed_when(ctx: &Ctx, p: &Params) -> Tr<(Value, bool)> {
+    if p.get("NextTurn").is_some() {
+        return unmapped("key:DelayedTrigger.NextTurn");
+    }
+    let this_turn = match p.get("ThisTurn") {
+        None => false,
+        Some("True") => true,
+        Some(other) => return unmapped(format!("key:DelayedTrigger.ThisTurn={other}")),
+    };
+    let line = p.without(&["ThisTurn", "RememberObjects"]);
+    // Valid words of a delayed trigger are the same words a trigger line reads.
+    let when = pattern(ctx, &line).map_err(|gap| match gap.0.strip_prefix("key:Trigger.") {
+        Some(rest) => super::ctx::Unmapped(format!("key:DelayedTrigger.{rest}")),
+        None => gap,
+    })?;
+    Ok((when, this_turn))
+}
+
 fn pattern(ctx: &Ctx, p: &Params) -> Tr<Value> {
     let mode = p.get("Mode").unwrap_or_default();
     if let Some(found) = super::triggers_more::pattern(ctx, p, mode) {
@@ -189,28 +209,74 @@ fn prints_every_end_step(p: &Params) -> bool {
 }
 
 fn phase(p: &Params) -> Tr<Value> {
-    keys(p, "Phase", &["Phase", "ValidPlayer"])?;
-    let step = step(p.get("Phase").unwrap_or_default())?;
+    keys(p, "Phase", &["Phase", "ValidPlayer", "PhaseCount"])?;
+    // `Phase$ Main` with a count names the first or the second (postcombat) main phase.
+    let step = match (p.get("Phase"), p.get("PhaseCount")) {
+        (Some("Main"), Some("1")) => "Main1",
+        (Some("Main"), Some("2")) => "Main2",
+        (Some("Main"), _) | (_, Some(_)) => return unmapped("key:Trigger.Phase.PhaseCount"),
+        (word, None) => step(word.unwrap_or_default())?,
+    };
     let whose = match p.get("ValidPlayer") {
-        None | Some("Player") => "EachPlayer",
         // Forge scripts "the end step" (every player's) with `ValidPlayer$ You`; the print has no "your".
-        Some("You") if prints_every_end_step(p) => "EachPlayer",
-        Some("You") => "You",
-        Some("Opponent" | "Player.Opponent") => "Opponents",
-        Some(other) => return unmapped(format!("key:Trigger.Phase.ValidPlayer={other}")),
+        Some("You") if prints_every_end_step(p) => json!("EachPlayer"),
+        word => match player_ref(word) {
+            Ok(found) => found,
+            Err(_) => {
+                return unmapped(format!(
+                    "key:Trigger.Phase.ValidPlayer={}",
+                    word.unwrap_or_default()
+                ));
+            }
+        },
     };
     Ok(json!({"StepBegins": {"step": step, "whose": whose}}))
 }
 
 fn attacks(ctx: &Ctx, p: &Params) -> Tr<Value> {
-    keys(p, "Attacks", &["ValidCard", "Alone"])?;
+    keys(p, "Attacks", &["ValidCard", "Alone", "Attacked"])?;
     let what = selector_any(ctx, p.get("ValidCard").unwrap_or("Creature"))?;
+    if let Some(word) = p.get("Attacked") {
+        if p.get("Alone") == Some("True") {
+            return unmapped("key:Trigger.Attacks.Attacked-with-Alone");
+        }
+        return attacks_at(word, &what);
+    }
     let variant = if p.get("Alone") == Some("True") {
         "AttacksAlone"
     } else {
         "Attacks"
     };
     Ok(json!({ variant: {"what": what} }))
+}
+
+/// An attack on a player (`Attacked$ You`), or on a player or a planeswalker that player controls
+/// (`Attacked$ You,Planeswalker.YouCtrl`): the two stay apart, and any other attacked thing is a gap.
+fn attacks_at(word: &str, what: &[Value]) -> Tr<Value> {
+    let gap = || unmapped(format!("key:Trigger.Attacks.Attacked={word}"));
+    let mut parts = word.split(',');
+    let Some(player) = parts.next() else {
+        return gap();
+    };
+    let Ok(at) = player_ref(Some(player)) else {
+        return gap();
+    };
+    let variant = match (parts.next(), parts.next(), &at) {
+        (None, ..) => "AttacksPlayer",
+        (Some("Planeswalker.YouCtrl"), None, Value::String(who)) if who == "You" => {
+            "AttacksPlayerOrPlaneswalker"
+        }
+        (Some("Planeswalker.OppCtrl"), None, Value::String(who)) if who == "Opponents" => {
+            "AttacksPlayerOrPlaneswalker"
+        }
+        (Some("Planeswalker.EnchantedPlayerCtrl"), None, Value::String(who))
+            if who == "AttachedPlayer" =>
+        {
+            "AttacksPlayerOrPlaneswalker"
+        }
+        _ => return gap(),
+    };
+    Ok(json!({ variant: {"what": what, "at": at} }))
 }
 
 /// The cards a player-related trigger is about and the player: the controller or owner in the valid-string is the player.
@@ -252,12 +318,18 @@ fn attackers_declared(ctx: &Ctx, p: &Params) -> Tr<Value> {
         "AttackersDeclared",
         &["AttackingPlayer", "ValidAttackers", "ValidAttackersAmount"],
     )?;
-    if p.get("AttackingPlayer") != Some("You") {
-        return unmapped("key:Trigger.AttackersDeclared.AttackingPlayer");
-    }
+    let word = p.get("AttackingPlayer");
+    let Ok(by) = player_ref(word) else {
+        return unmapped(format!(
+            "key:Trigger.AttackersDeclared.AttackingPlayer={}",
+            word.unwrap_or_default()
+        ));
+    };
     let mut what = selector_any(ctx, p.get("ValidAttackers").unwrap_or("Creature"))?;
-    if !what.contains(&json!({"ControlledBy": "You"})) {
-        what.push(json!({"ControlledBy": "You"}));
+    // The attackers are the attacking player's own creatures.
+    let own = json!({ "ControlledBy": by });
+    if by != "EachPlayer" && !what.contains(&own) {
+        what.push(own);
     }
     let mut pattern = json!({ "what": what });
     match p.get("ValidAttackersAmount") {
@@ -273,11 +345,16 @@ fn attackers_declared(ctx: &Ctx, p: &Params) -> Tr<Value> {
     Ok(json!({ "GroupAttacks": pattern }))
 }
 
-pub(super) fn player_ref(word: Option<&str>) -> Tr<&'static str> {
+/// The player a trigger's player word names: the controller, the opponents, anyone, the player an Aura enchants or that
+/// permanent's controller.
+pub(super) fn player_ref(word: Option<&str>) -> Tr<Value> {
     match word {
-        None | Some("Player") => Ok("EachPlayer"),
-        Some("You") => Ok("You"),
-        Some("Opponent" | "Player.Opponent") => Ok("Opponents"),
+        None | Some("Player") => Ok(json!("EachPlayer")),
+        Some("You") => Ok(json!("You")),
+        Some("Opponent" | "Player.Opponent") => Ok(json!("Opponents")),
+        Some("Player.EnchantedBy") => Ok(json!("AttachedPlayer")),
+        Some("Player.EnchantedController") => Ok(json!({"ControllerOf": "Attached"})),
+        Some("Player.Chosen") => Ok(json!("Chosen")),
         Some(other) => unmapped(format!("player:{other}")),
     }
 }

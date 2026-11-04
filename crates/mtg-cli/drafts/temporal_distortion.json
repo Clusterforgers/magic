@@ -1,0 +1,35 @@
+{
+  "oracle_id": "b0a16783-31c2-4b2a-835d-774dc385f99a",
+  "name": "Temporal Distortion",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Temporal Distortion",
+      "oracle_fingerprint": "a8e4b167496df84043b7432b9d8abe09",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Tapped": { "what": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Land" }] }] }
+            },
+            "effects": [
+              { "PutCounters": { "on": "Triggering", "counter": { "Other": "hourglass" } } }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "HasCounter": { "Other": "hourglass" } }] },
+            "mods": ["DoesntUntap"]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 173, "end": 282 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "oracle_id": "170adfe9-ffbe-40b1-b665-e756e7eb0302",
+  "name": "Jeering Instigator",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jeering Instigator",
+      "oracle_fingerprint": "ae5b1929b8c3da3b33861bc8a66b18ac",
+      "abilities": [
+        { "Keyword": { "Morph": "{2}{R}" } },
+        {
+          "Triggered": {
+            "when": { "TurnedFaceUp": { "what": ["This"] } },
+            "if": { "AtTrigger": "YourTurn" },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Other"] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Untap": { "what": { "Target": 0 } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

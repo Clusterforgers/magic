@@ -1,0 +1,57 @@
+{
+  "oracle_id": "bd92cacd-c7d8-43a2-a261-ea4754fefdc5",
+  "name": "Sage's Reverie",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sage's Reverie",
+      "oracle_fingerprint": "1250eefc17635f850953628620a6e3dc",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Draw": {
+                  "count": {
+                    "Count": [
+                      { "Subtype": "Aura" },
+                      { "ControlledBy": "You" },
+                      { "AttachedTo": { "Each": [{ "Type": "Creature" }] } }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": {
+                    "Count": [
+                      { "Subtype": "Aura" },
+                      { "ControlledBy": "You" },
+                      { "AttachedTo": { "Each": [{ "Type": "Creature" }] } }
+                    ]
+                  },
+                  "toughness": {
+                    "Count": [
+                      { "Subtype": "Aura" },
+                      { "ControlledBy": "You" },
+                      { "AttachedTo": { "Each": [{ "Type": "Creature" }] } }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

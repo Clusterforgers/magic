@@ -1,0 +1,72 @@
+{
+  "oracle_id": "e84becc0-6e15-4a74-aec0-9746b86ab5cc",
+  "name": "Sokka and Suki",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sokka and Suki",
+      "oracle_fingerprint": "0687189007b49b4b2b3f7941c03bf3fb",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  {
+                    "AnyOf": [
+                      "This",
+                      {
+                        "Not": {
+                          "AnyOf": [
+                            { "Not": { "Type": "Creature" } },
+                            { "Not": "Other" },
+                            { "Not": { "Subtype": "Ally" } },
+                            { "Not": { "ControlledBy": "You" } }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                ],
+                "to": "Battlefield"
+              }
+            },
+            "targets": [
+              {
+                "what": { "Object": [{ "Subtype": "Equipment" }, { "ControlledBy": "You" }] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [{ "Attach": { "what": { "Target": 0 }, "to": "Triggering" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Subtype": "Equipment" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Ally",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Ally"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

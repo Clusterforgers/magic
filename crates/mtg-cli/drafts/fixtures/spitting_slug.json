@@ -1,0 +1,133 @@
+{
+  "object": "card",
+  "id": "d98e413b-35bb-424f-9ae9-3319cf433785",
+  "oracle_id": "77af5e31-ac4d-4112-9138-e12abb5ce144",
+  "multiverse_ids": [
+    108855
+  ],
+  "mtgo_id": 26029,
+  "mtgo_foil_id": 26030,
+  "tcgplayer_id": 14645,
+  "cardmarket_id": 14146,
+  "name": "Spitting Slug",
+  "lang": "en",
+  "released_at": "2006-10-06",
+  "uri": "https://api.scryfall.com/cards/d98e413b-35bb-424f-9ae9-3319cf433785",
+  "scryfall_uri": "https://scryfall.com/card/tsb/85/spitting-slug?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T11:47:46Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/d/9/d98e413b-35bb-424f-9ae9-3319cf433785.jpg?1783943266",
+    "normal": "https://cards.scryfall.io/normal/front/d/9/d98e413b-35bb-424f-9ae9-3319cf433785.jpg?1783943266",
+    "large": "https://cards.scryfall.io/large/front/d/9/d98e413b-35bb-424f-9ae9-3319cf433785.jpg?1783943266",
+    "png": "https://cards.scryfall.io/png/front/d/9/d98e413b-35bb-424f-9ae9-3319cf433785.png?1783943266",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/d/9/d98e413b-35bb-424f-9ae9-3319cf433785.jpg?1783943266",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/d/9/d98e413b-35bb-424f-9ae9-3319cf433785.jpg?1783943266",
+    "thumb": "https://cards.scryfall.io/thumb/front/d/9/d98e413b-35bb-424f-9ae9-3319cf433785.webp?1783943266",
+    "grid": "https://cards.scryfall.io/grid/front/d/9/d98e413b-35bb-424f-9ae9-3319cf433785.webp?1783943266",
+    "display": "https://cards.scryfall.io/display/front/d/9/d98e413b-35bb-424f-9ae9-3319cf433785.webp?1783943266",
+    "art": "https://cards.scryfall.io/art/front/d/9/d98e413b-35bb-424f-9ae9-3319cf433785.webp?1783943266",
+    "crop": "https://cards.scryfall.io/crop/front/d/9/d98e413b-35bb-424f-9ae9-3319cf433785.webp?1783943266",
+    "jpeg": "https://cards.scryfall.io/normal/front/d/9/d98e413b-35bb-424f-9ae9-3319cf433785.jpg?1783943266"
+  },
+  "mana_cost": "{1}{G}{G}",
+  "cmc": 3.0,
+  "type_line": "Creature — Slug",
+  "oracle_text": "Whenever this creature blocks or becomes blocked, you may pay {1}{G}. If you do, this creature gains first strike until end of turn. Otherwise, each creature blocking or blocked by this creature gains first strike until end of turn.",
+  "power": "2",
+  "toughness": "4",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "legal",
+    "premodern": "not_legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "6519be58-b8cb-4cd7-9f5b-4db23364715b",
+  "set": "tsb",
+  "set_name": "Time Spiral Timeshifted",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/6519be58-b8cb-4cd7-9f5b-4db23364715b",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Atsb&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/tsb?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/d98e413b-35bb-424f-9ae9-3319cf433785/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A77af5e31-ac4d-4112-9138-e12abb5ce144&unique=prints",
+  "collector_number": "85",
+  "digital": false,
+  "rarity": "special",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Anson Maddocks",
+  "artist_ids": [
+    "634430a7-b5c3-4e4a-b2ac-164e084e47c9"
+  ],
+  "illustration_id": "b5a5e943-6432-4dc0-9032-26fded99d9df",
+  "border_color": "black",
+  "frame": "1997",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 31903,
+  "prices": {
+    "usd": "0.31",
+    "usd_foil": "1.08",
+    "usd_etched": null,
+    "eur": "0.30",
+    "eur_foil": "0.93",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=108855&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DSpitting%2BSlug",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DSpitting%2BSlug",
+    "edhrec": "https://edhrec.com/route/?cc=Spitting+Slug"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F14645%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=14146&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/26029?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

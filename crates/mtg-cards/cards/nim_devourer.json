@@ -1,0 +1,37 @@
+{
+  "oracle_id": "89075fbe-cd8a-4054-abab-fcaa2aedddfb",
+  "name": "Nim Devourer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nim Devourer",
+      "oracle_fingerprint": "a0480c077fda5e49a9bf04d51c486ca1",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": { "Count": [{ "Type": "Artifact" }, { "ControlledBy": "You" }] },
+                  "toughness": 0
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{B}{B}",
+            "condition": { "All": ["YourTurn", { "Step": "Upkeep" }] },
+            "from": "Graveyard",
+            "effects": [
+              { "Move": { "what": "This", "to": { "Battlefield": {} } } },
+              { "Sacrifice": { "filter": [{ "Type": "Creature" }] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "oracle_id": "c9375dca-2b32-4185-b88a-4bd5dde9a5d6",
+  "name": "Timberpack Wolf",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Timberpack Wolf",
+      "oracle_fingerprint": "badf6bce1c9fd15e67008f77b7e3a58a",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": {
+                    "Sum": [
+                      {
+                        "Count": [
+                          { "Type": "Creature" },
+                          { "Named": "Timberpack Wolf" },
+                          { "ControlledBy": "You" }
+                        ]
+                      },
+                      -1
+                    ]
+                  },
+                  "toughness": {
+                    "Sum": [
+                      {
+                        "Count": [
+                          { "Type": "Creature" },
+                          { "Named": "Timberpack Wolf" },
+                          { "ControlledBy": "You" }
+                        ]
+                      },
+                      -1
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

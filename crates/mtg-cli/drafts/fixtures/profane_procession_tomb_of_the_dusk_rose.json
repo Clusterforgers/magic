@@ -1,0 +1,202 @@
+{
+  "object": "card",
+  "id": "1d94ff37-f04e-48ee-8253-d62ab07f0632",
+  "oracle_id": "a656ad7f-133f-4d93-919a-43bcf1f815f3",
+  "multiverse_ids": [
+    439826,
+    439827
+  ],
+  "mtgo_id": 66791,
+  "arena_id": 66955,
+  "tcgplayer_id": 155699,
+  "cardmarket_id": 315352,
+  "name": "Profane Procession // Tomb of the Dusk Rose",
+  "lang": "en",
+  "released_at": "2018-01-19",
+  "uri": "https://api.scryfall.com/cards/1d94ff37-f04e-48ee-8253-d62ab07f0632",
+  "scryfall_uri": "https://scryfall.com/card/rix/166/profane-procession-tomb-of-the-dusk-rose?utm_source=api",
+  "layout": "transform",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T09:34:37Z",
+  "cmc": 3.0,
+  "type_line": "Legendary Enchantment // Legendary Land",
+  "color_identity": [
+    "B",
+    "W"
+  ],
+  "keywords": [
+    "Transform"
+  ],
+  "produced_mana": [
+    "B",
+    "G",
+    "R",
+    "U",
+    "W"
+  ],
+  "card_faces": [
+    {
+      "object": "card_face",
+      "name": "Profane Procession",
+      "mana_cost": "{1}{W}{B}",
+      "type_line": "Legendary Enchantment",
+      "oracle_text": "{3}{W}{B}: Exile target creature. Then if there are three or more cards exiled with Profane Procession, transform it.",
+      "colors": [
+        "B",
+        "W"
+      ],
+      "flavor_text": "Vona sought a conqueror. Mavren sought a savior. Both found what they sought . . .",
+      "artist": "Bastien L. Deharme",
+      "artist_id": "798f63ec-41ad-474e-9708-df08193345c6",
+      "illustration_id": "cf3e53bc-96b8-4cb6-995a-8d0ed76623a3",
+      "image_uris": {
+        "small": "https://cards.scryfall.io/small/front/1/d/1d94ff37-f04e-48ee-8253-d62ab07f0632.jpg?1783935277",
+        "normal": "https://cards.scryfall.io/normal/front/1/d/1d94ff37-f04e-48ee-8253-d62ab07f0632.jpg?1783935277",
+        "large": "https://cards.scryfall.io/large/front/1/d/1d94ff37-f04e-48ee-8253-d62ab07f0632.jpg?1783935277",
+        "png": "https://cards.scryfall.io/png/front/1/d/1d94ff37-f04e-48ee-8253-d62ab07f0632.png?1783935277",
+        "art_crop": "https://cards.scryfall.io/art_crop/front/1/d/1d94ff37-f04e-48ee-8253-d62ab07f0632.jpg?1783935277",
+        "border_crop": "https://cards.scryfall.io/border_crop/front/1/d/1d94ff37-f04e-48ee-8253-d62ab07f0632.jpg?1783935277",
+        "thumb": "https://cards.scryfall.io/thumb/front/1/d/1d94ff37-f04e-48ee-8253-d62ab07f0632.webp?1783935277",
+        "grid": "https://cards.scryfall.io/grid/front/1/d/1d94ff37-f04e-48ee-8253-d62ab07f0632.webp?1783935277",
+        "display": "https://cards.scryfall.io/display/front/1/d/1d94ff37-f04e-48ee-8253-d62ab07f0632.webp?1783935277",
+        "art": "https://cards.scryfall.io/art/front/1/d/1d94ff37-f04e-48ee-8253-d62ab07f0632.webp?1783935277",
+        "crop": "https://cards.scryfall.io/crop/front/1/d/1d94ff37-f04e-48ee-8253-d62ab07f0632.webp?1783935277",
+        "jpeg": "https://cards.scryfall.io/normal/front/1/d/1d94ff37-f04e-48ee-8253-d62ab07f0632.jpg?1783935277"
+      }
+    },
+    {
+      "object": "card_face",
+      "name": "Tomb of the Dusk Rose",
+      "mana_cost": "",
+      "type_line": "Legendary Land",
+      "oracle_text": "(Transforms from Profane Procession.)\n{T}: Add one mana of any color.\n{2}{W}{B}, {T}: Put a creature card exiled with this permanent onto the battlefield under your control.",
+      "colors": [],
+      "flavor_text": ". . . resting in the splendor of the dead.",
+      "artist": "Bastien L. Deharme",
+      "artist_id": "798f63ec-41ad-474e-9708-df08193345c6",
+      "illustration_id": "29bda121-c2da-4055-8664-115c85a2f812",
+      "image_uris": {
+        "small": "https://cards.scryfall.io/small/back/1/d/1d94ff37-f04e-48ee-8253-d62ab07f0632.jpg?1783935277",
+        "normal": "https://cards.scryfall.io/normal/back/1/d/1d94ff37-f04e-48ee-8253-d62ab07f0632.jpg?1783935277",
+        "large": "https://cards.scryfall.io/large/back/1/d/1d94ff37-f04e-48ee-8253-d62ab07f0632.jpg?1783935277",
+        "png": "https://cards.scryfall.io/png/back/1/d/1d94ff37-f04e-48ee-8253-d62ab07f0632.png?1783935277",
+        "art_crop": "https://cards.scryfall.io/art_crop/back/1/d/1d94ff37-f04e-48ee-8253-d62ab07f0632.jpg?1783935277",
+        "border_crop": "https://cards.scryfall.io/border_crop/back/1/d/1d94ff37-f04e-48ee-8253-d62ab07f0632.jpg?1783935277",
+        "thumb": "https://cards.scryfall.io/thumb/back/1/d/1d94ff37-f04e-48ee-8253-d62ab07f0632.webp?1783935277",
+        "grid": "https://cards.scryfall.io/grid/back/1/d/1d94ff37-f04e-48ee-8253-d62ab07f0632.webp?1783935277",
+        "display": "https://cards.scryfall.io/display/back/1/d/1d94ff37-f04e-48ee-8253-d62ab07f0632.webp?1783935277",
+        "art": "https://cards.scryfall.io/art/back/1/d/1d94ff37-f04e-48ee-8253-d62ab07f0632.webp?1783935277",
+        "crop": "https://cards.scryfall.io/crop/back/1/d/1d94ff37-f04e-48ee-8253-d62ab07f0632.webp?1783935277",
+        "jpeg": "https://cards.scryfall.io/normal/back/1/d/1d94ff37-f04e-48ee-8253-d62ab07f0632.jpg?1783935277"
+      }
+    }
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "9236ab9c-7730-46d9-a543-84ff7b245ece",
+      "component": "combo_piece",
+      "name": "Rivals of Ixalan Checklist",
+      "type_line": "Card",
+      "uri": "https://api.scryfall.com/cards/9236ab9c-7730-46d9-a543-84ff7b245ece"
+    },
+    {
+      "object": "related_card",
+      "id": "1d94ff37-f04e-48ee-8253-d62ab07f0632",
+      "component": "combo_piece",
+      "name": "Profane Procession // Tomb of the Dusk Rose",
+      "type_line": "Legendary Enchantment // Legendary Land",
+      "uri": "https://api.scryfall.com/cards/1d94ff37-f04e-48ee-8253-d62ab07f0632"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "arena",
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "2f7e40fc-772d-4a85-bfdd-01653c41d0fa",
+  "set": "rix",
+  "set_name": "Rivals of Ixalan",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/2f7e40fc-772d-4a85-bfdd-01653c41d0fa",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Arix&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/rix?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/1d94ff37-f04e-48ee-8253-d62ab07f0632/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Aa656ad7f-133f-4d93-919a-43bcf1f815f3&unique=prints",
+  "collector_number": "166",
+  "digital": false,
+  "rarity": "rare",
+  "artist": "Bastien L. Deharme",
+  "artist_ids": [
+    "798f63ec-41ad-474e-9708-df08193345c6"
+  ],
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "compasslanddfc"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 15962,
+  "penny_rank": 6079,
+  "prices": {
+    "usd": "0.38",
+    "usd_foil": "1.20",
+    "usd_etched": null,
+    "eur": "0.43",
+    "eur_foil": "1.46",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=439826&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DProfane%2BProcession%2B%252F%252F%2BTomb%2Bof%2Bthe%2BDusk%2BRose",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DProfane%2BProcession%2B%252F%252F%2BTomb%2Bof%2Bthe%2BDusk%2BRose",
+    "edhrec": "https://edhrec.com/route/?cc=Profane+Procession"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F155699%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=315352&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/66791?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

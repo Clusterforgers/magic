@@ -1,0 +1,133 @@
+{
+  "object": "card",
+  "id": "580dbecb-6d49-4b67-978f-e2041c10973c",
+  "oracle_id": "7fd0fe87-81d6-48b8-8d04-a233ed446d0f",
+  "multiverse_ids": [
+    555176
+  ],
+  "arena_id": 81084,
+  "name": "Mothrider Cavalry",
+  "lang": "en",
+  "released_at": "2022-03-17",
+  "uri": "https://api.scryfall.com/cards/580dbecb-6d49-4b67-978f-e2041c10973c",
+  "scryfall_uri": "https://scryfall.com/card/yneo/5/mothrider-cavalry?utm_source=api",
+  "layout": "normal",
+  "highres_image": false,
+  "image_status": "lowres",
+  "image_updated_at": "2026-07-13T06:20:03Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/5/8/580dbecb-6d49-4b67-978f-e2041c10973c.jpg?1783923603",
+    "normal": "https://cards.scryfall.io/normal/front/5/8/580dbecb-6d49-4b67-978f-e2041c10973c.jpg?1783923603",
+    "large": "https://cards.scryfall.io/large/front/5/8/580dbecb-6d49-4b67-978f-e2041c10973c.jpg?1783923603",
+    "png": "https://cards.scryfall.io/png/front/5/8/580dbecb-6d49-4b67-978f-e2041c10973c.png?1783923603",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/5/8/580dbecb-6d49-4b67-978f-e2041c10973c.jpg?1783923603",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/5/8/580dbecb-6d49-4b67-978f-e2041c10973c.jpg?1783923603",
+    "thumb": "https://cards.scryfall.io/thumb/front/5/8/580dbecb-6d49-4b67-978f-e2041c10973c.webp?1783923603",
+    "grid": "https://cards.scryfall.io/grid/front/5/8/580dbecb-6d49-4b67-978f-e2041c10973c.webp?1783923603",
+    "display": "https://cards.scryfall.io/display/front/5/8/580dbecb-6d49-4b67-978f-e2041c10973c.webp?1783923603",
+    "art": "https://cards.scryfall.io/art/front/5/8/580dbecb-6d49-4b67-978f-e2041c10973c.webp?1783923603",
+    "crop": "https://cards.scryfall.io/crop/front/5/8/580dbecb-6d49-4b67-978f-e2041c10973c.webp?1783923603",
+    "jpeg": "https://cards.scryfall.io/normal/front/5/8/580dbecb-6d49-4b67-978f-e2041c10973c.jpg?1783923603"
+  },
+  "mana_cost": "{2}{W}{W}",
+  "cmc": 4.0,
+  "type_line": "Creature — Human Samurai",
+  "oracle_text": "This spell costs {2} less to cast if you have no other creature cards in hand or if the only other creature cards in your hand are named Mothrider Cavalry.\nFlying\nOther creatures you control get +1/+1.",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Flying"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "not_legal",
+    "pauper": "not_legal",
+    "vintage": "not_legal",
+    "penny": "not_legal",
+    "commander": "not_legal",
+    "oathbreaker": "not_legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "not_legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "e804713e-fee5-49ee-8a34-5889ffd6094a",
+  "set": "yneo",
+  "set_name": "Alchemy: Kamigawa",
+  "set_type": "alchemy",
+  "set_uri": "https://api.scryfall.com/sets/e804713e-fee5-49ee-8a34-5889ffd6094a",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ayneo&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/yneo?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/580dbecb-6d49-4b67-978f-e2041c10973c/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A7fd0fe87-81d6-48b8-8d04-a233ed446d0f&unique=prints",
+  "collector_number": "5",
+  "digital": true,
+  "rarity": "mythic",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Konstantin Porubov",
+  "artist_ids": [
+    "103a5bc1-7a87-428d-853b-f86057a61cfe"
+  ],
+  "illustration_id": "6a8eca67-95fe-4547-ae0c-67d4be16af09",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "arena",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "alchemy"
+  ],
+  "preview": {
+    "source": "Wizards of the Coast",
+    "source_uri": "https://magic.gg/news/alchemy-kamigawa-previews-at-the-neon-dynasty-championship",
+    "previewed_at": "2022-03-13"
+  },
+  "prices": {
+    "usd": null,
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": null,
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=555176&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DMothrider%2BCavalry",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DMothrider%2BCavalry",
+    "edhrec": "https://edhrec.com/route/?cc=Mothrider+Cavalry"
+  }
+}

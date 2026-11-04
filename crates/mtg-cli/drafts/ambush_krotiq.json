@@ -1,0 +1,28 @@
+{
+  "oracle_id": "e53f5f82-a8e0-44b1-a3be-162a0724755d",
+  "name": "Ambush Krotiq",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ambush Krotiq",
+      "oracle_fingerprint": "48bc82dffdd91326576a44bb4328eb66",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }] },
+                  "as": "picked"
+                }
+              },
+              { "Move": { "what": { "Bound": "picked" }, "to": "Hand" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

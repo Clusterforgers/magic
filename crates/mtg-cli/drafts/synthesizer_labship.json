@@ -1,0 +1,72 @@
+{
+  "oracle_id": "a37314cf-bbbd-4003-b94d-0e6e60edfc15",
+  "name": "Synthesizer Labship",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Synthesizer Labship",
+      "oracle_fingerprint": "18958ddaec6a91f23374a230d055b260",
+      "abilities": [
+        { "Keyword": "Station" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Triggered": {
+                    "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+                    "targets": [
+                      {
+                        "what": {
+                          "Object": [{ "Type": "Artifact" }, "Other", { "ControlledBy": "You" }]
+                        },
+                        "bounds": { "min": 0, "max": 1 }
+                      }
+                    ],
+                    "effects": [
+                      {
+                        "Continuous": {
+                          "affected": { "Target": 0 },
+                          "mods": [
+                            { "SetPT": { "power": 2, "toughness": 2 } },
+                            { "AddType": "Artifact" },
+                            { "AddType": "Creature" },
+                            { "AddKeyword": "Flying" }
+                          ],
+                          "duration": "UntilEndOfTurn"
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ],
+            "condition": {
+              "Matches": {
+                "subject": "This",
+                "selector": [{ "CounterCount": { "kind": "charge", "op": "Ge", "to": 2 } }]
+              }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              { "AddKeyword": "Flying" },
+              { "AddKeyword": "Vigilance" },
+              { "AddType": "Creature" }
+            ],
+            "condition": {
+              "Matches": {
+                "subject": "This",
+                "selector": [{ "CounterCount": { "kind": "charge", "op": "Ge", "to": 9 } }]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

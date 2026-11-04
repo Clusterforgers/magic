@@ -1,0 +1,36 @@
+{
+  "oracle_id": "7e497f6b-69e1-4fab-bb04-f687c99a8310",
+  "name": "Skyknight Squire",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Skyknight Squire",
+      "oracle_fingerprint": "65bb5e803dcc25f695e3beddd92c375e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Flying" }, { "AddSubtype": "Knight" }],
+            "condition": {
+              "Matches": {
+                "subject": "This",
+                "selector": [{ "CounterCount": { "kind": "+1/+1", "op": "Ge", "to": 3 } }]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

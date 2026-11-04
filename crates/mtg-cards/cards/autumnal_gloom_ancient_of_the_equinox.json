@@ -1,0 +1,32 @@
+{
+  "oracle_id": "245aa786-d607-414f-ab55-b003b2b9faf4",
+  "name": "Autumnal Gloom // Ancient of the Equinox",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Autumnal Gloom",
+      "oracle_fingerprint": "c3d484e7bc01cdf82430e9285755f903",
+      "abilities": [
+        { "Activated": { "cost": "{B}", "effects": [{ "Mill": {} }] } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "CardTypes": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                "op": "Ge",
+                "right": 4
+              }
+            },
+            "effects": [{ "Transform": { "what": "This" } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Ancient of the Equinox",
+      "oracle_fingerprint": "cd98f99bb284618f162005a0fe36a23e",
+      "abilities": [{ "Keyword": "Trample" }, { "Keyword": "Hexproof" }]
+    }
+  ]
+}

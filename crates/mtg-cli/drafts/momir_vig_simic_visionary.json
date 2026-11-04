@@ -1,0 +1,65 @@
+{
+  "oracle_id": "6202d1cf-5359-4783-846d-7f35460e42b4",
+  "name": "Momir Vig, Simic Visionary",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Momir Vig, Simic Visionary",
+      "oracle_fingerprint": "662e610b2047a212f831d593fe061f26",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": { "what": [{ "Type": "Creature" }, { "Color": "Green" }], "by": "You" }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "Search": { "filter": [{ "Type": "Creature" }], "as": "found" } },
+                    { "Shuffle": {} },
+                    {
+                      "Move": {
+                        "what": { "Bound": "found" },
+                        "to": { "Library": { "place": "Top" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": { "what": [{ "Type": "Creature" }, { "Color": "Blue" }], "by": "You" }
+            },
+            "effects": [
+              { "LookAtTop": { "as": "top" } },
+              { "Reveal": { "what": { "Bound": "top" } } },
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "Type": "Creature" }
+                    ]
+                  },
+                  "to": "Hand"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Top", "order": "Chosen" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

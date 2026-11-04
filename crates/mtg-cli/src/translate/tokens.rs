@@ -39,13 +39,12 @@ fn token(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         return Ok(vec![token_create(ctx, p)?]);
     };
     let mut create = token_create(ctx, &p.without(&["AtEOT"]))?;
-    let bound = match create["CreateToken"].get("as") {
-        Some(name) => json!({ "Bound": name }),
-        None => {
-            let name = ctx.fresh("token");
-            create["CreateToken"]["as"] = json!(name);
-            json!({ "Bound": name })
-        }
+    let bound = if let Some(name) = create["CreateToken"].get("as") {
+        json!({ "Bound": name })
+    } else {
+        let name = ctx.fresh("token");
+        create["CreateToken"]["as"] = json!(name);
+        json!({ "Bound": name })
     };
     let clean_up = super::tokens_copy::at_eot(word, &bound)?;
     Ok(vec![create, clean_up])

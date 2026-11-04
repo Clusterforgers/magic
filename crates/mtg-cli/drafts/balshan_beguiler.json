@@ -1,0 +1,30 @@
+{
+  "oracle_id": "928a7fbc-ba34-42a9-947e-0f3bf1cba152",
+  "name": "Balshan Beguiler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Balshan Beguiler",
+      "oracle_fingerprint": "d5bef22554210a804263858024ec7d1e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              { "LookAtTop": { "who": "Triggering", "count": 2, "as": "top" } },
+              { "Choose": { "from": { "Bound": "top" }, "as": "kept2", "rest_as": "rest3" } },
+              { "Reveal": { "what": { "Bound": "kept2" } } },
+              { "Move": { "what": { "Bound": "kept2" }, "to": "Graveyard" } },
+              {
+                "Move": {
+                  "what": { "Bound": "rest3" },
+                  "to": { "Library": { "place": "Top", "order": "Chosen" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

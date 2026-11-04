@@ -1,0 +1,29 @@
+{
+  "oracle_id": "9f4e4d6e-bb1d-41d6-9184-3cac45197285",
+  "name": "Demon's Herald",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Demon's Herald",
+      "oracle_fingerprint": "a1cbf763328c7ccf97bd8b4d39fcdb9e",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{2}{B}" },
+              "Tap",
+              { "Sacrifice": { "filter": [{ "Type": "Creature" }, { "Color": "Blue" }] } },
+              { "Sacrifice": { "filter": [{ "Type": "Creature" }, { "Color": "Black" }] } },
+              { "Sacrifice": { "filter": [{ "Type": "Creature" }, { "Color": "Red" }] } }
+            ],
+            "effects": [
+              { "Search": { "filter": [{ "Named": "Prince of Thralls" }], "as": "found" } },
+              { "Move": { "what": { "Bound": "found" }, "to": { "Battlefield": {} } } },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

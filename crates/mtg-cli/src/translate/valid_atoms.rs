@@ -3,6 +3,9 @@
 
 use serde_json::{Value, json};
 
+use super::ctx::{CARD_TYPES, Ctx, Tr, unmapped};
+use super::valid::{defined, objects, selector_any};
+
 /// The predicates of a property such as `wasCastFromYourHandByYou` or `blockingSource`, when it is one of these.
 pub fn atom(prop: &str) -> Option<Vec<Value>> {
     let one = |value: Value| Some(vec![value]);
@@ -15,9 +18,168 @@ pub fn atom(prop: &str) -> Option<Vec<Value>> {
         "blockingSource" => return one(json!({"Blocks": "This"})),
         "blockedBySource" => return one(json!({"BlockedBy": "This"})),
         "attackingYou" => return one(json!({"AttackingPlayer": "You"})),
+        "IsMonstrous" => return one(json!("Monstrous")),
+        "IsRenowned" => return one(json!("Renowned")),
+        "faceDown" => return one(json!("FaceDown")),
+        "faceUp" => return one(json!({"Not": "FaceDown"})),
+        "nonColorless" => return one(json!({"Not": "Colorless"})),
+        // Only an attacker that no creature was declared to block; `blocked` is not its negation.
+        "unblocked" => return one(json!("Unblocked")),
+        "PairedWith" => return one(json!({"PairedWith": "This"})),
+        "milledThisTurn" => return one(json!("MilledThisTurn")),
+        "MonoColor" => return one(compare("Colors", "Eq", 1)),
+        // How the spell was cast, for the ways the cast node has.
+        "surged" => return one(json!({"CastWith": "Surge"})),
+        "spectacle" => return one(json!({"CastWith": "Spectacle"})),
+        "prowled" => return one(json!({"CastWith": "Prowl"})),
+        "webSlinged" => return one(json!({"CastWith": "WebSlinging"})),
         _ => {}
     }
+    if let Some(found) = counters(prop) {
+        return Some(vec![found]);
+    }
+    if let Some(found) = counted(prop) {
+        return Some(vec![found]);
+    }
     was_cast(prop.strip_prefix("wasCast")?)
+}
+
+/// Whether a reference names players only (a word that does not is a gap, or an object whose controller is wanted).
+fn is_player(reference: &Value) -> bool {
+    match reference {
+        Value::String(word) => matches!(
+            word.as_str(),
+            "You" | "Opponents" | "EachPlayer" | "AttachedPlayer" | "Defending" | "ActivePlayer"
+        ),
+        Value::Object(map) => map.contains_key("ControllerOf") || map.contains_key("OwnerOf"),
+        _ => false,
+    }
+}
+
+/// The objects a word names: a valid-string (`Creature.YouCtrl`) as the cards that match it, else a `Defined$` word.
+fn objects_of(ctx: &Ctx, word: &str) -> Tr<Value> {
+    let word = word.trim();
+    let head = word.split('.').next().unwrap_or(word);
+    let base = CARD_TYPES.contains(&head)
+        || matches!(head, "Permanent" | "Card")
+        || ctx.world.subtypes.contains(head);
+    if base {
+        Ok(json!({"Each": selector_any(ctx, word)?}))
+    } else {
+        objects(defined(ctx, word)?)
+    }
+}
+
+/// The player a `ControlledBy <word>` or `<word>Ctrl` names: the player a word holds, or the controller of the objects it
+/// names (`Self`, `Enchanted`, `Valid ...`); `None` for a word that is neither.
+fn controller_of(ctx: &Ctx, word: &str) -> Option<Value> {
+    let word = word.trim();
+    let found = defined(ctx, word).ok()?;
+    if is_player(&found) {
+        return Some(found);
+    }
+    let objects = word.starts_with("Valid ")
+        || matches!(word, "Self" | "Card.Self" | "Enchanted" | "Equipped");
+    objects.then(|| json!({ "ControllerOf": found }))
+}
+
+/// Properties that carry an argument or an object word: `AttachedTo <valid>`, `EnchantedBy <valid>`, `attacking <player>`,
+/// `ControlledBy <word>`, `OwnedBy <word>`. `None` for any other property.
+pub fn argument(ctx: &Ctx, prop: &str) -> Tr<Option<Vec<Value>>> {
+    // Forge writes a comma in a name as `;`; only a name the checkout knows is a name (a bare `namedAjani` is a broken split).
+    if let Some(name) = prop.strip_prefix("named")
+        && !name.is_empty()
+    {
+        let name = name.replace(';', ",");
+        return if ctx.world.names.contains(&name) {
+            Ok(Some(vec![json!({"Named": name})]))
+        } else {
+            unmapped(format!("valid:named{name}"))
+        };
+    }
+    let Some((head, arg)) = prop.split_once(' ') else {
+        return Ok(None);
+    };
+    let one = |value: Value| Ok(Some(vec![value]));
+    match head {
+        // This attachment sits on one of the objects the word names.
+        "AttachedTo" => one(json!({"AttachedTo": objects_of(ctx, arg)?})),
+        // The object has an attachment that matches: the opposite direction of `AttachedTo`.
+        "EnchantedBy" | "EquippedBy" => {
+            let subtype = if head == "EnchantedBy" {
+                "Aura"
+            } else {
+                "Equipment"
+            };
+            let mut attached = selector_any(ctx, arg)?;
+            if !attached.contains(&json!({"Subtype": subtype})) {
+                attached.push(json!({"Subtype": subtype}));
+            }
+            one(json!({ "HasAttached": attached }))
+        }
+        "attacking" => match defined(ctx, arg) {
+            Ok(who) if is_player(&who) => one(json!({"AttackingPlayer": who})),
+            _ => unmapped(format!("valid:attacking {arg}")),
+        },
+        "ControlledBy" | "OwnedBy" => {
+            let Some(who) = controller_of(ctx, arg) else {
+                return Ok(None);
+            };
+            let pred = if head == "ControlledBy" {
+                "ControlledBy"
+            } else {
+                "OwnedBy"
+            };
+            one(json!({ pred: who }))
+        }
+        _ => Ok(None),
+    }
+}
+
+/// `RememberedPlayerCtrl`, `EnchantedPlayerOwn`: the word names the player, the suffix says control or ownership.
+pub fn suffixed(ctx: &Ctx, prop: &str) -> Option<Vec<Value>> {
+    let (word, pred) = prop
+        .strip_suffix("Ctrl")
+        .map(|word| (word, "ControlledBy"))
+        .or_else(|| prop.strip_suffix("Own").map(|word| (word, "OwnedBy")))?;
+    let who = controller_of(ctx, word)?;
+    Some(vec![json!({ pred: who })])
+}
+
+/// `counters_GE1_P1P1`, `counters_LT3_CHARGE`: the number of counters of a kind compared with a written number. Whether
+/// there is one at all is `HasCounter` (or its negation); every other bound is `CounterCount`, where none counts as zero.
+fn counters(prop: &str) -> Option<Value> {
+    let rest = prop.strip_prefix("counters_")?;
+    let (bound, kind) = rest.split_once('_')?;
+    let op = super::valid::cmp(bound.get(..2)?)?;
+    let digits = bound.get(2..)?;
+    if digits.is_empty() || !digits.chars().all(|c| c.is_ascii_digit()) {
+        return None;
+    }
+    let to: u32 = digits.parse().ok()?;
+    let kind = super::amount::counter_kind(kind)?;
+    Some(match (op, to) {
+        ("Ge", 1) | ("Gt" | "Ne", 0) => json!({"HasCounter": kind}),
+        ("Eq" | "Le", 0) | ("Lt", 1) => json!({"Not": {"HasCounter": kind}}),
+        _ => json!({"CounterCount": {"kind": kind, "op": op, "to": to}}),
+    })
+}
+
+/// `numColorsEQ2`, `basePowerGE3`: a characteristic compared with a written number.
+fn counted(prop: &str) -> Option<Value> {
+    let (stat, rest) = [("numColors", "Colors"), ("basePower", "BasePower")]
+        .iter()
+        .find_map(|(word, stat)| prop.strip_prefix(word).map(|rest| (*stat, rest)))?;
+    let op = super::valid::cmp(rest.get(..2)?)?;
+    let digits = rest.get(2..)?;
+    if digits.is_empty() || !digits.chars().all(|c| c.is_ascii_digit()) {
+        return None;
+    }
+    Some(compare(stat, op, digits.parse().ok()?))
+}
+
+fn compare(stat: &str, op: &str, to: i64) -> Value {
+    json!({"Compare": {"stat": stat, "op": op, "to": to}})
 }
 
 /// `wasCast`, `wasCastByYou`, `wasCastFromYourHand`, `wasCastFromGraveyardByYou` and their kin.

@@ -1,0 +1,23 @@
+{
+  "oracle_id": "d2f98983-f395-4166-aa5a-309b4769baab",
+  "name": "Malfunction",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Malfunction",
+      "oracle_fingerprint": "3f9903ed3a3f8e157b60d82b83f1bc0d",
+      "abilities": [
+        {
+          "Keyword": { "Enchant": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] }] }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Tap": { "what": "Attached" } }]
+          }
+        },
+        { "Static": { "affected": "Attached", "mods": ["DoesntUntap"] } }
+      ]
+    }
+  ]
+}

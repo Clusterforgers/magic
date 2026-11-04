@@ -1,0 +1,29 @@
+{
+  "oracle_id": "330e109c-1885-4946-9edc-895408519b3d",
+  "name": "Savaen Elves",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Savaen Elves",
+      "oracle_fingerprint": "9c1a82c765d3f06fea1d9fa7af119c36",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{G}{G}" }, "Tap"],
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Subtype": "Aura" },
+                    { "AttachedTo": { "Each": [{ "Type": "Land" }] } }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

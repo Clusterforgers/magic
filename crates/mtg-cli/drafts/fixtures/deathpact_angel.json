@@ -1,0 +1,157 @@
+{
+  "object": "card",
+  "id": "81cfc3c5-6d69-443e-a506-76b94178979b",
+  "oracle_id": "ad0f50d5-7b40-4fd8-8d13-4a0493398f53",
+  "multiverse_ids": [
+    366278
+  ],
+  "mtgo_id": 47757,
+  "mtgo_foil_id": 47758,
+  "tcgplayer_id": 67346,
+  "cardmarket_id": 259812,
+  "name": "Deathpact Angel",
+  "lang": "en",
+  "released_at": "2013-02-01",
+  "uri": "https://api.scryfall.com/cards/81cfc3c5-6d69-443e-a506-76b94178979b",
+  "scryfall_uri": "https://scryfall.com/card/gtc/153/deathpact-angel?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T10:55:10Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/8/1/81cfc3c5-6d69-443e-a506-76b94178979b.jpg?1783940110",
+    "normal": "https://cards.scryfall.io/normal/front/8/1/81cfc3c5-6d69-443e-a506-76b94178979b.jpg?1783940110",
+    "large": "https://cards.scryfall.io/large/front/8/1/81cfc3c5-6d69-443e-a506-76b94178979b.jpg?1783940110",
+    "png": "https://cards.scryfall.io/png/front/8/1/81cfc3c5-6d69-443e-a506-76b94178979b.png?1783940110",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/8/1/81cfc3c5-6d69-443e-a506-76b94178979b.jpg?1783940110",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/8/1/81cfc3c5-6d69-443e-a506-76b94178979b.jpg?1783940110",
+    "thumb": "https://cards.scryfall.io/thumb/front/8/1/81cfc3c5-6d69-443e-a506-76b94178979b.webp?1783940110",
+    "grid": "https://cards.scryfall.io/grid/front/8/1/81cfc3c5-6d69-443e-a506-76b94178979b.webp?1783940110",
+    "display": "https://cards.scryfall.io/display/front/8/1/81cfc3c5-6d69-443e-a506-76b94178979b.webp?1783940110",
+    "art": "https://cards.scryfall.io/art/front/8/1/81cfc3c5-6d69-443e-a506-76b94178979b.webp?1783940110",
+    "crop": "https://cards.scryfall.io/crop/front/8/1/81cfc3c5-6d69-443e-a506-76b94178979b.webp?1783940110",
+    "jpeg": "https://cards.scryfall.io/normal/front/8/1/81cfc3c5-6d69-443e-a506-76b94178979b.jpg?1783940110"
+  },
+  "mana_cost": "{3}{W}{B}{B}",
+  "cmc": 6.0,
+  "type_line": "Creature — Angel",
+  "oracle_text": "Flying\nWhen this creature dies, create a 1/1 white and black Cleric creature token. It has \"{3}{W}{B}{B}, {T}, Sacrifice this token: Return a card named Deathpact Angel from your graveyard to the battlefield.\"",
+  "power": "5",
+  "toughness": "5",
+  "colors": [
+    "B",
+    "W"
+  ],
+  "color_identity": [
+    "B",
+    "W"
+  ],
+  "keywords": [
+    "Flying"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "81cfc3c5-6d69-443e-a506-76b94178979b",
+      "component": "combo_piece",
+      "name": "Deathpact Angel",
+      "type_line": "Creature — Angel",
+      "uri": "https://api.scryfall.com/cards/81cfc3c5-6d69-443e-a506-76b94178979b"
+    },
+    {
+      "object": "related_card",
+      "id": "9af74e26-69d7-4683-9a71-9b420c03d75f",
+      "component": "token",
+      "name": "Cleric",
+      "type_line": "Token Creature — Cleric",
+      "uri": "https://api.scryfall.com/cards/9af74e26-69d7-4683-9a71-9b420c03d75f"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "035a05f7-e020-4f50-a141-ed16ba704bd2",
+  "set": "gtc",
+  "set_name": "Gatecrash",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/035a05f7-e020-4f50-a141-ed16ba704bd2",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Agtc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/gtc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/81cfc3c5-6d69-443e-a506-76b94178979b/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Aad0f50d5-7b40-4fd8-8d13-4a0493398f53&unique=prints",
+  "collector_number": "153",
+  "digital": false,
+  "rarity": "mythic",
+  "watermark": "orzhov",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Jason Chan",
+  "artist_ids": [
+    "8062d5a9-51b6-4822-933f-fa9e9dba8416"
+  ],
+  "illustration_id": "89fec9f2-8133-4565-8273-6ae5feff6baf",
+  "border_color": "black",
+  "frame": "2003",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 20100,
+  "penny_rank": 13156,
+  "prices": {
+    "usd": "0.67",
+    "usd_foil": "10.63",
+    "usd_etched": null,
+    "eur": "0.73",
+    "eur_foil": "7.35",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=366278&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DDeathpact%2BAngel",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DDeathpact%2BAngel",
+    "edhrec": "https://edhrec.com/route/?cc=Deathpact+Angel"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F67346%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=259812&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/47757?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

@@ -1,0 +1,64 @@
+{
+  "oracle_id": "2efdfcae-c3ad-4c6b-8a60-45a203bd14c6",
+  "name": "Sengir Nosferatu",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sengir Nosferatu",
+      "oracle_fingerprint": "03428ef01b8b571c7d45c81741f74d5c",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{B}" }, "ExileSelf"],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Bat",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Bat"],
+                      "power": 1,
+                      "toughness": 2,
+                      "abilities": [
+                        { "Keyword": "Flying" },
+                        {
+                          "Activated": {
+                            "cost": [{ "Mana": "{1}{B}" }, "SacrificeSelf"],
+                            "effects": [
+                              {
+                                "Choose": {
+                                  "from": {
+                                    "Each": [
+                                      { "Named": "Sengir Nosferatu" },
+                                      { "In": "Exile" },
+                                      { "OwnedBy": "You" }
+                                    ]
+                                  },
+                                  "count": { "min": 0, "max": 1 },
+                                  "as": "picked"
+                                }
+                              },
+                              {
+                                "Move": {
+                                  "what": { "Bound": "picked" },
+                                  "to": { "Battlefield": {} }
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

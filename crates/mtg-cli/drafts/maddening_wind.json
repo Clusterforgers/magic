@@ -1,0 +1,21 @@
+{
+  "oracle_id": "c9798915-3f9e-466b-bbd6-f4e126bdb67d",
+  "name": "Maddening Wind",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Maddening Wind",
+      "oracle_fingerprint": "27baf18dafadc206e65b66b91cc34308",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        { "Keyword": { "CumulativeUpkeep": "{G}" } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": { "ControllerOf": "Attached" } } },
+            "effects": [{ "DealDamage": { "to": "Triggering", "amount": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

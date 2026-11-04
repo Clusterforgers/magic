@@ -1,0 +1,80 @@
+{
+  "oracle_id": "55bc7f55-f73b-40b5-8912-9bf76c129ccc",
+  "name": "Azlask, the Swelling Scourge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Azlask, the Swelling Scourge",
+      "oracle_fingerprint": "116758d5e6637e4b1a127f5e00d421d0",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  {
+                    "AnyOf": [
+                      "This",
+                      {
+                        "Not": {
+                          "AnyOf": [
+                            { "Not": { "Type": "Creature" } },
+                            { "Not": "Colorless" },
+                            { "Not": { "ControlledBy": "You" } }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                ],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "You", "counter": { "Other": "experience" } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{W}{U}{B}{R}{G}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": {
+                          "Counters": { "on": "You", "counter": { "Other": "experience" } }
+                        },
+                        "toughness": {
+                          "Counters": { "on": "You", "counter": { "Other": "experience" } }
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [
+                      { "AnyOf": [{ "Subtype": "Scion" }, { "Subtype": "Spawn" }] },
+                      { "ControlledBy": "You" }
+                    ]
+                  },
+                  "mods": [
+                    { "AddKeyword": { "Annihilator": 1 } },
+                    { "AddKeyword": "Indestructible" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

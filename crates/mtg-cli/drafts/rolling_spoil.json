@@ -1,0 +1,35 @@
+{
+  "oracle_id": "9abe09fb-17ab-41e8-9d89-1467ed62f87b",
+  "name": "Rolling Spoil",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rolling Spoil",
+      "oracle_fingerprint": "74cc0727afe5a371cac3a19fe6ca3a88",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Land" }] } }],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              {
+                "If": {
+                  "condition": { "ManaSpent": "Black" },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": { "Each": [{ "Type": "Creature" }] },
+                        "mods": [{ "ModifyPT": { "power": -1, "toughness": -1 } }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

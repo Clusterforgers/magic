@@ -1,0 +1,61 @@
+{
+  "oracle_id": "afc9436b-8cad-4916-929d-ff33a37b42d5",
+  "name": "Dawnsire, Sunstar Dreadnought",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dawnsire, Sunstar Dreadnought",
+      "oracle_fingerprint": "a32f567f073dde75eb617e063fddcb3b",
+      "abilities": [
+        { "Keyword": "Station" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Triggered": {
+                    "when": {
+                      "GroupAttacks": {
+                        "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                      }
+                    },
+                    "targets": [
+                      {
+                        "what": {
+                          "Object": [
+                            { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }
+                          ]
+                        },
+                        "bounds": { "min": 0, "max": 1 }
+                      }
+                    ],
+                    "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 100 } }]
+                  }
+                }
+              }
+            ],
+            "condition": {
+              "Matches": {
+                "subject": "This",
+                "selector": [{ "CounterCount": { "kind": "charge", "op": "Ge", "to": 10 } }]
+              }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Flying" }, { "AddType": "Creature" }],
+            "condition": {
+              "Matches": {
+                "subject": "This",
+                "selector": [{ "CounterCount": { "kind": "charge", "op": "Ge", "to": 20 } }]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

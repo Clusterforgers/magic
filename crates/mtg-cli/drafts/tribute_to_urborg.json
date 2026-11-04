@@ -1,0 +1,71 @@
+{
+  "oracle_id": "8355d44d-cf03-4b19-b2dc-0ca3450dbf5c",
+  "name": "Tribute to Urborg",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tribute to Urborg",
+      "oracle_fingerprint": "96afce8737ceb253c978f2a3fd72e424",
+      "abilities": [
+        { "Keyword": { "Kicker": "{1}{U}" } },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": -2, "toughness": -2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "If": {
+                  "condition": "Kicked",
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [
+                          {
+                            "ModifyPT": {
+                              "power": {
+                                "Times": {
+                                  "by": -1,
+                                  "of": {
+                                    "Count": [
+                                      { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                                      { "OwnedBy": "You" },
+                                      { "In": "Graveyard" }
+                                    ]
+                                  }
+                                }
+                              },
+                              "toughness": {
+                                "Times": {
+                                  "by": -1,
+                                  "of": {
+                                    "Count": [
+                                      { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                                      { "OwnedBy": "You" },
+                                      { "In": "Graveyard" }
+                                    ]
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        ],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

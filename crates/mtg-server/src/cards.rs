@@ -624,6 +624,66 @@ impl CardSource {
         }
     }
 
+    /// The cards that `seeds` can conjure, by the name a conjure asks for, and the drafts they play on: a name the card
+    /// index resolves to exactly one card is assembled in `rules` as any card of a deck is (a card without rules
+    /// arrives with its printed side and is played by hand), and the cards it can conjure follow in turn. A name that
+    /// resolves to no card, or to several, is left out, so a conjure of it does nothing.
+    pub(crate) async fn conjured_in(
+        &self,
+        rules: &Library,
+        seeds: &[Arc<CardDefinition>],
+    ) -> Result<(BTreeMap<String, Arc<CardDefinition>>, Reads), CatalogError> {
+        let mut found: BTreeMap<String, Arc<CardDefinition>> = BTreeMap::new();
+        let mut reads = Reads::new();
+        let mut tried = std::collections::BTreeSet::new();
+        let mut pending: Vec<String> = seeds
+            .iter()
+            .flat_map(|card| card.conjured_names())
+            .collect();
+        if pending.is_empty() {
+            return Ok((found, reads));
+        }
+        let index = self
+            .card_index()
+            .await
+            .map_err(|error| CatalogError::Database(error.to_string()))?;
+        while !pending.is_empty() {
+            let mut ids: Vec<(String, String)> = Vec::new();
+            for name in std::mem::take(&mut pending) {
+                if !tried.insert(name.clone()) {
+                    continue;
+                }
+                if let mtg_import::resolve::Lookup::Found(card) = index.find(&name) {
+                    ids.push((name, card.oracle_id.as_str().to_owned()));
+                }
+            }
+            let asked: Vec<String> = ids.iter().map(|(_, id)| id.clone()).collect();
+            let (assembled, more) = self.assemble_in(rules, &asked).await?;
+            reads.extend(more);
+            let catalog = catalog_of(assembled);
+            for (name, id) in ids {
+                if let Some(card) = catalog.get(&id) {
+                    pending.extend(card.conjured_names());
+                    found.insert(name, Arc::clone(card));
+                }
+            }
+        }
+        Ok((found, reads))
+    }
+
+    /// [`CardSource::conjured_in`] with the library as it is now.
+    pub(crate) async fn conjured_for(
+        &self,
+        seeds: &[Arc<CardDefinition>],
+    ) -> Result<(BTreeMap<String, Arc<CardDefinition>>, Reads), CatalogError> {
+        // A game of built-in decks conjures nothing and must not need the card tables.
+        if seeds.iter().all(|card| card.conjured_names().is_empty()) {
+            return Ok((BTreeMap::new(), Reads::new()));
+        }
+        let (rules, _) = self.library().await?;
+        self.conjured_in(&rules, seeds).await
+    }
+
     /// The definitions of the distinct cards of `ids`, by id.
     pub async fn catalog(&self, ids: &[String]) -> Result<Catalog, CatalogError> {
         Ok(self.catalog_pinned(ids).await?.0)
@@ -634,8 +694,16 @@ impl CardSource {
         &self,
         ids: &[String],
     ) -> Result<(Catalog, Reads), CatalogError> {
-        let (assembled, reads) = self.assemble_pinned(ids).await?;
-        Ok((catalog_of(assembled), reads))
+        let (rules, _) = self.library().await?;
+        let (assembled, mut reads) = self.assemble_in(&rules, ids).await?;
+        let catalog = catalog_of(assembled);
+        let seeds: Vec<Arc<CardDefinition>> = ids
+            .iter()
+            .filter_map(|id| catalog.get(id).cloned())
+            .collect();
+        let (conjured, more) = self.conjured_in(&rules, &seeds).await?;
+        reads.extend(more);
+        Ok((catalog.with_conjured(conjured), reads))
     }
 
     /// The cards of a deck of oracle ids in deck order, copies sharing one definition.
@@ -670,7 +738,13 @@ impl CardSource {
             self.pinned_library(&recipe.reads).await?
         };
         let (assembled, _) = self.assemble_in(&rules, &ids).await?;
-        Ok(catalog_of(assembled))
+        let catalog = catalog_of(assembled);
+        let seeds: Vec<Arc<CardDefinition>> = ids
+            .iter()
+            .filter_map(|id| catalog.get(id).cloned())
+            .collect();
+        let (conjured, _) = self.conjured_in(&rules, &seeds).await?;
+        Ok(catalog.with_conjured(conjured))
     }
 }
 

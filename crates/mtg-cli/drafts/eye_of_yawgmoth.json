@@ -1,0 +1,30 @@
+{
+  "oracle_id": "e0af613a-05ba-438d-ba74-3f6a9958576c",
+  "name": "Eye of Yawgmoth",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Eye of Yawgmoth",
+      "oracle_fingerprint": "1c3f2be04d98b26481fe262f5a06a786",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{3}" },
+              "Tap",
+              { "Sacrifice": { "filter": [{ "Type": "Creature" }] } }
+            ],
+            "effects": [
+              {
+                "LookAtTop": { "count": { "Stat": { "of": "Paid", "stat": "Power" } }, "as": "top" }
+              },
+              { "Choose": { "from": { "Bound": "top" }, "as": "kept2", "rest_as": "rest3" } },
+              { "Move": { "what": { "Bound": "kept2" }, "to": "Hand" } },
+              { "Exile": { "what": { "Bound": "rest3" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

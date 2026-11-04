@@ -1,0 +1,19 @@
+{
+  "oracle_id": "af642b8d-a085-4a07-8a1d-ca385d4700f7",
+  "name": "Leyline Phantom",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Leyline Phantom",
+      "oracle_fingerprint": "641d3032e2bf090e8e97806501cde063",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Batch": { "DealsDamage": { "source": ["This"], "combat": true } } },
+            "effects": [{ "Move": { "what": "This", "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

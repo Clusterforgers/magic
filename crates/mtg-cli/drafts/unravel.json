@@ -1,0 +1,33 @@
+{
+  "oracle_id": "1525cbc1-0d95-4f58-99fb-136e54c4d486",
+  "name": "Unravel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Unravel",
+      "oracle_fingerprint": "cadb499a8f1a303db2dcd53b5d0fce43",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [
+              { "Counter": { "what": { "Target": 0 } } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Stat": { "of": { "Target": 0 }, "stat": "ManaSpent" } },
+                      "op": "Lt",
+                      "right": { "Stat": { "of": { "Target": 0 }, "stat": "ManaValue" } }
+                    }
+                  },
+                  "then": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

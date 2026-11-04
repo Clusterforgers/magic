@@ -1,0 +1,123 @@
+{
+  "object": "card",
+  "id": "c357ee5b-8c9f-40cb-abc2-a95a34380eee",
+  "oracle_id": "95b337ae-e15c-457d-bcc2-0c738cb94b1e",
+  "multiverse_ids": [
+    574285
+  ],
+  "arena_id": 81906,
+  "name": "Yuan-Ti Scaleshield",
+  "lang": "en",
+  "released_at": "2022-07-07",
+  "uri": "https://api.scryfall.com/cards/c357ee5b-8c9f-40cb-abc2-a95a34380eee",
+  "scryfall_uri": "https://scryfall.com/card/hbg/71/yuan-ti-scaleshield?utm_source=api",
+  "layout": "normal",
+  "highres_image": false,
+  "image_status": "lowres",
+  "image_updated_at": "2026-07-13T05:54:55Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/c/3/c357ee5b-8c9f-40cb-abc2-a95a34380eee.jpg?1783922095",
+    "normal": "https://cards.scryfall.io/normal/front/c/3/c357ee5b-8c9f-40cb-abc2-a95a34380eee.jpg?1783922095",
+    "large": "https://cards.scryfall.io/large/front/c/3/c357ee5b-8c9f-40cb-abc2-a95a34380eee.jpg?1783922095",
+    "png": "https://cards.scryfall.io/png/front/c/3/c357ee5b-8c9f-40cb-abc2-a95a34380eee.png?1783922095",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/c/3/c357ee5b-8c9f-40cb-abc2-a95a34380eee.jpg?1783922095",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/c/3/c357ee5b-8c9f-40cb-abc2-a95a34380eee.jpg?1783922095",
+    "thumb": "https://cards.scryfall.io/thumb/front/c/3/c357ee5b-8c9f-40cb-abc2-a95a34380eee.webp?1783922095",
+    "grid": "https://cards.scryfall.io/grid/front/c/3/c357ee5b-8c9f-40cb-abc2-a95a34380eee.webp?1783922095",
+    "display": "https://cards.scryfall.io/display/front/c/3/c357ee5b-8c9f-40cb-abc2-a95a34380eee.webp?1783922095",
+    "art": "https://cards.scryfall.io/art/front/c/3/c357ee5b-8c9f-40cb-abc2-a95a34380eee.webp?1783922095",
+    "crop": "https://cards.scryfall.io/crop/front/c/3/c357ee5b-8c9f-40cb-abc2-a95a34380eee.webp?1783922095",
+    "jpeg": "https://cards.scryfall.io/normal/front/c/3/c357ee5b-8c9f-40cb-abc2-a95a34380eee.jpg?1783922095"
+  },
+  "mana_cost": "{2}{G}",
+  "cmc": 3.0,
+  "type_line": "Instant",
+  "oracle_text": "Permanents you control gain hexproof and indestructible until end of turn.\nSeek a creature card if an opponent has cast a spell with mana value 3 or less this turn.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Seek"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "not_legal",
+    "pauper": "not_legal",
+    "vintage": "not_legal",
+    "penny": "not_legal",
+    "commander": "not_legal",
+    "oathbreaker": "not_legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "not_legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "35528ede-7870-4598-a2ee-7f3d6464a74b",
+  "set": "hbg",
+  "set_name": "Alchemy Horizons: Baldur's Gate",
+  "set_type": "alchemy",
+  "set_uri": "https://api.scryfall.com/sets/35528ede-7870-4598-a2ee-7f3d6464a74b",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ahbg&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/hbg?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/c357ee5b-8c9f-40cb-abc2-a95a34380eee/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A95b337ae-e15c-457d-bcc2-0c738cb94b1e&unique=prints",
+  "collector_number": "71",
+  "digital": true,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Ben Hill",
+  "artist_ids": [
+    "35785d29-9538-407e-852d-a9b3ab626388"
+  ],
+  "illustration_id": "fa22e97c-8526-4576-8983-f9cd1b479a29",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "arena",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "prices": {
+    "usd": null,
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": null,
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=574285&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DYuan-Ti%2BScaleshield",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DYuan-Ti%2BScaleshield",
+    "edhrec": "https://edhrec.com/route/?cc=Yuan-Ti+Scaleshield"
+  }
+}

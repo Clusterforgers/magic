@@ -1,0 +1,129 @@
+{
+  "object": "card",
+  "id": "fcf0c46b-a37c-4475-99a1-bff6bc0cf2db",
+  "oracle_id": "74c0164c-130f-4572-9066-626c77f6e2ff",
+  "multiverse_ids": [],
+  "name": "Barrowgoyf",
+  "lang": "en",
+  "released_at": "2026-10-19",
+  "uri": "https://api.scryfall.com/cards/fcf0c46b-a37c-4475-99a1-bff6bc0cf2db",
+  "scryfall_uri": "https://scryfall.com/card/plst/M3C-102/barrowgoyf?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-08-25T18:13:37Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/f/c/fcf0c46b-a37c-4475-99a1-bff6bc0cf2db.jpg?1787681617",
+    "normal": "https://cards.scryfall.io/normal/front/f/c/fcf0c46b-a37c-4475-99a1-bff6bc0cf2db.jpg?1787681617",
+    "large": "https://cards.scryfall.io/large/front/f/c/fcf0c46b-a37c-4475-99a1-bff6bc0cf2db.jpg?1787681617",
+    "png": "https://cards.scryfall.io/png/front/f/c/fcf0c46b-a37c-4475-99a1-bff6bc0cf2db.png?1787681617",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/f/c/fcf0c46b-a37c-4475-99a1-bff6bc0cf2db.jpg?1787681617",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/f/c/fcf0c46b-a37c-4475-99a1-bff6bc0cf2db.jpg?1787681617",
+    "thumb": "https://cards.scryfall.io/thumb/front/f/c/fcf0c46b-a37c-4475-99a1-bff6bc0cf2db.webp?1787681617",
+    "grid": "https://cards.scryfall.io/grid/front/f/c/fcf0c46b-a37c-4475-99a1-bff6bc0cf2db.webp?1787681617",
+    "display": "https://cards.scryfall.io/display/front/f/c/fcf0c46b-a37c-4475-99a1-bff6bc0cf2db.webp?1787681617",
+    "art": "https://cards.scryfall.io/art/front/f/c/fcf0c46b-a37c-4475-99a1-bff6bc0cf2db.webp?1787681617",
+    "crop": "https://cards.scryfall.io/crop/front/f/c/fcf0c46b-a37c-4475-99a1-bff6bc0cf2db.webp?1787681617",
+    "jpeg": "https://cards.scryfall.io/normal/front/f/c/fcf0c46b-a37c-4475-99a1-bff6bc0cf2db.jpg?1787681617"
+  },
+  "mana_cost": "{2}{B}",
+  "cmc": 3.0,
+  "type_line": "Creature — Lhurgoyf",
+  "oracle_text": "Deathtouch, lifelink\nBarrowgoyf's power is equal to the number of card types among cards in all graveyards and its toughness is equal to that number plus 1.\nWhenever this creature deals combat damage to a player, you may mill that many cards. If you do, you may put a creature card from among them into your hand.",
+  "power": "*",
+  "toughness": "1+*",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Lifelink",
+    "Mill",
+    "Deathtouch"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "67e47ba2-b019-4181-9005-fe9fc021de44",
+  "set": "plst",
+  "set_name": "The List",
+  "set_type": "masters",
+  "set_uri": "https://api.scryfall.com/sets/67e47ba2-b019-4181-9005-fe9fc021de44",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aplst&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/plst?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/fcf0c46b-a37c-4475-99a1-bff6bc0cf2db/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A74c0164c-130f-4572-9066-626c77f6e2ff&unique=prints",
+  "collector_number": "M3C-102",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Igor Kieryluk",
+  "artist_ids": [
+    "9c3e9d17-509f-485c-9360-46d897ce716b"
+  ],
+  "illustration_id": "ff78f340-2cd7-4a96-96c0-bf5f454f5a00",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 4188,
+  "prices": {
+    "usd": null,
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": null,
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DBarrowgoyf",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DBarrowgoyf",
+    "edhrec": "https://edhrec.com/route/?cc=Barrowgoyf"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fmagic%2Fproduct%3FproductLineName%3Dmagic%26q%3DBarrowgoyf%26view%3Dgrid",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products/Search?referrer=scryfall&searchString=Barrowgoyf&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Barrowgoyf&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

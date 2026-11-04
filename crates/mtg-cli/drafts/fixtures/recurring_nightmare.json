@@ -1,0 +1,130 @@
+{
+  "object": "card",
+  "id": "b50e1800-a45c-43bd-8886-8a06145d9346",
+  "oracle_id": "a6708b11-1bcd-4208-a967-fe91f2e3313c",
+  "multiverse_ids": [
+    397441
+  ],
+  "mtgo_id": 56910,
+  "mtgo_foil_id": 56911,
+  "name": "Recurring Nightmare",
+  "lang": "en",
+  "released_at": "2015-05-06",
+  "uri": "https://api.scryfall.com/cards/b50e1800-a45c-43bd-8886-8a06145d9346",
+  "scryfall_uri": "https://scryfall.com/card/tpr/113/recurring-nightmare?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T10:27:58Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/b/5/b50e1800-a45c-43bd-8886-8a06145d9346.jpg?1783938478",
+    "normal": "https://cards.scryfall.io/normal/front/b/5/b50e1800-a45c-43bd-8886-8a06145d9346.jpg?1783938478",
+    "large": "https://cards.scryfall.io/large/front/b/5/b50e1800-a45c-43bd-8886-8a06145d9346.jpg?1783938478",
+    "png": "https://cards.scryfall.io/png/front/b/5/b50e1800-a45c-43bd-8886-8a06145d9346.png?1783938478",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/b/5/b50e1800-a45c-43bd-8886-8a06145d9346.jpg?1783938478",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/b/5/b50e1800-a45c-43bd-8886-8a06145d9346.jpg?1783938478",
+    "thumb": "https://cards.scryfall.io/thumb/front/b/5/b50e1800-a45c-43bd-8886-8a06145d9346.webp?1783938478",
+    "grid": "https://cards.scryfall.io/grid/front/b/5/b50e1800-a45c-43bd-8886-8a06145d9346.webp?1783938478",
+    "display": "https://cards.scryfall.io/display/front/b/5/b50e1800-a45c-43bd-8886-8a06145d9346.webp?1783938478",
+    "art": "https://cards.scryfall.io/art/front/b/5/b50e1800-a45c-43bd-8886-8a06145d9346.webp?1783938478",
+    "crop": "https://cards.scryfall.io/crop/front/b/5/b50e1800-a45c-43bd-8886-8a06145d9346.webp?1783938478",
+    "jpeg": "https://cards.scryfall.io/normal/front/b/5/b50e1800-a45c-43bd-8886-8a06145d9346.jpg?1783938478"
+  },
+  "mana_cost": "{2}{B}",
+  "cmc": 3.0,
+  "type_line": "Enchantment",
+  "oracle_text": "Sacrifice a creature, Return this enchantment to its owner's hand: Return target creature card from your graveyard to the battlefield. Activate only as a sorcery.",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "banned",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "banned",
+    "tlr": "legal"
+  },
+  "games": [
+    "mtgo"
+  ],
+  "reserved": true,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "41b3e002-ab58-46a0-8024-056ee843e267",
+  "set": "tpr",
+  "set_name": "Tempest Remastered",
+  "set_type": "masters",
+  "set_uri": "https://api.scryfall.com/sets/41b3e002-ab58-46a0-8024-056ee843e267",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Atpr&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/tpr?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/b50e1800-a45c-43bd-8886-8a06145d9346/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Aa6708b11-1bcd-4208-a967-fe91f2e3313c&unique=prints",
+  "collector_number": "113",
+  "digital": true,
+  "rarity": "mythic",
+  "flavor_text": "\"I am confined by sleep and defined by nightmare.\"\n—Crovax",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Jeff Laubenstein",
+  "artist_ids": [
+    "7c5b6391-2a5a-4b78-b19d-2b181149cb0f"
+  ],
+  "illustration_id": "cf5f10b3-4840-488f-8d31-2dbca6f0aa45",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "penny_rank": 308,
+  "prices": {
+    "usd": null,
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": null,
+    "eur_foil": null,
+    "tix": "2.50"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=397441&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DRecurring%2BNightmare",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DRecurring%2BNightmare",
+    "edhrec": "https://edhrec.com/route/?cc=Recurring+Nightmare"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fmagic%2Fproduct%3FproductLineName%3Dmagic%26q%3DRecurring%2BNightmare%26view%3Dgrid",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products/Search?referrer=scryfall&searchString=Recurring+Nightmare&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/56910?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

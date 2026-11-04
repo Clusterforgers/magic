@@ -1,0 +1,58 @@
+{
+  "oracle_id": "4debd0e4-3bb6-4dd1-addc-08e4bda69d11",
+  "name": "Reckless Detective",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Reckless Detective",
+      "oracle_fingerprint": "02172942d79b395aeb0048d7ef34076d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Either": {
+                  "first": [
+                    {
+                      "Pay": {
+                        "cost": [{ "Sacrifice": { "filter": [{ "Type": "Artifact" }] } }],
+                        "paid": [
+                          { "Draw": {} },
+                          {
+                            "Continuous": {
+                              "affected": "This",
+                              "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }],
+                              "duration": "UntilEndOfTurn"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "second": [
+                    {
+                      "Pay": {
+                        "cost": [{ "Discard": {} }],
+                        "paid": [
+                          { "Draw": {} },
+                          {
+                            "Continuous": {
+                              "affected": "This",
+                              "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }],
+                              "duration": "UntilEndOfTurn"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

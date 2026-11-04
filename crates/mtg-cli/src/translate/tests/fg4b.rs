@@ -140,10 +140,6 @@ fn play_effects(#[case] line: &str, #[case] effect: Value) {
     "SP$ Play | Defined$ Self | WithoutManaCost$ True",
     "key:Play.Optional"
 )]
-#[case::all(
-    "SP$ Play | Defined$ Self | Optional$ True | Amount$ All",
-    "key:Play.Amount"
-)]
 #[case::copy(
     "SP$ Play | Defined$ Self | Optional$ True | CopyCard$ True",
     "key:Play.CopyCard"

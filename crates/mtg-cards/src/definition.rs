@@ -380,6 +380,37 @@ impl CardDefinition {
         self.types.contains(&ty)
     }
 
+    /// The names of the cards its abilities (and those of its faces) can conjure, each once.
+    pub fn conjured_names(&self) -> BTreeSet<String> {
+        fn walk(value: &serde_json::Value, names: &mut BTreeSet<String>) {
+            match value {
+                serde_json::Value::Object(map) => {
+                    if let Some(name) = map
+                        .get("Conjure")
+                        .and_then(|conjure| conjure.get("name"))
+                        .and_then(serde_json::Value::as_str)
+                    {
+                        names.insert(name.to_owned());
+                    }
+                    for inner in map.values() {
+                        walk(inner, names);
+                    }
+                }
+                serde_json::Value::Array(items) => {
+                    for inner in items {
+                        walk(inner, names);
+                    }
+                }
+                _ => {}
+            }
+        }
+        let mut names = BTreeSet::new();
+        if let Ok(value) = serde_json::to_value(self) {
+            walk(&value, &mut names);
+        }
+        names
+    }
+
     /// Printed types as a compact set.
     pub fn type_set(&self) -> CardTypes {
         self.types.iter().copied().collect()
@@ -488,6 +519,23 @@ mod tests {
 
     use crate::effect::Effect;
     use crate::refs::Ref;
+
+    #[test]
+    fn the_names_a_card_can_conjure_are_those_of_its_conjure_effects() {
+        let conjure = |name: &str| -> Effect {
+            serde_json::from_str(&format!(
+                r#"{{"Conjure":{{"name":"{name}","zone":"Hand"}}}}"#
+            ))
+            .unwrap()
+        };
+        let card = CardDefinition::new("Maker").with_rules(Ability::Spell {
+            targets: Vec::new(),
+            effects: vec![conjure("Ponder"), conjure("Ponder"), conjure("Mox Opal")],
+        });
+        let names: Vec<String> = card.conjured_names().into_iter().collect();
+        assert_eq!(names, ["Mox Opal", "Ponder"]);
+        assert!(CardDefinition::new("Bear").conjured_names().is_empty());
+    }
 
     #[rstest]
     #[case::tap_ability(

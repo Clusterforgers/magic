@@ -1,0 +1,54 @@
+{
+  "oracle_id": "b1ffba56-1c1b-44a5-ad8c-097c417ab276",
+  "name": "Chaos Shrine's Black Crystal",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Chaos Shrine's Black Crystal",
+      "oracle_fingerprint": "e228ca5ef959ecf5e77c7f8e9be34f98",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }, { "Not": "Token" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [{ "Exile": { "what": "Triggering" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "ExiledWith": "This" },
+                      { "In": "Exile" },
+                      { "OwnedBy": "You" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "picked" },
+                  "to": {
+                    "Battlefield": { "under": "You", "counters": [[{ "Other": "finality" }, 1]] }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

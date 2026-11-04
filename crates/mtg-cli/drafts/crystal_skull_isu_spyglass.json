@@ -1,0 +1,40 @@
+{
+  "oracle_id": "b1f8eb7b-7e01-4bf8-a557-64e16a6052af",
+  "name": "Crystal Skull, Isu Spyglass",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Crystal Skull, Isu Spyglass",
+      "oracle_fingerprint": "e649b079d17b9c1e96edd92903256e7a",
+      "abilities": [
+        { "Rule": { "rule": { "LookAtTopAnyTime": "You" } } },
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": {
+                "what": [
+                  {
+                    "AnyOf": [
+                      { "Supertype": "Legendary" },
+                      { "Type": "Artifact" },
+                      { "Subtype": "Saga" }
+                    ]
+                  },
+                  "TopOfLibrary"
+                ],
+                "from": "Library",
+                "play": true
+              }
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Blue"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}
