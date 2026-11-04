@@ -281,3 +281,71 @@ fn dawnhand_dissident_casts_only_the_exiled_creatures_its_controller_owns(
     };
     assert_eq!(!options.castable.is_empty(), castable);
 }
+
+const SPOILS: &str = "Name:Split the Spoils\nManaCost:2 G\nTypes:Sorcery\nA:SP$ ChangeZone | Origin$ Graveyard | Destination$ Exile | ValidTgts$ Permanent.YouOwn | TargetMin$ 0 | TargetMax$ 5 | TgtPrompt$ Select up to five target permanent cards from your graveyard | SubAbility$ DBTwoPiles | SpellDescription$ Exile up to five target permanent cards from your graveyard\nSVar:DBTwoPiles:DB$ TwoPiles | Chooser$ Opponent | DefinedCards$ Targeted | Separator$ You | ChosenPile$ DBHand | UnchosenPile$ DBGrave | SpellDescription$ and separate them into two piles.\nSVar:DBHand:DB$ ChangeZone | Defined$ Remembered | Origin$ Exile | Destination$ Hand\nSVar:DBGrave:DB$ ChangeZone | Defined$ Remembered | Origin$ Exile | Destination$ Graveyard\n";
+
+#[rstest]
+#[case::nothing(0)]
+#[case::three_cards(3)]
+fn split_the_spoils_puts_every_exiled_card_in_a_hand_or_a_graveyard(#[case] cards: usize) {
+    use mtg_engine::choose::{CardsChoice, OptionChoice, TargetChoice};
+    use mtg_engine::decision::{Answer, DecisionKind, PayChoice};
+    let spoils = translated(SPOILS, "Split the Spoils", "Sorcery", "{2}{G}");
+    let dead: Vec<_> = (0..cards)
+        .map(|_| mtg_testkit::cards::free_creature("Dead Bear", 2, 2))
+        .collect();
+    let scenario = Scenario::new(2)
+        .hand(0, [spoils])
+        .battlefield(0, (0..3).map(|_| ready(forest())).collect::<Vec<_>>())
+        .graveyard(0, dead)
+        .library(0, library(9))
+        .library(1, library(9));
+    let mut driver = Driver::from_scenario(scenario).unwrap();
+    driver.begin_cast("Split the Spoils").unwrap();
+    for _ in 0..4 {
+        let decision = driver.decision().unwrap().clone();
+        match &decision.kind {
+            DecisionKind::ChooseTargets(o) => driver
+                .answer(Answer::ChooseTargets(TargetChoice::Targets(
+                    o.legal.clone(),
+                )))
+                .unwrap(),
+            DecisionKind::PayMana(_) => {
+                driver.answer(Answer::PayMana(PayChoice::Auto)).unwrap();
+                break;
+            }
+            other => panic!("{}", other.name()),
+        };
+    }
+    for _ in 0..40 {
+        let decision = driver.decision().unwrap().clone();
+        match &decision.kind {
+            DecisionKind::Priority(_) if driver.state().stack().is_empty() => break,
+            DecisionKind::ChooseCards(o) => {
+                let pick = o.from.iter().copied().take(1).collect();
+                driver
+                    .answer(Answer::ChooseCards(CardsChoice(pick)))
+                    .unwrap();
+            }
+            DecisionKind::ChooseOption(_) => {
+                driver
+                    .answer(Answer::ChooseOption(OptionChoice(0)))
+                    .unwrap();
+            }
+            _ => {
+                driver.answer_passively().unwrap();
+            }
+        }
+    }
+    let me = mtg_core::ids::PlayerId::from_index(0);
+    let count = |zone| {
+        driver
+            .state()
+            .zone(zone)
+            .iter()
+            .filter(|id| driver.state().object(**id).unwrap().card().name == "Dead Bear")
+            .count()
+    };
+    assert_eq!(count(Zone::Exile), 0);
+    assert_eq!(count(Zone::Hand(me)) + count(Zone::Graveyard(me)), cards);
+}

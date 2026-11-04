@@ -1,4 +1,4 @@
-//! An exile of a bound object names the exiled object again afterwards, as the object it became (CR 400.7); a sacrifice of a bound object takes all of it.
+//! An exile of a bound object or a target names the exiled object again afterwards, as the object it became (CR 400.7); a sacrifice of a bound object takes all of it.
 
 use serde_json::{Value, json};
 
@@ -49,24 +49,71 @@ fn sacrifice_all_of_bound(body: &mut Value) {
     map.insert("count".to_owned(), json!({"Count": [{"Is": object}]}));
 }
 
-/// Names the objects an `Exile` of a bound name exiles when `later` reads the old name; the old and the new name.
-fn mark(step: &mut Value, later: &[Value]) -> Option<(String, String)> {
+/// Names the objects an `Exile` of a bound name or of a target exiles when `later` reads the old name; the old reference
+/// and the new name. A target is read again only by the steps that act on the cards (`Move`, `SeparatePiles`): a step that
+/// reads a stat or the controller keeps the last-known object of the target.
+fn mark(step: &mut Value, later: &[Value]) -> Option<(Value, String)> {
     let body = step.get_mut("Exile")?;
-    let old = body.get("what")?.get("Bound")?.as_str()?.to_owned();
-    let read = json!({ "Bound": old }).to_string();
-    if body.get("as").is_some() || !later.iter().any(|step| step.to_string().contains(&read)) {
+    let what = body.get("what")?.clone();
+    let old = match (
+        what.get("Bound").and_then(Value::as_str),
+        what.get("Target"),
+    ) {
+        (Some(name), _) => name.to_owned(),
+        (None, Some(index)) if what.as_object()?.len() == 1 => format!("target{index}"),
+        _ => return None,
+    };
+    let reads = match what.get("Target") {
+        Some(_) => later.iter().any(|step| acts_on(step, &what)),
+        None => later
+            .iter()
+            .any(|step| step.to_string().contains(&what.to_string())),
+    };
+    if body.get("as").is_some() || !reads {
         return None;
     }
     let new = format!("{old}_exiled");
     body["as"] = json!(new);
-    Some((old, new))
+    Some((what, new))
 }
 
-fn rename(value: &mut Value, old: &str, new: &str) {
+/// Whether the step, or one inside it, is a `Move` or `SeparatePiles` of exactly `what`.
+fn acts_on(value: &Value, what: &Value) -> bool {
+    match value {
+        Value::Array(items) => items.iter().any(|item| acts_on(item, what)),
+        Value::Object(map) => {
+            ["Move", "SeparatePiles"]
+                .iter()
+                .any(|verb| map.get(*verb).and_then(|body| body.get("what")) == Some(what))
+                || map.values().any(|child| acts_on(child, what))
+        }
+        _ => false,
+    }
+}
+
+/// Makes the steps that read `old` read `new`: every reading of a bound name, only the acting steps for a target.
+fn rename(value: &mut Value, old: &Value, new: &str) {
+    if old.get("Target").is_some() {
+        if let Value::Object(map) = value {
+            for verb in ["Move", "SeparatePiles"] {
+                if let Some(body) = map.get_mut(verb)
+                    && body.get("what") == Some(old)
+                {
+                    body["what"] = json!({ "Bound": new });
+                }
+            }
+        }
+        match value {
+            Value::Array(items) => items.iter_mut().for_each(|item| rename(item, old, new)),
+            Value::Object(map) => map.values_mut().for_each(|child| rename(child, old, new)),
+            _ => {}
+        }
+        return;
+    }
     match value {
         Value::Array(items) => items.iter_mut().for_each(|item| rename(item, old, new)),
         Value::Object(map) => {
-            if map.len() == 1 && map.get("Bound").and_then(Value::as_str) == Some(old) {
+            if map.len() == 1 && map.get("Bound") == old.get("Bound") {
                 map.insert("Bound".to_owned(), json!(new));
             } else {
                 map.values_mut().for_each(|child| rename(child, old, new));
