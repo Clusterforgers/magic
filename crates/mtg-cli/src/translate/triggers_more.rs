@@ -36,7 +36,6 @@ fn recipient(ctx: &Ctx, valid: &str) -> Tr<Value> {
         "Card.AttachedBy" | "Creature.AttachedBy" | "Card.EnchantedBy" | "Creature.EnchantedBy" => {
             json!("Attached")
         }
-        other if other.contains(',') => return unmapped("key:Trigger.DamageDone.ValidTarget-or"),
         other => json!({"Each": selector_any(ctx, other)?}),
     })
 }
@@ -46,13 +45,28 @@ pub fn damage(ctx: &Ctx, p: &Params, mode: &str) -> Tr<Value> {
     keys(p, mode, &["ValidSource", "ValidTarget", "CombatDamage"])?;
     let source = super::valid::source_any(ctx, p.get("ValidSource").unwrap_or("Card"))?;
     let mut pattern = json!({ "source": source });
-    if let Some(target) = p.get("ValidTarget") {
-        pattern["to"] = recipient(ctx, target)?;
-    }
     if p.get("CombatDamage") == Some("True") {
         pattern["combat"] = json!(true);
     }
-    Ok(json!({ "DealsDamage": pattern }))
+    let Some(target) = p.get("ValidTarget") else {
+        return Ok(json!({ "DealsDamage": pattern }));
+    };
+    // "To a player or a planeswalker": one pattern for each recipient, any of which triggers.
+    let recipients: Vec<&str> = target.split(',').collect();
+    if let [only] = recipients.as_slice() {
+        pattern["to"] = recipient(ctx, only)?;
+        return Ok(json!({ "DealsDamage": pattern }));
+    }
+    if mode != "DamageDone" {
+        return unmapped("key:Trigger.DamageDoneOnce.ValidTarget-or");
+    }
+    let mut any = Vec::new();
+    for each in recipients {
+        let mut one = pattern.clone();
+        one["to"] = recipient(ctx, each)?;
+        any.push(json!({ "DealsDamage": one }));
+    }
+    Ok(json!({ "AnyOf": any }))
 }
 
 /// `ChangesZoneAll`: cards change zones together.
@@ -83,7 +97,7 @@ fn life_lost(p: &Params) -> Tr<Value> {
 }
 
 fn taps_for_mana(ctx: &Ctx, p: &Params) -> Tr<Value> {
-    keys(p, "TapsForMana", &["ValidCard", "Activator"])?;
+    keys(p, "TapsForMana", &["ValidCard", "Activator", "Static"])?;
     let what = selector_any(ctx, p.get("ValidCard").unwrap_or("Permanent"))?;
     let by = match p.get("Activator") {
         None => "EachPlayer",
