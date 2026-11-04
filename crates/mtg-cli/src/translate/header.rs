@@ -1,13 +1,79 @@
 //! The ability header: trigger words the header grammar reads, and the keys every API shares (the zone of a target).
 
-use serde_json::Value;
+use serde_json::{Value, json};
 
-use super::ctx::{Ctx, Tr};
+use super::condition::comparison;
+use super::ctx::{Ctx, Tr, unmapped};
 use crate::forge::script::Params;
 
 /// The trigger pattern of a `Mode$` word read here; `None` until a word is read.
 pub fn trigger_words(_ctx: &Ctx, _p: &Params, _mode: &str) -> Option<Tr<Value>> {
     None
+}
+
+/// The keys of [`gate_conditions`].
+pub const GATE_KEYS: [&str; 6] = [
+    "ConditionPlayerTurn",
+    "ConditionManaSpent",
+    "ConditionManaNotSpent",
+    "ConditionLifeTotal",
+    "ConditionLifeAmount",
+    "ConditionNotPresent",
+];
+
+/// The mana type a color letter names.
+fn mana_type(letter: &str) -> Option<&'static str> {
+    Some(match letter {
+        "W" => "White",
+        "U" => "Blue",
+        "B" => "Black",
+        "R" => "Red",
+        "G" => "Green",
+        "C" => "Colorless",
+        _ => return None,
+    })
+}
+
+/// The conditions the gate keys of a chain line state: whose turn it is, which mana was spent on the spell, and how the life
+/// totals compare (`ConditionNotPresent$` is read by [`super::condition::prefixed`]).
+pub fn gate_conditions(ctx: &Ctx, p: &Params) -> Tr<Vec<Value>> {
+    let mut all = Vec::new();
+    match p.get("ConditionPlayerTurn") {
+        None => {}
+        Some("True") => all.push(json!("YourTurn")),
+        Some("False") => all.push(json!({"Not": "YourTurn"})),
+        Some(other) => return unmapped(format!("condition:PlayerTurn={other}")),
+    }
+    if let Some(text) = p.get("ConditionManaSpent") {
+        let mut spent = Vec::new();
+        for letter in text.split_whitespace() {
+            let Some(kind) = mana_type(letter) else {
+                return unmapped(format!("condition:ManaSpent={letter}"));
+            };
+            spent.push(json!({ "ManaSpent": kind }));
+        }
+        match spent.len() {
+            0 => return unmapped("condition:ManaSpent="),
+            1 => all.append(&mut spent),
+            _ => all.push(json!({ "All": spent })),
+        }
+    }
+    if let Some(text) = p.get("ConditionManaNotSpent") {
+        let Some(kind) = mana_type(text) else {
+            return unmapped(format!("condition:ManaNotSpent={text}"));
+        };
+        all.push(json!({"Not": {"ManaSpent": kind}}));
+    }
+    match (p.get("ConditionLifeTotal"), p.get("ConditionLifeAmount")) {
+        (None, None) => {}
+        (Some("You"), Some(compare)) => {
+            let (op, right) = comparison(ctx, compare)?;
+            all.push(json!({"Compare": {"left": {"Life": "You"}, "op": op, "right": right}}));
+        }
+        (Some(other), _) => return unmapped(format!("condition:LifeTotal={other}")),
+        (None, Some(_)) => return unmapped("condition:LifeAmountWithoutLifeTotal"),
+    }
+    Ok(all)
 }
 
 /// The line with some pairs replaced by new values and some dropped; the order of the keys stays.
