@@ -1053,6 +1053,9 @@ pub enum Effect {
         effects: Vec<Effect>,
         /// The most passes, a hard bound ([`MOST_PASSES`] at the highest).
         most: u32,
+        /// A second bound, an amount read before each pass ("X times"); no bound but `most` when absent.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        times: Option<Amount>,
     },
     /// `who` separates the objects `what` names into two piles (CR 700.3), then `chooser` chooses one pile: that pile is
     /// bound as `chosen_as`, the other as `rest_as`.
@@ -1699,7 +1702,7 @@ mod tests {
     #[case::exchange_life(Effect::ExchangeLife { who: Ref::You, with: Ref::Opponents }, r#"{"ExchangeLife":{"with":"Opponents"}}"#)]
     #[case::remove_damage(Effect::RemoveDamage { what: Ref::This }, r#"{"RemoveDamage":{"what":"This"}}"#)]
     #[case::repeat_while(
-        Effect::RepeatWhile { condition: Condition::YourTurn, effects: vec![Effect::Draw { who: Ref::You, count: Amount::one() }], most: 3 },
+        Effect::RepeatWhile { condition: Condition::YourTurn, effects: vec![Effect::Draw { who: Ref::You, count: Amount::one() }], most: 3, times: None },
         r#"{"RepeatWhile":{"condition":"YourTurn","effects":[{"Draw":{}}],"most":3}}"#
     )]
     #[case::separate_piles(

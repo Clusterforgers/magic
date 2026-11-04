@@ -1163,3 +1163,21 @@ fn change_zone_all(ctx: &mut Ctx, p: &Params, origin: &str, destination: &str) -
     }
     Ok(vec![effect])
 }
+
+/// `RearrangeTopOfLibrary`: the controller looks at the top cards of a library and puts them back on top in the order
+/// they choose. A shuffle option or a second player who orders stays a gap.
+pub fn rearrange_top(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
+    only(
+        p,
+        "RearrangeTopOfLibrary",
+        &["Defined", "NumCards", "ValidTgts", "TargetMin", "TargetMax"],
+    )?;
+    let who = subject(ctx, p, "You", None)?;
+    let count = amount(ctx, p.get("NumCards").unwrap_or("1"))?;
+    let top = ctx.fresh("top");
+    Ok(vec![
+        json!({"LookAtTop": {"who": who, "count": count, "as": top}}),
+        json!({"Move": {"what": {"Bound": top},
+            "to": {"Library": {"place": "Top", "order": "Chosen"}}}}),
+    ])
+}
