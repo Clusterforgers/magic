@@ -115,6 +115,7 @@ fn the_options_of_blocks_and_damage_keep_their_json_until_they_carry_something_n
             most: None,
             blockers: blockers.clone(),
             must_be_blocked: Vec::new(),
+            cant_alone: Vec::new(),
             min_blockers: Vec::new(),
             max_blockers: Vec::new(),
             required: Vec::new()
@@ -127,6 +128,7 @@ fn the_options_of_blocks_and_damage_keep_their_json_until_they_carry_something_n
             most: None,
             blockers,
             must_be_blocked: Vec::new(),
+            cant_alone: Vec::new(),
             min_blockers: vec![(b, 2)],
             max_blockers: Vec::new(),
             required: Vec::new()

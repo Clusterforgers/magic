@@ -34,4 +34,9 @@ must_be_blocked?: Array<ObjectId>,
  * The most creatures that may block together (CR 509.1b: "no more than one creature can block each combat"). Left
  * out while no rule limits the declaration.
  */
-most?: number, };
+most?: number, 
+/**
+ * The creatures among `blockers` that can't block unless another creature blocks too; a declaration with one of them
+ * as the only blocker is refused. Left out while there are none.
+ */
+cant_alone?: Array<ObjectId>, };

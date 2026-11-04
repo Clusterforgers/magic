@@ -67,8 +67,6 @@ fn w11a_declare(
     exert: Vec<ObjectId>,
 ) -> Result<Outcome, EngineError> {
     check_attackers(options, &attackers)?;
-    let declared: Vec<ObjectId> = attackers.iter().map(|(object, _)| *object).collect();
-    crate::combat_quirks::check_attack_alone(state, &declared)?;
     crate::w11a_exert::w11a_check_exert(options, &attackers, &exert)?;
     attack_tax::declare(state, player, attackers, exert)
 }
@@ -138,7 +136,7 @@ pub(crate) fn handle(
             w11a_declare(state, player, options, attackers, exert)
         }
         (DecisionKind::DeclareBlockers(options), Answer::DeclareBlockers(blocks)) => {
-            check_blockers(state, options, &blocks)?;
+            check_blockers(options, &blocks)?;
             Ok(Outcome::Events(vec![Event::BlockersDeclared {
                 player,
                 blocks,

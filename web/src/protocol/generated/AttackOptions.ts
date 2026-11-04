@@ -31,4 +31,9 @@ most?: number,
  * The most creatures that may attack each limited player or planeswalker together (CR 508.1c: "no more than two
  * creatures can attack you each combat"). Left out while no rule limits the attacks at one.
  */
-most_at?: Array<[AttackTarget, number]>, };
+most_at?: Array<[AttackTarget, number]>, 
+/**
+ * The creatures among `attackers` that can't attack unless another creature attacks too (CR 508.1d); a declaration
+ * of one of them alone is refused. Left out while there are none.
+ */
+cant_alone?: Array<ObjectId>, };

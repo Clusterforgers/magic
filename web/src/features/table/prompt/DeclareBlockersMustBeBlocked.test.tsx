@@ -16,6 +16,20 @@ function table() {
   return { ...renderCombat({ DeclareBlockers: options }, { seats: 2 }), a, b, attackers }
 }
 
+describe('an attacker that must be blocked by a creature that cannot block alone', () => {
+  it('leaves No blocks open while that creature would block alone', () => {
+    const attackers = creaturesOf(fixtureOf(2), 1).slice(0, 1) as [ObjectId]
+    const [a] = creaturesOf(fixtureOf(2), 0) as [ObjectId]
+    const options: BlockOptions = {
+      blockers: [{ object: a, can_block: [...attackers] }],
+      must_be_blocked: [attackers[0]],
+      cant_alone: [a],
+    }
+    const t = renderCombat({ DeclareBlockers: options }, { seats: 2 })
+    expect(t.button('No blocks')).toBeEnabled()
+  })
+})
+
 describe('an attacker a rule says must be blocked', () => {
   it('is marked and keeps No blocks off until a creature blocks it', async () => {
     const t = table()
