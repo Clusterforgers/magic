@@ -22,6 +22,9 @@ pub fn continuous_statics(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         };
         let line = ctx.nested(None, |ctx| static_line(ctx, text))?;
         if let Some(rule) = line.get("Rule").and_then(|rule| rule.get("rule")) {
+            if line.pointer("/Rule/condition").is_some() {
+                return unmapped("effect:Effect-rule-with-condition");
+            }
             out.push(json!({"Rule": {"rule": rule, "duration": duration}}));
             continue;
         }
