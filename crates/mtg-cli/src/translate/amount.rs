@@ -82,6 +82,8 @@ pub fn amount(ctx: &Ctx, text: &str) -> Tr<Value> {
     }
     match ctx.svar(text) {
         Some(expression) => expression_amount(ctx, expression),
+        // A value written in place (`Count$Compare B GE2.2.1`) is the expression itself.
+        None if text.contains('$') => expression_amount(ctx, text),
         None => unmapped(format!("amount:{text}")),
     }
 }
@@ -102,11 +104,11 @@ fn expression_amount(ctx: &Ctx, expression: &str) -> Tr<Value> {
         return Ok(json!(number));
     }
     if let Some(rest) = expression.strip_prefix("Number$") {
-        return rest
-            .trim()
-            .parse::<i32>()
-            .map(|number| json!(number))
-            .or_else(|_| unmapped("amount:Number$"));
+        let (number, steps) = rest.split_once('/').unwrap_or((rest, ""));
+        let Ok(number) = number.trim().parse::<i32>() else {
+            return unmapped("amount:Number$");
+        };
+        return apply_steps(ctx, json!(number), steps);
     }
     if let Some(rest) = expression.strip_prefix("Count$") {
         return count_amount(ctx, rest);
@@ -180,6 +182,18 @@ fn event_amount(ctx: &Ctx, expression: &str) -> Tr<Option<Value>> {
                 None => unmapped(format!("amount:{head}${what}")),
             };
         }
+        "TargetedController" | "TargetedOwner" => {
+            let object = ctx.last_target()?;
+            let who = if head == "TargetedOwner" {
+                json!({"OwnerOf": object})
+            } else {
+                json!({"ControllerOf": object})
+            };
+            return match super::amount_more::player_amount("TargetedPlayer", what, &who) {
+                Some(found) => found.map(Some),
+                None => unmapped(format!("amount:{head}${what}")),
+            };
+        }
         "TriggeredPlayer" => {
             let who = super::triggered::resolve(ctx.trigger.as_ref(), "TriggeredPlayer")?;
             return match super::amount_more::player_amount("TargetedPlayer", what, &who) {
@@ -245,6 +259,7 @@ fn apply_steps(ctx: &Ctx, mut value: Value, steps: &str) -> Tr<Value> {
             Some(("LimitMax", n)) => limit(ctx, &value, n, "Gt")?,
             Some(("LimitMin", n)) => limit(ctx, &value, n, "Lt")?,
             None if step == "Twice" => times(&value, 2),
+            None if step == "Thrice" => times(&value, 3),
             None if step == "HalfUp" => json!({"Half": {"of": value, "up": true}}),
             None if step == "HalfDown" => json!({"Half": {"of": value, "up": false}}),
             _ => return unmapped(format!("amount:Count/{}", head(step))),
