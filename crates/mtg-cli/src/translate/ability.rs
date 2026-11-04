@@ -85,6 +85,12 @@ fn activated(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     let Some(text) = p.get("Cost") else {
         return unmapped("line:AB-without-cost");
     };
+    // "If this is tapped / on the battlefield" is checked as the ability resolves; a condition on activation differs.
+    if p.get("IsPresent")
+        .is_some_and(|valid| valid.starts_with("Card.Self"))
+    {
+        return unmapped("key:AB.IsPresent=Self");
+    }
     let when = condition(ctx, p)?;
     let p = &strip(p);
     let effects = chain(ctx, p)?;

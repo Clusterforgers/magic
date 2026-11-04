@@ -10,7 +10,7 @@ use std::path::{Path, PathBuf};
 
 use mtg_cards::compile::compile;
 use mtg_cards::load::{Library, canonical, slug};
-use mtg_cards::proposal::{Verdict, check};
+use mtg_cards::proposal::{Verdict, check, check_exact};
 use mtg_cards::support::{Caps, PrintedCard, Support, support};
 use mtg_cards::{builtin, card::Card};
 use mtg_db::{Database, SOURCE_FORGE, SOURCE_SWEEP};
@@ -152,7 +152,12 @@ impl W2aBasis<'_> {
         if support(compiled.as_ref(), printed, self.caps).support == Support::Verified {
             return Err(W2aSkip::Compiled);
         }
-        let report = check(text, printed, self.library, self.names, self.caps);
+        let source = meta.source_or(self.source);
+        let report = if source == SOURCE_FORGE {
+            check_exact(text, printed, self.library, self.names, self.caps)
+        } else {
+            check(text, printed, self.library, self.names, self.caps)
+        };
         let verdict = report.verdict();
         if self.draft {
             let source = meta.source_or(self.source);

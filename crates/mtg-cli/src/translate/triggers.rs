@@ -175,11 +175,19 @@ pub fn step(word: &str) -> Tr<&'static str> {
     })
 }
 
+/// Whether the printed trigger says "the end step", not "your end step".
+fn prints_every_end_step(p: &Params) -> bool {
+    p.get("TriggerDescription")
+        .is_some_and(|text| text.to_lowercase().contains("beginning of the end step"))
+}
+
 fn phase(p: &Params) -> Tr<Value> {
     keys(p, "Phase", &["Phase", "ValidPlayer"])?;
     let step = step(p.get("Phase").unwrap_or_default())?;
     let whose = match p.get("ValidPlayer") {
         None | Some("Player") => "EachPlayer",
+        // Forge scripts "the end step" (every player's) with `ValidPlayer$ You`; the print has no "your".
+        Some("You") if prints_every_end_step(p) => "EachPlayer",
         Some("You") => "You",
         Some("Opponent" | "Player.Opponent") => "Opponents",
         Some(other) => return unmapped(format!("key:Trigger.Phase.ValidPlayer={other}")),
