@@ -59,7 +59,7 @@ fn properties_map(#[case] spec: &str, #[case] expected: Value) {
 #[case::saddled("Card.Self+IsSaddled", "valid:IsSaddled")]
 #[case::controlled_by_a_card(
     "Creature.ControlledBy TriggeredTarget",
-    "valid:ControlledBy TriggeredTarget"
+    "defined:TriggeredTarget-in-no-trigger"
 )]
 #[case::targeted_player_without_a_target(
     "Creature.TargetedPlayerCtrl",
