@@ -28,7 +28,15 @@ pub fn atom(prop: &str) -> Option<Vec<Value>> {
         "PairedWith" => return one(json!({"PairedWith": "This"})),
         "milledThisTurn" => return one(json!("MilledThisTurn")),
         "MonoColor" => return one(compare("Colors", "Eq", 1)),
+        // How the spell was cast, for the ways the cast node has.
+        "surged" => return one(json!({"CastWith": "Surge"})),
+        "spectacle" => return one(json!({"CastWith": "Spectacle"})),
+        "prowled" => return one(json!({"CastWith": "Prowl"})),
+        "webSlinged" => return one(json!({"CastWith": "WebSlinging"})),
         _ => {}
+    }
+    if let Some(found) = counters(prop) {
+        return Some(vec![found]);
     }
     if let Some(found) = counted(prop) {
         return Some(vec![found]);
@@ -78,6 +86,17 @@ fn controller_of(ctx: &Ctx, word: &str) -> Option<Value> {
 /// Properties that carry an argument or an object word: `AttachedTo <valid>`, `EnchantedBy <valid>`, `attacking <player>`,
 /// `ControlledBy <word>`, `OwnedBy <word>`. `None` for any other property.
 pub fn argument(ctx: &Ctx, prop: &str) -> Tr<Option<Vec<Value>>> {
+    // Forge writes a comma in a name as `;`; only a name the checkout knows is a name (a bare `namedAjani` is a broken split).
+    if let Some(name) = prop.strip_prefix("named")
+        && !name.is_empty()
+    {
+        let name = name.replace(';', ",");
+        return if ctx.world.names.contains(&name) {
+            Ok(Some(vec![json!({"Named": name})]))
+        } else {
+            unmapped(format!("valid:named{name}"))
+        };
+    }
     let Some((head, arg)) = prop.split_once(' ') else {
         return Ok(None);
     };
@@ -125,6 +144,25 @@ pub fn suffixed(ctx: &Ctx, prop: &str) -> Option<Vec<Value>> {
         .or_else(|| prop.strip_suffix("Own").map(|word| (word, "OwnedBy")))?;
     let who = controller_of(ctx, word)?;
     Some(vec![json!({ pred: who })])
+}
+
+/// `counters_GE1_P1P1`, `counters_LT3_CHARGE`: the number of counters of a kind compared with a written number. Whether
+/// there is one at all is `HasCounter` (or its negation); every other bound is `CounterCount`, where none counts as zero.
+fn counters(prop: &str) -> Option<Value> {
+    let rest = prop.strip_prefix("counters_")?;
+    let (bound, kind) = rest.split_once('_')?;
+    let op = super::valid::cmp(bound.get(..2)?)?;
+    let digits = bound.get(2..)?;
+    if digits.is_empty() || !digits.chars().all(|c| c.is_ascii_digit()) {
+        return None;
+    }
+    let to: u32 = digits.parse().ok()?;
+    let kind = super::amount::counter_kind(kind)?;
+    Some(match (op, to) {
+        ("Ge", 1) | ("Gt" | "Ne", 0) => json!({"HasCounter": kind}),
+        ("Eq" | "Le", 0) | ("Lt", 1) => json!({"Not": {"HasCounter": kind}}),
+        _ => json!({"CounterCount": {"kind": kind, "op": op, "to": to}}),
+    })
 }
 
 /// `numColorsEQ2`, `basePowerGE3`: a characteristic compared with a written number.

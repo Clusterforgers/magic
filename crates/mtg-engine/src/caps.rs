@@ -638,6 +638,7 @@ const RUNS: &[&str] = &[
     "Pred.TargetedBy",
     "Pred.SingleTarget",
     "Pred.GreatestAmong",
+    "Pred.CounterCount",
     "Pred.Suspended",
     "Pred.Kicked",
 ];
