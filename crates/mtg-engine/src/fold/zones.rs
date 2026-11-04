@@ -1,7 +1,7 @@
 //! Folding events that move objects between zones.
 
 use mtg_cards::definition::Layout;
-use mtg_cards::value::CastWay;
+use mtg_cards::value::{CastWay, TallyEvent};
 use mtg_core::card::{CardType, Subtype};
 use mtg_core::ids::{ObjectId, PlayerId};
 
@@ -28,6 +28,7 @@ pub(super) fn move_object(
         return Err(invalid(format!("zone {to:?} does not exist")));
     }
     let (was_creature, w14b_phyrexian) = w14b_dying_kind(state, id, to);
+    log_death(state, id, to);
     // A permanent that enters takes the next timestamp, which its static abilities carry (CR 613.7).
     let timestamp = state.next_timestamp;
     if to == Zone::Battlefield {
@@ -136,7 +137,7 @@ pub(super) fn move_object(
 }
 
 /// Counts a card that left a graveyard for its owner, and a card put into a graveyard from the battlefield for the card as
-/// it lies there (`Pred::GravedThisTurn`).
+/// it lies there (`Pred::GravedThisTurn`), and logs a permanent that entered the battlefield (`TallyEvent::Entered`).
 fn w21a_tally_graveyards(
     state: &mut GameState,
     (from, to): (Zone, Zone),
@@ -146,8 +147,26 @@ fn w21a_tally_graveyards(
     if matches!(from, Zone::Graveyard(_)) && !matches!(to, Zone::Graveyard(_)) {
         state.tally(owner, Tally::W21aLeftGraveyard);
     }
+    if to == Zone::Battlefield {
+        let controller = state.object(card.id).map(GameObject::controller);
+        if let Some(controller) = controller {
+            state.log_event(TallyEvent::Entered, controller, card.id);
+        }
+    }
     if from == Zone::Battlefield && matches!(to, Zone::Graveyard(_)) {
         state.tally_object(card, None, Tally::W21aGraved);
+    }
+}
+
+/// Logs a permanent put into a graveyard from the battlefield as it last existed there (`TallyEvent::Died`).
+fn log_death(state: &mut GameState, id: ObjectId, to: Zone) {
+    let on_battlefield = state
+        .object(id)
+        .filter(|object| object.zone() == Zone::Battlefield);
+    if let Some(controller) = on_battlefield.map(GameObject::controller)
+        && matches!(to, Zone::Graveyard(_))
+    {
+        state.log_event(TallyEvent::Died, controller, id);
     }
 }
 
@@ -306,7 +325,7 @@ fn spell_cast(
     }
     note_rebound(state, object, from);
     note_aftermath(state, object, from);
-    state.log_event(mtg_cards::value::TallyEvent::SpellCast, player, object);
+    state.log_event(TallyEvent::SpellCast, player, object);
     // A spell cast for its flashback cost, or with its buyback cost paid, is moved by a replacement effect.
     let bought_back = state.objects.get(&object).is_some_and(|spell| {
         payments(spell.card(), &choices.optional_costs, OptionalKind::Buyback) > 0

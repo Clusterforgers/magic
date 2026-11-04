@@ -32,6 +32,8 @@ pub enum StatKind {
     BasePower,
     /// The mana spent to cast it, while it is a spell or when it was cast.
     ManaSpent,
+    /// Its name: no number, so only `Amount::Distinct` reads it (the different names among the objects).
+    Name,
 }
 
 /// A comparison between two numbers.
@@ -287,6 +289,10 @@ pub enum TallyEvent {
     TokenCreated,
     /// A spell was cast (the object is the spell, as it was cast).
     SpellCast,
+    /// A permanent entered the battlefield, a token included (the object as it entered, under the controller it entered with).
+    Entered,
+    /// A permanent was put into a graveyard from the battlefield (the object as it last existed there, tokens included).
+    Died,
 }
 
 /// Which result of the latest die roll an amount reads.

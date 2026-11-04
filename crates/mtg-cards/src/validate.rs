@@ -424,6 +424,7 @@ impl<'a> Walker<'a> {
             | Ref::Promised
             | Ref::Attacked
             | Ref::MostLife
+            | Ref::ActivePlayer
             | Ref::Defending => {
                 self.expect(Kind::Player, want);
             }
@@ -523,6 +524,7 @@ impl<'a> Walker<'a> {
                 self.uses("Pred", "GreatestAmong");
                 self.at("group", |w| w.selector(group));
             }
+            Pred::Kicked => self.uses("Pred", "Kicked"),
             _ => self.uses("Pred", "Suspended"),
         }
     }
@@ -590,6 +592,7 @@ impl<'a> Walker<'a> {
             | Pred::TargetedBy(_)
             | Pred::SingleTarget
             | Pred::GreatestAmong { .. }
+            | Pred::Kicked
             | Pred::Suspended => self.fe1a_pred(pred),
             Pred::Not(inner) => self.pred(inner),
             Pred::AnyOf(preds) => {
@@ -2134,6 +2137,7 @@ impl Walker<'_> {
             | Ref::Promised
             | Ref::Attacked
             | Ref::MostLife
+            | Ref::ActivePlayer
             | Ref::Defending
             | Ref::ControllerOf(_)
             | Ref::OwnerOf(_) => Kind::Player,

@@ -119,6 +119,7 @@ pub const fn stat_name(stat: StatKind) -> Option<&'static str> {
         StatKind::Loyalty
         | StatKind::Colors
         | StatKind::BasicLandTypes
+        | StatKind::Name
         | StatKind::BasePower
         | StatKind::ManaSpent => None,
     }

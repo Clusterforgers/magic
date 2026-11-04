@@ -13,6 +13,9 @@ pub fn when(ctx: &Ctx, base: &str) -> Option<Tr<Value>> {
     if let Some(rest) = base.strip_prefix("Compare ") {
         return Some(compare(ctx, rest));
     }
+    if let Some(rest) = base.strip_prefix("Adamant.") {
+        return Some(adamant(ctx, rest));
+    }
     let (word, branches) = base.split_once('.')?;
     let condition = match word {
         "Kicked" => json!("Kicked"),
@@ -30,6 +33,19 @@ pub fn when(ctx: &Ctx, base: &str) -> Option<Tr<Value>> {
         _ => return None,
     };
     Some(branch(ctx, &condition, branches))
+}
+
+/// `White.1.0`: the amount when at least three mana of the color was spent to cast the spell (adamant), else the other.
+fn adamant(ctx: &Ctx, rest: &str) -> Tr<Value> {
+    let Some((color, branches)) = rest.split_once('.') else {
+        return unmapped("amount:Count$Adamant-shape");
+    };
+    if !["White", "Blue", "Black", "Red", "Green"].contains(&color) {
+        return unmapped("amount:Count$Adamant-color");
+    }
+    let spent = json!({"ManaSpent": {"of": color}});
+    let condition = json!({"Compare": {"left": spent, "op": "Ge", "right": 3}});
+    branch(ctx, &condition, branches)
 }
 
 /// `Y GE1.2.1`: an amount, a comparison with its threshold, the amount when it holds and the amount when it does not.

@@ -836,6 +836,11 @@ impl<'a> Scope<'a> {
                 .map(Target::Player)
                 .collect(),
             Ref::MostLife => self.most_life().into_iter().map(Target::Player).collect(),
+            Ref::ActivePlayer => state
+                .active_player()
+                .map(Target::Player)
+                .into_iter()
+                .collect(),
             Ref::Bound(name) => self
                 .bindings
                 .get(name)
@@ -1251,6 +1256,7 @@ impl<'a> Scope<'a> {
             | Pred::TargetedBy(_)
             | Pred::SingleTarget
             | Pred::GreatestAmong { .. }
+            | Pred::Kicked
             | Pred::Suspended => self.fe1a_pred(pred, reference, seen)?,
             Pred::Not(inner) => !self.pred(inner, reference, seen)?,
             Pred::AnyOf(any) => self.w6d_any_of(any, reference, seen)?,
@@ -1307,6 +1313,8 @@ impl<'a> Scope<'a> {
             StatKind::BasicLandTypes => {
                 i64::try_from(Self::w7a_basic_land_types(seen).count()).ok()
             }
+            // A name is no number; `Amount::Distinct` reads it through `w2c_distinct`.
+            StatKind::Name => None,
         }
     }
 
@@ -1664,6 +1672,20 @@ impl<'a> Scope<'a> {
                 }
             }
             return Ok(i64::try_from(colors.len()).unwrap_or(i64::MAX));
+        }
+        if stat == StatKind::Name {
+            let mut names = BTreeSet::new();
+            for object in self.matching(of)? {
+                // A face-down card has no name.
+                let found = self
+                    .seen(object)
+                    .and_then(|seen| seen.card)
+                    .filter(|card| card.face_down().is_none());
+                if let Some(card) = found {
+                    names.insert(card.card().name.clone());
+                }
+            }
+            return Ok(i64::try_from(names.len()).unwrap_or(i64::MAX));
         }
         let values: BTreeSet<i64> = if stat == StatKind::BasicLandTypes {
             // Domain counts each basic land type once, a land of several types adding each of them.

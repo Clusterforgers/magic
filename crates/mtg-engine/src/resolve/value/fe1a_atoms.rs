@@ -6,9 +6,10 @@ use mtg_cards::refs::{Pred, Ref, Selector, ZoneKind};
 use mtg_cards::value::StatKind;
 
 use super::{ResolveError, Scope, Seen, zone_kind};
+use crate::announce::payments;
 use crate::combat::AttackTarget;
-use crate::keywords::keywords_of;
 use crate::keywords::suspend::time_counter;
+use crate::keywords::{OptionalKind, keywords_of};
 use crate::object::{GameObject, ObjectKind, ObjectRef};
 use crate::zones::Zone;
 
@@ -68,6 +69,9 @@ impl Scope<'_> {
                         .card
                         .is_some_and(|card| card.choices().targets.iter().flatten().count() == 1)
             }
+            Pred::Kicked => Self::fe1a_cast_object(seen).is_some_and(|card| {
+                payments(card.card(), card.paid_costs(), OptionalKind::Kicker) > 0
+            }),
             Pred::GreatestAmong { stat, group } => self.fe1a_greatest(*stat, group, seen)?,
             Pred::Suspended => {
                 seen.zone == Zone::Exile

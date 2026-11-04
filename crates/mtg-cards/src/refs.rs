@@ -94,6 +94,8 @@ pub enum Ref {
     Attacked,
     /// The player with the most life, or each of the players tied for it.
     MostLife,
+    /// The player whose turn it is; nobody once they have left the game.
+    ActivePlayer,
     /// The result an earlier step bound with `as`.
     Bound(String),
     /// The objects picked for the cost of the ability ("the creature tapped to pay it"): their characteristics are those they
@@ -316,6 +318,8 @@ pub enum Pred {
     },
     /// Is a card in exile with a time counter on it and suspend (CR 702.62).
     Suspended,
+    /// Is a spell, or a permanent that entered as a spell, cast with at least one kicker cost paid (CR 702.33).
+    Kicked,
     /// The predicate is false.
     Not(Box<Pred>),
     /// At least one of the predicates is true.
@@ -511,6 +515,7 @@ mod tests {
         r#"{"GreatestAmong":{"stat":"Power","group":["Other"]}}"#
     )]
     #[case::suspended(Pred::Suspended, r#""Suspended""#)]
+    #[case::kicked(Pred::Kicked, r#""Kicked""#)]
     fn the_cast_library_combat_and_greatest_atoms_have_stable_json(
         #[case] value: Pred,
         #[case] json: &str,

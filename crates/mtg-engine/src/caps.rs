@@ -637,6 +637,7 @@ const RUNS: &[&str] = &[
     "Pred.SingleTarget",
     "Pred.GreatestAmong",
     "Pred.Suspended",
+    "Pred.Kicked",
 ];
 
 /// The capabilities of this engine.
