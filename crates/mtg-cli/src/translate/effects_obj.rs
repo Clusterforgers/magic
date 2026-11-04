@@ -42,7 +42,6 @@ pub fn duration(word: Option<&str>) -> Tr<&'static str> {
     match word {
         // A thing about its host ends with the host: once it leaves it is a new object (CR 400.7), so nothing is left to apply to.
         None | Some("EOT" | "EndOfTurn" | "UntilHostLeavesPlayOrEOT") => Ok("UntilEndOfTurn"),
-        Some("EOT" | "EndOfTurn") => Ok("UntilEndOfTurn"),
         Some("Permanent") => Ok("Forever"),
         Some("UntilEndOfCombat") => Ok("UntilEndOfCombat"),
         Some("UntilYourNextTurn") => Ok("UntilYourNextTurn"),
