@@ -51,7 +51,7 @@ fn a_macro_keyword_keeps_its_number(#[case] line: &str, #[case] name: &str, #[ca
 fn a_shape_the_table_cannot_express_is_a_gap(#[case] line: &str) {
     let found = gaps(&script(line));
     assert_eq!(found.len(), 1, "{found:?}");
-    assert!(abilities(&script(line)).is_empty());
+    assert_eq!(abilities(&script(line)), Vec::<Value>::new());
 }
 
 /// The first ability of a translated script as a card.
@@ -93,7 +93,7 @@ fn blocked_by(attacker: std::sync::Arc<CardDefinition>, walls: usize) -> Driver 
                         .collect();
                     let chosen: Vec<(&str, &str)> =
                         pairs.iter().map(|(a, b)| (a.as_str(), *b)).collect();
-                    assert!(options.blockers.len() == walls);
+                    assert_eq!(options.blockers.len(), walls);
                     driver.block(&chosen).unwrap();
                 } else {
                     driver.block(&[]).unwrap();
@@ -250,7 +250,7 @@ fn a_static_mode_of_combat_is_a_rule(#[case] line: &str, #[case] rule: Value) {
 fn a_static_mode_with_a_condition_it_cannot_express_is_a_gap(#[case] line: &str) {
     let text = format!("Name:T\nTypes:Creature Elf\nPT:2/2\n{line}");
     assert_eq!(gaps(&text).len(), 1, "{:?}", gaps(&text));
-    assert!(abilities(&text).is_empty());
+    assert_eq!(abilities(&text), Vec::<Value>::new());
 }
 
 #[test]

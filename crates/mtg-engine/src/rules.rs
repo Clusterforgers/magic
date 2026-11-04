@@ -726,6 +726,11 @@ fn w17b_rule_objects(
         .collect())
 }
 
+/// The battlefield objects `who` names in `scope`.
+pub(crate) fn lower_objects(scope: &Scope<'_>, who: &Ref) -> Result<Vec<ObjectRef>, ResolveError> {
+    w17b_rule_objects(scope, who, Zone::Battlefield)
+}
+
 /// What the data's references name in `scope`, as the engine plays the rule: the permanents, the spells or the players.
 /// A rule the engine does not play refuses by name.
 pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, ResolveError> {
@@ -743,36 +748,9 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
                 .collect(),
         ),
         GameRule::MustBlock(who) => Rule::MustBlock(objects(who, Zone::Battlefield)?),
-        GameRule::MustBlockAttacker { who, attacker } => Rule::MustBlockAttacker {
-            blockers: objects(who, Zone::Battlefield)?,
-            attacker: objects(attacker, Zone::Battlefield)?
-                .into_iter()
-                .next()
-                .ok_or_else(|| ResolveError::Invalid("no attacker to block".into()))?,
-        },
-        GameRule::Combat { who, quirk } => Rule::Combat {
-            quirk: *quirk,
-            creatures: objects(who, Zone::Battlefield)?,
-        },
-        GameRule::IgnoreHexproof {
-            by,
-            what,
-            players,
-            shroud,
-        } => Rule::IgnoreHexproof {
-            by: scope.players(by)?,
-            what: what
-                .as_ref()
-                .map(|what| objects(what, Zone::Battlefield))
-                .transpose()?
-                .unwrap_or_default(),
-            players: players
-                .as_ref()
-                .map(|players| scope.players(players))
-                .transpose()?
-                .unwrap_or_default(),
-            shroud: *shroud,
-        },
+        GameRule::MustBlockAttacker { .. }
+        | GameRule::Combat { .. }
+        | GameRule::IgnoreHexproof { .. } => crate::combat_quirks::lower(scope, wanted)?,
         GameRule::AttackTax {
             who,
             attacked,

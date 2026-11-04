@@ -4,11 +4,13 @@
 use std::collections::BTreeMap;
 
 use mtg_cards::keyword::Keyword;
-use mtg_cards::modify::{Blocking, CombatQuirk};
+use mtg_cards::modify::{Blocking, CombatQuirk, GameRule};
+use mtg_cards::refs::Ref;
 use mtg_core::ids::{ObjectId, PlayerId};
 
 use crate::decision::{BlockOptions, BlockerOption};
 use crate::error::IllegalAnswer;
+use crate::resolve::{ResolveError, Scope};
 use crate::rules::Rule;
 use crate::state::GameState;
 
@@ -71,6 +73,49 @@ impl QuirkRules {
             .get(&id)
             .is_some_and(|held| held.iter().any(wanted))
     }
+}
+
+/// The rule a combat `GameRule` of this file stands for in `scope`: the creatures, players and permanents it names now.
+pub(crate) fn lower(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, ResolveError> {
+    let objects = |who: &Ref| crate::rules::lower_objects(scope, who);
+    let (by, what, players, shroud) = match wanted {
+        GameRule::MustBlockAttacker { who, attacker } => {
+            return Ok(Rule::MustBlockAttacker {
+                blockers: objects(who)?,
+                attacker: objects(attacker)?
+                    .into_iter()
+                    .next()
+                    .ok_or_else(|| ResolveError::Invalid("no attacker to block".into()))?,
+            });
+        }
+        GameRule::Combat { who, quirk } => {
+            return Ok(Rule::Combat {
+                quirk: *quirk,
+                creatures: objects(who)?,
+            });
+        }
+        GameRule::IgnoreHexproof {
+            by,
+            what,
+            players,
+            shroud,
+        } => (by, what, players, shroud),
+        _ => return Err(ResolveError::Invalid("not a combat rule".into())),
+    };
+    let permanents = match what {
+        Some(what) => crate::rules::lower_objects(scope, what)?,
+        None => Vec::new(),
+    };
+    let players = match players {
+        Some(players) => scope.players(players)?,
+        None => Vec::new(),
+    };
+    Ok(Rule::IgnoreHexproof {
+        by: scope.players(by)?,
+        what: permanents,
+        players,
+        shroud: *shroud,
+    })
 }
 
 /// Whether the creature may attack as though it did not have defender.
@@ -435,7 +480,7 @@ mod tests {
             Ok(()),
             "{default:?}"
         );
-        assert!(!legal(game).is_empty());
+        assert_ne!(legal(game), Vec::<BTreeSet<String>>::new());
     }
 
     #[rstest]
@@ -470,7 +515,7 @@ mod tests {
         attacked(&mut game);
         provoke(&mut game, &["Bear"], "Wolf");
         tap(&mut game, "Bear");
-        assert!(block_options(&game, FOE).required.is_empty());
+        assert_eq!(block_options(&game, FOE).required, Vec::<ObjectId>::new());
         assert_playable(&game);
     }
 
@@ -520,8 +565,9 @@ mod tests {
         assert_playable(&game);
         assert_eq!(block_options(&game, FOE).required_blocks().len(), 2);
         tap(&mut game, "Cub");
-        assert!(
-            block_options(&game, FOE).required.is_empty(),
+        assert_eq!(
+            block_options(&game, FOE).required,
+            Vec::<ObjectId>::new(),
             "no second blocker: the attacker can't be blocked"
         );
         assert_playable(&game);
@@ -563,7 +609,10 @@ mod tests {
         );
         provoke(&mut game, &["Bear"], "Fox");
         assert_playable(&game);
-        assert!(block_options(&game, FOE).must_be_blocked.is_empty());
+        assert_eq!(
+            block_options(&game, FOE).must_be_blocked,
+            Vec::<ObjectId>::new()
+        );
         assert_eq!(legal(&game), [["Bear>Fox".to_owned()].into()]);
     }
 
@@ -611,7 +660,7 @@ mod tests {
         attacked_by(&mut game, &["Wolf"]);
         quirk(&mut game, CombatQuirk::CantBlockAlone, &["Bear"]);
         provoke(&mut game, &["Bear"], "Wolf");
-        assert!(block_options(&game, FOE).required.is_empty());
+        assert_eq!(block_options(&game, FOE).required, Vec::<ObjectId>::new());
         assert_playable(&game);
     }
 
@@ -642,8 +691,8 @@ mod tests {
         quirk(&mut game, CombatQuirk::CantAttackAlone, &["Wolf"]);
         let wolf = refs(&game, &["Wolf"]);
         rule(&mut game, Rule::MustAttack(wolf));
-        assert!(attack_options(&game, ME).required.is_empty());
-        assert!(attack_options(&game, ME).required_attack().is_empty());
+        assert_eq!(attack_options(&game, ME).required, Vec::<ObjectId>::new());
+        assert_eq!(attack_options(&game, ME).required_attack(), Vec::new());
     }
 
     #[rstest]

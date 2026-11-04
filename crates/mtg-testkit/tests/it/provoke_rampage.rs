@@ -185,7 +185,7 @@ fn a_declined_provoke_changes_nothing(#[values(2, 3, 4)] seats: usize) -> Result
             .unwrap()
             .tapped()
     );
-    assert!(options.required.is_empty());
+    assert_eq!(options.required, Vec::<mtg_core::ids::ObjectId>::new());
     driver.block(&[])?;
     Ok(())
 }

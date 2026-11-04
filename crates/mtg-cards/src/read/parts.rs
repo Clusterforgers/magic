@@ -476,6 +476,24 @@ pub(super) fn affected(ctx: &Ctx, subject: &Ref) -> String {
     phrase::who(ctx, subject)
 }
 
+/// The words of a combat rule about the creatures `who`.
+fn combat_quirk(who: &str, quirk: CombatQuirk) -> String {
+    match quirk {
+        CombatQuirk::CantAttackAlone => format!("{who} can't attack alone"),
+        CombatQuirk::CantBlockAlone => format!("{who} can't block alone"),
+        CombatQuirk::AttackDespiteDefender => {
+            format!("{who} can attack as though they didn't have defender")
+        }
+        CombatQuirk::BlockWhileTapped => format!("{who} can block as though they were untapped"),
+        CombatQuirk::MustBeBlocked(Blocking::AtLeastOne) => {
+            format!("{who} must be blocked if able")
+        }
+        CombatQuirk::MustBeBlocked(Blocking::Every) => {
+            format!("all creatures able to block {who} do so")
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     //! Goal: triggers, costs, rules and changes read as English, and a part with no arm of its own still shows its variant.
@@ -555,23 +573,5 @@ mod tests {
     #[test]
     fn a_free_cost_is_not_blank() {
         assert_eq!(cost(&Ctx::none(), &Cost::default()), "no cost");
-    }
-}
-
-/// The words of a combat rule about the creatures `who`.
-fn combat_quirk(who: &str, quirk: CombatQuirk) -> String {
-    match quirk {
-        CombatQuirk::CantAttackAlone => format!("{who} can't attack alone"),
-        CombatQuirk::CantBlockAlone => format!("{who} can't block alone"),
-        CombatQuirk::AttackDespiteDefender => {
-            format!("{who} can attack as though they didn't have defender")
-        }
-        CombatQuirk::BlockWhileTapped => format!("{who} can block as though they were untapped"),
-        CombatQuirk::MustBeBlocked(Blocking::AtLeastOne) => {
-            format!("{who} must be blocked if able")
-        }
-        CombatQuirk::MustBeBlocked(Blocking::Every) => {
-            format!("all creatures able to block {who} do so")
-        }
     }
 }
