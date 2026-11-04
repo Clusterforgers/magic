@@ -4,13 +4,14 @@
 use std::sync::Arc;
 
 use mtg_cards::CardDefinition;
-use mtg_cards::refs::{Ref, Selector};
+use mtg_cards::refs::{Pred, Ref, Selector, ZoneKind};
 use mtg_cards::trigger::TriggerPattern;
 use mtg_cards::value::CounterKind;
+use mtg_core::card::{CardType, Subtype};
 use mtg_core::ids::ObjectId;
 use mtg_engine::Event;
 use mtg_engine::GameResult;
-use mtg_engine::manual::{CommonToken, ManualAction, ManualToken, ManualZone};
+use mtg_engine::manual::{CommonToken, CustomToken, ManualAction, ManualToken, ManualZone};
 use mtg_engine::player::LossReason;
 use mtg_engine::zones::Zone;
 use mtg_testkit::cards::{forest, free_creature, gain_life};
@@ -215,4 +216,44 @@ fn drawing_from_an_empty_library_by_hand_loses_the_game() {
     .unwrap();
     driver.manual(ManualAction::Draw { count: 1 }).unwrap();
     assert_eq!(driver.engine().result(), Some(GameResult::Winner(pid(1))));
+}
+
+#[rstest]
+#[case::lower("egg")]
+#[case::two_words("dinosaur egg")]
+fn a_sacrificed_hand_made_egg_fires_whenever_an_egg_you_control_dies(#[case] typed: &str) {
+    let egg_dies = watcher(
+        "Watcher",
+        TriggerPattern::ZoneChange {
+            what: Selector(vec![
+                Pred::Subtype(Subtype("Egg".into())),
+                Pred::ControlledBy(Ref::You),
+            ]),
+            from: Some(ZoneKind::Battlefield),
+            to: Some(ZoneKind::Graveyard),
+        },
+        vec![gain_life(3)],
+    );
+    let (mut driver, _) = game(egg_dies);
+    let before = driver.state().zone(Zone::Battlefield).len();
+    driver
+        .manual(ManualAction::CreateToken {
+            token: ManualToken::Custom(Box::new(CustomToken {
+                name: typed.into(),
+                colors: Vec::new(),
+                types: vec![CardType::Creature],
+                subtypes: vec![typed.into()],
+                power: Some(0),
+                toughness: Some(1),
+            })),
+            count: 1,
+        })
+        .unwrap();
+    settle(&mut driver);
+    let token = driver.state().zone(Zone::Battlefield)[before];
+    driver
+        .manual(ManualAction::Sacrifice { object: token })
+        .unwrap();
+    settle(&mut driver);
+    assert_eq!(life(&driver), 23);
 }

@@ -280,7 +280,7 @@ impl CustomToken {
         if self.types.is_empty() || !self.types.iter().all(allowed) {
             return Err(bad("creature, artifact, enchantment or land as its types"));
         }
-        if self.subtypes.len() > MAX_SUBTYPES
+        if self.typed_subtypes().len() > MAX_SUBTYPES
             || self.subtypes.iter().any(|word| {
                 let word = word.trim();
                 word.is_empty()
@@ -313,15 +313,40 @@ impl CustomToken {
             colors,
             supertypes: Vec::new(),
             types,
-            subtypes: self
-                .subtypes
-                .iter()
-                .map(|word| Subtype(word.trim().to_owned()))
-                .collect(),
+            subtypes: self.typed_subtypes(),
             power: stats.map(|(power, _)| power),
             toughness: stats.map(|(_, toughness)| toughness),
             abilities: Vec::new(),
         })
+    }
+}
+
+impl CustomToken {
+    /// The typed subtypes as the engine spells them: split on whitespace, capitalised (also after a hyphen or
+    /// apostrophe), without repeats.
+    fn typed_subtypes(&self) -> Vec<Subtype> {
+        let mut out: Vec<Subtype> = Vec::new();
+        for word in self
+            .subtypes
+            .iter()
+            .flat_map(|typed| typed.split_whitespace())
+        {
+            let mut capital = true;
+            let mut spelled = String::new();
+            for c in word.chars() {
+                if capital {
+                    spelled.extend(c.to_uppercase());
+                } else {
+                    spelled.extend(c.to_lowercase());
+                }
+                capital = matches!(c, '-' | '\'');
+            }
+            let subtype = Subtype(spelled);
+            if !out.contains(&subtype) {
+                out.push(subtype);
+            }
+        }
+        out
     }
 }
 
@@ -1051,6 +1076,22 @@ mod tests {
         assert_eq!(spec.colors, [Color::Blue, Color::Red]);
         assert_eq!(spec.types, [CardType::Creature]);
         assert_eq!(spec.subtypes, [Subtype("Imp".into())]);
+    }
+
+    #[rstest]
+    #[case::lower(&["egg"], &["Egg"])]
+    #[case::upper(&["EGG"], &["Egg"])]
+    #[case::padded_two_words(&[" dinosaur egg "], &["Dinosaur", "Egg"])]
+    #[case::canonical(&["Egg"], &["Egg"])]
+    #[case::hyphen(&["half-elf"], &["Half-Elf"])]
+    #[case::repeat(&["egg", "Egg"], &["Egg"])]
+    fn typed_subtypes_take_the_canonical_spelling(#[case] typed: &[&str], #[case] want: &[&str]) {
+        let spec = custom("dinosaur egg", &[CardType::Creature], typed, Some((0, 1)))
+            .spec()
+            .unwrap();
+        let want: Vec<Subtype> = want.iter().map(|s| Subtype((*s).into())).collect();
+        assert_eq!(spec.subtypes, want);
+        assert_eq!(spec.name, "dinosaur egg");
     }
 
     #[rstest]
