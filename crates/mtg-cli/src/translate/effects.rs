@@ -268,7 +268,14 @@ fn delayed(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     only(
         p,
         "DelayedTrigger",
-        &["Mode", "Phase", "ValidPlayer", "Execute", "NextTurn", "RememberObjects"],
+        &[
+            "Mode",
+            "Phase",
+            "ValidPlayer",
+            "Execute",
+            "NextTurn",
+            "RememberObjects",
+        ],
     )?;
     if p.get("Mode") != Some("Phase") {
         return unmapped("key:DelayedTrigger.Mode");

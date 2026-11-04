@@ -64,8 +64,12 @@ fn static_recipient(ctx: &Ctx, word: &str) -> Tr<Value> {
         "Player" => json!("EachPlayer"),
         "Opponent" | "Player.Opponent" => json!("Opponents"),
         "Card.Self" | "Creature.Self" => json!("This"),
-        "Card.AttachedBy" | "Creature.AttachedBy" | "Card.EnchantedBy" | "Creature.EnchantedBy"
-        | "Creature.EquippedBy" | "Card.EquippedBy" => json!("Attached"),
+        "Card.AttachedBy"
+        | "Creature.AttachedBy"
+        | "Card.EnchantedBy"
+        | "Creature.EnchantedBy"
+        | "Creature.EquippedBy"
+        | "Card.EquippedBy" => json!("Attached"),
         other if other.contains(',') || is_remembered(other) => {
             return unmapped("replacement:DamageDone-recipient-list");
         }
@@ -109,11 +113,17 @@ fn scaled(ctx: &Ctx, name: &str) -> Tr<Value> {
     if part.get("DB") != Some("ReplaceEffect") || part.get("VarName") != Some("DamageAmount") {
         return unmapped("replacement:DamageDone-ReplaceWith-shape");
     }
-    let expression = part.get("VarValue").and_then(|var| ctx.svar(var)).unwrap_or_default();
+    let expression = part
+        .get("VarValue")
+        .and_then(|var| ctx.svar(var))
+        .unwrap_or_default();
     match expression.strip_prefix("ReplaceCount$DamageAmount/") {
         Some("Twice") => Ok(json!({"Multiply": 2})),
         Some("Thrice") => Ok(json!({"Multiply": 3})),
-        Some(step) => match step.strip_prefix("Plus.").and_then(|n| n.parse::<u32>().ok()) {
+        Some(step) => match step
+            .strip_prefix("Plus.")
+            .and_then(|n| n.parse::<u32>().ok())
+        {
             Some(n) => Ok(json!({"Add": n})),
             None => unmapped("replacement:DamageDone-ReplaceCount-step"),
         },
@@ -123,7 +133,7 @@ fn scaled(ctx: &Ctx, name: &str) -> Tr<Value> {
 
 /// The `Shield` an `Effect` line makes from the prevention its `ReplacementEffects$` names; `remembered` is what
 /// `RememberObjects$` stands for.
-pub fn shield(ctx: &mut Ctx, line: &Params, remembered: Option<Value>) -> Tr<Vec<Value>> {
+pub fn shield(ctx: &mut Ctx, line: &Params, remembered: Option<&Value>) -> Tr<Vec<Value>> {
     let Some(name) = line.get("ReplacementEffects") else {
         return unmapped("key:Effect.no-ReplacementEffects");
     };
@@ -140,7 +150,7 @@ pub fn shield(ctx: &mut Ctx, line: &Params, remembered: Option<Value>) -> Tr<Vec
     read_keys(&p, false)?;
     let duration = duration(line.get("Duration"))?;
     let mut when = serde_json::Map::new();
-    match (p.get("ValidTarget"), &remembered) {
+    match (p.get("ValidTarget"), remembered) {
         (Some(word), Some(who)) if is_remembered(word) => {
             when.insert("to".into(), who.clone());
         }
@@ -156,7 +166,7 @@ pub fn shield(ctx: &mut Ctx, line: &Params, remembered: Option<Value>) -> Tr<Vec
         }
         (None, _) => {}
     }
-    match (p.get("ValidSource"), &remembered) {
+    match (p.get("ValidSource"), remembered) {
         (Some(word), Some(who)) if is_remembered(word) => {
             when.insert("source".into(), json!([{"Is": who}]));
         }

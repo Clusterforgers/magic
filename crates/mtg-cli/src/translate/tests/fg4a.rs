@@ -67,8 +67,8 @@ fn atoms_outside_the_nodes_stay_gaps(#[case] valid: &str) {
     let script = format!(
         "Name:T\nTypes:Creature Elf\nS:Mode$ Continuous | Affected$ {valid} | AddPower$ 1\n"
     );
-    assert!(abilities(&script).is_empty());
-    assert!(!gaps(&script).is_empty());
+    assert_eq!(abilities(&script), Vec::<Value>::new());
+    assert_ne!(gaps(&script), Vec::<String>::new());
 }
 
 #[rstest]
@@ -119,11 +119,15 @@ fn damage_prevention_maps(#[case] script: &str, #[case] expected: Value) {
 #[case::replaced_not_prevented(
     "R:Event$ DamageDone | ValidTarget$ You | ReplaceWith$ Dmg\nSVar:Dmg:DB$ ReplaceDamage | Amount$ 1\n"
 )]
-#[case::other_zone("R:Event$ DamageDone | Prevent$ True | ActiveZones$ Graveyard | ValidTarget$ You\n")]
+#[case::other_zone(
+    "R:Event$ DamageDone | Prevent$ True | ActiveZones$ Graveyard | ValidTarget$ You\n"
+)]
 #[case::unread_key("R:Event$ DamageDone | Prevent$ True | ValidTarget$ You | Quux$ True\n")]
-#[case::remembered_in_a_static("R:Event$ DamageDone | Prevent$ True | ValidSource$ Card.IsRemembered\n")]
+#[case::remembered_in_a_static(
+    "R:Event$ DamageDone | Prevent$ True | ValidSource$ Card.IsRemembered\n"
+)]
 fn other_damage_replacements_stay_gaps(#[case] line: &str) {
     let script = format!("Name:T\nTypes:Enchantment\n{line}");
-    assert!(abilities(&script).is_empty(), "{script}");
-    assert!(!gaps(&script).is_empty());
+    assert_eq!(abilities(&script), Vec::<Value>::new(), "{script}");
+    assert_ne!(gaps(&script), Vec::<String>::new());
 }

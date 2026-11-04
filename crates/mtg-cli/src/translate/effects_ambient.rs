@@ -41,7 +41,7 @@ pub fn continuous_statics(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
 
 /// The triggers `Triggers$` names as delayed triggers that fire every time for the effect's duration; `remembered` is
 /// what the effect remembers, which a trigger reads as `IsRemembered`.
-pub fn delayed_triggers(ctx: &mut Ctx, p: &Params, remembered: Option<Value>) -> Tr<Vec<Value>> {
+pub fn delayed_triggers(ctx: &mut Ctx, p: &Params, remembered: Option<&Value>) -> Tr<Vec<Value>> {
     if p.has("StaticAbilities") {
         return unmapped("key:Effect.Triggers-and-StaticAbilities");
     }
@@ -59,7 +59,7 @@ pub fn delayed_triggers(ctx: &mut Ctx, p: &Params, remembered: Option<Value>) ->
             return unmapped("svar:missing");
         };
         let body = without_zones(text);
-        let line = ctx.nested(remembered.clone(), |ctx| triggered(ctx, &body))?;
+        let line = ctx.nested(remembered.cloned(), |ctx| triggered(ctx, &body))?;
         let Some(inner) = line.get("Triggered").and_then(Value::as_object) else {
             return unmapped("effect:Effect-trigger-not-triggered");
         };

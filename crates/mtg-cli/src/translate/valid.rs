@@ -335,7 +335,10 @@ pub fn defined(ctx: &Ctx, word: &str) -> Tr<Value> {
             || unmapped("defined:ChosenCard-without-a-choice"),
             |name| Ok(json!({"Bound": name})),
         ),
-        "DelayTriggerRemembered" | "DelayTriggerRememberedLKI" | "DelayedTriggerRemembered" | "RememberedLKI" => ctx
+        "DelayTriggerRemembered"
+        | "DelayTriggerRememberedLKI"
+        | "DelayedTriggerRemembered"
+        | "RememberedLKI" => ctx
             .remembered
             .clone()
             .map_or_else(|| unmapped("defined:Remembered-without-a-change"), Ok),

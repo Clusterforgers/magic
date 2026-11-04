@@ -33,6 +33,6 @@ fn effects_that_are_no_emblem_stay_gaps(#[case] line: &str) {
     let script = format!(
         "Name:T\nTypes:Sorcery\nA:SP$ Effect | {line}\nSVar:Pump:Mode$ Continuous | Affected$ Creature.YouCtrl | AddPower$ 2\nSVar:Draws:Mode$ Drawn | ValidCard$ Card.YouCtrl | Execute$ Gain\nSVar:Gain:DB$ GainLife | LifeAmount$ 1\n"
     );
-    assert!(abilities(&script).is_empty(), "{script}");
-    assert!(!gaps(&script).is_empty());
+    assert_eq!(abilities(&script), Vec::<Value>::new(), "{script}");
+    assert_ne!(gaps(&script), Vec::<String>::new());
 }

@@ -26,7 +26,7 @@ pub fn when(ctx: &Ctx, base: &str) -> Option<Tr<Value>> {
         },
         _ => return None,
     };
-    Some(branch(ctx, condition, branches))
+    Some(branch(ctx, &condition, branches))
 }
 
 /// `Y GE1.2.1`: an amount, a comparison with its threshold, the amount when it holds and the amount when it does not.
@@ -42,11 +42,11 @@ fn compare(ctx: &Ctx, rest: &str) -> Tr<Value> {
     };
     let condition = json!({"Compare": {
         "left": amount(ctx, left.trim())?, "op": op, "right": amount(ctx, threshold)?}});
-    branch(ctx, condition, branches)
+    branch(ctx, &condition, branches)
 }
 
 /// `2.1`: the amount when the condition holds and the amount when it does not.
-fn branch(ctx: &Ctx, condition: Value, branches: &str) -> Tr<Value> {
+fn branch(ctx: &Ctx, condition: &Value, branches: &str) -> Tr<Value> {
     let Some((then, otherwise)) = branches.split_once('.') else {
         return unmapped("amount:Count-branches");
     };

@@ -42,9 +42,8 @@ fn ambient_statics_map(#[case] script: &str, #[case] expected: Value) {
 #[case::unknown_mode("Mode$ Quux | Affected$ Creature.YouCtrl")]
 #[case::missing_static("Mode$ Continuous | Affected$ Creature.YouCtrl | AddPower$ 1 | Quux$ 1")]
 fn other_ambient_statics_stay_gaps(#[case] static_line: &str) {
-    let script = format!(
-        "Name:T\nTypes:Sorcery\nA:SP$ Effect | StaticAbilities$ S\nSVar:S:{static_line}\n"
-    );
-    assert!(abilities(&script).is_empty(), "{script}");
-    assert!(!gaps(&script).is_empty());
+    let script =
+        format!("Name:T\nTypes:Sorcery\nA:SP$ Effect | StaticAbilities$ S\nSVar:S:{static_line}\n");
+    assert_eq!(abilities(&script), Vec::<Value>::new(), "{script}");
+    assert_ne!(gaps(&script), Vec::<String>::new());
 }

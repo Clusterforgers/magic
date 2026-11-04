@@ -39,14 +39,14 @@ pub fn effects(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             return unmapped("key:Effect.Triggers-and-ReplacementEffects");
         }
         let remembered = super::replacements_damage::remembered_of(ctx, p)?;
-        return super::effects_ambient::delayed_triggers(ctx, p, remembered);
+        return super::effects_ambient::delayed_triggers(ctx, p, remembered.as_ref());
     }
     if p.has("ReplacementEffects") {
         if p.has("StaticAbilities") {
             return unmapped("key:Effect.static-and-replacement");
         }
         let remembered = super::replacements_damage::remembered_of(ctx, p)?;
-        return super::replacements_damage::shield(ctx, p, remembered);
+        return super::replacements_damage::shield(ctx, p, remembered.as_ref());
     }
     if !p.has("RememberObjects") && !p.has("ValidTgts") {
         return super::effects_ambient::continuous_statics(ctx, p);
