@@ -363,6 +363,7 @@ fn cost_modifier(ctx: &Ctx, p: &Params, change: &str) -> Tr<Value> {
         &[
             "ValidCard",
             "ValidTarget",
+            "Color",
             "Type",
             "Activator",
             "Amount",
@@ -404,11 +405,25 @@ fn cost_modifier(ctx: &Ctx, p: &Params, change: &str) -> Tr<Value> {
         applies.push(json!({"Targeting": selector_any(ctx, target)?}));
     }
     let amount = p.get("Amount").unwrap_or_default();
+    // `Color$` names the one colour whose symbols the change adds or removes, `Amount$` how many.
+    let symbol = match p.get("Color") {
+        None => "{1}".to_owned(),
+        Some(color @ ("W" | "U" | "B" | "R" | "G")) => format!("{{{color}}}"),
+        Some(other) => return unmapped(format!("key:Static.CostModifier.Color={other}")),
+    };
     // A number or coloured symbols are the mana; a count (an `SVar`) is how many times {1} applies.
     if ctx.svar(amount).is_some() {
         let per = super::amount::amount(ctx, amount)?;
         return Ok(
-            json!({"CostModifier": {"applies_to": applies, "change": change, "mana": "{1}", "per": per}}),
+            json!({"CostModifier": {"applies_to": applies, "change": change, "mana": symbol, "per": per}}),
+        );
+    }
+    if p.has("Color") {
+        let Ok(count) = amount.parse::<usize>() else {
+            return unmapped("key:Static.CostModifier.Color-with-Amount");
+        };
+        return Ok(
+            json!({"CostModifier": {"applies_to": applies, "change": change, "mana": symbol.repeat(count)}}),
         );
     }
     let Value::String(mana) = cost(ctx, amount)? else {
