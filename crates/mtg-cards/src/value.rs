@@ -203,6 +203,20 @@ impl CounterKind {
         })
     }
 
+    /// The power and toughness one counter of this kind adds (CR 122.1a, 613.4c): `+1/+1` adds (1, 1), `-1/-1` adds
+    /// (-1, -1) and a counter named for its numbers such as `+2/+0` or `-0/-1` adds those; any other kind adds nothing.
+    pub fn power_toughness(&self) -> (i32, i32) {
+        match self {
+            CounterKind::PlusOnePlusOne => (1, 1),
+            CounterKind::MinusOneMinusOne => (-1, -1),
+            CounterKind::Other(name) => name
+                .split_once('/')
+                .and_then(|(power, toughness)| Some((signed(power)?, signed(toughness)?)))
+                .unwrap_or((0, 0)),
+            _ => (0, 0),
+        }
+    }
+
     /// The kind as a card names it: `+1/+1`, `poison`, `charge`.
     pub fn name(&self) -> &str {
         match self {
@@ -214,6 +228,19 @@ impl CounterKind {
             CounterKind::Other(name) => name,
         }
     }
+}
+
+/// A counter's signed number written with its sign (`+2`, `-0`).
+fn signed(text: &str) -> Option<i32> {
+    let (sign, digits) = match text.split_at_checked(1)? {
+        ("+", digits) => (1, digits),
+        ("-", digits) => (-1, digits),
+        _ => return None,
+    };
+    if digits.is_empty() || !digits.bytes().all(|b| b.is_ascii_digit()) {
+        return None;
+    }
+    digits.parse::<i32>().ok().map(|n| sign * n)
 }
 
 /// Whether it is day or night (CR 726.1).
@@ -1062,6 +1089,22 @@ mod tests {
     use rstest::rstest;
 
     use crate::refs::Pred;
+
+    #[rstest]
+    #[case::plus_one(CounterKind::PlusOnePlusOne, (1, 1))]
+    #[case::minus_one(CounterKind::MinusOneMinusOne, (-1, -1))]
+    #[case::plus_two_plus_two(CounterKind::Other("+2/+2".into()), (2, 2))]
+    #[case::power_only(CounterKind::Other("+1/+0".into()), (1, 0))]
+    #[case::toughness_down(CounterKind::Other("+0/-1".into()), (0, -1))]
+    #[case::negative_zero(CounterKind::Other("-0/-1".into()), (0, -1))]
+    #[case::big(CounterKind::Other("+12/-3".into()), (12, -3))]
+    #[case::keyword(CounterKind::Other("flying".into()), (0, 0))]
+    #[case::unsigned(CounterKind::Other("2/2".into()), (0, 0))]
+    #[case::garbage(CounterKind::Other("+a/+1".into()), (0, 0))]
+    #[case::poison(CounterKind::Poison, (0, 0))]
+    fn counters_add_power_and_toughness(#[case] kind: CounterKind, #[case] added: (i32, i32)) {
+        assert_eq!(kind.power_toughness(), added);
+    }
 
     #[rstest]
     #[case::flashback(CastWay::Flashback, true)]

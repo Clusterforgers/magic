@@ -15,9 +15,8 @@ pub fn counter_kind(word: &str) -> Option<Value> {
     {
         return None;
     }
-    // Only +1/+1 and -1/-1 counters change power and toughness in the engine; every other P/T counter and "all" would
-    // be a counter kind that does nothing.
-    if word == "ALL" || (word != "P1P1" && word != "M1M1" && is_power_toughness(word)) {
+    // "All" is not a kind: the effects that take every counter off say so themselves.
+    if word == "ALL" {
         return None;
     }
     Some(match word {
@@ -26,8 +25,24 @@ pub fn counter_kind(word: &str) -> Option<Value> {
         "LOYALTY" => json!("loyalty"),
         "POISON" => json!("poison"),
         "CHARGE" => json!("charge"),
+        other if is_power_toughness(other) => json!({"Other": power_toughness_name(other)}),
         other => json!({"Other": other.to_lowercase().replace('_', " ")}),
     })
+}
+
+/// The name of a power/toughness counter as the engine reads it in layer 7c: `P2P2` is `+2/+2`, `M0M1` is `-0/-1`.
+fn power_toughness_name(word: &str) -> String {
+    let mut name = String::new();
+    for c in word.chars() {
+        match c {
+            'P' if name.is_empty() => name.push('+'),
+            'M' if name.is_empty() => name.push('-'),
+            'P' => name.push_str("/+"),
+            'M' => name.push_str("/-"),
+            digit => name.push(digit),
+        }
+    }
+    name
 }
 
 /// Whether the word is a power/toughness counter (`P2P2`, `M0M1`).
@@ -305,7 +320,7 @@ fn this_turn_cast(ctx: &Ctx, word: &str) -> Tr<Value> {
 
 #[cfg(test)]
 mod tests {
-    //! Goal: only counter kinds the engine gives an effect map; other power/toughness counters and "all" stay gaps.
+    //! Goal: only counter kinds the engine gives an effect map; power/toughness counters are named for their numbers and "all" stays a gap.
     use rstest::rstest;
     use serde_json::json;
 
@@ -316,9 +331,10 @@ mod tests {
     #[case("M1M1", Some(json!("-1/-1")))]
     #[case("CHARGE", Some(json!("charge")))]
     #[case("TIME", Some(json!({"Other": "time"})))]
-    #[case("P2P2", None)]
-    #[case("M0M1", None)]
-    #[case("P1P0", None)]
+    #[case("P2P2", Some(json!({"Other": "+2/+2"})))]
+    #[case("M0M1", Some(json!({"Other": "-0/-1"})))]
+    #[case("P1P0", Some(json!({"Other": "+1/+0"})))]
+    #[case("P12M3", Some(json!({"Other": "+12/-3"})))]
     #[case("ALL", None)]
     fn counter_kinds(#[case] word: &str, #[case] kind: Option<serde_json::Value>) {
         assert_eq!(counter_kind(word), kind);

@@ -44,6 +44,7 @@ fn reports(effect: &Effect) -> Reports {
         | Effect::AddMana { .. }
         | Effect::PutCounters { .. }
         | Effect::RemoveCounters { .. }
+        | Effect::RemoveAllCounters { .. }
         | Effect::MoveCounters { .. }
         | Effect::MultiplyCounters { .. }
         | Effect::Tap { .. }

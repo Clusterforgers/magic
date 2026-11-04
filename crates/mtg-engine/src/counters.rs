@@ -26,10 +26,7 @@ pub struct CountersChanged {
 /// Whether counters of this kind change the characteristics of the permanent that holds them: the power and toughness
 /// (CR 613.4c) or the keywords (CR 122.1b).
 pub(crate) fn changes_characteristics(kind: &CounterKind) -> bool {
-    matches!(
-        kind,
-        CounterKind::PlusOnePlusOne | CounterKind::MinusOneMinusOne
-    ) || kind.keyword().is_some()
+    kind.power_toughness() != (0, 0) || kind.keyword().is_some()
 }
 
 /// Folds the event. Only a permanent on the battlefield, the very object that was named (CR 400.7), and a player who is
@@ -400,6 +397,9 @@ mod tests {
     #[rstest]
     #[case::a_plus_counter(CounterKind::PlusOnePlusOne, true)]
     #[case::a_minus_counter(CounterKind::MinusOneMinusOne, true)]
+    #[case::a_power_counter(CounterKind::Other("+1/+0".into()), true)]
+    #[case::a_toughness_counter(CounterKind::Other("-0/-1".into()), true)]
+    #[case::an_empty_pt_counter(CounterKind::Other("+0/+0".into()), false)]
     #[case::a_keyword_counter(CounterKind::Other("lifelink".into()), true)]
     #[case::a_two_word_keyword_counter(CounterKind::Other("first strike".into()), true)]
     #[case::a_counter_the_rules_give_no_keyword(CounterKind::Other("shield".into()), false)]

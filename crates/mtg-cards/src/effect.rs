@@ -610,6 +610,11 @@ pub enum Effect {
         #[serde(default, skip_serializing_if = "std::ops::Not::not")]
         up_to: bool,
     },
+    /// Removes every counter of every kind from an object or player ("Remove all counters from target creature").
+    RemoveAllCounters {
+        /// Where they come from.
+        from: Ref,
+    },
     /// Moves counters from one object onto another (CR 122.5); the first object gives up what it has, up to the count.
     MoveCounters {
         /// The object they leave.
@@ -1606,6 +1611,10 @@ mod tests {
     #[case::w2f_up_to_three_of_any_kind(
         Effect::RemoveCounters { from: Ref::Target(0), counter: None, count: Amount::Fixed(3), up_to: true },
         r#"{"RemoveCounters":{"from":{"Target":0},"count":3,"up_to":true}}"#
+    )]
+    #[case::remove_all_counters(
+        Effect::RemoveAllCounters { from: Ref::Target(0) },
+        r#"{"RemoveAllCounters":{"from":{"Target":0}}}"#
     )]
     #[case::double_the_counters_of_a_kind(
         Effect::MultiplyCounters { on: Ref::This, counter: Some(CounterKind::PlusOnePlusOne), factor: 2 },
