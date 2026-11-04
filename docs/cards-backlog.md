@@ -17,7 +17,7 @@ Open card, compiler and wording items by code area; the rules of `docs/ROADMAP.m
 
 Ordered by scripts freed per piece (`docs/cards-dsl.md`, Forge coverage). `gn1a` and `gn1j` are writer items beside this list; `gn1c`, `gn1e`, `gn1f`, `gn1i` and `gn1m` free 280, 164, 117, 97 and 104 scripts and stay as they are; a new decision comes with its web prompt in the same piece.
 
-- [ ] (fg5ea) Effect verbs with no mapper yet that free the most scripts: Vote, GenericChoice, Repeat, ChoosePlayer, Branch, SetState, RevealHand, ChooseSource, NameCard, MakeCard, Seek, CopySpellAbility; `translate/effects_verbs.rs`
+- [ ] (fg5ea) Effect verbs with no mapper yet that free the most scripts: Vote, Repeat, ChoosePlayer, RevealHand, ChooseSource, NameCard, CopySpellAbility; `translate/effects_verbs.rs`; MakeCard and Seek need engine nodes (conjure a named card, seek a card from the library); GenericChoice maps only two parts chosen by you, SetState only Transform; `translate/effects_verbs2.rs`
 - [ ] (fg5eb) Replacement events beyond entering and token multiplying: `Counter`, `AddCounter` (needs a selector for `CountersPut.on`), `Draw`, `ProduceMana`, `GameLoss`, `LifeReduced`, `Untap-affected`, token halving and added tokens; `translate/replacements_token.rs`
 - [ ] (fg5ec) Trigger modes beyond the batches mapped: `AbilityCast`, `AttackersDeclaredOneTarget`, `DamageDealtOnce`, `CounterAddedAll`, `Unattached`, `Always`, `CommitCrime`, and `FirstTime$` and `ValidSource$` on batches; `translate/triggers_batch.rs`
 - [ ] (gn1p) `RemoveCountersAmong` lets the payer distribute the removed counters instead of taking them in play order (a new decision with web support); `mtg-engine/src/parts/among.rs`
