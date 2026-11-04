@@ -122,7 +122,7 @@ fn activated(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     let p = &p.without(&ACTIVATION_WORDS);
     let game_limited = once_a_game(p)?;
     let p = &p.without(&["Exhaust", "GameActivationLimit"]);
-    let effects = chain(ctx, p)?;
+    let effects = chain(ctx, &p.without(&["ReduceCost"]))?;
     let targets = ctx.targets.clone();
     if p.get("Planeswalker") == Some("True") {
         if when.is_some() || !words.conditions.is_empty() {
@@ -130,7 +130,18 @@ fn activated(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
         }
         return loyalty_ability(p, text, &effects, &targets);
     }
-    let mut ability = json!({"cost": cost(ctx, text)?, "effects": effects});
+    let mut cost_items = cost(ctx, text)?;
+    if let Some(less) = reduce_cost(ctx, p)? {
+        cost_items = match cost_items {
+            Value::String(mana) => json!([{ "Mana": mana }, less]),
+            Value::Array(mut items) => {
+                items.push(less);
+                Value::Array(items)
+            }
+            _ => return unmapped("key:AB.ReduceCost.cost-shape"),
+        };
+    }
+    let mut ability = json!({"cost": cost_items, "effects": effects});
     let mut conditions: Vec<Value> = when.into_iter().collect();
     if p.get("PlayerTurn") == Some("True") {
         conditions.insert(0, json!("YourTurn"));
@@ -170,6 +181,21 @@ fn activated(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
         ability["targets"] = Value::Array(targets);
     }
     Ok(json!({ "Activated": ability }))
+}
+
+/// `ReduceCost$ <count>`: "This ability costs {1} less to activate for each ..." (CR 602.2b), the `Changed` cost item that
+/// takes one generic mana off per counted object. A fixed number is not a count and stays a gap.
+fn reduce_cost(ctx: &Ctx, p: &Params) -> Tr<Option<Value>> {
+    let Some(text) = p.get("ReduceCost") else {
+        return Ok(None);
+    };
+    if text.trim().parse::<i32>().is_ok() {
+        return unmapped("key:AB.ReduceCost=fixed");
+    }
+    let per = super::amount::amount(ctx, text)?;
+    Ok(Some(
+        json!({"Changed": {"change": "Reduce", "mana": "{1}", "per": per}}),
+    ))
 }
 
 /// Whether the line is used once each game: `GameActivationLimit$ 1`, or `Exhaust$ True` ("activate each exhaust ability

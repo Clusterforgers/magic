@@ -405,6 +405,7 @@ const RUNS: &[&str] = &[
     "Effect.Modal.AllIf",
     "Effect.Vote",
     "Effect.Let",
+    "Effect.Bind",
     "Effect.Modal.Who",
     "Effect.Planechase",
     "Effect.VillainousChoice",

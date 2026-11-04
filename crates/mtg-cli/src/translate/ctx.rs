@@ -112,6 +112,8 @@ pub struct Ctx<'a> {
     /// The objects an `Effect` object remembers, which a trigger or static it carries reads as `IsRemembered`; kept across
     /// `reset` because the carried lines are translated as lines of their own.
     pub pinned: Option<Value>,
+    /// What `DelayTriggerRemembered` names in the steps of a delayed trigger: the name its setup bound.
+    pub delayed_remembered: Option<Value>,
     /// The index of the target the line being translated is about to declare, for the condition it states ahead of its effect.
     pub coming: Option<u8>,
     /// The latest target the ability had declared before the line being translated (`Defined$ ParentTarget`).
@@ -149,6 +151,7 @@ impl<'a> Ctx<'a> {
             coming: None,
             memory: super::memory::plan(face),
             pinned: None,
+            delayed_remembered: None,
             parent_target: None,
             chosen: None,
             chosen_card: None,
