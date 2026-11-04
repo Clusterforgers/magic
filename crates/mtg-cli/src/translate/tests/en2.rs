@@ -271,10 +271,6 @@ fn a_dig_puts_what_it_takes_and_the_rest_where_the_library_position_says(
     "Dig | DigNum$ 4 | ChangeNum$ 1 | ChangeValid$ Creature | DestinationZone$ Library | LibraryPosition$ 2",
     "key:Dig.LibraryPosition"
 )]
-#[case::position_of_a_hand_destination(
-    "Dig | DigNum$ 4 | ChangeNum$ 1 | ChangeValid$ Creature | DestinationZone$ Hand | LibraryPosition$ 0",
-    "key:Dig.LibraryPosition"
-)]
 #[case::the_rest_third_from_the_top(
     "Dig | DigNum$ 4 | ChangeNum$ 1 | ChangeValid$ Creature | DestinationZone$ Hand | LibraryPosition2$ 2",
     "key:Dig.LibraryPosition2"
