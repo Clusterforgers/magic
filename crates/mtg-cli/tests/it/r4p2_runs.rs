@@ -74,3 +74,28 @@ fn the_remembered_choice_is_the_one_destroyed() {
     assert_eq!(state.zone(Zone::Graveyard(me)).len(), 2); // the bear and the spell
     assert_eq!(state.zone(Zone::Battlefield).len(), 1);
 }
+
+const SORT: &str =
+    "Name:Sort\nTypes:Sorcery\nA:SP$ RearrangeTopOfLibrary | Defined$ You | NumCards$ 3\n";
+
+#[test]
+fn the_top_cards_come_back_after_the_spell() {
+    use mtg_core::ids::PlayerId;
+    use mtg_engine::zones::Zone;
+    let spell = translated(SORT, "Sort", "Sorcery", "{0}");
+    let library: Vec<_> = (0..6)
+        .map(|n| mtg_testkit::cards::free_creature(&format!("C{n}"), 1, 1))
+        .collect();
+    let mut driver =
+        Driver::from_scenario(Scenario::new(2).hand(0, [spell]).library(0, library)).unwrap();
+    let me = PlayerId::from_index(0);
+    let before = driver.state().zone(Zone::Library(me)).to_vec();
+    driver.cast("Sort").unwrap();
+    settle(&mut driver);
+    let after = driver.state().zone(Zone::Library(me)).to_vec();
+    // The same six cards are in the library: nothing is lost and nothing is drawn.
+    let (mut a, mut b) = (before.clone(), after.clone());
+    a.sort();
+    b.sort();
+    assert_eq!(a, b);
+}

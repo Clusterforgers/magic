@@ -277,6 +277,7 @@ fn api_line(ctx: &mut Ctx, p: &Params, api: &str) -> Tr<Vec<Value>> {
         "Charm" => one(charm(ctx, p)),
         "DelayedTrigger" => one(delayed(ctx, p)),
         "Dig" => effects_zone::dig(ctx, p),
+        "RearrangeTopOfLibrary" => effects_zone::rearrange_top(ctx, p),
         "DigUntil" => effects_zone::dig_until(ctx, p),
         "ManifestDread" => effects_zone::manifest_dread(ctx, p),
         "Attach" => effects_obj::attach(ctx, p),

@@ -114,3 +114,55 @@ fn a_remembered_choice_in_a_pass_over_players_is_a_gap() {
         ["key:ChooseCard.RememberChosen-with-remembered"]
     );
 }
+
+/// Looking at the top cards of a library and putting them back in an order: the library is the line's player's.
+#[rstest]
+#[case::own("Defined$ You | NumCards$ 3", json!("You"), json!(3), json!([]))]
+#[case::targeted("ValidTgts$ Player | NumCards$ 1", json!({"Target": 0}), json!(1), json!([{"what": "Player"}]))]
+fn the_top_of_a_library_is_put_back_in_a_chosen_order(
+    #[case] line: &str,
+    #[case] who: serde_json::Value,
+    #[case] count: serde_json::Value,
+    #[case] targets: serde_json::Value,
+) {
+    let script = format!("Name:T\nTypes:Sorcery\nA:SP$ RearrangeTopOfLibrary | {line}\n");
+    let found = abilities(&script);
+    assert_eq!(found.len(), 1, "{:?}", gaps(&script));
+    let effects = &found[0]["Spell"]["effects"];
+    let top = effects[0]["LookAtTop"]["as"].clone();
+    assert_eq!(
+        effects[0]["LookAtTop"]
+            .get("count")
+            .cloned()
+            .unwrap_or(json!(1)),
+        count
+    );
+    assert_eq!(
+        effects[0]["LookAtTop"]
+            .get("who")
+            .cloned()
+            .unwrap_or(json!("You")),
+        who
+    );
+    assert_eq!(
+        effects[1],
+        json!({"Move": {"what": {"Bound": top}, "to": {"Library": {"place": "Top", "order": "Chosen"}}}})
+    );
+    if !targets.as_array().is_some_and(Vec::is_empty) {
+        assert_eq!(found[0]["Spell"]["targets"], targets);
+    }
+}
+
+#[rstest]
+#[case::shuffle(
+    "Defined$ You | NumCards$ 3 | MayShuffle$ True",
+    "key:RearrangeTopOfLibrary.MayShuffle"
+)]
+#[case::other_orderer(
+    "Defined$ You | RearrangePlayer$ Targeted | NumCards$ 3",
+    "key:RearrangeTopOfLibrary.RearrangePlayer"
+)]
+fn a_shuffle_option_or_another_orderer_is_a_gap(#[case] line: &str, #[case] gap: &str) {
+    let script = format!("Name:T\nTypes:Sorcery\nA:SP$ RearrangeTopOfLibrary | {line}\n");
+    assert_eq!(gaps(&script), [gap]);
+}
