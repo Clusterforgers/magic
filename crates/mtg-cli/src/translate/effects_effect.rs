@@ -53,7 +53,9 @@ pub fn effects(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         )?);
         return Ok(out);
     }
-    if let Some(name) = p.get("ReplacementEffects")
+    if let Some(name) = p
+        .get("ReplacementEffects")
+        .filter(|name| !name.contains(','))
         && ctx.sub(name.trim())?.get("Event") == Some("Untap")
     {
         return super::replacements::stays_tapped(ctx, p);

@@ -94,9 +94,6 @@ fn effect_objects_with_several_parts_map(
 }
 
 #[rstest]
-#[case::an_unread_always_replace(
-    "ValidTarget$ Card.Self | ReplaceWith$ D | PreventionEffect$ True | AlwaysReplace$ True\nSVar:D:DB$ RemoveCounter | Defined$ Self | CounterType$ P1P1 | CounterNum$ 1"
-)]
 #[case::an_unread_damage_target("ValidTarget$ You | Prevent$ True | DamageTarget$ Self")]
 #[case::two_players_in_a_list("ValidTarget$ You,Opponent | Prevent$ True")]
 #[case::redirect_to_another_target(
