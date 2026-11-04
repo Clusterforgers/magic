@@ -54,6 +54,8 @@ fn single(ctx: &mut Ctx, body: &str) -> Tr<Value> {
         "Destination",
         "ReplaceWith",
         "ReplacementResult",
+        "ActiveZones",
+        "Origin",
     ];
     check_keys(&p, "Replacement.Moved", &read, |_, _| false)?;
     if p.get("ReplacementResult")
@@ -61,7 +63,16 @@ fn single(ctx: &mut Ctx, body: &str) -> Tr<Value> {
     {
         return unmapped("key:Replacement.Moved.ReplacementResult");
     }
-    if p.get("ValidCard") != Some("Card.Self") || p.get("Destination") != Some("Battlefield") {
+    if p.get("ValidCard") != Some("Card.Self") {
+        return super::replacements_moved::others(ctx, &p, line_condition.as_ref());
+    }
+    if p.has("ActiveZones") {
+        return unmapped("key:Replacement.Moved.ActiveZones");
+    }
+    if p.has("Origin") {
+        return unmapped("key:Replacement.Moved.Origin");
+    }
+    if p.get("Destination") != Some("Battlefield") {
         return unmapped("replacement:Moved-shape");
     }
     let Some(name) = p.get("ReplaceWith") else {

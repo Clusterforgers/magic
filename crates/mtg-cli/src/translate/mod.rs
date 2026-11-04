@@ -36,6 +36,7 @@ pub mod remember;
 pub mod replacements;
 pub mod replacements_damage;
 pub mod replacements_damage_by;
+mod replacements_moved;
 mod replacements_token;
 pub mod report;
 pub mod statics;

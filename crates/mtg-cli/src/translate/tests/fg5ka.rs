@@ -94,3 +94,82 @@ fn a_defined_player_owns_the_cards_a_chooser_picks(#[case] line: &str, #[case] b
     assert_eq!(found.len(), 1, "{:?}", gaps(&script));
     assert_eq!(normal(found[0].clone()), normal(json!({ "Spell": body })));
 }
+
+const TAP: &str = "SVar:ETBTapped:DB$ Tap | ETB$ True | Defined$ ReplacedCard\n";
+const EXILE: &str = "SVar:Exile:DB$ ChangeZone | Hidden$ True | Origin$ All | Destination$ Exile | Defined$ ReplacedCard\n";
+
+fn enchantment(line: &str, svar: &str) -> String {
+    format!("Name:T\nTypes:Enchantment\nR:{line} | Description$ x\n{svar}")
+}
+
+#[rstest]
+#[case::opponents_nonbasic_lands_tapped(
+    "Event$ Moved | ValidCard$ Land.OppCtrl+nonBasic | Destination$ Battlefield | ReplaceWith$ ETBTapped | ReplacementResult$ Updated | ActiveZones$ Battlefield",
+    TAP,
+    json!({"Replacement": {"when": {"Enters": {"what": [{"Type": "Land"}, {"ControlledBy": "Opponents"}, {"Not": {"Supertype": "Basic"}}]}}, "by": "Tapped"}})
+)]
+#[case::every_creature_tapped(
+    "Event$ Moved | ValidCard$ Creature | Destination$ Battlefield | ReplaceWith$ ETBTapped | ReplacementResult$ Updated | ActiveZones$ Battlefield",
+    TAP,
+    json!({"Replacement": {"when": {"Enters": {"what": [{"Type": "Creature"}]}}, "by": "Tapped"}})
+)]
+#[case::exile_instead_of_dying(
+    "Event$ Moved | ActiveZones$ Battlefield | Origin$ Battlefield | Destination$ Graveyard | ValidCard$ Creature.OppCtrl | ReplaceWith$ Exile",
+    EXILE,
+    json!({"Replacement": {"when": {"ZoneChange": {"what": [{"Type": "Creature"}, {"ControlledBy": "Opponents"}], "from": "Battlefield", "to": "Graveyard"}}, "by": {"MoveTo": "Exile"}}})
+)]
+#[case::exile_instead_from_anywhere(
+    "Event$ Moved | ActiveZones$ Battlefield | Destination$ Graveyard | ValidCard$ Card | ReplaceWith$ Exile",
+    EXILE,
+    json!({"Replacement": {"when": {"ZoneChange": {"what": [], "to": "Graveyard"}}, "by": {"MoveTo": "Exile"}}})
+)]
+fn a_moved_replacement_of_other_cards_acts_while_its_source_is_on_the_battlefield(
+    #[case] line: &str,
+    #[case] svar: &str,
+    #[case] want: Value,
+) {
+    let script = enchantment(line, svar);
+    let found = abilities(&script);
+    assert_eq!(found.len(), 1, "{:?}", gaps(&script));
+    assert_eq!(normal(found[0].clone()), normal(want));
+}
+
+#[rstest]
+#[case::in_hand(
+    "Event$ Moved | ValidCard$ Creature | Destination$ Battlefield | ReplaceWith$ ETBTapped | ReplacementResult$ Updated | ActiveZones$ Hand",
+    TAP,
+    "key:Replacement.Moved.ActiveZones"
+)]
+#[case::no_zone(
+    "Event$ Moved | ValidCard$ Creature | Destination$ Battlefield | ReplaceWith$ ETBTapped | ReplacementResult$ Updated",
+    TAP,
+    "key:Replacement.Moved.ActiveZones"
+)]
+#[case::last_known_information(
+    "Event$ Moved | ActiveZones$ Battlefield | Origin$ Battlefield | Destination$ Graveyard | ValidLKI$ Creature.OppCtrl | ReplaceWith$ Exile",
+    EXILE,
+    "key:Replacement.Moved.ValidLKI"
+)]
+#[case::exile_elsewhere(
+    "Event$ Moved | ActiveZones$ Battlefield | Origin$ Hand | Destination$ Graveyard | ValidCard$ Card | ReplaceWith$ Exile",
+    EXILE,
+    "key:Replacement.Moved.Origin"
+)]
+#[case::untapped_instead(
+    "Event$ Moved | ValidCard$ Land.YouCtrl | Destination$ Battlefield | ReplaceWith$ ETBTapped | ReplacementResult$ Updated | ActiveZones$ Battlefield",
+    "SVar:ETBTapped:DB$ Untap | ETB$ True | Defined$ ReplacedCard\n",
+    "replacement:Moved-not-an-entering-effect"
+)]
+fn a_moved_replacement_beyond_the_shape_stays_a_gap(
+    #[case] line: &str,
+    #[case] svar: &str,
+    #[case] gap: &str,
+) {
+    let script = enchantment(line, svar);
+    assert_eq!(abilities(&script), Vec::<Value>::new(), "{script}");
+    assert!(
+        gaps(&script).iter().any(|found| found == gap),
+        "{:?}",
+        gaps(&script)
+    );
+}
