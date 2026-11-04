@@ -178,6 +178,34 @@ fn gain_control_new_controller(#[case] line: &str, #[case] who: &str) {
     );
 }
 
+#[rstest]
+#[case::keyword("PutCounter | ValidTgts$ Creature | CounterType$ Flying", "flying")]
+#[case::spaced(
+    "PutCounter | ValidTgts$ Creature | CounterType$ First Strike",
+    "first strike"
+)]
+#[case::experience("PutCounter | Defined$ You | CounterType$ Experience", "experience")]
+fn keyword_and_player_counters(#[case] line: &str, #[case] name: &str) {
+    let found = abilities(&plain(line));
+    assert_eq!(
+        found[0]["Spell"]["effects"][0]["PutCounters"]["counter"],
+        json!({"Other": name})
+    );
+}
+
+#[rstest]
+#[case::unknown(
+    "PutCounter | ValidTgts$ Creature | CounterType$ Wibble",
+    "key:PutCounter.CounterType"
+)]
+#[case::any(
+    "RemoveCounter | ValidTgts$ Creature | CounterType$ Any",
+    "key:RemoveCounter.CounterType"
+)]
+fn unknown_counter_words(#[case] line: &str, #[case] gap: &str) {
+    assert_eq!(gaps(&plain(line)), [gap]);
+}
+
 #[test]
 fn a_group_cannot_take_control() {
     let line = "GainControl | ValidTgts$ Creature | NewController$ Player.Opponent";

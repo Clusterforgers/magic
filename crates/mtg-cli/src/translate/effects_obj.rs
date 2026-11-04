@@ -127,7 +127,7 @@ fn put_counter_all(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
         "PutCounterAll",
         &["ValidCards", "CounterType", "CounterNum"],
     )?;
-    let Some(kind) = p.get("CounterType").and_then(counter_kind) else {
+    let Some(kind) = p.get("CounterType").and_then(kind_word) else {
         return unmapped("key:PutCounterAll.CounterType");
     };
     let valid = p.get("ValidCards").unwrap_or_default();
@@ -389,7 +389,7 @@ fn put_counter(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
             "DividedAsYouChoose",
         ],
     )?;
-    let Some(kind) = p.get("CounterType").and_then(counter_kind) else {
+    let Some(kind) = p.get("CounterType").and_then(kind_word) else {
         return unmapped("key:PutCounter.CounterType");
     };
     let on = subject(ctx, p, "Self", None)?;
@@ -418,11 +418,35 @@ fn remove_counter(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     if p.get("CounterType") == Some("ALL") && matches!(p.get("CounterNum"), None | Some("All")) {
         return Ok(json!({"RemoveAllCounters": {"from": from}}));
     }
-    let Some(kind) = p.get("CounterType").and_then(counter_kind) else {
+    let Some(kind) = p.get("CounterType").and_then(kind_word) else {
         return unmapped("key:RemoveCounter.CounterType");
     };
     let count = amount(ctx, p.get("CounterNum").unwrap_or("1"))?;
     Ok(json!({"RemoveCounters": {"from": from, "counter": kind, "count": count}}))
+}
+
+/// The counter a `CounterType$` word names: the upper-case Forge names, a keyword counter written as the keyword
+/// (`Flying`, `First Strike`), or the experience counter of a player.
+fn kind_word(word: &str) -> Option<Value> {
+    const KEYWORDS: [&str; 12] = [
+        "Flying",
+        "Indestructible",
+        "Deathtouch",
+        "Trample",
+        "Menace",
+        "Lifelink",
+        "Vigilance",
+        "First Strike",
+        "Double Strike",
+        "Shadow",
+        "Reach",
+        "Hexproof",
+    ];
+    let word = word.trim();
+    counter_kind(word).or_else(|| {
+        (KEYWORDS.contains(&word) || word == "Haste" || word == "Experience")
+            .then(|| json!({"Other": word.to_lowercase()}))
+    })
 }
 
 fn sacrifice(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
