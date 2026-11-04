@@ -50,7 +50,8 @@ fn by_mode(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
             restriction(ctx, p, &["CantAttack", "CantBlock"])?
         }
         "CantBlockBy" => cant_block_by(ctx, p)?,
-        "MustAttack" => must_attack(ctx, p)?,
+        "MustAttack" => must_act(ctx, p, "MustAttack")?,
+        "MustBlock" => must_act(ctx, p, "MustBlock")?,
         "ReduceCost" => cost_modifier(ctx, p, "Reduce")?,
         "RaiseCost" => cost_modifier(ctx, p, "Increase")?,
         "AlternativeCost" => super::statics_alt::alternative_cost(ctx, p)?,
@@ -313,14 +314,15 @@ fn cant_block_by(ctx: &Ctx, p: &Params) -> Tr<Value> {
     }
 }
 
-fn must_attack(ctx: &Ctx, p: &Params) -> Tr<Value> {
-    keys(p, "MustAttack", &["ValidCreature"])?;
+/// `MustAttack` and `MustBlock`: the creatures `ValidCreature$` names attack or block each combat if able.
+fn must_act(ctx: &Ctx, p: &Params, rule: &str) -> Tr<Value> {
+    keys(p, rule, &["ValidCreature"])?;
     let who = match p.get("ValidCreature").unwrap_or_default() {
         "Card.Self" | "Creature.Self" => json!("This"),
         "Creature.EnchantedBy" => json!("Attached"),
         valid => json!({"Each": selector_any(ctx, valid)?}),
     };
-    Ok(json!({"Rule": {"rule": {"MustAttack": who}}}))
+    Ok(json!({"Rule": {"rule": {rule: who}}}))
 }
 
 /// `ReduceCost` and `RaiseCost` of spells.

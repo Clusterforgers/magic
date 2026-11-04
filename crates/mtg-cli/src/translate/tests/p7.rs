@@ -341,3 +341,28 @@ fn a_delayed_trigger_reads_the_trigger_pattern(
 ) {
     assert_eq!(delayed(line), expected);
 }
+
+/// The first ability of a permanent whose only ability is the static line `line`.
+fn static_ability(line: &str) -> Value {
+    abilities(&format!("Name:T\nTypes:Enchantment\nS:{line}\n"))
+        .first()
+        .cloned()
+        .unwrap_or(Value::Null)
+}
+
+#[rstest]
+#[case::must_block_self(
+    "Mode$ MustBlock | ValidCreature$ Card.Self",
+    json!({"Rule": {"rule": {"MustBlock": "This"}}})
+)]
+#[case::must_block_all(
+    "Mode$ MustBlock | ValidCreature$ Creature",
+    json!({"Rule": {"rule": {"MustBlock": {"Each": [{"Type": "Creature"}]}}}})
+)]
+#[case::must_attack_still(
+    "Mode$ MustAttack | ValidCreature$ Card.Self",
+    json!({"Rule": {"rule": {"MustAttack": "This"}}})
+)]
+fn a_must_rule_reads_who_it_binds(#[case] line: &str, #[case] expected: Value) {
+    assert_eq!(static_ability(line), expected);
+}
