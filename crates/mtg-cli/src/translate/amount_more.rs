@@ -16,13 +16,32 @@ pub fn count(ctx: &Ctx, base: &str) -> Option<Tr<Value>> {
         "Converge" if rest.is_empty() => Ok(json!("ColorsSpent")),
         "CastTotalManaSpent" if rest.is_empty() => Ok(json!({"ManaSpent": {"of": null}})),
         "YourStartingLife" if rest.is_empty() => Ok(json!({"StartingLife": "You"})),
-        "Valid" | "ValidGraveyard" | "ValidHand" | "ValidExile" | "ValidLibrary" => {
-            valid_count(ctx, word, rest)
+        "CardsInYourHand" if rest.is_empty() => {
+            Ok(json!({"Count": [{"In": "Hand"}, {"OwnedBy": "You"}]}))
         }
+        "TotalCommanderCastFromCommandZone" if rest.is_empty() => {
+            Ok(json!({"CommanderCasts": "You"}))
+        }
+        _ if word.starts_with("YourCounters") && rest.is_empty() => your_counters(word),
+        "Valid" | "ValidGraveyard" | "ValidHand" | "ValidExile" | "ValidLibrary"
+        | "ValidBattlefield" => valid_count(ctx, word, rest),
         _ if word.starts_with("ThisTurnEntered_") => entered_this_turn(ctx, word),
         _ if word.starts_with("Devotion.") || word.starts_with("DevotionDual.") => devotion(word),
         _ => return None,
     })
+}
+
+/// `YourCountersEnergy`: the counters of that kind on you; a kind that is not one plain word stays a gap.
+fn your_counters(word: &str) -> Tr<Value> {
+    let kind = word.strip_prefix("YourCounters").unwrap_or_default();
+    let known = ["Energy", "Experience", "Poison", "Rad", "Charge"];
+    if !known.contains(&kind) {
+        return unmapped(format!("amount:Count${word}"));
+    }
+    let Some(counter) = super::amount::counter_kind(&kind.to_uppercase()) else {
+        return unmapped(format!("amount:Count${word}"));
+    };
+    Ok(json!({"Counters": {"on": "You", "counter": counter}}))
 }
 
 /// `Count$Valid Creature.YouCtrl$GreatestCardPower`: the objects the valid-string selects, counted or reduced to one
@@ -33,12 +52,14 @@ fn valid_count(ctx: &Ctx, word: &str, rest: &str) -> Tr<Value> {
         "ValidHand" => Some("Hand"),
         "ValidExile" => Some("Exile"),
         "ValidLibrary" => Some("Library"),
+        "ValidBattlefield" => Some("Battlefield"),
         _ => None,
     };
     let (spec, reduce) = rest.split_once('$').unwrap_or((rest, ""));
     let of = selector_in(ctx, spec, zone)?;
     let (kind, stat) = match reduce {
         "" => return Ok(json!({"Count": of})),
+        "CardTypes" => return Ok(json!({"CardTypes": of})),
         "Colors" => ("Distinct", "Colors"),
         "CardPower" => ("Total", "Power"),
         "CardToughness" => ("Total", "Toughness"),
