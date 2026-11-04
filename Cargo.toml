@@ -84,3 +84,6 @@ opt-level = 3
 opt-level = 3
 [profile.dev.package.mtg-protocol]
 opt-level = 3
+
+[profile.dev.package.mtg-cards]
+opt-level = 3
