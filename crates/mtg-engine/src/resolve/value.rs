@@ -468,7 +468,16 @@ impl<'a> Scope<'a> {
 
     /// The events of the kind this turn that count for the players `who` names and whose object the filter selects.
     fn logged(&self, event: TallyEvent, who: &Ref, filter: &Selector) -> Result<i64, ResolveError> {
-        let players = self.players(who)?;
+        self.logged_for(event, &self.players(who)?, filter)
+    }
+
+    /// [`Self::logged`] for the players themselves.
+    pub(crate) fn logged_for(
+        &self,
+        event: TallyEvent,
+        players: &[PlayerId],
+        filter: &Selector,
+    ) -> Result<i64, ResolveError> {
         let mut scope = self.clone();
         scope
             .snapshots
