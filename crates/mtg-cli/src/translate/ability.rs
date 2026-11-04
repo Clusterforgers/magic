@@ -148,8 +148,9 @@ fn activated(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     }
     match (p.get("ActivationZone"), words.from) {
         (None | Some("Battlefield"), None) => {}
-        (None, Some(zone)) => ability["from"] = json!(zone),
-        (Some(zone @ ("Graveyard" | "Hand" | "Exile")), None) => ability["from"] = json!(zone),
+        (None, Some(zone)) | (Some(zone @ ("Graveyard" | "Hand" | "Exile")), None) => {
+            ability["from"] = json!(zone);
+        }
         (Some(zone), Some(from)) if zone == from => ability["from"] = json!(from),
         (Some(other), _) => return unmapped(format!("key:AB.ActivationZone={other}")),
     }

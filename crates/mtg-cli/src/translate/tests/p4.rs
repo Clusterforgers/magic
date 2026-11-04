@@ -57,7 +57,7 @@ fn a_target_zone_becomes_a_property_of_the_target(#[case] line: &str, #[case] se
 )]
 #[case::mixed_with_open("SP$ Pump | ValidTgts$ Creature | TgtZone$ Battlefield,Exile | NumAtt$ +1")]
 fn a_target_zone_the_selector_cannot_state_stays_a_gap(#[case] line: &str) {
-    assert!(!gaps(&spell(line)).is_empty());
+    assert!(gaps(&spell(line)).first().is_some());
 }
 
 /// A spell that draws, then gains 2 life under the extra keys.
@@ -150,7 +150,7 @@ fn boast_and_forecast_limit_the_ability(
 #[case::forecast_elsewhere("Forecast$ True | ActivationZone$ Graveyard")]
 fn an_activation_word_the_table_does_not_know_stays_a_gap(#[case] keys: &str) {
     let text = format!("Name:T\nTypes:Creature Elf\nA:AB$ Draw | Cost$ 1 | NumCards$ 1 | {keys}\n");
-    assert!(!gaps(&text).is_empty());
+    assert!(gaps(&text).first().is_some());
 }
 
 #[rstest]
@@ -195,7 +195,7 @@ fn a_gating_word_of_a_trigger_is_its_if(#[case] keys: &str, #[case] expected: Va
 #[case::revolt("Revolt$ True")]
 #[case::not_true("PlayerTurn$ False")]
 fn a_gating_word_the_table_does_not_know_stays_a_gap(#[case] keys: &str) {
-    assert!(!gaps(&trigger(keys)).is_empty());
+    assert!(gaps(&trigger(keys)).first().is_some());
 }
 
 #[rstest]
@@ -206,5 +206,5 @@ fn a_gating_word_the_table_does_not_know_stays_a_gap(#[case] keys: &str) {
 #[case::unknown_word("Condition$ MaxSpeed")]
 #[case::not_present_beside_present("ConditionNotPresent$ Card | ConditionPresent$ Land")]
 fn a_condition_value_the_table_does_not_know_stays_a_gap(#[case] keys: &str) {
-    assert!(!gaps(&chain(keys)).is_empty());
+    assert!(gaps(&chain(keys)).first().is_some());
 }
