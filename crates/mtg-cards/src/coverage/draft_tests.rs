@@ -56,6 +56,7 @@ fn draft_of(shown: &PrintedCard, read: ReadState, hash: Option<&str>) -> DraftRu
     card.faces[0].oracle_fingerprint = oracle_fingerprint(&shown.faces[0].oracle_text);
     DraftRules {
         forge: false,
+        proof: None,
         oracle_id: id(7),
         read_hash: hash.map_or_else(|| read_hash(shown, &card), str::to_owned),
         rules: serde_json::to_value(&card).unwrap_or_default(),

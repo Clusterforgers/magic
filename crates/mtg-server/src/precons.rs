@@ -198,7 +198,7 @@ impl<'a> Judge<'a> {
                         let printed = printed_card(card);
                         let assembled = self.library.assemble(&printed, self.caps);
                         if let Some((card, hash)) =
-                            pin_of(self.library, &id, assembled.support.support)
+                            pin_of(self.library, &id, assembled.definition.read)
                         {
                             self.reads.insert(card, hash);
                         }

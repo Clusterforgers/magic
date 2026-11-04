@@ -107,6 +107,7 @@ fn row(printed: &PrintedCard, card: &Card, read: ReadState) -> DraftRules {
         rules: serde_json::to_value(card).unwrap_or_default(),
         read,
         forge: false,
+        proof: None,
     }
 }
 

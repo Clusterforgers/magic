@@ -80,15 +80,16 @@ pub struct Assembled {
 /// has no rules text (a vanilla creature, a basic land) and `Manual` otherwise. The mana abilities the
 /// basic land types give are part of the printed side (CR 305.6), so they are always there.
 pub fn assemble(printed: &PrintedCard, rules: Option<&Card>, caps: &Caps) -> Assembled {
-    assemble_record(printed, rules, support(rules, printed, caps), caps)
+    assemble_record(printed, rules, support(rules, printed, caps), caps, false)
 }
 
-/// [`assemble`] for a card whose support record is decided: a `Read` draft is attached like a `Verified` file.
+/// [`assemble`] for a card whose support record is decided: a `Read` draft is attached like a `Verified` file. `from_draft` marks a card a draft decides, so a failed automatic line fails soft whatever its state.
 pub(crate) fn assemble_record(
     printed: &PrintedCard,
     rules: Option<&Card>,
     record: SupportRecord,
     caps: &Caps,
+    from_draft: bool,
 ) -> Assembled {
     let attach = matches!(
         record.support,
@@ -112,7 +113,7 @@ pub(crate) fn assemble_record(
             }
         }
         definition.manual = manual_clauses(&record, attach, index, printed);
-        definition.read = matches!(record.support, Support::Read | Support::Forge);
+        definition.read = from_draft || matches!(record.support, Support::Read | Support::Forge);
         definition.partial = attach && !definition.manual.is_empty();
         definition
     };
