@@ -1,0 +1,73 @@
+//! Goal: a library search for another player and an optional move run the way the card reads when the translated card is played.
+
+#![allow(clippy::unwrap_used, clippy::expect_used)]
+
+use mtg_core::ids::PlayerId;
+use mtg_engine::decision::{Answer, DecisionKind, PriorityAction};
+use mtg_engine::zones::Zone;
+use mtg_testkit::cards::{bear, forest, plains};
+use mtg_testkit::{Driver, Scenario, ready};
+use rstest::rstest;
+
+use crate::r3p3_runs::translated;
+
+const PATH: &str = "Name:Path to Exile\nManaCost:W\nTypes:Instant\nA:SP$ ChangeZone | Origin$ Battlefield | Destination$ Exile | ValidTgts$ Creature | SubAbility$ DBChange | SpellDescription$ Exile target creature. Its controller may search their library for a basic land card, put that card onto the battlefield tapped, then shuffle.\nSVar:DBChange:DB$ ChangeZone | Optional$ True | Origin$ Library | Destination$ Battlefield | Tapped$ True | ChangeType$ Land.Basic | ChangeTypeDesc$ basic land | DefinedPlayer$ TargetedController | ShuffleNonMandatory$ True | StackDescription$ None\n";
+
+/// Plays Path to Exile on the opponent's bear, answering every question `yes`; the opponent's battlefield lands and
+/// tapped state afterwards, and whether the bear is in exile.
+fn path(yes: bool) -> (usize, usize, bool) {
+    let card = translated(PATH, "Path to Exile", "Instant", "{W}");
+    let scenario = Scenario::new(2)
+        .hand(0, [card])
+        .battlefield(0, [ready(plains())])
+        .battlefield(1, [ready(bear())])
+        .library(1, [forest(), forest()])
+        .library(0, [forest()]);
+    let mut driver = Driver::from_scenario(scenario).unwrap();
+    let target = driver.target_named("Grizzly Bears").unwrap();
+    driver.cast_at("Path to Exile", &[target]).unwrap();
+    for _ in 0..100 {
+        let decision = driver.decision().unwrap().clone();
+        let answer = match &decision.kind {
+            DecisionKind::Priority(_) if driver.state().stack().is_empty() => break,
+            DecisionKind::Priority(_) => Answer::Priority(PriorityAction::Pass),
+            DecisionKind::YesNo(_) => Answer::YesNo(mtg_engine::choose::YesNoChoice(yes)),
+            DecisionKind::ChooseCards(o) => Answer::ChooseCards(mtg_engine::choose::CardsChoice(
+                o.from.iter().copied().take(o.max as usize).collect(),
+            )),
+            _ => Driver::passive_answer(&decision),
+        };
+        driver.answer(answer).unwrap();
+    }
+    let state = driver.state();
+    let them = PlayerId::from_index(1);
+    let lands: Vec<_> = state
+        .zone(Zone::Battlefield)
+        .iter()
+        .map(|id| state.object(*id).unwrap())
+        .filter(|object| object.card().name == "Forest")
+        .collect();
+    let mine = lands
+        .iter()
+        .filter(|object| object.controller() == PlayerId::from_index(0))
+        .count();
+    let theirs = lands
+        .iter()
+        .filter(|object| object.controller() == them)
+        .count();
+    let exiled = state
+        .zone(Zone::Exile)
+        .iter()
+        .any(|id| state.object(*id).unwrap().card().name == "Grizzly Bears");
+    (mine, theirs, exiled)
+}
+
+#[rstest]
+#[case::the_controller_takes_the_land(true, (0, 1, true))]
+#[case::the_controller_declines(false, (0, 0, true))]
+fn path_to_exile_gives_the_creatures_controller_a_land(
+    #[case] yes: bool,
+    #[case] expected: (usize, usize, bool),
+) {
+    assert_eq!(path(yes), expected);
+}

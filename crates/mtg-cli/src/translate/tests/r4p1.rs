@@ -1,0 +1,72 @@
+//! Goal: zone-change lines of round 4 (optional moves, searches and choices for another player, moves from every zone) translate to what the card does, and a shape the nodes cannot carry stays a named gap.
+use rstest::rstest;
+
+use super::{abilities, gaps};
+
+fn card(types: &str, lines: &str) -> String {
+    format!("Name:T\nTypes:{types}\n{lines}\n")
+}
+
+#[rstest]
+#[case::may_put_on_top(
+    "A:SP$ ChangeZone | ValidTgts$ Card.YouOwn | TgtZone$ Graveyard | Origin$ Graveyard | Destination$ Library | LibraryPosition$ 0 | Optional$ True | SpellDescription$ You may put target card on top of your library.",
+    r#""May""#
+)]
+#[case::optional_you(
+    "A:SP$ ChangeZone | ValidTgts$ Creature.YouCtrl | TgtZone$ Graveyard | Origin$ Graveyard | Destination$ Hand | Optional$ You | SpellDescription$ You may return up to one target creature card to your hand.",
+    r#""May""#
+)]
+#[case::not_optional(
+    "A:SP$ ChangeZone | ValidTgts$ Card.YouOwn | TgtZone$ Graveyard | Origin$ Graveyard | Destination$ Hand | SpellDescription$ Return target card to your hand.",
+    r#""Move""#
+)]
+fn an_optional_move_is_a_may(#[case] lines: &str, #[case] node: &str) {
+    let script = card("Sorcery", lines);
+    let found = abilities(&script);
+    assert_eq!(found.len(), 1, "{:?}", gaps(&script));
+    let text = found[0].to_string();
+    assert!(text.contains(node), "{text}");
+    assert_eq!(text.contains("May"), node == r#""May""#, "{text}");
+}
+
+#[rstest]
+#[case::targeted_controller(
+    "A:SP$ ChangeZone | Origin$ Battlefield | Destination$ Exile | ValidTgts$ Creature | SubAbility$ S\nSVar:S:DB$ ChangeZone | Optional$ True | Origin$ Library | Destination$ Battlefield | Tapped$ True | ChangeType$ Land.Basic | DefinedPlayer$ TargetedController | ShuffleNonMandatory$ True",
+    &[r#""who":{"ControllerOf":{"Target":0}}"#, r#""Shuffle":{"who":{"ControllerOf":{"Target":0}}}"#]
+)]
+#[case::each_player(
+    "A:SP$ ChangeZone | Origin$ Library | Destination$ Battlefield | ChangeType$ Land.Basic | DefinedPlayer$ Player | Shuffle$ True",
+    &[r#""over":"EachPlayer""#, r#""Shuffle":{"who":{"Bound":"player"}}"#]
+)]
+#[case::each_opponent_may(
+    "A:SP$ ChangeZone | Optional$ True | Origin$ Library | Destination$ Battlefield | ChangeType$ Land.Basic | DefinedPlayer$ Player.Opponent | ChangeNum$ 1 | ShuffleNonMandatory$ True",
+    &[r#""over":"Opponents""#, r#""May":{"effects""#, r#""who":{"Bound":"player"}}"#]
+)]
+fn another_player_searches_their_own_library(#[case] lines: &str, #[case] parts: &[&str]) {
+    let script = card("Sorcery", lines);
+    let found = abilities(&script);
+    assert_eq!(found.len(), 1, "{:?}", gaps(&script));
+    let text = found[0].to_string();
+    for part in parts {
+        assert!(text.contains(part), "{part} in {text}");
+    }
+}
+
+#[rstest]
+#[case::chooser_apart(
+    "A:SP$ ChangeZone | DefinedPlayer$ TriggeredTarget | Origin$ Library | Destination$ Hand | ChangeType$ Card | Chooser$ You",
+    "key:ChangeZone.Search.Chooser"
+)]
+#[case::unknown_player(
+    "A:SP$ ChangeZone | DefinedPlayer$ Banana | Origin$ Library | Destination$ Hand | ChangeType$ Card",
+    "key:ChangeZone.Search.DefinedPlayer"
+)]
+#[case::unknown_optional(
+    "A:SP$ ChangeZone | ValidTgts$ Card.YouOwn | TgtZone$ Graveyard | Origin$ Graveyard | Destination$ Hand | Optional$ Maybe",
+    "key:ChangeZone.Optional"
+)]
+fn shapes_that_do_not_map_stay_named_gaps(#[case] lines: &str, #[case] gap: &str) {
+    let script = card("Sorcery", lines);
+    assert!(abilities(&script).is_empty(), "{:?}", abilities(&script));
+    assert_eq!(gaps(&script), [gap]);
+}

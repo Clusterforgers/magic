@@ -375,6 +375,7 @@ fn change_zone(ctx: &mut Ctx, p: &Params, origin: &str, destination: &str) -> Tr
             "Transformed",
             "AttachedTo",
             "StaticEffect",
+            "Optional",
         ],
     )?;
     let what = if origin == "Stack" && !p.has("ValidTgts") {
@@ -393,7 +394,7 @@ fn change_zone(ctx: &mut Ctx, p: &Params, origin: &str, destination: &str) -> Tr
     }
     let mut effects = vec![effect];
     with_static_effect(ctx, p, destination, &mut effects)?;
-    Ok(effects)
+    optional(p, effects, &json!("You"))
 }
 
 /// A card of the player's own hand, graveyard or exile that the player picks and moves ("put a creature card from your hand
@@ -570,8 +571,11 @@ fn search(ctx: &mut Ctx, p: &Params, destination: &str) -> Tr<Vec<Value>> {
             "WithCountersType",
             "WithCountersAmount",
             "NoLooking",
+            "DefinedPlayer",
+            "Chooser",
         ],
     )?;
+    let seat = searcher(ctx, p)?;
     // Not looking at the library only matters when the cards are not named already.
     if p.has("NoLooking")
         && !p
@@ -584,32 +588,11 @@ fn search(ctx: &mut Ctx, p: &Params, destination: &str) -> Tr<Vec<Value>> {
     let filter_is_open = filter.is_empty();
     let bind = ctx.fresh("found");
     let mut find = json!({"filter": filter, "as": bind});
-    // `Origin$ Library,Graveyard` searches the same zones as `OriginAlternative$ Graveyard`; both together are two lists.
-    let listed: String = p
-        .get("Origin")
-        .filter(|word| word.contains(','))
-        .map(|word| {
-            word.split(',')
-                .filter(|zone| *zone != "Library")
-                .collect::<Vec<_>>()
-                .join(",")
-        })
-        .unwrap_or_default();
-    if !listed.is_empty() && p.has("OriginAlternative") {
-        return unmapped("key:ChangeZone.Search.OriginAlternative");
+    if seat.who != json!("You") {
+        find["who"] = seat.who.clone();
     }
-    let alternative = p
-        .get("OriginAlternative")
-        .or((!listed.is_empty()).then_some(listed.as_str()));
-    if let Some(list) = alternative {
-        let also: Vec<&str> = list.split(',').collect();
-        if !also
-            .iter()
-            .all(|zone| matches!(*zone, "Graveyard" | "Hand"))
-            || (1..also.len()).any(|at| also[..at].contains(&also[at]))
-        {
-            return unmapped("key:ChangeZone.Search.OriginAlternative");
-        }
+    let alternative = alternative_zones(p, seat.who != json!("You"))?;
+    if let Some(also) = &alternative {
         find["also"] = json!(also);
     }
     match p.get("ChangeNum") {
@@ -621,6 +604,9 @@ fn search(ctx: &mut Ctx, p: &Params, destination: &str) -> Tr<Vec<Value>> {
     }
     let found = json!({ "Bound": bind });
     if p.get("RememberChanged") == Some("True") {
+        if seat.each.is_some() {
+            return unmapped("key:ChangeZone.Search.RememberChanged-for-each-player");
+        }
         ctx.remembered = Some(found.clone());
     }
     let search = json!({ "Search": find });
@@ -640,19 +626,112 @@ fn search(ctx: &mut Ctx, p: &Params, destination: &str) -> Tr<Vec<Value>> {
     } else {
         json!({"Shuffle": {}})
     };
+    let shuffle = if seat.who == json!("You") {
+        shuffle
+    } else {
+        json!({"Shuffle": {"who": seat.who.clone()}})
+    };
     let effects = match (destination, p.get("Shuffle")) {
         // The shuffle comes first when the card goes back on top: "then shuffle and put that card on top".
         ("Library", _) => vec![search, shuffle, put],
         (_, Some("False")) => vec![search, put],
         _ => vec![search, put, shuffle],
     };
-    optional(p, effects)
+    let effects = optional(p, effects, &seat.who)?;
+    Ok(match seat.each {
+        Some((over, name)) => {
+            vec![json!({"RepeatEach": {"over": over, "as": name, "effects": effects}})]
+        }
+        None => effects,
+    })
 }
 
+/// The other zones of the searcher a search looks in besides the library, from `OriginAlternative$` or an `Origin$` list.
+fn alternative_zones(p: &Params, another: bool) -> Tr<Option<Vec<String>>> {
+    // `Origin$ Library,Graveyard` searches the same zones as `OriginAlternative$ Graveyard`; both together are two lists.
+    let listed: String = p
+        .get("Origin")
+        .filter(|word| word.contains(','))
+        .map(|word| {
+            word.split(',')
+                .filter(|zone| *zone != "Library")
+                .collect::<Vec<_>>()
+                .join(",")
+        })
+        .unwrap_or_default();
+    if another && (p.has("OriginAlternative") || !listed.is_empty()) {
+        return unmapped("key:ChangeZone.Search.OriginAlternative-for-another-player");
+    }
+    if !listed.is_empty() && p.has("OriginAlternative") {
+        return unmapped("key:ChangeZone.Search.OriginAlternative");
+    }
+    let Some(list) = p
+        .get("OriginAlternative")
+        .or((!listed.is_empty()).then_some(listed.as_str()))
+    else {
+        return Ok(None);
+    };
+    let also: Vec<&str> = list.split(',').collect();
+    if !also
+        .iter()
+        .all(|zone| matches!(*zone, "Graveyard" | "Hand"))
+        || (1..also.len()).any(|at| also[..at].contains(&also[at]))
+    {
+        return unmapped("key:ChangeZone.Search.OriginAlternative");
+    }
+    Ok(Some(also.into_iter().map(str::to_owned).collect()))
+}
+
+/// Who searches: the player a `DefinedPlayer$` word names, or each of several in turn.
+struct Seat {
+    who: Value,
+    each: Option<(Value, String)>,
+}
+
+/// The searcher of a library search. Another player searches their own library; searching a library for someone else
+/// (a `Chooser$` apart from the player) stays a gap.
+fn searcher(ctx: &mut Ctx, p: &Params) -> Tr<Seat> {
+    let word = p.get("DefinedPlayer");
+    match (word, p.get("Chooser")) {
+        (_, None) | (None, Some("You")) => {}
+        (Some(w), Some(c)) if w == c => {}
+        _ => return unmapped("key:ChangeZone.Search.Chooser"),
+    }
+    match word {
+        None | Some("You") => Ok(Seat {
+            who: json!("You"),
+            each: None,
+        }),
+        Some(w @ ("Player" | "Player.Opponent" | "Player.Other")) => {
+            let name = ctx.fresh("player");
+            let who = json!({ "Bound": name });
+            Ok(Seat {
+                who,
+                each: Some((defined(ctx, w)?, name)),
+            })
+        }
+        Some(w) if SEARCHERS.contains(&w) => Ok(Seat {
+            who: defined(ctx, w)?,
+            each: None,
+        }),
+        Some(_) => unmapped("key:ChangeZone.Search.DefinedPlayer"),
+    }
+}
+
+/// The player words that name one searcher.
+const SEARCHERS: [&str; 4] = [
+    "TargetedController",
+    "TriggeredCardController",
+    "TriggeredPlayer",
+    "TriggeredTarget",
+];
+
 /// The search as a "may" when Forge marks it optional and the printed text says so too.
-fn optional(p: &Params, effects: Vec<Value>) -> Tr<Vec<Value>> {
-    if p.get("Optional") != Some("True") {
-        return Ok(effects);
+fn optional(p: &Params, effects: Vec<Value>, who: &Value) -> Tr<Vec<Value>> {
+    match p.get("Optional") {
+        None | Some("False") => return Ok(effects),
+        Some("True" | "You") => {}
+        Some(_) => return unmapped("key:ChangeZone.Optional"),
     }
     // A "may" the printed description does not carry is Forge's narrowing, not the card's.
     if let Some(text) = p.get("SpellDescription")
@@ -663,7 +742,11 @@ fn optional(p: &Params, effects: Vec<Value>) -> Tr<Vec<Value>> {
     {
         return unmapped("key:ChangeZone.Optional");
     }
-    Ok(vec![json!({"May": {"effects": effects}})])
+    let mut may = json!({"May": {"effects": effects}});
+    if *who != json!("You") {
+        may["May"]["who"] = who.clone();
+    }
+    Ok(vec![may])
 }
 
 /// The keys of a `Dig` line that are read.
