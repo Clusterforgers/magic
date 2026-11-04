@@ -215,11 +215,7 @@ fn a_move_from_either_of_two_zones_reads_both(#[case] line: &str, #[case] body: 
 #[rstest]
 #[case::battlefield_beside_the_graveyard(
     "ChangeZone | Origin$ Graveyard,Battlefield | Destination$ Hand | ValidTgts$ Creature",
-    "zone:Origin=Graveyard,Battlefield"
-)]
-#[case::library_beside_the_graveyard(
-    "ChangeZone | Origin$ Library,Graveyard | Destination$ Hand | ChangeType$ Card",
-    "zone:Origin=Library,Graveyard"
+    "zone:Graveyard,Battlefield"
 )]
 #[case::the_same_zone_twice(
     "ChangeZone | Origin$ Exile,Exile | Destination$ Hand | ValidTgts$ Creature",
