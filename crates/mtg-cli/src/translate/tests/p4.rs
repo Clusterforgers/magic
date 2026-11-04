@@ -182,6 +182,7 @@ fn trigger(extra: &str) -> String {
 #[case::your_turn("PlayerTurn$ True", json!({"AtTrigger": "YourTurn"}))]
 #[case::opponents_turn("OpponentTurn$ True", json!({"AtTrigger": {"Not": "YourTurn"}}))]
 #[case::first_combat("FirstCombat$ True", json!("FirstCombat"))]
+#[case::revolt("Revolt$ True", crate::translate::condition::revolt())]
 #[case::delirium(
     "Delirium$ True",
     json!({"Compare": {"left": {"CardTypes": [{"In": "Graveyard"}, {"OwnedBy": "You"}]}, "op": "Ge", "right": 4}})
@@ -192,7 +193,6 @@ fn a_gating_word_of_a_trigger_is_its_if(#[case] keys: &str, #[case] expected: Va
 }
 
 #[rstest]
-#[case::revolt("Revolt$ True")]
 #[case::not_true("PlayerTurn$ False")]
 fn a_gating_word_the_table_does_not_know_stays_a_gap(#[case] keys: &str) {
     assert!(gaps(&trigger(keys)).into_iter().next().is_some());
