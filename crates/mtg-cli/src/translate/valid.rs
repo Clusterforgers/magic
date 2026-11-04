@@ -82,7 +82,13 @@ fn property(ctx: &Ctx, prop: &str) -> Tr<Vec<Value>> {
         }
         _ => {}
     }
+    if let Some(preds) = super::valid_atoms::argument(ctx, prop)? {
+        return Ok(preds);
+    }
     if let Some(preds) = super::valid_more::property(ctx, prop)? {
+        return Ok(preds);
+    }
+    if let Some(preds) = super::valid_atoms::suffixed(ctx, prop) {
         return Ok(preds);
     }
     if let Some(preds) = super::valid_atoms::atom(prop) {
