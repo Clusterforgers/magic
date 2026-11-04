@@ -968,19 +968,19 @@ fn dig_places(p: &Params) -> Tr<(Goes, Goes)> {
             Goes::To(json!({"Battlefield": {"tapped": p.get("Tapped") == Some("True")}}))
         }
         Some("Library") => {
+            // Without a position the cards go to the bottom, as in Forge.
             let place = match p.get("LibraryPosition") {
                 Some("0") => "Top",
-                Some("-1") => "Bottom",
+                None | Some("-1") => "Bottom",
                 _ => return unmapped("key:Dig.LibraryPosition"),
             };
             Goes::To(json!({"Library": {"place": place}}))
         }
         Some(other) => return unmapped(format!("key:Dig.DestinationZone={other}")),
     };
-    // The position names where the cards taken go, so it is read only for a library destination.
-    if p.has("LibraryPosition") && p.get("DestinationZone") != Some("Library") {
-        return unmapped("key:Dig.LibraryPosition");
-    }
+    // `LibraryPosition$` names where the cards taken go, so it says nothing for another destination: the rest go where
+    // `DestinationZone2$` and `LibraryPosition2$` say, the bottom without them.
+    let _ = p.get("LibraryPosition");
     // The order of the rest is asked for, random, or (`SkipReorder$`) left as it lies.
     let order = match (p.get("RestRandomOrder"), p.get("SkipReorder")) {
         (Some("True"), Some("True")) => {

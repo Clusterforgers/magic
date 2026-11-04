@@ -261,3 +261,27 @@ fn a_move_of_all_cards_maps_or_stays_a_gap(#[case] lines: &str, #[case] maps: bo
         gaps(&script)
     );
 }
+
+#[rstest]
+#[case::another_destination_says_nothing("DestinationZone$ Hand | LibraryPosition$ 0", true)]
+#[case::the_default_rest_position(
+    "DestinationZone$ Battlefield | DestinationZone2$ Library | LibraryPosition$ -1",
+    true
+)]
+#[case::a_library_destination_without_a_position("DestinationZone$ Library", true)]
+#[case::a_library_destination_below_the_top("DestinationZone$ Library | LibraryPosition$ 3", false)]
+fn a_library_position_of_a_dig(#[case] places: &str, #[case] maps: bool) {
+    let script = card(
+        "Sorcery",
+        &format!("A:SP$ Dig | DigNum$ 3 | ChangeNum$ 1 | {places}"),
+    );
+    assert_eq!(
+        abilities(&script).len(),
+        usize::from(maps),
+        "{:?}",
+        gaps(&script)
+    );
+    if !maps {
+        assert_eq!(gaps(&script), ["key:Dig.LibraryPosition"]);
+    }
+}

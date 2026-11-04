@@ -302,3 +302,54 @@ fn a_move_of_all_cards_takes_the_zones_and_players_the_card_names(
 ) {
     assert_eq!(zones_after(script, name), expected);
 }
+
+const DIG: &str = "Name:Dig Spell\nManaCost:U\nTypes:Sorcery\nA:SP$ Dig | DigNum$ 3 | ChangeNum$ 1 | DestinationZone$ Hand | LibraryPosition$ 0 | RestRandomOrder$ True | SpellDescription$ Look at the top three cards of your library. Put one of them into your hand and the rest on the bottom of your library in a random order.\n";
+const BURY: &str = "Name:Bury Spell\nManaCost:U\nTypes:Sorcery\nA:SP$ Dig | DigNum$ 2 | ChangeNum$ Any | DestinationZone$ Library | SpellDescription$ Look at the top two cards of your library. Put any number of them on the bottom of your library.\n";
+
+/// The names in the library of seat 0 from the top, and in the hand, after `script` resolves over a four-card library.
+fn dig_run(script: &str, name: &str) -> (Vec<String>, Vec<String>) {
+    use mtg_testkit::cards::{free_creature, island};
+    let library = ["A", "B", "C", "D"].map(|n| free_creature(n, 1, 1));
+    let scenario = Scenario::new(2)
+        .hand(0, [translated(script, name, "Sorcery", "{U}")])
+        .library(0, library)
+        .library(1, [forest()])
+        .battlefield(0, [ready(island())]);
+    let mut driver = Driver::from_scenario(scenario).unwrap();
+    driver.cast(name).unwrap();
+    crate::r3p3_runs::settle(&mut driver);
+    let state = driver.state();
+    let names = |zone: Zone| -> Vec<String> {
+        state
+            .zone(zone)
+            .iter()
+            .map(|id| state.object(*id).unwrap().card().name.clone())
+            .collect()
+    };
+    let me = PlayerId::from_index(0);
+    (names(Zone::Library(me)), names(Zone::Hand(me)))
+}
+
+#[test]
+fn a_library_position_for_another_destination_leaves_the_rest_at_the_bottom() {
+    let (library, hand) = dig_run(DIG, "Dig Spell");
+    assert_eq!(hand.len(), 1, "{hand:?}");
+    assert_eq!(library.len(), 3, "{library:?}");
+    // The zone lists the bottom first.
+    assert_eq!(
+        library[2], "D",
+        "the card not looked at stays on top: {library:?}"
+    );
+}
+
+#[test]
+fn a_dig_to_the_library_without_a_position_goes_to_the_bottom() {
+    let (library, hand) = dig_run(BURY, "Bury Spell");
+    assert!(hand.is_empty(), "{hand:?}");
+    assert_eq!(library.len(), 4);
+    assert_eq!(
+        library[2..],
+        ["D", "C"],
+        "the two not looked at stay on top: {library:?}"
+    );
+}
