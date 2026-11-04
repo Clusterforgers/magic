@@ -188,6 +188,45 @@ pub fn remembered(ctx: &Ctx) -> Tr<Value> {
         .map_or_else(|| unmapped("defined:Remembered-without-a-change"), Ok)
 }
 
+/// The characteristic a `Remembered$Card…` word reads.
+pub fn stat_word(what: &str) -> Option<&'static str> {
+    match what {
+        "CardPower" => Some("Power"),
+        "CardToughness" => Some("Toughness"),
+        "CardManaCost" => Some("ManaValue"),
+        _ => None,
+    }
+}
+
+/// `Remembered$CardPower` and kin: the characteristic added up over everything the slot holds (a choice of any number of
+/// creatures has a total), looking in every zone like [`remembered_count`]. One target stays that object's own value.
+pub fn remembered_total(ctx: &Ctx, what: &str) -> Tr<Value> {
+    let (Some(held), Some(stat)) = (slot_ref(ctx, Slot::Remembered), stat_word(what)) else {
+        return unmapped("amount:Remembered-without-a-change");
+    };
+    let several = held.get("Bound").is_some() || held.get("Remembered").is_some();
+    if !several
+        || held
+            .get("Bound")
+            .and_then(Value::as_str)
+            .is_some_and(|n| ctx.counted.contains(n))
+    {
+        return super::amount::targeted_amount(what, &held);
+    }
+    let zones: Vec<Value> = [
+        "Battlefield",
+        "Hand",
+        "Library",
+        "Graveyard",
+        "Exile",
+        "Stack",
+    ]
+    .iter()
+    .map(|zone| json!({"In": zone}))
+    .collect();
+    Ok(json!({"Total": {"of": [{"Is": held}, {"AnyOf": zones}], "stat": stat}}))
+}
+
 /// `Remembered$Amount`: how many objects the slot holds. They sit in the zone the step put them in (CR 400.7), which the
 /// selector does not know, so it looks in every zone.
 pub fn remembered_count(ctx: &Ctx) -> Tr<Value> {

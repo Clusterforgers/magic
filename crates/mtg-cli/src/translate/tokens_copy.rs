@@ -4,7 +4,7 @@
 use serde_json::{Value, json};
 
 use super::amount::amount;
-use super::ctx::{CARD_TYPES, Ctx, Tr, only, unmapped};
+use super::ctx::{CARD_TYPES, Ctx, Tr, flag, only, unmapped};
 use super::effects_obj::color_names;
 use super::keyword::keyword_list;
 use super::valid::{objects, subject};
@@ -48,7 +48,7 @@ pub fn copy_permanent(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         spec["CopyOf"]["except"] = json!(except);
     }
     let mut create = json!({
-        "token": spec, "count": count, "tapped": p.get("TokenTapped") == Some("True")});
+        "token": spec, "count": count, "tapped": flag(p, "TokenTapped")?});
     if temporary.is_none() && !p.has("AtEOT") {
         return Ok(vec![json!({ "CreateToken": create })]);
     }
@@ -123,7 +123,7 @@ fn exceptions(ctx: &Ctx, p: &Params) -> Tr<Vec<Value>> {
             });
         }
     }
-    if p.get("NonLegendary") == Some("True") {
+    if flag(p, "NonLegendary")? {
         mods.push(json!({"RemoveSupertype": "Legendary"}));
     }
     if let Some(keywords) = p.get("AddKeywords") {

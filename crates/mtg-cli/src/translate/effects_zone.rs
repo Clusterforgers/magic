@@ -893,6 +893,7 @@ pub fn dig(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         Some(valid) => {
             let mut selector = vec![json!({"In": "Library"}), json!({"Is": from_top})];
             selector.extend(selector_any(ctx, valid)?);
+            selector.extend(super::valid::permanent_card(valid)?);
             json!({"Each": selector})
         }
         None => from_top.clone(),

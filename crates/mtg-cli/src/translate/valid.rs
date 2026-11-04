@@ -216,13 +216,37 @@ fn negated(preds: Vec<Value>) -> Tr<Value> {
     }
 }
 
+/// The properties of an alternative, split at `+`. A property with an object argument (`AttachedTo Creature.attacking`)
+/// takes the `+` parts after it: they belong to the object it names (`AttachedTo Creature.attacking+OppCtrl` is an Aura
+/// on an attacking creature an opponent controls).
+fn split_properties(props: &str) -> Vec<String> {
+    let mut out: Vec<String> = Vec::new();
+    let mut greedy = false;
+    for part in props.split('+').filter(|part| !part.is_empty()) {
+        match out.last_mut() {
+            Some(last) if greedy => {
+                last.push('+');
+                last.push_str(part);
+            }
+            _ => {
+                greedy = ["AttachedTo ", "EnchantedBy ", "EquippedBy "]
+                    .iter()
+                    .any(|head| part.strip_prefix(head).is_some_and(|arg| arg.contains('.')));
+                out.push(part.to_owned());
+            }
+        }
+    }
+    out
+}
+
 /// One alternative (`Creature.YouCtrl+Other`) as a selector.
 pub fn selector(ctx: &Ctx, spec: &str) -> Tr<Vec<Value>> {
     let spec = spec.trim();
     let (head, props) = spec.split_once('.').unwrap_or((spec, ""));
     let mut preds = base(ctx, head)?;
     let kind = preds.clone();
-    for prop in props.split('+').filter(|prop| !prop.is_empty()) {
+    for prop in split_properties(props) {
+        let prop = prop.as_str();
         if let Some(found) = super::valid_atoms::extreme(ctx, prop, &kind)? {
             preds.extend(found);
             continue;
@@ -372,30 +396,39 @@ fn owned_outside(preds: &mut [Value]) {
     }
 }
 
-/// A selector over the cards of a zone: the alternatives with `In(zone)` added when the zone is not the battlefield.
-pub fn selector_in(ctx: &Ctx, spec: &str, zone: Option<&str>) -> Tr<Vec<Value>> {
-    let spec = &commas(spec);
-    let mut preds = selector_any(ctx, spec)?;
+/// For a selector of cards outside the battlefield: "permanent" is a card of a permanent type, not an instant or sorcery.
+/// `None` when no alternative says permanent; a mixture with other alternatives is a gap.
+pub fn permanent_card(spec: &str) -> Tr<Option<Value>> {
     let permanents = spec
         .split(',')
         .filter(|alternative| alternative.trim().split('.').next() == Some("Permanent"))
         .count();
-    let off_battlefield = !matches!(zone, None | Some("Battlefield"));
-    if off_battlefield && permanents > 0 {
-        // Outside the battlefield "permanent" is a card of a permanent type, not an instant or sorcery.
-        if permanents != spec.split(',').count() {
-            return unmapped("valid:Permanent-card-beside-other-alternatives");
-        }
-        let types = [
-            "Artifact",
-            "Battle",
-            "Creature",
-            "Enchantment",
-            "Land",
-            "Planeswalker",
-        ];
-        let any: Vec<Value> = types.iter().map(|name| json!({"Type": name})).collect();
-        preds.push(json!({"AnyOf": any}));
+    if permanents == 0 {
+        return Ok(None);
+    }
+    if permanents != spec.split(',').count() {
+        return unmapped("valid:Permanent-card-beside-other-alternatives");
+    }
+    let types = [
+        "Artifact",
+        "Battle",
+        "Creature",
+        "Enchantment",
+        "Land",
+        "Planeswalker",
+    ];
+    let any: Vec<Value> = types.iter().map(|name| json!({"Type": name})).collect();
+    Ok(Some(json!({"AnyOf": any})))
+}
+
+/// A selector over the cards of a zone: the alternatives with `In(zone)` added when the zone is not the battlefield.
+pub fn selector_in(ctx: &Ctx, spec: &str, zone: Option<&str>) -> Tr<Vec<Value>> {
+    let spec = &commas(spec);
+    let mut preds = selector_any(ctx, spec)?;
+    if !matches!(zone, None | Some("Battlefield"))
+        && let Some(any) = permanent_card(spec)?
+    {
+        preds.push(any);
     }
     match zone {
         None | Some("Battlefield") => {}
@@ -494,6 +527,10 @@ pub fn target_spec(ctx: &Ctx, params: &Params, zone: Option<&str>) -> Tr<Value> 
         if (&min, &max) != (&json!(1), &json!(1)) {
             spec["bounds"] = json!({"min": min, "max": max});
         }
+    }
+    if valid.starts_with(super::header::FOR_EACH) {
+        // `per_player_targets` took the "up to one each" bounds off the line; the engine reads min 0 as up to one of each.
+        spec["bounds"] = json!({"min": 0, "max": 1});
     }
     if let Some(total) = params.get("DividedAsYouChoose") {
         spec["divide"] = amount(ctx, total)?;

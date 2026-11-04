@@ -28,6 +28,7 @@ mod propose;
 mod propose_http;
 mod r3f2_runs;
 mod r3p3_runs;
+mod r4f2_runs;
 mod r4p1_runs;
 mod r4p2_runs;
 mod r4p3_runs;

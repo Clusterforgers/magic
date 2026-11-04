@@ -4,7 +4,7 @@ use serde_json::{Value, json};
 
 use super::amount::amount;
 use super::card::translate_face;
-use super::ctx::{CARD_TYPES, Ctx, SUPERTYPES, Tr, only, unmapped};
+use super::ctx::{CARD_TYPES, Ctx, SUPERTYPES, Tr, flag, only, unmapped};
 use super::valid::{defined, selector_any};
 use crate::forge::script::{Face, Params};
 
@@ -84,10 +84,10 @@ fn token_create(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         "who": who,
         "token": token,
         "count": count,
-        "tapped": p.get("TokenTapped") == Some("True"),
-        "attacking": p.get("TokenAttacking") == Some("True"),
+        "tapped": flag(p, "TokenTapped")?,
+        "attacking": flag(p, "TokenAttacking")?,
     });
-    if p.get("RememberTokens") == Some("True") {
+    if flag(p, "RememberTokens")? {
         let name = ctx.fresh("token");
         ctx.remembered = Some(json!({ "Bound": name }));
         create["as"] = json!(name);

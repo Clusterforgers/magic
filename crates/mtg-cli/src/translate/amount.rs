@@ -246,6 +246,9 @@ fn event_amount(ctx: &Ctx, expression: &str) -> Tr<Option<Value>> {
         "Remembered" | "RememberedLKI" if what == "Amount" => {
             return super::memory::remembered_count(ctx).map(Some);
         }
+        "Remembered" if super::memory::stat_word(what).is_some() => {
+            return super::memory::remembered_total(ctx, what).map(Some);
+        }
         "Remembered" | "RememberedLKI" => match &ctx.remembered {
             Some(remembered) => remembered.clone(),
             None => return unmapped("amount:Remembered-without-a-change"),
@@ -256,7 +259,7 @@ fn event_amount(ctx: &Ctx, expression: &str) -> Tr<Option<Value>> {
 }
 
 /// A stat of the latest target.
-fn targeted_amount(what: &str, of: &Value) -> Tr<Value> {
+pub(super) fn targeted_amount(what: &str, of: &Value) -> Tr<Value> {
     // A stat of an object that left its zone is read as the object last was: `LKI` says so.
     let what = what.strip_suffix("LKI").unwrap_or(what);
     if let Some(kind) = what.strip_prefix("CardCounters.") {
