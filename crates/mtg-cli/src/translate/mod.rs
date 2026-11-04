@@ -25,6 +25,7 @@ pub mod effects_obj;
 pub mod effects_zone;
 pub mod keyword;
 pub mod keyword_alt;
+pub mod keyword_prevent;
 pub mod mayplay;
 pub mod needs;
 pub mod oracle;

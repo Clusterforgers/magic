@@ -234,6 +234,9 @@ pub fn keyword_abilities(ctx: &mut Ctx, body: &str) -> Vec<Tr<Value>> {
     if let Some(quirks) = combat_quirks(body.trim()) {
         return quirks.iter().map(|quirk| Ok(combat_rule(quirk))).collect();
     }
+    if let Some(rules) = super::keyword_prevent::prevent_keyword(body) {
+        return rules.into_iter().map(Ok).collect();
+    }
     match body.strip_prefix("Chapter:") {
         Some(rest) => chapters(ctx, rest),
         None => super::keyword_alt::alt_keyword(body)
