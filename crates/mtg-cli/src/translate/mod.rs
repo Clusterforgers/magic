@@ -40,6 +40,7 @@ pub mod mayplay;
 mod memory;
 pub mod needs;
 pub mod oracle;
+mod rebind;
 pub mod remember;
 pub mod replacements;
 mod replacements_counter;

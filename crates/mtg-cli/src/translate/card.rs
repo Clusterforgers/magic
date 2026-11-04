@@ -267,7 +267,14 @@ fn merged_trigger(ctx: &mut Ctx, group: &[&String]) -> Tr<Value> {
 /// Records the result of one line: the ability when it parses, else the gap.
 fn take(out: &mut FaceOut, result: Tr<Vec<Value>>) {
     out.lines += 1;
-    let parsed: Tr<Vec<Value>> = result.and_then(|list| list.into_iter().map(checked).collect());
+    let parsed: Tr<Vec<Value>> = result.and_then(|list| {
+        list.into_iter()
+            .map(|mut ability| {
+                super::rebind::rebind(&mut ability);
+                checked(ability)
+            })
+            .collect()
+    });
     match parsed {
         Ok(list) if list.is_empty() => out.lines -= 1,
         Ok(list) => out.abilities.extend(list),

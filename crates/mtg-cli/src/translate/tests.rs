@@ -696,6 +696,7 @@ fn the_end_step_without_your_is_every_players() {
         ]
     );
 }
+mod af1;
 mod en4_counter;
 mod en4_cumulative;
 mod en4_look;

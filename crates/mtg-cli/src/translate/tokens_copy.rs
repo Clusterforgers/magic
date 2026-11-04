@@ -152,7 +152,8 @@ pub fn at_eot(word: &str, bound: &Value) -> Tr<Value> {
     };
     let effect = match verb {
         "Sacrifice" => json!({"Sacrifice": {
-            "who": {"ControllerOf": bound}, "filter": [{"Is": bound}]}}),
+            "who": {"ControllerOf": bound}, "filter": [{"Is": bound}],
+            "count": {"Count": [{"Is": bound}]}}}),
         "Exile" => json!({"Exile": {"what": bound}}),
         "Destroy" => json!({"Destroy": {"what": bound}}),
         _ => json!({"Move": {"what": bound, "to": "Hand"}}),
