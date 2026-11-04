@@ -1,0 +1,24 @@
+{
+  "oracle_id": "42b28dfb-de4d-4005-b0d7-1db3917cf159",
+  "name": "Guardians of Oboro",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Guardians of Oboro",
+      "oracle_fingerprint": "650bb9a9f0b8eb4065af49dc469d3923",
+      "abilities": [
+        { "Keyword": "Defender" },
+        {
+          "Rule": {
+            "rule": {
+              "Combat": {
+                "who": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "Modified"] },
+                "quirk": "AttackDespiteDefender"
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "oracle_id": "24adb147-95b2-4854-86a5-17d43f904601",
+  "name": "Loxodon Lifechanter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Loxodon Lifechanter",
+      "oracle_fingerprint": "8c9115065530a09b261d90d92ad74378",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "SetLife": {
+                        "amount": {
+                          "Total": {
+                            "of": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                            "stat": "Toughness"
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{5}{W}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "ModifyPT": { "power": { "Life": "You" }, "toughness": { "Life": "You" } } }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,62 @@
+{
+  "oracle_id": "9778dd66-6770-4230-9ee1-9b9419e322e6",
+  "name": "Bloodthirsty Ogre",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bloodthirsty Ogre",
+      "oracle_fingerprint": "fa6d72524737bf864af954d199ab5ad8",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "PutCounters": { "on": "This", "counter": { "Other": "devotion" } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Subtype": "Demon" }, { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": {
+                          "Times": {
+                            "by": -1,
+                            "of": {
+                              "Counters": { "on": "This", "counter": { "Other": "devotion" } }
+                            }
+                          }
+                        },
+                        "toughness": {
+                          "Times": {
+                            "by": -1,
+                            "of": {
+                              "Counters": { "on": "This", "counter": { "Other": "devotion" } }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

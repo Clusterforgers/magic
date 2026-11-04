@@ -1,0 +1,31 @@
+{
+  "oracle_id": "35f63c60-b0a1-459d-bf51-a8549fb06930",
+  "name": "Sword of Kaldra",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sword of Kaldra",
+      "oracle_fingerprint": "efa9036e977a5165ffa28d158ac73b9d",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 5, "toughness": 5 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [{ "Is": "Attached" }],
+                "to": { "Each": [{ "Type": "Creature" }] }
+              }
+            },
+            "effects": [{ "Exile": { "what": "Triggering" } }]
+          }
+        },
+        { "Keyword": { "Equip": "{4}" } }
+      ]
+    }
+  ]
+}

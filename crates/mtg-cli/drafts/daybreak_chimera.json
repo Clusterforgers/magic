@@ -1,0 +1,22 @@
+{
+  "oracle_id": "a2ea435c-5a61-4c98-bb76-8ff4ef0a0da9",
+  "name": "Daybreak Chimera",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Daybreak Chimera",
+      "oracle_fingerprint": "d88bc32b5e35986e516f1323a1b30382",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{1}",
+            "per": { "Devotion": ["White"] }
+          }
+        },
+        { "Keyword": "Flying" }
+      ]
+    }
+  ]
+}

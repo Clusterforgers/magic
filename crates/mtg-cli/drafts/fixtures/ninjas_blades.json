@@ -1,0 +1,163 @@
+{
+  "object": "card",
+  "id": "a6b5af82-3646-44f9-ac12-1d7fa698f037",
+  "oracle_id": "cdaffb13-c2a4-4bc5-a9d6-c1a0d1686a81",
+  "multiverse_ids": [],
+  "resource_id": "C713798A594D1786AB541CD8A5BE00068C9936D6FC18F5308860E38F4EAFBA6A",
+  "mtgo_id": 141147,
+  "arena_id": 95968,
+  "tcgplayer_id": 633990,
+  "cardmarket_id": 826983,
+  "name": "Ninja's Blades",
+  "lang": "en",
+  "released_at": "2025-06-13",
+  "uri": "https://api.scryfall.com/cards/a6b5af82-3646-44f9-ac12-1d7fa698f037",
+  "scryfall_uri": "https://scryfall.com/card/fin/108/ninjas-blades?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T01:36:56Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/a/6/a6b5af82-3646-44f9-ac12-1d7fa698f037.jpg?1783906616",
+    "normal": "https://cards.scryfall.io/normal/front/a/6/a6b5af82-3646-44f9-ac12-1d7fa698f037.jpg?1783906616",
+    "large": "https://cards.scryfall.io/large/front/a/6/a6b5af82-3646-44f9-ac12-1d7fa698f037.jpg?1783906616",
+    "png": "https://cards.scryfall.io/png/front/a/6/a6b5af82-3646-44f9-ac12-1d7fa698f037.png?1783906616",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/a/6/a6b5af82-3646-44f9-ac12-1d7fa698f037.jpg?1783906616",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/a/6/a6b5af82-3646-44f9-ac12-1d7fa698f037.jpg?1783906616",
+    "thumb": "https://cards.scryfall.io/thumb/front/a/6/a6b5af82-3646-44f9-ac12-1d7fa698f037.webp?1783906616",
+    "grid": "https://cards.scryfall.io/grid/front/a/6/a6b5af82-3646-44f9-ac12-1d7fa698f037.webp?1783906616",
+    "display": "https://cards.scryfall.io/display/front/a/6/a6b5af82-3646-44f9-ac12-1d7fa698f037.webp?1783906616",
+    "art": "https://cards.scryfall.io/art/front/a/6/a6b5af82-3646-44f9-ac12-1d7fa698f037.webp?1783906616",
+    "crop": "https://cards.scryfall.io/crop/front/a/6/a6b5af82-3646-44f9-ac12-1d7fa698f037.webp?1783906616",
+    "jpeg": "https://cards.scryfall.io/normal/front/a/6/a6b5af82-3646-44f9-ac12-1d7fa698f037.jpg?1783906616"
+  },
+  "mana_cost": "{2}{B}",
+  "cmc": 3.0,
+  "type_line": "Artifact — Equipment",
+  "oracle_text": "Job select\nEquipped creature gets +1/+1, is a Ninja in addition to its other types, and has \"Whenever this creature deals combat damage to a player, draw a card, then discard a card. That player loses life equal to the discarded card's mana value.\"\nMutsunokami — Equip {2}",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Job select",
+    "Equip",
+    "Mutsunokami"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "a6b5af82-3646-44f9-ac12-1d7fa698f037",
+      "component": "combo_piece",
+      "name": "Ninja's Blades",
+      "type_line": "Artifact — Equipment",
+      "uri": "https://api.scryfall.com/cards/a6b5af82-3646-44f9-ac12-1d7fa698f037"
+    },
+    {
+      "object": "related_card",
+      "id": "17fa0c1f-6737-487c-9101-0bec2e586795",
+      "component": "token",
+      "name": "Hero",
+      "type_line": "Token Creature — Hero",
+      "uri": "https://api.scryfall.com/cards/17fa0c1f-6737-487c-9101-0bec2e586795"
+    }
+  ],
+  "legalities": {
+    "standard": "legal",
+    "future": "legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "arena",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "d7beb4b7-e1ff-4d35-ab07-5700f17ea1ea",
+  "set": "fin",
+  "set_name": "Final Fantasy",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/d7beb4b7-e1ff-4d35-ab07-5700f17ea1ea",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Afin&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/fin?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/a6b5af82-3646-44f9-ac12-1d7fa698f037/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Acdaffb13-c2a4-4bc5-a9d6-c1a0d1686a81&unique=prints",
+  "collector_number": "108",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Immanuela Crovius",
+  "artist_ids": [
+    "a8e39932-276e-4f39-9bde-0864fc6fa70c"
+  ],
+  "illustration_id": "227594e2-bcac-4613-abd3-2027feb9ee7a",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "promo_types": [
+    "ffxiv",
+    "universesbeyond"
+  ],
+  "edhrec_rank": 7986,
+  "penny_rank": 10208,
+  "preview": {
+    "source": "MyHandsAreBlank",
+    "source_uri": "https://bsky.app/profile/myhandsareblank.bsky.social/post/3lpu3h5m3f22h",
+    "previewed_at": "2025-05-23"
+  },
+  "prices": {
+    "usd": "0.45",
+    "usd_foil": "0.63",
+    "usd_etched": null,
+    "eur": "0.19",
+    "eur_foil": "0.59",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DNinja%2527s%2BBlades",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DNinja%2527s%2BBlades",
+    "edhrec": "https://edhrec.com/route/?cc=Ninja%27s+Blades"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F633990%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=826983&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/141147?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

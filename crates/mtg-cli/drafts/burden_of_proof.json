@@ -1,0 +1,63 @@
+{
+  "oracle_id": "d1767573-713d-4f63-a09d-e94150655093",
+  "name": "Burden of Proof",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Burden of Proof",
+      "oracle_fingerprint": "b81920c9a8e3e9601f36521a4fc61ecd",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+            "condition": {
+              "Matches": {
+                "subject": "Attached",
+                "selector": [{ "Subtype": "Detective" }, { "ControlledBy": "You" }]
+              }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                { "Is": "Attached" },
+                {
+                  "AnyOf": [
+                    { "Not": { "Subtype": "Detective" } },
+                    { "Not": { "ControlledBy": "You" } }
+                  ]
+                }
+              ]
+            },
+            "mods": [{ "SetPT": { "power": 1, "toughness": 1 } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Detective" }] },
+            "mods": [
+              {
+                "CantBeBlockedBy": [
+                  { "Type": "Creature" },
+                  { "Is": "Attached" },
+                  {
+                    "AnyOf": [
+                      { "Not": { "Subtype": "Detective" } },
+                      { "Not": { "ControlledBy": "You" } }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

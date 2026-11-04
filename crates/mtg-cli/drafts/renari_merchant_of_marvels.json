@@ -1,0 +1,24 @@
+{
+  "oracle_id": "99204279-2a50-4dd6-84ec-f84ba31554cf",
+  "name": "Renari, Merchant of Marvels",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Renari, Merchant of Marvels",
+      "oracle_fingerprint": "e7f3ee094fcf20cc5d27fb3e8bd40876",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": {
+                "what": [{ "AnyOf": [{ "Subtype": "Dragon" }, { "Type": "Artifact" }] }],
+                "flash": true
+              }
+            }
+          }
+        },
+        { "Keyword": "ChooseABackground" }
+      ]
+    }
+  ]
+}

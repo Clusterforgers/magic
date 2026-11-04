@@ -1,0 +1,34 @@
+{
+  "oracle_id": "a628186d-b7d9-40a5-9ae2-fbc9d2a14c7c",
+  "name": "Worldgorger Dragon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Worldgorger Dragon",
+      "oracle_fingerprint": "4a7a8415d7e3d4569d2b0f0fc5f7fd66",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Exile": { "what": { "Each": [{ "ControlledBy": "You" }, "Other"] } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield" } },
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Each": [{ "ExiledWith": "This" }, { "In": "Exile" }] },
+                  "to": { "Battlefield": {} }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

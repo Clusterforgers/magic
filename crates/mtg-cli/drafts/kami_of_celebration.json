@@ -1,0 +1,40 @@
+{
+  "oracle_id": "ecfabd06-c059-4f3d-9e5f-587364033cac",
+  "name": "Kami of Celebration",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kami of Celebration",
+      "oracle_fingerprint": "f91c323db20b93f071cf982ad11be995",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Attacks": { "what": [{ "Type": "Creature" }, "Modified", { "ControlledBy": "You" }] }
+            },
+            "effects": [
+              { "ExileTop": { "as": "exiled" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": { "from": "Exile", "only": { "Bound": "exiled" }, "play": true }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "WasCast": { "from": "Exile" } }], "by": "You" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

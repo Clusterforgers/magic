@@ -1,0 +1,25 @@
+{
+  "oracle_id": "865812c2-1838-4015-bf0d-990af76f7000",
+  "name": "Squad Captain",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Squad Captain",
+      "oracle_fingerprint": "78226fbf204c799c71915a1f8cf2d998",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "WithCounters": {
+                "counter": "+1/+1",
+                "count": { "Count": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }] }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

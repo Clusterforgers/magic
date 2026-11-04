@@ -1,0 +1,31 @@
+{
+  "oracle_id": "98f9b97b-4c15-4d24-895a-a9bebb68e79b",
+  "name": "Iroh, Dragon of the West",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Iroh, Dragon of the West",
+      "oracle_fingerprint": "60af41935b6e8243cb23cdc654ccfaec",
+      "abilities": [
+        { "Keyword": "Haste" },
+        { "Keyword": "Mentor" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "HasAnyCounter"]
+                  },
+                  "mods": [{ "AddKeyword": { "Macro": { "name": "firebending", "amount": 2 } } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "oracle_id": "97c8f5e1-9fc1-4a62-a757-1c0454754cd3",
+  "name": "Impatience",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Impatience",
+      "oracle_fingerprint": "3480da431cc25a9e72ef187ca38d9c94",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "SpellCast",
+                    "who": "EachPlayer",
+                    "filter": [{ "ControlledBy": "ActivePlayer" }]
+                  }
+                },
+                "op": "Eq",
+                "right": 0
+              }
+            },
+            "effects": [{ "DealDamage": { "to": "Triggering", "amount": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

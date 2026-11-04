@@ -1,0 +1,31 @@
+{
+  "oracle_id": "8267561e-bc25-4aaa-8242-f6d7ec88143e",
+  "name": "Hooded Horror",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hooded Horror",
+      "oracle_fingerprint": "5ffb2b0417dac93f1fded0b2885c91a2",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": ["This", "Attacking"] },
+            "mods": ["CantBeBlocked"],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Type": "Creature" }, { "ControlledBy": "Defending" }] },
+                "op": "Eq",
+                "right": {
+                  "Largest": {
+                    "who": "EachPlayer",
+                    "of": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

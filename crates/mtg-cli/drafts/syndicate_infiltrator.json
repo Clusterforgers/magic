@@ -1,0 +1,32 @@
+{
+  "oracle_id": "0d6be8a4-b05b-40fb-a653-5aabf71809e0",
+  "name": "Syndicate Infiltrator",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Syndicate Infiltrator",
+      "oracle_fingerprint": "368da987b185a435aa97bed1557f63c2",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Distinct": {
+                    "of": [{ "OwnedBy": "You" }, { "In": "Graveyard" }],
+                    "stat": "ManaValue"
+                  }
+                },
+                "op": "Ge",
+                "right": 5
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

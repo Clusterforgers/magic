@@ -1,0 +1,63 @@
+{
+  "oracle_id": "393a5d32-fc8e-422b-a957-59e545a54cb6",
+  "name": "The Destined Warrior",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Destined Warrior",
+      "oracle_fingerprint": "888f1213cf31d01ce420d855f99d9b32",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        { "Keyword": "Vigilance" },
+        { "Keyword": "Menace" },
+        {
+          "CostModifier": {
+            "applies_to": [
+              "Spell",
+              {
+                "AnyOf": [
+                  { "Subtype": "Cleric" },
+                  { "Subtype": "Rogue" },
+                  { "Subtype": "Warrior" },
+                  { "Subtype": "Wizard" }
+                ]
+              },
+              { "ControlledBy": "You" }
+            ],
+            "change": "Reduce",
+            "mana": "{1}"
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": {
+                          "When": {
+                            "condition": {
+                              "Compare": { "left": { "Party": "You" }, "op": "Eq", "right": 4 }
+                            },
+                            "then": 3,
+                            "otherwise": 1
+                          }
+                        },
+                        "toughness": 0
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

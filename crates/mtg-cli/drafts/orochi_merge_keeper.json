@@ -1,0 +1,35 @@
+{
+  "oracle_id": "53e39011-3d77-4883-9c8e-4707f6fc5c47",
+  "name": "Orochi Merge-Keeper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Orochi Merge-Keeper",
+      "oracle_fingerprint": "42a4b21b4934d7d9171343a3cb8c171c",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Green"] } } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Activated": {
+                    "cost": ["Tap"],
+                    "effects": [{ "AddMana": { "mana": { "Fixed": ["Green", "Green"] } } }]
+                  }
+                }
+              }
+            ],
+            "condition": { "Matches": { "subject": "This", "selector": ["Modified"] } }
+          }
+        }
+      ]
+    }
+  ]
+}

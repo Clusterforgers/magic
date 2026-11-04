@@ -23,10 +23,11 @@ pub fn triggered(ctx: &mut Ctx, body: &str) -> Tr<Value> {
     ctx.reset();
     let all = Params::parse(body);
     let intervening = condition(ctx, &all)?;
-    // The engine checks the condition again as the ability resolves (CR 603.4); Forge's line says it does not.
-    if all.get("NoResolvingCheck") == Some("True") && intervening.is_some() {
-        return unmapped("key:Trigger.NoResolvingCheck");
-    }
+    // The engine checks the condition again as the ability resolves (CR 603.4) unless the line says it does not.
+    let intervening = match (all.get("NoResolvingCheck"), intervening) {
+        (Some("True"), Some(condition)) => Some(json!({ "AtTrigger": condition })),
+        (_, other) => other,
+    };
     let p = strip(&all);
     let when = pattern(ctx, &p)?;
     let itself = is_about_itself(&when);
@@ -112,6 +113,9 @@ fn pattern(ctx: &Ctx, p: &Params) -> Tr<Value> {
     if let Some(found) = super::triggers_did::pattern(ctx, p, mode) {
         return found;
     }
+    if let Some(found) = super::triggers_batch::pattern(ctx, p, mode) {
+        return found;
+    }
     match mode {
         "ChangesZone" => changes_zone(ctx, p),
         "Phase" => phase(p),
@@ -175,11 +179,19 @@ pub fn step(word: &str) -> Tr<&'static str> {
     })
 }
 
+/// Whether the printed trigger says "the end step", not "your end step".
+fn prints_every_end_step(p: &Params) -> bool {
+    p.get("TriggerDescription")
+        .is_some_and(|text| text.to_lowercase().contains("beginning of the end step"))
+}
+
 fn phase(p: &Params) -> Tr<Value> {
     keys(p, "Phase", &["Phase", "ValidPlayer"])?;
     let step = step(p.get("Phase").unwrap_or_default())?;
     let whose = match p.get("ValidPlayer") {
         None | Some("Player") => "EachPlayer",
+        // Forge scripts "the end step" (every player's) with `ValidPlayer$ You`; the print has no "your".
+        Some("You") if prints_every_end_step(p) => "EachPlayer",
         Some("You") => "You",
         Some("Opponent" | "Player.Opponent") => "Opponents",
         Some(other) => return unmapped(format!("key:Trigger.Phase.ValidPlayer={other}")),

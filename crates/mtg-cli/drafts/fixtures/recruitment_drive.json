@@ -1,0 +1,156 @@
+{
+  "object": "card",
+  "id": "afbd2822-d161-41df-9f48-abecd5da19c4",
+  "oracle_id": "d37e37d7-ce66-42cb-862e-fc5c414cfeb6",
+  "multiverse_ids": [
+    562921
+  ],
+  "mtgo_id": 100074,
+  "tcgplayer_id": 273327,
+  "cardmarket_id": 660849,
+  "name": "Recruitment Drive",
+  "lang": "en",
+  "released_at": "2022-06-10",
+  "uri": "https://api.scryfall.com/cards/afbd2822-d161-41df-9f48-abecd5da19c4",
+  "scryfall_uri": "https://scryfall.com/card/clb/38/recruitment-drive?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T06:06:47Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/a/f/afbd2822-d161-41df-9f48-abecd5da19c4.jpg?1783922807",
+    "normal": "https://cards.scryfall.io/normal/front/a/f/afbd2822-d161-41df-9f48-abecd5da19c4.jpg?1783922807",
+    "large": "https://cards.scryfall.io/large/front/a/f/afbd2822-d161-41df-9f48-abecd5da19c4.jpg?1783922807",
+    "png": "https://cards.scryfall.io/png/front/a/f/afbd2822-d161-41df-9f48-abecd5da19c4.png?1783922807",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/a/f/afbd2822-d161-41df-9f48-abecd5da19c4.jpg?1783922807",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/a/f/afbd2822-d161-41df-9f48-abecd5da19c4.jpg?1783922807",
+    "thumb": "https://cards.scryfall.io/thumb/front/a/f/afbd2822-d161-41df-9f48-abecd5da19c4.webp?1783922807",
+    "grid": "https://cards.scryfall.io/grid/front/a/f/afbd2822-d161-41df-9f48-abecd5da19c4.webp?1783922807",
+    "display": "https://cards.scryfall.io/display/front/a/f/afbd2822-d161-41df-9f48-abecd5da19c4.webp?1783922807",
+    "art": "https://cards.scryfall.io/art/front/a/f/afbd2822-d161-41df-9f48-abecd5da19c4.webp?1783922807",
+    "crop": "https://cards.scryfall.io/crop/front/a/f/afbd2822-d161-41df-9f48-abecd5da19c4.webp?1783922807",
+    "jpeg": "https://cards.scryfall.io/normal/front/a/f/afbd2822-d161-41df-9f48-abecd5da19c4.jpg?1783922807"
+  },
+  "mana_cost": "{2}{W}",
+  "cmc": 3.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Roll a d20.\n1—9 | Create two 1/1 white Soldier creature tokens.\n10—19 | Create two 2/2 white Knight creature tokens.\n20 | Create three 2/2 white Knight creature tokens.",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "50633bba-9402-4d8c-a277-c370f25bd01f",
+      "component": "token",
+      "name": "Knight",
+      "type_line": "Token Creature — Knight",
+      "uri": "https://api.scryfall.com/cards/50633bba-9402-4d8c-a277-c370f25bd01f"
+    },
+    {
+      "object": "related_card",
+      "id": "afbd2822-d161-41df-9f48-abecd5da19c4",
+      "component": "combo_piece",
+      "name": "Recruitment Drive",
+      "type_line": "Sorcery",
+      "uri": "https://api.scryfall.com/cards/afbd2822-d161-41df-9f48-abecd5da19c4"
+    },
+    {
+      "object": "related_card",
+      "id": "b5000cf8-2104-4d85-95df-29efa92256f6",
+      "component": "token",
+      "name": "Soldier",
+      "type_line": "Token Creature — Soldier",
+      "uri": "https://api.scryfall.com/cards/b5000cf8-2104-4d85-95df-29efa92256f6"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "5e4c3fe8-fd57-4b20-ad56-c03790a16cea",
+  "set": "clb",
+  "set_name": "Commander Legends: Battle for Baldur's Gate",
+  "set_type": "draft_innovation",
+  "set_uri": "https://api.scryfall.com/sets/5e4c3fe8-fd57-4b20-ad56-c03790a16cea",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aclb&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/clb?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/afbd2822-d161-41df-9f48-abecd5da19c4/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ad37e37d7-ce66-42cb-862e-fc5c414cfeb6&unique=prints",
+  "collector_number": "38",
+  "digital": false,
+  "rarity": "common",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Diego Gisbert",
+  "artist_ids": [
+    "3f4e975d-092c-40e4-b850-2d582bf4b5cb"
+  ],
+  "illustration_id": "b3849091-9b90-4353-9b2c-566b20688f51",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 9769,
+  "prices": {
+    "usd": "0.22",
+    "usd_foil": "0.38",
+    "usd_etched": null,
+    "eur": "0.23",
+    "eur_foil": "0.17",
+    "tix": "4.09"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=562921&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DRecruitment%2BDrive",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DRecruitment%2BDrive",
+    "edhrec": "https://edhrec.com/route/?cc=Recruitment+Drive"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F273327%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=660849&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/100074?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

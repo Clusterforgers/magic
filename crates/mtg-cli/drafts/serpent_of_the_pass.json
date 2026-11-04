@@ -1,0 +1,43 @@
+{
+  "oracle_id": "98e36c6e-a868-4679-a5b5-6f02097f560b",
+  "name": "Serpent of the Pass",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Serpent of the Pass",
+      "oracle_fingerprint": "4dd334bde20aa3ea3d51e8811628e5b8",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{1}",
+            "per": {
+              "Count": [
+                { "Not": { "Type": "Creature" } },
+                { "Not": { "Type": "Land" } },
+                { "OwnedBy": "You" },
+                { "In": "Graveyard" }
+              ]
+            }
+          }
+        },
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{1}",
+            "per": {
+              "Count": [
+                { "Not": { "Type": "Creature" } },
+                { "Not": { "Type": "Land" } },
+                { "In": "Graveyard" },
+                { "OwnedBy": "You" }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

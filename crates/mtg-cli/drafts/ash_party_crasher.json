@@ -1,0 +1,33 @@
+{
+  "oracle_id": "1bc701e2-913a-45d5-bc3f-16f87e7e2653",
+  "name": "Ash, Party Crasher",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ash, Party Crasher",
+      "oracle_fingerprint": "23d7d0baebd326fc7d50436ece18e453",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": [{ "Type": "Creature" }, "This"] } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "Entered",
+                    "who": "EachPlayer",
+                    "filter": [{ "Not": { "Type": "Land" } }, { "ControlledBy": "You" }]
+                  }
+                },
+                "op": "Ge",
+                "right": 2
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

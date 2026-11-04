@@ -1,0 +1,50 @@
+{
+  "oracle_id": "1b6da140-0d91-4fae-a3ee-33e6808acf34",
+  "name": "Contagious Vorrac",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Contagious Vorrac",
+      "oracle_fingerprint": "50ec7dbf6af1ef18b9cddcba425e15e5",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "LookAtTop": { "count": 4, "as": "top" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [{ "In": "Library" }, { "Is": { "Bound": "top" } }, { "Type": "Land" }]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "kept2"
+                }
+              },
+              { "Move": { "what": { "Bound": "kept2" }, "to": "Hand" } },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "kept2" },
+                      "selector": [],
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [{ "Proliferate": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

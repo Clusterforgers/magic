@@ -1,0 +1,61 @@
+{
+  "oracle_id": "095ec64c-390a-4d21-a29c-590e0147938e",
+  "name": "Pyroclast Consul",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pyroclast Consul",
+      "oracle_fingerprint": "32df216473e2b08636170183c22aa022",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "LookAtTop": { "as": "top" } },
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "In": "Library" },
+                            { "Is": { "Bound": "top" } },
+                            { "SharesSubtype": "This" }
+                          ]
+                        },
+                        "count": { "min": 0, "max": 1 },
+                        "as": "revealed2"
+                      }
+                    },
+                    { "Reveal": { "what": { "Bound": "revealed2" } } },
+                    {
+                      "If": {
+                        "condition": {
+                          "CountOf": {
+                            "subject": { "Bound": "revealed2" },
+                            "selector": [],
+                            "op": "Eq",
+                            "right": 1
+                          }
+                        },
+                        "then": [
+                          {
+                            "DealDamage": {
+                              "to": { "Each": [{ "Type": "Creature" }] },
+                              "amount": 2
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

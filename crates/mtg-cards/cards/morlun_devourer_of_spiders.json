@@ -1,0 +1,27 @@
+{
+  "oracle_id": "273ad15c-366a-4691-978b-d6028b57005a",
+  "name": "Morlun, Devourer of Spiders",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Morlun, Devourer of Spiders",
+      "oracle_fingerprint": "a686bfea943380000c05ad03d437d167",
+      "abilities": [
+        { "Keyword": "Lifelink" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": "X" } }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": "X" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

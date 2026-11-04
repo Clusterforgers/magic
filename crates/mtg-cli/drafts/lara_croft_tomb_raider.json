@@ -1,0 +1,64 @@
+{
+  "oracle_id": "ddfd9dca-c886-4e13-b467-990469c31a61",
+  "name": "Lara Croft, Tomb Raider",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lara Croft, Tomb Raider",
+      "oracle_fingerprint": "4aa8112ab2031970b05c47846d3199bc",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        { "Keyword": "Reach" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Land" }] },
+                    { "Supertype": "Legendary" },
+                    { "In": "Graveyard" }
+                  ]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              {
+                "PutCounters": { "on": { "Bound": "exiled" }, "counter": { "Other": "discovery" } }
+              },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "what": [{ "HasCounter": { "Other": "discovery" } }],
+                      "from": "Exile",
+                      "play": true,
+                      "once": true
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "EndCombat", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "Attackers" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "CreateToken": { "token": { "Named": "treasure" } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

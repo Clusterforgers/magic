@@ -1,0 +1,41 @@
+{
+  "oracle_id": "644379e7-782e-48e1-9b47-c4dc62e62d85",
+  "name": "Fractal Anomaly",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fractal Anomaly",
+      "oracle_fingerprint": "fb8854735b4e4dd9bed299bdbbeaac17",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Fractal",
+                      "colors": ["Green", "Blue"],
+                      "types": ["Creature"],
+                      "subtypes": ["Fractal"],
+                      "power": 0,
+                      "toughness": 0
+                    }
+                  },
+                  "as": "token"
+                }
+              },
+              {
+                "PutCounters": {
+                  "on": { "Bound": "token" },
+                  "counter": "+1/+1",
+                  "count": { "Tallied": { "who": "You", "what": "Drawn" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

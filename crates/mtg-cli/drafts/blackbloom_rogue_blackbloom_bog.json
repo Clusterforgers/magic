@@ -1,0 +1,45 @@
+{
+  "oracle_id": "34320ebf-da97-44a4-bbeb-a9da06548289",
+  "name": "Blackbloom Rogue // Blackbloom Bog",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Blackbloom Rogue",
+      "oracle_fingerprint": "9f94d891ef5ace9152faf0263a8816f0",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": 3, "toughness": 0 } }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Largest": {
+                    "who": "Opponents",
+                    "of": [{ "In": "Graveyard" }, { "OwnedBy": "You" }]
+                  }
+                },
+                "op": "Ge",
+                "right": 8
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Blackbloom Bog",
+      "oracle_fingerprint": "21b302bea123539cae84880aa0174cb9",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Black"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

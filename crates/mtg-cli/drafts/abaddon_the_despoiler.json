@@ -1,0 +1,35 @@
+{
+  "oracle_id": "8dedb9a7-0afa-4dff-b124-2344c170f11a",
+  "name": "Abaddon the Despoiler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Abaddon the Despoiler",
+      "oracle_fingerprint": "cfd1cc4c43f854a555b2ee82ef01e0d9",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "ControlledBy": "You" },
+                { "OwnedBy": "You" },
+                { "WasCast": { "from": "Hand" } },
+                {
+                  "Compare": {
+                    "stat": "ManaValue",
+                    "op": "Le",
+                    "to": { "Tallied": { "who": "Opponents", "what": "LifeLost" } }
+                  }
+                },
+                { "In": "Stack" }
+              ]
+            },
+            "mods": [{ "AddKeyword": "Cascade" }],
+            "condition": "YourTurn"
+          }
+        }
+      ]
+    }
+  ]
+}

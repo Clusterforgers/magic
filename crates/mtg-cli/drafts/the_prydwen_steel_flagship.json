@@ -1,0 +1,67 @@
+{
+  "oracle_id": "f6ea8085-5ba9-43b6-994d-04be35c5793b",
+  "name": "The Prydwen, Steel Flagship",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Prydwen, Steel Flagship",
+      "oracle_fingerprint": "0ef5d14f98383ed7b4bd910dc82087e0",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "Type": "Artifact" },
+                  { "Not": "Token" },
+                  "Other",
+                  { "ControlledBy": "You" }
+                ],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Human Knight",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Human", "Knight"],
+                      "power": 2,
+                      "toughness": 2,
+                      "abilities": [
+                        {
+                          "Static": {
+                            "affected": "This",
+                            "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+                            "condition": {
+                              "Compare": {
+                                "left": {
+                                  "Tally": {
+                                    "event": "Entered",
+                                    "who": "EachPlayer",
+                                    "filter": [{ "Type": "Artifact" }, { "ControlledBy": "You" }]
+                                  }
+                                },
+                                "op": "Ge",
+                                "right": 1
+                              }
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Crew": 2 } }
+      ]
+    }
+  ]
+}

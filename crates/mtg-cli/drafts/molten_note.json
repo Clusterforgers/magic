@@ -1,0 +1,25 @@
+{
+  "oracle_id": "8c179b8f-3a83-49d6-9e7f-9e17c293ccbb",
+  "name": "Molten Note",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Molten Note",
+      "oracle_fingerprint": "a3e01575008f80aa900a845abb797e0a",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": { "ManaSpent": { "of": null } } } },
+              {
+                "Untap": { "what": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Flashback": "{6}{W}{R}" } }
+      ]
+    }
+  ]
+}

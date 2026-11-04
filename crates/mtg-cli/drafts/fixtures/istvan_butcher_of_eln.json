@@ -1,0 +1,131 @@
+{
+  "object": "card",
+  "id": "b30b1577-6b04-4ab5-92bc-ab54fdd5a621",
+  "oracle_id": "5e277de5-793a-4364-923a-a55b53c0fa85",
+  "multiverse_ids": [],
+  "tcgplayer_id": 709768,
+  "name": "Istvan, Butcher of Eln",
+  "lang": "en",
+  "released_at": "2026-10-19",
+  "uri": "https://api.scryfall.com/cards/b30b1577-6b04-4ab5-92bc-ab54fdd5a621",
+  "scryfall_uri": "https://scryfall.com/card/mbc/14/istvan-butcher-of-eln?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-08-03T12:08:06Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/b/3/b30b1577-6b04-4ab5-92bc-ab54fdd5a621.jpg?1785758886",
+    "normal": "https://cards.scryfall.io/normal/front/b/3/b30b1577-6b04-4ab5-92bc-ab54fdd5a621.jpg?1785758886",
+    "large": "https://cards.scryfall.io/large/front/b/3/b30b1577-6b04-4ab5-92bc-ab54fdd5a621.jpg?1785758886",
+    "png": "https://cards.scryfall.io/png/front/b/3/b30b1577-6b04-4ab5-92bc-ab54fdd5a621.png?1785758886",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/b/3/b30b1577-6b04-4ab5-92bc-ab54fdd5a621.jpg?1785758886",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/b/3/b30b1577-6b04-4ab5-92bc-ab54fdd5a621.jpg?1785758886",
+    "thumb": "https://cards.scryfall.io/thumb/front/b/3/b30b1577-6b04-4ab5-92bc-ab54fdd5a621.webp?1785758886",
+    "grid": "https://cards.scryfall.io/grid/front/b/3/b30b1577-6b04-4ab5-92bc-ab54fdd5a621.webp?1785758886",
+    "display": "https://cards.scryfall.io/display/front/b/3/b30b1577-6b04-4ab5-92bc-ab54fdd5a621.webp?1785758886",
+    "art": "https://cards.scryfall.io/art/front/b/3/b30b1577-6b04-4ab5-92bc-ab54fdd5a621.webp?1785758886",
+    "crop": "https://cards.scryfall.io/crop/front/b/3/b30b1577-6b04-4ab5-92bc-ab54fdd5a621.webp?1785758886",
+    "jpeg": "https://cards.scryfall.io/normal/front/b/3/b30b1577-6b04-4ab5-92bc-ab54fdd5a621.jpg?1785758886"
+  },
+  "mana_cost": "{1}{B}{B}{B}",
+  "cmc": 4.0,
+  "type_line": "Legendary Creature — Human",
+  "oracle_text": "Istvan attacks each combat if able.\nPrevent all damage that would be dealt to Istvan by creatures.\nWhenever a creature an opponent controls dies, put two +1/+1 counters on Istvan.",
+  "power": "1",
+  "toughness": "3",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "not_legal",
+    "pauper": "not_legal",
+    "vintage": "not_legal",
+    "penny": "not_legal",
+    "commander": "not_legal",
+    "oathbreaker": "not_legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "not_legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "a4135564-9f37-4aaf-963a-90666f843e0d",
+  "set": "mbc",
+  "set_name": "Mystery Booster Commander Edition",
+  "set_type": "draft_innovation",
+  "set_uri": "https://api.scryfall.com/sets/a4135564-9f37-4aaf-963a-90666f843e0d",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ambc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/mbc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/b30b1577-6b04-4ab5-92bc-ab54fdd5a621/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A5e277de5-793a-4364-923a-a55b53c0fa85&unique=prints",
+  "collector_number": "14",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "No beast in Terisiare is more frightening than the man who haunts its woods.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Marius Bota",
+  "artist_ids": [
+    "f3e8124b-0b6d-48ee-96de-6ff7e5a4da75"
+  ],
+  "illustration_id": "d98e04f5-7500-40c4-aa8e-0ffdbb206dd4",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 25943,
+  "prices": {
+    "usd": null,
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": null,
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DIstvan%252C%2BButcher%2Bof%2BEln",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DIstvan%252C%2BButcher%2Bof%2BEln",
+    "edhrec": "https://edhrec.com/route/?cc=Istvan%2C+Butcher+of+Eln"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F709768%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products/Search?referrer=scryfall&searchString=Istvan%2C+Butcher+of+Eln&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Istvan%2C+Butcher+of+Eln&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

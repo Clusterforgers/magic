@@ -1,0 +1,27 @@
+{
+  "oracle_id": "e005bc76-4985-4ec6-b9f6-cf6d0d9f5df4",
+  "name": "Stinkweed Imp",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stinkweed Imp",
+      "oracle_fingerprint": "272a724d143138f02a4b9e4f313485df",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": ["This"],
+                "to": { "Each": [{ "Type": "Creature" }] },
+                "combat": true
+              }
+            },
+            "effects": [{ "Destroy": { "what": "Triggering" } }]
+          }
+        },
+        { "Keyword": { "Dredge": 5 } }
+      ]
+    }
+  ]
+}

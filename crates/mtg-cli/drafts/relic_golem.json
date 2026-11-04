@@ -1,0 +1,38 @@
+{
+  "oracle_id": "14d9bb24-df7b-4f41-aeca-aad639b280db",
+  "name": "Relic Golem",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Relic Golem",
+      "oracle_fingerprint": "67c845f123c31d7e69f8404b60788139",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": ["CantAttack", "CantBlock"],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Largest": {
+                    "who": "Opponents",
+                    "of": [{ "In": "Graveyard" }, { "OwnedBy": "You" }]
+                  }
+                },
+                "op": "Lt",
+                "right": 8
+              }
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap"],
+            "targets": [{ "what": "Player" }],
+            "effects": [{ "Mill": { "who": { "Target": 0 }, "count": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

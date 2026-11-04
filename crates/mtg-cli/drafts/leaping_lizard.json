@@ -1,0 +1,30 @@
+{
+  "oracle_id": "23d42beb-5293-4f12-a732-3531a0fa0ca0",
+  "name": "Leaping Lizard",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Leaping Lizard",
+      "oracle_fingerprint": "07be3bed607a31c34c1c2c8b40ed5d5e",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{1}{G}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "ModifyPT": { "power": 0, "toughness": -1 } },
+                    { "AddKeyword": "Flying" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "oracle_id": "1e276998-9c54-4d68-a901-657853312d06",
+  "name": "Aeromoeba",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Aeromoeba",
+      "oracle_fingerprint": "94787ca5c3c2e112220257cf58aec121",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": [{ "Discard": {} }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": ["SwitchPT"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

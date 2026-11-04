@@ -1,0 +1,24 @@
+{
+  "oracle_id": "2681bfb5-127b-4046-85ac-72be584999cb",
+  "name": "Champion Lancer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Champion Lancer",
+      "oracle_fingerprint": "0abc188ffe5e510bdb2fe11182506cfd",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": {
+              "Damage": {
+                "to": "This",
+                "source": [{ "Type": "Creature" }, { "In": "Battlefield" }]
+              }
+            },
+            "by": "Prevent"
+          }
+        }
+      ]
+    }
+  ]
+}

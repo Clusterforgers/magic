@@ -1,0 +1,19 @@
+{
+  "oracle_id": "a1afb796-1b0b-4f41-9c8f-5320c9af5989",
+  "name": "Absorbing Man and Titania",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Absorbing Man and Titania",
+      "oracle_fingerprint": "509a39a5697e154ca0b96ab24e993511",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Damage": { "source": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+            "by": { "Multiply": 2 }
+          }
+        }
+      ]
+    }
+  ]
+}

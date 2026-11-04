@@ -1,0 +1,52 @@
+{
+  "oracle_id": "76f5445a-5193-4794-8593-b44f961334b6",
+  "name": "Ragost, Deft Gastronaut",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ragost, Deft Gastronaut",
+      "oracle_fingerprint": "4730c373e4be6ca4bede1cd971d1c4cf",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Artifact" }, { "ControlledBy": "You" }] },
+            "mods": [
+              { "AddSubtype": "Food" },
+              {
+                "GrantAbility": {
+                  "Activated": {
+                    "cost": [{ "Mana": "{2}" }, "Tap", "SacrificeSelf"],
+                    "effects": [{ "GainLife": { "amount": 3 } }]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{1}" },
+              "Tap",
+              { "Sacrifice": { "filter": [{ "Subtype": "Food" }] } }
+            ],
+            "effects": [{ "DealDamage": { "to": "Opponents", "amount": 3 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "LifeGainedTotal" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "Untap": { "what": "This" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "oracle_id": "5ab0ab9b-c143-4315-8983-f645fb21f8b3",
+  "name": "Dance of the Skywise",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dance of the Skywise",
+      "oracle_fingerprint": "10688141cfb1e4c4bea94e417b96b59b",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "SetPT": { "power": 4, "toughness": 4 } },
+                    { "SetColors": ["Blue"] },
+                    { "SetCreatureTypes": ["Dragon", "Illusion"] },
+                    { "AddKeyword": "Flying" },
+                    "LoseAbilities"
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

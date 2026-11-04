@@ -1,0 +1,66 @@
+{
+  "oracle_id": "e12fb44a-524e-4603-a89c-fad8204fdb2b",
+  "name": "Dawnhart Mentor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dawnhart Mentor",
+      "oracle_fingerprint": "d9191135b3fd93ad99aa6516c0e075d0",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Human",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Human"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{5}{G}",
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Distinct": {
+                    "of": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                    "stat": "Power"
+                  }
+                },
+                "op": "Ge",
+                "right": 3
+              }
+            },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "ModifyPT": { "power": 3, "toughness": 3 } },
+                    { "AddKeyword": "Trample" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

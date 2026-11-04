@@ -1,0 +1,44 @@
+{
+  "oracle_id": "87f746a3-ca6b-404e-99cc-290a0b23f9c4",
+  "name": "Myojin of Seeing Winds",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Myojin of Seeing Winds",
+      "oracle_fingerprint": "fb62797c037ff3b345b0ef11fdf3ff47",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Indestructible" }],
+            "condition": {
+              "Matches": {
+                "subject": "This",
+                "selector": [{ "HasCounter": { "Other": "divinity" } }]
+              }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Indestructible" }],
+            "condition": {
+              "Compare": {
+                "left": { "Counters": { "on": "This", "counter": { "Other": "divinity" } } },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "RemoveCounters": { "counter": { "Other": "divinity" } } }],
+            "effects": [{ "Draw": { "count": { "Count": [{ "ControlledBy": "You" }] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

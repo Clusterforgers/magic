@@ -1,0 +1,35 @@
+{
+  "oracle_id": "5fffd840-1e6e-4f5d-b847-802f9a25eb5c",
+  "name": "Vinebred Brawler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vinebred Brawler",
+      "oracle_fingerprint": "cceaa90a1b4c08b08ef9afda9bce3cc3",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": { "Combat": { "who": "This", "quirk": { "MustBeBlocked": "AtLeastOne" } } }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [
+              { "what": { "Object": [{ "Subtype": "Elf" }, "Other", { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

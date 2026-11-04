@@ -1,0 +1,76 @@
+{
+  "oracle_id": "dcf28f91-1bf4-48be-a3d0-e061f443fd9e",
+  "name": "Djinn of the Fountain",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Djinn of the Fountain",
+      "oracle_fingerprint": "3773ee7ff9eea0e6aa82225000b39aba",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                "by": "You"
+              }
+            },
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": "This",
+                            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        { "Exile": { "what": "This", "as": "exiled" } },
+                        {
+                          "If": {
+                            "condition": {
+                              "CountOf": {
+                                "subject": { "Bound": "exiled" },
+                                "selector": [],
+                                "op": "Ge",
+                                "right": 1
+                              }
+                            },
+                            "then": [
+                              {
+                                "DelayedTrigger": {
+                                  "when": { "StepBegins": { "step": "End" } },
+                                  "effects": [
+                                    {
+                                      "Move": {
+                                        "what": { "Bound": "exiled" },
+                                        "to": { "Battlefield": {} }
+                                      }
+                                    }
+                                  ]
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    },
+                    { "effects": [{ "Scry": {} }] }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

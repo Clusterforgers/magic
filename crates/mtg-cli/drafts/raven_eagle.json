@@ -1,0 +1,52 @@
+{
+  "oracle_id": "f75ac0a3-8795-48b4-91fd-4717900ef5b7",
+  "name": "Raven Eagle",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Raven Eagle",
+      "oracle_fingerprint": "e25ff7b307900824530c26b48bc5626f",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "Attacks": { "what": ["This"] } }
+              ]
+            },
+            "targets": [
+              { "what": { "Object": [{ "In": "Graveyard" }] }, "bounds": { "min": 0, "max": 1 } }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "exiled" },
+                      "selector": [{ "Type": "Creature" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "CreateToken": { "token": { "Named": "clue" } } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Nth": { "event": { "Drew": { "who": "You" } }, "nth": 2 } },
+            "effects": [
+              { "LoseLife": { "who": "Opponents", "amount": 1 } },
+              { "GainLife": { "amount": 1 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

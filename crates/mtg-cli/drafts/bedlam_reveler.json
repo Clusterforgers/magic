@@ -1,0 +1,37 @@
+{
+  "oracle_id": "01a7e0ce-c98f-4cf2-aba3-360aa0a9b9a7",
+  "name": "Bedlam Reveler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bedlam Reveler",
+      "oracle_fingerprint": "01a6e25272dfcd3701d561bcbd2dbcf5",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{1}",
+            "per": {
+              "Count": [
+                { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                { "OwnedBy": "You" },
+                { "In": "Graveyard" }
+              ]
+            }
+          }
+        },
+        { "Keyword": "Prowess" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "Discard": { "count": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] } } },
+              { "Draw": { "count": 3 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

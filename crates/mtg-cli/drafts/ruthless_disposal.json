@@ -1,0 +1,35 @@
+{
+  "oracle_id": "dcd12cb6-6920-4bff-af73-104ad32f7d59",
+  "name": "Ruthless Disposal",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ruthless Disposal",
+      "oracle_fingerprint": "b3e7d7d35cc015a8bf099052410b2fe5",
+      "abilities": [
+        {
+          "AdditionalCost": {
+            "cost": [{ "Discard": {} }, { "Sacrifice": { "filter": [{ "Type": "Creature" }] } }],
+            "required": true
+          }
+        },
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 2, "max": 2 } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": -13, "toughness": -13 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "oracle_id": "6a68fcaf-b1e8-451d-8e1c-b47db55c83cc",
+  "name": "Rancorous Archaic",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rancorous Archaic",
+      "oracle_fingerprint": "1d290bc0aa07df906bc0740fd8999677",
+      "abilities": [
+        { "Keyword": "Reach" },
+        { "Keyword": "Trample" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": "ColorsSpent" } }
+          }
+        }
+      ]
+    }
+  ]
+}

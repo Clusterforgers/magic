@@ -1,0 +1,55 @@
+{
+  "oracle_id": "a3bfbe1a-7831-45bd-9e42-790c28f6054c",
+  "name": "Teyo, Diamondblade Mage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Teyo, Diamondblade Mage",
+      "oracle_fingerprint": "da7d511a8e5a48ae46240a816724d89e",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": { "Object": [{ "ControlledBy": "You" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Deathtouch" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Target": 0 },
+                      "selector": [{ "Type": "Creature" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Target": 0 },
+                      "selector": [{ "Type": "Planeswalker" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "loyalty" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,55 @@
+{
+  "oracle_id": "eb35d7e5-eddd-4e02-99ac-1a42cd575041",
+  "name": "Tezzeret's Gatebreaker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tezzeret's Gatebreaker",
+      "oracle_fingerprint": "fa54d4375060452e086fd40d11cc78f0",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "LookAtTop": { "count": 5, "as": "top" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "AnyOf": [{ "Color": "Blue" }, { "Type": "Artifact" }] }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "kept2"
+                }
+              },
+              { "Move": { "what": { "Bound": "kept2" }, "to": "Hand" } },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{5}{U}" }, "Tap", "SacrificeSelf"],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": ["CantBeBlocked"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

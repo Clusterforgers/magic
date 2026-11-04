@@ -1,0 +1,39 @@
+{
+  "oracle_id": "44e1946d-01b5-45db-abdc-2f6d6480cf60",
+  "name": "Boon of Boseiju",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Boon of Boseiju",
+      "oracle_fingerprint": "3a77db49ad779deba5883331186df586",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": {
+                          "Greatest": { "of": [{ "ControlledBy": "You" }], "stat": "ManaValue" }
+                        },
+                        "toughness": {
+                          "Greatest": { "of": [{ "ControlledBy": "You" }], "stat": "ManaValue" }
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Untap": { "what": { "Target": 0 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

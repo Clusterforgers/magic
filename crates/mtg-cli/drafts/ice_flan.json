@@ -1,0 +1,33 @@
+{
+  "oracle_id": "3b7120a6-700b-4c61-bea4-a835f0cc0bcb",
+  "name": "Ice Flan",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ice Flan",
+      "oracle_fingerprint": "c0c63c1e48107d0969e27ee94b90191f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] },
+                    { "ControlledBy": "Opponents" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Tap": { "what": { "Target": 0 } } },
+              { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "stun" } } }
+            ]
+          }
+        },
+        { "Keyword": { "Typecycling": { "find": [{ "Subtype": "Island" }], "cost": "{2}" } } }
+      ]
+    }
+  ]
+}

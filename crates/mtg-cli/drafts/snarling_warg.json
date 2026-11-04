@@ -1,0 +1,32 @@
+{
+  "oracle_id": "978a7a96-ca79-4f73-a4c6-99d662605969",
+  "name": "Snarling Warg",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Snarling Warg",
+      "oracle_fingerprint": "683d04531d5162ae7a0fe50d32489caf",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "AnyOf": [{ "Subtype": "Orc" }, { "Subtype": "Goblin" }] },
+                    { "ControlledBy": "You" }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

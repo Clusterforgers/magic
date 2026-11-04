@@ -26,7 +26,10 @@ pub fn static_line(ctx: &mut Ctx, body: &str) -> Tr<Value> {
     if let Some(condition) = condition
         && let Some(inner) = ability.as_object_mut().and_then(|o| o.values_mut().next())
     {
-        inner["condition"] = condition;
+        inner["condition"] = match inner.get("condition") {
+            Some(earlier) => json!({"All": [earlier, condition]}),
+            None => condition,
+        };
     }
     Ok(ability)
 }
@@ -64,6 +67,9 @@ fn affected(ctx: &Ctx, p: &Params) -> Tr<Value> {
     }
     match (p.get("AffectedDefined"), p.get("Affected")) {
         (Some(word), None | Some("Creature" | "Card" | "Permanent")) => static_defined(ctx, word),
+        (Some(word), Some(_)) if matches!(word, "Self" | "Enchanted" | "Equipped") => {
+            static_defined(ctx, word)
+        }
         (Some(_), Some(_)) => unmapped("static-affected:Defined+Affected"),
         (None, Some(valid)) => zoned(ctx, valid, p.get("AffectedZone")),
         (None, None) if p.get("CharacteristicDefining") == Some("True") => Ok(json!("This")),
@@ -76,6 +82,24 @@ fn static_defined(ctx: &Ctx, word: &str) -> Tr<Value> {
         "Self" | "Enchanted" | "Equipped" => defined(ctx, word),
         other => unmapped(format!("static-affected:{other}")),
     }
+}
+
+/// The condition an `Affected$` refinement of a defined object states: "it has first strike while it attacks" affects the
+/// object only while it matches the valid-string. A plain type word adds none.
+fn refinement(ctx: &Ctx, p: &Params, subject: &Value) -> Tr<Option<Value>> {
+    let (Some(_), Some(valid)) = (p.get("AffectedDefined"), p.get("Affected")) else {
+        return Ok(None);
+    };
+    if matches!(valid, "Creature" | "Card" | "Permanent") {
+        return Ok(None);
+    }
+    if p.has("AffectedZone") {
+        return unmapped("key:Static.Continuous.AffectedZone-with-AffectedDefined");
+    }
+    let selector = selector_any(ctx, valid)?;
+    Ok(Some(
+        json!({"Matches": {"subject": subject, "selector": selector}}),
+    ))
 }
 
 /// The objects of a valid-string in the zone `AffectedZone$` names: a single zone other than the battlefield, whose cards
@@ -132,6 +156,7 @@ const CONTINUOUS: [&str; 19] = [
 fn continuous(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     keys(p, "Continuous", &CONTINUOUS)?;
     let affected = affected(ctx, p)?;
+    let refinement = refinement(ctx, p, &affected)?;
     let mut mods = Vec::new();
     if p.has("AddPower") || p.has("AddToughness") {
         let power = amount(ctx, p.get("AddPower").unwrap_or("0"))?;
@@ -179,6 +204,9 @@ fn continuous(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
         return unmapped("static:Continuous-nothing");
     }
     let mut ability = json!({"affected": affected, "mods": mods});
+    if let Some(refinement) = refinement {
+        ability["condition"] = refinement;
+    }
     match p.get("EffectZone") {
         None | Some("Battlefield") => {}
         Some(zone @ ("Graveyard" | "Hand" | "Exile" | "Library")) => ability["from"] = json!(zone),
@@ -271,7 +299,14 @@ fn cant_block_by(ctx: &Ctx, p: &Params) -> Tr<Value> {
             only.push(inner);
             Ok(json!({"Static": {"affected": "This", "mods": [{"CanBlockOnly": only}]}}))
         }
-        _ => unmapped("static:CantBlockBy-shape"),
+        (valid, None) => Ok(json!({"Static": {
+            "affected": affected_valid(ctx, valid)?,
+            "mods": ["CantBeBlocked"],
+        }})),
+        (valid, Some(blockers)) => Ok(json!({"Static": {
+            "affected": affected_valid(ctx, valid)?,
+            "mods": [{"CantBeBlockedBy": selector_any(ctx, blockers)?}],
+        }})),
     }
 }
 

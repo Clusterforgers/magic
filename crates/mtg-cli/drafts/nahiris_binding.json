@@ -1,0 +1,26 @@
+{
+  "oracle_id": "8f674382-78b5-462c-9a7f-c5f613c317d4",
+  "name": "Nahiri's Binding",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nahiri's Binding",
+      "oracle_fingerprint": "c0b1d844d2a71c6130c743ba0e6d2b42",
+      "abilities": [
+        {
+          "Keyword": {
+            "Enchant": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }]
+          }
+        },
+        { "Static": { "affected": "Attached", "mods": ["CantAttack", "CantBlock"] } },
+        {
+          "Rule": {
+            "rule": {
+              "Cant": { "who": { "Each": [{ "Is": "Attached" }] }, "action": { "Activate": [] } }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

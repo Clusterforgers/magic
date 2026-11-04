@@ -1,0 +1,48 @@
+{
+  "oracle_id": "a74494ef-aa35-4830-9b4c-47bff5270efc",
+  "name": "Memorial to Unity",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Memorial to Unity",
+      "oracle_fingerprint": "9f3ff7dcca51175809d37ad4a0352ced",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Green"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{G}" }, "Tap", "SacrificeSelf"],
+            "effects": [
+              { "LookAtTop": { "count": 5, "as": "top" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "Type": "Creature" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "kept2"
+                }
+              },
+              { "Move": { "what": { "Bound": "kept2" }, "to": "Hand" } },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

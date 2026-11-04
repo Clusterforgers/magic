@@ -1,0 +1,55 @@
+{
+  "oracle_id": "10185447-a13f-40d8-a8b6-39ce801f2fc0",
+  "name": "Stomped by the Foot",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stomped by the Foot",
+      "oracle_fingerprint": "fdfdd2e4332bf46ffa2a540027783fe6",
+      "abilities": [
+        {
+          "Keyword": {
+            "Kicker": [
+              {
+                "Sacrifice": {
+                  "filter": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": {
+                          "Times": {
+                            "by": -1,
+                            "of": { "When": { "condition": "Kicked", "then": 5, "otherwise": 2 } }
+                          }
+                        },
+                        "toughness": {
+                          "Times": {
+                            "by": -1,
+                            "of": { "When": { "condition": "Kicked", "then": 5, "otherwise": 2 } }
+                          }
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

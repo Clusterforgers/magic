@@ -1,0 +1,133 @@
+{
+  "object": "card",
+  "id": "f12eb6a6-14cc-4ad6-9684-ff33a39ba09f",
+  "oracle_id": "9100f213-f4c1-4b15-94f2-e280579894c0",
+  "multiverse_ids": [
+    19814
+  ],
+  "mtgo_id": 13493,
+  "mtgo_foil_id": 13494,
+  "tcgplayer_id": 6555,
+  "cardmarket_id": 11456,
+  "name": "High Seas",
+  "lang": "en",
+  "released_at": "1999-10-04",
+  "uri": "https://api.scryfall.com/cards/f12eb6a6-14cc-4ad6-9684-ff33a39ba09f",
+  "scryfall_uri": "https://scryfall.com/card/mmq/83/high-seas?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T12:32:45Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/f/1/f12eb6a6-14cc-4ad6-9684-ff33a39ba09f.jpg?1783945965",
+    "normal": "https://cards.scryfall.io/normal/front/f/1/f12eb6a6-14cc-4ad6-9684-ff33a39ba09f.jpg?1783945965",
+    "large": "https://cards.scryfall.io/large/front/f/1/f12eb6a6-14cc-4ad6-9684-ff33a39ba09f.jpg?1783945965",
+    "png": "https://cards.scryfall.io/png/front/f/1/f12eb6a6-14cc-4ad6-9684-ff33a39ba09f.png?1783945965",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/f/1/f12eb6a6-14cc-4ad6-9684-ff33a39ba09f.jpg?1783945965",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/f/1/f12eb6a6-14cc-4ad6-9684-ff33a39ba09f.jpg?1783945965",
+    "thumb": "https://cards.scryfall.io/thumb/front/f/1/f12eb6a6-14cc-4ad6-9684-ff33a39ba09f.webp?1783945965",
+    "grid": "https://cards.scryfall.io/grid/front/f/1/f12eb6a6-14cc-4ad6-9684-ff33a39ba09f.webp?1783945965",
+    "display": "https://cards.scryfall.io/display/front/f/1/f12eb6a6-14cc-4ad6-9684-ff33a39ba09f.webp?1783945965",
+    "art": "https://cards.scryfall.io/art/front/f/1/f12eb6a6-14cc-4ad6-9684-ff33a39ba09f.webp?1783945965",
+    "crop": "https://cards.scryfall.io/crop/front/f/1/f12eb6a6-14cc-4ad6-9684-ff33a39ba09f.webp?1783945965",
+    "jpeg": "https://cards.scryfall.io/normal/front/f/1/f12eb6a6-14cc-4ad6-9684-ff33a39ba09f.jpg?1783945965"
+  },
+  "mana_cost": "{2}{U}",
+  "cmc": 3.0,
+  "type_line": "Enchantment",
+  "oracle_text": "Red creature spells and green creature spells cost {1} more to cast.",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "385e11a4-492b-4d07-b4a6-a1409ef829b8",
+  "set": "mmq",
+  "set_name": "Mercadian Masques",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/385e11a4-492b-4d07-b4a6-a1409ef829b8",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ammq&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/mmq?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/f12eb6a6-14cc-4ad6-9684-ff33a39ba09f/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A9100f213-f4c1-4b15-94f2-e280579894c0&unique=prints",
+  "collector_number": "83",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "Bend as the wave breaks or it will break you as well.\n—Saprazzan saying",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Massimiliano Frezzato",
+  "artist_ids": [
+    "930f9f76-0ee1-4974-b6b5-754c9a5f8f4d"
+  ],
+  "illustration_id": "53b40c21-d44d-41fd-a9dd-40cf407ddc75",
+  "border_color": "black",
+  "frame": "1997",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 25050,
+  "penny_rank": 13244,
+  "prices": {
+    "usd": "0.21",
+    "usd_foil": "5.44",
+    "usd_etched": null,
+    "eur": "0.21",
+    "eur_foil": "4.18",
+    "tix": "0.06"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=19814&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DHigh%2BSeas",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DHigh%2BSeas",
+    "edhrec": "https://edhrec.com/route/?cc=High+Seas"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F6555%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=11456&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/13493?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

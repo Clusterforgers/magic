@@ -1,0 +1,53 @@
+{
+  "oracle_id": "5ea675aa-88d6-4387-a14d-e606fa9c3aec",
+  "name": "Seasoned Dungeoneer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Seasoned Dungeoneer",
+      "oracle_fingerprint": "926075e192ca756ec9bc6036f2e5d9d2",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "TakeInitiative": {} }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+            },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    "Attacking",
+                    {
+                      "AnyOf": [
+                        { "Subtype": "Cleric" },
+                        { "Subtype": "Rogue" },
+                        { "Subtype": "Warrior" },
+                        { "Subtype": "Wizard" }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": { "Protection": [{ "Type": "Creature" }] } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Explore": { "what": { "Target": 0 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

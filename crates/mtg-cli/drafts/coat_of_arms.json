@@ -9,7 +9,7 @@
       "abilities": [
         {
           "Static": {
-            "affected": "This",
+            "affected": { "Each": [{ "Type": "Creature" }] },
             "mods": [
               {
                 "ModifyPT": {

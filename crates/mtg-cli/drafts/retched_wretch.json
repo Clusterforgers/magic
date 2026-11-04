@@ -1,0 +1,34 @@
+{
+  "oracle_id": "0d3b6e27-2f8b-42e0-9490-7b134e84bb6b",
+  "name": "Retched Wretch",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Retched Wretch",
+      "oracle_fingerprint": "e38f6eb36e0adfdf9354263c8a83c4c3",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": ["This", { "HasCounter": "-1/-1" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              { "Move": { "what": "Triggering", "to": { "Battlefield": {} }, "as": "moved" } },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "moved" },
+                  "mods": ["LoseAbilities"],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

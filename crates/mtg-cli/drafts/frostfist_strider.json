@@ -1,0 +1,26 @@
+{
+  "oracle_id": "4e4a21a8-9332-4aeb-8519-949feb211294",
+  "name": "Frostfist Strider",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Frostfist Strider",
+      "oracle_fingerprint": "5ae7b279de748ad9d6b0d16ae378c01d",
+      "abilities": [
+        { "Keyword": { "Ward": "{2}" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              { "Tap": { "what": { "Target": 0 } } },
+              { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "stun" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

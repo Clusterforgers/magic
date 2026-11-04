@@ -1,0 +1,35 @@
+{
+  "oracle_id": "ef47c447-bd7f-43c6-b4db-4a848c39820c",
+  "name": "Visions of Glory",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Visions of Glory",
+      "oracle_fingerprint": "1a5ff071de22bbb3c3de13d1a85b3ca3",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Human",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Human"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": { "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Flashback": "{8}{W}{W}" } }
+      ]
+    }
+  ]
+}

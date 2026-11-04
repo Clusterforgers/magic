@@ -1,0 +1,51 @@
+{
+  "oracle_id": "8499b3ec-9a61-47a4-a880-e8230b41c81b",
+  "name": "Prized Amalgam",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Prized Amalgam",
+      "oracle_fingerprint": "f7ec309786852614e1beeb81e3412229",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                {
+                  "ZoneChange": {
+                    "what": [{ "Type": "Creature" }, { "OwnedBy": "You" }, "Other"],
+                    "from": "Graveyard",
+                    "to": "Battlefield"
+                  }
+                },
+                {
+                  "ZoneChange": {
+                    "what": [
+                      { "Type": "Creature" },
+                      { "OwnedBy": "You" },
+                      { "ControlledBy": "You" },
+                      "Other",
+                      { "WasCast": { "from": "Graveyard" } }
+                    ],
+                    "to": "Battlefield"
+                  }
+                }
+              ]
+            },
+            "from": "Graveyard",
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    { "Move": { "what": "This", "to": { "Battlefield": { "tapped": true } } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "oracle_id": "bfdb13b9-7050-43a3-ac5f-d427942b1616",
+  "name": "Synchronized Spellcraft",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Synchronized Spellcraft",
+      "oracle_fingerprint": "b9ba1611478616eeb47dd2c1354ec817",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 4 } },
+              {
+                "DealDamage": {
+                  "to": { "ControllerOf": { "Target": 0 } },
+                  "amount": { "Party": "You" }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "oracle_id": "53bfe54e-9b97-4113-97d9-3c5dbc85e7cf",
+  "name": "Akal Pakal, First Among Equals",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Akal Pakal, First Among Equals",
+      "oracle_fingerprint": "70d919421f1cf6862533d6f202f99501",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "Entered",
+                    "who": "EachPlayer",
+                    "filter": [{ "Type": "Artifact" }, { "ControlledBy": "You" }]
+                  }
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              { "LookAtTop": { "count": 2, "as": "top" } },
+              { "Choose": { "from": { "Bound": "top" }, "as": "kept2", "rest_as": "rest3" } },
+              { "Move": { "what": { "Bound": "kept2" }, "to": "Hand" } },
+              { "Move": { "what": { "Bound": "rest3" }, "to": "Graveyard" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

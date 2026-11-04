@@ -1,0 +1,54 @@
+{
+  "oracle_id": "a138ca33-6ea4-468e-9cfb-c908ee62c516",
+  "name": "Ink Dissolver",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ink Dissolver",
+      "oracle_fingerprint": "2d72353390bde062b7abce19ad6360ad",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "LookAtTop": { "as": "top" } },
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "In": "Library" },
+                            { "Is": { "Bound": "top" } },
+                            { "SharesSubtype": "This" }
+                          ]
+                        },
+                        "count": { "min": 0, "max": 1 },
+                        "as": "revealed2"
+                      }
+                    },
+                    { "Reveal": { "what": { "Bound": "revealed2" } } },
+                    {
+                      "If": {
+                        "condition": {
+                          "CountOf": {
+                            "subject": { "Bound": "revealed2" },
+                            "selector": [],
+                            "op": "Eq",
+                            "right": 1
+                          }
+                        },
+                        "then": [{ "Mill": { "who": "Opponents", "count": 3 } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

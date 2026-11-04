@@ -1,0 +1,58 @@
+{
+  "oracle_id": "506667b1-7922-4959-a5b3-0f8abe8c3615",
+  "name": "Deadbridge Chant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Deadbridge Chant",
+      "oracle_fingerprint": "95a01bb4b7792d0d8b475443495575b8",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Mill": { "count": 10 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "ChooseAtRandom": {
+                  "from": { "Each": [{ "OwnedBy": "You" }, { "In": "Graveyard" }] },
+                  "as": "card"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "card" },
+                      "selector": [{ "Type": "Creature" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Move": { "what": { "Bound": "card" }, "to": { "Battlefield": {} } } }]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "card" },
+                      "selector": [{ "Type": "Creature" }],
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [{ "Move": { "what": { "Bound": "card" }, "to": "Hand" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

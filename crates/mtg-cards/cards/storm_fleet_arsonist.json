@@ -1,0 +1,27 @@
+{
+  "oracle_id": "36081fbb-413f-4924-a536-82add34e38be",
+  "name": "Storm Fleet Arsonist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Storm Fleet Arsonist",
+      "oracle_fingerprint": "cdde87905f7754415326cf150c2a46a2",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "Attackers" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [{ "Sacrifice": { "who": { "Target": 0 }, "filter": [] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

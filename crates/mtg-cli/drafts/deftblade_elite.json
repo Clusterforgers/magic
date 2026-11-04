@@ -1,0 +1,35 @@
+{
+  "oracle_id": "9a3e3a8f-7c19-4b52-a1b4-08eb09f6127a",
+  "name": "Deftblade Elite",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Deftblade Elite",
+      "oracle_fingerprint": "b1273ba73147795349240c7fac7e2b15",
+      "abilities": [
+        { "Keyword": { "Macro": { "name": "provoke", "amount": 0 } } },
+        {
+          "Activated": {
+            "cost": "{1}{W}",
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "source": [{ "Is": "This" }], "combat": true } },
+                  "by": "Prevent",
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": "This", "combat": true } },
+                  "by": "Prevent",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

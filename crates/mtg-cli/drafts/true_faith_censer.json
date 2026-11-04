@@ -1,0 +1,29 @@
+{
+  "oracle_id": "330f2e60-810d-4fe0-9a35-b3f2b29e3e2a",
+  "name": "True-Faith Censer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "True-Faith Censer",
+      "oracle_fingerprint": "1e65750645ce8449e866b6cb78b12b0f",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }, { "AddKeyword": "Vigilance" }]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+            "condition": {
+              "Matches": { "subject": "Attached", "selector": [{ "Subtype": "Human" }] }
+            }
+          }
+        },
+        { "Keyword": { "Equip": "{2}" } }
+      ]
+    }
+  ]
+}

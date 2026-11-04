@@ -1,0 +1,28 @@
+{
+  "oracle_id": "688c232f-385b-4bd5-aed0-e55059111fb3",
+  "name": "Rusting Golem",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rusting Golem",
+      "oracle_fingerprint": "021417b93f0b062c1c706adc610ec8ae",
+      "abilities": [
+        { "Keyword": { "Fading": 5 } },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "SetPT": {
+                  "power": { "Counters": { "on": "This", "counter": { "Other": "fade" } } },
+                  "toughness": { "Counters": { "on": "This", "counter": { "Other": "fade" } } }
+                }
+              }
+            ],
+            "defining": true
+          }
+        }
+      ]
+    }
+  ]
+}

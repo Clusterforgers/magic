@@ -1,0 +1,62 @@
+{
+  "oracle_id": "5f808e3b-6b69-4b46-8a92-36d960527acc",
+  "name": "Nissa's Defeat",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nissa's Defeat",
+      "oracle_fingerprint": "c18722a32e6ae3e4f7ee7275f95f5099",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    {
+                      "AnyOf": [
+                        { "Subtype": "Forest" },
+                        {
+                          "Not": {
+                            "AnyOf": [
+                              { "Not": { "Type": "Enchantment" } },
+                              { "Not": { "Color": "Green" } }
+                            ]
+                          }
+                        },
+                        {
+                          "Not": {
+                            "AnyOf": [
+                              { "Not": { "Type": "Planeswalker" } },
+                              { "Not": { "Color": "Green" } }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Target": 0 },
+                      "selector": [{ "Type": "Planeswalker" }, { "Subtype": "Nissa" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

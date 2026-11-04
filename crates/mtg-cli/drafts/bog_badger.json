@@ -1,0 +1,28 @@
+{
+  "oracle_id": "6d8e464c-9df1-46b1-88e6-dcc7fe7b7caa",
+  "name": "Bog Badger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bog Badger",
+      "oracle_fingerprint": "fa0e1836acc5c816243c4648cb10c077",
+      "abilities": [
+        { "Keyword": { "Kicker": "{B}" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This", "Kicked"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [{ "AddKeyword": "Menace" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

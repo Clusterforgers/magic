@@ -1,0 +1,65 @@
+{
+  "oracle_id": "b10f6915-96b6-4e87-8171-4d3e96bfd48c",
+  "name": "Death's Oasis",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Death's Oasis",
+      "oracle_fingerprint": "57a08a9e7ac357bf420fc843331d027f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }, { "Not": "Token" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              { "Mill": { "count": 2 } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "OwnedBy": "You" },
+                      {
+                        "Compare": {
+                          "stat": "ManaValue",
+                          "op": "Lt",
+                          "to": { "Stat": { "of": "Triggering", "stat": "ManaValue" } }
+                        }
+                      },
+                      { "In": "Graveyard" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked"
+                }
+              },
+              { "Move": { "what": { "Bound": "picked" }, "to": "Hand" } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "SacrificeSelf"],
+            "effects": [
+              {
+                "GainLife": {
+                  "amount": {
+                    "Greatest": {
+                      "of": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                      "stat": "ManaValue"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

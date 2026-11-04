@@ -1,0 +1,47 @@
+{
+  "oracle_id": "3ebbe05c-7cc4-4845-87e5-ab93d7ac9623",
+  "name": "Aysen Crusader",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Aysen Crusader",
+      "oracle_fingerprint": "6b58786397a133d704a485eeb2474ed6",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "SetPT": {
+                  "power": {
+                    "Sum": [
+                      {
+                        "Count": [
+                          { "AnyOf": [{ "Subtype": "Soldier" }, { "Subtype": "Warrior" }] },
+                          { "ControlledBy": "You" }
+                        ]
+                      },
+                      2
+                    ]
+                  },
+                  "toughness": {
+                    "Sum": [
+                      {
+                        "Count": [
+                          { "AnyOf": [{ "Subtype": "Soldier" }, { "Subtype": "Warrior" }] },
+                          { "ControlledBy": "You" }
+                        ]
+                      },
+                      2
+                    ]
+                  }
+                }
+              }
+            ],
+            "defining": true
+          }
+        }
+      ]
+    }
+  ]
+}

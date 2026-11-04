@@ -1,0 +1,88 @@
+{
+  "oracle_id": "85d87087-48ee-4dc8-a1c0-9c9ccb885adc",
+  "name": "Eshki Dragonclaw",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Eshki Dragonclaw",
+      "oracle_fingerprint": "1deb3ad5a07e60e804d45fa37ab842ac",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        { "Keyword": "Trample" },
+        { "Keyword": { "Ward": "{1}" } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Sum": [
+                    {
+                      "When": {
+                        "condition": {
+                          "Compare": {
+                            "left": {
+                              "Tally": {
+                                "event": "SpellCast",
+                                "who": "EachPlayer",
+                                "filter": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                              }
+                            },
+                            "op": "Gt",
+                            "right": 1
+                          }
+                        },
+                        "then": 1,
+                        "otherwise": {
+                          "Tally": {
+                            "event": "SpellCast",
+                            "who": "EachPlayer",
+                            "filter": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "When": {
+                        "condition": {
+                          "Compare": {
+                            "left": {
+                              "Tally": {
+                                "event": "SpellCast",
+                                "who": "EachPlayer",
+                                "filter": [
+                                  { "Not": { "Type": "Creature" } },
+                                  { "ControlledBy": "You" }
+                                ]
+                              }
+                            },
+                            "op": "Gt",
+                            "right": 1
+                          }
+                        },
+                        "then": 1,
+                        "otherwise": {
+                          "Tally": {
+                            "event": "SpellCast",
+                            "who": "EachPlayer",
+                            "filter": [{ "Not": { "Type": "Creature" } }, { "ControlledBy": "You" }]
+                          }
+                        }
+                      }
+                    }
+                  ]
+                },
+                "op": "Ge",
+                "right": 2
+              }
+            },
+            "effects": [
+              { "Draw": {} },
+              { "PutCounters": { "on": "This", "counter": "+1/+1", "count": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

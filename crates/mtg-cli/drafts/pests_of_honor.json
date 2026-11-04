@@ -1,0 +1,32 @@
+{
+  "oracle_id": "c2a4066a-f911-4622-beb2-683e7e10822f",
+  "name": "Pests of Honor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pests of Honor",
+      "oracle_fingerprint": "a09eb980d1f4b1fb982882767743a0a8",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "Entered",
+                    "who": "EachPlayer",
+                    "filter": [{ "Not": { "Type": "Land" } }, { "ControlledBy": "You" }]
+                  }
+                },
+                "op": "Ge",
+                "right": 2
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

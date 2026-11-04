@@ -1,0 +1,80 @@
+{
+  "oracle_id": "8f5ffb0b-0585-4a37-8048-eda53990d1dd",
+  "name": "Old Rutstein",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Old Rutstein",
+      "oracle_fingerprint": "3cabda87e37b66dc50a2add7360b6644",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "StepBegins": { "step": "Upkeep", "whose": "You" } }
+              ]
+            },
+            "effects": [
+              { "Mill": { "as": "milled" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "milled" },
+                      "selector": [{ "Type": "Land" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "CreateToken": { "token": { "Named": "treasure" } } }]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "milled" },
+                      "selector": [{ "Type": "Creature" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Insect",
+                            "colors": ["Green"],
+                            "types": ["Creature"],
+                            "subtypes": ["Insect"],
+                            "power": 1,
+                            "toughness": 1
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "milled" },
+                      "selector": [{ "Not": { "Type": "Creature" } }, { "Not": { "Type": "Land" } }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "CreateToken": { "token": { "Named": "blood" } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

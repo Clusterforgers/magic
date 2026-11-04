@@ -1,0 +1,80 @@
+{
+  "oracle_id": "792da586-a687-428c-a10e-75431249df5b",
+  "name": "Rayblade Trooper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rayblade Trooper",
+      "oracle_fingerprint": "36aad6ec4b6e949af2b23b3dd5fa5d39",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "Not": "Token" },
+                  { "ControlledBy": "You" },
+                  { "HasCounter": "+1/+1" }
+                ],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Human Soldier",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Human", "Soldier"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "AltCast": { "way": "Warp", "cost": "{1}{W}" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": { "CastWith": "Warp" },
+            "effects": [
+              { "Choose": { "from": "This", "as": "warped" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    { "Exile": { "what": { "Bound": "warped" }, "as": "warped_card" } },
+                    {
+                      "Rule": {
+                        "rule": {
+                          "MayCast": { "from": "Exile", "only": { "Bound": "warped_card" } }
+                        },
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

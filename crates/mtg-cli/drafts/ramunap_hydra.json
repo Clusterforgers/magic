@@ -1,0 +1,44 @@
+{
+  "oracle_id": "a2dadaf5-eaa1-4c43-9e21-bb2334ceb918",
+  "name": "Ramunap Hydra",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ramunap Hydra",
+      "oracle_fingerprint": "41019c51cff6833719e45a5d7eeaf646",
+      "abilities": [
+        { "Keyword": "Reach" },
+        { "Keyword": "Vigilance" },
+        { "Keyword": "Trample" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Subtype": "Desert" }, { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [{ "Subtype": "Desert" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

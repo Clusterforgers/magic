@@ -1,0 +1,51 @@
+{
+  "oracle_id": "78301998-fd9b-4cd5-afad-dbcb43cac2a7",
+  "name": "Shatterskull Smashing // Shatterskull, the Hammer Pass",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shatterskull Smashing",
+      "oracle_fingerprint": "d3519a059830bef9fcd72e909c575458",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }]
+                },
+                "bounds": { "min": 0, "max": 2 },
+                "divide": {
+                  "When": {
+                    "condition": { "Compare": { "left": "X", "op": "Lt", "right": 6 } },
+                    "then": "X",
+                    "otherwise": { "Times": { "by": 2, "of": "X" } }
+                  }
+                }
+              }
+            ],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": "Divided" } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Shatterskull, the Hammer Pass",
+      "oracle_fingerprint": "75a4089357813fe059553fdac77b768e",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "PayLifeOrTapped": 3 }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Red"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

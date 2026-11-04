@@ -1,0 +1,43 @@
+{
+  "oracle_id": "bdecf59c-f8bd-4003-9058-685b70c08837",
+  "name": "Anurid Brushhopper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Anurid Brushhopper",
+      "oracle_fingerprint": "4b84a9f9d32469927de92d4a68706108",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Discard": { "count": 2 } }],
+            "effects": [
+              { "Exile": { "what": "This", "as": "exiled" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "exiled" },
+                      "selector": [],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "DelayedTrigger": {
+                        "when": { "StepBegins": { "step": "End" } },
+                        "effects": [
+                          { "Move": { "what": { "Bound": "exiled" }, "to": { "Battlefield": {} } } }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

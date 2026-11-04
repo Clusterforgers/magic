@@ -1,0 +1,38 @@
+{
+  "oracle_id": "1521f26b-9972-4e95-9e14-3ccbb078a1c8",
+  "name": "Serra's Boon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Serra's Boon",
+      "oracle_fingerprint": "7e91a459e72904e5241dfcb83dfd8260",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 2 } }],
+            "condition": {
+              "Matches": {
+                "subject": "Attached",
+                "selector": [{ "Type": "Creature" }, { "Color": "White" }]
+              }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": -2, "toughness": -1 } }],
+            "condition": {
+              "Matches": {
+                "subject": "Attached",
+                "selector": [{ "Type": "Creature" }, { "Not": { "Color": "White" } }]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

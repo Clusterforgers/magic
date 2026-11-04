@@ -1,0 +1,30 @@
+{
+  "oracle_id": "1adb733c-d18a-4019-9229-0ad701a15b1a",
+  "name": "Kor Aeronaut",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kor Aeronaut",
+      "oracle_fingerprint": "8dd71b293ce24076798fa670c6bf4904",
+      "abilities": [
+        { "Keyword": { "Kicker": "{1}{W}" } },
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This", "Kicked"], "to": "Battlefield" } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Flying" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

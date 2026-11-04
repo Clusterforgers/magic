@@ -1,0 +1,36 @@
+{
+  "oracle_id": "b2c840a7-24b4-4ae3-a13f-ed524e18d488",
+  "name": "Starfall",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Starfall",
+      "oracle_fingerprint": "3ceba61583105906ac94ff9607ca023b",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 3 } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Target": 0 },
+                      "selector": [{ "Type": "Enchantment" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    { "DealDamage": { "to": { "ControllerOf": { "Target": 0 } }, "amount": 3 } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

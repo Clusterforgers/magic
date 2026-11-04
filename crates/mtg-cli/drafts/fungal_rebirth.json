@@ -1,0 +1,82 @@
+{
+  "oracle_id": "b917f39a-3176-47ad-afda-08d09b873c02",
+  "name": "Fungal Rebirth",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fungal Rebirth",
+      "oracle_fingerprint": "30c60ded40a1e079343786848a04d017",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "OwnedBy": "You" },
+                    {
+                      "AnyOf": [
+                        { "Type": "Artifact" },
+                        { "Type": "Battle" },
+                        { "Type": "Creature" },
+                        { "Type": "Enchantment" },
+                        { "Type": "Land" },
+                        { "Type": "Planeswalker" }
+                      ]
+                    },
+                    { "In": "Graveyard" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": "Hand" } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "When": {
+                          "condition": {
+                            "Compare": {
+                              "left": {
+                                "Tallied": { "who": "EachPlayer", "what": "CreaturesDied" }
+                              },
+                              "op": "Ge",
+                              "right": 1
+                            }
+                          },
+                          "then": 1,
+                          "otherwise": 0
+                        }
+                      },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Saproling",
+                            "colors": ["Green"],
+                            "types": ["Creature"],
+                            "subtypes": ["Saproling"],
+                            "power": 1,
+                            "toughness": 1
+                          }
+                        },
+                        "count": 2
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

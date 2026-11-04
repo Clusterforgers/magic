@@ -1,0 +1,77 @@
+{
+  "oracle_id": "5f0be4ce-898e-4849-ab8f-a85fb05c3017",
+  "name": "Territorial Kavu",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Territorial Kavu",
+      "oracle_fingerprint": "57c2c0cd64ba68aa6d719cde29fcbb59",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "SetPT": {
+                  "power": {
+                    "Distinct": {
+                      "of": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                      "stat": "BasicLandTypes"
+                    }
+                  },
+                  "toughness": {
+                    "Distinct": {
+                      "of": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                      "stat": "BasicLandTypes"
+                    }
+                  }
+                }
+              }
+            ],
+            "defining": true
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "effects": [
+                        { "Discard": { "as": "discarded" } },
+                        {
+                          "If": {
+                            "condition": {
+                              "CountOf": {
+                                "subject": { "Bound": "discarded" },
+                                "selector": [],
+                                "op": "Ge",
+                                "right": 1
+                              }
+                            },
+                            "then": [{ "Draw": {} }]
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [
+                        {
+                          "what": { "Object": [{ "In": "Graveyard" }] },
+                          "bounds": { "min": 0, "max": 1 }
+                        }
+                      ],
+                      "effects": [{ "Exile": { "what": { "Target": 0 } } }]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

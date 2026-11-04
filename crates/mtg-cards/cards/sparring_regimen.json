@@ -1,0 +1,31 @@
+{
+  "oracle_id": "2aac3575-4a06-452c-bb0f-68dc34086226",
+  "name": "Sparring Regimen",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sparring Regimen",
+      "oracle_fingerprint": "fd76ada7c0894cb274fdbc12154c01ee",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Learn": {} }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+            },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Attacking"] } }],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } },
+              { "Untap": { "what": { "Target": 0 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

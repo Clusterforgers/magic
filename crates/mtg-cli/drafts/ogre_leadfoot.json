@@ -1,0 +1,24 @@
+{
+  "oracle_id": "17e00d6e-c57d-48ea-a1a1-0c1097083851",
+  "name": "Ogre Leadfoot",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ogre Leadfoot",
+      "oracle_fingerprint": "b1b7c197d2698dd2d5f0be7876996012",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "BecomesBlocked": {
+                "what": ["This"],
+                "by": [{ "Type": "Creature" }, { "Type": "Artifact" }]
+              }
+            },
+            "effects": [{ "Destroy": { "what": "Dealer" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

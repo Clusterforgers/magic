@@ -1,0 +1,34 @@
+{
+  "oracle_id": "73eaf40a-abc6-486a-958d-374ed6111173",
+  "name": "Roilmage's Trick",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Roilmage's Trick",
+      "oracle_fingerprint": "a00fb0c1ea4c52dc4536f117ac2d4788",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": { "Times": { "by": -1, "of": "ColorsSpent" } },
+                        "toughness": 0
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

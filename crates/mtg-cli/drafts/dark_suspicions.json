@@ -1,0 +1,36 @@
+{
+  "oracle_id": "cf5cf174-d976-4cd8-9721-c30fe784fb70",
+  "name": "Dark Suspicions",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dark Suspicions",
+      "oracle_fingerprint": "81551bc4225e07e98e532cfcd75a896d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "Opponents" } },
+            "effects": [
+              {
+                "LoseLife": {
+                  "who": "Triggering",
+                  "amount": {
+                    "Sum": [
+                      { "Count": [{ "In": "Hand" }, { "OwnedBy": "Triggering" }] },
+                      {
+                        "Times": {
+                          "by": -1,
+                          "of": { "Count": [{ "OwnedBy": "You" }, { "In": "Hand" }] }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

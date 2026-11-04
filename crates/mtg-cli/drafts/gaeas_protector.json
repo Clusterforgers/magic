@@ -1,0 +1,18 @@
+{
+  "oracle_id": "d91d5d22-9f94-4a41-9970-0a8ddd2f7711",
+  "name": "Gaea's Protector",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gaea's Protector",
+      "oracle_fingerprint": "0010906322711a6d9260656c6cc4e009",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": { "Combat": { "who": "This", "quirk": { "MustBeBlocked": "AtLeastOne" } } }
+          }
+        }
+      ]
+    }
+  ]
+}

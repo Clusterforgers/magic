@@ -1,0 +1,32 @@
+{
+  "oracle_id": "5f627e45-deee-4a4f-8128-57b0d8ebc553",
+  "name": "Force of Vigor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Force of Vigor",
+      "oracle_fingerprint": "5396ea0f8fdc0e374f947733be4dee32",
+      "abilities": [
+        {
+          "FreeCast": {
+            "condition": { "Not": "YourTurn" },
+            "cost": [{ "ExileFromHand": { "filter": [{ "Color": "Green" }, "Other"] } }]
+          }
+        },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Enchantment" }] }]
+                },
+                "bounds": { "min": 0, "max": 2 }
+              }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

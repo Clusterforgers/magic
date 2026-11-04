@@ -1,0 +1,39 @@
+{
+  "oracle_id": "9f762b9f-7525-4ff8-bc1d-fbab66fd4013",
+  "name": "Scrollshift",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Scrollshift",
+      "oracle_fingerprint": "bfa9ea8c0e48835fdf22278be549bcb8",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    {
+                      "AnyOf": [
+                        { "Type": "Artifact" },
+                        { "Type": "Creature" },
+                        { "Type": "Enchantment" }
+                      ]
+                    },
+                    { "ControlledBy": "You" }
+                  ]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              { "Move": { "what": { "Bound": "exiled" }, "to": { "Battlefield": {} } } },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

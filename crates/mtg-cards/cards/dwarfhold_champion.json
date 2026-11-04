@@ -1,0 +1,25 @@
+{
+  "oracle_id": "3db19689-73bb-48b2-a464-63615eb6bba0",
+  "name": "Dwarfhold Champion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dwarfhold Champion",
+      "oracle_fingerprint": "e5651a314960d76698f592fb9d99a036",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": 0, "toughness": 2 } }],
+            "condition": {
+              "Matches": {
+                "subject": "This",
+                "selector": [{ "HasAttached": [{ "Subtype": "Equipment" }] }]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

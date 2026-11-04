@@ -1,0 +1,80 @@
+{
+  "oracle_id": "57ce5ebd-cfac-4bb9-b010-04d0c285be27",
+  "name": "Clement, the Worrywort",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Clement, the Worrywort",
+      "oracle_fingerprint": "ca22dadce3da85c2d90db1ed30c799c4",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  {
+                    "AnyOf": [
+                      "This",
+                      {
+                        "Not": {
+                          "AnyOf": [
+                            { "Not": { "Type": "Creature" } },
+                            { "Not": "Other" },
+                            { "Not": { "ControlledBy": "You" } }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                ],
+                "to": "Battlefield"
+              }
+            },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "ControlledBy": "You" },
+                    {
+                      "Compare": {
+                        "stat": "ManaValue",
+                        "op": "Lt",
+                        "to": { "Stat": { "of": "Triggering", "stat": "ManaValue" } }
+                      }
+                    }
+                  ]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Frog" }, { "ControlledBy": "You" }] },
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Activated": {
+                    "cost": ["Tap"],
+                    "effects": [
+                      {
+                        "AddMana": {
+                          "mana": { "OneOf": ["Green", "Blue"] },
+                          "only": [{ "Spell": { "types": ["Creature"] } }]
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

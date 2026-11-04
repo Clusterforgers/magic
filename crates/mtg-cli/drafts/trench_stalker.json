@@ -1,0 +1,26 @@
+{
+  "oracle_id": "5a0c215a-2164-4cb8-89ff-2558b6b42dca",
+  "name": "Trench Stalker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Trench Stalker",
+      "oracle_fingerprint": "5a133cab8130590cd74f7ea241236a56",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Lifelink" }, { "AddKeyword": "Deathtouch" }],
+            "condition": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "Drawn" } },
+                "op": "Ge",
+                "right": 2
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -188,6 +188,15 @@ fn search(ctx: &mut Ctx, p: &Params, destination: &str) -> Tr<Vec<Value>> {
         _ => vec![search, put, shuffle],
     };
     if p.get("Optional") == Some("True") {
+        // A "may" the printed description does not carry is Forge's narrowing, not the card's.
+        if let Some(text) = p.get("SpellDescription")
+            && !text
+                .to_lowercase()
+                .split(|c: char| !c.is_alphabetic())
+                .any(|w| w == "may")
+        {
+            return unmapped("key:ChangeZone.Optional");
+        }
         effects = vec![json!({"May": {"effects": effects}})];
     }
     Ok(effects)

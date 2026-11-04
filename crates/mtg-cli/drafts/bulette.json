@@ -1,0 +1,38 @@
+{
+  "oracle_id": "4e690b82-9877-41f2-9dcd-cffdb6e3cd64",
+  "name": "Bulette",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bulette",
+      "oracle_fingerprint": "998106a2f4b01ff26bf3d1cc49a957ab",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "When": {
+                    "condition": {
+                      "Compare": {
+                        "left": { "Tallied": { "who": "EachPlayer", "what": "CreaturesDied" } },
+                        "op": "Ge",
+                        "right": 1
+                      }
+                    },
+                    "then": 1,
+                    "otherwise": 0
+                  }
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

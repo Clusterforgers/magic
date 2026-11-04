@@ -1,0 +1,31 @@
+{
+  "oracle_id": "ab8a00c2-dbb0-48c3-9d13-ad6f1e2f3a18",
+  "name": "Ghitu Chronicler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ghitu Chronicler",
+      "oracle_fingerprint": "affa887b835fcb3d8acf0ae8674f7e38",
+      "abilities": [
+        { "Keyword": { "Kicker": "{3}{R}" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This", "Kicked"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                    { "OwnedBy": "You" },
+                    { "In": "Graveyard" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

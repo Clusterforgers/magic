@@ -1,0 +1,19 @@
+{
+  "oracle_id": "e68d6459-2f32-4320-a062-6d33f85348f9",
+  "name": "Overwhelmed Apprentice",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Overwhelmed Apprentice",
+      "oracle_fingerprint": "75310a1b2f4bfdc94e4ce44ba7bb9b0d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Mill": { "who": "Opponents", "count": 2 } }, { "Scry": { "count": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

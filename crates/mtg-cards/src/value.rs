@@ -32,6 +32,8 @@ pub enum StatKind {
     BasePower,
     /// The mana spent to cast it, while it is a spell or when it was cast.
     ManaSpent,
+    /// Its name: no number, so only `Amount::Distinct` reads it (the different names among the objects).
+    Name,
 }
 
 /// A comparison between two numbers.
@@ -287,6 +289,10 @@ pub enum TallyEvent {
     TokenCreated,
     /// A spell was cast (the object is the spell, as it was cast).
     SpellCast,
+    /// A permanent entered the battlefield, a token included (the object as it entered, under the controller it entered with).
+    Entered,
+    /// A permanent was put into a graveyard from the battlefield (the object as it last existed there, tokens included).
+    Died,
 }
 
 /// Which result of the latest die roll an amount reads.
@@ -964,6 +970,20 @@ pub enum Condition {
         subject: Ref,
         /// The predicates it must satisfy.
         selector: Selector,
+    },
+    /// The inner condition is checked as the ability triggers and not again as it resolves (an "if" that is no intervening
+    /// "if", Forge's `NoResolvingCheck`).
+    AtTrigger(Box<Condition>),
+    /// The number of referenced objects that have the selector's characteristics (zone ignored) compares this way.
+    CountOf {
+        /// The objects counted.
+        subject: Ref,
+        /// The predicates each must satisfy.
+        selector: Selector,
+        /// The comparison.
+        op: Cmp,
+        /// The amount compared with.
+        right: Amount,
     },
     /// The spell was kicked (any kicker cost was paid); a permanent and its abilities read the spell it came from.
     Kicked,

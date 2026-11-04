@@ -1,0 +1,30 @@
+{
+  "oracle_id": "46d6bc30-9a21-4476-947b-87951cd9c882",
+  "name": "Falkenrath Pit Fighter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Falkenrath Pit Fighter",
+      "oracle_fingerprint": "042e37983c04b45ec256ad6114504641",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{1}{R}" },
+              { "Discard": {} },
+              { "Sacrifice": { "filter": [{ "Subtype": "Vampire" }] } }
+            ],
+            "condition": {
+              "Compare": {
+                "left": { "Tallied": { "who": "Opponents", "what": "LifeLost" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "Draw": { "count": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

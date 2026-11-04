@@ -28,6 +28,9 @@ mod flow;
 mod help_tests;
 mod land_types;
 mod layers;
+mod legal_declaration;
+#[cfg(test)]
+mod legal_declaration_tests;
 mod legend;
 mod mana_ability;
 mod mana_bonus;

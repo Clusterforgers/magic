@@ -1,0 +1,28 @@
+{
+  "oracle_id": "e3bf1a95-4363-4915-8f43-b423714861ec",
+  "name": "Containment Membrane",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Containment Membrane",
+      "oracle_fingerprint": "2136fcd1b4c1e10f1037c1830257776b",
+      "abilities": [
+        {
+          "AltCast": {
+            "way": "Surge",
+            "cost": "{U}",
+            "condition": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "SpellsCast" } },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        },
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        { "Static": { "affected": "Attached", "mods": ["DoesntUntap"] } }
+      ]
+    }
+  ]
+}

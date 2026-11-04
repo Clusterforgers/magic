@@ -1,0 +1,42 @@
+{
+  "oracle_id": "d3c3f293-6790-4dce-900a-8af0464c2572",
+  "name": "Anhelo, the Painter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Anhelo, the Painter",
+      "oracle_fingerprint": "710d81609c7ac0630a3b45d72cf61bdb",
+      "abilities": [
+        { "Keyword": "Deathtouch" },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                { "ControlledBy": "You" },
+                { "In": "Stack" }
+              ]
+            },
+            "mods": [{ "AddKeyword": { "Casualty": 2 } }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "SpellCast",
+                    "who": "EachPlayer",
+                    "filter": [
+                      { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                      { "ControlledBy": "You" }
+                    ]
+                  }
+                },
+                "op": "Eq",
+                "right": 0
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

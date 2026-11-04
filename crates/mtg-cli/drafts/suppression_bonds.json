@@ -1,0 +1,22 @@
+{
+  "oracle_id": "e844ded0-821a-4378-8f58-bf1e1c0269d5",
+  "name": "Suppression Bonds",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Suppression Bonds",
+      "oracle_fingerprint": "63d816a94c6aa4b09c96ff19df54963b",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Not": { "Type": "Land" } }] } },
+        { "Static": { "affected": "Attached", "mods": ["CantAttack", "CantBlock"] } },
+        {
+          "Rule": {
+            "rule": {
+              "Cant": { "who": { "Each": [{ "Is": "Attached" }] }, "action": { "Activate": [] } }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

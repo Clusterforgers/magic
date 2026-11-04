@@ -1,0 +1,71 @@
+{
+  "oracle_id": "93ab7462-ceef-4bc7-a9fe-8af8ceb78e1c",
+  "name": "Skeletal Swarming",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Skeletal Swarming",
+      "oracle_fingerprint": "e0f17c75ea35b5dfc0700dcc5c0d65ba",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Skeleton" }, { "ControlledBy": "You" }] },
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": {
+                    "Count": [{ "Subtype": "Skeleton" }, { "ControlledBy": "You" }, "Other"]
+                  },
+                  "toughness": 0
+                }
+              },
+              { "AddKeyword": "Trample" }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Skeleton",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Skeleton"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": {
+                    "When": {
+                      "condition": {
+                        "Compare": {
+                          "left": { "Tallied": { "who": "EachPlayer", "what": "CreaturesDied" } },
+                          "op": "Ge",
+                          "right": 1
+                        }
+                      },
+                      "then": 2,
+                      "otherwise": 1
+                    }
+                  },
+                  "tapped": true
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "MustAttack": { "Each": [{ "Subtype": "Skeleton" }, { "ControlledBy": "You" }] }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

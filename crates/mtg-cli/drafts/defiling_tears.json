@@ -1,0 +1,44 @@
+{
+  "oracle_id": "0decd8ea-a3d6-436b-81e9-bdd836537a1c",
+  "name": "Defiling Tears",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Defiling Tears",
+      "oracle_fingerprint": "35605a1017045dd523c6f6ab27388070",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": -1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "SetColors": ["Black"] },
+                    {
+                      "GrantAbility": {
+                        "Activated": {
+                          "cost": "{B}",
+                          "effects": [{ "Regenerate": { "what": "This" } }]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

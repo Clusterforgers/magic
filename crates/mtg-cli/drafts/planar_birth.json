@@ -1,0 +1,27 @@
+{
+  "oracle_id": "7a9d13b3-3823-463a-acd9-8b7a9d5e121f",
+  "name": "Planar Birth",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Planar Birth",
+      "oracle_fingerprint": "0664d00699e728b205f4eb5718269377",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Move": {
+                  "what": {
+                    "Each": [{ "Type": "Land" }, { "Supertype": "Basic" }, { "In": "Graveyard" }]
+                  },
+                  "to": { "Battlefield": { "tapped": true } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

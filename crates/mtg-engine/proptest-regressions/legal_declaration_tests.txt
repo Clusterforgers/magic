@@ -1,0 +1,12 @@
+# Seeds for failure cases proptest has generated in the past. It is
+# automatically read and these particular cases re-run before any
+# novel cases are generated.
+#
+# It is recommended to check this file in to source control so that
+# everyone who runs the test benefits from these saved cases.
+cc 1f4d99acacac11a0d8586faf0fed1bb1bc337b8a1aab640ca39c06ac74aa5efa # shrinks to can = [[false, true, false, false]], flags = [(true, false), (false, false), (false, false), (false, false), (false, false), (false, false)], must = [false, true, false, false], menace = [false, false, false, false], most = None
+cc 8323290845891375701522abcf0cca882c3b55c4ac7538d5b6b7e303886d1d84 # shrinks to can = [[false, false, true, false], [false, false, false, true]], flags = [(false, false), (true, false), (false, false), (false, false), (false, false), (false, false)], must = [false, false, false, true], menace = [false, false, true, false], most = None
+cc b08febe0f5794a533bb7fe710467e96c4d14e9b90f32bce15c9a648c16372946 # shrinks to can = [[false, false, false, false], [false, false, false, true], [false, true, false, true]], flags = [(false, false), (false, true), (true, false), (false, false), (false, false), (false, false)], must = [false, true, false, false], menace = [false, false, false, true], most = None
+cc 645fc3e648ac352991835b796e0795e6e8469ca5e8527bd617a4686b71e09cb9 # shrinks to can = [[true, false, false, false], [true, false, false, false]], flags = [(false, true), (false, false), (false, false), (false, false), (false, false), (false, false)], must = [false, false, false, false], menace = [true, false, false, false], most = Some(1)
+cc 7e4ceb9113472fc2ee8d95e478780f7eb672733d26fcb1f86ec3ad66d26c39cd # shrinks to can = [[false, false, false, false], [false, true, false, true], [false, true, false, true], [false, false, true, false]], flags = [(false, false), (false, false), (false, false), (false, true), (false, false), (false, false)], must = [false, false, false, true], menace = [false, true, false, true], most = Some(2)
+cc 0847f7211c75860cf1c2a620fbf4d609324e78f8e26bb3eba60e842d90bdc811 # shrinks to can = [[false, true, false, false], [false, false, false, false], [false, true, false, false], [false, false, true, false], [false, false, false, true]], flags = [(false, true), (false, false), (true, false), (false, true), (false, true), (false, false)], must = [false, false, false, false], menace = [false, true, false, false], most = Some(3)

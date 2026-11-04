@@ -1,0 +1,54 @@
+{
+  "oracle_id": "ea7d5ada-78ac-405b-887e-b262e4935bd3",
+  "name": "Wandering Graybeard",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wandering Graybeard",
+      "oracle_fingerprint": "1b3ccaabd78d1aea3a688c1f9029b2f4",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "LookAtTop": { "as": "top" } },
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "In": "Library" },
+                            { "Is": { "Bound": "top" } },
+                            { "SharesSubtype": "This" }
+                          ]
+                        },
+                        "count": { "min": 0, "max": 1 },
+                        "as": "revealed2"
+                      }
+                    },
+                    { "Reveal": { "what": { "Bound": "revealed2" } } },
+                    {
+                      "If": {
+                        "condition": {
+                          "CountOf": {
+                            "subject": { "Bound": "revealed2" },
+                            "selector": [],
+                            "op": "Eq",
+                            "right": 1
+                          }
+                        },
+                        "then": [{ "GainLife": { "amount": 4 } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "oracle_id": "d417f574-38a4-405c-83bb-49c5cf542648",
+  "name": "Triumphant Chomp",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Triumphant Chomp",
+      "oracle_fingerprint": "fecdf447eff4d4198db70bf0e642e14a",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": {
+                    "When": {
+                      "condition": {
+                        "Compare": {
+                          "left": {
+                            "Greatest": {
+                              "of": [{ "Subtype": "Dinosaur" }, { "ControlledBy": "You" }],
+                              "stat": "Power"
+                            }
+                          },
+                          "op": "Lt",
+                          "right": 2
+                        }
+                      },
+                      "then": 2,
+                      "otherwise": {
+                        "Greatest": {
+                          "of": [{ "Subtype": "Dinosaur" }, { "ControlledBy": "You" }],
+                          "stat": "Power"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

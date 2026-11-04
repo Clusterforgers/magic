@@ -1,0 +1,86 @@
+{
+  "oracle_id": "75c626fb-9dfc-4a94-b59f-f0e45c7b2f56",
+  "name": "Dega Sanctuary",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dega Sanctuary",
+      "oracle_fingerprint": "81e34da834ff8910facdcc094df948f1",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "ControlledBy": "You" },
+                    { "AnyOf": [{ "Color": "Black" }, { "Color": "Red" }] }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "GainLife": {
+                  "amount": {
+                    "When": {
+                      "condition": {
+                        "Compare": {
+                          "left": {
+                            "Sum": [
+                              {
+                                "When": {
+                                  "condition": {
+                                    "Compare": {
+                                      "left": {
+                                        "Count": [{ "Color": "Black" }, { "ControlledBy": "You" }]
+                                      },
+                                      "op": "Gt",
+                                      "right": 1
+                                    }
+                                  },
+                                  "then": 1,
+                                  "otherwise": {
+                                    "Count": [{ "Color": "Black" }, { "ControlledBy": "You" }]
+                                  }
+                                }
+                              },
+                              {
+                                "When": {
+                                  "condition": {
+                                    "Compare": {
+                                      "left": {
+                                        "Count": [{ "Color": "Red" }, { "ControlledBy": "You" }]
+                                      },
+                                      "op": "Gt",
+                                      "right": 1
+                                    }
+                                  },
+                                  "then": 1,
+                                  "otherwise": {
+                                    "Count": [{ "Color": "Red" }, { "ControlledBy": "You" }]
+                                  }
+                                }
+                              }
+                            ]
+                          },
+                          "op": "Eq",
+                          "right": 2
+                        }
+                      },
+                      "then": 4,
+                      "otherwise": 2
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

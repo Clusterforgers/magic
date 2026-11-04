@@ -1,0 +1,24 @@
+{
+  "oracle_id": "b16085d5-6d00-4d47-ab8b-d18d55c72141",
+  "name": "Phyrexian Hydra",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Phyrexian Hydra",
+      "oracle_fingerprint": "daf71c010b773c4a650b3481e07ffb88",
+      "abilities": [
+        { "Keyword": "Infect" },
+        {
+          "Replacement": {
+            "when": { "Damage": { "to": "This" } },
+            "by": {
+              "PreventAnd": [
+                { "PutCounters": { "on": "Triggering", "counter": "-1/-1", "count": "Triggering" } }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

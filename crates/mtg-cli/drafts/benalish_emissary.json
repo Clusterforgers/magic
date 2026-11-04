@@ -1,0 +1,21 @@
+{
+  "oracle_id": "99f2e195-5da5-4239-87e0-ed552643e7b5",
+  "name": "Benalish Emissary",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Benalish Emissary",
+      "oracle_fingerprint": "c2e8832748c35a61e82dd62ec71609fe",
+      "abilities": [
+        { "Keyword": { "Kicker": "{1}{G}" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This", "Kicked"], "to": "Battlefield" } },
+            "targets": [{ "what": { "Object": [{ "Type": "Land" }] } }],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "oracle_id": "39cae244-96e1-4ea3-899a-3aa871cca31c",
+  "name": "Slumbering Cerberus",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Slumbering Cerberus",
+      "oracle_fingerprint": "cdce8257606e9d661cbf82368e5996e3",
+      "abilities": [
+        { "Static": { "affected": "This", "mods": ["DoesntUntap"] } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "Died",
+                    "who": "EachPlayer",
+                    "filter": [{ "Type": "Creature" }]
+                  }
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "Untap": { "what": "This" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

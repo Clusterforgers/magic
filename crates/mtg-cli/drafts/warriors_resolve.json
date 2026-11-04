@@ -1,0 +1,39 @@
+{
+  "oracle_id": "e3f68aff-9347-452a-8f26-b344016a275d",
+  "name": "Warrior's Resolve",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Warrior's Resolve",
+      "oracle_fingerprint": "d279223076b83258ac7d41d21ddf4ca0",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": { "Macro": { "name": "training", "amount": 0 } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "Type": "Creature" },
+                    { "ControlledBy": "You" },
+                    { "HasCounter": "+1/+1" },
+                    "AttackedThisTurn"
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

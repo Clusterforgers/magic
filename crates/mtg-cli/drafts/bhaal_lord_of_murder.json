@@ -1,0 +1,47 @@
+{
+  "oracle_id": "0d2dd78c-103c-4286-a3a1-e471dc77ed91",
+  "name": "Bhaal, Lord of Murder",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bhaal, Lord of Murder",
+      "oracle_fingerprint": "f51b1f7e91c4fd9c53a5aed918e77337",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Indestructible" }],
+            "condition": {
+              "Compare": {
+                "left": { "Times": { "by": 2, "of": { "Life": "You" } } },
+                "op": "Le",
+                "right": { "StartingLife": "You" }
+              }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "Not": "Token" },
+                  "Other",
+                  { "ControlledBy": "You" }
+                ],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } },
+              { "Goad": { "what": { "Target": 0 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

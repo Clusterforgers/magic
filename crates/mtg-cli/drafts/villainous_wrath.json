@@ -1,0 +1,29 @@
+{
+  "oracle_id": "1c7c1867-20cb-4035-bb2a-42760edf0a55",
+  "name": "Villainous Wrath",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Villainous Wrath",
+      "oracle_fingerprint": "46f31389178c7686afebb3de8c11043c",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "LoseLife": {
+                  "who": { "Target": 0 },
+                  "amount": {
+                    "Count": [{ "Type": "Creature" }, { "ControlledBy": { "Target": 0 } }]
+                  }
+                }
+              },
+              { "Destroy": { "what": { "Each": [{ "Type": "Creature" }] } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,54 @@
+{
+  "oracle_id": "1abcdddd-0022-4dfe-8c15-eb1fa86de614",
+  "name": "Invasion of Azgol // Ashen Reaper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Invasion of Azgol",
+      "oracle_fingerprint": "65193f57afd647a499b38075ae190964",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Sacrifice": {
+                  "who": { "Target": 0 },
+                  "filter": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }]
+                }
+              },
+              { "LoseLife": { "who": { "Target": 0 }, "amount": 1 } }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Ashen Reaper",
+      "oracle_fingerprint": "7ce16897cfc3daaf9c5c70f71bd5605f",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Tally": { "event": "Died", "who": "EachPlayer", "filter": [] } },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

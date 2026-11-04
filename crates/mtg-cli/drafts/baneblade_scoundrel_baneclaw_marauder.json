@@ -1,0 +1,61 @@
+{
+  "oracle_id": "4f5da665-e880-4325-a9e2-6fc4ca1d807a",
+  "name": "Baneblade Scoundrel // Baneclaw Marauder",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Baneblade Scoundrel",
+      "oracle_fingerprint": "7ab26d3e9e7d9cfa1b755df8b21252f7",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "BecomesBlocked": { "what": ["This"] } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "Blocks": "This" }] },
+                  "mods": [{ "ModifyPT": { "power": -1, "toughness": -1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "Daybound" }
+      ]
+    },
+    {
+      "name": "Baneclaw Marauder",
+      "oracle_fingerprint": "6425b4c2705f2d0dd062e31ff7a9d36d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "BecomesBlocked": { "what": ["This"] } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "Blocks": "This" }] },
+                  "mods": [{ "ModifyPT": { "power": -1, "toughness": -1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "Blocks": "This" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [{ "LoseLife": { "who": { "ControllerOf": "Triggering" }, "amount": 1 } }]
+          }
+        },
+        { "Keyword": "Nightbound" }
+      ]
+    }
+  ]
+}

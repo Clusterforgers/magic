@@ -1,0 +1,54 @@
+{
+  "oracle_id": "2fadf4aa-1b7e-4e72-ad20-809a59ddccf8",
+  "name": "Peri Brown",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Peri Brown",
+      "oracle_fingerprint": "c4addbfadd3a39ccaacbb5d43a82fffd",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                {
+                  "AnyOf": [
+                    { "Supertype": "Legendary" },
+                    { "Type": "Artifact" },
+                    { "Subtype": "Saga" }
+                  ]
+                },
+                { "ControlledBy": "You" },
+                { "In": "Stack" }
+              ]
+            },
+            "mods": [{ "AddKeyword": "Convoke" }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "SpellCast",
+                    "who": "EachPlayer",
+                    "filter": [
+                      {
+                        "AnyOf": [
+                          { "Supertype": "Legendary" },
+                          { "Type": "Artifact" },
+                          { "Subtype": "Saga" }
+                        ]
+                      },
+                      { "ControlledBy": "You" }
+                    ]
+                  }
+                },
+                "op": "Eq",
+                "right": 0
+              }
+            }
+          }
+        },
+        { "Keyword": "DoctorsCompanion" }
+      ]
+    }
+  ]
+}

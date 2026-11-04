@@ -148,6 +148,7 @@ mod tests {
             mana: 0,
             most: None,
             most_at: vec![(P1, most)],
+            cant_alone: Vec::new(),
         }
     }
 

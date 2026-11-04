@@ -1,0 +1,44 @@
+{
+  "oracle_id": "b6e87f78-d4dd-44b2-bf70-92436ce583c9",
+  "name": "Fearsome Awakening",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fearsome Awakening",
+      "oracle_fingerprint": "21d6e91a91e3f6d08f1fb93d3a16b467",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} }, "as": "moved" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "moved" },
+                      "selector": [{ "Subtype": "Dragon" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "PutCounters": { "on": { "Bound": "moved" }, "counter": "+1/+1", "count": 2 }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

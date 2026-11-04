@@ -1,0 +1,22 @@
+{
+  "oracle_id": "84c00644-d0e2-418b-b931-4e972ecb3366",
+  "name": "Kavu Aggressor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kavu Aggressor",
+      "oracle_fingerprint": "daa7c6cae6b6c18b17336b40dd49a990",
+      "abilities": [
+        { "Keyword": { "Kicker": "{4}" } },
+        { "Static": { "affected": "This", "mods": ["CantBlock"] } },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": 1 } },
+            "condition": "Kicked"
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,51 @@
+{
+  "oracle_id": "223fefa3-64a7-457f-90a2-89973640f554",
+  "name": "Rush the Room",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rush the Room",
+      "oracle_fingerprint": "93d92fc5b5d732d4e0bf72c7a6da3384",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "ModifyPT": { "power": 1, "toughness": 0 } },
+                    { "AddKeyword": "FirstStrike" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Target": 0 },
+                      "selector": [{ "AnyOf": [{ "Subtype": "Orc" }, { "Subtype": "Goblin" }] }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [{ "AddKeyword": "Haste" }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

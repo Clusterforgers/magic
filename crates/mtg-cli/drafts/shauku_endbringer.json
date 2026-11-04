@@ -1,0 +1,39 @@
+{
+  "oracle_id": "49478593-29ff-4e5a-b1e8-6462c2d6176d",
+  "name": "Shauku, Endbringer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shauku, Endbringer",
+      "oracle_fingerprint": "e98693c42225c0591073a5281e675b04",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": ["CantAttack"],
+            "condition": {
+              "Compare": { "left": { "Count": [{ "Type": "Creature" }] }, "op": "Gt", "right": 1 }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [{ "LoseLife": { "amount": 3 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 } } },
+              { "PutCounters": { "on": "This", "counter": "+1/+1" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

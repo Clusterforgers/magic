@@ -1,0 +1,43 @@
+{
+  "oracle_id": "6d53f58c-6cf3-4ecc-8227-8c264fecc836",
+  "name": "Brawl",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Brawl",
+      "oracle_fingerprint": "f87750ee15859b2740b734c7d0f4864e",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }] },
+                  "mods": [
+                    {
+                      "GrantAbility": {
+                        "Activated": {
+                          "cost": ["Tap"],
+                          "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                          "effects": [
+                            {
+                              "DealDamage": {
+                                "to": { "Target": 0 },
+                                "amount": { "Stat": { "of": "This", "stat": "Power" } }
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

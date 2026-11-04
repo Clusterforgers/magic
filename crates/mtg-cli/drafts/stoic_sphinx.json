@@ -1,0 +1,34 @@
+{
+  "oracle_id": "d924c13e-f266-47b0-9711-ba9a9b9df1cb",
+  "name": "Stoic Sphinx",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stoic Sphinx",
+      "oracle_fingerprint": "ed4c83d7dca2991e79f35f249acff804",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": "Flying" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Hexproof" }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "SpellCast",
+                    "who": "EachPlayer",
+                    "filter": [{ "ControlledBy": "You" }]
+                  }
+                },
+                "op": "Lt",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "oracle_id": "c36d7c2b-204f-432e-b8e2-ffb3ffb49231",
+  "name": "Gnarled Sage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gnarled Sage",
+      "oracle_fingerprint": "91ec10ad0a27f1228a7ca81a70c5c410",
+      "abilities": [
+        { "Keyword": "Reach" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": 0, "toughness": 2 } }, { "AddKeyword": "Vigilance" }],
+            "condition": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "Drawn" } },
+                "op": "Ge",
+                "right": 2
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

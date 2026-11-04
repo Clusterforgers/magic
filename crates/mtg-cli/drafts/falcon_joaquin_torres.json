@@ -1,0 +1,30 @@
+{
+  "oracle_id": "46399b09-1b5c-4c28-9134-cc2ed573b6aa",
+  "name": "Falcon, Joaquin Torres",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Falcon, Joaquin Torres",
+      "oracle_fingerprint": "7a1f5b1b13c63df5f6348a6833a302df",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Lifelink" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "if": {
+              "AtTrigger": {
+                "Compare": {
+                  "left": { "Count": [{ "Type": "Creature" }, "Attacking", "Other"] },
+                  "op": "Ge",
+                  "right": 2
+                }
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }, { "Scry": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

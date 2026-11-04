@@ -1,0 +1,23 @@
+{
+  "oracle_id": "7719fd5d-c9dc-49b8-87b4-24f7d42af62f",
+  "name": "Vedalken Anatomist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vedalken Anatomist",
+      "oracle_fingerprint": "0afce7fd182f9eb490a2f9239250cfdf",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{U}" }, "Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "-1/-1" } },
+              { "TapOrUntap": { "what": { "Target": 0 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

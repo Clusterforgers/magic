@@ -1,0 +1,22 @@
+{
+  "oracle_id": "cdea4344-24b6-4659-a830-c51d4b348af5",
+  "name": "Radiant Epicure",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Radiant Epicure",
+      "oracle_fingerprint": "c4bcdea58aca343c358c3fb4c5e3fed4",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "LoseLife": { "who": "Opponents", "amount": "ColorsSpent" } },
+              { "GainLife": { "amount": "ColorsSpent" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

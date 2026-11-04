@@ -1,0 +1,136 @@
+{
+  "object": "card",
+  "id": "19fd23b5-5e57-44dc-8248-c4b9eb71c4f3",
+  "oracle_id": "11c2e14c-cee5-480d-b1be-a6b7e245332a",
+  "multiverse_ids": [
+    74580
+  ],
+  "mtgo_id": 21823,
+  "mtgo_foil_id": 21824,
+  "tcgplayer_id": 12272,
+  "cardmarket_id": 12830,
+  "name": "Harbinger of Spring",
+  "lang": "en",
+  "released_at": "2005-02-04",
+  "uri": "https://api.scryfall.com/cards/19fd23b5-5e57-44dc-8248-c4b9eb71c4f3",
+  "scryfall_uri": "https://scryfall.com/card/bok/128/harbinger-of-spring?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T12:03:04Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/1/9/19fd23b5-5e57-44dc-8248-c4b9eb71c4f3.jpg?1783944184",
+    "normal": "https://cards.scryfall.io/normal/front/1/9/19fd23b5-5e57-44dc-8248-c4b9eb71c4f3.jpg?1783944184",
+    "large": "https://cards.scryfall.io/large/front/1/9/19fd23b5-5e57-44dc-8248-c4b9eb71c4f3.jpg?1783944184",
+    "png": "https://cards.scryfall.io/png/front/1/9/19fd23b5-5e57-44dc-8248-c4b9eb71c4f3.png?1783944184",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/1/9/19fd23b5-5e57-44dc-8248-c4b9eb71c4f3.jpg?1783944184",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/1/9/19fd23b5-5e57-44dc-8248-c4b9eb71c4f3.jpg?1783944184",
+    "thumb": "https://cards.scryfall.io/thumb/front/1/9/19fd23b5-5e57-44dc-8248-c4b9eb71c4f3.webp?1783944184",
+    "grid": "https://cards.scryfall.io/grid/front/1/9/19fd23b5-5e57-44dc-8248-c4b9eb71c4f3.webp?1783944184",
+    "display": "https://cards.scryfall.io/display/front/1/9/19fd23b5-5e57-44dc-8248-c4b9eb71c4f3.webp?1783944184",
+    "art": "https://cards.scryfall.io/art/front/1/9/19fd23b5-5e57-44dc-8248-c4b9eb71c4f3.webp?1783944184",
+    "crop": "https://cards.scryfall.io/crop/front/1/9/19fd23b5-5e57-44dc-8248-c4b9eb71c4f3.webp?1783944184",
+    "jpeg": "https://cards.scryfall.io/normal/front/1/9/19fd23b5-5e57-44dc-8248-c4b9eb71c4f3.jpg?1783944184"
+  },
+  "mana_cost": "{4}{G}",
+  "cmc": 5.0,
+  "type_line": "Creature — Spirit",
+  "oracle_text": "Protection from non-Spirit creatures\nSoulshift 4 (When this creature dies, you may return target Spirit card with mana value 4 or less from your graveyard to your hand.)",
+  "power": "2",
+  "toughness": "1",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Protection",
+    "Soulshift"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "d4b88587-a1f5-4b47-9e24-78ec9e57bd0e",
+  "set": "bok",
+  "set_name": "Betrayers of Kamigawa",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/d4b88587-a1f5-4b47-9e24-78ec9e57bd0e",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Abok&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/bok?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/19fd23b5-5e57-44dc-8248-c4b9eb71c4f3/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A11c2e14c-cee5-480d-b1be-a6b7e245332a&unique=prints",
+  "collector_number": "128",
+  "digital": false,
+  "rarity": "common",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Cara Mitten",
+  "artist_ids": [
+    "de5ed3a2-4914-46dc-9aae-9b7b069cd485"
+  ],
+  "illustration_id": "9f25f071-c8b7-49a8-ba61-2a3b55faf408",
+  "border_color": "black",
+  "frame": "2003",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 23562,
+  "prices": {
+    "usd": "0.07",
+    "usd_foil": "0.47",
+    "usd_etched": null,
+    "eur": "0.08",
+    "eur_foil": "0.36",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=74580&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DHarbinger%2Bof%2BSpring",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DHarbinger%2Bof%2BSpring",
+    "edhrec": "https://edhrec.com/route/?cc=Harbinger+of+Spring"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F12272%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=12830&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/21823?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

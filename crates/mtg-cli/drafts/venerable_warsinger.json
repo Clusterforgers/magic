@@ -1,0 +1,39 @@
+{
+  "oracle_id": "e286d1aa-bb74-4568-98b5-a693ac7a369d",
+  "name": "Venerable Warsinger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Venerable Warsinger",
+      "oracle_fingerprint": "2a913c25f5f80141d53273bc51ed7f12",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "Compare": { "stat": "ManaValue", "op": "Le", "to": "Triggering" } },
+                    { "OwnedBy": "You" },
+                    { "In": "Graveyard" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "May": {
+                  "effects": [{ "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

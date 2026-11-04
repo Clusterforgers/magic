@@ -1,0 +1,38 @@
+{
+  "oracle_id": "3084377f-73fb-4b00-9dd9-3844b1ecafc2",
+  "name": "Illvoi Infiltrator",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Illvoi Infiltrator",
+      "oracle_fingerprint": "5c892a0f6fe1e24d2642d583dd8d24dd",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": ["CantBeBlocked"],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "SpellCast",
+                    "who": "EachPlayer",
+                    "filter": [{ "ControlledBy": "You" }]
+                  }
+                },
+                "op": "Ge",
+                "right": 2
+              }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

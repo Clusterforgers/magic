@@ -1,0 +1,67 @@
+{
+  "oracle_id": "6b4544d8-0579-4621-8660-4adb3b2a90be",
+  "name": "Chief Magistrate of Mercadia",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Chief Magistrate of Mercadia",
+      "oracle_fingerprint": "bc236d0402b6cb53d81b7cfa38b56c1c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "BecomeMonarch": {} }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Goblin",
+                      "colors": ["Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Goblin"],
+                      "power": 2,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Haste" }]
+                    }
+                  }
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "When": { "condition": { "Monarch": "You" }, "then": 1, "otherwise": 0 }
+                      },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "CopyOf": {
+                            "of": {
+                              "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "Token"]
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

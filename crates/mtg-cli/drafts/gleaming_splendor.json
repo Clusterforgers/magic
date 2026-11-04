@@ -1,0 +1,26 @@
+{
+  "oracle_id": "c01aeaa5-1d3b-4493-9575-30175dcd780d",
+  "name": "Gleaming Splendor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gleaming Splendor",
+      "oracle_fingerprint": "4fb1c0c40e2074f4bfaaa8ee734336c0",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Nth": { "event": { "Drew": { "who": "Opponents" } }, "nth": 2 } },
+            "effects": [{ "CreateToken": { "token": { "Named": "treasure" } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{2}{W}",
+            "targets": [{ "what": "Player", "bounds": { "min": 2, "max": 2 } }],
+            "effects": [{ "Draw": { "who": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

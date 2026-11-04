@@ -1,0 +1,75 @@
+{
+  "oracle_id": "2b62a716-7831-4c76-8f2d-b99b04e33350",
+  "name": "Clavileño, First of the Blessed",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Clavileño, First of the Blessed",
+      "oracle_fingerprint": "3532cedebc4f6edd3bd9e20a66dd3bc3",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+            },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Subtype": "Vampire" },
+                    { "ControlledBy": "You" },
+                    "Attacking",
+                    { "Not": { "Subtype": "Demon" } }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "AddSubtype": "Demon" },
+                    {
+                      "GrantAbility": {
+                        "Triggered": {
+                          "when": {
+                            "ZoneChange": {
+                              "what": ["This"],
+                              "from": "Battlefield",
+                              "to": "Graveyard"
+                            }
+                          },
+                          "effects": [
+                            { "Draw": {} },
+                            {
+                              "CreateToken": {
+                                "token": {
+                                  "Custom": {
+                                    "name": "Vampire Demon",
+                                    "colors": ["White", "Black"],
+                                    "types": ["Creature"],
+                                    "subtypes": ["Vampire", "Demon"],
+                                    "power": 4,
+                                    "toughness": 3,
+                                    "abilities": [{ "Keyword": "Flying" }]
+                                  }
+                                },
+                                "tapped": true
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

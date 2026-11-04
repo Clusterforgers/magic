@@ -1,0 +1,44 @@
+{
+  "oracle_id": "d9d76570-d951-4c09-aa0e-c204c3407aaf",
+  "name": "Gideon's Defeat",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gideon's Defeat",
+      "oracle_fingerprint": "7595a40c8c235777b7beef89230e841c",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "Color": "White" },
+                    { "AnyOf": ["Attacking", "Blocking"] }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 } } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Target": 0 },
+                      "selector": [{ "Type": "Planeswalker" }, { "Subtype": "Gideon" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "GainLife": { "amount": 5 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

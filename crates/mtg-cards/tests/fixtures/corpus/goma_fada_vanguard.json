@@ -1,0 +1,141 @@
+{
+  "object": "card",
+  "id": "ce83962b-445a-4b44-ad8a-fada2c0a15b8",
+  "oracle_id": "74027d31-6efb-471d-9499-cdb1cefc9eae",
+  "multiverse_ids": [
+    491781
+  ],
+  "mtgo_id": 83255,
+  "arena_id": 73342,
+  "tcgplayer_id": 221946,
+  "cardmarket_id": 495459,
+  "name": "Goma Fada Vanguard",
+  "lang": "en",
+  "released_at": "2020-09-25",
+  "uri": "https://api.scryfall.com/cards/ce83962b-445a-4b44-ad8a-fada2c0a15b8",
+  "scryfall_uri": "https://scryfall.com/card/znr/141/goma-fada-vanguard?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T07:55:59Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/c/e/ce83962b-445a-4b44-ad8a-fada2c0a15b8.jpg?1783929359",
+    "normal": "https://cards.scryfall.io/normal/front/c/e/ce83962b-445a-4b44-ad8a-fada2c0a15b8.jpg?1783929359",
+    "large": "https://cards.scryfall.io/large/front/c/e/ce83962b-445a-4b44-ad8a-fada2c0a15b8.jpg?1783929359",
+    "png": "https://cards.scryfall.io/png/front/c/e/ce83962b-445a-4b44-ad8a-fada2c0a15b8.png?1783929359",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/c/e/ce83962b-445a-4b44-ad8a-fada2c0a15b8.jpg?1783929359",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/c/e/ce83962b-445a-4b44-ad8a-fada2c0a15b8.jpg?1783929359",
+    "thumb": "https://cards.scryfall.io/thumb/front/c/e/ce83962b-445a-4b44-ad8a-fada2c0a15b8.webp?1783929359",
+    "grid": "https://cards.scryfall.io/grid/front/c/e/ce83962b-445a-4b44-ad8a-fada2c0a15b8.webp?1783929359",
+    "display": "https://cards.scryfall.io/display/front/c/e/ce83962b-445a-4b44-ad8a-fada2c0a15b8.webp?1783929359",
+    "art": "https://cards.scryfall.io/art/front/c/e/ce83962b-445a-4b44-ad8a-fada2c0a15b8.webp?1783929359",
+    "crop": "https://cards.scryfall.io/crop/front/c/e/ce83962b-445a-4b44-ad8a-fada2c0a15b8.webp?1783929359",
+    "jpeg": "https://cards.scryfall.io/normal/front/c/e/ce83962b-445a-4b44-ad8a-fada2c0a15b8.jpg?1783929359"
+  },
+  "mana_cost": "{1}{R}",
+  "cmc": 2.0,
+  "type_line": "Creature — Human Warrior",
+  "oracle_text": "Whenever this creature attacks, target creature an opponent controls with power less than or equal to the number of Warriors you control can't block this turn.",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "arena",
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "f4e01fa7-b254-42dd-849f-69b58027a8c4",
+  "set": "znr",
+  "set_name": "Zendikar Rising",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/f4e01fa7-b254-42dd-849f-69b58027a8c4",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aznr&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/znr?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/ce83962b-445a-4b44-ad8a-fada2c0a15b8/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A74027d31-6efb-471d-9499-cdb1cefc9eae&unique=prints",
+  "collector_number": "141",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "\"Her weapon's impressive, sure. But you should see her wield it.\"\n—Gred, expedition warrior",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Sean Sevestre",
+  "artist_ids": [
+    "711d2a24-64ca-48af-b1cf-5b448f60a1b5"
+  ],
+  "illustration_id": "2a6deacd-c3c7-4faa-8cd8-1f5e97b09d97",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 16190,
+  "penny_rank": 15876,
+  "preview": {
+    "source": "Corocoro",
+    "source_uri": "https://corocoro.jp/129663/",
+    "previewed_at": "2020-09-03"
+  },
+  "prices": {
+    "usd": "0.20",
+    "usd_foil": "0.40",
+    "usd_etched": null,
+    "eur": "0.03",
+    "eur_foil": "0.17",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=491781&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DGoma%2BFada%2BVanguard",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DGoma%2BFada%2BVanguard",
+    "edhrec": "https://edhrec.com/route/?cc=Goma+Fada+Vanguard"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F221946%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=495459&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/83255?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

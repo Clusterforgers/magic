@@ -1,0 +1,21 @@
+{
+  "oracle_id": "d5377597-3454-4636-8563-7e6a5544e36a",
+  "name": "Militia Rallier",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Militia Rallier",
+      "oracle_fingerprint": "c6f9c8df4006c2d0dee3ea8b96ff4131",
+      "abilities": [
+        { "Rule": { "rule": { "Combat": { "who": "This", "quirk": "CantAttackAlone" } } } },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "Untap": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

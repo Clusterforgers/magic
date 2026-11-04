@@ -1,0 +1,27 @@
+{
+  "oracle_id": "5f5fe039-4be4-42ae-9fa4-4392328aa665",
+  "name": "Topiary Lecturer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Topiary Lecturer",
+      "oracle_fingerprint": "36a41aae12da8d782580927c82c84601",
+      "abilities": [
+        { "Keyword": { "Macro": { "name": "increment", "amount": 0 } } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["Green"] },
+                  "times": { "Stat": { "of": "This", "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

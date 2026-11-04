@@ -1,0 +1,32 @@
+{
+  "oracle_id": "7fe361ef-a168-4847-92a2-21c1661aac06",
+  "name": "Thieves' Tools",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thieves' Tools",
+      "oracle_fingerprint": "5239489b6e08a00a9d08e2ac430bd2a5",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "CreateToken": { "token": { "Named": "treasure" } } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                { "Is": "Attached" },
+                { "Compare": { "stat": "Power", "op": "Le", "to": 3 } }
+              ]
+            },
+            "mods": ["CantBeBlocked"]
+          }
+        },
+        { "Keyword": { "Equip": "{2}" } }
+      ]
+    }
+  ]
+}

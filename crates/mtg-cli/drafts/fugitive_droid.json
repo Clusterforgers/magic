@@ -1,0 +1,53 @@
+{
+  "oracle_id": "c04d4fd4-e5aa-431d-824b-8bc94245f103",
+  "name": "Fugitive Droid",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fugitive Droid",
+      "oracle_fingerprint": "2a9aa5905b54da1aea082031afdaf158",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": ["CantBeBlocked"],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "Entered",
+                    "who": "EachPlayer",
+                    "filter": [{ "Type": "Artifact" }, { "ControlledBy": "You" }]
+                  }
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{U}" }, "SacrificeSelf"],
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    "Spell",
+                    {
+                      "Targeting": [
+                        { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] },
+                        { "ControlledBy": "You" }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Counter": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

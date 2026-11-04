@@ -1,0 +1,33 @@
+{
+  "oracle_id": "34c66f52-dcbf-4d0a-bf7f-cb294bd93e9c",
+  "name": "Mana Severance",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mana Severance",
+      "oracle_fingerprint": "ab5c437d12695e7f24501e4e3bd73911",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Search": {
+                  "filter": [{ "Type": "Land" }],
+                  "count": {
+                    "min": 0,
+                    "max": {
+                      "Count": [{ "Type": "Land" }, { "OwnedBy": "You" }, { "In": "Library" }]
+                    }
+                  },
+                  "as": "found"
+                }
+              },
+              { "Exile": { "what": { "Bound": "found" } } },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

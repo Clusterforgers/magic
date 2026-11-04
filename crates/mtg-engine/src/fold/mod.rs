@@ -1,8 +1,12 @@
 //! The single state transition: folding one [`Event`] into a [`GameState`].
 
+#[cfg(test)]
+mod active_ref;
 mod combat;
 #[cfg(test)]
 mod crew_record;
+#[cfg(test)]
+mod distinct_names;
 #[cfg(test)]
 mod entered;
 #[cfg(test)]
@@ -13,6 +17,8 @@ mod resolution;
 mod tests;
 #[cfg(test)]
 mod w21a_atoms;
+#[cfg(test)]
+mod zone_tally;
 mod zones;
 
 use std::collections::BTreeSet;

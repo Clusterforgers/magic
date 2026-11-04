@@ -1,0 +1,29 @@
+{
+  "oracle_id": "3da837db-b3e9-46e4-939d-54ab43af94d9",
+  "name": "Shorecrasher Mimic",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shorecrasher Mimic",
+      "oracle_fingerprint": "5a8d35da82c38abccf4fe1b9e9de5cca",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": { "what": [{ "Color": "Green" }, { "Color": "Blue" }], "by": "You" }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "SetPT": { "power": 5, "toughness": 3 } }, { "AddKeyword": "Trample" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

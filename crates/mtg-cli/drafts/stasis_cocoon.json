@@ -1,0 +1,22 @@
+{
+  "oracle_id": "ba11db54-149d-427e-b9ff-d1e29bbcbb11",
+  "name": "Stasis Cocoon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stasis Cocoon",
+      "oracle_fingerprint": "aabd7c7945c3c5b3fcc92297983e31db",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Artifact" }] } },
+        { "Static": { "affected": "Attached", "mods": ["CantAttack", "CantBlock"] } },
+        {
+          "Rule": {
+            "rule": {
+              "Cant": { "who": { "Each": [{ "Is": "Attached" }] }, "action": { "Activate": [] } }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

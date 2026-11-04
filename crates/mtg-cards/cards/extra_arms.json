@@ -1,0 +1,23 @@
+{
+  "oracle_id": "1470f614-88eb-4d3c-bc4f-270dfb512b6c",
+  "name": "Extra Arms",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Extra Arms",
+      "oracle_fingerprint": "645477c3f06d7bad9ab057ab72495b63",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": [{ "Is": "Attached" }] } },
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              { "DealDamage": { "source": "Triggering", "to": { "Target": 0 }, "amount": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

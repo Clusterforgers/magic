@@ -1,0 +1,34 @@
+{
+  "oracle_id": "45657f7f-9760-41f9-bcf7-9fbd2bbdb918",
+  "name": "Drill-Skimmer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Drill-Skimmer",
+      "oracle_fingerprint": "76905e3af7b0ddd8f84a875cc05d8ac4",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Shroud" }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "Type": "Creature" },
+                    { "Type": "Artifact" },
+                    "Other",
+                    { "ControlledBy": "You" }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

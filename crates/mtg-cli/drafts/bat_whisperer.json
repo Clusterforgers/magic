@@ -1,0 +1,42 @@
+{
+  "oracle_id": "f20f6da9-d678-486b-99f9-7121669fef81",
+  "name": "Bat Whisperer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bat Whisperer",
+      "oracle_fingerprint": "560a29039a66f65aeafd05d8bb0ffe53",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "Opponents", "what": "LifeLost" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Bat",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Bat"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

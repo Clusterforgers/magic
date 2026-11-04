@@ -1,0 +1,27 @@
+{
+  "oracle_id": "0d6dc95d-55ce-4ef8-b065-d7203f5bf642",
+  "name": "Resolute Archangel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Resolute Archangel",
+      "oracle_fingerprint": "164b97a075d4213f4b102b51984b8eaf",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": {
+              "Compare": {
+                "left": { "Life": "You" },
+                "op": "Lt",
+                "right": { "StartingLife": "You" }
+              }
+            },
+            "effects": [{ "SetLife": { "amount": { "StartingLife": "You" } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

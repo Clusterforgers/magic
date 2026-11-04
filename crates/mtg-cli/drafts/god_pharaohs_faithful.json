@@ -1,0 +1,26 @@
+{
+  "oracle_id": "3f86e6c6-fca5-43e9-88cc-4546cdd5f0ec",
+  "name": "God-Pharaoh's Faithful",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "God-Pharaoh's Faithful",
+      "oracle_fingerprint": "58795491e4b501cda4c07e38d859449d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [
+                  { "AnyOf": [{ "Color": "Blue" }, { "Color": "Red" }, { "Color": "Black" }] }
+                ],
+                "by": "You"
+              }
+            },
+            "effects": [{ "GainLife": { "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

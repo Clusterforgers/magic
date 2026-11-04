@@ -1,0 +1,21 @@
+{
+  "oracle_id": "ab3b72e3-9a49-4c95-8016-22fa02ad7663",
+  "name": "Steel Exemplar",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Steel Exemplar",
+      "oracle_fingerprint": "258ca90146b9adfbbb78dadd75bd9ff6",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": 2 } },
+            "condition": { "Compare": { "left": "ColorsSpent", "op": "Lt", "right": 2 } }
+          }
+        }
+      ]
+    }
+  ]
+}

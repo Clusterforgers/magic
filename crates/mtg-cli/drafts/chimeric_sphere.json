@@ -1,0 +1,53 @@
+{
+  "oracle_id": "b4aae26a-44a4-4ef0-9a1d-14a07a0865a3",
+  "name": "Chimeric Sphere",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Chimeric Sphere",
+      "oracle_fingerprint": "081cde4d5ec05eb8c048a57b7f0844eb",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{2}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "SetPT": { "power": 2, "toughness": 1 } },
+                    { "AddSubtype": "Construct" },
+                    { "AddType": "Creature" },
+                    { "AddType": "Artifact" },
+                    { "AddKeyword": "Flying" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{2}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "SetPT": { "power": 3, "toughness": 2 } },
+                    { "AddSubtype": "Construct" },
+                    { "AddType": "Creature" },
+                    { "AddType": "Artifact" },
+                    { "RemoveKeyword": "Flying" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "oracle_id": "13f63240-a6bb-4333-a3dd-818725c6fb73",
+  "name": "Abhorrent Overlord",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Abhorrent Overlord",
+      "oracle_fingerprint": "c05ce156cb3a65bceb539c85ee41fc9a",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Harpy",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Harpy"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  },
+                  "count": { "Devotion": ["Black"] }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [{ "Sacrifice": { "filter": [{ "Type": "Creature" }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

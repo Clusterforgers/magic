@@ -7,6 +7,7 @@
 
 pub mod ability;
 pub mod amount;
+pub mod amount_more;
 pub mod amount_when;
 pub mod card;
 pub mod condition;
@@ -22,9 +23,11 @@ pub mod effects_emblem;
 mod effects_game;
 pub mod effects_loop;
 pub mod effects_obj;
+mod effects_verbs;
 pub mod effects_zone;
 pub mod keyword;
 pub mod keyword_alt;
+pub mod keyword_prevent;
 mod ledger;
 pub mod mayplay;
 pub mod needs;
@@ -33,6 +36,7 @@ pub mod remember;
 pub mod replacements;
 pub mod replacements_damage;
 pub mod replacements_damage_by;
+mod replacements_token;
 pub mod report;
 pub mod statics;
 pub mod statics_alt;
@@ -43,10 +47,12 @@ pub mod stored;
 pub mod tokens;
 pub mod triggered;
 pub mod triggers;
+mod triggers_batch;
 pub mod triggers_did;
 pub mod triggers_more;
 pub mod valid;
 pub mod valid_atoms;
+pub mod valid_more;
 
 #[cfg(test)]
 mod tests;

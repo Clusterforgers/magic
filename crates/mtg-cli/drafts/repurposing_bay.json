@@ -1,0 +1,42 @@
+{
+  "oracle_id": "1787ac2f-762d-4f3a-b7e5-12db6d3d470d",
+  "name": "Repurposing Bay",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Repurposing Bay",
+      "oracle_fingerprint": "edee0de8b354f8b29b5d2e639b675da8",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{2}" },
+              "Tap",
+              { "Sacrifice": { "filter": [{ "Type": "Artifact" }, "Other"] } }
+            ],
+            "timing": "Sorcery",
+            "effects": [
+              {
+                "Search": {
+                  "filter": [
+                    { "Type": "Artifact" },
+                    {
+                      "Compare": {
+                        "stat": "ManaValue",
+                        "op": "Eq",
+                        "to": { "Sum": [{ "Stat": { "of": "Paid", "stat": "ManaValue" } }, 1] }
+                      }
+                    }
+                  ],
+                  "as": "found"
+                }
+              },
+              { "Move": { "what": { "Bound": "found" }, "to": { "Battlefield": {} } } },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

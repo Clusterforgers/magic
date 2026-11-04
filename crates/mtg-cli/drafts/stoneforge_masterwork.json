@@ -1,0 +1,41 @@
+{
+  "oracle_id": "83db5c28-e172-4a4d-9324-ed5ade5255bc",
+  "name": "Stoneforge Masterwork",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stoneforge Masterwork",
+      "oracle_fingerprint": "a4c2c6306742a67da04827f4fd06beb0",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": {
+                    "Count": [
+                      { "Type": "Creature" },
+                      { "SharesSubtype": "This" },
+                      "Other",
+                      { "ControlledBy": "You" }
+                    ]
+                  },
+                  "toughness": {
+                    "Count": [
+                      { "Type": "Creature" },
+                      { "SharesSubtype": "This" },
+                      "Other",
+                      { "ControlledBy": "You" }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{2}" } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "oracle_id": "ac87cc33-4a71-471b-917d-6a92721ea0b9",
+  "name": "Tajuru Stalwart",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tajuru Stalwart",
+      "oracle_fingerprint": "87583dbc178dadc43baefdcf2ad365d5",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": "ColorsSpent" } }
+          }
+        }
+      ]
+    }
+  ]
+}

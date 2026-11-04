@@ -1,0 +1,51 @@
+{
+  "oracle_id": "399d19cd-e6fa-4959-8d2a-9f1cfd52dce7",
+  "name": "Inscribed Tablet",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Inscribed Tablet",
+      "oracle_fingerprint": "4dc01036a03cf6a8ac0a7789972f4d51",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap", "SacrificeSelf"],
+            "effects": [
+              { "LookAtTop": { "count": 5, "as": "top" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [{ "In": "Library" }, { "Is": { "Bound": "top" } }, { "Type": "Land" }]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "kept2"
+                }
+              },
+              { "Reveal": { "what": { "Bound": "kept2" } } },
+              { "Move": { "what": { "Bound": "kept2" }, "to": "Hand" } },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "kept2" },
+                      "selector": [],
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

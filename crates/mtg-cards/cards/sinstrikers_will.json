@@ -1,0 +1,43 @@
+{
+  "oracle_id": "98e7b75b-f24d-4317-8b45-9397a4742081",
+  "name": "Sinstriker's Will",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sinstriker's Will",
+      "oracle_fingerprint": "3153cc83ea137dfa9eac1ec3dcda877d",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Activated": {
+                    "cost": ["Tap"],
+                    "targets": [
+                      {
+                        "what": {
+                          "Object": [{ "Type": "Creature" }, { "AnyOf": ["Attacking", "Blocking"] }]
+                        }
+                      }
+                    ],
+                    "effects": [
+                      {
+                        "DealDamage": {
+                          "to": { "Target": 0 },
+                          "amount": { "Stat": { "of": "This", "stat": "Power" } }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,74 @@
+{
+  "oracle_id": "b395925b-2456-454e-9262-3b55c9f2799a",
+  "name": "Biomechan Engineer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Biomechan Engineer",
+      "oracle_fingerprint": "6da506ce0a4fad48e222fa9fd307b2c1",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Lander",
+                      "types": ["Artifact"],
+                      "subtypes": ["Lander"],
+                      "abilities": [
+                        {
+                          "Activated": {
+                            "cost": [{ "Mana": "{2}" }, "Tap", "SacrificeSelf"],
+                            "effects": [
+                              {
+                                "Search": {
+                                  "filter": [{ "Type": "Land" }, { "Supertype": "Basic" }],
+                                  "as": "found"
+                                }
+                              },
+                              {
+                                "Move": {
+                                  "what": { "Bound": "found" },
+                                  "to": { "Battlefield": { "tapped": true } }
+                                }
+                              },
+                              { "Shuffle": {} }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{8}",
+            "effects": [
+              { "Draw": { "count": 2 } },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Robot",
+                      "types": ["Artifact", "Creature"],
+                      "subtypes": ["Robot"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "oracle_id": "274c5367-f02e-44a0-be8a-5ed03c831bda",
+  "name": "Jovial Evil",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jovial Evil",
+      "oracle_fingerprint": "65058893d0b9b10f117d1ff333fed033",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": {
+                    "Times": {
+                      "by": 2,
+                      "of": {
+                        "Count": [
+                          { "Type": "Creature" },
+                          { "Color": "White" },
+                          { "ControlledBy": { "Target": 0 } }
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

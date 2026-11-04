@@ -1,0 +1,163 @@
+{
+  "object": "card",
+  "id": "70ea66cd-587a-4ca9-9ca8-d7d2046bfbed",
+  "oracle_id": "8074afbf-190b-4a24-b939-cc559bdffe38",
+  "multiverse_ids": [
+    646765
+  ],
+  "mtgo_id": 121892,
+  "arena_id": 89122,
+  "tcgplayer_id": 532934,
+  "cardmarket_id": 752000,
+  "name": "Izoni, Center of the Web",
+  "lang": "en",
+  "released_at": "2024-02-09",
+  "uri": "https://api.scryfall.com/cards/70ea66cd-587a-4ca9-9ca8-d7d2046bfbed",
+  "scryfall_uri": "https://scryfall.com/card/mkm/209/izoni-center-of-the-web?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:20:46Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/7/0/70ea66cd-587a-4ca9-9ca8-d7d2046bfbed.jpg?1783912846",
+    "normal": "https://cards.scryfall.io/normal/front/7/0/70ea66cd-587a-4ca9-9ca8-d7d2046bfbed.jpg?1783912846",
+    "large": "https://cards.scryfall.io/large/front/7/0/70ea66cd-587a-4ca9-9ca8-d7d2046bfbed.jpg?1783912846",
+    "png": "https://cards.scryfall.io/png/front/7/0/70ea66cd-587a-4ca9-9ca8-d7d2046bfbed.png?1783912846",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/7/0/70ea66cd-587a-4ca9-9ca8-d7d2046bfbed.jpg?1783912846",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/7/0/70ea66cd-587a-4ca9-9ca8-d7d2046bfbed.jpg?1783912846",
+    "thumb": "https://cards.scryfall.io/thumb/front/7/0/70ea66cd-587a-4ca9-9ca8-d7d2046bfbed.webp?1783912846",
+    "grid": "https://cards.scryfall.io/grid/front/7/0/70ea66cd-587a-4ca9-9ca8-d7d2046bfbed.webp?1783912846",
+    "display": "https://cards.scryfall.io/display/front/7/0/70ea66cd-587a-4ca9-9ca8-d7d2046bfbed.webp?1783912846",
+    "art": "https://cards.scryfall.io/art/front/7/0/70ea66cd-587a-4ca9-9ca8-d7d2046bfbed.webp?1783912846",
+    "crop": "https://cards.scryfall.io/crop/front/7/0/70ea66cd-587a-4ca9-9ca8-d7d2046bfbed.webp?1783912846",
+    "jpeg": "https://cards.scryfall.io/normal/front/7/0/70ea66cd-587a-4ca9-9ca8-d7d2046bfbed.jpg?1783912846"
+  },
+  "mana_cost": "{4}{B}{G}",
+  "cmc": 6.0,
+  "type_line": "Legendary Creature — Elf Detective",
+  "oracle_text": "Menace\nWhenever Izoni enters or attacks, you may collect evidence 4. If you do, create two 2/1 black and green Spider creature tokens with reach and menace.\nSacrifice four tokens: Surveil 2, then draw two cards. You gain 2 life.",
+  "power": "5",
+  "toughness": "4",
+  "colors": [
+    "B",
+    "G"
+  ],
+  "color_identity": [
+    "B",
+    "G"
+  ],
+  "keywords": [
+    "Collect evidence",
+    "Surveil",
+    "Menace"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "74cb3ba3-9a14-4d72-bf24-0b75ae747f96",
+      "component": "token",
+      "name": "Spider",
+      "type_line": "Token Creature — Spider",
+      "uri": "https://api.scryfall.com/cards/74cb3ba3-9a14-4d72-bf24-0b75ae747f96"
+    },
+    {
+      "object": "related_card",
+      "id": "34c5f282-9297-4763-a04d-4147e5349953",
+      "component": "combo_piece",
+      "name": "Izoni, Center of the Web",
+      "type_line": "Legendary Creature — Elf Detective",
+      "uri": "https://api.scryfall.com/cards/34c5f282-9297-4763-a04d-4147e5349953"
+    }
+  ],
+  "legalities": {
+    "standard": "legal",
+    "future": "legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "arena",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "2b17794b-15c3-4796-ad6f-0887a0eceeca",
+  "set": "mkm",
+  "set_name": "Murders at Karlov Manor",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/2b17794b-15c3-4796-ad6f-0887a0eceeca",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Amkm&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/mkm?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/70ea66cd-587a-4ca9-9ca8-d7d2046bfbed/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A8074afbf-190b-4a24-b939-cc559bdffe38&unique=prints",
+  "collector_number": "209",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Justine Cruz",
+  "artist_ids": [
+    "4d6acc42-7bac-42cb-ac57-a56355292e89"
+  ],
+  "illustration_id": "5a4493b1-7b72-457e-9dee-5f500b750e86",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 12432,
+  "penny_rank": 9875,
+  "prices": {
+    "usd": "0.19",
+    "usd_foil": "0.34",
+    "usd_etched": null,
+    "eur": "0.18",
+    "eur_foil": "0.15",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=646765&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DIzoni%252C%2BCenter%2Bof%2Bthe%2BWeb",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DIzoni%252C%2BCenter%2Bof%2Bthe%2BWeb",
+    "edhrec": "https://edhrec.com/route/?cc=Izoni%2C+Center+of+the+Web"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F532934%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=752000&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/121892?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

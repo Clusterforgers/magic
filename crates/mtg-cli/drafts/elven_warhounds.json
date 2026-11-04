@@ -1,0 +1,19 @@
+{
+  "oracle_id": "ae997fee-2c1f-43c8-9dba-8b409d8e449e",
+  "name": "Elven Warhounds",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Elven Warhounds",
+      "oracle_fingerprint": "42531f02c5937c099bb00b69c6546868",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "BecomesBlocked": { "what": ["This"], "by": [{ "Type": "Creature" }] } },
+            "effects": [{ "Move": { "what": "Dealer", "to": { "Library": { "place": "Top" } } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

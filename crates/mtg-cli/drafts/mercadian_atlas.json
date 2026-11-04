@@ -1,0 +1,26 @@
+{
+  "oracle_id": "5bae9ffb-99b3-4feb-8aed-265d874fd68b",
+  "name": "Mercadian Atlas",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mercadian Atlas",
+      "oracle_fingerprint": "f11501621270483f50156ab60474c2d0",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "LandsPlayed" } },
+                "op": "Eq",
+                "right": 0
+              }
+            },
+            "effects": [{ "May": { "effects": [{ "Draw": {} }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

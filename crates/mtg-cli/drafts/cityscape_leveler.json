@@ -1,0 +1,38 @@
+{
+  "oracle_id": "d4d65797-2b92-4265-9169-133120c86c7f",
+  "name": "Cityscape Leveler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cityscape Leveler",
+      "oracle_fingerprint": "e78f4f729e67944ddd5f05feb4c606cf",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [{ "SpellCast": { "what": ["This"] } }, { "Attacks": { "what": ["This"] } }]
+            },
+            "targets": [
+              {
+                "what": { "Object": [{ "Not": { "Type": "Land" } }] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              {
+                "CreateToken": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "token": { "Named": "powerstone" },
+                  "tapped": true
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Unearth": "{8}" } }
+      ]
+    }
+  ]
+}

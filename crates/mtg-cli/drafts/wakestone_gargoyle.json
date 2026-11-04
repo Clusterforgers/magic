@@ -1,0 +1,39 @@
+{
+  "oracle_id": "11284767-7095-4e0e-bc60-c69d58098348",
+  "name": "Wakestone Gargoyle",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wakestone Gargoyle",
+      "oracle_fingerprint": "b2275f44794ead7857d43f4bd8e36e3f",
+      "abilities": [
+        { "Keyword": "Defender" },
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": "{1}{W}",
+            "effects": [
+              {
+                "Rule": {
+                  "rule": {
+                    "Combat": {
+                      "who": {
+                        "Each": [
+                          { "Type": "Creature" },
+                          { "ControlledBy": "You" },
+                          { "HasKeyword": "Defender" }
+                        ]
+                      },
+                      "quirk": "AttackDespiteDefender"
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "oracle_id": "f037b319-e559-42ad-bcfe-d43d07ce05e7",
+  "name": "Permafrost Trap",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Permafrost Trap",
+      "oracle_fingerprint": "1129b64f5365256c73a65a0ced2e9cf8",
+      "abilities": [
+        {
+          "FreeCast": {
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "Entered",
+                    "who": "EachPlayer",
+                    "filter": [
+                      { "Type": "Creature" },
+                      { "Color": "Green" },
+                      { "ControlledBy": "Opponents" }
+                    ]
+                  }
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "cost": "{U}"
+          }
+        },
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 0, "max": 2 } }
+            ],
+            "effects": [
+              { "Tap": { "what": { "Target": 0 } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["DoesntUntap"],
+                  "duration": "NextUntapStep"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

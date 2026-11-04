@@ -200,6 +200,19 @@ impl<'a> Ctx<'a> {
         }
     }
 
+    /// The reference to the latest declared target when it is a player (`TargetedPlayer`), else a gap.
+    pub fn player_target(&self) -> Tr<Value> {
+        let player = self
+            .targets
+            .last()
+            .is_some_and(|spec| matches!(spec["what"].as_str(), Some("Player" | "Opponent")));
+        if player {
+            self.last_target()
+        } else {
+            unmapped("defined:TargetedPlayer-without-a-player-target")
+        }
+    }
+
     /// The reference to the target declared before the current line (`ParentTarget` in a sub-ability).
     pub fn parent(&self) -> Tr<Value> {
         match self.parent_target {

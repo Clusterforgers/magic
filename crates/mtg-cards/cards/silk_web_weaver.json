@@ -1,0 +1,64 @@
+{
+  "oracle_id": "50477dc8-9a2a-41eb-984d-c9e1e78e08a2",
+  "name": "Silk, Web Weaver",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Silk, Web Weaver",
+      "oracle_fingerprint": "540eae22c1444aadb7edfd265d78a173",
+      "abilities": [
+        {
+          "AltCast": {
+            "way": "WebSlinging",
+            "cost": [
+              { "Mana": "{1}{W}{G}" },
+              {
+                "ReturnToHand": {
+                  "filter": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "Tapped"]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Type": "Creature" }], "by": "You" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Human Citizen",
+                      "colors": ["Green", "White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Human", "Citizen"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{3}{W}{G}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [
+                    { "ModifyPT": { "power": 2, "toughness": 2 } },
+                    { "AddKeyword": "Vigilance" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -13,6 +13,7 @@
             "effects": [
               {
                 "Draw": {
+                  "who": { "Target": 0 },
                   "count": {
                     "Half": {
                       "of": { "Count": [{ "In": "Library" }, { "OwnedBy": { "Target": 0 } }] },
@@ -25,16 +26,6 @@
                 "LoseLife": {
                   "who": { "Target": 0 },
                   "amount": { "Half": { "of": { "Life": { "Target": 0 } }, "up": true } }
-                }
-              },
-              {
-                "Draw": {
-                  "count": {
-                    "Half": {
-                      "of": { "Count": [{ "In": "Library" }, { "OwnedBy": { "Target": 0 } }] },
-                      "up": true
-                    }
-                  }
                 }
               }
             ]

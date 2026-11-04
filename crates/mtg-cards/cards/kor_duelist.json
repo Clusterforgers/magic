@@ -1,0 +1,25 @@
+{
+  "oracle_id": "758dd2fd-d3ec-4782-9a60-12b0d79719da",
+  "name": "Kor Duelist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kor Duelist",
+      "oracle_fingerprint": "54a865e043236cec5281414aef6e492c",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "DoubleStrike" }],
+            "condition": {
+              "Matches": {
+                "subject": "This",
+                "selector": [{ "HasAttached": [{ "Subtype": "Equipment" }] }]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

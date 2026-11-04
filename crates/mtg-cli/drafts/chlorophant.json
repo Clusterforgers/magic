@@ -1,0 +1,49 @@
+{
+  "oracle_id": "ad80d9a8-187f-4ecf-94be-e23ac3a57179",
+  "name": "Chlorophant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Chlorophant",
+      "oracle_fingerprint": "42c7da55101d87695bef9f5ba1db834e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              { "May": { "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }] } }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Triggered": {
+                    "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+                    "effects": [
+                      {
+                        "May": {
+                          "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                "op": "Ge",
+                "right": 7
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

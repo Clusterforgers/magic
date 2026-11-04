@@ -1,0 +1,38 @@
+{
+  "oracle_id": "1e94e647-9150-4b22-aa9f-d195f64fb20a",
+  "name": "Slaying Fire",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Slaying Fire",
+      "oracle_fingerprint": "0e63f60d8e37bdb8fe7aa09bff12416d",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": {
+                    "When": {
+                      "condition": {
+                        "Compare": {
+                          "left": { "ManaSpent": { "of": "Red" } },
+                          "op": "Ge",
+                          "right": 3
+                        }
+                      },
+                      "then": 4,
+                      "otherwise": 3
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

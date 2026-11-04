@@ -1,0 +1,38 @@
+{
+  "oracle_id": "9a6bf8a3-7640-4890-ac62-d5028f41978b",
+  "name": "Rhino, Barreling Brute",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rhino, Barreling Brute",
+      "oracle_fingerprint": "b74b680884cc6b8dd5f6cb2464374ee5",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        { "Keyword": "Trample" },
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "SpellCast",
+                    "who": "EachPlayer",
+                    "filter": [
+                      { "Compare": { "stat": "ManaValue", "op": "Ge", "to": 4 } },
+                      { "ControlledBy": "You" }
+                    ]
+                  }
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

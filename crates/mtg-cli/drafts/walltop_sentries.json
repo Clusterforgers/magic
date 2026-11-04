@@ -1,0 +1,30 @@
+{
+  "oracle_id": "fb3a0910-a582-41ef-b5b9-3cda1f1cd5ce",
+  "name": "Walltop Sentries",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Walltop Sentries",
+      "oracle_fingerprint": "3f1d3c502d03f88f6bdd412c31f7cd58",
+      "abilities": [
+        { "Keyword": "Reach" },
+        { "Keyword": "Deathtouch" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Count": [{ "Subtype": "Lesson" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "GainLife": { "amount": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

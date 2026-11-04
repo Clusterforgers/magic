@@ -1,0 +1,23 @@
+{
+  "oracle_id": "990583ef-5bf4-4e14-a8f1-61d32c6a75df",
+  "name": "Flick a Coin",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Flick a Coin",
+      "oracle_fingerprint": "f6e73ddccd7e5b7fec76e923b3bf2d29",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 1 } },
+              { "CreateToken": { "token": { "Named": "treasure" } } },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

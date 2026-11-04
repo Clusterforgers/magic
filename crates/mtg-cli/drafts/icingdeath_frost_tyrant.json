@@ -1,0 +1,60 @@
+{
+  "oracle_id": "1dc2c213-72f6-4112-96a8-bf6ad553c707",
+  "name": "Icingdeath, Frost Tyrant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Icingdeath, Frost Tyrant",
+      "oracle_fingerprint": "db0c979ef25ff8099a4e4962a650f996",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Icingdeath, Frost Tongue",
+                      "colors": ["White"],
+                      "supertypes": ["Legendary"],
+                      "types": ["Artifact"],
+                      "subtypes": ["Equipment"],
+                      "abilities": [
+                        { "Keyword": { "Equip": "{2}" } },
+                        {
+                          "Triggered": {
+                            "when": { "Attacks": { "what": [{ "Is": "Attached" }] } },
+                            "targets": [
+                              {
+                                "what": {
+                                  "Object": [
+                                    { "Type": "Creature" },
+                                    { "ControlledBy": "Defending" }
+                                  ]
+                                }
+                              }
+                            ],
+                            "effects": [{ "Tap": { "what": { "Target": 0 } } }]
+                          }
+                        },
+                        {
+                          "Static": {
+                            "affected": "Attached",
+                            "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

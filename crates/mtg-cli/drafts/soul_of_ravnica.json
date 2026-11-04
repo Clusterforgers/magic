@@ -1,0 +1,39 @@
+{
+  "oracle_id": "eb014442-5935-4333-8078-ee4896dce653",
+  "name": "Soul of Ravnica",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Soul of Ravnica",
+      "oracle_fingerprint": "827198b10c657b2fbd59b22c6b4226d4",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": "{5}{U}{U}",
+            "effects": [
+              {
+                "Draw": {
+                  "count": { "Distinct": { "of": [{ "ControlledBy": "You" }], "stat": "Colors" } }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{5}{U}{U}" }, "ExileSelf"],
+            "from": "Graveyard",
+            "effects": [
+              {
+                "Draw": {
+                  "count": { "Distinct": { "of": [{ "ControlledBy": "You" }], "stat": "Colors" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,51 @@
+{
+  "oracle_id": "54731e3f-a84a-4fc9-8c02-2f769133c71c",
+  "name": "Diregraf Scavenger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Diregraf Scavenger",
+      "oracle_fingerprint": "c83085ff14b2961ddef91a40c52440fe",
+      "abilities": [
+        { "Keyword": "Deathtouch" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              { "what": { "Object": [{ "In": "Graveyard" }] }, "bounds": { "min": 0, "max": 1 } }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "exiled" },
+                      "selector": [{ "Type": "Creature" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "LoseLife": { "who": "Opponents", "amount": 2 } }]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "exiled" },
+                      "selector": [{ "Type": "Creature" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "GainLife": { "amount": 2 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

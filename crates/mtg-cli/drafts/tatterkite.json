@@ -1,0 +1,24 @@
+{
+  "oracle_id": "9505f124-f152-48ce-b0d3-097abdda8e3e",
+  "name": "Tatterkite",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tatterkite",
+      "oracle_fingerprint": "f27f8a444e9e049b07400ee7799ffa7b",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": { "Each": ["This", { "In": "Battlefield" }] },
+                "action": "PutCounter"
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

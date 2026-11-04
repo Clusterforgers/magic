@@ -1,0 +1,16 @@
+{
+  "oracle_id": "8de57b66-cb97-44e4-8c0d-8ecf3202c299",
+  "name": "Wojek Bodyguard",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wojek Bodyguard",
+      "oracle_fingerprint": "09a2c4a050e09ff2e81f4dd0377039b5",
+      "abilities": [
+        { "Keyword": "Mentor" },
+        { "Rule": { "rule": { "Combat": { "who": "This", "quirk": "CantAttackAlone" } } } },
+        { "Rule": { "rule": { "Combat": { "who": "This", "quirk": "CantBlockAlone" } } } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "oracle_id": "1ad39f85-799a-42ae-852c-9117d689fe65",
+  "name": "Kathari Bomber",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kathari Bomber",
+      "oracle_fingerprint": "6912d843ad94d190eba07bb28ce53bcd",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Goblin",
+                      "colors": ["Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Goblin"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": 2
+                }
+              },
+              { "Sacrifice": { "filter": ["This"] } }
+            ]
+          }
+        },
+        { "Keyword": { "Unearth": "{3}{B}{R}" } }
+      ]
+    }
+  ]
+}

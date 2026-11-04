@@ -1,0 +1,141 @@
+{
+  "object": "card",
+  "id": "f872a2cd-e684-47be-885f-27a4666399fa",
+  "oracle_id": "43c31a03-2bbd-49a6-8b78-c5f3cab04a07",
+  "multiverse_ids": [],
+  "resource_id": "A223A6679AB1A57FDA8911BCCD6073D26F5456280BC8CD7229A960F6E3098499",
+  "mtgo_id": 151631,
+  "arena_id": 105601,
+  "tcgplayer_id": 697126,
+  "cardmarket_id": 891912,
+  "name": "Doctor Strange, Surgeon",
+  "lang": "en",
+  "released_at": "2026-06-26",
+  "uri": "https://api.scryfall.com/cards/f872a2cd-e684-47be-885f-27a4666399fa",
+  "scryfall_uri": "https://scryfall.com/card/msc/591/doctor-strange-surgeon?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T00:38:05Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/f/8/f872a2cd-e684-47be-885f-27a4666399fa.jpg?1783903085",
+    "normal": "https://cards.scryfall.io/normal/front/f/8/f872a2cd-e684-47be-885f-27a4666399fa.jpg?1783903085",
+    "large": "https://cards.scryfall.io/large/front/f/8/f872a2cd-e684-47be-885f-27a4666399fa.jpg?1783903085",
+    "png": "https://cards.scryfall.io/png/front/f/8/f872a2cd-e684-47be-885f-27a4666399fa.png?1783903085",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/f/8/f872a2cd-e684-47be-885f-27a4666399fa.jpg?1783903085",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/f/8/f872a2cd-e684-47be-885f-27a4666399fa.jpg?1783903085",
+    "thumb": "https://cards.scryfall.io/thumb/front/f/8/f872a2cd-e684-47be-885f-27a4666399fa.webp?1783903085",
+    "grid": "https://cards.scryfall.io/grid/front/f/8/f872a2cd-e684-47be-885f-27a4666399fa.webp?1783903085",
+    "display": "https://cards.scryfall.io/display/front/f/8/f872a2cd-e684-47be-885f-27a4666399fa.webp?1783903085",
+    "art": "https://cards.scryfall.io/art/front/f/8/f872a2cd-e684-47be-885f-27a4666399fa.webp?1783903085",
+    "crop": "https://cards.scryfall.io/crop/front/f/8/f872a2cd-e684-47be-885f-27a4666399fa.webp?1783903085",
+    "jpeg": "https://cards.scryfall.io/normal/front/f/8/f872a2cd-e684-47be-885f-27a4666399fa.jpg?1783903085"
+  },
+  "mana_cost": "{4}{W}",
+  "cmc": 5.0,
+  "type_line": "Legendary Creature — Human Doctor Hero",
+  "oracle_text": "Lifelink\nIf you would gain life, you gain twice that much life instead.\nAt the beginning of each combat, if you have at least 10 life more than your starting life total, creatures you control get +2/+2 and gain vigilance until end of turn.",
+  "power": "2",
+  "toughness": "5",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Lifelink"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo",
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "9d739461-c5ac-43a1-af41-3d5a585b5c8d",
+  "set": "msc",
+  "set_name": "Marvel Super Heroes Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/9d739461-c5ac-43a1-af41-3d5a585b5c8d",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Amsc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/msc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/f872a2cd-e684-47be-885f-27a4666399fa/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A43c31a03-2bbd-49a6-8b78-c5f3cab04a07&unique=prints",
+  "collector_number": "591",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Erikas Perl",
+  "artist_ids": [
+    "39cb50cf-0223-43c7-bd96-afb5f05c7e43"
+  ],
+  "illustration_id": "15d316f1-1e32-44fc-8a2a-efcd96c24266",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 13547,
+  "prices": {
+    "usd": "0.95",
+    "usd_foil": "3.89",
+    "usd_etched": null,
+    "eur": "1.26",
+    "eur_foil": "1.79",
+    "tix": "2.44"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DDoctor%2BStrange%252C%2BSurgeon",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DDoctor%2BStrange%252C%2BSurgeon",
+    "edhrec": "https://edhrec.com/route/?cc=Doctor+Strange%2C+Surgeon"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F697126%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=891912&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/151631?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

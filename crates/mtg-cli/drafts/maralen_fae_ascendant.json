@@ -1,0 +1,78 @@
+{
+  "oracle_id": "114e1d2c-cefc-4e2a-922e-3b2ceed1871d",
+  "name": "Maralen, Fae Ascendant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Maralen, Fae Ascendant",
+      "oracle_fingerprint": "b9e67aad725b678ffb798dab7272a2bd",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  {
+                    "AnyOf": [
+                      "This",
+                      {
+                        "Not": {
+                          "AnyOf": [
+                            { "Not": { "Subtype": "Elf" } },
+                            { "Not": "Other" },
+                            { "Not": { "ControlledBy": "You" } }
+                          ]
+                        }
+                      },
+                      {
+                        "Not": {
+                          "AnyOf": [
+                            { "Not": { "Subtype": "Faerie" } },
+                            { "Not": "Other" },
+                            { "Not": { "ControlledBy": "You" } }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                ],
+                "to": "Battlefield"
+              }
+            },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [{ "ExileTop": { "who": { "Target": 0 }, "count": 2, "as": "exiled" } }]
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": {
+                "what": [
+                  { "Not": { "Type": "Land" } },
+                  {
+                    "Compare": {
+                      "stat": "ManaValue",
+                      "op": "Le",
+                      "to": {
+                        "Count": [
+                          { "AnyOf": [{ "Subtype": "Elf" }, { "Subtype": "Faerie" }] },
+                          { "ControlledBy": "You" }
+                        ]
+                      }
+                    }
+                  },
+                  { "ExiledWith": "This" },
+                  "EnteredThisTurn"
+                ],
+                "from": "Exile",
+                "free": true,
+                "once": true
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

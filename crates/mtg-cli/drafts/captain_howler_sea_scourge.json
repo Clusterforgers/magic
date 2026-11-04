@@ -1,0 +1,50 @@
+{
+  "oracle_id": "46c99d67-8307-4af0-afd0-377714806614",
+  "name": "Captain Howler, Sea Scourge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Captain Howler, Sea Scourge",
+      "oracle_fingerprint": "505e8da13ab8bccbb609b00bf30041e7",
+      "abilities": [
+        { "Keyword": { "Ward": [{ "Mana": "{2}" }, { "PayLife": 2 }] } },
+        {
+          "Triggered": {
+            "when": { "Batch": { "Discarded": { "by": "You" } } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": { "Times": { "by": 2, "of": "Triggering" } },
+                        "toughness": 0
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "DealsDamage": {
+                      "source": [{ "Type": "Creature" }, { "Is": { "Target": 0 } }],
+                      "to": "EachPlayer",
+                      "combat": true
+                    }
+                  },
+                  "once": false,
+                  "this_turn": true,
+                  "effects": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

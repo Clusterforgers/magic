@@ -1,0 +1,30 @@
+{
+  "oracle_id": "53501112-bcdb-4bb5-9fd3-674cdba91951",
+  "name": "Crookclaw Transmuter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Crookclaw Transmuter",
+      "oracle_fingerprint": "ce9d179f16fa28377015b3d3fd4995a0",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["SwitchPT"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

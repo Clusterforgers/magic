@@ -1,0 +1,39 @@
+{
+  "oracle_id": "020d0c91-da68-40da-8561-5522377f3d07",
+  "name": "Gravetiller Wurm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gravetiller Wurm",
+      "oracle_fingerprint": "ed46033ec4fa608623944223a73d5b83",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": 4 } },
+            "condition": {
+              "Compare": {
+                "left": {
+                  "When": {
+                    "condition": {
+                      "Compare": {
+                        "left": { "Tallied": { "who": "EachPlayer", "what": "CreaturesDied" } },
+                        "op": "Ge",
+                        "right": 1
+                      }
+                    },
+                    "then": 1,
+                    "otherwise": 0
+                  }
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

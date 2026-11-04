@@ -1,0 +1,30 @@
+{
+  "oracle_id": "c5648a32-98b0-4625-aae1-ae56e0ef0197",
+  "name": "Fancy Footwork",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fancy Footwork",
+      "oracle_fingerprint": "6db8e50a64fd5be86931ca60ff4d1572",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 1, "max": 2 } }
+            ],
+            "effects": [
+              { "Untap": { "what": { "Target": 0 } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

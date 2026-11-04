@@ -1,0 +1,37 @@
+{
+  "oracle_id": "5b1dc298-403d-484d-90dd-e1c9b73e0188",
+  "name": "Rootless Yew",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rootless Yew",
+      "oracle_fingerprint": "b07b53d726f06f98cd2f640712f5fb33",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              {
+                "Search": {
+                  "filter": [
+                    { "Type": "Creature" },
+                    {
+                      "AnyOf": [
+                        { "Compare": { "stat": "Power", "op": "Ge", "to": 6 } },
+                        { "Compare": { "stat": "Toughness", "op": "Ge", "to": 6 } }
+                      ]
+                    }
+                  ],
+                  "reveal": true,
+                  "as": "found"
+                }
+              },
+              { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

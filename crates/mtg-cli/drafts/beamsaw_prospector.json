@@ -1,0 +1,53 @@
+{
+  "oracle_id": "bbe740f8-6e7c-4cfd-9134-9bf8d5f48cf5",
+  "name": "Beamsaw Prospector",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Beamsaw Prospector",
+      "oracle_fingerprint": "93e8c0d1e1e11fb40a21292bf6697e59",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Lander",
+                      "types": ["Artifact"],
+                      "subtypes": ["Lander"],
+                      "abilities": [
+                        {
+                          "Activated": {
+                            "cost": [{ "Mana": "{2}" }, "Tap", "SacrificeSelf"],
+                            "effects": [
+                              {
+                                "Search": {
+                                  "filter": [{ "Type": "Land" }, { "Supertype": "Basic" }],
+                                  "as": "found"
+                                }
+                              },
+                              {
+                                "Move": {
+                                  "what": { "Bound": "found" },
+                                  "to": { "Battlefield": { "tapped": true } }
+                                }
+                              },
+                              { "Shuffle": {} }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

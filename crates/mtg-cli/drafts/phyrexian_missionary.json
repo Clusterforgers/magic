@@ -1,0 +1,28 @@
+{
+  "oracle_id": "be04f54f-59fa-4f0a-b8b5-790d568932b6",
+  "name": "Phyrexian Missionary",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Phyrexian Missionary",
+      "oracle_fingerprint": "b83b489b26c69a38cf842f20170e86c0",
+      "abilities": [
+        { "Keyword": { "Kicker": "{1}{B}" } },
+        { "Keyword": "Lifelink" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This", "Kicked"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

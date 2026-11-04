@@ -1,0 +1,38 @@
+{
+  "oracle_id": "399fba23-fc13-440b-ab67-192eede6ecab",
+  "name": "Fire Nation Attacks",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fire Nation Attacks",
+      "oracle_fingerprint": "a849ddc9b0df74d77531ddb4da8a43cc",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Soldier",
+                      "colors": ["Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Soldier"],
+                      "power": 2,
+                      "toughness": 2,
+                      "abilities": [
+                        { "Keyword": { "Macro": { "name": "firebending", "amount": 1 } } }
+                      ]
+                    }
+                  },
+                  "count": 2
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Flashback": "{8}{R}" } }
+      ]
+    }
+  ]
+}

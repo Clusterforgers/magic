@@ -1,0 +1,28 @@
+{
+  "oracle_id": "3f65d1f8-3e46-4e3d-b087-5496a4106e4e",
+  "name": "Veinfire Borderpost",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Veinfire Borderpost",
+      "oracle_fingerprint": "7261407b39b14297ce9f68cfad0523fc",
+      "abilities": [
+        {
+          "FreeCast": {
+            "cost": [
+              { "Mana": "{1}" },
+              { "ReturnToHand": { "filter": [{ "Type": "Land" }, { "Supertype": "Basic" }] } }
+            ]
+          }
+        },
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "OneOf": ["Black", "Red"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

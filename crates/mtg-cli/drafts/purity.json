@@ -1,0 +1,28 @@
+{
+  "oracle_id": "23ef92b0-2298-4e8d-bf64-46d096c84a9d",
+  "name": "Purity",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Purity",
+      "oracle_fingerprint": "16b141d43d8a562a71983b181fbf68be",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Replacement": {
+            "when": { "Damage": { "to": "You", "combat": false } },
+            "by": { "PreventAnd": [{ "GainLife": { "amount": "Triggering" } }] }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Graveyard" } },
+            "effects": [
+              { "Move": { "what": "This", "to": { "Library": { "place": "Shuffled" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

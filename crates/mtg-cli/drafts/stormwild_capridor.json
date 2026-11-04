@@ -1,0 +1,24 @@
+{
+  "oracle_id": "2e83e8c8-adc4-4e33-9f8b-966b7231a6c9",
+  "name": "Stormwild Capridor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stormwild Capridor",
+      "oracle_fingerprint": "34c0d1b02b71b09e18be0b52162fd7a5",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Replacement": {
+            "when": { "Damage": { "to": "This", "combat": false } },
+            "by": {
+              "PreventAnd": [
+                { "PutCounters": { "on": "This", "counter": "+1/+1", "count": "Triggering" } }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

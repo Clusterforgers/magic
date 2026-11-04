@@ -1,0 +1,39 @@
+{
+  "oracle_id": "ee6a9bac-cf5b-4edd-8cb2-874d8dd0e62a",
+  "name": "Haytham Kenway",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Haytham Kenway",
+      "oracle_fingerprint": "507c84c6908b77e400e12f60245e8590",
+      "abilities": [
+        { "Keyword": { "Protection": [{ "Subtype": "Assassin" }] } },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Knight" }, "Other", { "ControlledBy": "You" }] },
+            "mods": [
+              { "ModifyPT": { "power": 2, "toughness": 2 } },
+              { "AddKeyword": { "Protection": [{ "Subtype": "Assassin" }] } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "PerPlayer": { "players": "Opponents", "what": [{ "Type": "Creature" }] }
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "duration": "WhileSourceOnBattlefield" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

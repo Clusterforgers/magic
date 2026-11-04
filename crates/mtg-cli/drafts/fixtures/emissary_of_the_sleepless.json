@@ -1,0 +1,153 @@
+{
+  "object": "card",
+  "id": "cc5fa496-a830-4031-a19a-d6467d074ad1",
+  "oracle_id": "f21bbacb-0436-46fa-b361-582b766d3964",
+  "multiverse_ids": [
+    409755
+  ],
+  "mtgo_id": 60372,
+  "mtgo_foil_id": 60373,
+  "tcgplayer_id": 116384,
+  "cardmarket_id": 289135,
+  "name": "Emissary of the Sleepless",
+  "lang": "en",
+  "released_at": "2016-04-08",
+  "uri": "https://api.scryfall.com/cards/cc5fa496-a830-4031-a19a-d6467d074ad1",
+  "scryfall_uri": "https://scryfall.com/card/soi/17/emissary-of-the-sleepless?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T10:17:00Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/c/c/cc5fa496-a830-4031-a19a-d6467d074ad1.jpg?1783937820",
+    "normal": "https://cards.scryfall.io/normal/front/c/c/cc5fa496-a830-4031-a19a-d6467d074ad1.jpg?1783937820",
+    "large": "https://cards.scryfall.io/large/front/c/c/cc5fa496-a830-4031-a19a-d6467d074ad1.jpg?1783937820",
+    "png": "https://cards.scryfall.io/png/front/c/c/cc5fa496-a830-4031-a19a-d6467d074ad1.png?1783937820",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/c/c/cc5fa496-a830-4031-a19a-d6467d074ad1.jpg?1783937820",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/c/c/cc5fa496-a830-4031-a19a-d6467d074ad1.jpg?1783937820",
+    "thumb": "https://cards.scryfall.io/thumb/front/c/c/cc5fa496-a830-4031-a19a-d6467d074ad1.webp?1783937820",
+    "grid": "https://cards.scryfall.io/grid/front/c/c/cc5fa496-a830-4031-a19a-d6467d074ad1.webp?1783937820",
+    "display": "https://cards.scryfall.io/display/front/c/c/cc5fa496-a830-4031-a19a-d6467d074ad1.webp?1783937820",
+    "art": "https://cards.scryfall.io/art/front/c/c/cc5fa496-a830-4031-a19a-d6467d074ad1.webp?1783937820",
+    "crop": "https://cards.scryfall.io/crop/front/c/c/cc5fa496-a830-4031-a19a-d6467d074ad1.webp?1783937820",
+    "jpeg": "https://cards.scryfall.io/normal/front/c/c/cc5fa496-a830-4031-a19a-d6467d074ad1.jpg?1783937820"
+  },
+  "mana_cost": "{4}{W}",
+  "cmc": 5.0,
+  "type_line": "Creature — Spirit",
+  "oracle_text": "Flying\nWhen this creature enters, if a creature died this turn, create a 1/1 white Spirit creature token with flying.",
+  "power": "2",
+  "toughness": "4",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Flying"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "3a53a7c6-6b32-4491-8c96-e564abea8880",
+      "component": "token",
+      "name": "Spirit",
+      "type_line": "Token Creature — Spirit",
+      "uri": "https://api.scryfall.com/cards/3a53a7c6-6b32-4491-8c96-e564abea8880"
+    },
+    {
+      "object": "related_card",
+      "id": "cc5fa496-a830-4031-a19a-d6467d074ad1",
+      "component": "combo_piece",
+      "name": "Emissary of the Sleepless",
+      "type_line": "Creature — Spirit",
+      "uri": "https://api.scryfall.com/cards/cc5fa496-a830-4031-a19a-d6467d074ad1"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "5e914d7e-c1e9-446c-a33d-d093c02b2743",
+  "set": "soi",
+  "set_name": "Shadows over Innistrad",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/5e914d7e-c1e9-446c-a33d-d093c02b2743",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Asoi&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/soi?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/cc5fa496-a830-4031-a19a-d6467d074ad1/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Af21bbacb-0436-46fa-b361-582b766d3964&unique=prints",
+  "collector_number": "17",
+  "digital": false,
+  "rarity": "common",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Igor Kieryluk",
+  "artist_ids": [
+    "9c3e9d17-509f-485c-9360-46d897ce716b"
+  ],
+  "illustration_id": "95595584-714e-4909-9a86-1a6a658b1fb3",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 28380,
+  "prices": {
+    "usd": "0.05",
+    "usd_foil": "0.18",
+    "usd_etched": null,
+    "eur": "0.04",
+    "eur_foil": "0.19",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=409755&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DEmissary%2Bof%2Bthe%2BSleepless",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DEmissary%2Bof%2Bthe%2BSleepless",
+    "edhrec": "https://edhrec.com/route/?cc=Emissary+of+the+Sleepless"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F116384%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=289135&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/60372?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

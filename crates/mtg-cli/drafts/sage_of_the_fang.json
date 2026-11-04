@@ -1,0 +1,32 @@
+{
+  "oracle_id": "d6eb2bfc-1e86-4e36-9d48-12de16955b98",
+  "name": "Sage of the Fang",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sage of the Fang",
+      "oracle_fingerprint": "e4fca9b2cc50f909e2ca50dc22f4009d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}{G}" }, "ExileSelf"],
+            "timing": "Sorcery",
+            "from": "Graveyard",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } },
+              { "MultiplyCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

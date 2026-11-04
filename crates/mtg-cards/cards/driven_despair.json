@@ -1,0 +1,78 @@
+{
+  "oracle_id": "87fca901-678d-4c9a-be4a-9dce2a53074b",
+  "name": "Driven // Despair",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Driven",
+      "oracle_fingerprint": "2a76c4b00a3746813d473b906fc244df",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [
+                    { "AddKeyword": "Trample" },
+                    {
+                      "GrantAbility": {
+                        "Triggered": {
+                          "when": {
+                            "DealsDamage": {
+                              "source": ["This"],
+                              "to": "EachPlayer",
+                              "combat": true
+                            }
+                          },
+                          "effects": [{ "Draw": {} }]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Despair",
+      "oracle_fingerprint": "e5cf0c1e73e79881b839e2845bbda06e",
+      "abilities": [
+        { "Keyword": "Aftermath" },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [
+                    { "AddKeyword": "Menace" },
+                    {
+                      "GrantAbility": {
+                        "Triggered": {
+                          "when": {
+                            "DealsDamage": {
+                              "source": ["This"],
+                              "to": "EachPlayer",
+                              "combat": true
+                            }
+                          },
+                          "effects": [{ "Discard": { "who": "Triggering" } }]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

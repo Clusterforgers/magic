@@ -1,0 +1,15 @@
+{
+  "oracle_id": "e4d5d666-fd55-4c1a-89c8-2348288f6b30",
+  "name": "Jackal Familiar",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jackal Familiar",
+      "oracle_fingerprint": "b35aff9e37c7d2987b9315c8bbb166c7",
+      "abilities": [
+        { "Rule": { "rule": { "Combat": { "who": "This", "quirk": "CantAttackAlone" } } } },
+        { "Rule": { "rule": { "Combat": { "who": "This", "quirk": "CantBlockAlone" } } } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "oracle_id": "c3adc698-a0c5-4c82-8347-536745c9e928",
+  "name": "Boneyard Desecrator",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Boneyard Desecrator",
+      "oracle_fingerprint": "08d34f653df4964e91f0016de297a3dd",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{1}{B}" },
+              { "Sacrifice": { "filter": [{ "Type": "Creature" }, "Other"] } }
+            ],
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": "+1/+1" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": "Paid",
+                      "selector": [
+                        {
+                          "AnyOf": [
+                            { "Subtype": "Assassin" },
+                            { "Subtype": "Mercenary" },
+                            { "Subtype": "Pirate" },
+                            { "Subtype": "Rogue" },
+                            { "Subtype": "Warlock" }
+                          ]
+                        }
+                      ],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "CreateToken": { "token": { "Named": "treasure" } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

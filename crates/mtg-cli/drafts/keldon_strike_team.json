@@ -1,0 +1,49 @@
+{
+  "oracle_id": "6465f93d-e6bf-4a7b-86f3-5a2376f8b127",
+  "name": "Keldon Strike Team",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Keldon Strike Team",
+      "oracle_fingerprint": "38084cd65d71a21ef5f68cdcb34f4664",
+      "abilities": [
+        { "Keyword": { "Kicker": "{1}{W}" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This", "Kicked"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Soldier",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Soldier"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": 2
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": "Haste" }],
+            "condition": {
+              "Compare": {
+                "left": { "Count": ["This", "EnteredThisTurn"] },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

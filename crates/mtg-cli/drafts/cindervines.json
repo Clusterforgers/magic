@@ -1,0 +1,37 @@
+{
+  "oracle_id": "92d95e12-fa51-4360-88e4-9078ccc5d8d3",
+  "name": "Cindervines",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cindervines",
+      "oracle_fingerprint": "19db89efafaa90328b1ca087d0cda4de",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": { "what": [{ "Not": { "Type": "Creature" } }], "by": "Opponents" }
+            },
+            "effects": [{ "DealDamage": { "to": "Triggering", "amount": 1 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "SacrificeSelf"],
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Enchantment" }] }]
+                }
+              }
+            ],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              { "DealDamage": { "to": { "ControllerOf": { "Target": 0 } }, "amount": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

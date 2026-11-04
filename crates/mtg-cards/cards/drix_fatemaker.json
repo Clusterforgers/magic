@@ -1,0 +1,54 @@
+{
+  "oracle_id": "583102f8-7232-4fbb-a715-087448536bb2",
+  "name": "Drix Fatemaker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Drix Fatemaker",
+      "oracle_fingerprint": "8126b521f73e82553bac9ff40ea2437d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": {
+              "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }, { "HasCounter": "+1/+1" }]
+            },
+            "mods": [{ "AddKeyword": "Trample" }]
+          }
+        },
+        { "AltCast": { "way": "Warp", "cost": "{1}{G}" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": { "CastWith": "Warp" },
+            "effects": [
+              { "Choose": { "from": "This", "as": "warped" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    { "Exile": { "what": { "Bound": "warped" }, "as": "warped_card" } },
+                    {
+                      "Rule": {
+                        "rule": {
+                          "MayCast": { "from": "Exile", "only": { "Bound": "warped_card" } }
+                        },
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

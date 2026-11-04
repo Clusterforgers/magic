@@ -1,0 +1,63 @@
+{
+  "oracle_id": "3a747893-a514-4689-8486-ecccf654fecb",
+  "name": "Fry",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fry",
+      "oracle_fingerprint": "ff642b234fab3596761756d9e8130188",
+      "abilities": [
+        { "Rule": { "rule": { "CantBeCountered": "This" }, "from": "Stack" } },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    {
+                      "AnyOf": [
+                        {
+                          "Not": {
+                            "AnyOf": [
+                              { "Not": { "Type": "Creature" } },
+                              { "Not": { "Color": "White" } }
+                            ]
+                          }
+                        },
+                        {
+                          "Not": {
+                            "AnyOf": [
+                              { "Not": { "Type": "Planeswalker" } },
+                              { "Not": { "Color": "White" } }
+                            ]
+                          }
+                        },
+                        {
+                          "Not": {
+                            "AnyOf": [
+                              { "Not": { "Type": "Creature" } },
+                              { "Not": { "Color": "Blue" } }
+                            ]
+                          }
+                        },
+                        {
+                          "Not": {
+                            "AnyOf": [
+                              { "Not": { "Type": "Planeswalker" } },
+                              { "Not": { "Color": "Blue" } }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 5 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

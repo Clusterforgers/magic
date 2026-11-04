@@ -1,0 +1,30 @@
+{
+  "oracle_id": "c41172c6-5133-48ed-bde0-3168b5371c18",
+  "name": "Vineshaper Prodigy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vineshaper Prodigy",
+      "oracle_fingerprint": "50832b267736bce9d081c5c1fc139f7e",
+      "abilities": [
+        { "Keyword": { "Kicker": "{1}{U}" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This", "Kicked"], "to": "Battlefield" } },
+            "effects": [
+              { "LookAtTop": { "count": 3, "as": "top" } },
+              { "Choose": { "from": { "Bound": "top" }, "as": "kept2", "rest_as": "rest3" } },
+              { "Move": { "what": { "Bound": "kept2" }, "to": "Hand" } },
+              {
+                "Move": {
+                  "what": { "Bound": "rest3" },
+                  "to": { "Library": { "place": "Bottom", "order": "Chosen" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

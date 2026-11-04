@@ -1,0 +1,24 @@
+{
+  "oracle_id": "ebec110e-aff3-48aa-abf6-309dd2ffb478",
+  "name": "Petrify",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Petrify",
+      "oracle_fingerprint": "c49d5123af3c8d72e15c7129f4bca179",
+      "abilities": [
+        {
+          "Keyword": { "Enchant": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] }] }
+        },
+        { "Static": { "affected": "Attached", "mods": ["CantAttack", "CantBlock"] } },
+        {
+          "Rule": {
+            "rule": {
+              "Cant": { "who": { "Each": [{ "Is": "Attached" }] }, "action": { "Activate": [] } }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

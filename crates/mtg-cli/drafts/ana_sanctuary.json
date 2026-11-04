@@ -1,0 +1,157 @@
+{
+  "oracle_id": "51f17fe1-1cf7-4362-b9a2-8ec225d41b03",
+  "name": "Ana Sanctuary",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ana Sanctuary",
+      "oracle_fingerprint": "964e86df13ea71e95374d4cb1659c482",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "ControlledBy": "You" },
+                    { "AnyOf": [{ "Color": "Blue" }, { "Color": "Black" }] }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": {
+                          "When": {
+                            "condition": {
+                              "Compare": {
+                                "left": {
+                                  "Sum": [
+                                    {
+                                      "When": {
+                                        "condition": {
+                                          "Compare": {
+                                            "left": {
+                                              "Count": [
+                                                { "Color": "Blue" },
+                                                { "ControlledBy": "You" }
+                                              ]
+                                            },
+                                            "op": "Gt",
+                                            "right": 1
+                                          }
+                                        },
+                                        "then": 1,
+                                        "otherwise": {
+                                          "Count": [{ "Color": "Blue" }, { "ControlledBy": "You" }]
+                                        }
+                                      }
+                                    },
+                                    {
+                                      "When": {
+                                        "condition": {
+                                          "Compare": {
+                                            "left": {
+                                              "Count": [
+                                                { "Color": "Black" },
+                                                { "ControlledBy": "You" }
+                                              ]
+                                            },
+                                            "op": "Gt",
+                                            "right": 1
+                                          }
+                                        },
+                                        "then": 1,
+                                        "otherwise": {
+                                          "Count": [{ "Color": "Black" }, { "ControlledBy": "You" }]
+                                        }
+                                      }
+                                    }
+                                  ]
+                                },
+                                "op": "Eq",
+                                "right": 2
+                              }
+                            },
+                            "then": 5,
+                            "otherwise": 1
+                          }
+                        },
+                        "toughness": {
+                          "When": {
+                            "condition": {
+                              "Compare": {
+                                "left": {
+                                  "Sum": [
+                                    {
+                                      "When": {
+                                        "condition": {
+                                          "Compare": {
+                                            "left": {
+                                              "Count": [
+                                                { "Color": "Blue" },
+                                                { "ControlledBy": "You" }
+                                              ]
+                                            },
+                                            "op": "Gt",
+                                            "right": 1
+                                          }
+                                        },
+                                        "then": 1,
+                                        "otherwise": {
+                                          "Count": [{ "Color": "Blue" }, { "ControlledBy": "You" }]
+                                        }
+                                      }
+                                    },
+                                    {
+                                      "When": {
+                                        "condition": {
+                                          "Compare": {
+                                            "left": {
+                                              "Count": [
+                                                { "Color": "Black" },
+                                                { "ControlledBy": "You" }
+                                              ]
+                                            },
+                                            "op": "Gt",
+                                            "right": 1
+                                          }
+                                        },
+                                        "then": 1,
+                                        "otherwise": {
+                                          "Count": [{ "Color": "Black" }, { "ControlledBy": "You" }]
+                                        }
+                                      }
+                                    }
+                                  ]
+                                },
+                                "op": "Eq",
+                                "right": 2
+                              }
+                            },
+                            "then": 5,
+                            "otherwise": 1
+                          }
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

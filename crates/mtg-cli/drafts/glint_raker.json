@@ -1,0 +1,62 @@
+{
+  "oracle_id": "e0a95a8e-5867-481b-9e85-e2d5386362b8",
+  "name": "Glint Raker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Glint Raker",
+      "oracle_fingerprint": "9c33909f98d2e9718078226a7a486c66",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": {
+                    "Greatest": {
+                      "of": [{ "Type": "Artifact" }, { "ControlledBy": "You" }],
+                      "stat": "ManaValue"
+                    }
+                  },
+                  "toughness": 0
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "LookAtTop": { "count": "Triggering", "as": "top" } },
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "In": "Library" },
+                            { "Is": { "Bound": "top" } },
+                            { "Type": "Artifact" }
+                          ]
+                        },
+                        "count": { "min": 0, "max": 1 },
+                        "as": "kept2"
+                      }
+                    },
+                    { "Reveal": { "what": { "Bound": "kept2" } } },
+                    { "Move": { "what": { "Bound": "kept2" }, "to": "Hand" } },
+                    { "Move": { "what": { "Bound": "top" }, "to": "Graveyard" } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

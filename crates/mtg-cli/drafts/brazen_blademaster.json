@@ -1,0 +1,36 @@
+{
+  "oracle_id": "43c92618-0aae-41f8-aa39-393e5d6b5ff7",
+  "name": "Brazen Blademaster",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Brazen Blademaster",
+      "oracle_fingerprint": "1641d92f3350048dc89958b6504f47f7",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "if": {
+              "AtTrigger": {
+                "Compare": {
+                  "left": { "Count": [{ "Type": "Artifact" }, { "ControlledBy": "You" }] },
+                  "op": "Ge",
+                  "right": 2
+                }
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

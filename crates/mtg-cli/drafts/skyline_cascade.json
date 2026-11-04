@@ -1,0 +1,37 @@
+{
+  "oracle_id": "79301ae1-8c9c-4723-be21-dc27e1646f35",
+  "name": "Skyline Cascade",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Skyline Cascade",
+      "oracle_fingerprint": "c3b28d36431c5fd85baf035fd0b77700",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["DoesntUntap"],
+                  "duration": "NextUntapStep"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Blue"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

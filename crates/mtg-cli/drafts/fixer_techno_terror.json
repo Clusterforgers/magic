@@ -1,0 +1,32 @@
+{
+  "oracle_id": "a47b71df-9357-4118-90c0-f86fca6d362b",
+  "name": "Fixer, Techno Terror",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fixer, Techno Terror",
+      "oracle_fingerprint": "88467063845611fc0a6c2a6aac2688c3",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap", { "PayLife": 2 }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "Entered",
+                    "who": "EachPlayer",
+                    "filter": [{ "Type": "Artifact" }, { "ControlledBy": "You" }]
+                  }
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

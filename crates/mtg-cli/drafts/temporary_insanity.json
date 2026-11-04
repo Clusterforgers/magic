@@ -1,0 +1,50 @@
+{
+  "oracle_id": "4f9c66f9-f5d4-499d-9325-e779e6612bca",
+  "name": "Temporary Insanity",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Temporary Insanity",
+      "oracle_fingerprint": "8256493e24c903117bde6552bcddc224",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    {
+                      "Compare": {
+                        "stat": "Power",
+                        "op": "Lt",
+                        "to": { "Count": [{ "OwnedBy": "You" }, { "In": "Graveyard" }] }
+                      }
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Untap": { "what": { "Target": 0 } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

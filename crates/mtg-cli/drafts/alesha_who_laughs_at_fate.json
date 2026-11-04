@@ -10,7 +10,7 @@
         { "Keyword": "FirstStrike" },
         {
           "Triggered": {
-            "when": { "Attacks": { "what": ["This"] } },
+            "when": { "Attacks": { "what": [{ "Type": "Creature" }, "This"] } },
             "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
           }
         },
@@ -29,7 +29,6 @@
                 "what": {
                   "Object": [
                     { "Type": "Creature" },
-                    { "In": "Graveyard" },
                     { "OwnedBy": "You" },
                     {
                       "Compare": {
@@ -37,15 +36,13 @@
                         "op": "Le",
                         "to": { "Stat": { "of": "This", "stat": "Power" } }
                       }
-                    }
+                    },
+                    { "In": "Graveyard" }
                   ]
                 }
               }
             ],
-            "effects": [
-              { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } },
-              { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }
-            ]
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }]
           }
         }
       ]

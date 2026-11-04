@@ -1,0 +1,167 @@
+{
+  "object": "card",
+  "id": "1aa3f1d6-92e5-4da2-a0e3-2c4df5619e1d",
+  "oracle_id": "6b4544d8-0579-4621-8660-4adb3b2a90be",
+  "multiverse_ids": [],
+  "tcgplayer_id": 709795,
+  "name": "Chief Magistrate of Mercadia",
+  "lang": "en",
+  "released_at": "2026-10-19",
+  "uri": "https://api.scryfall.com/cards/1aa3f1d6-92e5-4da2-a0e3-2c4df5619e1d",
+  "scryfall_uri": "https://scryfall.com/card/mbc/35/chief-magistrate-of-mercadia?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-08-03T12:09:57Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/1/a/1aa3f1d6-92e5-4da2-a0e3-2c4df5619e1d.jpg?1785758997",
+    "normal": "https://cards.scryfall.io/normal/front/1/a/1aa3f1d6-92e5-4da2-a0e3-2c4df5619e1d.jpg?1785758997",
+    "large": "https://cards.scryfall.io/large/front/1/a/1aa3f1d6-92e5-4da2-a0e3-2c4df5619e1d.jpg?1785758997",
+    "png": "https://cards.scryfall.io/png/front/1/a/1aa3f1d6-92e5-4da2-a0e3-2c4df5619e1d.png?1785758997",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/1/a/1aa3f1d6-92e5-4da2-a0e3-2c4df5619e1d.jpg?1785758997",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/1/a/1aa3f1d6-92e5-4da2-a0e3-2c4df5619e1d.jpg?1785758997",
+    "thumb": "https://cards.scryfall.io/thumb/front/1/a/1aa3f1d6-92e5-4da2-a0e3-2c4df5619e1d.webp?1785758997",
+    "grid": "https://cards.scryfall.io/grid/front/1/a/1aa3f1d6-92e5-4da2-a0e3-2c4df5619e1d.webp?1785758997",
+    "display": "https://cards.scryfall.io/display/front/1/a/1aa3f1d6-92e5-4da2-a0e3-2c4df5619e1d.webp?1785758997",
+    "art": "https://cards.scryfall.io/art/front/1/a/1aa3f1d6-92e5-4da2-a0e3-2c4df5619e1d.webp?1785758997",
+    "crop": "https://cards.scryfall.io/crop/front/1/a/1aa3f1d6-92e5-4da2-a0e3-2c4df5619e1d.webp?1785758997",
+    "jpeg": "https://cards.scryfall.io/normal/front/1/a/1aa3f1d6-92e5-4da2-a0e3-2c4df5619e1d.jpg?1785758997"
+  },
+  "mana_cost": "{4}{R}{W}",
+  "cmc": 6.0,
+  "type_line": "Legendary Creature — Human Noble",
+  "oracle_text": "When Chief Magistrate of Mercadia enters, you become the monarch.\nAt the beginning of your upkeep, create a 2/1 red Goblin creature token with haste. Then if you're the monarch, for each creature token you control, create a token that's a copy of it.",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "R",
+    "W"
+  ],
+  "color_identity": [
+    "R",
+    "W"
+  ],
+  "keywords": [],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "1aa3f1d6-92e5-4da2-a0e3-2c4df5619e1d",
+      "component": "combo_piece",
+      "name": "Chief Magistrate of Mercadia",
+      "type_line": "Legendary Creature — Human Noble",
+      "uri": "https://api.scryfall.com/cards/1aa3f1d6-92e5-4da2-a0e3-2c4df5619e1d"
+    },
+    {
+      "object": "related_card",
+      "id": "11608fa5-2c53-4008-ad82-555380f5e6f1",
+      "component": "combo_piece",
+      "name": "The Monarch",
+      "type_line": "Card",
+      "uri": "https://api.scryfall.com/cards/11608fa5-2c53-4008-ad82-555380f5e6f1"
+    },
+    {
+      "object": "related_card",
+      "id": "4b976756-e988-4211-95c2-0e3587118488",
+      "component": "token",
+      "name": "Copy",
+      "type_line": "Token",
+      "uri": "https://api.scryfall.com/cards/4b976756-e988-4211-95c2-0e3587118488"
+    },
+    {
+      "object": "related_card",
+      "id": "79707ef3-9ac8-4774-b34b-f227546ff4bd",
+      "component": "token",
+      "name": "Goblin",
+      "type_line": "Token Creature — Goblin",
+      "uri": "https://api.scryfall.com/cards/79707ef3-9ac8-4774-b34b-f227546ff4bd"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "not_legal",
+    "pauper": "not_legal",
+    "vintage": "not_legal",
+    "penny": "not_legal",
+    "commander": "not_legal",
+    "oathbreaker": "not_legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "not_legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "a4135564-9f37-4aaf-963a-90666f843e0d",
+  "set": "mbc",
+  "set_name": "Mystery Booster Commander Edition",
+  "set_type": "draft_innovation",
+  "set_uri": "https://api.scryfall.com/sets/a4135564-9f37-4aaf-963a-90666f843e0d",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ambc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/mbc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/1aa3f1d6-92e5-4da2-a0e3-2c4df5619e1d/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A6b4544d8-0579-4621-8660-4adb3b2a90be&unique=prints",
+  "collector_number": "35",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "The throne was his in appearance only.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Paolo Parente",
+  "artist_ids": [
+    "d48dd097-720d-476a-8722-6a02854ae28b"
+  ],
+  "illustration_id": "412c748b-4fba-4d44-a852-c0d2cdd934b3",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 24863,
+  "prices": {
+    "usd": null,
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": null,
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DChief%2BMagistrate%2Bof%2BMercadia",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DChief%2BMagistrate%2Bof%2BMercadia",
+    "edhrec": "https://edhrec.com/route/?cc=Chief+Magistrate+of+Mercadia"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F709795%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products/Search?referrer=scryfall&searchString=Chief+Magistrate+of+Mercadia&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Chief+Magistrate+of+Mercadia&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "oracle_id": "05852d99-8f30-4318-913c-d0b1eaf8c222",
+  "name": "Bristlepack Sentry",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bristlepack Sentry",
+      "oracle_fingerprint": "0f3f0e16599e29977c3b4df7f0f7bc97",
+      "abilities": [
+        { "Keyword": "Defender" },
+        {
+          "Rule": {
+            "rule": { "Combat": { "who": "This", "quirk": "AttackDespiteDefender" } },
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "Type": "Creature" },
+                    { "Compare": { "stat": "Power", "op": "Ge", "to": 4 } },
+                    { "ControlledBy": "You" }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

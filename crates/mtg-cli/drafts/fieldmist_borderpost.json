@@ -1,0 +1,28 @@
+{
+  "oracle_id": "a292ca5b-2472-4b02-a26b-d1b5b717a34b",
+  "name": "Fieldmist Borderpost",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fieldmist Borderpost",
+      "oracle_fingerprint": "09d41d3227c3295fb3112589e6332a84",
+      "abilities": [
+        {
+          "FreeCast": {
+            "cost": [
+              { "Mana": "{1}" },
+              { "ReturnToHand": { "filter": [{ "Type": "Land" }, { "Supertype": "Basic" }] } }
+            ]
+          }
+        },
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "OneOf": ["White", "Blue"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

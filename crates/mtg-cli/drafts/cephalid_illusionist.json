@@ -1,0 +1,43 @@
+{
+  "oracle_id": "3c3067c4-0ae0-4c6a-9174-e3c981a20235",
+  "name": "Cephalid Illusionist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cephalid Illusionist",
+      "oracle_fingerprint": "0e0489081dccd6b2a058020ee124edbc",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "BecomesTarget": { "what": ["This"] } },
+            "effects": [{ "Mill": { "count": 3 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{U}" }, "Tap"],
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "source": [{ "Is": { "Target": 0 } }], "combat": true } },
+                  "by": "Prevent",
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": { "Target": 0 }, "combat": true } },
+                  "by": "Prevent",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "oracle_id": "b749e9e4-0f2a-4157-8cca-facd6b48157f",
+  "name": "Proft's Eidetic Memory",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Proft's Eidetic Memory",
+      "oracle_fingerprint": "1c99093ab3dcb1961afdfdb1ba5d5b20",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Draw": {} }]
+          }
+        },
+        { "Rule": { "rule": { "NoMaxHandSize": "You" } } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "Drawn" } },
+                "op": "Gt",
+                "right": 1
+              }
+            },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": { "Target": 0 },
+                  "counter": "+1/+1",
+                  "count": { "Sum": [{ "Tallied": { "who": "You", "what": "Drawn" } }, -1] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

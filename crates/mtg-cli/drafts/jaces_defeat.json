@@ -9,15 +9,17 @@
       "abilities": [
         {
           "Spell": {
-            "targets": [{ "what": { "Object": ["Spell", "Colorless"] } }],
+            "targets": [{ "what": { "Object": ["Spell", { "Color": "Blue" }] } }],
             "effects": [
               { "Counter": { "what": { "Target": 0 } } },
               {
                 "If": {
                   "condition": {
-                    "Matches": {
+                    "CountOf": {
                       "subject": { "Target": 0 },
-                      "selector": [{ "Named": "Jace, the Mind Sculptor" }]
+                      "selector": ["Spell", { "Subtype": "Jace" }, { "Type": "Planeswalker" }],
+                      "op": "Ge",
+                      "right": 1
                     }
                   },
                   "then": [{ "Scry": { "count": 2 } }]

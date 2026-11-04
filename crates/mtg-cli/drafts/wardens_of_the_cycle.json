@@ -1,0 +1,47 @@
+{
+  "oracle_id": "fa7d09aa-2ebc-4571-81da-836cd80cf554",
+  "name": "Wardens of the Cycle",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wardens of the Cycle",
+      "oracle_fingerprint": "2fef9538964be1dd6de0f751dcfc5da8",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "When": {
+                    "condition": {
+                      "Compare": {
+                        "left": { "Tallied": { "who": "EachPlayer", "what": "CreaturesDied" } },
+                        "op": "Ge",
+                        "right": 1
+                      }
+                    },
+                    "then": 1,
+                    "otherwise": 0
+                  }
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    { "effects": [{ "GainLife": { "amount": 2 } }] },
+                    { "effects": [{ "Draw": {} }, { "LoseLife": { "amount": 1 } }] }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

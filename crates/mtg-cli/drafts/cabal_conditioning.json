@@ -1,0 +1,30 @@
+{
+  "oracle_id": "37a04d5a-9272-42bd-b448-c658375bbbc3",
+  "name": "Cabal Conditioning",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cabal Conditioning",
+      "oracle_fingerprint": "bbc86715697378deb732cce175f23f36",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": "Player", "bounds": { "min": 0, "max": { "Players": "EachPlayer" } } }
+            ],
+            "effects": [
+              {
+                "Discard": {
+                  "who": { "Target": 0 },
+                  "count": {
+                    "Greatest": { "of": [{ "ControlledBy": "You" }], "stat": "ManaValue" }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

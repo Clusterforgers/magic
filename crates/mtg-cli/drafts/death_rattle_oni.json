@@ -1,0 +1,45 @@
+{
+  "oracle_id": "bea40c67-73ca-4b5e-b902-5de07f21585c",
+  "name": "Death-Rattle Oni",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Death-Rattle Oni",
+      "oracle_fingerprint": "d20635a44dc648147c22774225f43fc4",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{1}",
+            "per": {
+              "Times": {
+                "by": 2,
+                "of": {
+                  "Tally": {
+                    "event": "Died",
+                    "who": "EachPlayer",
+                    "filter": [{ "Type": "Creature" }]
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Destroy": {
+                  "what": { "Each": [{ "Type": "Creature" }, "DamagedThisTurn", "Other"] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

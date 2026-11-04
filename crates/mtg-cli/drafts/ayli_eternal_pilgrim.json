@@ -1,0 +1,42 @@
+{
+  "oracle_id": "e6a35729-edee-4a8c-9aa1-041114d66c69",
+  "name": "Ayli, Eternal Pilgrim",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ayli, Eternal Pilgrim",
+      "oracle_fingerprint": "b5b653c4faf89ab0cfccc8aa695e5bd1",
+      "abilities": [
+        { "Keyword": "Deathtouch" },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{1}" },
+              { "Sacrifice": { "filter": [{ "Type": "Creature" }, "Other"] } }
+            ],
+            "effects": [
+              { "GainLife": { "amount": { "Stat": { "of": "Paid", "stat": "Toughness" } } } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{1}{W}{B}" },
+              { "Sacrifice": { "filter": [{ "Type": "Creature" }, "Other"] } }
+            ],
+            "condition": {
+              "Compare": {
+                "left": { "Life": "You" },
+                "op": "Ge",
+                "right": { "Sum": [{ "StartingLife": "You" }, 10] }
+              }
+            },
+            "targets": [{ "what": { "Object": [{ "Not": { "Type": "Land" } }] } }],
+            "effects": [{ "Exile": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

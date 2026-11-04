@@ -1,4 +1,4 @@
-//! Goal: every draft under `drafts/` is a whole rules file the checker marks `Unchecked`, in canonical form, named after
+//! Goal: every draft under `drafts/` is a whole rules file the checker marks `Unchecked` (`Mismatch` too for a trusted Forge draft), in canonical form, named after
 //! its card, with one record of the card's Scryfall data (equal to the cached Oracle Cards file where there is one),
 //! written for the text of that record, so its read hash is the one `compile` stores, and no rules file or `Verified`
 //! compiled row outranks it; the embedded set is the directory.
@@ -17,7 +17,7 @@ use mtg_cards::proposal::{Verdict, check};
 use mtg_cards::support::read_hash;
 use mtg_cards::{Caps, PrintedCard};
 use mtg_cli::cache::{Cache, default_dir};
-use mtg_cli::drafts::{self, FIXTURES, Misfit, misfits};
+use mtg_cli::drafts::{self, DraftMeta, FIXTURES, Misfit, misfits};
 use mtg_cli::w2a_promote::fixture::w2a_oracle_cards;
 use mtg_import::scryfall::{CardRecord, cards, cards_jsonl};
 use mtg_testkit::corpus::printed_card;
@@ -197,8 +197,12 @@ fn every_draft_is_a_whole_unchecked_card_in_canonical_form_that_fits_its_record(
             Some(other) => problems.push(format!("{slug}: {}", other.reason())),
         }
         let report = check(&item.text, &item.printed, library, &names, &caps);
+        let meta = fs::read_to_string(dir().join(drafts::META_DIR).join(format!("{slug}.json")))
+            .map_or_else(|_| DraftMeta::default(), |text| DraftMeta::parse(&text));
+        let trusted = meta.source.as_deref() == Some("forge") && meta.oracle_matches;
         match report.verdict() {
             Verdict::Unchecked => {}
+            Verdict::Mismatch if trusted => {}
             Verdict::Accepted => problems.push(format!(
                 "{slug}: the checker accepts it now: promote it as a corpus card and delete the draft"
             )),

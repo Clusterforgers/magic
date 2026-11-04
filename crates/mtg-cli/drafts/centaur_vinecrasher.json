@@ -1,0 +1,38 @@
+{
+  "oracle_id": "90629e9c-83c0-4eca-b4ed-d0494ded6704",
+  "name": "Centaur Vinecrasher",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Centaur Vinecrasher",
+      "oracle_fingerprint": "0cccd2eba54f4321331df2e28a6e528d",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "WithCounters": {
+                "counter": "+1/+1",
+                "count": { "Count": [{ "Type": "Land" }, { "In": "Graveyard" }] }
+              }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": { "what": [{ "Not": "Token" }, { "Type": "Land" }], "to": "Graveyard" }
+            },
+            "from": "Graveyard",
+            "effects": [
+              {
+                "Pay": { "cost": "{G}{G}", "paid": [{ "Move": { "what": "This", "to": "Hand" } }] }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

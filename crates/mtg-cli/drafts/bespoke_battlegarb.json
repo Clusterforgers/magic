@@ -1,0 +1,45 @@
+{
+  "oracle_id": "b2ff15b8-1be4-4f94-b4cc-aa959a50288e",
+  "name": "Bespoke Battlegarb",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bespoke Battlegarb",
+      "oracle_fingerprint": "36ad0cc5c435fe7d86d40f8575e3bb3d",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "Entered",
+                    "who": "EachPlayer",
+                    "filter": [{ "Not": { "Type": "Land" } }, { "ControlledBy": "You" }]
+                  }
+                },
+                "op": "Ge",
+                "right": 2
+              }
+            },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [{ "Attach": { "what": "This", "to": { "Target": 0 } } }]
+          }
+        },
+        { "Keyword": { "Equip": "{2}" } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "oracle_id": "f90174b3-effc-4c81-8cb0-856a0646516d",
+  "name": "Malignus",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Malignus",
+      "oracle_fingerprint": "a553f7fee2b38363169291fe0cbe8d44",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "SetPT": {
+                  "power": { "Half": { "of": { "HighestLife": "Opponents" }, "up": true } },
+                  "toughness": { "Half": { "of": { "HighestLife": "Opponents" }, "up": true } }
+                }
+              }
+            ],
+            "defining": true
+          }
+        },
+        { "Rule": { "rule": { "DamageCantBePrevented": { "source": ["This"] } } } }
+      ]
+    }
+  ]
+}

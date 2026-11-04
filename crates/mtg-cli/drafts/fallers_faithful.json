@@ -1,0 +1,40 @@
+{
+  "oracle_id": "df7500e8-76b4-49b3-a427-9a28ffa14637",
+  "name": "Faller's Faithful",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Faller's Faithful",
+      "oracle_fingerprint": "40cde98499e72c639f7a7d9f58d99fc3",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, "Other"] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Target": 0 },
+                      "selector": [{ "Not": "DamagedThisTurn" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Draw": { "who": { "ControllerOf": { "Target": 0 } }, "count": 2 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

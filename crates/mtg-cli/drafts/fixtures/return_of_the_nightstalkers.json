@@ -1,0 +1,127 @@
+{
+  "object": "card",
+  "id": "e85d85c2-9f34-4375-adcd-a1c5b487cacc",
+  "oracle_id": "6082f66e-3641-4b09-bb04-86bf29ee1c6f",
+  "multiverse_ids": [
+    6578
+  ],
+  "tcgplayer_id": 205,
+  "cardmarket_id": 9848,
+  "name": "Return of the Nightstalkers",
+  "lang": "en",
+  "released_at": "1998-06-24",
+  "uri": "https://api.scryfall.com/cards/e85d85c2-9f34-4375-adcd-a1c5b487cacc",
+  "scryfall_uri": "https://scryfall.com/card/p02/88/return-of-the-nightstalkers?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T12:41:11Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/e/8/e85d85c2-9f34-4375-adcd-a1c5b487cacc.jpg?1783946471",
+    "normal": "https://cards.scryfall.io/normal/front/e/8/e85d85c2-9f34-4375-adcd-a1c5b487cacc.jpg?1783946471",
+    "large": "https://cards.scryfall.io/large/front/e/8/e85d85c2-9f34-4375-adcd-a1c5b487cacc.jpg?1783946471",
+    "png": "https://cards.scryfall.io/png/front/e/8/e85d85c2-9f34-4375-adcd-a1c5b487cacc.png?1783946471",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/e/8/e85d85c2-9f34-4375-adcd-a1c5b487cacc.jpg?1783946471",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/e/8/e85d85c2-9f34-4375-adcd-a1c5b487cacc.jpg?1783946471",
+    "thumb": "https://cards.scryfall.io/thumb/front/e/8/e85d85c2-9f34-4375-adcd-a1c5b487cacc.webp?1783946471",
+    "grid": "https://cards.scryfall.io/grid/front/e/8/e85d85c2-9f34-4375-adcd-a1c5b487cacc.webp?1783946471",
+    "display": "https://cards.scryfall.io/display/front/e/8/e85d85c2-9f34-4375-adcd-a1c5b487cacc.webp?1783946471",
+    "art": "https://cards.scryfall.io/art/front/e/8/e85d85c2-9f34-4375-adcd-a1c5b487cacc.webp?1783946471",
+    "crop": "https://cards.scryfall.io/crop/front/e/8/e85d85c2-9f34-4375-adcd-a1c5b487cacc.webp?1783946471",
+    "jpeg": "https://cards.scryfall.io/normal/front/e/8/e85d85c2-9f34-4375-adcd-a1c5b487cacc.jpg?1783946471"
+  },
+  "mana_cost": "{5}{B}{B}",
+  "cmc": 7.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Return all Nightstalker permanent cards from your graveyard to the battlefield. Then destroy all Swamps you control.",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "ac67f18a-4f0e-407e-bab1-a9fe4f659565",
+  "set": "p02",
+  "set_name": "Portal Second Age",
+  "set_type": "starter",
+  "set_uri": "https://api.scryfall.com/sets/ac67f18a-4f0e-407e-bab1-a9fe4f659565",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ap02&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/p02?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/e85d85c2-9f34-4375-adcd-a1c5b487cacc/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A6082f66e-3641-4b09-bb04-86bf29ee1c6f&unique=prints",
+  "collector_number": "88",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Randy Gallegos",
+  "artist_ids": [
+    "a5048cc7-438a-4378-98e4-da99b78e1db0"
+  ],
+  "illustration_id": "fef3670c-78a5-4ac8-a000-40743a151c9d",
+  "border_color": "black",
+  "frame": "1997",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 32000,
+  "prices": {
+    "usd": "0.85",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.69",
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=6578&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DReturn%2Bof%2Bthe%2BNightstalkers",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DReturn%2Bof%2Bthe%2BNightstalkers",
+    "edhrec": "https://edhrec.com/route/?cc=Return+of+the+Nightstalkers"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F205%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=9848&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Return+of+the+Nightstalkers&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

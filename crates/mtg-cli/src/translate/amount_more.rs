@@ -1,0 +1,125 @@
+//! More `Count$` bases and player-count words: the amounts that name a fact of the game (domain, party size, colors of
+//! mana spent, the starting life), the permanents that entered or died this turn, and a player's cards and life.
+
+use serde_json::{Value, json};
+
+use super::ctx::{Ctx, Tr, unmapped};
+use super::valid::selector_in;
+
+/// The amount of a `Count$` base that is one of these, `None` for any other base.
+pub fn count(ctx: &Ctx, base: &str) -> Option<Tr<Value>> {
+    let (word, rest) = base.split_once(' ').unwrap_or((base, ""));
+    Some(match word {
+        "Domain" if rest.is_empty() => Ok(json!({"Distinct": {
+            "of": [{"Type": "Land"}, {"ControlledBy": "You"}], "stat": "BasicLandTypes"}})),
+        "Party" if rest.is_empty() => Ok(json!({"Party": "You"})),
+        "Converge" if rest.is_empty() => Ok(json!("ColorsSpent")),
+        "CastTotalManaSpent" if rest.is_empty() => Ok(json!({"ManaSpent": {"of": null}})),
+        "YourStartingLife" if rest.is_empty() => Ok(json!({"StartingLife": "You"})),
+        "Valid" | "ValidGraveyard" | "ValidHand" | "ValidExile" | "ValidLibrary" => {
+            valid_count(ctx, word, rest)
+        }
+        _ if word.starts_with("ThisTurnEntered_") => entered_this_turn(ctx, word),
+        _ if word.starts_with("Devotion.") || word.starts_with("DevotionDual.") => devotion(word),
+        _ => return None,
+    })
+}
+
+/// `Count$Valid Creature.YouCtrl$GreatestCardPower`: the objects the valid-string selects, counted or reduced to one
+/// characteristic by the word after the `$`.
+fn valid_count(ctx: &Ctx, word: &str, rest: &str) -> Tr<Value> {
+    let zone = match word {
+        "ValidGraveyard" => Some("Graveyard"),
+        "ValidHand" => Some("Hand"),
+        "ValidExile" => Some("Exile"),
+        "ValidLibrary" => Some("Library"),
+        _ => None,
+    };
+    let (spec, reduce) = rest.split_once('$').unwrap_or((rest, ""));
+    let of = selector_in(ctx, spec, zone)?;
+    let (kind, stat) = match reduce {
+        "" => return Ok(json!({"Count": of})),
+        "Colors" => ("Distinct", "Colors"),
+        "CardPower" => ("Total", "Power"),
+        "CardToughness" => ("Total", "Toughness"),
+        "CardManaCost" => ("Total", "ManaValue"),
+        "GreatestCardPower" => ("Greatest", "Power"),
+        "GreatestCardToughness" => ("Greatest", "Toughness"),
+        "GreatestCardManaCost" => ("Greatest", "ManaValue"),
+        "DifferentCardPower" => ("Distinct", "Power"),
+        "DifferentCardToughness" => ("Distinct", "Toughness"),
+        "DifferentCardManaCost" => ("Distinct", "ManaValue"),
+        "DifferentCardNames" => ("Distinct", "Name"),
+        other => return unmapped(format!("amount:Count${word}${other}")),
+    };
+    Ok(json!({kind: {"of": of, "stat": stat}}))
+}
+
+/// `ThisTurnEntered_Battlefield_Creature.YouCtrl` and `ThisTurnEntered_Graveyard_from_Battlefield_Creature`: the
+/// permanents that entered the battlefield, or went from it to a graveyard, this turn, as they were then.
+fn entered_this_turn(ctx: &Ctx, word: &str) -> Tr<Value> {
+    let spec = word.strip_prefix("ThisTurnEntered_").unwrap_or_default();
+    let (event, valid) = if let Some(valid) = spec.strip_prefix("Battlefield_") {
+        ("Entered", valid)
+    } else if let Some(valid) = spec.strip_prefix("Graveyard_from_Battlefield_") {
+        ("Died", valid)
+    } else {
+        return unmapped(format!("amount:Count$ThisTurnEntered_{}", head(spec)));
+    };
+    let filter = selector_in(ctx, valid, None)?;
+    Ok(json!({"Tally": {"event": event, "who": "EachPlayer", "filter": filter}}))
+}
+
+/// `Devotion.Black` and `DevotionDual.White.Black`: the mana symbols of the colors among the permanents you control.
+fn devotion(word: &str) -> Tr<Value> {
+    let colors: Vec<&str> = word.split('.').skip(1).collect();
+    let known = ["White", "Blue", "Black", "Red", "Green"];
+    if colors.is_empty() || !colors.iter().all(|color| known.contains(color)) {
+        return unmapped("amount:Count$Devotion");
+    }
+    Ok(json!({"Devotion": colors}))
+}
+
+fn head(spec: &str) -> &str {
+    spec.split('.').next().unwrap_or_default()
+}
+
+/// A number about a player (`TargetedPlayer$CardsInHand`, `PlayerCountPropertyYou$CardsDiscardedThisTurn`).
+pub fn player_amount(head: &str, what: &str, who: &Value) -> Option<Tr<Value>> {
+    let cards = |zone: &str| Ok(json!({"Count": [{"In": zone}, {"OwnedBy": who}]}));
+    let tallied = |what: &str| Ok(json!({"Tallied": {"who": who, "what": what}}));
+    Some(match (head, what) {
+        ("TargetedPlayer", "CardsInHand") => cards("Hand"),
+        ("TargetedPlayer", "CardsInLibrary") => cards("Library"),
+        ("TargetedPlayer", "CardsInGraveyard") => cards("Graveyard"),
+        ("TargetedPlayer", "LifeTotal") => Ok(json!({"Life": who})),
+        ("PlayerCountPropertyYou", "CardsDiscardedThisTurn") => tallied("Discarded"),
+        ("PlayerCountPropertyYou", "LifeLostThisTurn") => tallied("LifeLost"),
+        ("PlayerCountPropertyYou", "LandsPlayed") => tallied("LandsPlayed"),
+        _ => return None,
+    })
+}
+
+/// `PlayerCountOpponents$HighestCardsInHand` and its kin: the largest count among the players of the cards their own
+/// selector names, each player taken as "you"; `None` for any other word.
+pub fn highest(ctx: &Ctx, who: &str, what: &str) -> Option<Tr<Value>> {
+    let mine = |zone: &str| Ok(vec![json!({"In": zone}), json!({"OwnedBy": "You"})]);
+    let of = if let Some(spec) = what.strip_prefix("HighestValid ") {
+        selector_in(ctx, spec, None)
+    } else if let Some(spec) = what.strip_prefix("HighestValidGraveyard ") {
+        selector_in(ctx, spec, Some("Graveyard"))
+    } else {
+        match what {
+            "HighestCardsInHand" => mine("Hand"),
+            "HighestCardsInGraveyard" => mine("Graveyard"),
+            _ => return None,
+        }
+    };
+    Some(of.and_then(|of| {
+        // The selector is written for "you": a mention of the opponents would read the wrong players.
+        if of.iter().any(|pred| pred.to_string().contains("Opponents")) {
+            return unmapped("amount:Highest-of-the-opponents");
+        }
+        Ok(json!({"Largest": {"who": who, "of": of}}))
+    }))
+}

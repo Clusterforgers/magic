@@ -10,37 +10,7 @@
         {
           "Triggered": {
             "when": {
-              "ZoneChange": {
-                "what": [
-                  { "ControlledBy": "You" },
-                  { "Targeting": [] },
-                  { "Targeting": [] },
-                  { "Targeting": [] },
-                  { "Targeting": [] },
-                  { "Targeting": [] },
-                  { "Targeting": [] },
-                  { "Targeting": [] },
-                  { "Targeting": [] },
-                  { "Targeting": [] },
-                  { "Targeting": [] },
-                  { "Targeting": [] },
-                  { "Targeting": [] },
-                  { "Targeting": [] },
-                  { "Targeting": [] },
-                  { "Targeting": [] },
-                  { "Targeting": [] },
-                  { "Targeting": [] },
-                  { "Targeting": [] },
-                  { "Targeting": [] },
-                  { "Targeting": [] },
-                  { "Targeting": [] },
-                  { "Targeting": [] },
-                  { "Targeting": [] },
-                  { "Targeting": [] },
-                  { "Targeting": [] },
-                  { "Targeting": [] }
-                ]
-              }
+              "ZoneChange": { "what": ["Tapped", { "ControlledBy": "You" }], "to": "Battlefield" }
             },
             "effects": [{ "Untap": { "what": "Triggering" } }]
           }

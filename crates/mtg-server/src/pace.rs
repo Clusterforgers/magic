@@ -209,7 +209,7 @@ pub(crate) fn fallback(decision: &Decision) -> Option<Answer> {
     match &decision.kind {
         DecisionKind::Priority(_) => Some(pass()),
         DecisionKind::DeclareBlockers(options) => {
-            Some(Answer::DeclareBlockers(options.required_blocks()))
+            Some(Answer::DeclareBlockers(options.legal_blocks()))
         }
         DecisionKind::ChooseTargets(options) => {
             Some(Answer::ChooseTargets(if options.can_cancel {
@@ -267,7 +267,7 @@ pub(crate) fn fallback(decision: &Decision) -> Option<Answer> {
         ))),
         DecisionKind::PayMana(options) => pay_fallback(options).map(Answer::PayMana),
         DecisionKind::DeclareAttackers(options) => {
-            Some(Answer::DeclareAttackers(options.required_attack()))
+            Some(Answer::DeclareAttackers(options.legal_attack()))
         }
         DecisionKind::AssignDamage(options) => damage_in_order(options).map(Answer::AssignDamage),
         DecisionKind::Discard(options) => {
@@ -577,6 +577,7 @@ mod tests {
             most: None,
             blockers: Vec::new(),
             must_be_blocked: Vec::new(),
+            cant_alone: Vec::new(),
             min_blockers: Vec::new(),
             max_blockers: Vec::new(),
             required: Vec::new(),
@@ -625,6 +626,7 @@ mod tests {
         DecisionKind::DeclareAttackers(AttackOptions {
             most: None,
             most_at: Vec::new(),
+            cant_alone: Vec::new(),
             attackers: (10..13)
                 .map(|n| AttackerOption::free(ObjectId(n), vec![AttackTarget::Player(PlayerId(0))]))
                 .collect(),
@@ -1242,6 +1244,7 @@ mod tests {
                 },
             ],
             must_be_blocked: Vec::new(),
+            cant_alone: Vec::new(),
             min_blockers: Vec::new(),
             max_blockers: Vec::new(),
             required: vec![ObjectId(2)],

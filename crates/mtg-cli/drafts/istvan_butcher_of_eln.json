@@ -1,0 +1,37 @@
+{
+  "oracle_id": "5e277de5-793a-4364-923a-a55b53c0fa85",
+  "name": "Istvan, Butcher of Eln",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Istvan, Butcher of Eln",
+      "oracle_fingerprint": "429a3cfac7b505658c4d5ea0fd3dc23a",
+      "abilities": [
+        { "Rule": { "rule": { "MustAttack": "This" } } },
+        {
+          "Replacement": {
+            "when": {
+              "Damage": {
+                "to": "This",
+                "source": [{ "Type": "Creature" }, { "In": "Battlefield" }]
+              }
+            },
+            "by": "Prevent"
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1", "count": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

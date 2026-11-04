@@ -1,0 +1,34 @@
+{
+  "oracle_id": "137b5708-50a9-4f4c-84e6-9043be9f1989",
+  "name": "Anathemancer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Anathemancer",
+      "oracle_fingerprint": "9a5b9fc1250bae56776dfacba3d7d702",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": {
+                    "Count": [
+                      { "Type": "Land" },
+                      { "Not": { "Supertype": "Basic" } },
+                      { "ControlledBy": { "Target": 0 } }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Unearth": "{5}{B}{R}" } }
+      ]
+    }
+  ]
+}

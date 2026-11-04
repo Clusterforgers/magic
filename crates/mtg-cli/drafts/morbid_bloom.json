@@ -1,0 +1,36 @@
+{
+  "oracle_id": "aacec73f-9c60-4c3f-b323-6261eab342af",
+  "name": "Morbid Bloom",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Morbid Bloom",
+      "oracle_fingerprint": "f8519b14d1669a2301b46ea359228a60",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, { "In": "Graveyard" }] } }],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 } } },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Saproling",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Saproling"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": { "Stat": { "of": { "Target": 0 }, "stat": "Toughness" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

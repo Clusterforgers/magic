@@ -1,0 +1,60 @@
+{
+  "oracle_id": "eb448589-28e1-49d4-ba3e-7ddb4341fdc5",
+  "name": "Akoum Battlesinger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Akoum Battlesinger",
+      "oracle_fingerprint": "0ca2e70815a744dd50209ed661b6a1fd",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  {
+                    "AnyOf": [
+                      "This",
+                      {
+                        "Not": {
+                          "AnyOf": [
+                            { "Not": { "Subtype": "Ally" } },
+                            { "Not": "Other" },
+                            { "Not": { "ControlledBy": "You" } }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                ],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Continuous": {
+                        "affected": {
+                          "Each": [
+                            { "Type": "Creature" },
+                            { "Subtype": "Ally" },
+                            { "ControlledBy": "You" }
+                          ]
+                        },
+                        "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

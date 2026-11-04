@@ -1,0 +1,46 @@
+{
+  "oracle_id": "76c036df-44f5-4021-b7fc-656147351341",
+  "name": "Key to the Side-Door",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Key to the Side-Door",
+      "oracle_fingerprint": "6369f4c84722165b18db24fa16089b1b",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["CantBeBlocked"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{1}" },
+              "Tap",
+              {
+                "Discard": {
+                  "filter": [
+                    { "Supertype": "Legendary" },
+                    { "SharesName": { "Each": [{ "Supertype": "Legendary" }] } },
+                    { "ControlledBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Draw": { "count": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

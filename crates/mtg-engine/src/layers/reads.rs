@@ -179,6 +179,7 @@ pub(crate) fn reads_of_ref(reference: &Ref) -> Traits {
         | Ref::Defending
         | Ref::Attacked
         | Ref::MostLife
+        | Ref::ActivePlayer
         | Ref::Bound(_)
         | Ref::Paid => Traits::NONE,
         Ref::Remembered { on, .. } => reads_of_ref(on),
@@ -231,6 +232,7 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         | Pred::CastWith(_)
         | Pred::TopOfLibrary
         | Pred::BottomOfLibrary
+        | Pred::Kicked
         | Pred::Suspended => Traits::NONE,
         Pred::WasCast { by, .. } => by.as_ref().map_or(Traits::NONE, reads_of_ref),
         Pred::GreatestAmong { stat, group } => reads_of_stat(*stat).or(reads_of_selector(group)),
@@ -276,9 +278,11 @@ fn reads_of_stat(stat: StatKind) -> Traits {
         StatKind::Toughness => Traits::TOUGHNESS,
         StatKind::Colors => Traits::COLORS,
         StatKind::BasicLandTypes => Traits::SUBTYPES,
-        StatKind::ManaValue | StatKind::Loyalty | StatKind::BasePower | StatKind::ManaSpent => {
-            Traits::NONE
-        }
+        StatKind::ManaValue
+        | StatKind::Loyalty
+        | StatKind::BasePower
+        | StatKind::ManaSpent
+        | StatKind::Name => Traits::NONE,
     }
 }
 
@@ -355,7 +359,7 @@ pub(crate) fn reads_of_amount(amount: &Amount) -> Traits {
 /// What a condition reads when it is checked.
 pub(crate) fn reads_of_condition(condition: &Condition) -> Traits {
     match condition {
-        Condition::Not(inner) => reads_of_condition(inner),
+        Condition::Not(inner) | Condition::AtTrigger(inner) => reads_of_condition(inner),
         Condition::All(all) | Condition::Any(all) => all
             .iter()
             .fold(Traits::NONE, |sum, inner| sum.or(reads_of_condition(inner))),
@@ -363,6 +367,14 @@ pub(crate) fn reads_of_condition(condition: &Condition) -> Traits {
         Condition::Matches { subject, selector } => {
             reads_of_ref(subject).or(reads_of_selector(selector))
         }
+        Condition::CountOf {
+            subject,
+            selector,
+            right,
+            ..
+        } => reads_of_ref(subject)
+            .or(reads_of_selector(selector))
+            .or(reads_of_amount(right)),
         Condition::YourTurn => Traits::CONTROL,
         Condition::NewlyControlled(what) => reads_of_ref(what).or(Traits::CONTROL),
         Condition::Kicked

@@ -1,0 +1,52 @@
+{
+  "oracle_id": "f2a6dc8d-3c98-44ae-aff0-b838d7aee0b7",
+  "name": "Sandstalker Moloch",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sandstalker Moloch",
+      "oracle_fingerprint": "ca084792996ea1d863d2860bffa5ec4b",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "SpellCast",
+                    "who": "EachPlayer",
+                    "filter": [
+                      { "ControlledBy": "Opponents" },
+                      { "AnyOf": [{ "Color": "Blue" }, { "Color": "Black" }] }
+                    ]
+                  }
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              { "LookAtTop": { "count": 4, "as": "top" } },
+              {
+                "Choose": {
+                  "from": { "Each": [{ "In": "Library" }, { "Is": { "Bound": "top" } }] },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "kept2"
+                }
+              },
+              { "Move": { "what": { "Bound": "kept2" }, "to": "Hand" } },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,145 @@
+{
+  "object": "card",
+  "id": "1b1af9be-7f5e-48e9-a6e7-9261e199812e",
+  "oracle_id": "9900c771-ab81-415e-90a7-123c1bacfa83",
+  "multiverse_ids": [
+    574670
+  ],
+  "mtgo_id": 102856,
+  "arena_id": 82242,
+  "tcgplayer_id": 283120,
+  "cardmarket_id": 671629,
+  "name": "Yavimaya Iconoclast",
+  "lang": "en",
+  "released_at": "2022-09-09",
+  "uri": "https://api.scryfall.com/cards/1b1af9be-7f5e-48e9-a6e7-9261e199812e",
+  "scryfall_uri": "https://scryfall.com/card/dmu/190/yavimaya-iconoclast?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T05:41:27Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/1/b/1b1af9be-7f5e-48e9-a6e7-9261e199812e.jpg?1783921287",
+    "normal": "https://cards.scryfall.io/normal/front/1/b/1b1af9be-7f5e-48e9-a6e7-9261e199812e.jpg?1783921287",
+    "large": "https://cards.scryfall.io/large/front/1/b/1b1af9be-7f5e-48e9-a6e7-9261e199812e.jpg?1783921287",
+    "png": "https://cards.scryfall.io/png/front/1/b/1b1af9be-7f5e-48e9-a6e7-9261e199812e.png?1783921287",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/1/b/1b1af9be-7f5e-48e9-a6e7-9261e199812e.jpg?1783921287",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/1/b/1b1af9be-7f5e-48e9-a6e7-9261e199812e.jpg?1783921287",
+    "thumb": "https://cards.scryfall.io/thumb/front/1/b/1b1af9be-7f5e-48e9-a6e7-9261e199812e.webp?1783921287",
+    "grid": "https://cards.scryfall.io/grid/front/1/b/1b1af9be-7f5e-48e9-a6e7-9261e199812e.webp?1783921287",
+    "display": "https://cards.scryfall.io/display/front/1/b/1b1af9be-7f5e-48e9-a6e7-9261e199812e.webp?1783921287",
+    "art": "https://cards.scryfall.io/art/front/1/b/1b1af9be-7f5e-48e9-a6e7-9261e199812e.webp?1783921287",
+    "crop": "https://cards.scryfall.io/crop/front/1/b/1b1af9be-7f5e-48e9-a6e7-9261e199812e.webp?1783921287",
+    "jpeg": "https://cards.scryfall.io/normal/front/1/b/1b1af9be-7f5e-48e9-a6e7-9261e199812e.jpg?1783921287"
+  },
+  "mana_cost": "{1}{G}",
+  "cmc": 2.0,
+  "type_line": "Creature — Elf",
+  "oracle_text": "Kicker {R} (You may pay an additional {R} as you cast this spell.)\nTrample\nWhen this creature enters, if it was kicked, it gets +1/+1 and gains haste until end of turn.",
+  "power": "3",
+  "toughness": "2",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G",
+    "R"
+  ],
+  "keywords": [
+    "Trample",
+    "Kicker"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "arena",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "4e47a6cd-cdeb-4b0f-8f24-cfe1a0127cb3",
+  "set": "dmu",
+  "set_name": "Dominaria United",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/4e47a6cd-cdeb-4b0f-8f24-cfe1a0127cb3",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Admu&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/dmu?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/1b1af9be-7f5e-48e9-a6e7-9261e199812e/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A9900c771-ab81-415e-90a7-123c1bacfa83&unique=prints",
+  "collector_number": "190",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "Steel weapons hold a forbidden allure to some of the younger Yavimayans.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Caio Monteiro",
+  "artist_ids": [
+    "d5053eb6-af72-47a0-b6e8-023cc3b9aefb"
+  ],
+  "illustration_id": "c62ea362-5b4a-4ae7-8384-1e1d3db7fd54",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 22177,
+  "penny_rank": 6420,
+  "preview": {
+    "source": "nessameowmeow",
+    "source_uri": "https://www.instagram.com/p/ChfLIZZrPz6/",
+    "previewed_at": "2022-08-20"
+  },
+  "prices": {
+    "usd": "0.18",
+    "usd_foil": "0.12",
+    "usd_etched": null,
+    "eur": "0.07",
+    "eur_foil": "0.25",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=574670&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DYavimaya%2BIconoclast",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DYavimaya%2BIconoclast",
+    "edhrec": "https://edhrec.com/route/?cc=Yavimaya+Iconoclast"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F283120%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=671629&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/102856?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "oracle_id": "11c2e14c-cee5-480d-b1be-a6b7e245332a",
+  "name": "Harbinger of Spring",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Harbinger of Spring",
+      "oracle_fingerprint": "1449ad42c29333b12e9cf6ce9f1ab1d9",
+      "abilities": [
+        {
+          "Keyword": { "Protection": [{ "Type": "Creature" }, { "Not": { "Subtype": "Spirit" } }] }
+        },
+        { "Keyword": { "Macro": { "name": "soulshift", "amount": 4 } } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "oracle_id": "c49db060-2d4b-4dc8-8e54-7606e079c9fe",
+  "name": "Sunspear Shikari",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sunspear Shikari",
+      "oracle_fingerprint": "ff6b33c718c94f7d9c15e9709a0e5759",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "FirstStrike" }, { "AddKeyword": "Lifelink" }],
+            "condition": {
+              "Matches": {
+                "subject": "This",
+                "selector": [{ "HasAttached": [{ "Subtype": "Equipment" }] }]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

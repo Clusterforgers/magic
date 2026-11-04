@@ -1,0 +1,40 @@
+{
+  "oracle_id": "3b17da84-ae4d-4fc1-a327-85e54e6156c6",
+  "name": "Koth, the Geomancer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Koth, the Geomancer",
+      "oracle_fingerprint": "0a95ad5d3e8932d771520dd7cc12546a",
+      "abilities": [
+        { "Keyword": "Reach" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              { "DealDamage": { "to": "Opponents", "amount": 1 } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": "Triggering",
+                      "selector": [{ "Subtype": "Mountain" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "AddMana": { "mana": { "Fixed": ["Red"] } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

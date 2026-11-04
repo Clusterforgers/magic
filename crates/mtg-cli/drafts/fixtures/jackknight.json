@@ -1,0 +1,132 @@
+{
+  "object": "card",
+  "id": "3d84953b-c59c-45f8-aedd-e68bff7c7ce3",
+  "oracle_id": "81025603-f62b-4635-bbf1-5814cc60d615",
+  "multiverse_ids": [
+    439400
+  ],
+  "tcgplayer_id": 152506,
+  "cardmarket_id": 313655,
+  "name": "Jackknight",
+  "lang": "en",
+  "released_at": "2017-12-08",
+  "uri": "https://api.scryfall.com/cards/3d84953b-c59c-45f8-aedd-e68bff7c7ce3",
+  "scryfall_uri": "https://scryfall.com/card/ust/11/jackknight?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T09:37:40Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/3/d/3d84953b-c59c-45f8-aedd-e68bff7c7ce3.jpg?1783935460",
+    "normal": "https://cards.scryfall.io/normal/front/3/d/3d84953b-c59c-45f8-aedd-e68bff7c7ce3.jpg?1783935460",
+    "large": "https://cards.scryfall.io/large/front/3/d/3d84953b-c59c-45f8-aedd-e68bff7c7ce3.jpg?1783935460",
+    "png": "https://cards.scryfall.io/png/front/3/d/3d84953b-c59c-45f8-aedd-e68bff7c7ce3.png?1783935460",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/3/d/3d84953b-c59c-45f8-aedd-e68bff7c7ce3.jpg?1783935460",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/3/d/3d84953b-c59c-45f8-aedd-e68bff7c7ce3.jpg?1783935460",
+    "thumb": "https://cards.scryfall.io/thumb/front/3/d/3d84953b-c59c-45f8-aedd-e68bff7c7ce3.webp?1783935460",
+    "grid": "https://cards.scryfall.io/grid/front/3/d/3d84953b-c59c-45f8-aedd-e68bff7c7ce3.webp?1783935460",
+    "display": "https://cards.scryfall.io/display/front/3/d/3d84953b-c59c-45f8-aedd-e68bff7c7ce3.webp?1783935460",
+    "art": "https://cards.scryfall.io/art/front/3/d/3d84953b-c59c-45f8-aedd-e68bff7c7ce3.webp?1783935460",
+    "crop": "https://cards.scryfall.io/crop/front/3/d/3d84953b-c59c-45f8-aedd-e68bff7c7ce3.webp?1783935460",
+    "jpeg": "https://cards.scryfall.io/normal/front/3/d/3d84953b-c59c-45f8-aedd-e68bff7c7ce3.jpg?1783935460"
+  },
+  "mana_cost": "{1}{W}",
+  "cmc": 2.0,
+  "type_line": "Artifact Creature — Cyborg Knight",
+  "oracle_text": "Whenever another artifact you control enters, put a +1/+1 counter on this creature. If that artifact is a Contraption, this creature gains lifelink until end of turn.",
+  "power": "1",
+  "toughness": "1",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "not_legal",
+    "pauper": "not_legal",
+    "vintage": "not_legal",
+    "penny": "not_legal",
+    "commander": "not_legal",
+    "oathbreaker": "not_legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "not_legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "83491685-880d-41dd-a4af-47d2b3b17c10",
+  "set": "ust",
+  "set_name": "Unstable",
+  "set_type": "funny",
+  "set_uri": "https://api.scryfall.com/sets/83491685-880d-41dd-a4af-47d2b3b17c10",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aust&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/ust?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/3d84953b-c59c-45f8-aedd-e68bff7c7ce3/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A81025603-f62b-4635-bbf1-5814cc60d615&unique=prints",
+  "collector_number": "11",
+  "digital": false,
+  "rarity": "rare",
+  "watermark": "orderofthewidget",
+  "flavor_text": "\"My sword is at your service, as are my scissors, corkscrew, and bottle opener.\"",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Ben Wootten",
+  "artist_ids": [
+    "31cdca96-ecde-4245-bfb6-653929d57d9c"
+  ],
+  "illustration_id": "758a9c27-9c09-45dc-a34c-02de6a6d4772",
+  "border_color": "silver",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "prices": {
+    "usd": "0.26",
+    "usd_foil": "0.77",
+    "usd_etched": null,
+    "eur": "0.16",
+    "eur_foil": "0.56",
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=439400&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DJackknight",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DJackknight",
+    "edhrec": "https://edhrec.com/route/?cc=Jackknight"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F152506%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=313655&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Jackknight&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

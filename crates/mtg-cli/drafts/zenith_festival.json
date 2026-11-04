@@ -1,0 +1,29 @@
+{
+  "oracle_id": "4dabba8c-0490-41ec-a03e-f7d0c9f0edb6",
+  "name": "Zenith Festival",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Zenith Festival",
+      "oracle_fingerprint": "ab140fdac90fb4bedef00e83c815ab29",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "ExileTop": { "count": "X", "as": "exiled" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": { "from": "Exile", "only": { "Bound": "exiled" }, "play": true }
+                  },
+                  "duration": "UntilEndOfYourNextTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Harmonize": "{X}{R}{R}" } }
+      ]
+    }
+  ]
+}

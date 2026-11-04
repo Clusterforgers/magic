@@ -1,0 +1,32 @@
+{
+  "oracle_id": "52244c23-7680-4bed-8ef8-8d10e289d3f7",
+  "name": "Shimmercreep",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shimmercreep",
+      "oracle_fingerprint": "cbcf745d0d39f7f3754536c3ca4583f5",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "LoseLife": {
+                  "who": "Opponents",
+                  "amount": { "Distinct": { "of": [{ "ControlledBy": "You" }], "stat": "Colors" } }
+                }
+              },
+              {
+                "GainLife": {
+                  "amount": { "Distinct": { "of": [{ "ControlledBy": "You" }], "stat": "Colors" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

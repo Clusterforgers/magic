@@ -1,0 +1,38 @@
+{
+  "oracle_id": "dfd8e6c2-e425-41fa-af55-985271f771b3",
+  "name": "Balthor the Defiled",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Balthor the Defiled",
+      "oracle_fingerprint": "7c98dde0f58df45b6634ebf89812e883",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "Subtype": "Minion" }] },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{B}{B}{B}" }, "ExileSelf"],
+            "effects": [
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "AnyOf": [{ "Color": "Black" }, { "Color": "Red" }] },
+                      { "In": "Graveyard" }
+                    ]
+                  },
+                  "to": { "Battlefield": {} }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

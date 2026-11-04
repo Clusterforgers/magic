@@ -1,0 +1,24 @@
+{
+  "oracle_id": "ba08b4cf-9a13-40fd-8522-9504d2ff1a19",
+  "name": "Spider-Suit",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spider-Suit",
+      "oracle_fingerprint": "8e968ecadabfb59b4c0536ae0490740f",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "ModifyPT": { "power": 2, "toughness": 2 } },
+              { "AddSubtype": "Spider" },
+              { "AddSubtype": "Hero" }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{3}" } }
+      ]
+    }
+  ]
+}

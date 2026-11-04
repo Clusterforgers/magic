@@ -1,0 +1,49 @@
+{
+  "oracle_id": "f3902dfd-6d09-425f-8446-a68cae2eea50",
+  "name": "Ashad, the Lone Cyberman",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ashad, the Lone Cyberman",
+      "oracle_fingerprint": "3e1cfc2fba82600bc35826c1bfdba38b",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Artifact" },
+                { "Not": { "Supertype": "Legendary" } },
+                { "ControlledBy": "You" },
+                { "In": "Stack" }
+              ]
+            },
+            "mods": [{ "AddKeyword": { "Casualty": 2 } }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "SpellCast",
+                    "who": "EachPlayer",
+                    "filter": [
+                      { "Type": "Artifact" },
+                      { "Not": { "Supertype": "Legendary" } },
+                      { "ControlledBy": "You" }
+                    ]
+                  }
+                },
+                "op": "Eq",
+                "right": 0
+              }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Sacrificed": { "what": [{ "Type": "Creature" }, "Other"], "by": "You" } },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

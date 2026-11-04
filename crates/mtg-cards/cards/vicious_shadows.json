@@ -1,0 +1,39 @@
+{
+  "oracle_id": "9707ac4f-6493-47fe-9c31-4daf469b5c6e",
+  "name": "Vicious Shadows",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vicious Shadows",
+      "oracle_fingerprint": "50a89c59c73da45e53e566c035cad40d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "DealDamage": {
+                        "to": { "Target": 0 },
+                        "amount": { "Count": [{ "In": "Hand" }, { "OwnedBy": { "Target": 0 } }] }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

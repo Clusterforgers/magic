@@ -1,0 +1,41 @@
+{
+  "oracle_id": "fd0980ae-eabf-45da-98e7-23d81bfa185a",
+  "name": "Echo of Dusk",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Echo of Dusk",
+      "oracle_fingerprint": "7d63d992f506e5a815fcd63129e4da12",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }, { "AddKeyword": "Lifelink" }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "OwnedBy": "You" },
+                    {
+                      "AnyOf": [
+                        { "Type": "Artifact" },
+                        { "Type": "Battle" },
+                        { "Type": "Creature" },
+                        { "Type": "Enchantment" },
+                        { "Type": "Land" },
+                        { "Type": "Planeswalker" }
+                      ]
+                    },
+                    { "In": "Graveyard" }
+                  ]
+                },
+                "op": "Ge",
+                "right": 4
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

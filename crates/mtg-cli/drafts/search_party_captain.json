@@ -1,0 +1,27 @@
+{
+  "oracle_id": "8721b0a6-52ff-4749-92db-82bb36f5a73e",
+  "name": "Search Party Captain",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Search Party Captain",
+      "oracle_fingerprint": "73e7038971cad6be6562020ca28dae40",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{1}",
+            "per": { "Tallied": { "who": "You", "what": "Attackers" } }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

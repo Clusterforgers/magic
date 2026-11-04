@@ -1,0 +1,20 @@
+{
+  "oracle_id": "77d5d435-d794-46c0-b630-a460973cf75a",
+  "name": "Merfolk Falconer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Merfolk Falconer",
+      "oracle_fingerprint": "163e4c95ca2d151ccdb92dfc1d93d949",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": ["Kicked"], "by": "You" } },
+            "effects": [{ "Scry": { "count": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,60 @@
+{
+  "oracle_id": "c7031047-5109-482f-b2e9-14800b9279bf",
+  "name": "Riders of the Mark",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Riders of the Mark",
+      "oracle_fingerprint": "90b3cd44b11f3fab5722389aca1a3365",
+      "abilities": [
+        { "Keyword": { "Affinity": [{ "Subtype": "Human" }] } },
+        { "Keyword": "Trample" },
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": ["This", "AttackedThisTurn"] },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              { "Move": { "what": "This", "to": "Hand", "as": "moved" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "moved" },
+                      "selector": [],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Human Soldier",
+                            "colors": ["White"],
+                            "types": ["Creature"],
+                            "subtypes": ["Human", "Soldier"],
+                            "power": 1,
+                            "toughness": 1
+                          }
+                        },
+                        "count": { "Stat": { "of": { "Bound": "moved" }, "stat": "Toughness" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "oracle_id": "c97957a2-8310-4cff-8aad-871b7901d124",
+  "name": "Caretaker's Talent",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Caretaker's Talent",
+      "oracle_fingerprint": "772b08c6e330344ab363878489febab3",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "ZoneChange": { "what": ["Token", { "ControlledBy": "You" }], "to": "Battlefield" }
+              }
+            },
+            "limit": "OncePerTurn",
+            "effects": [{ "Draw": {} }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{W}",
+            "timing": "Sorcery",
+            "condition": { "Level": { "of": "This", "op": "Eq", "level": 1 } },
+            "effects": [{ "BecomeLevel": { "level": 2 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{3}{W}",
+            "timing": "Sorcery",
+            "condition": { "Level": { "of": "This", "op": "Eq", "level": 2 } },
+            "effects": [{ "BecomeLevel": { "level": 3 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "oracle_id": "6d9f2fe0-5657-45b4-9431-36e0f6c8eba2",
+  "name": "Prison Sentence",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Prison Sentence",
+      "oracle_fingerprint": "7e12b6b31c8ad217056601e80fd1c084",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Scry": { "count": 2 } }]
+          }
+        },
+        { "Static": { "affected": "Attached", "mods": ["CantAttack", "CantBlock"] } },
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": { "Each": [{ "Type": "Creature" }, { "Is": "Attached" }] },
+                "action": { "Activate": [] }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

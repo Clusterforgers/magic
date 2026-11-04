@@ -1,0 +1,32 @@
+{
+  "oracle_id": "23cf22fe-483f-4841-882e-e1513bb1d495",
+  "name": "Structural Assault",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Structural Assault",
+      "oracle_fingerprint": "ced7b171c6bfc010b59c6a7c4b29ab21",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Destroy": { "what": { "Each": [{ "Type": "Artifact" }] } } },
+              {
+                "DealDamage": {
+                  "to": { "Each": [{ "Type": "Creature" }] },
+                  "amount": {
+                    "Tally": {
+                      "event": "Died",
+                      "who": "EachPlayer",
+                      "filter": [{ "Type": "Artifact" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

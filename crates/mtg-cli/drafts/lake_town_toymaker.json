@@ -1,0 +1,40 @@
+{
+  "oracle_id": "0f208cd3-7673-4380-9cb8-5b6f09966ebd",
+  "name": "Lake-town Toymaker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lake-town Toymaker",
+      "oracle_fingerprint": "bd276f6ffcbed897a074a5adb15b975e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "Drawn" } },
+                "op": "Ge",
+                "right": 2
+              }
+            },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "ModifyPT": { "power": 3, "toughness": 0 } },
+                    { "AddKeyword": "FirstStrike" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

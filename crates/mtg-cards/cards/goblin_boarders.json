@@ -1,0 +1,26 @@
+{
+  "oracle_id": "4c64feae-95d7-426d-9e42-d3b0841d2054",
+  "name": "Goblin Boarders",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Goblin Boarders",
+      "oracle_fingerprint": "975e418623938db7e91252b1ceab7977",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": 1 } },
+            "condition": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "Attackers" } },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

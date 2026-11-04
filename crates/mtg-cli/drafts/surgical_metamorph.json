@@ -1,0 +1,29 @@
+{
+  "oracle_id": "4f328996-f9dd-4c7a-9548-bc4b9d0d943f",
+  "name": "Surgical Metamorph",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Surgical Metamorph",
+      "oracle_fingerprint": "7f470bd299ca76d6bb945d57965f0f3f",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{1}",
+            "per": {
+              "When": { "condition": { "StartingPlayer": "You" }, "then": 0, "otherwise": 1 }
+            }
+          }
+        },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "AsCopy": { "of": [], "except": [{ "AddType": "Artifact" }] } }
+          }
+        }
+      ]
+    }
+  ]
+}

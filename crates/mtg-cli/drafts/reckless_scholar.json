@@ -1,0 +1,23 @@
+{
+  "oracle_id": "604aded2-64c2-4474-b5b7-8c83e0e3fe76",
+  "name": "Reckless Scholar",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Reckless Scholar",
+      "oracle_fingerprint": "087967fd43c40a0f593c449f4bddfe07",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              { "Draw": { "who": { "Target": 0 } } },
+              { "Discard": { "who": { "Target": 0 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

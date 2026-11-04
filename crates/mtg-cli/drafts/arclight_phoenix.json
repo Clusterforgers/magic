@@ -1,0 +1,38 @@
+{
+  "oracle_id": "a80ea391-54d1-4b61-95a3-f8deb4cbe842",
+  "name": "Arclight Phoenix",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Arclight Phoenix",
+      "oracle_fingerprint": "1be8cb7c2743b52ff7c375cd9fd944fc",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "SpellCast",
+                    "who": "EachPlayer",
+                    "filter": [
+                      { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                      { "ControlledBy": "You" }
+                    ]
+                  }
+                },
+                "op": "Ge",
+                "right": 3
+              }
+            },
+            "from": "Graveyard",
+            "effects": [{ "Move": { "what": "This", "to": { "Battlefield": {} } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

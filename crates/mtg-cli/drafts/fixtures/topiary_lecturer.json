@@ -1,0 +1,140 @@
+{
+  "object": "card",
+  "id": "4f16a1c2-0a80-45e4-b025-3aa0c0b03812",
+  "oracle_id": "5f5fe039-4be4-42ae-9fa4-4392328aa665",
+  "multiverse_ids": [],
+  "resource_id": "60393A3EB10DCBEE7541F7D97CE15E2CDC8FE0DF79A7CC8DFB4B9D975AA08534",
+  "mtgo_id": 149829,
+  "arena_id": 102624,
+  "tcgplayer_id": 689518,
+  "cardmarket_id": 883052,
+  "name": "Topiary Lecturer",
+  "lang": "en",
+  "released_at": "2026-04-24",
+  "uri": "https://api.scryfall.com/cards/4f16a1c2-0a80-45e4-b025-3aa0c0b03812",
+  "scryfall_uri": "https://scryfall.com/card/sos/165/topiary-lecturer?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T00:47:32Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/4/f/4f16a1c2-0a80-45e4-b025-3aa0c0b03812.jpg?1783903652",
+    "normal": "https://cards.scryfall.io/normal/front/4/f/4f16a1c2-0a80-45e4-b025-3aa0c0b03812.jpg?1783903652",
+    "large": "https://cards.scryfall.io/large/front/4/f/4f16a1c2-0a80-45e4-b025-3aa0c0b03812.jpg?1783903652",
+    "png": "https://cards.scryfall.io/png/front/4/f/4f16a1c2-0a80-45e4-b025-3aa0c0b03812.png?1783903652",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/4/f/4f16a1c2-0a80-45e4-b025-3aa0c0b03812.jpg?1783903652",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/4/f/4f16a1c2-0a80-45e4-b025-3aa0c0b03812.jpg?1783903652",
+    "thumb": "https://cards.scryfall.io/thumb/front/4/f/4f16a1c2-0a80-45e4-b025-3aa0c0b03812.webp?1783903652",
+    "grid": "https://cards.scryfall.io/grid/front/4/f/4f16a1c2-0a80-45e4-b025-3aa0c0b03812.webp?1783903652",
+    "display": "https://cards.scryfall.io/display/front/4/f/4f16a1c2-0a80-45e4-b025-3aa0c0b03812.webp?1783903652",
+    "art": "https://cards.scryfall.io/art/front/4/f/4f16a1c2-0a80-45e4-b025-3aa0c0b03812.webp?1783903652",
+    "crop": "https://cards.scryfall.io/crop/front/4/f/4f16a1c2-0a80-45e4-b025-3aa0c0b03812.webp?1783903652",
+    "jpeg": "https://cards.scryfall.io/normal/front/4/f/4f16a1c2-0a80-45e4-b025-3aa0c0b03812.jpg?1783903652"
+  },
+  "mana_cost": "{2}{G}",
+  "cmc": 3.0,
+  "type_line": "Creature — Elf Druid",
+  "oracle_text": "Increment (Whenever you cast a spell, if the amount of mana you spent is greater than this creature's power or toughness, put a +1/+1 counter on this creature.)\n{T}: Add an amount of {G} equal to this creature's power.",
+  "power": "1",
+  "toughness": "2",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Increment"
+  ],
+  "produced_mana": [
+    "G"
+  ],
+  "legalities": {
+    "standard": "legal",
+    "future": "legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo",
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "e487c9ce-5e76-4756-bcd0-e4b7db5c38a3",
+  "set": "sos",
+  "set_name": "Secrets of Strixhaven",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/e487c9ce-5e76-4756-bcd0-e4b7db5c38a3",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Asos&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/sos?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/4f16a1c2-0a80-45e4-b025-3aa0c0b03812/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A5f5fe039-4be4-42ae-9fa4-4392328aa665&unique=prints",
+  "collector_number": "165",
+  "digital": false,
+  "rarity": "uncommon",
+  "watermark": "quandrix",
+  "flavor_text": "\"Before we can understand nature, we must learn to nurture it.\"",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Josiah \"Jo\" Cameron",
+  "artist_ids": [
+    "2a8b4b91-ddff-4477-ba10-b92bc04a4358"
+  ],
+  "illustration_id": "84ff1dc6-a8e4-498d-bc8c-623df9c67a2f",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 6999,
+  "penny_rank": 9516,
+  "prices": {
+    "usd": "0.26",
+    "usd_foil": "0.36",
+    "usd_etched": null,
+    "eur": "0.15",
+    "eur_foil": "0.26",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DTopiary%2BLecturer",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DTopiary%2BLecturer",
+    "edhrec": "https://edhrec.com/route/?cc=Topiary+Lecturer"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F689518%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=883052&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/149829?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

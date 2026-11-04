@@ -1,0 +1,22 @@
+{
+  "oracle_id": "b0713b1e-544d-4549-9371-61ac7f6c2a6a",
+  "name": "Nim Abomination",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nim Abomination",
+      "oracle_fingerprint": "974bca0e45058b8a9ca181ec0a64e3a4",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "CountOf": { "subject": "This", "selector": ["Untapped"], "op": "Ge", "right": 1 }
+            },
+            "effects": [{ "LoseLife": { "amount": 3 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

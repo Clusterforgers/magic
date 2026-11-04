@@ -1,0 +1,70 @@
+{
+  "oracle_id": "f9085e55-2833-41b7-9100-a35dc04dee93",
+  "name": "Thaumatic Compass // Spires of Orazca",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thaumatic Compass",
+      "oracle_fingerprint": "c699267c2cb3d1ced7e2c84c5d99fc2c",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}" }, "Tap"],
+            "effects": [
+              {
+                "Search": {
+                  "filter": [{ "Supertype": "Basic" }, { "Type": "Land" }],
+                  "reveal": true,
+                  "as": "land"
+                }
+              },
+              { "Move": { "what": { "Bound": "land" }, "to": "Hand" } },
+              { "Shuffle": {} }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 7
+              }
+            },
+            "effects": [{ "Transform": { "what": "This" } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Spires of Orazca",
+      "oracle_fingerprint": "f3256a98bfa80eedff179689e2ad6523",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, "Attacking", { "ControlledBy": "Opponents" }]
+                }
+              }
+            ],
+            "effects": [
+              { "Untap": { "what": { "Target": 0 } } },
+              { "RemoveFromCombat": { "what": { "Target": 0 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

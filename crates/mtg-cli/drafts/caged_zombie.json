@@ -1,0 +1,32 @@
+{
+  "oracle_id": "430b3e61-09a5-4390-b377-89830cacf66e",
+  "name": "Caged Zombie",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Caged Zombie",
+      "oracle_fingerprint": "53ec5a17332b6ef51833f62cbdb2540d",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{B}" }, "Tap"],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "Died",
+                    "who": "EachPlayer",
+                    "filter": [{ "Type": "Creature" }]
+                  }
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "LoseLife": { "who": "Opponents", "amount": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

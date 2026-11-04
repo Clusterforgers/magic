@@ -1,0 +1,46 @@
+{
+  "oracle_id": "4ab565bb-3188-4d23-93d8-5de67fc0d056",
+  "name": "Lethal Throwdown",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lethal Throwdown",
+      "oracle_fingerprint": "cc704b550b6de33dd7e336c2c9b3ebc4",
+      "abilities": [
+        {
+          "AdditionalCost": {
+            "cost": [{ "Sacrifice": { "filter": [{ "Type": "Creature" }] } }],
+            "required": true
+          }
+        },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }]
+                }
+              }
+            ],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": "Paid",
+                      "selector": ["Modified"],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

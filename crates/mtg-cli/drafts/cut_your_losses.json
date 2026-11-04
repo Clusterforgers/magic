@@ -1,0 +1,32 @@
+{
+  "oracle_id": "54530a84-8278-4c93-a2cb-f5c86619a053",
+  "name": "Cut Your Losses",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cut Your Losses",
+      "oracle_fingerprint": "a9a6f814b81b59ec3442a0de5e9bec9a",
+      "abilities": [
+        { "Keyword": { "Casualty": 2 } },
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Mill": {
+                  "who": { "Target": 0 },
+                  "count": {
+                    "Half": {
+                      "of": { "Count": [{ "In": "Library" }, { "OwnedBy": { "Target": 0 } }] },
+                      "up": false
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

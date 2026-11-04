@@ -26,6 +26,7 @@ mod player_words;
 mod printed;
 mod proposal;
 mod proposal_blocks;
+mod proposal_merge;
 mod proposal_names;
 mod proposal_repair;
 mod read_sheet;

@@ -1,0 +1,28 @@
+{
+  "oracle_id": "7a6c4216-7aff-41d4-8d79-bd1ac0b263ae",
+  "name": "Amazing Spider-Girl",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Amazing Spider-Girl",
+      "oracle_fingerprint": "32bce6c4faa09b2f3aa418e274b861a9",
+      "abilities": [
+        {
+          "AltCast": {
+            "way": "WebSlinging",
+            "cost": [
+              { "Mana": "{2}{W}" },
+              {
+                "ReturnToHand": {
+                  "filter": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "Tapped"]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "Flying" },
+        { "Keyword": "Vigilance" }
+      ]
+    }
+  ]
+}

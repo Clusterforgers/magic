@@ -1,0 +1,17 @@
+{
+  "oracle_id": "57f94fcb-a224-410b-a38e-3ed8cca7d0c7",
+  "name": "Moderation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Moderation",
+      "oracle_fingerprint": "404908090f63f70df5f9c64f5faaa9cd",
+      "abilities": [
+        {
+          "Rule": { "rule": { "Cant": { "who": "You", "action": { "Cast": { "more_than": 1 } } } } }
+        },
+        { "Triggered": { "when": { "SpellCast": { "by": "You" } }, "effects": [{ "Draw": {} }] } }
+      ]
+    }
+  ]
+}

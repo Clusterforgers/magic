@@ -1,0 +1,37 @@
+{
+  "oracle_id": "347a5faa-5656-4a36-af44-ab5a3ed267f4",
+  "name": "Snooping Newsie",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Snooping Newsie",
+      "oracle_fingerprint": "66b1edcf06b5c5ea2c415d184e149512",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Mill": { "count": 2 } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }, { "AddKeyword": "Lifelink" }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Distinct": {
+                    "of": [{ "OwnedBy": "You" }, { "In": "Graveyard" }],
+                    "stat": "ManaValue"
+                  }
+                },
+                "op": "Ge",
+                "right": 5
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

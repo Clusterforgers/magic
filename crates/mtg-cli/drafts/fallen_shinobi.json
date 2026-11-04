@@ -1,0 +1,35 @@
+{
+  "oracle_id": "4fc5f871-a809-4a4a-adfb-eb4cd52837c8",
+  "name": "Fallen Shinobi",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fallen Shinobi",
+      "oracle_fingerprint": "324833500601b136fda99335df8d2d40",
+      "abilities": [
+        { "Keyword": { "Ninjutsu": "{2}{U}{B}" } },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              { "ExileTop": { "who": "Triggering", "count": 2, "as": "exiled" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "from": "Exile",
+                      "free": true,
+                      "only": { "Bound": "exiled" },
+                      "play": true
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

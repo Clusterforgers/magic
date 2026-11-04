@@ -1,0 +1,85 @@
+{
+  "oracle_id": "0d2bbce0-8c27-4b82-ab62-51a0c3cfc9b0",
+  "name": "Vraska the Unseen",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vraska the Unseen",
+      "oracle_fingerprint": "2484e39330f6256442241c161ea4f59a",
+      "abilities": [
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    {
+                      "GrantAbility": {
+                        "Triggered": {
+                          "when": {
+                            "DealsDamage": {
+                              "source": [{ "Type": "Creature" }],
+                              "to": "This",
+                              "combat": true
+                            }
+                          },
+                          "effects": [{ "Destroy": { "what": "Dealer" } }]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilYourNextTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 3 },
+            "targets": [{ "what": { "Object": [{ "Not": { "Type": "Land" } }] } }],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 7 },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Assassin",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Assassin"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [
+                        {
+                          "Triggered": {
+                            "when": {
+                              "DealsDamage": {
+                                "source": ["This"],
+                                "to": "EachPlayer",
+                                "combat": true
+                              }
+                            },
+                            "effects": [{ "LoseGame": { "who": "Triggering" } }]
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "count": 3
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

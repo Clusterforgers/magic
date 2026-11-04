@@ -1,0 +1,46 @@
+{
+  "oracle_id": "21971c8b-ff9b-40f8-8c9a-93d26c2615b7",
+  "name": "Rem Karolus, Stalwart Slayer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rem Karolus, Stalwart Slayer",
+      "oracle_fingerprint": "32a64fe860597cb5a1851b901570e93d",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Haste" },
+        {
+          "Replacement": {
+            "when": { "Damage": { "to": "You", "source": ["Spell"] } },
+            "by": "Prevent"
+          }
+        },
+        {
+          "Replacement": {
+            "when": {
+              "Damage": {
+                "to": { "Each": [{ "ControlledBy": "You" }, "Other"] },
+                "source": ["Spell"]
+              }
+            },
+            "by": "Prevent"
+          }
+        },
+        {
+          "Replacement": {
+            "when": {
+              "Damage": { "to": { "Each": [{ "ControlledBy": "Opponents" }] }, "source": ["Spell"] }
+            },
+            "by": { "Add": 1 }
+          }
+        },
+        {
+          "Replacement": {
+            "when": { "Damage": { "to": "Opponents", "source": ["Spell"] } },
+            "by": { "Add": 1 }
+          }
+        }
+      ]
+    }
+  ]
+}

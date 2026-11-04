@@ -1,0 +1,71 @@
+{
+  "oracle_id": "cfa3f2a4-2724-4bc1-bdaf-244051db95ed",
+  "name": "Skinshifter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Skinshifter",
+      "oracle_fingerprint": "98ef6843dbf9343b580b145352c06003",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{G}",
+            "limit": "OncePerTurn",
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": "This",
+                            "mods": [
+                              { "SetPT": { "power": 4, "toughness": 4 } },
+                              { "SetCreatureTypes": ["Rhino"] },
+                              { "AddKeyword": "Trample" }
+                            ],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": "This",
+                            "mods": [
+                              { "SetPT": { "power": 2, "toughness": 2 } },
+                              { "SetCreatureTypes": ["Bird"] },
+                              { "AddKeyword": "Flying" }
+                            ],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": "This",
+                            "mods": [
+                              { "SetPT": { "power": 0, "toughness": 8 } },
+                              { "SetCreatureTypes": ["Plant"] }
+                            ],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

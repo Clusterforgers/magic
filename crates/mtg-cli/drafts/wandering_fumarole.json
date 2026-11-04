@@ -1,0 +1,55 @@
+{
+  "oracle_id": "741c51f1-cfbe-4c29-ac8f-ca6bcd2652f9",
+  "name": "Wandering Fumarole",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wandering Fumarole",
+      "oracle_fingerprint": "395405966b9e384f2113640638a91951",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "OneOf": ["Blue", "Red"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{2}{U}{R}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "SetPT": { "power": 1, "toughness": 4 } },
+                    { "SetColors": ["Blue", "Red"] },
+                    { "AddSubtype": "Elemental" },
+                    { "AddType": "Creature" },
+                    {
+                      "GrantAbility": {
+                        "Activated": {
+                          "cost": "{0}",
+                          "effects": [
+                            {
+                              "Continuous": {
+                                "affected": "This",
+                                "mods": ["SwitchPT"],
+                                "duration": "UntilEndOfTurn"
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

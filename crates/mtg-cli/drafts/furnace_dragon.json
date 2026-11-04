@@ -1,0 +1,30 @@
+{
+  "oracle_id": "13d92af9-a6e2-4847-b2e9-179fe0cc840e",
+  "name": "Furnace Dragon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Furnace Dragon",
+      "oracle_fingerprint": "d9f0b37adc59cb3378470b8deea48510",
+      "abilities": [
+        { "Keyword": { "Affinity": [{ "Type": "Artifact" }] } },
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "WasCast": { "by": "You", "from": "Hand" } },
+                  { "OwnedBy": "You" },
+                  "This"
+                ],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [{ "Exile": { "what": { "Each": [{ "Type": "Artifact" }] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

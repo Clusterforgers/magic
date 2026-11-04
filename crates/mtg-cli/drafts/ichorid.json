@@ -1,0 +1,40 @@
+{
+  "oracle_id": "5261ba70-b641-461d-9d9f-fce17764ad67",
+  "name": "Ichorid",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ichorid",
+      "oracle_fingerprint": "25adeca50c5fb09e7f132b8dd11d7400",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "effects": [{ "Sacrifice": { "filter": ["This"] } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "from": "Graveyard",
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [
+                    {
+                      "ExileFromGraveyard": {
+                        "filter": [{ "Type": "Creature" }, { "Color": "Black" }, "Other"]
+                      }
+                    }
+                  ],
+                  "paid": [{ "Move": { "what": "This", "to": { "Battlefield": {} } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

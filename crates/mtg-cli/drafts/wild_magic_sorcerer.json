@@ -1,0 +1,38 @@
+{
+  "oracle_id": "a450ef56-8511-43e0-bdca-0c25f54ba338",
+  "name": "Wild-Magic Sorcerer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wild-Magic Sorcerer",
+      "oracle_fingerprint": "12fc19637678310f44fc91da0e05eb88",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "ControlledBy": "You" },
+                { "WasCast": { "from": "Exile" } },
+                { "In": "Stack" }
+              ]
+            },
+            "mods": [{ "AddKeyword": "Cascade" }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "SpellCast",
+                    "who": "EachPlayer",
+                    "filter": [{ "ControlledBy": "You" }, { "WasCast": { "from": "Exile" } }]
+                  }
+                },
+                "op": "Eq",
+                "right": 0
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

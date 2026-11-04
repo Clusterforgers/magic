@@ -1,0 +1,27 @@
+{
+  "oracle_id": "8856d849-dad8-41b8-8212-bb839f2b359c",
+  "name": "Prism Array",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Prism Array",
+      "oracle_fingerprint": "3db02ce0f1363ce8864bd8b224c90247",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": { "Other": "crystal" }, "count": "ColorsSpent" } }
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "RemoveCounters": { "counter": { "Other": "crystal" } } }],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "Tap": { "what": { "Target": 0 } } }]
+          }
+        },
+        { "Activated": { "cost": "{W}{U}{B}{R}{G}", "effects": [{ "Scry": { "count": 3 } }] } }
+      ]
+    }
+  ]
+}

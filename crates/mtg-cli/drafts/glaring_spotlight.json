@@ -1,0 +1,44 @@
+{
+  "oracle_id": "21570481-190e-4cfa-a5fd-a0642e2af569",
+  "name": "Glaring Spotlight",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Glaring Spotlight",
+      "oracle_fingerprint": "5d217f52a09838328ba90a92becddae4",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "IgnoreHexproof": {
+                "by": "You",
+                "what": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] }
+              }
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}" }, "SacrificeSelf"],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [{ "AddKeyword": "Hexproof" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": ["CantBeBlocked"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

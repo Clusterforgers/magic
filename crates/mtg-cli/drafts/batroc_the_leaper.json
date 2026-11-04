@@ -1,0 +1,34 @@
+{
+  "oracle_id": "ebbea7a7-c990-43fa-8f67-a5da17fbbb10",
+  "name": "Batroc the Leaper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Batroc the Leaper",
+      "oracle_fingerprint": "9236c664df7a4c2f827cc09998ae03d1",
+      "abilities": [
+        { "Keyword": { "Multikicker": "{2}" } },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": "Kicks" } }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "AnyTarget", "bounds": { "min": 0, "max": "Kicks" } }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": { "Stat": { "of": "This", "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

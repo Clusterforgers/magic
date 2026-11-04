@@ -1,0 +1,38 @@
+{
+  "oracle_id": "aebddadd-f05b-4ad5-bda4-603a134f68dc",
+  "name": "Noetic Scales",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Noetic Scales",
+      "oracle_fingerprint": "7283320ee355656b5957ce1160aa15f9",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "effects": [
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "ControlledBy": "ActivePlayer" },
+                      {
+                        "Compare": {
+                          "stat": "Power",
+                          "op": "Gt",
+                          "to": { "Count": [{ "OwnedBy": "ActivePlayer" }, { "In": "Hand" }] }
+                        }
+                      }
+                    ]
+                  },
+                  "to": "Hand"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

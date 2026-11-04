@@ -1,0 +1,26 @@
+{
+  "oracle_id": "d78cb7d8-9cfc-4d16-86ea-d49fc5d65db0",
+  "name": "Neurok Spy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Neurok Spy",
+      "oracle_fingerprint": "4f75a36f43ad95d4a2d703f25251486d",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": ["CantBeBlocked"],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Type": "Artifact" }, { "ControlledBy": "Defending" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,79 @@
+{
+  "oracle_id": "6b4f1569-2025-46a8-89ba-79859208b04e",
+  "name": "Flourishing Grapple",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Flourishing Grapple",
+      "oracle_fingerprint": "1d3fbc6d760b10365693bdb4c21d8627",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    {
+                      "AnyOf": [
+                        {
+                          "Not": {
+                            "AnyOf": [
+                              { "Not": { "Type": "Creature" } },
+                              { "Not": { "Color": "Red" } }
+                            ]
+                          }
+                        },
+                        {
+                          "Not": {
+                            "AnyOf": [
+                              { "Not": { "Type": "Creature" } },
+                              { "Not": { "Color": "White" } }
+                            ]
+                          }
+                        },
+                        {
+                          "Not": {
+                            "AnyOf": [
+                              { "Not": { "Type": "Planeswalker" } },
+                              { "Not": { "Color": "Red" } }
+                            ]
+                          }
+                        },
+                        {
+                          "Not": {
+                            "AnyOf": [
+                              { "Not": { "Type": "Planeswalker" } },
+                              { "Not": { "Color": "White" } }
+                            ]
+                          }
+                        }
+                      ]
+                    },
+                    { "ControlledBy": "Opponents" }
+                  ]
+                }
+              },
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["LoseAbilities"],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "DealDamage": {
+                  "source": { "Target": 1 },
+                  "to": { "Target": 0 },
+                  "amount": { "Stat": { "of": { "Target": 1 }, "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

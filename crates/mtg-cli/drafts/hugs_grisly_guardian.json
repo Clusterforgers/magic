@@ -1,0 +1,31 @@
+{
+  "oracle_id": "3c5c227a-335b-4995-9821-d4269a0a233a",
+  "name": "Hugs, Grisly Guardian",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hugs, Grisly Guardian",
+      "oracle_fingerprint": "ae9cd9727330ec355f7f62f18936086a",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "ExileTop": { "count": "X", "as": "exiled" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": { "from": "Exile", "only": { "Bound": "exiled" }, "play": true }
+                  },
+                  "duration": "UntilEndOfYourNextTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Rule": { "rule": { "AdditionalLandPlays": {} } } }
+      ]
+    }
+  ]
+}

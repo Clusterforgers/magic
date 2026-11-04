@@ -1,0 +1,57 @@
+{
+  "oracle_id": "3858a2ff-cdc9-4e40-bc2c-42ed691aae08",
+  "name": "Lorehold Apprentice",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lorehold Apprentice",
+      "oracle_fingerprint": "c4b570771298ecf6ebd89ab29a5f5423",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                {
+                  "SpellCast": {
+                    "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                    "by": "You"
+                  }
+                },
+                {
+                  "SpellCopied": {
+                    "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                    "by": "You"
+                  }
+                }
+              ]
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "Subtype": "Spirit" },
+                      { "ControlledBy": "You" }
+                    ]
+                  },
+                  "mods": [
+                    {
+                      "GrantAbility": {
+                        "Activated": {
+                          "cost": ["Tap"],
+                          "effects": [{ "DealDamage": { "to": "Opponents", "amount": 1 } }]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

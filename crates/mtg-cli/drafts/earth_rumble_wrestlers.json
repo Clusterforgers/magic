@@ -1,0 +1,44 @@
+{
+  "oracle_id": "1de17747-27e8-40bb-b6f7-6d5402d4705c",
+  "name": "Earth Rumble Wrestlers",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Earth Rumble Wrestlers",
+      "oracle_fingerprint": "341dd3a4cbe8a9cc28b858f4475a9c30",
+      "abilities": [
+        { "Keyword": "Reach" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }, { "AddKeyword": "Trample" }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Sum": [
+                    {
+                      "Count": [
+                        { "Type": "Creature" },
+                        { "Type": "Land" },
+                        { "ControlledBy": "You" }
+                      ]
+                    },
+                    {
+                      "Tally": {
+                        "event": "Entered",
+                        "who": "EachPlayer",
+                        "filter": [{ "Type": "Land" }, { "ControlledBy": "You" }]
+                      }
+                    }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

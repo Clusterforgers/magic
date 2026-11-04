@@ -1,0 +1,34 @@
+{
+  "oracle_id": "5802aa98-a9b7-4b0d-9d7c-c3938701870d",
+  "name": "Jem Lightfoote, Sky Explorer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jem Lightfoote, Sky Explorer",
+      "oracle_fingerprint": "717270930ae8192dc18dfcc874ebc041",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "SpellCast",
+                    "who": "EachPlayer",
+                    "filter": [{ "WasCast": { "by": "You", "from": "Hand" } }, { "OwnedBy": "You" }]
+                  }
+                },
+                "op": "Lt",
+                "right": 1
+              }
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "oracle_id": "48a8fce6-b493-4b1d-8ac8-2a4f4b4781b5",
+  "name": "Dwindle",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dwindle",
+      "oracle_fingerprint": "f9cdc28bbe2a5987972199d08af79426",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": -6, "toughness": 0 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "BecomesBlocked": {
+                "what": [{ "Type": "Creature" }],
+                "by": [{ "Type": "Creature" }, { "Is": "Attached" }]
+              }
+            },
+            "effects": [{ "Destroy": { "what": "Dealer" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

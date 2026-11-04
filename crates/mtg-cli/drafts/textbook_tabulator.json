@@ -1,0 +1,20 @@
+{
+  "oracle_id": "ebb40a50-cfbc-4ec1-9c54-26a1bc2e7a6e",
+  "name": "Textbook Tabulator",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Textbook Tabulator",
+      "oracle_fingerprint": "f19c34153826a048343235c29b63a7c4",
+      "abilities": [
+        { "Keyword": { "Macro": { "name": "increment", "amount": 0 } } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Surveil": { "count": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

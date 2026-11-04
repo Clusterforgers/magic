@@ -1,0 +1,32 @@
+{
+  "oracle_id": "a3b226b9-f149-4578-882b-77447608380a",
+  "name": "Spelleater Wolverine",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spelleater Wolverine",
+      "oracle_fingerprint": "8d6dd83eae57d18a8a7d92916b5bcd66",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "DoubleStrike" }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                    { "OwnedBy": "You" },
+                    { "In": "Graveyard" }
+                  ]
+                },
+                "op": "Ge",
+                "right": 3
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

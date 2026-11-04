@@ -1,0 +1,36 @@
+{
+  "oracle_id": "ed416ae3-9291-4e1e-ad83-2f14138e9e47",
+  "name": "Haunting Figment",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Haunting Figment",
+      "oracle_fingerprint": "ec49b3ce1377ad172a3750ef3d223660",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": ["CantBeBlocked"],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "SpellCast",
+                    "who": "EachPlayer",
+                    "filter": [
+                      { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                      { "ControlledBy": "You" }
+                    ]
+                  }
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

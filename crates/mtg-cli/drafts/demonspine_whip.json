@@ -1,0 +1,28 @@
+{
+  "oracle_id": "a588f047-02b4-4c6b-bce2-6e4d564296ec",
+  "name": "Demonspine Whip",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Demonspine Whip",
+      "oracle_fingerprint": "a477806fc756b3dd17870b13609138aa",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{X}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Attached",
+                  "mods": [{ "ModifyPT": { "power": "X", "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{1}" } }
+      ]
+    }
+  ]
+}

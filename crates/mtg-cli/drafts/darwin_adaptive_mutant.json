@@ -1,0 +1,28 @@
+{
+  "oracle_id": "4061572b-b7ff-4d06-9f71-9e66e064593d",
+  "name": "Darwin, Adaptive Mutant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Darwin, Adaptive Mutant",
+      "oracle_fingerprint": "9bf487beedbc515b7cbe4d69a5ec2812",
+      "abilities": [
+        { "Keyword": "Evolve" },
+        {
+          "Activated": {
+            "cost": [{ "RemoveCounters": { "counter": "+1/+1", "count": 2 } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddKeyword": "Indestructible" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

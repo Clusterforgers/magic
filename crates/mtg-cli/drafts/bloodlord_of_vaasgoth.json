@@ -1,0 +1,34 @@
+{
+  "oracle_id": "d8560ee9-8cbb-440b-a132-e102a1eb3e89",
+  "name": "Bloodlord of Vaasgoth",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bloodlord of Vaasgoth",
+      "oracle_fingerprint": "7e94c352db2f1e4ac10dca11d60c27a2",
+      "abilities": [
+        { "Keyword": { "Macro": { "name": "bloodthirst", "amount": 3 } } },
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [{ "Type": "Creature" }, { "Subtype": "Vampire" }],
+                "by": "You"
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Triggering",
+                  "mods": [{ "AddKeyword": { "Macro": { "name": "bloodthirst", "amount": 3 } } }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

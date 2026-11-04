@@ -1,0 +1,147 @@
+{
+  "object": "card",
+  "id": "c171f179-9ccf-4819-915c-7f2cd3a91ad8",
+  "oracle_id": "bff55e1a-730c-4349-9ccb-18c97f46496d",
+  "multiverse_ids": [
+    497796
+  ],
+  "mtgo_id": 85334,
+  "tcgplayer_id": 226947,
+  "cardmarket_id": 512040,
+  "name": "Gnostro, Voice of the Crags",
+  "lang": "en",
+  "released_at": "2020-11-20",
+  "uri": "https://api.scryfall.com/cards/c171f179-9ccf-4819-915c-7f2cd3a91ad8",
+  "scryfall_uri": "https://scryfall.com/card/cmr/276/gnostro-voice-of-the-crags?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T07:46:13Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/c/1/c171f179-9ccf-4819-915c-7f2cd3a91ad8.jpg?1783928773",
+    "normal": "https://cards.scryfall.io/normal/front/c/1/c171f179-9ccf-4819-915c-7f2cd3a91ad8.jpg?1783928773",
+    "large": "https://cards.scryfall.io/large/front/c/1/c171f179-9ccf-4819-915c-7f2cd3a91ad8.jpg?1783928773",
+    "png": "https://cards.scryfall.io/png/front/c/1/c171f179-9ccf-4819-915c-7f2cd3a91ad8.png?1783928773",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/c/1/c171f179-9ccf-4819-915c-7f2cd3a91ad8.jpg?1783928773",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/c/1/c171f179-9ccf-4819-915c-7f2cd3a91ad8.jpg?1783928773",
+    "thumb": "https://cards.scryfall.io/thumb/front/c/1/c171f179-9ccf-4819-915c-7f2cd3a91ad8.webp?1783928773",
+    "grid": "https://cards.scryfall.io/grid/front/c/1/c171f179-9ccf-4819-915c-7f2cd3a91ad8.webp?1783928773",
+    "display": "https://cards.scryfall.io/display/front/c/1/c171f179-9ccf-4819-915c-7f2cd3a91ad8.webp?1783928773",
+    "art": "https://cards.scryfall.io/art/front/c/1/c171f179-9ccf-4819-915c-7f2cd3a91ad8.webp?1783928773",
+    "crop": "https://cards.scryfall.io/crop/front/c/1/c171f179-9ccf-4819-915c-7f2cd3a91ad8.webp?1783928773",
+    "jpeg": "https://cards.scryfall.io/normal/front/c/1/c171f179-9ccf-4819-915c-7f2cd3a91ad8.jpg?1783928773"
+  },
+  "mana_cost": "{1}{U}{R}{W}",
+  "cmc": 4.0,
+  "type_line": "Legendary Creature — Chimera",
+  "oracle_text": "{T}: Choose one. X is the number of spells you've cast this turn.\n• Scry X.\n• Gnostro deals X damage to target creature.\n• You gain X life.",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "R",
+    "U",
+    "W"
+  ],
+  "color_identity": [
+    "R",
+    "U",
+    "W"
+  ],
+  "keywords": [
+    "Scry"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "39de6fbf-1f11-48d0-8f04-f0407f6a0732",
+  "set": "cmr",
+  "set_name": "Commander Legends",
+  "set_type": "draft_innovation",
+  "set_uri": "https://api.scryfall.com/sets/39de6fbf-1f11-48d0-8f04-f0407f6a0732",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Acmr&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/cmr?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/c171f179-9ccf-4819-915c-7f2cd3a91ad8/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Abff55e1a-730c-4349-9ccb-18c97f46496d&unique=prints",
+  "collector_number": "276",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Lars Grant-West",
+  "artist_ids": [
+    "21ed6499-c4d3-4965-ab02-6c7228275bec"
+  ],
+  "illustration_id": "ffa1427f-d52f-46dc-8b1e-ab735912a7fc",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 23389,
+  "preview": {
+    "source": "TVMovie.de",
+    "source_uri": "https://www.tvmovie.de/news/magic-the-gathering-4-exklusive-preview-karten-aus-commander-legends-115162",
+    "previewed_at": "2020-10-31"
+  },
+  "prices": {
+    "usd": "0.28",
+    "usd_foil": "0.16",
+    "usd_etched": null,
+    "eur": "0.11",
+    "eur_foil": "0.21",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=497796&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DGnostro%252C%2BVoice%2Bof%2Bthe%2BCrags",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DGnostro%252C%2BVoice%2Bof%2Bthe%2BCrags",
+    "edhrec": "https://edhrec.com/route/?cc=Gnostro%2C+Voice+of+the+Crags"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F226947%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=512040&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/85334?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

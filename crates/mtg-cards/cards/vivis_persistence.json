@@ -1,0 +1,62 @@
+{
+  "oracle_id": "fd4a1f4b-674d-41f3-a9a6-c2b65bf5c1ab",
+  "name": "Vivi's Persistence",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vivi's Persistence",
+      "oracle_fingerprint": "969fc51b603afe783d2d563ab6fb771e",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Wizard",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Wizard"],
+                      "power": 0,
+                      "toughness": 1,
+                      "abilities": [
+                        {
+                          "Triggered": {
+                            "when": {
+                              "SpellCast": {
+                                "what": [{ "Not": { "Type": "Creature" } }],
+                                "by": "You"
+                              }
+                            },
+                            "effects": [{ "DealDamage": { "to": "Opponents", "amount": 1 } }]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                {
+                  "ZoneChange": { "what": ["Commander", { "OwnedBy": "You" }], "to": "Battlefield" }
+                },
+                { "Attacks": { "what": ["Commander", { "OwnedBy": "You" }] } }
+              ]
+            },
+            "from": "Graveyard",
+            "effects": [
+              { "Pay": { "cost": "{2}", "paid": [{ "Move": { "what": "This", "to": "Hand" } }] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

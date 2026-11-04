@@ -1,0 +1,34 @@
+{
+  "oracle_id": "6128679e-7e54-41e4-ab6e-25aeeffed49f",
+  "name": "Planar Disruption",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Planar Disruption",
+      "oracle_fingerprint": "3c5d7b8bd052900ff1514ea1367cfd14",
+      "abilities": [
+        {
+          "Keyword": {
+            "Enchant": [
+              {
+                "AnyOf": [
+                  { "Type": "Artifact" },
+                  { "Type": "Creature" },
+                  { "Type": "Planeswalker" }
+                ]
+              }
+            ]
+          }
+        },
+        { "Static": { "affected": "Attached", "mods": ["CantAttack", "CantBlock"] } },
+        {
+          "Rule": {
+            "rule": {
+              "Cant": { "who": { "Each": [{ "Is": "Attached" }] }, "action": { "Activate": [] } }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

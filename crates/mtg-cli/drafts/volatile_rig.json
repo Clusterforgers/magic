@@ -1,0 +1,36 @@
+{
+  "oracle_id": "ba47a07e-890c-411a-9fd0-947c2f738da2",
+  "name": "Volatile Rig",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Volatile Rig",
+      "oracle_fingerprint": "da4bcbb55560bc63060c219f620bd594",
+      "abilities": [
+        { "Keyword": "Trample" },
+        { "Rule": { "rule": { "MustAttack": "This" } } },
+        {
+          "Triggered": {
+            "when": { "Batch": { "DealsDamage": { "source": [], "to": "This" } } },
+            "effects": [{ "FlipCoin": { "lose": [{ "Sacrifice": { "filter": ["This"] } }] } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              {
+                "FlipCoin": {
+                  "lose": [
+                    { "DealDamage": { "to": { "Each": [{ "Type": "Creature" }] }, "amount": 4 } },
+                    { "DealDamage": { "to": "EachPlayer", "amount": 4 } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

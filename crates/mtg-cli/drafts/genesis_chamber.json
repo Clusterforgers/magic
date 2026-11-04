@@ -1,0 +1,42 @@
+{
+  "oracle_id": "150ab025-5cc3-4468-a724-bbba8838445d",
+  "name": "Genesis Chamber",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Genesis Chamber",
+      "oracle_fingerprint": "02795d6958ab85b0b25a1fa25c758072",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "Not": "Token" }],
+                "to": "Battlefield"
+              }
+            },
+            "if": {
+              "CountOf": { "subject": "This", "selector": ["Untapped"], "op": "Ge", "right": 1 }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "who": { "ControllerOf": "Triggering" },
+                  "token": {
+                    "Custom": {
+                      "name": "Myr",
+                      "types": ["Artifact", "Creature"],
+                      "subtypes": ["Myr"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

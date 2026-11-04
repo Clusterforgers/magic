@@ -1,0 +1,27 @@
+{
+  "oracle_id": "7b0d9139-b3ad-4065-9b55-aeeda8950bee",
+  "name": "Witch's Vengeance",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Witch's Vengeance",
+      "oracle_fingerprint": "6520c13dcf25726c7264e7169afebb53",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "ChooseValue": { "kind": "CreatureType", "as": "chosen" } },
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ChosenAs": "chosen" }] },
+                  "mods": [{ "ModifyPT": { "power": -3, "toughness": -3 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

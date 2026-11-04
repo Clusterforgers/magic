@@ -1,0 +1,42 @@
+{
+  "oracle_id": "4f6e2e47-34df-4bf3-a546-e06b42840167",
+  "name": "Divine Resilience",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Divine Resilience",
+      "oracle_fingerprint": "ceebfcecb6142b5c4298b44d1e45bace",
+      "abilities": [
+        { "Keyword": { "Kicker": "{2}{W}" } },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                "bounds": {
+                  "min": { "When": { "condition": "Kicked", "then": 0, "otherwise": 1 } },
+                  "max": {
+                    "When": {
+                      "condition": "Kicked",
+                      "then": { "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                      "otherwise": 1
+                    }
+                  }
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Indestructible" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

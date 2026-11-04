@@ -1,0 +1,22 @@
+{
+  "oracle_id": "09537e9f-6c8e-4849-9d35-d4f3950a64d7",
+  "name": "Kavu Primarch",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kavu Primarch",
+      "oracle_fingerprint": "5699776f1778d0238b1f713c35d5cb03",
+      "abilities": [
+        { "Keyword": { "Kicker": "{4}" } },
+        { "Keyword": "Convoke" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": 4 } },
+            "condition": "Kicked"
+          }
+        }
+      ]
+    }
+  ]
+}

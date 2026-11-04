@@ -1,0 +1,36 @@
+{
+  "oracle_id": "b1062763-1fcf-4605-9253-daa1687e8173",
+  "name": "Canopy Stalker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Canopy Stalker",
+      "oracle_fingerprint": "5d7727bab55f3d9c9e013206fa9097a5",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": { "Combat": { "who": "This", "quirk": { "MustBeBlocked": "AtLeastOne" } } }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              {
+                "GainLife": {
+                  "amount": {
+                    "Tally": {
+                      "event": "Died",
+                      "who": "EachPlayer",
+                      "filter": [{ "Type": "Creature" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

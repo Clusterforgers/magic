@@ -1,0 +1,33 @@
+{
+  "oracle_id": "b74c072d-77ac-460d-9d9c-75b25874f58b",
+  "name": "Captain Mar-Vell, Space-Born",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Captain Mar-Vell, Space-Born",
+      "oracle_fingerprint": "3ff323651411e78612756b54f414b86b",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Vigilance" },
+        {
+          "Rule": {
+            "rule": { "MayCast": { "flash": true } },
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "SpellCast",
+                    "who": "EachPlayer",
+                    "filter": [{ "ControlledBy": "Opponents" }]
+                  }
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

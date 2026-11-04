@@ -1,0 +1,20 @@
+{
+  "oracle_id": "cc7d99e8-f9dc-47d3-b6c0-e9308d33c3c0",
+  "name": "Invincible Hymn",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Invincible Hymn",
+      "oracle_fingerprint": "601a16f479b1859cd6a0625dc8dff34a",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "SetLife": { "amount": { "Count": [{ "OwnedBy": "You" }, { "In": "Library" }] } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

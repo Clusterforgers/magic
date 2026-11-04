@@ -1,0 +1,51 @@
+{
+  "oracle_id": "1221bef9-5947-4c32-a74b-b60279bb79bf",
+  "name": "Baloth Cage Trap",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Baloth Cage Trap",
+      "oracle_fingerprint": "bc468561a02dac41d18b846a2ba5c449",
+      "abilities": [
+        {
+          "FreeCast": {
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "Entered",
+                    "who": "EachPlayer",
+                    "filter": [{ "Type": "Artifact" }, { "ControlledBy": "Opponents" }]
+                  }
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "cost": "{1}{G}"
+          }
+        },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Beast",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Beast"],
+                      "power": 4,
+                      "toughness": 4
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "oracle_id": "e2376660-20f2-4474-b6fd-d270e0e6a31e",
+  "name": "Filigree Fracture",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Filigree Fracture",
+      "oracle_fingerprint": "5cf608158a1c2f273036fe7fe7944c70",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Enchantment" }] }]
+                }
+              }
+            ],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Target": 0 },
+                      "selector": [{ "AnyOf": [{ "Color": "Blue" }, { "Color": "Black" }] }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

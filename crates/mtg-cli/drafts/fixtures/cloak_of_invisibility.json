@@ -1,0 +1,134 @@
+{
+  "object": "card",
+  "id": "3f6e21e6-fb3e-49c1-b5a0-499faf66d279",
+  "oracle_id": "68b06917-7f83-47d4-a466-4e6698cae56d",
+  "multiverse_ids": [
+    3329
+  ],
+  "mtgo_id": 6867,
+  "mtgo_foil_id": 6868,
+  "tcgplayer_id": 5011,
+  "cardmarket_id": 8109,
+  "name": "Cloak of Invisibility",
+  "lang": "en",
+  "released_at": "1996-10-08",
+  "uri": "https://api.scryfall.com/cards/3f6e21e6-fb3e-49c1-b5a0-499faf66d279",
+  "scryfall_uri": "https://scryfall.com/card/mir/58/cloak-of-invisibility?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T12:51:52Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/3/f/3f6e21e6-fb3e-49c1-b5a0-499faf66d279.jpg?1783947112",
+    "normal": "https://cards.scryfall.io/normal/front/3/f/3f6e21e6-fb3e-49c1-b5a0-499faf66d279.jpg?1783947112",
+    "large": "https://cards.scryfall.io/large/front/3/f/3f6e21e6-fb3e-49c1-b5a0-499faf66d279.jpg?1783947112",
+    "png": "https://cards.scryfall.io/png/front/3/f/3f6e21e6-fb3e-49c1-b5a0-499faf66d279.png?1783947112",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/3/f/3f6e21e6-fb3e-49c1-b5a0-499faf66d279.jpg?1783947112",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/3/f/3f6e21e6-fb3e-49c1-b5a0-499faf66d279.jpg?1783947112",
+    "thumb": "https://cards.scryfall.io/thumb/front/3/f/3f6e21e6-fb3e-49c1-b5a0-499faf66d279.webp?1783947112",
+    "grid": "https://cards.scryfall.io/grid/front/3/f/3f6e21e6-fb3e-49c1-b5a0-499faf66d279.webp?1783947112",
+    "display": "https://cards.scryfall.io/display/front/3/f/3f6e21e6-fb3e-49c1-b5a0-499faf66d279.webp?1783947112",
+    "art": "https://cards.scryfall.io/art/front/3/f/3f6e21e6-fb3e-49c1-b5a0-499faf66d279.webp?1783947112",
+    "crop": "https://cards.scryfall.io/crop/front/3/f/3f6e21e6-fb3e-49c1-b5a0-499faf66d279.webp?1783947112",
+    "jpeg": "https://cards.scryfall.io/normal/front/3/f/3f6e21e6-fb3e-49c1-b5a0-499faf66d279.jpg?1783947112"
+  },
+  "mana_cost": "{U}",
+  "cmc": 1.0,
+  "type_line": "Enchantment — Aura",
+  "oracle_text": "Enchant creature\nEnchanted creature has phasing and can't be blocked except by Walls. (It phases in or out before its controller untaps during each of their untap steps. While it's phased out, it's treated as though it doesn't exist.)",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Enchant"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "5f06acf3-8123-4a78-b2e7-089b0b775a4a",
+  "set": "mir",
+  "set_name": "Mirage",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/5f06acf3-8123-4a78-b2e7-089b0b775a4a",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Amir&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/mir?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/3f6e21e6-fb3e-49c1-b5a0-499faf66d279/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A68b06917-7f83-47d4-a466-4e6698cae56d&unique=prints",
+  "collector_number": "58",
+  "digital": false,
+  "rarity": "common",
+  "flavor_text": "\"Useful . . . if you can find it.\"\n—Pashad ibn Asim, Suq'Ata trader",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "John Coulthart",
+  "artist_ids": [
+    "55e5567a-7673-418e-8ba2-aee7efd6f94b"
+  ],
+  "illustration_id": "37415d9d-3a59-44fd-bf4a-199b78ee05a9",
+  "border_color": "black",
+  "frame": "1997",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 19179,
+  "penny_rank": 13132,
+  "prices": {
+    "usd": "0.21",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.27",
+    "eur_foil": null,
+    "tix": "0.04"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=3329&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DCloak%2Bof%2BInvisibility",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DCloak%2Bof%2BInvisibility",
+    "edhrec": "https://edhrec.com/route/?cc=Cloak+of+Invisibility"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F5011%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=8109&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/6867?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

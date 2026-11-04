@@ -1,0 +1,36 @@
+{
+  "oracle_id": "2b719057-1bc0-4c3a-97c3-8377844570dd",
+  "name": "Dying to Serve",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dying to Serve",
+      "oracle_fingerprint": "15493d285c401065713b9ace869cb0c2",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Batch": { "Discarded": { "by": "You" } } },
+            "limit": "OncePerTurn",
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Zombie",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Zombie"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  },
+                  "tapped": true
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

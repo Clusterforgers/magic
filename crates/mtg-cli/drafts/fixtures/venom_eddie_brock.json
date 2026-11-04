@@ -1,0 +1,139 @@
+{
+  "object": "card",
+  "id": "eab647ce-fe86-450d-b5e8-ebcda631f6a1",
+  "oracle_id": "9132d7e6-7190-45e1-9c57-8fe2e5d0f2f2",
+  "multiverse_ids": [],
+  "resource_id": "0C99E5DEFA29D2AE06D021399EBA4DF3992CF053853E521B5A347BE73B6787DC",
+  "tcgplayer_id": 646045,
+  "cardmarket_id": 839927,
+  "name": "Venom, Eddie Brock",
+  "lang": "en",
+  "released_at": "2025-09-26",
+  "uri": "https://api.scryfall.com/cards/eab647ce-fe86-450d-b5e8-ebcda631f6a1",
+  "scryfall_uri": "https://scryfall.com/card/spe/12/venom-eddie-brock?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T01:16:11Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/e/a/eab647ce-fe86-450d-b5e8-ebcda631f6a1.jpg?1783905371",
+    "normal": "https://cards.scryfall.io/normal/front/e/a/eab647ce-fe86-450d-b5e8-ebcda631f6a1.jpg?1783905371",
+    "large": "https://cards.scryfall.io/large/front/e/a/eab647ce-fe86-450d-b5e8-ebcda631f6a1.jpg?1783905371",
+    "png": "https://cards.scryfall.io/png/front/e/a/eab647ce-fe86-450d-b5e8-ebcda631f6a1.png?1783905371",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/e/a/eab647ce-fe86-450d-b5e8-ebcda631f6a1.jpg?1783905371",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/e/a/eab647ce-fe86-450d-b5e8-ebcda631f6a1.jpg?1783905371",
+    "thumb": "https://cards.scryfall.io/thumb/front/e/a/eab647ce-fe86-450d-b5e8-ebcda631f6a1.webp?1783905371",
+    "grid": "https://cards.scryfall.io/grid/front/e/a/eab647ce-fe86-450d-b5e8-ebcda631f6a1.webp?1783905371",
+    "display": "https://cards.scryfall.io/display/front/e/a/eab647ce-fe86-450d-b5e8-ebcda631f6a1.webp?1783905371",
+    "art": "https://cards.scryfall.io/art/front/e/a/eab647ce-fe86-450d-b5e8-ebcda631f6a1.webp?1783905371",
+    "crop": "https://cards.scryfall.io/crop/front/e/a/eab647ce-fe86-450d-b5e8-ebcda631f6a1.webp?1783905371",
+    "jpeg": "https://cards.scryfall.io/normal/front/e/a/eab647ce-fe86-450d-b5e8-ebcda631f6a1.jpg?1783905371"
+  },
+  "mana_cost": "{4}{B}{B}",
+  "cmc": 6.0,
+  "type_line": "Legendary Creature — Symbiote Villain",
+  "oracle_text": "Menace (This creature can't be blocked except by two or more creatures.)\nWhenever another creature dies, put a +1/+1 counter on Venom. If that creature was a Villain, draw a card.",
+  "power": "6",
+  "toughness": "4",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Menace"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "57f25bcf-c541-418d-87c2-57361d57d35e",
+  "set": "spe",
+  "set_name": "Marvel's Spider-Man Eternal",
+  "set_type": "eternal",
+  "set_uri": "https://api.scryfall.com/sets/57f25bcf-c541-418d-87c2-57361d57d35e",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aspe&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/spe?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/eab647ce-fe86-450d-b5e8-ebcda631f6a1/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A9132d7e6-7190-45e1-9c57-8fe2e5d0f2f2&unique=prints",
+  "collector_number": "12",
+  "digital": false,
+  "rarity": "mythic",
+  "flavor_text": "Eddie Brock's prayers for vengeance were answered by a darkness from another world.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Simon Dominic",
+  "artist_ids": [
+    "b0e80135-db5a-4b88-a0bc-815a0e94faa1"
+  ],
+  "illustration_id": "32777b69-cc0a-4a19-9bcc-345dba6226f6",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 11947,
+  "prices": {
+    "usd": "15.90",
+    "usd_foil": "16.56",
+    "usd_etched": null,
+    "eur": "8.95",
+    "eur_foil": "12.33",
+    "tix": null
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DVenom%252C%2BEddie%2BBrock",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DVenom%252C%2BEddie%2BBrock",
+    "edhrec": "https://edhrec.com/route/?cc=Venom%2C+Eddie+Brock"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F646045%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=839927&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Venom%2C+Eddie+Brock&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "oracle_id": "24aaadda-ef1c-44eb-9b01-4847bf454cd5",
+  "name": "Meria, Scholar of Antiquity",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Meria, Scholar of Antiquity",
+      "oracle_fingerprint": "8d057ed1313be2b0dfe5d02162d97e82",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              { "TapPermanents": { "filter": [{ "Type": "Artifact" }, { "Not": "Token" }] } }
+            ],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Green"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              {
+                "TapPermanents": {
+                  "filter": [{ "Type": "Artifact" }, { "Not": "Token" }],
+                  "count": 2
+                }
+              }
+            ],
+            "effects": [
+              { "ExileTop": { "as": "exiled" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": { "from": "Exile", "only": { "Bound": "exiled" }, "play": true }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

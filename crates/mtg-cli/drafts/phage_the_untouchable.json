@@ -1,0 +1,50 @@
+{
+  "oracle_id": "09d01406-b529-4c3b-900e-d8c889a4c400",
+  "name": "Phage the Untouchable",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Phage the Untouchable",
+      "oracle_fingerprint": "5edddaaad054065954fcbaf289a997fd",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  {
+                    "AnyOf": [
+                      { "Not": { "WasCast": { "by": "You", "from": "Hand" } } },
+                      { "Not": { "OwnedBy": "You" } }
+                    ]
+                  },
+                  "This"
+                ],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [{ "LoseGame": {} }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": ["This"],
+                "to": { "Each": [{ "Type": "Creature" }] },
+                "combat": true
+              }
+            },
+            "effects": [{ "Destroy": { "what": "Triggering", "regenerate": false } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [{ "LoseGame": { "who": "Triggering" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

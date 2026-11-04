@@ -1,0 +1,34 @@
+{
+  "oracle_id": "93438939-3909-4e59-bfe4-760ec73eb57d",
+  "name": "Graywater's Fixer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Graywater's Fixer",
+      "oracle_fingerprint": "0666ab451142634d994571ff55b0cba4",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                {
+                  "AnyOf": [
+                    { "Subtype": "Assassin" },
+                    { "Subtype": "Mercenary" },
+                    { "Subtype": "Pirate" },
+                    { "Subtype": "Rogue" },
+                    { "Subtype": "Warlock" }
+                  ]
+                },
+                { "OwnedBy": "You" },
+                { "In": "Graveyard" }
+              ]
+            },
+            "mods": [{ "AddKeyword": { "Encore": "{X}" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "oracle_id": "42e55b84-8250-441d-a09e-7c61bf7661cc",
+  "name": "Kratos, God of War",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kratos, God of War",
+      "oracle_fingerprint": "609fae5bb7e97523cd714a7c99c6ad9f",
+      "abilities": [
+        { "Keyword": "DoubleStrike" },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }] },
+            "mods": [{ "AddKeyword": "Haste" }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": "Triggering",
+                  "amount": {
+                    "Count": [
+                      { "Type": "Creature" },
+                      { "Not": "AttackedThisTurn" },
+                      { "ControlledBy": "ActivePlayer" }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

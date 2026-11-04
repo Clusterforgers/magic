@@ -1,0 +1,32 @@
+{
+  "oracle_id": "0af189d3-4de1-483e-aac4-dd5d51a57d9c",
+  "name": "Battlegate Mimic",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Battlegate Mimic",
+      "oracle_fingerprint": "953b8b54be51ee3ed8ee34687c4e2db1",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": { "what": [{ "Color": "Red" }, { "Color": "White" }], "by": "You" }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "SetPT": { "power": 4, "toughness": 2 } },
+                    { "AddKeyword": "FirstStrike" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

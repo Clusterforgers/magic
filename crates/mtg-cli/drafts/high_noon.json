@@ -1,0 +1,25 @@
+{
+  "oracle_id": "3c8cbf0f-0288-4b5e-bd4f-0f208670b6b5",
+  "name": "High Noon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "High Noon",
+      "oracle_fingerprint": "bfd74d0bf3ac06cae1183ed221b877ac",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": { "Cant": { "who": "EachPlayer", "action": { "Cast": { "more_than": 1 } } } }
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{4}{R}" }, "SacrificeSelf"],
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 5 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

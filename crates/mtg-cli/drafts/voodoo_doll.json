@@ -1,0 +1,50 @@
+{
+  "oracle_id": "4d330c40-3d72-4528-a254-d036683958d3",
+  "name": "Voodoo Doll",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Voodoo Doll",
+      "oracle_fingerprint": "15376194f4710c2bce87ed4b13b86c0a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [{ "PutCounters": { "on": "This", "counter": { "Other": "pin" } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "CountOf": { "subject": "This", "selector": ["Untapped"], "op": "Ge", "right": 1 }
+            },
+            "effects": [
+              { "Destroy": { "what": "This" } },
+              {
+                "DealDamage": {
+                  "to": "You",
+                  "amount": { "Counters": { "on": "This", "counter": { "Other": "pin" } } }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{X}{X}" }, "Tap"],
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": { "Counters": { "on": "This", "counter": { "Other": "pin" } } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

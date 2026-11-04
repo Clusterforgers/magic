@@ -1,0 +1,73 @@
+{
+  "oracle_id": "e95a9488-3f86-4598-9c6e-6b1b959f8570",
+  "name": "Nimble Trapfinder",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nimble Trapfinder",
+      "oracle_fingerprint": "2c6de92bacb8bff2526c1d0db597756b",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": ["CantBeBlocked"],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "Entered",
+                    "who": "EachPlayer",
+                    "filter": [
+                      {
+                        "AnyOf": [
+                          { "Subtype": "Cleric" },
+                          { "Subtype": "Rogue" },
+                          { "Subtype": "Warrior" },
+                          { "Subtype": "Wizard" }
+                        ]
+                      },
+                      { "ControlledBy": "You" },
+                      "Other"
+                    ]
+                  }
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "if": { "Compare": { "left": { "Party": "You" }, "op": "Eq", "right": 4 } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [
+                    {
+                      "GrantAbility": {
+                        "Triggered": {
+                          "when": {
+                            "DealsDamage": {
+                              "source": ["This"],
+                              "to": "EachPlayer",
+                              "combat": true
+                            }
+                          },
+                          "effects": [{ "Draw": {} }]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

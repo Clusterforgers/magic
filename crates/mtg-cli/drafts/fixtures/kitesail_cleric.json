@@ -1,0 +1,144 @@
+{
+  "object": "card",
+  "id": "16626f84-00d3-4ec9-b62c-19fff380cd3a",
+  "oracle_id": "0b9bb0d7-4139-46b6-a058-2f79be64aef2",
+  "multiverse_ids": [
+    491643
+  ],
+  "mtgo_id": 82979,
+  "arena_id": 73204,
+  "tcgplayer_id": 221888,
+  "cardmarket_id": 495224,
+  "name": "Kitesail Cleric",
+  "lang": "en",
+  "released_at": "2020-09-25",
+  "uri": "https://api.scryfall.com/cards/16626f84-00d3-4ec9-b62c-19fff380cd3a",
+  "scryfall_uri": "https://scryfall.com/card/znr/20/kitesail-cleric?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T07:56:58Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/1/6/16626f84-00d3-4ec9-b62c-19fff380cd3a.jpg?1783929418",
+    "normal": "https://cards.scryfall.io/normal/front/1/6/16626f84-00d3-4ec9-b62c-19fff380cd3a.jpg?1783929418",
+    "large": "https://cards.scryfall.io/large/front/1/6/16626f84-00d3-4ec9-b62c-19fff380cd3a.jpg?1783929418",
+    "png": "https://cards.scryfall.io/png/front/1/6/16626f84-00d3-4ec9-b62c-19fff380cd3a.png?1783929418",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/1/6/16626f84-00d3-4ec9-b62c-19fff380cd3a.jpg?1783929418",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/1/6/16626f84-00d3-4ec9-b62c-19fff380cd3a.jpg?1783929418",
+    "thumb": "https://cards.scryfall.io/thumb/front/1/6/16626f84-00d3-4ec9-b62c-19fff380cd3a.webp?1783929418",
+    "grid": "https://cards.scryfall.io/grid/front/1/6/16626f84-00d3-4ec9-b62c-19fff380cd3a.webp?1783929418",
+    "display": "https://cards.scryfall.io/display/front/1/6/16626f84-00d3-4ec9-b62c-19fff380cd3a.webp?1783929418",
+    "art": "https://cards.scryfall.io/art/front/1/6/16626f84-00d3-4ec9-b62c-19fff380cd3a.webp?1783929418",
+    "crop": "https://cards.scryfall.io/crop/front/1/6/16626f84-00d3-4ec9-b62c-19fff380cd3a.webp?1783929418",
+    "jpeg": "https://cards.scryfall.io/normal/front/1/6/16626f84-00d3-4ec9-b62c-19fff380cd3a.jpg?1783929418"
+  },
+  "mana_cost": "{W}",
+  "cmc": 1.0,
+  "type_line": "Creature — Kor Cleric",
+  "oracle_text": "Kicker {2}{W} (You may pay an additional {2}{W} as you cast this spell.)\nFlying\nWhen this creature enters, if it was kicked, tap up to two target creatures.",
+  "power": "1",
+  "toughness": "1",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Kicker",
+    "Flying"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "arena",
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "f4e01fa7-b254-42dd-849f-69b58027a8c4",
+  "set": "znr",
+  "set_name": "Zendikar Rising",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/f4e01fa7-b254-42dd-849f-69b58027a8c4",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aznr&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/znr?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/16626f84-00d3-4ec9-b62c-19fff380cd3a/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A0b9bb0d7-4139-46b6-a058-2f79be64aef2&unique=prints",
+  "collector_number": "20",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "Too flashy to ignore. Too fast to catch.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "PINDURSKI",
+  "artist_ids": [
+    "f333a7f0-7330-40e9-8c58-667eea2f0f60"
+  ],
+  "illustration_id": "c994c730-e4e3-45ef-be1a-2abf80c030d1",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 21956,
+  "penny_rank": 10519,
+  "preview": {
+    "source": "IGN",
+    "source_uri": "https://www.ign.com/articles/magic-the-gathering-zendikar-rising-kor-blademaster-seafloor-stalker-kitesail-cleric-ardent-electromancer",
+    "previewed_at": "2020-09-02"
+  },
+  "prices": {
+    "usd": "0.15",
+    "usd_foil": "0.11",
+    "usd_etched": null,
+    "eur": "0.09",
+    "eur_foil": "0.25",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=491643&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DKitesail%2BCleric",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DKitesail%2BCleric",
+    "edhrec": "https://edhrec.com/route/?cc=Kitesail+Cleric"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F221888%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=495224&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/82979?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

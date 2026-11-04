@@ -1,0 +1,29 @@
+{
+  "oracle_id": "f903b76f-d405-427a-b115-5066eb311e10",
+  "name": "Strength of Solidarity",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Strength of Solidarity",
+      "oracle_fingerprint": "a250f9787ada993c308495d2d24935aa",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": { "Target": 0 },
+                  "counter": "+1/+1",
+                  "count": { "Party": "You" }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

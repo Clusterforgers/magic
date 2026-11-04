@@ -1,0 +1,58 @@
+{
+  "oracle_id": "84c0db59-255d-41af-a3d4-3f3548f1195f",
+  "name": "Thieves' Guild Enforcer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thieves' Guild Enforcer",
+      "oracle_fingerprint": "eb1858b20166a6ae8a9d0447bd25cbe6",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  {
+                    "AnyOf": [
+                      "This",
+                      {
+                        "Not": {
+                          "AnyOf": [
+                            { "Not": { "Subtype": "Rogue" } },
+                            { "Not": "Other" },
+                            { "Not": { "ControlledBy": "You" } }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                ],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [{ "Mill": { "who": "Opponents", "count": 2 } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 1 } }, { "AddKeyword": "Deathtouch" }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Largest": {
+                    "who": "Opponents",
+                    "of": [{ "In": "Graveyard" }, { "OwnedBy": "You" }]
+                  }
+                },
+                "op": "Ge",
+                "right": 8
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

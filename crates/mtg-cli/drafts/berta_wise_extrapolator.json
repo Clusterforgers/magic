@@ -1,0 +1,43 @@
+{
+  "oracle_id": "715f0832-696c-4111-b418-d9b6da403159",
+  "name": "Berta, Wise Extrapolator",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Berta, Wise Extrapolator",
+      "oracle_fingerprint": "60e22b2007db5eb8cb27e903ba2ea186",
+      "abilities": [
+        { "Keyword": { "Macro": { "name": "increment", "amount": 0 } } },
+        {
+          "Triggered": {
+            "when": { "Batch": { "CountersPut": { "what": ["This"], "counter": "+1/+1" } } },
+            "effects": [{ "May": { "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }] } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{X}" }, "Tap"],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Fractal",
+                      "colors": ["Green", "Blue"],
+                      "types": ["Creature"],
+                      "subtypes": ["Fractal"],
+                      "power": 0,
+                      "toughness": 0
+                    }
+                  },
+                  "as": "token"
+                }
+              },
+              { "PutCounters": { "on": { "Bound": "token" }, "counter": "+1/+1", "count": "X" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

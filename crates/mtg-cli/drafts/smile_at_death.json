@@ -1,0 +1,35 @@
+{
+  "oracle_id": "9228f04c-506f-4453-a335-e66876b8ce8d",
+  "name": "Smile at Death",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Smile at Death",
+      "oracle_fingerprint": "f943ec76e411b634457f5dfc3d395b4a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "Compare": { "stat": "Power", "op": "Le", "to": 2 } },
+                    { "OwnedBy": "You" },
+                    { "In": "Graveyard" }
+                  ]
+                },
+                "bounds": { "min": 0, "max": 2 }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} }, "as": "moved" } },
+              { "PutCounters": { "on": { "Bound": "moved" }, "counter": "+1/+1" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

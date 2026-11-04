@@ -1,0 +1,28 @@
+{
+  "oracle_id": "49b351d8-8b63-4f9e-a323-344ed35fdfff",
+  "name": "Elvish Hunter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Elvish Hunter",
+      "oracle_fingerprint": "44c10d55126e27846bf100d44c242dca",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{G}" }, "Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["DoesntUntap"],
+                  "duration": "NextUntapStep"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "oracle_id": "c66976d3-57f1-4c48-ada0-d74081f1699a",
+  "name": "Dungeoneer's Pack",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dungeoneer's Pack",
+      "oracle_fingerprint": "b21adfcdfe0f79786935a0d66f8a237d",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap", "SacrificeSelf"],
+            "effects": [
+              { "TakeInitiative": {} },
+              { "GainLife": { "amount": 3 } },
+              { "Draw": {} },
+              { "CreateToken": { "token": { "Named": "treasure" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,84 @@
+{
+  "oracle_id": "ea9031de-6169-4b1c-9390-7fdaf876c7cd",
+  "name": "Chaos Channeler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Chaos Channeler",
+      "oracle_fingerprint": "c5003dee7db2de7576f18afaaf84ffb5",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "RollDice": {
+                  "sides": 20,
+                  "results": [
+                    {
+                      "from": 1,
+                      "to": 9,
+                      "effects": [
+                        { "ExileTop": { "as": "exiled" } },
+                        {
+                          "Rule": {
+                            "rule": {
+                              "MayCast": {
+                                "from": "Exile",
+                                "only": { "Bound": "exiled" },
+                                "play": true
+                              }
+                            },
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "from": 10,
+                      "to": 19,
+                      "effects": [
+                        { "ExileTop": { "count": 2, "as": "exiled2" } },
+                        {
+                          "Rule": {
+                            "rule": {
+                              "MayCast": {
+                                "from": "Exile",
+                                "only": { "Bound": "exiled2" },
+                                "play": true
+                              }
+                            },
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "from": 20,
+                      "to": 20,
+                      "effects": [
+                        { "ExileTop": { "count": 3, "as": "exiled3" } },
+                        {
+                          "Rule": {
+                            "rule": {
+                              "MayCast": {
+                                "from": "Exile",
+                                "only": { "Bound": "exiled3" },
+                                "play": true
+                              }
+                            },
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

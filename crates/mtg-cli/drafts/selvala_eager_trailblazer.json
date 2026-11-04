@@ -1,0 +1,78 @@
+{
+  "oracle_id": "95b20721-1af9-4f3f-a39b-7cd1d4ce0b20",
+  "name": "Selvala, Eager Trailblazer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Selvala, Eager Trailblazer",
+      "oracle_fingerprint": "7f55c21a192286bdadcc4afec28dbfdc",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Type": "Creature" }], "by": "You" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Mercenary",
+                      "colors": ["Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Mercenary"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [
+                        {
+                          "Activated": {
+                            "cost": ["Tap"],
+                            "timing": "Sorcery",
+                            "targets": [
+                              {
+                                "what": {
+                                  "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                                }
+                              }
+                            ],
+                            "effects": [
+                              {
+                                "Continuous": {
+                                  "affected": { "Target": 0 },
+                                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+                                  "duration": "UntilEndOfTurn"
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": {
+                    "AnyColor": {
+                      "Distinct": {
+                        "of": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                        "stat": "Power"
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

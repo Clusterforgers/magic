@@ -1,0 +1,33 @@
+{
+  "oracle_id": "ccf8d919-1399-4bef-94ac-04c67f122828",
+  "name": "Zealous Persecution",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Zealous Persecution",
+      "oracle_fingerprint": "aed7c233202a8081d98f36d08a9d5ba5",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] },
+                  "mods": [{ "ModifyPT": { "power": -1, "toughness": -1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

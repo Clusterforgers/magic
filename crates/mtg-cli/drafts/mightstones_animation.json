@@ -1,0 +1,29 @@
+{
+  "oracle_id": "de68a69a-0c4e-43b9-821d-2fe2269b5e48",
+  "name": "Mightstone's Animation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mightstone's Animation",
+      "oracle_fingerprint": "069c062e67c627762a56ca696c952b73",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Artifact" }] } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Draw": {} }]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "SetPT": { "power": 4, "toughness": 4 } }, { "AddType": "Creature" }],
+            "condition": {
+              "Matches": { "subject": "Attached", "selector": [{ "Type": "Artifact" }] }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "oracle_id": "9b1048f8-0d56-424f-a7a1-40d91d681956",
+  "name": "Illuminating Lash",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Illuminating Lash",
+      "oracle_fingerprint": "0be85b9e8ea52f324004d480f5e707d7",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 3 } },
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "SpellCast": { "what": [{ "Not": { "Type": "Creature" } }], "by": "You" }
+                  },
+                  "effects": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

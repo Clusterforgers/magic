@@ -1,0 +1,35 @@
+{
+  "oracle_id": "854ef7c2-52e9-486a-aab6-7e3b3a6185ea",
+  "name": "Statecraft",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Statecraft",
+      "oracle_fingerprint": "a591e31f39d286719698403165fed0be",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": {
+              "Damage": {
+                "to": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                "combat": true
+              }
+            },
+            "by": "Prevent"
+          }
+        },
+        {
+          "Replacement": {
+            "when": {
+              "Damage": {
+                "source": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                "combat": true
+              }
+            },
+            "by": "Prevent"
+          }
+        }
+      ]
+    }
+  ]
+}

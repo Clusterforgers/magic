@@ -1,0 +1,33 @@
+{
+  "oracle_id": "5d27c63e-d1ef-48af-b51d-01ebc6daeac9",
+  "name": "Mikaeus, the Unhallowed",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mikaeus, the Unhallowed",
+      "oracle_fingerprint": "11ecb580a51b535559d418febdc5dc19",
+      "abilities": [
+        { "Keyword": "Intimidate" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": [{ "Subtype": "Human" }], "to": "You" } },
+            "effects": [{ "Destroy": { "what": "Dealer" } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                { "Not": { "Subtype": "Human" } },
+                "Other",
+                { "ControlledBy": "You" }
+              ]
+            },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }, { "AddKeyword": "Undying" }]
+          }
+        }
+      ]
+    }
+  ]
+}

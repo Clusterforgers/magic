@@ -1,0 +1,45 @@
+{
+  "oracle_id": "e001d7e6-71c9-42fa-9d5c-9455da66e4ec",
+  "name": "Arcade Gannon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Arcade Gannon",
+      "oracle_fingerprint": "a4a06375fce54fb7b1d02e624c6277c0",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              { "Draw": {} },
+              { "Discard": {} },
+              { "PutCounters": { "on": "This", "counter": { "Other": "quest" } } }
+            ]
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": {
+                "what": [
+                  { "AnyOf": [{ "Type": "Artifact" }, { "Subtype": "Human" }] },
+                  { "Not": { "Type": "Land" } },
+                  {
+                    "Compare": {
+                      "stat": "ManaValue",
+                      "op": "Le",
+                      "to": { "Counters": { "on": "This", "counter": { "Other": "quest" } } }
+                    }
+                  }
+                ],
+                "from": "Graveyard",
+                "once": true
+              }
+            },
+            "condition": "YourTurn"
+          }
+        }
+      ]
+    }
+  ]
+}

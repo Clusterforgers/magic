@@ -106,16 +106,22 @@ export const DeclareBlockersPrompt: PromptComponent<'DeclareBlockers'> = ({ opti
     [minimums, blockerLists],
   )
   // The attackers a rule says must be blocked, with no blocker yet while a creature that could block them is free.
-  const unserved = useMemo(
-    () =>
-      (options.must_be_blocked ?? []).filter(
-        (attacker) =>
-          attackers.includes(attacker) &&
-          !blockerLists.has(attacker) &&
-          [...offered].some(([blocker, can]) => can.includes(attacker) && !pairs.has(blocker)),
-      ),
-    [options.must_be_blocked, attackers, blockerLists, offered, pairs],
-  )
+  // A creature that can't block alone serves only beside another blocker, so it does not count while it would be alone:
+  // declaring no blocks stays open then.
+  const unserved = useMemo(() => {
+    const alone = new Set(options.cant_alone ?? [])
+    const free = [...offered.keys()].filter((blocker) => !pairs.has(blocker))
+    const partnered = pairs.size > 0 || free.length > 1
+    return (options.must_be_blocked ?? []).filter(
+      (attacker) =>
+        attackers.includes(attacker) &&
+        !blockerLists.has(attacker) &&
+        [...offered].some(
+          ([blocker, can]) =>
+            can.includes(attacker) && !pairs.has(blocker) && (partnered || !alone.has(blocker)),
+        ),
+    )
+  }, [options.must_be_blocked, options.cant_alone, attackers, blockerLists, offered, pairs])
   // The engine is asked what the blocks would do each time they change; its forecast comes back through the seam.
   const blocksMade = useMemo(() => blocksAnswer(pairs), [pairs])
   const previewStatus = usePreviewRequest(id, blocksMade)

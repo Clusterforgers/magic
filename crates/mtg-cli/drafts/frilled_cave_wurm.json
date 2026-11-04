@@ -1,0 +1,41 @@
+{
+  "oracle_id": "ac5294c6-bc79-4a0f-b8b3-52b554561e38",
+  "name": "Frilled Cave-Wurm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Frilled Cave-Wurm",
+      "oracle_fingerprint": "6a6af670d8254cf60e284f03efedcd2f",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "OwnedBy": "You" },
+                    {
+                      "AnyOf": [
+                        { "Type": "Artifact" },
+                        { "Type": "Battle" },
+                        { "Type": "Creature" },
+                        { "Type": "Enchantment" },
+                        { "Type": "Land" },
+                        { "Type": "Planeswalker" }
+                      ]
+                    },
+                    { "In": "Graveyard" }
+                  ]
+                },
+                "op": "Ge",
+                "right": 4
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

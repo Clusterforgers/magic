@@ -1,0 +1,38 @@
+{
+  "oracle_id": "25895c28-23c1-439e-858b-5cb31fdc31de",
+  "name": "Death of a Thousand Stings",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Death of a Thousand Stings",
+      "oracle_fingerprint": "479257c39f92bd0b8603364d56b8af70",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              { "LoseLife": { "who": { "Target": 0 }, "amount": 1 } },
+              { "GainLife": { "amount": 1 } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": [{ "OwnedBy": "You" }, { "In": "Hand" }] },
+                "op": "Gt",
+                "right": {
+                  "Largest": { "who": "Opponents", "of": [{ "In": "Hand" }, { "OwnedBy": "You" }] }
+                }
+              }
+            },
+            "from": "Graveyard",
+            "effects": [{ "May": { "effects": [{ "Move": { "what": "This", "to": "Hand" } }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "oracle_id": "7ed52301-81ea-4e7f-b985-cfab0593cae4",
+  "name": "Vengevine",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vengevine",
+      "oracle_fingerprint": "8bfee8fdc6a4471454a35848ee3cc723",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Type": "Creature" }], "by": "You" } },
+            "if": {
+              "AtTrigger": {
+                "Compare": {
+                  "left": {
+                    "Tally": {
+                      "event": "SpellCast",
+                      "who": "EachPlayer",
+                      "filter": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                    }
+                  },
+                  "op": "Eq",
+                  "right": 2
+                }
+              }
+            },
+            "from": "Graveyard",
+            "effects": [
+              {
+                "May": { "effects": [{ "Move": { "what": "This", "to": { "Battlefield": {} } } }] }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

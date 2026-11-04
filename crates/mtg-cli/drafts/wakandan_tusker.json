@@ -1,0 +1,19 @@
+{
+  "oracle_id": "9e8ffb63-1a7b-4ebe-839d-d5192522db65",
+  "name": "Wakandan Tusker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wakandan Tusker",
+      "oracle_fingerprint": "3d40f4e589ae4bc514396ecbb6711d8e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Tapped": { "what": ["This"] } },
+            "effects": [{ "GainLife": { "amount": 1 } }, { "Scry": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

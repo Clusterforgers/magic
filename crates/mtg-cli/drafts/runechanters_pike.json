@@ -1,0 +1,45 @@
+{
+  "oracle_id": "2efea460-c3e1-4578-a587-134e13bdf264",
+  "name": "Runechanter's Pike",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Runechanter's Pike",
+      "oracle_fingerprint": "7ab0c595ff3d5aa652ef1a8472d72f81",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": {
+                    "Sum": [
+                      {
+                        "Count": [
+                          { "Type": "Instant" },
+                          { "OwnedBy": "You" },
+                          { "In": "Graveyard" }
+                        ]
+                      },
+                      {
+                        "Count": [
+                          { "Type": "Sorcery" },
+                          { "OwnedBy": "You" },
+                          { "In": "Graveyard" }
+                        ]
+                      }
+                    ]
+                  },
+                  "toughness": 0
+                }
+              },
+              { "AddKeyword": "FirstStrike" }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{2}" } }
+      ]
+    }
+  ]
+}

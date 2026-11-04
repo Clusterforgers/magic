@@ -1,0 +1,19 @@
+{
+  "oracle_id": "c8a1b3dd-bc36-4d97-8f93-1151446f04e2",
+  "name": "Metathran Elite",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Metathran Elite",
+      "oracle_fingerprint": "3714cf1d8a16726342f5317a2094efac",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": ["This", { "HasAttached": [{ "Subtype": "Aura" }] }] },
+            "mods": ["CantBeBlocked"]
+          }
+        }
+      ]
+    }
+  ]
+}

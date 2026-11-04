@@ -1,0 +1,39 @@
+{
+  "oracle_id": "178828a5-c202-4503-9755-fc6bb2390209",
+  "name": "Splitting the Powerstone",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Splitting the Powerstone",
+      "oracle_fingerprint": "ded44955a8eec4c1c7c1e83b1c636d1c",
+      "abilities": [
+        {
+          "AdditionalCost": {
+            "cost": [{ "Sacrifice": { "filter": [{ "Type": "Artifact" }] } }],
+            "required": true
+          }
+        },
+        {
+          "Spell": {
+            "effects": [
+              { "CreateToken": { "token": { "Named": "powerstone" }, "count": 2, "tapped": true } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": "Paid",
+                      "selector": [{ "Supertype": "Legendary" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

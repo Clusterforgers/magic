@@ -1,0 +1,57 @@
+{
+  "oracle_id": "57889a8e-0039-45c2-a608-ab315d51aa3a",
+  "name": "Skyship Weatherlight",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Skyship Weatherlight",
+      "oracle_fingerprint": "001ab7a762b0184b6f98602b2324f068",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Search": {
+                  "filter": [
+                    { "AnyOf": [{ "Type": "Creature" }, { "Type": "Artifact" }] },
+                    { "OwnedBy": "You" }
+                  ],
+                  "count": {
+                    "min": 0,
+                    "max": {
+                      "Count": [
+                        { "AnyOf": [{ "Type": "Creature" }, { "Type": "Artifact" }] },
+                        { "OwnedBy": "You" },
+                        { "In": "Library" }
+                      ]
+                    }
+                  },
+                  "as": "found"
+                }
+              },
+              { "Exile": { "what": { "Bound": "found" } } },
+              { "Shuffle": {} }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{4}" }, "Tap"],
+            "effects": [
+              {
+                "ChooseAtRandom": {
+                  "from": {
+                    "Each": [{ "ExiledWith": "This" }, { "In": "Exile" }, { "OwnedBy": "You" }]
+                  },
+                  "as": "picked"
+                }
+              },
+              { "Move": { "what": { "Bound": "picked" }, "to": "Hand" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

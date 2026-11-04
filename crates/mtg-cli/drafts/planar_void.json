@@ -1,0 +1,19 @@
+{
+  "oracle_id": "994e27e1-0bff-47c9-a1e6-b9e3ae4ffb1e",
+  "name": "Planar Void",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Planar Void",
+      "oracle_fingerprint": "0994933b802214bb8f894cb1b148ef9d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": [{ "Not": "Token" }, "Other"], "to": "Graveyard" } },
+            "effects": [{ "Exile": { "what": "Triggering" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

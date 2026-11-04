@@ -1,0 +1,39 @@
+{
+  "oracle_id": "43fea418-db6f-4953-89d1-6873b2ca41a8",
+  "name": "Hobgoblin Bandit Lord",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hobgoblin Bandit Lord",
+      "oracle_fingerprint": "23794a213b037da116695368b5c82678",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Goblin" }, "Other", { "ControlledBy": "You" }] },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{R}" }, "Tap"],
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": {
+                    "Tally": {
+                      "event": "Entered",
+                      "who": "EachPlayer",
+                      "filter": [{ "Subtype": "Goblin" }, { "ControlledBy": "You" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

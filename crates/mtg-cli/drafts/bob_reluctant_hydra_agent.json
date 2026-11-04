@@ -1,0 +1,47 @@
+{
+  "oracle_id": "9caa490e-dc28-4069-9ffb-4b1afd8fdd54",
+  "name": "Bob, Reluctant HYDRA Agent",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bob, Reluctant HYDRA Agent",
+      "oracle_fingerprint": "b0f2126eef8349d337bfa393845d0d6f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "AttacksAlone": { "what": ["This"] } },
+            "effects": [
+              { "Move": { "what": "This", "to": "Hand", "as": "moved" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "moved" },
+                      "selector": [],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "LoseLife": { "who": "Opponents", "amount": 2 } }]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "moved" },
+                      "selector": [],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "GainLife": { "amount": 2 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

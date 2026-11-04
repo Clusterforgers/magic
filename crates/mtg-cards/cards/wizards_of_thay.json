@@ -1,0 +1,26 @@
+{
+  "oracle_id": "cda1e3b5-ea80-4e83-b305-88993d307170",
+  "name": "Wizards of Thay",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wizards of Thay",
+      "oracle_fingerprint": "2bccffbbea31085e3095dcfde8978af3",
+      "abilities": [
+        { "Keyword": "Myriad" },
+        {
+          "CostModifier": {
+            "applies_to": [
+              "Spell",
+              { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+              { "ControlledBy": "You" }
+            ],
+            "change": "Reduce",
+            "mana": "{1}"
+          }
+        },
+        { "Rule": { "rule": { "MayCast": { "what": [{ "Type": "Sorcery" }], "flash": true } } } }
+      ]
+    }
+  ]
+}

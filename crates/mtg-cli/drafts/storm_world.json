@@ -1,0 +1,36 @@
+{
+  "oracle_id": "868f4ab2-a846-4ad0-8720-95fd234dd36b",
+  "name": "Storm World",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Storm World",
+      "oracle_fingerprint": "2113ac5f1d2320dc85b194a9e7ead96f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": "Triggering",
+                  "amount": {
+                    "Sum": [
+                      4,
+                      {
+                        "Times": {
+                          "by": -1,
+                          "of": { "Count": [{ "OwnedBy": "ActivePlayer" }, { "In": "Hand" }] }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

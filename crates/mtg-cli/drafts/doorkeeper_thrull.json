@@ -1,0 +1,32 @@
+{
+  "oracle_id": "0eaea4fd-a377-4541-9bdd-14921034a975",
+  "name": "Doorkeeper Thrull",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Doorkeeper Thrull",
+      "oracle_fingerprint": "73ee3e26f19dd090f9d0dade40a74f83",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": "Flying" },
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "EachPlayer",
+                "action": {
+                  "Trigger": {
+                    "ZoneChange": {
+                      "what": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Artifact" }] }],
+                      "to": "Battlefield"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

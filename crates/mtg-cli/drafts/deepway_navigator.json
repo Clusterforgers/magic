@@ -1,0 +1,39 @@
+{
+  "oracle_id": "812df594-75af-494f-be09-5f9633aca46a",
+  "name": "Deepway Navigator",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Deepway Navigator",
+      "oracle_fingerprint": "60f09817743222a79f448a18ea295a9a",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Untap": {
+                  "what": { "Each": [{ "Subtype": "Merfolk" }, "Other", { "ControlledBy": "You" }] }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Merfolk" }, { "ControlledBy": "You" }] },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+            "condition": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "Attackers" } },
+                "op": "Ge",
+                "right": 3
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "oracle_id": "878e5e0d-beb9-4f8d-a640-62140c907e52",
+  "name": "Fanatic of the Harrowing",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fanatic of the Harrowing",
+      "oracle_fingerprint": "96ed202e21a479e1c6551cc530e50aa9",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "Discard": { "who": "EachPlayer", "as": "discarded" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "discarded" },
+                      "selector": [{ "OwnedBy": "You" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

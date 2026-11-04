@@ -1,0 +1,129 @@
+{
+  "object": "card",
+  "id": "7052825f-d9fc-4820-b8c4-dbc204730b7c",
+  "oracle_id": "ca00eb17-e5c3-42c8-a665-431f5f95b67f",
+  "multiverse_ids": [
+    2364
+  ],
+  "tcgplayer_id": 1914,
+  "cardmarket_id": 6133,
+  "name": "Seeker",
+  "lang": "en",
+  "released_at": "1995-04-01",
+  "uri": "https://api.scryfall.com/cards/7052825f-d9fc-4820-b8c4-dbc204730b7c",
+  "scryfall_uri": "https://scryfall.com/card/4ed/49/seeker?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T13:04:25Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/7/0/7052825f-d9fc-4820-b8c4-dbc204730b7c.jpg?1783947865",
+    "normal": "https://cards.scryfall.io/normal/front/7/0/7052825f-d9fc-4820-b8c4-dbc204730b7c.jpg?1783947865",
+    "large": "https://cards.scryfall.io/large/front/7/0/7052825f-d9fc-4820-b8c4-dbc204730b7c.jpg?1783947865",
+    "png": "https://cards.scryfall.io/png/front/7/0/7052825f-d9fc-4820-b8c4-dbc204730b7c.png?1783947865",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/7/0/7052825f-d9fc-4820-b8c4-dbc204730b7c.jpg?1783947865",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/7/0/7052825f-d9fc-4820-b8c4-dbc204730b7c.jpg?1783947865",
+    "thumb": "https://cards.scryfall.io/thumb/front/7/0/7052825f-d9fc-4820-b8c4-dbc204730b7c.webp?1783947865",
+    "grid": "https://cards.scryfall.io/grid/front/7/0/7052825f-d9fc-4820-b8c4-dbc204730b7c.webp?1783947865",
+    "display": "https://cards.scryfall.io/display/front/7/0/7052825f-d9fc-4820-b8c4-dbc204730b7c.webp?1783947865",
+    "art": "https://cards.scryfall.io/art/front/7/0/7052825f-d9fc-4820-b8c4-dbc204730b7c.webp?1783947865",
+    "crop": "https://cards.scryfall.io/crop/front/7/0/7052825f-d9fc-4820-b8c4-dbc204730b7c.webp?1783947865",
+    "jpeg": "https://cards.scryfall.io/normal/front/7/0/7052825f-d9fc-4820-b8c4-dbc204730b7c.jpg?1783947865"
+  },
+  "mana_cost": "{2}{W}{W}",
+  "cmc": 4.0,
+  "type_line": "Enchantment — Aura",
+  "oracle_text": "Enchant creature\nEnchanted creature can't be blocked except by artifact creatures and/or white creatures.",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Enchant"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "2dd259d4-dc13-4956-a2dc-3e1d70b4a743",
+  "set": "4ed",
+  "set_name": "Fourth Edition",
+  "set_type": "core",
+  "set_uri": "https://api.scryfall.com/sets/2dd259d4-dc13-4956-a2dc-3e1d70b4a743",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3A4ed&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/4ed?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/7052825f-d9fc-4820-b8c4-dbc204730b7c/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Aca00eb17-e5c3-42c8-a665-431f5f95b67f&unique=prints",
+  "collector_number": "49",
+  "digital": false,
+  "rarity": "common",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Mark Poole",
+  "artist_ids": [
+    "bfdeaf09-f915-4058-8e8b-bcac3bc43c33"
+  ],
+  "illustration_id": "525606dd-327f-4749-8a4e-6fb42d079235",
+  "border_color": "white",
+  "frame": "1993",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 27769,
+  "prices": {
+    "usd": "0.16",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.02",
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=2364&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DSeeker",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DSeeker",
+    "edhrec": "https://edhrec.com/route/?cc=Seeker"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F1914%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=6133&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Seeker&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

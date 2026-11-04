@@ -1,0 +1,35 @@
+{
+  "oracle_id": "9edcf49b-2767-48bd-8fbe-968527cbddf4",
+  "name": "Holy Justiciar",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Holy Justiciar",
+      "oracle_fingerprint": "9bcf734dd126cbcd53155ef5b7ed8b51",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{W}" }, "Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Tap": { "what": { "Target": 0 } } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Target": 0 },
+                      "selector": [{ "Subtype": "Zombie" }],
+                      "op": "Eq",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Exile": { "what": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

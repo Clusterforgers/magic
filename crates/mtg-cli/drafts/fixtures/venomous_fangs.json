@@ -1,0 +1,133 @@
+{
+  "object": "card",
+  "id": "f5ae1348-c063-4ec8-9d8c-3d19a6421800",
+  "oracle_id": "a1ee715e-bab5-4edc-89ba-610cf71bb048",
+  "multiverse_ids": [
+    8908
+  ],
+  "mtgo_id": 12327,
+  "mtgo_foil_id": 12328,
+  "tcgplayer_id": 7090,
+  "cardmarket_id": 10487,
+  "name": "Venomous Fangs",
+  "lang": "en",
+  "released_at": "1998-10-12",
+  "uri": "https://api.scryfall.com/cards/f5ae1348-c063-4ec8-9d8c-3d19a6421800",
+  "scryfall_uri": "https://scryfall.com/card/usg/280/venomous-fangs?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T12:38:29Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/f/5/f5ae1348-c063-4ec8-9d8c-3d19a6421800.jpg?1783946309",
+    "normal": "https://cards.scryfall.io/normal/front/f/5/f5ae1348-c063-4ec8-9d8c-3d19a6421800.jpg?1783946309",
+    "large": "https://cards.scryfall.io/large/front/f/5/f5ae1348-c063-4ec8-9d8c-3d19a6421800.jpg?1783946309",
+    "png": "https://cards.scryfall.io/png/front/f/5/f5ae1348-c063-4ec8-9d8c-3d19a6421800.png?1783946309",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/f/5/f5ae1348-c063-4ec8-9d8c-3d19a6421800.jpg?1783946309",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/f/5/f5ae1348-c063-4ec8-9d8c-3d19a6421800.jpg?1783946309",
+    "thumb": "https://cards.scryfall.io/thumb/front/f/5/f5ae1348-c063-4ec8-9d8c-3d19a6421800.webp?1783946309",
+    "grid": "https://cards.scryfall.io/grid/front/f/5/f5ae1348-c063-4ec8-9d8c-3d19a6421800.webp?1783946309",
+    "display": "https://cards.scryfall.io/display/front/f/5/f5ae1348-c063-4ec8-9d8c-3d19a6421800.webp?1783946309",
+    "art": "https://cards.scryfall.io/art/front/f/5/f5ae1348-c063-4ec8-9d8c-3d19a6421800.webp?1783946309",
+    "crop": "https://cards.scryfall.io/crop/front/f/5/f5ae1348-c063-4ec8-9d8c-3d19a6421800.webp?1783946309",
+    "jpeg": "https://cards.scryfall.io/normal/front/f/5/f5ae1348-c063-4ec8-9d8c-3d19a6421800.jpg?1783946309"
+  },
+  "mana_cost": "{2}{G}",
+  "cmc": 3.0,
+  "type_line": "Enchantment — Aura",
+  "oracle_text": "Enchant creature\nWhenever enchanted creature deals damage to a creature, destroy the other creature.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Enchant"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "c330df40-51db-4caf-bde6-48df6c181001",
+  "set": "usg",
+  "set_name": "Urza's Saga",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/c330df40-51db-4caf-bde6-48df6c181001",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ausg&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/usg?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/f5ae1348-c063-4ec8-9d8c-3d19a6421800/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Aa1ee715e-bab5-4edc-89ba-610cf71bb048&unique=prints",
+  "collector_number": "280",
+  "digital": false,
+  "rarity": "common",
+  "flavor_text": "All the pain of the shattered forest contained in a single drop.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Lawrence Snelly",
+  "artist_ids": [
+    "ef99ff34-0fa4-43bb-92c9-62e7bab1b228"
+  ],
+  "illustration_id": "4718e520-6df6-4e9b-b64f-8a9ed08596ad",
+  "border_color": "black",
+  "frame": "1997",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 25127,
+  "prices": {
+    "usd": "0.14",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.09",
+    "eur_foil": null,
+    "tix": "0.12"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=8908&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DVenomous%2BFangs",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DVenomous%2BFangs",
+    "edhrec": "https://edhrec.com/route/?cc=Venomous+Fangs"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F7090%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=10487&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/12327?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

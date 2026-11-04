@@ -1,0 +1,157 @@
+{
+  "object": "card",
+  "id": "e4760b87-b109-496a-98d1-353f67c265b8",
+  "oracle_id": "3492cee8-b854-449a-ada4-a4e8a4333d87",
+  "multiverse_ids": [],
+  "resource_id": "CF83870CDDA2A51566C2AD56DCFF0CE5F20242BDD46C3BFF6DDA1103D648F053",
+  "mtgo_id": 145616,
+  "arena_id": 98254,
+  "tcgplayer_id": 662448,
+  "cardmarket_id": 857927,
+  "name": "Nyla, Shirshu Sleuth",
+  "lang": "en",
+  "released_at": "2025-11-21",
+  "uri": "https://api.scryfall.com/cards/e4760b87-b109-496a-98d1-353f67c265b8",
+  "scryfall_uri": "https://scryfall.com/card/tle/109/nyla-shirshu-sleuth?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T01:07:03Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/e/4/e4760b87-b109-496a-98d1-353f67c265b8.jpg?1783904823",
+    "normal": "https://cards.scryfall.io/normal/front/e/4/e4760b87-b109-496a-98d1-353f67c265b8.jpg?1783904823",
+    "large": "https://cards.scryfall.io/large/front/e/4/e4760b87-b109-496a-98d1-353f67c265b8.jpg?1783904823",
+    "png": "https://cards.scryfall.io/png/front/e/4/e4760b87-b109-496a-98d1-353f67c265b8.png?1783904823",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/e/4/e4760b87-b109-496a-98d1-353f67c265b8.jpg?1783904823",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/e/4/e4760b87-b109-496a-98d1-353f67c265b8.jpg?1783904823",
+    "thumb": "https://cards.scryfall.io/thumb/front/e/4/e4760b87-b109-496a-98d1-353f67c265b8.webp?1783904823",
+    "grid": "https://cards.scryfall.io/grid/front/e/4/e4760b87-b109-496a-98d1-353f67c265b8.webp?1783904823",
+    "display": "https://cards.scryfall.io/display/front/e/4/e4760b87-b109-496a-98d1-353f67c265b8.webp?1783904823",
+    "art": "https://cards.scryfall.io/art/front/e/4/e4760b87-b109-496a-98d1-353f67c265b8.webp?1783904823",
+    "crop": "https://cards.scryfall.io/crop/front/e/4/e4760b87-b109-496a-98d1-353f67c265b8.webp?1783904823",
+    "jpeg": "https://cards.scryfall.io/normal/front/e/4/e4760b87-b109-496a-98d1-353f67c265b8.jpg?1783904823"
+  },
+  "mana_cost": "{4}{B}",
+  "cmc": 5.0,
+  "type_line": "Legendary Creature — Mole Beast",
+  "oracle_text": "When Nyla enters, exile up to one target creature card from your graveyard. If you do, you lose X life and create X Clue tokens, where X is that card's mana value. (A Clue token is an artifact with \"{2}, Sacrifice this token: Draw a card.\")\nAt the beginning of your end step, if you control no Clues, return target card exiled with Nyla to its owner's hand.",
+  "power": "4",
+  "toughness": "5",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "4e2ed002-abef-439f-b0ac-7f06d6843151",
+      "component": "combo_piece",
+      "name": "Nyla, Shirshu Sleuth",
+      "type_line": "Legendary Creature — Mole Beast",
+      "uri": "https://api.scryfall.com/cards/4e2ed002-abef-439f-b0ac-7f06d6843151"
+    },
+    {
+      "object": "related_card",
+      "id": "8db9a248-d380-48e9-850c-38b2907332c1",
+      "component": "token",
+      "name": "Clue",
+      "type_line": "Token Artifact — Clue",
+      "uri": "https://api.scryfall.com/cards/8db9a248-d380-48e9-850c-38b2907332c1"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "arena",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "a75e6ceb-d62c-4063-8e96-f269e3a0b025",
+  "set": "tle",
+  "set_name": "Avatar: The Last Airbender Eternal",
+  "set_type": "eternal",
+  "set_uri": "https://api.scryfall.com/sets/a75e6ceb-d62c-4063-8e96-f269e3a0b025",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Atle&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/tle?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/e4760b87-b109-496a-98d1-353f67c265b8/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A3492cee8-b854-449a-ada4-a4e8a4333d87&unique=prints",
+  "collector_number": "109",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Douzen",
+  "artist_ids": [
+    "78fd7e33-ad10-4b6d-8df8-5bec4b16b2d2"
+  ],
+  "illustration_id": "4949d313-d1b3-4f58-b1f3-abee865ee62b",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 20383,
+  "prices": {
+    "usd": "0.17",
+    "usd_foil": "0.37",
+    "usd_etched": null,
+    "eur": "0.29",
+    "eur_foil": "0.18",
+    "tix": "0.08"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DNyla%252C%2BShirshu%2BSleuth",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DNyla%252C%2BShirshu%2BSleuth",
+    "edhrec": "https://edhrec.com/route/?cc=Nyla%2C+Shirshu+Sleuth"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F662448%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=857927&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/145616?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

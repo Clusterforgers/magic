@@ -1,0 +1,23 @@
+{
+  "oracle_id": "7ce533d0-8b6e-46d8-b21e-a2932bdffb67",
+  "name": "Rolling Stones",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rolling Stones",
+      "oracle_fingerprint": "277c72fe8e20432d174886ec0f2c27dd",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "Combat": {
+                "who": { "Each": [{ "Type": "Creature" }, { "Subtype": "Wall" }] },
+                "quirk": "AttackDespiteDefender"
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

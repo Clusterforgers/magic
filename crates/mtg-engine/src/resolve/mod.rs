@@ -428,6 +428,7 @@ fn run_step(
             intervening_if: Some(condition),
             ..
         } = rules
+        && !matches!(condition, mtg_cards::value::Condition::AtTrigger(_))
         && !scope.holds(condition)?
     {
         return Ok(Progress::Done(vec![Event::ResolutionEnded {

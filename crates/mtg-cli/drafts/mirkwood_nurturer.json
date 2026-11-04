@@ -1,0 +1,40 @@
+{
+  "oracle_id": "66630640-9605-44da-afdf-eb9d458d056f",
+  "name": "Mirkwood Nurturer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mirkwood Nurturer",
+      "oracle_fingerprint": "c374ace19e00f45ca07a2d53b251da55",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": { "Object": ["Other", { "ControlledBy": "You" }] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": "Hand", "as": "moved" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "moved" },
+                      "selector": [],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

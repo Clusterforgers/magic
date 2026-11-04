@@ -1,0 +1,36 @@
+{
+  "oracle_id": "cb19d2f7-0511-4c66-ba4c-f38516920c20",
+  "name": "Smashing Success",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Smashing Success",
+      "oracle_fingerprint": "7f06866fed7299be6fcaacfa065a671b",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Land" }] }] } }
+            ],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 }, "as": "destroyed" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "destroyed" },
+                      "selector": [{ "Type": "Artifact" }],
+                      "op": "Eq",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "CreateToken": { "token": { "Named": "treasure" } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

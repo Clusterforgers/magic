@@ -1,0 +1,32 @@
+{
+  "oracle_id": "00e9c357-5d0b-45cc-a5fd-70ac1f327d28",
+  "name": "Tanglewalker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tanglewalker",
+      "oracle_fingerprint": "49e4ed1ec03c697bd2c0b3f712f16a92",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+            "mods": ["CantBeBlocked"],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "Type": "Artifact" },
+                    { "ControlledBy": "Defending" },
+                    { "Type": "Land" }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

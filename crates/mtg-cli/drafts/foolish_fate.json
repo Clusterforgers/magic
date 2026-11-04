@@ -1,0 +1,35 @@
+{
+  "oracle_id": "9c51893f-9118-4d95-b88a-e264f4cbd7a8",
+  "name": "Foolish Fate",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Foolish Fate",
+      "oracle_fingerprint": "3a6e45da7be99bf99be5e8e455e50300",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Tallied": { "who": "You", "what": "LifeGainedTotal" } },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    { "LoseLife": { "who": { "ControllerOf": { "Target": 0 } }, "amount": 3 } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

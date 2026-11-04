@@ -1,0 +1,38 @@
+{
+  "oracle_id": "b543bfa2-0174-4dd8-9ee6-09b92fb44934",
+  "name": "Prime Speaker Vannifar",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Prime Speaker Vannifar",
+      "oracle_fingerprint": "3f7b9604cd9a3da16de359c327432814",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap", { "Sacrifice": { "filter": [{ "Type": "Creature" }, "Other"] } }],
+            "timing": "Sorcery",
+            "effects": [
+              {
+                "Search": {
+                  "filter": [
+                    { "Type": "Creature" },
+                    {
+                      "Compare": {
+                        "stat": "ManaValue",
+                        "op": "Eq",
+                        "to": { "Sum": [{ "Stat": { "of": "Paid", "stat": "ManaValue" } }, 1] }
+                      }
+                    }
+                  ],
+                  "as": "found"
+                }
+              },
+              { "Move": { "what": { "Bound": "found" }, "to": { "Battlefield": {} } } },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,131 @@
+{
+  "object": "card",
+  "id": "e8b39fd6-9240-4f76-b12c-e7d9aa88f061",
+  "oracle_id": "7dde4eb6-e9d7-4259-abc2-3af738e0f00f",
+  "multiverse_ids": [
+    456651
+  ],
+  "mtgo_id": 70183,
+  "tcgplayer_id": 180808,
+  "cardmarket_id": 366857,
+  "name": "Foil",
+  "lang": "en",
+  "released_at": "2018-12-07",
+  "uri": "https://api.scryfall.com/cards/e8b39fd6-9240-4f76-b12c-e7d9aa88f061",
+  "scryfall_uri": "https://scryfall.com/card/uma/55/foil?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T09:10:43Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/e/8/e8b39fd6-9240-4f76-b12c-e7d9aa88f061.jpg?1783933843",
+    "normal": "https://cards.scryfall.io/normal/front/e/8/e8b39fd6-9240-4f76-b12c-e7d9aa88f061.jpg?1783933843",
+    "large": "https://cards.scryfall.io/large/front/e/8/e8b39fd6-9240-4f76-b12c-e7d9aa88f061.jpg?1783933843",
+    "png": "https://cards.scryfall.io/png/front/e/8/e8b39fd6-9240-4f76-b12c-e7d9aa88f061.png?1783933843",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/e/8/e8b39fd6-9240-4f76-b12c-e7d9aa88f061.jpg?1783933843",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/e/8/e8b39fd6-9240-4f76-b12c-e7d9aa88f061.jpg?1783933843",
+    "thumb": "https://cards.scryfall.io/thumb/front/e/8/e8b39fd6-9240-4f76-b12c-e7d9aa88f061.webp?1783933843",
+    "grid": "https://cards.scryfall.io/grid/front/e/8/e8b39fd6-9240-4f76-b12c-e7d9aa88f061.webp?1783933843",
+    "display": "https://cards.scryfall.io/display/front/e/8/e8b39fd6-9240-4f76-b12c-e7d9aa88f061.webp?1783933843",
+    "art": "https://cards.scryfall.io/art/front/e/8/e8b39fd6-9240-4f76-b12c-e7d9aa88f061.webp?1783933843",
+    "crop": "https://cards.scryfall.io/crop/front/e/8/e8b39fd6-9240-4f76-b12c-e7d9aa88f061.webp?1783933843",
+    "jpeg": "https://cards.scryfall.io/normal/front/e/8/e8b39fd6-9240-4f76-b12c-e7d9aa88f061.jpg?1783933843"
+  },
+  "mana_cost": "{2}{U}{U}",
+  "cmc": 4.0,
+  "type_line": "Instant",
+  "oracle_text": "You may discard an Island card and another card rather than pay this spell's mana cost.\nCounter target spell.",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "2ec77b94-6d47-4891-a480-5d0b4e5c9372",
+  "set": "uma",
+  "set_name": "Ultimate Masters",
+  "set_type": "masters",
+  "set_uri": "https://api.scryfall.com/sets/2ec77b94-6d47-4891-a480-5d0b4e5c9372",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Auma&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/uma?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/e8b39fd6-9240-4f76-b12c-e7d9aa88f061/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A7dde4eb6-e9d7-4259-abc2-3af738e0f00f&unique=prints",
+  "collector_number": "55",
+  "digital": false,
+  "rarity": "common",
+  "flavor_text": "Among wizards, poor timing is the most consistent mistake.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Donato Giancola",
+  "artist_ids": [
+    "90332db2-aecb-4d79-917b-95cbeb8d0cb6"
+  ],
+  "illustration_id": "139ace29-3164-451a-a444-4565f13fbbbc",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 4261,
+  "prices": {
+    "usd": "1.76",
+    "usd_foil": "6.07",
+    "usd_etched": null,
+    "eur": "2.57",
+    "eur_foil": "5.13",
+    "tix": "7.13"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=456651&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DFoil",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DFoil",
+    "edhrec": "https://edhrec.com/route/?cc=Foil"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F180808%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=366857&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/70183?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

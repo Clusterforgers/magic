@@ -1,0 +1,38 @@
+{
+  "oracle_id": "52e3bcc0-0c1f-4846-bf52-4af66b7abd6f",
+  "name": "Nyx Infusion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nyx Infusion",
+      "oracle_fingerprint": "ef6f2d2b5fecc22e6158fc0fb9a97663",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+            "condition": {
+              "Matches": {
+                "subject": "Attached",
+                "selector": [{ "Type": "Creature" }, { "Type": "Enchantment" }]
+              }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": -2, "toughness": -2 } }],
+            "condition": {
+              "Matches": {
+                "subject": "Attached",
+                "selector": [{ "Type": "Creature" }, { "Not": { "Type": "Enchantment" } }]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

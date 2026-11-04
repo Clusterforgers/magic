@@ -1,0 +1,40 @@
+{
+  "oracle_id": "0ab090db-f8fc-42ff-95db-e9370796db97",
+  "name": "Perilous Voyage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Perilous Voyage",
+      "oracle_fingerprint": "7c23fcfb9de49869d43c4db734468c6a",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Not": { "Type": "Land" } }, { "Not": { "ControlledBy": "You" } }]
+                }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": "Hand" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Target": 0 },
+                      "selector": [{ "Compare": { "stat": "ManaValue", "op": "Le", "to": 2 } }],
+                      "op": "Eq",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Scry": { "count": 2 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "oracle_id": "e349be42-5f14-44a9-9608-281985c10e2d",
+  "name": "Marauding Mako",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Marauding Mako",
+      "oracle_fingerprint": "3a79eae72ff3dbcbe87ee3479bd4d1b3",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Batch": { "Discarded": { "by": "You" } } },
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": "+1/+1", "count": "Triggering" } }
+            ]
+          }
+        },
+        { "Keyword": { "Cycling": "{2}" } }
+      ]
+    }
+  ]
+}

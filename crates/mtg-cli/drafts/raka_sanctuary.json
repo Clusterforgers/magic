@@ -1,0 +1,88 @@
+{
+  "oracle_id": "0b085c90-95df-4823-ba67-9eb398b1ec94",
+  "name": "Raka Sanctuary",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Raka Sanctuary",
+      "oracle_fingerprint": "aa9c91783ea97a0e3a19cc06afaa6b03",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "ControlledBy": "You" },
+                    { "AnyOf": [{ "Color": "White" }, { "Color": "Blue" }] }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": {
+                    "When": {
+                      "condition": {
+                        "Compare": {
+                          "left": {
+                            "Sum": [
+                              {
+                                "When": {
+                                  "condition": {
+                                    "Compare": {
+                                      "left": {
+                                        "Count": [{ "Color": "White" }, { "ControlledBy": "You" }]
+                                      },
+                                      "op": "Gt",
+                                      "right": 1
+                                    }
+                                  },
+                                  "then": 1,
+                                  "otherwise": {
+                                    "Count": [{ "Color": "White" }, { "ControlledBy": "You" }]
+                                  }
+                                }
+                              },
+                              {
+                                "When": {
+                                  "condition": {
+                                    "Compare": {
+                                      "left": {
+                                        "Count": [{ "Color": "Blue" }, { "ControlledBy": "You" }]
+                                      },
+                                      "op": "Gt",
+                                      "right": 1
+                                    }
+                                  },
+                                  "then": 1,
+                                  "otherwise": {
+                                    "Count": [{ "Color": "Blue" }, { "ControlledBy": "You" }]
+                                  }
+                                }
+                              }
+                            ]
+                          },
+                          "op": "Eq",
+                          "right": 2
+                        }
+                      },
+                      "then": 3,
+                      "otherwise": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

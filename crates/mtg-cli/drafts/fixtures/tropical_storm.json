@@ -1,0 +1,132 @@
+{
+  "object": "card",
+  "id": "cd5f473c-e11e-4047-91f9-81b80f0a3562",
+  "oracle_id": "9b3b0bef-cdbb-41c2-b8f1-ddda9903b43a",
+  "multiverse_ids": [
+    3415
+  ],
+  "mtgo_id": 7387,
+  "mtgo_foil_id": 7388,
+  "tcgplayer_id": 5271,
+  "cardmarket_id": 8195,
+  "name": "Tropical Storm",
+  "lang": "en",
+  "released_at": "1996-10-08",
+  "uri": "https://api.scryfall.com/cards/cd5f473c-e11e-4047-91f9-81b80f0a3562",
+  "scryfall_uri": "https://scryfall.com/card/mir/246/tropical-storm?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T12:50:58Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/c/d/cd5f473c-e11e-4047-91f9-81b80f0a3562.jpg?1783947058",
+    "normal": "https://cards.scryfall.io/normal/front/c/d/cd5f473c-e11e-4047-91f9-81b80f0a3562.jpg?1783947058",
+    "large": "https://cards.scryfall.io/large/front/c/d/cd5f473c-e11e-4047-91f9-81b80f0a3562.jpg?1783947058",
+    "png": "https://cards.scryfall.io/png/front/c/d/cd5f473c-e11e-4047-91f9-81b80f0a3562.png?1783947058",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/c/d/cd5f473c-e11e-4047-91f9-81b80f0a3562.jpg?1783947058",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/c/d/cd5f473c-e11e-4047-91f9-81b80f0a3562.jpg?1783947058",
+    "thumb": "https://cards.scryfall.io/thumb/front/c/d/cd5f473c-e11e-4047-91f9-81b80f0a3562.webp?1783947058",
+    "grid": "https://cards.scryfall.io/grid/front/c/d/cd5f473c-e11e-4047-91f9-81b80f0a3562.webp?1783947058",
+    "display": "https://cards.scryfall.io/display/front/c/d/cd5f473c-e11e-4047-91f9-81b80f0a3562.webp?1783947058",
+    "art": "https://cards.scryfall.io/art/front/c/d/cd5f473c-e11e-4047-91f9-81b80f0a3562.webp?1783947058",
+    "crop": "https://cards.scryfall.io/crop/front/c/d/cd5f473c-e11e-4047-91f9-81b80f0a3562.webp?1783947058",
+    "jpeg": "https://cards.scryfall.io/normal/front/c/d/cd5f473c-e11e-4047-91f9-81b80f0a3562.jpg?1783947058"
+  },
+  "mana_cost": "{X}{G}",
+  "cmc": 1.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Tropical Storm deals X damage to each creature with flying and 1 additional damage to each blue creature.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "5f06acf3-8123-4a78-b2e7-089b0b775a4a",
+  "set": "mir",
+  "set_name": "Mirage",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/5f06acf3-8123-4a78-b2e7-089b0b775a4a",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Amir&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/mir?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/cd5f473c-e11e-4047-91f9-81b80f0a3562/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A9b3b0bef-cdbb-41c2-b8f1-ddda9903b43a&unique=prints",
+  "collector_number": "246",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "\"After the storm, I found a sea turtle dying on the sands, a blade of grass driven through its shell.\"\n—*Travelogue of Najat*",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Richard Kane Ferguson",
+  "artist_ids": [
+    "191620ed-2361-444e-96a6-1fe7ce32ef3b"
+  ],
+  "illustration_id": "c845b572-bff4-4ca4-8410-81451a504fbf",
+  "border_color": "black",
+  "frame": "1997",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 29560,
+  "penny_rank": 18183,
+  "prices": {
+    "usd": "0.32",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.21",
+    "eur_foil": null,
+    "tix": "0.04"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=3415&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DTropical%2BStorm",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DTropical%2BStorm",
+    "edhrec": "https://edhrec.com/route/?cc=Tropical+Storm"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F5271%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=8195&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/7387?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

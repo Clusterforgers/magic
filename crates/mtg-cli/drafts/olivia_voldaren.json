@@ -1,0 +1,46 @@
+{
+  "oracle_id": "dd27d0f2-fe1e-4b63-9ba0-6264ca3c70f8",
+  "name": "Olivia Voldaren",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Olivia Voldaren",
+      "oracle_fingerprint": "838ab0205a15b25b15b47ee84788a44c",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": "{1}{R}",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Other"] } }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 1 } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddSubtype": "Vampire" }],
+                  "duration": "Forever"
+                }
+              },
+              { "PutCounters": { "on": "This", "counter": "+1/+1" } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{3}{B}{B}",
+            "targets": [{ "what": { "Object": [{ "Subtype": "Vampire" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "WhileYouControlSource"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

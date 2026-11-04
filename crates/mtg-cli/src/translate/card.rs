@@ -169,28 +169,30 @@ fn trigger_groups(bodies: &[String]) -> Vec<Vec<&String>> {
 /// objects ("gets +2/+2 and can't block"); a secondary line that fails takes the line before it down with it.
 fn static_abilities<'a>(ctx: &mut Ctx, bodies: &'a [String]) -> Vec<(Vec<&'a String>, Tr<Value>)> {
     let mut out: Vec<(Vec<&String>, Tr<Value>)> = Vec::new();
-    for body in bodies {
-        let secondary = Params::parse(body).get("Secondary") == Some("True");
-        let result = audited_one(|| static_line(ctx, body));
-        if secondary && let Some((lines, previous)) = out.last_mut() {
-            match (&result, previous.is_ok()) {
-                (Ok(second), true) => {
-                    if let Ok(first) = previous
-                        && join_statics(first, second)
-                    {
-                        lines.push(body);
+    for line in bodies {
+        for body in super::statics_cant::split_modes(line) {
+            let secondary = Params::parse(&body).get("Secondary") == Some("True");
+            let result = audited_one(|| static_line(ctx, &body));
+            if secondary && let Some((lines, previous)) = out.last_mut() {
+                match (&result, previous.is_ok()) {
+                    (Ok(second), true) => {
+                        if let Ok(first) = previous
+                            && join_statics(first, second)
+                        {
+                            lines.push(line);
+                            continue;
+                        }
+                    }
+                    (Err(_), true) => {
+                        *previous = result;
+                        lines.push(line);
                         continue;
                     }
+                    _ => {}
                 }
-                (Err(_), true) => {
-                    *previous = result;
-                    lines.push(body);
-                    continue;
-                }
-                _ => {}
             }
+            out.push((vec![line], result));
         }
-        out.push((vec![body], result));
     }
     out
 }

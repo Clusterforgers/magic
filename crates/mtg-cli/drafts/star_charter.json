@@ -1,0 +1,55 @@
+{
+  "oracle_id": "578ddb51-e128-43e5-a115-471f0cae1222",
+  "name": "Star Charter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Star Charter",
+      "oracle_fingerprint": "dabd2090df2155de19cf2a2d4820b2d5",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Sum": [
+                    { "Tallied": { "who": "You", "what": "LifeGainedTotal" } },
+                    { "Tallied": { "who": "You", "what": "LifeLost" } }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              { "LookAtTop": { "count": 4, "as": "top" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "Type": "Creature" },
+                      { "Compare": { "stat": "Power", "op": "Le", "to": 3 } }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "kept2"
+                }
+              },
+              { "Move": { "what": { "Bound": "kept2" }, "to": "Hand" } },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

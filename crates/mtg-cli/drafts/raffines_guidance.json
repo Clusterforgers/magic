@@ -1,0 +1,21 @@
+{
+  "oracle_id": "ad3bf726-e0c2-4038-a66e-9a9dff439563",
+  "name": "Raffine's Guidance",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Raffine's Guidance",
+      "oracle_fingerprint": "507c1b2086adb08e33139f8cdcc9f4f8",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        },
+        { "AltCast": { "way": "Alternative", "cost": "{2}{W}", "from": "Graveyard" } }
+      ]
+    }
+  ]
+}

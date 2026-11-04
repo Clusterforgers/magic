@@ -1,0 +1,144 @@
+{
+  "object": "card",
+  "id": "5734012b-31db-4125-8fea-c88666969cd6",
+  "oracle_id": "7c3f2b3d-1517-4818-9675-189949175623",
+  "multiverse_ids": [
+    464157
+  ],
+  "mtgo_id": 72788,
+  "tcgplayer_id": 190881,
+  "cardmarket_id": 374613,
+  "name": "Lightning Skelemental",
+  "lang": "en",
+  "released_at": "2019-06-14",
+  "uri": "https://api.scryfall.com/cards/5734012b-31db-4125-8fea-c88666969cd6",
+  "scryfall_uri": "https://scryfall.com/card/mh1/208/lightning-skelemental?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T08:58:00Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/5/7/5734012b-31db-4125-8fea-c88666969cd6.jpg?1783933080",
+    "normal": "https://cards.scryfall.io/normal/front/5/7/5734012b-31db-4125-8fea-c88666969cd6.jpg?1783933080",
+    "large": "https://cards.scryfall.io/large/front/5/7/5734012b-31db-4125-8fea-c88666969cd6.jpg?1783933080",
+    "png": "https://cards.scryfall.io/png/front/5/7/5734012b-31db-4125-8fea-c88666969cd6.png?1783933080",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/5/7/5734012b-31db-4125-8fea-c88666969cd6.jpg?1783933080",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/5/7/5734012b-31db-4125-8fea-c88666969cd6.jpg?1783933080",
+    "thumb": "https://cards.scryfall.io/thumb/front/5/7/5734012b-31db-4125-8fea-c88666969cd6.webp?1783933080",
+    "grid": "https://cards.scryfall.io/grid/front/5/7/5734012b-31db-4125-8fea-c88666969cd6.webp?1783933080",
+    "display": "https://cards.scryfall.io/display/front/5/7/5734012b-31db-4125-8fea-c88666969cd6.webp?1783933080",
+    "art": "https://cards.scryfall.io/art/front/5/7/5734012b-31db-4125-8fea-c88666969cd6.webp?1783933080",
+    "crop": "https://cards.scryfall.io/crop/front/5/7/5734012b-31db-4125-8fea-c88666969cd6.webp?1783933080",
+    "jpeg": "https://cards.scryfall.io/normal/front/5/7/5734012b-31db-4125-8fea-c88666969cd6.jpg?1783933080"
+  },
+  "mana_cost": "{B}{R}{R}",
+  "cmc": 3.0,
+  "type_line": "Creature — Elemental Skeleton",
+  "oracle_text": "Trample, haste\nWhenever this creature deals combat damage to a player, that player discards two cards.\nAt the beginning of the end step, sacrifice this creature.",
+  "power": "6",
+  "toughness": "1",
+  "colors": [
+    "B",
+    "R"
+  ],
+  "color_identity": [
+    "B",
+    "R"
+  ],
+  "keywords": [
+    "Haste",
+    "Trample"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "d7efccd6-55bc-4fb8-9138-e72577510a99",
+  "set": "mh1",
+  "set_name": "Modern Horizons",
+  "set_type": "draft_innovation",
+  "set_uri": "https://api.scryfall.com/sets/d7efccd6-55bc-4fb8-9138-e72577510a99",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Amh1&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/mh1?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/5734012b-31db-4125-8fea-c88666969cd6/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A7c3f2b3d-1517-4818-9675-189949175623&unique=prints",
+  "collector_number": "208",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Nicholas Gregory",
+  "artist_ids": [
+    "a1bba8ff-63b4-4786-b1c4-f1bfe5d3ab1c"
+  ],
+  "illustration_id": "ec50cd86-7def-44b2-82da-4291b5a2a352",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 10536,
+  "penny_rank": 2392,
+  "preview": {
+    "source": "WinCondition",
+    "source_uri": "https://www.youtube.com/watch?v=pPQANAHBZ1w",
+    "previewed_at": "2019-05-21"
+  },
+  "prices": {
+    "usd": "0.92",
+    "usd_foil": "4.15",
+    "usd_etched": null,
+    "eur": "1.12",
+    "eur_foil": "3.47",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=464157&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DLightning%2BSkelemental",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DLightning%2BSkelemental",
+    "edhrec": "https://edhrec.com/route/?cc=Lightning+Skelemental"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F190881%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=374613&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/72788?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

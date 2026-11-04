@@ -1,0 +1,33 @@
+{
+  "oracle_id": "c5ca2df3-6fd9-478d-9bc6-48695a4600fb",
+  "name": "Green Scarab",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Green Scarab",
+      "oracle_fingerprint": "1caebcb93788fc2e7ec14572e8f32d2c",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "CantBeBlockedBy": [{ "Type": "Creature" }, { "Color": "Green" }] }]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Color": "Green" }, { "ControlledBy": "Opponents" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

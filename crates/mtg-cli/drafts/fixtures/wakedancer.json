@@ -1,0 +1,155 @@
+{
+  "object": "card",
+  "id": "e85a5833-042b-4b13-8151-f9e4bcf8e810",
+  "oracle_id": "e850743e-e4c4-4a09-b797-d5f688b51451",
+  "multiverse_ids": [
+    413658
+  ],
+  "mtgo_id": 60741,
+  "mtgo_foil_id": 60742,
+  "tcgplayer_id": 118718,
+  "cardmarket_id": 290403,
+  "name": "Wakedancer",
+  "lang": "en",
+  "released_at": "2016-06-10",
+  "uri": "https://api.scryfall.com/cards/e85a5833-042b-4b13-8151-f9e4bcf8e810",
+  "scryfall_uri": "https://scryfall.com/card/ema/116/wakedancer?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T10:13:07Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/e/8/e85a5833-042b-4b13-8151-f9e4bcf8e810.jpg?1783937587",
+    "normal": "https://cards.scryfall.io/normal/front/e/8/e85a5833-042b-4b13-8151-f9e4bcf8e810.jpg?1783937587",
+    "large": "https://cards.scryfall.io/large/front/e/8/e85a5833-042b-4b13-8151-f9e4bcf8e810.jpg?1783937587",
+    "png": "https://cards.scryfall.io/png/front/e/8/e85a5833-042b-4b13-8151-f9e4bcf8e810.png?1783937587",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/e/8/e85a5833-042b-4b13-8151-f9e4bcf8e810.jpg?1783937587",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/e/8/e85a5833-042b-4b13-8151-f9e4bcf8e810.jpg?1783937587",
+    "thumb": "https://cards.scryfall.io/thumb/front/e/8/e85a5833-042b-4b13-8151-f9e4bcf8e810.webp?1783937587",
+    "grid": "https://cards.scryfall.io/grid/front/e/8/e85a5833-042b-4b13-8151-f9e4bcf8e810.webp?1783937587",
+    "display": "https://cards.scryfall.io/display/front/e/8/e85a5833-042b-4b13-8151-f9e4bcf8e810.webp?1783937587",
+    "art": "https://cards.scryfall.io/art/front/e/8/e85a5833-042b-4b13-8151-f9e4bcf8e810.webp?1783937587",
+    "crop": "https://cards.scryfall.io/crop/front/e/8/e85a5833-042b-4b13-8151-f9e4bcf8e810.webp?1783937587",
+    "jpeg": "https://cards.scryfall.io/normal/front/e/8/e85a5833-042b-4b13-8151-f9e4bcf8e810.jpg?1783937587"
+  },
+  "mana_cost": "{2}{B}",
+  "cmc": 3.0,
+  "type_line": "Creature — Human Shaman",
+  "oracle_text": "Morbid — When this creature enters, if a creature died this turn, create a 2/2 black Zombie creature token.",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Morbid"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "207e9b8c-3e5e-4262-8d78-248780600462",
+      "component": "token",
+      "name": "Zombie",
+      "type_line": "Token Creature — Zombie",
+      "uri": "https://api.scryfall.com/cards/207e9b8c-3e5e-4262-8d78-248780600462"
+    },
+    {
+      "object": "related_card",
+      "id": "e85a5833-042b-4b13-8151-f9e4bcf8e810",
+      "component": "combo_piece",
+      "name": "Wakedancer",
+      "type_line": "Creature — Human Shaman",
+      "uri": "https://api.scryfall.com/cards/e85a5833-042b-4b13-8151-f9e4bcf8e810"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "1f29f022-3ace-4c96-85e8-1f7b63aadf7e",
+  "set": "ema",
+  "set_name": "Eternal Masters",
+  "set_type": "masters",
+  "set_uri": "https://api.scryfall.com/sets/1f29f022-3ace-4c96-85e8-1f7b63aadf7e",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aema&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/ema?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/e85a5833-042b-4b13-8151-f9e4bcf8e810/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ae850743e-e4c4-4a09-b797-d5f688b51451&unique=prints",
+  "collector_number": "116",
+  "digital": false,
+  "rarity": "common",
+  "flavor_text": "Hers is an ancient form of necromancy, steeped in shamanic trance and ritual that few skaberen or ghoulcallers comprehend.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Austin Hsu",
+  "artist_ids": [
+    "c5e439d8-b3db-4c13-ae93-4e129e3b9478"
+  ],
+  "illustration_id": "13abd5c5-6aff-49e3-b78f-a56f467f52be",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 24757,
+  "penny_rank": 15436,
+  "prices": {
+    "usd": "0.09",
+    "usd_foil": "0.24",
+    "usd_etched": null,
+    "eur": "0.06",
+    "eur_foil": "0.22",
+    "tix": "0.04"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=413658&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DWakedancer",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DWakedancer",
+    "edhrec": "https://edhrec.com/route/?cc=Wakedancer"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F118718%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=290403&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/60741?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

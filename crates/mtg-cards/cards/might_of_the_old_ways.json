@@ -1,0 +1,44 @@
+{
+  "oracle_id": "266d3f06-c982-4427-b421-7520e5da5c2e",
+  "name": "Might of the Old Ways",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Might of the Old Ways",
+      "oracle_fingerprint": "e19c108d43330154161c86db133363d4",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Distinct": {
+                          "of": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                          "stat": "Power"
+                        }
+                      },
+                      "op": "Ge",
+                      "right": 3
+                    }
+                  },
+                  "then": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

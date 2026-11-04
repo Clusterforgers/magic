@@ -10,10 +10,7 @@
         {
           "Static": {
             "affected": { "Each": [{ "Subtype": "Forest" }] },
-            "mods": [
-              { "SetTypes": ["Land", "Creature"] },
-              { "SetPT": { "power": 1, "toughness": 1 } }
-            ]
+            "mods": [{ "SetPT": { "power": 1, "toughness": 1 } }, { "AddType": "Creature" }]
           }
         }
       ]

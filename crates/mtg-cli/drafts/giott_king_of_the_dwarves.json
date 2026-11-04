@@ -1,0 +1,48 @@
+{
+  "oracle_id": "c629fa91-e13c-494b-a95f-a91b7c52035a",
+  "name": "Giott, King of the Dwarves",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Giott, King of the Dwarves",
+      "oracle_fingerprint": "a23a35677844b03594890e67f7215824",
+      "abilities": [
+        { "Keyword": "DoubleStrike" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  {
+                    "AnyOf": [
+                      "This",
+                      {
+                        "Not": {
+                          "AnyOf": [
+                            { "Not": { "Subtype": "Dwarf" } },
+                            { "Not": "Other" },
+                            { "Not": { "ControlledBy": "You" } }
+                          ]
+                        }
+                      },
+                      {
+                        "Not": {
+                          "AnyOf": [
+                            { "Not": { "Subtype": "Equipment" } },
+                            { "Not": { "ControlledBy": "You" } }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                ],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [{ "Pay": { "cost": [{ "Discard": {} }], "paid": [{ "Draw": {} }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

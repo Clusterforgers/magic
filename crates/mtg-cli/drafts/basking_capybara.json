@@ -1,0 +1,41 @@
+{
+  "oracle_id": "0ce678fa-6495-4857-b178-231c283b4514",
+  "name": "Basking Capybara",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Basking Capybara",
+      "oracle_fingerprint": "7ae6066878fbaafb0b1af0ef21c3ba21",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": 3, "toughness": 0 } }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "OwnedBy": "You" },
+                    {
+                      "AnyOf": [
+                        { "Type": "Artifact" },
+                        { "Type": "Battle" },
+                        { "Type": "Creature" },
+                        { "Type": "Enchantment" },
+                        { "Type": "Land" },
+                        { "Type": "Planeswalker" }
+                      ]
+                    },
+                    { "In": "Graveyard" }
+                  ]
+                },
+                "op": "Ge",
+                "right": 4
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

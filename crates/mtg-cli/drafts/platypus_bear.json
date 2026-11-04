@@ -1,0 +1,34 @@
+{
+  "oracle_id": "933e4e8a-01ea-4f58-8f5e-4f6c43f4e105",
+  "name": "Platypus-Bear",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Platypus-Bear",
+      "oracle_fingerprint": "555c9c09968ce1dfa5e40e28a98c7d2e",
+      "abilities": [
+        { "Keyword": "Defender" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Mill": { "count": 2 } }]
+          }
+        },
+        {
+          "Rule": {
+            "rule": { "Combat": { "who": "This", "quirk": "AttackDespiteDefender" } },
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [{ "Subtype": "Lesson" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

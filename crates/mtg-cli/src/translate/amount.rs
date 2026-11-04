@@ -15,6 +15,11 @@ pub fn counter_kind(word: &str) -> Option<Value> {
     {
         return None;
     }
+    // Only +1/+1 and -1/-1 counters change power and toughness in the engine; every other P/T counter and "all" would
+    // be a counter kind that does nothing.
+    if word == "ALL" || (word != "P1P1" && word != "M1M1" && is_power_toughness(word)) {
+        return None;
+    }
     Some(match word {
         "P1P1" => json!("+1/+1"),
         "M1M1" => json!("-1/-1"),
@@ -23,6 +28,22 @@ pub fn counter_kind(word: &str) -> Option<Value> {
         "CHARGE" => json!("charge"),
         other => json!({"Other": other.to_lowercase().replace('_', " ")}),
     })
+}
+
+/// Whether the word is a power/toughness counter (`P2P2`, `M0M1`).
+fn is_power_toughness(word: &str) -> bool {
+    let mut rest = word;
+    for _ in 0..2 {
+        let Some(after) = rest.strip_prefix(['P', 'M']) else {
+            return false;
+        };
+        let trimmed = after.trim_start_matches(|c: char| c.is_ascii_digit());
+        if trimmed.len() == after.len() {
+            return false;
+        }
+        rest = trimmed;
+    }
+    rest.is_empty()
 }
 
 /// The amount a Forge value stands for: a number, `X`, or the name of a part that holds an expression.
@@ -37,9 +58,12 @@ pub fn amount(ctx: &Ctx, text: &str) -> Tr<Value> {
         return Ok(json!(number));
     }
     if let Some(inner) = text.strip_prefix('-')
-        && let Some(value) = negate(ctx, inner)
+        && inner
+            .chars()
+            .next()
+            .is_some_and(|c| c.is_ascii_alphabetic())
     {
-        return Ok(value);
+        return negate(ctx, inner);
     }
     match ctx.svar(text) {
         Some(expression) => expression_amount(ctx, expression),
@@ -47,13 +71,13 @@ pub fn amount(ctx: &Ctx, text: &str) -> Tr<Value> {
     }
 }
 
-/// `-X` and `-N`: the amount times minus one.
-fn negate(ctx: &Ctx, inner: &str) -> Option<Value> {
-    let value = amount(ctx, inner).ok()?;
-    match value.as_i64() {
-        Some(number) => Some(json!(-number)),
-        None => Some(json!({"Times": {"by": -1, "of": value}})),
-    }
+/// `-X`: the amount times minus one; a part that cannot be read is the gap, not the negation.
+fn negate(ctx: &Ctx, inner: &str) -> Tr<Value> {
+    let value = amount(ctx, inner)?;
+    Ok(match value.as_i64() {
+        Some(number) => json!(-number),
+        None => json!({"Times": {"by": -1, "of": value}}),
+    })
 }
 
 /// The amount of the value of a named part.
@@ -117,6 +141,9 @@ fn event_amount(ctx: &Ctx, expression: &str) -> Tr<Option<Value>> {
             } else {
                 "Opponents"
             };
+            if let Some(found) = super::amount_more::highest(ctx, who, what) {
+                return found.map(Some);
+            }
             let key = match what {
                 "Amount" => "Players",
                 "HighestLifeTotal" => "HighestLife",
@@ -126,9 +153,28 @@ fn event_amount(ctx: &Ctx, expression: &str) -> Tr<Option<Value>> {
             };
             return Ok(Some(json!({ key: who })));
         }
+        "PlayerCountPropertyYou" => {
+            return match super::amount_more::player_amount(head, what, &json!("You")) {
+                Some(found) => found.map(Some),
+                None => unmapped(format!("amount:{head}${what}")),
+            };
+        }
+        "TargetedPlayer" => {
+            return match super::amount_more::player_amount(head, what, &ctx.player_target()?) {
+                Some(found) => found.map(Some),
+                None => unmapped(format!("amount:{head}${what}")),
+            };
+        }
+        "TriggeredPlayer" => {
+            let who = super::triggered::resolve(ctx.trigger.as_ref(), "TriggeredPlayer")?;
+            return match super::amount_more::player_amount("TargetedPlayer", what, &who) {
+                Some(found) => found.map(Some),
+                None => unmapped(format!("amount:{head}${what}")),
+            };
+        }
         "TriggeredCard" => super::triggered::resolve(ctx.trigger.as_ref(), "TriggeredCard")?,
         "Sacrificed" => json!("Paid"),
-        "Remembered" if what != "Amount" => match &ctx.remembered {
+        "Remembered" | "RememberedLKI" if what != "Amount" => match &ctx.remembered {
             Some(remembered) => remembered.clone(),
             None => return unmapped("amount:Remembered-without-a-change"),
         },
@@ -161,11 +207,23 @@ fn apply_steps(ctx: &Ctx, mut value: Value, steps: &str) -> Tr<Value> {
             Some(("Plus", n)) => plus(ctx, &value, n, false)?,
             Some(("Minus", n)) => plus(ctx, &value, n, true)?,
             Some(("Times", n)) => times(&value, parse_number(n)?),
+            Some(("NMinus", n)) => json!({"Sum": [amount(ctx, n)?, times(&value, -1)]}),
+            Some(("LimitMax", n)) => limit(ctx, &value, n, "Gt")?,
+            Some(("LimitMin", n)) => limit(ctx, &value, n, "Lt")?,
             None if step == "Twice" => times(&value, 2),
+            None if step == "HalfUp" => json!({"Half": {"of": value, "up": true}}),
+            None if step == "HalfDown" => json!({"Half": {"of": value, "up": false}}),
             _ => return unmapped(format!("amount:Count/{}", head(step))),
         };
     }
     Ok(value)
+}
+
+/// The amount held to the bound: `LimitMax` (`Gt`) caps it, `LimitMin` (`Lt`) raises it.
+fn limit(ctx: &Ctx, value: &Value, bound: &str, beyond: &str) -> Tr<Value> {
+    let bound = amount(ctx, bound)?;
+    let past = json!({"Compare": {"left": value, "op": beyond, "right": bound}});
+    Ok(json!({"When": {"condition": past, "then": bound, "otherwise": value}}))
 }
 
 fn parse_number(text: &str) -> Tr<i32> {
@@ -198,13 +256,12 @@ fn count_base(ctx: &Ctx, base: &str) -> Tr<Value> {
     if let Some(chosen) = super::amount_when::when(ctx, base) {
         return chosen;
     }
-    let (word, rest) = base.split_once(' ').unwrap_or((base, ""));
+    if let Some(found) = super::amount_more::count(ctx, base) {
+        return found;
+    }
+    let word = base.split_once(' ').map_or(base, |(word, _)| word);
     match word {
         "xPaid" => Ok(json!("X")),
-        "Valid" => Ok(json!({"Count": selector_in(ctx, rest, None)?})),
-        "ValidGraveyard" => Ok(json!({"Count": selector_in(ctx, rest, Some("Graveyard"))?})),
-        "ValidHand" => Ok(json!({"Count": selector_in(ctx, rest, Some("Hand"))?})),
-        "ValidExile" => Ok(json!({"Count": selector_in(ctx, rest, Some("Exile"))?})),
         "CardPower" => Ok(stat_of_this("Power")),
         "CardToughness" => Ok(stat_of_this("Toughness")),
         "CardManaCost" => Ok(stat_of_this("ManaValue")),
@@ -244,4 +301,26 @@ fn this_turn_cast(ctx: &Ctx, word: &str) -> Tr<Value> {
     let valid = word.strip_prefix("ThisTurnCast_").unwrap_or_default();
     let filter = selector_in(ctx, valid, None)?;
     Ok(json!({"Tally": {"event": "SpellCast", "who": "EachPlayer", "filter": filter}}))
+}
+
+#[cfg(test)]
+mod tests {
+    //! Goal: only counter kinds the engine gives an effect map; other power/toughness counters and "all" stay gaps.
+    use rstest::rstest;
+    use serde_json::json;
+
+    use super::counter_kind;
+
+    #[rstest]
+    #[case("P1P1", Some(json!("+1/+1")))]
+    #[case("M1M1", Some(json!("-1/-1")))]
+    #[case("CHARGE", Some(json!("charge")))]
+    #[case("TIME", Some(json!({"Other": "time"})))]
+    #[case("P2P2", None)]
+    #[case("M0M1", None)]
+    #[case("P1P0", None)]
+    #[case("ALL", None)]
+    fn counter_kinds(#[case] word: &str, #[case] kind: Option<serde_json::Value>) {
+        assert_eq!(counter_kind(word), kind);
+    }
 }

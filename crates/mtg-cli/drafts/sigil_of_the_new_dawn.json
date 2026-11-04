@@ -1,0 +1,32 @@
+{
+  "oracle_id": "cb029c0f-b08a-4952-b236-8166b9f17119",
+  "name": "Sigil of the New Dawn",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sigil of the New Dawn",
+      "oracle_fingerprint": "4c3946c8c39477d333934c733e09d828",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "OwnedBy": "You" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{1}{W}",
+                  "paid": [{ "Move": { "what": "Triggering", "to": "Hand" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

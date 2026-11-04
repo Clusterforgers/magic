@@ -1,0 +1,31 @@
+{
+  "oracle_id": "8c5264d2-8544-4e83-8ebc-7261dde80f01",
+  "name": "Voices from the Void",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Voices from the Void",
+      "oracle_fingerprint": "98ecaf41afd50f1376fc8547f82f0b77",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Discard": {
+                  "who": { "Target": 0 },
+                  "count": {
+                    "Distinct": {
+                      "of": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                      "stat": "BasicLandTypes"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

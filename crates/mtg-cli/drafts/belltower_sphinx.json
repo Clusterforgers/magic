@@ -1,0 +1,20 @@
+{
+  "oracle_id": "b9ed0081-7eda-4ff9-ac2d-bcdc29a22d9f",
+  "name": "Belltower Sphinx",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Belltower Sphinx",
+      "oracle_fingerprint": "88428a3a0cf5f8670a4a7d257553f5dc",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": [], "to": "This" } },
+            "effects": [{ "Mill": { "who": { "ControllerOf": "Dealer" }, "count": "Triggering" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

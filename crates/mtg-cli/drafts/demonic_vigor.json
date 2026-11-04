@@ -1,0 +1,32 @@
+{
+  "oracle_id": "00cb93a8-5d33-4c6a-9e2a-4b3560f76f3f",
+  "name": "Demonic Vigor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Demonic Vigor",
+      "oracle_fingerprint": "dee0e948ab189edc7e810a0c7448536e",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Is": "Attached" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [{ "Move": { "what": "Triggering", "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

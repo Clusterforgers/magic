@@ -1,0 +1,38 @@
+{
+  "oracle_id": "fee73267-b0ef-4f43-a0bd-7728691d6f17",
+  "name": "Aven Heartstabber",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Aven Heartstabber",
+      "oracle_fingerprint": "26fa2d1077dd3fc114061ddae594d481",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }, { "AddKeyword": "Deathtouch" }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Distinct": {
+                    "of": [{ "OwnedBy": "You" }, { "In": "Graveyard" }],
+                    "stat": "ManaValue"
+                  }
+                },
+                "op": "Ge",
+                "right": 5
+              }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [{ "Mill": { "count": 2 } }, { "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

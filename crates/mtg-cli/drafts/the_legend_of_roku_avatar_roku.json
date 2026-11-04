@@ -1,0 +1,81 @@
+{
+  "oracle_id": "2f26f270-26d9-46d3-957f-19f52d51eb03",
+  "name": "The Legend of Roku // Avatar Roku",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Legend of Roku",
+      "oracle_fingerprint": "6029b4191eecaf1b5513f640463e6db6",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "effects": [
+              { "ExileTop": { "count": 3, "as": "impulse" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": { "from": "Exile", "only": { "Bound": "impulse" }, "play": true }
+                  },
+                  "duration": "UntilEndOfYourNextTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "effects": [
+              { "Exile": { "what": "This", "as": "exiled" } },
+              {
+                "Move": {
+                  "what": { "Bound": "exiled" },
+                  "to": { "Battlefield": { "under": "You", "transformed": true } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Avatar Roku",
+      "oracle_fingerprint": "4e2ec119637e38b619312f3a8c0d4664",
+      "abilities": [
+        { "Keyword": { "Macro": { "name": "firebending", "amount": 4 } } },
+        {
+          "Activated": {
+            "cost": "{8}",
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Dragon",
+                      "colors": ["Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Dragon"],
+                      "power": 4,
+                      "toughness": 4,
+                      "abilities": [
+                        { "Keyword": "Flying" },
+                        { "Keyword": { "Macro": { "name": "firebending", "amount": 4 } } }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

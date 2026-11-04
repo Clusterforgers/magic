@@ -1,0 +1,36 @@
+{
+  "oracle_id": "af6124cf-e8c5-44f3-964a-4ac0caa6f22b",
+  "name": "Sanguine Praetor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sanguine Praetor",
+      "oracle_fingerprint": "3442052fff297772158ecafc72877acd",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{B}" }, { "Sacrifice": { "filter": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Destroy": {
+                  "what": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      {
+                        "Compare": {
+                          "stat": "ManaValue",
+                          "op": "Eq",
+                          "to": { "Stat": { "of": "Paid", "stat": "ManaValue" } }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

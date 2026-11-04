@@ -1,0 +1,28 @@
+{
+  "oracle_id": "3a7b1d1c-1724-4208-943b-650a5d773653",
+  "name": "Balduvian Berserker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Balduvian Berserker",
+      "oracle_fingerprint": "d6e4197d61e76af343e34a961a74eaf1",
+      "abilities": [
+        { "Keyword": { "Macro": { "name": "enlist", "amount": 0 } } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": { "Stat": { "of": "This", "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

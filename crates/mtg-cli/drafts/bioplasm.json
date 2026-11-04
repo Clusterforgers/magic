@@ -1,0 +1,51 @@
+{
+  "oracle_id": "f39777be-39af-4a97-a70d-824d713bf145",
+  "name": "Bioplasm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bioplasm",
+      "oracle_fingerprint": "aeda614f09437240edf10f1fef443a58",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              { "ExileTop": { "as": "exiled" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "exiled" },
+                      "selector": [{ "Type": "Creature" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": "This",
+                        "mods": [
+                          {
+                            "ModifyPT": {
+                              "power": { "Stat": { "of": { "Bound": "exiled" }, "stat": "Power" } },
+                              "toughness": {
+                                "Stat": { "of": { "Bound": "exiled" }, "stat": "Toughness" }
+                              }
+                            }
+                          }
+                        ],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

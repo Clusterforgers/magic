@@ -1,0 +1,34 @@
+{
+  "oracle_id": "be87e410-4302-43ee-b880-56eedf2b3648",
+  "name": "Inspiration from Beyond",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Inspiration from Beyond",
+      "oracle_fingerprint": "67b56ebb35653ec352bf51c3224c612e",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Mill": { "count": 3 } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                      { "OwnedBy": "You" },
+                      { "In": "Graveyard" }
+                    ]
+                  },
+                  "as": "picked"
+                }
+              },
+              { "Move": { "what": { "Bound": "picked" }, "to": "Hand" } }
+            ]
+          }
+        },
+        { "Keyword": { "Flashback": "{5}{U}{U}" } }
+      ]
+    }
+  ]
+}

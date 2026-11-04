@@ -1,0 +1,38 @@
+{
+  "oracle_id": "20f3bc44-c7fa-4d5a-adb9-2dd1d2d66ffe",
+  "name": "Sardian Cliffstomper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sardian Cliffstomper",
+      "oracle_fingerprint": "798312c81c85edb2d2fdd54321bcf7a6",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": { "Count": [{ "Subtype": "Mountain" }, { "ControlledBy": "You" }] },
+                  "toughness": 0
+                }
+              }
+            ],
+            "condition": {
+              "All": [
+                {
+                  "Compare": {
+                    "left": { "Count": [{ "Subtype": "Mountain" }, { "ControlledBy": "You" }] },
+                    "op": "Ge",
+                    "right": 4
+                  }
+                },
+                "YourTurn"
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,59 @@
+{
+  "oracle_id": "1e0a2709-2cd2-4954-81ca-60654ab03d7c",
+  "name": "Downwind Ambusher",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Downwind Ambusher",
+      "oracle_fingerprint": "8f91165dd1fe3fd839a04931984e3772",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }]
+                          }
+                        }
+                      ],
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": { "Target": 0 },
+                            "mods": [{ "ModifyPT": { "power": -1, "toughness": -1 } }],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [
+                              { "Type": "Creature" },
+                              { "ControlledBy": "Opponents" },
+                              "DamagedThisTurn"
+                            ]
+                          }
+                        }
+                      ],
+                      "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

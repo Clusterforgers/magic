@@ -1,0 +1,95 @@
+{
+  "oracle_id": "3f6101a5-3038-45b0-8302-b2e4127b9510",
+  "name": "Rally the Monastery",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rally the Monastery",
+      "oracle_fingerprint": "bddc8410eaecb85abdab99d3e23d9948",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{2}",
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "SpellCast",
+                    "who": "EachPlayer",
+                    "filter": [{ "ControlledBy": "You" }]
+                  }
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "effects": [
+                        {
+                          "CreateToken": {
+                            "token": {
+                              "Custom": {
+                                "name": "Monk",
+                                "colors": ["White"],
+                                "types": ["Creature"],
+                                "subtypes": ["Monk"],
+                                "power": 1,
+                                "toughness": 1,
+                                "abilities": [{ "Keyword": "Prowess" }]
+                              }
+                            },
+                            "count": 2
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [
+                        {
+                          "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                          "bounds": { "min": 0, "max": 2 }
+                        }
+                      ],
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": { "Target": 0 },
+                            "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [
+                              { "Type": "Creature" },
+                              { "Compare": { "stat": "Power", "op": "Ge", "to": 4 } }
+                            ]
+                          }
+                        }
+                      ],
+                      "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

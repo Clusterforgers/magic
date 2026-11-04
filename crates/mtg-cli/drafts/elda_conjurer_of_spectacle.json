@@ -1,0 +1,43 @@
+{
+  "oracle_id": "7c39639e-c611-46ee-beda-aef466170ba2",
+  "name": "Elda, Conjurer of Spectacle",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Elda, Conjurer of Spectacle",
+      "oracle_fingerprint": "87bbb36b454a7b858c5c400f889f4acc",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                { "ControlledBy": "You" },
+                { "Not": { "Supertype": "Legendary" } },
+                { "In": "Stack" }
+              ]
+            },
+            "mods": [{ "AddKeyword": "Demonstrate" }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "SpellCast",
+                    "who": "EachPlayer",
+                    "filter": [
+                      { "Type": "Creature" },
+                      { "ControlledBy": "You" },
+                      { "Not": { "Supertype": "Legendary" } }
+                    ]
+                  }
+                },
+                "op": "Eq",
+                "right": 0
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

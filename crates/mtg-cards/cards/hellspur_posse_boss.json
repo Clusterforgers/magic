@@ -1,0 +1,79 @@
+{
+  "oracle_id": "15260fa6-6062-423a-a248-81292ea46178",
+  "name": "Hellspur Posse Boss",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hellspur Posse Boss",
+      "oracle_fingerprint": "6218a9a98aa201c58f8e06fa1f4230ad",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                {
+                  "AnyOf": [
+                    { "Subtype": "Assassin" },
+                    { "Subtype": "Mercenary" },
+                    { "Subtype": "Pirate" },
+                    { "Subtype": "Rogue" },
+                    { "Subtype": "Warlock" }
+                  ]
+                },
+                { "ControlledBy": "You" },
+                "Other"
+              ]
+            },
+            "mods": [{ "AddKeyword": "Haste" }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Mercenary",
+                      "colors": ["Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Mercenary"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [
+                        {
+                          "Activated": {
+                            "cost": ["Tap"],
+                            "timing": "Sorcery",
+                            "targets": [
+                              {
+                                "what": {
+                                  "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                                }
+                              }
+                            ],
+                            "effects": [
+                              {
+                                "Continuous": {
+                                  "affected": { "Target": 0 },
+                                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+                                  "duration": "UntilEndOfTurn"
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "count": 2
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

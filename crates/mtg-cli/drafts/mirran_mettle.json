@@ -1,0 +1,62 @@
+{
+  "oracle_id": "35506b6b-6476-4830-9baa-4051c18322f0",
+  "name": "Mirran Mettle",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mirran Mettle",
+      "oracle_fingerprint": "aa6b458bb5ff6412d3cdcbf06fa25b64",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": {
+                          "When": {
+                            "condition": {
+                              "Compare": {
+                                "left": {
+                                  "Count": [{ "Type": "Artifact" }, { "ControlledBy": "You" }]
+                                },
+                                "op": "Ge",
+                                "right": 3
+                              }
+                            },
+                            "then": 4,
+                            "otherwise": 2
+                          }
+                        },
+                        "toughness": {
+                          "When": {
+                            "condition": {
+                              "Compare": {
+                                "left": {
+                                  "Count": [{ "Type": "Artifact" }, { "ControlledBy": "You" }]
+                                },
+                                "op": "Ge",
+                                "right": 3
+                              }
+                            },
+                            "then": 4,
+                            "otherwise": 2
+                          }
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

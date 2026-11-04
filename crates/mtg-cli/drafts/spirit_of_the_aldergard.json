@@ -1,0 +1,44 @@
+{
+  "oracle_id": "ff3bc67b-f435-4bb7-9c21-8d24d8808c1a",
+  "name": "Spirit of the Aldergard",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spirit of the Aldergard",
+      "oracle_fingerprint": "cd614766db698aa874bd9e56cb7e80ea",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Search": {
+                  "filter": [{ "Type": "Land" }, { "Supertype": "Snow" }],
+                  "reveal": true,
+                  "as": "found"
+                }
+              },
+              { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+              { "Shuffle": {} }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": {
+                    "Count": [{ "Supertype": "Snow" }, "Other", { "ControlledBy": "You" }]
+                  },
+                  "toughness": 0
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

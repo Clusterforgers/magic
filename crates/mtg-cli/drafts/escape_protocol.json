@@ -1,0 +1,45 @@
+{
+  "oracle_id": "e875b468-b475-4573-adf6-312ca4ab6994",
+  "name": "Escape Protocol",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Escape Protocol",
+      "oracle_fingerprint": "6a509e6ed741d23a99540772edfae79d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Cycled": { "by": "You" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{1}",
+                  "paid": [
+                    {
+                      "Reflexive": {
+                        "targets": [
+                          {
+                            "what": {
+                              "Object": [
+                                { "AnyOf": [{ "Type": "Creature" }, { "Type": "Artifact" }] },
+                                { "ControlledBy": "You" }
+                              ]
+                            }
+                          }
+                        ],
+                        "effects": [
+                          { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+                          { "Move": { "what": { "Bound": "exiled" }, "to": { "Battlefield": {} } } }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

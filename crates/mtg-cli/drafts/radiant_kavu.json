@@ -1,0 +1,35 @@
+{
+  "oracle_id": "ab46b957-5206-4390-a2f6-aba2e8d1debe",
+  "name": "Radiant Kavu",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Radiant Kavu",
+      "oracle_fingerprint": "78cb5c13615a4de937c27f82c2743901",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{W}{R}{G}",
+            "effects": [
+              {
+                "Shield": {
+                  "when": {
+                    "Damage": {
+                      "source": [
+                        { "Type": "Creature" },
+                        { "AnyOf": [{ "Color": "Blue" }, { "Color": "Black" }] }
+                      ],
+                      "combat": true
+                    }
+                  },
+                  "by": "Prevent",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

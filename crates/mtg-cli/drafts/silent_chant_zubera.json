@@ -1,0 +1,36 @@
+{
+  "oracle_id": "8d5a8513-0728-46ff-be72-3aefa07c7658",
+  "name": "Silent-Chant Zubera",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Silent-Chant Zubera",
+      "oracle_fingerprint": "d6c4266f8ffc601402fb68847e69a680",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              {
+                "GainLife": {
+                  "amount": {
+                    "Times": {
+                      "by": 2,
+                      "of": {
+                        "Tally": {
+                          "event": "Died",
+                          "who": "EachPlayer",
+                          "filter": [{ "Subtype": "Zubera" }]
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

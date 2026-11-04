@@ -1,0 +1,38 @@
+{
+  "oracle_id": "6ca49880-4e12-494b-b14e-e49385d0f7f5",
+  "name": "Painbringer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Painbringer",
+      "oracle_fingerprint": "42e0c83b8f59ed599dc70c1bf9c43d0f",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              "Tap",
+              { "ExileFromGraveyard": { "filter": [{ "ControlledBy": "You" }], "count": "X" } }
+            ],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": { "Times": { "by": -1, "of": "X" } },
+                        "toughness": { "Times": { "by": -1, "of": "X" } }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

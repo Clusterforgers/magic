@@ -1,0 +1,28 @@
+{
+  "oracle_id": "e9893534-3d05-42c2-93ff-f28ffae89aa3",
+  "name": "Knight of the Mists",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Knight of the Mists",
+      "oracle_fingerprint": "e08e0a9376166958867de39214b31f44",
+      "abilities": [
+        { "Keyword": { "Macro": { "name": "flanking", "amount": 0 } } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": { "Object": [{ "Subtype": "Knight" }] } }],
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{U}",
+                  "unpaid": [{ "Destroy": { "what": { "Target": 0 }, "regenerate": false } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

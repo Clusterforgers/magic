@@ -1,0 +1,46 @@
+{
+  "oracle_id": "ccab4509-f189-4610-9597-547e7f6b0775",
+  "name": "Sword of Sinew and Steel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sword of Sinew and Steel",
+      "oracle_fingerprint": "0a95167c9da6ac83d76d9319e081d103",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "ModifyPT": { "power": 2, "toughness": 2 } },
+              { "AddKeyword": { "Protection": [{ "Color": "Black" }] } },
+              { "AddKeyword": { "Protection": [{ "Color": "Red" }] } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [{ "Type": "Creature" }, { "Is": "Attached" }],
+                "to": "EachPlayer",
+                "combat": true
+              }
+            },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Planeswalker" }] },
+                "bounds": { "min": 0, "max": 1 }
+              },
+              { "what": { "Object": [{ "Type": "Artifact" }] }, "bounds": { "min": 0, "max": 1 } }
+            ],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              { "Destroy": { "what": { "Target": 1 } } }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{2}" } }
+      ]
+    }
+  ]
+}

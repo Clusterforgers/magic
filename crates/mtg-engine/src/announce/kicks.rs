@@ -5,6 +5,7 @@ use mtg_cards::CardDefinition;
 use mtg_cards::ability::Ability;
 use mtg_cards::cost::{Cost, CostItem};
 use mtg_cards::keyword::Keyword;
+use mtg_cards::refs::{Pred, Selector};
 use mtg_cards::value::{Amount, Condition};
 use mtg_core::card::CardType;
 use mtg_core::ids::PlayerId;
@@ -252,6 +253,10 @@ fn a_spell_without_the_keywords_has_no_optional_costs() {
 
 fn read(game: &GameState, object: crate::object::ObjectRef) -> (bool, i64) {
     let scope = Scope::announcing(game, SEAT, object);
+    let by_pred = scope
+        .selects(&Selector(vec![Pred::Kicked]), object)
+        .unwrap();
+    assert_eq!(by_pred, scope.holds(&Condition::Kicked).unwrap());
     (
         scope.holds(&Condition::Kicked).unwrap(),
         scope.amount(&Amount::Kicks).unwrap(),

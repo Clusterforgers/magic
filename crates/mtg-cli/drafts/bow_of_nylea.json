@@ -1,0 +1,61 @@
+{
+  "oracle_id": "361b965f-2ce7-49f8-84e7-7325ea0c948d",
+  "name": "Bow of Nylea",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bow of Nylea",
+      "oracle_fingerprint": "3095b03ad610eee6e62ec4097111a417",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, "Attacking", { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": "Deathtouch" }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{G}" }, "Tap"],
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                      "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+                    },
+                    {
+                      "targets": [
+                        {
+                          "what": { "Object": [{ "Type": "Creature" }, { "HasKeyword": "Flying" }] }
+                        }
+                      ],
+                      "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 2 } }]
+                    },
+                    { "effects": [{ "GainLife": { "amount": 3 } }] },
+                    {
+                      "targets": [
+                        {
+                          "what": { "Object": [{ "OwnedBy": "You" }, { "In": "Graveyard" }] },
+                          "bounds": { "min": 0, "max": 4 }
+                        }
+                      ],
+                      "effects": [
+                        {
+                          "Move": {
+                            "what": { "Target": 0 },
+                            "to": { "Library": { "place": "Bottom" } }
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

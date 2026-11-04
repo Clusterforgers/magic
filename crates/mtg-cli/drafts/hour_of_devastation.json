@@ -1,0 +1,48 @@
+{
+  "oracle_id": "b9ea0d4c-cd71-4817-8213-96899e1a14bb",
+  "name": "Hour of Devastation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hour of Devastation",
+      "oracle_fingerprint": "2875483e0a6e4189b524e1d829cfdc6d",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }] },
+                  "mods": [{ "RemoveKeyword": "Indestructible" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "DealDamage": {
+                  "to": {
+                    "Each": [
+                      {
+                        "AnyOf": [
+                          { "Type": "Creature" },
+                          {
+                            "Not": {
+                              "AnyOf": [
+                                { "Not": { "Type": "Planeswalker" } },
+                                { "Not": { "Not": { "Subtype": "Bolas" } } }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "amount": 5
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

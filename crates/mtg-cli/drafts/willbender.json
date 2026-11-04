@@ -1,0 +1,30 @@
+{
+  "oracle_id": "0aae277e-e58e-4115-b5fd-0459451e17ec",
+  "name": "Willbender",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Willbender",
+      "oracle_fingerprint": "3cbb83c0517b41544001b35648283d2b",
+      "abilities": [
+        { "Keyword": { "Morph": "{1}{U}" } },
+        {
+          "Triggered": {
+            "when": { "TurnedFaceUp": { "what": ["This"] } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": ["Spell", { "Ability": "Activated" }, { "Ability": "Triggered" }] },
+                    "SingleTarget"
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "ChangeTargets": { "what": { "Target": 0 }, "to": "Another" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

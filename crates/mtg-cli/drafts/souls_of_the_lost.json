@@ -1,0 +1,111 @@
+{
+  "oracle_id": "c05d5a51-8e39-4475-9743-1adc60283c5a",
+  "name": "Souls of the Lost",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Souls of the Lost",
+      "oracle_fingerprint": "7decc939eb2c1516d13025573cc81765",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "SetPT": {
+                  "power": {
+                    "Count": [
+                      { "OwnedBy": "You" },
+                      {
+                        "AnyOf": [
+                          { "Type": "Artifact" },
+                          { "Type": "Battle" },
+                          { "Type": "Creature" },
+                          { "Type": "Enchantment" },
+                          { "Type": "Land" },
+                          { "Type": "Planeswalker" }
+                        ]
+                      },
+                      { "In": "Graveyard" }
+                    ]
+                  },
+                  "toughness": {
+                    "Sum": [
+                      {
+                        "Count": [
+                          { "OwnedBy": "You" },
+                          {
+                            "AnyOf": [
+                              { "Type": "Artifact" },
+                              { "Type": "Battle" },
+                              { "Type": "Creature" },
+                              { "Type": "Enchantment" },
+                              { "Type": "Land" },
+                              { "Type": "Planeswalker" }
+                            ]
+                          },
+                          { "In": "Graveyard" }
+                        ]
+                      },
+                      1
+                    ]
+                  }
+                }
+              }
+            ],
+            "defining": true
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "SetPT": {
+                  "power": {
+                    "Count": [
+                      {
+                        "AnyOf": [
+                          { "Type": "Artifact" },
+                          { "Type": "Battle" },
+                          { "Type": "Creature" },
+                          { "Type": "Enchantment" },
+                          { "Type": "Land" },
+                          { "Type": "Planeswalker" }
+                        ]
+                      },
+                      { "In": "Graveyard" },
+                      { "OwnedBy": "You" }
+                    ]
+                  },
+                  "toughness": {
+                    "Sum": [
+                      {
+                        "Count": [
+                          {
+                            "AnyOf": [
+                              { "Type": "Artifact" },
+                              { "Type": "Battle" },
+                              { "Type": "Creature" },
+                              { "Type": "Enchantment" },
+                              { "Type": "Land" },
+                              { "Type": "Planeswalker" }
+                            ]
+                          },
+                          { "In": "Graveyard" },
+                          { "OwnedBy": "You" }
+                        ]
+                      },
+                      1
+                    ]
+                  }
+                }
+              }
+            ],
+            "defining": true
+          }
+        }
+      ]
+    }
+  ]
+}

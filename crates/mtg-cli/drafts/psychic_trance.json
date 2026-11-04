@@ -1,0 +1,36 @@
+{
+  "oracle_id": "5870175d-83df-43af-b199-fcd1e60b824e",
+  "name": "Psychic Trance",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Psychic Trance",
+      "oracle_fingerprint": "45ef1b06f9bb6ab7d1104271f596f0af",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Subtype": "Wizard" }, { "ControlledBy": "You" }] },
+                  "mods": [
+                    {
+                      "GrantAbility": {
+                        "Activated": {
+                          "cost": ["Tap"],
+                          "targets": [{ "what": { "Object": ["Spell"] } }],
+                          "effects": [{ "Counter": { "what": { "Target": 0 } } }]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

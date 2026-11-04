@@ -1,0 +1,30 @@
+{
+  "oracle_id": "be109ed5-9e3e-40b3-9bf0-7caf7cdbb958",
+  "name": "Marshdrinker Giant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Marshdrinker Giant",
+      "oracle_fingerprint": "7c427a95d9b735e86d19b43d81b2bc66",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Land" },
+                    { "AnyOf": [{ "Subtype": "Island" }, { "Subtype": "Swamp" }] },
+                    { "ControlledBy": "Opponents" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

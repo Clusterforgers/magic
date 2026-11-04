@@ -1,0 +1,36 @@
+{
+  "oracle_id": "7a3e6e84-a8c2-472d-99fb-7cd14850b5ce",
+  "name": "Wheel of Torture",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wheel of Torture",
+      "oracle_fingerprint": "a7c66b96d592469fcbf3d08cb1617120",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "Opponents" } },
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": "Triggering",
+                  "amount": {
+                    "Sum": [
+                      3,
+                      {
+                        "Times": {
+                          "by": -1,
+                          "of": { "Count": [{ "In": "Hand" }, { "OwnedBy": "Triggering" }] }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

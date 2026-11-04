@@ -1,0 +1,52 @@
+{
+  "oracle_id": "6beaf310-c623-4ab6-a0d3-f4c8221f255b",
+  "name": "Foul Renewal",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Foul Renewal",
+      "oracle_fingerprint": "6a1e1e27d6cd8e4c66d7ed83c85899d1",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                }
+              },
+              { "what": { "Object": [{ "Type": "Creature" }] } }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": "Hand", "as": "moved" } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 1 },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": {
+                          "Times": {
+                            "by": -1,
+                            "of": { "Stat": { "of": { "Bound": "moved" }, "stat": "Toughness" } }
+                          }
+                        },
+                        "toughness": {
+                          "Times": {
+                            "by": -1,
+                            "of": { "Stat": { "of": { "Bound": "moved" }, "stat": "Toughness" } }
+                          }
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

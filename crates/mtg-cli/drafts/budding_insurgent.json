@@ -1,0 +1,43 @@
+{
+  "oracle_id": "723669e0-4a04-45ec-8c76-b1a369aa6892",
+  "name": "Budding Insurgent",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Budding Insurgent",
+      "oracle_fingerprint": "0bb0aff549aa6be939cca7101752cef3",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Activated": {
+            "cost": ["SacrificeSelf"],
+            "timing": "Sorcery",
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Enchantment" }] }]
+                }
+              }
+            ],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Target": 0 },
+                      "selector": [{ "Type": "Enchantment" }, { "Supertype": "Legendary" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

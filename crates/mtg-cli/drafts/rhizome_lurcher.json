@@ -1,0 +1,26 @@
+{
+  "oracle_id": "85e18895-d1d2-46c7-afd0-31da410c0438",
+  "name": "Rhizome Lurcher",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rhizome Lurcher",
+      "oracle_fingerprint": "03c5dc0a8cb025e103d91cdb489885f6",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "WithCounters": {
+                "counter": "+1/+1",
+                "count": {
+                  "Count": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "oracle_id": "1e9ebdf3-306a-48e1-8096-6a1d289e108c",
+  "name": "Skyhunter Cub",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Skyhunter Cub",
+      "oracle_fingerprint": "0bf4f52a0d058c4c225bade99f39096e",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }, { "AddKeyword": "Flying" }],
+            "condition": {
+              "Matches": {
+                "subject": "This",
+                "selector": [{ "HasAttached": [{ "Subtype": "Equipment" }] }]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "oracle_id": "7d0a1ae5-cd93-4789-9666-fc7bbbc6b613",
+  "name": "Eyes Everywhere",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Eyes Everywhere",
+      "oracle_fingerprint": "775acf41edccf57258ab2d3801fc1beb",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [{ "Scry": {} }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{5}{U}",
+            "timing": "Sorcery",
+            "targets": [{ "what": { "Object": [{ "Not": { "Type": "Land" } }] } }],
+            "effects": [
+              { "ExchangeControl": { "what": ["This", { "Target": 0 }], "duration": "Forever" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

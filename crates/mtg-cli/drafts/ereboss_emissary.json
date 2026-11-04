@@ -1,0 +1,67 @@
+{
+  "oracle_id": "dc39c52b-9bee-4cec-a970-1867314944ef",
+  "name": "Erebos's Emissary",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Erebos's Emissary",
+      "oracle_fingerprint": "e7537c217ae5ca4ec67d0363f6050f04",
+      "abilities": [
+        { "Keyword": { "Bestow": "{5}{B}" } },
+        {
+          "Activated": {
+            "cost": [{ "Discard": { "filter": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": ["This", { "Not": { "Subtype": "Aura" } }] },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": "This",
+                        "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": ["This", { "Subtype": "Aura" }] },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": "Attached",
+                        "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 3, "toughness": 3 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

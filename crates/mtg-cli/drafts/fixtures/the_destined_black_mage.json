@@ -1,0 +1,140 @@
+{
+  "object": "card",
+  "id": "cbba90d0-c45e-4ef1-ba0e-a2160533e27f",
+  "oracle_id": "ef2aa67a-9531-495c-85c7-7f745bc19ce1",
+  "multiverse_ids": [],
+  "resource_id": "5BEDE80DD4AF3780EDDD3A6C5185EAEF2F4E93335BAD6E9644763AE08C56236E",
+  "tcgplayer_id": 656804,
+  "cardmarket_id": 851622,
+  "name": "The Destined Black Mage",
+  "lang": "en",
+  "released_at": "2025-12-05",
+  "uri": "https://api.scryfall.com/cards/cbba90d0-c45e-4ef1-ba0e-a2160533e27f",
+  "scryfall_uri": "https://scryfall.com/card/fic/447/the-destined-black-mage?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T01:04:14Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/c/b/cbba90d0-c45e-4ef1-ba0e-a2160533e27f.jpg?1783904654",
+    "normal": "https://cards.scryfall.io/normal/front/c/b/cbba90d0-c45e-4ef1-ba0e-a2160533e27f.jpg?1783904654",
+    "large": "https://cards.scryfall.io/large/front/c/b/cbba90d0-c45e-4ef1-ba0e-a2160533e27f.jpg?1783904654",
+    "png": "https://cards.scryfall.io/png/front/c/b/cbba90d0-c45e-4ef1-ba0e-a2160533e27f.png?1783904654",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/c/b/cbba90d0-c45e-4ef1-ba0e-a2160533e27f.jpg?1783904654",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/c/b/cbba90d0-c45e-4ef1-ba0e-a2160533e27f.jpg?1783904654",
+    "thumb": "https://cards.scryfall.io/thumb/front/c/b/cbba90d0-c45e-4ef1-ba0e-a2160533e27f.webp?1783904654",
+    "grid": "https://cards.scryfall.io/grid/front/c/b/cbba90d0-c45e-4ef1-ba0e-a2160533e27f.webp?1783904654",
+    "display": "https://cards.scryfall.io/display/front/c/b/cbba90d0-c45e-4ef1-ba0e-a2160533e27f.webp?1783904654",
+    "art": "https://cards.scryfall.io/art/front/c/b/cbba90d0-c45e-4ef1-ba0e-a2160533e27f.webp?1783904654",
+    "crop": "https://cards.scryfall.io/crop/front/c/b/cbba90d0-c45e-4ef1-ba0e-a2160533e27f.webp?1783904654",
+    "jpeg": "https://cards.scryfall.io/normal/front/c/b/cbba90d0-c45e-4ef1-ba0e-a2160533e27f.jpg?1783904654"
+  },
+  "mana_cost": "{2}{B}",
+  "cmc": 3.0,
+  "type_line": "Legendary Creature — Human Wizard",
+  "oracle_text": "Deathtouch\n{B}, {T}: Another target creature you control gains deathtouch until end of turn.\nWhenever you cast a noncreature spell, The Destined Black Mage deals 1 damage to each opponent. If you have a full party, it deals 3 damage to each opponent instead.",
+  "power": "3",
+  "toughness": "2",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Deathtouch"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "mtgo",
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "30659956-4558-4cbf-a65f-34cd00c89579",
+  "set": "fic",
+  "set_name": "Final Fantasy Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/30659956-4558-4cbf-a65f-34cd00c89579",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Afic&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/fic?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/cbba90d0-c45e-4ef1-ba0e-a2160533e27f/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Aef2aa67a-9531-495c-85c7-7f745bc19ce1&unique=prints",
+  "collector_number": "447",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "David Rapoza",
+  "artist_ids": [
+    "c5a2318d-5d04-499f-b121-57dee5a9dfe6"
+  ],
+  "illustration_id": "f4a3219f-161c-4e4a-8766-fc389a7b2044",
+  "border_color": "borderless",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary",
+    "inverted"
+  ],
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "ffi",
+    "universesbeyond"
+  ],
+  "edhrec_rank": 9491,
+  "prices": {
+    "usd": "18.84",
+    "usd_foil": "18.02",
+    "usd_etched": null,
+    "eur": "15.44",
+    "eur_foil": "14.49",
+    "tix": null
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DThe%2BDestined%2BBlack%2BMage",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DThe%2BDestined%2BBlack%2BMage",
+    "edhrec": "https://edhrec.com/route/?cc=The+Destined+Black+Mage"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F656804%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=851622&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=The+Destined+Black+Mage&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

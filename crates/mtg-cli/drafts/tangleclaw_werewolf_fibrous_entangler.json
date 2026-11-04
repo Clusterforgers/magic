@@ -1,0 +1,28 @@
+{
+  "oracle_id": "280d5601-802c-4607-9655-75cc83248210",
+  "name": "Tangleclaw Werewolf // Fibrous Entangler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tangleclaw Werewolf",
+      "oracle_fingerprint": "11dc391d0414f0488e01d9ddc1b1fc6c",
+      "abilities": [
+        { "Static": { "affected": "This", "mods": [{ "BlocksAdditional": 1 }] } },
+        { "Activated": { "cost": "{6}{G}", "effects": [{ "Transform": { "what": "This" } }] } }
+      ]
+    },
+    {
+      "name": "Fibrous Entangler",
+      "oracle_fingerprint": "2851903efc5c3f2a5d30d8227a1b7b8b",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Rule": {
+            "rule": { "Combat": { "who": "This", "quirk": { "MustBeBlocked": "AtLeastOne" } } }
+          }
+        },
+        { "Static": { "affected": "This", "mods": [{ "BlocksAdditional": 1 }] } }
+      ]
+    }
+  ]
+}

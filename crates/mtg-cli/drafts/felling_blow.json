@@ -1,0 +1,31 @@
+{
+  "oracle_id": "fbfa19ca-98bb-4c7d-a04e-920a8aafb031",
+  "name": "Felling Blow",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Felling Blow",
+      "oracle_fingerprint": "acbdb5afaf298bedbb3a4a13164c0aed",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } },
+              {
+                "DealDamage": {
+                  "source": { "Target": 0 },
+                  "to": { "Target": 1 },
+                  "amount": { "Stat": { "of": { "Target": 0 }, "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

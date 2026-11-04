@@ -1,0 +1,59 @@
+{
+  "oracle_id": "185d84f4-6095-46ef-917f-3d662a86aa81",
+  "name": "Outmuscle",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Outmuscle",
+      "oracle_fingerprint": "23f6b09efb9fe3b99adbe3f1c3e069e4",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "Not": { "ControlledBy": "You" } }] }
+              }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } },
+              { "Fight": { "what": { "Target": 0 }, "with": { "Target": 1 } } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "When": {
+                          "condition": {
+                            "Compare": {
+                              "left": { "ManaSpent": { "of": "Green" } },
+                              "op": "Ge",
+                              "right": 3
+                            }
+                          },
+                          "then": 1,
+                          "otherwise": 0
+                        }
+                      },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [{ "AddKeyword": "Indestructible" }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

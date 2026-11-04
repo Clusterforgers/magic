@@ -1,0 +1,63 @@
+{
+  "oracle_id": "d1950094-2cc9-48ce-ae1a-0ae78ba252c1",
+  "name": "Hatchery Spider",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hatchery Spider",
+      "oracle_fingerprint": "dad8089841e05b8289812ba3df52e883",
+      "abilities": [
+        { "Keyword": "Reach" },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": ["This"] } },
+            "effects": [
+              {
+                "LookAtTop": {
+                  "count": {
+                    "Count": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                  },
+                  "as": "top"
+                }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "Color": "Green" },
+                      {
+                        "Compare": {
+                          "stat": "ManaValue",
+                          "op": "Le",
+                          "to": {
+                            "Count": [
+                              { "Type": "Creature" },
+                              { "OwnedBy": "You" },
+                              { "In": "Graveyard" }
+                            ]
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "kept2"
+                }
+              },
+              { "Reveal": { "what": { "Bound": "kept2" } } },
+              { "Move": { "what": { "Bound": "kept2" }, "to": { "Battlefield": {} } } },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

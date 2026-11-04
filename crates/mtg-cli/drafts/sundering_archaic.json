@@ -1,0 +1,39 @@
+{
+  "oracle_id": "b095526e-94a4-416b-83de-d6271804ccf3",
+  "name": "Sundering Archaic",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sundering Archaic",
+      "oracle_fingerprint": "b3d3a7b2c96bd28bfdab5b8302664e3b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Not": { "Type": "Land" } },
+                    { "ControlledBy": "Opponents" },
+                    { "Compare": { "stat": "ManaValue", "op": "Le", "to": "ColorsSpent" } }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Exile": { "what": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{2}",
+            "targets": [{ "what": { "Object": [{ "In": "Graveyard" }] } }],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Library": { "place": "Bottom" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

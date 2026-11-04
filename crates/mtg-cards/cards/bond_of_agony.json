@@ -1,0 +1,15 @@
+{
+  "oracle_id": "8e7bd5ae-005a-47d8-90bc-69f48cd8793d",
+  "name": "Bond of Agony",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bond of Agony",
+      "oracle_fingerprint": "2b1eaf058f137a73ee4d1801c86bfe6d",
+      "abilities": [
+        { "AdditionalCost": { "cost": [{ "PayLife": "X" }], "required": true } },
+        { "Spell": { "effects": [{ "LoseLife": { "who": "Opponents", "amount": "X" } }] } }
+      ]
+    }
+  ]
+}

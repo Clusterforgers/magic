@@ -1,0 +1,34 @@
+{
+  "oracle_id": "9ef676f0-53c5-4efe-9341-e960d00dbc69",
+  "name": "Consuming Ashes",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Consuming Ashes",
+      "oracle_fingerprint": "58384f95983e41e8b4d9376ef1ebba94",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 } } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Target": 0 },
+                      "selector": [{ "Compare": { "stat": "ManaValue", "op": "Le", "to": 3 } }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Surveil": { "count": 2 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

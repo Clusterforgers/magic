@@ -1,0 +1,31 @@
+{
+  "oracle_id": "df82b67f-f685-4278-a108-f3689a3a121b",
+  "name": "Infiltrator's Magemark",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Infiltrator's Magemark",
+      "oracle_fingerprint": "845e1e6e226b0321856bcba0e08caca4",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                { "HasAttached": [{ "Subtype": "Aura" }] },
+                { "ControlledBy": "You" }
+              ]
+            },
+            "mods": [
+              { "ModifyPT": { "power": 1, "toughness": 1 } },
+              {
+                "CantBeBlockedBy": [{ "Type": "Creature" }, { "Not": { "HasKeyword": "Defender" } }]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

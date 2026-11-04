@@ -1,0 +1,36 @@
+{
+  "oracle_id": "b8d019fa-3893-453e-a46d-aa53fc3f2f0e",
+  "name": "Strategic Intervention",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Strategic Intervention",
+      "oracle_fingerprint": "79b50cf41d53504ae769bd4b5b94c128",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AttacksAlone": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+            },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Defending" }] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Triggering",
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Tap": { "what": { "Target": 0 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

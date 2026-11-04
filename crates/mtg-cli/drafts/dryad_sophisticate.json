@@ -1,0 +1,14 @@
+{
+  "oracle_id": "7cf59255-0ad7-4ca8-bc95-f3a8cc2643d5",
+  "name": "Dryad Sophisticate",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dryad Sophisticate",
+      "oracle_fingerprint": "35d61152a888870ad9a6edfe52251c5a",
+      "abilities": [
+        { "Keyword": { "Landwalk": [{ "Type": "Land" }, { "Not": { "Supertype": "Basic" } }] } }
+      ]
+    }
+  ]
+}

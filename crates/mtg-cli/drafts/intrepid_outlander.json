@@ -1,0 +1,31 @@
+{
+  "oracle_id": "ff8d3532-bf4f-4209-ac01-351ddc9b9423",
+  "name": "Intrepid Outlander",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Intrepid Outlander",
+      "oracle_fingerprint": "396fbed51ddaaf4f0b620cbc4d3f692d",
+      "abilities": [
+        { "Keyword": "Reach" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "if": {
+              "AtTrigger": {
+                "Compare": {
+                  "left": {
+                    "Total": { "of": [{ "Type": "Creature" }, "Attacking"], "stat": "Power" }
+                  },
+                  "op": "Ge",
+                  "right": 6
+                }
+              }
+            },
+            "effects": [{ "Venture": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

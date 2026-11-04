@@ -1,0 +1,35 @@
+{
+  "oracle_id": "5a68c925-db79-44f2-a5c1-5a607298f6cf",
+  "name": "Clutch of Undeath",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Clutch of Undeath",
+      "oracle_fingerprint": "ee004067a1d69872f3fbdeee55186764",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 3, "toughness": 3 } }],
+            "condition": {
+              "Matches": { "subject": "Attached", "selector": [{ "Subtype": "Zombie" }] }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": -3, "toughness": -3 } }],
+            "condition": {
+              "Matches": {
+                "subject": "Attached",
+                "selector": [{ "Type": "Creature" }, { "Not": { "Subtype": "Zombie" } }]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

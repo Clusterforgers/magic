@@ -1,0 +1,16 @@
+{
+  "oracle_id": "e1bf20b0-2bd7-4a0f-9a02-41e43bd44641",
+  "name": "Hypersonic Dragon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hypersonic Dragon",
+      "oracle_fingerprint": "cc1e410aa62e388c5a78cc6e9a5fdeef",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Haste" },
+        { "Rule": { "rule": { "MayCast": { "what": [{ "Type": "Sorcery" }], "flash": true } } } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,75 @@
+{
+  "oracle_id": "bb956492-e3ed-483a-9169-5b795a8e619e",
+  "name": "Astelli Reclaimer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Astelli Reclaimer",
+      "oracle_fingerprint": "e48e964178c4b62b56b486d6613878d9",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Not": { "Type": "Creature" } },
+                    { "Not": { "Type": "Land" } },
+                    { "OwnedBy": "You" },
+                    {
+                      "Compare": {
+                        "stat": "ManaValue",
+                        "op": "Le",
+                        "to": { "ManaSpent": { "of": null } }
+                      }
+                    },
+                    {
+                      "AnyOf": [
+                        { "Type": "Artifact" },
+                        { "Type": "Battle" },
+                        { "Type": "Creature" },
+                        { "Type": "Enchantment" },
+                        { "Type": "Land" },
+                        { "Type": "Planeswalker" }
+                      ]
+                    },
+                    { "In": "Graveyard" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }]
+          }
+        },
+        { "AltCast": { "way": "Warp", "cost": "{2}{W}" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": { "CastWith": "Warp" },
+            "effects": [
+              { "Choose": { "from": "This", "as": "warped" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    { "Exile": { "what": { "Bound": "warped" }, "as": "warped_card" } },
+                    {
+                      "Rule": {
+                        "rule": {
+                          "MayCast": { "from": "Exile", "only": { "Bound": "warped_card" } }
+                        },
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

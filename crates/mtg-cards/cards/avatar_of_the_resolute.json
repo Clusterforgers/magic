@@ -1,0 +1,33 @@
+{
+  "oracle_id": "15fd66db-f9dd-40ab-92bc-9e0575bd7489",
+  "name": "Avatar of the Resolute",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Avatar of the Resolute",
+      "oracle_fingerprint": "43d5035a3f9f0e53e0aaf9cf4c3b1699",
+      "abilities": [
+        { "Keyword": "Reach" },
+        { "Keyword": "Trample" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "WithCounters": {
+                "counter": "+1/+1",
+                "count": {
+                  "Count": [
+                    { "Type": "Creature" },
+                    "Other",
+                    { "ControlledBy": "You" },
+                    { "HasCounter": "+1/+1" }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

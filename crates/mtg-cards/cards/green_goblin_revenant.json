@@ -1,0 +1,24 @@
+{
+  "oracle_id": "67175889-02f9-4ad8-a9ab-11db44328b67",
+  "name": "Green Goblin, Revenant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Green Goblin, Revenant",
+      "oracle_fingerprint": "c7d464a84ae7a47a7a9e8c8ac91cc644",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Deathtouch" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              { "Discard": {} },
+              { "Draw": { "count": { "Tallied": { "who": "You", "what": "Discarded" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

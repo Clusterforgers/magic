@@ -1,0 +1,39 @@
+{
+  "oracle_id": "dbaa70e6-26de-4ce9-9543-e652cbe387c1",
+  "name": "Doc Ock, Sinister Scientist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Doc Ock, Sinister Scientist",
+      "oracle_fingerprint": "b7134157c9d8ce918944c18e8ab6c7bd",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "SetPT": { "power": 8, "toughness": 8 } }],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "OwnedBy": "You" }, { "In": "Graveyard" }] },
+                "op": "Ge",
+                "right": 8
+              }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Hexproof" }],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Subtype": "Villain" }, { "ControlledBy": "You" }, "Other"] },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

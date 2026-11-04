@@ -1,0 +1,38 @@
+{
+  "oracle_id": "d2964a68-36d9-4b05-8f34-540969b410bf",
+  "name": "Auntie's Snitch",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Auntie's Snitch",
+      "oracle_fingerprint": "f24e0052edd4e5db853ae9b75605eca8",
+      "abilities": [
+        { "Static": { "affected": "This", "mods": ["CantBlock"] } },
+        { "Keyword": { "Prowl": "{1}{B}" } },
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [
+                  { "AnyOf": [{ "Subtype": "Goblin" }, { "Subtype": "Rogue" }] },
+                  { "ControlledBy": "You" }
+                ],
+                "to": "EachPlayer",
+                "combat": true
+              }
+            },
+            "if": {
+              "Compare": {
+                "left": { "Count": ["This", { "In": "Graveyard" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "from": "Graveyard",
+            "effects": [{ "May": { "effects": [{ "Move": { "what": "This", "to": "Hand" } }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

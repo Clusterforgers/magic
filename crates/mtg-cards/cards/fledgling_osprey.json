@@ -1,0 +1,25 @@
+{
+  "oracle_id": "d5482ccf-7c3f-45b8-aaa8-8f6686fe584d",
+  "name": "Fledgling Osprey",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fledgling Osprey",
+      "oracle_fingerprint": "37da7e160eb5e4be3c8d11cf40172931",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Flying" }],
+            "condition": {
+              "Matches": {
+                "subject": "This",
+                "selector": [{ "HasAttached": [{ "Subtype": "Aura" }] }]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

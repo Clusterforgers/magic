@@ -9,7 +9,7 @@
       "abilities": [
         {
           "Spell": {
-            "targets": [{ "what": "AnyTarget", "bounds": { "min": 0, "max": 1 } }],
+            "targets": [{ "what": "AnyTarget", "bounds": { "min": 0, "max": "X" } }],
             "effects": [
               {
                 "DealDamage": {

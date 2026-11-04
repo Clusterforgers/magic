@@ -1,0 +1,69 @@
+{
+  "oracle_id": "c29724c7-dc2e-4a66-8371-449fd012d429",
+  "name": "Wolf-Skull Shaman",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wolf-Skull Shaman",
+      "oracle_fingerprint": "e9a129af3f8635ee1b06a23fca2ff27c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "LookAtTop": { "as": "top" } },
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "In": "Library" },
+                            { "Is": { "Bound": "top" } },
+                            { "SharesSubtype": "This" }
+                          ]
+                        },
+                        "count": { "min": 0, "max": 1 },
+                        "as": "revealed2"
+                      }
+                    },
+                    { "Reveal": { "what": { "Bound": "revealed2" } } },
+                    {
+                      "If": {
+                        "condition": {
+                          "CountOf": {
+                            "subject": { "Bound": "revealed2" },
+                            "selector": [],
+                            "op": "Eq",
+                            "right": 1
+                          }
+                        },
+                        "then": [
+                          {
+                            "CreateToken": {
+                              "token": {
+                                "Custom": {
+                                  "name": "Wolf",
+                                  "colors": ["Green"],
+                                  "types": ["Creature"],
+                                  "subtypes": ["Wolf"],
+                                  "power": 2,
+                                  "toughness": 2
+                                }
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

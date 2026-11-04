@@ -1,0 +1,129 @@
+{
+  "object": "card",
+  "id": "717c5ee5-a033-4a58-bdcb-ef54e6c8b7a9",
+  "oracle_id": "70492e32-ba4d-4314-b016-892fb15f7a23",
+  "multiverse_ids": [
+    2149
+  ],
+  "tcgplayer_id": 1703,
+  "cardmarket_id": 5900,
+  "name": "Creature Bond",
+  "lang": "en",
+  "released_at": "1995-04-01",
+  "uri": "https://api.scryfall.com/cards/717c5ee5-a033-4a58-bdcb-ef54e6c8b7a9",
+  "scryfall_uri": "https://scryfall.com/card/4ed/66/creature-bond?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T13:04:20Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/7/1/717c5ee5-a033-4a58-bdcb-ef54e6c8b7a9.jpg?1783947860",
+    "normal": "https://cards.scryfall.io/normal/front/7/1/717c5ee5-a033-4a58-bdcb-ef54e6c8b7a9.jpg?1783947860",
+    "large": "https://cards.scryfall.io/large/front/7/1/717c5ee5-a033-4a58-bdcb-ef54e6c8b7a9.jpg?1783947860",
+    "png": "https://cards.scryfall.io/png/front/7/1/717c5ee5-a033-4a58-bdcb-ef54e6c8b7a9.png?1783947860",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/7/1/717c5ee5-a033-4a58-bdcb-ef54e6c8b7a9.jpg?1783947860",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/7/1/717c5ee5-a033-4a58-bdcb-ef54e6c8b7a9.jpg?1783947860",
+    "thumb": "https://cards.scryfall.io/thumb/front/7/1/717c5ee5-a033-4a58-bdcb-ef54e6c8b7a9.webp?1783947860",
+    "grid": "https://cards.scryfall.io/grid/front/7/1/717c5ee5-a033-4a58-bdcb-ef54e6c8b7a9.webp?1783947860",
+    "display": "https://cards.scryfall.io/display/front/7/1/717c5ee5-a033-4a58-bdcb-ef54e6c8b7a9.webp?1783947860",
+    "art": "https://cards.scryfall.io/art/front/7/1/717c5ee5-a033-4a58-bdcb-ef54e6c8b7a9.webp?1783947860",
+    "crop": "https://cards.scryfall.io/crop/front/7/1/717c5ee5-a033-4a58-bdcb-ef54e6c8b7a9.webp?1783947860",
+    "jpeg": "https://cards.scryfall.io/normal/front/7/1/717c5ee5-a033-4a58-bdcb-ef54e6c8b7a9.jpg?1783947860"
+  },
+  "mana_cost": "{1}{U}",
+  "cmc": 2.0,
+  "type_line": "Enchantment — Aura",
+  "oracle_text": "Enchant creature\nWhen enchanted creature dies, this Aura deals damage equal to that creature's toughness to the creature's controller.",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Enchant"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "2dd259d4-dc13-4956-a2dc-3e1d70b4a743",
+  "set": "4ed",
+  "set_name": "Fourth Edition",
+  "set_type": "core",
+  "set_uri": "https://api.scryfall.com/sets/2dd259d4-dc13-4956-a2dc-3e1d70b4a743",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3A4ed&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/4ed?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/717c5ee5-a033-4a58-bdcb-ef54e6c8b7a9/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A70492e32-ba4d-4314-b016-892fb15f7a23&unique=prints",
+  "collector_number": "66",
+  "digital": false,
+  "rarity": "common",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Anson Maddocks",
+  "artist_ids": [
+    "634430a7-b5c3-4e4a-b2ac-164e084e47c9"
+  ],
+  "illustration_id": "5dba0e50-d590-44a9-9cf3-faae3e8a84b7",
+  "border_color": "white",
+  "frame": "1993",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 27331,
+  "prices": {
+    "usd": "0.07",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.08",
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=2149&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DCreature%2BBond",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DCreature%2BBond",
+    "edhrec": "https://edhrec.com/route/?cc=Creature+Bond"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F1703%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=5900&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Creature+Bond&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

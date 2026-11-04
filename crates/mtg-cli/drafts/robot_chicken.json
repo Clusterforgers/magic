@@ -1,0 +1,52 @@
+{
+  "oracle_id": "51ccd23c-cd34-4a68-8212-0bb427920031",
+  "name": "Robot Chicken",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Robot Chicken",
+      "oracle_fingerprint": "4c8dcfaa6f7951a1f5c76d9e8dbec68f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "by": "You" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Egg",
+                      "types": ["Artifact", "Creature"],
+                      "subtypes": ["Egg"],
+                      "power": 0,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Subtype": "Egg" }, { "ControlledBy": "You" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] }]
+                }
+              }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

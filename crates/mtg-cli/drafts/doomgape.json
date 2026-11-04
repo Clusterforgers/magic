@@ -1,0 +1,27 @@
+{
+  "oracle_id": "ab94d8f7-f811-436a-9a22-9a12bd929e98",
+  "name": "Doomgape",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Doomgape",
+      "oracle_fingerprint": "f90298e50e1e0752906d35dcbd9655aa",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              { "Sacrifice": { "filter": [{ "Type": "Creature" }], "as": "sacrificed" } },
+              {
+                "GainLife": {
+                  "amount": { "Stat": { "of": { "Bound": "sacrificed" }, "stat": "Toughness" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,84 @@
+{
+  "oracle_id": "944a91ab-c217-4c1d-b920-2e5503c34546",
+  "name": "Sunstar Expansionist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sunstar Expansionist",
+      "oracle_fingerprint": "46dcf9578ce1c3b485344a2f7ae9d0cc",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Largest": {
+                    "who": "Opponents",
+                    "of": [{ "Type": "Land" }, { "ControlledBy": "You" }]
+                  }
+                },
+                "op": "Gt",
+                "right": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] }
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Lander",
+                      "types": ["Artifact"],
+                      "subtypes": ["Lander"],
+                      "abilities": [
+                        {
+                          "Activated": {
+                            "cost": [{ "Mana": "{2}" }, "Tap", "SacrificeSelf"],
+                            "effects": [
+                              {
+                                "Search": {
+                                  "filter": [{ "Type": "Land" }, { "Supertype": "Basic" }],
+                                  "as": "found"
+                                }
+                              },
+                              {
+                                "Move": {
+                                  "what": { "Bound": "found" },
+                                  "to": { "Battlefield": { "tapped": true } }
+                                }
+                              },
+                              { "Shuffle": {} }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

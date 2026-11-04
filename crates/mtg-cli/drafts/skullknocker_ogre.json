@@ -1,0 +1,34 @@
+{
+  "oracle_id": "980a0d4d-b070-46c1-be8d-31bdda0d1c33",
+  "name": "Skullknocker Ogre",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Skullknocker Ogre",
+      "oracle_fingerprint": "07f9b6074d3cfc0e5e97d63af2142233",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "Opponents" } },
+            "effects": [
+              { "Discard": { "who": "Triggering", "random": true, "as": "discarded" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "discarded" },
+                      "selector": [],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Draw": { "who": "Triggering" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

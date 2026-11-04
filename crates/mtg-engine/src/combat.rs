@@ -415,8 +415,15 @@ pub(crate) fn attack_options(state: &GameState, player: PlayerId) -> AttackOptio
             .into_iter()
             .filter(|(target, _)| defenders.contains(target))
             .collect(),
+        cant_alone: Vec::new(),
     };
     attack_tax::describe(state, player, &mut options);
+    options.cant_alone = options
+        .attackers
+        .iter()
+        .map(|option| option.object)
+        .filter(|object| cant_attack_alone(state, *object))
+        .collect();
     // A creature that can't attack any defender is not required to (it is "able" only with one to attack), nor is one
     // that can attack only by paying a cost: a requirement never makes a player pay (CR 508.1d).
     options.required = options
@@ -545,6 +552,7 @@ pub(crate) fn block_options(state: &GameState, player: PlayerId) -> BlockOptions
         .filter_map(|attacker| Some((attacker, blocker_limits(state, attacker).1?)))
         .collect();
     let (must_be_blocked, forced) = name_requirements(state, &mut blockers);
+    let cant_alone = cant_block_alone_of(state, &blockers);
     let required = blockers
         .iter()
         .map(|option| option.object)
@@ -560,7 +568,16 @@ pub(crate) fn block_options(state: &GameState, player: PlayerId) -> BlockOptions
         required,
         must_be_blocked,
         most,
+        cant_alone,
     }
+}
+
+/// The blockers among `blockers` that can't block alone.
+fn cant_block_alone_of(state: &GameState, blockers: &[BlockerOption]) -> Vec<ObjectId> {
+    let alone = blockers.iter().map(|option| option.object);
+    alone
+        .filter(|object| cant_block_alone(state, *object))
+        .collect()
 }
 
 /// Applies the requirements that name attackers to the blockers: a creature that must block an attacker it could block
@@ -626,6 +643,7 @@ pub(crate) fn check_attackers(
     let declared: Vec<ObjectId> = answer.iter().map(|(object, _)| *object).collect();
     let excused = w8a_check_limit(options.most, &options.required, &declared)?;
     w10a_check_limits_at(&options.most_at, answer)?;
+    options.check_attack_alone(&declared)?;
     // CR 508.1d: every requirement that can be obeyed is; a creature that is able to attack must, unless the limit on
     // the declaration or those at each defender it may attack for nothing are filled with creatures that must.
     if !excused
@@ -640,15 +658,14 @@ pub(crate) fn check_attackers(
 
 /// Checks declared blocks against the options, and that an attacker that needs several blockers gets them.
 pub(crate) fn check_blockers(
-    state: &GameState,
     options: &BlockOptions,
     answer: &[(ObjectId, ObjectId)],
 ) -> Result<(), IllegalAnswer> {
     w14c_check_pairs(options, answer)?;
-    crate::combat_quirks::check_block_alone(state, answer)?;
+    options.check_block_alone(answer)?;
     for (_, attacker) in answer {
         let got = answer.iter().filter(|(_, a)| a == attacker).count();
-        let needed = keywords::min_blockers(state, *attacker);
+        let needed = options.needed_for(*attacker);
         if got < needed {
             return Err(IllegalAnswer::TooFewBlockers { needed, got });
         }
@@ -1005,7 +1022,7 @@ mod tests {
         require(&mut game, Rule::MustBlock, &["Bear"]);
         let options = block_options(&game, FOE);
         assert_eq!(options.required, [id(&game, "Bear")]);
-        let result = check_blockers(&game, &options, &blocks(&game, declared));
+        let result = check_blockers(&options, &blocks(&game, declared));
         assert_eq!(result.is_ok(), legal, "{result:?}");
         if !legal {
             assert!(matches!(
@@ -1026,7 +1043,7 @@ mod tests {
         game.combat.remove_object(fox);
         let options = block_options(&game, FOE);
         assert_eq!(options.required, []);
-        assert_eq!(check_blockers(&game, &options, &[]), Ok(()));
+        assert_eq!(check_blockers(&options, &[]), Ok(()));
     }
 
     /// Seat 1's Brute (menace) attacks seat 0, whose Wolf must block and whose Fox is tapped or not.
@@ -1054,7 +1071,7 @@ mod tests {
         let game = brute_attacks(true);
         let options = block_options(&game, ME);
         assert_eq!(options.required, []);
-        assert_eq!(check_blockers(&game, &options, &[]), Ok(()));
+        assert_eq!(check_blockers(&options, &[]), Ok(()));
     }
 
     #[test]
@@ -1063,15 +1080,15 @@ mod tests {
         let options = block_options(&game, ME);
         assert_eq!(options.required, [id(&game, "Wolf")]);
         assert_eq!(
-            check_blockers(&game, &options, &[]),
+            check_blockers(&options, &[]),
             Err(IllegalAnswer::Required("blocker"))
         );
         assert_eq!(
-            check_blockers(&game, &options, &blocks(&game, &[("Wolf", "Brute")])),
+            check_blockers(&options, &blocks(&game, &[("Wolf", "Brute")])),
             Err(IllegalAnswer::TooFewBlockers { needed: 2, got: 1 })
         );
         let pair = blocks(&game, &[("Wolf", "Brute"), ("Fox", "Brute")]);
-        assert_eq!(check_blockers(&game, &options, &pair), Ok(()));
+        assert_eq!(check_blockers(&options, &pair), Ok(()));
         assert_eq!(
             options.required_blocks().len(),
             2,

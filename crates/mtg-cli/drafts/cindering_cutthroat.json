@@ -1,0 +1,40 @@
+{
+  "oracle_id": "46e8bec0-1a09-4e6e-b78a-7ba161686ca9",
+  "name": "Cindering Cutthroat",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cindering Cutthroat",
+      "oracle_fingerprint": "207260832f5278345ed3bfa1add1a2a6",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": 1 } },
+            "condition": {
+              "Compare": {
+                "left": { "Tallied": { "who": "Opponents", "what": "LifeLost" } },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{1}{B/R}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddKeyword": "Menace" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

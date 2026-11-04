@@ -669,8 +669,8 @@ impl Driver {
             }
             DecisionKind::Priority(_) => Answer::Priority(PriorityAction::Pass),
             DecisionKind::PayMana(_) => Answer::PayMana(PayChoice::Cancel),
-            DecisionKind::DeclareAttackers(o) => Answer::DeclareAttackers(o.required_attack()),
-            DecisionKind::DeclareBlockers(o) => Answer::DeclareBlockers(o.required_blocks()),
+            DecisionKind::DeclareAttackers(o) => Answer::DeclareAttackers(o.legal_attack()),
+            DecisionKind::DeclareBlockers(o) => Answer::DeclareBlockers(o.legal_blocks()),
             DecisionKind::AssignDamage(o) => Answer::AssignDamage(
                 o.blockers
                     .iter()

@@ -1,0 +1,16 @@
+{
+  "oracle_id": "aef07e62-ac7f-4a5b-9732-136052d88a06",
+  "name": "Taunting Elf",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Taunting Elf",
+      "oracle_fingerprint": "d086d94bff869ad621ee566034e4e5a7",
+      "abilities": [
+        {
+          "Rule": { "rule": { "Combat": { "who": "This", "quirk": { "MustBeBlocked": "Every" } } } }
+        }
+      ]
+    }
+  ]
+}

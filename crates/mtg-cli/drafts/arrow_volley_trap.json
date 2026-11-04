@@ -1,0 +1,37 @@
+{
+  "oracle_id": "131dc114-cd48-43d9-93b3-88df85640e09",
+  "name": "Arrow Volley Trap",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Arrow Volley Trap",
+      "oracle_fingerprint": "b1ba848f2fedf5edd6e663eeffbc723a",
+      "abilities": [
+        {
+          "FreeCast": {
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Type": "Creature" }, "Attacking"] },
+                "op": "Ge",
+                "right": 4
+              }
+            },
+            "cost": "{1}{W}"
+          }
+        },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, "Attacking"] },
+                "bounds": { "min": 0, "max": 5 },
+                "divide": 5
+              }
+            ],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": "Divided" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

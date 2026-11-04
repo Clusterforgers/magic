@@ -1,0 +1,39 @@
+{
+  "oracle_id": "43c31a03-2bbd-49a6-8b78-c5f3cab04a07",
+  "name": "Doctor Strange, Surgeon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Doctor Strange, Surgeon",
+      "oracle_fingerprint": "416eaba98810825777a79122979beefc",
+      "abilities": [
+        { "Keyword": "Lifelink" },
+        { "Replacement": { "when": { "LifeGain": {} }, "by": { "Multiply": 2 } } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat" } },
+            "if": {
+              "Compare": {
+                "left": { "Life": "You" },
+                "op": "Ge",
+                "right": { "Sum": [{ "StartingLife": "You" }, 10] }
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [
+                    { "ModifyPT": { "power": 2, "toughness": 2 } },
+                    { "AddKeyword": "Vigilance" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

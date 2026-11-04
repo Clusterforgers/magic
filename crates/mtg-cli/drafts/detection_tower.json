@@ -1,0 +1,38 @@
+{
+  "oracle_id": "93695c16-c441-492d-af12-b57df9739846",
+  "name": "Detection Tower",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Detection Tower",
+      "oracle_fingerprint": "c6139f84a6a1b536b3aab30a9efde99e",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap"],
+            "effects": [
+              {
+                "Rule": {
+                  "rule": {
+                    "IgnoreHexproof": {
+                      "by": "You",
+                      "what": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] },
+                      "players": "Opponents"
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

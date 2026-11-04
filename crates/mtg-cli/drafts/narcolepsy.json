@@ -1,0 +1,27 @@
+{
+  "oracle_id": "3da1412e-a72c-4da1-8848-37145ca6614a",
+  "name": "Narcolepsy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Narcolepsy",
+      "oracle_fingerprint": "1701b9840222c27cfd4815c2be727886",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": [{ "Type": "Creature" }, { "Is": "Attached" }, "Untapped"] },
+                "op": "Eq",
+                "right": 1
+              }
+            },
+            "effects": [{ "Tap": { "what": "Attached" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

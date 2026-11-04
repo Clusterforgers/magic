@@ -1,0 +1,64 @@
+{
+  "oracle_id": "0a557383-596b-4b8f-b81f-21706fef7b63",
+  "name": "Rally for the Throne",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rally for the Throne",
+      "oracle_fingerprint": "0146e7c244a8b9353447818f9fe6e2d2",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Human",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Human"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": 2
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "When": {
+                          "condition": {
+                            "Compare": {
+                              "left": { "ManaSpent": { "of": "White" } },
+                              "op": "Ge",
+                              "right": 3
+                            }
+                          },
+                          "then": 1,
+                          "otherwise": 0
+                        }
+                      },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "GainLife": {
+                        "amount": { "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

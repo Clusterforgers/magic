@@ -1,0 +1,20 @@
+{
+  "oracle_id": "b5cd9c55-34ad-4e1f-92b2-527c9babc4d4",
+  "name": "Steel Golem",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Steel Golem",
+      "oracle_fingerprint": "e8b55c0bca67eb89c7a88c8ff51868ce",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "Cant": { "who": "You", "action": { "Cast": { "filter": [{ "Type": "Creature" }] } } }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

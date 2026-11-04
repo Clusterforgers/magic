@@ -1,0 +1,31 @@
+{
+  "oracle_id": "57cf576b-5a03-4c60-a531-544df2638323",
+  "name": "Hope-Ender Coatl",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hope-Ender Coatl",
+      "oracle_fingerprint": "a976d729f00ff7ed797ac5be6326596e",
+      "abilities": [
+        { "Keyword": "Devoid" },
+        { "Keyword": "Flash" },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": ["This"] } },
+            "targets": [{ "what": { "Object": ["Spell", { "ControlledBy": "Opponents" }] } }],
+            "effects": [
+              {
+                "Pay": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "cost": "{1}",
+                  "unpaid": [{ "Counter": { "what": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "Flying" }
+      ]
+    }
+  ]
+}

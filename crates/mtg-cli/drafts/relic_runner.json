@@ -1,0 +1,41 @@
+{
+  "oracle_id": "69e4e5bf-f0e2-4ed1-8b17-c8c7a9381551",
+  "name": "Relic Runner",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Relic Runner",
+      "oracle_fingerprint": "d1d8d11a042ff32f9092a9bee8d7dad1",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": ["CantBeBlocked"],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "SpellCast",
+                    "who": "EachPlayer",
+                    "filter": [
+                      {
+                        "AnyOf": [
+                          { "Supertype": "Legendary" },
+                          { "Type": "Artifact" },
+                          { "Subtype": "Saga" }
+                        ]
+                      },
+                      { "ControlledBy": "You" }
+                    ]
+                  }
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

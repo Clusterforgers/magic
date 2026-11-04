@@ -8,18 +8,20 @@
 mod blame;
 mod blocks;
 mod complete;
+mod merge;
 mod pairing;
 pub mod partial;
 mod render;
 mod repair;
 
+pub use merge::merge;
 pub(crate) use pairing::pair_card;
 pub use repair::{Repair, RepairClass};
 
 use std::collections::BTreeSet;
 
 use crate::card::{Card, Span};
-use crate::compile::{ClauseKind, compile};
+use crate::compile::{Clause, ClauseKind, compile};
 use crate::load::{Library, LoadError, slug};
 use crate::support::{Caps, PrintedCard, SupportRecord, support};
 
@@ -164,6 +166,29 @@ pub fn check(
     names: &BTreeSet<String>,
     caps: &Caps,
 ) -> Report {
+    check_with(text, printed, hand_written, names, caps, true)
+}
+
+/// Like [`check`] without the repairs: a translator draft is judged as written, so a slip makes it a problem and is
+/// never changed into other rules.
+pub fn check_exact(
+    text: &str,
+    printed: &PrintedCard,
+    hand_written: &Library,
+    names: &BTreeSet<String>,
+    caps: &Caps,
+) -> Report {
+    check_with(text, printed, hand_written, names, caps, false)
+}
+
+fn check_with(
+    text: &str,
+    printed: &PrintedCard,
+    hand_written: &Library,
+    names: &BTreeSet<String>,
+    caps: &Caps,
+    repairs: bool,
+) -> Report {
     let file = format!("cards/{}.json", slug(&printed.name));
     let mut report = Report {
         card: printed.name.clone(),
@@ -181,7 +206,9 @@ pub fn check(
             return report;
         }
     };
-    report.repairs = repair::repair(&mut value, printed);
+    if repairs {
+        report.repairs = repair::repair(&mut value, printed);
+    }
     let proposed = match complete::parse(value, printed, &file) {
         Ok(card) => card,
         Err(error) => {
@@ -190,7 +217,24 @@ pub fn check(
         }
     };
     let clauses = compile(printed).clauses;
-    let paired = pairing::pair_card(&proposed, &clauses, printed);
+    judge(
+        report,
+        proposed,
+        &clauses,
+        printed,
+        (hand_written, names, caps),
+    )
+}
+
+/// Pairs, completes and judges parsed rules; `report` carries the card and the repairs.
+fn judge(
+    mut report: Report,
+    proposed: Card,
+    clauses: &[Clause],
+    printed: &PrintedCard,
+    (hand_written, names, caps): (&Library, &BTreeSet<String>, &Caps),
+) -> Report {
+    let paired = pairing::pair_card(&proposed, clauses, printed);
     let card = complete::finish(proposed, &paired, printed);
     report.problems = hand_written.check_generated(&card, printed, names);
     if report.problems.is_empty() {

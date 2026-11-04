@@ -1,0 +1,27 @@
+{
+  "oracle_id": "4eba0e29-985b-4763-9a70-0946ba044b43",
+  "name": "Mishra, Excavation Prodigy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mishra, Excavation Prodigy",
+      "oracle_fingerprint": "2eaa0608ed9b4a35f18f0e638c1747ee",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap", { "Discard": {} }],
+            "effects": [{ "Draw": {} }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Batch": { "Discarded": { "what": [{ "Type": "Artifact" }], "by": "You" } } },
+            "limit": "OncePerTurn",
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Red", "Red"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

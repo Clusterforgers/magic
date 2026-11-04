@@ -1,0 +1,37 @@
+{
+  "oracle_id": "15c994b9-901a-46d6-804b-24560a14a481",
+  "name": "Seedship Broodtender",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Seedship Broodtender",
+      "oracle_fingerprint": "9bb2493c5d7d80e37fa112c52a6b5ab5",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Mill": { "count": 3 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}{B}{G}" }, "SacrificeSelf"],
+            "timing": "Sorcery",
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Creature" }, { "Subtype": "Spacecraft" }] },
+                    { "OwnedBy": "You" },
+                    { "In": "Graveyard" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,55 @@
+{
+  "oracle_id": "f46c72b8-e2e8-42e6-a2e7-ffa5810a9bf3",
+  "name": "Swarm Shambler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Swarm Shambler",
+      "oracle_fingerprint": "149f4d7b209b4ccb8fc4f01ae2a58192",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": 1 } }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "BecomesTarget": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "ControlledBy": "You" },
+                  { "HasCounter": "+1/+1" }
+                ],
+                "by": ["Spell", { "ControlledBy": "Opponents" }]
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Insect",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Insect"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap"],
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

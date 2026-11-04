@@ -1,0 +1,26 @@
+{
+  "oracle_id": "9e3f5d0b-103f-40e2-beb5-26b1fcb136f3",
+  "name": "Shrieking Affliction",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shrieking Affliction",
+      "oracle_fingerprint": "81a6f8256f86242153ac0ae8a8ed1dc2",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "Opponents" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": [{ "OwnedBy": "ActivePlayer" }, { "In": "Hand" }] },
+                "op": "Le",
+                "right": 1
+              }
+            },
+            "effects": [{ "LoseLife": { "who": "Triggering", "amount": 3 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

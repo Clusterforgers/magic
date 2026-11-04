@@ -1,0 +1,41 @@
+{
+  "oracle_id": "04cffc41-05da-45fb-82da-2c4d4108c7e1",
+  "name": "Nightsquad Commando",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nightsquad Commando",
+      "oracle_fingerprint": "f3010c83338f81a328db502733371249",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "Attackers" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Human Soldier",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Human", "Soldier"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,60 @@
+{
+  "oracle_id": "8e3eafd7-5823-4cc1-bdb8-c456580e395a",
+  "name": "Myojin of Life's Web",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Myojin of Life's Web",
+      "oracle_fingerprint": "916d2f1c605ede0e5ecace1287bd2279",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Indestructible" }],
+            "condition": {
+              "Matches": {
+                "subject": "This",
+                "selector": [{ "HasCounter": { "Other": "divinity" } }]
+              }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Indestructible" }],
+            "condition": {
+              "Compare": {
+                "left": { "Counters": { "on": "This", "counter": { "Other": "divinity" } } },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "RemoveCounters": { "counter": { "Other": "divinity" } } }],
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [{ "Type": "Creature" }, { "In": "Hand" }, { "OwnedBy": "You" }]
+                  },
+                  "count": {
+                    "min": 0,
+                    "max": {
+                      "Count": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Hand" }]
+                    }
+                  },
+                  "as": "picked"
+                }
+              },
+              { "Move": { "what": { "Bound": "picked" }, "to": { "Battlefield": {} } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

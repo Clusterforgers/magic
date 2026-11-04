@@ -1,0 +1,65 @@
+{
+  "oracle_id": "d79755c4-3c61-4fc8-8eb7-fbdc23951748",
+  "name": "Instrument of the Bards",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Instrument of the Bards",
+      "oracle_fingerprint": "1ae2fba15156d2fa7009417ff183e06c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "PutCounters": { "on": "This", "counter": { "Other": "harmony" } } }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}{G}" }, "Tap"],
+            "effects": [
+              {
+                "Search": {
+                  "filter": [
+                    { "Type": "Creature" },
+                    {
+                      "Compare": {
+                        "stat": "ManaValue",
+                        "op": "Eq",
+                        "to": { "Counters": { "on": "This", "counter": { "Other": "harmony" } } }
+                      }
+                    }
+                  ],
+                  "reveal": true,
+                  "as": "found"
+                }
+              },
+              { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+              { "Shuffle": {} },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "found" },
+                      "selector": [{ "Supertype": "Legendary" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "CreateToken": { "token": { "Named": "treasure" } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

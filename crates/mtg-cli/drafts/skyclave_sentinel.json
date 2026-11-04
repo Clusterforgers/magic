@@ -1,0 +1,33 @@
+{
+  "oracle_id": "3b7b166b-4329-4194-a9a7-f1fec7a92cec",
+  "name": "Skyclave Sentinel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Skyclave Sentinel",
+      "oracle_fingerprint": "991f8e9484bcd5ac53397189d66ac052",
+      "abilities": [
+        { "Keyword": { "Kicker": "{4}" } },
+        { "Keyword": "Flying" },
+        { "Keyword": "Defender" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": 2 } },
+            "condition": "Kicked"
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "Combat": {
+                "who": { "Each": ["This", { "HasCounter": "+1/+1" }] },
+                "quirk": "AttackDespiteDefender"
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

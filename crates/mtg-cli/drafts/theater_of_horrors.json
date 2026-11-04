@@ -1,0 +1,47 @@
+{
+  "oracle_id": "b391a4ce-52ce-4a8c-bbe5-6053951ee1d4",
+  "name": "Theater of Horrors",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Theater of Horrors",
+      "oracle_fingerprint": "7b2237e4f7feb840a5280b482adeac8a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [{ "ExileTop": { "as": "exiled" } }]
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": { "what": [{ "ExiledWith": "This" }], "from": "Exile", "play": true }
+            },
+            "condition": {
+              "All": [
+                {
+                  "Compare": {
+                    "left": { "Tallied": { "who": "Opponents", "what": "LifeLost" } },
+                    "op": "Ge",
+                    "right": 1
+                  }
+                },
+                "YourTurn"
+              ]
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{3}{R}",
+            "targets": [
+              { "what": { "Either": ["Opponent", { "Object": [{ "Type": "Planeswalker" }] }] } }
+            ],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

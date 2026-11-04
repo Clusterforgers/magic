@@ -1,0 +1,48 @@
+{
+  "oracle_id": "f75be4f2-d1a7-40c7-a0e4-ba8b03556ac6",
+  "name": "Prismabasher",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Prismabasher",
+      "oracle_fingerprint": "f035fba5a18914aebc81721c595619b1",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                "bounds": {
+                  "min": 0,
+                  "max": { "Distinct": { "of": [{ "ControlledBy": "You" }], "stat": "Colors" } }
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": {
+                          "Distinct": { "of": [{ "ControlledBy": "You" }], "stat": "Colors" }
+                        },
+                        "toughness": {
+                          "Distinct": { "of": [{ "ControlledBy": "You" }], "stat": "Colors" }
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

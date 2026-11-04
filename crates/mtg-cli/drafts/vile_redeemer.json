@@ -1,0 +1,61 @@
+{
+  "oracle_id": "a7a88bcc-eac2-4f74-804f-b49d16560184",
+  "name": "Vile Redeemer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vile Redeemer",
+      "oracle_fingerprint": "3ae04a93e05eace0a71690fe1d8558b1",
+      "abilities": [
+        { "Keyword": "Devoid" },
+        { "Keyword": "Flash" },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": ["This"] } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{C}",
+                  "paid": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Eldrazi Scion",
+                            "types": ["Creature"],
+                            "subtypes": ["Eldrazi", "Scion"],
+                            "power": 1,
+                            "toughness": 1,
+                            "abilities": [
+                              {
+                                "Activated": {
+                                  "cost": ["SacrificeSelf"],
+                                  "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+                                }
+                              }
+                            ]
+                          }
+                        },
+                        "count": {
+                          "Tally": {
+                            "event": "Died",
+                            "who": "EachPlayer",
+                            "filter": [
+                              { "Type": "Creature" },
+                              { "Not": "Token" },
+                              { "ControlledBy": "You" }
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

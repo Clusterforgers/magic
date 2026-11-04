@@ -1,0 +1,28 @@
+{
+  "oracle_id": "6f18f41e-df8d-4b59-87cc-ea167823fbda",
+  "name": "Pygmy Troll",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pygmy Troll",
+      "oracle_fingerprint": "0a5058473c52f8268027aa83b8b5d02a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "BecomesBlocked": { "what": ["This"], "by": [{ "Type": "Creature" }] } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Activated": { "cost": "{G}", "effects": [{ "Regenerate": { "what": "This" } }] } }
+      ]
+    }
+  ]
+}

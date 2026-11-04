@@ -1,0 +1,86 @@
+{
+  "oracle_id": "a8c70dab-1e27-4a9c-bd2d-910d5720d02d",
+  "name": "Great Hall of the Biblioplex",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Great Hall of the Biblioplex",
+      "oracle_fingerprint": "b1123a91afe1fbf9753709f4932a7ffd",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap", { "PayLife": 1 }],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "AnyColor": 1 },
+                  "only": [{ "Spell": { "types": ["Instant", "Sorcery"] } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{5}",
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": ["This", { "Not": { "Type": "Creature" } }] },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": "This",
+                        "mods": [
+                          { "SetPT": { "power": 2, "toughness": 4 } },
+                          { "AddSubtype": "Wizard" },
+                          { "AddType": "Creature" },
+                          {
+                            "GrantAbility": {
+                              "Triggered": {
+                                "when": {
+                                  "SpellCast": {
+                                    "what": [
+                                      { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }
+                                    ],
+                                    "by": "You"
+                                  }
+                                },
+                                "effects": [
+                                  {
+                                    "Continuous": {
+                                      "affected": "This",
+                                      "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+                                      "duration": "UntilEndOfTurn"
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          }
+                        ],
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

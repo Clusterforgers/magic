@@ -1,0 +1,20 @@
+{
+  "oracle_id": "b02bd695-ec7f-47be-b797-e2b4b309cc2a",
+  "name": "Kaleidoscorch",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kaleidoscorch",
+      "oracle_fingerprint": "8529100693d9b4604f7d1e6eab16d25b",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": "ColorsSpent" } }]
+          }
+        },
+        { "Keyword": { "Flashback": "{4}{R}" } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "oracle_id": "9bc0ca04-26ab-4743-bc65-0b5f4115c8f7",
+  "name": "Scuttlegator",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Scuttlegator",
+      "oracle_fingerprint": "5889208290921a24c6267e947850929d",
+      "abilities": [
+        { "Keyword": "Defender" },
+        { "Activated": { "cost": "{6}{G/U}{G/U}", "effects": [{ "Adapt": { "count": 3 } }] } },
+        {
+          "Rule": {
+            "rule": {
+              "Combat": {
+                "who": { "Each": ["This", { "HasCounter": "+1/+1" }] },
+                "quirk": "AttackDespiteDefender"
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

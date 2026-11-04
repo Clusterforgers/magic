@@ -1,0 +1,41 @@
+{
+  "oracle_id": "089788ce-d06c-4a85-915c-82e2cb5b0103",
+  "name": "Candletrap",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Candletrap",
+      "oracle_fingerprint": "9e8112117b6cc76cc7693806e842b73b",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        { "Static": { "affected": "Attached", "mods": [{ "AddKeyword": "Defender" }] } },
+        {
+          "Replacement": {
+            "when": {
+              "Damage": { "source": [{ "Type": "Creature" }, { "Is": "Attached" }], "combat": true }
+            },
+            "by": "Prevent"
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{W}" }, "SacrificeSelf"],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Distinct": {
+                    "of": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                    "stat": "Power"
+                  }
+                },
+                "op": "Ge",
+                "right": 3
+              }
+            },
+            "effects": [{ "Exile": { "what": "Attached" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

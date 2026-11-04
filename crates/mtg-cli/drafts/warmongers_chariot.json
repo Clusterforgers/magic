@@ -1,0 +1,30 @@
+{
+  "oracle_id": "90f4ec87-d33d-46c1-8cc7-3e7ad3f8ad70",
+  "name": "Warmonger's Chariot",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Warmonger's Chariot",
+      "oracle_fingerprint": "57c85e738dbb444367ae2dd4e0cf5f34",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }]
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "Combat": {
+                "who": { "Each": [{ "Is": "Attached" }, { "HasKeyword": "Defender" }] },
+                "quirk": "AttackDespiteDefender"
+              }
+            }
+          }
+        },
+        { "Keyword": { "Equip": "{3}" } }
+      ]
+    }
+  ]
+}

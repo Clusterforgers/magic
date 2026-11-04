@@ -1,0 +1,28 @@
+{
+  "oracle_id": "705cc928-d6d4-4294-979b-a385d1b07dc6",
+  "name": "Delightful Discovery",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Delightful Discovery",
+      "oracle_fingerprint": "b7c8c00b3b6ba331745ecdcf4edc111e",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{1}",
+            "per": {
+              "Tally": {
+                "event": "SpellCast",
+                "who": "EachPlayer",
+                "filter": [{ "ControlledBy": "Opponents" }]
+              }
+            }
+          }
+        },
+        { "Spell": { "effects": [{ "Scry": { "count": 2 } }, { "Draw": { "count": 2 } }] } }
+      ]
+    }
+  ]
+}

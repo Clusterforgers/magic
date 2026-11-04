@@ -1,0 +1,42 @@
+{
+  "oracle_id": "e3559565-0512-4525-addb-bf27903bcd13",
+  "name": "Night Nurse, Healer of Heroes",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Night Nurse, Healer of Heroes",
+      "oracle_fingerprint": "572399c1d1c7aa8ac47d6388c8359499",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": "Lifelink" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "OwnedBy": "You" },
+                    "EnteredThisTurn",
+                    {
+                      "AnyOf": [
+                        { "Type": "Artifact" },
+                        { "Type": "Battle" },
+                        { "Type": "Creature" },
+                        { "Type": "Enchantment" },
+                        { "Type": "Land" },
+                        { "Type": "Planeswalker" }
+                      ]
+                    },
+                    { "In": "Graveyard" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

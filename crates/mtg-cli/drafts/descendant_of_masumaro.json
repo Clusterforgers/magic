@@ -1,0 +1,35 @@
+{
+  "oracle_id": "d5bfb740-8ab2-4160-a8f0-5b70b63c2f3a",
+  "name": "Descendant of Masumaro",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Descendant of Masumaro",
+      "oracle_fingerprint": "27f4f365453559c66cb018e94dd502b0",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": "This",
+                  "counter": "+1/+1",
+                  "count": { "Count": [{ "OwnedBy": "You" }, { "In": "Hand" }] }
+                }
+              },
+              {
+                "RemoveCounters": {
+                  "from": "This",
+                  "counter": "+1/+1",
+                  "count": { "Count": [{ "In": "Hand" }, { "OwnedBy": { "Target": 0 } }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

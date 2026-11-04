@@ -1,0 +1,36 @@
+{
+  "oracle_id": "2ea95e03-b95d-4ccf-afc6-1a26ac6cf354",
+  "name": "Sergeant-at-Arms",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sergeant-at-Arms",
+      "oracle_fingerprint": "77a33e0f7431c250e75b999f722b40e3",
+      "abilities": [
+        { "Keyword": { "Kicker": "{2}{W}" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This", "Kicked"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Soldier",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Soldier"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": 2
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

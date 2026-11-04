@@ -1,0 +1,46 @@
+{
+  "oracle_id": "65afedc9-9446-4417-8576-807279061342",
+  "name": "Phyrexian Totem",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Phyrexian Totem",
+      "oracle_fingerprint": "11bb6d22c29f9a3df023368169f607be",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Black"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{2}{B}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "SetPT": { "power": 5, "toughness": 5 } },
+                    { "SetColors": ["Black"] },
+                    { "SetCreatureTypes": ["Phyrexian", "Horror"] },
+                    { "AddType": "Creature" },
+                    { "AddType": "Artifact" },
+                    { "AddKeyword": "Trample" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Batch": { "DealsDamage": { "source": [], "to": "This" } } },
+            "effects": [{ "Sacrifice": { "filter": [], "count": "Triggering" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

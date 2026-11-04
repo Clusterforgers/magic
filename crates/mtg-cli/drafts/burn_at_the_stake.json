@@ -1,0 +1,32 @@
+{
+  "oracle_id": "eb23bbb0-dd12-44f1-8645-d92f46cbe8ff",
+  "name": "Burn at the Stake",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Burn at the Stake",
+      "oracle_fingerprint": "2bbd91892c1c74a8fcf0c323d6846e09",
+      "abilities": [
+        {
+          "AdditionalCost": {
+            "cost": [{ "TapPermanents": { "filter": [{ "Type": "Creature" }], "count": "X" } }],
+            "required": true
+          }
+        },
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": { "Times": { "by": 3, "of": "X" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

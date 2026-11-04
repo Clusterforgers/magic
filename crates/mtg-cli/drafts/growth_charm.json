@@ -14,15 +14,20 @@
                 "Modal": {
                   "modes": [
                     {
-                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
                       "effects": [
                         {
-                          "Continuous": {
-                            "affected": { "Target": 0 },
-                            "mods": [{ "ModifyPT": { "power": 4, "toughness": 4 } }],
-                            "duration": "UntilEndOfTurn"
+                          "Search": {
+                            "filter": [{ "Type": "Land" }, { "Supertype": "Basic" }],
+                            "as": "found"
                           }
-                        }
+                        },
+                        {
+                          "Move": {
+                            "what": { "Bound": "found" },
+                            "to": { "Battlefield": { "tapped": true } }
+                          }
+                        },
+                        { "Shuffle": {} }
                       ]
                     },
                     {
@@ -38,12 +43,10 @@
                       ]
                     },
                     {
-                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
-                      "effects": [
-                        { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } },
-                        { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } },
-                        { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }
-                      ]
+                      "targets": [
+                        { "what": { "Object": [{ "OwnedBy": "You" }, { "In": "Graveyard" }] } }
+                      ],
+                      "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
                     }
                   ]
                 }

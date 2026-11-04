@@ -1,0 +1,44 @@
+{
+  "oracle_id": "8933297c-62f1-4df9-91b8-2d3481db77e5",
+  "name": "Spider-Man India",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spider-Man India",
+      "oracle_fingerprint": "18a835e4e14afffa0f236307ed56273b",
+      "abilities": [
+        {
+          "AltCast": {
+            "way": "WebSlinging",
+            "cost": [
+              { "Mana": "{1}{W}{G}" },
+              {
+                "ReturnToHand": {
+                  "filter": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "Tapped"]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Type": "Creature" }], "by": "You" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Flying" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

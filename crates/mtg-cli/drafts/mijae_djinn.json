@@ -1,0 +1,28 @@
+{
+  "oracle_id": "61bebdfa-5df0-4952-abf9-dc5e0e4f57ea",
+  "name": "Mijae Djinn",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mijae Djinn",
+      "oracle_fingerprint": "11503a20a9b4c3f90b0bba749f791937",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "FlipCoin": {
+                  "lose": [
+                    { "RemoveFromCombat": { "what": "This" } },
+                    { "Tap": { "what": "This" } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

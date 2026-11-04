@@ -1,0 +1,40 @@
+{
+  "oracle_id": "f67a599c-200a-4831-9e73-126c7435a396",
+  "name": "Viv Vision, Teen Synthezoid",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Viv Vision, Teen Synthezoid",
+      "oracle_fingerprint": "c430df86285fdeb5fb81439e12990e6c",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": "This",
+                      "selector": [{ "Compare": { "stat": "Power", "op": "Ge", "to": 4 } }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{7}",
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1", "count": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}
