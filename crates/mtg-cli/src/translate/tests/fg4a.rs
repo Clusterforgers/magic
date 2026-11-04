@@ -40,6 +40,18 @@ use super::{abilities, gaps, normal};
     "Name:T\nTypes:Instant\nA:SP$ Draw | NumCards$ X\nSVar:X:Count$Kicked.2.1\n",
     json!({"Spell": {"effects": [{"Draw": {"count": {"When": {"condition": "Kicked", "then": 2, "otherwise": 1}}}}]}})
 )]
+#[case::remember_the_token_and_pump_it(
+    "Name:T\nTypes:Sorcery\nA:SP$ Token | TokenScript$ w_1_1_soldier | RememberTokens$ True | SubAbility$ Boost\nSVar:Boost:DB$ Pump | Defined$ Remembered | NumAtt$ +2\n",
+    json!({"Spell": {"effects": [
+        {"CreateToken": {"token": {"Custom": {"name": "Soldier", "colors": ["White"], "types": ["Creature"], "subtypes": ["Soldier"], "power": 1, "toughness": 1}}, "as": "token"}},
+        {"Continuous": {"affected": {"Bound": "token"}, "mods": [{"ModifyPT": {"power": 2, "toughness": 0}}], "duration": "UntilEndOfTurn"}}]}})
+)]
+#[case::remember_the_discarded_cards(
+    "Name:T\nTypes:Sorcery\nA:SP$ Discard | NumCards$ 2 | RememberDiscarded$ True | SubAbility$ Back\nSVar:Back:DB$ ChangeZone | Origin$ Graveyard | Destination$ Hand | Defined$ Remembered\n",
+    json!({"Spell": {"effects": [
+        {"Discard": {"count": 2, "as": "discarded"}},
+        {"Move": {"what": {"Bound": "discarded"}, "to": "Hand"}}]}})
+)]
 fn selector_atoms_map(#[case] script: &str, #[case] expected: Value) {
     let mut found = abilities(script);
     assert_eq!(found.len(), 1, "{:?}", gaps(script));

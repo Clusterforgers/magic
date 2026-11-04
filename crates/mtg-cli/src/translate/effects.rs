@@ -204,6 +204,7 @@ fn discard(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
             "Mode",
             "TargetMin",
             "TargetMax",
+            "RememberDiscarded",
         ],
     )?;
     let random = match p.get("Mode") {
@@ -213,7 +214,13 @@ fn discard(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     };
     let who = player(ctx, p)?;
     let count = amount(ctx, p.get("NumCards").unwrap_or("1"))?;
-    Ok(json!({"Discard": {"who": who, "count": count, "random": random}}))
+    let mut discard = json!({"who": who, "count": count, "random": random});
+    if p.get("RememberDiscarded") == Some("True") {
+        let name = ctx.fresh("discarded");
+        ctx.remembered = Some(json!({ "Bound": name }));
+        discard["as"] = json!(name);
+    }
+    Ok(json!({ "Discard": discard }))
 }
 
 /// A verb of a player and a count: mill, scry, surveil.

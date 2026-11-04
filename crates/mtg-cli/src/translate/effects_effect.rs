@@ -117,6 +117,7 @@ fn remembered(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     let who = match word {
         "Targeted" if p.has("ValidTgts") => subject(ctx, p, "", None)?,
         "Self" => json!("This"),
+        "Targeted" => ctx.last_target()?,
         "Remembered" | "RememberedCard" => defined(ctx, "Remembered")?,
         "TriggeredCard" => json!("Triggering"),
         "ParentTarget" => ctx.parent()?,

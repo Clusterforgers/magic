@@ -150,6 +150,7 @@ pub fn remembered_of(ctx: &mut Ctx, line: &Params) -> Tr<Option<Value>> {
         None if line.has("ValidTgts") => unmapped("key:Effect.target-not-remembered"),
         None => Ok(None),
         Some("Targeted") if line.has("ValidTgts") => Ok(Some(subject(ctx, line, "", None)?)),
+        Some("Targeted") => Ok(Some(ctx.last_target()?)),
         Some("Self") => Ok(Some(json!("This"))),
         Some(other) => unmapped(format!("key:Effect.RememberObjects={other}")),
     }
