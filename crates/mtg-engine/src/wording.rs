@@ -161,7 +161,7 @@ fn noun(selector: &Selector) -> String {
 }
 
 /// A selector as the subject of a clause: "it" for the source itself, else "a creature you control".
-fn subject(selector: &Selector) -> String {
+pub(crate) fn subject(selector: &Selector) -> String {
     if selector.0 == [Pred::This] {
         return "it".to_owned();
     }

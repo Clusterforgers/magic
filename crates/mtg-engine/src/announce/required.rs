@@ -262,7 +262,7 @@ mod tests {
         count: Amount::X,
     }, true)]
     #[case::discard(CostItem::Discard { count: Amount::X, filter: None }, true)]
-    #[case::exile(CostItem::ExileFromGraveyard { filter: Selector(Vec::new()), count: Amount::X }, true)]
+    #[case::exile(CostItem::ExileFromGraveyard { filter: Selector(Vec::new()), any_player: false, count: Amount::X }, true)]
     #[case::fixed(CostItem::PayLife(Amount::Fixed(3)), false)]
     fn a_part_that_counts_x_is_paid_with_the_x_announced(
         #[case] item: CostItem,

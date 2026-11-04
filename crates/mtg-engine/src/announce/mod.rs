@@ -397,7 +397,7 @@ impl Pending {
             .as_ref()
             .and_then(|needs| parts::weak(&self.what, needs, &self.choices, state, cards));
         match weak {
-            Some((needed, got)) => Err(IllegalAnswer::TooLittlePower { needed, got }),
+            Some(illegal) => Err(illegal),
             None => Ok(()),
         }
     }

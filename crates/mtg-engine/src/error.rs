@@ -248,6 +248,17 @@ pub enum IllegalAnswer {
         /// The total power of the creatures chosen.
         got: u32,
     },
+    /// The cards exiled for a cost have less total mana value than it asks (collect evidence).
+    #[error("the cards exiled have total mana value {got} but the cost asks {needed}")]
+    TooLittleValue {
+        /// The total mana value the cost asks.
+        needed: u32,
+        /// The total mana value of the cards chosen.
+        got: u32,
+    },
+    /// The objects chosen for a cost are not what it takes.
+    #[error("the cost takes {0}")]
+    WrongPick(&'static str),
     /// An attacker that needs several blockers (menace) was blocked by fewer.
     #[error("the attacker needs {needed} blockers together but got {got}")]
     TooFewBlockers {

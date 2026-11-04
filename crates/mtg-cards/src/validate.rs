@@ -65,9 +65,12 @@ fn is_fixed(item: &CostItem) -> bool {
         matches!(amount, Amount::Fixed(number) if *number >= 0) || *amount == Amount::X
     };
     match item {
-        CostItem::PayLife(amount) | CostItem::PayEnergy(amount) | CostItem::Mill(amount) => {
-            fixed(amount)
-        }
+        CostItem::PayLife(amount)
+        | CostItem::PayEnergy(amount)
+        | CostItem::Mill(amount)
+        | CostItem::DamageToYou(amount)
+        | CostItem::ExileTop(amount)
+        | CostItem::Blight(amount) => fixed(amount),
         CostItem::RemoveCountersAmong { count, .. }
         | CostItem::PutCounters { count, .. }
         | CostItem::UntapPermanents { count, .. }
@@ -78,7 +81,9 @@ fn is_fixed(item: &CostItem) -> bool {
         | CostItem::ExileFromGraveyard { count, .. }
         | CostItem::ExileFromHand { count, .. }
         | CostItem::RevealFromHand { count, .. }
-        | CostItem::ReturnToHand { count, .. } => fixed(count),
+        | CostItem::ReturnToHand { count, .. }
+        | CostItem::Behold { count, .. }
+        | CostItem::ToLibrary { count, .. } => fixed(count),
         _ => true,
     }
 }
@@ -86,9 +91,12 @@ fn is_fixed(item: &CostItem) -> bool {
 /// Whether the amount of a part of a cost is the X announced.
 fn amount_is_x(item: &CostItem) -> bool {
     match item {
-        CostItem::PayLife(amount) | CostItem::PayEnergy(amount) | CostItem::Mill(amount) => {
-            *amount == Amount::X
-        }
+        CostItem::PayLife(amount)
+        | CostItem::PayEnergy(amount)
+        | CostItem::Mill(amount)
+        | CostItem::DamageToYou(amount)
+        | CostItem::ExileTop(amount)
+        | CostItem::Blight(amount) => *amount == Amount::X,
         CostItem::RemoveCountersAmong { count, .. }
         | CostItem::PutCounters { count, .. }
         | CostItem::UntapPermanents { count, .. }
@@ -99,7 +107,9 @@ fn amount_is_x(item: &CostItem) -> bool {
         | CostItem::ExileFromGraveyard { count, .. }
         | CostItem::ExileFromHand { count, .. }
         | CostItem::RevealFromHand { count, .. }
-        | CostItem::ReturnToHand { count, .. } => *count == Amount::X,
+        | CostItem::ReturnToHand { count, .. }
+        | CostItem::Behold { count, .. }
+        | CostItem::ToLibrary { count, .. } => *count == Amount::X,
         _ => false,
     }
 }
@@ -1030,7 +1040,10 @@ impl<'a> Walker<'a> {
                 match item {
                     CostItem::PayLife(amount)
                     | CostItem::PayEnergy(amount)
-                    | CostItem::Mill(amount) => {
+                    | CostItem::Mill(amount)
+                    | CostItem::DamageToYou(amount)
+                    | CostItem::ExileTop(amount)
+                    | CostItem::Blight(amount) => {
                         w.amount(amount);
                     }
                     CostItem::RemoveCounters { count, .. }
@@ -1043,11 +1056,13 @@ impl<'a> Walker<'a> {
                     }
                     CostItem::Sacrifice { filter, count }
                     | CostItem::TapPermanents { filter, count }
-                    | CostItem::ExileFromGraveyard { filter, count }
+                    | CostItem::ExileFromGraveyard { filter, count, .. }
                     | CostItem::ExileFromHand { filter, count }
                     | CostItem::UntapPermanents { filter, count }
                     | CostItem::RevealFromHand { filter, count }
-                    | CostItem::ReturnToHand { filter, count } => {
+                    | CostItem::ReturnToHand { filter, count }
+                    | CostItem::Behold { filter, count }
+                    | CostItem::ToLibrary { filter, count, .. } => {
                         w.at("filter", |w| w.selector(filter));
                         w.at("count", |w| w.amount(count));
                     }
@@ -1073,7 +1088,10 @@ impl<'a> Walker<'a> {
                     | CostItem::Untap
                     | CostItem::SacrificeSelf
                     | CostItem::ExileSelf
-                    | CostItem::DiscardSelf => {}
+                    | CostItem::DiscardSelf
+                    | CostItem::Unattach
+                    | CostItem::CollectEvidence(_)
+                    | CostItem::Forage => {}
                 }
             });
         }
@@ -1301,6 +1319,14 @@ impl<'a> Walker<'a> {
                     | CostItem::TapPermanents { .. }
                     | CostItem::TapPower { .. }
                     | CostItem::ReturnToHand { .. }
+                    | CostItem::DamageToYou(_)
+                    | CostItem::Unattach
+                    | CostItem::ExileTop(_)
+                    | CostItem::CollectEvidence(_)
+                    | CostItem::Blight(_)
+                    | CostItem::Behold { .. }
+                    | CostItem::ToLibrary { .. }
+                    | CostItem::Forage
             ) {
                 self.uses(kind, &format!("{prefix}.{}", tag_of(item)));
             }
@@ -3850,6 +3876,11 @@ fn picks(cost: &Cost) -> bool {
                 | CostItem::ReturnToHand { .. }
                 | CostItem::TapPermanents { .. }
                 | CostItem::TapPower { .. }
+                | CostItem::CollectEvidence(_)
+                | CostItem::Blight(_)
+                | CostItem::Behold { .. }
+                | CostItem::ToLibrary { .. }
+                | CostItem::Forage
         ),
     })
 }
