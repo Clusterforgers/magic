@@ -189,3 +189,45 @@ fn an_aura_on_an_attacking_creature_an_opponent_controls_is_destroyed(
         .any(|id| state.object(*id).unwrap().card().name == "Curse");
     assert_eq!(curse, stays);
 }
+
+const STORM: &str = "Name:Storm\nManaCost:G\nTypes:Sorcery\nA:SP$ Dig | DigNum$ 5 | Optional$ True | ChangeNum$ 2 | ChangeValid$ Permanent.cmcLE5 | DestinationZone$ Battlefield | LibraryPosition$ 0 | RestRandomOrder$ True | SpellDescription$ x\n";
+
+#[test]
+fn a_dig_for_permanent_cards_does_not_offer_a_sorcery() {
+    use mtg_testkit::cards::{forest, mountain};
+    let bolt = translated(
+        "Name:Zap\nManaCost:R\nTypes:Instant\nA:SP$ DealDamage | ValidTgts$ Any | NumDmg$ 3\n",
+        "Zap",
+        "Instant",
+        "{R}",
+    );
+    let card = translated(STORM, "Storm", "Sorcery", "{G}");
+    let scenario = Scenario::new(2)
+        .hand(0, [card])
+        .battlefield(0, [ready(forest())])
+        .library(0, [bolt, mountain(), bear()])
+        .library(1, [plains()]);
+    let mut driver = Driver::from_scenario(scenario).unwrap();
+    driver.cast("Storm").unwrap();
+    let mut offered = Vec::new();
+    for _ in 0..50 {
+        let decision = driver.decision().unwrap().clone();
+        let answer = match &decision.kind {
+            DecisionKind::Priority(_) if driver.state().stack().is_empty() => break,
+            DecisionKind::ChooseCards(o) => {
+                let state = driver.state();
+                offered = o
+                    .from
+                    .iter()
+                    .map(|id| state.object(*id).unwrap().card().name.clone())
+                    .collect();
+                Answer::ChooseCards(CardsChoice(o.from.clone()))
+            }
+            DecisionKind::YesNo(_) => Answer::YesNo(YesNoChoice(true)),
+            _ => Driver::passive_answer(&decision),
+        };
+        driver.answer(answer).unwrap();
+    }
+    offered.sort();
+    assert_eq!(offered, ["Grizzly Bears", "Mountain"]);
+}

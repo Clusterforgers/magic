@@ -396,30 +396,39 @@ fn owned_outside(preds: &mut [Value]) {
     }
 }
 
-/// A selector over the cards of a zone: the alternatives with `In(zone)` added when the zone is not the battlefield.
-pub fn selector_in(ctx: &Ctx, spec: &str, zone: Option<&str>) -> Tr<Vec<Value>> {
-    let spec = &commas(spec);
-    let mut preds = selector_any(ctx, spec)?;
+/// For a selector of cards outside the battlefield: "permanent" is a card of a permanent type, not an instant or sorcery.
+/// `None` when no alternative says permanent; a mixture with other alternatives is a gap.
+pub fn permanent_card(spec: &str) -> Tr<Option<Value>> {
     let permanents = spec
         .split(',')
         .filter(|alternative| alternative.trim().split('.').next() == Some("Permanent"))
         .count();
-    let off_battlefield = !matches!(zone, None | Some("Battlefield"));
-    if off_battlefield && permanents > 0 {
-        // Outside the battlefield "permanent" is a card of a permanent type, not an instant or sorcery.
-        if permanents != spec.split(',').count() {
-            return unmapped("valid:Permanent-card-beside-other-alternatives");
-        }
-        let types = [
-            "Artifact",
-            "Battle",
-            "Creature",
-            "Enchantment",
-            "Land",
-            "Planeswalker",
-        ];
-        let any: Vec<Value> = types.iter().map(|name| json!({"Type": name})).collect();
-        preds.push(json!({"AnyOf": any}));
+    if permanents == 0 {
+        return Ok(None);
+    }
+    if permanents != spec.split(',').count() {
+        return unmapped("valid:Permanent-card-beside-other-alternatives");
+    }
+    let types = [
+        "Artifact",
+        "Battle",
+        "Creature",
+        "Enchantment",
+        "Land",
+        "Planeswalker",
+    ];
+    let any: Vec<Value> = types.iter().map(|name| json!({"Type": name})).collect();
+    Ok(Some(json!({"AnyOf": any})))
+}
+
+/// A selector over the cards of a zone: the alternatives with `In(zone)` added when the zone is not the battlefield.
+pub fn selector_in(ctx: &Ctx, spec: &str, zone: Option<&str>) -> Tr<Vec<Value>> {
+    let spec = &commas(spec);
+    let mut preds = selector_any(ctx, spec)?;
+    if !matches!(zone, None | Some("Battlefield"))
+        && let Some(any) = permanent_card(spec)?
+    {
+        preds.push(any);
     }
     match zone {
         None | Some("Battlefield") => {}
