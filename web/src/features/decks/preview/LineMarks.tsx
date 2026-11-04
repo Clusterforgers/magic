@@ -4,7 +4,8 @@ import { useCardDetail } from '@/features/builder/useCardDetail'
 import { CardsApiContext } from '@/features/table/cardsContext'
 import { RUNS_AUTOMATICALLY, YOU_DO_BY_HAND, lineMarks } from '@/lib/lineMarks'
 import { cn } from '@/lib/utils'
-import type { PreviewCard } from './model'
+import type { CardDetail } from "@/protocol/generated"
+import type { PreviewCard } from "./model"
 
 function MarkTag({ hand }: { hand: boolean }) {
   const Icon = hand ? HandIcon : CheckIcon
@@ -22,30 +23,34 @@ function MarkTag({ hand }: { hand: boolean }) {
 }
 
 /** Each line of a partly automatic card's text with its mark, words and icon, so colour never carries it alone. */
-export function LineMarks({ card }: { card: PreviewCard }) {
-  const detail = useCardDetail(useContext(CardsApiContext), card.oracleId).state
-  if (detail.status !== 'ready') return null
-  const { faces, oracle_text: whole, reasons } = detail.detail
+export function LineMarksList({ detail }: { detail: CardDetail }) {
+  const { faces, oracle_text: whole, reasons } = detail
   const texts = faces.length > 0 ? faces.map((face) => face.oracle_text) : [whole]
   return (
-    <ul aria-label="Lines of the card" data-slot="line-marks" className="grid gap-1 text-left text-sm">
+    <div role="group" aria-label="Lines of the card" data-slot="line-marks" className="grid gap-1 text-left text-sm">
       {texts.flatMap((text, face) => {
         const { lines, unplaced } = lineMarks(text, reasons, face)
         return [
           ...lines.map((line, at) => (
-            <li key={`${face}:${at}`} data-mark={line.mark ?? 'none'} className="flex items-start gap-2">
+            <p key={`${face}:${at}`} data-mark={line.mark ?? 'none'} className="flex items-start gap-2">
               {line.mark === null ? null : <MarkTag hand={line.mark === 'hand'} />}
               <span className="min-w-0 [overflow-wrap:anywhere]">{line.text}</span>
-            </li>
+            </p>
           )),
           ...unplaced.map((reason) => (
-            <li key={`${face}:u:${reason}`} data-mark="hand" className="flex items-start gap-2">
+            <p key={`${face}:u:${reason}`} data-mark="hand" className="flex items-start gap-2">
               <MarkTag hand />
               <span className="min-w-0 [overflow-wrap:anywhere]">{reason}</span>
-            </li>
+            </p>
           )),
         ]
       })}
-    </ul>
+    </div>
   )
+}
+
+/** `LineMarksList` for a card of the deck preview, which loads the card detail itself. */
+export function LineMarks({ card }: { card: PreviewCard }) {
+  const { state } = useCardDetail(useContext(CardsApiContext), card.oracleId)
+  return state.status === "ready" ? <LineMarksList detail={state.detail} /> : null
 }

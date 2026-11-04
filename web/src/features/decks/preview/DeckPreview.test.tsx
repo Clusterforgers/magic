@@ -165,6 +165,7 @@ describe('the deck preview', () => {
     const zoom = await screen.findByRole('dialog')
     expect(zoom).toHaveTextContent('Odd Dragon')
     expect(within(zoom).getByText('Resolve the second ability by hand.')).toBeInTheDocument()
+    expect(within(zoom).getByText('You do this by hand')).toBeInTheDocument()
     await user.keyboard('{Escape}')
     expect(screen.queryByRole('dialog')).toBeNull()
   })
