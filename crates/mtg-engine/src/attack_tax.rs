@@ -194,7 +194,10 @@ fn payment(
         true,
         0,
     )?;
-    options.auto_available.then_some(options)
+    options.auto_available.then_some(PayOptions {
+        attack: true,
+        ..options
+    })
 }
 
 /// What a declared attack does: with nothing to pay it is made, else it is paid for first (CR 508.1h) or, if its player

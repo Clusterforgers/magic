@@ -39,6 +39,10 @@ auto_available: boolean,
  */
 can_cancel: boolean, 
 /**
+ * Whether the payment is the tax on an attack being declared (CR 508.1h); cancelling returns to the declaration.
+ */
+attack?: boolean, 
+/**
  * The payer's life total.
  */
 life: number, 

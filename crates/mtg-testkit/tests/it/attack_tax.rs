@@ -9,6 +9,7 @@ use mtg_cards::keyword::Keyword;
 use mtg_core::card::CardType;
 use mtg_engine::decision::{Answer, DecisionKind, PayChoice};
 use mtg_engine::effects::Duration;
+use mtg_engine::mana::Payment;
 use mtg_engine::rules::{AttackTax, Rule};
 use mtg_engine::turn::Step;
 use mtg_engine::{Event, PresetPermanent};
@@ -162,12 +163,51 @@ fn a_smaller_attack_is_made_when_the_larger_cannot_be_paid(
 }
 
 #[rstest]
+#[case::one_attacker(&["A"], 2, 3)]
+#[case::two_attackers(&["A", "B"], 4, 5)]
+fn the_player_taps_the_sources_by_hand_and_a_payment_that_falls_short_is_refused(
+    #[values(2, 3, 4)] seats: usize,
+    #[case] attackers: &[&str],
+    #[case] owed: usize,
+    #[case] mana: usize,
+) -> Result<(), ScriptError> {
+    let mut driver = table(seats, taxers(&["Propaganda"]), attackers, mana)?;
+    declare(&mut driver, attackers, 1)?;
+    let options = driver.pay_options()?.clone();
+    assert!(options.attack && options.can_cancel);
+    let taps = |count: usize| {
+        options
+            .sources
+            .iter()
+            .take(count)
+            .map(|option| option.source)
+            .collect::<Vec<_>>()
+    };
+    let payment = |count| {
+        Answer::PayMana(PayChoice::Manual(Payment {
+            taps: taps(count),
+            ..Payment::default()
+        }))
+    };
+    assert!(driver.answer(payment(owed - 1)).is_err());
+    driver.expect_decision(0, "pay-mana")?;
+    driver.answer(payment(owed))?;
+    assert!(declared(&driver));
+    assert_eq!(tapped(&driver, "Plains"), owed);
+    Ok(())
+}
+
+#[rstest]
 fn backing_out_of_the_payment_returns_to_the_declaration_with_nothing_paid(
     #[values(2, 3, 4)] seats: usize,
 ) -> Result<(), ScriptError> {
     let mut driver = table(seats, taxers(&["Propaganda"]), &["A", "B"], 4)?;
     let log = driver.engine().events().len();
     declare(&mut driver, &["A", "B"], 1)?;
+    assert!(
+        driver.pay_options()?.attack,
+        "the payment says it is for the attack"
+    );
     driver.answer(Answer::PayMana(PayChoice::Cancel))?;
     driver.expect_decision(0, "declare-attackers")?;
     assert_eq!(

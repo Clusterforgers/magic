@@ -7,10 +7,20 @@ import { attacksAnswer, useBlockPreview } from '../../combat/forecast'
 import { usePublishPending } from '../../combat/pending'
 import { usePreviewRequest } from '../../combat/usePreviewRequest'
 import { usePreviewTarget } from '../../preview'
-import { attackSummary, distinctTargets, sameTarget, targetKey } from '../combatText'
+import { symbolText } from '../../manaSymbols'
+import {
+  attackLifeOf,
+  attackSummary,
+  attackTaxOf,
+  costLine,
+  costPhrase,
+  distinctTargets,
+  sameTarget,
+  targetKey,
+} from '../combatText'
 import { BarButton } from '../CombatBar'
 import { markCards, useCardMarks, useCardNotes } from '../marks'
-import type { CardMarks, CardNotes } from '../marks'
+import type { CardMarks, CardNote, CardNotes } from '../marks'
 import { useOwnCardIds } from '../ownCards'
 import { usePrompt } from '../PromptContext'
 import { PromptLayout } from '../PromptLayout'
@@ -139,23 +149,52 @@ export const DeclareAttackersPrompt: PromptComponent<'DeclareAttackers'> = ({ op
     }
     return marked
   }, [own, legal, declaredIds, several, walkers, offered, aimedWalker])
-  const notes = useMemo<CardNotes>(
+  // What each chosen attacker costs, and the cost line of the bar; nothing while no effect taxes the attack.
+  const costs = useMemo(
     () =>
-      new Map(
-        declared.map(({ object, target }) => [
+      declared.map(({ object, target }) => {
+        const option = offered.get(object)
+        return {
           object,
-          object === held
-            ? {
-                words: `attacking ${names.long(target)}; click a player, planeswalker or battle to send it there`,
-                cue: 'active' as const,
-              }
-            : required.includes(object)
-              ? { label: 'Must attack', words: `must attack ${names.long(target)} if able` }
-              : { words: `attacking ${names.long(target)}` },
-        ]),
-      ),
-    [declared, names, held, required],
+          cost: option === undefined ? [] : attackTaxOf(option, target),
+          life: option === undefined ? 0 : attackLifeOf(option, target),
+        }
+      }),
+    [declared, offered],
   )
+  const taxed = useMemo(
+    () =>
+      [...offered.values()].some((option) => (option.tax?.length ?? 0) > 0 || (option.life?.length ?? 0) > 0),
+    [offered],
+  )
+  const notes = useMemo<CardNotes>(() => {
+    const map = new Map<ObjectId, CardNote>()
+    // A creature that is not in the attack yet says what attacking would cost.
+    for (const [object, option] of offered) {
+      const price = aim === undefined ? '' : costPhrase(attackTaxOf(option, aim), attackLifeOf(option, aim))
+      if (price !== '' && !selection.ids.has(object))
+        map.set(object, { words: `can attack; attacking ${price}` })
+    }
+    for (const { object, target } of declared) {
+      const price = costs.find((entry) => entry.object === object)
+      const pays = price === undefined ? '' : costPhrase(price.cost, price.life)
+      const label =
+        pays === '' || price === undefined ? undefined : `Pays ${price.cost.map(symbolText).join('')}`
+      const owed = pays === '' ? '' : `; attacking ${pays}`
+      map.set(
+        object,
+        object === held
+          ? {
+              words: `attacking ${names.long(target)}${owed}; click a player, planeswalker or battle to send it there`,
+              cue: 'active' as const,
+            }
+          : required.includes(object)
+            ? { label: 'Must attack', words: `must attack ${names.long(target)} if able${owed}` }
+            : { ...(label === undefined ? {} : { label }), words: `attacking ${names.long(target)}${owed}` },
+      )
+    }
+    return map
+  }, [declared, names, held, required, offered, aim, selection.ids, costs])
 
   const aimAll = (ids: readonly ObjectId[], target: AttackTarget | undefined): void => {
     setTargets((current) => {
@@ -262,6 +301,11 @@ export const DeclareAttackersPrompt: PromptComponent<'DeclareAttackers'> = ({ op
           No more than {options.most} {options.most === 1 ? 'creature' : 'creatures'} can attack this combat.
         </p>
       )}
+      {taxed ? (
+        <p data-slot="attack-cost" className="basis-full text-xs text-muted-foreground">
+          {costLine(costs, true, options.mana)}
+        </p>
+      ) : null}
       {(options.most_at ?? []).map(([target, most]) => (
         <p
           key={JSON.stringify(target)}
