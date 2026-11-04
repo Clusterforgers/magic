@@ -152,6 +152,7 @@ fn fold_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         Event::Paired { object, with } => crate::soulbond::fold_paired(state, *object, *with),
         Event::Unpaired { object, with } => crate::soulbond::fold_unpaired(state, *object, *with),
         Event::TokenCreated(token) => crate::tokens::fold(state, token),
+        Event::CardConjured(card) => crate::conjure::fold(state, card),
         Event::BecameCopy(copy) => crate::copies::fold(state, copy),
         Event::SpellCopied(copy) => crate::copies::fold_spell(state, copy),
         Event::CardCopied(copy) => crate::copies::fold_card(state, copy),
@@ -362,6 +363,7 @@ fn apply_turn(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
     Ok(())
 }
 
+#[allow(clippy::too_many_lines)]
 fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
     match event {
         Event::TurnBegan { .. }
@@ -381,7 +383,10 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         | Event::Learned { .. }
         | Event::Clashed { .. }
         | Event::Proliferated { .. } => {}
-        Event::ChosenAtRandom { .. } | Event::DieRolled { .. } | Event::CoinFlipped { .. } => {
+        Event::ChosenAtRandom { .. }
+        | Event::Sought { .. }
+        | Event::DieRolled { .. }
+        | Event::CoinFlipped { .. } => {
             c11e_draw_random(state, event);
         }
         Event::Cycled { player, .. } => state.tally(*player, Tally::Cycled),

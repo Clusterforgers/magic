@@ -18,6 +18,7 @@ pub mod effects;
 pub mod effects_ambient;
 pub mod effects_animate;
 pub mod effects_copy;
+mod effects_digital;
 pub mod effects_effect;
 pub mod effects_emblem;
 mod effects_game;
@@ -97,7 +98,8 @@ pub async fn translate_forge(
         None => None,
     };
     let scripts = read_checkout(&args.dir)?;
-    let world = World::new(&scripts, read_tokens(&args.dir));
+    let mut world = World::new(&scripts, read_tokens(&args.dir));
+    world.stored = stored.as_ref().map(Stored::slugs);
     let wanted: Vec<String> = args.cards.iter().map(|name| fold(name)).collect();
     let out_dir = args
         .out

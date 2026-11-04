@@ -803,6 +803,32 @@ pub enum Effect {
         /// How many +1/+1 counters.
         count: Amount,
     },
+    /// The player conjures cards (Alchemy): new cards named `name`, taken from the game's card library, are created in
+    /// a zone of theirs. A name the game cannot resolve conjures nothing.
+    Conjure {
+        /// Who conjures and owns the cards.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        who: Ref,
+        /// The card's name.
+        name: String,
+        /// The zone the cards are created in: a hand, the top of a library, a graveyard or exile.
+        zone: ZoneKind,
+        /// How many cards.
+        #[serde(default = "Amount::one", skip_serializing_if = "Amount::is_one")]
+        count: Amount,
+    },
+    /// The player seeks cards (Alchemy): random cards from their library that match the filter go to their hand, chosen
+    /// with the game's random source; fewer when fewer match.
+    Seek {
+        /// Who seeks.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        who: Ref,
+        /// What the cards must be.
+        filter: Selector,
+        /// How many cards.
+        #[serde(default = "Amount::one", skip_serializing_if = "Amount::is_one")]
+        count: Amount,
+    },
     /// The source creature becomes monstrous (CR 701.37): it gets +1/+1 counters.
     Monstrosity {
         /// How many +1/+1 counters.
@@ -1601,6 +1627,14 @@ mod tests {
     #[case::search_of_several_zones(
         Effect::Search { who: Ref::You, zone: ZoneKind::Library, also: vec![ZoneKind::Hand, ZoneKind::Graveyard], filter: Selector(vec![Pred::Subtype(mtg_core::card::Subtype("Rune".into()))]), count: Bounds::default(), reveal: false, bind: "rune".into() },
         r#"{"Search":{"also":["Hand","Graveyard"],"filter":[{"Subtype":"Rune"}],"as":"rune"}}"#
+    )]
+    #[case::conjure(
+        Effect::Conjure { who: Ref::You, name: "Lightning Bolt".into(), zone: ZoneKind::Hand, count: Amount::Fixed(2) },
+        r#"{"Conjure":{"name":"Lightning Bolt","zone":"Hand","count":2}}"#
+    )]
+    #[case::seek(
+        Effect::Seek { who: Ref::Opponents, filter: Selector(vec![Pred::Supertype(mtg_core::card::Supertype::Basic)]), count: Amount::one() },
+        r#"{"Seek":{"who":"Opponents","filter":[{"Supertype":"Basic"}]}}"#
     )]
     #[case::pay(
         Effect::Pay { who: Ref::Triggering, cost: Cost::mana("{1}".parse().unwrap()), times: Amount::one(), paid: vec![], unpaid: vec![Effect::Draw { who: Ref::You, count: Amount::one() }] },

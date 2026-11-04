@@ -71,6 +71,11 @@ impl Stored {
         })
     }
 
+    /// The slugs of every card the database stores.
+    pub fn slugs(&self) -> BTreeSet<String> {
+        self.cards.keys().cloned().collect()
+    }
+
     /// Whether the run keeps a card with this slug: the database stores it (and with `--precons`, a precon holds it).
     pub fn has(&self, slug: &str) -> bool {
         self.cards.contains_key(slug)

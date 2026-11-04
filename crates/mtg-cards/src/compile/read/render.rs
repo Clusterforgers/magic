@@ -1277,6 +1277,34 @@ fn sacrifice_text(filter: &Selector) -> Option<String> {
     Some(format!("{} {text}", article(&text)))
 }
 
+/// "conjure a card named Ponder into your hand" and "seek a creature card": the digital verbs of the player themselves.
+fn digital_text(effect: &Effect) -> Option<String> {
+    match effect {
+        Effect::Conjure {
+            name, zone, count, ..
+        } => {
+            let place = match zone {
+                ZoneKind::Hand => "your hand",
+                ZoneKind::Library => "your library",
+                ZoneKind::Graveyard => "your graveyard",
+                ZoneKind::Exile => "exile",
+                _ => return None,
+            };
+            Some(format!(
+                "conjure {} named {name} into {place}",
+                cards_text(count)?
+            ))
+        }
+        Effect::Seek { filter, count, .. } if count.is_one() => {
+            let text = phrase_text(filter, Form::Subject)?;
+            // Only a plain card kind reads as "a creature card"; any other filter is not worded.
+            text.chars().all(|c| c.is_ascii_lowercase()).then_some(())?;
+            Some(format!("seek {} {text} card", article(&text)))
+        }
+        _ => None,
+    }
+}
+
 /// Whether the effect puts energy counters on you, which a card writes "you get {E}{E}".
 fn gets_energy(effect: &Effect) -> bool {
     matches!(
@@ -1310,6 +1338,8 @@ fn is_imperative(effect: &Effect) -> bool {
                 | Effect::Proliferate { who: Ref::You }
                 | Effect::Venture { who: Ref::You, .. }
                 | Effect::Incubate { who: Ref::You, .. }
+                | Effect::Conjure { who: Ref::You, .. }
+                | Effect::Seek { who: Ref::You, .. }
                 | Effect::TimeTravel { who: Ref::You }
                 | Effect::Draw { who: Ref::You, .. }
                 | Effect::Mill { who: Ref::You, .. }
@@ -2420,6 +2450,9 @@ impl Writer<'_> {
                 Ref::You => format!("incubate {}", points_text(count)?),
                 _ => format!("{} {}", self.player(who)?, self.predicate(effect, true)?),
             },
+            Effect::Conjure { who: Ref::You, .. } | Effect::Seek { who: Ref::You, .. } => {
+                digital_text(effect)?
+            }
             Effect::TimeTravel { who: Ref::You } => "time travel".to_owned(),
             Effect::Learn { who: Ref::You } => "learn".to_owned(),
             Effect::Monstrosity { count } => format!("monstrosity {}", points_text(count)?),
