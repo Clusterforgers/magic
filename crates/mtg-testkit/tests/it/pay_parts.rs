@@ -14,7 +14,7 @@ use mtg_engine::decision::{Answer, DecisionKind, PayChoice};
 use mtg_engine::error::IllegalAnswer;
 use mtg_engine::zones::Zone;
 use mtg_engine::{EngineError, GameSetup, replay};
-use mtg_testkit::cards::{forest, free_creature};
+use mtg_testkit::cards::{forest, free_creature, plains};
 use mtg_testkit::{Driver, Scenario, ScriptError, ready, with_counters};
 use rstest::rstest;
 
@@ -387,5 +387,40 @@ fn evidence_is_collected_by_total_mana_value_and_not_by_the_number_of_cards(
     assert_eq!(life(&driver), life_before);
     let state = replay(driver.engine().setup(), driver.engine().events()).unwrap();
     assert_eq!(state.state_hash(), driver.state().state_hash());
+    Ok(())
+}
+
+#[rstest]
+#[case::sacrificing_the_source(r#"["SacrificeSelf"]"#)]
+#[case::exiling_the_source(r#"["ExileSelf"]"#)]
+fn a_source_that_became_a_new_object_cannot_be_paid_with(
+    #[case] cost: &str,
+) -> Result<(), ScriptError> {
+    let scenario = Scenario::new(2)
+        .battlefield(0, [ready(taxed(cost)), ready(plains())])
+        .hand(0, [mtg_testkit::corpus::card("Cloudshift").unwrap()]);
+    let mut driver = Driver::from_scenario(scenario)?;
+    let before = life(&driver);
+    driver.begin_activation("Taxed")?;
+    // The ability waits on the stack; the source is flickered in response and returns as a new object (CR 400.7).
+    let target = driver.target_named("Taxed")?;
+    driver.cast_at("Cloudshift", &[target])?;
+    while !driver.state().stack().is_empty() {
+        match &driver.decision()?.kind {
+            DecisionKind::YesNo(options) => {
+                assert!(options.only_no, "the old object cannot be paid with");
+                driver.answer(yes_no(false))?;
+            }
+            _ => {
+                driver.pass()?;
+            }
+        }
+    }
+    let taxed = driver.id_of("Taxed")?;
+    assert_eq!(
+        driver.state().object(taxed).unwrap().zone(),
+        Zone::Battlefield
+    );
+    assert_eq!(life(&driver), before + 1, "unpaid");
     Ok(())
 }

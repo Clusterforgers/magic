@@ -7,12 +7,17 @@
 
 use std::sync::Arc;
 
-use mtg_cards::CardDefinition;
-use mtg_cards::ability::Ability;
+use mtg_cards::ability::{Ability, Timing};
+use mtg_cards::cost::{Cost, CostItem};
+use mtg_cards::effect::{Effect, Produce};
 use mtg_cards::keyword::Keyword;
 use mtg_cards::modify::Modification as WantedModification;
-use mtg_cards::refs::ZoneKind;
+use mtg_cards::refs::{Ref, ZoneKind};
+use mtg_cards::spend::ManaLasts;
+use mtg_cards::value::Amount;
+use mtg_cards::{AbilityDef, CardDefinition};
 use mtg_core::ids::ObjectId;
+use mtg_core::mana::ManaType;
 
 use crate::abilities::{AbilityRef, AbilitySource, Grant};
 use crate::effects::Modification;
@@ -41,6 +46,42 @@ pub(crate) fn printed(object: &GameObject) -> impl Iterator<Item = (AbilityRef, 
         .iter()
         .enumerate()
         .map(|(index, rules)| (AbilityRef::printed(object.id(), index), rules))
+}
+
+/// The activated abilities a card lends to a permanent that gains the abilities of it, each with its index: the activated
+/// rules in order, then the plain mana abilities the card has (a basic land's own) numbered after the rules.
+pub(crate) fn lendable(card: &CardDefinition) -> Vec<(usize, Arc<Ability>)> {
+    let rules = card
+        .rules
+        .iter()
+        .enumerate()
+        .filter(|(_, rules)| matches!(***rules, Ability::Activated { .. }))
+        .map(|(index, rules)| (index, Arc::clone(rules)));
+    let mana = card.abilities.iter().enumerate().map(|(at, def)| {
+        let AbilityDef::Mana(mana) = def;
+        (card.rules.len() + at, tap_for_mana(mana.produces))
+    });
+    rules.chain(mana).collect()
+}
+
+/// "{T}: Add {X}" as a rules ability.
+fn tap_for_mana(produces: ManaType) -> Arc<Ability> {
+    Arc::new(Ability::Activated {
+        cost: Cost(vec![CostItem::Tap]),
+        timing: Timing::default(),
+        condition: None,
+        limit: None,
+        from: ZoneKind::default(),
+        targets: Vec::new(),
+        effects: vec![Effect::AddMana {
+            who: Ref::you(),
+            mana: Produce::Fixed(vec![produces]),
+            times: Amount::one(),
+            only: Vec::new(),
+            lasts: ManaLasts::default(),
+            when_spent: None,
+        }],
+    })
 }
 
 /// The rules printed on a card with this definition, in order: what a spell announces and what the cards of a hand or a
@@ -488,12 +529,9 @@ fn granted_ability(state: &GameState, grant: Grant) -> Option<Arc<Ability>> {
             _ => None,
         },
         // The ability is printed on the donor, and it is only an ability of the object while the donor is the same object.
-        Grant::Borrowed { donor, ability } => {
-            match card_of(state, donor, None)?.rules.get(ability)? {
-                rules if matches!(**rules, Ability::Activated { .. }) => Some(Arc::clone(rules)),
-                _ => None,
-            }
-        }
+        Grant::Borrowed { donor, ability } => lendable(card_of(state, donor, None)?)
+            .into_iter()
+            .find_map(|(index, body)| (index == ability).then_some(body)),
     }
 }
 

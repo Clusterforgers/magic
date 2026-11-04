@@ -535,9 +535,22 @@ struct Cand<'a> {
 
 impl Cand<'_> {
     /// The order effects apply in when nothing depends on anything: the characteristic-defining abilities first (CR
-    /// 613.3), then by timestamp, registered effects by id before static ones by source, ability and modification.
-    fn order(&self) -> (bool, u64, Key) {
-        (!self.defining, self.timestamp, self.key)
+    /// 613.3), then by timestamp, registered effects by id before static ones by source, ability and modification, with
+    /// the loss of abilities first within an ability.
+    fn order(&self) -> (bool, u64, Key, bool, Key) {
+        // Within one static ability the loss of all abilities applies first, so what the same ability gives stays (CR 613.1f).
+        let loses = match &self.what {
+            Source::Static(cand) => matches!(
+                &*cand.body,
+                Ability::Static { mods, .. } if matches!(mods.get(cand.index), Some(Wanted::LoseAbilities))
+            ),
+            Source::Registered(_) => false,
+        };
+        let group = match self.key {
+            Key::Static(address, _) => Key::Static(address, 0),
+            key @ Key::Effect(_) => key,
+        };
+        (!self.defining, self.timestamp, group, !loses, self.key)
     }
 }
 

@@ -90,7 +90,12 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Optioned::Done(taken) => taken.into_iter(),
     };
     let mut events = Vec::new();
-    for (made, wanted) in (0u64..).zip(mods) {
+    // The loss of all abilities takes the first timestamp of the effect, so what the same effect gives stays whatever the
+    // order of its list (CR 613.1f).
+    let (lost, kept): (Vec<_>, Vec<_>) = mods
+        .iter()
+        .partition(|wanted| matches!(wanted, Wanted::LoseAbilities));
+    for (made, wanted) in (0u64..).zip(lost.into_iter().chain(kept)) {
         let modification = match wanted {
             Wanted::AddProtectionFromChosenColor => {
                 let color = chosen
@@ -159,7 +164,7 @@ fn chosen_in(scope: &Scope<'_>, keyword: &Keyword) -> Keyword {
     }
 }
 
-/// The activated abilities printed on the cards `from` names now, each with the card it is printed on: what a static ability
+/// The activated abilities printed on the cards `from` names now (and the mana ability of a basic land), each with the card it is printed on: what a static ability
 /// that gives the abilities of other cards gives while the layers are worked out.
 fn borrowed(scope: &Scope<'_>, from: &mtg_cards::refs::Ref) -> Result<Vec<Borrowed>, ResolveError> {
     let mut found = Vec::new();
@@ -167,14 +172,12 @@ fn borrowed(scope: &Scope<'_>, from: &mtg_cards::refs::Ref) -> Result<Vec<Borrow
         let Some(object) = scope.state.object(donor.id) else {
             continue;
         };
-        for (address, rules) in crate::ability_reader::printed(object) {
-            if matches!(**rules, mtg_cards::ability::Ability::Activated { .. }) {
-                found.push(Borrowed {
-                    donor: donor.id,
-                    index: address.ability,
-                    body: Arc::clone(rules),
-                });
-            }
+        for (index, body) in crate::ability_reader::lendable(object.card()) {
+            found.push(Borrowed {
+                donor: donor.id,
+                index,
+                body,
+            });
         }
     }
     Ok(found)
