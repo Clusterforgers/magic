@@ -36,3 +36,8 @@ pub fn abilities(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     }
     Ok(mods)
 }
+
+/// The static a `Mode$` word of an animation stands for; `None` until a word is read.
+pub fn animate_words(_ctx: &mut Ctx, _p: &Params) -> Option<Tr<Value>> {
+    None
+}

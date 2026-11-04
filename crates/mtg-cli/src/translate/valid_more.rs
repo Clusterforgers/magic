@@ -95,3 +95,8 @@ fn player_word(ctx: &Ctx, word: &str) -> Tr<Value> {
         other => unmapped(format!("valid:ControlledBy {other}")),
     }
 }
+
+/// The reference of a `Defined$` word the table does not know; every word is still a gap.
+pub fn defined_word(_ctx: &Ctx, word: &str) -> Tr<Value> {
+    unmapped(format!("defined:{word}"))
+}

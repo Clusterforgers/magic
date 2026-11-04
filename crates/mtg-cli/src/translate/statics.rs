@@ -36,6 +36,9 @@ pub fn static_line(ctx: &mut Ctx, body: &str) -> Tr<Value> {
 
 /// The ability of a static line by its mode.
 fn by_mode(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
+    if let Some(found) = super::effects_animate::animate_words(ctx, p) {
+        return found;
+    }
     Ok(match p.get("Mode").unwrap_or_default() {
         "Continuous" if p.has("MayPlay") => {
             json!({"Rule": {"rule": super::mayplay::may_cast(ctx, p, None)?}})
