@@ -1,0 +1,104 @@
+{
+  "oracle_id": "2f4374f6-c695-4a5d-a6d6-0e41eaa587ca",
+  "name": "Dowsing Device // Geode Grotto",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dowsing Device",
+      "oracle_fingerprint": "ac870776fcd84dd46c402f111910d4a6",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  {
+                    "AnyOf": [
+                      "This",
+                      {
+                        "Not": {
+                          "AnyOf": [
+                            { "Not": { "Type": "Artifact" } },
+                            { "Not": { "ControlledBy": "You" } },
+                            { "Not": "Other" }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                ],
+                "to": "Battlefield"
+              }
+            },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "ModifyPT": { "power": 1, "toughness": 0 } },
+                    { "AddKeyword": "Haste" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "Type": "Artifact" }, { "ControlledBy": "You" }] },
+                      "op": "Ge",
+                      "right": 4
+                    }
+                  },
+                  "then": [{ "Transform": { "what": "This" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Geode Grotto",
+      "oracle_fingerprint": "f8f493346fd75493c03898d4a256d4cd",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Red"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{R}" }, "Tap"],
+            "timing": "Sorcery",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": { "Count": [{ "Type": "Artifact" }, { "ControlledBy": "You" }] },
+                        "toughness": 0
+                      }
+                    },
+                    { "AddKeyword": "Haste" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

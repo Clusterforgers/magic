@@ -1,0 +1,52 @@
+{
+  "oracle_id": "7d012731-f921-47bf-a2da-ce494650cd4f",
+  "name": "Kamahl's Druidic Vow",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kamahl's Druidic Vow",
+      "oracle_fingerprint": "5caa854d9eec6bab83fde50cf596013a",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "LookAtTop": { "count": "X", "as": "top" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      {
+                        "AnyOf": [
+                          { "Type": "Land" },
+                          {
+                            "Not": {
+                              "AnyOf": [
+                                { "Not": { "Supertype": "Legendary" } },
+                                {
+                                  "Not": {
+                                    "Compare": { "stat": "ManaValue", "op": "Le", "to": "X" }
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "count": { "min": 0, "max": null },
+                  "as": "kept2"
+                }
+              },
+              { "Reveal": { "what": { "Bound": "kept2" } } },
+              { "Move": { "what": { "Bound": "kept2" }, "to": { "Battlefield": {} } } },
+              { "Move": { "what": { "Bound": "top" }, "to": "Graveyard" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

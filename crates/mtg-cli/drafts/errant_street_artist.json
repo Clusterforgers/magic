@@ -1,0 +1,29 @@
+{
+  "oracle_id": "23e6df25-90db-42a4-8658-e592e67be15e",
+  "name": "Errant, Street Artist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Errant, Street Artist",
+      "oracle_fingerprint": "2a10ae0330ece2419b8e59ea181ba240",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": "Defender" },
+        { "Keyword": "Haste" },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{U}" }, "Tap"],
+            "targets": [
+              {
+                "what": {
+                  "Object": ["Spell", { "ControlledBy": "You" }, { "Not": { "WasCast": {} } }]
+                }
+              }
+            ],
+            "effects": [{ "CopySpell": { "what": { "Target": 0 }, "new_targets": true } }]
+          }
+        }
+      ]
+    }
+  ]
+}

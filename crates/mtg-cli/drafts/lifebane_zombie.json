@@ -1,0 +1,37 @@
+{
+  "oracle_id": "5b31ac7b-7901-484c-b59f-556284fd562c",
+  "name": "Lifebane Zombie",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lifebane Zombie",
+      "oracle_fingerprint": "1674f3538e0e6365c28761e49fb1c897",
+      "abilities": [
+        { "Keyword": "Intimidate" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "AnyOf": [{ "Color": "Green" }, { "Color": "White" }] },
+                      { "In": "Hand" },
+                      { "OwnedBy": { "Target": 0 } }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked"
+                }
+              },
+              { "Exile": { "what": { "Bound": "picked" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,57 @@
+{
+  "oracle_id": "eb0d97a3-6494-4011-9f60-1b12b165a995",
+  "name": "Skirk Drill Sergeant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Skirk Drill Sergeant",
+      "oracle_fingerprint": "e957e0f55902d9fdb799daffc7071e0f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  {
+                    "AnyOf": [
+                      {
+                        "Not": { "AnyOf": [{ "Not": { "Subtype": "Goblin" } }, { "Not": "Other" }] }
+                      },
+                      "This"
+                    ]
+                  }
+                ],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{2}{R}",
+                  "paid": [
+                    { "LookAtTop": { "as": "top" } },
+                    { "Reveal": { "what": { "Bound": "top" } } },
+                    {
+                      "Move": {
+                        "what": {
+                          "Each": [
+                            { "In": "Library" },
+                            { "Is": { "Bound": "top" } },
+                            { "Subtype": "Goblin" }
+                          ]
+                        },
+                        "to": { "Battlefield": {} }
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "top" }, "to": "Graveyard" } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

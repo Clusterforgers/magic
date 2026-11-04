@@ -1,0 +1,52 @@
+{
+  "oracle_id": "486bb9a5-73f1-4cec-b097-fb07ac80b72e",
+  "name": "Ojer Taq, Deepest Foundation // Temple of Civilization",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Ojer Taq, Deepest Foundation",
+      "oracle_fingerprint": "2ed68163dc2a72999a4360f75351160d",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Replacement": {
+            "when": { "TokenCreation": { "what": [{ "Type": "Creature" }] } },
+            "by": { "Multiply": 3 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 137, "end": 235 }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Temple of Civilization",
+      "oracle_fingerprint": "098abf6acc47dcf851439c654e4274c9",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["White"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{W}" }, "Tap"],
+            "timing": "Sorcery",
+            "condition": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "Attackers" } },
+                "op": "Ge",
+                "right": 3
+              }
+            },
+            "effects": [{ "Transform": { "what": "This" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "oracle_id": "ddd97b56-a80f-4515-9883-ae5fc1de0c5d",
+  "name": "Rebuking Ceremony",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rebuking Ceremony",
+      "oracle_fingerprint": "c4b673c41c0382f9db3c29358648b7eb",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Artifact" }] }, "bounds": { "min": 2, "max": 2 } }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Library": { "place": "Top" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

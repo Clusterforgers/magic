@@ -1,0 +1,26 @@
+{
+  "oracle_id": "7ccaf9cc-84c3-4617-ae8a-236c5fe5d2dc",
+  "name": "Hungry Hungry Heifer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hungry Hungry Heifer",
+      "oracle_fingerprint": "40aafa9104ba0ee885676e03e742c045",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "RemoveCountersAmong": { "from": [] } }],
+                  "unpaid": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

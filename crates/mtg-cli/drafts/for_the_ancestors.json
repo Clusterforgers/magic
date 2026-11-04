@@ -1,0 +1,43 @@
+{
+  "oracle_id": "4caa3c55-41b3-48a3-b6a8-4d23aff7d00d",
+  "name": "For the Ancestors",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "For the Ancestors",
+      "oracle_fingerprint": "366024850f996ef7452da2e6691cc44c",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "ChooseValue": { "kind": "CreatureType", "as": "chosen" } },
+              { "LookAtTop": { "count": 6, "as": "top2" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top2" } },
+                      { "Type": "Creature" },
+                      { "ChosenAs": "chosen" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": null },
+                  "as": "kept3"
+                }
+              },
+              { "Move": { "what": { "Bound": "kept3" }, "to": "Hand" } },
+              {
+                "Move": {
+                  "what": { "Bound": "top2" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Flashback": "{3}{G}" } }
+      ]
+    }
+  ]
+}

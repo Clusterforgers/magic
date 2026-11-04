@@ -1,0 +1,26 @@
+{
+  "oracle_id": "f7971f22-2689-4c6f-9fea-1afc4f5afed3",
+  "name": "Drekavac",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Drekavac",
+      "oracle_fingerprint": "a7870f8bbbb434f7eaf540ecadb1294f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "Discard": { "filter": [{ "Not": { "Type": "Creature" } }] } }],
+                  "unpaid": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

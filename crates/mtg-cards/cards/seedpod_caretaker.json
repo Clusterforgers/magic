@@ -1,0 +1,53 @@
+{
+  "oracle_id": "257fbe05-b2cb-493c-a116-49f9000b2384",
+  "name": "Seedpod Caretaker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Seedpod Caretaker",
+      "oracle_fingerprint": "34ac0efa9208e328a7740f22d08fd0cb",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [
+                              { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] },
+                              { "ControlledBy": "You" }
+                            ]
+                          }
+                        }
+                      ],
+                      "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+                    },
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [
+                              { "Subtype": "Incubator" },
+                              "Token",
+                              { "ControlledBy": "You" }
+                            ]
+                          }
+                        }
+                      ],
+                      "effects": [{ "Transform": { "what": { "Target": 0 } } }]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

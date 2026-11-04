@@ -1,0 +1,51 @@
+{
+  "oracle_id": "b25962ab-21b5-47f9-bdef-35b911b45671",
+  "name": "Grave Birthing",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Grave Birthing",
+      "oracle_fingerprint": "7ecd7f7fd3263b17f210b2ee52df5b50",
+      "abilities": [
+        { "Keyword": "Devoid" },
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Choose": {
+                  "who": { "Target": 0 },
+                  "from": { "Each": [{ "In": "Graveyard" }, { "OwnedBy": { "Target": 0 } }] },
+                  "as": "picked"
+                }
+              },
+              { "Exile": { "what": { "Bound": "picked" } } },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Eldrazi Scion",
+                      "types": ["Creature"],
+                      "subtypes": ["Eldrazi", "Scion"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [
+                        {
+                          "Activated": {
+                            "cost": ["SacrificeSelf"],
+                            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

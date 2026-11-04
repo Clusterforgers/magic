@@ -1,0 +1,33 @@
+{
+  "oracle_id": "0ec153ee-2a91-4196-9105-212dd1864aea",
+  "name": "Hecatomb",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hecatomb",
+      "oracle_fingerprint": "4d9ca11afaa3c18805739f696aeba4b5",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "Sacrifice": { "filter": [{ "Type": "Creature" }], "count": 4 } }],
+                  "unpaid": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "TapPermanents": { "filter": [{ "Subtype": "Swamp" }] } }],
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

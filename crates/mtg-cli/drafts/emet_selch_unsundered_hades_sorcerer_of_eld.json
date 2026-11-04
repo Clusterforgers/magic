@@ -1,0 +1,57 @@
+{
+  "oracle_id": "3b102ccc-7629-457c-aba6-e9b00fd50c85",
+  "name": "Emet-Selch, Unsundered // Hades, Sorcerer of Eld",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Emet-Selch, Unsundered",
+      "oracle_fingerprint": "d42cafaffd1650d49fe935b4a1fd46e6",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "Attacks": { "what": ["This"] } }
+              ]
+            },
+            "effects": [{ "Draw": {} }, { "Discard": {} }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": [{ "OwnedBy": "You" }, { "In": "Graveyard" }] },
+                "op": "Ge",
+                "right": 14
+              }
+            },
+            "effects": [{ "May": { "effects": [{ "Transform": { "what": "This" } }] } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Hades, Sorcerer of Eld",
+      "oracle_fingerprint": "2b8a8bd1fc8fec4718974b439cb10904",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Rule": {
+            "rule": { "MayCast": { "from": "Graveyard", "play": true } },
+            "condition": "YourTurn"
+          }
+        },
+        {
+          "Replacement": {
+            "when": { "ZoneChange": { "what": [{ "OwnedBy": "You" }], "to": "Graveyard" } },
+            "by": { "MoveTo": "Exile" }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,55 @@
+{
+  "oracle_id": "aa64f830-b9b6-4d5e-9a5d-f9e120089335",
+  "name": "Scouring Swarm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Scouring Swarm",
+      "oracle_fingerprint": "a538a8aada4788127a30d6de4a761576",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "Sacrificed": { "what": [{ "Type": "Land" }], "by": "You" } },
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Count": [{ "Type": "Land" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                      },
+                      "op": "Ge",
+                      "right": 7
+                    }
+                  },
+                  "then": [
+                    { "CreateToken": { "token": { "CopyOf": { "of": "This" } }, "tapped": true } }
+                  ],
+                  "otherwise": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Insect",
+                            "colors": ["Black"],
+                            "types": ["Creature"],
+                            "subtypes": ["Insect"],
+                            "power": 1,
+                            "toughness": 1,
+                            "abilities": [{ "Keyword": "Flying" }]
+                          }
+                        },
+                        "tapped": true
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

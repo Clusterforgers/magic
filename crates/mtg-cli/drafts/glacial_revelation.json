@@ -1,0 +1,36 @@
+{
+  "oracle_id": "92359752-74aa-499e-b2db-0342d7596691",
+  "name": "Glacial Revelation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Glacial Revelation",
+      "oracle_fingerprint": "f83f4d7ed62bf473d8de0afdc4fca5c8",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "LookAtTop": { "count": 6, "as": "top" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "Supertype": "Snow" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": null },
+                  "as": "kept2"
+                }
+              },
+              { "Reveal": { "what": { "Bound": "kept2" } } },
+              { "Move": { "what": { "Bound": "kept2" }, "to": "Hand" } },
+              { "Move": { "what": { "Bound": "top" }, "to": "Graveyard" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

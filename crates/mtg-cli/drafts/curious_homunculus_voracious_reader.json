@@ -1,0 +1,63 @@
+{
+  "oracle_id": "c38db10f-c0b7-4391-b49a-77079a4d087c",
+  "name": "Curious Homunculus // Voracious Reader",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Curious Homunculus",
+      "oracle_fingerprint": "235da344374e0616f83cbee681b63266",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["Colorless"] },
+                  "only": [{ "Spell": { "types": ["Instant", "Sorcery"] } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                    { "OwnedBy": "You" },
+                    { "In": "Graveyard" }
+                  ]
+                },
+                "op": "Ge",
+                "right": 3
+              }
+            },
+            "effects": [{ "Transform": { "what": "This" } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Voracious Reader",
+      "oracle_fingerprint": "7a29a3a2816dd5098d7076805ce13b11",
+      "abilities": [
+        { "Keyword": "Prowess" },
+        {
+          "CostModifier": {
+            "applies_to": [
+              "Spell",
+              { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+              { "ControlledBy": "You" }
+            ],
+            "change": "Reduce",
+            "mana": "{1}"
+          }
+        }
+      ]
+    }
+  ]
+}

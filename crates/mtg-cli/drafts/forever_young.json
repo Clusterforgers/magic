@@ -1,0 +1,34 @@
+{
+  "oracle_id": "31f32afa-5b2a-4218-ae7b-642e1cac3911",
+  "name": "Forever Young",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Forever Young",
+      "oracle_fingerprint": "543cf6b68d7e5e17ba543ce9041713e0",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                },
+                "bounds": {
+                  "min": 0,
+                  "max": {
+                    "Count": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                  }
+                }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Library": { "place": "Top" } } } },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

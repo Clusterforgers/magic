@@ -1,0 +1,33 @@
+{
+  "oracle_id": "87c8e1ed-258a-4a89-bcc6-211405e49692",
+  "name": "Command Bridge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Command Bridge",
+      "oracle_fingerprint": "3da7b8cd4b296b6297e7aace6e832239",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "TapPermanents": { "filter": [] } }],
+                  "unpaid": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

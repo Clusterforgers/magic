@@ -1,0 +1,48 @@
+{
+  "oracle_id": "c017f54c-e4c0-411e-b8c1-eb20b1b86c56",
+  "name": "Karumonix, the Rat King",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Karumonix, the Rat King",
+      "oracle_fingerprint": "e2900487aa83bf5329e903ab690427d0",
+      "abilities": [
+        { "Keyword": { "Toxic": 1 } },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Rat" }, { "ControlledBy": "You" }, "Other"] },
+            "mods": [{ "AddKeyword": { "Toxic": 1 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "LookAtTop": { "count": 5, "as": "top" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "Subtype": "Rat" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": null },
+                  "as": "kept2"
+                }
+              },
+              { "Move": { "what": { "Bound": "kept2" }, "to": "Hand" } },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

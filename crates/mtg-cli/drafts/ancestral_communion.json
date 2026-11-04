@@ -1,0 +1,55 @@
+{
+  "oracle_id": "a45bb088-16fd-4d91-8fd6-3c52f1c24748",
+  "name": "Ancestral Communion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ancestral Communion",
+      "oracle_fingerprint": "7b5055d2e8b6a7bfb5be87fb11ca8e3e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": ["This"] } },
+            "if": {
+              "AtTrigger": {
+                "Compare": {
+                  "left": {
+                    "Count": ["Commander", { "ControlledBy": "You" }, { "OwnedBy": "You" }]
+                  },
+                  "op": "Ge",
+                  "right": 1
+                }
+              }
+            },
+            "effects": [{ "CopySpell": { "what": "Triggering", "new_targets": true } }]
+          }
+        },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "OwnedBy": "You" },
+                    {
+                      "AnyOf": [
+                        { "Type": "Artifact" },
+                        { "Type": "Battle" },
+                        { "Type": "Creature" },
+                        { "Type": "Enchantment" },
+                        { "Type": "Land" },
+                        { "Type": "Planeswalker" }
+                      ]
+                    },
+                    { "In": "Graveyard" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

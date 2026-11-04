@@ -1,0 +1,48 @@
+{
+  "oracle_id": "539c5bb8-d5d0-4901-a45b-594514948be6",
+  "name": "The Great Juggernaut",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Great Juggernaut",
+      "oracle_fingerprint": "e476074b24932bb8ee1ecf8dcb0518d2",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "Discard": {} }],
+                  "unpaid": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              { "Shuffle": {} },
+              { "ExileTop": { "as": "exiled" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "from": "Exile",
+                      "free": true,
+                      "only": { "Bound": "exiled" },
+                      "play": true
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

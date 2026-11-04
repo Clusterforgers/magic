@@ -1,0 +1,56 @@
+{
+  "oracle_id": "6de67fad-0d01-443d-9ae0-4126ae903069",
+  "name": "HYDRA Troopers",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "HYDRA Troopers",
+      "oracle_fingerprint": "19f791d5253523c8219c0a517db8421c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Count": [
+                          { "Type": "Creature" },
+                          { "OwnedBy": "You" },
+                          { "In": "Graveyard" }
+                        ]
+                      },
+                      "op": "Ge",
+                      "right": 2
+                    }
+                  },
+                  "then": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Villain",
+                            "colors": ["Black"],
+                            "types": ["Creature"],
+                            "subtypes": ["Villain"],
+                            "power": 2,
+                            "toughness": 1,
+                            "abilities": [{ "Keyword": "Menace" }]
+                          }
+                        },
+                        "tapped": true
+                      }
+                    }
+                  ],
+                  "otherwise": [{ "Mill": { "count": 2 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

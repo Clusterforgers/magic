@@ -1,0 +1,50 @@
+{
+  "oracle_id": "1863ba60-f786-4e52-90fc-f3135ca0257f",
+  "name": "Heaven Sent",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Heaven Sent",
+      "oracle_fingerprint": "4127299e78563a447039414615e3ea00",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "effects": [{ "CreateToken": { "token": { "Named": "clue" } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "effects": [{ "CreateToken": { "token": { "Named": "clue" } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "effects": [
+              { "DealDamage": { "to": "Opponents", "amount": 1 } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": { "left": { "LowestLife": "Opponents" }, "op": "Le", "right": 0 }
+                  },
+                  "then": [{ "Draw": { "count": 7 } }],
+                  "otherwise": [
+                    { "Exile": { "what": "This" } },
+                    {
+                      "Rule": {
+                        "rule": { "MayCast": { "from": "Exile", "only": "This" } },
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

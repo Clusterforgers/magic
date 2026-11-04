@@ -1,0 +1,73 @@
+{
+  "oracle_id": "909ff4a8-8bdd-4478-bd43-ce5175a02d68",
+  "name": "Brightling",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Brightling",
+      "oracle_fingerprint": "43c904add46b5b541a32f28e99185acd",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{W}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddKeyword": "Vigilance" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{W}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddKeyword": "Lifelink" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": { "cost": "{W}", "effects": [{ "Move": { "what": "This", "to": "Hand" } }] }
+        },
+        {
+          "Activated": {
+            "cost": "{1}",
+            "effects": [
+              {
+                "Either": {
+                  "first": [
+                    {
+                      "Continuous": {
+                        "affected": "This",
+                        "mods": [{ "ModifyPT": { "power": 1, "toughness": -1 } }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ],
+                  "second": [
+                    {
+                      "Continuous": {
+                        "affected": "This",
+                        "mods": [{ "ModifyPT": { "power": -1, "toughness": 1 } }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

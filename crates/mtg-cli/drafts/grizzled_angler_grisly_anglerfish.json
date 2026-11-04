@@ -1,0 +1,63 @@
+{
+  "oracle_id": "d37effd3-d194-4609-9994-6d70038a68f9",
+  "name": "Grizzled Angler // Grisly Anglerfish",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Grizzled Angler",
+      "oracle_fingerprint": "9d7e1673f06f2bb08a7ae6750882031d",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              { "Mill": { "count": 2 } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Count": [
+                          { "Type": "Creature" },
+                          { "OwnedBy": "You" },
+                          "Colorless",
+                          { "In": "Graveyard" }
+                        ]
+                      },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Transform": { "what": "This" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Grisly Anglerfish",
+      "oracle_fingerprint": "d736e1a9ae2cf2d9e9768c93b78713ab",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{6}",
+            "effects": [
+              {
+                "Rule": {
+                  "rule": {
+                    "MustAttack": {
+                      "Each": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }]
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

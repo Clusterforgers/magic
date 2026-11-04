@@ -1,0 +1,26 @@
+{
+  "oracle_id": "516d1ac4-e831-44b6-8266-131dde7fe802",
+  "name": "Tragic Lesson",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tragic Lesson",
+      "oracle_fingerprint": "ddc85ec4e664f6b7fd3f68df28bae675",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Draw": { "count": 2 } },
+              {
+                "Pay": {
+                  "cost": [{ "ReturnToHand": { "filter": [{ "Type": "Land" }] } }],
+                  "unpaid": [{ "Discard": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "oracle_id": "d7dcd1a3-3163-4e26-94e8-f4072e477e6a",
+  "name": "Halo-Charged Skaab",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Halo-Charged Skaab",
+      "oracle_fingerprint": "493e88d968aa162d1cf7684808ba7bf8",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "Mill": { "who": "EachPlayer", "count": 2 } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      {
+                        "AnyOf": [
+                          { "Type": "Instant" },
+                          { "Type": "Sorcery" },
+                          { "Type": "Battle" }
+                        ]
+                      },
+                      { "OwnedBy": "You" },
+                      { "In": "Graveyard" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked"
+                }
+              },
+              { "Move": { "what": { "Bound": "picked" }, "to": { "Library": { "place": "Top" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

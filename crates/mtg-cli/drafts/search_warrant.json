@@ -1,0 +1,28 @@
+{
+  "oracle_id": "27744033-5cb6-4d26-ad76-f4b4f1c0466c",
+  "name": "Search Warrant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Search Warrant",
+      "oracle_fingerprint": "51cc6a62df506b7f9864e2fa6676710d",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Reveal": { "what": { "Each": [{ "OwnedBy": { "Target": 0 } }, { "In": "Hand" }] } }
+              },
+              {
+                "GainLife": {
+                  "amount": { "Count": [{ "OwnedBy": { "Target": 0 } }, { "In": "Hand" }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

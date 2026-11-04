@@ -1,0 +1,29 @@
+{
+  "oracle_id": "36d6d6c0-721c-40c3-b81f-4f027fcf847e",
+  "name": "Owlin Spiralmancer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Owlin Spiralmancer",
+      "oracle_fingerprint": "265a33b5ee49effa91f307441f80344c",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": {
+              "Nth": { "event": { "SpellCast": { "what": ["XInCost"], "by": "You" } }, "nth": 1 }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [{ "CopySpell": { "what": "Triggering", "new_targets": true } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

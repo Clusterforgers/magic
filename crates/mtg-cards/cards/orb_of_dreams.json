@@ -1,0 +1,12 @@
+{
+  "oracle_id": "2c24b7c3-7c90-4109-a4aa-d9cae6febf34",
+  "name": "Orb of Dreams",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Orb of Dreams",
+      "oracle_fingerprint": "8697dd87b4a4215782ad0ccf496e9d68",
+      "abilities": [{ "Replacement": { "when": { "Enters": { "what": [] } }, "by": "Tapped" } }]
+    }
+  ]
+}

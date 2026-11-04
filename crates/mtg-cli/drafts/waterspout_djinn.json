@@ -1,0 +1,33 @@
+{
+  "oracle_id": "050dac46-9ba0-4b8a-b61b-1c7ec6f3723a",
+  "name": "Waterspout Djinn",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Waterspout Djinn",
+      "oracle_fingerprint": "218821852ec764febfc2d3a8ac6a435e",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [
+                    {
+                      "ReturnToHand": {
+                        "filter": [{ "Subtype": "Island" }, "Untapped", { "ControlledBy": "You" }]
+                      }
+                    }
+                  ],
+                  "unpaid": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

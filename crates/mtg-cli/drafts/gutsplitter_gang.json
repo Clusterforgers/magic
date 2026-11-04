@@ -1,0 +1,21 @@
+{
+  "oracle_id": "322c1c8f-ef8a-4a9f-b9ce-927720bad1d6",
+  "name": "Gutsplitter Gang",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gutsplitter Gang",
+      "oracle_fingerprint": "32c44e6bfbff9b82fc2c7e9de8e13421",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Main1", "whose": "You" } },
+            "effects": [
+              { "Pay": { "cost": [{ "Blight": 2 }], "unpaid": [{ "LoseLife": { "amount": 3 } }] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

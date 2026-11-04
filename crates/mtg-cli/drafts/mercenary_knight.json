@@ -1,0 +1,26 @@
+{
+  "oracle_id": "ed5429bb-233a-4528-bf7d-df5f6b192b1c",
+  "name": "Mercenary Knight",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mercenary Knight",
+      "oracle_fingerprint": "debd488b3d92adbac37fd40f37a88355",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "Discard": { "filter": [{ "Type": "Creature" }] } }],
+                  "unpaid": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

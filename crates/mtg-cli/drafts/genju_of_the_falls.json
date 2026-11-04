@@ -1,0 +1,46 @@
+{
+  "oracle_id": "c546747a-1935-4c59-a45f-cad7da41fe38",
+  "name": "Genju of the Falls",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Genju of the Falls",
+      "oracle_fingerprint": "d512df42a98d2bbe8b7ac44bcb760905",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Subtype": "Island" }] } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 15, "end": 121 }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Is": "Attached" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": { "Each": ["This", { "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                        "as": "picked"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "picked" }, "to": "Hand" } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

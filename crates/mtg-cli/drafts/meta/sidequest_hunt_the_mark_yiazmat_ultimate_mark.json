@@ -1,0 +1,59 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "When this enchantment enters, destroy up to one target creature.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "At the beginning of your end step, if a creature died under an opponent's control this turn, create a Treasure token. Then if you control three or more Treasures, transform this enchantment.",
+      "abilities": [
+        1
+      ],
+      "gap": null
+    },
+    {
+      "face": 1,
+      "tag": "A",
+      "text": "NICKNAME gains indestructible until end of turn. Tap it. (Damage and effects that say \"destroy\" don't destroy it.)",
+      "abilities": [],
+      "gap": "valid:Other;Artifact.Other"
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 64
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 65,
+          "end": 255
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 1,
+        "span": {
+          "start": 0,
+          "end": 103
+        },
+        "mark": "ByHand"
+      }
+    ]
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "oracle_id": "2c306e87-e3c8-4066-9be5-570e2f2d6bad",
+  "name": "Moonmist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Moonmist",
+      "oracle_fingerprint": "d49e9e50280e1c6102760137b9771cd4",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Transform": { "what": { "Each": [{ "Subtype": "Human" }] } } },
+              {
+                "Shield": {
+                  "when": {
+                    "Damage": {
+                      "source": [
+                        { "Type": "Creature" },
+                        { "Not": { "Subtype": "Werewolf" } },
+                        { "Not": { "Subtype": "Wolf" } }
+                      ],
+                      "combat": true
+                    }
+                  },
+                  "by": "Prevent",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

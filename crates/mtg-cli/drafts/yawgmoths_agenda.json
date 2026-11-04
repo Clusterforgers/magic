@@ -1,0 +1,28 @@
+{
+  "oracle_id": "72177c93-ed1f-47bd-99a6-ad229a292d46",
+  "name": "Yawgmoth's Agenda",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Yawgmoth's Agenda",
+      "oracle_fingerprint": "a5da7659a7f5ac1bc6e767f961529ed4",
+      "abilities": [
+        {
+          "Rule": { "rule": { "Cant": { "who": "You", "action": { "Cast": { "more_than": 1 } } } } }
+        },
+        { "Rule": { "rule": { "MayCast": { "from": "Graveyard", "play": true } } } },
+        {
+          "Replacement": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Not": "Token" }, { "OwnedBy": "You" }],
+                "to": "Graveyard"
+              }
+            },
+            "by": { "MoveTo": "Exile" }
+          }
+        }
+      ]
+    }
+  ]
+}

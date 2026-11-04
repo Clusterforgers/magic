@@ -1,0 +1,40 @@
+{
+  "oracle_id": "ea91be73-40f5-461a-bb39-d60216829a53",
+  "name": "Lead the Stampede",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lead the Stampede",
+      "oracle_fingerprint": "bff7143de61b32364d345638ad13d2fd",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "LookAtTop": { "count": 5, "as": "top" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "Type": "Creature" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": null },
+                  "as": "kept2"
+                }
+              },
+              { "Move": { "what": { "Bound": "kept2" }, "to": "Hand" } },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Bottom", "order": "Chosen" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

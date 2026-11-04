@@ -1,0 +1,59 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "K",
+      "text": "Enchant:Mountain",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    },
+    {
+      "face": 0,
+      "tag": "A",
+      "text": "Enchanted Mountain becomes a 6/1 red Spirit creature until end of turn. It's still a land.",
+      "abilities": [],
+      "gap": "key:Animate.Colors-added"
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "When enchanted Mountain is put into a graveyard, you may return CARDNAME from your graveyard to your hand.",
+      "abilities": [
+        1
+      ],
+      "gap": null
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 16
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 17,
+          "end": 112
+        },
+        "mark": "ByHand"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 113,
+          "end": 220
+        },
+        "mark": "Auto"
+      }
+    ]
+  }
+}

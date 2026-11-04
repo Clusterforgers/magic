@@ -1,0 +1,20 @@
+{
+  "oracle_id": "ddb770c1-a783-49c9-a36d-2434b8580743",
+  "name": "Spirit Shackle",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spirit Shackle",
+      "oracle_fingerprint": "f7c72b644a96fbfe24e479b4f17b9256",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": { "Tapped": { "what": [{ "Is": "Attached" }] } },
+            "effects": [{ "PutCounters": { "on": "Triggering", "counter": { "Other": "-0/-2" } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

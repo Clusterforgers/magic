@@ -1,0 +1,37 @@
+{
+  "oracle_id": "a9c2bf1b-2d5e-42c5-bc76-8429aaae161c",
+  "name": "Bloodline Shaman",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bloodline Shaman",
+      "oracle_fingerprint": "d0a5eef66965c9292a93ca99c30435bc",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              { "ChooseValue": { "kind": "CreatureType", "as": "chosen" } },
+              { "LookAtTop": { "as": "top2" } },
+              { "Reveal": { "what": { "Bound": "top2" } } },
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top2" } },
+                      { "Type": "Creature" },
+                      { "ChosenAs": "chosen" }
+                    ]
+                  },
+                  "to": "Hand"
+                }
+              },
+              { "Move": { "what": { "Bound": "top2" }, "to": "Graveyard" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

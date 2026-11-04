@@ -1,0 +1,35 @@
+{
+  "oracle_id": "6bef2904-1ebe-4e7e-879a-79f4968174fb",
+  "name": "Sin Collector",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sin Collector",
+      "oracle_fingerprint": "0dea398aa43400939398cc273fa40102",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                      { "In": "Hand" },
+                      { "OwnedBy": { "Target": 0 } }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked"
+                }
+              },
+              { "Exile": { "what": { "Bound": "picked" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

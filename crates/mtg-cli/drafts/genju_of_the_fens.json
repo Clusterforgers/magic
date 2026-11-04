@@ -1,0 +1,46 @@
+{
+  "oracle_id": "f6c9c0e6-b851-4ede-8d7a-190c7cfd9051",
+  "name": "Genju of the Fens",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Genju of the Fens",
+      "oracle_fingerprint": "625861e0d926fe8c5b4ce54d9b665a07",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Subtype": "Swamp" }] } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 14, "end": 164 }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Is": "Attached" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": { "Each": ["This", { "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                        "as": "picked"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "picked" }, "to": "Hand" } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

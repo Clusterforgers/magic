@@ -1,0 +1,42 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "When another creature you control dies, transform CARDNAME.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    },
+    {
+      "face": 1,
+      "tag": "T",
+      "text": "Whenever CARDNAME attacks, return target creature card with mana value 2 or less from your graveyard to the battlefield tapped and attacking.",
+      "abilities": [],
+      "gap": "key:ChangeZone.Attacking"
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 64
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 1,
+        "span": {
+          "start": 0,
+          "end": 146
+        },
+        "mark": "ByHand"
+      }
+    ]
+  }
+}

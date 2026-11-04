@@ -1,0 +1,38 @@
+{
+  "oracle_id": "044be66d-9334-4d4b-b420-b97a18698e95",
+  "name": "Junk Golem",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Junk Golem",
+      "oracle_fingerprint": "717fd4c4ed664b793d11e59b196c14e7",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": 3 } }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "RemoveCounters": { "counter": "+1/+1" } }],
+                  "unpaid": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, { "Discard": {} }],
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

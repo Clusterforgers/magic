@@ -1,0 +1,38 @@
+{
+  "oracle_id": "e13289e5-370b-435b-a38e-cf57c3078cec",
+  "name": "Rith's Grove",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rith's Grove",
+      "oracle_fingerprint": "f3a3d6e1d4b1a59116480f07d8948dbf",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [
+                    {
+                      "ReturnToHand": {
+                        "filter": [{ "Type": "Land" }, { "Not": { "Subtype": "Lair" } }]
+                      }
+                    }
+                  ],
+                  "unpaid": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "OneOf": ["Red", "Green", "White"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

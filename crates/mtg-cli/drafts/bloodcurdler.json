@@ -1,0 +1,52 @@
+{
+  "oracle_id": "3f53fd3e-9116-4599-81df-a9390461b549",
+  "name": "Bloodcurdler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bloodcurdler",
+      "oracle_fingerprint": "d805c35fcda0cd7e4c5e4825f733024a",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [{ "Mill": {} }]
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              { "ModifyPT": { "power": 1, "toughness": 1 } },
+              {
+                "GrantAbility": {
+                  "Triggered": {
+                    "when": { "StepBegins": { "step": "End", "whose": "You" } },
+                    "effects": [
+                      {
+                        "Choose": {
+                          "from": { "Each": [{ "OwnedBy": "You" }, { "In": "Graveyard" }] },
+                          "count": { "min": 2, "max": 2 },
+                          "as": "picked"
+                        }
+                      },
+                      { "Exile": { "what": { "Bound": "picked" } } }
+                    ]
+                  }
+                }
+              }
+            ],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                "op": "Ge",
+                "right": 7
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

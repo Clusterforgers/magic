@@ -1,0 +1,93 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "Whenever a creature an opponent controls dies, put a number of +1/+1 counters on CARDNAME equal to that creature's power.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "Whenever CARDNAME attacks, you may transform it.",
+      "abilities": [
+        1
+      ],
+      "gap": null
+    },
+    {
+      "face": 1,
+      "tag": "K",
+      "text": "Trample",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    },
+    {
+      "face": 1,
+      "tag": "K",
+      "text": "Lifelink",
+      "abilities": [
+        1
+      ],
+      "gap": null
+    },
+    {
+      "face": 1,
+      "tag": "T",
+      "text": "When CARDNAME dies, return it to the battlefield tapped (front face up).",
+      "abilities": [],
+      "gap": "key:ChangeZone.GainControl"
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 130
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 131,
+          "end": 188
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 1,
+        "span": {
+          "start": 0,
+          "end": 7
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 1,
+        "span": {
+          "start": 9,
+          "end": 17
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 1,
+        "span": {
+          "start": 18,
+          "end": 94
+        },
+        "mark": "ByHand"
+      }
+    ]
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "oracle_id": "a82ea8f2-e576-46cd-aa08-9c98d6029db4",
+  "name": "Ruthless Negotiation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ruthless Negotiation",
+      "oracle_fingerprint": "e982dca523f0444dc9ae9016e03d3e73",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Choose": {
+                  "who": { "Target": 0 },
+                  "from": { "Each": [{ "In": "Hand" }, { "OwnedBy": { "Target": 0 } }] },
+                  "as": "picked"
+                }
+              },
+              { "Exile": { "what": { "Bound": "picked" } } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": "This",
+                      "selector": [{ "WasCast": { "from": "Graveyard" } }],
+                      "op": "Eq",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Flashback": "{4}{B}" } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "oracle_id": "6e924ac1-c9f1-4fd1-8c44-a933b82151fd",
+  "name": "Reflective Rimekin",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Reflective Rimekin",
+      "oracle_fingerprint": "9961f8648c2021a7f9052f775fa2ca30",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "SpellCast": {
+                      "what": [
+                        { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                        { "Compare": { "stat": "ManaValue", "op": "Le", "to": 3 } }
+                      ],
+                      "by": "You"
+                    }
+                  },
+                  "effects": [{ "CopySpell": { "what": "Triggering", "new_targets": true } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

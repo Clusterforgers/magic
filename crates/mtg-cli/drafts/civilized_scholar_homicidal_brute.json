@@ -1,0 +1,67 @@
+{
+  "oracle_id": "8662c9be-2244-4ea3-bf80-31a117f40a59",
+  "name": "Civilized Scholar // Homicidal Brute",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Civilized Scholar",
+      "oracle_fingerprint": "67f0d7bf306bbfdad78503bae8e6d712",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              { "Draw": {} },
+              { "Discard": { "as": "discarded" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "discarded" },
+                      "selector": [{ "Type": "Creature" }],
+                      "op": "Eq",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Transform": { "what": "This" } }]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "discarded" },
+                      "selector": [{ "Type": "Creature" }],
+                      "op": "Eq",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Untap": { "what": "This" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Homicidal Brute",
+      "oracle_fingerprint": "43e829e326598d19c9fe2bea496dd552",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": [{ "Not": "AttackedThisTurn" }, "This"] },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "Tap": { "what": "This" } }, { "Transform": { "what": "This" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

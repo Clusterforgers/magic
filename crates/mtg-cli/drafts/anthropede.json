@@ -1,0 +1,55 @@
+{
+  "oracle_id": "452d98ae-0fa2-4cff-9e18-eecd76ddb20b",
+  "name": "Anthropede",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Anthropede",
+      "oracle_fingerprint": "c86a13c7235f7104288463a361668978",
+      "abilities": [
+        { "Keyword": "Reach" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Either": {
+                  "first": [
+                    {
+                      "Pay": {
+                        "cost": [{ "Discard": {} }],
+                        "paid": [
+                          {
+                            "Reflexive": {
+                              "targets": [{ "what": { "Object": [{ "Subtype": "Room" }] } }],
+                              "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "second": [
+                    {
+                      "Pay": {
+                        "cost": "{2}",
+                        "paid": [
+                          {
+                            "Reflexive": {
+                              "targets": [{ "what": { "Object": [{ "Subtype": "Room" }] } }],
+                              "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

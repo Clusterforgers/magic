@@ -1,0 +1,25 @@
+{
+  "oracle_id": "bdbf70da-af38-4827-9b8b-39f553ebd34a",
+  "name": "Sage of Hours",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Sage of Hours",
+      "oracle_fingerprint": "dd9779b7bf985e2ac797056fd2a86929",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Targeting": ["This"] }], "by": "You" } },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 90, "end": 211 }
+          }
+        }
+      ]
+    }
+  ]
+}

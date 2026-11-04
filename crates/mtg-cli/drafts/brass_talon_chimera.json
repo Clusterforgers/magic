@@ -1,0 +1,32 @@
+{
+  "oracle_id": "2e114d15-4356-4cef-8f89-260ab4c8d4b9",
+  "name": "Brass-Talon Chimera",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Brass-Talon Chimera",
+      "oracle_fingerprint": "5236789ff29268355642295b6f8a9322",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        {
+          "Activated": {
+            "cost": ["SacrificeSelf"],
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "Subtype": "Chimera" }] } }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "+2/+2" } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "FirstStrike" }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

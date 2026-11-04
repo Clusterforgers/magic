@@ -1,0 +1,30 @@
+{
+  "oracle_id": "4dfea3bf-dfd1-4abd-a17e-f3a07488a069",
+  "name": "Arena Athlete",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Arena Athlete",
+      "oracle_fingerprint": "a4ae0ead1895169f40b63a977aa7c678",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Targeting": ["This"] }], "by": "You" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["CantBlock"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

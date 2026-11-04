@@ -1,0 +1,25 @@
+{
+  "oracle_id": "2631130e-63e2-43a3-914a-648e76722203",
+  "name": "Fire Lord Azula",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fire Lord Azula",
+      "oracle_fingerprint": "1b16ed8855aa2e2b7095dde2b7ead9d9",
+      "abilities": [
+        { "Keyword": { "Macro": { "name": "firebending", "amount": 2 } } },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "by": "You" } },
+            "if": {
+              "AtTrigger": {
+                "Compare": { "left": { "Count": ["This", "Attacking"] }, "op": "Ge", "right": 1 }
+              }
+            },
+            "effects": [{ "CopySpell": { "what": "Triggering", "new_targets": true } }]
+          }
+        }
+      ]
+    }
+  ]
+}

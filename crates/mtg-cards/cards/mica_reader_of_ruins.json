@@ -1,0 +1,32 @@
+{
+  "oracle_id": "fc90f74d-11f3-4bd4-b8a1-1cf2ffcd5b73",
+  "name": "Mica, Reader of Ruins",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mica, Reader of Ruins",
+      "oracle_fingerprint": "e56a73db37b61af26595aec02a74ba2c",
+      "abilities": [
+        { "Keyword": { "Ward": [{ "PayLife": 3 }] } },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                "by": "You"
+              }
+            },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "Sacrifice": { "filter": [{ "Type": "Artifact" }] } }],
+                  "paid": [{ "CopySpell": { "what": "Triggering", "new_targets": true } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

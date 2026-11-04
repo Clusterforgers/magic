@@ -1,0 +1,38 @@
+{
+  "oracle_id": "5b356a01-900c-4fe5-93bd-45629528c484",
+  "name": "Avacynian Missionaries // Lunarch Inquisitors",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Avacynian Missionaries",
+      "oracle_fingerprint": "73c7fa935b0c239ecb53ed7ec0d09802",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": ["This", { "HasAttached": [{ "Subtype": "Equipment" }] }] },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "Transform": { "what": "This" } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Lunarch Inquisitors",
+      "oracle_fingerprint": "4ac3c4cc10c287c18bf16e47e5a14a18",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 137 }
+          }
+        }
+      ]
+    }
+  ]
+}

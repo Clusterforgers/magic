@@ -1,0 +1,24 @@
+{
+  "oracle_id": "26ff3da5-4e02-41d1-a52f-3f8e87b01a77",
+  "name": "Ecstatic Awakener // Awoken Demon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ecstatic Awakener",
+      "oracle_fingerprint": "f6215aaf5a549d9c13b0a5c803487c10",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{2}{B}" },
+              { "Sacrifice": { "filter": [{ "Type": "Creature" }, "Other"] } }
+            ],
+            "limit": "OncePerTurn",
+            "effects": [{ "Draw": {} }, { "Transform": { "what": "This" } }]
+          }
+        }
+      ]
+    },
+    { "name": "Awoken Demon", "oracle_fingerprint": "e3b0c44298fc1c149afbf4c8996fb924" }
+  ]
+}

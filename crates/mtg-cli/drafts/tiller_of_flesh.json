@@ -1,0 +1,21 @@
+{
+  "oracle_id": "b6d2f392-5637-49ec-b6cb-603edd89e788",
+  "name": "Tiller of Flesh",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tiller of Flesh",
+      "oracle_fingerprint": "69c7c1da1c2845051cd3b9e275063bb7",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": { "what": [{ "Targeting": [{ "In": "Battlefield" }] }], "by": "You" }
+            },
+            "effects": [{ "Incubate": { "count": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

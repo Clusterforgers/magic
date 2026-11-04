@@ -1,0 +1,39 @@
+{
+  "oracle_id": "13be47e4-9da2-4f9e-baf0-db96f7777ccb",
+  "name": "Thalia, Heretic Cathar",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thalia, Heretic Cathar",
+      "oracle_fingerprint": "487ac74eefdbcd65fbeeb2d52a25e76f",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        {
+          "Replacement": {
+            "when": {
+              "Enters": {
+                "what": [
+                  {
+                    "AnyOf": [
+                      { "Type": "Creature" },
+                      {
+                        "Not": {
+                          "AnyOf": [
+                            { "Not": { "Type": "Land" } },
+                            { "Not": { "Not": { "Supertype": "Basic" } } }
+                          ]
+                        }
+                      }
+                    ]
+                  },
+                  { "ControlledBy": "Opponents" }
+                ]
+              }
+            },
+            "by": "Tapped"
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "oracle_id": "a08b0a07-6da2-4ff6-88e5-88355dd84589",
+  "name": "Bebop & Rocksteady",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bebop & Rocksteady",
+      "oracle_fingerprint": "f0fc4acd6fa6eb952b15b53fd60a9a15",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [{ "Attacks": { "what": ["This"] } }, { "Blocks": { "what": ["This"] } }]
+            },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "Discard": {} }],
+                  "unpaid": [{ "Sacrifice": { "filter": [] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

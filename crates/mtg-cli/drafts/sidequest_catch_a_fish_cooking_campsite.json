@@ -1,0 +1,92 @@
+{
+  "oracle_id": "bd7c328e-0380-46f8-bb85-7bf4e201b7ac",
+  "name": "Sidequest: Catch a Fish // Cooking Campsite",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sidequest: Catch a Fish",
+      "oracle_fingerprint": "ae2d46b6f21143fd5d7ec9fcc5cf52ba",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              { "LookAtTop": { "as": "top" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "revealed2"
+                }
+              },
+              { "Reveal": { "what": { "Bound": "revealed2" } } },
+              { "Move": { "what": { "Bound": "revealed2" }, "to": "Hand" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "revealed2" },
+                      "selector": [{ "In": "Hand" }],
+                      "op": "Eq",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "CreateToken": { "token": { "Named": "food" } } }]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "revealed2" },
+                      "selector": [{ "In": "Hand" }],
+                      "op": "Eq",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Transform": { "what": "This" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Cooking Campsite",
+      "oracle_fingerprint": "4c35e330815477f096bc4e594e343201",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["White"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{3}" },
+              "Tap",
+              { "Sacrifice": { "filter": [{ "Type": "Artifact" }] } }
+            ],
+            "timing": "Sorcery",
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "counter": "+1/+1"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

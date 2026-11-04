@@ -1,0 +1,33 @@
+{
+  "oracle_id": "d1aba343-d85a-4829-bdfe-db31fcb3c320",
+  "name": "Deep Spawn",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Deep Spawn",
+      "oracle_fingerprint": "a575ba5425184044d4e63c84a08134b8",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "Mill": 2 }],
+                  "unpaid": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 92, "end": 276 }
+          }
+        }
+      ]
+    }
+  ]
+}

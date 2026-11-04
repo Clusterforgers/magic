@@ -1,0 +1,189 @@
+{
+  "object": "card",
+  "id": "4adee830-62fd-4ab4-b1c6-a8bbe15331d1",
+  "oracle_id": "bfa60dd1-fcc8-4126-ab7a-4695c74f5bce",
+  "multiverse_ids": [
+    534756,
+    534757
+  ],
+  "resource_id": "404C38EB466031F846C74583E50D90EA795D1CBB961D1AA17FD089F3F98F3340",
+  "mtgo_id": 92926,
+  "arena_id": 78327,
+  "tcgplayer_id": 248176,
+  "cardmarket_id": 574969,
+  "name": "Bereaved Survivor // Dauntless Avenger",
+  "lang": "en",
+  "released_at": "2021-09-24",
+  "uri": "https://api.scryfall.com/cards/4adee830-62fd-4ab4-b1c6-a8bbe15331d1",
+  "scryfall_uri": "https://scryfall.com/card/mid/4/bereaved-survivor-dauntless-avenger?utm_source=api",
+  "layout": "transform",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T06:54:33Z",
+  "cmc": 3.0,
+  "type_line": "Creature — Human Peasant // Creature — Human Soldier",
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Transform"
+  ],
+  "card_faces": [
+    {
+      "object": "card_face",
+      "name": "Bereaved Survivor",
+      "mana_cost": "{2}{W}",
+      "type_line": "Creature — Human Peasant",
+      "oracle_text": "When another creature you control dies, transform this creature.",
+      "colors": [
+        "W"
+      ],
+      "power": "2",
+      "toughness": "1",
+      "flavor_text": "\"With Avacyn gone, I no longer knew who to pray to. Alone, I wept for a sister who would never return.\"",
+      "artist": "Zara Alfonso",
+      "artist_id": "329a7971-c37e-47f7-9143-58dc929420a7",
+      "illustration_id": "ea82c687-05a5-4dfe-8c64-8ecf9e127dab",
+      "image_uris": {
+        "small": "https://cards.scryfall.io/small/front/4/a/4adee830-62fd-4ab4-b1c6-a8bbe15331d1.jpg?1783925673",
+        "normal": "https://cards.scryfall.io/normal/front/4/a/4adee830-62fd-4ab4-b1c6-a8bbe15331d1.jpg?1783925673",
+        "large": "https://cards.scryfall.io/large/front/4/a/4adee830-62fd-4ab4-b1c6-a8bbe15331d1.jpg?1783925673",
+        "png": "https://cards.scryfall.io/png/front/4/a/4adee830-62fd-4ab4-b1c6-a8bbe15331d1.png?1783925673",
+        "art_crop": "https://cards.scryfall.io/art_crop/front/4/a/4adee830-62fd-4ab4-b1c6-a8bbe15331d1.jpg?1783925673",
+        "border_crop": "https://cards.scryfall.io/border_crop/front/4/a/4adee830-62fd-4ab4-b1c6-a8bbe15331d1.jpg?1783925673",
+        "thumb": "https://cards.scryfall.io/thumb/front/4/a/4adee830-62fd-4ab4-b1c6-a8bbe15331d1.webp?1783925673",
+        "grid": "https://cards.scryfall.io/grid/front/4/a/4adee830-62fd-4ab4-b1c6-a8bbe15331d1.webp?1783925673",
+        "display": "https://cards.scryfall.io/display/front/4/a/4adee830-62fd-4ab4-b1c6-a8bbe15331d1.webp?1783925673",
+        "art": "https://cards.scryfall.io/art/front/4/a/4adee830-62fd-4ab4-b1c6-a8bbe15331d1.webp?1783925673",
+        "crop": "https://cards.scryfall.io/crop/front/4/a/4adee830-62fd-4ab4-b1c6-a8bbe15331d1.webp?1783925673",
+        "jpeg": "https://cards.scryfall.io/normal/front/4/a/4adee830-62fd-4ab4-b1c6-a8bbe15331d1.jpg?1783925673"
+      }
+    },
+    {
+      "object": "card_face",
+      "name": "Dauntless Avenger",
+      "mana_cost": "",
+      "type_line": "Creature — Human Soldier",
+      "oracle_text": "Whenever this creature attacks, return target creature card with mana value 2 or less from your graveyard to the battlefield tapped and attacking.",
+      "colors": [
+        "W"
+      ],
+      "color_indicator": [
+        "W"
+      ],
+      "power": "3",
+      "toughness": "2",
+      "flavor_text": "\"It was Sigarda who lifted me from despair and gave me the strength to fight on.\"",
+      "artist": "Zara Alfonso",
+      "artist_id": "329a7971-c37e-47f7-9143-58dc929420a7",
+      "illustration_id": "86d22f71-f9e2-41f7-add6-ef5f5ea0c1f8",
+      "image_uris": {
+        "small": "https://cards.scryfall.io/small/back/4/a/4adee830-62fd-4ab4-b1c6-a8bbe15331d1.jpg?1783925673",
+        "normal": "https://cards.scryfall.io/normal/back/4/a/4adee830-62fd-4ab4-b1c6-a8bbe15331d1.jpg?1783925673",
+        "large": "https://cards.scryfall.io/large/back/4/a/4adee830-62fd-4ab4-b1c6-a8bbe15331d1.jpg?1783925673",
+        "png": "https://cards.scryfall.io/png/back/4/a/4adee830-62fd-4ab4-b1c6-a8bbe15331d1.png?1783925673",
+        "art_crop": "https://cards.scryfall.io/art_crop/back/4/a/4adee830-62fd-4ab4-b1c6-a8bbe15331d1.jpg?1783925673",
+        "border_crop": "https://cards.scryfall.io/border_crop/back/4/a/4adee830-62fd-4ab4-b1c6-a8bbe15331d1.jpg?1783925673",
+        "thumb": "https://cards.scryfall.io/thumb/back/4/a/4adee830-62fd-4ab4-b1c6-a8bbe15331d1.webp?1783925673",
+        "grid": "https://cards.scryfall.io/grid/back/4/a/4adee830-62fd-4ab4-b1c6-a8bbe15331d1.webp?1783925673",
+        "display": "https://cards.scryfall.io/display/back/4/a/4adee830-62fd-4ab4-b1c6-a8bbe15331d1.webp?1783925673",
+        "art": "https://cards.scryfall.io/art/back/4/a/4adee830-62fd-4ab4-b1c6-a8bbe15331d1.webp?1783925673",
+        "crop": "https://cards.scryfall.io/crop/back/4/a/4adee830-62fd-4ab4-b1c6-a8bbe15331d1.webp?1783925673",
+        "jpeg": "https://cards.scryfall.io/normal/back/4/a/4adee830-62fd-4ab4-b1c6-a8bbe15331d1.jpg?1783925673"
+      }
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "arena",
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "44b8eb8f-fa23-401a-98b5-1fbb9871128e",
+  "set": "mid",
+  "set_name": "Innistrad: Midnight Hunt",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/44b8eb8f-fa23-401a-98b5-1fbb9871128e",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Amid&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/mid?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/4adee830-62fd-4ab4-b1c6-a8bbe15331d1/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Abfa60dd1-fcc8-4126-ab7a-4695c74f5bce&unique=prints",
+  "collector_number": "4",
+  "digital": false,
+  "rarity": "uncommon",
+  "artist": "Zara Alfonso",
+  "artist_ids": [
+    "329a7971-c37e-47f7-9143-58dc929420a7"
+  ],
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "sunmoondfc"
+  ],
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 18976,
+  "penny_rank": 8595,
+  "preview": {
+    "source": "Cedric Phillips",
+    "source_uri": "https://twitter.com/CedricAPhillips/status/1435641580627677190",
+    "previewed_at": "2021-09-08"
+  },
+  "prices": {
+    "usd": "0.23",
+    "usd_foil": "0.23",
+    "usd_etched": null,
+    "eur": "0.19",
+    "eur_foil": "0.20",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=534756&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DBereaved%2BSurvivor%2B%252F%252F%2BDauntless%2BAvenger",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DBereaved%2BSurvivor%2B%252F%252F%2BDauntless%2BAvenger",
+    "edhrec": "https://edhrec.com/route/?cc=Bereaved+Survivor"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F248176%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=574969&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/92926?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

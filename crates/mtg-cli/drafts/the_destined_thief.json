@@ -1,0 +1,53 @@
+{
+  "oracle_id": "7857c7b6-9676-47ac-bb28-d0b4cbda5fa7",
+  "name": "The Destined Thief",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Destined Thief",
+      "oracle_fingerprint": "f39ac494d52db16cf298fc54969e00a3",
+      "abilities": [
+        { "Static": { "affected": "This", "mods": ["CantBeBlocked"] } },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{U}" }, "Tap"],
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["CantBeBlocked"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "DealsDamage": {
+                  "source": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                  "to": "EachPlayer",
+                  "combat": true
+                }
+              }
+            },
+            "effects": [
+              {
+                "If": {
+                  "condition": { "Compare": { "left": { "Party": "You" }, "op": "Eq", "right": 4 } },
+                  "then": [{ "Draw": { "count": 3 } }],
+                  "otherwise": [{ "Draw": {} }, { "Discard": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

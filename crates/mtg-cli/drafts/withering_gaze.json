@@ -1,0 +1,34 @@
+{
+  "oracle_id": "9225016d-adfd-43c6-99cd-d41a7e0d35d6",
+  "name": "Withering Gaze",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Withering Gaze",
+      "oracle_fingerprint": "54df12f46c05af47044a32dbad1b5820",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Reveal": { "what": { "Each": [{ "OwnedBy": { "Target": 0 } }, { "In": "Hand" }] } }
+              },
+              {
+                "Draw": {
+                  "count": {
+                    "Count": [
+                      { "AnyOf": [{ "Subtype": "Forest" }, { "Color": "Green" }] },
+                      { "OwnedBy": { "Target": 0 } },
+                      { "In": "Hand" }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

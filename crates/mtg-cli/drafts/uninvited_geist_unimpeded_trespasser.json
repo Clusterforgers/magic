@@ -1,0 +1,25 @@
+{
+  "oracle_id": "5c975dbb-aabb-43fe-877c-c3950019a584",
+  "name": "Uninvited Geist // Unimpeded Trespasser",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Uninvited Geist",
+      "oracle_fingerprint": "3e305f83c60760b0d5ea0176ec57f23f",
+      "abilities": [
+        { "Keyword": "Skulk" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [{ "Transform": { "what": "This" } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Unimpeded Trespasser",
+      "oracle_fingerprint": "7540809bd7730a0a5bad46af0633452e",
+      "abilities": [{ "Static": { "affected": "This", "mods": ["CantBeBlocked"] } }]
+    }
+  ]
+}

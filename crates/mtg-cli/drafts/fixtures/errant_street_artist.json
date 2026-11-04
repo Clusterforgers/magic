@@ -1,0 +1,149 @@
+{
+  "object": "card",
+  "id": "61d23407-9fe0-4cbf-b4b5-bc1e132c36e4",
+  "oracle_id": "23e6df25-90db-42a4-8658-e592e67be15e",
+  "multiverse_ids": [
+    555242
+  ],
+  "mtgo_id": 98301,
+  "arena_id": 80192,
+  "tcgplayer_id": 268678,
+  "cardmarket_id": 651625,
+  "name": "Errant, Street Artist",
+  "lang": "en",
+  "released_at": "2022-04-29",
+  "uri": "https://api.scryfall.com/cards/61d23407-9fe0-4cbf-b4b5-bc1e132c36e4",
+  "scryfall_uri": "https://scryfall.com/card/snc/41/errant-street-artist?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T06:12:26Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/6/1/61d23407-9fe0-4cbf-b4b5-bc1e132c36e4.jpg?1783923146",
+    "normal": "https://cards.scryfall.io/normal/front/6/1/61d23407-9fe0-4cbf-b4b5-bc1e132c36e4.jpg?1783923146",
+    "large": "https://cards.scryfall.io/large/front/6/1/61d23407-9fe0-4cbf-b4b5-bc1e132c36e4.jpg?1783923146",
+    "png": "https://cards.scryfall.io/png/front/6/1/61d23407-9fe0-4cbf-b4b5-bc1e132c36e4.png?1783923146",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/6/1/61d23407-9fe0-4cbf-b4b5-bc1e132c36e4.jpg?1783923146",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/6/1/61d23407-9fe0-4cbf-b4b5-bc1e132c36e4.jpg?1783923146",
+    "thumb": "https://cards.scryfall.io/thumb/front/6/1/61d23407-9fe0-4cbf-b4b5-bc1e132c36e4.webp?1783923146",
+    "grid": "https://cards.scryfall.io/grid/front/6/1/61d23407-9fe0-4cbf-b4b5-bc1e132c36e4.webp?1783923146",
+    "display": "https://cards.scryfall.io/display/front/6/1/61d23407-9fe0-4cbf-b4b5-bc1e132c36e4.webp?1783923146",
+    "art": "https://cards.scryfall.io/art/front/6/1/61d23407-9fe0-4cbf-b4b5-bc1e132c36e4.webp?1783923146",
+    "crop": "https://cards.scryfall.io/crop/front/6/1/61d23407-9fe0-4cbf-b4b5-bc1e132c36e4.webp?1783923146",
+    "jpeg": "https://cards.scryfall.io/normal/front/6/1/61d23407-9fe0-4cbf-b4b5-bc1e132c36e4.jpg?1783923146"
+  },
+  "mana_cost": "{U}",
+  "cmc": 1.0,
+  "type_line": "Legendary Creature — Human Rogue",
+  "oracle_text": "Flash\nDefender, haste\n{1}{U}, {T}: Copy target spell you control that wasn't cast. You may choose new targets for the copy.",
+  "power": "0",
+  "toughness": "3",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Haste",
+    "Flash",
+    "Defender"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo",
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "df837242-8c15-42e4-b049-c933a02dc501",
+  "set": "snc",
+  "set_name": "Streets of New Capenna",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/df837242-8c15-42e4-b049-c933a02dc501",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Asnc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/snc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/61d23407-9fe0-4cbf-b4b5-bc1e132c36e4/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A23e6df25-90db-42a4-8658-e592e67be15e&unique=prints",
+  "collector_number": "41",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "Few know her face, but everyone knows her work.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Justine Cruz",
+  "artist_ids": [
+    "4d6acc42-7bac-42cb-ac57-a56355292e89"
+  ],
+  "illustration_id": "53d0ee87-7120-441d-abd8-3e3a057a39a6",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 8968,
+  "penny_rank": 11101,
+  "preview": {
+    "source": "Multiplayer.it",
+    "source_uri": "https://multiplayer.it/notizie/magic-the-gathering-carta-leggendaria-errante-artista-strada-svelata.html",
+    "previewed_at": "2022-04-09"
+  },
+  "prices": {
+    "usd": "0.36",
+    "usd_foil": "0.34",
+    "usd_etched": null,
+    "eur": "0.11",
+    "eur_foil": "0.33",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=555242&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DErrant%252C%2BStreet%2BArtist",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DErrant%252C%2BStreet%2BArtist",
+    "edhrec": "https://edhrec.com/route/?cc=Errant%2C+Street+Artist"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F268678%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=651625&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/98301?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

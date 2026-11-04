@@ -1,0 +1,33 @@
+{
+  "oracle_id": "e4e6cb61-f673-4f36-b95c-c84a68459503",
+  "name": "Hypothesizzle",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hypothesizzle",
+      "oracle_fingerprint": "56ce85e1688bd3b444ae709b91b46472",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Draw": { "count": 2 } },
+              {
+                "Pay": {
+                  "cost": [{ "Discard": { "filter": [{ "Not": { "Type": "Land" } }] } }],
+                  "paid": [
+                    {
+                      "Reflexive": {
+                        "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                        "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 4 } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

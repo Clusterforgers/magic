@@ -1,0 +1,42 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "At the beginning of your end step, if CARDNAME is equipped, transform it.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    },
+    {
+      "face": 1,
+      "tag": "T",
+      "text": "When this creature transforms into CARDNAME, you may exile another target creature until CARDNAME leaves the battlefield.",
+      "abilities": [],
+      "gap": "key:ChangeZone.Duration"
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 78
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 1,
+        "span": {
+          "start": 0,
+          "end": 137
+        },
+        "mark": "ByHand"
+      }
+    ]
+  }
+}

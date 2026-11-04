@@ -1,0 +1,59 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "K",
+      "text": "Trample",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    },
+    {
+      "face": 0,
+      "tag": "A",
+      "text": "CARDNAME gains shroud until end of turn and doesn't untap during your next untap step. Tap CARDNAME. (A permanent with shroud can't be the target of spells or abilities.)",
+      "abilities": [],
+      "gap": "replacement:Untap"
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "At the beginning of your upkeep, sacrifice CARDNAME unless you mill two cards.",
+      "abilities": [
+        1
+      ],
+      "gap": null
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 7
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 8,
+          "end": 91
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 92,
+          "end": 276
+        },
+        "mark": "ByHand"
+      }
+    ]
+  }
+}

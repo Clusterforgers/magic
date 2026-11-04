@@ -1,0 +1,53 @@
+{
+  "oracle_id": "f40e6bbf-1fed-4ec5-869d-18c2dd396d14",
+  "name": "Vincent Valentine // Galian Beast",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Vincent Valentine",
+      "oracle_fingerprint": "7d40e066c765daa8cee95733c70cbc43",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": "This",
+                  "counter": "+1/+1",
+                  "count": { "Stat": { "of": "Triggering", "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [{ "May": { "effects": [{ "Transform": { "what": "This" } }] } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Galian Beast",
+      "oracle_fingerprint": "f4f2d0188f50add585e3f420b1d479e3",
+      "abilities": [
+        { "Keyword": "Trample" },
+        { "Keyword": "Lifelink" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 18, "end": 94 }
+          }
+        }
+      ]
+    }
+  ]
+}

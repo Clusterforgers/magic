@@ -1,0 +1,46 @@
+{
+  "oracle_id": "5cd35d18-115b-4d7c-8d05-3d4c8303f46e",
+  "name": "Genju of the Fields",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Genju of the Fields",
+      "oracle_fingerprint": "7eed8a6c13580074c707981e9cadd544",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Subtype": "Plains" }] } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 15, "end": 191 }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Is": "Attached" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": { "Each": ["This", { "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                        "as": "picked"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "picked" }, "to": "Hand" } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

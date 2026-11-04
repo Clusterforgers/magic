@@ -1,0 +1,35 @@
+{
+  "oracle_id": "0be157fa-b2d3-415e-acb0-173fd1603fde",
+  "name": "Vigean Intuition",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vigean Intuition",
+      "oracle_fingerprint": "0fd006929c0d27f5cc767f8cbd83637f",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "ChooseValue": { "kind": "CardType", "as": "chosen" } },
+              { "LookAtTop": { "count": 4, "as": "top2" } },
+              { "Reveal": { "what": { "Bound": "top2" } } },
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top2" } },
+                      { "ChosenAs": "chosen" }
+                    ]
+                  },
+                  "to": "Hand"
+                }
+              },
+              { "Move": { "what": { "Bound": "top2" }, "to": "Graveyard" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

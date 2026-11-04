@@ -1,0 +1,28 @@
+{
+  "oracle_id": "29ae5540-5fdf-48be-86ba-b4db0fe19f6c",
+  "name": "Vapor Snare",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vapor Snare",
+      "oracle_fingerprint": "a94cdf942e86ee76bfc93a3c8035feff",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        { "Static": { "affected": "Attached", "mods": [{ "SetController": "You" }] } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "ReturnToHand": { "filter": [{ "Type": "Land" }] } }],
+                  "unpaid": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

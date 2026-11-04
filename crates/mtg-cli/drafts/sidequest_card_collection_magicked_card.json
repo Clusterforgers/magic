@@ -1,0 +1,37 @@
+{
+  "oracle_id": "0c2095b0-478d-45b4-a34d-b19eb77cea4c",
+  "name": "Sidequest: Card Collection // Magicked Card",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sidequest: Card Collection",
+      "oracle_fingerprint": "1cdda62166361ce7c68a21a6bbeefc5b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Draw": { "count": 3 } }, { "Discard": { "count": 2 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": [{ "OwnedBy": "You" }, { "In": "Graveyard" }] },
+                "op": "Ge",
+                "right": 8
+              }
+            },
+            "effects": [{ "Transform": { "what": "This" } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Magicked Card",
+      "oracle_fingerprint": "d469e474920b9abeb0345c182fced260",
+      "abilities": [{ "Keyword": "Flying" }, { "Keyword": { "Crew": 1 } }]
+    }
+  ]
+}

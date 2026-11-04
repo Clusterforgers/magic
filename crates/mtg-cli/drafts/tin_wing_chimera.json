@@ -1,0 +1,32 @@
+{
+  "oracle_id": "0d5fe27f-db51-4323-aa74-b6fdb4309425",
+  "name": "Tin-Wing Chimera",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tin-Wing Chimera",
+      "oracle_fingerprint": "473fd10961974824ddefe516e63fe690",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": ["SacrificeSelf"],
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "Subtype": "Chimera" }] } }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "+2/+2" } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Flying" }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

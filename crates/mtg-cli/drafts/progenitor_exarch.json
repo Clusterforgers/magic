@@ -1,0 +1,32 @@
+{
+  "oracle_id": "4052f710-6ba7-406f-8fb7-653a684a80e0",
+  "name": "Progenitor Exarch",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Progenitor Exarch",
+      "oracle_fingerprint": "2e8a585a34fca0a08a42dab156d84576",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 208 }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Subtype": "Incubator" }, "Token", { "ControlledBy": "You" }]
+                }
+              }
+            ],
+            "effects": [{ "Transform": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

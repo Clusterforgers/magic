@@ -1,0 +1,38 @@
+{
+  "oracle_id": "7b2c7758-2b89-49ff-8838-8dc9880c7209",
+  "name": "Treva's Ruins",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Treva's Ruins",
+      "oracle_fingerprint": "7fee6b434024bf090e5be1ad1634a105",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [
+                    {
+                      "ReturnToHand": {
+                        "filter": [{ "Type": "Land" }, { "Not": { "Subtype": "Lair" } }]
+                      }
+                    }
+                  ],
+                  "unpaid": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "OneOf": ["Green", "White", "Blue"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "oracle_id": "ada3c285-3449-4037-8b44-42e128456a65",
+  "name": "Genju of the Cedars",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Genju of the Cedars",
+      "oracle_fingerprint": "794bbf591a0bb593922b261479b74acf",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Subtype": "Forest" }] } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 15, "end": 110 }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Is": "Attached" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": { "Each": ["This", { "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                        "as": "picked"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "picked" }, "to": "Hand" } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "oracle_id": "bfa60dd1-fcc8-4126-ab7a-4695c74f5bce",
+  "name": "Bereaved Survivor // Dauntless Avenger",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Bereaved Survivor",
+      "oracle_fingerprint": "a35b899da2c46f7594a523b2022fc686",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [{ "Transform": { "what": "This" } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Dauntless Avenger",
+      "oracle_fingerprint": "7cc97a176dfe251291c230abb9ec1572",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 146 }
+          }
+        }
+      ]
+    }
+  ]
+}

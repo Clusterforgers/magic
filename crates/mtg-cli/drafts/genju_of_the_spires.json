@@ -1,0 +1,46 @@
+{
+  "oracle_id": "c040882e-48ba-469e-9fc6-02e8b68dd58c",
+  "name": "Genju of the Spires",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Genju of the Spires",
+      "oracle_fingerprint": "5d1c7107b05874fc1d01aa9f19bf9bbb",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Subtype": "Mountain" }] } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 17, "end": 112 }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Is": "Attached" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": { "Each": ["This", { "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                        "as": "picked"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "picked" }, "to": "Hand" } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

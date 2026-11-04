@@ -1,0 +1,26 @@
+{
+  "oracle_id": "cdab50a8-1e02-4ba5-8c09-e2837e7652f7",
+  "name": "Thundering Wurm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thundering Wurm",
+      "oracle_fingerprint": "857aee8a69bfdb6b540c71d99db19784",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "Discard": { "filter": [{ "Type": "Land" }] } }],
+                  "unpaid": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

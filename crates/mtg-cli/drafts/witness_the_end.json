@@ -1,0 +1,31 @@
+{
+  "oracle_id": "340d2261-9454-4ab0-827c-49c7e76c7781",
+  "name": "Witness the End",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Witness the End",
+      "oracle_fingerprint": "5f882ec4ffe6a0af7dd1cf0165a98677",
+      "abilities": [
+        { "Keyword": "Devoid" },
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Choose": {
+                  "who": { "Target": 0 },
+                  "from": { "Each": [{ "In": "Hand" }, { "OwnedBy": { "Target": 0 } }] },
+                  "count": { "min": 2, "max": 2 },
+                  "as": "picked"
+                }
+              },
+              { "Exile": { "what": { "Bound": "picked" } } },
+              { "LoseLife": { "who": { "Target": 0 }, "amount": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

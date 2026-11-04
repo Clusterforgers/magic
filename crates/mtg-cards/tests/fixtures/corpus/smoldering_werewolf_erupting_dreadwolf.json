@@ -1,0 +1,190 @@
+{
+  "object": "card",
+  "id": "e724d16c-d44b-4b8f-9616-64923e2cdeb2",
+  "oracle_id": "372a01f7-6e58-4424-9405-0ee4acbb9346",
+  "multiverse_ids": [
+    686010
+  ],
+  "mtgo_id": 135750,
+  "tcgplayer_id": 609919,
+  "cardmarket_id": 805800,
+  "name": "Smoldering Werewolf // Erupting Dreadwolf",
+  "lang": "en",
+  "released_at": "2025-01-24",
+  "uri": "https://api.scryfall.com/cards/e724d16c-d44b-4b8f-9616-64923e2cdeb2",
+  "scryfall_uri": "https://scryfall.com/card/inr/171/smoldering-werewolf-erupting-dreadwolf?utm_source=api",
+  "layout": "transform",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T02:01:58Z",
+  "cmc": 4.0,
+  "type_line": "Creature — Werewolf Horror // Creature — Eldrazi Werewolf",
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Transform"
+  ],
+  "card_faces": [
+    {
+      "object": "card_face",
+      "name": "Smoldering Werewolf",
+      "mana_cost": "{2}{R}{R}",
+      "type_line": "Creature — Werewolf Horror",
+      "oracle_text": "When this creature enters, it deals 1 damage to each of up to two target creatures.\n{4}{R}{R}: Transform this creature.",
+      "colors": [
+        "R"
+      ],
+      "power": "3",
+      "toughness": "2",
+      "flavor_text": "\"Never thought I'd see the day I'd be wishing to see just a plain old werewolf.\"\n—Raf Gyel of the Quiver of Kessig",
+      "artist": "Zack Stella",
+      "artist_id": "17bc7f55-958b-43f4-bb40-09746d05b3f9",
+      "illustration_id": "58aaabd7-6c23-4ff2-9868-fa744f21f3a3",
+      "image_uris": {
+        "small": "https://cards.scryfall.io/small/front/e/7/e724d16c-d44b-4b8f-9616-64923e2cdeb2.jpg?1783908118",
+        "normal": "https://cards.scryfall.io/normal/front/e/7/e724d16c-d44b-4b8f-9616-64923e2cdeb2.jpg?1783908118",
+        "large": "https://cards.scryfall.io/large/front/e/7/e724d16c-d44b-4b8f-9616-64923e2cdeb2.jpg?1783908118",
+        "png": "https://cards.scryfall.io/png/front/e/7/e724d16c-d44b-4b8f-9616-64923e2cdeb2.png?1783908118",
+        "art_crop": "https://cards.scryfall.io/art_crop/front/e/7/e724d16c-d44b-4b8f-9616-64923e2cdeb2.jpg?1783908118",
+        "border_crop": "https://cards.scryfall.io/border_crop/front/e/7/e724d16c-d44b-4b8f-9616-64923e2cdeb2.jpg?1783908118",
+        "thumb": "https://cards.scryfall.io/thumb/front/e/7/e724d16c-d44b-4b8f-9616-64923e2cdeb2.webp?1783908118",
+        "grid": "https://cards.scryfall.io/grid/front/e/7/e724d16c-d44b-4b8f-9616-64923e2cdeb2.webp?1783908118",
+        "display": "https://cards.scryfall.io/display/front/e/7/e724d16c-d44b-4b8f-9616-64923e2cdeb2.webp?1783908118",
+        "art": "https://cards.scryfall.io/art/front/e/7/e724d16c-d44b-4b8f-9616-64923e2cdeb2.webp?1783908118",
+        "crop": "https://cards.scryfall.io/crop/front/e/7/e724d16c-d44b-4b8f-9616-64923e2cdeb2.webp?1783908118",
+        "jpeg": "https://cards.scryfall.io/normal/front/e/7/e724d16c-d44b-4b8f-9616-64923e2cdeb2.jpg?1783908118"
+      }
+    },
+    {
+      "object": "card_face",
+      "name": "Erupting Dreadwolf",
+      "mana_cost": "",
+      "type_line": "Creature — Eldrazi Werewolf",
+      "oracle_text": "Whenever this creature attacks, it deals 2 damage to any target.",
+      "colors": [],
+      "power": "6",
+      "toughness": "4",
+      "flavor_text": "\". . . heck, I'd settle for anything that even resembled a werewolf.\"\n—Raf Gyel of the Quiver of Kessig",
+      "artist": "Zack Stella",
+      "artist_id": "17bc7f55-958b-43f4-bb40-09746d05b3f9",
+      "illustration_id": "740c7ee7-dbf5-41e1-9ea3-b49511f7036e",
+      "image_uris": {
+        "small": "https://cards.scryfall.io/small/back/e/7/e724d16c-d44b-4b8f-9616-64923e2cdeb2.jpg?1783908118",
+        "normal": "https://cards.scryfall.io/normal/back/e/7/e724d16c-d44b-4b8f-9616-64923e2cdeb2.jpg?1783908118",
+        "large": "https://cards.scryfall.io/large/back/e/7/e724d16c-d44b-4b8f-9616-64923e2cdeb2.jpg?1783908118",
+        "png": "https://cards.scryfall.io/png/back/e/7/e724d16c-d44b-4b8f-9616-64923e2cdeb2.png?1783908118",
+        "art_crop": "https://cards.scryfall.io/art_crop/back/e/7/e724d16c-d44b-4b8f-9616-64923e2cdeb2.jpg?1783908118",
+        "border_crop": "https://cards.scryfall.io/border_crop/back/e/7/e724d16c-d44b-4b8f-9616-64923e2cdeb2.jpg?1783908118",
+        "thumb": "https://cards.scryfall.io/thumb/back/e/7/e724d16c-d44b-4b8f-9616-64923e2cdeb2.webp?1783908118",
+        "grid": "https://cards.scryfall.io/grid/back/e/7/e724d16c-d44b-4b8f-9616-64923e2cdeb2.webp?1783908118",
+        "display": "https://cards.scryfall.io/display/back/e/7/e724d16c-d44b-4b8f-9616-64923e2cdeb2.webp?1783908118",
+        "art": "https://cards.scryfall.io/art/back/e/7/e724d16c-d44b-4b8f-9616-64923e2cdeb2.webp?1783908118",
+        "crop": "https://cards.scryfall.io/crop/back/e/7/e724d16c-d44b-4b8f-9616-64923e2cdeb2.webp?1783908118",
+        "jpeg": "https://cards.scryfall.io/normal/back/e/7/e724d16c-d44b-4b8f-9616-64923e2cdeb2.jpg?1783908118"
+      }
+    }
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "ca129694-150c-47c6-bdda-c3ba3d1fdc61",
+      "component": "combo_piece",
+      "name": "Smoldering Werewolf // Erupting Dreadwolf",
+      "type_line": "Creature — Werewolf Horror // Creature — Eldrazi Werewolf",
+      "uri": "https://api.scryfall.com/cards/ca129694-150c-47c6-bdda-c3ba3d1fdc61"
+    },
+    {
+      "object": "related_card",
+      "id": "cd8586f9-97e2-438d-b74f-1e53c811f314",
+      "component": "combo_piece",
+      "name": "Eldritch Moon Checklist",
+      "type_line": "Card",
+      "uri": "https://api.scryfall.com/cards/cd8586f9-97e2-438d-b74f-1e53c811f314"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "b9618c8c-9f31-4b42-9798-2991893c27bf",
+  "set": "inr",
+  "set_name": "Innistrad Remastered",
+  "set_type": "masters",
+  "set_uri": "https://api.scryfall.com/sets/b9618c8c-9f31-4b42-9798-2991893c27bf",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ainr&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/inr?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/e724d16c-d44b-4b8f-9616-64923e2cdeb2/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A372a01f7-6e58-4424-9405-0ee4acbb9346&unique=prints",
+  "collector_number": "171",
+  "digital": false,
+  "rarity": "uncommon",
+  "artist": "Zack Stella",
+  "artist_ids": [
+    "17bc7f55-958b-43f4-bb40-09746d05b3f9"
+  ],
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 21656,
+  "penny_rank": 12984,
+  "prices": {
+    "usd": "0.23",
+    "usd_foil": "0.33",
+    "usd_etched": null,
+    "eur": "0.09",
+    "eur_foil": "0.19",
+    "tix": "0.04"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=686010&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DSmoldering%2BWerewolf%2B%252F%252F%2BErupting%2BDreadwolf",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DSmoldering%2BWerewolf%2B%252F%252F%2BErupting%2BDreadwolf",
+    "edhrec": "https://edhrec.com/route/?cc=Smoldering+Werewolf"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F609919%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=805800&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/135750?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

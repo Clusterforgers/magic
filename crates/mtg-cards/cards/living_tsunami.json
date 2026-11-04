@@ -1,0 +1,27 @@
+{
+  "oracle_id": "7260657a-c1cd-4081-8ab5-46d604dccca8",
+  "name": "Living Tsunami",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Living Tsunami",
+      "oracle_fingerprint": "9c33b3f8a2dd5662fbd54e163fa7390b",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "ReturnToHand": { "filter": [{ "Type": "Land" }] } }],
+                  "unpaid": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

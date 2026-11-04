@@ -1,0 +1,41 @@
+{
+  "oracle_id": "433e86ce-df04-4182-bb63-ad2607d67dbd",
+  "name": "Contagion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Contagion",
+      "oracle_fingerprint": "c9788300918fac7e34c9dfc13b8ba86c",
+      "abilities": [
+        {
+          "FreeCast": {
+            "cost": [
+              { "PayLife": 1 },
+              { "ExileFromHand": { "filter": [{ "Color": "Black" }, "Other"] } }
+            ]
+          }
+        },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }] },
+                "bounds": { "min": 1, "max": 2 },
+                "divide": 2
+              }
+            ],
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": { "Target": 0 },
+                  "counter": { "Other": "-2/-1" },
+                  "count": "Divided"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

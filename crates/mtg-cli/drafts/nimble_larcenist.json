@@ -1,0 +1,42 @@
+{
+  "oracle_id": "abd839ab-8b08-4bc0-900a-3a161c62b06c",
+  "name": "Nimble Larcenist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nimble Larcenist",
+      "oracle_fingerprint": "41da1ed17f866c5b64e4341c5b8f6af7",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      {
+                        "AnyOf": [
+                          { "Type": "Artifact" },
+                          { "Type": "Instant" },
+                          { "Type": "Sorcery" }
+                        ]
+                      },
+                      { "In": "Hand" },
+                      { "OwnedBy": { "Target": 0 } }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked"
+                }
+              },
+              { "Exile": { "what": { "Bound": "picked" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

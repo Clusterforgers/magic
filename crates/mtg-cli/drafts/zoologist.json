@@ -1,0 +1,35 @@
+{
+  "oracle_id": "878e4e3b-c546-4174-906e-6fe8e64d9d41",
+  "name": "Zoologist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Zoologist",
+      "oracle_fingerprint": "18ad035d6cf9dd4d1f541553b16eff70",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}{G}" }, "Tap"],
+            "effects": [
+              { "LookAtTop": { "as": "top" } },
+              { "Reveal": { "what": { "Bound": "top" } } },
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "Type": "Creature" }
+                    ]
+                  },
+                  "to": { "Battlefield": {} }
+                }
+              },
+              { "Move": { "what": { "Bound": "top" }, "to": "Graveyard" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

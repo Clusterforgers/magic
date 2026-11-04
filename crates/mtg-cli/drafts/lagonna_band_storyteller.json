@@ -1,0 +1,45 @@
+{
+  "oracle_id": "0d208c1e-c273-437f-9aea-136400e450e1",
+  "name": "Lagonna-Band Storyteller",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lagonna-Band Storyteller",
+      "oracle_fingerprint": "e1086eefd40c376367d17556e14a72d9",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Enchantment" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Move": {
+                        "what": { "Target": 0 },
+                        "to": { "Library": { "place": "Top" } },
+                        "as": "moved"
+                      }
+                    },
+                    {
+                      "GainLife": {
+                        "amount": { "Stat": { "of": { "Bound": "moved" }, "stat": "ManaValue" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

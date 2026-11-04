@@ -1,0 +1,34 @@
+{
+  "oracle_id": "4135131d-4653-4767-ad1d-68c9bf393c3a",
+  "name": "Baleful Stare",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Baleful Stare",
+      "oracle_fingerprint": "6d1ef132b51335c9f9dd828895865f2f",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Reveal": { "what": { "Each": [{ "OwnedBy": { "Target": 0 } }, { "In": "Hand" }] } }
+              },
+              {
+                "Draw": {
+                  "count": {
+                    "Count": [
+                      { "AnyOf": [{ "Subtype": "Mountain" }, { "Color": "Red" }] },
+                      { "OwnedBy": { "Target": 0 } },
+                      { "In": "Hand" }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

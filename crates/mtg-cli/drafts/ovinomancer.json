@@ -1,0 +1,39 @@
+{
+  "oracle_id": "98026d30-a29f-4590-968f-b1b36926a275",
+  "name": "Ovinomancer",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Ovinomancer",
+      "oracle_fingerprint": "4a561fbed7eae0299fd407f5d3e84882",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [
+                    {
+                      "ReturnToHand": {
+                        "filter": [{ "Type": "Land" }, { "Supertype": "Basic" }],
+                        "count": 3
+                      }
+                    }
+                  ],
+                  "unpaid": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 111, "end": 276 }
+          }
+        }
+      ]
+    }
+  ]
+}

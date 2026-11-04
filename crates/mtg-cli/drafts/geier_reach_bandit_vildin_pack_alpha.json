@@ -1,0 +1,40 @@
+{
+  "oracle_id": "64720167-b88b-47f7-bfc1-d5e005c9fd68",
+  "name": "Geier Reach Bandit // Vildin-Pack Alpha",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Geier Reach Bandit",
+      "oracle_fingerprint": "4a1d18e3a64e1103d6d5d2cb7d853669",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 6, "end": 97 } }
+        }
+      ]
+    },
+    {
+      "name": "Vildin-Pack Alpha",
+      "oracle_fingerprint": "4959d9269bad9deb59b617186eb42dd6",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Subtype": "Werewolf" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [{ "May": { "effects": [{ "Transform": { "what": "Triggering" } }] } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 62, "end": 166 }
+          }
+        }
+      ]
+    }
+  ]
+}
