@@ -71,3 +71,41 @@ fn path_to_exile_gives_the_creatures_controller_a_land(
 ) {
     assert_eq!(path(yes), expected);
 }
+
+const FLICKER: &str = "Name:Flick\nManaCost:W\nTypes:Instant\nA:SP$ ChangeZone | ValidTgts$ Creature | Origin$ Battlefield | Destination$ Exile | RememberChanged$ True | SubAbility$ DBReturn\nSVar:DBReturn:DB$ ChangeZone | Defined$ Remembered | Origin$ All | Destination$ Battlefield | SubAbility$ DBCleanup\nSVar:DBCleanup:DB$ Cleanup | ClearRemembered$ True\n";
+const SWAP: &str = "Name:Flick Swap\nManaCost:W\nTypes:Instant\nA:SP$ ChangeZone | ValidTgts$ Creature | Origin$ Battlefield | Destination$ Exile | RememberChanged$ True | SubAbility$ DBReturn\nSVar:DBReturn:DB$ ChangeZone | Defined$ Remembered | Origin$ All | Destination$ Battlefield | GainControl$ True | SubAbility$ DBCleanup\nSVar:DBCleanup:DB$ Cleanup | ClearRemembered$ True\n";
+
+/// The player that controls the opponent's bear after the spell, and how many bears are on the battlefield.
+fn flicker(script: &str, name: &str) -> (usize, usize) {
+    let card = translated(script, name, "Instant", "{W}");
+    let scenario = Scenario::new(2)
+        .hand(0, [card])
+        .battlefield(0, [ready(plains())])
+        .battlefield(1, [ready(bear())]);
+    let mut driver = Driver::from_scenario(scenario).unwrap();
+    let target = driver.target_named("Grizzly Bears").unwrap();
+    driver.cast_at(name, &[target]).unwrap();
+    crate::r3p3_runs::settle(&mut driver);
+    let state = driver.state();
+    let bears: Vec<_> = state
+        .zone(Zone::Battlefield)
+        .iter()
+        .map(|id| state.object(*id).unwrap())
+        .filter(|object| object.card().name == "Grizzly Bears")
+        .collect();
+    (
+        bears.first().map_or(9, |bear| bear.controller().index()),
+        bears.len(),
+    )
+}
+
+#[rstest]
+#[case::back_under_its_owner(FLICKER, "Flick", (1, 1))]
+#[case::under_your_control(SWAP, "Flick Swap", (0, 1))]
+fn a_flicker_returns_the_exiled_card(
+    #[case] script: &str,
+    #[case] name: &str,
+    #[case] expected: (usize, usize),
+) {
+    assert_eq!(flicker(script, name), expected);
+}

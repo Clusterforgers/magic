@@ -70,3 +70,33 @@ fn shapes_that_do_not_map_stay_named_gaps(#[case] lines: &str, #[case] gap: &str
     assert!(abilities(&script).is_empty(), "{:?}", abilities(&script));
     assert_eq!(gaps(&script), [gap]);
 }
+
+#[rstest]
+#[case::returned_from_anywhere(
+    "A:SP$ ChangeZone | ValidTgts$ Creature | Origin$ Battlefield | Destination$ Exile | RememberChanged$ True | SubAbility$ R\nSVar:R:DB$ ChangeZone | Defined$ Remembered | Origin$ All | Destination$ Battlefield | SubAbility$ C\nSVar:C:DB$ Cleanup | ClearRemembered$ True",
+    true
+)]
+#[case::taken_under_your_control(
+    "A:SP$ ChangeZone | ValidTgts$ Creature | Origin$ Battlefield | Destination$ Exile | RememberChanged$ True | SubAbility$ R\nSVar:R:DB$ ChangeZone | Defined$ Remembered | Origin$ All | Destination$ Battlefield | GainControl$ True | SubAbility$ C\nSVar:C:DB$ Cleanup | ClearRemembered$ True",
+    true
+)]
+#[case::a_target_of_any_zone_has_no_zone_to_filter(
+    "A:SP$ ChangeZone | ValidTgts$ Creature | Origin$ All | Destination$ Battlefield",
+    false
+)]
+#[case::a_pick_by_type_has_no_zone(
+    "A:SP$ ChangeZone | ChangeType$ Creature | Origin$ All | Destination$ Battlefield",
+    false
+)]
+fn a_move_from_every_zone_names_the_objects(#[case] lines: &str, #[case] maps: bool) {
+    let script = card("Instant", lines);
+    assert_eq!(
+        abilities(&script).len(),
+        usize::from(maps),
+        "{:?}",
+        gaps(&script)
+    );
+    if !maps {
+        assert_eq!(gaps(&script), ["zone:Origin=All"]);
+    }
+}

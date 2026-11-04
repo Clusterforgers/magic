@@ -13,6 +13,9 @@ use crate::forge::script::Params;
 pub fn effects(ctx: &mut Ctx, p: &Params, api: &str) -> Tr<Vec<Value>> {
     let origin = if api == "ChangeZone" && p.get("Origin") == Some("Stack") {
         "Stack"
+    } else if api == "ChangeZone" && p.get("Origin") == Some("All") && named_objects(p) {
+        // The named objects are moved from wherever they are now; a zone is no filter on them.
+        "All"
     } else {
         zone_word(p.get("Origin"), "Origin", true)?
     };
@@ -45,6 +48,11 @@ pub fn effects(ctx: &mut Ctx, p: &Params, api: &str) -> Tr<Vec<Value>> {
         ("ChangeZone", _) => change_zone(ctx, p, origin, destination),
         _ => change_zone_all(ctx, p, origin, destination),
     }
+}
+
+/// Whether the line moves objects it names (`Defined$`), not a target or a pick by type.
+fn named_objects(p: &Params) -> bool {
+    p.has("Defined") && !p.has("ValidTgts") && !p.has("ChangeType")
 }
 
 /// Whether the word is one of the hand, graveyard and exile, or a list of them (`Graveyard,Exile`).
