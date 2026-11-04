@@ -1,0 +1,35 @@
+{
+  "oracle_id": "d4721c7e-1a55-42cf-99c9-9118e386f48b",
+  "name": "Wild Research",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wild Research",
+      "oracle_fingerprint": "f6b1c634da0cdd72b5706cf3fcbc47af",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{1}{W}",
+            "effects": [
+              { "Search": { "filter": [{ "Type": "Enchantment" }], "reveal": true, "as": "found" } },
+              { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+              { "Shuffle": {} },
+              { "Discard": { "random": true } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{1}{U}",
+            "effects": [
+              { "Search": { "filter": [{ "Type": "Instant" }], "reveal": true, "as": "found" } },
+              { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+              { "Shuffle": {} },
+              { "Discard": { "random": true } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

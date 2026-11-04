@@ -1,0 +1,27 @@
+{
+  "oracle_id": "e5c2cf0f-c1c0-4fd6-9b5f-7d4aa25246a7",
+  "name": "Zodiac Dragon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Zodiac Dragon",
+      "oracle_fingerprint": "50dff2ade2cfa2ddee1cc2f8834fcc6e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": ["This", { "OwnedBy": "You" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              { "May": { "effects": [{ "Move": { "what": "Triggering", "to": "Hand" } }] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

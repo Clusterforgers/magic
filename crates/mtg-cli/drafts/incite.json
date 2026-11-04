@@ -1,0 +1,30 @@
+{
+  "oracle_id": "304da0e0-9852-4ba5-a896-3c6bd703a64c",
+  "name": "Incite",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Incite",
+      "oracle_fingerprint": "9c288faa24e2f52d19efc43a8bb81715",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetColors": ["Red"] }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Rule": { "rule": { "MustAttack": { "Target": 0 } }, "duration": "UntilEndOfTurn" }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

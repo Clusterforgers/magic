@@ -1,0 +1,53 @@
+{
+  "oracle_id": "0e2418f8-2f32-4f79-8ce7-44eae8e764cb",
+  "name": "Hollowhenge Overlord",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hollowhenge Overlord",
+      "oracle_fingerprint": "f78af2845746281cab63f83411c2a674",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Wolf",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Wolf"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  },
+                  "count": {
+                    "Count": [
+                      {
+                        "AnyOf": [
+                          {
+                            "Not": {
+                              "AnyOf": [
+                                { "Not": { "Type": "Creature" } },
+                                { "Not": { "Subtype": "Wolf" } }
+                              ]
+                            }
+                          },
+                          { "Subtype": "Werewolf" }
+                        ]
+                      },
+                      { "ControlledBy": "You" }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,96 @@
+{
+  "oracle_id": "14c8a590-88ec-4982-ad7b-36a219ff6de7",
+  "name": "Tyvar Kell",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tyvar Kell",
+      "oracle_fingerprint": "3d3144c1b4b2c85ec9dd49dfc50290ad",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Elf" }, { "ControlledBy": "You" }] },
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Activated": {
+                    "cost": ["Tap"],
+                    "effects": [{ "AddMana": { "mana": { "Fixed": ["Black"] } } }]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "targets": [
+              { "what": { "Object": [{ "Subtype": "Elf" }] }, "bounds": { "min": 0, "max": 1 } }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } },
+              { "Untap": { "what": { "Target": 0 } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Deathtouch" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": "Zero",
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Elf Warrior",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Elf", "Warrior"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 6 },
+            "effects": [
+              {
+                "CreateEmblem": {
+                  "abilities": [
+                    {
+                      "Triggered": {
+                        "when": { "SpellCast": { "what": [{ "Subtype": "Elf" }], "by": "You" } },
+                        "effects": [
+                          {
+                            "Continuous": {
+                              "affected": "Triggering",
+                              "mods": [{ "AddKeyword": "Haste" }],
+                              "duration": "UntilEndOfTurn"
+                            }
+                          },
+                          { "Draw": { "count": 2 } }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

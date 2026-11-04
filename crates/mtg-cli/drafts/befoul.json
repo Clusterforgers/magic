@@ -1,0 +1,39 @@
+{
+  "oracle_id": "c573c59a-5a79-4fe1-a6d8-5e0153b5c059",
+  "name": "Befoul",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Befoul",
+      "oracle_fingerprint": "e626aecea5db93ec2b0e867c7f00a5a2",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    {
+                      "AnyOf": [
+                        { "Type": "Land" },
+                        {
+                          "Not": {
+                            "AnyOf": [
+                              { "Not": { "Type": "Creature" } },
+                              { "Not": { "Not": { "Color": "Black" } } }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 }, "regenerate": false } }]
+          }
+        }
+      ]
+    }
+  ]
+}

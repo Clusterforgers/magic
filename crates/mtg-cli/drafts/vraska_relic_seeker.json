@@ -1,0 +1,66 @@
+{
+  "oracle_id": "3c037103-5af0-40a8-bbbe-7f3f5958b6e9",
+  "name": "Vraska, Relic Seeker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vraska, Relic Seeker",
+      "oracle_fingerprint": "690e3f8a7911bfba415de504917aa21e",
+      "abilities": [
+        {
+          "Loyalty": {
+            "cost": { "Plus": 2 },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Pirate",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Pirate"],
+                      "power": 2,
+                      "toughness": 2,
+                      "abilities": [{ "Keyword": "Menace" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 3 },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    {
+                      "AnyOf": [
+                        { "Type": "Artifact" },
+                        { "Type": "Creature" },
+                        { "Type": "Enchantment" }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              { "CreateToken": { "token": { "Named": "treasure" } } }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 10 },
+            "targets": [{ "what": "Player" }],
+            "effects": [{ "SetLife": { "who": { "Target": 0 }, "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

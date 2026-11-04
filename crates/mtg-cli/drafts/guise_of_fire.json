@@ -1,0 +1,21 @@
+{
+  "oracle_id": "69d4d459-d680-45d9-a3dc-468e4ecce12e",
+  "name": "Guise of Fire",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Guise of Fire",
+      "oracle_fingerprint": "e50164b0ea70a007241da82a7d641ed1",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": -1 } }]
+          }
+        },
+        { "Rule": { "rule": { "MustAttack": "Attached" } } }
+      ]
+    }
+  ]
+}

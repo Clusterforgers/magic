@@ -1,0 +1,28 @@
+{
+  "oracle_id": "c9640b04-9751-46d5-b7bf-5b8a8ecf145f",
+  "name": "Foresight",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Foresight",
+      "oracle_fingerprint": "408cd3071fe7d8956b4e37c799d4e945",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Search": { "filter": [], "count": { "min": 0, "max": 3 }, "as": "found" } },
+              { "Exile": { "what": { "Bound": "found" } } },
+              { "Shuffle": {} },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "Upkeep" } },
+                  "effects": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

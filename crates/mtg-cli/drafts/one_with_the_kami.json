@@ -1,0 +1,58 @@
+{
+  "oracle_id": "006f4a62-8590-4ca0-9f51-3aea26cd1a54",
+  "name": "One with the Kami",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "One with the Kami",
+      "oracle_fingerprint": "3e72952ace6598d8f6eccded25bf9ff2",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "Type": "Creature" },
+                  {
+                    "AnyOf": [
+                      { "Is": "Attached" },
+                      {
+                        "Not": {
+                          "AnyOf": [
+                            { "Not": { "ControlledBy": "You" } },
+                            { "Not": "Modified" },
+                            { "Not": { "Not": { "Is": "Attached" } } }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                ],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Spirit",
+                      "types": ["Creature"],
+                      "subtypes": ["Spirit"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": { "Stat": { "of": "Triggering", "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

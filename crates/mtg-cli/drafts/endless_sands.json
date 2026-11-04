@@ -1,0 +1,43 @@
+{
+  "oracle_id": "c4033d97-769f-4811-8b11-f85b8817b7a2",
+  "name": "Endless Sands",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Endless Sands",
+      "oracle_fingerprint": "d79a76384fe65c1a4046e37eeeda5d22",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap"],
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [{ "Exile": { "what": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{4}" }, "Tap", "SacrificeSelf"],
+            "effects": [
+              {
+                "Move": {
+                  "what": {
+                    "Each": [{ "Type": "Creature" }, { "ExiledWith": "This" }, { "In": "Exile" }]
+                  },
+                  "to": { "Battlefield": {} }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

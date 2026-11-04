@@ -1,0 +1,58 @@
+{
+  "oracle_id": "dac3a263-cc02-446a-88ec-882a21096b6c",
+  "name": "The Spear of Leonidas",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Spear of Leonidas",
+      "oracle_fingerprint": "c7821b2ef516a4e566bda4687e4e5f25",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": [{ "Is": "Attached" }] } },
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": "Triggering",
+                            "mods": [{ "AddKeyword": "DoubleStrike" }],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "CreateToken": {
+                            "token": {
+                              "Custom": {
+                                "name": "Phobos",
+                                "colors": ["Red"],
+                                "supertypes": ["Legendary"],
+                                "types": ["Creature"],
+                                "subtypes": ["Horse"],
+                                "power": 3,
+                                "toughness": 2
+                              }
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    { "effects": [{ "Discard": { "count": 2 } }, { "Draw": { "count": 2 } }] }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{2}" } }
+      ]
+    }
+  ]
+}

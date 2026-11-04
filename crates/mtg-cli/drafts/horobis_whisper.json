@@ -1,0 +1,34 @@
+{
+  "oracle_id": "2447f1f4-3569-4afb-a119-2ad9778eaf39",
+  "name": "Horobi's Whisper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Horobi's Whisper",
+      "oracle_fingerprint": "e4c20b21c1d39cae3b65d95d631af212",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "Not": { "Color": "Black" } }] } }
+            ],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "Subtype": "Swamp" }, { "ControlledBy": "You" }] },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Destroy": { "what": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

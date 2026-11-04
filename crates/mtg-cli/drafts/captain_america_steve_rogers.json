@@ -1,0 +1,32 @@
+{
+  "oracle_id": "d2084a6b-3248-4ed4-8fb5-d9c439d1ee72",
+  "name": "Captain America, Steve Rogers",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Captain America, Steve Rogers",
+      "oracle_fingerprint": "b876fa66ffe7a4aafae9b0e859e63bd5",
+      "abilities": [
+        { "Keyword": "Lifelink" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": [{ "Type": "Creature" }, "This"] } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Indestructible" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

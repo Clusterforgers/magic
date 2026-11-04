@@ -1,0 +1,43 @@
+{
+  "oracle_id": "389ad507-8a14-4856-8d19-c90e3104aca8",
+  "name": "Midnight Ritual",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Midnight Ritual",
+      "oracle_fingerprint": "1ed2a65354c73b4fc875b41b8e0339c3",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                },
+                "bounds": { "min": "X", "max": "X" }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 } } },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Zombie",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Zombie"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  },
+                  "count": "X"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

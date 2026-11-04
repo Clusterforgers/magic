@@ -1,0 +1,22 @@
+{
+  "oracle_id": "35453c9e-e1ae-4fe9-926d-75724deb0555",
+  "name": "Armor Thrull",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Armor Thrull",
+      "oracle_fingerprint": "9b65f9671968963874ca9f341dae5729",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap", "SacrificeSelf"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "p1p2" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

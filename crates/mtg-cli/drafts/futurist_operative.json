@@ -1,0 +1,23 @@
+{
+  "oracle_id": "9f53aac8-f21f-4928-af8f-65b40cb9149c",
+  "name": "Futurist Operative",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Futurist Operative",
+      "oracle_fingerprint": "255b0999a54e5d8a650f58cb3c3ef034",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": ["CantBeBlocked"],
+            "condition": {
+              "Compare": { "left": { "Count": ["This", "Tapped"] }, "op": "Ge", "right": 1 }
+            }
+          }
+        },
+        { "Activated": { "cost": "{2}{U}", "effects": [{ "Untap": { "what": "This" } }] } }
+      ]
+    }
+  ]
+}

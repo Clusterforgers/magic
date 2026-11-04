@@ -1,0 +1,40 @@
+{
+  "oracle_id": "ac935fad-2fa7-4afc-9db4-3cd30ec4aabd",
+  "name": "Protocol Knight",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Protocol Knight",
+      "oracle_fingerprint": "718fb23ebcb30629cbc7a57b4ad6c7ef",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              { "Tap": { "what": { "Target": 0 } } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Count": [{ "Subtype": "Knight" }, { "ControlledBy": "You" }, "Other"]
+                      },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "stun" } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

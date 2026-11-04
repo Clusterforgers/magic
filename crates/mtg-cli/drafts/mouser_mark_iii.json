@@ -1,0 +1,26 @@
+{
+  "oracle_id": "ad0c6d46-a1ca-4a9f-93f0-4a4dc31868e6",
+  "name": "Mouser Mark III",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mouser Mark III",
+      "oracle_fingerprint": "bae27f946fbbe8adf8ff059ea8b8c153",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": ["CantAttack"],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Type": "Artifact" }, { "ControlledBy": "You" }, "Other"] },
+                "op": "Eq",
+                "right": 0
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

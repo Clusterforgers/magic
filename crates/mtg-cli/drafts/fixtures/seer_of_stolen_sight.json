@@ -1,0 +1,137 @@
+{
+  "object": "card",
+  "id": "9d0b3232-44ee-481d-81d9-46432f853a7d",
+  "oracle_id": "b2bdccf1-857b-48f8-a9aa-8ef999ef0632",
+  "multiverse_ids": [
+    611087
+  ],
+  "mtgo_id": 109748,
+  "arena_id": 85114,
+  "tcgplayer_id": 490446,
+  "cardmarket_id": 703507,
+  "name": "Seer of Stolen Sight",
+  "lang": "en",
+  "released_at": "2023-04-21",
+  "uri": "https://api.scryfall.com/cards/9d0b3232-44ee-481d-81d9-46432f853a7d",
+  "scryfall_uri": "https://scryfall.com/card/mom/330/seer-of-stolen-sight?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T04:28:22Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/9/d/9d0b3232-44ee-481d-81d9-46432f853a7d.jpg?1783916902",
+    "normal": "https://cards.scryfall.io/normal/front/9/d/9d0b3232-44ee-481d-81d9-46432f853a7d.jpg?1783916902",
+    "large": "https://cards.scryfall.io/large/front/9/d/9d0b3232-44ee-481d-81d9-46432f853a7d.jpg?1783916902",
+    "png": "https://cards.scryfall.io/png/front/9/d/9d0b3232-44ee-481d-81d9-46432f853a7d.png?1783916902",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/9/d/9d0b3232-44ee-481d-81d9-46432f853a7d.jpg?1783916902",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/9/d/9d0b3232-44ee-481d-81d9-46432f853a7d.jpg?1783916902",
+    "thumb": "https://cards.scryfall.io/thumb/front/9/d/9d0b3232-44ee-481d-81d9-46432f853a7d.webp?1783916902",
+    "grid": "https://cards.scryfall.io/grid/front/9/d/9d0b3232-44ee-481d-81d9-46432f853a7d.webp?1783916902",
+    "display": "https://cards.scryfall.io/display/front/9/d/9d0b3232-44ee-481d-81d9-46432f853a7d.webp?1783916902",
+    "art": "https://cards.scryfall.io/art/front/9/d/9d0b3232-44ee-481d-81d9-46432f853a7d.webp?1783916902",
+    "crop": "https://cards.scryfall.io/crop/front/9/d/9d0b3232-44ee-481d-81d9-46432f853a7d.webp?1783916902",
+    "jpeg": "https://cards.scryfall.io/normal/front/9/d/9d0b3232-44ee-481d-81d9-46432f853a7d.jpg?1783916902"
+  },
+  "mana_cost": "{2}{B}",
+  "cmc": 3.0,
+  "type_line": "Creature — Phyrexian Warlock",
+  "oracle_text": "Menace (This creature can't be blocked except by two or more creatures.)\nWhenever one or more artifacts and/or creatures you control are put into a graveyard from the battlefield, surveil 1. (Look at the top card of your library. You may put that card into your graveyard.)",
+  "power": "2",
+  "toughness": "3",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Surveil",
+    "Menace"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo",
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "392f7315-dc53-40a3-a2cc-5482dbd498b3",
+  "set": "mom",
+  "set_name": "March of the Machine",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/392f7315-dc53-40a3-a2cc-5482dbd498b3",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Amom&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/mom?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/9d0b3232-44ee-481d-81d9-46432f853a7d/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ab2bdccf1-857b-48f8-a9aa-8ef999ef0632&unique=prints",
+  "collector_number": "330",
+  "digital": false,
+  "rarity": "uncommon",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Betty Jiang",
+  "artist_ids": [
+    "2e823b11-7bf4-49b6-986a-8a6fb10d74eb"
+  ],
+  "illustration_id": "5006ed23-9083-4725-8475-4b37d71c4808",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 20965,
+  "prices": {
+    "usd": "0.29",
+    "usd_foil": "0.35",
+    "usd_etched": null,
+    "eur": "0.35",
+    "eur_foil": "0.26",
+    "tix": "0.77"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=611087&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DSeer%2Bof%2BStolen%2BSight",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DSeer%2Bof%2BStolen%2BSight",
+    "edhrec": "https://edhrec.com/route/?cc=Seer+of+Stolen+Sight"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F490446%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=703507&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/109748?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

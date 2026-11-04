@@ -1,0 +1,74 @@
+{
+  "oracle_id": "e4648fa3-0343-414b-b04d-07fe0d132145",
+  "name": "Golden Demise",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Golden Demise",
+      "oracle_fingerprint": "9528ef374ee868ff211b9e30a7a8e9ef",
+      "abilities": [
+        { "Keyword": "Ascend" },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "When": {
+                          "condition": { "CitysBlessing": "You" },
+                          "then": 1,
+                          "otherwise": 0
+                        }
+                      },
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": { "Each": [{ "Type": "Creature" }] },
+                        "mods": [{ "ModifyPT": { "power": -2, "toughness": -2 } }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "When": {
+                          "condition": { "CitysBlessing": "You" },
+                          "then": 1,
+                          "otherwise": 0
+                        }
+                      },
+                      "op": "Eq",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": {
+                          "Each": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }]
+                        },
+                        "mods": [{ "ModifyPT": { "power": -2, "toughness": -2 } }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

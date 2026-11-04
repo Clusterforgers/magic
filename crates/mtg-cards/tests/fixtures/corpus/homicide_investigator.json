@@ -1,0 +1,157 @@
+{
+  "object": "card",
+  "id": "21d6accd-167a-4b21-a488-44d54cdfa608",
+  "oracle_id": "dc4d5602-47cb-47c8-8a43-3b840e12b79c",
+  "multiverse_ids": [
+    646644
+  ],
+  "mtgo_id": 121650,
+  "arena_id": 89001,
+  "tcgplayer_id": 533146,
+  "cardmarket_id": 751197,
+  "name": "Homicide Investigator",
+  "lang": "en",
+  "released_at": "2024-02-09",
+  "uri": "https://api.scryfall.com/cards/21d6accd-167a-4b21-a488-44d54cdfa608",
+  "scryfall_uri": "https://scryfall.com/card/mkm/86/homicide-investigator?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:21:36Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/2/1/21d6accd-167a-4b21-a488-44d54cdfa608.jpg?1783912896",
+    "normal": "https://cards.scryfall.io/normal/front/2/1/21d6accd-167a-4b21-a488-44d54cdfa608.jpg?1783912896",
+    "large": "https://cards.scryfall.io/large/front/2/1/21d6accd-167a-4b21-a488-44d54cdfa608.jpg?1783912896",
+    "png": "https://cards.scryfall.io/png/front/2/1/21d6accd-167a-4b21-a488-44d54cdfa608.png?1783912896",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/2/1/21d6accd-167a-4b21-a488-44d54cdfa608.jpg?1783912896",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/2/1/21d6accd-167a-4b21-a488-44d54cdfa608.jpg?1783912896",
+    "thumb": "https://cards.scryfall.io/thumb/front/2/1/21d6accd-167a-4b21-a488-44d54cdfa608.webp?1783912896",
+    "grid": "https://cards.scryfall.io/grid/front/2/1/21d6accd-167a-4b21-a488-44d54cdfa608.webp?1783912896",
+    "display": "https://cards.scryfall.io/display/front/2/1/21d6accd-167a-4b21-a488-44d54cdfa608.webp?1783912896",
+    "art": "https://cards.scryfall.io/art/front/2/1/21d6accd-167a-4b21-a488-44d54cdfa608.webp?1783912896",
+    "crop": "https://cards.scryfall.io/crop/front/2/1/21d6accd-167a-4b21-a488-44d54cdfa608.webp?1783912896",
+    "jpeg": "https://cards.scryfall.io/normal/front/2/1/21d6accd-167a-4b21-a488-44d54cdfa608.jpg?1783912896"
+  },
+  "mana_cost": "{1}{B}",
+  "cmc": 2.0,
+  "type_line": "Creature — Human Detective",
+  "oracle_text": "Whenever one or more nontoken creatures you control die, investigate. This ability triggers only once each turn. (Create a Clue token. It's an artifact with \"{2}, Sacrifice this token: Draw a card.\")",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Investigate"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "ef607895-d6d2-44ab-a6b4-84af55fce593",
+      "component": "token",
+      "name": "Clue",
+      "type_line": "Token Artifact — Clue",
+      "uri": "https://api.scryfall.com/cards/ef607895-d6d2-44ab-a6b4-84af55fce593"
+    },
+    {
+      "object": "related_card",
+      "id": "b9106abf-f589-48a2-90f8-d606a7367377",
+      "component": "combo_piece",
+      "name": "Homicide Investigator",
+      "type_line": "Creature — Human Detective",
+      "uri": "https://api.scryfall.com/cards/b9106abf-f589-48a2-90f8-d606a7367377"
+    }
+  ],
+  "legalities": {
+    "standard": "legal",
+    "future": "legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "arena",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "2b17794b-15c3-4796-ad6f-0887a0eceeca",
+  "set": "mkm",
+  "set_name": "Murders at Karlov Manor",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/2b17794b-15c3-4796-ad6f-0887a0eceeca",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Amkm&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/mkm?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/21d6accd-167a-4b21-a488-44d54cdfa608/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Adc4d5602-47cb-47c8-8a43-3b840e12b79c&unique=prints",
+  "collector_number": "86",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "In her line of work, the dead are often better sources than the living.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Jodie Muir",
+  "artist_ids": [
+    "b09e6cd1-0257-425a-9bbb-5cac3f803443"
+  ],
+  "illustration_id": "6cd40b19-8216-43d7-a2d7-4d7035705330",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 15158,
+  "penny_rank": 10347,
+  "prices": {
+    "usd": "0.18",
+    "usd_foil": "0.26",
+    "usd_etched": null,
+    "eur": "0.17",
+    "eur_foil": "0.23",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=646644&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DHomicide%2BInvestigator",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DHomicide%2BInvestigator",
+    "edhrec": "https://edhrec.com/route/?cc=Homicide+Investigator"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F533146%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=751197&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/121650?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

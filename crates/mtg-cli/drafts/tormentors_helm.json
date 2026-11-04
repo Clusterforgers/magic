@@ -1,0 +1,26 @@
+{
+  "oracle_id": "4f5f0988-0b1f-4f4b-bcee-cc76fa484d9e",
+  "name": "Tormentor's Helm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tormentor's Helm",
+      "oracle_fingerprint": "490a31a50e253d9c31d62bba0ed71f73",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "BecomesBlocked": { "what": [{ "Type": "Creature" }, { "Is": "Attached" }] } },
+            "effects": [{ "DealDamage": { "to": "Defending", "amount": 1 } }]
+          }
+        },
+        { "Keyword": { "Equip": "{1}" } }
+      ]
+    }
+  ]
+}

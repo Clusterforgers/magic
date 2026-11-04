@@ -1,0 +1,35 @@
+{
+  "oracle_id": "4e552be1-0702-4e18-822f-98611f8a8e70",
+  "name": "Enter the Avatar State",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Enter the Avatar State",
+      "oracle_fingerprint": "10534f7aa53f02b49113e2c7827213ef",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "AddSubtype": "Avatar" },
+                    { "AddKeyword": "Flying" },
+                    { "AddKeyword": "FirstStrike" },
+                    { "AddKeyword": "Lifelink" },
+                    { "AddKeyword": "Hexproof" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

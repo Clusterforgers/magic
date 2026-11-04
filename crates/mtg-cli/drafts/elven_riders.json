@@ -13,7 +13,9 @@
             "mods": [
               {
                 "CantBeBlockedBy": [
-                  { "Not": { "AnyOf": [{ "Subtype": "Wall" }, { "HasKeyword": "Flying" }] } }
+                  { "Type": "Creature" },
+                  { "Not": { "HasKeyword": "Flying" } },
+                  { "Not": { "Subtype": "Wall" } }
                 ]
               }
             ]

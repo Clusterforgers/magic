@@ -1,0 +1,15 @@
+{
+  "oracle_id": "87e44296-6c79-4065-aa54-33e508293a79",
+  "name": "Kitsune Riftwalker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kitsune Riftwalker",
+      "oracle_fingerprint": "f5a732712ebda071dc5c6751e22b7510",
+      "abilities": [
+        { "Keyword": { "Protection": [{ "Subtype": "Spirit" }] } },
+        { "Keyword": { "Protection": [{ "Subtype": "Arcane" }] } }
+      ]
+    }
+  ]
+}

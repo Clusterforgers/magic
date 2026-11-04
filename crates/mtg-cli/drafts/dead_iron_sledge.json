@@ -1,0 +1,42 @@
+{
+  "oracle_id": "e1ee79de-e4c3-48f9-87a7-18f72e2f6116",
+  "name": "Dead-Iron Sledge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dead-Iron Sledge",
+      "oracle_fingerprint": "ea19bdbaa1877d4fb2ecc16e0ffdf49d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "BecomesBlocked": {
+                "what": [{ "Type": "Creature" }],
+                "by": [{ "Type": "Creature" }, { "Is": "Attached" }]
+              }
+            },
+            "effects": [
+              { "Destroy": { "what": "Triggering" } },
+              { "Destroy": { "what": "Triggering" } }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{2}" } },
+        {
+          "Triggered": {
+            "when": {
+              "BecomesBlocked": {
+                "what": [{ "Type": "Creature" }, { "Is": "Attached" }],
+                "by": [{ "Type": "Creature" }]
+              }
+            },
+            "effects": [
+              { "Destroy": { "what": "Triggering" } },
+              { "Destroy": { "what": "Triggering" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

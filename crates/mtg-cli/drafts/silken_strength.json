@@ -1,0 +1,31 @@
+{
+  "oracle_id": "53a59ba9-f4e9-460b-928a-ce6d7ae883f7",
+  "name": "Silken Strength",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Silken Strength",
+      "oracle_fingerprint": "8920621200dd2aa6e9b6e022d0ee0fb1",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Keyword": {
+            "Enchant": [{ "AnyOf": [{ "Type": "Creature" }, { "Subtype": "Vehicle" }] }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Untap": { "what": "Attached" } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 2 } }, { "AddKeyword": "Reach" }]
+          }
+        }
+      ]
+    }
+  ]
+}

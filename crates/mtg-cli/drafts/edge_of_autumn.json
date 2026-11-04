@@ -1,0 +1,46 @@
+{
+  "oracle_id": "42d86827-6459-42fc-86b6-6eb055604c36",
+  "name": "Edge of Autumn",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Edge of Autumn",
+      "oracle_fingerprint": "48eb5d4a372ee2e604052dcb3b3eb00b",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] },
+                      "op": "Le",
+                      "right": 4
+                    }
+                  },
+                  "then": [
+                    {
+                      "Search": {
+                        "filter": [{ "Type": "Land" }, { "Supertype": "Basic" }],
+                        "as": "found"
+                      }
+                    },
+                    {
+                      "Move": {
+                        "what": { "Bound": "found" },
+                        "to": { "Battlefield": { "tapped": true } }
+                      }
+                    },
+                    { "Shuffle": {} }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Cycling": [{ "Sacrifice": { "filter": [{ "Type": "Land" }] } }] } }
+      ]
+    }
+  ]
+}

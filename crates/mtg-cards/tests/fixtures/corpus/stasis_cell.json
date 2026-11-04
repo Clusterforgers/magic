@@ -1,0 +1,131 @@
+{
+  "object": "card",
+  "id": "49304692-1e8c-46ed-ba51-e5ba3b70e2f4",
+  "oracle_id": "8b2ba6f8-1060-4167-9941-3ab7bd4e0ca8",
+  "multiverse_ids": [
+    382375
+  ],
+  "tcgplayer_id": 83252,
+  "cardmarket_id": 267070,
+  "name": "Stasis Cell",
+  "lang": "en",
+  "released_at": "2014-06-06",
+  "uri": "https://api.scryfall.com/cards/49304692-1e8c-46ed-ba51-e5ba3b70e2f4",
+  "scryfall_uri": "https://scryfall.com/card/cns/107/stasis-cell?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T10:42:38Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/4/9/49304692-1e8c-46ed-ba51-e5ba3b70e2f4.jpg?1783939358",
+    "normal": "https://cards.scryfall.io/normal/front/4/9/49304692-1e8c-46ed-ba51-e5ba3b70e2f4.jpg?1783939358",
+    "large": "https://cards.scryfall.io/large/front/4/9/49304692-1e8c-46ed-ba51-e5ba3b70e2f4.jpg?1783939358",
+    "png": "https://cards.scryfall.io/png/front/4/9/49304692-1e8c-46ed-ba51-e5ba3b70e2f4.png?1783939358",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/4/9/49304692-1e8c-46ed-ba51-e5ba3b70e2f4.jpg?1783939358",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/4/9/49304692-1e8c-46ed-ba51-e5ba3b70e2f4.jpg?1783939358",
+    "thumb": "https://cards.scryfall.io/thumb/front/4/9/49304692-1e8c-46ed-ba51-e5ba3b70e2f4.webp?1783939358",
+    "grid": "https://cards.scryfall.io/grid/front/4/9/49304692-1e8c-46ed-ba51-e5ba3b70e2f4.webp?1783939358",
+    "display": "https://cards.scryfall.io/display/front/4/9/49304692-1e8c-46ed-ba51-e5ba3b70e2f4.webp?1783939358",
+    "art": "https://cards.scryfall.io/art/front/4/9/49304692-1e8c-46ed-ba51-e5ba3b70e2f4.webp?1783939358",
+    "crop": "https://cards.scryfall.io/crop/front/4/9/49304692-1e8c-46ed-ba51-e5ba3b70e2f4.webp?1783939358",
+    "jpeg": "https://cards.scryfall.io/normal/front/4/9/49304692-1e8c-46ed-ba51-e5ba3b70e2f4.jpg?1783939358"
+  },
+  "mana_cost": "{4}{U}",
+  "cmc": 5.0,
+  "type_line": "Enchantment — Aura",
+  "oracle_text": "Enchant creature\nEnchanted creature doesn't untap during its controller's untap step.\n{3}{U}: Attach this Aura to target creature.",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Enchant"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "7d4ebb59-a50b-45b8-8fff-ab70767819a5",
+  "set": "cns",
+  "set_name": "Conspiracy",
+  "set_type": "draft_innovation",
+  "set_uri": "https://api.scryfall.com/sets/7d4ebb59-a50b-45b8-8fff-ab70767819a5",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Acns&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/cns?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/49304692-1e8c-46ed-ba51-e5ba3b70e2f4/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A8b2ba6f8-1060-4167-9941-3ab7bd4e0ca8&unique=prints",
+  "collector_number": "107",
+  "digital": false,
+  "rarity": "common",
+  "flavor_text": "The Simic created the cells to preserve their experiments. The Azorius put the cells to use on the guilty.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Mark A. Nelson",
+  "artist_ids": [
+    "a10f59a4-36fd-4ef3-966b-5570ca118062"
+  ],
+  "illustration_id": "80453002-3922-41a7-b0b2-aa14cabe484e",
+  "border_color": "black",
+  "frame": "2003",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 30564,
+  "prices": {
+    "usd": "0.19",
+    "usd_foil": "0.03",
+    "usd_etched": null,
+    "eur": "0.02",
+    "eur_foil": "0.17",
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=382375&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DStasis%2BCell",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DStasis%2BCell",
+    "edhrec": "https://edhrec.com/route/?cc=Stasis+Cell"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F83252%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=267070&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Stasis+Cell&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

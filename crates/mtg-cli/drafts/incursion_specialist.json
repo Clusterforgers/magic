@@ -1,0 +1,39 @@
+{
+  "oracle_id": "3c334eb3-e3fd-45b0-a36d-4681c9e72ac5",
+  "name": "Incursion Specialist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Incursion Specialist",
+      "oracle_fingerprint": "bec3784ad0b9967da83716b9a7d03c30",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Nth": {
+                "event": { "SpellCast": { "what": [{ "ControlledBy": "You" }], "by": "You" } },
+                "nth": 2
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": ["CantBeBlocked"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

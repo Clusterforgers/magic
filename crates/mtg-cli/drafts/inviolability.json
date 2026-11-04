@@ -1,0 +1,15 @@
+{
+  "oracle_id": "3f336198-2425-447a-88b4-9be21ef7e90a",
+  "name": "Inviolability",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Inviolability",
+      "oracle_fingerprint": "4e467ef41dd5876d9b779f0553502ed4",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        { "Replacement": { "when": { "Damage": { "to": "Attached" } }, "by": "Prevent" } }
+      ]
+    }
+  ]
+}

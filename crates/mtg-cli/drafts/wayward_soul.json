@@ -1,0 +1,20 @@
+{
+  "oracle_id": "319b4715-c3eb-49bf-b8d2-4d41e601ebe4",
+  "name": "Wayward Soul",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wayward Soul",
+      "oracle_fingerprint": "10100eb15f5b36378a688fc32cf48df9",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": "{U}",
+            "effects": [{ "Move": { "what": "This", "to": { "Library": { "place": "Top" } } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

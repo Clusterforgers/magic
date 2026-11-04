@@ -1,0 +1,34 @@
+{
+  "oracle_id": "c2f6ddc2-86bc-43da-9bdd-0c2af79c62fd",
+  "name": "Ammit Eternal",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ammit Eternal",
+      "oracle_fingerprint": "dcd5dc529a9bbaf1329de2b7c4ccceff",
+      "abilities": [
+        { "Keyword": { "Afflict": 3 } },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "by": "Opponents" } },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "-1/-1" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              {
+                "RemoveCounters": {
+                  "from": "This",
+                  "counter": "-1/-1",
+                  "count": { "Counters": { "on": "This", "counter": "-1/-1" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

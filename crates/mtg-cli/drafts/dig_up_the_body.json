@@ -1,0 +1,31 @@
+{
+  "oracle_id": "144e3d90-8ed8-4c21-941d-fc59cec042a2",
+  "name": "Dig Up the Body",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dig Up the Body",
+      "oracle_fingerprint": "57956c7bc52be5f1187b011d1c9e3e54",
+      "abilities": [
+        { "Keyword": { "Casualty": 1 } },
+        {
+          "Spell": {
+            "effects": [
+              { "Mill": { "count": 2 } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked"
+                }
+              },
+              { "Move": { "what": { "Bound": "picked" }, "to": "Hand" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

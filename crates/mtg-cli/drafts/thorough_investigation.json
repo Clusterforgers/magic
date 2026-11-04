@@ -1,0 +1,27 @@
+{
+  "oracle_id": "e7504407-bb72-4baf-be4a-8152e4198e2b",
+  "name": "Thorough Investigation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thorough Investigation",
+      "oracle_fingerprint": "a3d5bd6786dd6aa30076ee473a646c27",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+            },
+            "effects": [{ "CreateToken": { "token": { "Named": "clue" } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Sacrificed": { "what": [{ "Subtype": "Clue" }, { "ControlledBy": "You" }] } },
+            "effects": [{ "Venture": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

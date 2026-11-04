@@ -10,7 +10,10 @@
         {
           "Triggered": {
             "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
-            "effects": [{ "GainLife": { "amount": 3 } }, { "AddPhase": { "phases": ["Main"] } }]
+            "effects": [
+              { "GainLife": { "amount": 3 } },
+              { "PutCounters": { "on": "You", "counter": { "Other": "energy" }, "count": 3 } }
+            ]
           }
         }
       ]

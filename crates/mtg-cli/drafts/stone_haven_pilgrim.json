@@ -1,0 +1,42 @@
+{
+  "oracle_id": "264fafb7-3bd3-4bf1-81b2-2e436c9ca8d0",
+  "name": "Stone Haven Pilgrim",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stone Haven Pilgrim",
+      "oracle_fingerprint": "5fecaa66a015bc224ca5f39e6c0d342c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Enchantment" }] },
+                    { "ControlledBy": "You" }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "ModifyPT": { "power": 1, "toughness": 1 } },
+                    { "AddKeyword": "Lifelink" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

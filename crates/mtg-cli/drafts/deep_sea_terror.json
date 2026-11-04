@@ -1,0 +1,26 @@
+{
+  "oracle_id": "36775412-0280-4acc-bae8-3ea5d4e341be",
+  "name": "Deep-Sea Terror",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Deep-Sea Terror",
+      "oracle_fingerprint": "0f1c30316f7dde19edf6fc14af3ffcdd",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": ["CantAttack"],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "OwnedBy": "You" }, { "In": "Graveyard" }] },
+                "op": "Lt",
+                "right": 7
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "oracle_id": "44924f1e-edc4-481b-93f3-78606d4fd691",
+  "name": "Ranger's Hawk",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ranger's Hawk",
+      "oracle_fingerprint": "e8be904051d07294900e10d2bc34ea35",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{3}" },
+              "Tap",
+              { "TapPermanents": { "filter": [{ "Type": "Creature" }, "Other"] } }
+            ],
+            "timing": "Sorcery",
+            "effects": [{ "Venture": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

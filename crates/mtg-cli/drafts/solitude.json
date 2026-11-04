@@ -1,0 +1,40 @@
+{
+  "oracle_id": "dcb9c2a7-ae54-4ddc-a567-640bf4bf4366",
+  "name": "Solitude",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Solitude",
+      "oracle_fingerprint": "6cf8a37d8715836ccd015461e5bc2729",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": "Lifelink" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, "Other"] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 } } },
+              {
+                "GainLife": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "amount": { "Stat": { "of": { "Target": 0 }, "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Keyword": {
+            "Evoke": [{ "ExileFromHand": { "filter": [{ "Color": "White" }, "Other"] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "oracle_id": "3a1efa7e-21d5-47a1-bcd8-7d4616be0d58",
+  "name": "Haazda Marshal",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Haazda Marshal",
+      "oracle_fingerprint": "8101032c264a9e2a4fe74540cd66c02c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "if": {
+              "Compare": {
+                "left": { "Count": [{ "Type": "Creature" }, "Attacking", "Other"] },
+                "op": "Ge",
+                "right": 2
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Soldier",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Soldier"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Lifelink" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

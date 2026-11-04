@@ -1,0 +1,34 @@
+{
+  "oracle_id": "b1914241-6b2b-4b3e-8626-aeb0b8cbc12d",
+  "name": "Ceti Eel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ceti Eel",
+      "oracle_fingerprint": "ea0280a9f856b95300baf72f84c3568a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "Mill": { "count": 2 } },
+              {
+                "PutCounters": {
+                  "on": "This",
+                  "counter": "+1/+1",
+                  "count": {
+                    "Count": [
+                      { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] },
+                      { "OwnedBy": "You" },
+                      { "In": "Graveyard" }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

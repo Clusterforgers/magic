@@ -1,0 +1,19 @@
+{
+  "oracle_id": "af753429-c121-4957-b768-8bed43dc06cb",
+  "name": "Samite Herbalist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Samite Herbalist",
+      "oracle_fingerprint": "3d40f4e589ae4bc514396ecbb6711d8e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Tapped": { "what": ["This"] } },
+            "effects": [{ "GainLife": { "amount": 1 } }, { "Scry": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

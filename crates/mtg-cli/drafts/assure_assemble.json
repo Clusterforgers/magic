@@ -1,0 +1,56 @@
+{
+  "oracle_id": "087018b6-6355-4534-9a35-9336b4b7fccc",
+  "name": "Assure // Assemble",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Assure",
+      "oracle_fingerprint": "315540dd44ab987999a322798920c932",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Indestructible" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Assemble",
+      "oracle_fingerprint": "4e27d530f585e7164b5a4aaf7e5eb179",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Elf Knight",
+                      "colors": ["White", "Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Elf", "Knight"],
+                      "power": 2,
+                      "toughness": 2,
+                      "abilities": [{ "Keyword": "Vigilance" }]
+                    }
+                  },
+                  "count": 3
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

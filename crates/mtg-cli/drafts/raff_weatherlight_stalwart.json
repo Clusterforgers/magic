@@ -1,0 +1,48 @@
+{
+  "oracle_id": "41f3acbf-6092-435f-a5af-4d80dd6e1aef",
+  "name": "Raff, Weatherlight Stalwart",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Raff, Weatherlight Stalwart",
+      "oracle_fingerprint": "fdee1dac9bfd12be24a544cb626eb2f7",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                "by": "You"
+              }
+            },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "TapPermanents": { "filter": [{ "Type": "Creature" }], "count": 2 } }],
+                  "paid": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{3}{W}{W}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [
+                    { "ModifyPT": { "power": 1, "toughness": 1 } },
+                    { "AddKeyword": "Vigilance" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

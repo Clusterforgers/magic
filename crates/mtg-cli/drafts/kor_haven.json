@@ -1,0 +1,34 @@
+{
+  "oracle_id": "276cece9-f9f2-46e6-ae76-daddaa2fb9ab",
+  "name": "Kor Haven",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kor Haven",
+      "oracle_fingerprint": "ec59969c602246eb2060013bff6bf9e4",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{W}" }, "Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Attacking"] } }],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "source": [{ "Is": { "Target": 0 } }], "combat": true } },
+                  "by": "Prevent",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

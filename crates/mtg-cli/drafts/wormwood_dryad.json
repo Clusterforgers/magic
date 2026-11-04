@@ -1,0 +1,43 @@
+{
+  "oracle_id": "277bd0c7-2400-4c94-ba82-4c9472badb60",
+  "name": "Wormwood Dryad",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wormwood Dryad",
+      "oracle_fingerprint": "fe0dfe016afbff227e6edd0e0f86ba1c",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{G}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddKeyword": { "Landwalk": [{ "Subtype": "Forest" }] } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "DealDamage": { "to": "You", "amount": 1 } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{B}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddKeyword": { "Landwalk": [{ "Subtype": "Swamp" }] } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "DealDamage": { "to": "You", "amount": 1 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

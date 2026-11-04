@@ -1,0 +1,46 @@
+{
+  "oracle_id": "0ca1f76d-ae77-490a-8b32-d30ad33afc2d",
+  "name": "Apocalypse Runner",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Apocalypse Runner",
+      "oracle_fingerprint": "0e57a3a351fd12b1a1e7fbf12885cf84",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "Compare": { "stat": "Power", "op": "Le", "to": 2 } },
+                    { "ControlledBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Lifelink" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["CantBeBlocked"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Crew": 3 } }
+      ]
+    }
+  ]
+}

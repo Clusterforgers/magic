@@ -1,0 +1,39 @@
+{
+  "oracle_id": "5fa4607a-6731-4599-80f3-19d6097b4b28",
+  "name": "Serrated Arrows",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Serrated Arrows",
+      "oracle_fingerprint": "35a6d3a374b71f7f01c208f0aad6d4a8",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": { "Other": "arrowhead" }, "count": 3 } }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": ["This", { "HasCounter": { "Other": "arrowhead" } }] },
+                "op": "Eq",
+                "right": 0
+              }
+            },
+            "effects": [{ "Sacrifice": { "filter": ["This"] } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap", { "RemoveCounters": { "counter": { "Other": "arrowhead" } } }],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "-1/-1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

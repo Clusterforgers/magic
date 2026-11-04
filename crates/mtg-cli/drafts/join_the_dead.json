@@ -1,0 +1,72 @@
+{
+  "oracle_id": "b153fc70-0312-4856-befd-bb6b9a04a26e",
+  "name": "Join the Dead",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Join the Dead",
+      "oracle_fingerprint": "e65221957cbce373e708a4c1f32f39a1",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": {
+                          "Times": {
+                            "by": -1,
+                            "of": {
+                              "When": {
+                                "condition": {
+                                  "Compare": {
+                                    "left": {
+                                      "Count": [{ "OwnedBy": "You" }, { "In": "Graveyard" }]
+                                    },
+                                    "op": "Ge",
+                                    "right": 4
+                                  }
+                                },
+                                "then": 10,
+                                "otherwise": 5
+                              }
+                            }
+                          }
+                        },
+                        "toughness": {
+                          "Times": {
+                            "by": -1,
+                            "of": {
+                              "When": {
+                                "condition": {
+                                  "Compare": {
+                                    "left": {
+                                      "Count": [{ "OwnedBy": "You" }, { "In": "Graveyard" }]
+                                    },
+                                    "op": "Ge",
+                                    "right": 4
+                                  }
+                                },
+                                "then": 10,
+                                "otherwise": 5
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "oracle_id": "a3f76c99-b608-425e-83ca-675acb7c2693",
+  "name": "Hooded Assassin",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hooded Assassin",
+      "oracle_fingerprint": "722afa37216047c3ebe51e1e88131312",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    { "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }] },
+                    {
+                      "targets": [
+                        { "what": { "Object": [{ "Type": "Creature" }, "DamagedThisTurn"] } }
+                      ],
+                      "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

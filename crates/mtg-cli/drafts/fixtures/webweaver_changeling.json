@@ -1,0 +1,142 @@
+{
+  "object": "card",
+  "id": "576807eb-47fa-4f08-8982-1c0b3526fdd2",
+  "oracle_id": "c8cf9387-54df-45b1-ad8d-9de57ed8916b",
+  "multiverse_ids": [
+    571497
+  ],
+  "mtgo_id": 101812,
+  "tcgplayer_id": 276264,
+  "cardmarket_id": 664057,
+  "name": "Webweaver Changeling",
+  "lang": "en",
+  "released_at": "2022-07-08",
+  "uri": "https://api.scryfall.com/cards/576807eb-47fa-4f08-8982-1c0b3526fdd2",
+  "scryfall_uri": "https://scryfall.com/card/2x2/164/webweaver-changeling?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T05:51:00Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/5/7/576807eb-47fa-4f08-8982-1c0b3526fdd2.jpg?1783921860",
+    "normal": "https://cards.scryfall.io/normal/front/5/7/576807eb-47fa-4f08-8982-1c0b3526fdd2.jpg?1783921860",
+    "large": "https://cards.scryfall.io/large/front/5/7/576807eb-47fa-4f08-8982-1c0b3526fdd2.jpg?1783921860",
+    "png": "https://cards.scryfall.io/png/front/5/7/576807eb-47fa-4f08-8982-1c0b3526fdd2.png?1783921860",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/5/7/576807eb-47fa-4f08-8982-1c0b3526fdd2.jpg?1783921860",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/5/7/576807eb-47fa-4f08-8982-1c0b3526fdd2.jpg?1783921860",
+    "thumb": "https://cards.scryfall.io/thumb/front/5/7/576807eb-47fa-4f08-8982-1c0b3526fdd2.webp?1783921860",
+    "grid": "https://cards.scryfall.io/grid/front/5/7/576807eb-47fa-4f08-8982-1c0b3526fdd2.webp?1783921860",
+    "display": "https://cards.scryfall.io/display/front/5/7/576807eb-47fa-4f08-8982-1c0b3526fdd2.webp?1783921860",
+    "art": "https://cards.scryfall.io/art/front/5/7/576807eb-47fa-4f08-8982-1c0b3526fdd2.webp?1783921860",
+    "crop": "https://cards.scryfall.io/crop/front/5/7/576807eb-47fa-4f08-8982-1c0b3526fdd2.webp?1783921860",
+    "jpeg": "https://cards.scryfall.io/normal/front/5/7/576807eb-47fa-4f08-8982-1c0b3526fdd2.jpg?1783921860"
+  },
+  "mana_cost": "{3}{G}{G}",
+  "cmc": 5.0,
+  "type_line": "Creature — Shapeshifter",
+  "oracle_text": "Changeling (This card is every creature type.)\nReach\nWhen this creature enters, if there are three or more creature cards in your graveyard, you gain 5 life.",
+  "power": "3",
+  "toughness": "5",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Reach",
+    "Changeling"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "5a645837-b050-449f-ac90-1e7ccbf45031",
+  "set": "2x2",
+  "set_name": "Double Masters 2022",
+  "set_type": "masters",
+  "set_uri": "https://api.scryfall.com/sets/5a645837-b050-449f-ac90-1e7ccbf45031",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3A2x2&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/2x2?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/576807eb-47fa-4f08-8982-1c0b3526fdd2/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ac8cf9387-54df-45b1-ad8d-9de57ed8916b&unique=prints",
+  "collector_number": "164",
+  "digital": false,
+  "rarity": "common",
+  "flavor_text": "Eight legs carrying endless phobias.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Nicholas Gregory",
+  "artist_ids": [
+    "a1bba8ff-63b4-4786-b1c4-f1bfe5d3ab1c"
+  ],
+  "illustration_id": "06c89905-bc8d-47c8-abd7-e033c5a91ce5",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 16098,
+  "penny_rank": 18285,
+  "preview": {
+    "source": "Wizards of the Coast",
+    "source_uri": "https://magic.wizards.com/en/articles/archive/card-image-gallery/double-masters-2022",
+    "previewed_at": "2022-06-16"
+  },
+  "prices": {
+    "usd": "0.22",
+    "usd_foil": "0.31",
+    "usd_etched": null,
+    "eur": "0.12",
+    "eur_foil": "0.18",
+    "tix": "0.04"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=571497&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DWebweaver%2BChangeling",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DWebweaver%2BChangeling",
+    "edhrec": "https://edhrec.com/route/?cc=Webweaver+Changeling"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F276264%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=664057&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/101812?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

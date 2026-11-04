@@ -1,0 +1,29 @@
+{
+  "oracle_id": "c2905e12-8af1-46f4-b888-be272a9b9748",
+  "name": "Sight Beyond Sight",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sight Beyond Sight",
+      "oracle_fingerprint": "48a8972b58f3dc7d2431c8ed14da9cc9",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "LookAtTop": { "count": 2, "as": "top" } },
+              { "Choose": { "from": { "Bound": "top" }, "as": "kept2", "rest_as": "rest3" } },
+              { "Move": { "what": { "Bound": "kept2" }, "to": "Hand" } },
+              {
+                "Move": {
+                  "what": { "Bound": "rest3" },
+                  "to": { "Library": { "place": "Bottom", "order": "Chosen" } }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "Rebound" }
+      ]
+    }
+  ]
+}

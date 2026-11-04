@@ -1,0 +1,26 @@
+{
+  "oracle_id": "21f507fd-6a26-455c-879a-f838e0aa2a43",
+  "name": "Grixis Sojourners",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Grixis Sojourners",
+      "oracle_fingerprint": "46212c565c23816e64edbe172dfde295",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "Cycled": { "what": ["This"] } },
+                { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } }
+              ]
+            },
+            "targets": [{ "what": { "Object": [{ "In": "Graveyard" }] } }],
+            "effects": [{ "May": { "effects": [{ "Exile": { "what": { "Target": 0 } } }] } }]
+          }
+        },
+        { "Keyword": { "Cycling": "{2}{B}" } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "oracle_id": "299ea6dd-79eb-4c25-a05d-ff6fcad663cf",
+  "name": "Obelisk of Undoing",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Obelisk of Undoing",
+      "oracle_fingerprint": "2d679fe4b43ae5e4c8a43797145213d4",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{6}" }, "Tap"],
+            "targets": [{ "what": { "Object": [{ "ControlledBy": "You" }, { "OwnedBy": "You" }] } }],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

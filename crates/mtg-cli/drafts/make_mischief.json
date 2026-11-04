@@ -1,0 +1,50 @@
+{
+  "oracle_id": "5de50aa5-3b30-4d7d-9203-bc8fc0f8fb34",
+  "name": "Make Mischief",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Make Mischief",
+      "oracle_fingerprint": "7ba85dddd581146d230985c2eed476e5",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 1 } },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Devil",
+                      "colors": ["Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Devil"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [
+                        {
+                          "Triggered": {
+                            "when": {
+                              "ZoneChange": {
+                                "what": ["This"],
+                                "from": "Battlefield",
+                                "to": "Graveyard"
+                              }
+                            },
+                            "targets": [{ "what": "AnyTarget" }],
+                            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

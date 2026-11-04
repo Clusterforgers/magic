@@ -1,0 +1,130 @@
+{
+  "object": "card",
+  "id": "b903472f-bd9b-4d7e-9820-34b7dd601ecb",
+  "oracle_id": "a7eef84a-0b56-41d5-a298-dc3cf199e125",
+  "multiverse_ids": [
+    401659
+  ],
+  "tcgplayer_id": 104218,
+  "cardmarket_id": 284151,
+  "name": "Joraga Bard",
+  "lang": "en",
+  "released_at": "2015-08-28",
+  "uri": "https://api.scryfall.com/cards/b903472f-bd9b-4d7e-9820-34b7dd601ecb",
+  "scryfall_uri": "https://scryfall.com/card/ddp/17/joraga-bard?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T10:24:16Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/b/9/b903472f-bd9b-4d7e-9820-34b7dd601ecb.jpg?1783938256",
+    "normal": "https://cards.scryfall.io/normal/front/b/9/b903472f-bd9b-4d7e-9820-34b7dd601ecb.jpg?1783938256",
+    "large": "https://cards.scryfall.io/large/front/b/9/b903472f-bd9b-4d7e-9820-34b7dd601ecb.jpg?1783938256",
+    "png": "https://cards.scryfall.io/png/front/b/9/b903472f-bd9b-4d7e-9820-34b7dd601ecb.png?1783938256",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/b/9/b903472f-bd9b-4d7e-9820-34b7dd601ecb.jpg?1783938256",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/b/9/b903472f-bd9b-4d7e-9820-34b7dd601ecb.jpg?1783938256",
+    "thumb": "https://cards.scryfall.io/thumb/front/b/9/b903472f-bd9b-4d7e-9820-34b7dd601ecb.webp?1783938256",
+    "grid": "https://cards.scryfall.io/grid/front/b/9/b903472f-bd9b-4d7e-9820-34b7dd601ecb.webp?1783938256",
+    "display": "https://cards.scryfall.io/display/front/b/9/b903472f-bd9b-4d7e-9820-34b7dd601ecb.webp?1783938256",
+    "art": "https://cards.scryfall.io/art/front/b/9/b903472f-bd9b-4d7e-9820-34b7dd601ecb.webp?1783938256",
+    "crop": "https://cards.scryfall.io/crop/front/b/9/b903472f-bd9b-4d7e-9820-34b7dd601ecb.webp?1783938256",
+    "jpeg": "https://cards.scryfall.io/normal/front/b/9/b903472f-bd9b-4d7e-9820-34b7dd601ecb.jpg?1783938256"
+  },
+  "mana_cost": "{3}{G}",
+  "cmc": 4.0,
+  "type_line": "Creature — Elf Rogue Bard Ally",
+  "oracle_text": "Whenever this creature or another Ally you control enters, you may have Ally creatures you control gain vigilance until end of turn.",
+  "power": "1",
+  "toughness": "4",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "0dbc7609-b12c-471a-bfd3-c57bc670c445",
+  "set": "ddp",
+  "set_name": "Duel Decks: Zendikar vs. Eldrazi",
+  "set_type": "duel_deck",
+  "set_uri": "https://api.scryfall.com/sets/0dbc7609-b12c-471a-bfd3-c57bc670c445",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Addp&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/ddp?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/b903472f-bd9b-4d7e-9820-34b7dd601ecb/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Aa7eef84a-0b56-41d5-a298-dc3cf199e125&unique=prints",
+  "collector_number": "17",
+  "digital": false,
+  "rarity": "common",
+  "flavor_text": "Adventuring bards recite *Chanter's Epics*, never-ending tales that keep their comrades' minds alert to danger.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Volkan Baǵa",
+  "artist_ids": [
+    "93bec3c0-0260-4d31-8064-5d01efb4153f"
+  ],
+  "illustration_id": "f9fb600d-f7af-49af-9ba1-ba16bdfefbe0",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 22812,
+  "prices": {
+    "usd": "0.12",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.02",
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=401659&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DJoraga%2BBard",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DJoraga%2BBard",
+    "edhrec": "https://edhrec.com/route/?cc=Joraga+Bard"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F104218%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=284151&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Joraga+Bard&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "oracle_id": "8c04663a-1023-49a5-a0b9-78f24a72fb1e",
+  "name": "Nature's Way",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nature's Way",
+      "oracle_fingerprint": "c74fddcdd7676d52fc51e76de4ac7cab",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "Not": { "ControlledBy": "You" } }] }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Vigilance" }, { "AddKeyword": "Trample" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "DealDamage": {
+                  "source": { "Target": 0 },
+                  "to": { "Target": 1 },
+                  "amount": { "Stat": { "of": { "Target": 0 }, "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "oracle_id": "73f84440-425f-4cf5-b01a-3ae89f1f6e37",
+  "name": "Red Ward",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Red Ward",
+      "oracle_fingerprint": "37cba49ff58f9be6c4c7633ec92b00e7",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "AddKeyword": { "Protection": [{ "Color": "Red" }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

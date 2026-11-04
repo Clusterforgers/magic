@@ -1,0 +1,21 @@
+{
+  "oracle_id": "0ecb35b3-5bd1-4467-a4a3-ce468023ced2",
+  "name": "Blossombind",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Blossombind",
+      "oracle_fingerprint": "0a46ce07991b2ec18bfa16d5b21cd3de",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Tap": { "what": "Attached" } }]
+          }
+        },
+        { "Rule": { "rule": { "Cant": { "who": "Attached", "action": "PutCounter" } } } }
+      ]
+    }
+  ]
+}

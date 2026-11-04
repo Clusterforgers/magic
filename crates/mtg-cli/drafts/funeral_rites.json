@@ -1,0 +1,22 @@
+{
+  "oracle_id": "771210f7-0f00-4438-a886-a1f716e3d80e",
+  "name": "Funeral Rites",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Funeral Rites",
+      "oracle_fingerprint": "cf683c047e6099d6c85fe23dfa629bff",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Draw": { "count": 2 } },
+              { "LoseLife": { "amount": 2 } },
+              { "Mill": { "count": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

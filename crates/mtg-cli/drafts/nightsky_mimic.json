@@ -1,0 +1,29 @@
+{
+  "oracle_id": "ed186aea-e0dc-4d88-a619-748b2ebf0c52",
+  "name": "Nightsky Mimic",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nightsky Mimic",
+      "oracle_fingerprint": "4dced6d4570f4412dcf32f059bf622fc",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": { "what": [{ "Color": "White" }, { "Color": "Black" }], "by": "You" }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "SetPT": { "power": 4, "toughness": 4 } }, { "AddKeyword": "Flying" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

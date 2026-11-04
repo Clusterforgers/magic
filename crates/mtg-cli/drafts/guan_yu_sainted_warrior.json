@@ -1,0 +1,36 @@
+{
+  "oracle_id": "f7ee3935-4510-485a-a863-ac38dffa1908",
+  "name": "Guan Yu, Sainted Warrior",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Guan Yu, Sainted Warrior",
+      "oracle_fingerprint": "c814c819e926aaa0f5e5f261c60ad5e0",
+      "abilities": [
+        { "Keyword": "Horsemanship" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": ["This", { "OwnedBy": "You" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Move": { "what": "Triggering", "to": { "Library": { "place": "Shuffled" } } }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

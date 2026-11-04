@@ -1,0 +1,136 @@
+{
+  "object": "card",
+  "id": "ec676a8f-612d-4ef4-a370-6208407a86af",
+  "oracle_id": "e16c5516-f73c-40c4-9ffa-39c6b2e92ab7",
+  "multiverse_ids": [
+    667608
+  ],
+  "mtgo_id": 128002,
+  "tcgplayer_id": 556387,
+  "cardmarket_id": 775482,
+  "name": "Escape Detection",
+  "lang": "en",
+  "released_at": "2024-07-05",
+  "uri": "https://api.scryfall.com/cards/ec676a8f-612d-4ef4-a370-6208407a86af",
+  "scryfall_uri": "https://scryfall.com/card/acr/18/escape-detection?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T02:49:43Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/e/c/ec676a8f-612d-4ef4-a370-6208407a86af.jpg?1783910983",
+    "normal": "https://cards.scryfall.io/normal/front/e/c/ec676a8f-612d-4ef4-a370-6208407a86af.jpg?1783910983",
+    "large": "https://cards.scryfall.io/large/front/e/c/ec676a8f-612d-4ef4-a370-6208407a86af.jpg?1783910983",
+    "png": "https://cards.scryfall.io/png/front/e/c/ec676a8f-612d-4ef4-a370-6208407a86af.png?1783910983",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/e/c/ec676a8f-612d-4ef4-a370-6208407a86af.jpg?1783910983",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/e/c/ec676a8f-612d-4ef4-a370-6208407a86af.jpg?1783910983",
+    "thumb": "https://cards.scryfall.io/thumb/front/e/c/ec676a8f-612d-4ef4-a370-6208407a86af.webp?1783910983",
+    "grid": "https://cards.scryfall.io/grid/front/e/c/ec676a8f-612d-4ef4-a370-6208407a86af.webp?1783910983",
+    "display": "https://cards.scryfall.io/display/front/e/c/ec676a8f-612d-4ef4-a370-6208407a86af.webp?1783910983",
+    "art": "https://cards.scryfall.io/art/front/e/c/ec676a8f-612d-4ef4-a370-6208407a86af.webp?1783910983",
+    "crop": "https://cards.scryfall.io/crop/front/e/c/ec676a8f-612d-4ef4-a370-6208407a86af.webp?1783910983",
+    "jpeg": "https://cards.scryfall.io/normal/front/e/c/ec676a8f-612d-4ef4-a370-6208407a86af.jpg?1783910983"
+  },
+  "mana_cost": "{1}{U}{U}",
+  "cmc": 3.0,
+  "type_line": "Instant",
+  "oracle_text": "Freerunning—Return a blue creature you control to its owner's hand. (You may cast this spell for its freerunning cost if you dealt combat damage to a player this turn with an Assassin or commander.)\nReturn target creature to its owner's hand.\nDraw a card.",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Freerunning"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "54b67b0b-cd3f-4e0d-ac25-fef5d966409b",
+  "set": "acr",
+  "set_name": "Assassin's Creed",
+  "set_type": "draft_innovation",
+  "set_uri": "https://api.scryfall.com/sets/54b67b0b-cd3f-4e0d-ac25-fef5d966409b",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aacr&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/acr?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/ec676a8f-612d-4ef4-a370-6208407a86af/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ae16c5516-f73c-40c4-9ffa-39c6b2e92ab7&unique=prints",
+  "collector_number": "18",
+  "digital": false,
+  "rarity": "uncommon",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Justyna Dura",
+  "artist_ids": [
+    "d2340aef-8ca9-4e0d-864c-6a4e8d5e350a"
+  ],
+  "illustration_id": "3c84fa55-6903-44c5-8b36-fd1f6d67a759",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 13406,
+  "prices": {
+    "usd": "0.22",
+    "usd_foil": "0.29",
+    "usd_etched": null,
+    "eur": "0.08",
+    "eur_foil": "0.13",
+    "tix": "0.27"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=667608&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DEscape%2BDetection",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DEscape%2BDetection",
+    "edhrec": "https://edhrec.com/route/?cc=Escape+Detection"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F556387%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=775482&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/128002?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

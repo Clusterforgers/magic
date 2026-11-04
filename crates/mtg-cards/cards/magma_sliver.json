@@ -1,0 +1,46 @@
+{
+  "oracle_id": "008ac258-763c-4379-bfcd-b9cc4d7296dd",
+  "name": "Magma Sliver",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Magma Sliver",
+      "oracle_fingerprint": "44ad132daea29715cbfa55a467f4e3cd",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Sliver" }] },
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Activated": {
+                    "cost": ["Tap"],
+                    "targets": [
+                      { "what": { "Object": [{ "Type": "Creature" }, { "Subtype": "Sliver" }] } }
+                    ],
+                    "effects": [
+                      {
+                        "Continuous": {
+                          "affected": { "Target": 0 },
+                          "mods": [
+                            {
+                              "ModifyPT": {
+                                "power": { "Count": [{ "Subtype": "Sliver" }] },
+                                "toughness": 0
+                              }
+                            }
+                          ],
+                          "duration": "UntilEndOfTurn"
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

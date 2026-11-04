@@ -1,0 +1,33 @@
+{
+  "oracle_id": "66b46257-b64c-4672-bf47-12bf0bcd6f8f",
+  "name": "Sylvan Awakening",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sylvan Awakening",
+      "oracle_fingerprint": "b6d7af409af8839efc1540bf19963b6e",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Land" }, { "ControlledBy": "You" }] },
+                  "mods": [
+                    { "SetPT": { "power": 2, "toughness": 2 } },
+                    { "AddSubtype": "Elemental" },
+                    { "AddType": "Creature" },
+                    { "AddKeyword": "Reach" },
+                    { "AddKeyword": "Indestructible" },
+                    { "AddKeyword": "Haste" }
+                  ],
+                  "duration": "UntilYourNextTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

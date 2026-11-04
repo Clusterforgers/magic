@@ -1,0 +1,38 @@
+{
+  "oracle_id": "edbe4fdf-9e55-44fa-b3ec-5b1ac615f3a7",
+  "name": "Gift of Growth",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gift of Growth",
+      "oracle_fingerprint": "4a1d7d217e8e67ec3e6f9040dc0ad0ad",
+      "abilities": [
+        { "Keyword": { "Kicker": "{2}" } },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Untap": { "what": { "Target": 0 } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": { "When": { "condition": "Kicked", "then": 4, "otherwise": 2 } },
+                        "toughness": {
+                          "When": { "condition": "Kicked", "then": 4, "otherwise": 2 }
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

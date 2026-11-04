@@ -1,0 +1,30 @@
+{
+  "oracle_id": "ff3f5b1e-9d53-4258-84ee-cfecf685dd05",
+  "name": "Skitterskin",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Skitterskin",
+      "oracle_fingerprint": "8d743f0d135e2267a572f3b12d6a1328",
+      "abilities": [
+        { "Keyword": "Devoid" },
+        { "Static": { "affected": "This", "mods": ["CantBlock"] } },
+        {
+          "Activated": {
+            "cost": "{1}{B}",
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [{ "Type": "Creature" }, "Colorless", { "ControlledBy": "You" }, "Other"]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "Regenerate": { "what": "This" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

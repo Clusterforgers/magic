@@ -1,0 +1,47 @@
+{
+  "oracle_id": "507fc71d-0dfc-4bfe-bc71-de88162c39a1",
+  "name": "Iron Man, Modern Marvel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Iron Man, Modern Marvel",
+      "oracle_fingerprint": "02dc6cbf74a65a363d2954302f4d71d6",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                { "Type": "Artifact" },
+                "Other",
+                { "ControlledBy": "You" }
+              ]
+            },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "Type": "Creature" },
+                    { "Type": "Artifact" },
+                    "Other",
+                    { "ControlledBy": "You" }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "oracle_id": "d2309fba-4273-4084-b206-642a43975c34",
+  "name": "Triton Wavebreaker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Triton Wavebreaker",
+      "oracle_fingerprint": "d5a58d4bd5e04a316b02e67735b4b205",
+      "abilities": [
+        { "Keyword": { "Bestow": "{1}{U}" } },
+        { "Static": { "affected": "This", "mods": [{ "AddKeyword": "Prowess" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }, { "AddKeyword": "Prowess" }]
+          }
+        }
+      ]
+    }
+  ]
+}

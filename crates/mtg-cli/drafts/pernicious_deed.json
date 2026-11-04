@@ -1,0 +1,36 @@
+{
+  "oracle_id": "62e44e0d-eda0-4275-8367-49dab9a087c3",
+  "name": "Pernicious Deed",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pernicious Deed",
+      "oracle_fingerprint": "2d19952e56a327f80c52c99d7f0e5115",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{X}" }, "SacrificeSelf"],
+            "effects": [
+              {
+                "Destroy": {
+                  "what": {
+                    "Each": [
+                      {
+                        "AnyOf": [
+                          { "Type": "Artifact" },
+                          { "Type": "Creature" },
+                          { "Type": "Enchantment" }
+                        ]
+                      },
+                      { "Compare": { "stat": "ManaValue", "op": "Le", "to": "X" } }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

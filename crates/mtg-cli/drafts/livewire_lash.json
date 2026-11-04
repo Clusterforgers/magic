@@ -1,0 +1,31 @@
+{
+  "oracle_id": "9d3f1b93-ec3b-47eb-bd93-89890fd33ccb",
+  "name": "Livewire Lash",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Livewire Lash",
+      "oracle_fingerprint": "5755a065a54b49951356d58a83f1b38a",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "ModifyPT": { "power": 2, "toughness": 0 } },
+              {
+                "GrantAbility": {
+                  "Triggered": {
+                    "when": { "BecomesTarget": { "what": ["This"], "by": ["Spell"] } },
+                    "targets": [{ "what": "AnyTarget" }],
+                    "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 2 } }]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{2}" } }
+      ]
+    }
+  ]
+}

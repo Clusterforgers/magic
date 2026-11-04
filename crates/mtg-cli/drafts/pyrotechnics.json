@@ -1,0 +1,19 @@
+{
+  "oracle_id": "794b9ddf-1660-441f-9cc2-a0f5d4d0cf22",
+  "name": "Pyrotechnics",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pyrotechnics",
+      "oracle_fingerprint": "41a40d4c2e1933e07339800ce9969392",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget", "bounds": { "min": 0, "max": 4 }, "divide": 4 }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": "Divided" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

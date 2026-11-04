@@ -1,0 +1,24 @@
+{
+  "oracle_id": "3dc73517-0767-46ae-bc8d-ee378237a509",
+  "name": "Rooftop Percher",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rooftop Percher",
+      "oracle_fingerprint": "9801ca620776fa8055c7d93801656dc3",
+      "abilities": [
+        { "Keyword": "Changeling" },
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              { "what": { "Object": [{ "In": "Graveyard" }] }, "bounds": { "min": 0, "max": 2 } }
+            ],
+            "effects": [{ "Exile": { "what": { "Target": 0 } } }, { "GainLife": { "amount": 3 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

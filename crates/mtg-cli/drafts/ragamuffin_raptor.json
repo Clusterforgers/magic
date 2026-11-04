@@ -1,0 +1,31 @@
+{
+  "oracle_id": "71b81f3f-6092-4819-8529-e27bccfcf088",
+  "name": "Ragamuffin Raptor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ragamuffin Raptor",
+      "oracle_fingerprint": "4acf74e664726ce1368ef43e6a7db2bf",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Creature" }, { "Subtype": "Food" }] },
+                    { "OwnedBy": "You" },
+                    { "In": "Graveyard" }
+                  ]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

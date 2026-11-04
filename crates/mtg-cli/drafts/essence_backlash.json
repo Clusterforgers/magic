@@ -1,0 +1,27 @@
+{
+  "oracle_id": "f51ed0b4-c144-458e-b97c-618b9e1cf25d",
+  "name": "Essence Backlash",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Essence Backlash",
+      "oracle_fingerprint": "ccf919416941586ffde96b66aa56ff7a",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell", { "Type": "Creature" }] } }],
+            "effects": [
+              { "Counter": { "what": { "Target": 0 } } },
+              {
+                "DealDamage": {
+                  "to": { "ControllerOf": { "Target": 0 } },
+                  "amount": { "Stat": { "of": { "Target": 0 }, "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

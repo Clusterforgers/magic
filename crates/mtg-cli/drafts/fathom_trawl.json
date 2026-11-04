@@ -1,0 +1,34 @@
+{
+  "oracle_id": "7b002cae-ee7d-400d-af9c-445eb10f1f0c",
+  "name": "Fathom Trawl",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fathom Trawl",
+      "oracle_fingerprint": "916bb5eaae63a3ac1de501b0e7c65ec2",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RevealUntil": {
+                  "filter": [{ "Not": { "Type": "Land" } }, { "OwnedBy": "You" }],
+                  "count": 3,
+                  "as": "found",
+                  "revealed_as": "revealed2"
+                }
+              },
+              { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+              {
+                "Move": {
+                  "what": { "Bound": "revealed2" },
+                  "to": { "Library": { "place": "Bottom", "order": "Chosen" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

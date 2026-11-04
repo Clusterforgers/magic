@@ -10,19 +10,18 @@
         {
           "Spell": {
             "effects": [
-              { "DealDamage": { "to": { "Each": [{ "ControlledBy": "Opponents" }] }, "amount": 1 } },
               {
                 "DealDamage": {
                   "to": {
                     "Each": [
-                      { "ControlledBy": "Opponents" },
-                      { "Type": "Creature" },
-                      { "Type": "Planeswalker" }
+                      { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] },
+                      { "ControlledBy": "Opponents" }
                     ]
                   },
                   "amount": 1
                 }
-              }
+              },
+              { "DealDamage": { "to": "Opponents", "amount": 1 } }
             ]
           }
         }

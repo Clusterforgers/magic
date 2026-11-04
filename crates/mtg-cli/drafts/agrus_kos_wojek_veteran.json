@@ -1,0 +1,36 @@
+{
+  "oracle_id": "e758aecd-6ce1-42f6-9716-32871e3bfa41",
+  "name": "Agrus Kos, Wojek Veteran",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Agrus Kos, Wojek Veteran",
+      "oracle_fingerprint": "dc6154b479f6c241c995734276163097",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, "Attacking", { "Color": "Red" }] },
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [{ "Type": "Creature" }, "Attacking", { "Color": "White" }]
+                  },
+                  "mods": [{ "ModifyPT": { "power": 0, "toughness": 2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

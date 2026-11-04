@@ -1,0 +1,35 @@
+{
+  "oracle_id": "4f815ca4-0197-48c7-bfa2-5eb937c615e6",
+  "name": "Take for a Ride",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Take for a Ride",
+      "oracle_fingerprint": "cc1ebe584457d1e60f82ebaec24dab8f",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Untap": { "what": { "Target": 0 } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

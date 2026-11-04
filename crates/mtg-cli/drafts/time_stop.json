@@ -1,0 +1,12 @@
+{
+  "oracle_id": "55bc6a7e-2356-48f0-a93a-8bf19044ee4b",
+  "name": "Time Stop",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Time Stop",
+      "oracle_fingerprint": "b5df037d892425064815d5a9fdf8ef90",
+      "abilities": [{ "Spell": { "effects": ["EndTurn"] } }]
+    }
+  ]
+}

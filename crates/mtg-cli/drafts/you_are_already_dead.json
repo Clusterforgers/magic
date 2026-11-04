@@ -1,0 +1,19 @@
+{
+  "oracle_id": "c1157d79-38ea-4a88-b346-7b12614ff78a",
+  "name": "You Are Already Dead",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "You Are Already Dead",
+      "oracle_fingerprint": "d70d4f3bd42bd9261ca84c63d8b9131f",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "DamagedThisTurn"] } }],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }, { "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

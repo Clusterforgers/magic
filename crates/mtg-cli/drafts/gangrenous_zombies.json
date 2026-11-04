@@ -1,0 +1,68 @@
+{
+  "oracle_id": "d0d844f2-6cf4-49f2-95db-64e932a15b17",
+  "name": "Gangrenous Zombies",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gangrenous Zombies",
+      "oracle_fingerprint": "7f6935a0491e8472e34abbb385ccc6c0",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap", "SacrificeSelf"],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Each": [{ "Type": "Creature" }] },
+                  "amount": {
+                    "When": {
+                      "condition": {
+                        "Compare": {
+                          "left": {
+                            "Count": [
+                              { "Subtype": "Swamp" },
+                              { "Supertype": "Snow" },
+                              { "ControlledBy": "You" }
+                            ]
+                          },
+                          "op": "Eq",
+                          "right": 0
+                        }
+                      },
+                      "then": 1,
+                      "otherwise": 2
+                    }
+                  }
+                }
+              },
+              {
+                "DealDamage": {
+                  "to": "EachPlayer",
+                  "amount": {
+                    "When": {
+                      "condition": {
+                        "Compare": {
+                          "left": {
+                            "Count": [
+                              { "Subtype": "Swamp" },
+                              { "Supertype": "Snow" },
+                              { "ControlledBy": "You" }
+                            ]
+                          },
+                          "op": "Eq",
+                          "right": 0
+                        }
+                      },
+                      "then": 1,
+                      "otherwise": 2
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

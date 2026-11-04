@@ -1,0 +1,20 @@
+{
+  "oracle_id": "35bf67e0-8141-4664-b762-2c613353e1eb",
+  "name": "Acolyte of the Inferno",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Acolyte of the Inferno",
+      "oracle_fingerprint": "4455631c16172e9150b94e57bc78c390",
+      "abilities": [
+        { "Keyword": { "Renown": 1 } },
+        {
+          "Triggered": {
+            "when": { "BecomesBlocked": { "what": ["This"], "by": [{ "Type": "Creature" }] } },
+            "effects": [{ "DealDamage": { "to": "This", "amount": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "oracle_id": "4236851b-5366-43a1-bde4-f525b4fbcbce",
+  "name": "Bloodchief's Thirst",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bloodchief's Thirst",
+      "oracle_fingerprint": "90480ec07fc70ccba9352bdcc3f5718f",
+      "abilities": [
+        { "Keyword": { "Kicker": "{2}{B}" } },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] },
+                    { "Compare": { "stat": "ManaValue", "op": "Le", "to": 2 } }
+                  ]
+                },
+                "bounds": {
+                  "min": { "When": { "condition": "Kicked", "then": 0, "otherwise": 1 } },
+                  "max": { "When": { "condition": "Kicked", "then": 0, "otherwise": 1 } }
+                }
+              },
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }]
+                },
+                "bounds": {
+                  "min": { "When": { "condition": "Kicked", "then": 1, "otherwise": 0 } },
+                  "max": { "When": { "condition": "Kicked", "then": 1, "otherwise": 0 } }
+                }
+              }
+            ],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              { "Destroy": { "what": { "Target": 1 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

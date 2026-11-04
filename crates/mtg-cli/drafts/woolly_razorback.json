@@ -1,0 +1,33 @@
+{
+  "oracle_id": "c5d27469-96e1-44ec-a887-2fc26f9e10d3",
+  "name": "Woolly Razorback",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Woolly Razorback",
+      "oracle_fingerprint": "b2a4d223a3bb1019c20380970a731fb2",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": { "Other": "ice" }, "count": 3 } }
+          }
+        },
+        {
+          "Replacement": {
+            "when": {
+              "Damage": { "source": ["This", { "HasCounter": { "Other": "ice" } }], "combat": true }
+            },
+            "by": "Prevent"
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Blocks": { "what": ["This"] } },
+            "effects": [{ "RemoveCounters": { "from": "This", "counter": { "Other": "ice" } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

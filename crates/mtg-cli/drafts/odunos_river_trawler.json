@@ -1,0 +1,49 @@
+{
+  "oracle_id": "0282b5c0-e792-4099-a3fa-329eda11fb44",
+  "name": "Odunos River Trawler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Odunos River Trawler",
+      "oracle_fingerprint": "9a850ad633ef511fe14c63239af897b7",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Enchantment" },
+                    { "Type": "Creature" },
+                    { "OwnedBy": "You" },
+                    { "In": "Graveyard" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{W}" }, "SacrificeSelf"],
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Enchantment" },
+                    { "Type": "Creature" },
+                    { "OwnedBy": "You" },
+                    { "In": "Graveyard" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

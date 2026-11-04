@@ -1,0 +1,24 @@
+{
+  "oracle_id": "c81d1890-e741-49ec-a6ce-86c27fd4d502",
+  "name": "Profane Memento",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Profane Memento",
+      "oracle_fingerprint": "632b9a31e8a9c85acaa13c0e5d6d4770",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "Not": "Token" }, { "OwnedBy": "Opponents" }],
+                "to": "Graveyard"
+              }
+            },
+            "effects": [{ "GainLife": { "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

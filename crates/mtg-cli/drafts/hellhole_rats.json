@@ -1,0 +1,29 @@
+{
+  "oracle_id": "7491e0bf-8335-44e4-8e05-b9a737a0f2e7",
+  "name": "Hellhole Rats",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hellhole Rats",
+      "oracle_fingerprint": "aa9d63e42a584511bad098eac91a7a93",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              { "Discard": { "who": { "Target": 0 }, "as": "discarded" } },
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": { "Stat": { "of": { "Bound": "discarded" }, "stat": "ManaValue" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

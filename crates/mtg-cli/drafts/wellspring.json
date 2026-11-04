@@ -1,0 +1,43 @@
+{
+  "oracle_id": "8650bd97-ecf6-420f-9b72-a749970afcd4",
+  "name": "Wellspring",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wellspring",
+      "oracle_fingerprint": "4a95ca1e5862525b257c2f4df6ff8f4f",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Land" }] } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Attached",
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Attached",
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Untap": { "what": "Attached" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

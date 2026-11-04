@@ -1,0 +1,19 @@
+{
+  "oracle_id": "34424168-1353-46a9-9e60-d09a344c3573",
+  "name": "Crushing Pain",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Crushing Pain",
+      "oracle_fingerprint": "30701f6dd4fb1f552654558a561c62fe",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "DamagedThisTurn"] } }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 6 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

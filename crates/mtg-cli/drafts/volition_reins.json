@@ -1,0 +1,28 @@
+{
+  "oracle_id": "bda496f9-5362-46f2-ad4f-cd96410c3c61",
+  "name": "Volition Reins",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Volition Reins",
+      "oracle_fingerprint": "af698b852b1d1a8c057f6ebed5bc5496",
+      "abilities": [
+        { "Keyword": { "Enchant": [] } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": [{ "Is": "Attached" }, "Tapped"] },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "Untap": { "what": "Attached" } }]
+          }
+        },
+        { "Static": { "affected": "Attached", "mods": [{ "SetController": "You" }] } }
+      ]
+    }
+  ]
+}

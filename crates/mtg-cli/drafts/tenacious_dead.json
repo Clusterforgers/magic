@@ -1,0 +1,28 @@
+{
+  "oracle_id": "9ae376d5-c68f-4a4b-851c-ebfd385b86dd",
+  "name": "Tenacious Dead",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tenacious Dead",
+      "oracle_fingerprint": "d171d4fdc320f2fb8b1957c6af51b86e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{1}{B}",
+                  "paid": [
+                    { "Move": { "what": "This", "to": { "Battlefield": { "tapped": true } } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

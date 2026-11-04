@@ -1,0 +1,132 @@
+{
+  "object": "card",
+  "id": "d98f0e44-f5c7-4e08-8a4a-d0280f22d132",
+  "oracle_id": "49a7c053-81e9-47b7-af5c-c62cd0389ed4",
+  "multiverse_ids": [],
+  "resource_id": "61166F5456740731C94EFB8EAC3A22D51877EF7FDD4AF319C16F47C4AD3C7DAA",
+  "tcgplayer_id": 646132,
+  "cardmarket_id": 839925,
+  "name": "Lethal Protection",
+  "lang": "en",
+  "released_at": "2025-09-26",
+  "uri": "https://api.scryfall.com/cards/d98f0e44-f5c7-4e08-8a4a-d0280f22d132",
+  "scryfall_uri": "https://scryfall.com/card/spe/10/lethal-protection?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T01:16:12Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/d/9/d98f0e44-f5c7-4e08-8a4a-d0280f22d132.jpg?1783905372",
+    "normal": "https://cards.scryfall.io/normal/front/d/9/d98f0e44-f5c7-4e08-8a4a-d0280f22d132.jpg?1783905372",
+    "large": "https://cards.scryfall.io/large/front/d/9/d98f0e44-f5c7-4e08-8a4a-d0280f22d132.jpg?1783905372",
+    "png": "https://cards.scryfall.io/png/front/d/9/d98f0e44-f5c7-4e08-8a4a-d0280f22d132.png?1783905372",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/d/9/d98f0e44-f5c7-4e08-8a4a-d0280f22d132.jpg?1783905372",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/d/9/d98f0e44-f5c7-4e08-8a4a-d0280f22d132.jpg?1783905372",
+    "thumb": "https://cards.scryfall.io/thumb/front/d/9/d98f0e44-f5c7-4e08-8a4a-d0280f22d132.webp?1783905372",
+    "grid": "https://cards.scryfall.io/grid/front/d/9/d98f0e44-f5c7-4e08-8a4a-d0280f22d132.webp?1783905372",
+    "display": "https://cards.scryfall.io/display/front/d/9/d98f0e44-f5c7-4e08-8a4a-d0280f22d132.webp?1783905372",
+    "art": "https://cards.scryfall.io/art/front/d/9/d98f0e44-f5c7-4e08-8a4a-d0280f22d132.webp?1783905372",
+    "crop": "https://cards.scryfall.io/crop/front/d/9/d98f0e44-f5c7-4e08-8a4a-d0280f22d132.webp?1783905372",
+    "jpeg": "https://cards.scryfall.io/normal/front/d/9/d98f0e44-f5c7-4e08-8a4a-d0280f22d132.jpg?1783905372"
+  },
+  "mana_cost": "{3}{B}",
+  "cmc": 4.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Destroy target creature. Return up to one target creature card from your graveyard to your hand.",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "57f25bcf-c541-418d-87c2-57361d57d35e",
+  "set": "spe",
+  "set_name": "Marvel's Spider-Man Eternal",
+  "set_type": "eternal",
+  "set_uri": "https://api.scryfall.com/sets/57f25bcf-c541-418d-87c2-57361d57d35e",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aspe&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/spe?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/d98f0e44-f5c7-4e08-8a4a-d0280f22d132/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A49a7c053-81e9-47b7-af5c-c62cd0389ed4&unique=prints",
+  "collector_number": "10",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "Venom's favorite crime was punishment.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Néstor Ossandón Leal",
+  "artist_ids": [
+    "7a6f1667-a8ac-47f5-a302-f71cb54b2adf"
+  ],
+  "illustration_id": "a9f3ba0e-754c-44f0-bc18-d051a2287b4b",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 14706,
+  "prices": {
+    "usd": "1.27",
+    "usd_foil": "2.76",
+    "usd_etched": null,
+    "eur": "1.36",
+    "eur_foil": "1.85",
+    "tix": null
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DLethal%2BProtection",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DLethal%2BProtection",
+    "edhrec": "https://edhrec.com/route/?cc=Lethal+Protection"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F646132%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=839925&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Lethal+Protection&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

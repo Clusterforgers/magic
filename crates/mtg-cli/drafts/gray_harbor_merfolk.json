@@ -1,0 +1,33 @@
+{
+  "oracle_id": "f0f79389-95f1-4110-9d3d-91779bc71604",
+  "name": "Gray Harbor Merfolk",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gray Harbor Merfolk",
+      "oracle_fingerprint": "7e01fd0e805fa1dc8fab26eb927d6ad9",
+      "abilities": [
+        { "Static": { "affected": "This", "mods": ["CantBeBlocked"] } },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] },
+                    "Commander",
+                    { "ControlledBy": "You" }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

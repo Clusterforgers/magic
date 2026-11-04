@@ -1,0 +1,31 @@
+{
+  "oracle_id": "8a8bc537-b69f-441d-a10e-d7f17f2f75bb",
+  "name": "Pothole Mole",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pothole Mole",
+      "oracle_fingerprint": "cc0cd97ec8859e0661dde4e008983670",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "Mill": { "count": 3 } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [{ "Type": "Land" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked"
+                }
+              },
+              { "Move": { "what": { "Bound": "picked" }, "to": "Hand" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

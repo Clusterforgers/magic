@@ -1,0 +1,43 @@
+{
+  "oracle_id": "287f60a6-e83b-487b-add9-2048a06dcca1",
+  "name": "Revelation of Power",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Revelation of Power",
+      "oracle_fingerprint": "a472b401bc7f16b1ba1d3ecb75fe7801",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": { "left": { "Count": ["HasAnyCounter"] }, "op": "Ge", "right": 1 }
+                  },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [{ "AddKeyword": "Flying" }, { "AddKeyword": "Lifelink" }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

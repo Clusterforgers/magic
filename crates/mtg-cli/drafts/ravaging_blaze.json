@@ -1,0 +1,41 @@
+{
+  "oracle_id": "a41760a2-d359-4581-b8d3-c1b572ac15c2",
+  "name": "Ravaging Blaze",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ravaging Blaze",
+      "oracle_fingerprint": "3ad92169da31133418e337263f7daf14",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": "X" } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Count": [
+                          { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                          { "OwnedBy": "You" },
+                          { "In": "Graveyard" }
+                        ]
+                      },
+                      "op": "Ge",
+                      "right": 2
+                    }
+                  },
+                  "then": [
+                    { "DealDamage": { "to": { "ControllerOf": { "Target": 0 } }, "amount": "X" } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

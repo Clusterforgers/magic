@@ -1,0 +1,56 @@
+{
+  "oracle_id": "5502741a-e3b9-454e-8121-4360a6db6750",
+  "name": "Mirrex",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mirrex",
+      "oracle_fingerprint": "c961d44355e6501f4a261ac5b179be9e",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "condition": {
+              "Compare": {
+                "left": { "Count": ["This", "EnteredThisTurn"] },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}" }, "Tap"],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Phyrexian Mite",
+                      "types": ["Artifact", "Creature"],
+                      "subtypes": ["Phyrexian", "Mite"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [
+                        { "Keyword": { "Toxic": 1 } },
+                        { "Static": { "affected": "This", "mods": ["CantBlock"] } }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

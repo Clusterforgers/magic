@@ -1,0 +1,31 @@
+{
+  "oracle_id": "19cab267-3c51-4322-b1af-22941bbbdadf",
+  "name": "Wondrous Revival",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wondrous Revival",
+      "oracle_fingerprint": "dac313fd66a18f251aa9390c89207b4f",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "Subtype": "Hero" },
+                    { "OwnedBy": "You" },
+                    { "In": "Graveyard" }
+                  ]
+                },
+                "bounds": { "min": 0, "max": 3 }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

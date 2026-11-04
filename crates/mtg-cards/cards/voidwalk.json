@@ -1,0 +1,30 @@
+{
+  "oracle_id": "6706ebe4-4f96-4788-a934-f9b9aac5746f",
+  "name": "Voidwalk",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Voidwalk",
+      "oracle_fingerprint": "935537e4dea16521702b2437247f33a6",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    { "Move": { "what": { "Bound": "exiled" }, "to": { "Battlefield": {} } } }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "Cipher" }
+      ]
+    }
+  ]
+}

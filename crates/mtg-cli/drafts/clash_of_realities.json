@@ -1,0 +1,65 @@
+{
+  "oracle_id": "7ab18e48-f935-405b-8658-b49052d20529",
+  "name": "Clash of Realities",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Clash of Realities",
+      "oracle_fingerprint": "253c00924b068b638792cd27803d1ade",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "Subtype": "Spirit" }] },
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Triggered": {
+                    "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                    "targets": [
+                      {
+                        "what": {
+                          "Object": [{ "Type": "Creature" }, { "Not": { "Subtype": "Spirit" } }]
+                        }
+                      }
+                    ],
+                    "effects": [
+                      {
+                        "May": {
+                          "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 3 } }]
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "Not": { "Subtype": "Spirit" } }] },
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Triggered": {
+                    "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                    "targets": [
+                      { "what": { "Object": [{ "Type": "Creature" }, { "Subtype": "Spirit" }] } }
+                    ],
+                    "effects": [
+                      {
+                        "May": {
+                          "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 3 } }]
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

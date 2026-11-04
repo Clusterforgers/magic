@@ -1,0 +1,36 @@
+{
+  "oracle_id": "98a61659-9882-417c-9c16-16ebb26f9037",
+  "name": "Carrion Cruiser",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Carrion Cruiser",
+      "oracle_fingerprint": "84d0aa962629d3ff0b82a3b6f8b07482",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "Mill": { "count": 2 } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "AnyOf": [{ "Type": "Creature" }, { "Subtype": "Vehicle" }] },
+                      { "OwnedBy": "You" },
+                      { "In": "Graveyard" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked"
+                }
+              },
+              { "Move": { "what": { "Bound": "picked" }, "to": "Hand" } }
+            ]
+          }
+        },
+        { "Keyword": { "Crew": 1 } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "oracle_id": "555c571e-ccfc-4a8e-8a40-7b1eab0fbbef",
+  "name": "Break Through the Line",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Break Through the Line",
+      "oracle_fingerprint": "bb4d44918f39c02a80c343c6dc55a4ae",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{R}",
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "Compare": { "stat": "Power", "op": "Le", "to": 2 } }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["CantBeBlocked"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

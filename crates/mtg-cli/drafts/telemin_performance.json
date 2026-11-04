@@ -1,0 +1,35 @@
+{
+  "oracle_id": "4014f665-08a6-4ae0-b4d7-5a69d043af6a",
+  "name": "Telemin Performance",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Telemin Performance",
+      "oracle_fingerprint": "2de0e1e41e6c1e12c97f4d0e4423bbb3",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "RevealUntil": {
+                  "who": { "Target": 0 },
+                  "filter": [{ "Type": "Creature" }],
+                  "as": "found",
+                  "revealed_as": "revealed2"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "found" },
+                  "to": { "Battlefield": { "under": "You" } }
+                }
+              },
+              { "Move": { "what": { "Bound": "revealed2" }, "to": "Graveyard" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

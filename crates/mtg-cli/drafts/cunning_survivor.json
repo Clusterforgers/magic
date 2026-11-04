@@ -1,0 +1,34 @@
+{
+  "oracle_id": "e6dfac7c-72ed-4db8-97b0-371ed9108b00",
+  "name": "Cunning Survivor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cunning Survivor",
+      "oracle_fingerprint": "bd9d992a44e3500216512163616c92f5",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Discarded": { "by": "You" } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": ["CantBeBlocked"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

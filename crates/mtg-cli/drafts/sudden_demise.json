@@ -1,0 +1,26 @@
+{
+  "oracle_id": "b34b5b3f-7f17-4292-814e-634408a5d7a5",
+  "name": "Sudden Demise",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sudden Demise",
+      "oracle_fingerprint": "6a23d00ebe71e19d8122af59b6a4cd96",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "ChooseValue": { "kind": "Color", "as": "chosen" } },
+              {
+                "DealDamage": {
+                  "to": { "Each": [{ "Type": "Creature" }, { "ChosenAs": "chosen" }] },
+                  "amount": "X"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,132 @@
+{
+  "object": "card",
+  "id": "a233a244-7f84-4525-b0ce-e10db0a95385",
+  "oracle_id": "f3f01fe8-0a2c-4afa-94d2-268d27c0d252",
+  "multiverse_ids": [
+    4663
+  ],
+  "mtgo_id": 9793,
+  "mtgo_foil_id": 9794,
+  "tcgplayer_id": 5547,
+  "cardmarket_id": 8764,
+  "name": "Extinction",
+  "lang": "en",
+  "released_at": "1997-10-14",
+  "uri": "https://api.scryfall.com/cards/a233a244-7f84-4525-b0ce-e10db0a95385",
+  "scryfall_uri": "https://scryfall.com/card/tmp/135/extinction?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T12:44:00Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/a/2/a233a244-7f84-4525-b0ce-e10db0a95385.jpg?1783946640",
+    "normal": "https://cards.scryfall.io/normal/front/a/2/a233a244-7f84-4525-b0ce-e10db0a95385.jpg?1783946640",
+    "large": "https://cards.scryfall.io/large/front/a/2/a233a244-7f84-4525-b0ce-e10db0a95385.jpg?1783946640",
+    "png": "https://cards.scryfall.io/png/front/a/2/a233a244-7f84-4525-b0ce-e10db0a95385.png?1783946640",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/a/2/a233a244-7f84-4525-b0ce-e10db0a95385.jpg?1783946640",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/a/2/a233a244-7f84-4525-b0ce-e10db0a95385.jpg?1783946640",
+    "thumb": "https://cards.scryfall.io/thumb/front/a/2/a233a244-7f84-4525-b0ce-e10db0a95385.webp?1783946640",
+    "grid": "https://cards.scryfall.io/grid/front/a/2/a233a244-7f84-4525-b0ce-e10db0a95385.webp?1783946640",
+    "display": "https://cards.scryfall.io/display/front/a/2/a233a244-7f84-4525-b0ce-e10db0a95385.webp?1783946640",
+    "art": "https://cards.scryfall.io/art/front/a/2/a233a244-7f84-4525-b0ce-e10db0a95385.webp?1783946640",
+    "crop": "https://cards.scryfall.io/crop/front/a/2/a233a244-7f84-4525-b0ce-e10db0a95385.webp?1783946640",
+    "jpeg": "https://cards.scryfall.io/normal/front/a/2/a233a244-7f84-4525-b0ce-e10db0a95385.jpg?1783946640"
+  },
+  "mana_cost": "{4}{B}",
+  "cmc": 5.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Destroy all creatures of the creature type of your choice.",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "10df3a67-178e-4363-8668-34f0e6edf2a7",
+  "set": "tmp",
+  "set_name": "Tempest",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/10df3a67-178e-4363-8668-34f0e6edf2a7",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Atmp&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/tmp?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/a233a244-7f84-4525-b0ce-e10db0a95385/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Af3f01fe8-0a2c-4afa-94d2-268d27c0d252&unique=prints",
+  "collector_number": "135",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "\"I once had an entire race killed just to listen to the rattling of their dried bones as I waded through them.\"\n—Volrath",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Una Fricker",
+  "artist_ids": [
+    "0471a371-1bf8-49f2-8e76-cbe3a0bfa7e8"
+  ],
+  "illustration_id": "81e2da81-e93e-4661-aebb-4e6769765841",
+  "border_color": "black",
+  "frame": "1997",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 21200,
+  "penny_rank": 7297,
+  "prices": {
+    "usd": "0.89",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.78",
+    "eur_foil": null,
+    "tix": "0.24"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=4663&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DExtinction",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DExtinction",
+    "edhrec": "https://edhrec.com/route/?cc=Extinction"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F5547%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=8764&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/9793?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

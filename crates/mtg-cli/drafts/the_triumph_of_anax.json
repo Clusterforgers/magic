@@ -1,0 +1,95 @@
+{
+  "oracle_id": "eea6ba94-8755-45c0-94ea-cde68e4a1e7c",
+  "name": "The Triumph of Anax",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Triumph of Anax",
+      "oracle_fingerprint": "3113334136f2e1c81e758ff374fdeddc",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": { "Counters": { "on": "This", "counter": { "Other": "lore" } } },
+                        "toughness": 0
+                      }
+                    },
+                    { "AddKeyword": "Trample" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 4 } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "Not": { "ControlledBy": "You" } }] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [{ "Fight": { "what": { "Target": 0 }, "with": { "Target": 1 } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": { "Counters": { "on": "This", "counter": { "Other": "lore" } } },
+                        "toughness": 0
+                      }
+                    },
+                    { "AddKeyword": "Trample" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": { "Counters": { "on": "This", "counter": { "Other": "lore" } } },
+                        "toughness": 0
+                      }
+                    },
+                    { "AddKeyword": "Trample" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "oracle_id": "79d46e09-2548-440f-9c02-3c3dc39a0cd1",
+  "name": "Sundial of the Infinite",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sundial of the Infinite",
+      "oracle_fingerprint": "4b16303e967f63fbdf8a6ebea2b1ecf2",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap"],
+            "condition": "YourTurn",
+            "effects": ["EndTurn"]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "oracle_id": "adff8c13-8909-47d0-acad-ba63597f2e96",
+  "name": "Leafkin Avenger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Leafkin Avenger",
+      "oracle_fingerprint": "2c219e8d2e1e629b93839ae412086638",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["Green"] },
+                  "times": {
+                    "Count": [
+                      { "Type": "Creature" },
+                      { "ControlledBy": "You" },
+                      { "Compare": { "stat": "Power", "op": "Ge", "to": 4 } }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{7}{R}",
+            "targets": [
+              { "what": { "Either": ["Player", { "Object": [{ "Type": "Planeswalker" }] }] } }
+            ],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": { "Stat": { "of": "This", "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

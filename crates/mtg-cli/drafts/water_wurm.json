@@ -1,0 +1,26 @@
+{
+  "oracle_id": "cfa373c4-6e42-4cf3-94a4-841f2824603e",
+  "name": "Water Wurm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Water Wurm",
+      "oracle_fingerprint": "6e9adf11be63a0fabcbc5fb23f6111c1",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": 0, "toughness": 1 } }],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Subtype": "Island" }, { "ControlledBy": "Opponents" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

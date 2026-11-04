@@ -1,0 +1,132 @@
+{
+  "object": "card",
+  "id": "f1379753-0a37-4e33-ac46-8ef33cb98b06",
+  "oracle_id": "6b4ee935-4474-4757-9fab-978a2e1e72a0",
+  "multiverse_ids": [
+    205376
+  ],
+  "mtgo_id": 44628,
+  "mtgo_foil_id": 44629,
+  "tcgplayer_id": 37451,
+  "cardmarket_id": 21547,
+  "name": "Tribal Unity",
+  "lang": "en",
+  "released_at": "2009-09-04",
+  "uri": "https://api.scryfall.com/cards/f1379753-0a37-4e33-ac46-8ef33cb98b06",
+  "scryfall_uri": "https://scryfall.com/card/hop/80/tribal-unity?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T11:31:57Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/f/1/f1379753-0a37-4e33-ac46-8ef33cb98b06.jpg?1783942317",
+    "normal": "https://cards.scryfall.io/normal/front/f/1/f1379753-0a37-4e33-ac46-8ef33cb98b06.jpg?1783942317",
+    "large": "https://cards.scryfall.io/large/front/f/1/f1379753-0a37-4e33-ac46-8ef33cb98b06.jpg?1783942317",
+    "png": "https://cards.scryfall.io/png/front/f/1/f1379753-0a37-4e33-ac46-8ef33cb98b06.png?1783942317",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/f/1/f1379753-0a37-4e33-ac46-8ef33cb98b06.jpg?1783942317",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/f/1/f1379753-0a37-4e33-ac46-8ef33cb98b06.jpg?1783942317",
+    "thumb": "https://cards.scryfall.io/thumb/front/f/1/f1379753-0a37-4e33-ac46-8ef33cb98b06.webp?1783942317",
+    "grid": "https://cards.scryfall.io/grid/front/f/1/f1379753-0a37-4e33-ac46-8ef33cb98b06.webp?1783942317",
+    "display": "https://cards.scryfall.io/display/front/f/1/f1379753-0a37-4e33-ac46-8ef33cb98b06.webp?1783942317",
+    "art": "https://cards.scryfall.io/art/front/f/1/f1379753-0a37-4e33-ac46-8ef33cb98b06.webp?1783942317",
+    "crop": "https://cards.scryfall.io/crop/front/f/1/f1379753-0a37-4e33-ac46-8ef33cb98b06.webp?1783942317",
+    "jpeg": "https://cards.scryfall.io/normal/front/f/1/f1379753-0a37-4e33-ac46-8ef33cb98b06.jpg?1783942317"
+  },
+  "mana_cost": "{X}{2}{G}",
+  "cmc": 3.0,
+  "type_line": "Instant",
+  "oracle_text": "Creatures of the creature type of your choice get +X/+X until end of turn.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "7137ffeb-eb1d-466c-a0d3-3157f52b1b10",
+  "set": "hop",
+  "set_name": "Planechase",
+  "set_type": "planechase",
+  "set_uri": "https://api.scryfall.com/sets/7137ffeb-eb1d-466c-a0d3-3157f52b1b10",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ahop&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/hop?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/f1379753-0a37-4e33-ac46-8ef33cb98b06/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A6b4ee935-4474-4757-9fab-978a2e1e72a0&unique=prints",
+  "collector_number": "80",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "Kamahl left the violence of his former life behind him, but he still believes in the power of muscle.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Ron Spears",
+  "artist_ids": [
+    "fce9030b-86bd-4439-b06a-920a1eeb184c"
+  ],
+  "illustration_id": "e6df9e8a-62fc-4299-9091-a53d9c677678",
+  "border_color": "black",
+  "frame": "2003",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 17548,
+  "penny_rank": 11236,
+  "prices": {
+    "usd": "0.60",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.40",
+    "eur_foil": null,
+    "tix": "0.30"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=205376&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DTribal%2BUnity",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DTribal%2BUnity",
+    "edhrec": "https://edhrec.com/route/?cc=Tribal+Unity"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F37451%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=21547&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/44628?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

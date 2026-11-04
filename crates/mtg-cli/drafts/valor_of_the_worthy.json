@@ -1,0 +1,42 @@
+{
+  "oracle_id": "84534792-7834-4a3c-9940-c1eccbe6e9cf",
+  "name": "Valor of the Worthy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Valor of the Worthy",
+      "oracle_fingerprint": "a6010e9e5038e88cfe57f04d7042f776",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": [{ "Is": "Attached" }], "from": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Spirit",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Spirit"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

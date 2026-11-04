@@ -1,0 +1,20 @@
+{
+  "oracle_id": "c8552706-83f2-41d7-8068-75891abb8bde",
+  "name": "Serrated Biskelion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Serrated Biskelion",
+      "oracle_fingerprint": "f951a64be954a22f66e63e3eae629426",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "-1/-1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

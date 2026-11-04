@@ -1,0 +1,56 @@
+{
+  "oracle_id": "27c84ad1-1491-459b-bf8a-0146062084dc",
+  "name": "Fiery Impulse",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fiery Impulse",
+      "oracle_fingerprint": "7a52f77819b0cfd7e0e8c78bac14bc7c",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Count": [
+                          { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                          { "OwnedBy": "You" },
+                          { "In": "Graveyard" }
+                        ]
+                      },
+                      "op": "Lt",
+                      "right": 2
+                    }
+                  },
+                  "then": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 2 } }]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Count": [
+                          { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                          { "OwnedBy": "You" },
+                          { "In": "Graveyard" }
+                        ]
+                      },
+                      "op": "Ge",
+                      "right": 2
+                    }
+                  },
+                  "then": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 3 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
