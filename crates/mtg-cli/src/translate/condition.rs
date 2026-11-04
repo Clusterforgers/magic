@@ -101,6 +101,8 @@ fn holds_a_shield_for_the_choice(p: &Params) -> bool {
 
 /// The condition a line of a chain states with `ConditionPresent$` and the like, and the line without those keys.
 pub fn prefixed(ctx: &Ctx, p: &Params) -> Tr<(Option<Value>, Params)> {
+    let zoned = super::header::zone_targets(p);
+    let p = zoned.as_ref().unwrap_or(p);
     if holds_a_shield_for_the_choice(p) {
         let keys: Vec<&str> = PREFIXED.iter().map(|(from, _)| *from).collect();
         return Ok((None, p.without(&keys)));
