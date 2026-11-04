@@ -11,7 +11,7 @@ use crate::forge::script::{Face, Params};
 /// The effects of `Token`, `Investigate` and `Mana`.
 pub fn effects(ctx: &mut Ctx, p: &Params, api: &str) -> Tr<Vec<Value>> {
     let effect = match api {
-        "Token" => token(ctx, p)?,
+        "Token" => return token(ctx, p),
         "Investigate" => {
             only(p, "Investigate", &[])?;
             json!({"CreateToken": {"token": {"Named": "clue"}}})
@@ -33,7 +33,25 @@ const NAMED: [&str; 8] = [
     "Map",
 ];
 
-fn token(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
+/// `Token`: the created tokens, and with `AtEOT$` the delayed clean-up of exactly those tokens.
+fn token(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
+    let Some(word) = p.get("AtEOT") else {
+        return Ok(vec![token_create(ctx, p)?]);
+    };
+    let mut create = token_create(ctx, &p.without(&["AtEOT"]))?;
+    let bound = match create["CreateToken"].get("as") {
+        Some(name) => json!({ "Bound": name }),
+        None => {
+            let name = ctx.fresh("token");
+            create["CreateToken"]["as"] = json!(name);
+            json!({ "Bound": name })
+        }
+    };
+    let clean_up = super::tokens_copy::at_eot(word, &bound)?;
+    Ok(vec![create, clean_up])
+}
+
+fn token_create(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     only(
         p,
         "Token",
