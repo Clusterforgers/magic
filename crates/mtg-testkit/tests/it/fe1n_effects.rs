@@ -287,3 +287,21 @@ fn a_pile_is_separated_by_one_player_and_chosen_by_another(
     );
     Ok(())
 }
+
+#[rstest]
+#[case::three_times(3, 7, 20 + 12)]
+#[case::never(0, 7, 20)]
+#[case::most_is_the_lower_bound(9, 2, 20 + 8)]
+fn a_repeat_with_times_stops_after_that_many_passes(
+    #[case] times: u32,
+    #[case] most: u32,
+    #[case] end: i32,
+    #[values(2, 3)] seats: usize,
+) -> Result<(), ScriptError> {
+    let effects = format!(
+        r#"[{{"RepeatWhile":{{"condition":"YourTurn","effects":[{{"GainLife":{{"amount":4}}}}],"most":{most},"times":{times}}}}},{{"GainLife":{{"amount":1}}}}]"#
+    );
+    let mut driver = Driver::from_scenario(Scenario::new(seats).hand(0, [instant(&effects)]))?;
+    play(&mut driver)?;
+    driver.expect_life(0, end + 1)
+}

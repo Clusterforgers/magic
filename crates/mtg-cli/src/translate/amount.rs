@@ -105,6 +105,9 @@ pub fn amount(ctx: &Ctx, text: &str) -> Tr<Value> {
     {
         return negate(ctx, inner);
     }
+    if ctx.die_result.as_deref() == Some(text) {
+        return Ok(json!({"DieResult": "Only"}));
+    }
     match ctx.svar(text) {
         Some(expression) => expression_amount(ctx, expression),
         // A value written in place (`Count$Compare B GE2.2.1`) is the expression itself.

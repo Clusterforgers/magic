@@ -34,13 +34,18 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         condition,
         effects,
         most,
+        times,
     } = effect
     else {
         return Err(wrong_effect("RepeatWhile"));
     };
     let name = passes_name(cx);
     let count = made(cx, &name);
-    let bound_on_passes = usize::try_from((*most).min(MOST_PASSES)).unwrap_or(0);
+    let mut bound_on_passes = usize::try_from((*most).min(MOST_PASSES)).unwrap_or(0);
+    if let Some(times) = times {
+        let wanted = usize::try_from(cx.scope.amount(times)?.max(0)).unwrap_or(usize::MAX);
+        bound_on_passes = bound_on_passes.min(wanted);
+    }
     let mut bound = Vec::new();
     if count >= bound_on_passes || !cx.scope.holds(condition)? {
         if cx.resolving.bindings().contains_key(&name) {

@@ -65,6 +65,14 @@ pub fn chain_at(ctx: &mut Ctx, p: &Params, top: bool) -> Tr<Vec<Value>> {
         }
         None => Vec::new(),
     };
+    // A roll read only as a number: the lines after it run in its one row, where the result is known.
+    if p.has("ResultSVar")
+        && !rest.is_empty()
+        && let Some(roll) = effects.last_mut().and_then(|e| e.get_mut("RollDice"))
+        && roll["results"].as_array().is_some_and(Vec::is_empty)
+    {
+        roll["results"] = json!([{"from": 1, "effects": std::mem::take(&mut rest)}]);
+    }
     if let Some(unless) = p.get("UnlessCost") {
         if condition.is_some() && p.has("UnlessResolveSubs") {
             return unmapped("key:Unless.UnlessResolveSubs-with-condition");
@@ -257,6 +265,7 @@ fn api_line(ctx: &mut Ctx, p: &Params, api: &str) -> Tr<Vec<Value>> {
         "Cleanup" => cleanup(p),
         "Effect" => effects_effect::effects(ctx, p),
         "RepeatEach" => effects_loop::repeat_each(ctx, p),
+        "Repeat" => effects_loop::repeat(ctx, p),
         "ImmediateTrigger" => effects_loop::immediate_trigger(ctx, p),
         "PeekAndReveal" => effects_loop::peek_and_reveal(ctx, p),
         "RollDice" => effects_loop::roll_dice(ctx, p),

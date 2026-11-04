@@ -1,5 +1,6 @@
 //! Effects that repeat for each player (`RepeatEach`) and that ask a player for a value (`ChooseColor`, `ChooseType`).
 
+use mtg_cards::effect::MOST_PASSES;
 use serde_json::{Value, json};
 
 use super::amount::amount;
@@ -23,6 +24,7 @@ pub fn choose_card(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             "AtRandom",
             "ControlledByPlayer",
             "Reveal",
+            "RememberChosen",
         ],
     )?;
     let mut filter = selector_in(ctx, p.get("Choices").unwrap_or("Card"), p.get("ChoiceZone"))?;
@@ -52,6 +54,13 @@ pub fn choose_card(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         json!({"Choose": {"who": who, "from": from, "count": {"min": min, "max": count}, "as": bind}})
     };
     ctx.chosen_card = Some(bind.clone());
+    if p.get("RememberChosen") == Some("True") {
+        // A pass of a loop binds its names anew, so what it remembers cannot outlive the pass or add up over passes.
+        if ctx.remembered.is_some() {
+            return unmapped("key:ChooseCard.RememberChosen-with-remembered");
+        }
+        ctx.remembered = Some(json!({ "Bound": bind }));
+    }
     let mut effects = vec![effect];
     if p.get("Reveal") == Some("True") {
         effects.push(json!({"Reveal": {"what": {"Bound": bind}}}));
@@ -170,19 +179,31 @@ pub fn roll_dice(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     only(
         p,
         "RollDice",
-        &["Sides", "Amount", "ResultSubAbilities", "Defined"],
+        &[
+            "Sides",
+            "Amount",
+            "ResultSubAbilities",
+            "ResultSVar",
+            "Defined",
+        ],
     )?;
     if p.get("Amount").is_some_and(|dice| dice != "1") {
         return unmapped("key:RollDice.Amount");
     }
     let who = defined(ctx, p.get("Defined").unwrap_or("You"))?;
-    let Some(sides) = p.get("Sides").and_then(|sides| sides.parse::<u32>().ok()) else {
+    // Forge rolls a six-sided die unless the line says otherwise.
+    let Some(sides) = p.get("Sides").unwrap_or("6").parse::<u32>().ok() else {
         return unmapped("key:RollDice.Sides");
     };
     let mut rows = Vec::new();
-    // A roll whose result is read as a number (`ResultSVar`) has no table here.
-    let Some(table) = p.get("ResultSubAbilities") else {
-        return unmapped("effect:RollDice");
+    if let Some(name) = p.get("ResultSVar") {
+        ctx.die_result = Some(name.to_owned());
+    }
+    // A roll whose result is only read as a number has no table: `chain_at` puts the lines after it into one row.
+    let table = match (p.get("ResultSubAbilities"), p.has("ResultSVar")) {
+        (Some(table), _) => table,
+        (None, true) => "",
+        (None, false) => return unmapped("effect:RollDice"),
     };
     for row in table.split(',').filter(|row| !row.is_empty()) {
         let Some((range, name)) = row.split_once(':') else {
@@ -319,4 +340,32 @@ pub fn two_piles(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     }
     ctx.remembered = outer;
     Ok(effects)
+}
+
+/// `Repeat` with a fixed number of passes (`MaxRepeat`): the body again and again, at most that many times; any other
+/// end (a check on a remembered value, a player's choice) is a gap, so a loop always has a defined end.
+pub fn repeat(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
+    only(p, "Repeat", &["RepeatSubAbility", "MaxRepeat"])?;
+    let Some(sub) = p.get("RepeatSubAbility") else {
+        return unmapped("key:Repeat.no-RepeatSubAbility");
+    };
+    let Some(max) = p.get("MaxRepeat") else {
+        return unmapped("key:Repeat.no-MaxRepeat");
+    };
+    let outer = ctx.remembered.clone();
+    let part = ctx.sub(sub)?;
+    let effects = chain_at(ctx, &part, false);
+    ctx.remembered = outer;
+    let effects = effects?;
+    let mut repeat =
+        json!({"condition": {"Compare": {"left": 0, "op": "Eq", "right": 0}}, "effects": effects});
+    match max.parse::<u32>() {
+        Ok(n) if (1..=MOST_PASSES).contains(&n) => repeat["most"] = json!(n),
+        Ok(_) => return unmapped("key:Repeat.MaxRepeat=out-of-range"),
+        Err(_) => {
+            repeat["most"] = json!(MOST_PASSES);
+            repeat["times"] = amount(ctx, max)?;
+        }
+    }
+    Ok(vec![json!({"RepeatWhile": repeat})])
 }

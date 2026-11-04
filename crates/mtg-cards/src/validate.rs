@@ -2879,7 +2879,13 @@ impl Walker<'_> {
                 condition,
                 effects,
                 most,
-            } => w.repeat_while(condition, effects, *most),
+                times,
+            } => {
+                w.repeat_while(condition, effects, *most);
+                if let Some(times) = times {
+                    w.at("times", |w| w.amount(times));
+                }
+            }
             Effect::SeparatePiles {
                 who,
                 what,

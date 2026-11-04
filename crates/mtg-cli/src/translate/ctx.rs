@@ -122,6 +122,8 @@ pub struct Ctx<'a> {
     pub chosen_card: Option<String>,
     /// The name the latest number chosen by the ability is bound to (`ChosenNumber` after it).
     pub chosen_number: Option<String>,
+    /// The name of the `SVar` that reads the result of the latest die roll (`ResultSVar`).
+    pub die_result: Option<String>,
     /// What the trigger line being translated is about, for its `Triggered*` words.
     pub trigger: Option<super::triggered::Shape>,
     binds: usize,
@@ -153,6 +155,7 @@ impl<'a> Ctx<'a> {
             chosen: None,
             chosen_card: None,
             chosen_number: None,
+            die_result: None,
             trigger: None,
             binds: 0,
             depth: 0,
@@ -171,6 +174,7 @@ impl<'a> Ctx<'a> {
         self.chosen = None;
         self.chosen_card = None;
         self.chosen_number = None;
+        self.die_result = None;
         self.trigger = None;
         self.binds = 0;
         self.depth = 0;
@@ -192,7 +196,9 @@ impl<'a> Ctx<'a> {
             self.binds,
             self.depth,
         );
+        let die = self.die_result.take();
         let out = run(self);
+        self.die_result = die;
         self.pinned = before;
         self.targets = targets;
         (
