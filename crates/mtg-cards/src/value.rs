@@ -482,6 +482,14 @@ pub enum Amount {
         /// The objects counted for each, written for "you".
         of: Selector,
     },
+    /// The most counters of the kind that any one of the players the reference names holds ("the most poison counters
+    /// among your opponents"); never the sum, and zero when no player is named.
+    HighestCounters {
+        /// The players compared.
+        who: Ref,
+        /// The kind of counter.
+        counter: CounterKind,
+    },
     /// The life total the players the reference names began the game with (the least of them).
     StartingLife(Ref),
     /// The size of the party of the player the reference names (CR 700.8): the most roles among Cleric, Rogue, Warrior and
@@ -647,6 +655,10 @@ enum Tagged {
         who: Ref,
         of: Selector,
     },
+    HighestCounters {
+        who: Ref,
+        counter: CounterKind,
+    },
     StartingLife(Ref),
     Party(Ref),
     Triggering,
@@ -748,6 +760,10 @@ enum TaggedRef<'a> {
         who: &'a Ref,
         of: &'a Selector,
     },
+    HighestCounters {
+        who: &'a Ref,
+        counter: &'a CounterKind,
+    },
     StartingLife(&'a Ref),
     Party(&'a Ref),
     Triggering,
@@ -822,6 +838,7 @@ impl From<Tagged> for Amount {
             Tagged::PermanentsGraved => Amount::PermanentsGraved,
             Tagged::Tallied { who, what } => Amount::Tallied { who, what },
             Tagged::Largest { who, of } => Amount::Largest { who, of },
+            Tagged::HighestCounters { who, counter } => Amount::HighestCounters { who, counter },
             Tagged::StartingLife(who) => Amount::StartingLife(who),
             Tagged::Party(who) => Amount::Party(who),
             Tagged::Triggering => Amount::Triggering,
@@ -901,6 +918,9 @@ impl Serialize for Amount {
                 TaggedRef::Tallied { who, what: *what }.serialize(serializer)
             }
             Amount::Largest { who, of } => TaggedRef::Largest { who, of }.serialize(serializer),
+            Amount::HighestCounters { who, counter } => {
+                TaggedRef::HighestCounters { who, counter }.serialize(serializer)
+            }
             Amount::StartingLife(who) => TaggedRef::StartingLife(who).serialize(serializer),
             Amount::Party(who) => TaggedRef::Party(who).serialize(serializer),
             Amount::Triggering => TaggedRef::Triggering.serialize(serializer),

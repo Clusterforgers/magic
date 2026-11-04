@@ -801,6 +801,7 @@ impl<'a> Walker<'a> {
                 self.player_amount("Largest", who);
                 self.at("of", |w| w.selector(of));
             }
+            Amount::HighestCounters { who, .. } => self.player_amount("HighestCounters", who),
             Amount::StartingLife(who) => self.player_amount("StartingLife", who),
             Amount::Party(who) => self.player_amount("Party", who),
             Amount::CastWith(_) => self.uses("Amount", "CastWith"),

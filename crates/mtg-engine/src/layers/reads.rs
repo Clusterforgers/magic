@@ -326,6 +326,7 @@ pub(crate) fn reads_of_amount(amount: &Amount) -> Traits {
         | Amount::Tallied { who, .. }
         | Amount::CommanderColors(who)
         | Amount::StartingLife(who)
+        | Amount::HighestCounters { who, .. }
         | Amount::LowestLife(who)
         | Amount::LowestHand(who)
         | Amount::HighestLife(who) => reads_of_ref(who),
