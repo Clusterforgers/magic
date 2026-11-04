@@ -151,6 +151,47 @@ pub fn argument(ctx: &Ctx, prop: &str) -> Tr<Option<Vec<Value>>> {
     }
 }
 
+/// `greatestPower`, `leastToughnessControlledByYou`, `greatestCMC`: the object has the most (or least) of the stat among the
+/// objects of the selector's own base (`group`, e.g. creatures), narrowed to those a player controls when the word says so.
+/// `None` for any other word; a base that names no kind of object, or a controller word unknown here, is a gap.
+pub fn extreme(ctx: &Ctx, prop: &str, group: &[Value]) -> Tr<Option<Vec<Value>>> {
+    let (pred, rest) = if let Some(rest) = prop.strip_prefix("greatest") {
+        ("GreatestAmong", rest)
+    } else if let Some(rest) = prop.strip_prefix("least") {
+        ("LeastAmong", rest)
+    } else {
+        return Ok(None);
+    };
+    let (stat, rest) = [
+        ("Power", "Power"),
+        ("Toughness", "Toughness"),
+        ("CMC", "ManaValue"),
+    ]
+    .iter()
+    .find_map(|(word, stat)| rest.strip_prefix(word).map(|rest| (*stat, rest)))
+    .map_or((None, rest), |(stat, rest)| (Some(stat), rest));
+    let Some(stat) = stat else {
+        return Ok(None);
+    };
+    let mut group = group.to_vec();
+    if group.is_empty() {
+        return unmapped(format!("valid:{prop}-without-a-kind"));
+    }
+    if !rest.is_empty() {
+        let who = rest
+            .strip_prefix("ControlledBy")
+            .and_then(|word| match word {
+                "Opponent" => Some(json!("Opponents")),
+                other => controller_of(ctx, other),
+            });
+        let Some(who) = who else {
+            return unmapped(format!("valid:{prop}"));
+        };
+        group.push(json!({"ControlledBy": who}));
+    }
+    Ok(Some(vec![json!({ pred: {"stat": stat, "group": group} })]))
+}
+
 /// `RememberedPlayerCtrl`, `EnchantedPlayerOwn`: the word names the player, the suffix says control or ownership.
 pub fn suffixed(ctx: &Ctx, prop: &str) -> Option<Vec<Value>> {
     let (word, pred) = prop

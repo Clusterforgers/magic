@@ -212,7 +212,12 @@ pub fn selector(ctx: &Ctx, spec: &str) -> Tr<Vec<Value>> {
     let spec = spec.trim();
     let (head, props) = spec.split_once('.').unwrap_or((spec, ""));
     let mut preds = base(ctx, head)?;
+    let kind = preds.clone();
     for prop in props.split('+').filter(|prop| !prop.is_empty()) {
+        if let Some(found) = super::valid_atoms::extreme(ctx, prop, &kind)? {
+            preds.extend(found);
+            continue;
+        }
         match prop.strip_prefix('!') {
             Some(inner) => preds.push(negated(property(ctx, inner)?)?),
             None => preds.extend(property(ctx, prop)?),

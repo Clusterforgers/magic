@@ -266,6 +266,24 @@ fn greatest_among_takes_every_object_tied_for_the_most(
     }
 }
 
+#[rstest]
+#[case::power(StatKind::Power)]
+#[case::toughness(StatKind::Toughness)]
+fn least_among_takes_only_the_smallest_and_not_the_greatest(
+    #[values(2, 3, 4)] seats: usize,
+    #[case] stat: StatKind,
+) {
+    let game = table(seats);
+    let group = Selector(vec![
+        Pred::Type(CardType::Creature),
+        Pred::ControlledBy(Ref::You),
+    ]);
+    let pred = Pred::LeastAmong { stat, group };
+    assert!(holds(&game, pred.clone(), "Owl"));
+    assert!(!holds(&game, pred.clone(), "Guest 0"));
+    assert!(!holds(&game, pred, "Bear"));
+}
+
 #[test]
 fn greatest_among_follows_a_growing_creature() {
     let mut game = table(2);

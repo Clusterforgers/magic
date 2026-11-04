@@ -47,6 +47,19 @@ fn refuses(spec: &str, gap: &str) {
     "Creature.YouOwn+ThisTurnEnteredFrom_Battlefield",
     json!([{"Type": "Creature"}, {"OwnedBy": "You"}, {"ArrivedFrom": "Battlefield"}])
 )]
+#[case::greatest_power(
+    "Creature.greatestPower",
+    json!([{"Type": "Creature"}, {"GreatestAmong": {"stat": "Power", "group": [{"Type": "Creature"}]}}])
+)]
+#[case::least_toughness_of_a_players(
+    "Creature.leastToughnessControlledByOpponent",
+    json!([{"Type": "Creature"}, {"LeastAmong": {"stat": "Toughness",
+        "group": [{"Type": "Creature"}, {"ControlledBy": "Opponents"}]}}])
+)]
+#[case::greatest_value_of_artifacts(
+    "Artifact.greatestCMC",
+    json!([{"Type": "Artifact"}, {"GreatestAmong": {"stat": "ManaValue", "group": [{"Type": "Artifact"}]}}])
+)]
 #[case::arrived_from_the_library("Card.ThisTurnEnteredFrom_Library", json!([{"ArrivedFrom": "Library"}]))]
 #[case::mono("Creature.MonoColor", json!([{"Type": "Creature"}, {"Compare": {"stat": "Colors", "op": "Eq", "to": 1}}]))]
 #[case::colors("Card.numColorsEQ2", json!([{"Compare": {"stat": "Colors", "op": "Eq", "to": 2}}]))]
@@ -178,6 +191,12 @@ fn unknown_words_stay_gaps(#[case] spec: &str, #[case] gap: &str) {
 }
 
 #[rstest]
+#[case::group_without_a_kind("Card.greatestPower", "valid:greatestPower-without-a-kind")]
+#[case::unknown_controller(
+    "Creature.leastPowerControlledByBogus",
+    "valid:leastPowerControlledByBogus"
+)]
+#[case::remembered_stat("Card.greatestRememberedCMC", "valid:greatestRememberedCMC")]
 #[case::arrival_from_nowhere(
     "Creature.ThisTurnEnteredFrom_Nowhere",
     "valid:ThisTurnEnteredFrom_Nowhere"

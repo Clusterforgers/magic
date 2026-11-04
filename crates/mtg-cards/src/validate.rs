@@ -524,6 +524,10 @@ impl<'a> Walker<'a> {
                 self.uses("Pred", "GreatestAmong");
                 self.at("group", |w| w.selector(group));
             }
+            Pred::LeastAmong { group, .. } => {
+                self.uses("Pred", "LeastAmong");
+                self.at("group", |w| w.selector(group));
+            }
             Pred::Kicked => self.uses("Pred", "Kicked"),
             Pred::CounterCount { .. } => self.uses("Pred", "CounterCount"),
             _ => self.uses("Pred", "Suspended"),
@@ -598,6 +602,7 @@ impl<'a> Walker<'a> {
             | Pred::TargetedBy(_)
             | Pred::SingleTarget
             | Pred::GreatestAmong { .. }
+            | Pred::LeastAmong { .. }
             | Pred::Kicked
             | Pred::CounterCount { .. }
             | Pred::Suspended => self.fe1a_pred(pred),

@@ -330,6 +330,13 @@ pub enum Pred {
         /// The objects compared; the object itself counts when it matches.
         group: Selector,
     },
+    /// Has the least value of the characteristic among the objects the group selector matches (a tie counts for each).
+    LeastAmong {
+        /// The characteristic compared.
+        stat: StatKind,
+        /// The objects compared; the object itself counts when it matches.
+        group: Selector,
+    },
     /// Is a card in exile with a time counter on it and suspend (CR 702.62).
     Suspended,
     /// Is a spell, or a permanent that entered as a spell, cast with at least one kicker cost paid (CR 702.33).

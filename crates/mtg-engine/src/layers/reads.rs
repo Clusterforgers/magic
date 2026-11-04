@@ -237,7 +237,9 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         | Pred::Kicked
         | Pred::Suspended => Traits::NONE,
         Pred::WasCast { by, .. } => by.as_ref().map_or(Traits::NONE, reads_of_ref),
-        Pred::GreatestAmong { stat, group } => reads_of_stat(*stat).or(reads_of_selector(group)),
+        Pred::GreatestAmong { stat, group } | Pred::LeastAmong { stat, group } => {
+            reads_of_stat(*stat).or(reads_of_selector(group))
+        }
         Pred::Modified => Traits::CONTROL,
         Pred::Goaded => Traits::GOADED,
         Pred::Is(who)
