@@ -26,6 +26,7 @@ mod memory_runs;
 mod promote_draft;
 mod propose;
 mod propose_http;
+mod r3p3_runs;
 mod reads;
 mod rebind_runs;
 mod t18a_propose_speed;

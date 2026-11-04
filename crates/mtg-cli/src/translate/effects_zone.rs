@@ -11,7 +11,11 @@ use crate::forge::script::Params;
 
 /// The effects of `ChangeZone` and `ChangeZoneAll`.
 pub fn effects(ctx: &mut Ctx, p: &Params, api: &str) -> Tr<Vec<Value>> {
-    let origin = zone_word(p.get("Origin"), "Origin", true)?;
+    let origin = if api == "ChangeZone" && p.get("Origin") == Some("Stack") {
+        "Stack"
+    } else {
+        zone_word(p.get("Origin"), "Origin", true)?
+    };
     let destination = zone_word(p.get("Destination"), "Destination", false)?;
     match (api, origin) {
         ("ChangeZone", "Library") if p.has("Defined") && !p.has("ChangeType") => {
@@ -25,6 +29,16 @@ pub fn effects(ctx: &mut Ctx, p: &Params, api: &str) -> Tr<Vec<Value>> {
             if (hidden_origin(from)
                 || (from == "Battlefield" && p.get("Hidden") == Some("True")))
                 && p.has("ChangeType") =>
+        {
+            choose_and_move(ctx, p, origin, destination)
+        }
+        // "Put two cards from your hand on top of your library": the cards are not named, so the player picks.
+        ("ChangeZone", from)
+            if hidden_origin(from)
+                && p.has("ChangeNum")
+                && !["ChangeType", "Defined", "ValidTgts"]
+                    .iter()
+                    .any(|key| p.has(key)) =>
         {
             choose_and_move(ctx, p, origin, destination)
         }
@@ -319,6 +333,25 @@ fn moves(what: &Value, goes: Goes) -> Value {
     }
 }
 
+/// The spell a move from the stack names without a target: the spell itself (`Self`, or `Parent` and nothing on a
+/// sorcery or instant, whose chain is the spell), or the spell a cast trigger is about. Any other word is a gap.
+fn spell_subject(ctx: &Ctx, p: &Params) -> Tr<Value> {
+    let spell = ctx.types.contains("Instant") || ctx.types.contains("Sorcery");
+    match p.get("Defined") {
+        None | Some("Self") => Ok(json!("This")),
+        Some("Parent") if spell => Ok(json!("This")),
+        Some("TriggeredSpellAbility" | "TriggeredCard")
+            if ctx
+                .trigger
+                .as_ref()
+                .is_some_and(|shape| shape.mode == "SpellCast") =>
+        {
+            Ok(json!("Triggering"))
+        }
+        Some(other) => unmapped(format!("defined:Stack-{other}")),
+    }
+}
+
 fn change_zone(ctx: &mut Ctx, p: &Params, origin: &str, destination: &str) -> Tr<Vec<Value>> {
     only(
         p,
@@ -344,7 +377,11 @@ fn change_zone(ctx: &mut Ctx, p: &Params, origin: &str, destination: &str) -> Tr
             "StaticEffect",
         ],
     )?;
-    let what = subject(ctx, p, "Self", Some(origin))?;
+    let what = if origin == "Stack" && !p.has("ValidTgts") {
+        spell_subject(ctx, p)?
+    } else {
+        subject(ctx, p, "Self", Some(origin))?
+    };
     let mut effect = moves(&what, goes(ctx, p, destination)?);
     if remember::wanted(p, &["RememberChanged", "RememberLKI", "RememberTargets"]) {
         let (verb, stem) = if effect.get("Exile").is_some() {
@@ -386,9 +423,14 @@ fn choose_and_move(ctx: &mut Ctx, p: &Params, origin: &str, destination: &str) -
             "WithCountersAmount",
             "Transformed",
             "AttachedTo",
+            "Reorder",
             "StaticEffect",
         ],
     )?;
+    // Several cards put into one library are ordered by their controller anyway.
+    if p.get("Reorder").is_some_and(|word| word != "True") {
+        return unmapped("key:ChangeZone.Choose.Reorder");
+    }
     let who = defined_player(ctx, p)?;
     let (owner, chooser) = (who.owner.clone(), who.chooser.clone());
     let mut filter = selector_in(ctx, p.get("ChangeType").unwrap_or("Card"), Some(origin))?;
@@ -527,8 +569,17 @@ fn search(ctx: &mut Ctx, p: &Params, destination: &str) -> Tr<Vec<Value>> {
             "GainControl",
             "WithCountersType",
             "WithCountersAmount",
+            "NoLooking",
         ],
     )?;
+    // Not looking at the library only matters when the cards are not named already.
+    if p.has("NoLooking")
+        && !p
+            .get("ChangeType")
+            .is_some_and(|t| t.contains("IsRemembered"))
+    {
+        return unmapped("key:ChangeZone.Search.NoLooking");
+    }
     let filter = selector_any(ctx, p.get("ChangeType").unwrap_or("Card"))?;
     let filter_is_open = filter.is_empty();
     let bind = ctx.fresh("found");
@@ -573,6 +624,15 @@ fn search(ctx: &mut Ctx, p: &Params, destination: &str) -> Tr<Vec<Value>> {
         ctx.remembered = Some(found.clone());
     }
     let search = json!({ "Search": find });
+    // "Search, reveal, then do something with those cards": the cards stay in the library and the steps after read them.
+    let stays = destination == "Library"
+        && alternative.is_none()
+        && !p.has("LibraryPosition")
+        && p.get("Shuffle") == Some("False")
+        && p.get("RememberChanged") == Some("True");
+    if stays {
+        return Ok(vec![search]);
+    }
     let put = moves(&found, goes_found(ctx, p, destination)?);
     // Searching only another zone leaves the library as it was: "if you search your library this way, shuffle".
     let shuffle = if alternative.is_some() {
@@ -580,25 +640,30 @@ fn search(ctx: &mut Ctx, p: &Params, destination: &str) -> Tr<Vec<Value>> {
     } else {
         json!({"Shuffle": {}})
     };
-    let mut effects = match (destination, p.get("Shuffle")) {
+    let effects = match (destination, p.get("Shuffle")) {
         // The shuffle comes first when the card goes back on top: "then shuffle and put that card on top".
         ("Library", _) => vec![search, shuffle, put],
         (_, Some("False")) => vec![search, put],
         _ => vec![search, put, shuffle],
     };
-    if p.get("Optional") == Some("True") {
-        // A "may" the printed description does not carry is Forge's narrowing, not the card's.
-        if let Some(text) = p.get("SpellDescription")
-            && !text
-                .to_lowercase()
-                .split(|c: char| !c.is_alphabetic())
-                .any(|w| w == "may")
-        {
-            return unmapped("key:ChangeZone.Optional");
-        }
-        effects = vec![json!({"May": {"effects": effects}})];
+    optional(p, effects)
+}
+
+/// The search as a "may" when Forge marks it optional and the printed text says so too.
+fn optional(p: &Params, effects: Vec<Value>) -> Tr<Vec<Value>> {
+    if p.get("Optional") != Some("True") {
+        return Ok(effects);
     }
-    Ok(effects)
+    // A "may" the printed description does not carry is Forge's narrowing, not the card's.
+    if let Some(text) = p.get("SpellDescription")
+        && !text
+            .to_lowercase()
+            .split(|c: char| !c.is_alphabetic())
+            .any(|w| w == "may")
+    {
+        return unmapped("key:ChangeZone.Optional");
+    }
+    Ok(vec![json!({"May": {"effects": effects}})])
 }
 
 /// The keys of a `Dig` line that are read.
@@ -880,13 +945,24 @@ fn change_zone_all(ctx: &mut Ctx, p: &Params, origin: &str, destination: &str) -
             "LibraryPosition",
             "Shuffle",
             "RememberChanged",
+            "ValidTgts",
         ],
     )?;
     if origin == "Library" {
         return unmapped("key:ChangeZoneAll.Origin=Library");
     }
     let zone = (origin != "Battlefield").then_some(origin);
-    let filter = selector_in(ctx, p.get("ChangeType").unwrap_or("Card"), zone)?;
+    let mut filter = selector_in(ctx, p.get("ChangeType").unwrap_or("Card"), zone)?;
+    if p.has("ValidTgts") {
+        // "Exile target player's graveyard": the cards of the zone that player owns.
+        if !matches!(origin, "Graveyard" | "Hand" | "Exile")
+            || !matches!(p.get("ValidTgts"), Some("Player" | "Opponent"))
+        {
+            return unmapped("key:ChangeZoneAll.ValidTgts");
+        }
+        let owner = subject(ctx, p, "", Some(origin))?;
+        filter.push(json!({"OwnedBy": owner}));
+    }
     let mut effect = moves(&json!({ "Each": filter }), goes(ctx, p, destination)?);
     if remember::wanted(p, &["RememberChanged"]) {
         let (verb, stem) = if effect.get("Exile").is_some() {
