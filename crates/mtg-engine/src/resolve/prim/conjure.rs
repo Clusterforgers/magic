@@ -160,7 +160,7 @@ mod tests {
     #[case::battlefield(conjure("Bolt", "Battlefield", ""))]
     #[case::stack(conjure("Bolt", "Stack", ""))]
     fn what_cannot_be_conjured_is_no_event(#[case] json: String) {
-        assert!(events(&game(), &json).is_empty());
+        assert!(matches!(events(&game(), &json).as_slice(), []));
     }
 
     #[test]
@@ -171,6 +171,9 @@ mod tests {
         );
         assert!(table.conjurable.is_empty());
         let game = GameState::from_setup(&table).unwrap();
-        assert!(events(&game, &conjure("Bolt", "Hand", "")).is_empty());
+        assert!(matches!(
+            events(&game, &conjure("Bolt", "Hand", "")).as_slice(),
+            []
+        ));
     }
 }

@@ -654,6 +654,7 @@ mod fg5s_block;
 mod fg5s_hidden;
 mod fg5s_play;
 mod fg5s_prevent;
+mod fg_digital;
 mod gn2;
 mod gn2_cant;
 mod gn2_play;

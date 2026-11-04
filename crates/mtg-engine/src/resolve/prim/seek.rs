@@ -172,7 +172,7 @@ mod tests {
         r#"{"Type":"Creature"}"#
     )]
     fn nothing_to_seek_is_no_event(#[case] game: GameState, #[case] filter: &str) {
-        assert!(events(&game, &seek(filter, "")).is_empty());
+        assert!(matches!(events(&game, &seek(filter, "")).as_slice(), []));
     }
 
     #[test]

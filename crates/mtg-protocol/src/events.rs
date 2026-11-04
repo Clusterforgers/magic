@@ -927,6 +927,47 @@ mod tests {
         }
     }
 
+    /// A conjured card is told whole when it lands in a zone every seat sees and to its owner alone in a hand or a library.
+    #[test]
+    fn a_conjured_card_is_named_only_where_the_viewer_sees_it() {
+        let t = table();
+        let hidden = Err(HiddenEvent::CardConjured { player: OWNER });
+        let cases = [
+            (Zone::Library(OWNER), hidden.clone()),
+            (Zone::Hand(OWNER), hidden),
+            (Zone::Graveyard(OWNER), Ok(())),
+            (Zone::Exile, Ok(())),
+        ];
+        for (zone, other) in cases {
+            let conjured = Event::CardConjured(mtg_engine::conjure::CardConjured {
+                object: ObjectId(900),
+                owner: OWNER,
+                zone,
+                name: "Bear".to_owned(),
+                definition: std::sync::Arc::new(mtg_cards::CardDefinition::new("Bear")),
+            });
+            assert_eq!(
+                told(&t.state, &conjured, OWNER),
+                Ok(()),
+                "{zone:?} to the owner"
+            );
+            assert_eq!(
+                told(&t.state, &conjured, OTHER),
+                other,
+                "{zone:?} to another seat"
+            );
+        }
+        let sought = Event::Sought {
+            player: OWNER,
+            count: 2,
+        };
+        assert_eq!(
+            told(&t.state, &sought, OTHER),
+            Ok(()),
+            "a seek tells only how many"
+        );
+    }
+
     /// A search tells the viewer which cards it found in a zone the viewer sees into and only how many in any other.
     #[test]
     fn a_search_tells_the_cards_found_in_the_zones_a_viewer_sees_into() {

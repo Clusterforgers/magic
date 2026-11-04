@@ -873,6 +873,7 @@ impl InvariantChecker {
         }
     }
 
+    #[allow(clippy::too_many_lines)]
     fn observe_event(&mut self, event: &Event) -> Result<(), Violation> {
         // An ability ceases to exist when its resolution ends, and the fold removes it, so look first.
         let ability_ends = matches!(event, Event::ResolutionEnded { object, .. }

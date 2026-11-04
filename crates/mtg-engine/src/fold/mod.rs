@@ -358,6 +358,7 @@ fn apply_turn(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
     Ok(())
 }
 
+#[allow(clippy::too_many_lines)]
 fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
     match event {
         Event::TurnBegan { .. }
