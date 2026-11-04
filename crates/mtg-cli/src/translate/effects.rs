@@ -21,7 +21,11 @@ pub fn chain_at(ctx: &mut Ctx, p: &Params, top: bool) -> Tr<Vec<Value>> {
     let (condition, own) = prefixed(ctx, p)?;
     let mut effects = line(ctx, &own.without(&["UnlessCost", "UnlessPayer"]))?;
     if let Some(unless) = p.get("UnlessCost") {
-        effects = unless_pays(ctx, p, unless, &effects)?;
+        effects = if p.get("UnlessSwitched") == Some("True") {
+            pays_to_do(ctx, p, unless, &effects)?
+        } else {
+            unless_pays(ctx, p, unless, &effects)?
+        };
     }
     if let Some(condition) = condition {
         effects = vec![json!({"If": {"condition": condition, "then": effects}})];
@@ -59,6 +63,20 @@ fn unless_pays(ctx: &Ctx, p: &Params, unless: &str, effects: &[Value]) -> Tr<Vec
     ])
 }
 
+/// `UnlessSwitched$ True`: the effects happen if the player pays the cost ("you may pay; if you do").
+fn pays_to_do(ctx: &Ctx, p: &Params, cost: &str, effects: &[Value]) -> Tr<Vec<Value>> {
+    if p.get("UnlessPayer") != Some("You") {
+        return unmapped("key:Unless.UnlessSwitched-payer");
+    }
+    let Value::String(cost) = super::cost::cost(ctx, cost)? else {
+        return unmapped("key:Unless.UnlessCost-shape");
+    };
+    if cost.contains('X') {
+        return unmapped("key:Unless.UnlessCost-X");
+    }
+    Ok(vec![json!({"Pay": {"cost": cost, "paid": effects}})])
+}
+
 /// The API a line names.
 fn api_of(params: &Params) -> Tr<&str> {
     ["SP", "AB", "DB"]
@@ -84,6 +102,10 @@ fn line(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         "Cleanup" => cleanup(p),
         "Effect" => effects_effect::effects(ctx, p),
         "RepeatEach" => effects_loop::repeat_each(ctx, p),
+        "ImmediateTrigger" => effects_loop::immediate_trigger(ctx, p),
+        "PeekAndReveal" => effects_loop::peek_and_reveal(ctx, p),
+        "RollDice" => effects_loop::roll_dice(ctx, p),
+        "ChooseCard" => effects_loop::choose_card(ctx, p),
         "ChooseColor" | "ChooseType" => effects_loop::choose_value(ctx, p, api),
         "Charm" => one(charm(ctx, p)),
         "DelayedTrigger" => one(delayed(ctx, p)),

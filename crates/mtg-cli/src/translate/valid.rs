@@ -54,6 +54,12 @@ fn property(ctx: &Ctx, prop: &str) -> Tr<Vec<Value>> {
                 None => unmapped("valid:RememberedPlayerCtrl-without-a-player"),
             };
         }
+        "ChosenCard" => {
+            return match &ctx.chosen_card {
+                Some(name) => one(json!({"Is": {"Bound": name}})),
+                None => unmapped("valid:ChosenCard-without-a-choice"),
+            };
+        }
         "ChosenColor" | "ChosenType" => {
             return match &ctx.chosen {
                 Some(name) => one(json!({"ChosenAs": name})),
@@ -316,6 +322,10 @@ pub fn defined(ctx: &Ctx, word: &str) -> Tr<Value> {
         "Enchanted" | "Equipped" => Ok(json!("Attached")),
         "EnchantedController" | "EquippedController" => controller(json!("Attached")),
         "EnchantedPlayer" => Ok(json!("AttachedPlayer")),
+        "ChosenCard" => ctx.chosen_card.as_ref().map_or_else(
+            || unmapped("defined:ChosenCard-without-a-choice"),
+            |name| Ok(json!({"Bound": name})),
+        ),
         "Player.IsRemembered" | "Remembered" => ctx
             .remembered
             .clone()

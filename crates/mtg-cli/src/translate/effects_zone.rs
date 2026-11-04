@@ -12,7 +12,13 @@ pub fn effects(ctx: &mut Ctx, p: &Params, api: &str) -> Tr<Vec<Value>> {
     let origin = zone_word(p.get("Origin"), "Origin")?;
     let destination = zone_word(p.get("Destination"), "Destination")?;
     match (api, origin) {
+        ("ChangeZone", "Library") if p.has("Defined") && !p.has("ChangeType") => {
+            change_zone(ctx, p, origin, destination)
+        }
         ("ChangeZone", "Library") => search(ctx, p, destination),
+        ("ChangeZone", "Hand" | "Graveyard" | "Exile") if p.has("ChangeType") => {
+            choose_and_move(ctx, p, origin, destination)
+        }
         ("ChangeZone", _) => change_zone(ctx, p, origin, destination),
         _ => change_zone_all(ctx, p, origin, destination),
     }
@@ -89,6 +95,49 @@ fn change_zone(ctx: &mut Ctx, p: &Params, origin: &str, destination: &str) -> Tr
         ctx.remembered = Some(json!({ "Bound": name }));
     }
     Ok(vec![effect])
+}
+
+/// A card of the player's own hand, graveyard or exile that the player picks and moves ("put a creature card from your hand
+/// onto the battlefield"): a choice among the matching cards, then the move.
+fn choose_and_move(ctx: &mut Ctx, p: &Params, origin: &str, destination: &str) -> Tr<Vec<Value>> {
+    only(
+        p,
+        "ChangeZone.Choose",
+        &[
+            "Origin",
+            "Destination",
+            "ChangeType",
+            "ChangeNum",
+            "Hidden",
+            "Mandatory",
+            "Optional",
+            "AtRandom",
+            "Tapped",
+            "LibraryPosition",
+            "Shuffle",
+        ],
+    )?;
+    let mut filter = selector_in(ctx, p.get("ChangeType").unwrap_or("Card"), Some(origin))?;
+    if !filter.iter().any(|pred| pred.get("OwnedBy").is_some()) {
+        filter.push(json!({"OwnedBy": "You"}));
+    }
+    let max = amount(ctx, p.get("ChangeNum").unwrap_or("1"))?;
+    let min = if p.get("Mandatory") == Some("True") && p.get("Optional") != Some("True") {
+        max.clone()
+    } else {
+        json!(0)
+    };
+    let bind = ctx.fresh("picked");
+    let chosen = json!({ "Bound": bind });
+    let choose = if p.get("AtRandom") == Some("True") {
+        if p.get("Optional") == Some("True") {
+            return unmapped("key:ChangeZone.Choose.AtRandom-optional");
+        }
+        json!({"ChooseAtRandom": {"from": {"Each": filter}, "count": max, "as": bind}})
+    } else {
+        json!({"Choose": {"from": {"Each": filter}, "count": {"min": min, "max": max}, "as": bind}})
+    };
+    Ok(vec![choose, moves(&chosen, goes(p, destination)?)])
 }
 
 /// The library search: the search, the move of what was found, then the shuffle.

@@ -23,6 +23,51 @@ use super::{abilities, gaps, normal};
         {"ChooseValue": {"kind": "Color", "as": "chosen"}},
         {"Destroy": {"what": {"Each": [{"Type": "Creature"}, {"ChosenAs": "chosen"}]}}}]}})
 )]
+#[case::choose_a_card_and_destroy_it(
+    "Name:T\nTypes:Sorcery\nA:SP$ ChooseCard | Defined$ You | Choices$ Creature.OppCtrl | Mandatory$ True | SubAbility$ Kill\nSVar:Kill:DB$ Destroy | Defined$ ChosenCard\n",
+    json!({"Spell": {"effects": [
+        {"Choose": {"from": {"Each": [{"Type": "Creature"}, {"ControlledBy": "Opponents"}]}, "as": "card"}},
+        {"Destroy": {"what": {"Bound": "card"}}}]}})
+)]
+#[case::choose_up_to_two_at_random_from_a_graveyard(
+    "Name:T\nTypes:Sorcery\nA:SP$ ChooseCard | Choices$ Creature.YouOwn | ChoiceZone$ Graveyard | Amount$ 2 | AtRandom$ True | SubAbility$ Back\nSVar:Back:DB$ ChangeZone | Origin$ Graveyard | Destination$ Hand | Defined$ ChosenCard\n",
+    json!({"Spell": {"effects": [
+        {"ChooseAtRandom": {"from": {"Each": [{"Type": "Creature"}, {"OwnedBy": "You"}, {"In": "Graveyard"}]}, "count": 2, "as": "card"}},
+        {"Move": {"what": {"Bound": "card"}, "to": "Hand"}}]}})
+)]
+#[case::put_a_creature_from_the_hand_onto_the_battlefield(
+    "Name:T\nTypes:Sorcery\nA:SP$ ChangeZone | Origin$ Hand | Destination$ Battlefield | ChangeType$ Creature\n",
+    json!({"Spell": {"effects": [
+        {"Choose": {"from": {"Each": [{"Type": "Creature"}, {"In": "Hand"}, {"OwnedBy": "You"}]}, "count": {"min": 0, "max": 1}, "as": "picked"}},
+        {"Move": {"what": {"Bound": "picked"}, "to": {"Battlefield": {}}}}]}})
+)]
+#[case::roll_a_d6_with_a_table(
+    "Name:T\nTypes:Sorcery\nA:SP$ RollDice | Sides$ 6 | ResultSubAbilities$ 1-2:Low,6:High\nSVar:Low:DB$ GainLife | LifeAmount$ 1\nSVar:High:DB$ Draw | NumCards$ 2\n",
+    json!({"Spell": {"effects": [{"RollDice": {"sides": 6, "results": [
+        {"from": 1, "to": 2, "effects": [{"GainLife": {"amount": 1}}]},
+        {"from": 6, "to": 6, "effects": [{"Draw": {"count": 2}}]}]}}]}})
+)]
+#[case::pay_and_when_you_do_a_trigger_with_its_own_target(
+    "Name:T\nTypes:Creature Elf\nT:Mode$ Attacks | ValidCard$ Card.Self | Execute$ Imm\nSVar:Imm:DB$ ImmediateTrigger | Execute$ Hit | UnlessCost$ 1 | UnlessPayer$ You | UnlessSwitched$ True\nSVar:Hit:DB$ DealDamage | ValidTgts$ Creature | NumDmg$ 2\n",
+    json!({"Triggered": {"when": {"Attacks": {"what": [ "This" ]}}, "effects": [
+        {"Pay": {"cost": "{1}", "paid": [{"Reflexive": {
+            "targets": [{"what": {"Object": [{"Type": "Creature"}]}}],
+            "effects": [{"DealDamage": {"to": {"Target": 0}, "amount": 2}}]}}]}}]}})
+)]
+#[case::reveal_the_top_card_and_put_a_land_in_hand(
+    "Name:T\nTypes:Sorcery\nA:SP$ PeekAndReveal | PeekAmount$ 1 | RevealValid$ Land | RevealOptional$ True | RememberRevealed$ True | SubAbility$ Take\nSVar:Take:DB$ ChangeZone | Origin$ Library | Destination$ Hand | Defined$ Remembered\n",
+    json!({"Spell": {"effects": [
+        {"LookAtTop": {"count": 1, "as": "top"}},
+        {"Choose": {"from": {"Each": [{"In": "Library"}, {"Is": {"Bound": "top"}}, {"Type": "Land"}]}, "count": {"min": 0, "max": 1}, "as": "revealed2"}},
+        {"Reveal": {"what": {"Bound": "revealed2"}}},
+        {"Move": {"what": {"Bound": "revealed2"}, "to": "Hand"}}]}})
+)]
+#[case::discard_one_at_random_to_exile(
+    "Name:T\nTypes:Sorcery\nA:SP$ ChangeZone | Origin$ Hand | Destination$ Exile | ChangeType$ Card | AtRandom$ True | Mandatory$ True\n",
+    json!({"Spell": {"effects": [
+        {"ChooseAtRandom": {"from": {"Each": [{"In": "Hand"}, {"OwnedBy": "You"}]}, "as": "picked"}},
+        {"Exile": {"what": {"Bound": "picked"}}}]}})
+)]
 fn a_construct_with_a_node_maps(#[case] script: &str, #[case] expected: Value) {
     let mut found = abilities(script);
     assert_eq!(found.len(), 1, "{:?}", gaps(script));
