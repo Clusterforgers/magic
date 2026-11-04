@@ -1,0 +1,23 @@
+{
+  "oracle_id": "153fac93-5d2b-4348-a468-a5eef6a12da3",
+  "name": "Unwinding Clock",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Unwinding Clock",
+      "oracle_fingerprint": "8c5e4453ea67afca0df84098921e5405",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "UntapDuring": {
+                "what": [{ "Type": "Artifact" }, { "ControlledBy": "You" }],
+                "whose": "Opponents"
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

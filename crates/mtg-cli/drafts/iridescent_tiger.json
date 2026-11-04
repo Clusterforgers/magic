@@ -1,0 +1,26 @@
+{
+  "oracle_id": "ce09c5b0-9dd4-4f73-9f3f-dfbd829813e4",
+  "name": "Iridescent Tiger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Iridescent Tiger",
+      "oracle_fingerprint": "9a446a087c2cb2d0dfb7a360e56b1139",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": ["This", { "WasCast": { "by": "You" } }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              { "AddMana": { "mana": { "Fixed": ["White", "Blue", "Black", "Red", "Green"] } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

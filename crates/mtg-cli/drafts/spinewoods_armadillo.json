@@ -1,0 +1,47 @@
+{
+  "oracle_id": "8c81f7b6-38e7-482b-afff-727074a23888",
+  "name": "Spinewoods Armadillo",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spinewoods Armadillo",
+      "oracle_fingerprint": "8681ddcbe796e2ba4a49043a84bcdc2d",
+      "abilities": [
+        { "Keyword": "Reach" },
+        { "Keyword": { "Ward": "{3}" } },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{G}" }, "DiscardSelf"],
+            "from": "Hand",
+            "effects": [
+              {
+                "Search": {
+                  "filter": [
+                    {
+                      "AnyOf": [
+                        {
+                          "Not": {
+                            "AnyOf": [
+                              { "Not": { "Type": "Land" } },
+                              { "Not": { "Supertype": "Basic" } }
+                            ]
+                          }
+                        },
+                        { "Subtype": "Desert" }
+                      ]
+                    }
+                  ],
+                  "reveal": true,
+                  "as": "found"
+                }
+              },
+              { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+              { "Shuffle": {} },
+              { "GainLife": { "amount": 3 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

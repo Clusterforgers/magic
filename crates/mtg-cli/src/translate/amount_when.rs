@@ -17,6 +17,9 @@ pub fn when(ctx: &Ctx, base: &str) -> Option<Tr<Value>> {
     let condition = match word {
         "Kicked" => json!("Kicked"),
         "Monarch" => json!({"Monarch": "You"}),
+        "Morbid" => {
+            json!({"Compare": {"left": {"Tallied": {"who": "EachPlayer", "what": "CreaturesDied"}}, "op": "Ge", "right": 1}})
+        }
         "Blessing" => json!({"CitysBlessing": "You"}),
         "StartingPlayer" => json!({"StartingPlayer": "You"}),
         "Night" => json!("IsNight"),

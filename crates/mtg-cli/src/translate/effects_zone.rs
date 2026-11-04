@@ -4,6 +4,7 @@ use serde_json::{Value, json};
 
 use super::amount::amount;
 use super::ctx::{Ctx, Tr, only, unmapped};
+use super::remember;
 use super::valid::{selector_any, selector_in, subject};
 use crate::forge::script::Params;
 
@@ -82,18 +83,18 @@ fn change_zone(ctx: &mut Ctx, p: &Params, origin: &str, destination: &str) -> Tr
             "Tapped",
             "RememberChanged",
             "RememberLKI",
+            "RememberTargets",
         ],
     )?;
     let what = subject(ctx, p, "Self", Some(origin))?;
     let mut effect = moves(&what, goes(p, destination)?);
-    if p.get("RememberChanged") == Some("True") || p.get("RememberLKI") == Some("True") {
-        // Only an exile binds the new objects; a move of a target does not name what it moved.
-        if effect.get("Exile").is_none() {
-            return unmapped("key:ChangeZone.RememberChanged-move");
-        }
-        let name = ctx.fresh("exiled");
-        effect["Exile"]["as"] = json!(name);
-        ctx.remembered = Some(json!({ "Bound": name }));
+    if remember::wanted(p, &["RememberChanged", "RememberLKI", "RememberTargets"]) {
+        let (verb, stem) = if effect.get("Exile").is_some() {
+            ("Exile", "exiled")
+        } else {
+            ("Move", "moved")
+        };
+        remember::bind_moved(ctx, &mut effect, verb, stem);
     }
     Ok(vec![effect])
 }
@@ -383,6 +384,7 @@ fn change_zone_all(ctx: &mut Ctx, p: &Params, origin: &str, destination: &str) -
             "Tapped",
             "LibraryPosition",
             "Shuffle",
+            "RememberChanged",
         ],
     )?;
     if origin == "Library" {
@@ -390,8 +392,14 @@ fn change_zone_all(ctx: &mut Ctx, p: &Params, origin: &str, destination: &str) -
     }
     let zone = (origin != "Battlefield").then_some(origin);
     let filter = selector_in(ctx, p.get("ChangeType").unwrap_or("Card"), zone)?;
-    Ok(vec![moves(
-        &json!({ "Each": filter }),
-        goes(p, destination)?,
-    )])
+    let mut effect = moves(&json!({ "Each": filter }), goes(p, destination)?);
+    if remember::wanted(p, &["RememberChanged"]) {
+        let (verb, stem) = if effect.get("Exile").is_some() {
+            ("Exile", "exiled")
+        } else {
+            ("Move", "moved")
+        };
+        remember::bind_moved(ctx, &mut effect, verb, stem);
+    }
+    Ok(vec![effect])
 }

@@ -39,6 +39,7 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
             who: Ref::You,
             filter: itself,
             count: one,
+            ..
         },
     ] = unpaid.as_slice()
     else {

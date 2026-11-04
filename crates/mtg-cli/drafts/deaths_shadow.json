@@ -1,0 +1,26 @@
+{
+  "oracle_id": "e08722b3-0f79-4c82-b298-603e04a37857",
+  "name": "Death's Shadow",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Death's Shadow",
+      "oracle_fingerprint": "927b6291895a42fd61f43e0b4752422d",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": { "Times": { "by": -1, "of": { "Life": "You" } } },
+                  "toughness": { "Times": { "by": -1, "of": { "Life": "You" } } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

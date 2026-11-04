@@ -1,0 +1,59 @@
+{
+  "oracle_id": "83cb9ab7-6a8f-40b5-b076-6fa669ff15f2",
+  "name": "Farid, Enterprising Salvager",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Farid, Enterprising Salvager",
+      "oracle_fingerprint": "06237494ddbaaed52f8da48e99ae6128",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Artifact" }, { "Not": "Token" }, { "ControlledBy": "You" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": { "token": { "Custom": { "name": "Scrap", "types": ["Artifact"] } } }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{R}" }, { "Sacrifice": { "filter": [{ "Type": "Artifact" }] } }],
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "effects": [
+                        { "PutCounters": { "on": "This", "counter": "+1/+1" } },
+                        {
+                          "Continuous": {
+                            "affected": "This",
+                            "mods": [{ "AddKeyword": "Menace" }],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                      "effects": [{ "Goad": { "what": { "Target": 0 } } }]
+                    },
+                    { "effects": [{ "Discard": {} }, { "Draw": {} }] }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

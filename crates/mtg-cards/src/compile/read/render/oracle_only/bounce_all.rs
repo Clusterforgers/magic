@@ -21,6 +21,7 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
             Effect::Move {
                 what: Ref::Each(group),
                 to: Destination::Hand,
+                ..
             },
         ],
     ) = (&spec.what, effects.as_slice())

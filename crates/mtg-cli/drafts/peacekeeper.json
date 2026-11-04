@@ -1,0 +1,22 @@
+{
+  "oracle_id": "e82ce5c6-1e42-4e87-b696-67aa3822ec9c",
+  "name": "Peacekeeper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Peacekeeper",
+      "oracle_fingerprint": "7e0db87f374a67accb70d4d3ef23d36a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              { "Pay": { "cost": "{1}{W}", "unpaid": [{ "Sacrifice": { "filter": ["This"] } }] } }
+            ]
+          }
+        },
+        { "Static": { "affected": { "Each": [{ "Type": "Creature" }] }, "mods": ["CantAttack"] } }
+      ]
+    }
+  ]
+}

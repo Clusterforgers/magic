@@ -32,6 +32,7 @@ impl KeywordRules for Evoke {
                 who: Ref::You,
                 filter: Selector::this(),
                 count: Amount::one(),
+                bind: None,
             }],
         }]
     }

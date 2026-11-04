@@ -1,0 +1,135 @@
+{
+  "object": "card",
+  "id": "a77d4044-f2bd-470a-8468-a319e0a21d8d",
+  "oracle_id": "92bd7fe2-bb70-40fb-984b-26e461347c56",
+  "multiverse_ids": [
+    598879
+  ],
+  "mtgo_id": 107499,
+  "tcgplayer_id": 457139,
+  "cardmarket_id": 688380,
+  "name": "Divine Sacrament",
+  "lang": "en",
+  "released_at": "2023-01-13",
+  "uri": "https://api.scryfall.com/cards/a77d4044-f2bd-470a-8468-a319e0a21d8d",
+  "scryfall_uri": "https://scryfall.com/card/dmr/5/divine-sacrament?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T04:55:17Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/a/7/a77d4044-f2bd-470a-8468-a319e0a21d8d.jpg?1783918517",
+    "normal": "https://cards.scryfall.io/normal/front/a/7/a77d4044-f2bd-470a-8468-a319e0a21d8d.jpg?1783918517",
+    "large": "https://cards.scryfall.io/large/front/a/7/a77d4044-f2bd-470a-8468-a319e0a21d8d.jpg?1783918517",
+    "png": "https://cards.scryfall.io/png/front/a/7/a77d4044-f2bd-470a-8468-a319e0a21d8d.png?1783918517",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/a/7/a77d4044-f2bd-470a-8468-a319e0a21d8d.jpg?1783918517",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/a/7/a77d4044-f2bd-470a-8468-a319e0a21d8d.jpg?1783918517",
+    "thumb": "https://cards.scryfall.io/thumb/front/a/7/a77d4044-f2bd-470a-8468-a319e0a21d8d.webp?1783918517",
+    "grid": "https://cards.scryfall.io/grid/front/a/7/a77d4044-f2bd-470a-8468-a319e0a21d8d.webp?1783918517",
+    "display": "https://cards.scryfall.io/display/front/a/7/a77d4044-f2bd-470a-8468-a319e0a21d8d.webp?1783918517",
+    "art": "https://cards.scryfall.io/art/front/a/7/a77d4044-f2bd-470a-8468-a319e0a21d8d.webp?1783918517",
+    "crop": "https://cards.scryfall.io/crop/front/a/7/a77d4044-f2bd-470a-8468-a319e0a21d8d.webp?1783918517",
+    "jpeg": "https://cards.scryfall.io/normal/front/a/7/a77d4044-f2bd-470a-8468-a319e0a21d8d.jpg?1783918517"
+  },
+  "mana_cost": "{1}{W}{W}",
+  "cmc": 3.0,
+  "type_line": "Enchantment",
+  "oracle_text": "White creatures get +1/+1.\nThreshold — White creatures get an additional +1/+1 as long as there are seven or more cards in your graveyard.",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Threshold"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "ca4c2884-e539-4b7f-980d-5d6a50220f2a",
+  "set": "dmr",
+  "set_name": "Dominaria Remastered",
+  "set_type": "masters",
+  "set_uri": "https://api.scryfall.com/sets/ca4c2884-e539-4b7f-980d-5d6a50220f2a",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Admr&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/dmr?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/a77d4044-f2bd-470a-8468-a319e0a21d8d/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A92bd7fe2-bb70-40fb-984b-26e461347c56&unique=prints",
+  "collector_number": "5",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "\"My wings shall be your shield. My sword shall be your vengeance.\"",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Ekaterina Burmak",
+  "artist_ids": [
+    "2a9f3780-fcc8-4ec5-b403-ee1d1370d3b4"
+  ],
+  "illustration_id": "b6d5e091-4355-487e-a2b5-748b7dbcf1a8",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 17704,
+  "penny_rank": 8885,
+  "prices": {
+    "usd": "0.32",
+    "usd_foil": "0.35",
+    "usd_etched": null,
+    "eur": "0.21",
+    "eur_foil": "0.48",
+    "tix": "0.08"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=598879&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DDivine%2BSacrament",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DDivine%2BSacrament",
+    "edhrec": "https://edhrec.com/route/?cc=Divine+Sacrament"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F457139%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=688380&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/107499?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

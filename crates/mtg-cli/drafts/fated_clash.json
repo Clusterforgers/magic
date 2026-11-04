@@ -1,0 +1,38 @@
+{
+  "oracle_id": "610d9f58-4182-49cb-855c-9b6030e7f714",
+  "name": "Fated Clash",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fated Clash",
+      "oracle_fingerprint": "5c61d635d5b75645b4e7e96f3d4f2683",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Indestructible" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Target": 1 },
+                  "mods": [{ "AddKeyword": "Indestructible" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Destroy": { "what": { "Each": [{ "Type": "Creature" }] } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

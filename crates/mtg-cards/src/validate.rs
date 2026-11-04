@@ -2406,11 +2406,17 @@ impl Walker<'_> {
         }
         self.at(tag, |w| match effect {
             Effect::Draw { who, count }
-            | Effect::Mill { who, count }
             | Effect::Scry { who, count }
             | Effect::Surveil { who, count } => {
                 w.at("who", |w| w.reference(who, Kind::Player));
                 w.at("count", |w| w.amount(count));
+            }
+            Effect::Mill { who, count, bind } => {
+                w.at("who", |w| w.reference(who, Kind::Player));
+                w.at("count", |w| w.amount(count));
+                if let Some(name) = bind {
+                    w.at("as", |w| w.bind(name, Kind::Object));
+                }
             }
             Effect::Discard {
                 who, count, bind, ..
@@ -2494,7 +2500,13 @@ impl Walker<'_> {
             | Effect::Goad { what }
             | Effect::Explore { what }
             | Effect::Connive { what }
-            | Effect::Destroy { what, .. } => w.at("what", |w| w.reference(what, Kind::Object)),
+            => w.at("what", |w| w.reference(what, Kind::Object)),
+            Effect::Destroy { what, bind, .. } => {
+                w.at("what", |w| w.reference(what, Kind::Object));
+                if let Some(name) = bind {
+                    w.at("as", |w| w.bind(name, Kind::Object));
+                }
+            }
             Effect::Fight { what, with } => {
                 w.at("what", |w| w.reference(what, Kind::Object));
                 w.at("with", |w| w.reference(with, Kind::Object));
@@ -2663,14 +2675,20 @@ impl Walker<'_> {
                     w.problem("an added phase list names no phase");
                 }
             }
-            Effect::Move { what, to } => {
+            Effect::Move { what, to, bind } => {
                 w.at("what", |w| w.reference(what, Kind::Object));
                 w.at("to", |w| w.destination(to));
+                if let Some(name) = bind {
+                    w.at("as", |w| w.bind(name, Kind::Object));
+                }
             }
-            Effect::Sacrifice { who, filter, count } => {
+            Effect::Sacrifice { who, filter, count, bind } => {
                 w.at("who", |w| w.reference(who, Kind::Player));
                 w.at("filter", |w| w.selector(filter));
                 w.at("count", |w| w.amount(count));
+                if let Some(name) = bind {
+                    w.at("as", |w| w.bind(name, Kind::Object));
+                }
             }
             Effect::DealDamage { source, to, amount } => {
                 if let Some(source) = source {
@@ -4422,6 +4440,10 @@ mod tests {
     #[case::modular_is_a_macro(r#"{"Keyword":{"Macro":{"name":"modular","amount":2}}}"#, &["Ability.Replacement", "Ability.Triggered", "Effect.May", "Effect.PutCounters", "Keyword.Macro", "ReplaceBy.WithCounters", "ReplaceWhen.Enters", "Trigger.ZoneChange"])]
     #[case::mobilize_is_a_macro(r#"{"Keyword":{"Macro":{"name":"mobilize","amount":2}}}"#, &["Ability.Triggered", "Effect.CreateToken", "Effect.DelayedTrigger", "Effect.Sacrifice", "Keyword.Macro", "Trigger.Attacks", "Trigger.StepBegins"])]
     #[case::a_modal_chosen_by_an_opponent(r#"{"Spell":{"effects":[{"Modal":{"who":"Opponents","modes":[{"effects":[{"Draw":{}}]},{"effects":[{"GainLife":{"amount":1}}]}]}}]}}"#, &["Ability.Spell", "Effect.Draw", "Effect.GainLife", "Effect.Modal", "Effect.Modal.Who"])]
+    #[case::a_milled_card_named(r#"{"Spell":{"effects":[{"Mill":{"count":2,"as":"m"}},{"Move":{"what":{"Bound":"m"},"to":"Hand"}}]}}"#, &["Ability.Spell", "Effect.Mill", "Effect.Move"])]
+    #[case::a_sacrifice_named(r#"{"Spell":{"effects":[{"Sacrifice":{"filter":[],"as":"s"}},{"Move":{"what":{"Bound":"s"},"to":"Hand"}}]}}"#, &["Ability.Spell", "Effect.Move", "Effect.Sacrifice"])]
+    #[case::a_destroy_named(r#"{"Spell":{"effects":[{"Destroy":{"what":"This","as":"d"}},{"Move":{"what":{"Bound":"d"},"to":"Hand"}}]}}"#, &["Ability.Spell", "Effect.Destroy", "Effect.Move"])]
+    #[case::a_move_named(r#"{"Spell":{"effects":[{"Move":{"what":"This","to":"Graveyard","as":"g"}},{"Move":{"what":{"Bound":"g"},"to":"Hand"}}]}}"#, &["Ability.Spell", "Effect.Move"])]
     #[case::a_kept_number(r#"{"Spell":{"effects":[{"Let":{"as":"n","amount":2}},{"GainLife":{"amount":{"Bound":"n"}}}]}}"#, &["Ability.Spell", "Effect.GainLife", "Effect.Let"])]
     #[case::storm_is_a_keyword(r#"{"Keyword":"Storm"}"#, &["Keyword.Storm"])]
     #[case::a_copy_with_the_exceptions_the_values_keep(r#"{"Spell":{"effects":[{"CreateToken":{"token":{"CopyOf":{"of":"This","except":[{"AddKeyword":"Haste"},{"AddSubtype":"Zombie"},{"SetColors":["Blue"]},{"SetPT":{"power":1,"toughness":1}}]}}}}]}}"#, &["Ability.Spell", "Effect.CreateToken", "Effect.CreateToken.Copy", "Keyword.Haste", "Mod.AddKeyword", "Mod.AddSubtype", "Mod.SetColors", "Mod.SetPT"])]

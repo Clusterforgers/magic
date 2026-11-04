@@ -1,0 +1,25 @@
+{
+  "oracle_id": "95bedd11-ed01-4cb1-bcdb-c5f9fdba8c79",
+  "name": "Spreading Flames",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spreading Flames",
+      "oracle_fingerprint": "93c26b0701128518bb408223fe9c7859",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }] },
+                "bounds": { "min": 0, "max": 6 },
+                "divide": 6
+              }
+            ],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": "Divided" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

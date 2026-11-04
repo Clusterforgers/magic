@@ -1,0 +1,52 @@
+{
+  "oracle_id": "8ecbbf14-68c3-4378-9fce-383f9d901bfa",
+  "name": "Kytheon's Tactics",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kytheon's Tactics",
+      "oracle_fingerprint": "ee77bc1a46a2de06a8c995c4e63eba7e",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Count": [
+                          { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                          { "OwnedBy": "You" },
+                          { "In": "Graveyard" }
+                        ]
+                      },
+                      "op": "Ge",
+                      "right": 2
+                    }
+                  },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                        "mods": [{ "AddKeyword": "Vigilance" }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

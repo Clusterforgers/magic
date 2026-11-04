@@ -52,8 +52,7 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
             },
             Effect::Move {
                 what: Ref::Bound(moved),
-                to: Destination::Hand,
-            },
+                to: Destination::Hand, ..            },
             Effect::Destroy {
                 what: Ref::Each(destroyed),
                 ..
@@ -84,8 +83,7 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
             },
             Effect::Move {
                 what: Ref::Bound(moved),
-                to: Destination::Battlefield { tapped: true, .. },
-            },
+                to: Destination::Battlefield { tapped: true, .. }, ..            },
         ] if moved == bind && is_own_lands_in_hand_and_graveyard(lands) => targets
             .first()
             .and_then(spec_text)
@@ -129,6 +127,7 @@ fn searched_basic_typed(ability: &Ability, texts: &mut Vec<String>) {
         Effect::Move {
             what: Ref::Bound(moved),
             to: Destination::Hand,
+            ..
         },
         Effect::Shuffle { who: Ref::You },
     ] = effects.as_slice()

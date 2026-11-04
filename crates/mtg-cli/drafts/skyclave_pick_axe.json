@@ -1,0 +1,42 @@
+{
+  "oracle_id": "6d2cf8b4-1468-4e00-94ca-65ef0c564b09",
+  "name": "Skyclave Pick-Axe",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Skyclave Pick-Axe",
+      "oracle_fingerprint": "1c5c24af05b964955ef19cec49b03dab",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [{ "Attach": { "what": "This", "to": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Attached",
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{2}{G}" } }
+      ]
+    }
+  ]
+}

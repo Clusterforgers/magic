@@ -1,0 +1,30 @@
+{
+  "oracle_id": "3c02d725-a05e-4086-9caa-ddb005d7ae18",
+  "name": "Undead Hand Ninja",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Undead Hand Ninja",
+      "oracle_fingerprint": "76f0c5443a5d86ff278d75c3564ae650",
+      "abilities": [
+        { "Keyword": "Deathtouch" },
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "ZoneChange": {
+                  "what": [{ "Type": "Creature" }, { "OwnedBy": "You" }],
+                  "from": "Graveyard"
+                }
+              }
+            },
+            "effects": [
+              { "LoseLife": { "who": "Opponents", "amount": 1 } },
+              { "GainLife": { "amount": 1 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

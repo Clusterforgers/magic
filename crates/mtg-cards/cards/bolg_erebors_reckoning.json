@@ -1,0 +1,41 @@
+{
+  "oracle_id": "eab096fd-a7e2-4b96-99ec-1039d3a552f3",
+  "name": "Bolg, Erebor's Reckoning",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bolg, Erebor's Reckoning",
+      "oracle_fingerprint": "c016a7fab7722378b65527aec59bc5d8",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat" } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [
+                      { "AnyOf": [{ "Subtype": "Goblin" }, { "Subtype": "Orc" }] },
+                      { "ControlledBy": "You" },
+                      "Other"
+                    ]
+                  },
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] },
+                  "mods": [{ "ModifyPT": { "power": -1, "toughness": -1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

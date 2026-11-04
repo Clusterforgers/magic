@@ -12,16 +12,21 @@
             "cost": ["Tap", { "Sacrifice": { "filter": [{ "Type": "Creature" }] } }],
             "effects": [
               {
-                "If": {
-                  "condition": {
-                    "Compare": {
-                      "left": { "Stat": { "of": "Paid", "stat": "Toughness" } },
-                      "op": "Ge",
-                      "right": 4
+                "CreateToken": {
+                  "token": { "Named": "food" },
+                  "count": {
+                    "When": {
+                      "condition": {
+                        "Compare": {
+                          "left": { "Stat": { "of": "Paid", "stat": "Toughness" } },
+                          "op": "Ge",
+                          "right": 4
+                        }
+                      },
+                      "then": 2,
+                      "otherwise": 1
                     }
-                  },
-                  "then": [{ "CreateToken": { "token": { "Named": "food" }, "count": 2 } }],
-                  "otherwise": [{ "CreateToken": { "token": { "Named": "food" } } }]
+                  }
                 }
               }
             ]

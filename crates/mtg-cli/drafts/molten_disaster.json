@@ -1,0 +1,27 @@
+{
+  "oracle_id": "21390513-1ed0-48f2-a7fa-020da8f803c0",
+  "name": "Molten Disaster",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Molten Disaster",
+      "oracle_fingerprint": "b03e5d01d797410759555907d9679711",
+      "abilities": [
+        { "Keyword": { "Kicker": "{R}" } },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Each": [{ "Type": "Creature" }, { "Not": { "HasKeyword": "Flying" } }] },
+                  "amount": "X"
+                }
+              },
+              { "DealDamage": { "to": "EachPlayer", "amount": "X" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "oracle_id": "669830ea-f55c-447a-aa3a-8965fa6d2a33",
+  "name": "Rage Forger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rage Forger",
+      "oracle_fingerprint": "13a774f495cc376abf30ec7ddde90e3b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "Subtype": "Shaman" },
+                      "Other",
+                      { "ControlledBy": "You" }
+                    ]
+                  },
+                  "counter": "+1/+1"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "Attacks": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "ControlledBy": "You" },
+                  { "HasCounter": "+1/+1" }
+                ]
+              }
+            },
+            "targets": [
+              { "what": { "Either": ["Player", { "Object": [{ "Type": "Planeswalker" }] }] } }
+            ],
+            "effects": [
+              { "DealDamage": { "source": "Triggering", "to": { "Target": 0 }, "amount": 1 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

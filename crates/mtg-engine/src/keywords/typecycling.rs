@@ -43,6 +43,7 @@ impl KeywordRules for Typecycling {
                 Effect::Move {
                     what: Ref::Bound(FOUND.into()),
                     to: Destination::Hand,
+                    bind: None,
                 },
                 Effect::Shuffle { who: Ref::You },
             ],

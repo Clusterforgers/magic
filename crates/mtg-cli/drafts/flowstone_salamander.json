@@ -1,0 +1,20 @@
+{
+  "oracle_id": "a0e40eb1-a909-405b-8fb4-3759df8edf7f",
+  "name": "Flowstone Salamander",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Flowstone Salamander",
+      "oracle_fingerprint": "b513dc9059ee453bd8992856cdf9a13f",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{R}",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, { "Blocks": "This" }] } }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

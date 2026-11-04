@@ -14,7 +14,7 @@ use crate::zones::Zone;
 /// drawing, so no player loses by it. Every move is a `ZoneChanged` with `ZoneCause::Milled`, and a graveyard is open,
 /// so every seat sees which cards were milled.
 pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
-    let Effect::Mill { who, count } = effect else {
+    let Effect::Mill { who, count, .. } = effect else {
         return Err(wrong_effect("Mill"));
     };
     let wanted = usize::try_from(cx.scope.amount(count)?.max(0)).unwrap_or(usize::MAX);

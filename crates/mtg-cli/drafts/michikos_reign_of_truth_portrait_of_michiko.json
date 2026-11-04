@@ -1,0 +1,106 @@
+{
+  "oracle_id": "94794f7c-62e7-43c8-ba7f-ac5c0bc9a712",
+  "name": "Michiko's Reign of Truth // Portrait of Michiko",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Michiko's Reign of Truth",
+      "oracle_fingerprint": "911165a78310a648126de5afd229602b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": {
+                          "Count": [
+                            { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Enchantment" }] },
+                            { "ControlledBy": "You" }
+                          ]
+                        },
+                        "toughness": {
+                          "Count": [
+                            { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Enchantment" }] },
+                            { "ControlledBy": "You" }
+                          ]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": {
+                          "Count": [
+                            { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Enchantment" }] },
+                            { "ControlledBy": "You" }
+                          ]
+                        },
+                        "toughness": {
+                          "Count": [
+                            { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Enchantment" }] },
+                            { "ControlledBy": "You" }
+                          ]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Portrait of Michiko",
+      "oracle_fingerprint": "7a6dab690ae3d63d53d2107435b8a6b7",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": {
+                    "Count": [
+                      { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Enchantment" }] },
+                      { "ControlledBy": "You" }
+                    ]
+                  },
+                  "toughness": {
+                    "Count": [
+                      { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Enchantment" }] },
+                      { "ControlledBy": "You" }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -178,6 +178,7 @@ pub fn token_copy(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
                     who: Ref::You,
                     filter: Selector(vec![Pred::Is(copy)]),
                     count: Amount::one(),
+                    bind: None,
                 }
             }],
         });
@@ -457,6 +458,7 @@ fn populate_later(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
                 who: Ref::You,
                 filter: Selector(vec![Pred::Is(token)]),
                 count: Amount::one(),
+                bind: None,
             }],
         },
     ])
@@ -1234,6 +1236,7 @@ pub(super) fn delay_text(created: &Effect, delayed: &Effect, plural: bool) -> Op
                 who: Ref::You,
                 filter,
                 count,
+                ..
             },
         ] if filter.0 == [Pred::Is(copy)] && count.is_one() => "sacrifice",
         _ => return None,

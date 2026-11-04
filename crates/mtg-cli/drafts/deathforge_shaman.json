@@ -1,0 +1,30 @@
+{
+  "oracle_id": "1d3cfdd3-e16f-4955-9b81-0d6fc981c168",
+  "name": "Deathforge Shaman",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Deathforge Shaman",
+      "oracle_fingerprint": "4d26f5fc49a0f37437418dd946abe2c6",
+      "abilities": [
+        { "Keyword": { "Multikicker": "{R}" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              { "what": { "Either": ["Player", { "Object": [{ "Type": "Planeswalker" }] }] } }
+            ],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": { "Times": { "by": 2, "of": "Kicks" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

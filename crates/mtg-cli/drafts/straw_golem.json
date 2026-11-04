@@ -1,0 +1,19 @@
+{
+  "oracle_id": "6e48981b-8971-4b7c-ae05-29c7e4091a05",
+  "name": "Straw Golem",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Straw Golem",
+      "oracle_fingerprint": "919f8252b900cfa781840ddd0a10f8ee",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Type": "Creature" }], "by": "Opponents" } },
+            "effects": [{ "Sacrifice": { "filter": ["This"] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -56,6 +56,7 @@ pub(super) fn w8b_return_it(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         effects: vec![Effect::Move {
             what: Ref::This,
             to: Destination::Hand,
+            bind: None,
         }],
     }])
 }

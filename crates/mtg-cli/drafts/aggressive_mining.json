@@ -1,0 +1,21 @@
+{
+  "oracle_id": "ff321c13-03ae-4cb9-b371-1242290f8433",
+  "name": "Aggressive Mining",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Aggressive Mining",
+      "oracle_fingerprint": "9abb72cfed1acdec120774a480e5c882",
+      "abilities": [
+        { "Rule": { "rule": { "Cant": { "who": "You", "action": "PlayLand" } } } },
+        {
+          "Activated": {
+            "cost": [{ "Sacrifice": { "filter": [{ "Type": "Land" }] } }],
+            "limit": "OncePerTurn",
+            "effects": [{ "Draw": { "count": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

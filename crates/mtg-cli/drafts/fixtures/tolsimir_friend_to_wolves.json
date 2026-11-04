@@ -1,0 +1,166 @@
+{
+  "object": "card",
+  "id": "f7fce047-49f1-40ae-8410-6501cb0f8201",
+  "oracle_id": "3cef501b-5ce1-4699-89a5-3949f7e65bf1",
+  "multiverse_ids": [
+    461151
+  ],
+  "mtgo_id": 72054,
+  "arena_id": 69673,
+  "tcgplayer_id": 188101,
+  "cardmarket_id": 371919,
+  "name": "Tolsimir, Friend to Wolves",
+  "lang": "en",
+  "released_at": "2019-05-03",
+  "uri": "https://api.scryfall.com/cards/f7fce047-49f1-40ae-8410-6501cb0f8201",
+  "scryfall_uri": "https://scryfall.com/card/war/224/tolsimir-friend-to-wolves?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T09:03:04Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/f/7/f7fce047-49f1-40ae-8410-6501cb0f8201.jpg?1783933384",
+    "normal": "https://cards.scryfall.io/normal/front/f/7/f7fce047-49f1-40ae-8410-6501cb0f8201.jpg?1783933384",
+    "large": "https://cards.scryfall.io/large/front/f/7/f7fce047-49f1-40ae-8410-6501cb0f8201.jpg?1783933384",
+    "png": "https://cards.scryfall.io/png/front/f/7/f7fce047-49f1-40ae-8410-6501cb0f8201.png?1783933384",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/f/7/f7fce047-49f1-40ae-8410-6501cb0f8201.jpg?1783933384",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/f/7/f7fce047-49f1-40ae-8410-6501cb0f8201.jpg?1783933384",
+    "thumb": "https://cards.scryfall.io/thumb/front/f/7/f7fce047-49f1-40ae-8410-6501cb0f8201.webp?1783933384",
+    "grid": "https://cards.scryfall.io/grid/front/f/7/f7fce047-49f1-40ae-8410-6501cb0f8201.webp?1783933384",
+    "display": "https://cards.scryfall.io/display/front/f/7/f7fce047-49f1-40ae-8410-6501cb0f8201.webp?1783933384",
+    "art": "https://cards.scryfall.io/art/front/f/7/f7fce047-49f1-40ae-8410-6501cb0f8201.webp?1783933384",
+    "crop": "https://cards.scryfall.io/crop/front/f/7/f7fce047-49f1-40ae-8410-6501cb0f8201.webp?1783933384",
+    "jpeg": "https://cards.scryfall.io/normal/front/f/7/f7fce047-49f1-40ae-8410-6501cb0f8201.jpg?1783933384"
+  },
+  "mana_cost": "{2}{G}{G}{W}",
+  "cmc": 5.0,
+  "type_line": "Legendary Creature — Elf Scout",
+  "oracle_text": "When Tolsimir enters, create Voja, Friend to Elves, a legendary 3/3 green and white Wolf creature token.\nWhenever a Wolf you control enters, you gain 3 life and that creature fights up to one target creature you don't control.",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "G",
+    "W"
+  ],
+  "color_identity": [
+    "G",
+    "W"
+  ],
+  "keywords": [
+    "Fight"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "f7fce047-49f1-40ae-8410-6501cb0f8201",
+      "component": "combo_piece",
+      "name": "Tolsimir, Friend to Wolves",
+      "type_line": "Legendary Creature — Elf Scout",
+      "uri": "https://api.scryfall.com/cards/f7fce047-49f1-40ae-8410-6501cb0f8201"
+    },
+    {
+      "object": "related_card",
+      "id": "39475e91-1e71-4546-ae4a-47ea66e47536",
+      "component": "token",
+      "name": "Voja, Friend to Elves",
+      "type_line": "Token Legendary Creature — Wolf",
+      "uri": "https://api.scryfall.com/cards/39475e91-1e71-4546-ae4a-47ea66e47536"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "arena",
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "ee044f0b-e101-4ead-8d0e-aa510aad4277",
+  "set": "war",
+  "set_name": "War of the Spark",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/ee044f0b-e101-4ead-8d0e-aa510aad4277",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Awar&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/war?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/f7fce047-49f1-40ae-8410-6501cb0f8201/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A3cef501b-5ce1-4699-89a5-3949f7e65bf1&unique=prints",
+  "collector_number": "224",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Ryan Pancoast",
+  "artist_ids": [
+    "89cc9475-dda2-4d13-bf88-54b92867a25c"
+  ],
+  "illustration_id": "87d36e03-995c-4ead-ba43-62b1f7f94017",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 10296,
+  "penny_rank": 3225,
+  "preview": {
+    "source": "Wizards of the Coast",
+    "source_uri": "https://www.facebook.com/MagicTheGathering.apac/posts/2172272142841635",
+    "previewed_at": "2019-04-04"
+  },
+  "prices": {
+    "usd": "0.35",
+    "usd_foil": "2.76",
+    "usd_etched": null,
+    "eur": "0.19",
+    "eur_foil": "1.06",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=461151&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DTolsimir%252C%2BFriend%2Bto%2BWolves",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DTolsimir%252C%2BFriend%2Bto%2BWolves",
+    "edhrec": "https://edhrec.com/route/?cc=Tolsimir%2C+Friend+to+Wolves"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F188101%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=371919&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/72054?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

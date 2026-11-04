@@ -1,0 +1,45 @@
+{
+  "oracle_id": "b47b3cfe-7005-4b33-9d41-83b60808e12b",
+  "name": "Tameshi, Reality Architect",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tameshi, Reality Architect",
+      "oracle_fingerprint": "e2145552f522c5439b9bd3a5afb84e44",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Not": { "Type": "Creature" } }],
+                "from": "Battlefield",
+                "to": "Hand"
+              }
+            },
+            "limit": "OncePerTurn",
+            "effects": [{ "Draw": {} }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{X}{W}" }, { "ReturnToHand": { "filter": [{ "Type": "Land" }] } }],
+            "timing": "Sorcery",
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Enchantment" }] },
+                    { "Compare": { "stat": "ManaValue", "op": "Le", "to": "X" } },
+                    { "OwnedBy": "You" },
+                    { "In": "Graveyard" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

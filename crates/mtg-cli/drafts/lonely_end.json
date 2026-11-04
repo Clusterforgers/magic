@@ -1,0 +1,85 @@
+{
+  "oracle_id": "2df9d8c4-f884-4a4d-a1e8-d8b1172344e4",
+  "name": "Lonely End",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lonely End",
+      "oracle_fingerprint": "f6873ba7138488f8093917839905b909",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": { "Target": 0 },
+                            "mods": [{ "ModifyPT": { "power": -3, "toughness": -3 } }],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        },
+                        {
+                          "If": {
+                            "condition": {
+                              "Compare": {
+                                "left": {
+                                  "When": {
+                                    "condition": { "StartingPlayer": "You" },
+                                    "then": 1,
+                                    "otherwise": 0
+                                  }
+                                },
+                                "op": "Eq",
+                                "right": 0
+                              }
+                            },
+                            "then": [{ "GainLife": { "amount": 3 } }]
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Planeswalker" }] } }],
+                      "effects": [
+                        {
+                          "RemoveCounters": {
+                            "from": { "Target": 0 },
+                            "counter": "loyalty",
+                            "count": 3
+                          }
+                        },
+                        {
+                          "If": {
+                            "condition": {
+                              "Compare": {
+                                "left": {
+                                  "When": {
+                                    "condition": { "StartingPlayer": "You" },
+                                    "then": 1,
+                                    "otherwise": 0
+                                  }
+                                },
+                                "op": "Eq",
+                                "right": 0
+                              }
+                            },
+                            "then": [{ "GainLife": { "amount": 3 } }]
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

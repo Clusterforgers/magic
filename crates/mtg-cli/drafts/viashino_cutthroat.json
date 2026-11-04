@@ -1,0 +1,20 @@
+{
+  "oracle_id": "6dc1305a-d6ca-4280-ba5d-5ed91f78ced0",
+  "name": "Viashino Cutthroat",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Viashino Cutthroat",
+      "oracle_fingerprint": "b32e24c3648fab5985c20f1ba9a5fe37",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "effects": [{ "Move": { "what": "This", "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

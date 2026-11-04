@@ -1,0 +1,19 @@
+{
+  "oracle_id": "82b0c006-bf58-4f05-8801-e5d2857a6fd6",
+  "name": "Swift Reckoning",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Swift Reckoning",
+      "oracle_fingerprint": "174ffd90ed2a1cd24978135fadb49049",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Tapped"] } }],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,64 @@
+{
+  "oracle_id": "14df239a-c7cc-492a-94f5-2971f6efe17b",
+  "name": "Vampirism",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vampirism",
+      "oracle_fingerprint": "b8368fa010cdf1b31b04325f186eec55",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "Upkeep" } },
+                  "effects": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": {
+                    "Count": [
+                      { "Type": "Creature" },
+                      { "ControlledBy": "You" },
+                      { "Not": { "Is": "Attached" } }
+                    ]
+                  },
+                  "toughness": {
+                    "Count": [
+                      { "Type": "Creature" },
+                      { "ControlledBy": "You" },
+                      { "Not": { "Is": "Attached" } }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                { "ControlledBy": "You" },
+                { "Not": { "Is": "Attached" } }
+              ]
+            },
+            "mods": [{ "ModifyPT": { "power": -1, "toughness": -1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

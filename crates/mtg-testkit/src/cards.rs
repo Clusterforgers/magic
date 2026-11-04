@@ -392,6 +392,7 @@ pub fn edict(name: &str) -> Arc<CardDefinition> {
                     who: Ref::Target(0),
                     filter: Selector(vec![Pred::Type(CardType::Creature)]),
                     count: Amount::Fixed(1),
+                    bind: None,
                 }],
             }),
     )
@@ -535,6 +536,7 @@ pub fn bottomer(name: &str) -> Arc<CardDefinition> {
                             place: Place::Bottom,
                             order: Some(Order::Chosen),
                         },
+                        bind: None,
                     },
                 ],
             }),
@@ -582,6 +584,7 @@ pub fn revealer(name: &str) -> Arc<CardDefinition> {
                             place: Place::Bottom,
                             order: None,
                         },
+                        bind: None,
                     },
                 ],
             }),

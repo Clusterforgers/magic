@@ -1,0 +1,25 @@
+{
+  "oracle_id": "cdc7356c-9621-4420-9fda-c8b91df0ec7c",
+  "name": "Alchemax Slayer-Bots",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Alchemax Slayer-Bots",
+      "oracle_fingerprint": "62d7b888f46bc8ec6bd3e42cda7ba335",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              { "Tap": { "what": { "Target": 0 } } },
+              { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "stun" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

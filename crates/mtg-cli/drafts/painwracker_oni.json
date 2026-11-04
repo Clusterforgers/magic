@@ -1,0 +1,33 @@
+{
+  "oracle_id": "4c033502-2005-4e13-96b6-3f8c0a4b6a81",
+  "name": "Painwracker Oni",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Painwracker Oni",
+      "oracle_fingerprint": "43ce0932e3fa06badaada8657f58eab8",
+      "abilities": [
+        { "Keyword": "Fear" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "Subtype": "Ogre" }, { "ControlledBy": "You" }] },
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [{ "Sacrifice": { "filter": [{ "Type": "Creature" }] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

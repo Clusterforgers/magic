@@ -1,0 +1,42 @@
+{
+  "oracle_id": "2553ab57-ceb6-4654-a59d-bc61735da908",
+  "name": "Guardian of Ghirapur",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Guardian of Ghirapur",
+      "oracle_fingerprint": "55981089b0a4d4ff404f8ebb88a235d1",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Creature" }, { "Type": "Artifact" }] },
+                    { "ControlledBy": "You" },
+                    "Other"
+                  ]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    { "Move": { "what": { "Bound": "exiled" }, "to": { "Battlefield": {} } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

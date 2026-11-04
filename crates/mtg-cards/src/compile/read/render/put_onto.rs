@@ -27,6 +27,7 @@ pub(super) fn put_onto_text(choose: &Effect, moved: &Effect) -> Option<String> {
                     transformed: false,
                     counters,
                 },
+            ..
         },
     ) = (choose, moved)
     else {
@@ -87,6 +88,7 @@ pub(super) fn returned_to_battlefield_text(choose: &Effect, moved: &Effect) -> O
                     transformed: false,
                     counters,
                 },
+            ..
         },
     ) = (choose, moved)
     else {

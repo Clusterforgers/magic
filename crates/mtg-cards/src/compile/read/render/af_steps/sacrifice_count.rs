@@ -10,6 +10,7 @@ pub(super) fn text(effects: &[Effect]) -> Option<(String, usize)> {
             who,
             filter,
             count: Amount::Fixed(number),
+            ..
         },
         ..,
     ] = effects

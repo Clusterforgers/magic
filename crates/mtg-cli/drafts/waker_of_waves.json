@@ -1,0 +1,31 @@
+{
+  "oracle_id": "3a19a959-ea83-404b-89f7-e5dbf4cb7995",
+  "name": "Waker of Waves",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Waker of Waves",
+      "oracle_fingerprint": "d7bcab0192a62a5429881b210b7fddd4",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] },
+            "mods": [{ "ModifyPT": { "power": -1, "toughness": 0 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{U}" }, "DiscardSelf"],
+            "from": "Hand",
+            "effects": [
+              { "LookAtTop": { "count": 2, "as": "top" } },
+              { "Choose": { "from": { "Bound": "top" }, "as": "kept2", "rest_as": "rest3" } },
+              { "Move": { "what": { "Bound": "kept2" }, "to": "Hand" } },
+              { "Move": { "what": { "Bound": "rest3" }, "to": "Graveyard" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

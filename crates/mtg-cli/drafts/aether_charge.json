@@ -1,0 +1,35 @@
+{
+  "oracle_id": "15e83068-6253-4c65-8679-7295f3dc2075",
+  "name": "Aether Charge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Aether Charge",
+      "oracle_fingerprint": "60a180939ca32eb2debdc1698915d240",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Subtype": "Beast" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "targets": [
+              { "what": { "Either": ["Opponent", { "Object": [{ "Type": "Planeswalker" }] }] } }
+            ],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "DealDamage": { "source": "Triggering", "to": { "Target": 0 }, "amount": 4 } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

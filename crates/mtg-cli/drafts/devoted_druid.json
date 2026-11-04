@@ -1,0 +1,25 @@
+{
+  "oracle_id": "cb814e16-acf7-41d5-a357-1323dcc369f3",
+  "name": "Devoted Druid",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Devoted Druid",
+      "oracle_fingerprint": "c3f8ea799f8fa5b646a4746079bd0413",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Green"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "PutCounters": { "counter": "-1/-1" } }],
+            "effects": [{ "Untap": { "what": "This" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -86,7 +86,9 @@ fn cards(ctx: &Ctx, effect: &Effect) -> Option<String> {
                 &format!("{}{at_random}", phrase::counted(ctx, count, "card")),
             )
         }
-        Effect::Mill { who, count } => act(ctx, who, "mill", &phrase::counted(ctx, count, "card")),
+        Effect::Mill { who, count, .. } => {
+            act(ctx, who, "mill", &phrase::counted(ctx, count, "card"))
+        }
         Effect::Scry { who, count } => act(ctx, who, "scry", &phrase::amount(ctx, count)),
         Effect::Surveil { who, count } => act(ctx, who, "surveil", &phrase::amount(ctx, count)),
         Effect::GainLife { who, amount } => act(
@@ -276,8 +278,10 @@ fn moved(ctx: &Ctx, what: &Ref, to: &Destination) -> String {
 /// The effects on permanents, spells and the cards they move.
 fn permanents(ctx: &Ctx, effect: &Effect) -> Option<String> {
     Some(match effect {
-        Effect::Move { what, to } => moved(ctx, what, to),
-        Effect::Destroy { what, regenerate } => format!(
+        Effect::Move { what, to, .. } => moved(ctx, what, to),
+        Effect::Destroy {
+            what, regenerate, ..
+        } => format!(
             "destroy {}{}",
             phrase::who(ctx, what),
             if *regenerate {
@@ -293,9 +297,9 @@ fn permanents(ctx: &Ctx, effect: &Effect) -> Option<String> {
                 .as_ref()
                 .map_or_else(String::new, |until| format!(" {}", phrase::duration(until)))
         ),
-        Effect::Sacrifice { who, filter, count } => {
-            act(ctx, who, "sacrifice", &sacrificed(ctx, count, filter))
-        }
+        Effect::Sacrifice {
+            who, filter, count, ..
+        } => act(ctx, who, "sacrifice", &sacrificed(ctx, count, filter)),
         Effect::Counter { what } => format!("counter {}", phrase::who(ctx, what)),
         Effect::Tap { what, .. } => format!("tap {}", phrase::who(ctx, what)),
         Effect::Untap { what } => format!("untap {}", phrase::who(ctx, what)),

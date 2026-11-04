@@ -1,0 +1,26 @@
+{
+  "oracle_id": "e5d896f0-78ed-4374-bca0-9b1a70cab86c",
+  "name": "Fatal Attraction",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fatal Attraction",
+      "oracle_fingerprint": "f66711e14bd2bd6cfcaa9de548231637",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "DealDamage": { "to": "Attached", "amount": 2 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [{ "DealDamage": { "to": "Attached", "amount": 4 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

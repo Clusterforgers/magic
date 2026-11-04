@@ -1,0 +1,46 @@
+{
+  "oracle_id": "e45a1c99-a020-49ab-8971-35c6bcd096c8",
+  "name": "Pride of Conquerors",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pride of Conquerors",
+      "oracle_fingerprint": "ad139234ac88bf3f092025496307ac38",
+      "abilities": [
+        { "Keyword": "Ascend" },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": {
+                          "When": {
+                            "condition": { "CitysBlessing": "You" },
+                            "then": 2,
+                            "otherwise": 1
+                          }
+                        },
+                        "toughness": {
+                          "When": {
+                            "condition": { "CitysBlessing": "You" },
+                            "then": 2,
+                            "otherwise": 1
+                          }
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

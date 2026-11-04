@@ -1,0 +1,49 @@
+{
+  "oracle_id": "ab9e2045-860a-40ab-bec1-0dffced003ef",
+  "name": "Devils' Playground",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Devils' Playground",
+      "oracle_fingerprint": "0e24e81bdff42cb26bccaacfe59cb930",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Devil",
+                      "colors": ["Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Devil"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [
+                        {
+                          "Triggered": {
+                            "when": {
+                              "ZoneChange": {
+                                "what": ["This"],
+                                "from": "Battlefield",
+                                "to": "Graveyard"
+                              }
+                            },
+                            "targets": [{ "what": "AnyTarget" }],
+                            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }]
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "count": 4
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

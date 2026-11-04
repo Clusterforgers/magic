@@ -50,6 +50,7 @@ impl KeywordRules for PartnerWith {
                         Effect::Move {
                             what: Ref::Bound("partner".into()),
                             to: Destination::Hand,
+                            bind: None,
                         },
                     ],
                 },

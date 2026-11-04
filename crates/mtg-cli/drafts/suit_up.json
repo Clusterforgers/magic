@@ -1,0 +1,38 @@
+{
+  "oracle_id": "29bbbbfe-77cb-411f-9c1b-f7e4724685c6",
+  "name": "Suit Up",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Suit Up",
+      "oracle_fingerprint": "70030c826d92585907c14f3f1b294ae8",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Creature" }, { "Subtype": "Vehicle" }] }]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "SetPT": { "power": 4, "toughness": 5 } },
+                    { "AddType": "Artifact" },
+                    { "AddType": "Creature" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

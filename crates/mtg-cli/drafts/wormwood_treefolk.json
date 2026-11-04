@@ -1,0 +1,43 @@
+{
+  "oracle_id": "2a014ef1-0450-4485-8a8c-8210a985be4c",
+  "name": "Wormwood Treefolk",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wormwood Treefolk",
+      "oracle_fingerprint": "d6d07e955d6f963e79603b565b8d3cb1",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{G}{G}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddKeyword": { "Landwalk": [{ "Subtype": "Forest" }] } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "DealDamage": { "to": "You", "amount": 2 } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{B}{B}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddKeyword": { "Landwalk": [{ "Subtype": "Swamp" }] } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "DealDamage": { "to": "You", "amount": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

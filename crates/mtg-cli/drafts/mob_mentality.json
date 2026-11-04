@@ -1,0 +1,64 @@
+{
+  "oracle_id": "90e8fb2c-6473-42c3-92f4-f46a744920fa",
+  "name": "Mob Mentality",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mob Mentality",
+      "oracle_fingerprint": "62f6094fa06714d9c117d481627e657b",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        { "Static": { "affected": "Attached", "mods": [{ "AddKeyword": "Trample" }] } },
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+            },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "Type": "Creature" },
+                    { "ControlledBy": "You" },
+                    "Attacking",
+                    { "Not": { "Subtype": "Wall" } }
+                  ]
+                },
+                "op": "Eq",
+                "right": {
+                  "Count": [
+                    { "Type": "Creature" },
+                    { "ControlledBy": "You" },
+                    { "Not": { "Subtype": "Wall" } }
+                  ]
+                }
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Attached",
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": {
+                          "Count": [
+                            { "Type": "Creature" },
+                            { "ControlledBy": "You" },
+                            { "Not": { "Subtype": "Wall" } }
+                          ]
+                        },
+                        "toughness": 0
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

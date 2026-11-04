@@ -1,0 +1,52 @@
+{
+  "oracle_id": "c238ef51-4b46-43d5-a70b-40270a96a1fd",
+  "name": "Hellion Crucible",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hellion Crucible",
+      "oracle_fingerprint": "465819153ce9bc4322bae0e14ad8925d",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{R}" }, "Tap"],
+            "effects": [{ "PutCounters": { "on": "This", "counter": { "Other": "pressure" } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{1}{R}" },
+              "Tap",
+              { "RemoveCounters": { "counter": { "Other": "pressure" }, "count": 2 } },
+              "SacrificeSelf"
+            ],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Hellion",
+                      "colors": ["Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Hellion"],
+                      "power": 4,
+                      "toughness": 4,
+                      "abilities": [{ "Keyword": "Haste" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

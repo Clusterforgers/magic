@@ -1,0 +1,68 @@
+{
+  "oracle_id": "5a7b89a6-d42d-4fd4-8754-d9c3e3df2118",
+  "name": "Battle of Frost and Fire",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Battle of Frost and Fire",
+      "oracle_fingerprint": "ea3e20258d624dcdd8b8bda1d66aa95e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": {
+                    "Each": [
+                      {
+                        "AnyOf": [
+                          {
+                            "Not": {
+                              "AnyOf": [
+                                { "Not": { "Type": "Creature" } },
+                                { "Not": { "Not": { "Subtype": "Giant" } } }
+                              ]
+                            }
+                          },
+                          { "Type": "Planeswalker" }
+                        ]
+                      }
+                    ]
+                  },
+                  "amount": 4
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "effects": [{ "Scry": { "count": 3 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "SpellCast": {
+                      "what": [{ "Compare": { "stat": "ManaValue", "op": "Ge", "to": 5 } }],
+                      "by": "You"
+                    }
+                  },
+                  "once": false,
+                  "this_turn": true,
+                  "effects": [{ "Draw": { "count": 2 } }, { "Discard": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

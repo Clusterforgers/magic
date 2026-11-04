@@ -1012,6 +1012,7 @@ fn verb_phrase(effect: &Effect) -> Option<String> {
         Effect::Mill {
             who: Ref::You,
             count: Amount::Fixed(n),
+            ..
         } => format!("mill {}", cards(*n)),
         Effect::Scry {
             who: Ref::You,

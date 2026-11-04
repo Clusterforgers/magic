@@ -1,0 +1,37 @@
+{
+  "oracle_id": "fab8d954-807b-426f-8057-99a5d2fec618",
+  "name": "Fell Horseman // Deathly Ride",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fell Horseman",
+      "oracle_fingerprint": "f8011a6fe581e87c2c8ed489c9ee27f4",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [{ "Move": { "what": "This", "to": { "Library": { "place": "Bottom" } } } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Deathly Ride",
+      "oracle_fingerprint": "f30034a9f8300e6aa97ee2798b960e5f",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "oracle_id": "ae0a1d9c-19cb-42ee-97c3-464e38e84615",
+  "name": "Twilight's Call",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Twilight's Call",
+      "oracle_fingerprint": "6e2efb56a186d3370b5d09479da5c23f",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Each": [{ "Type": "Creature" }, { "In": "Graveyard" }] },
+                  "to": { "Battlefield": {} }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

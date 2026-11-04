@@ -48,6 +48,7 @@ pub fn w14a_keep_one_text(effect: &Effect) -> Option<String> {
             who: Ref::Bound(sacrificer),
             filter: Selector(filter),
             count: Amount::Count(Selector(counted)),
+            ..
         },
     ] = effects.as_slice()
     else {
@@ -99,6 +100,7 @@ pub fn w14a_keep_one(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
                 who: player,
                 filter: Selector(rest.to_vec()),
                 count: Amount::Count(Selector(rest.to_vec())),
+                bind: None,
             },
         ],
     }])

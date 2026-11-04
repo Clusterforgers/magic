@@ -1,0 +1,40 @@
+{
+  "oracle_id": "2cee861f-d28c-47e6-baee-2da9b7fa89d8",
+  "name": "Inner Demon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Inner Demon",
+      "oracle_fingerprint": "5283f6f31e3f6cf9e1c416fc8755cdbd",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "ModifyPT": { "power": 2, "toughness": 2 } },
+              { "AddKeyword": "Flying" },
+              { "AddSubtype": "Demon" }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [{ "Type": "Creature" }, { "Not": { "Subtype": "Demon" } }]
+                  },
+                  "mods": [{ "ModifyPT": { "power": -2, "toughness": -2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

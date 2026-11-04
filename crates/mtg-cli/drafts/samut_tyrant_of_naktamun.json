@@ -1,0 +1,25 @@
+{
+  "oracle_id": "a275f7ac-7dae-4422-875a-f34f24b6f28a",
+  "name": "Samut, Tyrant of Naktamun",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Samut, Tyrant of Naktamun",
+      "oracle_fingerprint": "7c8b554e4753d82b10b03cff4c6b5551",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                { "ControlledBy": "You" },
+                { "In": "Stack" }
+              ]
+            },
+            "mods": [{ "AddKeyword": "SplitSecond" }]
+          }
+        }
+      ]
+    }
+  ]
+}

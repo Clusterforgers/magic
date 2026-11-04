@@ -1,0 +1,44 @@
+{
+  "oracle_id": "22640b75-8db6-4264-a4aa-9174c159a228",
+  "name": "Stampede Surfer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stampede Surfer",
+      "oracle_fingerprint": "0b508d3302b64654c0135f1f050692fb",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "Opponents",
+                  "as": "each",
+                  "effects": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Boar",
+                            "colors": ["Green"],
+                            "types": ["Creature"],
+                            "subtypes": ["Boar"],
+                            "power": 2,
+                            "toughness": 2
+                          }
+                        },
+                        "tapped": true
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

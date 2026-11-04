@@ -21,10 +21,12 @@ pub(super) fn text(effects: &[Effect]) -> Option<(String, usize)> {
         Effect::Move {
             what: Ref::This,
             to: first,
+            ..
         },
         Effect::Move {
             what: Ref::Each(group),
             to: second,
+            ..
         },
         ..,
     ] = effects

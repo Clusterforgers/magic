@@ -1,0 +1,36 @@
+{
+  "oracle_id": "f9516b60-36dd-4f8a-bebb-ac1bc0961f07",
+  "name": "Candlekeep Sage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Candlekeep Sage",
+      "oracle_fingerprint": "55de6c5578bc6e6f7f5fa3c37977e958",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, "Commander", { "OwnedBy": "You" }] },
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Triggered": {
+                    "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                    "effects": [{ "Draw": {} }]
+                  }
+                }
+              },
+              {
+                "GrantAbility": {
+                  "Triggered": {
+                    "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield" } },
+                    "effects": [{ "Draw": {} }]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "oracle_id": "c1c5f9da-1396-4406-b803-b64f66b8e49d",
+  "name": "Ooze Spill",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ooze Spill",
+      "oracle_fingerprint": "b80ed889218e4ffa8edf887159be544a",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [
+              { "Counter": { "what": { "Target": 0 } } },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Mutagen",
+                      "types": ["Artifact"],
+                      "subtypes": ["Mutagen"],
+                      "abilities": [
+                        {
+                          "Activated": {
+                            "cost": [{ "Mana": "{1}" }, "Tap", "SacrificeSelf"],
+                            "timing": "Sorcery",
+                            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                            "effects": [
+                              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

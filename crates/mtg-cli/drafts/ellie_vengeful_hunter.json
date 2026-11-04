@@ -1,0 +1,33 @@
+{
+  "oracle_id": "e619cb66-8c0d-408a-829c-6f02bf25fd0f",
+  "name": "Ellie, Vengeful Hunter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ellie, Vengeful Hunter",
+      "oracle_fingerprint": "e245d5910d46c3346da3ececfd362c3b",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              { "PayLife": 2 },
+              { "Sacrifice": { "filter": [{ "Type": "Creature" }, "Other"] } }
+            ],
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 2 } },
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddKeyword": "Indestructible" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "PartnerGroup": "Survivors" } }
+      ]
+    }
+  ]
+}

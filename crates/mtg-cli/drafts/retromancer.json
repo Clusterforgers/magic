@@ -1,0 +1,19 @@
+{
+  "oracle_id": "2c34949d-0765-455d-9ef4-81bc162b48d9",
+  "name": "Retromancer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Retromancer",
+      "oracle_fingerprint": "5bd320bb81ca947ee94d7a36ba9a3f2e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "BecomesTarget": { "what": ["This"] } },
+            "effects": [{ "DealDamage": { "to": "You", "amount": 3 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

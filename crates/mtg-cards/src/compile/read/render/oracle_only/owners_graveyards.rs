@@ -22,6 +22,7 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
                     transformed: false,
                     counters,
                 },
+            ..
         },
     ] = effects.as_slice()
     else {

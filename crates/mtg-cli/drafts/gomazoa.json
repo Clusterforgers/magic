@@ -1,0 +1,44 @@
+{
+  "oracle_id": "0c82ae16-f995-4ac3-adb4-a5cc93a6e6f2",
+  "name": "Gomazoa",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gomazoa",
+      "oracle_fingerprint": "90ac0ec51dbcd3c53abb6c947bea04c4",
+      "abilities": [
+        { "Keyword": "Defender" },
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      {
+                        "AnyOf": [
+                          "This",
+                          {
+                            "Not": {
+                              "AnyOf": [
+                                { "Not": { "Type": "Creature" } },
+                                { "Not": { "BlockedBy": "This" } }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "to": { "Library": { "place": "Top" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

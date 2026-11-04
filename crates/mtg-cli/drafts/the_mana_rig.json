@@ -1,0 +1,47 @@
+{
+  "oracle_id": "58678469-77e5-4c1b-88d6-5e6642b0c8ca",
+  "name": "The Mana Rig",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Mana Rig",
+      "oracle_fingerprint": "e7b6091f1ec36ec1219a730ad085c9bf",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [{ "Compare": { "stat": "Colors", "op": "Ge", "to": 2 } }],
+                "by": "You"
+              }
+            },
+            "effects": [{ "CreateToken": { "token": { "Named": "powerstone" }, "tapped": true } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{X}{X}{X}" }, "Tap"],
+            "effects": [
+              { "LookAtTop": { "count": "X", "as": "top" } },
+              {
+                "Choose": {
+                  "from": { "Bound": "top" },
+                  "count": { "min": 0, "max": 2 },
+                  "as": "kept2",
+                  "rest_as": "rest3"
+                }
+              },
+              { "Move": { "what": { "Bound": "kept2" }, "to": "Hand" } },
+              {
+                "Move": {
+                  "what": { "Bound": "rest3" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

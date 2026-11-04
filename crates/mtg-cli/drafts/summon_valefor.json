@@ -1,0 +1,50 @@
+{
+  "oracle_id": "67d29e56-9ca8-46bc-9ee0-20184e867ce4",
+  "name": "Summon: Valefor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Summon: Valefor",
+      "oracle_fingerprint": "6ffe13168e755887739c01269d081102",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 0, "max": 1 } }
+            ],
+            "effects": [
+              { "Tap": { "what": { "Target": 0 } } },
+              { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "stun" } } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 0, "max": 1 } }
+            ],
+            "effects": [
+              { "Tap": { "what": { "Target": 0 } } },
+              { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "stun" } } }
+            ]
+          }
+        },
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 4 } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 0, "max": 1 } }
+            ],
+            "effects": [
+              { "Tap": { "what": { "Target": 0 } } },
+              { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "stun" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

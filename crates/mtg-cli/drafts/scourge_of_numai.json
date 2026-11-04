@@ -1,0 +1,32 @@
+{
+  "oracle_id": "540d1878-7afe-48a5-8b40-3dd1b06a024a",
+  "name": "Scourge of Numai",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Scourge of Numai",
+      "oracle_fingerprint": "8b31395c85bd755bcf2636ef03e55979",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "Subtype": "Ogre" }, { "ControlledBy": "You" }] },
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [{ "LoseLife": { "amount": 2 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

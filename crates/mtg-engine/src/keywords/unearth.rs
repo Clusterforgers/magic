@@ -64,6 +64,7 @@ fn activation(cost: &Cost) -> Ability {
                     transformed: false,
                     counters: Vec::new(),
                 },
+                bind: None,
             },
             // Only the permanent that arrived is in play: a card that was moved away in response stays where it is.
             Effect::If {

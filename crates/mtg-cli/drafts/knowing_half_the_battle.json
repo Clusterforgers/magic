@@ -1,0 +1,27 @@
+{
+  "oracle_id": "34f3b09e-b536-444d-a9f8-c0565ee84cba",
+  "name": "Knowing // Half the Battle",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Knowing",
+      "oracle_fingerprint": "6ea8f033e803a4e83921c0924330565f",
+      "abilities": [{ "Spell": { "effects": [{ "Draw": { "count": 3 } }] } }]
+    },
+    {
+      "name": "Half the Battle",
+      "oracle_fingerprint": "bb5b7570f6f2fb1e8fdfe21f0faf5776",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Search": { "filter": [{ "Type": "Battle" }], "reveal": true, "as": "found" } },
+              { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

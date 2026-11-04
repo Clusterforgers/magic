@@ -1,0 +1,57 @@
+{
+  "oracle_id": "4ed9bccf-c655-426e-8192-65beab830fcd",
+  "name": "Skirk Ridge Exhumer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Skirk Ridge Exhumer",
+      "oracle_fingerprint": "990b5e194dfb9525683e28667da0d7e8",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{B}" }, "Tap", { "Discard": {} }],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Festering Goblin",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Zombie", "Goblin"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [
+                        {
+                          "Triggered": {
+                            "when": {
+                              "ZoneChange": {
+                                "what": ["This"],
+                                "from": "Battlefield",
+                                "to": "Graveyard"
+                              }
+                            },
+                            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                            "effects": [
+                              {
+                                "Continuous": {
+                                  "affected": { "Target": 0 },
+                                  "mods": [{ "ModifyPT": { "power": -1, "toughness": -1 } }],
+                                  "duration": "UntilEndOfTurn"
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

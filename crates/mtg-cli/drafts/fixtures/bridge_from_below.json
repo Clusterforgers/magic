@@ -1,0 +1,158 @@
+{
+  "object": "card",
+  "id": "3faaa657-8b02-41a9-8a99-31a223d2caa5",
+  "oracle_id": "0f071f64-b69b-4fa0-999c-5028429e3cfb",
+  "multiverse_ids": [
+    456683
+  ],
+  "mtgo_id": 70247,
+  "tcgplayer_id": 180828,
+  "cardmarket_id": 366865,
+  "name": "Bridge from Below",
+  "lang": "en",
+  "released_at": "2018-12-07",
+  "uri": "https://api.scryfall.com/cards/3faaa657-8b02-41a9-8a99-31a223d2caa5",
+  "scryfall_uri": "https://scryfall.com/card/uma/87/bridge-from-below?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T09:10:27Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/3/f/3faaa657-8b02-41a9-8a99-31a223d2caa5.jpg?1783933827",
+    "normal": "https://cards.scryfall.io/normal/front/3/f/3faaa657-8b02-41a9-8a99-31a223d2caa5.jpg?1783933827",
+    "large": "https://cards.scryfall.io/large/front/3/f/3faaa657-8b02-41a9-8a99-31a223d2caa5.jpg?1783933827",
+    "png": "https://cards.scryfall.io/png/front/3/f/3faaa657-8b02-41a9-8a99-31a223d2caa5.png?1783933827",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/3/f/3faaa657-8b02-41a9-8a99-31a223d2caa5.jpg?1783933827",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/3/f/3faaa657-8b02-41a9-8a99-31a223d2caa5.jpg?1783933827",
+    "thumb": "https://cards.scryfall.io/thumb/front/3/f/3faaa657-8b02-41a9-8a99-31a223d2caa5.webp?1783933827",
+    "grid": "https://cards.scryfall.io/grid/front/3/f/3faaa657-8b02-41a9-8a99-31a223d2caa5.webp?1783933827",
+    "display": "https://cards.scryfall.io/display/front/3/f/3faaa657-8b02-41a9-8a99-31a223d2caa5.webp?1783933827",
+    "art": "https://cards.scryfall.io/art/front/3/f/3faaa657-8b02-41a9-8a99-31a223d2caa5.webp?1783933827",
+    "crop": "https://cards.scryfall.io/crop/front/3/f/3faaa657-8b02-41a9-8a99-31a223d2caa5.webp?1783933827",
+    "jpeg": "https://cards.scryfall.io/normal/front/3/f/3faaa657-8b02-41a9-8a99-31a223d2caa5.jpg?1783933827"
+  },
+  "mana_cost": "{B}{B}{B}",
+  "cmc": 3.0,
+  "type_line": "Enchantment",
+  "oracle_text": "Whenever a nontoken creature is put into your graveyard from the battlefield, if this card is in your graveyard, create a 2/2 black Zombie creature token.\nWhen a creature is put into an opponent's graveyard from the battlefield, if this card is in your graveyard, exile this card.",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "2d8bceff-81c3-43b9-ac0a-4e7157373e41",
+      "component": "combo_piece",
+      "name": "Corpseweaver Prodigy",
+      "type_line": "Creature — Treefolk Warlock",
+      "uri": "https://api.scryfall.com/cards/2d8bceff-81c3-43b9-ac0a-4e7157373e41"
+    },
+    {
+      "object": "related_card",
+      "id": "3faaa657-8b02-41a9-8a99-31a223d2caa5",
+      "component": "combo_piece",
+      "name": "Bridge from Below",
+      "type_line": "Enchantment",
+      "uri": "https://api.scryfall.com/cards/3faaa657-8b02-41a9-8a99-31a223d2caa5"
+    },
+    {
+      "object": "related_card",
+      "id": "096e8ff7-3cb7-4ef9-a480-76d664924cff",
+      "component": "token",
+      "name": "Zombie",
+      "type_line": "Token Creature — Zombie",
+      "uri": "https://api.scryfall.com/cards/096e8ff7-3cb7-4ef9-a480-76d664924cff"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "banned",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "2ec77b94-6d47-4891-a480-5d0b4e5c9372",
+  "set": "uma",
+  "set_name": "Ultimate Masters",
+  "set_type": "masters",
+  "set_uri": "https://api.scryfall.com/sets/2ec77b94-6d47-4891-a480-5d0b4e5c9372",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Auma&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/uma?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/3faaa657-8b02-41a9-8a99-31a223d2caa5/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A0f071f64-b69b-4fa0-999c-5028429e3cfb&unique=prints",
+  "collector_number": "87",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Daarken",
+  "artist_ids": [
+    "e607a0d4-fc12-4c01-9e3f-501f5269b9cb"
+  ],
+  "illustration_id": "a802906b-7b5b-404e-add9-c3055f5a948c",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 16256,
+  "penny_rank": 909,
+  "prices": {
+    "usd": "0.79",
+    "usd_foil": "0.69",
+    "usd_etched": null,
+    "eur": "0.60",
+    "eur_foil": "1.46",
+    "tix": "0.35"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=456683&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DBridge%2Bfrom%2BBelow",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DBridge%2Bfrom%2BBelow",
+    "edhrec": "https://edhrec.com/route/?cc=Bridge+from+Below"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F180828%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=366865&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/70247?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

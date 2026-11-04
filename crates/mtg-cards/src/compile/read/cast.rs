@@ -124,6 +124,7 @@ fn bottom_in_a_random_order() -> Effect {
             place: Place::Bottom,
             order: Some(Order::Random),
         },
+        bind: None,
     }
 }
 

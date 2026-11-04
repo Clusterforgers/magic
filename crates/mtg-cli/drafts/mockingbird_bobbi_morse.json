@@ -1,0 +1,19 @@
+{
+  "oracle_id": "d34affa9-3629-49e1-b1e4-4742aff6eafc",
+  "name": "Mockingbird, Bobbi Morse",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mockingbird, Bobbi Morse",
+      "oracle_fingerprint": "bdfb0ae2d0f2fab5171d64cff148578b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Batch": { "DealsDamage": { "source": [], "to": "This" } } },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

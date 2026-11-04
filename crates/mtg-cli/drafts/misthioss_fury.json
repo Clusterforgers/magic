@@ -1,0 +1,35 @@
+{
+  "oracle_id": "e99c088e-1326-4844-b932-fb51802656f5",
+  "name": "Misthios's Fury",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Misthios's Fury",
+      "oracle_fingerprint": "31a8b08c8f6829cae66e5b41c8fca4b9",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 3 } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "Subtype": "Equipment" }, { "ControlledBy": "You" }] },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    { "DealDamage": { "to": { "ControllerOf": { "Target": 0 } }, "amount": 2 } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

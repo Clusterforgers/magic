@@ -1,0 +1,34 @@
+{
+  "oracle_id": "5182de2d-aceb-450e-bd20-8bc7db124334",
+  "name": "Mary Read and Anne Bonny",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mary Read and Anne Bonny",
+      "oracle_fingerprint": "54959e83161a50d601040f238be570af",
+      "abilities": [
+        { "Keyword": "Haste" },
+        { "Activated": { "cost": ["Tap"], "effects": [{ "Draw": {} }, { "Discard": {} }] } },
+        {
+          "Triggered": {
+            "when": {
+              "Discarded": {
+                "what": [
+                  {
+                    "AnyOf": [
+                      { "Subtype": "Island" },
+                      { "Subtype": "Pirate" },
+                      { "Subtype": "Vehicle" }
+                    ]
+                  }
+                ],
+                "by": "You"
+              }
+            },
+            "effects": [{ "CreateToken": { "token": { "Named": "treasure" }, "tapped": true } }]
+          }
+        }
+      ]
+    }
+  ]
+}

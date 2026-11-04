@@ -1,0 +1,46 @@
+{
+  "oracle_id": "7f425406-2746-45a1-86bf-f9645015ffc2",
+  "name": "Nature's Chosen",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nature's Chosen",
+      "oracle_fingerprint": "a33452f4ef59b82543a00d2f3a0d46eb",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+        {
+          "Activated": {
+            "cost": "{0}",
+            "condition": "YourTurn",
+            "limit": "OncePerTurn",
+            "effects": [{ "Untap": { "what": "Attached" } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              {
+                "TapPermanents": {
+                  "filter": [{ "Type": "Creature" }, { "Is": "Attached" }, { "Color": "White" }]
+                }
+              }
+            ],
+            "limit": "OncePerTurn",
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    {
+                      "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }, { "Type": "Land" }]
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Untap": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

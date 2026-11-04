@@ -1,0 +1,33 @@
+{
+  "oracle_id": "bf9b24e1-60d4-4739-808a-535336e191c2",
+  "name": "Blistercoil Weird",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Blistercoil Weird",
+      "oracle_fingerprint": "0aa68a47034f824d10369a543961d0a2",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                "by": "You"
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Untap": { "what": "This" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

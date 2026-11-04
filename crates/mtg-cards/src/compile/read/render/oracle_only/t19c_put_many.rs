@@ -54,6 +54,7 @@ fn many_from_hand(effects: &[Effect]) -> Option<(String, Selector, Bounds)> {
                         counters,
                         ..
                     },
+                ..
             },
         ] = pair
         else {

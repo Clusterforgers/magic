@@ -1,0 +1,139 @@
+{
+  "object": "card",
+  "id": "5cd3287d-e4d8-4670-a2dd-b683055ae4b9",
+  "oracle_id": "264fafb7-3bd3-4bf1-81b2-2e436c9ca8d0",
+  "multiverse_ids": [
+    489173
+  ],
+  "mtgo_id": 81759,
+  "arena_id": 72109,
+  "tcgplayer_id": 216524,
+  "cardmarket_id": 474164,
+  "name": "Stone Haven Pilgrim",
+  "lang": "en",
+  "released_at": "2020-07-17",
+  "uri": "https://api.scryfall.com/cards/5cd3287d-e4d8-4670-a2dd-b683055ae4b9",
+  "scryfall_uri": "https://scryfall.com/card/jmp/6/stone-haven-pilgrim?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T08:15:08Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/5/c/5cd3287d-e4d8-4670-a2dd-b683055ae4b9.jpg?1783930508",
+    "normal": "https://cards.scryfall.io/normal/front/5/c/5cd3287d-e4d8-4670-a2dd-b683055ae4b9.jpg?1783930508",
+    "large": "https://cards.scryfall.io/large/front/5/c/5cd3287d-e4d8-4670-a2dd-b683055ae4b9.jpg?1783930508",
+    "png": "https://cards.scryfall.io/png/front/5/c/5cd3287d-e4d8-4670-a2dd-b683055ae4b9.png?1783930508",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/5/c/5cd3287d-e4d8-4670-a2dd-b683055ae4b9.jpg?1783930508",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/5/c/5cd3287d-e4d8-4670-a2dd-b683055ae4b9.jpg?1783930508",
+    "thumb": "https://cards.scryfall.io/thumb/front/5/c/5cd3287d-e4d8-4670-a2dd-b683055ae4b9.webp?1783930508",
+    "grid": "https://cards.scryfall.io/grid/front/5/c/5cd3287d-e4d8-4670-a2dd-b683055ae4b9.webp?1783930508",
+    "display": "https://cards.scryfall.io/display/front/5/c/5cd3287d-e4d8-4670-a2dd-b683055ae4b9.webp?1783930508",
+    "art": "https://cards.scryfall.io/art/front/5/c/5cd3287d-e4d8-4670-a2dd-b683055ae4b9.webp?1783930508",
+    "crop": "https://cards.scryfall.io/crop/front/5/c/5cd3287d-e4d8-4670-a2dd-b683055ae4b9.webp?1783930508",
+    "jpeg": "https://cards.scryfall.io/normal/front/5/c/5cd3287d-e4d8-4670-a2dd-b683055ae4b9.jpg?1783930508"
+  },
+  "mana_cost": "{1}{W}",
+  "cmc": 2.0,
+  "type_line": "Creature — Kor Cleric",
+  "oracle_text": "Whenever this creature attacks, if you control an artifact or enchantment, this creature gets +1/+1 and gains lifelink until end of turn.",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "arena",
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "0f6ccf25-a627-4263-86df-5757137f1696",
+  "set": "jmp",
+  "set_name": "Jumpstart",
+  "set_type": "draft_innovation",
+  "set_uri": "https://api.scryfall.com/sets/0f6ccf25-a627-4263-86df-5757137f1696",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ajmp&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/jmp?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/5cd3287d-e4d8-4670-a2dd-b683055ae4b9/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A264fafb7-3bd3-4bf1-81b2-2e436c9ca8d0&unique=prints",
+  "collector_number": "6",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "The persistence to overcome obstacles is the most esteemed of kor virtues.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Cristi Balanescu",
+  "artist_ids": [
+    "c09ede88-a1b5-4a18-9895-dc8a965d28a5"
+  ],
+  "illustration_id": "06d7fd0b-b474-4427-b70c-536a448b605f",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 29315,
+  "preview": {
+    "source": "Jamie Rigatti",
+    "source_uri": "https://twitter.com/jamietopples/status/1274085142991077384",
+    "previewed_at": "2020-06-19"
+  },
+  "prices": {
+    "usd": "0.17",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.07",
+    "eur_foil": null,
+    "tix": "0.04"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=489173&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DStone%2BHaven%2BPilgrim",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DStone%2BHaven%2BPilgrim",
+    "edhrec": "https://edhrec.com/route/?cc=Stone+Haven+Pilgrim"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F216524%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=474164&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/81759?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

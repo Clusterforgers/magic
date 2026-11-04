@@ -1,0 +1,51 @@
+{
+  "oracle_id": "143714b8-30ae-42c2-84d9-e58aed7dff5b",
+  "name": "Geistflame Reservoir",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Geistflame Reservoir",
+      "oracle_fingerprint": "94c25008d97403a3df3ec7a2fc6c58a6",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                "by": "You"
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "charge" } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{1}{R}" },
+              "Tap",
+              { "RemoveCounters": { "counter": "charge", "count": "X" } }
+            ],
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": "X" } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{R}" }, "Tap"],
+            "effects": [
+              { "ExileTop": { "as": "exiled" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": { "from": "Exile", "only": { "Bound": "exiled" }, "play": true }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

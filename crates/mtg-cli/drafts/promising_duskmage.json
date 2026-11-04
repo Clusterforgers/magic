@@ -9,8 +9,13 @@
       "abilities": [
         {
           "Triggered": {
-            "when": { "ZoneChange": { "what": ["This"], "to": "Graveyard" } },
-            "if": { "Matches": { "subject": "This", "selector": [{ "HasCounter": "+1/+1" }] } },
+            "when": {
+              "ZoneChange": {
+                "what": ["This", { "HasCounter": "+1/+1" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
             "effects": [{ "Draw": {} }]
           }
         }

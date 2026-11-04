@@ -1,0 +1,32 @@
+{
+  "oracle_id": "d578ef54-6a6b-4839-a059-261728fdaef1",
+  "name": "Fate Foretold",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fate Foretold",
+      "oracle_fingerprint": "71a755cc7160be9e1711003047ca28c1",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Draw": {} }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Is": "Attached" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [{ "Draw": { "who": { "ControllerOf": "Triggering" } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

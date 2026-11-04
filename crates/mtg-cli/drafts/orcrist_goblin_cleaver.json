@@ -1,0 +1,46 @@
+{
+  "oracle_id": "cc65821a-1893-4087-b461-35cf9fd26c71",
+  "name": "Orcrist, Goblin-cleaver",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Orcrist, Goblin-cleaver",
+      "oracle_fingerprint": "1fb360fb322ec1995ee55c18dba54d43",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }, { "AddKeyword": "Trample" }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [{ "Type": "Creature" }, { "Is": "Attached" }],
+                "to": "EachPlayer",
+                "combat": true
+              }
+            },
+            "effects": [
+              { "ChooseValue": { "kind": "CreatureType", "as": "chosen" } },
+              {
+                "CreateToken": {
+                  "token": { "Named": "treasure" },
+                  "count": {
+                    "Count": [
+                      { "Type": "Creature" },
+                      { "ChosenAs": "chosen" },
+                      { "ControlledBy": "You" }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{3}" } }
+      ]
+    }
+  ]
+}

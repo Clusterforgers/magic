@@ -1,0 +1,37 @@
+{
+  "oracle_id": "02af53c1-83e6-447f-908b-2757c8aa445c",
+  "name": "Funeral Pyre",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Funeral Pyre",
+      "oracle_fingerprint": "514244a1d5f3aecacae426161c5144cb",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "In": "Graveyard" }] } }],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 } } },
+              {
+                "CreateToken": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "token": {
+                    "Custom": {
+                      "name": "Spirit",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Spirit"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

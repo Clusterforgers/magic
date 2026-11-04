@@ -212,7 +212,7 @@ fn a_card_returns_itself_at_the_end_step_for_the_life_gained(
     assert!(
         matches!(
             effects.as_slice(),
-            [Effect::Move { what: Ref::This, to: Destination::Battlefield { tapped: held, .. } }] if *held == tapped
+            [Effect::Move { what: Ref::This, to: Destination::Battlefield { tapped: held, .. }, .. }] if *held == tapped
         ),
         "{effects:?}"
     );
@@ -272,7 +272,8 @@ fn another_creature_that_dies_returns_as_the_card_in_the_graveyard(
             *moved,
             vec![Effect::Move {
                 what: Ref::Bound(bind.clone()),
-                to: Destination::Hand
+                to: Destination::Hand,
+                bind: None
             }]
         );
     } else {
@@ -280,7 +281,8 @@ fn another_creature_that_dies_returns_as_the_card_in_the_graveyard(
             effects,
             vec![Effect::Move {
                 what: the_dead_card(),
-                to: Destination::Hand
+                to: Destination::Hand,
+                bind: None
             }],
             "{text}"
         );

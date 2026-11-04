@@ -1,0 +1,19 @@
+{
+  "oracle_id": "16774611-c004-4383-b4e1-4a43a9b1f4aa",
+  "name": "Fatal Blow",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fatal Blow",
+      "oracle_fingerprint": "14af487737c501bf59226e99868ec6f2",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "DamagedThisTurn"] } }],
+            "effects": [{ "Destroy": { "what": { "Target": 0 }, "regenerate": false } }]
+          }
+        }
+      ]
+    }
+  ]
+}

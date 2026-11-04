@@ -1,0 +1,34 @@
+{
+  "oracle_id": "96d6a400-f1bc-40f8-91ef-1d3cb96926f1",
+  "name": "Wojek Halberdiers",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wojek Halberdiers",
+      "oracle_fingerprint": "c3134b838a3daf817936b609ca697554",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "if": {
+              "Compare": {
+                "left": { "Count": [{ "Type": "Creature" }, "Attacking", "Other"] },
+                "op": "Ge",
+                "right": 2
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddKeyword": "FirstStrike" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "oracle_id": "73af8406-4447-41b2-9cec-1b471759f09c",
+  "name": "Gutwrencher Oni",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gutwrencher Oni",
+      "oracle_fingerprint": "5bd0cb4b761219847adf8ce0fd26c045",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "Subtype": "Ogre" }, { "ControlledBy": "You" }] },
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [{ "Discard": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

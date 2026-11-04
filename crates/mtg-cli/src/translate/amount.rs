@@ -72,9 +72,13 @@ fn expression_amount(ctx: &Ctx, expression: &str) -> Tr<Value> {
     if let Some(rest) = expression.strip_prefix("Count$") {
         return count_amount(ctx, rest);
     }
+    if let Some(rest) = expression.strip_prefix("SVar$") {
+        let (name, steps) = rest.split_once('/').unwrap_or((rest, ""));
+        return apply_steps(ctx, amount(ctx, name)?, steps);
+    }
     let (base, steps) = expression.split_once('/').unwrap_or((expression, ""));
     if let Some(amount) = event_amount(ctx, base)? {
-        return apply_steps(amount, steps);
+        return apply_steps(ctx, amount, steps);
     }
     if let Some(rest) = expression.strip_prefix("Targeted$") {
         return targeted_amount(rest, &ctx.last_target()?);
@@ -147,15 +151,15 @@ fn targeted_amount(what: &str, of: &Value) -> Tr<Value> {
 /// The amount of a `Count$` expression: its base and the `/Plus.N`, `/Minus.N`, `/Twice` or `/Times.N` steps after it.
 fn count_amount(ctx: &Ctx, expression: &str) -> Tr<Value> {
     let (first, steps) = expression.split_once('/').unwrap_or((expression, ""));
-    apply_steps(count_base(ctx, first)?, steps)
+    apply_steps(ctx, count_base(ctx, first)?, steps)
 }
 
 /// The `/Plus.N`, `/Minus.N`, `/Twice` and `/Times.N` steps that follow the base of an expression.
-fn apply_steps(mut value: Value, steps: &str) -> Tr<Value> {
+fn apply_steps(ctx: &Ctx, mut value: Value, steps: &str) -> Tr<Value> {
     for step in steps.split('/').filter(|step| !step.is_empty()) {
         value = match step.split_once('.') {
-            Some(("Plus", n)) => sum(&value, parse_number(n)?),
-            Some(("Minus", n)) => sum(&value, -parse_number(n)?),
+            Some(("Plus", n)) => plus(ctx, &value, n, false)?,
+            Some(("Minus", n)) => plus(ctx, &value, n, true)?,
             Some(("Times", n)) => times(&value, parse_number(n)?),
             None if step == "Twice" => times(&value, 2),
             _ => return unmapped(format!("amount:Count/{}", head(step))),
@@ -166,6 +170,16 @@ fn apply_steps(mut value: Value, steps: &str) -> Tr<Value> {
 
 fn parse_number(text: &str) -> Tr<i32> {
     text.parse().or_else(|_| unmapped("amount:step-number"))
+}
+
+/// The amount plus (or minus) the step operand: a number, or the name of another part whose amount is added.
+fn plus(ctx: &Ctx, value: &Value, operand: &str, minus: bool) -> Tr<Value> {
+    if let Ok(n) = operand.parse::<i32>() {
+        return Ok(sum(value, if minus { -n } else { n }));
+    }
+    let other = amount(ctx, operand)?;
+    let other = if minus { times(&other, -1) } else { other };
+    Ok(json!({"Sum": [value, other]}))
 }
 
 fn sum(value: &Value, n: i32) -> Value {
@@ -195,12 +209,21 @@ fn count_base(ctx: &Ctx, base: &str) -> Tr<Value> {
         "CardToughness" => Ok(stat_of_this("Toughness")),
         "CardManaCost" => Ok(stat_of_this("ManaValue")),
         "YourLifeTotal" => Ok(json!({"Life": "You"})),
+        "LifeYouGainedThisTurn" => Ok(tallied("You", "LifeGainedTotal")),
+        "AttackersDeclared" => Ok(tallied("You", "Attackers")),
+        "YouDrewThisTurn" => Ok(tallied("You", "Drawn")),
+        "LifeOppsLostThisTurn" => Ok(tallied("Opponents", "LifeLost")),
         "OppLifeTotal" | "TargetedPlayerLife" => unmapped(format!("amount:Count${word}")),
         "TimesKicked" => Ok(json!("Kicks")),
         "PlayerCountOpponents" => Ok(json!({"Players": "Opponents"})),
         "PlayerCountPlayers" => Ok(json!({"Players": "EachPlayer"})),
+        other if other.starts_with("ThisTurnCast_") => this_turn_cast(ctx, other),
         other => counters_or_gap(ctx, other),
     }
+}
+
+fn tallied(who: &str, what: &str) -> Value {
+    json!({"Tallied": {"who": who, "what": what}})
 }
 
 fn stat_of_this(stat: &str) -> Value {
@@ -214,4 +237,11 @@ fn counters_or_gap(ctx: &Ctx, word: &str) -> Tr<Value> {
         return Ok(json!({"Counters": {"on": on, "counter": kind}}));
     }
     unmapped(format!("amount:Count${}", head(word)))
+}
+
+/// `ThisTurnCast_Card.YouCtrl`: the spells cast this turn, by any player, that the valid-string selects as they were cast.
+fn this_turn_cast(ctx: &Ctx, word: &str) -> Tr<Value> {
+    let valid = word.strip_prefix("ThisTurnCast_").unwrap_or_default();
+    let filter = selector_in(ctx, valid, None)?;
+    Ok(json!({"Tally": {"event": "SpellCast", "who": "EachPlayer", "filter": filter}}))
 }

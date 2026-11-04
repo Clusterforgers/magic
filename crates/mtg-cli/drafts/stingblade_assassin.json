@@ -1,0 +1,32 @@
+{
+  "oracle_id": "7938112a-3832-42b4-b123-27a42c06a290",
+  "name": "Stingblade Assassin",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stingblade Assassin",
+      "oracle_fingerprint": "fd346b042806cd3432755a900cb72a37",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    "DamagedThisTurn",
+                    { "ControlledBy": "Opponents" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

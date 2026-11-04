@@ -17,6 +17,7 @@ pub(super) fn all_text(effect: &Effect) -> Option<String> {
     let Effect::Move {
         what: Ref::Each(selector),
         to: Destination::Hand,
+        ..
     } = effect
     else {
         return None;
@@ -41,6 +42,7 @@ pub(super) fn one_text(choose: &Effect, moved: &Effect) -> Option<String> {
         Effect::Move {
             what: Ref::Bound(name),
             to: Destination::Hand,
+            ..
         },
     ) = (choose, moved)
     else {

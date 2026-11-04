@@ -1,0 +1,32 @@
+{
+  "oracle_id": "73648693-c67f-454b-83e2-1d1787437a2a",
+  "name": "Touch of Darkness",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Touch of Darkness",
+      "oracle_fingerprint": "a8e7c65c7bec08a2568a819cd61459da",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }] },
+                "bounds": { "min": 1, "max": { "Count": [{ "Type": "Creature" }] } }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetColors": ["Black"] }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

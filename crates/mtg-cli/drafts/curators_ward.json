@@ -1,0 +1,35 @@
+{
+  "oracle_id": "a89ad91e-2bc2-45f4-b32c-fb2b67a2019e",
+  "name": "Curator's Ward",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Curator's Ward",
+      "oracle_fingerprint": "2c7886cb1eba51c389d6fe6d5e4dd496",
+      "abilities": [
+        { "Keyword": { "Enchant": [] } },
+        { "Static": { "affected": "Attached", "mods": [{ "AddKeyword": "Hexproof" }] } },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "Is": "Attached" },
+                  {
+                    "AnyOf": [
+                      { "Supertype": "Legendary" },
+                      { "Type": "Artifact" },
+                      { "Subtype": "Saga" }
+                    ]
+                  }
+                ],
+                "from": "Battlefield"
+              }
+            },
+            "effects": [{ "Draw": { "count": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "oracle_id": "b74992b8-2857-403b-88cf-f2718873571a",
+  "name": "Tormentor's Trident",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tormentor's Trident",
+      "oracle_fingerprint": "fef4766dfad30fbf153f66dbced3a275",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 3, "toughness": 0 } }]
+          }
+        },
+        { "Keyword": { "Equip": "{3}" } },
+        { "Rule": { "rule": { "MustAttack": { "Each": [{ "Is": "Attached" }] } } } }
+      ]
+    }
+  ]
+}

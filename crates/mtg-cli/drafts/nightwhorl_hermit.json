@@ -1,0 +1,40 @@
+{
+  "oracle_id": "99007c40-1eb5-4c3a-9889-6d12417d8191",
+  "name": "Nightwhorl Hermit",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nightwhorl Hermit",
+      "oracle_fingerprint": "4d077c44b241eb765d5bdacf727c9ee9",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                "op": "Ge",
+                "right": 7
+              }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": ["CantBeBlocked"],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                "op": "Ge",
+                "right": 7
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

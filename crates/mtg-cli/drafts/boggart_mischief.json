@@ -1,0 +1,57 @@
+{
+  "oracle_id": "ac65ed8c-abe8-4044-9ce5-70b1370d0e19",
+  "name": "Boggart Mischief",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Boggart Mischief",
+      "oracle_fingerprint": "3e1e4a3e3cf130fafb1427cb3d5f580b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "Blight": 1 }],
+                  "paid": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Goblin",
+                            "colors": ["Black", "Red"],
+                            "types": ["Creature"],
+                            "subtypes": ["Goblin"],
+                            "power": 1,
+                            "toughness": 1
+                          }
+                        },
+                        "count": 2
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "Subtype": "Goblin" }, { "ControlledBy": "You" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              { "LoseLife": { "who": "Opponents", "amount": 1 } },
+              { "GainLife": { "amount": 1 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

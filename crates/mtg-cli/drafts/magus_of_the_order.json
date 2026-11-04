@@ -1,0 +1,33 @@
+{
+  "oracle_id": "ff922641-142a-4774-be3e-36a5183fce2b",
+  "name": "Magus of the Order",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Magus of the Order",
+      "oracle_fingerprint": "a34f37cd03f1ab8b9b61177edcc628ec",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{G}" },
+              "Tap",
+              "SacrificeSelf",
+              { "Sacrifice": { "filter": [{ "Type": "Creature" }, { "Color": "Green" }, "Other"] } }
+            ],
+            "effects": [
+              {
+                "Search": {
+                  "filter": [{ "Type": "Creature" }, { "Color": "Green" }],
+                  "as": "found"
+                }
+              },
+              { "Move": { "what": { "Bound": "found" }, "to": { "Battlefield": {} } } },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -408,6 +408,7 @@ fn w20a_effects(items: Vec<W20aTake>, before: usize) -> Vec<Effect> {
         effects.push(Effect::Move {
             what: Ref::Bound(bind),
             to: item.to,
+            bind: None,
         });
     }
     effects
@@ -473,6 +474,7 @@ pub fn w20a_look_pick(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     effects.push(Effect::Move {
         what: w20a_top(),
         to,
+        bind: None,
     });
     Some(effects)
 }
@@ -565,6 +567,7 @@ pub fn w20a_sequence(effects: &[Effect]) -> Option<(String, usize)> {
             Effect::Move {
                 what: Ref::Bound(moved),
                 to,
+                ..
             },
             after @ ..,
         ] = after
@@ -584,6 +587,7 @@ pub fn w20a_sequence(effects: &[Effect]) -> Option<(String, usize)> {
         Effect::Move {
             what: Ref::Bound(left),
             to,
+            ..
         },
         ..,
     ] = tail

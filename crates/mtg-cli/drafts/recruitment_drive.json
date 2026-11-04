@@ -1,0 +1,89 @@
+{
+  "oracle_id": "d37e37d7-ce66-42cb-862e-fc5c414cfeb6",
+  "name": "Recruitment Drive",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Recruitment Drive",
+      "oracle_fingerprint": "38f874758e14dec9f4a69d8cc1b6a845",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RollDice": {
+                  "sides": 20,
+                  "results": [
+                    {
+                      "from": 1,
+                      "to": 9,
+                      "effects": [
+                        {
+                          "CreateToken": {
+                            "token": {
+                              "Custom": {
+                                "name": "Soldier",
+                                "colors": ["White"],
+                                "types": ["Creature"],
+                                "subtypes": ["Soldier"],
+                                "power": 1,
+                                "toughness": 1
+                              }
+                            },
+                            "count": 2
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "from": 10,
+                      "to": 19,
+                      "effects": [
+                        {
+                          "CreateToken": {
+                            "token": {
+                              "Custom": {
+                                "name": "Knight",
+                                "colors": ["White"],
+                                "types": ["Creature"],
+                                "subtypes": ["Knight"],
+                                "power": 2,
+                                "toughness": 2
+                              }
+                            },
+                            "count": 2
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "from": 20,
+                      "to": 20,
+                      "effects": [
+                        {
+                          "CreateToken": {
+                            "token": {
+                              "Custom": {
+                                "name": "Knight",
+                                "colors": ["White"],
+                                "types": ["Creature"],
+                                "subtypes": ["Knight"],
+                                "power": 2,
+                                "toughness": 2
+                              }
+                            },
+                            "count": 3
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

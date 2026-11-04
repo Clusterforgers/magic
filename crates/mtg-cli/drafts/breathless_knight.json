@@ -1,0 +1,68 @@
+{
+  "oracle_id": "e15fb040-2e11-478e-87f1-55675d614f8e",
+  "name": "Breathless Knight",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Breathless Knight",
+      "oracle_fingerprint": "e88bafa90b4e9394339305fceec283dd",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Lifelink" },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                {
+                  "ZoneChange": {
+                    "what": [
+                      {
+                        "AnyOf": [
+                          {
+                            "Not": {
+                              "AnyOf": [
+                                { "Not": { "Type": "Creature" } },
+                                { "Not": { "ControlledBy": "You" } },
+                                { "Not": "Other" }
+                              ]
+                            }
+                          },
+                          "This"
+                        ]
+                      }
+                    ],
+                    "from": "Graveyard",
+                    "to": "Battlefield"
+                  }
+                },
+                {
+                  "ZoneChange": {
+                    "what": [
+                      {
+                        "AnyOf": [
+                          {
+                            "Not": {
+                              "AnyOf": [
+                                { "Not": { "Type": "Creature" } },
+                                { "Not": { "ControlledBy": "You" } },
+                                { "Not": "Other" }
+                              ]
+                            }
+                          },
+                          "This"
+                        ]
+                      },
+                      { "WasCast": { "by": "You", "from": "Graveyard" } }
+                    ],
+                    "to": "Battlefield"
+                  }
+                }
+              ]
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

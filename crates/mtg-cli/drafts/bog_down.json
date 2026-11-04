@@ -1,0 +1,29 @@
+{
+  "oracle_id": "8574f57a-768d-42a0-ac8c-cc0a1de181e0",
+  "name": "Bog Down",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bog Down",
+      "oracle_fingerprint": "c15bf5587b1b8d1cd1d29aebd3aa1f24",
+      "abilities": [
+        {
+          "Keyword": { "Kicker": [{ "Sacrifice": { "filter": [{ "Type": "Land" }], "count": 2 } }] }
+        },
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Discard": {
+                  "who": { "Target": 0 },
+                  "count": { "When": { "condition": "Kicked", "then": 3, "otherwise": 2 } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

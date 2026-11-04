@@ -1,0 +1,27 @@
+{
+  "oracle_id": "02a506bd-203f-421c-b72e-e2ba77e922aa",
+  "name": "Ruthless Sniper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ruthless Sniper",
+      "oracle_fingerprint": "82235fac9f8de1ca0ed5fe3851d588eb",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Discarded": { "by": "You" } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{1}",
+                  "paid": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "-1/-1" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

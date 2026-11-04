@@ -1,0 +1,62 @@
+{
+  "oracle_id": "661618a2-54c7-4136-beff-fff5ff7d84cb",
+  "name": "Necrosynthesis",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Necrosynthesis",
+      "oracle_fingerprint": "9e1846c519016ab5df29e960fd97c9b3",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Triggered": {
+                    "when": {
+                      "ZoneChange": {
+                        "what": [{ "Type": "Creature" }, "Other"],
+                        "from": "Battlefield",
+                        "to": "Graveyard"
+                      }
+                    },
+                    "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "Is": "Attached" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "LookAtTop": {
+                  "count": { "Stat": { "of": "Triggering", "stat": "Power" } },
+                  "as": "top"
+                }
+              },
+              { "Choose": { "from": { "Bound": "top" }, "as": "kept2", "rest_as": "rest3" } },
+              { "Move": { "what": { "Bound": "kept2" }, "to": "Hand" } },
+              {
+                "Move": {
+                  "what": { "Bound": "rest3" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

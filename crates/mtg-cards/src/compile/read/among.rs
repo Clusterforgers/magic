@@ -96,10 +96,12 @@ pub fn among(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         effects.push(Effect::Move {
             what: Ref::Each(selector),
             to,
+            bind: None,
         });
         effects.push(Effect::Move {
             what: top(),
             to: rest_destination(r)?,
+            bind: None,
         });
         return Some(effects);
     }
@@ -137,12 +139,14 @@ pub fn among(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     effects.push(Effect::Move {
         what: Ref::Bound(KEPT.to_owned()),
         to,
+        bind: None,
     });
     r.punct('.').then_some(())?;
     r.need("put the rest")?;
     effects.push(Effect::Move {
         what: top(),
         to: rest_destination(r)?,
+        bind: None,
     });
     Some(effects)
 }
@@ -198,10 +202,12 @@ pub fn sequence(effects: &[Effect]) -> Option<(String, usize)> {
             Effect::Move {
                 what: Ref::Each(selector),
                 to,
+                ..
             },
             Effect::Move {
                 what: Ref::Bound(left),
                 to: rest,
+                ..
             },
             ..,
         ] if left == TOP => {
@@ -234,10 +240,12 @@ pub fn sequence(effects: &[Effect]) -> Option<(String, usize)> {
                 Effect::Move {
                     what: Ref::Bound(moved),
                     to,
+                    ..
                 },
                 Effect::Move {
                     what: Ref::Bound(left),
                     to: rest,
+                    ..
                 },
                 ..,
             ] = kept

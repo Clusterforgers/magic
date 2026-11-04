@@ -1,0 +1,28 @@
+{
+  "oracle_id": "5aa66cb0-86b9-4e85-9a17-df78416d682d",
+  "name": "Restrain",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Restrain",
+      "oracle_fingerprint": "3853d8d800252c9cc1d249792700d1cd",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Attacking"] } }],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "source": [{ "Is": { "Target": 0 } }], "combat": true } },
+                  "by": "Prevent",
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

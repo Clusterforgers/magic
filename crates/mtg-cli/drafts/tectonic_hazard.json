@@ -1,0 +1,26 @@
+{
+  "oracle_id": "9097243a-39fa-4e18-8316-c0e57699c783",
+  "name": "Tectonic Hazard",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tectonic Hazard",
+      "oracle_fingerprint": "cd783d68bf4f9a4d2c8aa131cdb411b8",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] },
+                  "amount": 1
+                }
+              },
+              { "DealDamage": { "to": "Opponents", "amount": 1 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

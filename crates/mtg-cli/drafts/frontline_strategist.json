@@ -1,0 +1,33 @@
+{
+  "oracle_id": "6e202114-48f3-46d2-bc54-df766d149d9d",
+  "name": "Frontline Strategist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Frontline Strategist",
+      "oracle_fingerprint": "34bb3ceb18e1f0ba721272b07416361b",
+      "abilities": [
+        { "Keyword": { "Morph": "{W}" } },
+        {
+          "Triggered": {
+            "when": { "TurnedFaceUp": { "what": ["This"] } },
+            "effects": [
+              {
+                "Shield": {
+                  "when": {
+                    "Damage": {
+                      "source": [{ "Type": "Creature" }, { "Not": { "Subtype": "Soldier" } }],
+                      "combat": true
+                    }
+                  },
+                  "by": "Prevent",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

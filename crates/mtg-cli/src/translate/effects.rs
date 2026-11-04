@@ -5,6 +5,7 @@ use serde_json::{Value, json};
 use super::amount::amount;
 use super::condition::prefixed;
 use super::ctx::{Ctx, Tr, only, unmapped};
+use super::remember;
 use super::valid::{defined, subject};
 use super::{effects_effect, effects_loop, effects_obj, effects_zone, tokens};
 use crate::forge::script::Params;
@@ -86,8 +87,22 @@ fn api_of(params: &Params) -> Tr<&str> {
 }
 
 /// The effects of one line, without its sub-abilities.
+/// One line: its effects, and the latest target it declared as what `RememberTargets` leaves to remember when the API does not
+/// move it (a move names what it moved).
 fn line(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     let api = api_of(p)?;
+    if p.get("RememberTargets") != Some("True") || matches!(api, "ChangeZone" | "Destroy") {
+        return api_line(ctx, p, api);
+    }
+    if !p.has("ValidTgts") {
+        return unmapped("key:RememberTargets-without-targets");
+    }
+    let effects = api_line(ctx, &p.without(&["RememberTargets"]), api)?;
+    ctx.remembered = Some(ctx.last_target()?);
+    Ok(effects)
+}
+
+fn api_line(ctx: &mut Ctx, p: &Params, api: &str) -> Tr<Vec<Value>> {
     let one = |value: Tr<Value>| value.map(|value| vec![value]);
     if let Some(found) = super::effects_game::effects(ctx, p, api) {
         return found;
@@ -98,7 +113,7 @@ fn line(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         "GainLife" => one(life(ctx, p, "GainLife")),
         "LoseLife" => one(life(ctx, p, "LoseLife")),
         "Discard" => one(discard(ctx, p)),
-        "Mill" => one(count_verb(ctx, p, "Mill", "NumCards")),
+        "Mill" => one(mill(ctx, p)),
         "Scry" => one(count_verb(ctx, p, "Scry", "ScryNum")),
         "Surveil" => one(count_verb(ctx, p, "Surveil", "Amount")),
         "Proliferate" => one(proliferate(p)),
@@ -233,6 +248,16 @@ fn discard(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
         discard["as"] = json!(name);
     }
     Ok(json!({ "Discard": discard }))
+}
+
+/// `Mill`, naming the cards milled for `RememberMilled`.
+fn mill(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
+    let milled = remember::wanted(p, &["RememberMilled"]);
+    let mut effect = count_verb(ctx, &p.without(&["RememberMilled"]), "Mill", "NumCards")?;
+    if milled {
+        remember::bind_moved(ctx, &mut effect, "Mill", "milled");
+    }
+    Ok(effect)
 }
 
 /// A verb of a player and a count: mill, scry, surveil.

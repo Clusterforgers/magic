@@ -1,0 +1,159 @@
+{
+  "object": "card",
+  "id": "287bd99b-6539-4e54-9166-12d3e2c9b8de",
+  "oracle_id": "f7ee3935-4510-485a-a863-ac38dffa1908",
+  "multiverse_ids": [
+    201280
+  ],
+  "mtgo_id": 33766,
+  "mtgo_foil_id": 33767,
+  "name": "Guan Yu, Sainted Warrior",
+  "lang": "en",
+  "released_at": "2009-09-07",
+  "uri": "https://api.scryfall.com/cards/287bd99b-6539-4e54-9166-12d3e2c9b8de",
+  "scryfall_uri": "https://scryfall.com/card/me3/12/guan-yu-sainted-warrior?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T11:30:43Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/2/8/287bd99b-6539-4e54-9166-12d3e2c9b8de.jpg?1783942243",
+    "normal": "https://cards.scryfall.io/normal/front/2/8/287bd99b-6539-4e54-9166-12d3e2c9b8de.jpg?1783942243",
+    "large": "https://cards.scryfall.io/large/front/2/8/287bd99b-6539-4e54-9166-12d3e2c9b8de.jpg?1783942243",
+    "png": "https://cards.scryfall.io/png/front/2/8/287bd99b-6539-4e54-9166-12d3e2c9b8de.png?1783942243",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/2/8/287bd99b-6539-4e54-9166-12d3e2c9b8de.jpg?1783942243",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/2/8/287bd99b-6539-4e54-9166-12d3e2c9b8de.jpg?1783942243",
+    "thumb": "https://cards.scryfall.io/thumb/front/2/8/287bd99b-6539-4e54-9166-12d3e2c9b8de.webp?1783942243",
+    "grid": "https://cards.scryfall.io/grid/front/2/8/287bd99b-6539-4e54-9166-12d3e2c9b8de.webp?1783942243",
+    "display": "https://cards.scryfall.io/display/front/2/8/287bd99b-6539-4e54-9166-12d3e2c9b8de.webp?1783942243",
+    "art": "https://cards.scryfall.io/art/front/2/8/287bd99b-6539-4e54-9166-12d3e2c9b8de.webp?1783942243",
+    "crop": "https://cards.scryfall.io/crop/front/2/8/287bd99b-6539-4e54-9166-12d3e2c9b8de.webp?1783942243",
+    "jpeg": "https://cards.scryfall.io/normal/front/2/8/287bd99b-6539-4e54-9166-12d3e2c9b8de.jpg?1783942243"
+  },
+  "mana_cost": "{3}{W}{W}",
+  "cmc": 5.0,
+  "type_line": "Legendary Creature — Human Soldier Warrior",
+  "oracle_text": "Horsemanship (This creature can't be blocked except by creatures with horsemanship.)\nWhen Guan Yu is put into your graveyard from the battlefield, you may shuffle Guan Yu into your library.",
+  "power": "3",
+  "toughness": "5",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Horsemanship"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "6364eba6-6aba-4c18-b9f0-aead17064b48",
+      "component": "combo_piece",
+      "name": "Zhang Fei, Fierce Warrior",
+      "type_line": "Legendary Creature — Human Soldier Warrior",
+      "uri": "https://api.scryfall.com/cards/6364eba6-6aba-4c18-b9f0-aead17064b48"
+    },
+    {
+      "object": "related_card",
+      "id": "dea7f8a1-e848-4f4f-9b03-b4c6c977c7de",
+      "component": "combo_piece",
+      "name": "Liu Bei, Lord of Shu",
+      "type_line": "Legendary Creature — Human Soldier",
+      "uri": "https://api.scryfall.com/cards/dea7f8a1-e848-4f4f-9b03-b4c6c977c7de"
+    },
+    {
+      "object": "related_card",
+      "id": "287bd99b-6539-4e54-9166-12d3e2c9b8de",
+      "component": "combo_piece",
+      "name": "Guan Yu, Sainted Warrior",
+      "type_line": "Legendary Creature — Human Soldier Warrior",
+      "uri": "https://api.scryfall.com/cards/287bd99b-6539-4e54-9166-12d3e2c9b8de"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "b65fb1f2-4768-4c70-8fdf-30a069ad592e",
+  "set": "me3",
+  "set_name": "Masters Edition III",
+  "set_type": "masters",
+  "set_uri": "https://api.scryfall.com/sets/b65fb1f2-4768-4c70-8fdf-30a069ad592e",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ame3&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/me3?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/287bd99b-6539-4e54-9166-12d3e2c9b8de/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Af7ee3935-4510-485a-a863-ac38dffa1908&unique=prints",
+  "collector_number": "12",
+  "digital": true,
+  "rarity": "uncommon",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Qiao Dafu",
+  "artist_ids": [
+    "74b8d1ff-74ee-4588-8002-7e7f88729ef2"
+  ],
+  "illustration_id": "2395b6e6-edeb-4c42-a69c-e3420db756c5",
+  "border_color": "black",
+  "frame": "1997",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 24998,
+  "penny_rank": 17229,
+  "prices": {
+    "usd": null,
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": null,
+    "eur_foil": null,
+    "tix": "0.04"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=201280&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DGuan%2BYu%252C%2BSainted%2BWarrior",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DGuan%2BYu%252C%2BSainted%2BWarrior",
+    "edhrec": "https://edhrec.com/route/?cc=Guan+Yu%2C+Sainted+Warrior"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fmagic%2Fproduct%3FproductLineName%3Dmagic%26q%3DGuan%2BYu%252C%2BSainted%2BWarrior%26view%3Dgrid",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products/Search?referrer=scryfall&searchString=Guan+Yu%2C+Sainted+Warrior&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/33766?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "oracle_id": "4da9b548-898d-431b-8aa5-9cb7bf579219",
+  "name": "Set Phasers to . . .",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Set Phasers to . . .",
+      "oracle_fingerprint": "3e1269cd67b235730bcbdfb1acd26aa5",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                      "effects": [
+                        { "Tap": { "what": { "Target": 0 } } },
+                        { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "stun" } } }
+                      ]
+                    },
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Attacking"] } }],
+                      "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 3 } }]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

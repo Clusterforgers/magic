@@ -1,0 +1,30 @@
+{
+  "oracle_id": "4573f044-7011-412e-81bd-ae8d0c21283b",
+  "name": "Voyager Staff",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Voyager Staff",
+      "oracle_fingerprint": "55764841e0b628b538f685274ae2dc79",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "SacrificeSelf"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    { "Move": { "what": { "Bound": "exiled" }, "to": { "Battlefield": {} } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

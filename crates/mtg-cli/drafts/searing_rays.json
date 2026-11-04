@@ -1,0 +1,40 @@
+{
+  "oracle_id": "fd6730e2-3904-43cf-90c6-e3d9fe210bc5",
+  "name": "Searing Rays",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Searing Rays",
+      "oracle_fingerprint": "19640cec516a96a3f97e7026921d7967",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "ChooseValue": { "kind": "Color", "as": "chosen" } },
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "each2",
+                  "effects": [
+                    {
+                      "DealDamage": {
+                        "to": { "Bound": "each2" },
+                        "amount": {
+                          "Count": [
+                            { "Type": "Creature" },
+                            { "ControlledBy": { "Bound": "each2" } },
+                            { "ChosenAs": "chosen" }
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
