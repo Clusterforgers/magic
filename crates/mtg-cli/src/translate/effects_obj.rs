@@ -24,7 +24,7 @@ pub fn effects(ctx: &mut Ctx, p: &Params, api: &str) -> Tr<Vec<Value>> {
         "Animate" | "AnimateAll" => animate(ctx, p),
         "PutCounter" => one(put_counter(ctx, p)),
         "RemoveCounter" => one(remove_counter(ctx, p)),
-        "Tap" => one(simple(ctx, p, "Tap", "Tap")),
+        "Tap" => tap(ctx, p),
         "Untap" => one(simple(ctx, p, "Untap", "Untap")),
         "Regenerate" => one(simple(ctx, p, "Regenerate", "Regenerate")),
         "TapAll" => one(all_of(ctx, p, "Tap")),
@@ -53,6 +53,45 @@ fn simple(ctx: &mut Ctx, p: &Params, api: &str, verb: &str) -> Tr<Value> {
     only(p, api, &["ValidTgts", "Defined", "TargetMin", "TargetMax"])?;
     let what = subject(ctx, p, "Self", None)?;
     Ok(json!({ verb: {"what": what} }))
+}
+
+/// `Tap`: the target or `Defined$` object, or "tap any number of" the objects `CardChoices$` allows, which the controller
+/// picks on resolution. `RememberTapped$` binds the permanents that became tapped. A cap other than "all that match"
+/// stays a gap.
+fn tap(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
+    let remember = remember::wanted(p, &["RememberTapped"]);
+    let Some(choices) = p.get("CardChoices") else {
+        let mut effect = simple(ctx, &p.without(&["RememberTapped"]), "Tap", "Tap")?;
+        if remember {
+            remember::bind_moved(ctx, &mut effect, "Tap", "tapped");
+        }
+        return Ok(vec![effect]);
+    };
+    only(
+        p,
+        "Tap",
+        &[
+            "CardChoices",
+            "AnyNumber",
+            "ChoiceAmount",
+            "ChoicePrompt",
+            "RememberTapped",
+        ],
+    )?;
+    let all = format!("Count$Valid {choices}");
+    if p.get("AnyNumber") != Some("True") || p.get("ChoiceAmount") != Some(all.as_str()) {
+        return unmapped("key:Tap.CardChoices-amount");
+    }
+    let filter = selector_any(ctx, choices)?;
+    let max = json!({"Count": filter});
+    let from = json!({"Each": filter});
+    let bind = ctx.fresh("tap");
+    let mut effect = json!({"Tap": {"what": {"Bound": bind}}});
+    if remember {
+        remember::bind_moved(ctx, &mut effect, "Tap", "tapped");
+    }
+    let pick = json!({"Choose": {"from": from, "count": {"min": 0, "max": max}, "as": bind}});
+    Ok(vec![pick, effect])
 }
 
 /// `TapAll`, `UntapAll`: the verb on every object the valid-string names.

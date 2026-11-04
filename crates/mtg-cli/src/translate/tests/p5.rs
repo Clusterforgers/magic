@@ -275,6 +275,62 @@ fn sacrifice_all_of_a_valid_string_is_a_gap() {
     );
 }
 
+#[test]
+fn tap_any_number_picks_then_taps_and_binds_the_tapped() {
+    let line = "Tap | CardChoices$ Creature.YouCtrl+untapped | AnyNumber$ True | ChoiceAmount$ Count$Valid Creature.YouCtrl+untapped | RememberTapped$ True | SubAbility$ Main";
+    assert_eq!(gaps(&spell(line)), Vec::<String>::new());
+    let found = abilities(&spell(line));
+    let effects = &found[0]["Spell"]["effects"];
+    let bind = effects[0]["Choose"]["as"].clone();
+    for effect in effects.as_array().into_iter().flatten() {
+        let parsed = serde_json::from_value::<mtg_cards::effect::Effect>(effect.clone());
+        assert!(parsed.is_ok(), "{effect}");
+    }
+    assert_eq!(effects[0]["Choose"]["count"]["min"], 0);
+    assert_eq!(effects[1]["Tap"]["what"], json!({"Bound": bind}));
+    assert!(effects[1]["Tap"]["as"].is_string());
+}
+
+#[rstest]
+#[case::cap(
+    "Tap | CardChoices$ Creature | AnyNumber$ True | ChoiceAmount$ 2",
+    "key:Tap.CardChoices-amount"
+)]
+#[case::fixed(
+    "Tap | CardChoices$ Creature | ChoiceAmount$ 1",
+    "key:Tap.CardChoices-amount"
+)]
+fn tap_choices_with_a_cap_are_gaps(#[case] line: &str, #[case] gap: &str) {
+    assert_eq!(gaps(&plain(line)), [gap]);
+}
+
+#[rstest]
+#[case::poison("Poison | Defined$ Player.Opponent | Num$ 2")]
+#[case::fog("Fog")]
+#[case::skip("SkipPhase | Defined$ You | Step$ Draw | Duration$ EndOfTurn")]
+#[case::sacrifice("SacrificeAll | Defined$ Self")]
+#[case::earthbend("Earthbend | Num$ 2")]
+#[case::discover("Discover | Num$ 3")]
+fn new_verbs_are_nodes_of_the_language(#[case] line: &str) {
+    let found = abilities(&plain(line));
+    for effect in found[0]["Spell"]["effects"]
+        .as_array()
+        .into_iter()
+        .flatten()
+    {
+        let parsed = serde_json::from_value::<mtg_cards::effect::Effect>(effect.clone());
+        assert!(parsed.is_ok(), "{effect}");
+    }
+}
+
+#[test]
+fn tap_remembers_what_became_tapped() {
+    let found = abilities(&spell(
+        "Tap | ValidTgts$ Creature | RememberTapped$ True | SubAbility$ Main",
+    ));
+    assert!(found[0]["Spell"]["effects"][0]["Tap"]["as"].is_string());
+}
+
 #[rstest]
 #[case::earthbend("Earthbend | Num$ 2")]
 #[case::discover("Discover | Num$ 4")]
