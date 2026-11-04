@@ -300,10 +300,10 @@ fn keywords_in_the_data_appear_in_the_oracle_text() {
                     && !matches!(keyword, Keyword::Fuse)
                 {
                     assert!(
-                        text.contains(&keyword.name().to_lowercase()),
+                        text.contains(&keyword.shown_name().to_lowercase()),
                         "{}: the text has no `{}`",
                         card.name,
-                        keyword.name()
+                        keyword.shown_name()
                     );
                 }
             }
