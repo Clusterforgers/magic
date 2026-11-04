@@ -210,6 +210,42 @@ fn an_amount_replacement_that_is_not_known_stays_a_named_gap(
     assert_eq!(gaps(&replacement(line, svars)), [name]);
 }
 
+#[rstest]
+#[case::all_creatures(
+    "Event$ Untap | ActiveZones$ Battlefield | ValidCard$ Creature | ValidStepTurnToController$ You | Layer$ CantHappen",
+    json!({"Static": {"affected": {"Each": [{"Type": "Creature"}]}, "mods": ["DoesntUntap"]}})
+)]
+#[case::flyers(
+    "Event$ Untap | ActiveZones$ Battlefield | ValidCard$ Creature.withFlying | ValidStepTurnToController$ You | Layer$ CantHappen",
+    json!({"Static": {"affected": {"Each": [{"Type": "Creature"}, {"HasKeyword": "Flying"}]}, "mods": ["DoesntUntap"]}})
+)]
+#[case::enchanted_permanent(
+    "Event$ Untap | ActiveZones$ Battlefield | ValidCard$ Permanent.EnchantedBy | ValidStepTurnToController$ You | Layer$ CantHappen",
+    json!({"Static": {"affected": "Attached", "mods": ["DoesntUntap"]}})
+)]
+#[case::equipped_creature(
+    "Event$ Untap | ValidCard$ Creature.EquippedBy | ValidStepTurnToController$ You | Layer$ CantHappen",
+    json!({"Static": {"affected": "Attached", "mods": ["DoesntUntap"]}})
+)]
+fn a_permanent_that_does_not_untap_reads_who_it_is(#[case] line: &str, #[case] expected: Value) {
+    let mut found = abilities(&replacement(line, ""));
+    assert_eq!(found.len(), 1, "{:?}", gaps(&replacement(line, "")));
+    assert_eq!(found.remove(0), expected);
+}
+
+#[rstest]
+#[case::chosen_player_in_the_command_zone(
+    "Event$ Untap | ActiveZones$ Command | ValidCard$ Permanent.ChosenCtrl | ValidStepTurnToController$ You | Layer$ CantHappen",
+    "replacement:Untap-zone"
+)]
+#[case::only_with_a_counter_on_itself(
+    "Event$ Untap | ActiveZones$ Battlefield | ValidCard$ Card.Self+counters_GE1_DEPLETION | ValidStepTurnToController$ You | Layer$ CantHappen",
+    "replacement:Untap-affected"
+)]
+fn an_untap_rule_that_is_not_known_stays_a_named_gap(#[case] line: &str, #[case] name: &str) {
+    assert_eq!(gaps(&replacement(line, "")), [name]);
+}
+
 /// The gaps of a permanent whose only ability is the static line `line`.
 fn static_gaps(line: &str) -> Vec<String> {
     gaps(&format!("Name:T\nTypes:Enchantment\nS:{line}\n"))

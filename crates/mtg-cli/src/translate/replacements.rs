@@ -37,7 +37,7 @@ fn single(ctx: &mut Ctx, body: &str) -> Tr<Value> {
     let (line_condition, p) = prefixed(ctx, &all)?;
     let event = p.get("Event").unwrap_or_default();
     if event == "Untap" {
-        return doesnt_untap(&p);
+        return doesnt_untap(ctx, &p);
     }
     if event == "Counter" {
         if line_condition.is_some() {
@@ -111,7 +111,7 @@ fn single(ctx: &mut Ctx, body: &str) -> Tr<Value> {
 }
 
 /// "Doesn't untap during its controller's untap step": the untap that can't happen.
-fn doesnt_untap(p: &Params) -> Tr<Value> {
+fn doesnt_untap(ctx: &Ctx, p: &Params) -> Tr<Value> {
     only_keys(
         p,
         &[
@@ -129,8 +129,24 @@ fn doesnt_untap(p: &Params) -> Tr<Value> {
         return unmapped("replacement:Untap-zone");
     }
     let affected = match p.get("ValidCard") {
-        Some("Card.Self" | "Creature.Self") => "This",
-        Some("Creature.EnchantedBy" | "Card.EnchantedBy" | "Creature.AttachedBy") => "Attached",
+        Some("Card.Self" | "Creature.Self") => json!("This"),
+        Some(
+            "Creature.EnchantedBy"
+            | "Card.EnchantedBy"
+            | "Permanent.EnchantedBy"
+            | "Creature.AttachedBy"
+            | "Permanent.AttachedBy"
+            | "Creature.EquippedBy"
+            | "Card.EquippedBy",
+        ) => json!("Attached"),
+        // A group ("Creatures don't untap during their controllers' untap steps") is each permanent it selects.
+        Some(valid)
+            if !valid.contains("Self")
+                && !valid.contains("Chosen")
+                && p.get("ActiveZones") == Some("Battlefield") =>
+        {
+            json!({"Each": selector_any(ctx, valid)?})
+        }
         _ => return unmapped("replacement:Untap-affected"),
     };
     Ok(json!({"Static": {"affected": affected, "mods": ["DoesntUntap"]}}))
