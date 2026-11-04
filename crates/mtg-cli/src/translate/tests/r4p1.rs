@@ -100,3 +100,45 @@ fn a_move_from_every_zone_names_the_objects(#[case] lines: &str, #[case] maps: b
         assert_eq!(gaps(&script), ["zone:Origin=All"]);
     }
 }
+
+#[rstest]
+#[case::a_player_the_parent_targeted(
+    "A:SP$ LoseLife | ValidTgts$ Opponent | LifeAmount$ 1 | SubAbility$ S\nSVar:S:DB$ ChangeZone | Origin$ Hand | Destination$ Exile | DefinedPlayer$ Targeted | Chooser$ You | ChangeType$ Card.nonLand | ChangeNum$ 1 | Mandatory$ True",
+    r#"{"OwnedBy":{"Target":0}}"#
+)]
+#[case::the_controller_of_the_permanent_the_parent_targeted(
+    "A:SP$ Destroy | ValidTgts$ Creature | SubAbility$ S\nSVar:S:DB$ ChangeZone | Origin$ Hand | Destination$ Exile | DefinedPlayer$ TargetedController | Chooser$ You | ChangeType$ Card | ChangeNum$ 1 | Mandatory$ True",
+    r#"{"OwnedBy":{"ControllerOf":{"Target":0}}}"#
+)]
+#[case::each_other_player(
+    "A:SP$ ChangeZone | Origin$ Hand | Destination$ Battlefield | ChangeType$ Artifact,Enchantment | DefinedPlayer$ Player.Other | ChangeNum$ 1",
+    r#""over":"Opponents""#
+)]
+fn a_hidden_zone_choice_is_among_the_cards_of_the_player_named(
+    #[case] lines: &str,
+    #[case] part: &str,
+) {
+    let script = card("Sorcery", lines);
+    let found = abilities(&script);
+    assert_eq!(found.len(), 1, "{:?}", gaps(&script));
+    assert!(
+        found[0].to_string().contains(part),
+        "{part} in {}",
+        found[0]
+    );
+}
+
+#[rstest]
+#[case::the_target_is_not_a_player(
+    "A:SP$ Destroy | ValidTgts$ Creature | SubAbility$ S\nSVar:S:DB$ ChangeZone | Origin$ Hand | Destination$ Exile | DefinedPlayer$ Targeted | Chooser$ You | ChangeType$ Card | ChangeNum$ 1 | Mandatory$ True",
+    "defined:TargetedPlayer-without-a-player-target"
+)]
+#[case::two_targets_are_not_one_player(
+    "A:SP$ LoseLife | ValidTgts$ Opponent | TargetMin$ 0 | TargetMax$ 2 | LifeAmount$ 1 | SubAbility$ S\nSVar:S:DB$ ChangeZone | Origin$ Hand | Destination$ Exile | DefinedPlayer$ Targeted | Chooser$ You | ChangeType$ Card | ChangeNum$ 1 | Mandatory$ True",
+    "key:ChangeZone.Choose.DefinedPlayer"
+)]
+fn a_player_that_is_not_one_player_stays_a_named_gap(#[case] lines: &str, #[case] gap: &str) {
+    let script = card("Sorcery", lines);
+    assert!(abilities(&script).is_empty(), "{:?}", abilities(&script));
+    assert_eq!(gaps(&script), [gap]);
+}

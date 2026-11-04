@@ -109,3 +109,33 @@ fn a_flicker_returns_the_exiled_card(
 ) {
     assert_eq!(flicker(script, name), expected);
 }
+
+const SNIP: &str = "Name:Snip\nManaCost:B\nTypes:Sorcery\nA:SP$ LoseLife | ValidTgts$ Opponent | LifeAmount$ 1 | SubAbility$ DBExile | SpellDescription$ Target opponent loses 1 life. You choose a nonland card from their hand and exile it.\nSVar:DBExile:DB$ ChangeZone | Origin$ Hand | Destination$ Exile | DefinedPlayer$ Targeted | Chooser$ You | ChangeType$ Card.nonLand | ChangeNum$ 1 | Mandatory$ True\n";
+
+#[test]
+fn a_choice_from_the_hand_of_the_targeted_player_takes_only_a_nonland_card_of_theirs() {
+    use mtg_testkit::cards::swamp;
+    let card = translated(SNIP, "Snip", "Sorcery", "{B}");
+    let scenario = Scenario::new(2)
+        .hand(0, [card, bear()])
+        .hand(1, [forest(), bear()])
+        .battlefield(0, [ready(swamp())]);
+    let mut driver = Driver::from_scenario(scenario).unwrap();
+    let target = driver.target_player(1);
+    driver.cast_at("Snip", &[target]).unwrap();
+    crate::r3p3_runs::settle(&mut driver);
+    let state = driver.state();
+    let names = |zone: Zone| -> Vec<String> {
+        state
+            .zone(zone)
+            .iter()
+            .map(|id| state.object(*id).unwrap().card().name.clone())
+            .collect()
+    };
+    assert_eq!(names(Zone::Exile), ["Grizzly Bears"]);
+    assert_eq!(names(Zone::Hand(PlayerId::from_index(1))), ["Forest"]);
+    assert_eq!(
+        names(Zone::Hand(PlayerId::from_index(0))),
+        ["Grizzly Bears"]
+    );
+}

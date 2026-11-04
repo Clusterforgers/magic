@@ -506,7 +506,10 @@ struct Who {
 }
 
 /// The player words a `DefinedPlayer$` or `Chooser$` may be when the line has no target.
-const PLAYER_WORDS: [&str; 6] = [
+const PLAYER_WORDS: [&str; 9] = [
+    "TriggeredActivator",
+    "TriggeredSourceController",
+    "TriggeredDefendingPlayer",
     "TriggeredPlayer",
     "TriggeredTarget",
     "TriggeredCardController",
@@ -529,11 +532,23 @@ fn defined_player(ctx: &mut Ctx, p: &Params) -> Tr<Who> {
         (Some("Targeted" | "TargetedPlayer"), true) if one_target => {
             (subject(ctx, p, "You", None)?, true)
         }
-        (Some(word @ ("Player" | "Player.Opponent")), false) => {
+        (Some(word @ ("Player" | "Player.Opponent" | "Player.Other")), false) => {
             let name = ctx.fresh("player");
             let owner = json!({ "Bound": name });
             each = Some((defined(ctx, word)?, name));
             (owner, false)
+        }
+        // The player a parent line targeted, or the controller or owner of the permanent it targeted.
+        (Some("Targeted" | "TargetedPlayer"), false)
+            if ctx
+                .targets
+                .last()
+                .is_some_and(|spec| spec.get("bounds").is_none()) =>
+        {
+            (ctx.player_target()?, false)
+        }
+        (Some(word @ ("TargetedController" | "TargetedOwner")), false) => {
+            (defined(ctx, word)?, false)
         }
         (Some(word), false) if PLAYER_WORDS.contains(&word) => (defined(ctx, word)?, false),
         (None, true) => return unmapped("key:ChangeZone.Choose.ValidTgts"),
@@ -541,6 +556,7 @@ fn defined_player(ctx: &mut Ctx, p: &Params) -> Tr<Who> {
     };
     let chooser = match p.get("Chooser") {
         None => owner.clone(),
+        Some(word) if Some(word) == p.get("DefinedPlayer") && each.is_none() => owner.clone(),
         Some("You") => json!("You"),
         Some("Targeted") if targeted => owner.clone(),
         Some(word) if PLAYER_WORDS.contains(&word) && !targets && each.is_none() => {
