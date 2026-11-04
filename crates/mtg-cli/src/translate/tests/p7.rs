@@ -341,3 +341,186 @@ fn a_delayed_trigger_reads_the_trigger_pattern(
 ) {
     assert_eq!(delayed(line), expected);
 }
+
+/// The first ability of a permanent whose only ability is the static line `line`.
+fn static_ability(line: &str) -> Value {
+    abilities(&format!("Name:T\nTypes:Enchantment\nS:{line}\n"))
+        .first()
+        .cloned()
+        .unwrap_or(Value::Null)
+}
+
+#[rstest]
+#[case::must_block_self(
+    "Mode$ MustBlock | ValidCreature$ Card.Self",
+    json!({"Rule": {"rule": {"MustBlock": "This"}}})
+)]
+#[case::must_block_all(
+    "Mode$ MustBlock | ValidCreature$ Creature",
+    json!({"Rule": {"rule": {"MustBlock": {"Each": [{"Type": "Creature"}]}}}})
+)]
+#[case::must_attack_still(
+    "Mode$ MustAttack | ValidCreature$ Card.Self",
+    json!({"Rule": {"rule": {"MustAttack": "This"}}})
+)]
+fn a_must_rule_reads_who_it_binds(#[case] line: &str, #[case] expected: Value) {
+    assert_eq!(static_ability(line), expected);
+}
+
+#[rstest]
+#[case::you(
+    "Mode$ CantAttack | ValidCard$ Creature | Target$ You",
+    json!({"Static": {"affected": {"Each": [{"Type": "Creature"}]}, "mods": [{"CantAttackYou": "Player"}]}})
+)]
+#[case::you_and_walkers(
+    "Mode$ CantAttack | ValidCard$ Creature.EnchantedBy | Target$ You,Planeswalker.YouCtrl",
+    json!({"Static": {"affected": "Attached", "mods": [{"CantAttackYou": "Both"}]}})
+)]
+#[case::walkers_only(
+    "Mode$ CantAttack | ValidCard$ Creature | Target$ Planeswalker.YouCtrl",
+    json!({"Static": {"affected": {"Each": [{"Type": "Creature"}]}, "mods": [{"CantAttackYou": "Planeswalkers"}]}})
+)]
+fn a_creature_that_cant_attack_you_keeps_what_it_protects(
+    #[case] line: &str,
+    #[case] expected: Value,
+) {
+    assert_eq!(static_ability(line), expected);
+}
+
+#[rstest]
+#[case::you_hexproof(
+    "Mode$ Continuous | Affected$ You | AddKeyword$ Hexproof",
+    json!({"Static": {"affected": "You", "mods": [{"AddKeyword": "Hexproof"}]}})
+)]
+#[case::each_player_shroud(
+    "Mode$ Continuous | Affected$ Player | AddKeyword$ Shroud",
+    json!({"Static": {"affected": "EachPlayer", "mods": [{"AddKeyword": "Shroud"}]}})
+)]
+fn a_player_with_a_keyword_a_player_can_have_is_affected(
+    #[case] line: &str,
+    #[case] expected: Value,
+) {
+    assert_eq!(static_ability(line), expected);
+}
+
+#[rstest]
+#[case::flying(
+    "Mode$ Continuous | Affected$ You | AddKeyword$ Flying",
+    "static-affected:You"
+)]
+#[case::power(
+    "Mode$ Continuous | Affected$ Player | AddPower$ 1",
+    "static-affected:Player"
+)]
+fn a_player_given_what_a_player_cannot_have_stays_a_named_gap(
+    #[case] line: &str,
+    #[case] name: &str,
+) {
+    assert_eq!(static_gaps(line), [name]);
+}
+
+#[rstest]
+#[case::own_spell_with_a_target(
+    "Mode$ ReduceCost | ValidCard$ Card.Self | Type$ Spell | Amount$ 2 | EffectZone$ All | ValidTarget$ Creature.tapped",
+    json!({"CostModifier": {"applies_to": ["This", {"Targeting": [{"Type": "Creature"}, "Tapped"]}], "change": "Reduce", "mana": "{2}"}})
+)]
+#[case::spells_that_target_this(
+    "Mode$ RaiseCost | ValidTarget$ Card.Self | Activator$ Opponent | Type$ Spell | Amount$ 2",
+    json!({"CostModifier": {"applies_to": ["Spell", {"ControlledBy": "Opponents"}, {"Targeting": ["This"]}], "change": "Increase", "mana": "{2}"}})
+)]
+fn a_cost_change_for_spells_with_a_target_reads_the_target(
+    #[case] line: &str,
+    #[case] expected: Value,
+) {
+    assert_eq!(static_ability(line), expected);
+}
+
+#[rstest]
+#[case::one_red(
+    "Mode$ ReduceCost | ValidCard$ Goblin | Type$ Spell | Activator$ You | Amount$ 1 | Color$ R",
+    json!({"CostModifier": {"applies_to": ["Spell", {"Subtype": "Goblin"}, {"ControlledBy": "You"}], "change": "Reduce", "mana": "{R}"}})
+)]
+#[case::two_blue(
+    "Mode$ RaiseCost | ValidCard$ Card.Self | Type$ Spell | Amount$ 2 | Color$ U",
+    json!({"CostModifier": {"applies_to": ["This"], "change": "Increase", "mana": "{U}{U}"}})
+)]
+fn a_cost_change_of_one_colour_changes_that_colour(#[case] line: &str, #[case] expected: Value) {
+    assert_eq!(static_ability(line), expected);
+}
+
+#[rstest]
+#[case::two_colours(
+    "Mode$ ReduceCost | ValidCard$ Cleric | Type$ Spell | Activator$ You | Amount$ 1 | Color$ W B | IgnoreGeneric$ True",
+    "key:Static.CostModifier.IgnoreGeneric"
+)]
+#[case::ignore_generic(
+    "Mode$ ReduceCost | ValidCard$ Goblin | Type$ Spell | Amount$ 1 | Color$ R | IgnoreGeneric$ True",
+    "key:Static.CostModifier.IgnoreGeneric"
+)]
+fn a_colour_word_that_is_not_known_stays_a_named_gap(#[case] line: &str, #[case] name: &str) {
+    assert_eq!(static_gaps(line), [name]);
+}
+
+/// The text of the duration of the first effect of a creature whose only ability is the pump line `pump`.
+fn pump_duration(pump: &str) -> String {
+    let text = format!(
+        "Name:T\nTypes:Artifact\nA:AB$ Pump | Cost$ T | ValidTgts$ Creature | KW$ Indestructible | {pump}\n"
+    );
+    abilities(&text)
+        .first()
+        .and_then(|ability| ability.pointer("/Activated/effects/0/Continuous/duration"))
+        .map_or_else(|| gaps(&text).join(","), ToString::to_string)
+}
+
+#[rstest]
+#[case::as_long_as_control("Duration$ AsLongAsControl", "\"WhileYouControlSource\"")]
+#[case::as_long_as_in_play("Duration$ AsLongAsInPlay", "\"WhileSourceOnBattlefield\"")]
+#[case::end_of_turn("Duration$ EndOfTurn", "\"UntilEndOfTurn\"")]
+#[case::both_ends(
+    "Duration$ UntilHostLeavesPlayOrEOT",
+    "duration:UntilHostLeavesPlayOrEOT"
+)]
+#[case::next_upkeep("Duration$ UntilYourNextUpkeep", "duration:UntilYourNextUpkeep")]
+fn a_duration_word_reads_as_the_end_it_prints(#[case] word: &str, #[case] expected: &str) {
+    assert_eq!(pump_duration(word), expected);
+}
+
+#[rstest]
+#[case::cant_block(
+    "Mode$ Continuous | Affected$ Creature.withoutFlying | AddHiddenKeyword$ CARDNAME can't block.",
+    json!(["CantBlock"])
+)]
+#[case::cant_attack_or_block(
+    "Mode$ Continuous | AffectedDefined$ Enchanted | AddPower$ 2 | AddHiddenKeyword$ CARDNAME can't attack or block.",
+    json!([{"ModifyPT": {"power": 2, "toughness": 0}}, "CantAttack", "CantBlock"])
+)]
+fn a_hidden_keyword_of_a_static_line_is_the_restriction_it_prints(
+    #[case] line: &str,
+    #[case] mods: Value,
+) {
+    assert_eq!(static_ability(line).pointer("/Static/mods"), Some(&mods));
+}
+
+#[rstest]
+#[case::untap(
+    "Mode$ Continuous | Affected$ Creature | AddHiddenKeyword$ This card doesn't untap during your next untap step."
+)]
+#[case::must_be_blocked(
+    "Mode$ Continuous | Affected$ Creature | AddHiddenKeyword$ CARDNAME must be blocked if able."
+)]
+fn a_hidden_keyword_with_no_modification_stays_a_named_gap(#[case] line: &str) {
+    assert_eq!(
+        static_gaps(line),
+        ["key:Static.Continuous.AddHiddenKeyword"]
+    );
+}
+
+#[test]
+fn an_attack_target_that_is_not_known_stays_a_named_gap() {
+    assert_eq!(
+        static_gaps(
+            "Mode$ CantAttack | ValidCard$ Card.Self | Target$ Player.attackedBySourceThisTurn"
+        ),
+        ["key:Static.CantAttack.Target=Player.attackedBySourceThisTurn"]
+    );
+}

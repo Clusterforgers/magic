@@ -50,7 +50,8 @@ fn by_mode(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
             restriction(ctx, p, &["CantAttack", "CantBlock"])?
         }
         "CantBlockBy" => cant_block_by(ctx, p)?,
-        "MustAttack" => must_attack(ctx, p)?,
+        "MustAttack" => must_act(ctx, p, "MustAttack")?,
+        "MustBlock" => must_act(ctx, p, "MustBlock")?,
         "ReduceCost" => cost_modifier(ctx, p, "Reduce")?,
         "RaiseCost" => cost_modifier(ctx, p, "Increase")?,
         "AlternativeCost" => super::statics_alt::alternative_cost(ctx, p)?,
@@ -74,6 +75,9 @@ fn affected(ctx: &Ctx, p: &Params) -> Tr<Value> {
             static_defined(ctx, word)
         }
         (Some(_), Some(_)) => unmapped("static-affected:Defined+Affected"),
+        (None, Some("You")) if !p.has("AffectedZone") => Ok(json!("You")),
+        (None, Some("Player")) if !p.has("AffectedZone") => Ok(json!("EachPlayer")),
+        (None, Some("Opponent")) if !p.has("AffectedZone") => Ok(json!("Opponents")),
         (None, Some(valid)) => zoned(ctx, valid, p.get("AffectedZone")),
         (None, None) if p.get("CharacteristicDefining") == Some("True") => Ok(json!("This")),
         (None, None) => unmapped("static-affected:none"),
@@ -134,7 +138,8 @@ fn affected_valid(ctx: &Ctx, word: &str) -> Tr<Value> {
 }
 
 /// The keys a continuous static line reads.
-const CONTINUOUS: [&str; 19] = [
+const CONTINUOUS: [&str; 20] = [
+    "AddHiddenKeyword",
     "AddSVar",
     "AffectedZone",
     "AddAbility",
@@ -184,6 +189,17 @@ fn continuous(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
             }
         }
     }
+    if let Some(word) = p.get("AddHiddenKeyword") {
+        // Only the combat restrictions have a modification; any other hidden keyword is another rule.
+        match word.trim_end_matches('.') {
+            "CARDNAME can't block" => mods.push(json!("CantBlock")),
+            "CARDNAME can't attack" => mods.push(json!("CantAttack")),
+            "CARDNAME can't attack or block" => {
+                mods.extend([json!("CantAttack"), json!("CantBlock")]);
+            }
+            _ => return unmapped("key:Static.Continuous.AddHiddenKeyword"),
+        }
+    }
     if p.get("RemoveAllAbilities") == Some("True") {
         mods.push(json!("LoseAbilities"));
     }
@@ -205,6 +221,18 @@ fn continuous(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     }
     if mods.is_empty() {
         return unmapped("static:Continuous-nothing");
+    }
+    // Only the keywords a player can have apply to players; any other change would be lost.
+    if matches!(affected.as_str(), Some("You" | "EachPlayer" | "Opponents"))
+        && !mods.iter().all(|m| {
+            m.get("AddKeyword")
+                .is_some_and(|k| k == "Hexproof" || k == "Shroud")
+        })
+    {
+        return unmapped(format!(
+            "static-affected:{}",
+            p.get("Affected").unwrap_or_default()
+        ));
     }
     let mut ability = json!({"affected": affected, "mods": mods});
     if let Some(refinement) = refinement {
@@ -263,8 +291,23 @@ fn granted(ctx: &mut Ctx, names: &str, trigger: bool) -> Tr<Vec<Value>> {
 
 /// `CantAttack`, `CantBlock` of the cards named by `ValidCard$`.
 fn restriction(ctx: &Ctx, p: &Params, modifications: &[&str]) -> Tr<Value> {
-    keys(p, modifications[0], &["ValidCard"])?;
+    keys(p, modifications[0], &["ValidCard", "Target"])?;
     let affected = affected_valid(ctx, p.get("ValidCard").unwrap_or_default())?;
+    if let Some(target) = p.get("Target") {
+        // "Can't attack you" keeps the players and planeswalkers it protects apart.
+        let attacked = match target {
+            "You" => "Player",
+            "Planeswalker.YouCtrl" => "Planeswalkers",
+            "You,Planeswalker.YouCtrl" => "Both",
+            _ => return unmapped(format!("key:Static.CantAttack.Target={target}")),
+        };
+        if modifications != ["CantAttack"] {
+            return unmapped("key:Static.CantBlock.Target");
+        }
+        return Ok(
+            json!({"Static": {"affected": affected, "mods": [{"CantAttackYou": attacked}]}}),
+        );
+    }
     Ok(json!({"Static": {"affected": affected, "mods": modifications}}))
 }
 
@@ -313,14 +356,15 @@ fn cant_block_by(ctx: &Ctx, p: &Params) -> Tr<Value> {
     }
 }
 
-fn must_attack(ctx: &Ctx, p: &Params) -> Tr<Value> {
-    keys(p, "MustAttack", &["ValidCreature"])?;
+/// `MustAttack` and `MustBlock`: the creatures `ValidCreature$` names attack or block each combat if able.
+fn must_act(ctx: &Ctx, p: &Params, rule: &str) -> Tr<Value> {
+    keys(p, rule, &["ValidCreature"])?;
     let who = match p.get("ValidCreature").unwrap_or_default() {
         "Card.Self" | "Creature.Self" => json!("This"),
         "Creature.EnchantedBy" => json!("Attached"),
         valid => json!({"Each": selector_any(ctx, valid)?}),
     };
-    Ok(json!({"Rule": {"rule": {"MustAttack": who}}}))
+    Ok(json!({"Rule": {"rule": {rule: who}}}))
 }
 
 /// `ReduceCost` and `RaiseCost` of spells.
@@ -328,7 +372,15 @@ fn cost_modifier(ctx: &Ctx, p: &Params, change: &str) -> Tr<Value> {
     keys(
         p,
         "CostModifier",
-        &["ValidCard", "Type", "Activator", "Amount", "EffectZone"],
+        &[
+            "ValidCard",
+            "ValidTarget",
+            "Color",
+            "Type",
+            "Activator",
+            "Amount",
+            "EffectZone",
+        ],
     )?;
     if p.get("Type") != Some("Spell") {
         return unmapped("static:CostModifier-Type");
@@ -359,12 +411,31 @@ fn cost_modifier(ctx: &Ctx, p: &Params, change: &str) -> Tr<Value> {
             selector
         }
     };
+    let mut applies = applies;
+    if let Some(target) = p.get("ValidTarget") {
+        // "Spells that target a tapped creature": the cost is judged with the targets the spell has announced.
+        applies.push(json!({"Targeting": selector_any(ctx, target)?}));
+    }
     let amount = p.get("Amount").unwrap_or_default();
+    // `Color$` names the one colour whose symbols the change adds or removes, `Amount$` how many.
+    let symbol = match p.get("Color") {
+        None => "{1}".to_owned(),
+        Some(color @ ("W" | "U" | "B" | "R" | "G")) => format!("{{{color}}}"),
+        Some(other) => return unmapped(format!("key:Static.CostModifier.Color={other}")),
+    };
     // A number or coloured symbols are the mana; a count (an `SVar`) is how many times {1} applies.
     if ctx.svar(amount).is_some() {
         let per = super::amount::amount(ctx, amount)?;
         return Ok(
-            json!({"CostModifier": {"applies_to": applies, "change": change, "mana": "{1}", "per": per}}),
+            json!({"CostModifier": {"applies_to": applies, "change": change, "mana": symbol, "per": per}}),
+        );
+    }
+    if p.has("Color") {
+        let Ok(count) = amount.parse::<usize>() else {
+            return unmapped("key:Static.CostModifier.Color-with-Amount");
+        };
+        return Ok(
+            json!({"CostModifier": {"applies_to": applies, "change": change, "mana": symbol.repeat(count)}}),
         );
     }
     let Value::String(mana) = cost(ctx, amount)? else {
