@@ -46,6 +46,7 @@ fn property(ctx: &Ctx, prop: &str) -> Tr<Vec<Value>> {
         "EnchantedBy" | "EquippedBy" | "AttachedBy" => return one(json!({"Is": "Attached"})),
         "IsCommander" => return one(json!("Commander")),
         "modified" => return one(json!("Modified")),
+        "singleTarget" => return one(json!("SingleTarget")),
         "IsGoaded" | "Goaded" => return one(json!("Goaded")),
         "HasCounters" => return one(json!("HasAnyCounter")),
         "hasXCost" => return one(json!("XInCost")),

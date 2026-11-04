@@ -28,8 +28,12 @@ pub fn triggered(ctx: &mut Ctx, body: &str) -> Tr<Value> {
         (Some("True"), Some(condition)) => Some(json!({ "AtTrigger": condition })),
         (_, other) => other,
     };
-    let p = strip(&all);
-    let when = pattern(ctx, &p)?;
+    let (p, intervening) = during(strip(&all), intervening)?;
+    let (when, intervening) = if p.get("Mode") == Some("Always") {
+        state_when(ctx, &p, &all)?
+    } else {
+        (pattern(ctx, &p)?, intervening)
+    };
     let itself = is_about_itself(&when);
     ctx.trigger = Some(super::triggered::Shape {
         mode: p.get("Mode").unwrap_or_default().to_owned(),
@@ -86,7 +90,48 @@ pub fn triggered(ctx: &mut Ctx, body: &str) -> Tr<Value> {
     if !ctx.targets.is_empty() {
         ability["targets"] = Value::Array(ctx.targets.clone());
     }
-    Ok(json!({ "Triggered": ability }))
+    let ability = json!({ "Triggered": ability });
+    // A triggered mana ability (CR 605.1b) only works in the shape the engine folds into the tap.
+    if p.get("Static") == Some("True") {
+        let folds = serde_json::from_value::<mtg_cards::ability::Ability>(ability.clone())
+            .is_ok_and(|found| mtg_cards::mana_trigger::mana_trigger(&found).is_some());
+        if !folds {
+            return unmapped("key:Trigger.TapsForMana.Static");
+        }
+    }
+    Ok(ability)
+}
+
+/// The step a card enters in (`Phase$ Declare Attackers` of a zone change) as a condition of the event, checked as the ability
+/// triggers; the line without the key and the condition joined with the intervening one.
+fn during(p: Params, intervening: Option<Value>) -> Tr<(Params, Option<Value>)> {
+    let Some(word) = p
+        .get("Phase")
+        .filter(|_| p.get("Mode") == Some("ChangesZone"))
+    else {
+        return Ok((p, intervening));
+    };
+    let state = match word {
+        "Declare Attackers" => json!({"Step": "DeclareAttackers"}),
+        "BeginCombat->EndCombat" => json!("InCombat"),
+        "Main1,Main2" => json!({"Any": [{"Step": "Main1"}, {"Step": "Main2"}]}),
+        _ => return unmapped(format!("key:Trigger.ChangesZone.Phase={word}")),
+    };
+    let during = json!({ "AtTrigger": state });
+    let both = match intervening {
+        None => during,
+        Some(other) => json!({"All": [other, during]}),
+    };
+    Ok((p.without(&["Phase"]), Some(both)))
+}
+
+/// "When you control no Islands": a state trigger holds the line's condition as its pattern and has no intervening one.
+fn state_when(ctx: &Ctx, p: &Params, all: &Params) -> Tr<(Value, Option<Value>)> {
+    keys(p, "Always", &[])?;
+    let Some(state) = condition(ctx, all)? else {
+        return unmapped("trigger:Always-without-condition");
+    };
+    Ok((json!({"State": {"condition": state}}), None))
 }
 
 /// Whether a pattern is about the card itself ("when this creature dies"), so that "that creature" is the card and its
@@ -155,7 +200,7 @@ fn pattern(ctx: &Ctx, p: &Params) -> Tr<Value> {
         "Taps" => what_trigger(ctx, p, "Tapped"),
         "Untaps" => what_trigger(ctx, p, "Untapped"),
         "Blocks" => what_trigger(ctx, p, "Blocks"),
-        "AttackerBlocked" => what_trigger(ctx, p, "BecomesBlocked"),
+        "AttackerBlocked" => attacker_blocked(ctx, p),
         other => unmapped(format!("trigger:{other}")),
     }
 }
@@ -175,7 +220,16 @@ fn zone(word: Option<&str>, key: &str) -> Tr<Option<&'static str>> {
 }
 
 fn changes_zone(ctx: &Ctx, p: &Params) -> Tr<Value> {
-    keys(p, "ChangesZone", &["ValidCard", "Origin", "Destination"])?;
+    keys(
+        p,
+        "ChangesZone",
+        &["ValidCard", "Origin", "Destination", "TriggerController"],
+    )?;
+    // The controller of a trigger of a permanent leaving the battlefield is its controller as it left (CR 603.3a).
+    match (p.get("TriggerController"), p.get("Origin")) {
+        (None, _) | (Some("TriggeredCardController"), Some("Battlefield")) => {}
+        _ => return unmapped("key:Trigger.ChangesZone.TriggerController"),
+    }
     let what = selector_any(ctx, p.get("ValidCard").unwrap_or("Card"))?;
     let mut pattern = json!({ "what": what });
     if let Some(from) = zone(p.get("Origin"), "Origin")? {
@@ -368,12 +422,39 @@ fn spell_cast(ctx: &Ctx, p: &Params) -> Tr<Value> {
             "ValidActivatingPlayer",
             "ActivatorThisTurnCast",
             "TargetsValid",
+            "ValidSA",
+            "ValidSAonCard",
+            "IsSingleTarget",
         ],
     )?;
     let by = player_ref(p.get("ValidActivatingPlayer"))?;
     let mut pattern = json!({ "by": by });
     if let Some(valid) = p.get("ValidCard") {
         pattern["what"] = json!(selector_any(ctx, valid)?);
+    }
+    // The spell ability's own words ("an instant or sorcery spell with a single target") restrict the same spell.
+    for key in ["ValidSA", "ValidSAonCard"] {
+        if let Some(valid) = p.get(key) {
+            let more = selector_any(ctx, valid)?;
+            match pattern.get_mut("what").and_then(Value::as_array_mut) {
+                Some(what) => {
+                    for pred in more {
+                        if !what.contains(&pred) {
+                            what.push(pred);
+                        }
+                    }
+                }
+                None => pattern["what"] = json!(more),
+            }
+        }
+    }
+    match p.get("IsSingleTarget") {
+        None => {}
+        Some("True") => match pattern.get_mut("what").and_then(Value::as_array_mut) {
+            Some(what) => what.push(json!("SingleTarget")),
+            None => pattern["what"] = json!(["SingleTarget"]),
+        },
+        Some(other) => return unmapped(format!("key:Trigger.SpellCast.IsSingleTarget={other}")),
     }
     // "Whenever you cast a spell that targets a creature you control": one of its targets matches.
     if let Some(valid) = p.get("TargetsValid") {
@@ -395,14 +476,20 @@ fn sacrificed(ctx: &Ctx, p: &Params) -> Tr<Value> {
 }
 
 fn drawn(p: &Params) -> Tr<Value> {
-    keys(p, "Drawn", &["ValidCard"])?;
+    keys(p, "Drawn", &["ValidCard", "Number"])?;
     let who = match p.get("ValidCard") {
         Some("Card.YouOwn" | "Card.YouCtrl") => "You",
         Some("Card.OppOwn") => "Opponents",
         None | Some("Card") => "EachPlayer",
         Some(other) => return unmapped(format!("key:Trigger.Drawn.ValidCard={other}")),
     };
-    Ok(json!({"Drew": {"who": who}}))
+    let drew = json!({"Drew": {"who": who}});
+    // "Your second card each turn".
+    match p.get("Number").map(str::parse::<u32>) {
+        None => Ok(drew),
+        Some(Ok(nth)) if nth > 0 => Ok(json!({"Nth": {"event": drew, "nth": nth}})),
+        Some(_) => unmapped("key:Trigger.Drawn.Number"),
+    }
 }
 
 fn life_gained(p: &Params) -> Tr<Value> {
@@ -416,4 +503,27 @@ fn what_trigger(ctx: &Ctx, p: &Params, variant: &str) -> Tr<Value> {
     keys(p, variant, &["ValidCard"])?;
     let what = selector_any(ctx, p.get("ValidCard").unwrap_or("Card"))?;
     Ok(json!({ variant: {"what": what} }))
+}
+
+/// `AttackerBlocked`: an attacker becomes blocked, once. A blocker filter ("whenever this blocks a creature") reads as the
+/// pattern's `by` only for a blocker that is one object, since `by` triggers once for each matching blocker.
+fn attacker_blocked(ctx: &Ctx, p: &Params) -> Tr<Value> {
+    keys(p, "BecomesBlocked", &["ValidCard", "ValidBlocker"])?;
+    let what = selector_any(ctx, p.get("ValidCard").unwrap_or("Card"))?;
+    let mut node = json!({ "what": what });
+    if let Some(valid) = p.get("ValidBlocker") {
+        if !matches!(
+            valid,
+            "Card.Self"
+                | "Card.EquippedBy"
+                | "Card.AttachedBy"
+                | "Creature.AttachedBy"
+                | "Creature.EquippedBy"
+                | "Creature.EnchantedBy"
+        ) {
+            return unmapped("key:Trigger.BecomesBlocked.ValidBlocker");
+        }
+        node["by"] = json!(selector_any(ctx, valid)?);
+    }
+    Ok(json!({ "BecomesBlocked": node }))
 }

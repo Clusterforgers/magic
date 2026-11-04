@@ -173,7 +173,7 @@ pub fn activation_words(p: &Params) -> Tr<Activation> {
 }
 
 /// The gating words of a trigger line (`PlayerTurn$ True`, `Delirium$ True`).
-const TRIGGER_GATES: [&str; 7] = [
+const TRIGGER_GATES: [&str; 8] = [
     "PlayerTurn",
     "OpponentTurn",
     "Delirium",
@@ -181,6 +181,7 @@ const TRIGGER_GATES: [&str; 7] = [
     "Hellbent",
     "Metalcraft",
     "FirstCombat",
+    "Revolt",
 ];
 
 /// Whether the line is a trigger (a `Mode$` with an `Execute$`), whose gating words are conditions of the event.
@@ -206,6 +207,7 @@ pub fn trigger_gates(p: &Params) -> Tr<Vec<Value>> {
             "PlayerTurn" => json!({"AtTrigger": "YourTurn"}),
             "OpponentTurn" => json!({"AtTrigger": {"Not": "YourTurn"}}),
             "FirstCombat" => json!("FirstCombat"),
+            "Revolt" => super::condition::revolt(),
             other => super::condition::named(other)?,
         });
     }
