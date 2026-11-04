@@ -57,6 +57,7 @@ const RUNS: &[&str] = &[
     "Trigger.BecomesBlocked",
     "Trigger.Unblocked",
     "Trigger.GroupAttacks",
+    "Trigger.GroupAttacksAt",
     "Trigger.CountersPut",
     "Trigger.CountersRemoved",
     "Trigger.Chapter",
@@ -1044,6 +1045,7 @@ mod tests {
     #[case::w2e_unblocked_triggers("Trigger.Unblocked", true)]
     #[case::w2e_copy_triggers("Trigger.SpellCopied", true)]
     #[case::group_attack_triggers("Trigger.GroupAttacks", true)]
+    #[case::group_attack_at_triggers("Trigger.GroupAttacksAt", true)]
     #[case::counter_triggers("Trigger.CountersPut", true)]
     #[case::counter_removal_triggers("Trigger.CountersRemoved", true)]
     #[case::chapter_triggers("Trigger.Chapter", true)]

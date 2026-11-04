@@ -1,0 +1,158 @@
+//! Trigger modes for an ability activated (`AbilityCast`, `SpellAbilityCast`) and attackers declared at one player.
+
+use serde_json::{Value, json};
+
+use super::ctx::{Ctx, Tr, unmapped};
+use super::triggers::{keys, player_ref};
+use super::valid::selector_any;
+use crate::forge::script::Params;
+
+/// The pattern of a mode this module reads; `None` for any other mode.
+pub fn pattern(ctx: &Ctx, p: &Params, mode: &str) -> Option<Tr<Value>> {
+    Some(match mode {
+        "AbilityCast" => ability_cast(ctx, p),
+        "SpellAbilityCast" => spell_ability_cast(ctx, p),
+        "AttackersDeclaredOneTarget" => attackers_at_one_target(ctx, p),
+        _ => return None,
+    })
+}
+
+/// What a `ValidSA` part asks of the activation: only the words that hold for every ability the engine logs as activated.
+fn activation_word(word: &str, mode: &str) -> Tr<()> {
+    match word {
+        // Mana abilities do not log an activation unless they have a limit.
+        "SpellAbility" | "Activated" | "SpellAbility.!ManaAbility" | "Activated.!ManaAbility" => {
+            Ok(())
+        }
+        other => unmapped(format!("key:Trigger.{mode}.ValidSA={other}")),
+    }
+}
+
+/// "Whenever you activate an ability of a creature": the source is the object, the player is who activates.
+fn activation(ctx: &Ctx, p: &Params) -> Tr<Value> {
+    let mut node = json!({ "action": "Activated" });
+    let who = player_ref(p.get("ValidActivatingPlayer"))?;
+    if who != "EachPlayer" {
+        node["who"] = json!(who);
+    }
+    if let Some(valid) = p.get("ValidCard") {
+        node["what"] = json!(selector_any(ctx, valid)?);
+    }
+    Ok(json!({ "Did": node }))
+}
+
+fn ability_cast(ctx: &Ctx, p: &Params) -> Tr<Value> {
+    keys(
+        p,
+        "AbilityCast",
+        &["ValidCard", "ValidActivatingPlayer", "ValidSA"],
+    )?;
+    if let Some(word) = p.get("ValidSA") {
+        activation_word(word, "AbilityCast")?;
+    }
+    activation(ctx, p)
+}
+
+/// "Whenever you cast a spell or activate an ability": either event triggers it alone.
+fn spell_ability_cast(ctx: &Ctx, p: &Params) -> Tr<Value> {
+    keys(p, "SpellAbilityCast", &["ValidActivatingPlayer", "ValidSA"])?;
+    let Some(words) = p.get("ValidSA") else {
+        return unmapped("key:Trigger.SpellAbilityCast.ValidSA-missing");
+    };
+    let by = player_ref(p.get("ValidActivatingPlayer"))?;
+    let mut spell: Option<Vec<Value>> = None;
+    let mut activated = false;
+    for word in words.split(',') {
+        match word {
+            "SpellAbility" | "SpellAbility.!ManaAbility" => {
+                activation_word(word, "SpellAbilityCast")?;
+                activated = true;
+                spell.get_or_insert_with(Vec::new);
+            }
+            "Activated" | "Activated.!ManaAbility" => {
+                activation_word(word, "SpellAbilityCast")?;
+                activated = true;
+            }
+            "Spell" => {
+                spell.get_or_insert_with(Vec::new);
+            }
+            other => {
+                let Some(rest) = other.strip_prefix("Spell.") else {
+                    return unmapped(format!("key:Trigger.SpellAbilityCast.ValidSA={other}"));
+                };
+                // Two spell parts would be an either-or of selectors: one part is all this reads.
+                if spell.is_some() {
+                    return unmapped("key:Trigger.SpellAbilityCast.ValidSA-two-spell-parts");
+                }
+                spell = Some(selector_any(ctx, &format!("Card.{rest}"))?);
+            }
+        }
+    }
+    let mut parts = Vec::new();
+    if let Some(what) = spell {
+        let mut cast = json!({ "by": by });
+        if !what.is_empty() {
+            cast["what"] = json!(what);
+        }
+        parts.push(json!({ "SpellCast": cast }));
+    }
+    if activated {
+        let mut node = json!({ "action": "Activated" });
+        if by != "EachPlayer" {
+            node["who"] = json!(by);
+        }
+        parts.push(json!({ "Did": node }));
+    }
+    match parts.len() {
+        0 => unmapped("key:Trigger.SpellAbilityCast.ValidSA"),
+        1 => Ok(parts.remove(0)),
+        _ => Ok(json!({ "AnyOf": parts })),
+    }
+}
+
+/// "Whenever one or more Dragons you control attack an opponent": the attackers of one player attacked, once for each.
+fn attackers_at_one_target(ctx: &Ctx, p: &Params) -> Tr<Value> {
+    keys(
+        p,
+        "AttackersDeclaredOneTarget",
+        &[
+            "AttackingPlayer",
+            "ValidAttackers",
+            "AttackedTarget",
+            "ValidAttackersAmount",
+        ],
+    )?;
+    // A planeswalker or battle attacked is no player attacked: the player word alone is read.
+    let target = p.get("AttackedTarget");
+    let Ok(at) = player_ref(target) else {
+        return unmapped(format!(
+            "key:Trigger.AttackersDeclaredOneTarget.AttackedTarget={}",
+            target.unwrap_or_default()
+        ));
+    };
+    let word = p.get("AttackingPlayer");
+    let Ok(by) = player_ref(word) else {
+        return unmapped(format!(
+            "key:Trigger.AttackersDeclaredOneTarget.AttackingPlayer={}",
+            word.unwrap_or_default()
+        ));
+    };
+    let mut what = selector_any(ctx, p.get("ValidAttackers").unwrap_or("Creature"))?;
+    // The attackers are the attacking player's own creatures.
+    let own = json!({ "ControlledBy": by });
+    if by != "EachPlayer" && !what.contains(&own) {
+        what.push(own);
+    }
+    let mut node = json!({ "what": what, "at": at });
+    match p.get("ValidAttackersAmount") {
+        None => {}
+        Some(amount) => match amount
+            .strip_prefix("GE")
+            .and_then(|n| n.parse::<u32>().ok())
+        {
+            Some(least) if least >= 2 => node["at_least"] = json!(least),
+            _ => return unmapped("key:Trigger.AttackersDeclaredOneTarget.ValidAttackersAmount"),
+        },
+    }
+    Ok(json!({ "GroupAttacksAt": node }))
+}

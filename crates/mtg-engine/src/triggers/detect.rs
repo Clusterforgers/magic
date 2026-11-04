@@ -146,6 +146,11 @@ enum Happened {
     Copied { player: PlayerId, spell: ObjectId },
     /// Attackers were declared together.
     AttackedTogether { attackers: Vec<ObjectId> },
+    /// Attackers were declared together at one player (not at a planeswalker or battle), once for each player.
+    AttackedTogetherAt {
+        attackers: Vec<ObjectId>,
+        at: PlayerId,
+    },
     /// An Aura, Equipment or Fortification became attached to a permanent.
     Attached { attachment: ObjectId, to: ObjectId },
     /// A player cycled a card, the `nth` of their turn.
@@ -501,6 +506,24 @@ fn happenings(pre: &GameState, events: &[Event], post: &GameState) -> Vec<Happen
                 if !attackers.is_empty() {
                     found.push(Happened::AttackedTogether {
                         attackers: attackers.iter().map(|(attacker, _)| *attacker).collect(),
+                    });
+                }
+                let mut at_players: Vec<PlayerId> = Vec::new();
+                for (_, at) in attackers {
+                    if let AttackTarget::Player(at) = at
+                        && !at_players.contains(at)
+                    {
+                        at_players.push(*at);
+                    }
+                }
+                for at in at_players {
+                    found.push(Happened::AttackedTogetherAt {
+                        attackers: attackers
+                            .iter()
+                            .filter(|(_, to)| *to == AttackTarget::Player(at))
+                            .map(|(attacker, _)| *attacker)
+                            .collect(),
+                        at,
                     });
                 }
             }
@@ -1692,6 +1715,29 @@ fn matching_permanents(
             TriggerPattern::GroupAttacks { what, at_least },
             Happened::AttackedTogether { attackers },
         ) => {
+            let mut picked = Vec::new();
+            for attacker in attackers {
+                if let Some(attacker) = object(*attacker)
+                    && picks(what, attacker)?
+                {
+                    picked.push(Target::Object(attacker));
+                }
+            }
+            (picked.len() >= usize::try_from(*at_least).unwrap_or(usize::MAX)).then(|| {
+                let count = u32::try_from(picked.len()).unwrap_or(u32::MAX);
+                counted(state, picked, count)
+            })
+        }
+        (
+            TriggerPattern::GroupAttacksAt { what, at, at_least },
+            Happened::AttackedTogetherAt {
+                attackers,
+                at: attacked,
+            },
+        ) => {
+            if !scope.players(at).ok()?.contains(attacked) {
+                return None;
+            }
             let mut picked = Vec::new();
             for attacker in attackers {
                 if let Some(attacker) = object(*attacker)
