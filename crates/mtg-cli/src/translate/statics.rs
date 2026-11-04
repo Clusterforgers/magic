@@ -16,18 +16,9 @@ pub fn static_line(ctx: &mut Ctx, body: &str) -> Tr<Value> {
     let all = Params::parse(body);
     let condition = condition(ctx, &all)?;
     let p = strip(&all);
-    let mut ability = match p.get("Mode").unwrap_or_default() {
-        "Continuous" if p.has("MayPlay") => {
-            json!({"Rule": {"rule": super::mayplay::may_cast(ctx, &p, None)?}})
-        }
-        "Continuous" => continuous(ctx, &p)?,
-        "CantAttack" => restriction(ctx, &p, "CantAttack")?,
-        "CantBlock" => restriction(ctx, &p, "CantBlock")?,
-        "CantBlockBy" => cant_block_by(ctx, &p)?,
-        "MustAttack" => must_attack(ctx, &p)?,
-        "ReduceCost" => cost_modifier(ctx, &p, "Reduce")?,
-        "RaiseCost" => cost_modifier(ctx, &p, "Increase")?,
-        other => return unmapped(format!("static:{other}")),
+    let mut ability = match super::statics_rules::rule(ctx, &p) {
+        Some(found) => found?,
+        None => by_mode(ctx, &p)?,
     };
     if condition.is_some() && ability.pointer("/Static/defining").is_some() {
         return unmapped("key:Static.Continuous.defining-with-condition");
@@ -38,6 +29,23 @@ pub fn static_line(ctx: &mut Ctx, body: &str) -> Tr<Value> {
         inner["condition"] = condition;
     }
     Ok(ability)
+}
+
+/// The ability of a static line by its mode.
+fn by_mode(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
+    Ok(match p.get("Mode").unwrap_or_default() {
+        "Continuous" if p.has("MayPlay") => {
+            json!({"Rule": {"rule": super::mayplay::may_cast(ctx, p, None)?}})
+        }
+        "Continuous" => continuous(ctx, p)?,
+        "CantAttack" => restriction(ctx, p, "CantAttack")?,
+        "CantBlock" => restriction(ctx, p, "CantBlock")?,
+        "CantBlockBy" => cant_block_by(ctx, p)?,
+        "MustAttack" => must_attack(ctx, p)?,
+        "ReduceCost" => cost_modifier(ctx, p, "Reduce")?,
+        "RaiseCost" => cost_modifier(ctx, p, "Increase")?,
+        other => return unmapped(format!("static:{other}")),
+    })
 }
 
 /// Refuses a key the mode does not read.

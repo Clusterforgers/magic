@@ -25,6 +25,7 @@ pub mod oracle;
 pub mod replacements;
 pub mod report;
 pub mod statics;
+pub mod statics_rules;
 pub mod stored;
 pub mod tokens;
 pub mod triggers;

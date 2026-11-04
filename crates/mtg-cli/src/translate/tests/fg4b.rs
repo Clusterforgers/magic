@@ -74,6 +74,43 @@ fn cost_words(#[case] cost: &str, #[case] expected: Value) {
 }
 
 #[rstest]
+#[case::no_gain("Mode$ CantGainLife | ValidPlayer$ Opponent", json!({"CantGainLife": "Opponents"}))]
+#[case::no_draw("Mode$ CantDraw | ValidPlayer$ Player", json!({"CantDraw": "EachPlayer"}))]
+#[case::no_land("Mode$ CantPlayLand | Player$ You", json!({"Cant": {"who": "You", "action": "PlayLand"}}))]
+#[case::no_counters("Mode$ CantPutCounter | ValidCard$ Card.Self", json!({"Cant": {"who": "This", "action": "PutCounter"}}))]
+#[case::no_sacrifice("Mode$ CantSacrifice | ValidCard$ Card.EnchantedBy", json!({"Cant": {"who": "Attached", "action": "Sacrifice"}}))]
+#[case::no_target("Mode$ CantTarget | ValidTarget$ Card.Self | ValidSource$ Card.White", json!({"Cant": {"who": "This", "action": {"BeTargeted": [{"Color": "White"}]}}}))]
+#[case::unlimited_hand("Mode$ Continuous | Affected$ You | SetMaxHandSize$ Unlimited", json!({"NoMaxHandSize": "You"}))]
+#[case::hand_of_two("Mode$ Continuous | Affected$ Player | SetMaxHandSize$ 2", json!({"MaxHandSize": {"who": "EachPlayer", "size": 2}}))]
+#[case::legend_rule("Mode$ IgnoreLegendRule", json!({"NoLegendRule": "EachPlayer"}))]
+#[case::untap_with_others("Mode$ UntapOtherPlayer | ValidCard$ Card.Self", json!({"UntapDuring": {"what": ["This"], "whose": "Opponents"}}))]
+fn rule_statics(#[case] line: &str, #[case] rule: Value) {
+    let script = format!("Name:T\nTypes:Enchantment\nS:{line}\n");
+    assert_eq!(
+        abilities(&script),
+        vec![normal(json!({"Rule": {"rule": rule}}))]
+    );
+}
+
+#[rstest]
+#[case::draw_limit(
+    "Mode$ CantDraw | ValidPlayer$ Opponent | DrawLimit$ 1",
+    "key:Static.CantDraw.DrawLimit"
+)]
+#[case::land_origin(
+    "Mode$ CantPlayLand | Player$ You | Origin$ Hand",
+    "key:Static.CantPlayLand.Origin"
+)]
+#[case::command_zone(
+    "Mode$ CantGainLife | ValidPlayer$ You | EffectZone$ Command",
+    "key:Static.CantGainLife.EffectZone"
+)]
+fn rule_static_extras_stay_gaps(#[case] line: &str, #[case] gap: &str) {
+    let script = format!("Name:T\nTypes:Enchantment\nS:{line}\n");
+    assert_eq!(gaps(&script), vec![gap.to_owned()]);
+}
+
+#[rstest]
 #[case::goad_duration(
     "SP$ Goad | ValidTgts$ Creature | Duration$ Permanent",
     "key:Goad.Duration"
