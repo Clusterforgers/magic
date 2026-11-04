@@ -103,6 +103,33 @@ fn first_of(text: &str) -> Value {
     abilities(text).into_iter().next().unwrap_or_default()
 }
 
+/// A trigger of the card entering, under extra keys.
+fn trigger(extra: &str) -> String {
+    format!(
+        "Name:T\nTypes:Creature Elf\nT:Mode$ ChangesZone | Origin$ Any | Destination$ Battlefield | ValidCard$ Card.Self | Execute$ Go | {extra}\nSVar:Go:DB$ Draw\n"
+    )
+}
+
+#[rstest]
+#[case::your_turn("PlayerTurn$ True", json!({"AtTrigger": "YourTurn"}))]
+#[case::opponents_turn("OpponentTurn$ True", json!({"AtTrigger": {"Not": "YourTurn"}}))]
+#[case::first_combat("FirstCombat$ True", json!("FirstCombat"))]
+#[case::delirium(
+    "Delirium$ True",
+    json!({"Compare": {"left": {"CardTypes": [{"In": "Graveyard"}, {"OwnedBy": "You"}]}, "op": "Ge", "right": 4}})
+)]
+fn a_gating_word_of_a_trigger_is_its_if(#[case] keys: &str, #[case] expected: Value) {
+    let found = first_of(&trigger(keys));
+    assert_eq!(found["Triggered"]["if"], expected);
+}
+
+#[rstest]
+#[case::revolt("Revolt$ True")]
+#[case::not_true("PlayerTurn$ False")]
+fn a_gating_word_the_table_does_not_know_stays_a_gap(#[case] keys: &str) {
+    assert!(!gaps(&trigger(keys)).is_empty());
+}
+
 #[rstest]
 #[case::turn_word("ConditionPlayerTurn$ Maybe")]
 #[case::two_colors_not_spent("ConditionManaNotSpent$ R G")]

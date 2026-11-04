@@ -76,6 +76,46 @@ pub fn gate_conditions(ctx: &Ctx, p: &Params) -> Tr<Vec<Value>> {
     Ok(all)
 }
 
+/// The gating words of a trigger line (`PlayerTurn$ True`, `Delirium$ True`).
+const TRIGGER_GATES: [&str; 7] = [
+    "PlayerTurn",
+    "OpponentTurn",
+    "Delirium",
+    "Threshold",
+    "Hellbent",
+    "Metalcraft",
+    "FirstCombat",
+];
+
+/// Whether the line is a trigger (a `Mode$` with an `Execute$`), whose gating words are conditions of the event.
+fn is_trigger(p: &Params) -> bool {
+    peek(p, "Mode").is_some() && peek(p, "Execute").is_some()
+}
+
+/// The gating words a line of this kind has, to be removed with its condition keys.
+pub fn gate_words(p: &Params) -> &'static [&'static str] {
+    if is_trigger(p) { &TRIGGER_GATES } else { &[] }
+}
+
+/// The conditions the gating words of a trigger line state. A turn word is a condition of the event ("during your turn",
+/// CR 603.4 does not recheck it); an "if" word is rechecked as the ability resolves unless the line says otherwise.
+pub fn trigger_gates(p: &Params) -> Tr<Vec<Value>> {
+    let mut all = Vec::new();
+    for word in gate_words(p) {
+        let Some(value) = p.get(word) else { continue };
+        if value != "True" {
+            return unmapped(format!("condition:{word}={value}"));
+        }
+        all.push(match *word {
+            "PlayerTurn" => json!({"AtTrigger": "YourTurn"}),
+            "OpponentTurn" => json!({"AtTrigger": {"Not": "YourTurn"}}),
+            "FirstCombat" => json!("FirstCombat"),
+            other => super::condition::named(other)?,
+        });
+    }
+    Ok(all)
+}
+
 /// The line with some pairs replaced by new values and some dropped; the order of the keys stays.
 fn rebuilt(p: &Params, replace: &[(&str, String)], drop: &[&str]) -> Params {
     let body: Vec<String> = p

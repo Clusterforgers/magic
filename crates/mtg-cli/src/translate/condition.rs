@@ -44,6 +44,7 @@ pub fn condition(ctx: &Ctx, p: &Params) -> Tr<Option<Value>> {
     if let Some(name) = p.get("Condition") {
         all.push(named(name)?);
     }
+    all.extend(super::header::trigger_gates(p)?);
     Ok(single(all))
 }
 
@@ -207,5 +208,7 @@ pub fn named(name: &str) -> Tr<Value> {
 
 /// The line without the keys of its condition.
 pub fn strip(p: &Params) -> Params {
-    p.without(&KEYS)
+    let mut keys = KEYS.to_vec();
+    keys.extend(super::header::gate_words(p));
+    p.without(&keys)
 }
