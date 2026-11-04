@@ -92,3 +92,37 @@ fn a_next_turn_upkeep_of_one_player_is_a_gap() {
     let script = later("Upkeep").replace("ValidPlayer$ Player", "ValidPlayer$ You");
     assert_eq!(gaps(&script), ["key:DelayedTrigger.NextTurn"]);
 }
+
+fn choosing(choice: &str) -> String {
+    format!(
+        "Name:T\nTypes:Sorcery\nA:SP$ ChooseNumber | {choice} | SubAbility$ Pay\nSVar:Pay:DB$ LoseLife | LifeAmount$ N\nSVar:N:Count$ChosenNumber\n"
+    )
+}
+
+/// `ChooseNumber` binds a number from the minimum to the maximum and the next lines read it back.
+#[rstest]
+#[case::default_min("Max$ 5", json!([0, 5]))]
+#[case::own_min("Min$ 1 | Max$ 3", json!([1, 3]))]
+#[case::life_total("Max$ LifeTotal | ListTitle$ amount of life", json!([0, {"Life": "You"}]))]
+fn a_chosen_number_is_bound_and_read(#[case] choice: &str, #[case] range: serde_json::Value) {
+    let script = choosing(choice).replace("LifeTotal", "Count$YourLifeTotal");
+    let found = abilities(&script);
+    assert_eq!(found.len(), 1, "{:?}", gaps(&script));
+    let effects = &found[0]["Spell"]["effects"];
+    let bind = &effects[0]["ChooseValue"]["as"];
+    assert_eq!(effects[0]["ChooseValue"]["kind"], json!({"Number": range}));
+    assert_eq!(
+        effects[1],
+        json!({"LoseLife": {"amount": {"ChosenAs": bind}}})
+    );
+}
+
+/// An open range, a secret pick and a group of choosers stay gaps named after the key.
+#[rstest]
+#[case::no_max("Min$ 1", "key:ChooseNumber.no-Max")]
+#[case::any_number("Max$ 5 | ChooseAnyNumber$ True", "key:ChooseNumber.ChooseAnyNumber")]
+#[case::secretly("Max$ 5 | Secretly$ True", "key:ChooseNumber.Secretly")]
+#[case::everyone("Max$ 5 | Defined$ Player", "key:ChooseNumber.Defined=group")]
+fn an_unread_number_choice_is_a_named_gap(#[case] choice: &str, #[case] gap: &str) {
+    assert_eq!(gaps(&choosing(choice)), [gap]);
+}

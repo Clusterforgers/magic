@@ -336,6 +336,10 @@ fn count_base(ctx: &Ctx, base: &str) -> Tr<Value> {
     let word = base.split_once(' ').map_or(base, |(word, _)| word);
     match word {
         "xPaid" => Ok(json!("X")),
+        "ChosenNumber" => ctx.chosen_number.as_ref().map_or_else(
+            || unmapped("amount:ChosenNumber-without-a-choice"),
+            |name| Ok(json!({"ChosenAs": name})),
+        ),
         "CardPower" => Ok(stat_of_this("Power")),
         "CardToughness" => Ok(stat_of_this("Toughness")),
         "CardManaCost" => Ok(stat_of_this("ManaValue")),

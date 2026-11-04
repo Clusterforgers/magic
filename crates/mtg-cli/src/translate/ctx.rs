@@ -111,6 +111,8 @@ pub struct Ctx<'a> {
     pub chosen: Option<String>,
     /// The name the cards the latest `ChooseCard` picked are bound to (`ChosenCard` after it).
     pub chosen_card: Option<String>,
+    /// The name the latest number chosen by the ability is bound to (`ChosenNumber` after it).
+    pub chosen_number: Option<String>,
     /// What the trigger line being translated is about, for its `Triggered*` words.
     pub trigger: Option<super::triggered::Shape>,
     binds: usize,
@@ -137,6 +139,7 @@ impl<'a> Ctx<'a> {
             parent_target: None,
             chosen: None,
             chosen_card: None,
+            chosen_number: None,
             trigger: None,
             binds: 0,
             depth: 0,
@@ -151,6 +154,7 @@ impl<'a> Ctx<'a> {
         self.parent_target = None;
         self.chosen = None;
         self.chosen_card = None;
+        self.chosen_number = None;
         self.trigger = None;
         self.binds = 0;
         self.depth = 0;
@@ -166,6 +170,7 @@ impl<'a> Ctx<'a> {
             self.parent_target,
             self.chosen.take(),
             self.chosen_card.take(),
+            self.chosen_number.take(),
             self.trigger.take(),
             self.binds,
             self.depth,
@@ -179,6 +184,7 @@ impl<'a> Ctx<'a> {
             self.parent_target,
             self.chosen,
             self.chosen_card,
+            self.chosen_number,
             self.trigger,
             self.binds,
             self.depth,

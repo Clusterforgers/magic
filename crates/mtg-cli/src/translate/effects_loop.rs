@@ -210,3 +210,22 @@ pub fn choose_value(ctx: &mut Ctx, p: &Params, api: &str) -> Tr<Vec<Value>> {
         json!({"ChooseValue": {"who": who, "kind": kind, "as": bind}}),
     ])
 }
+
+/// `ChooseNumber`: one player picks a whole number from `Min$` (0) to `Max$`, read when the choice is made; the later lines
+/// read it as `ChosenNumber`. Without a `Max$` the range is open and stays a gap.
+pub fn choose_number(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
+    only(p, "ChooseNumber", &["Defined", "Min", "Max"])?;
+    let Some(max) = p.get("Max") else {
+        return unmapped("key:ChooseNumber.no-Max");
+    };
+    let who = defined(ctx, p.get("Defined").unwrap_or("You"))?;
+    if matches!(who.as_str(), Some("Opponents" | "EachPlayer")) {
+        return unmapped("key:ChooseNumber.Defined=group");
+    }
+    let (min, max) = (amount(ctx, p.get("Min").unwrap_or("0"))?, amount(ctx, max)?);
+    let bind = ctx.fresh("number");
+    ctx.chosen_number = Some(bind.clone());
+    Ok(vec![
+        json!({"ChooseValue": {"who": who, "kind": {"Number": [min, max]}, "as": bind}}),
+    ])
+}
