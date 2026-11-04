@@ -26,6 +26,7 @@ pub mod effects_obj;
 mod effects_verbs;
 mod effects_verbs2;
 mod effects_verbs3;
+mod effects_verbs4;
 pub mod effects_zone;
 pub mod keyword;
 pub mod keyword_alt;
