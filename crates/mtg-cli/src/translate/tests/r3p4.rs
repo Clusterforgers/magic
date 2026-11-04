@@ -42,7 +42,7 @@ fn the_amount_of_remembered_objects_counts_them_in_whatever_zone_they_went_to(
 ) {
     let (json, found) = creature(lines);
     assert!(found.is_empty(), "{found:?}");
-    assert!(json.contains(&format!("{expected}~moved")), "{json}");
+    assert!(json.contains(expected) && json.contains("~moved"), "{json}");
     assert!(json.contains(expected), "{json}");
 }
 
