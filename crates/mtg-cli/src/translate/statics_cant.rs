@@ -18,6 +18,23 @@ pub fn rule(ctx: &Ctx, p: &Params) -> Option<Tr<Value>> {
     Some(found)
 }
 
+/// A static line of the mode `CantAttack,CantBlock,CantBeActivated` ("can't attack or block and its activated abilities can't
+/// be activated") as the two lines of its parts; any other line stays whole.
+pub fn split_modes(body: &str) -> Vec<String> {
+    const MODE: &str = "Mode$ CantAttack,CantBlock,CantBeActivated";
+    if !body.contains(MODE) || body.contains("Secondary$") {
+        return vec![body.to_owned()];
+    }
+    vec![
+        body.replacen(MODE, "Mode$ CantAttack,CantBlock", 1),
+        body.replacen(
+            MODE,
+            "Mode$ CantBeActivated | ValidSA$ Activated.!ManaAbility",
+            1,
+        ),
+    ]
+}
+
 /// Refuses a key the mode does not read; a static in another zone than the battlefield is another ability.
 fn keys(p: &Params, mode: &str, read: &[&str]) -> Tr<()> {
     check_keys(p, &format!("Static.{mode}"), read, |key, value| {

@@ -143,7 +143,11 @@ fn trigger_groups(bodies: &[String]) -> Vec<Vec<&String>> {
 /// objects ("gets +2/+2 and can't block"); a secondary line that fails takes the line before it down with it.
 fn static_abilities(ctx: &mut Ctx, bodies: &[String]) -> Vec<Tr<Value>> {
     let mut out: Vec<Tr<Value>> = Vec::new();
-    for body in bodies {
+    let bodies: Vec<String> = bodies
+        .iter()
+        .flat_map(|body| super::statics_cant::split_modes(body))
+        .collect();
+    for body in &bodies {
         let secondary = Params::parse(body).get("Secondary") == Some("True");
         let result = audited_one(|| static_line(ctx, body));
         if secondary && let Some(previous) = out.last_mut() {
