@@ -45,9 +45,6 @@ pub fn continuous_statics(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
 /// The triggers `Triggers$` names as delayed triggers that fire every time for the effect's duration; `remembered` is
 /// what the effect remembers, which a trigger reads as `IsRemembered`.
 pub fn delayed_triggers(ctx: &mut Ctx, p: &Params, remembered: Option<&Value>) -> Tr<Vec<Value>> {
-    if p.has("StaticAbilities") {
-        return unmapped("key:Effect.Triggers-and-StaticAbilities");
-    }
     let this_turn = match p.get("Duration") {
         None | Some("EOT") => true,
         Some("Permanent") => false,

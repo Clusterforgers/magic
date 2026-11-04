@@ -42,7 +42,8 @@ fn read_keys(p: &Params, static_line: bool) -> Tr<()> {
     }
     let prevents = p.get("Prevent") == Some("True");
     let replaces = p.has("ReplaceWith");
-    if prevents == replaces || (replaces && !static_line) {
+    let shield_prevention = p.get("PreventionEffect") == Some("True");
+    if prevents == replaces || (replaces && !static_line && !shield_prevention) {
         return unmapped("replacement:DamageDone-not-a-prevention");
     }
     match (p.get("ActiveZones"), static_line) {
@@ -88,7 +89,7 @@ pub fn static_prevention(ctx: &Ctx, p: &Params) -> Tr<Vec<Value>> {
     let by = match p.get("ReplaceWith") {
         None => json!("Prevent"),
         Some(name) if is_damage_scaling(ctx, name) => scaled(ctx, name)?,
-        Some(name) => super::replacements_damage_by::by(ctx, p, name, you)?,
+        Some(name) => super::replacements_damage_by::by(ctx, p, name, you, false)?,
     };
     // A list of one player and one permanent word names disjoint recipients, so one replacement for each is exact.
     let mut out = Vec::new();
@@ -126,12 +127,7 @@ fn recipients(ctx: &Ctx, word: Option<&str>) -> Tr<Vec<Option<Value>>> {
 }
 
 /// One `Replacement` of damage to `recipient` by the line's source and combat restrictions.
-fn static_replacement(
-    ctx: &Ctx,
-    p: &Params,
-    recipient: Option<Value>,
-    by: Value,
-) -> Tr<Value> {
+fn static_replacement(ctx: &Ctx, p: &Params, recipient: Option<Value>, by: Value) -> Tr<Value> {
     let mut when = serde_json::Map::new();
     if let Some(to) = recipient {
         when.insert("to".into(), to);
@@ -185,9 +181,20 @@ pub fn shield(ctx: &mut Ctx, line: &Params, remembered: Option<&Value>) -> Tr<Ve
     let Some(name) = line.get("ReplacementEffects") else {
         return unmapped("key:Effect.no-ReplacementEffects");
     };
-    if name.contains(',') {
-        return unmapped("key:Effect.ReplacementEffects-list");
+    let mut out = Vec::new();
+    for name in name.split(',').map(str::trim) {
+        out.extend(one_shield(ctx, line, name, remembered)?);
     }
+    Ok(out)
+}
+
+/// The `Shield` of one named replacement of an `Effect` line.
+fn one_shield(
+    ctx: &mut Ctx,
+    line: &Params,
+    name: &str,
+    remembered: Option<&Value>,
+) -> Tr<Vec<Value>> {
     let p = ctx.sub(name)?;
     if p.get("Event") != Some("DamageDone") {
         return unmapped(format!(
@@ -229,8 +236,18 @@ pub fn shield(ctx: &mut Ctx, line: &Params, remembered: Option<&Value>) -> Tr<Ve
     if let Some(combat) = combat(&p)? {
         when.insert("combat".into(), json!(combat));
     }
+    let by = match p.get("ReplaceWith") {
+        None => json!("Prevent"),
+        Some(_) if p.get("Prevent") == Some("True") => {
+            return unmapped("replacement:DamageDone-prevent-and-replace");
+        }
+        Some(name) => {
+            let you = p.get("ValidTarget") == Some("You");
+            super::replacements_damage_by::by(ctx, &p, name, you, true)?
+        }
+    };
     Ok(vec![
-        json!({"Shield": {"when": {"Damage": when}, "by": "Prevent", "duration": duration}}),
+        json!({"Shield": {"when": {"Damage": when}, "by": by, "duration": duration}}),
     ])
 }
 

@@ -24,11 +24,12 @@ fn damage_amount(ctx: &Ctx, word: Option<&str>) -> Tr<Value> {
 }
 
 /// The object a part's `Defined$` names: the recipient of the damage, the card itself, or what it is attached to.
-fn defined(word: Option<&str>) -> Tr<Value> {
+fn defined(word: Option<&str>, shield: bool) -> Tr<Value> {
     match word {
-        Some("Self") => Ok(json!("This")),
         Some("ReplacedTarget") => Ok(json!("Triggering")),
-        Some("Equipped" | "Enchanted") => Ok(json!("Attached")),
+        // In a shield "Self" would be the Forge `Effect` object, not the card whose ability made it.
+        Some("Self") if !shield => Ok(json!("This")),
+        Some("Equipped" | "Enchanted") if !shield => Ok(json!("Attached")),
         _ => unmapped("replacement:DamageDone-Defined"),
     }
 }
@@ -37,14 +38,17 @@ fn defined(word: Option<&str>) -> Tr<Value> {
 fn keys(part: &Params, read: &[&str]) -> Tr<()> {
     for (key, _) in part.iter() {
         if key != "DB" && !read.contains(&key) && !is_hint(key) {
-            return unmapped(format!("key:Replacement.DamageDone.{}.{key}", part.get("DB").unwrap_or_default()));
+            return unmapped(format!(
+                "key:Replacement.DamageDone.{}.{key}",
+                part.get("DB").unwrap_or_default()
+            ));
         }
     }
     Ok(())
 }
 
 /// The effect a part runs with the damage in the event.
-fn effect(ctx: &Ctx, part: &Params, recipient_is_you: bool) -> Tr<Value> {
+fn effect(ctx: &Ctx, part: &Params, recipient_is_you: bool, shield: bool) -> Tr<Value> {
     match part.get("DB").unwrap_or_default() {
         "PutCounter" => {
             keys(part, &["Defined", "CounterType", "CounterNum"])?;
@@ -52,7 +56,7 @@ fn effect(ctx: &Ctx, part: &Params, recipient_is_you: bool) -> Tr<Value> {
                 return unmapped("replacement:DamageDone-counter");
             };
             Ok(json!({"PutCounters": {
-                "on": defined(part.get("Defined"))?,
+                "on": defined(part.get("Defined"), shield)?,
                 "counter": counter,
                 "count": damage_amount(ctx, part.get("CounterNum"))?,
             }}))
@@ -63,7 +67,7 @@ fn effect(ctx: &Ctx, part: &Params, recipient_is_you: bool) -> Tr<Value> {
                 return unmapped("replacement:DamageDone-counter");
             };
             Ok(json!({"RemoveCounters": {
-                "from": defined(part.get("Defined"))?,
+                "from": defined(part.get("Defined"), shield)?,
                 "counter": counter,
                 "count": damage_amount(ctx, part.get("CounterNum"))?,
             }}))
@@ -80,8 +84,8 @@ fn effect(ctx: &Ctx, part: &Params, recipient_is_you: bool) -> Tr<Value> {
 }
 
 /// The `ReplaceBy` of a damage replacement that names a `ReplaceWith$` part. `recipient_is_you` is whether the line
-/// is about damage to its controller (the only player a life gain may name).
-pub fn by(ctx: &Ctx, p: &Params, name: &str, recipient_is_you: bool) -> Tr<Value> {
+/// is about damage to its controller (the only player a life gain may name); a `shield` is made by an `Effect` object.
+pub fn by(ctx: &Ctx, p: &Params, name: &str, recipient_is_you: bool, shield: bool) -> Tr<Value> {
     let Some(text) = ctx.svar(name) else {
         return unmapped("svar:missing");
     };
@@ -95,7 +99,7 @@ pub fn by(ctx: &Ctx, p: &Params, name: &str, recipient_is_you: bool) -> Tr<Value
                 _ => unmapped("replacement:DamageDone-prevented-amount"),
             }
         }
-        ("RemoveCounter", true) if part.get("Defined") == Some("Self") => {
+        ("RemoveCounter", true) if part.get("Defined") == Some("Self") && !shield => {
             keys(&part, &["Defined", "CounterType", "CounterNum"])?;
             let counter = part.get("CounterType").and_then(counter_kind);
             match (counter, part.get("CounterNum")) {
@@ -103,13 +107,13 @@ pub fn by(ctx: &Ctx, p: &Params, name: &str, recipient_is_you: bool) -> Tr<Value
                 _ => unmapped("replacement:DamageDone-counter"),
             }
         }
-        ("ReplaceEffect", false) if part.get("VarName") == Some("Affected") => {
+        ("ReplaceEffect", false) if part.get("VarName") == Some("Affected") && !shield => {
             keys(&part, &["VarName", "VarValue", "VarType"])?;
             redirect(p, &part)
         }
         ("ReplaceEffect", _) => unmapped("replacement:DamageDone-ReplaceEffect"),
-        (_, true) => Ok(json!({"PreventAnd": [effect(ctx, &part, recipient_is_you)?]})),
-        (_, false) => Ok(json!({"Instead": [effect(ctx, &part, recipient_is_you)?]})),
+        (_, true) => Ok(json!({"PreventAnd": [effect(ctx, &part, recipient_is_you, shield)?]})),
+        (_, false) => Ok(json!({"Instead": [effect(ctx, &part, recipient_is_you, shield)?]})),
     }
 }
 

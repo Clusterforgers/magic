@@ -100,10 +100,7 @@ pub fn translate_face(world: &World, face: &Face) -> FaceOut {
         take(&mut out, result.map(|ability| vec![ability]));
     }
     for body in &face.replacements {
-        take(
-            &mut out,
-            replacement_lines(&mut ctx, body),
-        );
+        take(&mut out, replacement_lines(&mut ctx, body));
     }
     out
 }

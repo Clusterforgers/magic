@@ -38,7 +38,10 @@ pub fn cast_with_flash(ctx: &Ctx, p: &Params) -> Tr<Value> {
     }
     let who = caster(p.get("Caster"))?;
     let what = selector_any(ctx, p.get("ValidCard").unwrap_or("Card"))?;
-    if what.iter().any(|pred| pred.to_string().contains("\"This\"")) {
+    if what
+        .iter()
+        .any(|pred| pred.to_string().contains("\"This\""))
+    {
         return unmapped("static:CastWithFlash-the-card-itself");
     }
     let mut permission = json!({"flash": true});

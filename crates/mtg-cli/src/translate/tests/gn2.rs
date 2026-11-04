@@ -51,11 +51,52 @@ fn damage_replacements_map(#[case] script: &str, #[case] holds: &[&str], #[case]
 }
 
 #[rstest]
+#[case::shields_for_a_creature_as_source_and_recipient(
+    "Name:T\nTypes:Creature Wizard\nA:AB$ Effect | Cost$ 2 U T | ValidTgts$ Creature.YouCtrl | ReplacementEffects$ R1,R2 | RememberObjects$ Targeted | ExileOnMoved$ Battlefield\nSVar:R1:Event$ DamageDone | Prevent$ True | IsCombat$ True | ValidSource$ Card.IsRemembered\nSVar:R2:Event$ DamageDone | Prevent$ True | IsCombat$ True | ValidTarget$ Card.IsRemembered | Secondary$ True\n",
+    &["Shield", "\"source\"", "\"to\""], 2
+)]
+#[case::a_shield_that_puts_counters(
+    "Name:T\nTypes:Sorcery\nA:SP$ Effect | ReplacementEffects$ R | Duration$ EOT\nSVar:R:Event$ DamageDone | ValidTarget$ You | ReplaceWith$ Gain | PreventionEffect$ True\nSVar:Gain:DB$ GainLife | Defined$ ReplacedTarget | LifeAmount$ X\nSVar:X:ReplaceCount$DamageAmount\n",
+    &["Shield", "PreventAnd", "GainLife"], 1
+)]
+#[case::statics_and_a_trigger_of_one_effect(
+    "Name:T\nTypes:Sorcery\nA:SP$ Effect | StaticAbilities$ Pump | Triggers$ Draws\nSVar:Pump:Mode$ Continuous | Affected$ Creature.YouCtrl | AddPower$ 1\nSVar:Draws:Mode$ Drawn | ValidCard$ Card.YouCtrl | TriggerZones$ Command | Execute$ Gain\nSVar:Gain:DB$ GainLife | LifeAmount$ 1\n",
+    &["Continuous", "DelayedTrigger"], 2
+)]
+#[case::two_statics_on_a_target(
+    "Name:T\nTypes:Sorcery\nA:SP$ Effect | ValidTgts$ Creature | RememberObjects$ Targeted | StaticAbilities$ A,B\nSVar:A:Mode$ CantAttack | ValidCard$ Card.IsRemembered\nSVar:B:Mode$ CantBlock | ValidCard$ Card.IsRemembered\n",
+    &["CantAttack", "CantBlock"], 2
+)]
+fn effect_objects_with_several_parts_map(
+    #[case] script: &str,
+    #[case] holds: &[&str],
+    #[case] count: usize,
+) {
+    let found = abilities(script);
+    assert_eq!(found.len(), 1, "{:?}", gaps(script));
+    let effects = found[0]
+        .pointer("/Spell/effects")
+        .or_else(|| found[0].pointer("/Activated/effects"));
+    let effects = effects.cloned().unwrap_or_default();
+    assert_eq!(effects.as_array().map_or(0, Vec::len), count, "{found:?}");
+    let text = shown(script);
+    for part in holds {
+        assert!(text.contains(part), "{part} missing in {text}");
+    }
+}
+
+#[rstest]
 #[case::two_players_in_a_list("ValidTarget$ You,Opponent | Prevent$ True")]
-#[case::redirect_to_another_target("ValidTarget$ You | ReplaceWith$ D | DamageTarget$ Self\nSVar:D:DB$ ReplaceEffect | VarName$ Affected | VarValue$ Enchanted | VarType$ Card")]
-#[case::counters_by_a_variable("ValidTarget$ Card.Self | ReplaceWith$ D | PreventionEffect$ True\nSVar:D:DB$ RemoveCounter | Defined$ ReplacedTarget | CounterType$ P1P1 | CounterNum$ Y")]
+#[case::redirect_to_another_target(
+    "ValidTarget$ You | ReplaceWith$ D | DamageTarget$ Self\nSVar:D:DB$ ReplaceEffect | VarName$ Affected | VarValue$ Enchanted | VarType$ Card"
+)]
+#[case::counters_by_a_variable(
+    "ValidTarget$ Card.Self | ReplaceWith$ D | PreventionEffect$ True\nSVar:D:DB$ RemoveCounter | Defined$ ReplacedTarget | CounterType$ P1P1 | CounterNum$ Y"
+)]
 fn damage_replacements_beyond_the_nodes_stay_gaps(#[case] line: &str) {
-    let script = format!("Name:T\nTypes:Enchantment\nR:Event$ DamageDone | ActiveZones$ Battlefield | {line}\n");
+    let script = format!(
+        "Name:T\nTypes:Enchantment\nR:Event$ DamageDone | ActiveZones$ Battlefield | {line}\n"
+    );
     assert_eq!(abilities(&script), Vec::<Value>::new(), "{script}");
     assert_ne!(gaps(&script), Vec::<String>::new());
 }
@@ -94,11 +135,18 @@ fn animate_and_casting_statics_map(#[case] script: &str, #[case] holds: &[&str])
 
 #[rstest]
 #[case::only_some_cards("Mode$ CantBeCast | ValidCard$ Card.nonCreature | Caster$ You")]
-#[case::a_limit_each_turn("Mode$ CantBeCast | ValidCard$ Card | Caster$ Player | NumLimitEachTurn$ 1")]
-#[case::loyalty_abilities("Mode$ CastWithFlash | ValidCard$ Card.Self | ValidSA$ Activated.Loyalty | Caster$ You")]
-#[case::the_spell_itself("Mode$ CastWithFlash | ValidCard$ Card.Self | ValidSA$ Spell | Caster$ You")]
+#[case::a_limit_each_turn(
+    "Mode$ CantBeCast | ValidCard$ Card | Caster$ Player | NumLimitEachTurn$ 1"
+)]
+#[case::loyalty_abilities(
+    "Mode$ CastWithFlash | ValidCard$ Card.Self | ValidSA$ Activated.Loyalty | Caster$ You"
+)]
+#[case::the_spell_itself(
+    "Mode$ CastWithFlash | ValidCard$ Card.Self | ValidSA$ Spell | Caster$ You"
+)]
 fn casting_statics_beyond_the_nodes_stay_gaps(#[case] line: &str) {
-    let script = format!("Name:T\nTypes:Sorcery\nA:SP$ Effect | StaticAbilities$ S\nSVar:S:{line}\n");
+    let script =
+        format!("Name:T\nTypes:Sorcery\nA:SP$ Effect | StaticAbilities$ S\nSVar:S:{line}\n");
     assert_eq!(abilities(&script), Vec::<Value>::new(), "{script}");
     assert_ne!(gaps(&script), Vec::<String>::new());
 }
