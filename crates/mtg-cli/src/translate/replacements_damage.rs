@@ -8,7 +8,8 @@ use super::effects_obj::duration;
 use super::valid::{selector_any, subject};
 use crate::forge::script::Params;
 
-const KEYS: [&str; 7] = [
+const KEYS: [&str; 8] = [
+    "ReplaceWith",
     "Event",
     "Prevent",
     "IsCombat",
@@ -35,7 +36,9 @@ fn read_keys(p: &Params, static_line: bool) -> Tr<()> {
             return unmapped(format!("key:Replacement.DamageDone.{key}"));
         }
     }
-    if p.get("Prevent") != Some("True") {
+    let prevents = p.get("Prevent") == Some("True");
+    let replaces = p.has("ReplaceWith");
+    if prevents == replaces || (replaces && !static_line) {
         return unmapped("replacement:DamageDone-not-a-prevention");
     }
     match (p.get("ActiveZones"), static_line) {
@@ -86,7 +89,36 @@ pub fn static_prevention(ctx: &Ctx, p: &Params) -> Tr<Value> {
     if let Some(combat) = combat(p)? {
         when.insert("combat".into(), json!(combat));
     }
-    Ok(json!({"Replacement": {"when": {"Damage": when}, "by": "Prevent"}}))
+    let by = match p.get("ReplaceWith") {
+        None => json!("Prevent"),
+        Some(name) => scaled(ctx, name)?,
+    };
+    Ok(json!({"Replacement": {"when": {"Damage": when}, "by": by}}))
+}
+
+/// `ReplaceEffect` of the damage amount (`ReplaceCount$DamageAmount/Twice`) as a multiplication or an addition.
+fn scaled(ctx: &Ctx, name: &str) -> Tr<Value> {
+    let Some(part) = ctx.svar(name).map(Params::parse) else {
+        return unmapped("svar:missing");
+    };
+    for (key, _) in part.iter() {
+        if !["DB", "VarName", "VarValue"].contains(&key) && !is_hint(key) {
+            return unmapped(format!("key:ReplaceEffect.{key}"));
+        }
+    }
+    if part.get("DB") != Some("ReplaceEffect") || part.get("VarName") != Some("DamageAmount") {
+        return unmapped("replacement:DamageDone-ReplaceWith-shape");
+    }
+    let expression = part.get("VarValue").and_then(|var| ctx.svar(var)).unwrap_or_default();
+    match expression.strip_prefix("ReplaceCount$DamageAmount/") {
+        Some("Twice") => Ok(json!({"Multiply": 2})),
+        Some("Thrice") => Ok(json!({"Multiply": 3})),
+        Some(step) => match step.strip_prefix("Plus.").and_then(|n| n.parse::<u32>().ok()) {
+            Some(n) => Ok(json!({"Add": n})),
+            None => unmapped("replacement:DamageDone-ReplaceCount-step"),
+        },
+        None => unmapped("replacement:DamageDone-ReplaceCount"),
+    }
 }
 
 /// The `Shield` an `Effect` line makes from the prevention its `ReplacementEffects$` names; `remembered` is what

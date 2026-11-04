@@ -81,11 +81,12 @@ fn change_zone(ctx: &mut Ctx, p: &Params, origin: &str, destination: &str) -> Tr
             "Shuffle",
             "Tapped",
             "RememberChanged",
+            "RememberLKI",
         ],
     )?;
     let what = subject(ctx, p, "Self", Some(origin))?;
     let mut effect = moves(&what, goes(p, destination)?);
-    if p.get("RememberChanged") == Some("True") {
+    if p.get("RememberChanged") == Some("True") || p.get("RememberLKI") == Some("True") {
         // Only an exile binds the new objects; a move of a target does not name what it moved.
         if effect.get("Exile").is_none() {
             return unmapped("key:ChangeZone.RememberChanged-move");

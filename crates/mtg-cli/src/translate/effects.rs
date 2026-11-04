@@ -268,7 +268,7 @@ fn delayed(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     only(
         p,
         "DelayedTrigger",
-        &["Mode", "Phase", "ValidPlayer", "Execute", "NextTurn"],
+        &["Mode", "Phase", "ValidPlayer", "Execute", "NextTurn", "RememberObjects"],
     )?;
     if p.get("Mode") != Some("Phase") {
         return unmapped("key:DelayedTrigger.Mode");
@@ -282,6 +282,11 @@ fn delayed(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     let Some(execute) = p.get("Execute") else {
         return unmapped("key:DelayedTrigger.no-Execute");
     };
+    match p.get("RememberObjects") {
+        None => {}
+        Some("Remembered" | "RememberedLKI") if ctx.remembered.is_some() => {}
+        Some(other) => return unmapped(format!("key:DelayedTrigger.RememberObjects={other}")),
+    }
     let part = ctx.sub(execute)?;
     let effects = chain_at(ctx, &part, false)?;
     let when = json!({"StepBegins": {"step": step, "whose": whose}});

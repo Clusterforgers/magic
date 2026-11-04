@@ -80,6 +80,21 @@ fn atoms_outside_the_nodes_stay_gaps(#[case] valid: &str) {
     "Name:T\nTypes:Enchantment Aura\nR:Event$ DamageDone | ActiveZones$ Battlefield | Prevent$ True | ValidSource$ Creature.EnchantedBy\n",
     json!({"Replacement": {"when": {"Damage": {"source": [{"Type": "Creature"}, {"Is": "Attached"}]}}, "by": "Prevent"}})
 )]
+#[case::double_damage_of_your_creatures(
+    "Name:T\nTypes:Enchantment\nR:Event$ DamageDone | ActiveZones$ Battlefield | ValidSource$ Creature.YouCtrl | ReplaceWith$ Twice\nSVar:Twice:DB$ ReplaceEffect | VarName$ DamageAmount | VarValue$ X\nSVar:X:ReplaceCount$DamageAmount/Twice\n",
+    json!({"Replacement": {"when": {"Damage": {"source": [{"Type": "Creature"}, {"ControlledBy": "You"}]}}, "by": {"Multiply": 2}}})
+)]
+#[case::one_more_damage_to_opponents(
+    "Name:T\nTypes:Enchantment\nR:Event$ DamageDone | ValidTarget$ Player.Opponent | ReplaceWith$ More\nSVar:More:DB$ ReplaceEffect | VarName$ DamageAmount | VarValue$ X\nSVar:X:ReplaceCount$DamageAmount/Plus.1\n",
+    json!({"Replacement": {"when": {"Damage": {"to": "Opponents"}}, "by": {"Add": 1}}})
+)]
+#[case::exile_and_return_at_end_of_turn(
+    "Name:T\nTypes:Instant\nA:SP$ ChangeZone | ValidTgts$ Creature | Origin$ Battlefield | Destination$ Exile | RememberLKI$ True | SubAbility$ Later\nSVar:Later:DB$ DelayedTrigger | Mode$ Phase | Phase$ End of Turn | RememberObjects$ RememberedLKI | Execute$ Back\nSVar:Back:DB$ ChangeZone | Origin$ Exile | Destination$ Battlefield | Defined$ DelayTriggerRememberedLKI\n",
+    json!({"Spell": {"targets": [{"what": {"Object": [{"Type": "Creature"}]}}], "effects": [
+        {"Exile": {"what": {"Target": 0}, "as": "exiled"}},
+        {"DelayedTrigger": {"when": {"StepBegins": {"step": "End", "whose": "EachPlayer"}}, "effects": [
+            {"Move": {"what": {"Bound": "exiled"}, "to": {"Battlefield": {}}}}]}}]}})
+)]
 #[case::shield_to_target(
     "Name:T\nTypes:Instant\nA:SP$ Effect | ValidTgts$ Creature | ReplacementEffects$ RPrevent | RememberObjects$ Targeted\nSVar:RPrevent:Event$ DamageDone | Prevent$ True | ValidTarget$ Card.IsRemembered | Description$ x\n",
     json!({"Spell": {"targets": [{"what": {"Object": [{"Type": "Creature"}]}}],
