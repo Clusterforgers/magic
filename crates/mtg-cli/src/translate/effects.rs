@@ -275,7 +275,7 @@ fn api_line(ctx: &mut Ctx, p: &Params, api: &str) -> Tr<Vec<Value>> {
         "Destroy" | "DestroyAll" | "Counter" | "Pump" | "PumpAll" | "PutCounter"
         | "RemoveCounter" | "Tap" | "Untap" | "TapAll" | "UntapAll" | "Sacrifice"
         | "Regenerate" | "Fight" | "GainControl" | "DamageAll" | "Animate" | "PreventDamage"
-        | "PutCounterAll" | "AnimateAll" => effects_obj::effects(ctx, p, api),
+        | "DamageResolve" | "PutCounterAll" | "AnimateAll" => effects_obj::effects(ctx, p, api),
         "ChangeZone" | "ChangeZoneAll" => effects_zone::effects(ctx, p, api),
         "Token" | "Mana" | "Investigate" => tokens::effects(ctx, p, api),
         other => unmapped(format!("effect:{other}")),
@@ -311,6 +311,7 @@ fn deal_damage(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
         p,
         "DealDamage",
         &[
+            "DamageMap",
             "NumDmg",
             "ValidTgts",
             "Defined",
@@ -320,6 +321,7 @@ fn deal_damage(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
             "DividedAsYouChoose",
         ],
     )?;
+    super::effects_obj::damage_map(p)?;
     let to = subject(ctx, p, "Self", None)?;
     let amount = if divided(p, "NumDmg")? {
         json!("Divided")
@@ -508,8 +510,20 @@ fn delayed(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
         ctx.pinned = before;
         read?
     };
-    let part = ctx.sub(execute)?;
-    let effects = chain_at(ctx, &part, false)?;
+    // The `Triggered*` words of what it does are about the event it waited for.
+    let shape = (p.get("Mode") != Some("Phase")).then(|| super::triggered::Shape {
+        mode: p.get("Mode").unwrap_or_default().to_owned(),
+        itself: super::triggers::is_about_itself(&when),
+        by: when
+            .get("BecomesBlocked")
+            .is_some_and(|node| node.get("by").is_some()),
+    });
+    let outer = std::mem::replace(&mut ctx.trigger, shape);
+    let effects = ctx
+        .sub(execute)
+        .and_then(|part| chain_at(ctx, &part, false));
+    ctx.trigger = outer;
+    let effects = effects?;
     let mut node = json!({"DelayedTrigger": {"when": when, "effects": effects}});
     if this_turn {
         node["DelayedTrigger"]["this_turn"] = json!(true);

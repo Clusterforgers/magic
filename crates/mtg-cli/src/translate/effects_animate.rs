@@ -18,18 +18,20 @@ pub fn abilities(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             mods.push(json!({ "RemoveKeyword": keyword }));
         }
     }
-    for (key, trigger) in [("Triggers", true), ("Abilities", false)] {
+    for (key, kind) in [
+        ("Triggers", Given::Trigger),
+        ("Abilities", Given::Ability),
+        ("staticAbilities", Given::Static),
+    ] {
         let Some(names) = p.get(key) else { continue };
         for name in names.split(',').map(str::trim) {
             let Some(text) = ctx.svar(name).map(str::to_owned) else {
                 return unmapped("svar:missing");
             };
-            let given = ctx.nested(None, |ctx| {
-                if trigger {
-                    Ok(vec![super::triggers::triggered(ctx, &text)?])
-                } else {
-                    super::ability::ability_line(ctx, &text)
-                }
+            let given = ctx.nested(None, |ctx| match kind {
+                Given::Trigger => Ok(vec![super::triggers::triggered(ctx, &text)?]),
+                Given::Ability => super::ability::ability_line(ctx, &text),
+                Given::Static => given_static(ctx, &text).map(|given| vec![given]),
             })?;
             mods.extend(given.into_iter().map(|a| json!({"GrantAbility": a})));
         }
@@ -40,4 +42,31 @@ pub fn abilities(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
 /// The static a `Mode$` word of an animation stands for; `None` until a word is read.
 pub fn animate_words(_ctx: &mut Ctx, _p: &Params) -> Option<Tr<Value>> {
     None
+}
+
+/// Which kind of ability an `Animate` key gives.
+#[derive(Clone, Copy)]
+enum Given {
+    Trigger,
+    Ability,
+    Static,
+}
+
+/// A static ability the object gains: only a `Static` that does not itself give abilities, the form the engine grants.
+fn given_static(ctx: &mut Ctx, text: &str) -> Tr<Value> {
+    let given = super::statics::static_line(ctx, text)?;
+    let Some(inner) = given.get("Static") else {
+        return unmapped("key:Animate.staticAbilities-kind");
+    };
+    if inner.get("defining").is_some() {
+        return unmapped("key:Animate.staticAbilities-defining");
+    }
+    let grants = inner
+        .get("mods")
+        .and_then(Value::as_array)
+        .is_some_and(|mods| mods.iter().any(|m| m.get("GrantAbility").is_some()));
+    if grants {
+        return unmapped("key:Animate.staticAbilities-grants");
+    }
+    Ok(given)
 }

@@ -36,9 +36,10 @@ const NAMED: [&str; 8] = [
 /// `Token`: the created tokens, and with `AtEOT$` the delayed clean-up of exactly those tokens.
 fn token(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     let Some(word) = p.get("AtEOT") else {
-        return Ok(vec![token_create(ctx, p)?]);
+        return token_create(ctx, p);
     };
-    let mut create = token_create(ctx, &p.without(&["AtEOT"]))?;
+    let mut created = token_create(ctx, &p.without(&["AtEOT"]))?;
+    let create = &mut created[0];
     let bound = if let Some(name) = create["CreateToken"].get("as") {
         json!({ "Bound": name })
     } else {
@@ -47,10 +48,11 @@ fn token(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         json!({ "Bound": name })
     };
     let clean_up = super::tokens_copy::at_eot(word, &bound)?;
-    Ok(vec![create, clean_up])
+    created.push(clean_up);
+    Ok(created)
 }
 
-fn token_create(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
+fn token_create(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     only(
         p,
         "Token",
@@ -61,6 +63,8 @@ fn token_create(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
             "TokenTapped",
             "TokenAttacking",
             "RememberTokens",
+            "AttachedTo",
+            "ValidTgts",
         ],
     )?;
     let Some(script) = p.get("TokenScript") else {
@@ -87,7 +91,10 @@ fn token_create(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
         ctx.remembered = Some(json!({ "Bound": name }));
         create["as"] = json!(name);
     }
-    Ok(json!({ "CreateToken": create }))
+    let attach = attached(ctx, p, face, &mut create)?;
+    let mut effects = vec![json!({ "CreateToken": create })];
+    effects.extend(attach);
+    Ok(effects)
 }
 
 /// What a token script describes: a predefined token of the corpus, or a custom one.
@@ -249,4 +256,31 @@ fn spend_on(restriction: &str) -> Tr<Value> {
         filter["supertypes"] = json!(supertypes);
     }
     Ok(json!({ "Spell": filter }))
+}
+
+/// `AttachedTo$`: an Aura or Equipment token created attached to the target or to the source. A Role needs the rule that
+/// keeps one per controller on an object, which the engine lacks, so it stays a gap.
+fn attached(ctx: &mut Ctx, p: &Params, face: &Face, create: &mut Value) -> Tr<Option<Value>> {
+    let Some(word) = p.get("AttachedTo") else {
+        if p.has("ValidTgts") {
+            return unmapped("key:Token.ValidTgts");
+        }
+        return Ok(None);
+    };
+    if face.types.split_whitespace().any(|w| w == "Role") {
+        return unmapped("token:Role-rule");
+    }
+    let to = match (word, p.has("ValidTgts")) {
+        ("Targeted", true) => super::valid::subject(ctx, p, "", None)?,
+        ("Self", false) => defined(ctx, "Self")?,
+        _ => return unmapped(format!("key:Token.AttachedTo={word}")),
+    };
+    let name = if let Some(name) = create.get("as").and_then(Value::as_str) {
+        name.to_owned()
+    } else {
+        let name = ctx.fresh("token");
+        create["as"] = json!(name);
+        name
+    };
+    Ok(Some(json!({"Attach": {"what": {"Bound": name}, "to": to}})))
 }
