@@ -11,7 +11,7 @@ use std::path::{Path, PathBuf};
 use mtg_cards::compile::compile;
 use mtg_cards::load::{Library, canonical, slug, unwhole};
 use mtg_cards::proposal::partial::{LedgerLine, PartialProof};
-use mtg_cards::proposal::{Report, Verdict, check, check_exact, merge};
+use mtg_cards::proposal::{Report, Verdict, check, check_exact, merge, refusal};
 use mtg_cards::support::{Caps, PrintedCard, Support, support};
 use mtg_cards::{builtin, card::Card};
 use mtg_db::{Database, SOURCE_FORGE, SOURCE_SWEEP};
@@ -38,6 +38,8 @@ pub enum W2aSkip {
     Compiled,
     /// The checker does not accept the proposal.
     Rejected(Verdict),
+    /// The compiler reads part of the card and the merged reading drops or doubles a clause (named in the detail).
+    Merge(&'static str),
     /// Accepted, but with a state that is not promoted (`Partial` is, with `--partial`).
     State(Support),
     /// The rules name a card without a corpus file (a partner), so the corpus would not load.
@@ -63,6 +65,7 @@ impl W2aSkip {
     /// The reason in a few words.
     pub fn reason(self) -> String {
         match self {
+            W2aSkip::Merge(word) => word.to_owned(),
             W2aSkip::NoCard => "no stored card is named after the file".into(),
             W2aSkip::CorpusFile => "already a corpus card".into(),
             W2aSkip::Compiled => "the compiler makes it Verified".into(),
@@ -214,8 +217,20 @@ impl W2aBasis<'_> {
                 return direct;
             }
         }
+        let mut report = report;
+        if verdict == Verdict::Accepted
+            && let Some(merged) = self.merged(&report, printed)
+        {
+            if let Some(refused) = refusal(&report, &merged) {
+                *detail = Some(refused.named().to_owned());
+                return Err(W2aSkip::Merge(refused.word()));
+            }
+            if merged.verdict() == Verdict::Accepted {
+                report = merged;
+            }
+        }
         let (Verdict::Accepted, Some(record), Some(rules)) =
-            (verdict, report.support, report.rules)
+            (report.verdict(), report.support, report.rules)
         else {
             return Err(W2aSkip::Rejected(verdict));
         };

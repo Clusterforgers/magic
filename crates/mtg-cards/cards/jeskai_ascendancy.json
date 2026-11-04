@@ -1,0 +1,39 @@
+{
+  "oracle_id": "c3c802ba-dfbb-4f63-ae9a-e29c2e30013d",
+  "name": "Jeskai Ascendancy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jeskai Ascendancy",
+      "oracle_fingerprint": "6c4df1e24727d12dee71eb706d046e3b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Not": { "Type": "Creature" } }], "by": "You" } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Untap": { "what": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Not": { "Type": "Creature" } }], "by": "You" } },
+            "effects": [
+              { "May": { "effects": [{ "Draw": {} }] } },
+              { "If": { "condition": "Performed", "then": [{ "Discard": {} }] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

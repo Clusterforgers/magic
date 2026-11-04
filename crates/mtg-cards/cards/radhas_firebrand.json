@@ -1,0 +1,73 @@
+{
+  "oracle_id": "0d6d5509-41e5-4099-98a0-18ae7531df7d",
+  "name": "Radha's Firebrand",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Radha's Firebrand",
+      "oracle_fingerprint": "a3e12d2fb79354e081e5bee30787d9f0",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "ControlledBy": "Defending" },
+                    {
+                      "Compare": {
+                        "stat": "Power",
+                        "op": "Lt",
+                        "to": { "Stat": { "of": "This", "stat": "Power" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["CantBlock"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{5}{R}" },
+              {
+                "Changed": {
+                  "change": "Reduce",
+                  "mana": "{1}",
+                  "per": {
+                    "Distinct": {
+                      "of": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                      "stat": "BasicLandTypes"
+                    }
+                  }
+                }
+              }
+            ],
+            "limit": "OncePerTurn",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

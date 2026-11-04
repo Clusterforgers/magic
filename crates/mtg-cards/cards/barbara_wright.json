@@ -1,0 +1,20 @@
+{
+  "oracle_id": "0e61a062-f13a-4958-91de-909650c662a8",
+  "name": "Barbara Wright",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Barbara Wright",
+      "oracle_fingerprint": "e39b8be6622ca686622e71a59363ee97",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Saga" }, { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": "ReadAhead" }]
+          }
+        },
+        { "Keyword": "DoctorsCompanion" }
+      ]
+    }
+  ]
+}

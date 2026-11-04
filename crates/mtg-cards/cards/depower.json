@@ -1,0 +1,35 @@
+{
+  "oracle_id": "33f89437-885b-4850-88b7-239f5dfcc8b1",
+  "name": "Depower",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Depower",
+      "oracle_fingerprint": "0a373d61e3efdf3a5f6efa3edfd0b3a6",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This", { "Targeting": [{ "Type": "Creature" }, "Attacking"] }],
+            "change": "Reduce",
+            "mana": "{2}"
+          }
+        },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": -4, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

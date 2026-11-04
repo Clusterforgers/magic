@@ -1,0 +1,30 @@
+{
+  "oracle_id": "fe83087d-c6c1-40be-9295-baaa1c6b2db1",
+  "name": "Mondrak, Glory Dominus",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mondrak, Glory Dominus",
+      "oracle_fingerprint": "b03c6089b21797256dc7dc4bdc875eb6",
+      "abilities": [
+        { "Replacement": { "when": { "TokenCreation": {} }, "by": { "Multiply": 2 } } },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{1}{W/P}{W/P}" },
+              {
+                "Sacrifice": {
+                  "filter": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] }, "Other"],
+                  "count": 2
+                }
+              }
+            ],
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": { "Other": "indestructible" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
