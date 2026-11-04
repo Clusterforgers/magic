@@ -524,6 +524,12 @@ impl<'a> Walker<'a> {
                 self.uses("Pred", "GreatestAmong");
                 self.at("group", |w| w.selector(group));
             }
+            Pred::HasKeywordNamed(name) => {
+                self.uses("Pred", "HasKeywordNamed");
+                if !Keyword::NAMES.contains(&name.as_str()) {
+                    self.problem(format!("`{name}` is not a keyword"));
+                }
+            }
             Pred::LeastAmong { group, .. } => {
                 self.uses("Pred", "LeastAmong");
                 self.at("group", |w| w.selector(group));
@@ -603,6 +609,7 @@ impl<'a> Walker<'a> {
             | Pred::SingleTarget
             | Pred::GreatestAmong { .. }
             | Pred::LeastAmong { .. }
+            | Pred::HasKeywordNamed(_)
             | Pred::Kicked
             | Pred::CounterCount { .. }
             | Pred::Suspended => self.fe1a_pred(pred),

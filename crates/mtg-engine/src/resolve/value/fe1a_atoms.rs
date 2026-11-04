@@ -73,6 +73,15 @@ impl Scope<'_> {
                 payments(card.card(), card.paid_costs(), OptionalKind::Kicker) > 0
             }),
             Pred::GreatestAmong { stat, group } => self.fe1a_greatest(*stat, group, seen, false)?,
+            // Like `HasKeyword`, an object that changed zones has the keywords its snapshot holds.
+            Pred::HasKeywordNamed(name) => match seen.keywords {
+                Some(held) => held.iter().any(|keyword| keyword.name() == name),
+                None => seen.card.is_some_and(|card| {
+                    keywords_of(self.state, card.id())
+                        .into_iter()
+                        .any(|keyword| keyword.name() == name)
+                }),
+            },
             Pred::LeastAmong { stat, group } => self.fe1a_greatest(*stat, group, seen, true)?,
             Pred::Suspended => {
                 seen.zone == Zone::Exile

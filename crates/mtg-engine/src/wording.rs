@@ -126,6 +126,7 @@ fn phrase(selector: &Selector) -> (String, String) {
             Pred::HasKeyword(keyword) => {
                 tail.push(format!("with {}", keyword.shown_name().to_lowercase()));
             }
+            Pred::HasKeywordNamed(name) => tail.push(format!("with {}", name.to_lowercase())),
             Pred::HasCounter(kind) => tail.push(format!("with a {} counter on it", kind.name())),
             Pred::HasAnyCounter => tail.push("with a counter on it".to_owned()),
             Pred::CounterCount { kind, op, to } => {

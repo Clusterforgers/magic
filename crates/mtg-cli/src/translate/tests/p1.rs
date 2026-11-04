@@ -47,6 +47,9 @@ fn refuses(spec: &str, gap: &str) {
     "Creature.YouOwn+ThisTurnEnteredFrom_Battlefield",
     json!([{"Type": "Creature"}, {"OwnedBy": "You"}, {"ArrivedFrom": "Battlefield"}])
 )]
+#[case::toxic_at_any_value("Creature.withToxic", json!([{"Type": "Creature"}, {"HasKeywordNamed": "Toxic"}]))]
+#[case::cycling_at_any_cost("Card.withCycling", json!([{"HasKeywordNamed": "Cycling"}]))]
+#[case::spaced_keyword("Creature.withFirst Strike", json!([{"Type": "Creature"}, {"HasKeyword": "FirstStrike"}]))]
 #[case::greatest_power(
     "Creature.greatestPower",
     json!([{"Type": "Creature"}, {"GreatestAmong": {"stat": "Power", "group": [{"Type": "Creature"}]}}])
@@ -191,6 +194,7 @@ fn unknown_words_stay_gaps(#[case] spec: &str, #[case] gap: &str) {
 }
 
 #[rstest]
+#[case::not_a_keyword("Creature.withQuux", "valid:withQuux")]
 #[case::group_without_a_kind("Card.greatestPower", "valid:greatestPower-without-a-kind")]
 #[case::unknown_controller(
     "Creature.leastPowerControlledByBogus",

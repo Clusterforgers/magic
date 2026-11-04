@@ -307,6 +307,49 @@ fn greatest_among_follows_a_growing_creature() {
 }
 
 #[rstest]
+#[case::any_value_of_the_keyword("Toxic", &["Toxic 1", "Toxic 3"])]
+#[case::another_keyword("Flying", &[])]
+#[case::unspoken("Cycling", &[])]
+fn has_keyword_named_holds_at_any_value_of_the_parameter(
+    #[values(2, 3, 4)] seats: usize,
+    #[case] name: &str,
+    #[case] holders: &[&str],
+) {
+    let toxic = |label: &str, n: u32| {
+        Arc::new(
+            CardDefinition::new(label)
+                .with_type(CardType::Creature)
+                .with_power_toughness(1, 1)
+                .with_rules(Ability::Keyword(Keyword::Toxic(n))),
+        )
+    };
+    let game = state(
+        (0..seats).map(|_| Vec::new()).collect(),
+        (0..seats)
+            .map(|s| {
+                if s == 0 {
+                    vec![
+                        toxic("Toxic 1", 1),
+                        toxic("Toxic 3", 3),
+                        creature("Plain", 1, 1),
+                        creature("Guest 0", 2, 2),
+                    ]
+                } else {
+                    vec![creature(&format!("Guest {s}"), 2, 2)]
+                }
+            })
+            .collect(),
+    );
+    for label in ["Toxic 1", "Toxic 3", "Plain"] {
+        assert_eq!(
+            holds(&game, Pred::HasKeywordNamed(name.to_owned()), label),
+            holders.contains(&label),
+            "{label}"
+        );
+    }
+}
+
+#[rstest]
 #[case::with_time_counters(3, true)]
 #[case::without_counters(0, false)]
 fn suspended_is_a_card_in_exile_with_time_counters_and_suspend(

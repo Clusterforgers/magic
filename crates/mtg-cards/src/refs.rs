@@ -242,6 +242,9 @@ pub enum Pred {
     CastFrom(ZoneKind),
     /// Has the keyword.
     HasKeyword(Keyword),
+    /// Has the keyword at any value of its parameter ("with toxic", "with cycling"); the name is Scryfall's spelling
+    /// (`Keyword::NAMES`).
+    HasKeywordNamed(String),
     /// Has at least one counter of the kind on it.
     HasCounter(CounterKind),
     /// Has at least one counter of any kind on it (CR 122.1).

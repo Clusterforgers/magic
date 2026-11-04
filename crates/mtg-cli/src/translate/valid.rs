@@ -104,6 +104,14 @@ fn property(ctx: &Ctx, prop: &str) -> Tr<Vec<Value>> {
     {
         return one(json!({"Not": {"HasKeyword": keyword}}));
     }
+    // A keyword with a parameter (`withToxic`): has it at any value.
+    if let Some(word) = prop.strip_prefix("with")
+        && let Some(name) = mtg_cards::keyword::Keyword::NAMES
+            .iter()
+            .find(|name| name.eq_ignore_ascii_case(&spaced(word)))
+    {
+        return one(json!({"HasKeywordNamed": name}));
+    }
     if let Some(rest) = prop.strip_prefix("non")
         && ctx.world.subtypes.contains(&capitalize(rest))
     {
@@ -119,7 +127,7 @@ fn property(ctx: &Ctx, prop: &str) -> Tr<Vec<Value>> {
 fn spaced(word: &str) -> String {
     let mut out = String::new();
     for (at, c) in word.chars().enumerate() {
-        if at > 0 && c.is_uppercase() {
+        if at > 0 && c.is_uppercase() && !out.ends_with(' ') {
             out.push(' ');
         }
         out.push(c);

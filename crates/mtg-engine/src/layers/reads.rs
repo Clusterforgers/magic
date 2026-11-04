@@ -266,7 +266,7 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         Pred::SharesSubtype(who) => Traits::SUBTYPES.or(reads_of_ref(who)),
         Pred::Color(_) | Pred::Colorless | Pred::ChosenColor => Traits::COLORS,
         Pred::ControlledBy(who) => Traits::CONTROL.or(reads_of_ref(who)),
-        Pred::HasKeyword(_) => Traits::KEYWORDS,
+        Pred::HasKeyword(_) | Pred::HasKeywordNamed(_) => Traits::KEYWORDS,
         Pred::Compare { stat, to, .. } => reads_of_stat(*stat).or(reads_of_amount(to)),
         Pred::Not(inner) => reads_of_pred(inner),
         Pred::Targeting(inner) | Pred::HasAttached(inner) => reads_of_selector(inner),
