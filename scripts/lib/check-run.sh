@@ -19,6 +19,9 @@ take_lease() {
   flock -n 7 || true
 }
 
+# drop_lease: stop counting this check as running while it only waits (closing fd 7 releases the lock).
+drop_lease() { exec 7>&- 2>/dev/null || true; }
+
 # running_checks: how many checks hold a lease, this one included; leases of dead checks are removed.
 running_checks() {
   local f n=0
@@ -206,7 +209,9 @@ run_units() {
     if ((${#running[@]} == 0)); then
       # Only units that need the Postgres lock are left, and another check holds it.
       wait_start=$SECONDS
+      drop_lease
       flock 9
+      take_lease
       lock_held=0
       secs["lock wait"]=$((${secs["lock wait"]:-0} + SECONDS - wait_start))
       continue

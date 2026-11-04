@@ -70,6 +70,24 @@ wait %1 2>/dev/null || true
 check "postgres lock: others first" "$(tr '\n' ' ' <"$scratch/events")" "t1 s t1 e p1 s p1 e "
 check "postgres lock: waited" "$((elapsed >= 1 ? 1 : 0))" 1
 
+# A check that only waits for the Postgres lock does not count as running, and counts again after.
+take_lease
+check "lease: own check counts" "$(running_checks)" 1
+exec 8>"$lease_dir/run.other"; flock -n 8
+check "lease: two checks" "$(running_checks)" 2
+drop_lease
+check "lease: waiting check not counted" "$(running_checks)" 1
+take_lease
+check "lease: counted again after" "$(running_checks)" 2
+exec 8>&-
+
+# The Postgres unit sizes its threads from the share after the wait: with no other check it gets what is free (at most 12).
+flock "$pg_lock" sleep 1 &
+sleep 0.3
+MTG_TEST_THREADS=24 sched 'unset RUST_TEST_THREADS; unit p1 pg "echo \$RUST_TEST_THREADS >'"$scratch"'/thr.p1"'
+wait %1 2>/dev/null || true
+check "postgres lock: threads after the wait" "$(cat "$scratch/thr.p1")" 12
+
 # The first failure stops the rest, and the failing names come last.
 sched 'unit long tests "echo \$\$ >'"$scratch"'/long.pid; exec sleep 60"
        unit bad tests "sleep 0.4; echo \"test m::broken ... FAILED\"; echo failures:; echo boom; exit 101"'
