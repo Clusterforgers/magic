@@ -66,6 +66,7 @@ fn token(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
             "TokenOwner",
             "TokenTapped",
             "TokenAttacking",
+            "RememberTokens",
         ],
     )?;
     let Some(script) = p.get("TokenScript") else {
@@ -80,13 +81,19 @@ fn token(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     let token = token_ref(ctx, face)?;
     let count = amount(ctx, p.get("TokenAmount").unwrap_or("1"))?;
     let who = defined(ctx, p.get("TokenOwner").unwrap_or("You"))?;
-    Ok(json!({"CreateToken": {
+    let mut create = json!({
         "who": who,
         "token": token,
         "count": count,
         "tapped": p.get("TokenTapped") == Some("True"),
         "attacking": p.get("TokenAttacking") == Some("True"),
-    }}))
+    });
+    if p.get("RememberTokens") == Some("True") {
+        let name = ctx.fresh("token");
+        ctx.remembered = Some(json!({ "Bound": name }));
+        create["as"] = json!(name);
+    }
+    Ok(json!({ "CreateToken": create }))
 }
 
 /// What a token script describes: a predefined token of the corpus, or a custom one.

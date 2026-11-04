@@ -7,12 +7,16 @@
 
 pub mod ability;
 pub mod amount;
+pub mod amount_when;
 pub mod card;
 pub mod condition;
 pub mod cost;
 pub mod ctx;
 pub mod effects;
+pub mod effects_ambient;
 pub mod effects_effect;
+pub mod effects_emblem;
+pub mod effects_loop;
 pub mod effects_obj;
 pub mod effects_zone;
 pub mod keyword;
@@ -20,6 +24,7 @@ pub mod mayplay;
 pub mod needs;
 pub mod oracle;
 pub mod replacements;
+pub mod replacements_damage;
 pub mod report;
 pub mod statics;
 pub mod stored;
@@ -27,6 +32,7 @@ pub mod tokens;
 pub mod triggers;
 pub mod triggers_more;
 pub mod valid;
+pub mod valid_atoms;
 
 #[cfg(test)]
 mod tests;

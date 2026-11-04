@@ -7,7 +7,7 @@ use super::condition::{condition, strip};
 use super::cost::cost;
 use super::ctx::{Ctx, Tr, is_hint, unmapped};
 use super::keyword::keyword_list;
-use super::valid::{defined, selector_any};
+use super::valid::{defined, selector_any, selector_in};
 use crate::forge::script::Params;
 
 /// A static line as an ability.
@@ -52,10 +52,13 @@ fn keys(p: &Params, mode: &str, read: &[&str]) -> Tr<()> {
 
 /// The objects a static line affects: `Affected$` or `AffectedDefined$`.
 fn affected(ctx: &Ctx, p: &Params) -> Tr<Value> {
+    if p.has("AffectedZone") && (p.has("AffectedDefined") || !p.has("Affected")) {
+        return unmapped("key:Static.Continuous.AffectedZone-without-Affected");
+    }
     match (p.get("AffectedDefined"), p.get("Affected")) {
         (Some(word), None | Some("Creature" | "Card" | "Permanent")) => static_defined(ctx, word),
         (Some(_), Some(_)) => unmapped("static-affected:Defined+Affected"),
-        (None, Some(valid)) => affected_valid(ctx, valid),
+        (None, Some(valid)) => zoned(ctx, valid, p.get("AffectedZone")),
         (None, None) if p.get("CharacteristicDefining") == Some("True") => Ok(json!("This")),
         (None, None) => unmapped("static-affected:none"),
     }
@@ -65,6 +68,23 @@ fn static_defined(ctx: &Ctx, word: &str) -> Tr<Value> {
     match word {
         "Self" | "Enchanted" | "Equipped" => defined(ctx, word),
         other => unmapped(format!("static-affected:{other}")),
+    }
+}
+
+/// The objects of a valid-string in the zone `AffectedZone$` names: a single zone other than the battlefield, whose cards
+/// the layers hold like permanents.
+fn zoned(ctx: &Ctx, valid: &str, zone: Option<&str>) -> Tr<Value> {
+    match zone {
+        None | Some("Battlefield") => affected_valid(ctx, valid),
+        Some(zone @ ("Hand" | "Graveyard" | "Exile" | "Library")) => {
+            Ok(json!({"Each": selector_in(ctx, valid, Some(zone))?}))
+        }
+        Some("Stack") => {
+            let mut preds = selector_any(ctx, valid)?;
+            preds.push(json!({"In": "Stack"}));
+            Ok(json!({"Each": preds}))
+        }
+        Some(other) => unmapped(format!("key:Static.Continuous.AffectedZone={other}")),
     }
 }
 
@@ -80,8 +100,9 @@ fn affected_valid(ctx: &Ctx, word: &str) -> Tr<Value> {
 }
 
 /// The keys a continuous static line reads.
-const CONTINUOUS: [&str; 18] = [
+const CONTINUOUS: [&str; 19] = [
     "AddSVar",
+    "AffectedZone",
     "AddAbility",
     "AddTrigger",
     "AddType",

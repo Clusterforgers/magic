@@ -6,7 +6,7 @@ use super::amount::amount;
 use super::condition::prefixed;
 use super::ctx::{Ctx, Tr, only, unmapped};
 use super::valid::{defined, subject};
-use super::{effects_effect, effects_obj, effects_zone, tokens};
+use super::{effects_effect, effects_loop, effects_obj, effects_zone, tokens};
 use crate::forge::script::Params;
 
 /// The effects of an ability line and of the sub-abilities it names, in order.
@@ -21,7 +21,11 @@ pub fn chain_at(ctx: &mut Ctx, p: &Params, top: bool) -> Tr<Vec<Value>> {
     let (condition, own) = prefixed(ctx, p)?;
     let mut effects = line(ctx, &own.without(&["UnlessCost", "UnlessPayer"]))?;
     if let Some(unless) = p.get("UnlessCost") {
-        effects = unless_pays(ctx, p, unless, &effects)?;
+        effects = if p.get("UnlessSwitched") == Some("True") {
+            pays_to_do(ctx, p, unless, &effects)?
+        } else {
+            unless_pays(ctx, p, unless, &effects)?
+        };
     }
     if let Some(condition) = condition {
         effects = vec![json!({"If": {"condition": condition, "then": effects}})];
@@ -59,6 +63,20 @@ fn unless_pays(ctx: &Ctx, p: &Params, unless: &str, effects: &[Value]) -> Tr<Vec
     ])
 }
 
+/// `UnlessSwitched$ True`: the effects happen if the player pays the cost ("you may pay; if you do").
+fn pays_to_do(ctx: &Ctx, p: &Params, cost: &str, effects: &[Value]) -> Tr<Vec<Value>> {
+    if p.get("UnlessPayer") != Some("You") {
+        return unmapped("key:Unless.UnlessSwitched-payer");
+    }
+    let Value::String(cost) = super::cost::cost(ctx, cost)? else {
+        return unmapped("key:Unless.UnlessCost-shape");
+    };
+    if cost.contains('X') {
+        return unmapped("key:Unless.UnlessCost-X");
+    }
+    Ok(vec![json!({"Pay": {"cost": cost, "paid": effects}})])
+}
+
 /// The API a line names.
 fn api_of(params: &Params) -> Tr<&str> {
     ["SP", "AB", "DB"]
@@ -83,6 +101,12 @@ fn line(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         "Proliferate" => one(proliferate(p)),
         "Cleanup" => cleanup(p),
         "Effect" => effects_effect::effects(ctx, p),
+        "RepeatEach" => effects_loop::repeat_each(ctx, p),
+        "ImmediateTrigger" => effects_loop::immediate_trigger(ctx, p),
+        "PeekAndReveal" => effects_loop::peek_and_reveal(ctx, p),
+        "RollDice" => effects_loop::roll_dice(ctx, p),
+        "ChooseCard" => effects_loop::choose_card(ctx, p),
+        "ChooseColor" | "ChooseType" => effects_loop::choose_value(ctx, p, api),
         "Charm" => one(charm(ctx, p)),
         "DelayedTrigger" => one(delayed(ctx, p)),
         "Dig" => effects_zone::dig(ctx, p),
@@ -180,6 +204,7 @@ fn discard(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
             "Mode",
             "TargetMin",
             "TargetMax",
+            "RememberDiscarded",
         ],
     )?;
     let random = match p.get("Mode") {
@@ -189,7 +214,13 @@ fn discard(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     };
     let who = player(ctx, p)?;
     let count = amount(ctx, p.get("NumCards").unwrap_or("1"))?;
-    Ok(json!({"Discard": {"who": who, "count": count, "random": random}}))
+    let mut discard = json!({"who": who, "count": count, "random": random});
+    if p.get("RememberDiscarded") == Some("True") {
+        let name = ctx.fresh("discarded");
+        ctx.remembered = Some(json!({ "Bound": name }));
+        discard["as"] = json!(name);
+    }
+    Ok(json!({ "Discard": discard }))
 }
 
 /// A verb of a player and a count: mill, scry, surveil.
@@ -237,7 +268,14 @@ fn delayed(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     only(
         p,
         "DelayedTrigger",
-        &["Mode", "Phase", "ValidPlayer", "Execute", "NextTurn"],
+        &[
+            "Mode",
+            "Phase",
+            "ValidPlayer",
+            "Execute",
+            "NextTurn",
+            "RememberObjects",
+        ],
     )?;
     if p.get("Mode") != Some("Phase") {
         return unmapped("key:DelayedTrigger.Mode");
@@ -251,6 +289,11 @@ fn delayed(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     let Some(execute) = p.get("Execute") else {
         return unmapped("key:DelayedTrigger.no-Execute");
     };
+    match p.get("RememberObjects") {
+        None => {}
+        Some("Remembered" | "RememberedLKI") if ctx.remembered.is_some() => {}
+        Some(other) => return unmapped(format!("key:DelayedTrigger.RememberObjects={other}")),
+    }
     let part = ctx.sub(execute)?;
     let effects = chain_at(ctx, &part, false)?;
     let when = json!({"StepBegins": {"step": step, "whose": whose}});

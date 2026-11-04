@@ -86,8 +86,15 @@ pub struct Ctx<'a> {
     pub targets: Vec<Value>,
     /// The objects the latest zone change moved (`RememberChanged$`), which `Defined$ Remembered` names later.
     pub remembered: Option<Value>,
+    /// The objects an `Effect` object remembers, which a trigger or static it carries reads as `IsRemembered`; kept across
+    /// `reset` because the carried lines are translated as lines of their own.
+    pub pinned: Option<Value>,
     /// The latest target the ability had declared before the line being translated (`Defined$ ParentTarget`).
     pub parent_target: Option<u8>,
+    /// The name the latest value chosen by the ability is bound to (`ChosenColor`, `ChosenType` after it).
+    pub chosen: Option<String>,
+    /// The name the cards the latest `ChooseCard` picked are bound to (`ChosenCard` after it).
+    pub chosen_card: Option<String>,
     binds: usize,
     depth: usize,
 }
@@ -106,7 +113,10 @@ impl<'a> Ctx<'a> {
             world,
             targets: Vec::new(),
             remembered: None,
+            pinned: None,
             parent_target: None,
+            chosen: None,
+            chosen_card: None,
             binds: 0,
             depth: 0,
         }
@@ -117,8 +127,36 @@ impl<'a> Ctx<'a> {
         self.targets.clear();
         self.remembered = None;
         self.parent_target = None;
+        self.chosen = None;
+        self.chosen_card = None;
         self.binds = 0;
         self.depth = 0;
+    }
+
+    /// Runs a translation of a line of its own (a static, a trigger) and restores the state of the ability around it.
+    pub fn nested<T>(&mut self, pinned: Option<Value>, run: impl FnOnce(&mut Ctx<'a>) -> T) -> T {
+        let before = std::mem::replace(&mut self.pinned, pinned);
+        let targets = std::mem::take(&mut self.targets);
+        let saved = (
+            self.remembered.take(),
+            self.parent_target,
+            self.chosen.take(),
+            self.chosen_card.take(),
+            self.binds,
+            self.depth,
+        );
+        let out = run(self);
+        self.pinned = before;
+        self.targets = targets;
+        (
+            self.remembered,
+            self.parent_target,
+            self.chosen,
+            self.chosen_card,
+            self.binds,
+            self.depth,
+        ) = saved;
+        out
     }
 
     /// The text of a named part.

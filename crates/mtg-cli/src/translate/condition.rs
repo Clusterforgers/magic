@@ -100,7 +100,7 @@ pub fn tapped_when(condition: Value) -> Value {
 }
 
 /// The condition a named Forge condition stands for (`Condition$ Threshold`).
-fn named(name: &str) -> Tr<Value> {
+pub fn named(name: &str) -> Tr<Value> {
     let yours = |extra: Value| vec![extra, json!({"OwnedBy": "You"})];
     Ok(match name {
         "PlayerTurn" => json!("YourTurn"),

@@ -181,6 +181,9 @@ fn times(value: &Value, n: i32) -> Value {
 
 /// The base of a `Count$` expression.
 fn count_base(ctx: &Ctx, base: &str) -> Tr<Value> {
+    if let Some(chosen) = super::amount_when::when(ctx, base) {
+        return chosen;
+    }
     let (word, rest) = base.split_once(' ').unwrap_or((base, ""));
     match word {
         "xPaid" => Ok(json!("X")),
