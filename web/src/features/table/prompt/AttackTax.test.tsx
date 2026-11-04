@@ -75,7 +75,7 @@ describe('payText for an attack', () => {
     [{ attack: true }, 'Pay 2 generic for the attack.'],
     [
       { attack: true, canAdd: false, auto: false },
-      'You cannot pay 2 generic for the attack with the mana you have. Go back to choose other attackers.',
+      'You cannot pay 2 generic for the attack with the mana you have. Add the mana by hand in the Commands panel, or go back to choose other attackers.',
     ],
     [{ attack: true, covered: true, chosen: 2 }, 'The cost is covered. Confirm to attack.'],
   ])('%j', (extra, start) => {
@@ -100,6 +100,14 @@ describe('the attack screen with a tax', () => {
     await t.user.click(t.card(b))
     expect(line()).toContain('costs 4 generic')
     expect(line()).toContain('That is more than you surely have.')
+  })
+
+  it('writes the cost on the card before and after it is chosen', async () => {
+    const t = render()
+    expect(t.card(a)).toHaveTextContent('Pay 2')
+    expect(t.card(c)).not.toHaveTextContent('Pay 2')
+    await t.user.click(t.card(a))
+    expect(t.card(a)).toHaveTextContent('Pay 2')
   })
 
   it('answers with the attackers once confirmed', async () => {

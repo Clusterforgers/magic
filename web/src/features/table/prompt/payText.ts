@@ -147,7 +147,9 @@ export function payText({
   if (chosen === 0) {
     // The game offers an automatic payment whenever the cost can be paid at all, unless that takes the last life.
     if (!canAdd || (!auto && !may)) {
-      const back = attack ? ' Go back to choose other attackers.' : ' Cancel to go back.'
+      const back = attack
+        ? ' Add the mana by hand in the Commands panel, or go back to choose other attackers.'
+        : ' Cancel to go back.'
       return `You cannot pay ${costWords(cost)} for ${attack ? 'the attack' : spell} with the mana you have.${cancel ? back : ''}`
     }
     const automatic = auto ? ', or pay automatically' : ''

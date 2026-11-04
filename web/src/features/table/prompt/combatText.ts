@@ -1,6 +1,7 @@
 /** The combat prompts in plain words: who is attacked, how many attack where, who blocks what. */
 import type { AttackerOption, AttackTarget, ManaCost, ObjectId, PlayerId } from '@/protocol/generated'
 import { battleWords } from '../cardModel'
+import { symbolText } from '../manaSymbols'
 import { manaValue } from './payment'
 import { andList, costWords } from './payText'
 
@@ -14,7 +15,16 @@ export function attackLifeOf(option: AttackerOption, target: AttackTarget): numb
   return option.life?.find(([to]) => sameTarget(to, target))?.[1] ?? 0
 }
 
-/** "costs 2 generic", "costs 1 white and 2 life", or '' while attacking is free. */
+/** The short words on a card: "Pay 2", "Pay 1W", "Pay 2 + 2 life". */
+export function costLabel(cost: ManaCost, life: number, verb: 'Pay'): string {
+  const parts = [
+    ...(cost.length === 0 ? [] : [cost.map(symbolText).join('')]),
+    ...(life > 0 ? [`${life} life`] : []),
+  ]
+  return `${verb} ${parts.join(' + ')}`
+}
+
+/** "costs 2 generic","costs 1 white and 2 life", or '' while attacking is free. */
 export function costPhrase(cost: ManaCost, life: number): string {
   const parts = [...(cost.length === 0 ? [] : [costWords(cost)]), ...(life > 0 ? [`${life} life`] : [])]
   return parts.length === 0 ? '' : `costs ${andList(parts)}`

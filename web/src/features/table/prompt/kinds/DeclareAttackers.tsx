@@ -7,11 +7,11 @@ import { attacksAnswer, useBlockPreview } from '../../combat/forecast'
 import { usePublishPending } from '../../combat/pending'
 import { usePreviewRequest } from '../../combat/usePreviewRequest'
 import { usePreviewTarget } from '../../preview'
-import { symbolText } from '../../manaSymbols'
 import {
   attackLifeOf,
   attackSummary,
   attackTaxOf,
+  costLabel,
   costLine,
   costPhrase,
   distinctTargets,
@@ -171,20 +171,25 @@ export const DeclareAttackersPrompt: PromptComponent<'DeclareAttackers'> = ({ op
     const map = new Map<ObjectId, CardNote>()
     // A creature that is not in the attack yet says what attacking would cost.
     for (const [object, option] of offered) {
-      const price = aim === undefined ? '' : costPhrase(attackTaxOf(option, aim), attackLifeOf(option, aim))
-      if (price !== '' && !selection.ids.has(object))
-        map.set(object, { words: `can attack; attacking ${price}` })
+      const to = aimedAt(option, aim)
+      if (to === undefined || selection.ids.has(object)) continue
+      const [cost, life] = [attackTaxOf(option, to), attackLifeOf(option, to)]
+      if (costPhrase(cost, life) !== '')
+        map.set(object, {
+          label: costLabel(cost, life, 'Pay'),
+          words: `can attack; attacking ${costPhrase(cost, life)}`,
+        })
     }
     for (const { object, target } of declared) {
       const price = costs.find((entry) => entry.object === object)
       const pays = price === undefined ? '' : costPhrase(price.cost, price.life)
-      const label =
-        pays === '' || price === undefined ? undefined : `Pays ${price.cost.map(symbolText).join('')}`
+      const label = pays === '' || price === undefined ? undefined : costLabel(price.cost, price.life, 'Pay')
       const owed = pays === '' ? '' : `; attacking ${pays}`
       map.set(
         object,
         object === held
           ? {
+              ...(label === undefined ? {} : { label }),
               words: `attacking ${names.long(target)}${owed}; click a player, planeswalker or battle to send it there`,
               cue: 'active' as const,
             }

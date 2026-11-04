@@ -7,9 +7,11 @@ use mtg_cards::CardDefinition;
 use mtg_cards::ability::Ability;
 use mtg_cards::keyword::Keyword;
 use mtg_core::card::CardType;
+use mtg_core::mana::ManaType;
 use mtg_engine::decision::{Answer, DecisionKind, PayChoice};
 use mtg_engine::effects::Duration;
 use mtg_engine::mana::Payment;
+use mtg_engine::manual::ManualAction;
 use mtg_engine::rules::{AttackTax, Rule};
 use mtg_engine::turn::Step;
 use mtg_engine::{Event, PresetPermanent};
@@ -149,12 +151,90 @@ fn the_attack_is_declared_with_the_payment_of_its_total_cost(
     Ok(())
 }
 
+/// A land whose mana ability is left to the table (a card played by hand): the engine sees no source in it.
+fn manual_land() -> Arc<CardDefinition> {
+    Arc::new(
+        CardDefinition::new("Hand Land")
+            .with_type(CardType::Land)
+            .with_manual("{T}: Add {W}.", "the table taps it"),
+    )
+}
+
+#[rstest]
+fn an_attack_the_engine_sees_no_source_for_waits_for_mana_added_by_hand(
+    #[values(2, 3, 4)] seats: usize,
+    #[values(true, false)] taps_first: bool,
+) -> Result<(), ScriptError> {
+    let mut mine = creatures(&["A"]);
+    mine.extend((0..2).map(|_| ready(manual_land())));
+    let mut driver = Driver::from_scenario(
+        Scenario::new(seats)
+            .at(2, 0, Step::DeclareAttackers)
+            .battlefield(0, mine)
+            .battlefield(1, taxers(&["Ghostly Prison"])),
+    )?;
+    if taps_first {
+        driver.manual_by(
+            pid(0),
+            &ManualAction::AddMana {
+                mana: ManaType::White,
+                count: 2,
+            },
+        )?;
+        declare(&mut driver, &["A"], 1)?;
+    } else {
+        // Nothing is floating and the lands give the engine no mana: the attack still begins its payment, which the
+        // player can back out of or pay once the mana is added by hand.
+        declare(&mut driver, &["A"], 1)?;
+        driver.expect_decision(0, "pay-mana")?;
+        assert!(!driver.pay_options()?.auto_available);
+        driver.manual_by(
+            pid(0),
+            &ManualAction::AddMana {
+                mana: ManaType::White,
+                count: 2,
+            },
+        )?;
+    }
+    driver.expect_decision(0, "pay-mana")?;
+    assert!(driver.pay_options()?.auto_available);
+    pay_auto(&mut driver)?;
+    assert!(declared(&driver));
+    Ok(())
+}
+
+#[rstest]
+fn real_forests_pay_a_ghostly_prison_tax(
+    #[values(2, 3, 4)] seats: usize,
+) -> Result<(), ScriptError> {
+    let mut mine = creatures(&["A"]);
+    mine.extend((0..2).map(|_| corpus("Forest")));
+    let mut driver = Driver::from_scenario(
+        Scenario::new(seats)
+            .at(2, 0, Step::DeclareAttackers)
+            .battlefield(0, mine)
+            .battlefield(1, taxers(&["Ghostly Prison"])),
+    )?;
+    declare(&mut driver, &["A"], 1)?;
+    driver.expect_decision(0, "pay-mana")?;
+    Ok(())
+}
+
 #[rstest]
 fn a_smaller_attack_is_made_when_the_larger_cannot_be_paid(
     #[values(2, 3, 4)] seats: usize,
 ) -> Result<(), ScriptError> {
     let mut driver = table(seats, taxers(&["Propaganda"]), &["A", "B", "C"], 4)?;
-    assert!(declare(&mut driver, &["A", "B", "C"], 1).is_err());
+    let before = driver.decision()?.clone();
+    let refused = declare(&mut driver, &["A", "B", "C"], 1)
+        .unwrap_err()
+        .to_string();
+    // The player is told what the attack costs and that the attackers can change, and stays on the attack choice.
+    assert!(
+        refused.contains("costs {6}") && refused.contains("Change the attackers"),
+        "{refused}"
+    );
+    assert_eq!(driver.decision()?, &before);
     declare(&mut driver, &["A", "B"], 1)?;
     pay_auto(&mut driver)?;
     assert_eq!(driver.state().combat().attackers().len(), 2);
