@@ -192,6 +192,7 @@ fn fold_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         }
         Event::Scried(scried) => {
             zones::scry(state, scried)?;
+            state.tally(scried.player, Tally::Scried);
             opening::scried(state, scried.player)?;
             let seen: Vec<ObjectId> = scried.top.iter().chain(&scried.bottom).copied().collect();
             sight::show(state, Some(scried.player), &seen);

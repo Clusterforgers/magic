@@ -385,6 +385,7 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
             {
                 tally_discard(state, player, *object);
             }
+            tally_sacrifice(state, (*cause, *from), before);
             if *cause == ZoneCause::Milled {
                 w13b_tally_milled(state, *object);
             }
@@ -455,6 +456,20 @@ fn card_drawn(
         state.tally(player, Tally::C6BlkDrawStepDrawn);
     }
     Ok(())
+}
+
+/// Counts a sacrificed permanent for the player who controlled it as it left.
+fn tally_sacrifice(
+    state: &mut GameState,
+    (cause, from): (ZoneCause, Zone),
+    controller: Option<PlayerId>,
+) {
+    if cause == ZoneCause::Sacrificed
+        && from == Zone::Battlefield
+        && let Some(controller) = controller
+    {
+        state.tally(controller, Tally::Sacrificed);
+    }
 }
 
 /// Counts the card `id` milled this turn while it lies in the graveyard it was milled into.

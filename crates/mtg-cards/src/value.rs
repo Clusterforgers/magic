@@ -307,6 +307,12 @@ pub enum TurnTally {
     /// The cards that left the graveyards of the players read this turn, to any zone ("if a card left your graveyard this
     /// turn"). Added up over the players.
     CardsLeftGraveyard,
+    /// The times the player scried this turn, once for each scry that looked at a card.
+    Scried,
+    /// The times the player surveilled this turn, once for each surveil that looked at a card.
+    Surveilled,
+    /// The permanents the player sacrificed this turn, each once, as the player who controlled it.
+    Sacrificed,
 }
 
 /// A kind of event the game logs for the turn with the object it was about, which `Amount::Tally` filters and counts.

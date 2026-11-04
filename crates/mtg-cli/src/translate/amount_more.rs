@@ -117,6 +117,7 @@ pub fn player_amount(head: &str, what: &str, who: &Value) -> Option<Tr<Value>> {
         ("PlayerCountPropertyYou", "CardsDiscardedThisTurn") => tallied("Discarded"),
         ("PlayerCountPropertyYou", "LifeLostThisTurn") => tallied("LifeLost"),
         ("PlayerCountPropertyYou", "LandsPlayed") => tallied("LandsPlayed"),
+        ("PlayerCountPropertyYou", "SacrificedThisTurn") => tallied("Sacrificed"),
         _ => return None,
     })
 }

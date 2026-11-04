@@ -126,3 +126,30 @@ fn a_move_that_is_no_death_is_not_one_and_the_next_turn_clears_the_record() {
     fold(&mut game, &[turn]);
     assert_eq!(tally(&game, TallyEvent::Died, vec![]), 0);
 }
+
+#[rstest]
+#[case::sacrificed(ZoneCause::Sacrificed, 1)]
+#[case::destroyed(ZoneCause::Destroyed, 0)]
+fn only_a_sacrifice_counts_for_the_player_who_controlled_it(
+    #[case] cause: ZoneCause,
+    #[case] expected: i64,
+) {
+    let mut game = table();
+    let old = id(&game, "Old");
+    let event = Event::ZoneChanged {
+        object: old,
+        from: Zone::Battlefield,
+        to: Zone::Graveyard(ME),
+        cause,
+    };
+    fold(&mut game, &[event]);
+    let reference = game.object(old).unwrap().reference();
+    let amount = Amount::Tallied {
+        who: Ref::You,
+        what: mtg_cards::value::TurnTally::Sacrificed,
+    };
+    let got = Scope::announcing(&game, ME, reference)
+        .amount(&amount)
+        .unwrap();
+    assert_eq!(got, expected);
+}
