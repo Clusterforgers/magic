@@ -17,6 +17,9 @@ pub fn effects(ctx: &mut Ctx, p: &Params, api: &str) -> Tr<Vec<Value>> {
             change_zone(ctx, p, origin, destination)
         }
         ("ChangeZone", "Library") => search(ctx, p, destination),
+        ("ChangeZone", from) if searches_library(from) && p.has("ChangeType") => {
+            search(ctx, p, destination)
+        }
         ("ChangeZone", from) if hidden_origin(from) && p.has("ChangeType") => {
             choose_and_move(ctx, p, origin, destination)
         }
@@ -27,11 +30,35 @@ pub fn effects(ctx: &mut Ctx, p: &Params, api: &str) -> Tr<Vec<Value>> {
 
 /// Whether the word is one of the hand, graveyard and exile, or a list of them (`Graveyard,Exile`).
 fn hidden_origin(word: &str) -> bool {
-    let mut seen: Vec<&str> = Vec::new();
-    word.split(',').all(|zone| {
-        let new = !seen.contains(&zone);
-        seen.push(zone);
-        new && matches!(zone, "Hand" | "Graveyard" | "Exile")
+    zone_list(word).is_some_and(|zones| {
+        zones
+            .iter()
+            .all(|zone| matches!(*zone, "Hand" | "Graveyard" | "Exile"))
+    })
+}
+
+/// The zones of a list word (`Graveyard,Hand`), each a known zone once; `None` for any other word (`Stack`, `Command`,
+/// `All` have no zone here).
+fn zone_list(word: &str) -> Option<Vec<&str>> {
+    let zones: Vec<&str> = word.split(',').collect();
+    let known = zones.iter().all(|zone| {
+        matches!(
+            *zone,
+            "Battlefield" | "Graveyard" | "Hand" | "Library" | "Exile"
+        )
+    });
+    let distinct = (1..zones.len()).all(|at| !zones[..at].contains(&zones[at]));
+    (known && distinct).then_some(zones)
+}
+
+/// Whether the word lists the library with the hand and graveyard: a search that may also look there.
+fn searches_library(word: &str) -> bool {
+    zone_list(word).is_some_and(|zones| {
+        zones.len() > 1
+            && zones.contains(&"Library")
+            && zones
+                .iter()
+                .all(|zone| matches!(*zone, "Library" | "Graveyard" | "Hand"))
     })
 }
 
@@ -39,7 +66,7 @@ fn hidden_origin(word: &str) -> bool {
 fn zone_word<'a>(word: Option<&'a str>, key: &str, many: bool) -> Tr<&'a str> {
     match word {
         Some(zone @ ("Battlefield" | "Graveyard" | "Hand" | "Library" | "Exile")) => Ok(zone),
-        Some(list) if many && hidden_origin(list) => Ok(list),
+        Some(list) if many && zone_list(list).is_some() => Ok(list),
         Some(other) => unmapped(format!("zone:{key}={other}")),
         None => unmapped(format!("key:ChangeZone.no-{key}")),
     }
@@ -284,7 +311,24 @@ fn search(ctx: &mut Ctx, p: &Params, destination: &str) -> Tr<Vec<Value>> {
     let filter_is_open = filter.is_empty();
     let bind = ctx.fresh("found");
     let mut find = json!({"filter": filter, "as": bind});
-    if let Some(list) = p.get("OriginAlternative") {
+    // `Origin$ Library,Graveyard` searches the same zones as `OriginAlternative$ Graveyard`; both together are two lists.
+    let listed: String = p
+        .get("Origin")
+        .filter(|word| word.contains(','))
+        .map(|word| {
+            word.split(',')
+                .filter(|zone| *zone != "Library")
+                .collect::<Vec<_>>()
+                .join(",")
+        })
+        .unwrap_or_default();
+    if !listed.is_empty() && p.has("OriginAlternative") {
+        return unmapped("key:ChangeZone.Search.OriginAlternative");
+    }
+    let alternative = p
+        .get("OriginAlternative")
+        .or((!listed.is_empty()).then_some(listed.as_str()));
+    if let Some(list) = alternative {
         let also: Vec<&str> = list.split(',').collect();
         if !also
             .iter()
@@ -309,7 +353,7 @@ fn search(ctx: &mut Ctx, p: &Params, destination: &str) -> Tr<Vec<Value>> {
     let search = json!({ "Search": find });
     let put = moves(&found, goes_found(p, destination)?);
     // Searching only another zone leaves the library as it was: "if you search your library this way, shuffle".
-    let shuffle = if p.has("OriginAlternative") {
+    let shuffle = if alternative.is_some() {
         json!({"If": {"condition": {"Searched": {"zone": "Library"}}, "then": [{"Shuffle": {}}]}})
     } else {
         json!({"Shuffle": {}})

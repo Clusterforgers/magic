@@ -79,3 +79,32 @@ fn play_unknowns_stay_gaps(#[case] line: &str, #[case] gap: &str) {
     let (_, found) = sorcery(&format!("A:SP$ Draw | SubAbility$ P\nSVar:P:{line}"));
     assert!(found.iter().any(|g| g == gap), "{found:?}");
 }
+
+#[rstest]
+#[case::library_and_graveyard(
+    "A:SP$ ChangeZone | Origin$ Library,Graveyard | Destination$ Hand | ChangeType$ Creature.YouOwn | Optional$ True | SpellDescription$ You may search your library and/or graveyard for a creature card.",
+    &["\"also\":[\"Graveyard\"]", "Searched"]
+)]
+#[case::library_hand_graveyard(
+    "A:SP$ ChangeZone | Origin$ Graveyard,Hand,Library | Destination$ Battlefield | ChangeType$ Aura.YouOwn | Hidden$ True",
+    &["\"also\":[\"Graveyard\",\"Hand\"]"]
+)]
+fn zone_lists_with_the_library_search(#[case] line: &str, #[case] has: &[&str]) {
+    let (json, gaps) = sorcery(line);
+    assert!(gaps.is_empty(), "{gaps:?}");
+    for word in has {
+        assert!(json.contains(word), "{word} missing in {json}");
+    }
+}
+
+#[rstest]
+#[case::stack("Stack", "zone:Origin=Stack")]
+#[case::stack_with_battlefield("Battlefield,Stack", "zone:Origin=Battlefield,Stack")]
+#[case::command("Command", "zone:Origin=Command")]
+#[case::repeated("Graveyard,Graveyard", "zone:Origin=Graveyard,Graveyard")]
+fn zones_without_a_node_stay_gaps(#[case] origin: &str, #[case] gap: &str) {
+    let (_, found) = sorcery(&format!(
+        "A:SP$ ChangeZone | Origin$ {origin} | Destination$ Exile | Defined$ Targeted"
+    ));
+    assert_eq!(found, [gap]);
+}
