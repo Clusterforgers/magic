@@ -9,6 +9,7 @@ mod blame;
 mod blocks;
 mod complete;
 mod pairing;
+pub mod partial;
 mod render;
 mod repair;
 

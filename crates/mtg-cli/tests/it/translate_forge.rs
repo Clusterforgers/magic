@@ -101,14 +101,24 @@ async fn each_proposal_is_marked_as_from_forge_and_other_meta_is_kept() {
     )
     .unwrap();
     run(dir.path(), &out, &[]).await;
+    let mut quartz = json_of(&out.join("meta/quartz_spark.json"));
+    assert!(quartz["lines"].is_array());
+    quartz.as_object_mut().unwrap().remove("lines");
+    assert_eq!(quartz, json!({"solved_examples": 5, "source": "forge"}));
+    let mut willow = json_of(&out.join("meta/willow_seer.json"));
+    let lines = willow.as_object_mut().unwrap().remove("lines").unwrap();
     assert_eq!(
-        json_of(&out.join("meta/quartz_spark.json")),
-        json!({"solved_examples": 5, "source": "forge"})
-    );
-    assert_eq!(
-        json_of(&out.join("meta/willow_seer.json")),
+        willow,
         json!({"source": "forge", "gaps": ["effect:RollDice"]})
     );
+    let gap_rows: Vec<&Value> = lines
+        .as_array()
+        .unwrap()
+        .iter()
+        .filter(|row| row["gap"] == "effect:RollDice")
+        .collect();
+    assert_eq!(gap_rows.len(), 1);
+    assert_eq!(gap_rows[0]["abilities"], json!([]));
 }
 
 #[tokio::test]

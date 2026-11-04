@@ -1,11 +1,13 @@
 //! One card: every line of its faces translated or recorded as a gap, each ability checked to parse as the DSL's `Ability`.
 
 use mtg_cards::ability::Ability;
+use mtg_cards::proposal::partial::LedgerLine;
 use serde_json::{Value, json};
 
 use super::ability::ability_line;
 use super::ctx::{Ctx, Tr, Unmapped, World, unmapped};
 use super::keyword::keyword_abilities;
+use super::ledger::{Before, record};
 use super::replacements::replacement_lines;
 use super::statics::static_line;
 use super::triggers::triggered;
@@ -20,6 +22,8 @@ pub struct FaceOut {
     pub gaps: Vec<Unmapped>,
     /// The lines of the face that state a rule (keywords, abilities, triggers, statics, replacements).
     pub lines: usize,
+    /// One row for each script line, with the abilities it gave or the gap that stopped it.
+    pub ledger: Vec<LedgerLine>,
 }
 
 /// The translation of a script.
@@ -37,6 +41,18 @@ impl CardOut {
     /// The lines that state a rule.
     pub fn lines(&self) -> usize {
         self.faces.iter().map(|face| face.lines).sum()
+    }
+
+    /// The ledger rows of every face, the face index set.
+    pub fn ledger(&self) -> Vec<LedgerLine> {
+        let rows = self.faces.iter().enumerate();
+        rows.flat_map(|(face, out)| {
+            out.ledger.iter().map(move |line| LedgerLine {
+                face,
+                ..line.clone()
+            })
+        })
+        .collect()
     }
 
     /// The abilities translated.
@@ -83,24 +99,34 @@ pub fn translate_face(world: &World, face: &Face) -> FaceOut {
     let mut ctx = Ctx::new(face, world);
     let mut out = FaceOut::default();
     for body in &face.keywords {
+        let before = Before::of(&out);
         for result in keyword_abilities(&mut ctx, body) {
             take(&mut out, result.map(|ability| vec![ability]));
         }
+        record(&mut out, "K", &[body], &before);
     }
     for body in &face.abilities {
+        let before = Before::of(&out);
         take(&mut out, audited_one(|| ability_line(&mut ctx, body)));
+        record(&mut out, "A", &[body], &before);
     }
     for group in trigger_groups(&face.triggers) {
+        let before = Before::of(&out);
         take(
             &mut out,
             audited_one(|| merged_trigger(&mut ctx, &group).map(|ability| vec![ability])),
         );
+        record(&mut out, "T", &group, &before);
     }
-    for result in static_abilities(&mut ctx, &face.statics) {
+    for (group, result) in static_abilities(&mut ctx, &face.statics) {
+        let before = Before::of(&out);
         take(&mut out, result.map(|ability| vec![ability]));
+        record(&mut out, "S", &group, &before);
     }
     for body in &face.replacements {
+        let before = Before::of(&out);
         take(&mut out, audited_one(|| replacement_lines(&mut ctx, body)));
+        record(&mut out, "R", &[body], &before);
     }
     out
 }
@@ -141,28 +167,30 @@ fn trigger_groups(bodies: &[String]) -> Vec<Vec<&String>> {
 
 /// The static abilities of the lines, a line marked `Secondary$` joined to the one before it when both change the same
 /// objects ("gets +2/+2 and can't block"); a secondary line that fails takes the line before it down with it.
-fn static_abilities(ctx: &mut Ctx, bodies: &[String]) -> Vec<Tr<Value>> {
-    let mut out: Vec<Tr<Value>> = Vec::new();
+fn static_abilities<'a>(ctx: &mut Ctx, bodies: &'a [String]) -> Vec<(Vec<&'a String>, Tr<Value>)> {
+    let mut out: Vec<(Vec<&String>, Tr<Value>)> = Vec::new();
     for body in bodies {
         let secondary = Params::parse(body).get("Secondary") == Some("True");
         let result = audited_one(|| static_line(ctx, body));
-        if secondary && let Some(previous) = out.last_mut() {
+        if secondary && let Some((lines, previous)) = out.last_mut() {
             match (&result, previous.is_ok()) {
                 (Ok(second), true) => {
                     if let Ok(first) = previous
                         && join_statics(first, second)
                     {
+                        lines.push(body);
                         continue;
                     }
                 }
                 (Err(_), true) => {
                     *previous = result;
+                    lines.push(body);
                     continue;
                 }
                 _ => {}
             }
         }
-        out.push(result);
+        out.push((vec![body], result));
     }
     out
 }

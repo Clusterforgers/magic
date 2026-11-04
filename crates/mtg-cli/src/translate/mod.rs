@@ -25,6 +25,7 @@ pub mod effects_obj;
 pub mod effects_zone;
 pub mod keyword;
 pub mod keyword_alt;
+mod ledger;
 pub mod mayplay;
 pub mod needs;
 pub mod oracle;
@@ -184,6 +185,7 @@ fn write_proposal(
     } else {
         record["gaps"] = json!(gaps);
     }
+    record["lines"] = json!(card.ledger());
     if let Some(matches) = oracle_matches {
         record["oracle_matches"] = json!(matches);
     }
