@@ -72,8 +72,9 @@ pub fn chain_at(ctx: &mut Ctx, p: &Params, top: bool) -> Tr<Vec<Value>> {
 
 /// APIs whose `Optional$ True` asks the player who gets the effect whether to do all of it ("you may draw a card"). The
 /// other APIs read the key themselves, with a meaning of their own (a count, a choice), or leave it a named gap.
-const MAY_APIS: [&str; 8] = [
+const MAY_APIS: [&str; 9] = [
     "Draw",
+    "Discard",
     "Mill",
     "GainLife",
     "LoseLife",
@@ -362,11 +363,15 @@ fn discard(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
             "DiscardValidDesc",
         ],
     )?;
+    let whole_hand = p.get("Mode") == Some("Hand");
     let random = match p.get("Mode") {
-        None | Some("TgtChoose") => false,
+        None | Some("TgtChoose" | "Hand") => false,
         Some("Random") => true,
         Some(other) => return unmapped(format!("key:Discard.Mode={other}")),
     };
+    if whole_hand && (p.has("DiscardValid") || p.has("NumCards")) {
+        return unmapped("key:Discard.Mode=Hand+count");
+    }
     let filter = match p.get("DiscardValid") {
         None | Some("Card") => None,
         // A random pick among the cards that match is not a discard the engine makes.
@@ -374,7 +379,15 @@ fn discard(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
         Some(spec) => Some(selector_any(ctx, spec)?),
     };
     let who = player(ctx, p)?;
-    let count = amount(ctx, p.get("NumCards").unwrap_or("1"))?;
+    let count = if whole_hand {
+        // One player's hand as it is when the discard happens; a group would count every hand together.
+        if matches!(who.as_str(), Some("Opponents" | "EachPlayer")) {
+            return unmapped("key:Discard.Mode=Hand+group");
+        }
+        json!({"Count": [{"In": "Hand"}, {"OwnedBy": who}]})
+    } else {
+        amount(ctx, p.get("NumCards").unwrap_or("1"))?
+    };
     let mut discard = json!({"who": who, "count": count, "random": random});
     if let Some(filter) = filter {
         discard["filter"] = json!(filter);
