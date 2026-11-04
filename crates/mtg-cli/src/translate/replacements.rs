@@ -10,18 +10,34 @@ use crate::forge::script::Params;
 
 /// A replacement line as a `Replacement` ability.
 pub fn replacement_line(ctx: &mut Ctx, body: &str) -> Tr<Value> {
+    let mut found = replacement_lines(ctx, body)?;
+    if found.len() == 1 {
+        return Ok(found.remove(0));
+    }
+    unmapped("replacement:several-abilities")
+}
+
+/// A replacement line as the `Replacement` abilities it stands for (a list of recipients is one for each).
+pub fn replacement_lines(ctx: &mut Ctx, body: &str) -> Tr<Vec<Value>> {
+    let all = Params::parse(body);
+    if all.get("Event") == Some("DamageDone") {
+        ctx.reset();
+        let (line_condition, p) = prefixed(ctx, &all)?;
+        if line_condition.is_some() {
+            return unmapped("key:Replacement.DamageDone.condition");
+        }
+        return super::replacements_damage::static_prevention(ctx, &p);
+    }
+    single(ctx, body).map(|ability| vec![ability])
+}
+
+fn single(ctx: &mut Ctx, body: &str) -> Tr<Value> {
     ctx.reset();
     let all = Params::parse(body);
     let (line_condition, p) = prefixed(ctx, &all)?;
     let event = p.get("Event").unwrap_or_default();
     if event == "Untap" {
         return doesnt_untap(&p);
-    }
-    if event == "DamageDone" {
-        if line_condition.is_some() {
-            return unmapped("key:Replacement.DamageDone.condition");
-        }
-        return super::replacements_damage::static_prevention(ctx, &p);
     }
     if event != "Moved" {
         return unmapped(format!("replacement:{event}"));

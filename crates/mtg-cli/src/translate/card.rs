@@ -6,7 +6,7 @@ use serde_json::{Value, json};
 use super::ability::ability_line;
 use super::ctx::{Ctx, Tr, Unmapped, World, unmapped};
 use super::keyword::keyword_abilities;
-use super::replacements::replacement_line;
+use super::replacements::replacement_lines;
 use super::statics::static_line;
 use super::triggers::triggered;
 use crate::forge::script::{Face, Params, Script};
@@ -102,7 +102,7 @@ pub fn translate_face(world: &World, face: &Face) -> FaceOut {
     for body in &face.replacements {
         take(
             &mut out,
-            replacement_line(&mut ctx, body).map(|ability| vec![ability]),
+            replacement_lines(&mut ctx, body),
         );
     }
     out

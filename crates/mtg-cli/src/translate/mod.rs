@@ -28,6 +28,7 @@ pub mod needs;
 pub mod oracle;
 pub mod replacements;
 pub mod replacements_damage;
+pub mod replacements_damage_by;
 pub mod report;
 pub mod statics;
 pub mod statics_cast;
