@@ -414,6 +414,12 @@ impl<'a> Walker<'a> {
         }
     }
 
+    /// Binds the objects a named step moved and the number it moved, which survives a token that ceased to exist.
+    fn bind_moved(&mut self, name: &str) {
+        self.bind(name, Kind::Object);
+        self.scope.numbers.insert(format!("{name}~moved"));
+    }
+
     fn bind(&mut self, name: &str, kind: Kind) {
         if !is_name(name) {
             self.problem(format!("`{name}` is not a name (lowercase letters, digits and underscores, starting with a letter)"));
@@ -2522,7 +2528,7 @@ impl Walker<'_> {
                 w.at("who", |w| w.reference(who, Kind::Player));
                 w.at("count", |w| w.amount(count));
                 if let Some(name) = bind {
-                    w.at("as", |w| w.bind(name, Kind::Object));
+                    w.at("as", |w| w.bind_moved(name));
                 }
             }
             Effect::Discard {
@@ -2583,7 +2589,7 @@ impl Walker<'_> {
             } => {
                 w.at("what", |w| w.reference(what, Kind::Object));
                 if let Some(name) = bind {
-                    w.at("as", |w| w.bind(name, Kind::Object));
+                    w.at("as", |w| w.bind_moved(name));
                 }
                 // The engine returns the cards when the source leaves the battlefield or an opponent becomes the monarch,
                 // and no other duration.
@@ -2618,7 +2624,7 @@ impl Walker<'_> {
             Effect::Destroy { what, bind, .. } => {
                 w.at("what", |w| w.reference(what, Kind::Object));
                 if let Some(name) = bind {
-                    w.at("as", |w| w.bind(name, Kind::Object));
+                    w.at("as", |w| w.bind_moved(name));
                 }
             }
             Effect::Fight { what, with } => {
@@ -2793,7 +2799,7 @@ impl Walker<'_> {
                 w.at("what", |w| w.reference(what, Kind::Object));
                 w.at("to", |w| w.destination(to));
                 if let Some(name) = bind {
-                    w.at("as", |w| w.bind(name, Kind::Object));
+                    w.at("as", |w| w.bind_moved(name));
                 }
             }
             Effect::Sacrifice { who, filter, count, bind } => {
@@ -2801,7 +2807,7 @@ impl Walker<'_> {
                 w.at("filter", |w| w.selector(filter));
                 w.at("count", |w| w.amount(count));
                 if let Some(name) = bind {
-                    w.at("as", |w| w.bind(name, Kind::Object));
+                    w.at("as", |w| w.bind_moved(name));
                 }
             }
             Effect::DealDamage { source, to, amount } => {

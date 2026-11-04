@@ -17,8 +17,19 @@ use mtg_testkit::cards::{bear, forest, mountain, swamp};
 use mtg_testkit::{Driver, Scenario, ready};
 
 /// The definition the engine runs for a script translated whole, printed as `types` with the cost `cost`.
-fn translated(script: &str, name: &str, types: &str, cost: &str) -> Arc<CardDefinition> {
-    let out = translate_script(&World::default(), &Script::parse(script));
+pub(crate) fn translated(script: &str, name: &str, types: &str, cost: &str) -> Arc<CardDefinition> {
+    translated_in(&World::default(), script, name, types, cost)
+}
+
+/// The same in a world that knows token scripts.
+pub(crate) fn translated_in(
+    world: &World,
+    script: &str,
+    name: &str,
+    types: &str,
+    cost: &str,
+) -> Arc<CardDefinition> {
+    let out = translate_script(world, &Script::parse(script));
     let face = out.faces.into_iter().next().unwrap();
     assert!(face.gaps.is_empty(), "{:?}", face.gaps);
     let oracle_id = format!("00000000-0000-4000-8000-{:012}", name.len());
@@ -52,7 +63,7 @@ fn translated(script: &str, name: &str, types: &str, cost: &str) -> Arc<CardDefi
 }
 
 /// Answers every question yes and picks the first cards until the stack is empty again.
-fn settle(driver: &mut Driver) {
+pub(crate) fn settle(driver: &mut Driver) {
     for _ in 0..200 {
         let decision = driver.decision().unwrap().clone();
         let answer = match &decision.kind {

@@ -105,6 +105,8 @@ pub struct Ctx<'a> {
     /// For a name a step bound to what it moved, the reference the step named them by: they are other objects now (CR 400.7)
     /// and `RememberedController` is read on those named before the move.
     pub moved_from: BTreeMap<String, Value>,
+    /// The bound names whose step keeps how many objects it moved (`<name>~moved`), which survives a token that ceased to exist.
+    pub counted: std::collections::BTreeSet<String>,
     /// The memories the card reads on a line other than the one that wrote them.
     pub memory: super::memory::Plan,
     /// The objects an `Effect` object remembers, which a trigger or static it carries reads as `IsRemembered`; kept across
@@ -143,6 +145,7 @@ impl<'a> Ctx<'a> {
             remembered: None,
             imprinted: None,
             moved_from: BTreeMap::new(),
+            counted: std::collections::BTreeSet::new(),
             coming: None,
             memory: super::memory::plan(face),
             pinned: None,
@@ -162,6 +165,7 @@ impl<'a> Ctx<'a> {
         self.remembered = None;
         self.imprinted = None;
         self.moved_from.clear();
+        self.counted.clear();
         self.coming = None;
         self.parent_target = None;
         self.chosen = None;

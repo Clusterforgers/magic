@@ -5,7 +5,14 @@ use mtg_cards::effect::Effect;
 use crate::choose::Target;
 use crate::events::Event;
 use crate::object::ObjectRef;
-use crate::resolve::{Cx, Next, Run};
+use crate::resolve::{Cx, LET, Next, Run};
+
+const MOVED: &str = "~moved";
+
+/// The entry that keeps how many objects the step named `name` moved, for `Amount::Bound("<name>~moved")`.
+pub(super) fn count_entry(name: &str, moved: usize) -> (String, Vec<Target>) {
+    (format!("{LET}{moved}:{name}{MOVED}"), Vec::new())
+}
 
 /// The name the effect binds its moved objects to, when it has one.
 fn name(effect: &Effect) -> Option<&str> {
@@ -34,10 +41,14 @@ pub(super) fn bind(cx: &Cx<'_>, effect: &Effect, mut run: Run) -> Run {
         && !matches!(next, Next::Again)
     {
         let mut moved: Vec<Target> = Vec::new();
+        let mut count: Vec<_> = Vec::new();
         for event in events.iter() {
             let Event::ZoneChanged { object, .. } = event else {
                 continue;
             };
+            if !count.contains(object) {
+                count.push(*object);
+            }
             let Some(live) = cx.state().object(*object) else {
                 continue;
             };
@@ -50,13 +61,15 @@ pub(super) fn bind(cx: &Cx<'_>, effect: &Effect, mut run: Run) -> Run {
             }
         }
         bound.push((name.to_owned(), moved));
+        // A token that left the battlefield is gone (CR 111.7), so the objects cannot count it: the number is kept apart.
+        bound.push(count_entry(name, count.len()));
     }
     run
 }
 
 #[cfg(test)]
 mod tests {
-    //! Goal: a Mill, Sacrifice, Destroy or Move with an `as` name binds exactly the objects it moved, each as the object it becomes (its counter one on), and without a name binds nothing.
+    //! Goal: a Mill, Sacrifice, Destroy or Move with an `as` name keeps how many objects it moved (tokens that ceased to exist included) and binds exactly the objects it moved, each as the object it becomes (its counter one on), and without a name binds nothing.
     use mtg_core::ids::PlayerId;
     use rstest::rstest;
 
@@ -108,6 +121,12 @@ mod tests {
             .map(|(_, targets)| targets.clone())
             .unwrap();
         assert_eq!(it.len(), count);
+        assert!(
+            bound
+                .iter()
+                .any(|(name, _)| *name == format!("{LET}{count}:it{MOVED}")),
+            "{bound:?}"
+        );
         assert_eq!(events.len(), count);
         for (event, target) in events.iter().zip(&it) {
             let Event::ZoneChanged { object, .. } = event else {

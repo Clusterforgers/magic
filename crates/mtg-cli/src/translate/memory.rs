@@ -194,6 +194,14 @@ pub fn remembered_count(ctx: &Ctx) -> Tr<Value> {
     let Some(held) = slot_ref(ctx, Slot::Remembered) else {
         return unmapped("amount:Remembered-without-a-change");
     };
+    // A token a step moved is gone, so the engine keeps the number the step moved (CR 111.7, 400.7).
+    if let Some(name) = held
+        .get("Bound")
+        .and_then(Value::as_str)
+        .filter(|name| ctx.counted.contains(*name))
+    {
+        return Ok(json!({"Bound": format!("{name}~moved")}));
+    }
     let zones: Vec<Value> = [
         "Battlefield",
         "Hand",
