@@ -1,0 +1,158 @@
+//! Effects that map one Forge verb to one engine node: keyword actions, player actions, counters, exchanges and coin flips.
+
+use serde_json::{Value, json};
+
+use super::amount::{amount, counter_kind};
+use super::ctx::{Ctx, Tr, only, unmapped};
+use super::effects::chain_at;
+use super::valid::{defined, subject};
+use crate::forge::script::Params;
+
+const TARGETING: [&str; 4] = ["Defined", "ValidTgts", "TargetMin", "TargetMax"];
+
+/// The effects of a verb this module reads; `None` for any other API.
+pub fn effects(ctx: &mut Ctx, p: &Params, api: &str) -> Option<Tr<Vec<Value>>> {
+    let node = match api {
+        "Explore" => object_verb(ctx, p, api, "Explore"),
+        "BecomeMonarch" => player_verb(ctx, p, api, "BecomeMonarch"),
+        "TakeInitiative" => player_verb(ctx, p, api, "TakeInitiative"),
+        "Learn" => player_verb(ctx, p, api, "Learn"),
+        "TimeTravel" => player_verb(ctx, p, api, "TimeTravel"),
+        "Incubate" => incubate(ctx, p),
+        "Unattach" => object_verb(ctx, p, api, "Unattach"),
+        "TapOrUntap" => object_verb(ctx, p, api, "TapOrUntap"),
+        "Phases" => object_verb(ctx, p, api, "PhaseOut"),
+        "AddTurn" => add_turn(ctx, p),
+        "Manifest" => manifest(ctx, p, "Manifest"),
+        "Cloak" => manifest(ctx, p, "Cloak"),
+        "MultiplyCounter" => multiply_counter(ctx, p),
+        "MoveCounter" => move_counter(ctx, p),
+        "ExchangeControl" => exchange_control(ctx, p),
+        "ExchangeLife" => exchange_life(ctx, p),
+        "FlipCoin" => flip_coin(ctx, p),
+        _ => return None,
+    };
+    Some(node.map(|node| vec![node]))
+}
+
+/// A verb whose only object is a player: the target or `Defined$`, `You` by default.
+fn player_verb(ctx: &mut Ctx, p: &Params, api: &str, variant: &str) -> Tr<Value> {
+    only(p, api, &TARGETING)?;
+    let who = subject(ctx, p, "You", None)?;
+    Ok(json!({ variant: {"who": who} }))
+}
+
+/// A verb whose only object is a permanent: the target or `Defined$`, the card itself by default.
+fn object_verb(ctx: &mut Ctx, p: &Params, api: &str, variant: &str) -> Tr<Value> {
+    only(p, api, &TARGETING)?;
+    let what = subject(ctx, p, "Self", None)?;
+    Ok(json!({ variant: {"what": what} }))
+}
+
+fn incubate(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
+    only(p, "Incubate", &["Amount", "Defined"])?;
+    let who = subject(ctx, p, "You", None)?;
+    let count = amount(ctx, p.get("Amount").unwrap_or("1"))?;
+    Ok(json!({"Incubate": {"who": who, "count": count}}))
+}
+
+fn add_turn(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
+    let mut read = TARGETING.to_vec();
+    read.push("NumTurns");
+    only(p, "AddTurn", &read)?;
+    let who = subject(ctx, p, "You", None)?;
+    let count = amount(ctx, p.get("NumTurns").unwrap_or("1"))?;
+    Ok(json!({"ExtraTurn": {"who": who, "count": count}}))
+}
+
+/// `Manifest` and `Cloak` of the top cards of a library; a named card (`Remembered`) is a gap.
+fn manifest(ctx: &mut Ctx, p: &Params, variant: &str) -> Tr<Value> {
+    only(p, variant, &["Amount", "Defined", "DefinedPlayer"])?;
+    if !matches!(p.get("Defined"), None | Some("TopOfLibrary")) {
+        return unmapped(format!("key:{variant}.Defined"));
+    }
+    let who = defined(ctx, p.get("DefinedPlayer").unwrap_or("You"))?;
+    let count = amount(ctx, p.get("Amount").unwrap_or("1"))?;
+    Ok(json!({ variant: {"who": who, "count": count} }))
+}
+
+fn multiply_counter(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
+    let mut read = TARGETING.to_vec();
+    read.extend(["CounterType", "Multiplier"]);
+    only(p, "MultiplyCounter", &read)?;
+    let Some(kind) = p.get("CounterType").and_then(counter_kind) else {
+        return unmapped("key:MultiplyCounter.CounterType");
+    };
+    let factor = match p.get("Multiplier") {
+        None => 2,
+        Some(text) => match text.trim().parse::<u32>() {
+            Ok(n) if n > 1 => n,
+            _ => return unmapped("key:MultiplyCounter.Multiplier"),
+        },
+    };
+    let on = subject(ctx, p, "Self", None)?;
+    Ok(json!({"MultiplyCounters": {"on": on, "counter": kind, "factor": factor}}))
+}
+
+/// `MoveCounter` of one named kind from the `Source$` onto the target or `Defined$`.
+fn move_counter(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
+    let mut read = TARGETING.to_vec();
+    read.extend(["Source", "CounterType", "CounterNum"]);
+    only(p, "MoveCounter", &read)?;
+    let (Some(source), Some(kind)) = (p.get("Source"), p.get("CounterType").and_then(counter_kind))
+    else {
+        return unmapped("key:MoveCounter.Source-or-CounterType");
+    };
+    if p.get("CounterNum")
+        .is_some_and(|n| n.trim().parse::<u32>().is_err())
+    {
+        return unmapped("key:MoveCounter.CounterNum");
+    }
+    let from = defined(ctx, source)?;
+    let to = subject(ctx, p, "Self", None)?;
+    let count = amount(ctx, p.get("CounterNum").unwrap_or("1"))?;
+    Ok(json!({"MoveCounters": {"from": from, "to": to, "counter": kind, "count": count}}))
+}
+
+/// `ExchangeControl` for good between the `Defined$` permanent and the one target.
+fn exchange_control(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
+    only(p, "ExchangeControl", &TARGETING)?;
+    if !p.has("Defined") || !p.has("ValidTgts") || p.has("TargetMin") || p.has("TargetMax") {
+        return unmapped("key:ExchangeControl.shape");
+    }
+    let first = defined(ctx, p.get("Defined").unwrap_or_default())?;
+    let second = subject(ctx, &p.without(&["Defined"]), "Self", None)?;
+    Ok(json!({"ExchangeControl": {"what": [first, second], "duration": "Forever"}}))
+}
+
+/// `ExchangeLife` with one target player.
+fn exchange_life(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
+    only(p, "ExchangeLife", &["ValidTgts"])?;
+    if !p.has("ValidTgts") {
+        return unmapped("key:ExchangeLife.no-target");
+    }
+    let with = subject(ctx, p, "You", None)?;
+    Ok(json!({"ExchangeLife": {"with": with}}))
+}
+
+/// `FlipCoin` of the controller, once: the named win and lose parts.
+fn flip_coin(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
+    only(
+        p,
+        "FlipCoin",
+        &["WinSubAbility", "LoseSubAbility", "NoCall", "Defined"],
+    )?;
+    if !matches!(p.get("Defined"), None | Some("You")) {
+        return unmapped("key:FlipCoin.Defined");
+    }
+    // With or without a call the flip is won with even odds, as the node says.
+    let _ = p.get("NoCall");
+    let mut node = json!({"FlipCoin": {}});
+    for (key, field) in [("WinSubAbility", "win"), ("LoseSubAbility", "lose")] {
+        if let Some(name) = p.get(key) {
+            let part = ctx.sub(name)?;
+            node["FlipCoin"][field] = Value::Array(chain_at(ctx, &part, false)?);
+        }
+    }
+    Ok(node)
+}
