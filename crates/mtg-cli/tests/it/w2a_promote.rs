@@ -12,7 +12,6 @@ use std::path::{Path, PathBuf};
 
 use mtg_cards::load::Library;
 use mtg_cards::proposal::Verdict;
-use mtg_cards::support::Support;
 use mtg_cli::args::PromoteArgs;
 use mtg_cli::cache::Cache;
 use mtg_cli::ingest::{IngestOptions, ingest};
@@ -132,10 +131,10 @@ async fn each_file_is_promoted_or_skipped_with_its_reason(pool: PgPool) {
     let forty = reservoir.replace("\"amount\":50", "\"amount\":40");
     assert_ne!(forty, reservoir);
     let files = vec![
-        proposal(d, "a", "aetherflux_reservoir", RESERVOIR_TRIGGER),
         proposal(d, "b", "aetherflux_reservoir", INVALID),
         proposal(d, "c", "aetherflux_reservoir", &forty),
         proposal(d, "d", "aetherflux_reservoir", &reservoir),
+        proposal(d, "a", "aetherflux_reservoir", RESERVOIR_TRIGGER),
         proposal(d, "e", "aetherflux_reservoir", &reservoir),
         proposal(d, "a", "lightning_bolt", BOLT),
         proposal(
@@ -154,10 +153,10 @@ async fn each_file_is_promoted_or_skipped_with_its_reason(pool: PgPool) {
     assert_eq!(
         outcomes(&promoted),
         vec![
-            (reservoir_name(), Some(W2aSkip::State(Support::Partial))),
             (reservoir_name(), Some(W2aSkip::Rejected(Verdict::Invalid))),
             (reservoir_name(), Some(W2aSkip::Rejected(Verdict::Mismatch))),
             (reservoir_name(), None),
+            (reservoir_name(), Some(W2aSkip::Repeated)),
             (reservoir_name(), Some(W2aSkip::Repeated)),
             (name("Lightning Bolt"), Some(W2aSkip::Compiled)),
             (name("Eureka Moment"), Some(W2aSkip::Compiled)),
@@ -189,7 +188,7 @@ async fn each_file_is_promoted_or_skipped_with_its_reason(pool: PgPool) {
         text.contains("promoted Aetherflux Reservoir (Verified): cards/aetherflux_reservoir.json"),
         "{text}"
     );
-    assert!(text.ends_with("1 promoted, 8 skipped: 1 INVALID, 1 MISMATCH, 1 accepted Partial, 1 already a corpus card, 1 an earlier file promotes it, 1 no stored card is named after the file, 2 the compiler makes it Verified"), "{text}");
+    assert!(text.ends_with("1 promoted, 8 skipped: 1 INVALID, 1 MISMATCH, 1 already a corpus card, 2 an earlier file promotes it, 1 no stored card is named after the file, 2 the compiler makes it Verified"), "{text}");
 }
 
 #[sqlx::test]
@@ -214,7 +213,7 @@ async fn a_dry_run_writes_nothing_partial_admits_partial_and_a_missing_record_is
     assert!(dry.written.is_empty() && fs::read_dir(out.join("cards")).unwrap().next().is_none());
     assert!(
         dry.render()
-            .starts_with("would promote Aetherflux Reservoir (Partial)"),
+            .starts_with("would promote Aetherflux Reservoir (Verified)"),
         "{}",
         dry.render()
     );
