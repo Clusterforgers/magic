@@ -371,7 +371,7 @@ pub fn defined(ctx: &Ctx, word: &str) -> Tr<Value> {
         "Enchanted" | "Equipped" => Ok(json!("Attached")),
         "EnchantedController" | "EquippedController" => controller(json!("Attached")),
         "EnchantedPlayer" => Ok(json!("AttachedPlayer")),
-        "ChosenCard" => ctx.chosen_card.as_ref().map_or_else(
+        "ChosenCard" | "ChosenPlayer" => ctx.chosen_card.as_ref().map_or_else(
             || unmapped("defined:ChosenCard-without-a-choice"),
             |name| Ok(json!({"Bound": name})),
         ),
