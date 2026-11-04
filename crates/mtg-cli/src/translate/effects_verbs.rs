@@ -140,10 +140,20 @@ fn flip_coin(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     only(
         p,
         "FlipCoin",
-        &["WinSubAbility", "LoseSubAbility", "NoCall", "Defined"],
+        &[
+            "WinSubAbility",
+            "LoseSubAbility",
+            "NoCall",
+            "Defined",
+            "ValidTgts",
+        ],
     )?;
     if !matches!(p.get("Defined"), None | Some("You")) {
         return unmapped("key:FlipCoin.Defined");
+    }
+    // The flip names a target that the win and lose parts read as `Targeted`.
+    if p.has("ValidTgts") {
+        subject(ctx, p, "You", None)?;
     }
     // With or without a call the flip is won with even odds, as the node says.
     let _ = p.get("NoCall");

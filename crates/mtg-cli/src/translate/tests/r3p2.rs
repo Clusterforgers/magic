@@ -153,3 +153,37 @@ fn extra_phases_are_added(#[case] line: &str, #[case] phases: serde_json::Value)
 fn an_unread_extra_phase_is_a_named_gap(#[case] line: &str, #[case] gap: &str) {
     assert_eq!(gaps(&spell(&format!("AddPhase | {line}"))), [gap]);
 }
+
+/// A flip or a choice that names a target declares it for the parts to read.
+#[rstest]
+#[case::flip(
+    "A:SP$ FlipCoin | ValidTgts$ Creature | WinSubAbility$ Win | LoseSubAbility$ Lose",
+    "FlipCoin"
+)]
+#[case::choice(
+    "A:SP$ GenericChoice | ValidTgts$ Creature | Defined$ You | Choices$ Win,Lose",
+    "Either"
+)]
+fn a_target_of_a_flip_or_choice_is_read_by_its_parts(#[case] head: &str, #[case] node: &str) {
+    let script = format!(
+        "Name:T\nTypes:Sorcery\n{head}\nSVar:Win:DB$ Destroy | Defined$ Targeted\nSVar:Lose:DB$ Tap | Defined$ Targeted\n"
+    );
+    let found = abilities(&script);
+    assert_eq!(found.len(), 1, "{:?}", gaps(&script));
+    assert_eq!(
+        found[0]["Spell"]["targets"].as_array().map(Vec::len),
+        Some(1)
+    );
+    assert!(
+        found[0]["Spell"]["effects"][0][node]
+            .to_string()
+            .contains(r#"{"Target":0}"#)
+    );
+}
+
+/// The target of a choice may be the chooser in Forge; without `Defined$ You` that is not read.
+#[test]
+fn a_choice_by_its_target_is_a_gap() {
+    let script = "Name:T\nTypes:Sorcery\nA:SP$ GenericChoice | ValidTgts$ Opponent | Choices$ Win,Lose\nSVar:Win:DB$ Draw\nSVar:Lose:DB$ Draw\n";
+    assert_eq!(gaps(script), ["key:GenericChoice.ValidTgts-chooser"]);
+}
