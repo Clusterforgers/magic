@@ -144,3 +144,29 @@ fn a_cast_trigger_returns_the_spell_to_hand_without_resolving_it() {
         "the spell never resolved"
     );
 }
+
+const BOG: &str = "Name:Grave Wipe\nManaCost:B\nTypes:Sorcery\nA:SP$ ChangeZoneAll | ValidTgts$ Player | Origin$ Graveyard | Destination$ Exile | ChangeType$ Card | SpellDescription$ Exile target player's graveyard.\n";
+
+#[test]
+fn a_targeted_players_graveyard_is_exiled_and_the_other_stays() {
+    let spell = translated(BOG, "Grave Wipe", "Sorcery", "{B}");
+    let scenario = Scenario::new(2)
+        .hand(0, [spell])
+        .graveyard(0, [bear()])
+        .graveyard(1, [bear(), bear()])
+        .battlefield(0, [ready(swamp())]);
+    let mut driver = Driver::from_scenario(scenario).unwrap();
+    let target = driver.target_player(1);
+    driver.cast_at("Grave Wipe", &[target]).unwrap();
+    settle(&mut driver);
+    assert_eq!(named(&driver, Zone::Exile, "Grizzly Bears").len(), 2);
+    assert_eq!(
+        named(
+            &driver,
+            Zone::Graveyard(PlayerId::from_index(0)),
+            "Grizzly Bears"
+        )
+        .len(),
+        1
+    );
+}

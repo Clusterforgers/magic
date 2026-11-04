@@ -65,3 +65,31 @@ fn another_name_for_a_spell_stays_a_gap(#[case] defined: &str, #[case] gap: &str
     );
     assert_eq!(gaps(&text), [gap]);
 }
+
+#[rstest]
+#[case::bojuka_bog("Player", "Graveyard", "Exile", json!({"Exile": {"what": {"Each": [{"In": "Graveyard"}, {"OwnedBy": {"Target": 0}}]}}}))]
+#[case::blessed_respite_shuffle("Player", "Graveyard", "Library", json!({"Move": {"what": {"Each": [{"In": "Graveyard"}, {"OwnedBy": {"Target": 0}}]}, "to": {"Library": {"place": "Shuffled"}}}}))]
+#[case::opponents_hand("Opponent", "Hand", "Exile", json!({"Exile": {"what": {"Each": [{"In": "Hand"}, {"OwnedBy": {"Target": 0}}]}}}))]
+fn a_zone_of_a_targeted_player_moves_whole(
+    #[case] tgt: &str,
+    #[case] origin: &str,
+    #[case] destination: &str,
+    #[case] expected: Value,
+) {
+    let shuffle = if destination == "Library" {
+        " | Shuffle$ True"
+    } else {
+        ""
+    };
+    let text = format!(
+        "Name:T\nTypes:Sorcery\nA:SP$ ChangeZoneAll | ValidTgts$ {tgt} | Origin$ {origin} | Destination$ {destination} | ChangeType$ Card{shuffle}\n"
+    );
+    assert_eq!(gaps(&text), Vec::<String>::new());
+    assert_eq!(effects(&text).last(), Some(&expected));
+}
+
+#[test]
+fn a_targeted_battlefield_sweep_stays_a_gap() {
+    let text = "Name:T\nTypes:Sorcery\nA:SP$ ChangeZoneAll | ValidTgts$ Player | Origin$ Battlefield | Destination$ Hand | ChangeType$ Creature\n";
+    assert_eq!(gaps(text), ["key:ChangeZoneAll.ValidTgts"]);
+}

@@ -907,13 +907,24 @@ fn change_zone_all(ctx: &mut Ctx, p: &Params, origin: &str, destination: &str) -
             "LibraryPosition",
             "Shuffle",
             "RememberChanged",
+            "ValidTgts",
         ],
     )?;
     if origin == "Library" {
         return unmapped("key:ChangeZoneAll.Origin=Library");
     }
     let zone = (origin != "Battlefield").then_some(origin);
-    let filter = selector_in(ctx, p.get("ChangeType").unwrap_or("Card"), zone)?;
+    let mut filter = selector_in(ctx, p.get("ChangeType").unwrap_or("Card"), zone)?;
+    if p.has("ValidTgts") {
+        // "Exile target player's graveyard": the cards of the zone that player owns.
+        if !matches!(origin, "Graveyard" | "Hand" | "Exile")
+            || !matches!(p.get("ValidTgts"), Some("Player" | "Opponent"))
+        {
+            return unmapped("key:ChangeZoneAll.ValidTgts");
+        }
+        let owner = subject(ctx, p, "", Some(origin))?;
+        filter.push(json!({"OwnedBy": owner}));
+    }
     let mut effect = moves(&json!({ "Each": filter }), goes(ctx, p, destination)?);
     if remember::wanted(p, &["RememberChanged"]) {
         let (verb, stem) = if effect.get("Exile").is_some() {
