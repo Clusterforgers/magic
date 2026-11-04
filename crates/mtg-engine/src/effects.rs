@@ -109,6 +109,8 @@ pub enum Modification {
     AddKeyword(#[cfg_attr(feature = "ts", ts(type = "unknown"))] Keyword),
     /// Removes a keyword ability (layer 6), printed or granted before it; `keywords_of` reads it.
     RemoveKeyword(#[cfg_attr(feature = "ts", ts(type = "unknown"))] Keyword),
+    /// Removes a keyword ability and keeps the object from having or gaining it afterwards (layer 6).
+    LockKeyword(#[cfg_attr(feature = "ts", ts(type = "unknown"))] Keyword),
     /// Gives an activated or a triggered ability (layer 6); `ability_reader` lists it under an address of its own.
     GrantAbility(#[cfg_attr(feature = "ts", ts(type = "unknown"))] Arc<Ability>),
     /// Takes away every ability the object has so far (layer 6): the printed ones, the plain mana abilities and
@@ -204,6 +206,7 @@ impl Modification {
             | Modification::AddAllCreatureTypes => Layer::Type,
             Modification::SetColors(_) => Layer::Color,
             Modification::AddKeyword(_)
+            | Modification::LockKeyword(_)
             | Modification::RemoveKeyword(_)
             | Modification::GrantAbility(_)
             | Modification::LoseAbilities => Layer::Ability,
@@ -285,6 +288,7 @@ impl Modification {
             Modification::SetController(_)
             | Modification::AddKeyword(_)
             | Modification::RemoveKeyword(_)
+            | Modification::LockKeyword(_)
             | Modification::GrantAbility(_)
             | Modification::CantAttack
             | Modification::CantAttackYou { .. }

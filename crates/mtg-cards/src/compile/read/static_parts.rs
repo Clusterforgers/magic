@@ -67,6 +67,15 @@ fn single(modification: &Modification, _last: bool, plural: bool) -> Vec<String>
             .map(|word| format!("{} {word}", verb(plural, "loses", "lose")))
             .into_iter()
             .collect(),
+        Modification::LockKeyword(keyword) => keyword_text(keyword)
+            .map(|word| {
+                format!(
+                    "{} {word} and can't have or gain {word}",
+                    verb(plural, "loses", "lose")
+                )
+            })
+            .into_iter()
+            .collect(),
         Modification::LoseAbilities => {
             vec![format!("{} all abilities", verb(plural, "loses", "lose"))]
         }

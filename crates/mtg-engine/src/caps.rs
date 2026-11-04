@@ -349,6 +349,7 @@ const RUNS: &[&str] = &[
     "Mod.AddAllCreatureTypes",
     "Mod.SetColors",
     "Mod.RemoveKeyword",
+    "Mod.LockKeyword",
     "Mod.GrantAbility",
     "Mod.LoseAbilities",
     "Mod.SetController",
@@ -821,6 +822,7 @@ mod tests {
     #[case::preventing("ReplaceBy.Prevent", true)]
     #[case::preventing_in_part("ReplaceBy.PreventUpTo", true)]
     #[case::removed_keywords("Mod.RemoveKeyword", true)]
+    #[case::locked_keywords("Mod.LockKeyword", true)]
     #[case::conditions("Effect.If", true)]
     #[case::putting_counters("Effect.PutCounters", true)]
     #[case::removing_counters("Effect.RemoveCounters", true)]

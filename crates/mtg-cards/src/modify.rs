@@ -66,6 +66,9 @@ pub enum Modification {
     AddProtectionFromChosenCardType,
     /// Removes a keyword ability (layer 6).
     RemoveKeyword(Keyword),
+    /// Removes a keyword ability and the object can't have or gain it afterwards, whichever effect is newer (layer 6):
+    /// "lose flying and can't have or gain flying".
+    LockKeyword(Keyword),
     /// Gives the object an activated or a triggered ability (layer 6); a keyword is `AddKeyword`.
     GrantAbility(Arc<Ability>),
     /// The object loses all its abilities (layer 6); abilities granted after it still count.
@@ -108,7 +111,9 @@ impl Modification {
     pub fn is_player_keyword(&self) -> bool {
         matches!(
             self,
-            Modification::AddKeyword(keyword) | Modification::RemoveKeyword(keyword)
+            Modification::AddKeyword(keyword)
+            | Modification::RemoveKeyword(keyword)
+            | Modification::LockKeyword(keyword)
                 if matches!(keyword, Keyword::Hexproof | Keyword::Shroud | Keyword::Protection(_))
         )
     }
@@ -129,6 +134,7 @@ impl Modification {
             Modification::AddKeyword(_)
             | Modification::AddProtectionFromChosenColor
             | Modification::AddProtectionFromChosenCardType
+            | Modification::LockKeyword(_)
             | Modification::RemoveKeyword(_)
             | Modification::GrantAbility(_)
             | Modification::LoseAbilities => Some("6"),

@@ -163,7 +163,7 @@ fn leaves(game: &mut GameState, name: &str) {
 }
 
 /// The modifications the engine runs.
-const MODIFICATIONS: [&str; 26] = [
+const MODIFICATIONS: [&str; 27] = [
     r#"{"ModifyPT":{"power":2,"toughness":-1}}"#,
     r#"{"SetPT":{"power":5,"toughness":1}}"#,
     r#""SwitchPT""#,
@@ -190,6 +190,7 @@ const MODIFICATIONS: [&str; 26] = [
     r#"{"MaxBlockers":1}"#,
     r#""Goaded""#,
     r#"{"SetLandTypes":["Mountain"]}"#,
+    r#"{"LockKeyword":"Flying"}"#,
 ];
 
 #[test]
@@ -227,6 +228,7 @@ fn the_table_of_modifications_has_every_variant_of_the_dsl() {
             | mtg_cards::modify::Modification::AddProtectionFromChosenColor
             | mtg_cards::modify::Modification::AddProtectionFromChosenCardType
             | mtg_cards::modify::Modification::RemoveKeyword(_)
+            | mtg_cards::modify::Modification::LockKeyword(_)
             | mtg_cards::modify::Modification::GrantAbility(_)
             | mtg_cards::modify::Modification::LoseAbilities
             | mtg_cards::modify::Modification::SetController(_)
@@ -248,7 +250,7 @@ fn the_table_of_modifications_has_every_variant_of_the_dsl() {
 
 #[rstest]
 fn every_modification_gives_the_same_view_as_a_static_ability_and_as_an_effect(
-    #[values(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 18, 25)] which: usize,
+    #[values(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 18, 25, 26)] which: usize,
 ) {
     let modification = MODIFICATIONS[which];
     let mut by_effect = game_with(idle_totem());

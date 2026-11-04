@@ -1552,7 +1552,9 @@ impl<'a> Walker<'a> {
                 self.at("power", |w| w.amount(power));
                 self.at("toughness", |w| w.amount(toughness));
             }
-            Modification::AddKeyword(keyword) | Modification::RemoveKeyword(keyword) => {
+            Modification::AddKeyword(keyword)
+            | Modification::RemoveKeyword(keyword)
+            | Modification::LockKeyword(keyword) => {
                 if matches!(modification, Modification::AddKeyword(_)) {
                     self.granted.push(keyword.clone());
                 }
